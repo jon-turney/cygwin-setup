@@ -1,3 +1,8 @@
+2002-02-24  Robert Collins <rbtcollins@hotmail.com>
+
+	* log.cc (log_save): Fix creating /var/log.
+	* packate_meta.cc (standard_dirs): Remove duplicate '/''s.
+
 2002-02-24  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* res.rc (STRINGTABLE): Add IDS_CYGWIN_SETUP and
