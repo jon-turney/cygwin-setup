@@ -618,17 +618,20 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 	    {
 	      int download = 0;
 	      char *filename = strrchr (url, '/') + 1;
-	      if (download_when == NEVER)
-		/* nothing to do */;
-	      else if (download_when == ALWAYS || _access (filename, 0) == -1)
+	      if (download_when == ALWAYS || _access (filename, 0) == -1)
 		download = 1;
 	      else
 		{
 		  char text[_MAX_PATH];
 		  char *answer;
 
-		  sprintf (text, "Replace %s from the net (ynAN)", filename);
-		  answer = prompt (text, "y");
+		  if (download_when == NEVER)
+		    answer = "N";
+		  else
+		    {
+		      sprintf (text, "Replace %s from the net (ynAN)", filename);
+		      answer = prompt (text, "y");
+		    }
 
 		  if (answer)
 		    {
@@ -644,6 +647,7 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 			  break;
 			case 'N':
 			  download_when = NEVER;
+			  fprintf (stderr, "Skipping %s\n", filename);
 			case 'n':
 			default:
 			  download = 0;
@@ -654,7 +658,7 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 
 	      if (download)
 		{
-		  printf ("Downloading: %s...", url);
+		  printf ("Downloading: %s...", filename);
 		  fflush (stdout);
 		  if (geturl (session, url, filename, 0))
 		    {

@@ -1,3 +1,7 @@
+Sat Apr 15 20:05:33 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (processdirlisting): Make "N" option a little less aggressive.
+
 Fri Apr 14 11:11:29 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (tarx): Wait to after tar has completed to reset protections
