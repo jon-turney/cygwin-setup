@@ -29,7 +29,7 @@ main (int anargc, char **anargv)
   argv[1] = strdup("-h");
     {
       BoolOption helpoption (false, 'h', "help", "Tests the use of help output.");
-      if (!GetOption::GetInstance().Process (argc, argv))
+      if (!GetOption::GetInstance().Process (argc, argv, NULL))
 	{
 	  std::cout << "Failed to process options" << std::endl;
 	  return 1;
@@ -44,7 +44,7 @@ main (int anargc, char **anargv)
     }
     {
       BoolOption helpoption (false, 'h', "help", "Tests the use of help output.");
-      if (!GetOption::GetInstance().Process (argc, argv))
+      if (!GetOption::GetInstance().Process (argc, argv, NULL))
 	{
 	  std::cout << "Failed to process options (2) " << std::endl;
 	  return 1;
@@ -56,16 +56,4 @@ main (int anargc, char **anargv)
 	}
     }
   return 0;
-  /*
-  if (testoption)
-    {
-      std::cout << "Option used" << std::endl;
-      return 1;
-    }
-  else
-    {
-      std::cout << "Option not used" << std::endl;
-      return 0;
-    }
-    */
 }

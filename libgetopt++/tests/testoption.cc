@@ -24,7 +24,7 @@ static BoolOption helpoption (false, 'h', "help", "Tests the use of help output.
 int
 main (int argc, char **argv)
 {
-  if (!GetOption::GetInstance().Process (argc, argv))
+  if (!GetOption::GetInstance().Process (argc, argv, NULL))
     {
       std::cout << "Failed to process options" << std::endl;
       return 1;

@@ -16,7 +16,6 @@
 #ifndef _GETOPT___DEFAULTFORMATTER_H_
 #define _GETOPT___DEFAULTFORMATTER_H_
 
-#include <getopt.h>
 #include <iostream>
 #include <vector>
 #include "getopt++/Option.h"
@@ -30,7 +29,7 @@ class DefaultFormatter {
     void operator () (Option *anOption) {
       std::string output = std::string() + " -" + anOption->shortOption ()[0];
       output += " --" ;
-      output += anOption->longOption ().name;
+      output += anOption->longOption ();
       output += std::string (40 - output.size(), ' ');
       std::string helpmsg = anOption->shortHelp();
       while (helpmsg.size() > 40)

@@ -34,11 +34,10 @@ BoolOption::shortOption () const
   return string() + _shortopt;
 }
 
-struct option 
+string const  
 BoolOption::longOption () const
 {
-  struct option foo = {_longopt, no_argument, NULL, _shortopt};
-  return foo;
+  return _longopt;
 }
 
 string const 
@@ -47,13 +46,20 @@ BoolOption::shortHelp () const
   return _shorthelp;
 }
 
-bool 
+Option::Result 
 BoolOption::Process (char const *)
 {
   _value = !_ovalue;
+  return Ok;
 }
 
 BoolOption::operator bool () const
 {
   return _value;
+}
+
+Option::Argument
+BoolOption::argument () const
+{
+    return None;
 }

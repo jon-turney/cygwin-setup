@@ -1,3 +1,246 @@
+2003-12-10 20:45:32 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-17
+
+    Summary:
+      bump library version
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-17
+
+
+    modified files:
+     Makefile.am src/OptionSet.cc
+
+
+2003-12-10 13:14:39 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-16
+
+    Summary:
+      extract argumentless parsing logic
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-16
+
+
+    modified files:
+     include/getopt++/OptionSet.h src/OptionSet.cc
+
+
+2003-12-10 12:25:55 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-15
+
+    Summary:
+      simplify logic by consolidating Process calls in OptionSet::doOption
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-15
+
+
+    modified files:
+     src/OptionSet.cc
+
+
+2003-12-10 12:24:22 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-14
+
+    Summary:
+      move option value passing out of the direct path of option processing
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-14
+
+
+    modified files:
+     src/OptionSet.cc
+
+
+2003-12-10 12:21:32 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-13
+
+    Summary:
+      return actual Option results
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-13
+
+
+    modified files:
+     src/OptionSet.cc
+
+
+2003-12-10 12:19:39 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-12
+
+    Summary:
+      extract OptionSet::findOption
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-12
+
+
+    modified files:
+     include/getopt++/OptionSet.h src/OptionSet.cc
+
+
+2003-12-10 12:14:36 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-11
+
+    Summary:
+      make OptionSet::processOne() return void
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-11
+
+
+    modified files:
+     include/getopt++/OptionSet.h src/OptionSet.cc
+
+
+2003-12-10 12:10:42 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-10
+
+    Summary:
+      extract method OptionSet::doOption
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-10
+
+
+    modified files:
+     include/getopt++/OptionSet.h src/OptionSet.cc
+
+
+2003-12-10 11:57:05 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-9
+
+    Summary:
+      extract method OptionSet::isOption
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-9
+
+
+    modified files:
+     include/getopt++/OptionSet.h src/OptionSet.cc
+
+
+2003-12-10 11:48:31 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-8
+
+    Summary:
+      eliminate passed in self reference to OptionSet::processOne
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-8
+
+
+    modified files:
+     include/getopt++/OptionSet.h src/OptionSet.cc
+
+
+2003-12-10 11:36:01 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-7
+
+    Summary:
+      remove OptionState class
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-7
+
+
+    modified files:
+     include/getopt++/OptionSet.h src/OptionSet.cc
+
+
+2003-12-10 11:32:33 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-6
+
+    Summary:
+      remove OptionStateFinder class
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-6
+
+
+    modified files:
+     src/OptionSet.cc
+
+
+2003-12-10 06:52:51 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-5
+
+    Summary:
+      use up option values that are in the next argv slot
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-5
+
+
+    modified files:
+     src/OptionSet.cc
+
+
+2003-12-10 06:47:33 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-4
+
+    Summary:
+      support step by step parsing - using non options to switch 'mode'
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-4
+
+
+    modified files:
+     include/getopt++/OptionSet.h src/OptionSet.cc
+     tests/OptionSet.cc
+
+
+2003-12-10 04:37:57 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-3
+
+    Summary:
+      deprecate the DefaultOptionSet approach for chaining options
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-3
+
+
+    modified files:
+     include/getopt++/BoolOption.h include/getopt++/Option.h
+     include/getopt++/OptionSet.h include/getopt++/StringOption.h
+     src/BoolOption.cc src/OptionSet.cc src/StringOption.cc
+     tests/BoolOptionTest.cc tests/OptionSet.cc tests/testoption.cc
+
+
+2003-12-10 04:01:28 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-2
+
+    Summary:
+      remove getopt logic
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-2
+
+
+    removed files:
+     include/.arch-ids/cdefs.h.id include/.arch-ids/getopt.h.id
+     include/cdefs.h include/getopt.h src/.arch-ids/getopt.c.id
+     src/getopt.c
+
+    modified files:
+     Makefile.am configure.in include/getopt++/DefaultFormatter.h
+     include/getopt++/OptionSet.h include/getopt++/StringOption.h
+     src/BoolOption.cc src/StringOption.cc
+
+
+2003-12-10 03:50:09 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-1
+
+    Summary:
+      add test case, and reimplement getopt from scratch
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--patch-1
+
+
+    new files:
+     tests/.arch-ids/OptionSet.cc.id tests/OptionSet.cc
+
+    modified files:
+     Makefile.am include/getopt++/BoolOption.h
+     include/getopt++/DefaultFormatter.h include/getopt++/Option.h
+     include/getopt++/OptionSet.h include/getopt++/StringOption.h
+     src/BoolOption.cc src/OptionSet.cc src/StringOption.cc
+
+
+2003-12-09 06:32:21 GMT	Robert Collins <rbtcollins@hotmail.com>	base-0
+
+    Summary:
+      initial import
+    Revision:
+      libgetoptplusplus--own-getopt--1.0--base-0
+
+    
+    (automatically generated log message)
+
+    new files:
+     COPYING ChangeLog Makefile.am README bootstrap.sh configure.in
+     include/cdefs.h include/getopt++/BoolOption.h
+     include/getopt++/DefaultFormatter.h
+     include/getopt++/GetOption.h include/getopt++/Option.h
+     include/getopt++/OptionSet.h include/getopt++/StringOption.h
+     include/getopt.h src/BoolOption.cc src/GetOption.cc
+     src/Option.cc src/OptionSet.cc src/StringOption.cc
+     src/getopt.c tests/BoolOptionTest.cc tests/optioniterator.cc
+     tests/testoption.cc
+
+
 2003-11-16 Robert Collins  <rbtcollins@hotmail.com>
 
 	* src/OptionSet.cc (OptionSet::Process): Call the default optionset 

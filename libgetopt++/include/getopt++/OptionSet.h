@@ -17,11 +17,9 @@
 #ifndef _OPTIONSET_H_
 #define _OPTIONSET_H_
 
-#include <getopt.h>
 #include <iosfwd>
 #include <vector>
-
-class Option;
+#include "getopt++/Option.h"
 
 class OptionSet
 {
@@ -29,16 +27,30 @@ public:
   OptionSet();
   virtual ~OptionSet();
   virtual void Register (Option *);
-  virtual bool Process (int argc, char **argv, OptionSet *defaultOptionSet=0);
+  virtual bool Process (int argc, char **argv, Option *nonOptionHandler);
+  virtual bool Process (std::vector<std::string> const &parms, Option *nonOptionHandler);
+  virtual bool process (Option *nonOptionHandler);
   virtual void ParameterUsage (std::ostream &);
   virtual std::vector<Option *> const &optionsInSet() const;
+  virtual std::vector<std::string> const &nonOptions() const;
+  virtual std::vector<std::string> const &remainingArgv() const;
 protected:
   OptionSet (OptionSet const &);
   OptionSet &operator= (OptionSet const &);
   // force initialisation of variables
   void Init ();
 private:
+  void processOne();
+  bool isOption(std::string::size_type) const;
+  void doOption(std::string &option, std::string::size_type const &pos);
+  bool doNoArgumentOption(std::string &option, std::string::size_type const &pos);
+  Option * findOption(std::string &option, std::string::size_type const &pos) const;
   std::vector<Option *> options;
+  std::vector<std::string> argv;
+  std::vector<std::string> nonoptions;
+  std::vector<std::string> remainingargv;
+  Option *nonOptionHandler;
+  Option::Result lastResult;
 };
 
 #endif // _OPTIONSET_H_

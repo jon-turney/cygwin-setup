@@ -4,6 +4,7 @@
 #
 
 AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.5 foreign
+AM_CXXFLAGS = -Wall -Werror
 ##DIST_SUBDIRS	= src
 ##SUBDIRS		= src
 
@@ -14,26 +15,15 @@ INCLUDES = -I$(top_srcdir)/include
 getoptincludedir = $(includedir)/getopt++
 
 lib_LTLIBRARIES = libgetopt++.la
-check_PROGRAMS = tests/testoption tests/optioniterator tests/BoolOptionTest
+check_PROGRAMS = tests/OptionSet tests/testoption tests/optioniterator tests/BoolOptionTest
 
-TESTS = tests/optioniterator tests/BoolOptionTest
-
-EXTRA_libgetopt___la_SOURCES = src/getopt.c
-
-if INTERNAL_GETOPT
-internal_getopt=src/getopt.c
-else
-internal_getopt=
-endif
+TESTS = tests/OptionSet tests/optioniterator tests/BoolOptionTest
 
 libgetopt___la_SOURCES = src/GetOption.cc src/Option.cc src/BoolOption.cc \
 	src/OptionSet.cc \
-	src/StringOption.cc \
-	$(internal_getopt) \
-	include/getopt.h \
-	include/cdefs.h
+	src/StringOption.cc
 
-libgetopt___la_LDFLAGS = -version-info 0:0:0
+libgetopt___la_LDFLAGS = -version-info 1:1:0
 
 getoptinclude_HEADERS = include/getopt++/Option.h \
   include/getopt++/BoolOption.h \
@@ -50,3 +40,7 @@ tests_optioniterator_LDADD = libgetopt++.la
 
 tests_BoolOptionTest_SOURCES = tests/BoolOptionTest.cc
 tests_BoolOptionTest_LDADD = libgetopt++.la
+
+tests_OptionSet_SOURCES = tests/OptionSet.cc
+tests_OptionSet_LDADD = libgetopt++.la
+

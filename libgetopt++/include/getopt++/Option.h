@@ -31,9 +31,20 @@ class Option
 public:
   virtual ~ Option ();
   virtual std::string const shortOption () const = 0;
-  virtual struct option longOption () const = 0;
+  virtual std::string const longOption () const = 0;
   virtual std::string const shortHelp () const = 0;
-  virtual bool Process (char const *) = 0;
+  enum Result {
+      Failed,
+      Ok,
+      Stop
+  };
+  virtual Result Process (char const *) = 0;
+  enum Argument {
+      None,
+      Optional,
+      Required
+  };
+  virtual Argument argument () const = 0;
 
 protected:
     Option ();

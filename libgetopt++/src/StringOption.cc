@@ -24,9 +24,9 @@ StringOption::StringOption(string const defaultvalue, char shortopt,
 		       _longopt (longopt), _shorthelp (shorthelp)
 {
   if (!optional)
-    _optional = required_argument;
+    _optional = Required;
   else
-    _optional = optional_argument;
+    _optional = Optional;
   owner.Register (this);
 };
 
@@ -38,11 +38,10 @@ StringOption::shortOption () const
   return string() + _shortopt + ":";
 }
 
-struct option 
+string const
 StringOption::longOption () const
 {
-  struct option foo = {_longopt, _optional, NULL, _shortopt};
-  return foo;
+  return _longopt;
 }
 
 string const 
@@ -51,14 +50,23 @@ StringOption::shortHelp () const
   return _shorthelp;
 }
 
-bool 
+Option::Result 
 StringOption::Process (char const *optarg)
 {
   if (optarg)
     _value = optarg;
+  if (optarg || _optional == Optional)
+      return Ok;
+  return Failed;
 }
 
 StringOption::operator string () const
 {
   return _value;
+}
+
+Option::Argument
+StringOption::argument () const
+{
+    return _optional;
 }

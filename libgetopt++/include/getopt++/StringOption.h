@@ -28,13 +28,14 @@ public:
 	     OptionSet &owner=GetOption::GetInstance());
   virtual ~ StringOption ();
   virtual std::string const shortOption () const;
-  virtual struct option longOption () const;
+  virtual std::string const longOption () const;
   virtual std::string const shortHelp () const;
-  virtual bool Process (char const *);
+  virtual Result Process (char const *);
+  virtual Argument argument () const;
   operator std::string () const;
 
 private:
-  int _optional;
+  Argument _optional;
   std::string _value;
   char _shortopt;
   char const *_longopt;

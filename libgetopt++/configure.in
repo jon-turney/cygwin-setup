@@ -26,7 +26,6 @@ AC_CANONICAL_HOST
 AC_PROG_LIBTOOL
 
 AC_CHECK_HEADERS( \
-	sys/cdefs.h \
 	unistd.h \
 	string   \
 	string.h
