@@ -485,7 +485,7 @@ do_install (HINSTANCE h)
 	{
 	  sscanf (line, "%s", pkgname);
 	  Package *pkg = getpkgbyname (pkgname);
-	  if (!is_download_action (pkg))
+	  if (!pkg || !is_download_action (pkg))
 	    fputs (line, ndb);
 	}
 
