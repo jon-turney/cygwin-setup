@@ -78,7 +78,7 @@ WinMain (HINSTANCE h,
 	case IDD_CHOOSE:	do_choose (h);	break;
 	case IDD_S_DOWNLOAD:	do_download (h); break;
 	case IDD_S_INSTALL:	do_install (h);	break;
-	case IDD_S_DESKTOP:	do_desktop (h); break;
+	case IDD_DESKTOP:	do_desktop (h); break;
 	case IDD_S_POSTINSTALL:	do_postinstall (h); break;
 
 	default:

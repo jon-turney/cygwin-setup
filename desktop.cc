@@ -138,6 +138,15 @@ start_menu (char *title, char *target)
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
   SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_COMMON_PROGRAMS : CSIDL_PROGRAMS, &id);
   SHGetPathFromIDList (id, path);
+// following lines added because it appears Win95 does not use common programs
+// unless it comes into play when multiple users for Win95 is enabled
+  msg("Program directory for program link: %s",path);
+  if ( strlen(path) == 0) {
+     SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
+     SHGetPathFromIDList (id, path);
+     msg("Program directory for program link changed to: %s",path);
+  }
+// end of Win95 addition
   strcat (path, "/Cygnus Solutions");
   make_link (path, title, target);
 }
@@ -148,8 +157,18 @@ desktop_icon (char *title, char *target)
   char path[_MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
-  SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_DESKTOP : CSIDL_COMMON_DESKTOPDIRECTORY, &id);
+  //SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_DESKTOP : CSIDL_COMMON_DESKTOPDIRECTORY, &id);
+  SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_COMMON_DESKTOPDIRECTORY : CSIDL_DESKTOPDIRECTORY, &id);
   SHGetPathFromIDList (id, path);
+// following lines added because it appears Win95 does not use common programs
+// unless it comes into play when multiple users for Win95 is enabled
+  msg("Desktop directory for desktop link: %s",path);
+  if ( strlen(path) == 0) {
+     SHGetSpecialFolderLocation (NULL, CSIDL_DESKTOPDIRECTORY, &id);
+     SHGetPathFromIDList (id, path);
+     msg("Desktop directory for deskop link changed to: %s",path);
+  }
+// end of Win95 addition
   make_link (path, title, target);
 }
 
@@ -283,23 +302,164 @@ save_icon ()
     }
 }
 
-void
-do_desktop (HINSTANCE h)
+static void
+do_desktop_setup()
 {
-  next_dialog = IDD_S_POSTINSTALL;
-
-  CoInitialize (NULL);
-
-  verinfo.dwOSVersionInfoSize = sizeof (verinfo);
-  GetVersionEx (&verinfo);
-
   save_icon ();
 
   make_cygwin_bat ();
   make_etc_profile ();
   make_passwd_group ();
 
-  start_menu ("Cygwin 1.1 Bash Shell", batname);
+  if (root_menu) {
+    start_menu ("Cygwin 1.1 Bash Shell", batname);
+  }
 
-  desktop_icon ("Cygwin", batname);
+  if (root_desktop) {
+    desktop_icon ("Cygwin", batname);
+  }
+}
+
+static int da[] = { IDC_ROOT_DESKTOP, 0 };
+static int ma[] = { IDC_ROOT_MENU, 0 };
+
+static void
+check_if_enable_next (HWND h)
+{
+  EnableWindow (GetDlgItem (h, IDOK), 1);
+}
+
+static void
+load_dialog (HWND h)
+{
+  rbset (h, da, root_desktop);
+  rbset (h, ma, root_menu);
+  check_if_enable_next (h);
+}
+
+static int check_desktop (char *title, char *target)
+{
+  char path[_MAX_PATH];
+  LPITEMIDLIST id;
+  int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
+  SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_COMMON_DESKTOPDIRECTORY : CSIDL_DESKTOPDIRECTORY, &id);
+  SHGetPathFromIDList (id, path);
+  // following lines added because it appears Win95 does not use common programs
+  // unless it comes into play when multiple users for Win95 is enabled
+  msg ("Desktop directory for desktop link: %s",path);
+  if (strlen (path) == 0) {
+     SHGetSpecialFolderLocation (NULL, CSIDL_DESKTOPDIRECTORY, &id);
+     SHGetPathFromIDList (id, path);
+     msg ("Desktop directory for deskop link changed to: %s",path);
+  }
+  // end of Win95 addition
+  char *fname = concat (path, "/", title, ".lnk", 0);
+
+  if (_access (fname, 0) == 0)
+    return 0; /* already exists */
+  
+  fname = concat (path, "/", title, ".pif", 0); /* check for a pif as well */
+  
+  if (_access (fname, 0) == 0)
+    return 0; /* already exists */
+
+  return IDC_ROOT_DESKTOP;
+}
+
+static int check_startmenu (char *title, char *target)
+{
+  char path[_MAX_PATH];
+  LPITEMIDLIST id;
+  int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
+  SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_COMMON_PROGRAMS : CSIDL_PROGRAMS, &id);
+  SHGetPathFromIDList (id, path);
+  // following lines added because it appears Win95 does not use common programs
+  // unless it comes into play when multiple users for Win95 is enabled
+  msg ("Program directory for program link: %s",path);
+  if (strlen (path) == 0) {
+     SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
+     SHGetPathFromIDList (id, path);
+     msg ("Program directory for program link changed to: %s",path);
+  }
+  // end of Win95 addition
+  strcat (path, "/Cygnus Solutions");
+  char *fname = concat (path, "/", title, ".lnk", 0);
+
+  if (_access (fname, 0) == 0)
+    return 0; /* already exists */
+  
+  fname = concat (path, "/", title, ".pif", 0); /* check for a pif as well */
+  
+  if (_access (fname, 0) == 0)
+    return 0; /* already exists */
+  
+  return IDC_ROOT_MENU;
+}
+
+static void
+save_dialog (HWND h)
+{
+  root_desktop= rbget (h, da);
+  root_menu = rbget (h, ma);
+}
+
+static BOOL
+dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
+{
+  switch (id)
+    {
+
+    case IDC_ROOT_DESKTOP:
+    case IDC_ROOT_MENU:
+      save_dialog (h);
+      check_if_enable_next (h);
+      break;
+
+    case IDOK:
+      save_dialog (h);
+      do_desktop_setup();
+      NEXT (IDD_S_POSTINSTALL);
+      break;
+
+    case IDC_BACK:
+      save_dialog (h);
+      NEXT (IDD_CHOOSE);
+      break;
+
+    case IDCANCEL:
+      NEXT (0);
+      break;
+    }
+}
+
+static BOOL CALLBACK
+dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+{
+  switch (message)
+    {
+    case WM_INITDIALOG:
+      load_dialog (h);
+      return FALSE;
+    case WM_COMMAND:
+      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
+    }
+  return FALSE;
+}
+
+void
+do_desktop (HINSTANCE h)
+{
+  CoInitialize (NULL);
+
+  verinfo.dwOSVersionInfoSize = sizeof (verinfo);
+  GetVersionEx (&verinfo);
+
+  root_desktop = check_desktop("Cygwin",backslash (concat (root_dir, "/cygwin.bat", 0)));
+  root_menu = check_startmenu("Cygwin 1.1 Bash Shell",backslash (concat (root_dir, "/cygwin.bat", 0)));
+  
+  int rv = 0;
+
+  rv = DialogBox (h, MAKEINTRESOURCE (IDD_DESKTOP), 0, dialog_proc);
+  if (rv == -1)
+    fatal (IDS_DIALOG_FAILED);
 }

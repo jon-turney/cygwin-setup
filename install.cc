@@ -237,7 +237,7 @@ void
 do_install (HINSTANCE h)
 {
   int i, num_installs = 0, num_uninstalls = 0;
-  next_dialog = IDD_S_DESKTOP;
+  next_dialog = IDD_DESKTOP;
 
   mkdir_p (1, root_dir);
 

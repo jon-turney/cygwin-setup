@@ -1,3 +1,29 @@
+2000-09-05  Brian Keener  <bkeener@thesoftwaresource.com>
+
+	* desktop.cc: added logic to handle to the new dialog and to
+	default the setting for the new checkboxes based on whether the
+	desktop icon or start menu link already exist.
+	(desktop_icon): correction to desktop directories for desktop icon
+	creation.  Additional logic added for Win95 which does not appear
+	to have Common Directories so if Common selected and null uses
+	normal directory.
+	(start_menu): Additional logic added for Win95 which does not
+	appear to have Common Directories so if Common selected and null
+	uses normal directory.
+	(do_desktop_setup): moved the saving of the icon, creation of the
+	bat file, profile, passwd, Start Menu link and desktop shortcut to
+	this method from do_desktop.  Made the creation of the desktop
+	icon and start menu link conditional on settings of new dialog
+	created for desktop.
+	* install.cc (do_install): changed next from IDD_S_DESKTOP to
+	IDD_DESKTOP.
+	* main.cc (WinMain): changed case IDD_S_DESKTOP to IDD_DESKTOP.
+	* res.rc: added new resource to create a desktop dialog with 2
+	checkboxes for creating the desktop icon and start menu link.
+	* resource.h: changed IDD_S_DESKTOP to IDD_DESKTOP and added two
+	new controls: IDC_ROOT_MENU and IDC_ROOT_DESKTOP for new dialog.
+	* state.h: added root_menu and root_desktop for use in dialog.
+
 2000-08-29  DJ Delorie  <dj@redhat.com>
 
 	* choose.cc (scan_downloaded_files): scan for existing files, so
