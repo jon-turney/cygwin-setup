@@ -64,7 +64,7 @@ public:
   /* how big is the source file */
   size_t size;
   /* how much space do we need to install this ? */
-  virtual unsigned long installedSize ()
+  virtual unsigned long installedSize () const
     {
       return _installedSize;
     }
@@ -75,21 +75,21 @@ public:
   /* The canonical name - the complete path to the source file 
    * i.e. foo/bar/package-1.tar.bz2
    */
-  virtual const char *Canonical ()
+  virtual const char *Canonical () const
   {
     return canonical;
   };
   /* The basename - without extention 
    * i.e. package-1
    */
-  virtual const char *Base ()
+  virtual const char *Base () const
   {
     return base;
   };
   /* The basename - with extention 
    * i.e. package-1.tar.bz2
    */
-  virtual const char *Filename ()
+  virtual const char *Filename () const
   {
     return filename;
   };

@@ -1,3 +1,9 @@
+2004-11-19  Max Bowsher  <maxb@ukf.net>
+
+	* package_source.h (packagesource::Canonical, packagesource::Base)
+	(packagesource::Filename): Add "const" specification to accessor
+	methods.
+
 2004-11-18  Max Bowsher  <maxb@ukf.net>
 
 	* archive.h (archive::~archive): Define a pure virtual destructor to
