@@ -432,151 +432,174 @@ optionprompt (const char *text, SA * options)
 }
 
 int
-geturl (HINTERNET session, const char *url, const char *file)
+geturl (HINTERNET session, const char *url, const char *file, int verbose)
 {
   DWORD type, size;
   int authenticated = 0;
   int retval = 0;
   HINTERNET connect;
-  int tries = 3;
+  int tries = 20;
 
-  do
+  if (verbose)
+    {
+      printf ("Connecting to ftp site...");
+      fflush (stdout);
+    }
+  for (tries = 1; tries <= 20; tries++)
     {
       connect =
 	InternetOpenUrl (session, url, NULL, 0,
 			 INTERNET_FLAG_DONT_CACHE |
 			 INTERNET_FLAG_KEEP_CONNECTION |
 			 INTERNET_FLAG_RELOAD, 0);
+      if (connect)
+	break;
+      if (!verbose || tries == 1)
+	/* nothing */;
+      else if (tries > 2)
+        printf ("\rConnecting to ftp site...(try %d)  \b\b", tries);
+      else
+        printf ("\rConnecting to ftp site...(try %d)", tries);
     }
-  while (!connect && --tries);
 
   if (!connect)
-    winerror ();
+    {
+      puts ("\nCouldn't connect to ftp site."); fflush (stdout);
+      winerror ();
+    }
   else
-    while (!authenticated)
-      {
-	size = sizeof (type);
-	if (!InternetQueryOption
-	    (connect, INTERNET_OPTION_HANDLE_TYPE, &type, &size))
-	  {
-	    winerror ();
-	    return 0;
-	  }
-	else
-	  switch (type)
+    {
+      if (verbose)
+	{
+	  if (tries > 1)
+	    printf ("\rConnecting to ftp site...        \b\b\b\b\b\b\b\b");
+	  printf ("Done.\n"); fflush (stdout);
+	}
+      while (!authenticated)
+	{
+	  size = sizeof (type);
+	  if (!InternetQueryOption
+	      (connect, INTERNET_OPTION_HANDLE_TYPE, &type, &size))
 	    {
-	    case INTERNET_HANDLE_TYPE_HTTP_REQUEST:
-	    case INTERNET_HANDLE_TYPE_CONNECT_HTTP:
-	      size = sizeof (DWORD);
-	      if (!HttpQueryInfo
-		  (connect, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
-		   &type, &size, NULL))
-		{
-		  winerror ();
-		  return 0;
-		}
-	      else if (type == HTTP_STATUS_PROXY_AUTH_REQ)
-		{
-		  DWORD len;
-
-		  if (!InternetQueryDataAvailable (connect, &len, 0, 0))
-		    {
-		      winerror ();
-		      return 0;
-		    }
-		  else
-		    {
-		      char *user, *password;
-
-		      /* Have to read any pending data, WININET peculiarity. */
-		      char *buffer = xmalloc (len);
-		      do
-			{
-			  InternetReadFile (connect, buffer, len, &size);
-			}
-		      while (size);
-		      xfree (buffer);
-
-		      puts ("Proxy authentication is required.\n");
-
-		      user = prompt ("Proxy username", NULL);
-		      if (!InternetSetOption
-			  (connect, INTERNET_OPTION_PROXY_USERNAME, user,
-			   strlen (user)))
-			{
-			  xfree (user);
-			  winerror ();
-			  return 0;
-			}
-		      else
-			{
-			  xfree (user);
-			  password = prompt ("Proxy password", NULL);
-			  if (!InternetSetOption
-			      (connect, INTERNET_OPTION_PROXY_PASSWORD,
-			       password,
-			       strlen (password))
-			      || !HttpSendRequest (connect, NULL, 0, NULL, 0))
-			    {
-			      xfree (password);
-			      winerror ();
-			      return 0;
-			    }
-			  xfree (password);
-			}
-		    }
-		}
-	      else if (type != HTTP_STATUS_OK)
-		{
-		  printf ("Error retrieving \"%s\".\n", url);
-		  return 0;
-		}
-	      else
-		authenticated = 1;
-	      break;
-
-	    default:
-	      authenticated = 1;
-	      break;
+	      winerror ();
+	      return 0;
 	    }
-
-	/* Now that authentication is complete read the file. */
-	if (!InternetQueryDataAvailable (connect, &size, 0, 0))
-	  winerror ();
-	else
-	  {
-	    char *buffer = xmalloc (size);
-
-	    FILE *out = fopen (file, "wb");
-	    if (!out)
-	      printf ("Unable to open \"%s\" for output: %s\n", file,
-		      _strerror (""));
-	    else
+	  else
+	    switch (type)
 	      {
-		for (;;)
+	      case INTERNET_HANDLE_TYPE_HTTP_REQUEST:
+	      case INTERNET_HANDLE_TYPE_CONNECT_HTTP:
+		size = sizeof (DWORD);
+		if (!HttpQueryInfo
+		    (connect, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
+		     &type, &size, NULL))
 		  {
-		    DWORD readbytes;
+		    winerror ();
+		    return 0;
+		  }
+		else if (type == HTTP_STATUS_PROXY_AUTH_REQ)
+		  {
+		    DWORD len;
 
-		    if (!InternetReadFile (connect, buffer, size, &readbytes))
-		      winerror ();
-		    else if (!readbytes)
+		    if (!InternetQueryDataAvailable (connect, &len, 0, 0))
 		      {
-			retval = 1;
-			break;
+			winerror ();
+			return 0;
 		      }
-		    else if (fwrite (buffer, 1, readbytes, out) != readbytes)
+		    else
 		      {
-			printf ("Error writing \"%s\": %s\n", file,
-				_strerror (""));
-			break;
+			char *user, *password;
+
+			/* Have to read any pending data, WININET peculiarity. */
+			char *buffer = xmalloc (len);
+			do
+			  {
+			    InternetReadFile (connect, buffer, len, &size);
+			  }
+			while (size);
+			xfree (buffer);
+
+			puts ("Proxy authentication is required.\n");
+
+			user = prompt ("Proxy username", NULL);
+			if (!InternetSetOption
+			    (connect, INTERNET_OPTION_PROXY_USERNAME, user,
+			     strlen (user)))
+			  {
+			    xfree (user);
+			    winerror ();
+			    return 0;
+			  }
+			else
+			  {
+			    xfree (user);
+			    password = prompt ("Proxy password", NULL);
+			    if (!InternetSetOption
+				(connect, INTERNET_OPTION_PROXY_PASSWORD,
+				 password,
+				 strlen (password))
+				|| !HttpSendRequest (connect, NULL, 0, NULL, 0))
+			      {
+				xfree (password);
+				winerror ();
+				return 0;
+			      }
+			    xfree (password);
+			  }
 		      }
 		  }
-		fclose (out);
+		else if (type != HTTP_STATUS_OK)
+		  {
+		    printf ("Error retrieving \"%s\".\n", url);
+		    return 0;
+		  }
+		else
+		  authenticated = 1;
+		break;
+
+	      default:
+		authenticated = 1;
+		break;
 	      }
-	    xfree (buffer);
-	  }
-	InternetCloseHandle (connect);
-      }
+
+	  /* Now that authentication is complete read the file. */
+	  if (!InternetQueryDataAvailable (connect, &size, 0, 0))
+	    winerror ();
+	  else
+	    {
+	      char *buffer = xmalloc (size);
+
+	      FILE *out = fopen (file, "wb");
+	      if (!out)
+		printf ("Unable to open \"%s\" for output: %s\n", file,
+			_strerror (""));
+	      else
+		{
+		  for (;;)
+		    {
+		      DWORD readbytes;
+
+		      if (!InternetReadFile (connect, buffer, size, &readbytes))
+			winerror ();
+		      else if (!readbytes)
+			{
+			  retval = 1;
+			  break;
+			}
+		      else if (fwrite (buffer, 1, readbytes, out) != readbytes)
+			{
+			  printf ("Error writing \"%s\": %s\n", file,
+				  _strerror (""));
+			  break;
+			}
+		    }
+		  fclose (out);
+		}
+	      xfree (buffer);
+	    }
+	  InternetCloseHandle (connect);
+	}
+    }
 
   return retval;
 }
@@ -607,6 +630,7 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 {
   int retval;
   char buffer[256];
+  static enum {UNKNOWN, ALWAYS, NEVER} download_when = {UNKNOWN};
 
   FILE *in = fopen (file, "r");
 
@@ -635,41 +659,57 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 	    {
 	      int download = 0;
 	      char *filename = strrchr (url, '/') + 1;
-	      if (_access (filename, 0) != -1)
+	      if (download_when == NEVER)
+		/* nothing to do */;
+	      else if (download_when == ALWAYS || _access (filename, 0) == -1)
+		download = 1;
+	      else
 		{
 		  char text[_MAX_PATH];
 		  char *answer;
 
-		  sprintf (text, "Replace %s from the net", filename);
+		  sprintf (text, "Replace %s from the net (ynAN)", filename);
 		  answer = prompt (text, "yes");
 
 		  if (answer)
 		    {
-		      if (toupper (*answer) == 'Y')
-			download = 1;
+		      switch (*answer)
+			{
+			case 'a':
+			case 'A':
+			  download_when = ALWAYS;
+			  /* purposely fall through */;
+			case 'y':
+			case 'Y':
+			  download = 1;
+			case 'N':
+			  download_when = NEVER;
+			case 'n':
+			default:
+			  download = 0;
+			}
 		      xfree (answer);
 		    }
 		}
-	      else
-		download = 1;
 
 	      if (download)
 		{
 		  printf ("Downloading: %s...", url);
 		  fflush (stdout);
-		  if (geturl (session, url, filename))
+		  if (geturl (session, url, filename, 0))
 		    {
 		      printf ("Done.\n");
 		    }
 		  else
 		    {
-		      printf ("Unable to retrieve %s\n", url);
+		      printf ("\nUnable to retrieve %s\n", url);
 		    }
 		}
 	    }
 	}
     }
 
+  fflush (stdout);
   retval = feof (in);
 
   fclose (in);
@@ -689,7 +729,7 @@ downloaddir (HINTERNET session, const char *url)
   int retval = 0;
   char *file = tmpfilename ();
 
-  if (geturl (session, url, file))
+  if (geturl (session, url, file, 1))
     retval = processdirlisting (session, url, file);
   xfree (file);
 
@@ -716,7 +756,7 @@ downloadfrom (const char *url)
     {
       char *file = tmpfilename ();
 
-      if (geturl (session, url, file))
+      if (geturl (session, url, file, 1))
 	retval = processdirlisting (session, url, file);
 
       xfree (file);
@@ -734,18 +774,23 @@ reverse_sort (const void *arg1, const void *arg2)
 }
 
 int
-create_uninstall (const char *folder, const char *shellscut,
+create_uninstall (const char *wd, const char *folder, const char *shellscut,
 		  const char *shortcut, const char *log)
 {
   int retval = 0;
   char buffer[MAX_PATH];
+  char *cygwin1_dll;
   FILE *logfile = fopen (log, "r");
   clock_t start;
-
+  HINSTANCE lib;
+  
   /* I am not completely sure how safe it is to "preload" cygwin1.dll, but it 
      greatly speeds up the execution of cygpath which is eventually called by 
      utodpath in a loop that can be executed thousands of times. */
-  HINSTANCE lib = LoadLibrary ("\\usr\\bin\\cygwin1.dll");
+  cygwin1_dll = pathcat (wd, "cygwin1.dll");
+  lib = LoadLibrary (cygwin1_dll);
+  xfree (cygwin1_dll);
+
   printf ("Creating the uninstall file... 0%%");
   fflush (stdout);
   start = clock ();
@@ -768,7 +813,7 @@ create_uninstall (const char *folder, const char *shellscut,
 
 	  qsort (lines.array, lines.count, sizeof (char *), reverse_sort);
 
-	  uninst = fopen ("usr\\bin\\uninst.bat", "w");
+	  uninst = fopen ("bin\\uninst.bat", "w");
 
 	  if (uninst)
 	    {
@@ -807,11 +852,11 @@ create_uninstall (const char *folder, const char *shellscut,
 		       "del \"%s\"\n"
 		       "del \"%s\"\n"
 		       "rmdir \"%s\"\n"
-		       "del usr\\bin\\uninst.bat\n", shortcut, shellscut,
+		       "del bin\\uninst.bat\n", shortcut, shellscut,
 		       folder);
 	      fclose (uninst);
 
-	      uninstfile = pathcat (cwd, "usr\\bin\\uninst.bat");
+	      uninstfile = pathcat (cwd, "bin\\uninst.bat");
 	      if (uninstfile)
 		{
 		  create_shortcut (uninstfile, shortcut);
@@ -842,7 +887,7 @@ int
 do_start_menu (const char *root, const char *logfile)
 {
   FILE *batch;
-  char *batch_name = pathcat (root, "usr\\bin\\cygwin.bat");
+  char *batch_name = pathcat (root, "bin\\cygwin.bat");
   int retval = 0;
 
   /* Create the batch file for the start menu. */
@@ -858,7 +903,7 @@ do_start_menu (const char *root, const char *logfile)
 	  fprintf (batch,
 		   "@echo off\n"
 		   "SET MAKE_MODE=UNIX\n"
-		   "SET PATH=%s\\usr\\bin;%s\\bin;%%PATH%%\n"
+		   "SET PATH=%s\\bin;%%PATH%%\n"
 		   "bash\n", root, root);
 	  fclose (batch);
 
@@ -903,7 +948,7 @@ do_start_menu (const char *root, const char *logfile)
 		      if (uninstscut)
 			{
 			  if (create_uninstall
-			      (folder, shortcut, uninstscut, logfile))
+			      (wd, folder, shortcut, uninstscut, logfile))
 			    retval = 1;
 			  xfree (uninstscut);
 			}
@@ -931,7 +976,7 @@ getdownloadsource ()
     winerror ();
   else if (!geturl
 	   (session, "http://sourceware.cygnus.com/cygwin/mirrors.html",
-	    filename))
+	    filename, 1))
     fputs ("Unable to retrieve the list of cygwin mirrors.\n", stderr);
   else
     {
@@ -1063,6 +1108,14 @@ int
 main ()
 {
   int retval = 1;		/* Default to error code */
+  puts ( "\n\n\n\n"
+"This is the Cygwin setup utility.\n\n"
+"Use this program to install the latest version of the Cygwin Utilities\n"
+"from the Internet.\n\n"
+"Alternatively, if you already have already downloaded the appropriate files\n"
+"to the current directory, this program can use those as the basis for your\n"
+"installation.\n");
+
   if (!EnumResourceNames (NULL, "FILE", output_file, 0))
     {
       winerror ();
@@ -1122,8 +1175,8 @@ main ()
 				   already exist. */
 
       update =
-	prompt ("Would you like download packages from the Internet", "yes");
-      if (toupper (*update) == 'Y')
+	prompt ("Install from the current directory (d) or from the Internet (i)", "i");
+      if (toupper (*update) == 'I')
 	{
 	  char *dir = getdownloadsource ();
 
@@ -1151,8 +1204,8 @@ main ()
 	      _chdrive (toupper (*root) - 'A' + 1);
 
 	      /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
-	      mkmount (wd, root, "usr\\bin", "/bin", 1);
-	      mkmount (wd, root, "usr\\lib", "/lib", 1);
+	      mkmount (wd, root, "bin", "/usr/bin", 1);
+	      mkmount (wd, root, "lib", "/usr/lib", 1);
 
 	      /* Extract all of the packages that are stored with setup or in
 	         subdirectories of its location */

@@ -1,3 +1,13 @@
+Mon Apr 10 17:15:52 2000  Christopher Faylor <cgf@cygnus.com>
+
+	Change occurrences of .usr.bin to .bin throughout.
+	* setup.c (geturl): Increase number of retries to 20.  Let user know
+	what's going on during long connects.
+	(processdirlisting): Accept "A"lways and "N"ever as update options.
+	(create_uninstall): Load cygwin1.dll from the current directory rather
+	than \bin.
+	(main): Add some expository text.
+
 Sun Apr  9 20:59:15 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* Makefile.in: Change method for compressing cygwin1.dll to avoid
