@@ -216,7 +216,7 @@ architecturelist: /* empty */
   
  
 SourceFilesList: /* empty */
- | SourceFilesList MD5 STRING STRING NL
+ | SourceFilesList MD5 STRING STRING { iniBuilder->buildSourceFile ((unsigned char *)$2, $3, $4);  } NL
  ;
  
 %%

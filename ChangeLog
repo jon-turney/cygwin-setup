@@ -1,3 +1,13 @@
+2002-07-15  Robert Collins  <rbtcollins@hotmail.com>
+
+	* iniparse.y: Implement support for multiple source files for a source
+	package.
+	* IniDBBuilder.h (IniDBBuilder::buildSourceFile): Ditto.
+	* IniDBBuilderPackage.h (IniDBBuilder::buildSourceFile): Ditto.
+	* IniDBBuilder.cc (IniDBBuilder::buildSourceFile): Ditto.
+	* IniDBBuilderPackage.cc (IniDBBuilder::buildSourceFile): Implement a 
+	stub as preparation.
+
 2002-07-13  Robert Collins  <rbtcollins@hotmail.com>
 
 	* PickPackageLine.cc (PickPackageLine::click): Set requirements for 

@@ -155,6 +155,11 @@ IniDBBuilderPackage::buildPackageSource (String const &path, String const &size)
 }
 
 void
+IniDBBuilderPackage::buildSourceFile (unsigned char const * md5, String const &size, String const &path)
+{
+}
+
+void
 IniDBBuilderPackage::buildPackageTrust (int newtrust)
 {
   trust = newtrust;

@@ -31,6 +31,7 @@ public:
   virtual void buildPackageLDesc (String const &);
   virtual void buildPackageInstall (String const &);
   virtual void buildPackageSource (String const &, String const &);
+  virtual void buildSourceFile (unsigned char const[16], String const &, String const &);
   virtual void buildPackageTrust (int);
   virtual void buildPackageCategory (String const &);
   virtual void buildBeginDepends ();
