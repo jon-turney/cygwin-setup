@@ -161,6 +161,30 @@ replace_one (packagemeta & pkg)
   return errors;
 }
 
+/* log failed scheduling of replace-on-reboot of a given file. */
+/* also increment errors. */
+static void
+log_ror_failure (String const &fn, int &errors)
+{
+  log (LOG_TIMESTAMP,
+       "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
+       cygpath (String ("/") + fn).cstr_oneuse(),
+       cygpath (String ("/") + fn + ".new").cstr_oneuse(),
+       GetLastError ());
+  ++errors;
+}
+
+/* log successful scheduling of replace-on-reboot of a given file. */
+/* also set rebootneeded. */
+static void
+log_ror_success (String const &fn, bool &rebootneeded)
+{
+  log (LOG_TIMESTAMP,
+       "Scheduled reboot replacement of file %s with %s",
+       cygpath (String ("/") + fn).cstr_oneuse(),
+       cygpath (String ("/") + fn + ".new").cstr_oneuse());
+  rebootneeded = true;
+}
 
 /* install one source at a given prefix. */
 static int
@@ -252,13 +276,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 					  source, MAX_PATH);
 		      if (!len || len > MAX_PATH)
 			{
-			  log (LOG_TIMESTAMP,
-			       "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-			       cygpath (String ("/") + fn).cstr_oneuse(),
-			       cygpath (String ("/") + fn +
-						".new").cstr_oneuse(),
-			       GetLastError ());
-			  ++errors;
+			  log_ror_failure (fn, errors);
 			}
 		      else
 			{
@@ -269,29 +287,19 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 					      dest, MAX_PATH);
 			  if (!len || len > MAX_PATH)
 			    {
-			      log (LOG_TIMESTAMP,
-				   "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-				   cygpath (String ("/") + fn).cstr_oneuse(),
-				   cygpath (String ("/") + fn +
-					    ".new").cstr_oneuse(),
-				   GetLastError ());
-			      ++errors;
-
+			      log_ror_failure (fn, errors);
 			    }
 			  else
 			    /* trigger a replacement on reboot */
 			  if (!WritePrivateProfileString
 				("rename", dest, source, "WININIT.INI"))
 			    {
-			      log (LOG_TIMESTAMP,
-				   "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-				   cygpath (String ("/") + fn).cstr_oneuse(),
-				   cygpath (String ("/") + fn +
-					    ".new").cstr_oneuse(),
-				   GetLastError ());
-			      ++errors;
+			      log_ror_failure (fn, errors);
 			    }
-
+			  else
+			    {
+			      log_ror_success (fn, rebootneeded);
+			    }
 			}
 		    }
 		      break;
@@ -307,15 +315,12 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 				       MOVEFILE_DELAY_UNTIL_REBOOT |
 				       MOVEFILE_REPLACE_EXISTING))
 			{
-			  log (LOG_TIMESTAMP,
-			       "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-			       cygpath (String ("/") + fn).cstr_oneuse(),
-			       cygpath (String ("/") + fn + ".new").cstr_oneuse(),
-			       GetLastError ());
-			  ++errors;
+			  log_ror_failure (fn, errors);
 			}
 		      else
-			rebootneeded = true;
+			{
+			  log_ror_success (fn, rebootneeded);
+			}
 		      break;
 		    }
 		}

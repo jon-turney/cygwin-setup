@@ -1,3 +1,11 @@
+2003-03-14  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
+	* install.cc (install_one_source): Add logging for successful
+	replace-on-reboot scheduling. Factor out duplicate code.
+	Set rebootneeded on Win9x.
+	(log_ror_failure): New static function.
+	(log_ror_success): New static function.
+
 2003-03-14  Robert Collins  <rbtcollins@hotmail.com>
 
 	* choose.cc (ChooserPage::OnNext): Fix iterator bug. Reported by 
@@ -9,9 +17,10 @@
 
 2003-03-13  Robert Collins  <rbtcollins@hotmail.com>
 
-	* install.cc (do_install_thread): Use a query method rather than temp variable do_skip.
+	* install.cc (do_install_thread): Use a query method rather than temp
+	variable do_skip.
 
-2003-03-09  Pavel Tsekov  <ptsekov at gmx dot net>
+2003-03-09  Pavel Tsekov  <ptsekov@gmx.net>
 
 	* install.cc (do_install_thread): Use IDS_SKIP_PACKAGE 
 	instead of IDS_CORRUPT_PACKAGE when asking the user to take
@@ -37,23 +46,29 @@
 	* UserSetting.cc: New file.
 	* UserSetting.h: New file.
 	* site.h: Add a SiteSetting as example of a UserSetting.
-	* site.cc (ChosenSites): Add a instance of SiteSetting to trigger registration.
+	* site.cc (ChosenSites): Add a instance of SiteSetting to trigger
+	registration.
 
 2003-03-10  Robert Collins  <rbtcollins@hotmail.com>
 
-	* compress_bz.cc (compress_bz::read): adjust incorrect assignment of lasterr.
+	* compress_bz.cc (compress_bz::read): Adjust incorrect assignment of
+	lasterr.
 	(compress_bz::error): Return lasterr which will indicate any error.
 
 2003-03-10  Robert Collins  <rbtcollins@hotmail.com>
 
 	* choose.h (ChooserPage): Override OnActivate.
-	* choose.cc (ChooserPage::OnActivate): Refresh the current view when activating the dialog.
+	* choose.cc (ChooserPage::OnActivate): Refresh the current view when
+	activating the dialog.
 
 2003-03-09  Robert Collins  <rbtcollins@hotmail.com>
 
-	* package_version.cc (_defaultversion::pick(bool)): Override this and do nothing.
-	(packageversion::pick(bool): Use a mutator function rather than direct member access.
-	* package_version.h (_packageversion::pick(bool)): Move method from _packageversion.
+	* package_version.cc (_defaultversion::pick(bool)): Override this and
+	do nothing.
+	(packageversion::pick(bool): Use a mutator function rather than direct
+	member access.
+	* package_version.h (_packageversion::pick(bool)): Move method from
+	_packageversion.
 
 2003-02-16  Pavel Tsekov  <ptsekov@gmx.net>
 
