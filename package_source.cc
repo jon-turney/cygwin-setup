@@ -61,9 +61,9 @@ packagesource::set_canonical (char const *fn)
 
   if (filename)
     delete filename;
-  filename = new char[end - bstart + 1];
-  memcpy (filename, bstart, end - bstart);
-  filename[end - bstart] = '\0';
+  filename = new char[end - bstart];
+  memcpy (filename, bstart + 1, end - bstart - 1);
+  filename[end - bstart - 1] = '\0';
 
   if (cached)
     delete cached;

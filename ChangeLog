@@ -1,3 +1,7 @@
+2001-12-01  Robert Collins  <rbtcollins@hotmail.com>
+
+	* package_source.cc (packagesource::set_canonical): Filename was out by one.
+
 2001-11-30  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in (OBJS): Remove category_list - it's not needed.
