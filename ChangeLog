@@ -1,8 +1,12 @@
+2001-11-11  Christopher Faylor  <cgf@redhat.com>
+
+	* choose.cc (parse_filename): Reorganize code to work around gcc
+	optimization problem.
+
 2001-11-09  Gareth Pearce  <tilps@hotmail.com>
 
 	* choose.cc (set_action): Allow skip as an option for installed
 	packages that have version number not listed in setup.ini.
-
 
 2001-11-07  Charles Wilson  <cwilson@ece.gatech.edu>
 
