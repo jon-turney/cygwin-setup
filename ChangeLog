@@ -1,3 +1,12 @@
+Wed Nov 9  2:19:00 2000  Corinna Vinschen <vinschen@redhat.com>
+
+	* desktop.cc: Include "ini.h" and "version.h".
+	(make_passwd_group): Skip the function on 9x/ME boxes when an
+	older version of Cygwin has been installed which doesn't
+	support mkpasswd/mkgroup on 9x/ME.
+	* install.cc: Move the `LOOP_PACKAGES' and `pi' macros to...
+	* ini.h: ...here.
+
 Wed Nov 8 17:10:00 2000  Corinna Vinschen <vinschen@redhat.com>
 
 	* desktop.cc (make_passwd_group): Don't exit when started

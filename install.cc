@@ -222,14 +222,6 @@ map_filename (char *fn)
   return dest_file;
 }
 
-#define pi (package[i].info[package[i].trust])
-
-#define LOOP_PACKAGES \
-  for (i=0; i<npackages; i++) \
-    if ((package[i].action == ACTION_NEW \
-	 || package[i].action == ACTION_UPGRADE) \
-	&& pi.install)
-
 static int
 exists (char *file)
 {

@@ -28,11 +28,13 @@ static char *cvsid = "\n%%% $Id$\n";
 #include <unistd.h>
 
 #include "resource.h"
+#include "ini.h"
 #include "msg.h"
 #include "state.h"
 #include "concat.h"
 #include "mkdir.h"
 #include "dialog.h"
+#include "version.h"
 
 #include "port.h"
 
@@ -258,10 +260,25 @@ uexists (char *path)
 static void
 make_passwd_group ()
 {
-#if 0 /* mkpasswd and mkgroup are now working on 9x/ME as well. */
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
-    return;
-#endif
+    {
+      int i;
+
+      LOOP_PACKAGES
+	{
+	  if (!strcmp (package[i].name, "cygwin"))
+	    {
+	      /* mkpasswd and mkgroup are not working on 9x/ME up to 1.1.5-4 */
+	      char *border_version = canonicalize_version ("1.1.5-4");
+	      char *inst_version = canonicalize_version (pi.version);
+
+	      if (strcmp (inst_version, border_version) <= 0)
+		return;
+
+	      break;
+	    }
+	}
+    }
 
   if (uexists ("/etc/passwd") && uexists ("/etc/group"))
     return;
