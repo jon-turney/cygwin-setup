@@ -1,3 +1,9 @@
+Thu Apr 27 09:23:17 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (tarx): Use full path name to tar executable.
+	(main): Build full pathname to tar executable.  Create /usr/local/etc
+	by default.
+
 Wed Apr 26 22:16:57 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (findhref): Change method for scanning for href= to choose

@@ -49,6 +49,7 @@
 #endif
 
 char *wd = NULL;
+static char *tarpgm;
 
 static int downloaddir (const char *url);
 
@@ -208,7 +209,7 @@ tarx (const char *dir, const char *fn)
 
   dpath = pathcat (dir, fn);
   path = dtoupath (dpath);
-  sprintf (buffer, "tar xvfUz \"%s\"", path);
+  sprintf (buffer, "%s xvfUz \"%s\"", tarpgm, path);
   xfree (path);
   xfree (dpath);
 
@@ -1263,6 +1264,7 @@ those as the basis for your installation.\n\n"
       setpath (wd);
 
       logpath = pathcat (wd, "setup.log");
+      tarpgm = pathcat (wd, "tar.exe");
 
       if (logpath)
 	logfp = fopen (logpath, "wt");
@@ -1408,6 +1410,7 @@ those as the basis for your installation.\n\n"
 		  files.array[++files.index] = pathcat (root, "usr\\local");
 		  files.array[++files.index] = pathcat (root, "usr\\local\\bin");
 		  files.array[++files.index] = pathcat (root, "usr\\local\\lib");
+		  files.array[++files.index] = pathcat (root, "usr\\local\\etc");
 		  mkdirp (files.array[files.index]);
 		  mkdir (files.array[files.index - 1]);
 
