@@ -246,6 +246,20 @@ output_file (HMODULE h __attribute__ ((unused)),
   return retval;
 }
 
+static char *
+prompt (const char *text, const char *def)
+{
+  char buffer[_MAX_PATH];
+
+  printf ((def ? "%s? [%s] " : "%s? "), text, def);
+  fflush (stdout);
+  fgets (buffer, sizeof (buffer), stdin);
+  buffer[strcspn (buffer, "\r\n")] = '\0';
+
+  /* Duplicate the entered value or the default if nothing was entered. */
+  return xstrdup (strlen (buffer) ? buffer : def ? def : "");
+}
+
 static void
 xumount (const char *mountexedir, const char *unixpath)
 {
@@ -256,6 +270,44 @@ xumount (const char *mountexedir, const char *unixpath)
   (void) xcreate_process (1, NULL, devnull, devnull, buffer);
   xfree (umount);
 }
+
+static void
+ask_obsolete (char *dosp, char *cygp)
+{
+  char buf[4096];
+  char *fn;
+
+  printf ("An obsolete directory has been detected: %s\n", cygp);
+  while (1)
+    {
+      char *ans, *path;
+      ans = prompt ("What should be done with this directory?\n'D'elete it, 'R'ename to \".old\", 'I'gnore it", "D");
+      if (ans)
+	switch (tolower (*ans))
+	{
+	  case 'd':
+  		path = utodpath ("/bin");
+		sprintf (buf, "%s\\rm -rf '%s'", path, dosp);
+		xcreate_process (1, NULL, NULL, NULL, buf);
+		if (access (dosp, 0) == 0)
+		  warning ("couldn't remove %s\n", dosp);
+		xfree (path);
+		return;
+	  case 'r':
+		sprintf (buf, "%s.old", dosp);
+		if (rename (dosp, buf))
+		  warning ("couldn't rename %s to %s: %s\n", dosp, cygp, _strerror (""));
+		return;
+	  case 'i':
+		return;
+	  default:
+		puts ("Please answer D, R, or I.\n");
+		break;
+	}
+    }
+}
+
+
 
 static int
 tarx (const char *dir, const char *fn)
@@ -349,6 +401,30 @@ tarx (const char *dir, const char *fn)
 
   warning ("%s package '%s'\n", write_pkg (pkg, pkgname, pkgversion) ?
 			      "Updated" : "Refreshed", pkgname);
+
+  if (stricmp (pkg->name, "cygwin") == 0)
+    {
+      char *pn, *pv;
+      char *thisver = xstrdup (pkgversion);
+      normalize_version ("cygwin-1.1.2.tar.gz", &pn, &pv);
+      if (stricmp (thisver, pv) >= 0)
+	{
+	  char *i686 = utodpath ("/usr/i686-pc-cygwin/include");
+	  if (access (i686, 00) == 0)
+	    ask_obsolete (i686, "/usr/i686-pc-cygwin/include");
+	  xfree (i686);
+	  i686 = utodpath ("/usr/i686-pc-cygwin/lib");
+	  if (access (i686, 00) == 0)
+	    ask_obsolete (i686, "/usr/i686-pc-cygwin/lib");
+	  xfree (i686);
+	  i686 = utodpath ("/usr/i686-pc-cygwin");
+	  rmdir (i686);
+	  if (access (i686, 00) == 0)
+	    warning ("Obsolete directory /usr/i686-pc-cygwin is non-empty and could not be deleted\n");
+	  xfree (i686);
+	}
+      xfree (thisver);
+    }
 
   return 1;
 }
@@ -496,20 +572,6 @@ setpath (const char *element)
   putenv (buffer);
 
   xfree (buffer);
-}
-
-static char *
-prompt (const char *text, const char *def)
-{
-  char buffer[_MAX_PATH];
-
-  printf ((def ? "%s? [%s] " : "%s? "), text, def);
-  fflush (stdout);
-  fgets (buffer, sizeof (buffer), stdin);
-  buffer[strcspn (buffer, "\r\n")] = '\0';
-
-  /* Duplicate the entered value or the default if nothing was entered. */
-  return xstrdup (strlen (buffer) ? buffer : def ? def : "");
 }
 
 static int

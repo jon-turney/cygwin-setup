@@ -137,18 +137,20 @@ pathcat (const char *arg1, const char *arg2)
 
   assert (!strchr (arg1, '/'));
   strcpy (path, arg1);
+  if (*arg2)
+    {
+      /* Remove any trailing slash */
+      len = strlen (path);
+      if (path[--len] == '\\')
+	path[len] = '\0';
 
-  /* Remove any trailing slash */
-  len = strlen (path);
-  if (path[--len] == '\\')
-    path[len] = '\0';
+      strcat (path, "\\");
 
-  strcat (path, "\\");
+      if (*arg2 == '\\')
+	++arg2;
 
-  if (*arg2 == '\\')
-    ++arg2;
-
-  strcat (path, arg2);
+      strcat (path, arg2);
+    }
 
   return xstrdup (path);
 }

@@ -1,3 +1,11 @@
+Wed Jun  7 18:31:21 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* path.c (pathcat): Don't add a trailing slash if arg2 is empty.
+	* setup.c (ask_obsolete): New function to ask what to do about obsolete
+	directories.
+	(tarx): Detect obsolete directories if installing new version of
+	cygwin.
+
 Wed May 31 19:31:16 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* pkg.c (newer_pkg): Make always newer if not updating.
