@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Gary R. Van Sickle.
+ * Copyright (c) 2001, 2002, 2003 Gary R. Van Sickle.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #include <windows.h>
 #include "window.h"
 #include "String++.h"
+#include "RECTWrapper.h"
 
 ATOM Window::WindowClassAtom = 0;
 HINSTANCE Window::AppInstance = NULL;
@@ -61,7 +62,7 @@ Window::FirstWindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
       wnd = reinterpret_cast<Window *>(((LPCREATESTRUCT)lParam)->lpCreateParams);
 
       // Set a backreference to this class instance in the HWND.
-      SetWindowLongPtr (hwnd, GWL_USERDATA, (LONG_PTR) wnd);
+      SetWindowLongPtr (hwnd, GWL_USERDATA, reinterpret_cast<LONG_PTR>(wnd));
 
       // Set a new WindowProc now that we have the peliminaries done.
       // We could instead simply do the contents of Window::WindowProcReflector
@@ -85,7 +86,7 @@ Window::WindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
   Window *This;
 
   // Get our this pointer
-  This = (Window *) GetWindowLongPtr (hwnd, GWL_USERDATA);
+  This = reinterpret_cast<Window *>(GetWindowLongPtr (hwnd, GWL_USERDATA));
 
   return This->WindowProc (uMsg, wParam, lParam);
 }
@@ -99,6 +100,7 @@ bool Window::Create (Window * parent, DWORD Style)
       return false;
     }
 
+  // Save our parent, we'll probably need it eventually.
   Parent = parent;
 
   // Create the window instance
@@ -204,6 +206,12 @@ Window::MoveWindow(long x, long y, long w, long h, bool Repaint)
   return ::MoveWindow (WindowHandle, x, y, w, h, Repaint);
 }
 
+bool
+Window::MoveWindow(const RECTWrapper &r, bool Repaint)
+{
+  return ::MoveWindow (WindowHandle, r.left, r.top, r.width(), r.height(), Repaint);
+}
+
 void
 Window::CenterWindow ()
 {
@@ -287,7 +295,7 @@ Window::PostMessage (UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 UINT Window::IsButtonChecked (int nIDButton) const
 {
-  return::IsDlgButtonChecked (GetHWND (), nIDButton);
+  return ::IsDlgButtonChecked (GetHWND (), nIDButton);
 }
 
 bool
@@ -322,7 +330,7 @@ bool
       return false;
     }
 
-  // Set the new fint, and redraw any text which was already in the item.
+  // Set the new font, and redraw any text which was already in the item.
   SendMessage (ctrl, WM_SETFONT, (WPARAM) hfnt, TRUE);
 
   // Save it for later.

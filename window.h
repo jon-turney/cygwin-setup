@@ -1,8 +1,8 @@
-#ifndef CINSTALL_WINDOW_H
-#define CINSTALL_WINDOW_H
+#ifndef SETUP_WINDOW_H
+#define SETUP_WINDOW_H
 
 /*
- * Copyright (c) 2001, Gary R. Van Sickle.
+ * Copyright (c) 2001, 2002, 2003 Gary R. Van Sickle.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include <windows.h>
 
 class String;
+class RECTWrapper;
 
 class Window
 {
@@ -36,6 +37,7 @@ class Window
   static LRESULT CALLBACK WindowProcReflector (HWND hwnd, UINT uMsg,
 					       WPARAM wParam, LPARAM lParam);
 
+  // Our Windows(tm) window handle.
   HWND WindowHandle;
 
   Window *Parent;
@@ -55,21 +57,25 @@ public:
   Window ();
   virtual ~ Window ();
 
+  virtual bool Create (Window * Parent = NULL,
+		       DWORD Style =
+		       WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN);
+  
   static void SetAppInstance (HINSTANCE h)
   {
+    // This only has to be called once in the entire app, before
+    // any Windows are created.
     AppInstance = h;
   };
 
   virtual LRESULT WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam);
   virtual bool MessageLoop ();
 
-  virtual bool Create (Window * Parent = NULL,
-		       DWORD Style =
-		       WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN);
   void Show (int State);
 
   HWND GetHWND () const
   {
+    // Ideally this could be hidden from the user completely.
     return WindowHandle;
   };
   HINSTANCE GetInstance () const
@@ -95,12 +101,15 @@ public:
 
   virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
   {
+    // Not processed by default.  Override in derived classes to
+    // do something with app messages if you need to.
     return false;
   };
 
   virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code)
   {
-    // Not processed.
+    // Not processed by default.  Override in derived classes to
+    // do something with command messages if you need to.
     return false;
   };
 
@@ -112,12 +121,12 @@ public:
 
   // Reposition the window
   bool MoveWindow(long x, long y, long w, long h, bool Repaint = true);
+  bool MoveWindow(const RECTWrapper &r, bool Repaint = true);
 
   // Set the title of the window.
   void SetWindowText (const String & s);
 
   RECT ScreenToClient(const RECT &r) const;
- 
 };
 
-#endif // CINSTALL_WINDOW_H
+#endif // SETUP_WINDOW_H

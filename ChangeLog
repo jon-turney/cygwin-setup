@@ -1,3 +1,16 @@
+2003-06-05  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* window.h (SETUP_WINDOW_H): Rename multi-include guard.
+	(Copyright): Update.
+	(RECTWrapper): New forward declaration.
+	(Window::Create): Move.
+	(Window::MoveWindow): New overload declaration.
+	* window.cc: (RECTWrapper.h) Include.
+	(Copyright): Update.
+	(Window::FirstWindowProcReflector): Use reinterpret_cast<> instead
+	of C-style casts.
+	(Window::MoveWindow): New overload.
+
 2003-05-31  Max Bowsher  <maxb@ukf.net>
 
 	* res.rc: Resize title controls to fully fill available width.
