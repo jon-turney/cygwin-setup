@@ -1,5 +1,9 @@
 2002-05-04  Robert Collins  <rbtcollins@hotmail.com>
 
+	* res.rc (IDD_SPLASH): Remove the white rectangle.
+	
+2002-05-04  Robert Collins  <rbtcollins@hotmail.com>
+
 	* inilex.l (MD5): The high and low nibbles were reversed.
 
 2002-05-01  Robert Collins  <rbtcollins@hotmail.com>
