@@ -36,7 +36,13 @@ packages (0)
 }
 
 int
-Categorycmp (Category & a, Category & b)
+Categorycmp (Category const & a, Category const & b)
 {
   return strcasecmp (a.name, b.name);
+}
+
+int
+Categorycmp (Category & a, Category & b)
+{
+    return strcasecmp (a.name, b.name);
 }

@@ -1,3 +1,22 @@
+2001-01-07  Robert Collins  <rbtcollins@hotmail.com>
+
+	* category.cc (Categorycmp): Add a const safe version.
+	* category.h (Categorycmp): Add a const safe version.
+	(Category): Add operator ==.
+	* choose.cc (fill_missing_category): Add every package to "All".
+	(pick_category_line::paint): Add support for hidden labels, and a tree depth.
+	(pick_category_line::click): Ditto.
+	(view::view): Pass in a top level category to use.
+	(view::insert_pkg): Special case - skip category "All".
+	(view::insert_category): Ditto.
+	(view::clear_view): Set the contents label state.
+	(create_listview): Pass in a top level category to view().
+	* choose.h (topbucket): Make bucket available to derived classes.
+	(pick_category_line):  Add support for hidden labels, and a tree depth.
+	Remove our second copy of bucket.
+	(view): Pass in a top level category to the constructor.
+	Use pick_category_line to allow three level display.
+
 2001-01-06  Robert Collins  <rbtcollins@hotmail.com>
 
 	* cygpackage.h (cygpackage): Make set_[s|l]desc virtual.

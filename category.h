@@ -18,20 +18,25 @@
 #ifndef _CATEGORY_H_
 #define _CATEGORY_H_
 
+class Category;
 class CategoryPackage;
+
+int Categorycmp (Category const &, Category const &);
+// Grrr template problem - couldn't get list to use int Ucmp (U const, U const),
+// and gcc wouldn't cast on the fly.
+int Categorycmp (Category &, Category &);
 
 class Category
 {
 public:
   Category ();
-  Category (const char *);
+  Category (char const *);
+  bool operator== (Category const &rhs) const {return Categorycmp (*this, rhs) ? false : true;}
 
   Category *next;		/* the next category in the list */
   const char *name;		/* the category */
   const char *key;		/* always == name */
   CategoryPackage *packages;	/* the packages in this category */
 };
-
-int Categorycmp (Category &, Category &);
 
 #endif /* _CATEGORY_H_ */

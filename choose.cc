@@ -504,6 +504,7 @@ fill_missing_category ()
       packagemeta & pkg = *db.packages[n];
       if (!pkg.Categories.number ())
 	pkg.add_category (db.categories.registerbykey ("Misc"));
+      pkg.add_category (db.categories.registerbykey ("All"));
     }
 }
 
@@ -664,11 +665,12 @@ void
 pick_category_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 {
   int r = y + row * row_height;
-  TextOut (hdc, x + chooser->headers[chooser->cat_col].x + HMARGIN / 2, r,
+  if (show_label)
+    TextOut (hdc, x + chooser->headers[chooser->cat_col].x + HMARGIN / 2 + depth * 8, r,
 	   cat.name, strlen (cat.name));
   if (collapsed)
     return;
-  int accum_row = row + 1;
+  int accum_row = row + (show_label ? 1 : 0);
   for (size_t n = 1; n <= bucket.number (); n++)
     {
       bucket[n]->paint (hdc, x, y, accum_row, show_cat);
@@ -698,7 +700,7 @@ pick_pkg_line::click (int const myrow, int const ClickedRow, int const x)
 int
 pick_category_line::click (int const myrow, int const ClickedRow, int const x)
 {
-  if (myrow == ClickedRow)
+  if (myrow == ClickedRow && show_label)
     {
       collapsed = !collapsed;
       int accum_row = 0;
@@ -708,7 +710,7 @@ pick_category_line::click (int const myrow, int const ClickedRow, int const x)
     }
   else
     {
-      int accum_row = myrow + 1;
+      int accum_row = myrow + (show_label ? 1 : 0);
       for (size_t n = 1; n <= bucket.number (); n++)
 	{
 	  if (accum_row + bucket[n]->itemcount () > ClickedRow)
@@ -721,7 +723,8 @@ pick_category_line::click (int const myrow, int const ClickedRow, int const x)
 
 HWND DoCreateHeader (HWND hwndParent);
 
-view::view (views _mode, HWND lv):listview (lv)
+view::view (views _mode, HWND lv, Category &cat) : 
+contents (cat, 0, false, true), listview (lv)
 {
 
   HDC dc = GetDC (listview);
@@ -924,7 +927,10 @@ view::insert_pkg (packagemeta & pkg)
       for (size_t x = 1; x <= pkg.Categories.number (); x++)
 	{
 	  Category & cat = pkg.Categories[x]->key;
-	  pick_category_line & catline = *new pick_category_line (cat);
+	  // Special case - yuck
+	  if (cat == Category ("All"))
+	    continue;
+	  pick_category_line & catline = *new pick_category_line (cat, 1);
 	  pick_pkg_line & line = *new pick_pkg_line (pkg);
 	  catline.insert (line);
 	  contents.insert (catline);
@@ -935,8 +941,9 @@ view::insert_pkg (packagemeta & pkg)
 void
 view::insert_category (Category * cat, bool collapsed)
 {
-
-  pick_category_line & catline = *new pick_category_line (*cat, collapsed);
+  if (*cat == Category ("All"))
+    return;
+  pick_category_line & catline = *new pick_category_line (*cat, 1, collapsed);
   for (CategoryPackage * catpkg = cat->packages; catpkg;
        catpkg = catpkg->next)
     {
@@ -951,6 +958,20 @@ void
 view::clear_view (void)
 {
   contents.empty ();
+  switch (view_mode)
+  {
+  case VIEW_UNKNOWN:
+    break;
+  case VIEW_PACKAGE_FULL:
+  case VIEW_PACKAGE:
+    contents.ShowLabel (false);
+    break;
+  case VIEW_CATEGORY:
+    contents.ShowLabel ();
+    break;
+  default:
+    return;
+  }
 }
 
 static views
@@ -1074,14 +1095,14 @@ create_listview (HWND dlg, RECT * r)
 		       (HMENU) MAKEINTRESOURCE (IDC_CHOOSE_LIST),
 		       hinstance, 0);
   ShowWindow (lv, SW_SHOW);
-  chooser = new view (VIEW_CATEGORY, lv);
+  packagedb db;
+  chooser = new view (VIEW_CATEGORY, lv, db.categories.registerbykey("All"));
 
   default_trust (lv, TRUST_CURR);
   set_view_mode (lv, VIEW_CATEGORY);
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE, "Failed to set View button caption %ld",
 	 GetLastError ());
-  packagedb db;
   for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];

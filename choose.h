@@ -150,7 +150,6 @@ public:
 protected:
   topbucket (topbucket const &);
   topbucket & operator= (topbucket const &);
-private:
   list < pick_line, char const *, strcasecmp > bucket;
 };
 
@@ -158,43 +157,52 @@ private:
 class pick_category_line:public topbucket
 {
 public:
-  pick_category_line (Category & _cat, bool aBool =
-		      true):cat (_cat), collapsed (aBool)
+  pick_category_line (Category & _cat, size_t thedepth = 0, bool aBool =
+		      true, bool aBool2 = true):cat (_cat), depth(thedepth)
   {
+    if (aBool)
+      {
+        collapsed = true;
+	show_label = true;
+      }
+    else
+      {
+	collapsed = false;
+	show_label = aBool2;
+      }
+    
     key = _cat.key;
   };
+  void ShowLabel(bool aBool = true) {show_label = aBool; if (!show_label) collapsed = false;}
   virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
   virtual int click (int const myrow, int const ClickedRow, int const x);
   virtual int itemcount () const
   {
     if (collapsed)
       return 1;
-    int t = 1;
+    int t = show_label ? 1 : 0;
     for (size_t n = 1; n <= bucket.number (); n++)
         t += bucket[n]->itemcount ();
       return t;
   };
-  virtual void insert (pick_line & aLine)
-  {
-    bucket.registerbyobject (aLine);
-  }
 private:
   Category & cat;
-  list < pick_line, char const *, strcasecmp > bucket;
   bool collapsed;
+  bool show_label;
+  size_t depth;
 };
 
 class view
 {
 public:
   int num_columns;
-  views get_view_mode ()
+  views get_view_mode () 
   {
     return view_mode;
   };
   void set_view_mode (views _mode);
   struct _header *headers;
-  view (views mode, HWND listview);
+  view (views mode, HWND listview, Category &cat);
   const char *mode_caption ();
   void insert_pkg (packagemeta &);
   void insert_category (Category *, bool);
@@ -206,9 +214,7 @@ public:
   int cat_col;
   int pkg_col;
   int last_col;
-//  pick_line *lines;
-//  int nlines;
-  topbucket contents;
+  pick_category_line contents;
   void scroll (HWND hwnd, int which, int *var, int code);
   HWND ListHeader (void) const
   {
