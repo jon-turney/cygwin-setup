@@ -1,3 +1,11 @@
+2003-02-28  Pierre Humblet  <pierre.humblet@ieee.org>
+
+	* main.cc (set_default_dacl): Replace with set_default_sec.
+	(set_default_sec): Attempt to change the default group to
+	Users or Administrators if it is None, in addition to setting
+	Everyone in the default DACL.
+	(main): Call set_default_sec instead of set_default_dacl.
+
 2003-01-31  Max Bowsher  <maxb@ukf.net>
 
 	* install.cc (install_one_source): Fix spacing in log message.
