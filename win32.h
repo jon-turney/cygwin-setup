@@ -32,7 +32,9 @@
 /* We want a minimum IE version of 3 */
 #define _WIN32_IE 0x0300
 #include <windows.h>
+#ifndef alloca
 #define alloca __builtin_alloca
+#endif
 
 #include <wininet.h>
 #include <windowsx.h>

@@ -1,5 +1,9 @@
 2002-03-20  Robert Collins  <rbtcollins@hotmail.com>
 
+	* win32.h: Only define alloca if it's not already.
+
+2002-03-20  Robert Collins  <rbtcollins@hotmail.com>
+
 	* package_meta.h (packamgemeta::trustp): Make 'test' choice leave installed
 	packages alone.
 	* README: Update with latest requests.
