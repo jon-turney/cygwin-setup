@@ -32,6 +32,15 @@ using namespace std;
 IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
 cp (0), cbpv (), cspv (), currentSpec (0), currentOrList (0), currentAndList (0), trust (0), _feedback (aFeedback){}
 
+inline bool lt_packagemeta(packagemeta *p1, packagemeta *p2) 
+{ return p1->name.casecompare(p2->name) < 0; }
+
+IniDBBuilderPackage::~IniDBBuilderPackage()
+{
+  packagedb db;
+  sort (db.packages.begin(), db.packages.end(), lt_packagemeta);
+}
+
 void
 IniDBBuilderPackage::buildTimestamp (String const &time)
 {

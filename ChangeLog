@@ -1,5 +1,12 @@
 2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	* IniDBBuilderPackage.cc (IniDBBuilderPackage::~IniDBBuilderPackage):
+	Sort the packages db once all the new packages have been added.
+	* IniDBBuilderPackage.h (IniDBBuilderPackage::~IniDBBuilderPackage):
+	Declare this.
+
+2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc (ChooserPage::OnNext): Remove extracted comment.
 	* package_version.cc (processOneDependency): Return once selecting
 	a package (bugfix to prevous rework).

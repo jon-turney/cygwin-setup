@@ -27,6 +27,7 @@ class IniDBBuilderPackage:public IniDBBuilder
 {
 public:
   IniDBBuilderPackage (IniParseFeedback const &);
+  ~IniDBBuilderPackage ();
   virtual void buildTimestamp (String const &);
   virtual void buildVersion (String const &);
   virtual void buildPackage (String const &);
