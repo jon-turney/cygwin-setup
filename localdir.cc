@@ -162,8 +162,6 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       switch (source)
 	{
 	case IDC_SOURCE_DOWNLOAD:
-	  NEXT (IDD_SOURCE);
-	  break;
 	case IDC_SOURCE_NETINST:
 	case IDC_SOURCE_CWD:
 	  NEXT (IDD_ROOT);

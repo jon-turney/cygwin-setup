@@ -1,3 +1,8 @@
+2001-11-06  Robert Collins  <rbtcollins@hotmail.com>
+
+	* localdir.cc (dialog_cmd): Go back to IDD_ROOT in every case.
+	* source.cc (dialog_cmd): Go forward to IDD_ROOT in every case.
+
 2001-11-06  Pavel Tsekov  <ptsekov@syntrex.com>
 
 	* fromcwd.cc (found_file): Free() memory containing the version and
