@@ -152,9 +152,11 @@ public:
   /* if you are still needing these hints... give up now! */
     virtual ~ io_stream () = 0;
 protected:
-    void operator= (const io_stream &);
-    io_stream () {};
-    io_stream (const io_stream &);
+  void operator= (const io_stream &);
+    io_stream ()
+  {
+  };
+  io_stream (const io_stream &);
 private:
   static int move_copy (char const *, char const *);
 };

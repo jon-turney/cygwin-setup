@@ -20,12 +20,8 @@
 #include <windows.h>
 #include "window.h"
 
-ATOM
-  Window::WindowClassAtom =
-  0;
-HINSTANCE
-  Window::AppInstance =
-  NULL;
+ATOM Window::WindowClassAtom = 0;
+HINSTANCE Window::AppInstance = NULL;
 
 // FIXME: I know, this is brutal.  Mutexing should at least make window creation threadsafe,
 // but if somebody has any ideas as to how to get rid of it entirely, please tell me / do so.
@@ -36,8 +32,7 @@ struct REFLECTION_INFO
   bool
     FirstCall;
 };
-REFLECTION_INFO
-  ReflectionInfo;
+REFLECTION_INFO ReflectionInfo;
 
 Window::Window ()
 {
@@ -94,8 +89,7 @@ Window::WindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
   return This->WindowProc (uMsg, wParam, lParam);
 }
 
-bool
-Window::Create (Window * parent, DWORD Style)
+bool Window::Create (Window * parent, DWORD Style)
 {
   // First register the window class, if we haven't already
   if (RegisterWindowClass () == false)
@@ -135,13 +129,13 @@ Window::Create (Window * parent, DWORD Style)
   return true;
 }
 
-bool
-Window::RegisterWindowClass ()
+bool Window::RegisterWindowClass ()
 {
   if (WindowClassAtom == 0)
     {
       // We're not registered yet
-      WNDCLASSEX wc;
+      WNDCLASSEX
+	wc;
 
       wc.cbSize = sizeof (wc);
       // Some sensible style defaults
@@ -232,8 +226,7 @@ Window::CenterWindow ()
   MoveWindow (GetHWND (), p.x, p.y, WindowWidth, WindowHeight, TRUE);
 }
 
-LRESULT
-Window::WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT Window::WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   switch (uMsg)
     {
@@ -244,10 +237,10 @@ Window::WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam)
   return 0;
 }
 
-bool
-Window::MessageLoop ()
+bool Window::MessageLoop ()
 {
-  MSG msg;
+  MSG
+    msg;
 
   while (GetMessage (&msg, NULL, 0, 0) != 0
 	 && GetMessage (&msg, (HWND) NULL, 0, 0) != -1)

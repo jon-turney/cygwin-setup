@@ -469,19 +469,37 @@ note_width (struct _header *hdrs, HDC dc, const char *string, int addend,
 static void
 set_existence ()
 {
-  /* FIXME:
-     iterate through the package list, and delete packages that are
-     * Not installed
-     * have no mirror site
-     and then do the same for categories with no packages.
-   */
+  packagedb db;
+  /* Remove packages that are in the db, not installed, and have no 
+     mirror info. */
+  size_t n = 1;
+  while (n <= db.packages.number ())
+    {
+      packagemeta & pkg = *db.packages[n];
+      bool mirrors = false;
+      size_t o = 1;
+      while (o <= pkg.versions.number () && !mirrors)
+	{
+	  packageversion & ver = *pkg.versions[o];
+	  if (ver.bin.sites.number () || ver.src.sites.number ())
+	    mirrors = true;
+	  ++o;
+	}
+      if (!pkg.installed && !mirrors)
+        {
+	  packagemeta * pkgm = db.packages.removebyindex (n);
+	  delete pkgm;
+	}
+      else
+	++n;
+    }
 }
 
 static void
 fill_missing_category ()
 {
   packagedb db;
-  for (size_t n = 1; n < db.packages.number (); n++)
+  for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
       if (!pkg.Categories.number ())
@@ -494,7 +512,7 @@ default_trust (HWND h, trusts trust)
 {
   deftrust = trust;
   packagedb db;
-  for (size_t n = 1; n < db.packages.number (); n++)
+  for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
       if (pkg.installed
@@ -516,6 +534,18 @@ default_trust (HWND h, trusts trust)
   InvalidateRect (h, &r, TRUE);
   if (nextbutton)
     SetFocus (nextbutton);
+  // and then do the same for categories with no packages.
+  size_t n = 1;
+  while (n <= db.categories.number ())
+    {
+      if (!db.categories[n]->packages)
+        {
+           Category * cat = db.categories.removebyindex (n);
+           delete cat;
+        }
+      else
+	++n;
+    }
 }
 
 void
@@ -849,7 +879,7 @@ view::init_headers (HDC dc)
   /* src checkbox */
   note_width (headers, dc, 0, HMARGIN + 11, src_col);
   packagedb db;
-  for (size_t n = 1; n < db.packages.number (); n++)
+  for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
       if (pkg.installed)
@@ -957,7 +987,7 @@ set_view_mode (HWND h, views mode)
   switch (chooser->get_view_mode ())
     {
     case VIEW_PACKAGE:
-      for (size_t n = 1; n < db.packages.number (); n++)
+      for (size_t n = 1; n <= db.packages.number (); n++)
 	{
 	  packagemeta & pkg = *db.packages[n];
 	  if ((!pkg.desired && pkg.installed)
@@ -967,7 +997,7 @@ set_view_mode (HWND h, views mode)
 	}
       break;
     case VIEW_PACKAGE_FULL:
-      for (size_t n = 1; n < db.packages.number (); n++)
+      for (size_t n = 1; n <= db.packages.number (); n++)
 	{
 	  packagemeta & pkg = *db.packages[n];
 	  chooser->insert_pkg (pkg);
@@ -1052,7 +1082,7 @@ create_listview (HWND dlg, RECT * r)
     log (LOG_BABBLE, "Failed to set View button caption %ld",
 	 GetLastError ());
   packagedb db;
-  for (size_t n = 1; n < db.packages.number (); n++)
+  for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
       add_required (pkg);
@@ -1071,7 +1101,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     {
     case IDC_CHOOSE_PREV:
       default_trust (lv, TRUST_PREV);
-      for (size_t n = 1; n < db.packages.number (); n++)
+      for (size_t n = 1; n <= db.packages.number (); n++)
 	{
 	  packagemeta & pkg = *db.packages[n];
 	  add_required (pkg);
@@ -1080,7 +1110,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       break;
     case IDC_CHOOSE_CURR:
       default_trust (lv, TRUST_CURR);
-      for (size_t n = 1; n < db.packages.number (); n++)
+      for (size_t n = 1; n <= db.packages.number (); n++)
 	{
 	  packagemeta & pkg = *db.packages[n];
 	  add_required (pkg);
@@ -1089,7 +1119,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       break;
     case IDC_CHOOSE_EXP:
       default_trust (lv, TRUST_TEST);
-      for (size_t n = 1; n < db.packages.number (); n++)
+      for (size_t n = 1; n <= db.packages.number (); n++)
 	{
 	  packagemeta & pkg = *db.packages[n];
 	  add_required (pkg);
@@ -1297,7 +1327,7 @@ do_choose (HINSTANCE h, HWND owner)
 
   log (LOG_BABBLE, "Chooser results...");
   packagedb db;
-  for (size_t n = 1; n < db.packages.number (); n++)
+  for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
 //      static const char *infos[] = { "nada", "prev", "curr", "test" };

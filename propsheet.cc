@@ -126,10 +126,10 @@ GetPROPSHEETHEADERSize ()
   return retval;
 }
 
-bool
-PropSheet::Create (const Window * Parent, DWORD Style)
+bool PropSheet::Create (const Window * Parent, DWORD Style)
 {
-  PROPSHEETHEADER p;
+  PROPSHEETHEADER
+    p;
 
   PageHandles = CreatePages ();
 
@@ -188,15 +188,13 @@ PropSheet::AddPage (PropertyPage * p)
   NumPropPages++;
 }
 
-bool
-PropSheet::SetActivePage (int i)
+bool PropSheet::SetActivePage (int i)
 {
   // Posts a message to the message queue, so this won't block
   return static_cast < bool > (::PropSheet_SetCurSel (GetHWND (), NULL, i));
 }
 
-bool
-PropSheet::SetActivePageByID (int resource_id)
+bool PropSheet::SetActivePageByID (int resource_id)
 {
   // Posts a message to the message queue, so this won't block
   return static_cast < bool >

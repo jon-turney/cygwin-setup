@@ -1,3 +1,25 @@
+2002-01-01  Robert Collins  <rbtcollins@hotmail.com>
+
+	* README: Update TODO's.
+	* choose.cc (set_existence): Delete non installed packages with no
+	mirrors.
+	(fill_missing_category): Fix an off-by-one error.
+	(default_trust): Ditto. Also delete any unused categories. 
+	(view::init_headers): Fix an off-by-one error.
+	(set_view_mode): Ditto.
+	(set_view_mode): Ditto.
+	(create_listview): Ditto.
+	(dialog_cmd): Ditto.
+	(do_choose): Ditto.
+	* io_stream.cc: Indent.
+	* io_stream.h: Ditto.
+	* package_db.cc: Ditto.
+	* package_meta.h: Const correctness for SDesc ();
+	* proppage.cc: Run d2u and indent.
+	* propsheet.cc: Run d2u and indent.
+	* window.cc: Run d2u and indent.
+	* window.h: Run d2u and indent.
+
 2001-12-28  Christopher Faylor  <cgf@redhat.com>
 
 	* Makefile.in (iniparse.o): Accommodate newer bisons.

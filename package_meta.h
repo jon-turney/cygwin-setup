@@ -70,7 +70,6 @@ public:
     strcpy (installed_from, installedfrom);
   };
 
-
   ~packagemeta ()
   {
     delete[] name;
@@ -91,7 +90,7 @@ public:
   char *installed_from;
   /* SDesc is global in theory, across all package versions. 
      LDesc is not: it can be different per version */
-  char const *SDesc ();
+  char const *SDesc () const;
   /* what categories does this package belong in. Note that if multiple versions
    * of a package disagree.... the first one read in will take precedence.
    */

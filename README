@@ -3,7 +3,6 @@ net releases.
 
 TODO:
 * Src tickbox /source only can be confusing.
-* file magic detection. - partially complete. 
 * support rpm/deb files for reading the package from. (To allow the maintainers the use of rpm/deb tools to create packages.)
   * make a librar(y|ies) for setup and cygcheck to use containing 
   1) Something to translate POSIX -> native.  Currently called "cygpath"
@@ -26,7 +25,6 @@ WISHLIST:
   *   build-depends
   *   FTP control connections should be closed when we are awaiting user input.
   *   Show a sdesc for each category
-  *   ini.cc: add field in setup.ini to specify whether package is installed by default, or not.
   * Add friendly error reporting to simpsock.cc
   * scan newly installed files for README files, show list to user, let them read them if they want.
    * Mouse wheel support broken/missing for *some* users.
@@ -61,3 +59,6 @@ recently completed
         happens via the reinstall/redo already - perhaps this is "done".)
    * Make skip only ever appear for non-installed packages.
    *   skip sould be followed by the <prec/curr/exp> from the radio buttons, not by prev.
+   * Src tickbox /source only can be confusing.
+   *   ini.cc: add field in setup.ini to specify whether package is installed by default, or not. (base category does this)
+

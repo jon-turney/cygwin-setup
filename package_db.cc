@@ -42,7 +42,7 @@ static const char *cvsid =
 
 packagedb::packagedb ()
 {
-  io_stream * db = 0;
+  io_stream *db = 0;
   if (!installeddbread)
     {
       /* no parameters. Read in the local installation database. */
@@ -131,22 +131,22 @@ packagedb::flush ()
   ndb->write ("INSTALLED.DB 2\n", strlen ("INSTALLED.DB 2\n"));
   for (size_t n = 1; n < packages.number (); n++)
     {
-      packagemeta &pkgm = * packages[n];
-	  if (pkgm.installed)
-	    {
-	      char line[2048];
+      packagemeta & pkgm = *packages[n];
+      if (pkgm.installed)
+	{
+	  char line[2048];
 
-	      /* size here is irrelevant - as we can assume that this install source
-	       * no longer exists, and it does not correlate to used disk space
-	       * also note that we are writing a fictional install source 
-	       * to keep cygcheck happy.               
-	       */
-	      sprintf (line, "%s %s %d\n", pkgm.name,
-		       concat (pkgm.name, "-",
-			       pkgm.installed->Canonical_version (),
-			       ".tar.bz2", 0), 0);
-	      ndb->write (line, strlen (line));
-	    }
+	  /* size here is irrelevant - as we can assume that this install source
+	   * no longer exists, and it does not correlate to used disk space
+	   * also note that we are writing a fictional install source 
+	   * to keep cygcheck happy.               
+	   */
+	  sprintf (line, "%s %s %d\n", pkgm.name,
+		   concat (pkgm.name, "-",
+			   pkgm.installed->Canonical_version (),
+			   ".tar.bz2", 0), 0);
+	  ndb->write (line, strlen (line));
+	}
     }
 
   delete ndb;
@@ -158,9 +158,15 @@ packagedb::flush ()
   return 0;
 }
 
-int packagedb::installeddbread = 0;
-list < packagemeta, char const *, strcasecmp > packagedb::packages;
+int
+  packagedb::installeddbread =
+  0;
+list < packagemeta, char const *,
+  strcasecmp >
+  packagedb::packages;
 list < Category, char const *,
   strcasecmp >
   packagedb::categories;
-PackageDBActions packagedb::task = PackageDB_Install;
+PackageDBActions
+  packagedb::task =
+  PackageDB_Install;

@@ -170,21 +170,24 @@ io_stream::move_copy (const char *from, const char *to)
   return 0;
 }
 
-ssize_t
-io_stream::copy (io_stream *in, io_stream *out)
+ssize_t io_stream::copy (io_stream * in, io_stream * out)
 {
   if (!in || !out)
     return -1;
-  char buffer[16384];
-  ssize_t countin, countout;
+  char
+    buffer[16384];
+  ssize_t
+    countin,
+    countout;
   while ((countin = in->read (buffer, 16384)) > 0)
     {
       countout = out->write (buffer, countin);
       if (countout != countin)
-        {
-          log (LOG_TIMESTAMP, "io_stream::copy failed to write %ld bytes", countin);
-          return countout ? countout : -1;
-        }
+	{
+	  log (LOG_TIMESTAMP, "io_stream::copy failed to write %ld bytes",
+	       countin);
+	  return countout ? countout : -1;
+	}
     }
 
   /* TODO:
@@ -272,5 +275,3 @@ io_stream::~io_stream ()
   log (LOG_TIMESTAMP, "io_stream::~io_stream called");
   return;
 }
-
-

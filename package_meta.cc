@@ -150,7 +150,7 @@ packagemeta::add_category (Category & cat)
 }
 
 char const *
-packagemeta::SDesc ()
+packagemeta::SDesc () const
 {
   return versions[1]->SDesc ();
 };

@@ -20,9 +20,7 @@
 #include "propsheet.h"
 #include "win32.h"
 
-bool
-  PropertyPage::DoOnceForSheet =
-  true;
+bool PropertyPage::DoOnceForSheet = true;
 
 PropertyPage::PropertyPage ()
 {
@@ -36,22 +34,20 @@ PropertyPage::~PropertyPage ()
 {
 }
 
-bool
-PropertyPage::Create (int TemplateID)
+bool PropertyPage::Create (int TemplateID)
 {
   return Create (NULL, NULL, TemplateID);
 }
 
-bool
-PropertyPage::Create (DLGPROC dlgproc, int TemplateID)
+bool PropertyPage::Create (DLGPROC dlgproc, int TemplateID)
 {
   return Create (dlgproc, NULL, TemplateID);
 }
 
 bool
-PropertyPage::Create (DLGPROC dlgproc,
-		      BOOL (*cproc) (HWND h, int id, HWND hwndctl, UINT code),
-		      int TemplateID)
+  PropertyPage::Create (DLGPROC dlgproc,
+			BOOL (*cproc) (HWND h, int id, HWND hwndctl,
+				       UINT code), int TemplateID)
 {
   psp.dwSize = sizeof (PROPSHEETPAGE);
   psp.dwFlags = 0;
