@@ -145,7 +145,7 @@ start_menu (char *title, char *target)
      msg("Program directory for program link changed to: %s",path);
   }
 // end of Win95 addition
-  strcat (path, "/Cygnus Solutions");
+  strcat (path, "/Cygwin");
   make_link (path, title, target);
 }
 
@@ -391,7 +391,7 @@ static int check_startmenu (char *title, char *target)
      msg ("Program directory for program link changed to: %s",path);
   }
   // end of Win95 addition
-  strcat (path, "/Cygnus Solutions");
+  strcat (path, "/Cygwin");
   char *fname = concat (path, "/", title, ".lnk", 0);
 
   if (_access (fname, 0) == 0)

@@ -1,3 +1,8 @@
+2001-11-12  Christopher Faylor  <cgf@redhat.com>
+
+	* desktop.cc (start_menu): Change start menu name to "Cygwin".
+	(check_startmenu): Ditto.
+
 2001-11-11  Christopher Faylor  <cgf@redhat.com>
 
 	* choose.cc (parse_filename): Finish reorganization by correctly
