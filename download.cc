@@ -159,7 +159,7 @@ do_download_thread (HINSTANCE h, HWND owner)
 
   packagedb db;
   /* calculate the amount needed */
-  for (size_t n = 1; n < db.packages.number (); n++)
+  for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
       if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
@@ -179,7 +179,7 @@ do_download_thread (HINSTANCE h, HWND owner)
   /* and do the download. FIXME: This here we assign a new name for the cached version
    * and check that above.
    */
-  for (size_t n = 1; n < db.packages.number (); n++)
+  for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
       if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
