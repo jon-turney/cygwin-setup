@@ -1,3 +1,7 @@
+2003-07-26  Max Bowsher  <maxb@ukf.net>
+
+	* tests/.cvsignore: New file, listing Makefile.in.
+
 2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
 
 	Save used local cache dir from initial run of setup, so the user doesn't
