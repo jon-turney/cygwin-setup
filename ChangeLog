@@ -1,3 +1,7 @@
+2000-10-05  DJ Delorie  <dj@redhat.com>
+
+	* Makefile.in: fix %.cc rule
+
 2000-10-04  DJ Delorie  <dj@redhat.com>
 
 	* desktop.cc: quote HOME and USER, don't . ./.profile

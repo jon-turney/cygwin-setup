@@ -173,7 +173,7 @@ endif
 
 %.o: %.cc
 ifdef VERBOSE
-	$(CC) $(MINGW_CXXFLAGS) -c -o $@ $*.cc
+	$(CC) $(MINGW_CXXFLAGS) -c -o $@ $<
 else
 	@echo $(CC) -c $(CXXFLAGS) ... $(<F)
 	@$(CC) $(MINGW_CXXFLAGS) -c -o $@ $<
