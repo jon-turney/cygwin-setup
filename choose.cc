@@ -412,8 +412,7 @@ set_existence ()
 	  /* 1 = check source file */
 	  package[i].info[t].source_exists = check_existence (i, t, 1);
 	  if (package[i].info[t].install &&
-	      (!extra[i].installed_ver
-	       || extra[i].installed_ver != package[i].info[t].version))
+	      (extra[i].installed_ver != package[i].info[t].version))
 	    {
 	      if (source == IDC_SOURCE_NETINST)
 		package[i].info[t].partial_list_display = 1;

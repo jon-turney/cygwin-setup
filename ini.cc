@@ -41,7 +41,7 @@ static char *cvsid = "\n%%% $Id$\n";
 unsigned int setup_timestamp = 0;
 char *setup_version = 0;
 
-extern "C" int yyparse ();
+extern int yyparse ();
 /*extern int yydebug;*/
 
 static char *error_buf = 0;

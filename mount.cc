@@ -100,13 +100,16 @@ create_mount (const char *posix, const char *win32, int istext, int issystem)
 		      0, &key, &disposition) != ERROR_SUCCESS)
     fatal ("mount");
 
-  RegSetValueEx (key, "native", 0, REG_SZ, (BYTE *)win32, strlen (win32)+1);
+  RegSetValueEx (key, "native", 0, REG_SZ, (BYTE *) win32, strlen (win32) + 1);
   flags = 0;
   if (!istext)
     flags |= MOUNT_BINARY;
   if (issystem)
     flags |= MOUNT_SYSTEM;
   RegSetValueEx (key, "flags", 0, REG_DWORD, (BYTE *)&flags, sizeof (flags));
+  
+  RegCloseKey(key);
+  read_mounts ();
 }
 
 static void
@@ -289,6 +292,15 @@ read_mounts ()
   DWORD disposition;
   char buf[10000];
 
+  root_here = NULL;
+  for (mnt *m1 = mount_table; m1->posix; m1++)
+    {
+      free (m1->posix);
+      if (m1->native)
+	free ((char *) m1->native);
+      m1->posix = NULL;
+    }
+
   /* Loop through subkeys */
   /* FIXME: we would like to not check MAX_MOUNTS but the heap in the
      shared area is currently statically allocated so we can't have an
@@ -315,15 +327,22 @@ read_mounts ()
 			      NULL, NULL, NULL);
 
 	  if (res == ERROR_NO_MORE_ITEMS)
-	    break;
+	    {
+	      free (m->posix);
+	      m->posix = NULL;
+	      break;
+	    }
 
-	  if (in_table (m))
-	    m--;
+	  if (!*m->posix || in_table (m))
+	    goto no_go;
 	  else if (res != ERROR_SUCCESS)
 	    break;
 	  else
 	    {
 	      m->native = find2 (key, &m->istext, m->posix);
+	      if (!m->native)
+		goto no_go;
+		  
 	      if (strcmp (m->posix, "/") == 0)
 		{
 		  root_here = m;
@@ -337,6 +356,11 @@ read_mounts ()
 		    root_scope = IDC_ROOT_USER;
 		}
 	    }
+	  continue;
+	no_go:
+	  free (m->posix);
+	  m->posix = NULL;
+	  m--;
 	}
       RegCloseKey (key);
     }
@@ -351,8 +375,8 @@ read_mounts ()
       GetWindowsDirectory (windir, sizeof (windir));
       windir[2] = 0;
       set_root_dir (concat (windir, "\\cygwin", 0));
+      m++;
     }
-
 }
 
 void
@@ -406,6 +430,10 @@ cygpath (const char *s, ...)
 
   va_start (v, s);
   char *path = vconcat (s, v);
+  if (strncmp (path, "./", 2) == 0)
+    memmove (path, path + 2, strlen (path + 2) + 1);
+  if (strncmp (path, "/./", 3) == 0)
+    memmove (path + 1, path + 3, strlen (path + 3) + 1);
 
   for (m = mount_table; m->posix ; m++)
     {

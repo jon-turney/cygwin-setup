@@ -1,9 +1,27 @@
+Sun May 27 15:42:18 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* Makefile.in: Make iniparse.y produce a c++ file.
+	* choose.cc (set_existence): Revert 2001-05-27 change.
+	* ini.cc: Remove "C" from declaration of yyparse.
+	* iniparse.y (yyparse): Fill out version field by default when a binary
+	install is detected and no version has been set yet.
+	* install.cc (do_install): Mount things earlier so that we can use
+	proper mount table settings.  Don't remove mounts since they are now
+	honored.
+	* mount.cc (create_mount): Reread the mount table after establishing a
+	new mount.
+	(read_mounts): Explicitly clear root_here to allow multiple uses of
+	this function.  Ensure that there is no garbage in the table when we've
+	exhausted all of the mounts in the registry.
+	(cygpath): Accomodate ./ in path.
+
 Sun May 27 02:59:07 2001  Christopher Faylor <cgf@cygnus.com>
 
-	Use parse_filename method to parse filenames throughout.
-	Use get_root_dir to retrieve the current root directory throughout.
-	Set const in argument list, where appropriate, throughout.
-	* choose.cc (set_existence): Detect case of uninstalled package with no version.
+	Use parse_filename method to parse filenames throughout.  Use
+	get_root_dir to retrieve the current root directory throughout.  Set
+	const in argument list, where appropriate, throughout.
+	* choose.cc (set_existence): Detect case of uninstalled package with no
+	version.
 	(parse_filename): New function.
 	* filemanip.h (fileparse): New structure.
 	* mount.cc (read_mounts): Remember where we found the root mount.

@@ -381,6 +381,14 @@ do_install (HINSTANCE h)
   int df = diskfull (get_root_dir ());
   SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
 
+  int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;
+  int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
+
+  create_mount ("/", get_root_dir (), istext, issystem);
+  create_mount ("/usr/bin", cygpath ("/bin", 0), istext, issystem);
+  create_mount ("/usr/lib", cygpath ("/lib", 0), istext, issystem);
+  set_cygdrive_flags (istext, issystem);
+
   LOOP_PACKAGES
     {
       if (package[i].action != ACTION_SRC_ONLY)
@@ -500,22 +508,14 @@ do_install (HINSTANCE h)
       return;
     }
 
-  remove_mount ("/");
-  remove_mount ("/usr");
-  remove_mount ("/usr/bin");
-  remove_mount ("/usr/lib");
-  remove_mount ("/var");
-  remove_mount ("/lib");
-  remove_mount ("/bin");
-  remove_mount ("/etc");
-
-  int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;
-  int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
-
-  create_mount ("/", get_root_dir (), istext, issystem);
-  create_mount ("/usr/bin", cygpath ("/bin", 0), istext, issystem);
-  create_mount ("/usr/lib", cygpath ("/lib", 0), istext, issystem);
-  set_cygdrive_flags (istext, issystem);
+  // remove_mount ("/");
+  // remove_mount ("/usr");
+  // remove_mount ("/usr/bin");
+  // remove_mount ("/usr/lib");
+  // remove_mount ("/var");
+  // remove_mount ("/lib");
+  // remove_mount ("/bin");
+  // remove_mount ("/etc");
 
   if (errors)
     exit_msg = IDS_INSTALL_INCOMPLETE;

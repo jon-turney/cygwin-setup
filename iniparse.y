@@ -22,6 +22,10 @@
 
 #include "ini.h"
 #include "iniparse.h"
+#include "filemanip.h"
+
+extern "C" int yyerror (char *s, ...);
+extern "C" int yylex ();
 
 #include "port.h"
 
@@ -80,7 +84,14 @@ simple_line
  | SDESC STRING			{ cp->sdesc = $2; }
  | LDESC STRING			{ cp->ldesc = $2; }
  | INSTALL STRING STRING	{ cpt->install = $2;
-				  cpt->install_size = atoi($3); }
+				  cpt->install_size = atoi($3);
+				  if (!cpt->version)
+				    {
+				      fileparse f;
+				      if (parse_filename ($2, f))
+					cpt->version = strdup (f.ver);
+				    }
+				}
  | SOURCE STRING STRING		{ cpt->source = $2;
 				  cpt->source_size = atoi($3); }
  | T_PREV			{ trust = TRUST_PREV; }

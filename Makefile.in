@@ -193,8 +193,8 @@ else
 	@$(CC) $(MINGW_CFLAGS) -c -o $@ $< -fno-inline-functions
 endif
 
-iniparse.c iniparse.h : iniparse.y
-	bison -d -o iniparse.c $(srcdir)/iniparse.y
+iniparse.cc iniparse.h : iniparse.y
+	bison -d -o iniparse.cc $(srcdir)/iniparse.y
 
 inilex.c : inilex.l iniparse.h
 	flex -8 $(srcdir)/inilex.l
