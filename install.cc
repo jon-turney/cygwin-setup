@@ -218,14 +218,23 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
   log (LOG_PLAIN, String (msg) + " " + source.Cached ());
   
   io_stream *tmp = io_stream::open (source.Cached (), "rb");
+  io_stream *tmp2 = 0;
   archive *thefile = 0;
   if (tmp)
     {
-      io_stream *tmp2 = compress::decompress (tmp);
+      tmp2 = compress::decompress (tmp);
       if (tmp2)
-	thefile = archive::extract (tmp2);
+        {
+          thefile = archive::extract (tmp2);
+          // tmp2 now owned by archive instance
+          if (thefile) tmp2 = 0;
+        }
       else
-	thefile = archive::extract (tmp);
+        {
+          thefile = archive::extract (tmp);
+          // tmp now owned by archive instance
+          if (thefile) tmp = 0;
+        }
     }
     
   /* FIXME: potential leak of either *tmp or *tmp2 */
@@ -344,8 +353,9 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
   int df = diskfull (get_root_dir ().cstr_oneuse());
   Progress.SetBar3 (df);
 
-  if (lst)
-    delete lst;
+  if (lst) delete lst;
+  if (tmp2) delete tmp2;
+  if (tmp) delete tmp;
 
   return errors;
 }
