@@ -603,7 +603,7 @@ ChooserPage::OnNext ()
 	  /* List categories the package belongs to */
 	  set <String, String::caseless>::const_iterator i 
 	    = pkg.categories.begin ();
-	  String all_categories = *i;
+	  String all_categories = *(i++);
 	  while (i != pkg.categories.end ())
 	    all_categories += String (", ") + *(i++);
 

@@ -1,3 +1,8 @@
+2003-03-14  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.cc (ChooserPage::OnNext): Fix iterator bug. Reported by 
+	Igor Pechtchanski  <pechtcha@cs.nyu.edu>.
+
 2003-03-13  Max Bowsher  <maxb@ukf.net>
 
 	* Update included zlib to 1.1.4.
