@@ -219,15 +219,14 @@ Script::run(BOOL to_log) const
 
   if (sh.size() && strcmp (ext, ".sh") == 0)
     {
-      String f2 = scriptName;
-      log(LOG_PLAIN) << "running: " << sh << " -c " << f2 << endLog;
-      ::run (sh.cstr_oneuse(), "-c", f2.cstr_oneuse(), file_out);
+      log(LOG_PLAIN) << "running: " << sh << " -c " << scriptName << endLog;
+      ::run (sh.cstr_oneuse(), "-c", scriptName.cstr_oneuse(), file_out);
     }
   else if (cmd && strcmp (ext, ".bat") == 0)
     {
-      String f2 = backslash (cygpath (scriptName));
-      log(LOG_PLAIN) << "running: " << cmd << " /c " << f2 << endLog;
-      ::run (cmd, "/c", f2.cstr_oneuse(), file_out);
+      String windowsName = backslash (cygpath (scriptName));
+      log(LOG_PLAIN) << "running: " << cmd << " /c " << windowsName << endLog;
+      ::run (cmd, "/c", windowsName.cstr_oneuse(), file_out);
     }
   else
     return;

@@ -1,5 +1,10 @@
 2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
 
+	* script.cc (Script::run): Eliminate temp variable 'f2'.
+	Rename temp variable 'f2' to 'windowsName' for increased clarity.
+
+2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
+
 	* script.cc (Script::run): Eliminate temp variable 'fname'.
 
 2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
