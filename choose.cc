@@ -1339,7 +1339,7 @@ scan2 (char *path, unsigned int size)
       {
 	if (cmp > 0)
 	  hole = inf;
-	else
+	else if (cmp == 0)
 	  maybe_hole = inf;
       }
     else if ((cmp = strcasecmp (f.ver, inf->version)) == 0)
