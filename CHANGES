@@ -1,0 +1,14 @@
+Version 2.459
+
+ - Repair the broken detection of wrongly-sized package files.
+
+ - Fix setup keeping open handles to every tarball it installs during a run.
+
+ - Fix a miscellany of error-reporting deficiencies.
+
+ - Close stdin, to protect against rogue postinstall scripts attempting to
+   wait for user input.
+
+Version 2.427
+
+ - Last release before CHANGES file begun.
