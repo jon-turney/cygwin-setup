@@ -107,6 +107,7 @@ OBJS = \
 	find.o \
 	filemanip.o \
 	fromcwd.o \
+	GetOption.o \
 	geturl.o \
 	hash.o \
 	ini.o \
@@ -131,6 +132,7 @@ OBJS = \
 	nio-file.o \
 	nio-ftp.o \
 	nio-http.o \
+	Option.o \
 	package_db.o \
 	package_meta.o \
 	package_source.o \

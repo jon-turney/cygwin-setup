@@ -57,6 +57,8 @@ static const char *cvsid =
 #include "threebar.h"
 #include "desktop.h"
 
+#include "GetOption.h"
+
 int next_dialog;
 int exit_msg = 0;
 
@@ -167,10 +169,12 @@ WinMain (HINSTANCE h,
 
   char **argv;
   int argc;
-  log (LOG_TIMESTAMP, "Command line parameters\n");
-  for (argc = 0, argv = __argv; *argv; argv++)
-    log (LOG_TIMESTAMP, "%d - '%s'\n", argc++, *argv);
-  log (LOG_TIMESTAMP, "%d parameters passed\n", argc);
+  for (argc = 0, argv = __argv; *argv; argv++)++argc;
+
+  GetOption options = GetOption::GetInstance();
+  if (!options.Process (argc, __argv))
+    exit_setup(1);
+  
 
   /* Set the default DACL only on NT/W2K. 9x/ME has no idea of access
      control lists and security at all. */

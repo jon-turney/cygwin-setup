@@ -1,3 +1,15 @@
+2003-03-27  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in (OBJS): Add new commandline objects.
+	* desktop.cc (NoShortCutsOption): New option code.
+	(DesktopSetupPage::OnInit): Check whether to skip shortcuts.
+	* desktop.h (NoShortCutsOption): New concrete command line option class.
+	* main.cc (WinMain): Process command line options.
+	* GetOption.h: New file, singleton command line class.
+	* GetOption.cc: New file, implementation of the above.
+	* Option.h : New file, abstract option for GetOption.
+	* Option.cc: New file, implement constructor and destructor.
+
 2002-03-26  Pavel Tsekov  <ptsekov@gmx.net>
 
         * mkdir.cc (mkdir_p): Stop processing if the path is exhausted.
