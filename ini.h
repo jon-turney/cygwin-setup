@@ -79,6 +79,10 @@ typedef enum
    (pkg)->action == ACTION_PREV || \
    (pkg)->action == ACTION_UNINSTALL)
 
+#define is_full_action(pkg) \
+  (((pkg)->action >= ACTION_SAME_PREV && (pkg)->action <= ACTION_SAME_TEST) \
+   || (pkg)->action == ACTION_SKIP)
+
 #define SRCACTION_NO		0
 #define SRCACTION_YES		1
 typedef struct _Info

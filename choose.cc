@@ -100,9 +100,11 @@ isinstalled (Package *pkg, int trust)
 static void
 set_action (Package *pkg, bool preinc)
 {
-  pkg->srcpicked = 0;
   if (!pkg->action || preinc)
-    ((int) pkg->action)++;
+    {
+      ((int) pkg->action)++;
+      pkg->srcpicked = 0;
+    }
 
   /* Exercise the action state machine. */
   for (;; ((int) pkg->action)++)
@@ -145,21 +147,28 @@ set_action (Package *pkg, bool preinc)
       case ACTION_UNINSTALL:
 	if (pkg->installed)
 	  return;
+	break;
       case ACTION_REDO:
-	if (pkg->installed)
+	if (pkg->installed && pkg->info[pkg->installed_ix].install_exists)
 	  {
 	    pkg->trust = pkg->installed_ix;
 	    return;
 	  }
+	break;
       case ACTION_SRC_ONLY:
-	if (pkg->installed && pkg->installed->source_exists)
-	  return;
+	if (pkg->info[pkg->trust].source_exists)
+	  {
+	    pkg->srcpicked = 1;
+	    return;
+	  }
 	break;
       case ACTION_SAME_LAST:
 	pkg->action = ACTION_SKIP;
 	/* Fall through intentionally */
       case ACTION_SKIP:
-	return;
+	if (!pkg->installed || !pkg->info[pkg->installed_ix].install_exists)
+	  return;
+	break;
       default:
 	log (0, "should never get here %d\n", pkg->action);
       }
@@ -370,7 +379,8 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
   if (x >= headers[NEW_COL].x - (HMARGIN / 2) && x <= headers[NEW_COL + 1].x - HMARGIN/2)
     set_action (pkg, 1);
 
-  if (x >= headers[SRC_COL].x - HMARGIN/2 && x <= headers[SRC_COL + 1].x - HMARGIN/2)
+  if (pkg->info[pkg->trust].source_exists &&
+      x >= headers[SRC_COL].x - HMARGIN/2 && x <= headers[SRC_COL + 1].x - HMARGIN/2)
     pkg->srcpicked ^= 1;
 
   RECT rect;
@@ -504,7 +514,7 @@ set_full_list (HWND h, int isfull)
     if (!pkg->exclude)
       {
 	set_action (pkg, 0);
-	if ((isfull || is_download_action (pkg)))
+	if (isfull || !is_full_action (pkg))
 	  package_indexes[nindexes++] = pkg - package;
       }
 
@@ -983,7 +993,7 @@ do_choose (HINSTANCE h)
 		 (pkg->info[t].install_exists) ? "yes":"no",
 		 pkg->info[t].source ?: "(none)",
 		 pkg->info[t].source_size,
-		 (pkg->info[t].source_exists == 1) ? "yes":"no");
+		 (pkg->info[t].source_exists == 1) ? "yes" : "no");
 	}
     }
 }
