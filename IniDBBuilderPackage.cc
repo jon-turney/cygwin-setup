@@ -68,7 +68,12 @@ IniDBBuilderPackage::buildPackage (String const &name)
     }
 #endif
   packagedb db;
-  cp = &db.packages.registerbykey(name);
+  cp = db.findBinary (PackageSpecification(name));
+  if (!cp)
+    {
+      cp = new packagemeta (name);
+      db.packages.push_back (cp);
+    }
   cbpv = cygpackage::createInstance (name);
   cspv = packageversion ();
   currentSpec = NULL;

@@ -225,9 +225,10 @@ do_download_thread (HINSTANCE h, HWND owner)
 
   packagedb db;
   /* calculate the amount needed */
-  for (size_t n = 1; n <= db.packages.number (); n++)
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **i;
       if (pkg.desired.changeRequested())
 	{
 	  packageversion version = pkg.desired;
@@ -254,9 +255,10 @@ do_download_thread (HINSTANCE h, HWND owner)
   /* and do the download. FIXME: This here we assign a new name for the cached version
    * and check that above.
    */
-  for (size_t n = 1; n <= db.packages.number (); n++)
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **i;
       if (pkg.desired.changeRequested())
 	{
 	  int e = 0;

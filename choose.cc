@@ -271,18 +271,19 @@ set_existence ()
   /* binary packages */
   /* Remove packages that are in the db, not installed, and have no 
      mirror info and are not cached for both binary and source packages. */
-  size_t n = 1;
-  while (n <= db.packages.number ())
+  vector <packagemeta *>::iterator i = db.packages.begin ();
+  while (i != db.packages.end ())
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **i;
       if (!pkg.installed && !pkg.accessible() && 
 	  !pkg.sourceAccessible() )
 	{
-	  packagemeta *pkgm = db.packages.removebyindex (n);
+	  packagemeta *pkgm = *i;
 	  delete pkgm;
+	  i = db.packages.erase (i);
 	}
       else
-	++n;
+	++i;
     }
 #if 0
   /* remove any source packages which are not accessible */
@@ -306,9 +307,10 @@ static void
 fill_missing_category ()
 {
   packagedb db;
-  for (size_t n = 1; n <= db.packages.number (); n++)
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **i;
       if (!pkg.categories.size ())
 	pkg.add_category ("Misc");
       pkg.add_category ("All");
@@ -320,9 +322,10 @@ default_trust (HWND h, trusts trust)
 {
   chooser->deftrust = trust;
   packagedb db;
-  for (size_t n = 1; n <= db.packages.number (); n++)
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **i;
       if (pkg.installed
 	  || pkg.categories.find ("Base") != pkg.categories.end ()
 	  || pkg.categories.find ("Misc") != pkg.categories.end ())
@@ -357,9 +360,10 @@ set_view_mode (HWND h, PickView::views mode)
   packagedb db;
   if (chooser->get_view_mode () == PickView::views::Package)
     {
-      for (size_t n = 1; n <= db.packages.number (); n++)
+      for (vector <packagemeta *>::iterator i = db.packages.begin ();
+	   i != db.packages.end (); ++i)
 	{
-	  packagemeta & pkg = *db.packages[n];
+	  packagemeta & pkg = **i;
 	  if ((!pkg.desired && pkg.installed)
 	      || (pkg.desired && (pkg.desired.picked () 
 				  || pkg.desired.sourcePackage().picked())))
@@ -368,11 +372,9 @@ set_view_mode (HWND h, PickView::views mode)
     }
   else if (chooser->get_view_mode () == PickView::views::PackageFull)
     {
-      for (size_t n = 1; n <= db.packages.number (); n++)
-	{
-	  packagemeta & pkg = *db.packages[n];
-	  chooser->insert_pkg (pkg);
-	}
+      for (vector <packagemeta *>::iterator i = db.packages.begin ();
+	   i != db.packages.end (); ++i)
+	chooser->insert_pkg (**i);
     }
   else if (chooser->get_view_mode () == PickView::views::Category)
     {
@@ -426,9 +428,10 @@ create_listview (HWND dlg, RECT * r)
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE) << "Failed to set View button caption %ld" << 
 	 GetLastError () << endLog;
-  for (size_t n = 1; n <= db.packages.number (); n++)
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **i;
       pkg.set_requirements (chooser->deftrust);
     }
   /* FIXME: do we need to init the desired fields ? */
@@ -473,9 +476,10 @@ scan_downloaded_files ()
    * and fill in the Cached attribute if it exists.
    */
   packagedb db;
-  for (size_t n = 1; n <= db.packages.number (); ++n)
+  for (vector <packagemeta *>::iterator n = db.packages.begin ();
+       n != db.packages.end (); ++n)
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **n;
       for (set<packageversion>::iterator i = pkg.versions.begin (); 
 	   i != pkg.versions.end (); ++i)
 	{
@@ -553,10 +557,10 @@ ChooserPage::OnNext ()
 
   log (LOG_BABBLE) << "Chooser results..." << endLog;
   packagedb db;
-  for (size_t n = 1; n <= db.packages.number (); n++)
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = *db.packages[n];
-//      static const char *infos[] = { "nada", "prev", "curr", "test" };
+      packagemeta & pkg = **i;
       const char *trust = ((pkg.desired == pkg.prev) ? "prev"
 			   : (pkg.desired == pkg.curr) ? "curr"
 			   : (pkg.desired == pkg.exp) ? "test" : "unknown");
@@ -638,9 +642,10 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       if (IsDlgButtonChecked (GetHWND (), id))
       {
         default_trust (lv, TRUST_PREV);
-        for (size_t n = 1; n <= db.packages.number (); n++)
+	for (vector <packagemeta *>::iterator i = db.packages.begin ();
+	     i != db.packages.end (); ++i)
           {
-            packagemeta & pkg = *db.packages[n];
+            packagemeta & pkg = **i;
             pkg.set_requirements (TRUST_PREV);
           }
         set_view_mode (lv, chooser->get_view_mode ());
@@ -652,9 +657,10 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       if (IsDlgButtonChecked (GetHWND (), id))
       {
         default_trust (lv, TRUST_CURR);
-        for (size_t n = 1; n <= db.packages.number (); n++)
+	for (vector <packagemeta *>::iterator i = db.packages.begin ();
+	     i != db.packages.end (); ++i)
           {
-            packagemeta & pkg = *db.packages[n];
+            packagemeta & pkg = **i;
             pkg.set_requirements (TRUST_CURR);
           }
         set_view_mode (lv, chooser->get_view_mode ());
@@ -666,9 +672,10 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       if (IsDlgButtonChecked (GetHWND (), id))
       {
         default_trust (lv, TRUST_TEST);
-        for (size_t n = 1; n <= db.packages.number (); n++)
+	for (vector <packagemeta *>::iterator i = db.packages.begin ();
+	     i != db.packages.end (); ++i)
           {
-            packagemeta & pkg = *db.packages[n];
+            packagemeta & pkg = **i;
             pkg.set_requirements (TRUST_TEST);
           }
         set_view_mode (lv, chooser->get_view_mode ());

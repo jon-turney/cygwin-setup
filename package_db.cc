@@ -92,10 +92,11 @@ packagedb::packagedb ()
 		  if (!parseable)
 		    continue;
 
-		  packagemeta *pkg = packages.getbykey (pkgname);
+		  packagemeta *pkg = findBinary (PackageSpecification(pkgname));
 		  if (!pkg)
 		    {
 		      pkg = new packagemeta (pkgname, inst);
+		      packages.push_back (pkg);
 		      /* we should install a new handler then not check this...
 		       */
 		      //if (!pkg)
@@ -110,8 +111,6 @@ packagedb::packagedb ()
 		  pkg->add_version (binary);
 		  pkg->set_installed (binary);
 		  pkg->desired = pkg->installed;
-		  packages.registerbyobject (*pkg);
-
 		}
 	      delete db;
 	      db = 0;
@@ -140,9 +139,10 @@ packagedb::flush ()
     return errno ? errno : 1;
 
   ndb->write ("INSTALLED.DB 2\n", strlen ("INSTALLED.DB 2\n"));
-  for (size_t n = 1; n <= packages.number (); n++)
+  for (vector <packagemeta *>::iterator i = packages.begin ();
+       i != packages.end (); ++i)
     {
-      packagemeta & pkgm = *packages[n];
+      packagemeta & pkgm = **i;
       if (pkgm.installed)
 	{
 	  /* size here is irrelevant - as we can assume that this install source
@@ -169,9 +169,10 @@ packagedb::flush ()
 packagemeta *
 packagedb::findBinary (PackageSpecification const &spec) const
 {
-  for (size_t n = 1; n <= packages.number (); ++n)
+  for (vector <packagemeta *>::iterator n = packages.begin ();
+       n != packages.end (); ++n)
     {
-      packagemeta & pkgm = *packages[n];
+      packagemeta & pkgm = **n;
       for (set<packageversion>::iterator i=pkgm.versions.begin();
 	  i != pkgm.versions.end(); ++i)
 	if (spec.satisfies (*i))
@@ -197,9 +198,7 @@ packagedb::findSource (PackageSpecification const &spec) const
 int
   packagedb::installeddbread =
   0;
-list < packagemeta, String,
-  String::casecompare >
-  packagedb::packages;
+vector < packagemeta * > packagedb::packages;
 packagedb::categoriesType
   packagedb::categories;
 vector <packagemeta *> packagedb::sourcePackages;

@@ -20,7 +20,6 @@
 #include <String++.h>
 #include <vector>
 #include <map>
-#include "list.h"
 #include "category.h"
 class packagemeta;
 class io_stream;
@@ -41,7 +40,7 @@ public:
   packagemeta * findBinary (PackageSpecification const &) const;
   packagemeta * findSource (PackageSpecification const &) const;
   /* all seen binary packages */
-  static list < packagemeta, String, String::casecompare > packages;
+  static vector < packagemeta *> packages;
   /* all seen source packages */
   static vector <packagemeta *> sourcePackages;
   /* all seen categories */

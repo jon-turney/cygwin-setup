@@ -503,9 +503,10 @@ do_install_thread (HINSTANCE h, HWND owner)
   init_run_script ();
 
   packagedb db;
-  for (size_t n = 1; n <= db.packages.number (); n++)
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **i;
 
       if (pkg.desired.changeRequested())
 	{
@@ -517,9 +518,10 @@ do_install_thread (HINSTANCE h, HWND owner)
     }
 
   /* start with uninstalls - remove files that new packages may replace */
-  for (size_t n = 1; n <= db.packages.number (); n++)
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **i;
       if (pkg.installed && (!pkg.desired || pkg.desired != pkg.installed))
 	uninstall_one (pkg);
     }
@@ -528,9 +530,10 @@ do_install_thread (HINSTANCE h, HWND owner)
    * that have been moved into new packages
    */
 
-  for (size_t n = 1; n <= db.packages.number (); n++)
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **i;
       if (pkg.installed && pkg.desired.picked())
 	{
 	  try {
@@ -551,9 +554,10 @@ do_install_thread (HINSTANCE h, HWND owner)
 	}
     }
 
-  for (size_t n = 1; n <= db.packages.number (); n++)
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **i;
 
       if (pkg.desired && pkg.desired.changeRequested())
 	{

@@ -322,9 +322,10 @@ PickView::init_headers (HDC dc)
   for (packagedb::categoriesType::iterator n = packagedb::categories.begin();
        n != packagedb::categories.end(); ++n)
     note_width (headers, dc, String ("+ ")+n->first, HMARGIN, cat_col);
-  for (size_t n = 1; n <= db.packages.number (); n++)
+  for (vector <packagemeta *>::iterator n = db.packages.begin ();
+       n != db.packages.end (); ++n)
     {
-      packagemeta & pkg = *db.packages[n];
+      packagemeta & pkg = **n;
       if (pkg.installed)
         note_width (headers, dc, pkg.installed.Canonical_version (),
                     HMARGIN, current_col);

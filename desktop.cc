@@ -25,6 +25,7 @@ static const char *cvsid =
 
 #include "win32.h"
 #include <shlobj.h>
+#include "desktop.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,8 +50,9 @@ static const char *cvsid =
 #include "String++.h"
 #include "io_stream.h"
   
-#include "desktop.h"
 #include "getopt++/BoolOption.h"
+
+#include "PackageSpecification.h"
 
 static BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", "Disable creation of desktop and start menu shortcuts");
 
@@ -288,7 +290,7 @@ make_passwd_group ()
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
     {
       packagedb db;
-      packagemeta *pkg = db.packages.getbykey ("cygwin");
+      packagemeta *pkg = db.findBinary (PackageSpecification("cygwin"));
       if (pkg && pkg->installed)
 	{
 	  /* mkpasswd and mkgroup are not working on 9x/ME up to 1.1.5-4 */

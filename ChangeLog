@@ -1,3 +1,18 @@
+2002-07-09  Robert Collins  <rbtcollins@hotmail.com>
+
+	Change custom container code for packagedb::packages to STL containers
+	throughout.
+	* IniDBBuilderPackage.cc: Ditto.
+	* PickView.cc: Ditto.
+	* choose.cc: Ditto.
+	* desktop.cc: Ditto.
+	* download.cc: Ditto.
+	* install.cc: Ditto.
+	* package_db.cc: Ditto.
+	* package_db.h: Ditto.
+	* Makefile.am: Remove list.h references.
+	* list.h: Remove.
+
 2002-07-08  Max Bowsher  <maxb@ukf.net>
 
 	* PickView.cc (PickView::PickView): Set font of package list header to

@@ -183,7 +183,6 @@ setup_SOURCES = \
 	io_stream_memory.cc \
 	io_stream_memory.h \
 	IOStreamProvider.h \
-	list.h \
 	localdir.cc \
 	localdir.h \
 	log.cc \
