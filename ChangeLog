@@ -1,3 +1,7 @@
+Wed Aug  8 13:53:47 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* desktop.cc (etc_profile): Leave environment variables untouched.
+
 2001-08-07  Corinna Vinschen  <corinna@vinschen.de>
 
 	* autoload.c: Add dynamic load statements for NT/W2K
