@@ -412,8 +412,7 @@ build_labels ()
 	  c++;
 	}
 
-      /* we intentionally skip TRUST_PREV */
-      for (t=TRUST_CURR; t<NTRUST; t++)
+      for (t=TRUST_PREV; t<NTRUST; t++)
 	if (package[i].info[t].install)
 	  if (t != extra[i].which_is_installed)
 	    {
@@ -422,7 +421,9 @@ build_labels ()
 		C.caption = "0.0";
 	      C.trust = t;
 	      c++;
-	      extra[i].in_partial_list = 1;
+	      /* we intentionally skip TRUST_PREV */
+	      if (t != TRUST_PREV || !extra[i].installed_ver)
+		extra[i].in_partial_list = 1;
 	    }
 
       if (c == 0)
@@ -701,10 +702,20 @@ foo1() {
     next_dialog = IDD_S_DOWNLOAD;
 }
 
+int
+package_sort (const void *va, const void *vb)
+{
+  Package *a = (Package *)va;
+  Package *b = (Package *)vb;
+  return strcmp (a->name, b->name);
+}
+
 void
 do_choose (HINSTANCE h)
 {
   int rv, i;
+
+  qsort (package, npackages, sizeof (package[0]), package_sort);
 
   nextbutton = 0;
   bm_spin = LoadImage (h, MAKEINTRESOURCE (IDB_SPIN), IMAGE_BITMAP, 0, 0, 0);

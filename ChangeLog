@@ -1,3 +1,10 @@
+2000-10-22  DJ Delorie  <dj@redhat.com>
+
+	* choose.cc (build_labels): Don't skip TRUST_PREV completely; only
+	ignore it wrt full_list if there's already a version installed.
+	(do_choose): Sort the list.
+	(package_sort): New.
+
 2000-10-12  DJ Delorie  <dj@redhat.com>
 
 	* res.rc: Add more error strings.
