@@ -1,5 +1,16 @@
 2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.cc (scan_downloaded_files): Rename to packagemeta::ScanDownloadedFiles.
+	(scanAVersion): Rename to packageversion::scan.
+	(GetParentRect): Rename to ChooserPage::getParentRect.
+	* choose.h (ChooserPage::getParentRect): Declare.
+	* package_meta.h (packagemeta::ScanDownloadedFiles): Declare.
+	* package_version.h (packageversion::scan): Declare.
+	* package_version.cc (packageversion::scan): Move from choose.cc
+	* package_meta.cc (packagemeta::ScanDownloadedFiles): Move from choose.cc
+
+2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc (ChooserPage::OnNext): log before starting activity threads.
 	(ChooserPage::OnInit): Remove temporary variable frame.
 	(ChooserPage::setPrompt): Extract method from OnInit.

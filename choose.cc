@@ -58,8 +58,6 @@ static const char *cvsid =
 #include "port.h"
 #include "threebar.h"
 
-#include "download.h"
-
 using namespace std;
 
 extern ThreeBarProgressPage Progress;
@@ -461,74 +459,22 @@ create_listview (HWND dlg, RECT * r)
   rbset (dlg, ta, IDC_CHOOSE_CURR);
 }
 
-static void
-GetParentRect (HWND parent, HWND child, RECT * r)
+/* TODO: review ::overrides for possible consolidation */
+void
+ChooserPage::getParentRect (HWND parent, HWND child, RECT * r)
 {
   POINT p;
-  GetWindowRect (child, r);
+  ::GetWindowRect (child, r);
   p.x = r->left;
   p.y = r->top;
-  ScreenToClient (parent, &p);
+  ::ScreenToClient (parent, &p);
   r->left = p.x;
   r->top = p.y;
   p.x = r->right;
   p.y = r->bottom;
-  ScreenToClient (parent, &p);
+  ::ScreenToClient (parent, &p);
   r->right = p.x;
   r->bottom = p.y;
-}
-
-static void
-scanAVersion (packageversion version)
-{
-  if (!version)
-    return;
-  /* Remove mirror sites.
-   * FIXME: This is a bit of a hack. a better way is to abstract
-   * the availability logic to the package
-   */
-  if (!check_for_cached (*(version.source())) && source == IDC_SOURCE_CWD)
-    version.source()->sites.clear();
-}
-
-static void
-scan_downloaded_files ()
-{
-  /* Look at every known package, in all the known mirror dirs,
-   * and fill in the Cached attribute if it exists.
-   */
-  packagedb db;
-  for (vector <packagemeta *>::iterator n = db.packages.begin ();
-       n != db.packages.end (); ++n)
-    {
-      packagemeta & pkg = **n;
-      for (set<packageversion>::iterator i = pkg.versions.begin (); 
-	   i != pkg.versions.end (); ++i)
-	{
-	  scanAVersion (*i);
-	  packageversion foo = *i;
-	  packageversion pkgsrcver = foo.sourcePackage();
-	  scanAVersion (pkgsrcver);
-	  /* For local installs, if there is no src and no bin, the version
-	   * is unavailable
-	   */
-	  if (!i->accessible() && !pkgsrcver.accessible()
-	      && *i != pkg.installed)
-	    {
-	      if (pkg.prev == *i)
-		pkg.prev = packageversion();
-	      if (pkg.curr == *i)
-		pkg.curr = packageversion();
-	      if (pkg.exp == *i)
-		pkg.exp = packageversion();
-	      pkg.versions.erase(i);
-	      /* For now, leave the source version alone */
-	    }
-	}
-    }
-  /* Don't explicity iterate through sources - any sources that aren't 
-     referenced are unselectable anyway 
-     */
 }
 
 bool
@@ -549,7 +495,7 @@ ChooserPage::OnInit ()
   register_windows (GetInstance ());
 
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_CWD)
-    scan_downloaded_files ();
+    packagemeta::ScanDownloadedFiles ();
 
   set_existence ();
   fill_missing_category ();
@@ -559,7 +505,7 @@ ChooserPage::OnInit ()
   else
     setPrompt("Select packages to install ");
   RECT r;
-  GetParentRect (GetHWND (), GetDlgItem (IDC_LISTVIEW_POS), &r);
+  getParentRect (GetHWND (), GetDlgItem (IDC_LISTVIEW_POS), &r);
   r.top += 2;
   r.bottom -= 2;
   create_listview (GetHWND (), &r);

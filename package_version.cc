@@ -28,6 +28,7 @@ static const char *cvsid =
 #include "state.h"
 #include "resource.h"
 #include <algorithm>
+#include "download.h"
 
 using namespace std;
 
@@ -304,6 +305,19 @@ bool
 packageversion::accessible() const
 {
   return data->accessible();
+}
+
+void
+packageversion::scan()
+{
+  if (!*this)
+    return;
+  /* Remove mirror sites.
+   * FIXME: This is a bit of a hack. a better way is to abstract
+   * the availability logic to the package
+   */
+  if (!check_for_cached (*(source())) && ::source == IDC_SOURCE_CWD)
+    source()->sites.clear();
 }
 
 static bool

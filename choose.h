@@ -47,6 +47,7 @@ public:
     return OnNext ();
   }; 
   private:
+  void getParentRect (HWND parent, HWND child, RECT * r);
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();
   void keepClicked ();

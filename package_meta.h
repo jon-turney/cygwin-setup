@@ -32,6 +32,7 @@ class packagemeta
 {
 public:
   static void PrepareForVisit();
+  static void ScanDownloadedFiles();
   packagemeta (packagemeta const &);
   packagemeta (String const &pkgname):name (pkgname), key(pkgname), installed_from (),
   prevtimestamp (0), currtimestamp (0),
