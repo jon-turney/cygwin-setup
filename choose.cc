@@ -893,10 +893,6 @@ read_installed_db ()
 	}
 
       pkg->installed = new Info (inst, f.ver, instsz);
-      memset (pkg->installed, 0, sizeof (*pkg->installed));
-      pkg->installed->install = strdup (inst);
-      pkg->installed->version = strdup (f.ver);
-      pkg->installed->install_size = instsz;
 
       if (!pkg->installed_ix)
 	for (trusts t = TRUST_PREV; t < NTRUST; ((int) t)++)

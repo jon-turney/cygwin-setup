@@ -1,3 +1,15 @@
+Thu Jun 14 22:43:59 2001   Robert Collins <rbtcollins@hotmail.com>
+
+	* ini.h (Dependency): New structure.  Declare new function.
+	* inilex.l (yylex): Detect new setup.ini options - category and requires.
+	* iniparse.y: Declare new setup.ini token values.
+	(yyparse): Parse new token values.
+	(new_requirement): New function.
+
+Thu Jun 14 22:43:26 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (read_installed_db): Eliminate obsolete code.
+
 Thu Jun 14 22:11:53 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* choose.cc (set_action): Set trust on "redo".

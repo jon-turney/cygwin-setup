@@ -45,6 +45,7 @@ extern int yylineno;
 
 %token STRING
 %token SETUP_TIMESTAMP SETUP_VERSION VERSION INSTALL SOURCE SDESC LDESC
+%token CATEGORY REQUIRES
 %token APATH PPATH INCLUDE_SETUP EXCLUDE_PACKAGE DOWNLOAD_URL
 %token T_PREV T_CURR T_TEST T_UNKNOWN
 
@@ -85,6 +86,8 @@ simple_line
  : VERSION STRING		{ cpt->version = $2; }
  | SDESC STRING			{ cp->sdesc = $2; }
  | LDESC STRING			{ cp->ldesc = $2; }
+ | CATEGORY STRING		{ cp->category = $2; }
+ | REQUIRES requires
  | INSTALL STRING STRING	{ cpt->install = $2;
 				  cpt->install_size = atoi($3);
 				  if (!cpt->version)
@@ -106,6 +109,11 @@ simple_line
 		yyerror ("unrecognized line in package %s (do you have the latest setup?)", cp->name);
 		yylineno ++;
 	      }
+ ;
+
+requires
+ : STRING			{ new_requirement(cp, $1); } requires
+ | STRING			{ new_requirement(cp, $1); }
  ;
 
 %%
@@ -138,4 +146,16 @@ new_package (char *name)
     }
 
   return cp;
+}
+
+void
+new_requirement(Package *package, char *dependson)
+{
+  Dependency *dp;
+  if (!dependson)
+    return;
+  dp = (Dependency *) malloc (sizeof (Dependency));
+  dp->next = cp->required;
+  dp->package = dependson;
+  cp->required = dp;
 }

@@ -95,11 +95,19 @@ typedef struct _Info
 #endif
 } Info;			/* +1 for TRUST_UNKNOWN */
 
+typedef struct _Dependency
+{
+  struct _Dependency *next; /* the next package in this dependency list */
+  char *package;	/* the name of the package that is depended on */
+} Dependency; 		/* Dependencies can be used for
+			   recommended/required/related... */
 typedef struct
 {
   char *name;		/* package name, like "cygwin" */
   char *sdesc;		/* short description (replaces "name" if provided) */
   char *ldesc;		/* long description (multi-line) */
+  char *category; /* the category the package belongs to, like "required" or "XFree86" */
+  Dependency *required; /* the packages required for this package to work */
   actions action;	/* ACTION_* - only NEW and UPGRADE get installed */
   trusts trust;		/* TRUST_* (selects among info[] below) */
   int srcpicked;	/* SRCACTION_ */
@@ -121,6 +129,7 @@ extern "C" {
 Package *new_package (char *name);
 void	ini_init (char *string);
 Package *getpkgbyname (const char *pkgname);
+void    new_requirement (Package *package, char *dependson);
 
 #ifdef __cplusplus
 }

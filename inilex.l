@@ -52,6 +52,9 @@ STR	[a-zA-Z0-9_./+-]+
 "sdesc:"		return SDESC;
 "ldesc:"		return LDESC;
 
+"category:"		return CATEGORY;
+"requires:"		return REQUIRES;
+
 "apath:"		return APATH;
 "ppath:"		return PPATH;
 
