@@ -42,7 +42,7 @@ list ():pointerblock (0), _number (0), _space (0)
   /* add an element if one with the same key does not exist */
   T & registerbyobject (T &);
   /* remove by index */
-  T * removebyindex (size_t);
+  T *removebyindex (size_t);
   size_t number () const
   {
     return _number;
@@ -53,6 +53,11 @@ list ():pointerblock (0), _number (0), _space (0)
     return n && n <= _number ? pointerblock[n - 1] : 0;
   };
   /* TODO: delete */
+private:
+  // ensure there is enough array space.
+  void checksize (void);
+  // perform an insertion.
+  void insert (size_t, T *);
 };
 
 template < class T, class U, int
@@ -73,28 +78,11 @@ T & list < T, U, Ucmp >::registerbykey (U key)
   T *tempT = getbykey (key);
   if (!tempT)
     {
-      if (_number == _space)
-	{
-	  T **newptr =
-	    (T **) realloc (pointerblock, sizeof (T *) * (_space + 20));
-	  if (!newptr)
-	    {
-	      //die - todo enable exceptions
-	      exit (100);
-	    }
-	  pointerblock = newptr;
-	  /* TODO: Parameterise this too */
-	  _space += 20;
-	}
       tempT = new T (key);
       size_t n;
       for (n = 0;
 	   n < _number && Ucmp (pointerblock[n]->key, tempT->key) < 0; n++);
-      /* insert at n */
-      memmove (&pointerblock[n + 1], &pointerblock[n],
-	       (_number - n) * sizeof (T *));
-      pointerblock[n] = tempT;
-      _number++;
+      insert (n, tempT);
     }
   return *tempT;
 }
@@ -107,44 +95,63 @@ T & list < T, U, Ucmp >::registerbyobject (T & newobj)
   T *tempT = getbykey (newobj.key);
   if (!tempT)
     {
-      if (_number == _space)
-	{
-	  T **newptr =
-	    (T **) realloc (pointerblock, sizeof (T *) * (_space + 20));
-	  if (!newptr)
-	    {
-	      //die - todo enable exceptions
-	      exit (100);
-	    }
-	  pointerblock = newptr;
-	  /* TODO: Parameterise this too */
-	  _space += 20;
-	}
       tempT = &newobj;
       size_t n;
       for (n = 0;
 	   n < _number && Ucmp (pointerblock[n]->key, tempT->key) < 0; n++);
-      /* insert at n */
-      memmove (&pointerblock[n + 1], &pointerblock[n],
-	       (_number - n) * sizeof (T *));
-      pointerblock[n] = tempT;
-      _number++;
+      insert (n, tempT);
     }
   return *tempT;
 }
 
-template < class T, class U, int Ucmp (U, U) >
+template < class T, class U, int
+Ucmp (U, U) >
 T * list < T, U, Ucmp >::removebyindex (size_t index)
 {
   if (index && index <= _number)
     {
-      T * rv = pointerblock[index - 1];
+      T *rv = pointerblock[index - 1];
       /* remove from index - 1 */
-      memmove (&pointerblock[index - 1], &pointerblock[index], (_number - index) * sizeof (T *));
-      _number --;
+      for (size_t i = index; i < _number; ++i)
+	pointerblock[i - 1] = pointerblock[i];
+      --_number;
       return rv;
     }
   return 0;
 }
+
+template < class T, class U, int
+     Ucmp (U, U) > void
+     list < T, U, Ucmp >::checksize ()
+{
+  if (_number == _space)
+    {
+      T **newptr = new (T *)[_space + 20];
+      if (!newptr)
+	{
+	  //die - todo enable exceptions
+	  exit (100);
+	}
+      for (size_t i = 0; i < _number; ++i)
+	newptr[i] = pointerblock[i];
+      delete[]pointerblock;
+      pointerblock = newptr;
+      /* TODO: Parameterise this too */
+      _space += 20;
+    }
+}
+template < class T, class U, int
+     Ucmp (U, U) > void
+     list < T, U, Ucmp >::insert (size_t where, T * someT)
+{
+  // doesn't change where
+  checksize ();
+  /* insert at where */
+  for (size_t i = _number; where < i; --i)
+    pointerblock[i] = pointerblock[i - 1];
+  pointerblock[where] = someT;
+  ++_number;
+}
+
 
 #endif /* _LIST_H_ */
