@@ -229,7 +229,7 @@ add_required (Package *pkg)
 	  chooser->insert_pkg (required);
 	  break;
 	default:
-	  log (0, "should never get here %d\n", required->action);
+	  log (0, "invalid state %d\n", required->action);
 	}
       changed += add_required (required);
       dp=dp->next;
@@ -291,15 +291,18 @@ paint (HWND hwnd)
 
   for (i = 0; i <= chooser->last_col ; i++)
     {
-      TextOut (hdc, x + chooser->headers[i].x, 3, chooser->headers[i].text, chooser->headers[i].slen);
+      TextOut (hdc, x + chooser->headers[i].x, 3, chooser->headers[i].text,
+	       chooser->headers[i].slen);
       MoveToEx (hdc, x + chooser->headers[i].x, header_height-3, &p);
-      LineTo (hdc, x + chooser->headers[i].x + chooser->headers[i].width, header_height-3);
+      LineTo (hdc, x + chooser->headers[i].x + chooser->headers[i].width,
+	      header_height-3);
     }
 
   IntersectClipRect (hdc, cr.left, cr.top + header_height, cr.right, cr.bottom);
 
   for (ii = 0; ii < chooser->nlines; ii++)
-      chooser->lines[ii].paint (hdc, x, y, ii, (chooser->get_view_mode () == VIEW_CATEGORY) ? 0 : 1);
+      chooser->lines[ii].paint (hdc, x, y, ii,
+			 (chooser->get_view_mode () == VIEW_CATEGORY) ? 0 : 1);
 
   if (chooser->nlines == 0)
     {
@@ -586,14 +589,15 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
           TextOut (hdc, x + chooser->headers[chooser->current_col].x, r,
                    pkg->installed->version, strlen (pkg->installed->version));
           SelectObject (bitmap_dc, bm_rtarrow);
-          BitBlt (hdc, x + chooser->headers[chooser->current_col].x +
-		       chooser->headers[0].width + ICON_MARGIN/2 + HMARGIN/2,
+          BitBlt (hdc, x + chooser->headers[chooser->current_col].x
+		       + chooser->headers[0].width + ICON_MARGIN / 2
+		       + HMARGIN / 2,
 		  by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
         }
 
       const char *s = choose_caption (pkg);
-      TextOut (hdc, x + chooser->headers[chooser->new_col].x + NEW_COL_SIZE_SLOP, r,
-               s, strlen (s));
+      TextOut (hdc, x + chooser->headers[chooser->new_col].x
+		    + NEW_COL_SIZE_SLOP, r, s, strlen (s));
       SelectObject (bitmap_dc, bm_spin);
       BitBlt (hdc, x + chooser->headers[chooser->new_col].x, by, 11, 11,
               bitmap_dc, 0, 0, SRCCOPY);
@@ -608,9 +612,10 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
       BitBlt (hdc, x + chooser->headers[chooser->src_col].x, by, 11, 11,
               bitmap_dc, 0, 0, SRCCOPY);
 
-	/* shows "first" category - do we want to show any? */
+      /* shows "first" category - do we want to show any? */
       if (pkg->category && show_cat)
-       TextOut (hdc, x + chooser->headers[chooser->cat_col].x, r, pkg->category->name, strlen (pkg->category->name));
+	TextOut (hdc, x + chooser->headers[chooser->cat_col].x, r,
+		 pkg->category->name, strlen (pkg->category->name));
 
       if (pkg->sdesc)
         s = pkg->sdesc;
@@ -619,9 +624,8 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
       TextOut (hdc, x + chooser->headers[chooser->pkg_col].x, r, s, strlen (s));
     }
   else if (cat)
-    {
-      TextOut (hdc, x + chooser->headers[chooser->cat_col].x, r, cat->name, strlen (cat->name));
-    }
+    TextOut (hdc, x + chooser->headers[chooser->cat_col].x, r, cat->name,
+	     strlen (cat->name));
 }
 
 int
@@ -1309,7 +1313,7 @@ scan2 (char *path, unsigned int size)
   if (!parse_filename (path, f))
     return;
 
-  if (f.what[0] != '\0')
+  if (f.what[0] != '\0' && f.what[0] != 's')
     return;
 
   pkg = getpkgbyname (f.pkg);
@@ -1532,14 +1536,64 @@ do_choose (HINSTANCE h)
 			       : "unknown");
       const char *excluded = (pkg->exclude ? "yes" : "no");
 
-      log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s excluded=%s src?=%s"
-	   " category=%s", pkg->name, action, trust, installed,
-	   excluded, pkg->srcpicked ? "yes" : "no", pkg->category->name);
+      log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s excluded=%s"
+	   " src?=%s",
+	   pkg->name, action, trust, installed, excluded,
+	   pkg->srcpicked ? "yes" : "no");
+      if (pkg->category)
+	{
+	  /* List categories the package belongs to */
+	  char *categories = "";
+	  int  categories_len = 0;
+	  Category *cp;
+	  for (cp = pkg->category; cp; cp = cp->next)
+	    if (cp->name)
+	      categories_len += strlen (cp->name) + 2;
+
+	  if (categories_len > 0)
+	    {
+	      categories = (char *) malloc (categories_len);
+	      strcpy(categories, pkg->category->name);
+	      for (cp = pkg->category->next; cp; cp = cp->next)
+		if (cp->name)
+		  {
+		    strcat (categories, ", ");
+		    strcat (categories, cp->name);
+		  }
+	      log (LOG_BABBLE, "     categories=%s", categories);
+	      free (categories);
+	    }
+	}
+      if (pkg->required)
+	{
+	  /* List other packages this package depends on */
+	  char *requires = "";
+	  int  requires_len = 0;
+	  Dependency *dp;
+	  for (dp = pkg->required; dp; dp = dp->next)
+	    if (dp->package)
+	      requires_len += strlen (dp->package) + 2;
+
+	  if (requires_len > 0)
+	    {
+	      requires = (char *) malloc (requires_len);
+	      strcpy(requires, pkg->required->package);
+	      for (dp = pkg->required->next; dp; dp = dp->next)
+		if (dp->package)
+		  {
+		    strcat (requires, ", ");
+		    strcat (requires, dp->package);
+		  }
+	      log (LOG_BABBLE, "     requires=%s", requires);
+	      free (requires);
+	    }
+	}
+
       for (int t = 1; t < NTRUST; t++)
 	{
 	  if (pkg->info[t].install)
-	    log (LOG_BABBLE, "     [%s] ver=%s\r\n"
-			     "          inst=%s %d exists=%s\r\n"
+	    log (LOG_BABBLE, "     [%s] ver=%s\n"
+			     "          inst=%s %d exists=%s\n"
 			     "          src=%s %d exists=%s",
 		 infos[t],
 		 pkg->info[t].version ?: "(none)",
@@ -1548,7 +1602,7 @@ do_choose (HINSTANCE h)
 		 (pkg->info[t].install_exists) ? "yes" : "no",
 		 pkg->info[t].source ?: "(none)",
 		 pkg->info[t].source_size,
-		 (pkg->info[t].source_exists == 1) ? "yes" : "no");
+		 (pkg->info[t].source_exists) ? "yes" : "no");
 	}
     }
 }

@@ -1,3 +1,21 @@
+Sat Jun 30 14:05:21  2001  Michael A Chase <mchase@ix.netcom.com>
+
+	* res.rc (IDD_LOCAL_DIR): Change caption to match the other dialog
+	boxes.
+	(IDD_CHOOSE))))))))): Adjust horizontal size so package names are
+	visible.
+
+	* choose.cc: Restore some more changes from 2001-06-25, throughout.
+	(paint): Wrap some excessively long lines.
+	(pick_line::paint): Ditto.  Move the arrow in the "Current" column
+	right to where it belongs.  Move the source checkbox slightly to the
+	right.
+	(do_choose): List categories and required packages in setup.log.full.
+
+Sat Jun 30 23:04:59 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (scan2): Restore source scanning eliminated by previous checkin.
+
 Sat Jun 30 15:18:33 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* ini.h (struct _Info): Add "derived" element.
@@ -74,8 +92,8 @@ Sat Jun 30 11:01:00 2001 Robert Collins <rbtcollins@hotmail.com>
 	(register_category): New prototype.
 	(add_category): New prototype.
 	* iniparse.y: Parse multiple categories per package.
-	category: New global variable.
-	ncategories: New global variable.
+	(category): New global variable.
+	(ncategories): New global variable.
 	(new_package): Compare package against NULL, not 0.
 	(new_requirement): Source formatting fix.
 	(register_category): New function.
