@@ -1,3 +1,93 @@
+2001-12-20  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in: Add libcomctl32.a for setup.exe.
+	* archive.h (archive): Prevent non-child direct creation of the class.
+	* archive_tar.h (archive_tar): Prevent inaccurate synthetic copy and assignment.
+	* choose.cc: Include commctrl for the choose header.
+	(NEW_COL_SIZE_SLOP): Define without magic numbers.
+	(pkgtrustp): Convert to function.
+	(set_action): Remove.
+	(add_required, fill_missing_category,default_trust): Use list syntax for 
+	package list.
+	Use new set_action.
+	(choose_caption): Remove.
+	(topbucket::paint): New method.
+	(topbucket::empty): Ditto.
+	(topbucket::click): Ditto.
+	(topbucket::~topbucket): Ditto.
+	(paint): Remove i,ii and p as they are obsolete.
+	Remove header drawing code.
+	Use new chooser method to paint the chooser.
+	Use new chooser itemcount method.
+	(scroll_common): Rename to view::scroll.
+	Scroll the header window separately.
+	(list_vscroll, list_hscroll, list_click): Update for new chooser methods.
+	(listview_proc): Look for header messages.
+	(note_width): Accept stringless calls.
+	(pick_line::set_line): Remove.
+	(pick_line::paint): Remove.
+	(pick_pkg_line::paint): Paint this one line, using the header column widths.
+	(pick_category_line::paint): Paint this category, and anything in the bucket.
+	(pick_line::click): Remove.
+	(pick_pkg_line::click): Handle a click.
+	(pick_category_line::click): Handle a click.
+	(_view): Rename all to view.
+	(view::view): Initialise the control contents.
+	(view::set_headers): Work with the header control.
+	(view::init_headers): Use list syntax for package list.
+	Rearrange the width logic a little.
+	(view::insert_pkg): Update to use the hierarchy.
+	(view::insert_category): Ditto.
+	(view::insert_at, view::insert_under): Remove.
+	(view::clear_view): Update to use the hierarchy.
+	(view::click): Update to use the hierarchy.
+	(set_view_mode): Use list syntax for package list.
+	Update for new chooser methods.
+	(DoInsertItem): New helper function. (Needs a home somewhere).
+	(create_listview): Remove choose control code and use the constructor instead.
+	(dialog_cmd,scan2,do_choose): Use list syntax for package list.
+	* choose.h: Include newly required headers list and package_meta.
+	(_voew): Rename to view.
+	(pick_line): Convert to an ABC.
+	(pick_pkg_line): New class.
+	(pick_catgory_line): New class.
+	(topbucket): New class.
+	(view::scroll): New method created from listview_scroll function.
+	* desktop.cc (make_passwd_group): Use list syntax for package list.
+	* download.cc (do_download): Use list syntax for package list.
+	* fromcwd.cc (found_file): Use list syntax for package list.
+	* iniparse.y (pacakges): Use list syntax for package list.
+	* install.cc (uninstall_one): Use list syntax for package list.
+	(do_install): Use list syntax for package list.
+	* io_stream.h (io_stream): Prevent non-child direct creation of the class.
+	Prevent inaccurate synthetic copy and assignment.
+	* list.h: Include required header stdlib.
+	Work on const correctness.
+	* package_db.cc (packagedb::getpackagebyname): Remove.
+	(packagedb::packagedb): Remove custom list code, and make db a local.
+	(packagedb::getfirstpackage): Remove.
+	(packagedb::getnextpackage): Remove.
+	(packagedb::addpackage): Remove.
+	(flush): Remove custom list code.
+	(packagedb::registerpackage): Remove.
+	(packagedb::packages): New static member.
+	(packagedb::task): New static member.
+	* package_db.h (PackageDBActions): New enum.
+	(packagedb): Remove getfirstpackage, getnextpackage, getpackagebyname,
+	addpackage, registerpackage, packages, packagecount, curr_package, db.
+	Add packages, task.
+	* pacakge_meta.cc: Include package_db.h.
+	(packagemeta::action_caption): New method.
+	(packagemeta::set_action): New method.
+	* package_meta.h (CategoryPackage): Initialise key.
+	(packagemeta): Initialise key.
+	Add set_action and action_caption methods.
+	Prevent inaccurate synthetic copy and assignment.
+	* resource.h (IDC_CHOOSE_LISTHEADER): New ID.
+	* source.cc: Include package_db for db manipulation.
+	(save_dialog): Set the db task.
+	* win32.h: Tell the w32 include headers what IE version to expect/require.
+
 2001-12-06  Robert Collins  <rbtcollins@hotmail.com>
 
 	* README: Wishlist updates.

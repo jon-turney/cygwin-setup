@@ -68,30 +68,99 @@ struct _header
 };
 
 #ifdef __cplusplus
+#include "list.h"
+#include "package_meta.h"
 
-typedef class _view view;
+class view;
 
 class pick_line
 {
 public:
-  void set_line (packagemeta * _pkg);
-  void set_line (Category * _cat);
-  void paint (HDC hdc, int x, int y, int row, int show_cat);
-  packagemeta *get_pkg (void)
-  {
-    return pkg;
-  };
-  Category *get_category (void)
-  {
-    return cat;
-  };
-  int click (int x);
-private:
-  packagemeta * pkg;
-  Category *cat;
+  virtual void paint (HDC hdc, int x, int y, int row, int show_cat) = 0;
+  virtual int click (int const myrow, int const ClickedRow, int const x) = 0;
+  virtual int itemcount () const = 0;
+  // this may indicate bad inheritance model.
+  virtual bool IsContainer (void) const = 0;
+  virtual void insert (pick_line &) = 0;
+  // Never allocate to key, always allocated elsewhere
+  char const *key;
+  virtual ~pick_line () {};
+protected:
+  pick_line () {};
+  pick_line (pick_line const &);
+  pick_line &operator= (pick_line const &);
 };
 
-class _view
+class pick_pkg_line : public pick_line
+{
+public:
+  pick_pkg_line (packagemeta &apkg) : pkg (apkg) {
+  key = apkg.key;};
+  virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
+  virtual int click (int const myrow, int const ClickedRow, int const x);
+  virtual int itemcount () const {return 1;}
+  virtual bool IsContainer (void) const {return false;}
+  virtual void insert (pick_line &) {};
+private:
+  packagemeta & pkg;
+};
+
+class topbucket : public pick_line
+{
+public:
+  topbucket () {
+    key = 0;};
+  virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
+  virtual int click (int const myrow, int const ClickedRow, int const x);
+  virtual int itemcount () const 
+  {
+    int t = 0;
+    for (size_t n = 1; n <= bucket.number (); n++)
+        t += bucket[n]->itemcount ();
+    return t;
+  };
+  virtual bool IsContainer (void) const {return true;}
+  virtual void insert (pick_line &aLine) 
+  {
+    bucket.registerbyobject (aLine);
+  }
+  virtual void empty (void);
+  virtual ~topbucket ();
+protected:
+  topbucket (topbucket const &);
+  topbucket &operator= (topbucket const &);
+private:
+  list <pick_line, char const *, strcasecmp> bucket;
+};
+  
+
+class pick_category_line : public topbucket
+{
+public:
+  pick_category_line (Category & _cat, bool aBool = true) : cat (_cat), collapsed (aBool) {
+  key = _cat.key;};
+  virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
+  virtual int click (int const myrow, int const ClickedRow, int const x);
+  virtual int itemcount () const
+  {
+    if (collapsed)
+      return 1;
+    int t = 1;
+    for (size_t n = 1; n <= bucket.number (); n++)
+      t += bucket[n]->itemcount ();
+    return t;
+  };
+  virtual void insert (pick_line &aLine)
+  {
+      bucket.registerbyobject (aLine);
+  }
+  private:
+  Category &cat;
+  list <pick_line, char const *, strcasecmp> bucket;
+  bool collapsed;
+};
+
+class view
 {
 public:
   int num_columns;
@@ -101,10 +170,10 @@ public:
   };
   void set_view_mode (views _mode);
   struct _header *headers;
-  _view (views mode, HDC dc);
+  view (views mode, HWND listview);
   const char *mode_caption ();
   void insert_pkg (packagemeta &);
-  void insert_category (Category *, int);
+  void insert_category (Category *, bool);
   void clear_view (void);
   int click (int row, int x);
   int current_col;
@@ -113,16 +182,18 @@ public:
   int cat_col;
   int pkg_col;
   int last_col;
-  pick_line *lines;
-  int nlines;
+//  pick_line *lines;
+//  int nlines;
+  topbucket contents;
+  void scroll (HWND hwnd, int which, int *var, int code);
+  HWND ListHeader (void) const {return listheader;}
 
 private:
+  HWND listview;
+  HWND listheader;
   views view_mode;
-  void set_headers (void);
+  void set_headers ();
   void init_headers (HDC dc);
-  void insert_at (int, pick_line);
-  void insert_under (int linen, pick_line line);
-
 };
 #endif /* __cplusplus */
 #endif /* _CHOOSE_H_ */

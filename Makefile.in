@@ -61,11 +61,12 @@ BZ2LIB		:= $(bupdir)/bz2lib/libbz2.a
 libmingw32.a	:= $(mingw_build)/libmingw32.a
 libuser32	:= $(w32api_lib)/libuser32.a
 libkernel32	:= $(w32api_lib)/libkernel32.a
+libcomctl32	:= $(w32api_lib)/libcomctl32.a
 
 ALL_DEP_LDLIBS	:= $(ZLIB) $(BZ2LIB) $(w32api_lib)/libole32.a $(w32api_lib)/libwsock32.a \
 		$(w32api_lib)/libnetapi32.a $(w32api_lib)/libadvapi32.a \
-		$(w32api_lib)/libuuid.a $(libkernel32) $(w32api_lib)/libuser32.a \
-		$(libmingw32)
+		$(w32api_lib)/libuuid.a $(libkernel32) $(libuser32) \
+		$(libcomctl32) $(libmingw32)
 
 ALL_LDLIBS	:= ${patsubst $(mingw_build)/lib%.a,-l%,\
 	      ${patsubst $(w32api_lib)/lib%.a,-l%,\

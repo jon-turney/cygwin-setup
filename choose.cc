@@ -31,6 +31,7 @@ static const char *cvsid =
 #endif
 
 #include "win32.h"
+#include <commctrl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <io.h>
@@ -60,7 +61,9 @@ static const char *cvsid =
 #define HMARGIN	10
 #define ROW_MARGIN	5
 #define ICON_MARGIN	4
-#define NEW_COL_SIZE_SLOP (ICON_MARGIN + 11)
+#define RTARROW_WIDTH 11
+#define SPIN_WIDTH 11
+#define NEW_COL_SIZE_SLOP (ICON_MARGIN + SPIN_WIDTH + RTARROW_WIDTH)
 
 #define CHECK_SIZE	11
 
@@ -96,137 +99,12 @@ static struct _header cat_headers[] = {
   {0, 0, 0, 0}
 };
 
-static int add_required (packagemeta & pkg, size_t depth = 0);
 static void set_view_mode (HWND h, views mode);
 
-#define pkgtrustp(pkg,t) (packageversion *)(t==TRUST_PREV ? pkg->prev : t == TRUST_CURR ? pkg->curr : pkg->exp)
-
-/* Set the next action given a current action.  */
-static void
-set_action (packagemeta * pkg)
+packageversion *
+pkgtrustp (packagemeta const &pkg, trusts const t)
 {
-/* actions are the following:
-
-   for install modes (from net/local)
-   for each version:
-   install this version
-   install the source for this version
-   and a boolean flag - force install to allow reinstallation, or bypassing requirements
-   globally:
-   install the source for the current version.
-   
-   to uninstall a package, the desired version is set to NULL;
-
-   for mirroring modes (download only)
-   for each version
-   download this version
-   download source for this version
-
-   these are represented by the following:
-   the desired pointer in the packagemetadata indicated which version we are operating on.
-   if we are operating on the installed version, reinstall is a valid option.
-   for the selected version, forceinstall means Do an install no matter what, and
-   srcpicked means download the source.
-
-   The default action for any installed package is to install the 'curr version' 
-   if it is not already installed.
-
-   The default action for any non-installed package is to do nothing. 
-   
-   To achieve a no-op, set desired==installed, and if (installed) set forceinstall=0 and
-   srcpicked = 0;
-
-   Iteration through versions should follow the following rules:
-   selected radio button (prev/curr/test) (show as reinstall if that is the
-   current version) ->source only (only if the package is installed) ->oldest version....skip version of radio button...
-   newest version->uninstall->no-op->selected radio button.
-
-   If any state cannot be set (ie because (say) no prev entry exists for a package
-   simply progress to the next option.
-   
-   */
-
-  /* We were set to uninstall the package */
-  if (!pkg->desired && pkg->installed)
-    {
-      /* No-op - keep whatever we've got */
-      pkg->desired = pkg->installed;
-      if (pkg->desired)
-	{
-	  pkg->desired->binpicked = 0;
-	  pkg->desired->srcpicked = 0;
-	}
-      return;
-    }
-  else if (pkg->desired == pkg->installed
-	   && (!pkg->installed
-	       || !(pkg->installed->binpicked || pkg->installed->srcpicked)))
-    /* Install the default trust version - this is a 'reinstall' for installed
-     * packages */
-    {
-      pkg->desired = NULL;
-      /* No-op */
-      pkg->desired = pkgtrustp (pkg, deftrust);
-      if (pkg->desired)
-	{
-	  pkg->desired->binpicked = 1;
-	  return;
-	}
-    }
-  /* are we currently on the radio button selection and installed */
-  if (pkg->desired == pkgtrustp (pkg, deftrust) && pkg->installed &&
-      (!pkg->desired || pkg->desired->binpicked)
-      && (pkg->desired && 
-	(pkg->desired->src.Cached () || pkg->desired->src.sites.number ())))
-    {
-      /* source only this file */
-      pkg->desired = pkg->installed;
-      pkg->desired->binpicked = 0;
-      pkg->desired->srcpicked = 1;
-      return;
-    }
-  /* are we currently on source only or on the radio button but not installed */
-  else if ((pkg->desired == pkg->installed && pkg->installed
-	    && pkg->installed->srcpicked) ||
-	   pkg->desired == pkgtrustp (pkg, deftrust))
-    {
-      /* move onto the loop through versions */
-      pkg->desired = pkg->versions[1];
-      if (pkg->desired == pkgtrustp (pkg, deftrust))
-	pkg->desired =
-	  pkg->versions.number () > 1 ? pkg->versions[2] : NULL;
-      if (pkg->desired)
-	{
-	  pkg->desired->binpicked = 1;
-	  pkg->desired->srcpicked = 0;
-	}
-      return;
-    }
-  else
-    {
-      /* preserve the src tick box */
-      int source = pkg->desired->srcpicked;
-      /* bump the version selected, skipping the radio button trust along the way */
-      size_t n;
-      for (n = 1;
-	   n <= pkg->versions.number ()
-	   && pkg->desired != pkg->versions[n]; n++);
-      /* n points at pkg->desired */
-      n++;
-      if (n <= pkg->versions.number ())
-	{
-	  if (pkgtrustp (pkg, deftrust) == pkg->versions[n])
-	    n++;
-	  if (n <= pkg->versions.number ())
-	    {
-	      pkg->desired = pkg->versions[n];
-	      pkg->desired->srcpicked = source;
-	      return;
-	    }
-	}
-      /* went past the end - uninstall the package */
-      pkg->desired = NULL;
-    }
+  return t==TRUST_PREV ? pkg.prev : t == TRUST_CURR ? pkg.curr : pkg.exp;
 }
 
 static int
@@ -247,7 +125,7 @@ add_required (packagemeta & pkg, size_t depth = 0)
     return 0;
   while (dp)
     {
-      if ((required = db.getpackagebyname (dp->package)) == NULL)
+      if ((required = db.packages.getbykey (dp->package)) == NULL)
 	{
 	  dp = dp->next;
 	  changed++;
@@ -256,7 +134,7 @@ add_required (packagemeta & pkg, size_t depth = 0)
       if (!required->desired)
 	{
 	  /* it's set to uninstall */
-	  set_action (required);
+	  required->set_action (pkgtrustp (*required, deftrust));
 	}
       else if (required->desired != required->installed
 	       && !required->desired->binpicked)
@@ -271,23 +149,44 @@ add_required (packagemeta & pkg, size_t depth = 0)
   return changed;
 }
 
-/* Return an appropriate caption given the current action. */
-char const *
-choose_caption (packagemeta * pkg)
+void
+topbucket::paint (HDC hdc, int x, int y, int row, int show_cat)
 {
-  if (!pkg->desired && pkg->installed)
-    return "Uninstall";
-  else if (!pkg->desired)
-    return "Skip";
-  else if (pkg->desired == pkg->installed && pkg->desired->binpicked)
-    return source == IDC_SOURCE_DOWNLOAD ? "Retrieve" : "Reinstall";
-  else if (pkg->desired == pkg->installed && pkg->desired->srcpicked)
-    /* FIXME: Redo source should come up if the tarball is already present locally */
-    return "Source";
-  else if (pkg->desired == pkg->installed)	/* and neither src nor bin */
-    return "Keep";
-  else
-    return pkg->desired->Canonical_version ();
+  int accum_row = row;
+  for (size_t n = 1; n <= bucket.number (); n++)
+    {
+      bucket[n]->paint(hdc, x, y, accum_row, show_cat);
+      accum_row += bucket[n]->itemcount ();
+    }
+}
+
+void
+topbucket::empty (void)
+{
+  while (bucket.number ())
+    {
+      pick_line *line = bucket.removebyindex (1);
+      delete line;
+    }
+}
+
+topbucket::~topbucket (void)
+{
+  empty ();
+}
+
+int
+topbucket::click (int const myrow, int const ClickedRow, int const x)
+{
+  int accum_row = myrow;
+  for (size_t n = 1; n <= bucket.number (); n++)
+    {
+      accum_row += bucket[n]->itemcount ();
+      if (accum_row > ClickedRow)
+	return bucket[n]->click (accum_row - bucket[n]->itemcount (),
+	  ClickedRow, x);
+    }
+  return 0;
 }
 
 static void
@@ -295,7 +194,7 @@ paint (HWND hwnd)
 {
   HDC hdc;
   PAINTSTRUCT ps;
-  int x, y, i, ii;
+  int x, y;	
 
   hdc = BeginPaint (hwnd, &ps);
 
@@ -306,30 +205,16 @@ paint (HWND hwnd)
   RECT cr;
   GetClientRect (hwnd, &cr);
 
-  POINT p;
-
   x = cr.left - scroll_ulc_x;
   y = cr.top - scroll_ulc_y + header_height;
-
-
-  for (i = 0; i <= chooser->last_col; i++)
-    {
-      TextOut (hdc, x + chooser->headers[i].x, 3, chooser->headers[i].text,
-	       chooser->headers[i].slen);
-      MoveToEx (hdc, x + chooser->headers[i].x, header_height - 3, &p);
-      LineTo (hdc, x + chooser->headers[i].x + chooser->headers[i].width,
-	      header_height - 3);
-    }
 
   IntersectClipRect (hdc, cr.left, cr.top + header_height, cr.right,
 		     cr.bottom);
 
-  for (ii = 0; ii < chooser->nlines; ii++)
-    chooser->lines[ii].paint (hdc, x, y, ii,
-			      (chooser->get_view_mode () ==
-			       VIEW_CATEGORY) ? 0 : 1);
+  chooser->contents.paint (hdc, x, y, 0,(chooser->get_view_mode () ==
+		VIEW_CATEGORY) ? 0 : 1);
 
-  if (chooser->nlines == 0)
+  if (chooser->contents.itemcount () == 0)
     {
       static const char *msg = "Nothing to Install/Update";
       if (source == IDC_SOURCE_DOWNLOAD)
@@ -340,8 +225,8 @@ paint (HWND hwnd)
   EndPaint (hwnd, &ps);
 }
 
-static void
-scroll_common (HWND hwnd, int which, int *var, int code)
+void
+view::scroll (HWND hwnd, int which, int *var, int code)
 {
   SCROLLINFO si;
   si.cbSize = sizeof (si);
@@ -391,23 +276,34 @@ scroll_common (HWND hwnd, int which, int *var, int code)
   GetClientRect (hwnd, &cr);
   sr = cr;
   sr.top += header_height;
+  UpdateWindow (hwnd);
   ScrollWindow (hwnd, ox - scroll_ulc_x, oy - scroll_ulc_y, &sr, &sr);
+  /*
   sr.bottom = sr.top;
   sr.top = cr.top;
   ScrollWindow (hwnd, ox - scroll_ulc_x, 0, &sr, &sr);
+  */
+  if (ox - scroll_ulc_x)
+  {
+  GetClientRect (listheader, &cr);
+  sr = cr;
+//  UpdateWindow (htmp);
+  MoveWindow (listheader, -scroll_ulc_x, 0, chooser->headers[last_col].x+chooser->headers[last_col].width, header_height ,TRUE);
+  }
+  UpdateWindow (hwnd);
 }
 
 static LRESULT CALLBACK
 list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos)
 {
-  scroll_common (hwnd, SB_VERT, &scroll_ulc_y, code);
+  chooser->scroll (hwnd, SB_VERT, &scroll_ulc_y, code);
   return 0;
 }
 
 static LRESULT CALLBACK
 list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos)
 {
-  scroll_common (hwnd, SB_HORZ, &scroll_ulc_x, code);
+  chooser->scroll (hwnd, SB_HORZ, &scroll_ulc_x, code);
   return 0;
 }
 
@@ -416,7 +312,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 {
   int row, refresh;
 
-  if (chooser->nlines == 0)
+  if (chooser->contents.itemcount () == 0)
     return 0;
 
   if (y < header_height)
@@ -426,7 +322,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 
   row = (y + ROW_MARGIN / 2) / row_height;
 
-  if (row < 0 || row >= chooser->nlines)
+  if (row < 0 || row >= chooser->contents.itemcount ())
     return 0;
 
   refresh = chooser->click (row, x);
@@ -441,7 +337,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
       si.fMask = SIF_ALL;	/* SIF_RANGE was giving strange behaviour */
       si.nMin = 0;
 
-      si.nMax = chooser->nlines * row_height;
+      si.nMax = chooser->contents.itemcount () * row_height;
       si.nPage = r.bottom - header_height;
 
       /* if we are under the minimum display count ,
@@ -482,6 +378,29 @@ listview_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
       paint (hwnd);
       return 0;
+    case WM_NOTIFY:
+      {
+	// pnmh = (LPNMHDR) lParam
+      LPNMHEADER phdr = (LPNMHEADER) lParam;
+      switch (phdr->hdr.code)
+      {
+      case HDN_ITEMCHANGED:
+      if (phdr->hdr.hwndFrom == chooser->ListHeader())
+      {
+	if (phdr->pitem && phdr->pitem->mask & HDI_WIDTH)
+	  chooser->headers [phdr->iItem].width = phdr->pitem->cxy;
+	  for (int i = 1; i <= chooser->last_col; i++)
+	    chooser->headers[i].x = chooser->headers[i - 1].x + chooser->headers[i - 1].width;
+	    RECT r;
+	    GetClientRect (hwnd, &r);
+	    InvalidateRect (hwnd, &r, TRUE);
+	
+      }
+      break;
+    default:
+      break;
+      }
+    }
     default:
       return DefWindowProc (hwnd, message, wParam, lParam);
     }
@@ -515,7 +434,11 @@ note_width (struct _header *hdrs, HDC dc, const char *string, int addend,
 	    int column)
 {
   if (!string)
-    return;
+    {
+      if (hdrs[column].width < addend)
+	hdrs[column].width = addend;
+      return;
+    }
   SIZE s;
   GetTextExtentPoint32 (dc, string, strlen (string), &s);
   if (hdrs[column].width < s.cx + addend)
@@ -537,10 +460,12 @@ static void
 fill_missing_category ()
 {
   packagedb db;
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-       pkg = db.getnextpackage ())
-    if (!pkg->Categories.number ())
-      pkg->add_category (db.categories.registerbykey ("Misc"));
+  for (size_t n = 1; n < db.packages.number (); n++)
+    {
+      packagemeta &pkg = * db.packages[n];
+      if (!pkg.Categories.number ())
+        pkg.add_category (db.categories.registerbykey ("Misc"));
+    }
 }
 
 static void
@@ -548,23 +473,23 @@ default_trust (HWND h, trusts trust)
 {
   deftrust = trust;
   packagedb db;
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-       pkg = db.getnextpackage ())
+  for (size_t n = 1; n < db.packages.number (); n++)
     {
-      if (pkg->installed
-	  || pkg->Categories.getbykey (db.categories.registerbykey ("Base"))
-	  || pkg->Categories.getbykey (db.categories.registerbykey ("Misc")))
+      packagemeta &pkg = * db.packages[n];
+      if (pkg.installed
+	  || pkg.Categories.getbykey (db.categories.registerbykey ("Base"))
+	  || pkg.Categories.getbykey (db.categories.registerbykey ("Misc")))
 	{
-	  pkg->desired = pkgtrustp (pkg, trust);
-	  if (pkg->desired)
+	  pkg.desired = pkgtrustp (pkg, trust);
+	  if (pkg.desired)
 	    {
-	      pkg->desired->binpicked =
-		pkg->desired == pkg->installed ? 0 : 1;
-	      pkg->desired->srcpicked = 0;
+	      pkg.desired->binpicked =
+		pkg.desired == pkg.installed ? 0 : 1;
+	      pkg.desired->srcpicked = 0;
 	    }
 	}
       else
-	pkg->desired = 0;
+	pkg.desired = 0;
     }
   RECT r;
   GetClientRect (h, &r);
@@ -574,114 +499,185 @@ default_trust (HWND h, trusts trust)
 }
 
 void
-pick_line::set_line (packagemeta * _pkg)
-{
-  pkg = _pkg;
-  cat = NULL;
-}
-
-void
-pick_line::set_line (Category * _cat)
-{
-  cat = _cat;
-  pkg = NULL;
-}
-
-void
-pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
+pick_pkg_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 {
   int r = y + row * row_height;
   int by = r + tm.tmHeight - 11;
-  if (pkg)
-    {
-      if (pkg->installed)
+  if (pkg.installed)
 	{
-	  TextOut (hdc, x + chooser->headers[chooser->current_col].x, r,
-		   pkg->installed->Canonical_version (),
-		   strlen (pkg->installed->Canonical_version ()));
+	  TextOut (hdc,
+		   x + chooser->headers[chooser->current_col].x + HMARGIN / 2,
+		   r, pkg.installed->Canonical_version (),
+		   strlen (pkg.installed->Canonical_version ()));
 	  SelectObject (bitmap_dc, bm_rtarrow);
-	  BitBlt (hdc, x + chooser->headers[chooser->current_col].x
-		  + chooser->headers[0].width + ICON_MARGIN / 2
-		  + HMARGIN / 2, by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
+	  BitBlt (hdc, x + chooser->headers[chooser->new_col].x + HMARGIN / 2,
+		  by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
 	}
 
-      const char *s = choose_caption (pkg);
-      TextOut (hdc, x + chooser->headers[chooser->new_col].x
+      const char *s = pkg.action_caption ();
+      TextOut (hdc, x + chooser->headers[chooser->new_col].x + HMARGIN / 2
 	       + NEW_COL_SIZE_SLOP, r, s, strlen (s));
       SelectObject (bitmap_dc, bm_spin);
-      BitBlt (hdc, x + chooser->headers[chooser->new_col].x, by, 11, 11,
-	      bitmap_dc, 0, 0, SRCCOPY);
+      BitBlt (hdc,
+	      x + chooser->headers[chooser->new_col].x + ICON_MARGIN / 2 +
+	      RTARROW_WIDTH + HMARGIN / 2, by, 11, 11, bitmap_dc, 0, 0,
+	      SRCCOPY);
 
       HANDLE check_bm;
-      if ( /* uninstall */ !pkg->desired ||
-	  /* source only */ (!pkg->desired->binpicked
-			     && pkg->desired->srcpicked) ||
+      if ( /* uninstall */ !pkg.desired ||
+	  /* source only */ (!pkg.desired->binpicked
+			     && pkg.desired->srcpicked) ||
 	  /* when no source mirror available */
-	  !pkg->desired->src.sites.number ())
+	  !pkg.desired->src.sites.number ())
 	check_bm = bm_checkna;
-      else if (pkg->desired->srcpicked)
+      else if (pkg.desired->srcpicked)
 	check_bm = bm_checkyes;
       else
 	check_bm = bm_checkno;
 
       SelectObject (bitmap_dc, check_bm);
-      BitBlt (hdc, x + chooser->headers[chooser->src_col].x, by, 11, 11,
-	      bitmap_dc, 0, 0, SRCCOPY);
+      BitBlt (hdc, x + chooser->headers[chooser->src_col].x + HMARGIN / 2, by,
+	      11, 11, bitmap_dc, 0, 0, SRCCOPY);
 
       /* shows "first" category - do we want to show any? */
-      if (pkg->Categories.number () && show_cat)
-	TextOut (hdc, x + chooser->headers[chooser->cat_col].x, r,
-		 pkg->Categories[1]->key.name,
-		 strlen (pkg->Categories[1]->key.name));
+      if (pkg.Categories.number () && show_cat)
+	TextOut (hdc, x + chooser->headers[chooser->cat_col].x + HMARGIN / 2,
+		 r, pkg.Categories[1]->key.name,
+		 strlen (pkg.Categories[1]->key.name));
 
-      if (!pkg->SDesc ())
-	s = pkg->name;
+      if (!pkg.SDesc ())
+	s = pkg.name;
       else
 	{
 	  static char buf[512];
-	  strcpy (buf, pkg->name);
+	  strcpy (buf, pkg.name);
 	  strcat (buf, ": ");
-	  strcat (buf, pkg->SDesc ());
+	  strcat (buf, pkg.SDesc ());
 	  s = buf;
 	}
-      TextOut (hdc, x + chooser->headers[chooser->pkg_col].x, r, s,
-	       strlen (s));
+      TextOut (hdc, x + chooser->headers[chooser->pkg_col].x + HMARGIN / 2, r,
+	       s, strlen (s));
+}
+
+void
+pick_category_line::paint (HDC hdc, int x, int y, int row, int show_cat)
+{
+  int r = y + row * row_height;
+  TextOut (hdc, x + chooser->headers[chooser->cat_col].x + HMARGIN / 2, r,
+      cat.name, strlen (cat.name));
+  if (collapsed)
+    return;
+  int accum_row = row + 1;
+  for (size_t n = 1; n <= bucket.number (); n++)
+    {
+      bucket[n]->paint (hdc, x, y, accum_row, show_cat);
+      accum_row += bucket[n]->itemcount ();
     }
-  else if (cat)
-    TextOut (hdc, x + chooser->headers[chooser->cat_col].x, r, cat->name,
-	     strlen (cat->name));
 }
 
 int
-pick_line::click (int x)
+pick_pkg_line::click (int const myrow, int const ClickedRow, int const x)
 {
-  if (pkg)
-    {
-      if (pkg->desired && pkg->desired->src.sites.number ()
+  // assert (myrow == ClickedRow);
+  if (pkg.desired && pkg.desired->src.sites.number ()
 	  && x >= chooser->headers[chooser->src_col].x - HMARGIN / 2
 	  && x <= chooser->headers[chooser->src_col + 1].x - HMARGIN / 2)
-	pkg->desired->srcpicked ^= 1;
+	pkg.desired->srcpicked ^= 1;
 
       if (x >= chooser->headers[chooser->new_col].x - (HMARGIN / 2)
 	  && x <= chooser->headers[chooser->new_col + 1].x - HMARGIN / 2)
 	{
-	  set_action (pkg);
+	  pkg.set_action (pkgtrustp (pkg, deftrust));
 	  /* Add any packages that are needed by this package */
-	  return add_required (*pkg);
+	  return add_required (pkg);
 	}
-    }
-  else if (cat)
-    {
-      /* handle the catalog being clicked ... does this belong up a level.. ? */
-    }
-
   return 0;
 }
 
-_view::_view (views _mode, HDC dc)
+int
+pick_category_line::click (int const myrow, int const ClickedRow, int const x)
 {
-  lines = NULL;
-  nlines = 0;
+  if (myrow == ClickedRow)
+    {
+      collapsed = !collapsed;
+      int accum_row = 0;
+      for (size_t n = 1; n <= bucket.number (); n++)
+	accum_row += bucket[n]->itemcount ();
+      return collapsed ? accum_row : -accum_row;
+    }
+  else
+  {
+    int accum_row = myrow + 1;
+    for (size_t n = 1; n <= bucket.number (); n++)
+      {
+	if (accum_row + bucket[n]->itemcount () > ClickedRow)
+	  return bucket[n]->click (accum_row,
+	      ClickedRow, x);
+	accum_row += bucket[n]->itemcount ();
+      }
+    return 0;
+  }
+}
+
+HWND DoCreateHeader (HWND hwndParent);
+
+view::view (views _mode, HWND lv):listview (lv)
+{
+
+  HDC
+    dc =
+    GetDC (listview);
+  sysfont = GetStockObject (DEFAULT_GUI_FONT);
+  SelectObject (dc, sysfont);
+  GetTextMetrics (dc, &tm);
+
+  bitmap_dc = CreateCompatibleDC (dc);
+
+  row_height = (tm.tmHeight + tm.tmExternalLeading + ROW_MARGIN);
+  int irh = tm.tmExternalLeading + tm.tmDescent + 11 + ROW_MARGIN;
+  if (row_height < irh)
+    row_height = irh;
+
+  RECT
+    rcParent;
+  HDLAYOUT
+    hdl;
+  WINDOWPOS
+    wp;
+
+  // Ensure that the common control DLL is loaded, and then create
+  // the header control.
+  INITCOMMONCONTROLSEX
+    controlinfo = {sizeof (INITCOMMONCONTROLSEX), ICC_LISTVIEW_CLASSES };
+  InitCommonControlsEx (&controlinfo);
+
+  if ((listheader = CreateWindowEx (0, WC_HEADER, (LPCTSTR) NULL,
+				    WS_CHILD | WS_BORDER | CCS_NORESIZE |
+				    // | HDS_BUTTONS
+				    HDS_HORZ, 0, 0, 0, 0, listview,
+				    (HMENU) IDC_CHOOSE_LISTHEADER, hinstance,
+				    (LPVOID) NULL)) == NULL)
+    // FIXME: throw an exception 
+    exit (10);
+
+  // Retrieve the bounding rectangle of the parent window's
+  // client area, and then request size and position values
+  // from the header control.
+  GetClientRect (listview, &rcParent);
+
+  hdl.prc = &rcParent;
+  hdl.pwpos = &wp;
+  if (!SendMessage (listheader, HDM_LAYOUT, 0, (LPARAM) & hdl))
+    // FIXME: throw an exception
+    exit (11);
+
+
+  // Set the size, position, and visibility of the header control.
+  SetWindowPos (listheader, wp.hwndInsertAfter, wp.x, wp.y,
+		wp.cx, wp.cy, wp.flags | SWP_SHOWWINDOW);
+
+  header_height = wp.cy;
+
   view_mode = VIEW_PACKAGE;
   set_headers ();
   init_headers (dc);
@@ -691,10 +687,12 @@ _view::_view (views _mode, HDC dc)
 
   view_mode = _mode;
   set_headers ();
+
+  ReleaseDC (lv, dc);
 }
 
 void
-_view::set_view_mode (views _mode)
+view::set_view_mode (views _mode)
 {
   if (_mode == NVIEW)
     view_mode = VIEW_PACKAGE_FULL;
@@ -704,7 +702,7 @@ _view::set_view_mode (views _mode)
 }
 
 const char *
-_view::mode_caption ()
+view::mode_caption ()
 {
   switch (view_mode)
     {
@@ -721,8 +719,10 @@ _view::mode_caption ()
     }
 }
 
+int DoInsertItem (HWND hwndHeader, int iInsertAfter, int nWidth, LPSTR lpsz);
+
 void
-_view::set_headers (void)
+view::set_headers ()
 {
   switch (view_mode)
     {
@@ -746,236 +746,106 @@ _view::set_headers (void)
       cat_col = 0;
       pkg_col = 4;
       last_col = 4;
+      break;
     default:
       return;
     }
+  while (int n = SendMessage (listheader, HDM_GETITEMCOUNT, 0, 0))
+    {
+      SendMessage (listheader, HDM_DELETEITEM, n - 1, 0);
+    }
+  int i;
+  for (i = 0; i <= last_col; i++)
+    DoInsertItem (listheader, i, headers[i].width, (char *) headers[i].text);
 }
 
+
 void
-_view::init_headers (HDC dc)
+view::init_headers (HDC dc)
 {
   int i;
 
   for (i = 0; headers[i].text; i++)
-    headers[i].width = 0;
+    {
+      headers[i].width = 0;
+      headers[i].x = 0;
+    }
 
   for (i = 0; headers[i].text; i++)
-    note_width (headers, dc, headers[i].text, 0, i);
+    note_width (headers, dc, headers[i].text, HMARGIN, i);
+  /* src checkbox */
+  note_width (headers, dc, 0, HMARGIN + 11, src_col);
   packagedb db;
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-       pkg = db.getnextpackage ())
+  for (size_t n = 1; n < db.packages.number (); n++)
     {
-      if (pkg->installed)
-	{
-	  note_width (headers, dc, pkg->installed->Canonical_version (), 0,
-		      current_col);
-	  note_width (headers, dc, pkg->installed->Canonical_version (),
-		      NEW_COL_SIZE_SLOP, new_col);
-	}
-      for (size_t n = 1; n <= pkg->versions.number (); n++)
-	note_width (headers, dc,
-		    pkg->versions[n]->Canonical_version (),
-		    NEW_COL_SIZE_SLOP, new_col);
+      packagemeta &pkg = * db.packages[n];
+      if (pkg.installed)
+	note_width (headers, dc, pkg.installed->Canonical_version (),
+		    HMARGIN, current_col);
+      for (size_t n = 1; n <= pkg.versions.number (); n++)
+	if (pkg.versions[n] != pkg.installed)
+	  note_width (headers, dc,
+		      pkg.versions[n]->Canonical_version (),
+		      NEW_COL_SIZE_SLOP + HMARGIN, new_col);
       for (size_t n = 1; n <= db.categories.number (); n++)
-	note_width (headers, dc, db.categories[n]->name, 0, cat_col);
-      if (!pkg->SDesc ())
-	note_width (headers, dc, pkg->name, 0, pkg_col);
+	note_width (headers, dc, db.categories[n]->name, HMARGIN, cat_col);
+      if (!pkg.SDesc ())
+	note_width (headers, dc, pkg.name, HMARGIN, pkg_col);
       else
 	{
 	  static char buf[512];
-	  strcpy (buf, pkg->name);
+	  strcpy (buf, pkg.name);
 	  strcat (buf, ": ");
-	  strcat (buf, pkg->SDesc ());
-	  note_width (headers, dc, buf, 0, pkg_col);
+	  strcat (buf, pkg.SDesc ());
+	  note_width (headers, dc, buf, HMARGIN, pkg_col);
 	}
     }
-  note_width (headers, dc, "keep", NEW_COL_SIZE_SLOP, new_col);
-  note_width (headers, dc, "uninstall", NEW_COL_SIZE_SLOP, new_col);
+  note_width (headers, dc, "keep", NEW_COL_SIZE_SLOP + HMARGIN, new_col);
+  note_width (headers, dc, "uninstall", NEW_COL_SIZE_SLOP + HMARGIN, new_col);
 
-  headers[0].x = HMARGIN / 2;
+  headers[0].x = 0;
   for (i = 1; i <= last_col; i++)
-    headers[i].x = headers[i - 1].x + headers[i - 1].width + ((i == new_col) ?
-							      NEW_COL_SIZE_SLOP
-							      : 0) + HMARGIN;
+    headers[i].x = headers[i - 1].x + headers[i - 1].width;
 }
 
 void
-_view::insert_pkg (packagemeta & pkg)
+view::insert_pkg (packagemeta & pkg)
 {
-  pick_line line;
-  line.set_line (&pkg);
-  packagedb db;
   if (view_mode != VIEW_CATEGORY)
     {
-      if (lines == NULL)
-	{
-	  lines =
-	    (pick_line *) calloc (db.npackages () +
-				  db.categories.number (),
-				  sizeof (pick_line));
-	  nlines = 0;
-	  insert_at (0, line);
-	}
-      else
-	insert_under (0, line);
+      pick_pkg_line &line = * new pick_pkg_line(pkg);
+      contents.insert (line);
     }
   else
     {
-//      assert (lines); /* protect against a coding change in future */
       for (size_t x = 1; x <= pkg.Categories.number (); x++)
 	{
 	  Category & cat = pkg.Categories[x]->key;
-	  /* insert the package under this category in the list. If this category is not
-	     visible, add it */
-	  int n = 0;
-	  while (n < nlines)
-	    {
-	      /* this should be a generic call to list_sort_cmp */
-	      if (lines[n].get_category ()
-		  && !strcasecmp (cat.name, lines[n].get_category ()->name))
-		{
-		  insert_under (n, line);
-		  n = nlines;
-		}
-	      n++;
-	    }
-	  if (n == nlines)
-	    {
-	      /* the category wasn't visible - insert at the end */
-	      insert_category (&cat, CATEGORY_COLLAPSED);
-	      insert_pkg (pkg);
-	    }
+	  pick_category_line &catline = * new pick_category_line (cat);
+	  pick_pkg_line &line = * new pick_pkg_line(pkg);
+	  catline.insert (line);
+	  contents.insert (catline);
 	}
     }
 }
 
 void
-_view::insert_category (Category * cat, int collapsed)
+view::insert_category (Category * cat, bool collapsed)
 {
-  pick_line line;
-  line.set_line (cat);
-  if (lines == NULL)
-    {
-      packagedb db;
-      lines =
-	(pick_line *) malloc ((db.npackages () + db.categories.number ())
-			      * sizeof (pick_line));
-      memset (lines, '\0',
-	      (db.npackages () +
-	       db.categories.number ()) * sizeof (pick_line));
-      nlines = 0;
-      insert_at (0, line);
-      if (!collapsed)
-	for (CategoryPackage * catpkg = cat->packages; catpkg;
-	     catpkg = catpkg->next)
-	  insert_pkg (*catpkg->pkg);
-    }
-  else
-    {
-      int n = 0;
-      while (n < nlines)
-	{
-	  /* this should be a generic call to list_sort_cmp */
-	  if (lines[n].get_category ()
-	      && strcasecmp (cat->name, lines[n].get_category ()->name) < 0)
-	    {
-	      insert_at (n, line);
-	      if (!collapsed)
-		for (CategoryPackage * catpkg = cat->packages; catpkg;
-		     catpkg = catpkg->next)
-		  insert_pkg (*catpkg->pkg);
-	      n = nlines;
-	    }
-	  else if (lines[n].get_category () == cat)
-	    n = nlines;
-	  n++;
-
-	}
-      if (n == nlines)
-	{
-	  /* insert at the end */
-	  insert_at (n, line);
-	  if (!collapsed)
-	    for (CategoryPackage * catpkg = cat->packages; catpkg;
-		 catpkg = catpkg->next)
-	      insert_pkg (*catpkg->pkg);
-	}
-    }
-}
-
-/* insert a new line at line n */
-void
-_view::insert_at (int n, pick_line line)
-{
-  if (n < 0 || n > nlines)
-    return;
-  memmove (&lines[n + 1], &lines[n], (nlines - n) * sizeof (pick_line));
-  lines[n] = line;
-  nlines++;
-}
-
-/* insert a new line in the chooser, at the next depth in from linen */
-void
-_view::insert_under (int linen, pick_line line)
-{
-  int n;
-  /* special case - empty view */
-  if (nlines == 0)
-    {
-      insert_at (0, line);
-      return;
-    }
-  /* perhaps these two are equivalent. FIXME: check for potential insert_under (0,.. calls */
-  else if (linen > nlines)
-    {
-      insert_at (nlines, line);
-      return;
-    }
-  /* part 1 - find the appropriate bucket beginning */
-  if (lines[linen].get_category ())
-    {
-      n = linen + 1;
-    }
-  else if (lines[linen].get_pkg ())
-    {
-      n = linen;
-      /* walk up to the beginning of the bucket */
-      while (n > 0 && lines[n - 1].get_pkg ())
-	n--;
-    }
-  else
-    {
-      /* nlines != 0 and lines[linen] is not a category or a package! */
-      return;
-    }
-  /* part 2 - insert in sorted order in the bucket */
-  while (n < nlines)
-    {
-      if (lines[n].get_category () || (lines[n].get_pkg ()
-				       && strcasecmp (line.get_pkg ()->name,
-						      lines[n].
-						      get_pkg ()->name) < 0))
-	{
-	  insert_at (n, line);
-	  n = nlines;
-	}
-      else if (lines[n].get_pkg () == line.get_pkg ())
-	{
-	  n = nlines;
-	}
-      n++;
-    }
-  if (n == nlines)
-    {
-      /* insert at the end of this bucket */
-      insert_at (n, line);
-    }
+  pick_category_line &catline = * new pick_category_line (*cat, collapsed);
+    for (CategoryPackage * catpkg = cat->packages; catpkg;
+	catpkg = catpkg->next)
+      {
+	pick_pkg_line &line = * new pick_pkg_line(*catpkg->pkg);
+	catline.insert (line);
+      }
+  contents.insert (catline);
 }
 
 void
-_view::clear_view (void)
+view::clear_view (void)
 {
-  nlines = 0;
+  contents.empty ();
 }
 
 static views
@@ -997,70 +867,10 @@ viewsplusplus (views theview)
 }
 
 int
-_view::click (int row, int x)
+view::click (int row, int x)
 {
-  if (row > nlines)
-    return 0;
-  if (lines[row].get_pkg ())
-    return lines[row].click (x);
-  else
-    {
-      /* if we are the last line or the next line is a category too, expand */
-      if (row == (nlines - 1) || lines[row + 1].get_category ())
-	{
-	  int count = nlines;
-	  for (CategoryPackage * catpkg =
-	       lines[row].get_category ()->packages; catpkg;
-	       catpkg = catpkg->next)
-	    {
-	      packagemeta & pkg = *catpkg->pkg;
-	      int n = row + 1;
-	      pick_line line;
-	      line.set_line (&pkg);
-	      /* this is a nasty hack. It will go away when the hierarchy is coded */
-	      while (n < nlines)
-		{
-		  if (lines[n].get_category () || (lines[n].get_pkg ()
-						   && strcasecmp (pkg.name,
-								  lines
-								  [n].get_pkg
-								  ()->name) <
-						   0))
-		    {
-		      insert_at (n, line);
-		      n = nlines;
-		    }
-		  else if (lines[n].get_pkg () == &pkg)
-		    {
-		      n = nlines;
-		    }
-		  n++;
-		}
-	      if (n == nlines)
-		{
-		  /* insert at the end of this category */
-		  insert_at (n, line);
-		  n = nlines + 1;
-		}
-	    }
-	  return nlines - count;
-	}
-      else
-	/* contract */
-	{
-	  int count = 0, n = row + 1;
-	  while (n < nlines & !lines[n].get_category ())
-	    {
-	      memmove (&lines[n], &lines[n + 1],
-		       (nlines - n) * sizeof (pick_line));
-	      nlines--;
-	      count++;
-	    }
-	  return -count;
-	}
-    }
+  return contents.click (0, row, x);
 }
-
 
 static void
 set_view_mode (HWND h, views mode)
@@ -1072,23 +882,26 @@ set_view_mode (HWND h, views mode)
   switch (chooser->get_view_mode ())
     {
     case VIEW_PACKAGE:
-      for (packagemeta * pkg = db.getfirstpackage (); pkg;
-	   pkg = db.getnextpackage ())
-	if ((!pkg->desired && pkg->installed)
-	    || (pkg->desired
-		&& (pkg->desired->srcpicked || pkg->desired->binpicked)))
-	  chooser->insert_pkg (*pkg);
+      for (size_t n = 1; n < db.packages.number (); n++)
+	{
+	  packagemeta &pkg = * db.packages[n];
+	  if ((!pkg.desired && pkg.installed)
+	      || (pkg.desired
+	      && (pkg.desired->srcpicked || pkg.desired->binpicked)))
+	  chooser->insert_pkg (pkg);
+	}
       break;
     case VIEW_PACKAGE_FULL:
-      for (packagemeta * pkg = db.getfirstpackage (); pkg;
-	   pkg = db.getnextpackage ())
-	chooser->insert_pkg (*pkg);
+      for (size_t n = 1; n < db.packages.number (); n++)
+	{
+	  packagemeta &pkg = * db.packages[n];
+	  chooser->insert_pkg (pkg);
+	}
       break;
     case VIEW_CATEGORY:
       /* start collapsed. TODO: make this a chooser flag */
       for (size_t n = 1; n <= db.categories.number (); n++)
-	chooser->insert_category (db.categories[n],
-				  CATEGORY_COLLAPSED);
+	chooser->insert_category (db.categories[n], CATEGORY_COLLAPSED);
       break;
     default:
       break;
@@ -1103,11 +916,11 @@ set_view_mode (HWND h, views mode)
   si.nMin = 0;
   si.nMax =
     chooser->headers[chooser->last_col].x +
-    chooser->headers[chooser->last_col].width + HMARGIN;
+    chooser->headers[chooser->last_col].width;// + HMARGIN;
   si.nPage = r.right;
   SetScrollInfo (h, SB_HORZ, &si, TRUE);
 
-  si.nMax = chooser->nlines * row_height;
+  si.nMax = chooser->contents.itemcount () * row_height;
   si.nPage = r.bottom - header_height;
   SetScrollInfo (h, SB_VERT, &si, TRUE);
 
@@ -1118,6 +931,32 @@ set_view_mode (HWND h, views mode)
   if (nextbutton)
     SetFocus (nextbutton);
 }
+
+// DoInsertItem - inserts an item into a header control. 
+// Returns the index of the new item. 
+// hwndHeader - handle to the header control. 
+// iInsertAfter - index of the previous item. 
+// nWidth - width of the new item. 
+// lpsz - address of the item string. 
+int
+DoInsertItem (HWND hwndHeader, int iInsertAfter, int nWidth, LPSTR lpsz)
+{
+  HDITEM hdi;
+  int index;
+
+  hdi.mask = HDI_TEXT | HDI_FORMAT | HDI_WIDTH;
+  hdi.pszText = lpsz;
+  hdi.cxy = nWidth;
+  hdi.cchTextMax = lstrlen (hdi.pszText);
+  hdi.fmt = HDF_LEFT | HDF_STRING;
+
+  index = SendMessage (hwndHeader, HDM_INSERTITEM,
+		       (WPARAM) iInsertAfter, (LPARAM) & hdi);
+
+  return index;
+
+}
+
 
 static void
 create_listview (HWND dlg, RECT * r)
@@ -1132,20 +971,7 @@ create_listview (HWND dlg, RECT * r)
 		       (HMENU) MAKEINTRESOURCE (IDC_CHOOSE_LIST),
 		       hinstance, 0);
   ShowWindow (lv, SW_SHOW);
-  HDC dc = GetDC (lv);
-  sysfont = GetStockObject (DEFAULT_GUI_FONT);
-  SelectObject (dc, sysfont);
-  GetTextMetrics (dc, &tm);
-  header_height = tm.tmHeight + 5 + 3;
-
-  bitmap_dc = CreateCompatibleDC (dc);
-
-  row_height = (tm.tmHeight + tm.tmExternalLeading + ROW_MARGIN);
-  int irh = tm.tmExternalLeading + tm.tmDescent + 11 + ROW_MARGIN;
-  if (row_height < irh)
-    row_height = irh;
-
-  chooser = new (view) (VIEW_CATEGORY, dc);
+  chooser = new view (VIEW_CATEGORY, lv);
 
   default_trust (lv, TRUST_CURR);
   set_view_mode (lv, VIEW_CATEGORY);
@@ -1153,14 +979,15 @@ create_listview (HWND dlg, RECT * r)
     log (LOG_BABBLE, "Failed to set View button caption %ld",
 	 GetLastError ());
   packagedb db;
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-       pkg = db.getnextpackage ())
-    add_required (*pkg);
+  for (size_t n = 1; n < db.packages.number (); n++)
+    {
+      packagemeta &pkg = * db.packages[n];
+      add_required (pkg);
+    }
   /* FIXME: do we need to init the desired fields ? */
   static int ta[] = { IDC_CHOOSE_CURR, 0 };
   rbset (dlg, ta, IDC_CHOOSE_CURR);
 
-  ReleaseDC (lv, dc);
 }
 
 static BOOL
@@ -1171,23 +998,29 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     {
     case IDC_CHOOSE_PREV:
       default_trust (lv, TRUST_PREV);
-      for (packagemeta * pkg = db.getfirstpackage (); pkg;
-	   pkg = db.getnextpackage ())
-	add_required (*pkg);
+      for (size_t n = 1; n < db.packages.number (); n++)
+	{
+	  packagemeta &pkg = * db.packages[n];
+	  add_required (pkg);
+	}
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_CURR:
       default_trust (lv, TRUST_CURR);
-      for (packagemeta * pkg = db.getfirstpackage (); pkg;
-	   pkg = db.getnextpackage ())
-	add_required (*pkg);
+      for (size_t n = 1; n < db.packages.number (); n++)
+	{
+	  packagemeta &pkg = * db.packages[n];
+	  add_required (pkg);
+	}
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_EXP:
       default_trust (lv, TRUST_TEST);
-      for (packagemeta * pkg = db.getfirstpackage (); pkg;
-	   pkg = db.getnextpackage ())
-	add_required (*pkg);
+      for (size_t n = 1; n < db.packages.number (); n++)
+	{
+	  packagemeta &pkg = * db.packages[n];
+	  add_required (pkg);
+	}
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_VIEW:
@@ -1281,7 +1114,7 @@ scan2 (char *path, unsigned int size)
     return;
 
   packagedb db;
-  pkg = db.getpackagebyname (f.pkg);
+  pkg = db.packages.getbykey (f.pkg);
   if (pkg == NULL)
     return;
 
@@ -1390,56 +1223,55 @@ do_choose (HINSTANCE h)
 
   log (LOG_BABBLE, "Chooser results...");
   packagedb db;
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-       pkg = db.getnextpackage ())
+  for (size_t n = 1; n < db.packages.number (); n++)
     {
+      packagemeta &pkg = * db.packages[n];
 //      static const char *infos[] = { "nada", "prev", "curr", "test" };
-      const char *trust = ((pkg->desired == pkg->prev) ? "prev"
-			   : (pkg->desired == pkg->curr) ? "curr"
-			   : (pkg->desired == pkg->exp) ? "test" : "unknown");
-      const char *action = choose_caption (pkg);
+      const char *trust = ((pkg.desired == pkg.prev) ? "prev"
+			   : (pkg.desired == pkg.curr) ? "curr"
+			   : (pkg.desired == pkg.exp) ? "test" : "unknown");
+      const char *action = pkg.action_caption ();
       const char *installed =
-	pkg->installed ? pkg->installed->Canonical_version () : "none";
+	pkg.installed ? pkg.installed->Canonical_version () : "none";
 
       log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s"
 	   " src?=%s",
-	   pkg->name, action, trust, installed,
-	   pkg->desired && pkg->desired->srcpicked ? "yes" : "no");
-      if (pkg->Categories.number ())
+	   pkg.name, action, trust, installed,
+	   pkg.desired && pkg.desired->srcpicked ? "yes" : "no");
+      if (pkg.Categories.number ())
 	{
 	  /* List categories the package belongs to */
 	  int categories_len = 0;
-	  for (size_t n = 1; n <= pkg->Categories.number (); n++)
-	    categories_len +=
-	      strlen (pkg->Categories[n]->key.name) + 2;
+	  for (size_t n = 1; n <= pkg.Categories.number (); n++)
+	    categories_len += strlen (pkg.Categories[n]->key.name) + 2;
 
 	  if (categories_len > 0)
 	    {
 	      char *categories = (char *) malloc (categories_len);
-	      strcpy (categories, pkg->Categories[1]->key.name);
-	      for (size_t n = 2; n <= pkg->Categories.number (); n++)
+	      strcpy (categories, pkg.Categories[1]->key.name);
+	      for (size_t n = 2; n <= pkg.Categories.number (); n++)
 		{
 		  strcat (categories, ", ");
-		  strcat (categories, pkg->Categories[n]->key.name);
+		  strcat (categories, pkg.Categories[n]->key.name);
 		}
 	      log (LOG_BABBLE, "     categories=%s", categories);
 	      free (categories);
 	    }
 	}
-      if (pkg->desired && pkg->desired->required)
+      if (pkg.desired && pkg.desired->required)
 	{
 	  /* List other packages this package depends on */
 	  int requires_len = 0;
 	  Dependency *dp;
-	  for (dp = pkg->desired->required; dp; dp = dp->next)
+	  for (dp = pkg.desired->required; dp; dp = dp->next)
 	    if (dp->package)
 	      requires_len += strlen (dp->package) + 2;
 
 	  if (requires_len > 0)
 	    {
 	      char *requires = (char *) malloc (requires_len);
-	      strcpy (requires, pkg->desired->required->package);
-	      for (dp = pkg->desired->required->next; dp; dp = dp->next)
+	      strcpy (requires, pkg.desired->required->package);
+	      for (dp = pkg.desired->required->next; dp; dp = dp->next)
 		if (dp->package)
 		  {
 		    strcat (requires, ", ");

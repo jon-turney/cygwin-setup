@@ -276,7 +276,7 @@ make_passwd_group ()
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
     {
       packagedb db;
-      packagemeta *pkg = db.getpackagebyname ("cygwin");
+      packagemeta *pkg = db.packages.getbykey ("cygwin");
       if (pkg && pkg->installed)
 	{
 	  /* mkpasswd and mkgroup are not working on 9x/ME up to 1.1.5-4 */

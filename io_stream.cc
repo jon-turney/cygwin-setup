@@ -272,3 +272,5 @@ io_stream::~io_stream ()
   log (LOG_TIMESTAMP, "io_stream::~io_stream called");
   return;
 }
+
+

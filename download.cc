@@ -155,11 +155,12 @@ do_download (HINSTANCE h)
 
   packagedb db;
   /* calculate the amount needed */
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-       pkg = db.getnextpackage ())
-    if (pkg->desired && (pkg->desired->srcpicked || pkg->desired->binpicked))
+  for (size_t n = 1; n < db.packages.number (); n++)
+    {
+      packagemeta &pkg = * db.packages[n];
+      if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
       {
-	packageversion *version = pkg->desired;
+	packageversion *version = pkg.desired;
 	if (!
 	    (check_for_cached (version->bin)
 	     && source != IDC_SOURCE_DOWNLOAD))
@@ -169,16 +170,18 @@ do_download (HINSTANCE h)
 	     && source != IDC_SOURCE_DOWNLOAD))
 	  total_download_bytes += version->src.size;
       }
+    }
 
   /* and do the download. FIXME: This here we assign a new name for the cached version
    * and check that above.
    */
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-       pkg = db.getnextpackage ())
-    if (pkg->desired && (pkg->desired->srcpicked || pkg->desired->binpicked))
+  for (size_t n = 1; n < db.packages.number (); n++)
+    {
+      packagemeta &pkg = * db.packages[n];
+    if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
       {
 	int e = 0;
-	packageversion *version = pkg->desired;
+	packageversion *version = pkg.desired;
 	if (version->binpicked)
 	  e += download_one (version->bin);
 	if (version->srcpicked)
@@ -189,6 +192,7 @@ do_download (HINSTANCE h)
 	  pkg->action = ACTION_ERROR;
 #endif
       }
+    }
 
   dismiss_url_status_dialog ();
 

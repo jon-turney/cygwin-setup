@@ -190,16 +190,13 @@ static int num_installs, num_uninstalls;
 
 /* FIXME: upgrades should be a method too */
 static void
-uninstall_one (packagemeta * pkgm)
+uninstall_one (packagemeta & pkgm)
 {
-  if (pkgm)
-    {
-      SetWindowText (ins_pkgname, pkgm->name);
+      SetWindowText (ins_pkgname, pkgm.name);
       SetWindowText (ins_action, "Uninstalling...");
-      log (0, "Uninstalling %s", pkgm->name);
-      pkgm->uninstall ();
+      log (0, "Uninstalling %s", pkgm.name);
+      pkgm.uninstall ();
       num_uninstalls++;
-    }
 }
 
 
@@ -420,30 +417,32 @@ do_install (HINSTANCE h)
   set_cygdrive_flags (istext, issystem);
 
   packagedb db;
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-       pkg = db.getnextpackage ())
-
-    if (pkg->desired && (pkg->desired->srcpicked || pkg->desired->binpicked))
-      {
-	if (pkg->desired->srcpicked)
-	  total_bytes += pkg->desired->src.size;
-	if (pkg->desired->binpicked)
-	  total_bytes += pkg->desired->bin.size;
-      }
-
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-       pkg = db.getnextpackage ())
+  for (size_t n = 1; n < db.packages.number (); n++)
     {
-      if (!pkg->desired || pkg->desired != pkg->installed)
+      packagemeta &pkg = * db.packages[n];
+
+    if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
+      {
+	if (pkg.desired->srcpicked)
+	  total_bytes += pkg.desired->src.size;
+	if (pkg.desired->binpicked)
+	  total_bytes += pkg.desired->bin.size;
+      }
+    }
+
+  for (size_t n = 1; n < db.packages.number (); n++)
+    {
+      packagemeta &pkg = * db.packages[n];
+      if (pkg.installed && (!pkg.desired || pkg.desired != pkg.installed))
 	{
 	  uninstall_one (pkg);
 	}
 
-      if (pkg->desired
-	  && (pkg->desired->srcpicked || pkg->desired->binpicked))
+      if (pkg.desired
+	  && (pkg.desired->srcpicked || pkg.desired->binpicked))
 	{
 	  int e = 0;
-	  e += install_one (*pkg);
+	  e += install_one (pkg);
 	  if (e)
 	    {
 	      errors++;

@@ -16,6 +16,7 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 
+#include "stdlib.h"
 #include "sys/types.h"
 
 /* Creates a list/array of type T (must have a field key of type U),
@@ -42,12 +43,12 @@ list ():pointerblock (0), _number (0), _space (0)
   T & registerbyobject (T &);
   /* remove by index */
   T * removebyindex (size_t);
-  size_t number ()
+  size_t number () const
   {
     return _number;
   };
   /* get by offset - not thread safe - starts at 1 */
-  T *operator [] (size_t n)
+  T *operator [] (size_t n) const
   {
     return n && n <= _number ? pointerblock[n - 1] : 0;
   };

@@ -41,6 +41,7 @@ static const char *cvsid =
 #include "package_version.h"
 #include "cygpackage.h"
 #include "package_meta.h"
+#include "package_db.h"
 
 static const char *standard_dirs[] = {
   "/bin",
@@ -153,3 +154,152 @@ packagemeta::SDesc ()
 {
   return versions[1]->SDesc ();
 };
+
+/* Return an appropriate caption given the current action. */
+char const *
+packagemeta::action_caption ()
+{
+  if (!desired && installed)
+    return "Uninstall";
+  else if (!desired)
+    return "Skip";
+  else if (desired == installed && desired->binpicked)
+    {
+      packagedb db;
+      return db.task == PackageDB_Install ? "Reinstall" : "Retrieve";
+    }
+  else if (desired == installed && desired->srcpicked)
+    /* FIXME: Redo source should come up if the tarball is already present locally */
+    return "Source";
+  else if (desired == installed)	/* and neither src nor bin */
+    return "Keep";
+  else
+    return desired->Canonical_version ();
+}
+
+/* Set the next action given a current action.  */
+void
+packagemeta::set_action (packageversion * default_version)
+{
+  /* actions are the following:
+
+     for install modes (from net/local)
+     for each version:
+     install this version
+     install the source for this version
+     and a boolean flag - force install to allow reinstallation, or bypassing requirements
+     globally:
+     install the source for the current version.
+
+     to uninstall a package, the desired version is set to NULL;
+
+     for mirroring modes (download only)
+     for each version
+     download this version
+     download source for this version
+
+     these are represented by the following:
+     the desired pointer in the packagemetadata indicated which version we are operating on.
+     if we are operating on the installed version, reinstall is a valid option.
+     for the selected version, forceinstall means Do an install no matter what, and
+     srcpicked means download the source.
+
+     The default action for any installed package is to install the 'curr version'
+     if it is not already installed.
+
+     The default action for any non-installed package is to do nothing.
+
+     To achieve a no-op, set desired==installed, and if (installed) set forceinstall=0 and
+     srcpicked = 0;
+
+     Iteration through versions should follow the following rules:
+     selected radio button (prev/curr/test) (show as reinstall if that is the
+     current version) ->source only (only if the package is installed) ->oldest version....s
+     kip version of radio button...
+     newest version->uninstall->no-op->selected radio button.
+
+     If any state cannot be set (ie because (say) no prev entry exists for a package
+     simply progress to the next option.
+
+   */
+
+  /* We were set to uninstall the package */
+  if (!desired && installed)
+    {
+      /* No-op - keep whatever we've got */
+      desired = installed;
+      if (desired)
+	{
+	  desired->binpicked = 0;
+	  desired->srcpicked = 0;
+	}
+      return;
+    }
+  else if (desired == installed
+	   && (!installed
+	       || !(installed->binpicked || installed->srcpicked)))
+    /* Install the default trust version - this is a 'reinstall' for installed
+       * packages */
+    {
+      desired = NULL;
+      /* No-op */
+      desired = default_version;
+      if (desired)
+	{
+	  desired->binpicked = 1;
+	  return;
+	}
+    }
+  /* are we currently on the radio button selection and installed */
+  if (desired == default_version && installed &&
+      (!desired || desired->binpicked)
+      && (desired &&
+	  (desired->src.Cached () || desired->src.sites.number ())))
+    {
+      /* source only this file */
+      desired = installed;
+      desired->binpicked = 0;
+      desired->srcpicked = 1;
+      return;
+    }
+  /* are we currently on source only or on the radio button but not installed */
+  else if ((desired == installed && installed
+	    && installed->srcpicked) || desired == default_version)
+    {
+      /* move onto the loop through versions */
+      desired = versions[1];
+      if (desired == default_version)
+	desired = versions.number () > 1 ? versions[2] : NULL;
+      if (desired)
+	{
+	  desired->binpicked = 1;
+	  desired->srcpicked = 0;
+	}
+      return;
+    }
+  else
+    {
+      /* preserve the src tick box */
+      int source = desired->srcpicked;
+      /* bump the version selected, skipping the radio button trust along the way */
+      size_t n;
+      for (n = 1;
+	   n <= versions.number ()
+	   && desired != versions[n]; n++);
+      /* n points at pkg->desired */
+      n++;
+      if (n <= versions.number ())
+	{
+	  if (default_version == versions[n])
+	    n++;
+	  if (n <= versions.number ())
+	    {
+	      desired = versions[n];
+	      desired->srcpicked = source;
+	      return;
+	    }
+	}
+      /* went past the end - uninstall the package */
+      desired = NULL;
+    }
+}

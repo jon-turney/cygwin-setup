@@ -53,6 +53,7 @@ public:
   {
     name = new char[strlen (pkgname) + 1];
       strcpy (name, pkgname);
+    key = name;
   };
 
   packagemeta (char const *pkgname,
@@ -63,6 +64,7 @@ public:
     exp (0), exptimestamp (0), desired (0)
   {
     name = new char[strlen (pkgname) + 1];
+    key = name;
     strcpy (name, pkgname);
     installed_from = new char[strlen (installedfrom) + 1];
     strcpy (installed_from, installedfrom);
@@ -78,9 +80,13 @@ public:
 
   void add_version (packageversion &);
   void set_installed (packageversion &);
+  void set_action (packageversion *default_version);
   void uninstall ();
 
+  char const *action_caption ();
+
   char *name;			/* package name, like "cygwin" */
+  char *key;
   /* legacy variable used to output data for installed.db versions <= 2 */
   char *installed_from;
   /* SDesc is global in theory, across all package versions. 
@@ -108,6 +114,9 @@ public:
   /* Now for the user stuff :] */
   /* What version does the user want ? */
   packageversion *desired;
+protected:
+  packagemeta (packagemeta const &);
+  packagemeta &operator= (packagemeta const &);
 };
 
 #endif /* _PACKAGE_META_H_ */

@@ -78,7 +78,7 @@ found_file (char *path, unsigned int fsize)
 
   packagemeta *p = NULL;
   packagedb db;
-  p = db.getpackagebyname (f.pkg);
+  p = db.packages.getbykey (f.pkg);
   if (p == NULL)
     p = new packagemeta (f.pkg, path);
 

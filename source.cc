@@ -29,6 +29,7 @@ static const char *cvsid =
 #include "state.h"
 #include "msg.h"
 #include "log.h"
+#include "package_db.h"
 
 static int rb[] =
   { IDC_SOURCE_NETINST, IDC_SOURCE_DOWNLOAD, IDC_SOURCE_CWD, 0 };
@@ -43,6 +44,8 @@ static void
 save_dialog (HWND h)
 {
   source = rbget (h, rb);
+  packagedb db;
+  db.task = source == IDC_SOURCE_DOWNLOAD ? PackageDB_Download : PackageDB_Install;
 }
 
 static BOOL

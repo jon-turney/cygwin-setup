@@ -82,7 +82,7 @@ packages
  ;
 
 package
- : '@' STRING '\n'		{ cp = &db.registerpackage($2); cpv = new cygpackage ($2); trust = TRUST_CURR;}
+ : '@' STRING '\n'		{ cp = &db.packages.registerbykey($2); cpv = new cygpackage ($2); trust = TRUST_CURR;}
    lines
  ;
 

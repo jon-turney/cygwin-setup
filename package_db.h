@@ -23,33 +23,24 @@ class Category;
 class packagemeta;
 class io_stream;
 
+typedef enum {
+  PackageDB_Install,
+  PackageDB_Download
+} PackageDBActions;
+
 /*TODO: add mutexs */
 class packagedb
 {
 public:
   packagedb ();
-  packagemeta *getfirstpackage ();
-  packagemeta *getnextpackage ();
-  packagemeta *getpackagebyname (const char *);
-  /* 0 on success */
-  int addpackage (packagemeta &);
   /* 0 on success */
   int flush ();
-  /* return an existing record if it exists, otherwise make a new one */
-    packagemeta & registerpackage (char const *);
-  size_t npackages ()
-  {
-    return packagecount;
-  };
+  /* all seen packages */
+  static list < packagemeta, char const *, strcasecmp > packages;
   /* all seen categories */
   static list < Category, char const *, strcasecmp > categories;
+  static PackageDBActions task;
 private:
-  /* this gets sorted */
-  static packagemeta **packages;
-  static size_t packagecount;
-  static size_t packagespace;
-  size_t curr_package;
-  io_stream *db;
   static int installeddbread;	/* do we have to reread this */
 };
 

@@ -132,7 +132,9 @@ public:
   virtual const char *linktarget ();
   virtual int skip_file ();
   /* if you are still needing these hints... give up now! */
-    virtual ~ archive_tar ();
+  virtual ~ archive_tar ();
+  archive_tar& operator= (const archive_tar &);
+  archive_tar (archive_tar const &);
 private:
     archive_tar ()
   {

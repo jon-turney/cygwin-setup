@@ -41,24 +41,9 @@ static const char *cvsid =
 
 /* static members */
 
-packagemeta *
-packagedb::getpackagebyname (const char *search)
-{
-  /* dumb search, we can add a index and do a btree later */
-  size_t index = 0;
-  while (index < packagecount)
-    {
-      if (!strcasecmp ((*packages[index]).name, search))
-	return packages[index];
-      index++;
-    }
-  return 0;
-}
-
 packagedb::packagedb ()
 {
-  db = 0;
-  curr_package = 0;
+  io_stream * db = 0;
   if (!installeddbread)
     {
       /* no parameters. Read in the local installation database. */
@@ -98,7 +83,7 @@ packagedb::packagedb ()
 		  if (!parseable)
 		    continue;
 
-		  packagemeta *pkg = getpackagebyname (pkgname);
+		  packagemeta *pkg = packages.getbykey (pkgname);
 		  if (!pkg)
 		    {
 		      pkg = new packagemeta (pkgname, inst);
@@ -116,7 +101,7 @@ packagedb::packagedb ()
 		  pkg->add_version (*binary);
 		  pkg->set_installed (*binary);
 		  pkg->desired = pkg->installed;
-		  addpackage (*pkg);
+		  packages.registerbyobject (*pkg);
 
 		}
 	      delete db;
@@ -128,57 +113,6 @@ packagedb::packagedb ()
 	}
       installeddbread = 1;
     }
-}
-
-packagemeta *
-packagedb::getfirstpackage ()
-{
-  curr_package = 0;
-  if (packages)
-    return packages[0];
-  return 0;
-}
-
-packagemeta *
-packagedb::getnextpackage ()
-{
-  curr_package++;
-  if (packagecount > curr_package)
-    return packages[curr_package];
-  return 0;
-}
-
-int
-packagedb::addpackage (packagemeta & newpackage)
-{
-  if (getpackagebyname (newpackage.name))
-    return 1;
-  /* lock the mutex */
-  if (packagecount == packagespace)
-    {
-      packagemeta **newpackages = (packagemeta **) realloc (packages,
-							    sizeof
-							    (packagemeta *) *
-							    (packagespace +
-							     100));
-      if (!newpackages)
-	{
-	  //die
-	  exit (100);
-	}
-      packages = newpackages;
-      packagespace += 100;
-    }
-  size_t n;
-  for (n = 0;
-       n < packagecount
-       && strcasecmp (packages[n]->name, newpackage.name) < 0; n++);
-  /* insert at n */
-  memmove (&packages[n + 1], &packages[n],
-	   (packagecount - n) * sizeof (packagemeta *));
-  packages[n] = &newpackage;
-  packagecount++;
-  return 0;
 }
 
 int
@@ -196,12 +130,10 @@ packagedb::flush ()
     return errno ? errno : 1;
 
   ndb->write ("INSTALLED.DB 2\n", strlen ("INSTALLED.DB 2\n"));
-  if (getfirstpackage ())
+  for (size_t n = 1; n < packages.number (); n++)
     {
-      packagemeta *pkgm = getfirstpackage ();
-      while (pkgm)
-	{
-	  if (pkgm->installed)
+      packagemeta &pkgm = * packages[n];
+	  if (pkgm.installed)
 	    {
 	      char line[2048];
 
@@ -210,14 +142,12 @@ packagedb::flush ()
 	       * also note that we are writing a fictional install source 
 	       * to keep cygcheck happy.               
 	       */
-	      sprintf (line, "%s %s %d\n", pkgm->name,
-		       concat (pkgm->name, "-",
-			       pkgm->installed->Canonical_version (),
+	      sprintf (line, "%s %s %d\n", pkgm.name,
+		       concat (pkgm.name, "-",
+			       pkgm.installed->Canonical_version (),
 			       ".tar.bz2", 0), 0);
 	      ndb->write (line, strlen (line));
 	    }
-	  pkgm = getnextpackage ();
-	}
     }
 
   delete ndb;
@@ -229,27 +159,9 @@ packagedb::flush ()
   return 0;
 }
 
-packagemeta & packagedb::registerpackage (char const *pkgname)
-{
-  packagemeta *
-    tmp =
-    getpackagebyname (pkgname);
-  if (tmp)
-    return *tmp;
-  tmp = new packagemeta (pkgname);
-  addpackage (*tmp);
-  return *tmp;
-}
-
-
-packagemeta **
-  packagedb::packages =
-  0;
-size_t packagedb::packagecount = 0;
-size_t packagedb::packagespace = 0;
-int
-  packagedb::installeddbread =
-  0;
+int packagedb::installeddbread = 0;
+list < packagemeta, char const *, strcasecmp > packagedb::packages;
 list < Category, char const *,
   strcasecmp >
   packagedb::categories;
+PackageDBActions packagedb::task = PackageDB_Install;

@@ -83,6 +83,10 @@ public:
   virtual int skip_file () = 0;
   /* if you are still needing these hints... give up now! */
 //  virtual ~compress ();
+protected:
+  void operator= (const archive &);
+  archive () {};
+  archive (const archive &);
 private:
 //  archive () {};
 };
