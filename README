@@ -1,25 +1,51 @@
 This directory contains the source for the setup program for the cygwin
 net releases.
 
+TODO:
+* Src tickbox /source only can be confusing.
+* file magic detection.
+* support rpm/deb files for reading the package from. (To allow the maintainers the use of rpm/deb tools to create packages.)
+  * make a librar(y|ies) for setup and cygcheck to use containing 
+  1) Something to translate POSIX -> native.  Currently called "cygpath"
+     in setup, although this is probably a bad choice of name.
+  2) Something to return the list of installed packages.
+  3) Something to return the cygwin mount table.  Currently, I have implemented
+     a lightweight setmntent and getmntent using the code in 
+  4) Something to parse a tar file name into package/version or altenatively,
+     return that information from 2)
+  5) Something to return a list of files associated with a package.
+* Make skip only ever appear for non-installed packages.
+	   
+	   
+WISHLIST:
+  *   ini.cc: add field in setup.ini to specify whether package is installed by default, or not.
+  * Add friendly error reporting to simpsock.cc
+  * scan newly installed files for README files, show list to user, let them read them if they want.
+   * Mouse wheel support broken/missing for *some* users.
+   * When in category view, and changing from prev->normal->exp the categories get collapsed This is non-intuitive.
+   * mirrors.lst to be copied to setup.ini and cached locally. Then the master mirrors list is reserved for bootstrapping.
+   * clicking on a package that is in multiple categories should update the view of the package in both locations on screen.
+   * view button is not clear at first view. (the dotted highlight).
+   * remember the view mode - ie if you leave setup in partial, it returns to partial automatically.
+   * new view - "action / category / package"
+   * Downloading from the internet should be _able_ to list based on what is present in the cache, as opposed to what is installed. (To help building a complete install set for a different machine).
+   * new view - show installed packages only. Probably not categorised.
+   * multiple mirror support, with setup.ini from each merged automagically.
 
-
-To-Do list:
-
-ini.cc: add field in setup.ini to specify whether package is installed
-by default, or not.
-
-install.cc: scan newly installed files for README files, show list to
-user, let them read them if they want.
-
-download.cc: add a "total progress" indicator, like the install one.
-
-add a "category" field to setup.ini, let user choose which categories
-of packages to install, perhaps with a "custom..." button to lead to
-the current chooser.
-
-remember which packages were selected to be skipped, and which prev/curr/exp
-option was last selected, and recall them each time the chooser runs.
-
-Add friendly error reporting to simpsock.cc
-
-Add option to download sources also.
+- Have an option to display any downloaded READMEs (or at least mention that they exist)
+- Don't ask about the start menu or desktop options if they already exist
+ * Save the manual proxy settings so they don't need to be retyped.
+ * detect files in mulitple packages
+ * save all options
+ * run a different script after finishing setup.
+ * Show bin and src download size
+   
+recently completed
+   * installed packages aren't automatically upgraded.
+   * Dependencies should not trigger alterations to user actions for installed packages that have any action other than uninstall.
+   * Wide descriptions can get truncated - ie SSMTP
+   * SKIP and KEEP sometimes appearing for the same package.
+   * Set the screen size for 640x480 users
+   * View mdoe caption on the right hand of the screen
+   * Downloading from the internet should allow redownloading already present files. (This
+        happens via the reinstall/redo already - perhaps this is "done".)
