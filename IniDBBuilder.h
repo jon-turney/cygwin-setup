@@ -47,6 +47,8 @@ public:
   virtual void buildBeginReplaces ();
   virtual void buildBeginConflicts ();
   virtual void buildBeginProvides ();
+  virtual void buildBeginBuildDepends ();
+  virtual void buildBeginBinary ();
   virtual void buildDescription (String const &);
   virtual void buildSourceName (String const &);
   virtual void buildSourceNameVersion (String const &);

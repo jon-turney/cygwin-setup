@@ -246,6 +246,11 @@ packageversion::provides()
       return &data->provides;
 }
 
+vector <vector <PackageSpecification *> *> *
+packageversion::binaries()
+{
+      return &data->binaries;
+}
 
 bool
 packageversion::picked () const

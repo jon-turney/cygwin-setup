@@ -42,7 +42,7 @@ static void ignore_line (void);
 %x descriptionstate
 %x eolstate
 
-STR	[a-zA-Z0-9_./:\+-]+
+STR	[!a-zA-Z0-9_./:\+-]+
 
 %%
 
@@ -84,6 +84,7 @@ STR	[a-zA-Z0-9_./:\+-]+
 "Source:"		return SOURCEPACKAGE;
 "Binary:"		return BINARYPACKAGE;
 "Build-Depends:"	return BUILDDEPENDS;
+"Build-Depends-Indep:"	return BUILDDEPENDS; /* technicallyincorrect :[ */
 "Standards-Version:"	return STANDARDSVERSION; 
 "Format:"		return FORMAT;
 "Directory:"		return DIRECTORY;
@@ -113,14 +114,17 @@ STR	[a-zA-Z0-9_./:\+-]+
 "[test]"		return T_TEST;
 "[exp]"			return T_TEST;
 "[prev]"		return T_PREV;
-"["{STR}"]"		return T_UNKNOWN;
 
 "("			return OPENBRACE;
 ")"			return CLOSEBRACE;
+"["			return OPENSQUARE;
+"]"			return CLOSESQUARE;
 "<<"			return LT;
 ">>"			return GT;
 ">="			return GTEQUAL;
 "<="			return LTEQUAL;
+">"			return GT;
+"<"			return LT;
 "="                     return EQUAL;
 \,			return COMMA;
 "|"			return OR;
@@ -146,7 +150,6 @@ STR	[a-zA-Z0-9_./:\+-]+
 
 \n			{ return NL; }
 .			{ return *yytext;}
-<<EOF>>			{ return LEX_EOF; }
 
 %%
 

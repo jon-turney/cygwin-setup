@@ -40,6 +40,8 @@ void IniDBBuilder::buildBeginSuggests (){}
 void IniDBBuilder::buildBeginReplaces (){}
 void IniDBBuilder::buildBeginConflicts (){}
 void IniDBBuilder::buildBeginProvides (){}
+void IniDBBuilder::buildBeginBuildDepends (){}
+void IniDBBuilder::buildBeginBinary (){}
 void IniDBBuilder::buildDescription (String const &){}
 void IniDBBuilder::buildSourceName (String const &){}
 void IniDBBuilder::buildSourceNameVersion (String const &){}

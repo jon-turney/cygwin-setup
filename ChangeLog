@@ -1,3 +1,24 @@
+2002-07-13  Robert Collins  <rbtcollins@hotmail.com>
+
+	* IniDBBuilder.cc (IniDBBuilder::buildBeginBuildDepends): Implement.
+	(IniDBBuilder::buildBeginBinary): Implement.
+	* IniDBBuilder.h (IniDBBuilder::buildBeginBuildDepends): Declare.
+	(IniDBBuilder::buildBeginBinary): Ditto.
+	* IniDBBuilderPackage.cc (IniDBBuilderPackage::buildBeginBuildDepends):
+	Implement.
+	(IniDBBuilderPackage::buildBeginBinary): Ditto.
+	* IniDBBuilderPackage.h (IniDBBuilderPackage::buildBeginBuildDepends):
+	Declare.
+	(IniDBBuilderPackage::buildBeginBinary): Ditto.
+	* inilex.l: Recognise Build-Depends-Indep, [,], >, < and remove
+	T_UNKNOWN.
+	* iniparse.y: Full support for parsing a debian Sources file in-line in
+	setup.ini.
+	* package_version.cc (packageversion::binaries): Implement.
+	* package_version.h (packageversion::binaries): Declare list of what
+	packages are created from a given source package.
+	(_packageversion::binaries): Ditto.
+
 2002-07-10  Robert Collins  <rbtcollins@hotmail.com>
 
 	* iniparse.y: Add basis for support for parsing a debian Sources file.

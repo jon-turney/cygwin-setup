@@ -117,7 +117,7 @@ public:
 
   /* invariant: these never return NULL */
   vector <vector <PackageSpecification *> *> *depends(), *predepends(), 
-  *recommends(), *suggests(), *replaces(), *conflicts(), *provides();
+  *recommends(), *suggests(), *replaces(), *conflicts(), *provides(), *binaries();
 
   bool picked() const;   /* true if this version is to be installed */
   void pick(bool); /* trigger an install/reinsall */
@@ -171,7 +171,7 @@ public:
   virtual void setSourcePackageSpecification (PackageSpecification const &);
   
   vector <vector <PackageSpecification *> *> depends, predepends, recommends,
-  suggests, replaces, conflicts, provides;
+  suggests, replaces, conflicts, provides, binaries;
   
   bool picked;	/* non zero if this version is to be installed */
 		/* This will also trigger reinstalled if it is set */

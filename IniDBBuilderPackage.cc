@@ -234,6 +234,11 @@ IniDBBuilderPackage::buildInstalledSize (String const &size)
 void
 IniDBBuilderPackage::buildMaintainer (String const &){}
 
+/* TODO: we can multiple arch's for a given package,
+   and it may befor either source or binary, so we need to either set both
+   or track a third current package that points to whether we altering source
+   or binary at the moment
+   */
 void
 IniDBBuilderPackage::buildArchitecture (String const &arch)
 {
@@ -321,6 +326,31 @@ IniDBBuilderPackage::buildBeginProvides ()
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
   currentAndList = cbpv.provides();
+}
+
+void
+IniDBBuilderPackage::buildBeginBuildDepends ()
+{
+#if DEBUG
+  log (LOG_BABBLE) << "Beginning of a Build-Depends statement" << endLog;
+  dumpAndList (currentAndList);
+#endif
+  currentSpec = NULL;
+  currentOrList = NULL; /* set by the build AndListNode */
+  currentAndList = cspv.depends ();
+}
+
+  
+void
+IniDBBuilderPackage::buildBeginBinary ()
+{
+#if DEBUG
+  log (LOG_BABBLE) << "Beginning of a Binary statement" << endLog;
+  dumpAndList (currentAndList);
+#endif
+  currentSpec = NULL;
+  currentOrList = NULL; /* set by the build AndListNode */
+  currentAndList = cspv.binaries ();
 }
 
 void

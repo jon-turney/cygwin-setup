@@ -46,19 +46,20 @@ void add_correct_version();
 %token SETUP_TIMESTAMP SETUP_VERSION PACKAGEVERSION INSTALL SOURCE SDESC LDESC
 %token CATEGORY DEPENDS REQUIRES
 %token APATH PPATH INCLUDE_SETUP EXCLUDE_PACKAGE DOWNLOAD_URL
-%token T_PREV T_CURR T_TEST T_UNKNOWN
+%token T_PREV T_CURR T_TEST
 %token MD5 INSTALLEDSIZE MAINTAINER PRIORITY
 %token DESCTAG DESCRIPTION FILESIZE ARCHITECTURE SOURCEPACKAGE MD5LINE 
 %token RECOMMENDS PREDEPENDS
-%token SUGGESTS CONFLICTS REPLACES PROVIDES PACKAGENAME STRTOEOL PARAGRAPH LEX_EOF
+%token SUGGESTS CONFLICTS REPLACES PROVIDES PACKAGENAME STRTOEOL PARAGRAPH
 %token EMAIL COMMA OR NL AT
 %token OPENBRACE CLOSEBRACE EQUAL GT LT GTEQUAL LTEQUAL 
+%token OPENSQUARE CLOSESQUARE
 %token BINARYPACKAGE BUILDDEPENDS STANDARDSVERSION FORMAT DIRECTORY FILES
 
 %%
 
 whole_file
- : setup_headers packages
+ : setup_headers packageseparator packages
  ;
 
 setup_headers: /* empty */
@@ -71,7 +72,7 @@ header /* non-empty */
  ;
 
 packages: /* empty */
- | packages packageseparator package
+ | packages package packageseparator
  ;
 
 packageseparator: /* empty */
@@ -98,11 +99,10 @@ singleitem /* non-empty */
  | T_PREV NL 			{ iniBuilder->buildPackageTrust (TRUST_PREV); }
  | T_CURR NL			{ iniBuilder->buildPackageTrust (TRUST_CURR); }
  | T_TEST NL			{ iniBuilder->buildPackageTrust (TRUST_TEST); }
- | T_UNKNOWN NL		      { iniBuilder->buildPackageTrust (TRUST_UNKNOWN);}
  | PRIORITY STRING NL		{ iniBuilder->buildPriority ($2); }
  | INSTALLEDSIZE STRING NL	{ iniBuilder->buildInstalledSize ($2); }
  | MAINTAINER STRING NL		{ iniBuilder->buildMaintainer ($2); }
- | ARCHITECTURE STRING NL 	{ iniBuilder->buildArchitecture ($2); }
+ | ARCHITECTURE packagearchspec NL 	{ iniBuilder->buildArchitecture ($2); }
  | FILESIZE STRING NL		{ iniBuilder->buildInstallSize($2); }
  | FORMAT STRING NL		{ /* TODO */ }
  | DIRECTORY STRING NL		{ /* TODO */ }
@@ -113,7 +113,7 @@ singleitem /* non-empty */
  | INSTALL STRING { iniBuilder->buildPackageInstall ($2); } installmeta NL
  | SOURCE STRING STRING sourceMD5 NL {iniBuilder->buildPackageSource ($2, $3);}
  | PROVIDES 		{ iniBuilder->buildBeginProvides(); } packagelist NL
- | BINARYPACKAGE  { /* TODO */ } packagelist NL
+ | BINARYPACKAGE  { iniBuilder->buildBeginBinary (); } packagelist NL
  | CONFLICTS	{ iniBuilder->buildBeginConflicts(); } versionedpackagelist NL
  | DEPENDS { iniBuilder->buildBeginDepends(); } versionedpackagelist NL
  | REQUIRES { iniBuilder->buildBeginDepends(); }versionedpackagelistsp NL
@@ -121,16 +121,19 @@ singleitem /* non-empty */
  | RECOMMENDS { iniBuilder->buildBeginRecommends(); }   versionedpackagelist NL
  | SUGGESTS { iniBuilder->buildBeginSuggests(); } versionedpackagelist NL
  | REPLACES { iniBuilder->buildBeginReplaces(); }       versionedpackagelist NL
- | BUILDDEPENDS { /* todo */ } versionedpackagelist NL
+ | BUILDDEPENDS { iniBuilder->buildBeginBuildDepends(); } versionedpackagelist NL
  | FILES NL SourceFilesList
  | DESCTAG mlinedesc
- | LEX_EOF			{ YYACCEPT; }
  | error 			{ yyerror (String("unrecognized line ") 
 					  + yylineno 
 					  + " (do you have the latest setup?)");
 				}
  ;
 
+packagearchspec: /* empty */
+ | packagearchspec STRING { iniBuilder->buildArchitecture ($2); }
+ ;
+ 
 categories: /* empty */
  | categories STRING		{ iniBuilder->buildPackageCategory ($2); }
  ;
@@ -166,7 +169,7 @@ packagelist /* non-empty */
  ;
 
 packageentry /* empty not allowed */
- : STRING 		{ iniBuilder->buildPackageListOrNode($1); }
+ : STRING 		  { iniBuilder->buildPackageListOrNode($1); } 
  | packageentry OR STRING { iniBuilder->buildPackageListOrNode($3); }
  ;
 
@@ -181,14 +184,14 @@ versionedpackagelistsp /* non-empty */
  ;
 
 
-listseparator /* non-empty */
- : COMMA
+listseparator: /* empty */
+ | COMMA
  | COMMA NL
  ;
  
 versionedpackageentry /* empty not allowed */
- : STRING { iniBuilder->buildPackageListOrNode($1); } versioncriteria
- | versionedpackageentry OR STRING { iniBuilder->buildPackageListOrNode($3); } versioncriteria
+ : STRING { iniBuilder->buildPackageListOrNode($1); } versioncriteria architecture
+ | versionedpackageentry OR STRING { iniBuilder->buildPackageListOrNode($3); } versioncriteria architecture
  ;
 
 versioncriteria: /* empty */
@@ -202,6 +205,15 @@ operator /* non-empty */
  | LTEQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::LessThanEquals); }
  | GTEQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::MoreThanEquals); }
  ;
+ 
+architecture: /* empty */
+ | OPENSQUARE architecturelist CLOSESQUARE
+ ;
+
+architecturelist: /* empty */
+ | architecturelist STRING
+ ;
+  
  
 SourceFilesList: /* empty */
  | SourceFilesList MD5 STRING STRING NL
