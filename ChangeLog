@@ -1,5 +1,11 @@
 2002-05-022 Robert Collins  <rbtcollins@hotmail.com>
 
+	* configure.in: Correct a typo in last change.
+	* configure: Regenerate.
+	* Makefile.in: Regenerate.
+
+2002-05-022 Robert Collins  <rbtcollins@hotmail.com>
+
 	* configure.in: Check for string.h and string.
 	* configure: Regenerate.
 	* Makefile.in: Regenerate.
