@@ -105,7 +105,8 @@ find_routine (char *path, unsigned int fsize)
     MessageBox (0, error_buf, error_count == 1 ? "Parse Error" : "Parse Errors", 0);
   else
     local_ini++;
-  *error_buf = '\0';
+  if (error_buf)
+    *error_buf = '\0';
   error_count = 0;
 }
 

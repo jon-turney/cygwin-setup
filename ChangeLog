@@ -1,5 +1,9 @@
 2002-05-14  Christopher Faylor  <cgf@redhat.com>
 
+	* ini.cc (find_routine): Don't clear buffer it it's NULL.
+
+2002-05-14  Christopher Faylor  <cgf@redhat.com>
+
 	* filemanip.h (trail): Declare.
 	* filemanip.cc (trail): New function.
 	(find_tar_ext): Use trail() instead of strstr().
