@@ -1,5 +1,20 @@
 2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
 
+	* Makefile.in (OBJS): Add package abstraction objects.
+	* choose.cc: Include package abstraction headers.
+	(read_installed_db): Use packagedb class and ignore installed sources.
+	* cygpackage.cc: New file.
+	* cygpackage.h: New file.
+	* filemanip.h (get_file_size): Use unixy types.
+	* package.h: New file.
+	* package.cc: New file.
+	* package_db.cc: New file.
+	* package_db.h: New file.
+	* package_meta.cc: New file.
+	* package_meta.h: New file.
+
+2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
+
 	* REAME: Updates to wishlist.
 
 2001-11-16  Robert Collins  <rbtcollins@hotmail.com>

@@ -48,6 +48,10 @@ static const char *cvsid =
 #include "io_stream.h"
 #include "choose.h"
 
+#include "package_db.h"
+#include "package_meta.h"
+#include "package.h"
+
 #include "port.h"
 
 #define alloca __builtin_alloca
@@ -1518,56 +1522,48 @@ _Info::_Info (const char *_install, const char *_version, int _install_size,
 static void
 read_installed_db ()
 {
-  char line[1000], pkgname[1000], inst[1000], src[1000];
-  int instsz, srcsz;
+  packagedb db;
 
-  io_stream *db =
-    io_stream::open (concat ("cygfile://", "/etc/setup/installed.db", 0),
-		     "rt");
-  if (!db)
+  if (!db.getfirstpackage ())
     return;
 
-  while (db->gets (line, 1000))
+  packagemeta *pkgm = db.getfirstpackage ();
+
+  while (pkgm)
     {
-      int parseable;
-      src[0] = 0;
-      srcsz = 0;
-      sscanf (line, "%s %s %d %s %d", pkgname, inst, &instsz, src, &srcsz);
-
-      Package *pkg = getpkgbyname (pkgname);
-      fileparse f;
-      parseable = parse_filename (inst, f);
-
-      if (pkg == NULL)
+      if (pkgm->installed)
 	{
-	  if (!parseable)
-	    continue;
-	  pkg = new_package (pkgname);
-	  pkg->info[TRUST_CURR].version = strdup (f.ver);
-	  pkg->info[TRUST_CURR].install = strdup (inst);
-	  pkg->info[TRUST_CURR].install_size = instsz;
-	  if (src[0] && srcsz)
+	  Package *pkg = getpkgbyname (pkgm->name);
+	  if (!pkg)
 	    {
-	      pkg->info[TRUST_CURR].source = strdup (src);
-	      pkg->info[TRUST_CURR].source_size = srcsz;
+	      pkg = new_package (pkgm->name);
+	      pkg->info[TRUST_CURR].version =
+		concat (pkgm->installed->Vendor_version (), "-",
+			pkgm->installed->Package_version (), 0);
+	      /* install from is unknown for installed packages */
+	      pkg->info[TRUST_CURR].install = 0;
+	      pkg->info[TRUST_CURR].install_size = 0;
+	      /* likewise for src */
+	      pkg->installed_ix = TRUST_CURR;
+	      /* Exists on local system but not on download system */
+	      pkg->exclude = EXCLUDE_NOT_FOUND;
 	    }
-	  pkg->installed_ix = TRUST_CURR;
-	  /* Exists on local system but not on download system */
-	  pkg->exclude = EXCLUDE_NOT_FOUND;
+	  pkg->installed = new Info (0, pkg->info[TRUST_CURR].version, 0);
+	  if (!pkg->installed_ix)
+	    for (trusts t = TRUST_PREV; t < NTRUST; ((int) t)++)
+	      if (pkg->info[t].install
+		  &&
+		  strcmp (concat
+			  (pkgm->installed->Vendor_version (), "-",
+			   pkgm->installed->Package_version (), 0),
+			  pkg->info[t].version) == 0)
+		{
+		  pkg->installed_ix = t;
+		  break;
+		}
 	}
-
-      pkg->installed = new Info (inst, f.ver, instsz);
-
-      if (!pkg->installed_ix)
-	for (trusts t = TRUST_PREV; t < NTRUST; ((int) t)++)
-	  if (pkg->info[t].install
-	      && strcmp (f.ver, pkg->info[t].version) == 0)
-	    {
-	      pkg->installed_ix = t;
-	      break;
-	    }
+      pkgm = db.getnextpackage ();
     }
-  delete db;
 }
 
 int

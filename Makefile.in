@@ -89,6 +89,7 @@ OBJS = \
 	compress_bz.o \
 	compress_gz.o \
 	concat.o \
+	cygpackage.o \
 	desktop.o \
 	dialog.o \
 	diskfull.o \
@@ -120,6 +121,8 @@ OBJS = \
 	nio-ftp.o \
 	nio-http.o \
 	other.o \
+	package_db.o \
+	package_meta.o \
 	postinstall.o \
 	res.o \
 	root.o \

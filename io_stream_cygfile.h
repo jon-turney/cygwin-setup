@@ -43,7 +43,7 @@ public:
   virtual int error ();
   virtual int set_mtime (int);
   /* not relevant yet */
-  virtual int get_mtime () {return 0;};
+  virtual int get_mtime () { return 0;};
   /* dummy for io_stream_file */
   virtual const char *next_file_name ()
   {
