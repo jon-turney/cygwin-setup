@@ -36,6 +36,7 @@ CC_FOR_TARGET	:= $(CC)
 
 CFLAGS		:= @CFLAGS@ -nostdinc
 CXXFLAGS	:= @CXXFLAGS@ -fno-exceptions -nostdinc++ -fno-rtti
+CXX		:=${subst gcc,g++,$(CC)}
 
 WINDRES		:= @WINDRES@
 OBJCOPY		:= @OBJCOPY@
@@ -120,10 +121,10 @@ all: Makefile $(PROGS)
 
 setup$(EXEEXT): $(OBJS) $(ALL_DEP_LDLIBS)
 ifdef VERBOSE
-	$(CC) $(MINGW_CXXFLAGS) -o $@ ${filter-out $(ALL_DEP_LIBS),$^}
+	$(CXX) $(MINGW_CXXFLAGS) -o $@ ${filter-out $(ALL_DEP_LIBS),$^}
 else
-	@echo $(CC) ... -o $@ $(OBJS)
-	@$(CC) $(MINGW_CXXFLAGS) -o $@ ${filter-out $(ALL_DEP_LIBS),$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
+	@echo $(CXX) ... -o $@ $(OBJS)
+	@$(CXX) $(MINGW_CXXFLAGS) -o $@ ${filter-out $(ALL_DEP_LIBS),$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
 endif
 	@chmod a-x $@
 
