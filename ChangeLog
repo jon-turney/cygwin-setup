@@ -1,3 +1,7 @@
+2001-10-12  Christopher Faylor  <cgf@redhat.com>
+
+	* choose.cc (pick_line::paint): Add missing declaration.
+
 2001-10-10  Ralf Habacker <Ralf.Habacker@freenet.de>
 
 	* choose.cc (pick_line::paint): Add package name to sdesc for display.
