@@ -309,7 +309,7 @@ BEGIN
                     WS_VISIBLE,7,41,303,134
     ICON            IDI_CYGWIN,IDC_STATIC,290,0,20,20
     LTEXT           "Select the packages you want setup to install.",
-                    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+                    IDC_CHOOSE_INST_TEXT,21,9,239,16,NOT WS_GROUP
     LTEXT           "Select Packages",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT 
                     WS_GROUP
     LTEXT           "",IDC_CHOOSE_VIEWCAPTION,270,30,40,10

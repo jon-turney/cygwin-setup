@@ -1,5 +1,15 @@
 2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.cc (ChooserPage::OnNext): log before starting activity threads.
+	(ChooserPage::OnInit): Remove temporary variable frame.
+	(ChooserPage::setPrompt): Extract method from OnInit.
+	(choose_inst_text): Remove unused variable.
+	* choose.h(ChooserPage::setPrompt): Declare
+	* res.rc (IDD_CHOOSE): Bugfix: the chooser was setting a non-present
+	caption.
+
+2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	Remove package specific code from choose.cc.
 	Update copyrights where appropriate.
 	* choose.cc(ChooserPage::OnNext): Extract logging to

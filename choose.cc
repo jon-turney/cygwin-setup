@@ -64,7 +64,7 @@ using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
-static HWND lv, choose_inst_text;
+static HWND lv;
 static PickView *chooser = NULL;
 
 static void set_view_mode (HWND h, PickView::views mode);
@@ -534,15 +534,18 @@ scan_downloaded_files ()
 bool
 ChooserPage::Create ()
 {
-  return PropertyPage::Create (IDD_CHOOSE);
+    return PropertyPage::Create (IDD_CHOOSE);
+}
+
+void
+ChooserPage::setPrompt(char const *aString)
+{
+  ::SetWindowText (GetDlgItem (IDC_CHOOSE_INST_TEXT), aString);
 }
 
 void
 ChooserPage::OnInit ()
 {
-  HWND frame;
-  RECT r;
-
   register_windows (GetInstance ());
 
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_CWD)
@@ -551,13 +554,12 @@ ChooserPage::OnInit ()
   set_existence ();
   fill_missing_category ();
 
-  frame = GetDlgItem (IDC_LISTVIEW_POS);
-  choose_inst_text = GetDlgItem (IDC_CHOOSE_INST_TEXT);
   if (source == IDC_SOURCE_DOWNLOAD)
-    ::SetWindowText (choose_inst_text, "Select packages to download ");
+    setPrompt("Select packages to download ");
   else
-    ::SetWindowText (choose_inst_text, "Select packages to install ");
-  GetParentRect (GetHWND (), frame, &r);
+    setPrompt("Select packages to install ");
+  RECT r;
+  GetParentRect (GetHWND (), GetDlgItem (IDC_LISTVIEW_POS), &r);
   r.top += 2;
   r.bottom -= 2;
   create_listview (GetHWND (), &r);
@@ -580,6 +582,8 @@ ChooserPage::logResults()
 long
 ChooserPage::OnNext ()
 {
+  logResults();
+
   if (source == IDC_SOURCE_CWD)
     {
       // Next, install
@@ -590,8 +594,6 @@ ChooserPage::OnNext ()
       // Next, start download from internet
       Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
     }
-  logResults();
-
   return IDD_INSTATUS;
 }
 

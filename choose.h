@@ -50,6 +50,7 @@ public:
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();
   void keepClicked ();
+  void setPrompt(char const *aPrompt);
   template<class C> bool ifChecked(int const &id, void (C::*fn)()) {
      if (IsDlgButtonChecked (GetHWND (), id)) {
        (this->*fn)();
