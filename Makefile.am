@@ -117,6 +117,8 @@ setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a \
 	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid 
 setup_LDFLAGS = -mwindows
 setup_SOURCES = \
+	AntiVirus.cc \
+	AntiVirus.h \
 	archive.cc \
 	archive.h \
 	archive_tar.cc \

@@ -30,6 +30,7 @@ static const char *cvsid =
 #include <set>
 #include <time.h>
 #include <string>
+#include "AntiVirus.h"
 
 using namespace std;
 
@@ -103,6 +104,7 @@ LogFile::setFile (int minlevel, String const &path, bool append)
 void
 LogFile::exit (int const exit_code)
 {
+  AntiVirus::AtExit();
   static int been_here = 0;
   if (been_here)
 #ifndef _CYGWIN_

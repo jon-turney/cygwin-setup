@@ -48,6 +48,7 @@ static const char *cvsid =
 
 // Page class headers
 #include "splash.h"
+#include "AntiVirus.h"
 #include "source.h"
 #include "root.h"
 #include "localdir.h"
@@ -180,6 +181,7 @@ main (int argc, char **argv)
   log (LOG_PLAIN) << "Starting cygwin install, version " << version << endLog;
 
   SplashPage Splash;
+  AntiVirusPage AntiVirus;
   SourcePage Source;
   RootPage Root;
   LocalDirPage LocalDir;
@@ -226,6 +228,7 @@ main (int argc, char **argv)
 
   // Create pages
   Splash.Create ();
+  AntiVirus.Create ();
   Source.Create ();
   Root.Create ();
   LocalDir.Create ();
@@ -237,6 +240,7 @@ main (int argc, char **argv)
 
   // Add pages to sheet
   MainWindow.AddPage (&Splash);
+  MainWindow.AddPage (&AntiVirus);
   MainWindow.AddPage (&Source);
   MainWindow.AddPage (&Root);
   MainWindow.AddPage (&LocalDir);

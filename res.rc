@@ -48,6 +48,26 @@ BEGIN
                     IDC_STATIC,21,9,239,16,NOT WS_GROUP
 END
 
+IDD_VIRUS DIALOG DISCARDABLE  0, 0, 317, 179
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "Disable Virus Scanner?"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "&Disable Virus scanner",IDC_DISABLE_AV,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,101,69,115,10
+    CONTROL         "&Leave Virus scanner alone",IDC_LEAVE_AV,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,101,84,115,10
+    ICON            IDI_CYGWIN,IDC_STATIC,290,0,21,20
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
+                    317,1
+    LTEXT           "Choose whether to disable your virus scanner while installing.",IDC_STATIC_HEADER_TITLE,7,0,
+                    131,8,NOT WS_GROUP
+    LTEXT           "Some Antivirus programs, notably McAfee, cause a blue screen on Windows NT/2000/XP computers during installation of Cygwin.", 
+   		    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT	    "One that may be a problem has been detected. Cygwin setup can disable this during the installation process, and re-enable it when the install is complete.",
+                    IDC_STATIC,21,32,239,24,NOT WS_GROUP
+END
+
 IDD_LOCAL_DIR DIALOG DISCARDABLE  0, 0, 317, 179
 STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
 CAPTION "Select Local Package Directory"

@@ -33,6 +33,8 @@ static const char *cvsid =
 
 #include "source.h"
 
+#include "AntiVirus.h"
+
 #include "getopt++/BoolOption.h"
 
 static BoolOption DownloadOption (false, 'D', "download", "Download from internet");
@@ -125,6 +127,8 @@ long
 SourcePage::OnBack ()
 {
   save_dialog (GetHWND ());
+  if (!AntiVirus::Show())
+      return IDD_SPLASH;
   return 0;
 }
 

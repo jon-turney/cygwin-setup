@@ -54,6 +54,12 @@ Auto (advapi32, FreeSid, 4);
 Auto (advapi32, InitializeAcl, 12);
 Auto (advapi32, OpenProcessToken, 12);
 Auto (advapi32, SetTokenInformation, 16);
+Auto (advapi32, OpenSCManagerA, 16);
+Auto (advapi32, CloseServiceHandle, 4);
+Auto (advapi32, OpenServiceA, 16);
+Auto (advapi32, QueryServiceStatus, 8);
+Auto (advapi32, StartServiceA, 16);
+
 
 typedef struct {
   DllInfo *dll;

@@ -57,6 +57,7 @@
 #define IDB_CHECK_NA                    125
 #define IDD_FTP_AUTH                    126
 #define IDD_CHOOSER                     127
+#define IDD_VIRUS			128
 #define IDC_SOURCE_DOWNLOAD             1000
 #define IDC_SOURCE_NETINST              1001
 #define IDC_SOURCE_CWD                  1002
@@ -116,6 +117,8 @@
 #define IDS_REBOOT_REQUIRED		1064
 #define IDS_CORRUPT_PACKAGE		1065
 #define IDS_INSTALL_ERROR		1066
+#define IDC_DISABLE_AV			1067
+#define IDC_LEAVE_AV			1068
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -126,7 +129,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1067
+#define _APS_NEXT_CONTROL_VALUE         1069
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

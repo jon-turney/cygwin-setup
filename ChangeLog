@@ -1,5 +1,21 @@
 2002-11-25  Robert Collins  <rbtcollins@hotmail.com>
 
+	* AntiVirus.cc: New file.
+	* AntiVirus.h: Ditto.
+	* LogFile.cc: Include AntiVirus.h for class definition.
+	(LogFile::exit): Trigger AntiVirus::AtExit().
+	* MakeFile.am(setup_SOURCES): Add AntiVirus files.
+	* autoload.c: Declare Service Control Manager related API's.
+	* main.cc: Include AntiVirus.h for class definition.
+	(main): Add the AntiVirus page in.
+	* res.rc: Define IDD_VIRUS.
+	* resource.h: Define IDD_VIRUS related control ID's.
+	* splash.h: Override OnNext.
+	* splash.cc: Only show AntiVirus page when one has been detected.
+	* source.cc: Ditto.
+
+2002-11-25  Robert Collins  <rbtcollins@hotmail.com>
+
 	* package_version.cc (DependencyProcessor): Create convenience class.
 	(select): Extract version selection method.
 	(processOneDependency): Check for a satisfactory trusted version

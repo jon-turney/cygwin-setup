@@ -33,6 +33,7 @@ public:
 
   bool Create ();
   virtual void OnInit ();
+  virtual long OnNext ();
   long OnUnattended ()
   {
     return 0;
