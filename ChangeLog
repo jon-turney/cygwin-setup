@@ -1,5 +1,9 @@
 2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
 
+	* script.cc (Script::run): Eliminate temp variable 'fname'.
+
+2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
+
 	* script.cc (Script::run): Eliminate temp variable 'dir'.
 
 2003-04-12  Robert Collins  <rbtcollins@hotmail.com>

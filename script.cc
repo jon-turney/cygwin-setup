@@ -205,8 +205,7 @@ run_script (String const &dir, String const &fname)
 void
 Script::run(BOOL to_log) const
 {
-  String const fname (scriptName);
-  char *ext = strrchr (fname.cstr_oneuse(), '.');
+  char *ext = strrchr (scriptName.cstr_oneuse(), '.');
   if (!ext)
     return;
 
@@ -220,13 +219,13 @@ Script::run(BOOL to_log) const
 
   if (sh.size() && strcmp (ext, ".sh") == 0)
     {
-      String f2 = fname;
+      String f2 = scriptName;
       log(LOG_PLAIN) << "running: " << sh << " -c " << f2 << endLog;
       ::run (sh.cstr_oneuse(), "-c", f2.cstr_oneuse(), file_out);
     }
   else if (cmd && strcmp (ext, ".bat") == 0)
     {
-      String f2 = backslash (cygpath (fname));
+      String f2 = backslash (cygpath (scriptName));
       log(LOG_PLAIN) << "running: " << cmd << " /c " << f2 << endLog;
       ::run (cmd, "/c", f2.cstr_oneuse(), file_out);
     }
@@ -237,10 +236,10 @@ Script::run(BOOL to_log) const
     log(LOG_BABBLE) << file_out << endLog;
 
   /* if file exists then delete it otherwise just ignore no file error */
-  io_stream::remove (String ("cygfile://") + fname + ".done");
+  io_stream::remove (String ("cygfile://") + scriptName + ".done");
 
-  io_stream::move (String ("cygfile://") + fname,
-                   String ("cygfile://") + fname+ ".done");
+  io_stream::move (String ("cygfile://") + scriptName,
+                   String ("cygfile://") + scriptName + ".done");
 }
 
 void
