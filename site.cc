@@ -26,6 +26,8 @@
 #include "state.h"
 #include "geturl.h"
 #include "msg.h"
+#include "concat.h"
+#include "mount.h"
 
 #include "port.h"
 
@@ -70,6 +72,33 @@ save_dialog (HWND h)
     }
 }
 
+static void
+get_root_dir ()
+{
+  int istext;
+  int issystem;
+  if (root_dir)
+    return;
+  root_dir = find_root_mount (&istext, &issystem);
+}
+
+void
+save_site_url ()
+{
+  if (! MIRROR_SITE)
+    return;
+
+  get_root_dir ();
+  if (! root_dir)
+    return;
+  
+  FILE *f = fopen (concat (root_dir, "/etc/setup/last-mirror", 0), "wb");
+  if (!f)
+    return;
+  fprintf (f, "%s\n", MIRROR_SITE);
+  fclose (f);
+}
+
 static BOOL
 dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 {
@@ -82,15 +111,19 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       break;
 
     case IDOK:
-      save_dialog(h);
+      save_dialog (h);
       if (mirror_idx == OTHER_IDX)
 	NEXT(IDD_OTHER_URL);
       else
-	NEXT(IDD_S_LOAD_INI);
+	{
+	  other_url = 0;
+	  save_site_url ();
+	  NEXT(IDD_S_LOAD_INI);
+	}
       break;
 
     case IDC_BACK:
-      save_dialog(h);
+      save_dialog (h);
       NEXT(IDD_NET);
       break;
 
@@ -116,7 +149,7 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 	}
       j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM)"Other URL");
       SendMessage (listbox, LB_SETITEMDATA, j, OTHER_IDX);
-      load_dialog(h);
+      load_dialog (h);
       return FALSE;
     case WM_COMMAND:
       return HANDLE_WM_COMMAND(h, wParam, lParam, dialog_cmd);
@@ -128,7 +161,7 @@ static int
 get_site_list (HINSTANCE h)
 {
   char mirror_url[1000];
-  if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof(mirror_url)) <= 0)
+  if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
     return 1;
   char *mirrors = get_url_to_string (mirror_url);
   dismiss_url_status_dialog ();
@@ -137,7 +170,11 @@ get_site_list (HINSTANCE h)
 
   char *bol, *eol, *nl;
 
-  int nmirrors = 2; /* null plus account for possibly missing NL */
+  
+  /* null plus account for possibly missing NL plus account for "Other
+    URL" from previous run. */
+  int nmirrors = 3;
+
   for (bol=mirrors; *bol; bol++)
     if (*bol == '\n')
       nmirrors ++;
@@ -171,6 +208,45 @@ get_site_list (HINSTANCE h)
   return 0;
 }
 
+static void
+get_initial_list_idx ()
+{
+  get_root_dir ();
+  if (! root_dir)
+    return;
+
+  FILE *f = fopen (concat (root_dir, "/etc/setup/last-mirror", 0), "rt");
+  if (!f)
+    return;
+
+  char site[1000];
+  site[0]='\0';
+  char * fg_ret = fgets (site, 1000, f);
+  fclose (f);
+  if (! fg_ret)
+    return;
+
+  char *eos = site + strlen (site) - 1;
+  while (eos >= site && (*eos == '\n' || *eos == '\r'))
+    *eos-- = '\0';
+
+  if (eos < site)
+    return;
+
+  int i;
+  for (i = 0; site_list[i]; i++)
+    if (strcmp (site_list[i], site) == 0)
+      break;
+
+  if (! site_list[i])
+    {
+      site_list[i] = _strdup (site);
+      site_list[i+1] = 0;
+    }
+
+  mirror_idx = list_idx = i;
+}
+
 void
 do_site (HINSTANCE h)
 {
@@ -182,6 +258,8 @@ do_site (HINSTANCE h)
 	NEXT(0);
 	return;
       }
+
+  get_initial_list_idx ();
 
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_SITE), 0, dialog_proc);
   if (rv == -1)

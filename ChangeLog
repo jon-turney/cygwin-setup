@@ -1,3 +1,18 @@
+2000-07-17  Jeff Juliano  <juliano@cs.unc.edu>
+
+	* res.rc (IDD_OTHER_URL): reorder to give default focus to entry
+
+	* other.cc (dialog_cmd): save download site URL
+	* site.cc (get_root_dir): new
+	(save_mirror_site): new
+	(dialog_cmd): save download site URL
+	(get_site_list): make list big enough to add prev site
+	(get_initial_list_idx): new, read last-used URL from file and
+	append it to site_list
+	(do_site): call get_initial_list_idx
+
+	* concat.cc (concat): avoid segfault when first parm is null
+	
 2000-07-13  DJ Delorie  <dj@cygnus.com>
 
 	* postinstall.cc: new

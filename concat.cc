@@ -23,12 +23,14 @@
 char *
 concat (char *s, ...)
 {
-  int len = strlen(s);
+  int len;
   char *rv, *arg;
   va_list v;
 
   if (!s)
     return 0;
+
+  len = strlen (s);
 
   va_start (v, s);
   while (1)

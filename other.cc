@@ -26,6 +26,9 @@
 #include "msg.h"
 
 
+/* private shared function, from site.cc */
+void save_site_url (void);
+
 static void
 check_if_enable_next (HWND h)
 {
@@ -58,6 +61,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDOK:
       save_dialog(h);
+      save_site_url ();
       NEXT(IDD_S_LOAD_INI);
       break;
 
