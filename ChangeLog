@@ -1,3 +1,7 @@
+2001-11-03  Robert Collins  <rbtcollins@hotmail.com>
+
+	* res.rc (IDD_CHOOSE): Move the view caption to the right hand edge.
+
 2001-11-03  Pavel Tsekov  <ptsekov@syntrex.com>
 
 	* install.cc (known_file_types): A new global variable, containing a set
