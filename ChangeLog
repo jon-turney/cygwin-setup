@@ -1,3 +1,9 @@
+Mon Sep 11 22:40 2000  Harold L Hunt II <harold@compasstechnologies.com>
+
+	* mkdir.cc: Create directories when ERROR_FILE_NOT_FOUND is
+	returned, as it seems Samba 2.0.6+ returns this instead of
+	ERROR_PATH_NOT_FOUND
+	
 Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* site.cc (get_initial_list_idx): Don't default to saved URL if it
@@ -10,7 +16,9 @@ Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
 	* resource.h: ditto
 	* version.h: new
 	* fromcwd.cc (canonicalize_version): make global
-	* iniparse.y: add setup-version support
+	* iniparse.y: add setup-version support, fix bug in blank line
+	handling
+
 	* inilex.l: add [exp] as alias for [test], add setup-version
 	* Makefile.in (version.c): add setup-version tag
 

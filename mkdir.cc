@@ -39,7 +39,7 @@ mkdir_p (int isadir, char *path)
       if (CreateDirectory (path, 0))
 	return 0;
       gse = GetLastError ();
-      if (gse != ERROR_PATH_NOT_FOUND)
+      if (gse != ERROR_PATH_NOT_FOUND && gse != ERROR_FILE_NOT_FOUND)
 	{
 	  if (gse == ERROR_ALREADY_EXISTS)
 	    {

@@ -55,6 +55,7 @@ setup_headers
 setup_header
  : SETUP_TIMESTAMP STRING '\n' { setup_timestamp = strtoul ($2, 0, 0); }
  | SETUP_VERSION STRING '\n' { setup_version = _strdup ($2); }
+ | '\n'
  | error { yyerror ("unrecognized line in setup.ini headers (do you have the latest setup?)"); } '\n'
  ;
 
@@ -66,7 +67,6 @@ packages
 package
  : '@' STRING '\n'		{ new_package($2); }
    lines
- | '\n'
  ;
 
 lines
