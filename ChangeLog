@@ -1,3 +1,9 @@
+2001-02-07  Earnie Boyd  <earnie@users.sourceforge.net>
+
+	* Makefile.in: (%.o: %.rc): Specify --include-dir $(w32api_include).
+	This is to allow cinstall to build with 2.95.2-7 and to make the
+	use of headers consistent.
+
 2000-12-26  Earnie Boyd  <earnie_boyd@yahoo.com>
 
 	* Makefile.in (autoload.o): Add target to specify -fno-inline-functions
