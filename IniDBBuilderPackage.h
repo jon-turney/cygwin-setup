@@ -73,8 +73,8 @@ private:
   packagemeta *csp;
   packageversion cspv;
   PackageSpecification *currentSpec;
-  vector<PackageSpecification *> *currentOrList;
-  vector<vector<PackageSpecification *> *> *currentAndList;
+  std::vector<PackageSpecification *> *currentOrList;
+  std::vector<std::vector<PackageSpecification *> *> *currentAndList;
   int trust;
   IniParseFeedback const &_feedback;
 };

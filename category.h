@@ -23,6 +23,6 @@
 #include <utility>
 
 class packagemeta;
-typedef pair <String const, vector <packagemeta *> > Category;
+typedef std::pair <String const, std::vector <packagemeta *> > Category;
 
 #endif /* _CATEGORY_H_ */

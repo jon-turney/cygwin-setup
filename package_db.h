@@ -40,11 +40,11 @@ public:
   packagemeta * findBinary (PackageSpecification const &) const;
   packagemeta * findSource (PackageSpecification const &) const;
   /* all seen binary packages */
-  static vector < packagemeta *> packages;
+  static std::vector < packagemeta *> packages;
   /* all seen source packages */
-  static vector <packagemeta *> sourcePackages;
+  static std::vector <packagemeta *> sourcePackages;
   /* all seen categories */
-  typedef map <String, vector <packagemeta *>, String::caseless > categoriesType;
+  typedef std::map <String, std::vector <packagemeta *>, String::caseless > categoriesType;
   static categoriesType categories;
   static PackageDBActions task;
 private:

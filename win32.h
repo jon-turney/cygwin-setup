@@ -31,6 +31,8 @@
 #define WIN32_LEAN_AND_MEAN
 /* We want a minimum IE version of 3 */
 #define _WIN32_IE 0x0300
+/* libstdc++-v3 _really_ dislikes min & max defined as macros. */
+#define NOMINMAX
 #include <windows.h>
 #if HAVE_ALLOCA_H
 #include <alloca.h>

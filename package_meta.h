@@ -95,8 +95,8 @@ public:
    * of a package disagree.... the first one read in will take precedence.
    */
   void add_category (String const &);
-  set <String, String::caseless> categories;
-  set <packageversion> versions;
+  std::set <String, String::caseless> categories;
+  std::set <packageversion> versions;
 
   /* which one is installed. */
   packageversion installed;

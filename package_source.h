@@ -102,7 +102,7 @@ public:
   virtual void set_canonical (char const *);
   virtual void set_cached (String const &);
   class md5 md5;
-  typedef vector <site> sitestype;
+  typedef std::vector <site> sitestype;
   sitestype sites;
 
   virtual ~ packagesource ()

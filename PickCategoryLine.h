@@ -83,7 +83,7 @@ private:
   size_t depth;
   PickCategoryLine (PickCategoryLine const &);
   PickCategoryLine & operator= (PickCategoryLine const &);
-  vector < PickLine * > bucket;
+  std::vector < PickLine * > bucket;
   PickView& theView;
 };
 #endif // _PICKCATEGORYLINE_H_

@@ -117,7 +117,7 @@ public:
   void setSourcePackageSpecification (PackageSpecification const &);
 
   /* invariant: these never return NULL */
-  vector <vector <PackageSpecification *> *> *depends(), *predepends(), 
+  std::vector <std::vector <PackageSpecification *> *> *depends(), *predepends(), 
   *recommends(), *suggests(), *replaces(), *conflicts(), *provides(), *binaries();
 
   bool picked() const;   /* true if this version is to be installed */
@@ -130,7 +130,7 @@ public:
   /* invariant: never null */
   packagesource *source(); /* where can we source the file from */
   /* invariant: never null */
-  vector <packagesource> *sources(); /* expose the list of files.
+  std::vector <packagesource> *sources(); /* expose the list of files.
 					source() returns the 'default' file
 					sources() allows managing multiple files
 					in a single package
@@ -180,7 +180,7 @@ public:
   virtual PackageSpecification & sourcePackageSpecification ();
   virtual void setSourcePackageSpecification (PackageSpecification const &);
   
-  vector <vector <PackageSpecification *> *> depends, predepends, recommends,
+  std::vector <std::vector <PackageSpecification *> *> depends, predepends, recommends,
   suggests, replaces, conflicts, provides, binaries;
   
   bool picked;	/* non zero if this version is to be installed */
@@ -191,7 +191,7 @@ public:
 
 
   virtual void uninstall () = 0;
-  vector<packagesource> sources; /* where can we source the files from */
+  std::vector<packagesource> sources; /* where can we source the files from */
 
   bool accessible () const;
 

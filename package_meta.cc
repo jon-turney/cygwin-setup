@@ -44,6 +44,8 @@ static const char *cvsid = "\n%%% $Id$\n";
 
 #include <algorithm>
 
+using namespace std;
+
 static const char *standard_dirs[] = {
   "bin",
   "etc",
@@ -416,7 +418,7 @@ packagemeta::set_action (packageversion const &default_version)
 }
 
 int
-packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
+packagemeta::set_requirements (trusts deftrust, size_t depth)
 {
   int changed = 0;
   /* handle build-depends */

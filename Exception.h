@@ -23,10 +23,10 @@
 #include <exception>
 
 /* Generic excpetion class for throwing exceptions */
-class Exception : public exception {
+class Exception : public std::exception {
 public:
   Exception (char const *where, char const *message, int appErrNo = 0);
-  char const *what() const;
+  char const *what() const throw();
   int errNo() const;
 private:
   char const *_message;

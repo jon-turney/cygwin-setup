@@ -73,7 +73,7 @@ public:
   bool operator >= (site_list_type const &) const;
 };
 
-typedef vector <site_list_type> SiteList;
+typedef std::vector <site_list_type> SiteList;
 
 /* user chosen sites */
 extern SiteList site_list;

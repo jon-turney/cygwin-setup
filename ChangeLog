@@ -1,3 +1,24 @@
+2002-11-04  Max Bowsher  <maxb@ukf.net>
+
+	* Exception.h (Exception::what): Add throw() specification,
+	to agree with libstdc++-v3.
+	* Exception.cc (Exception::what): Ditto.
+	* IniDBBuilderPackage.h: Add 'std::' where needed.
+	* PickCategoryLine.h: Ditto.
+	* category.h: Ditto.
+	* package_db.h: Ditto.
+	* package_meta.h: Ditto.
+	* package_source.h: Ditto.
+	* package_version.h: Ditto.
+	* site.h: Ditto.
+	* win32.h: Define NOMINMAX before including <windows.h>.
+	* package_meta.cc: Add 'using namespace std;'.
+	(packagemeta::set_requirements): Remove default parameter values
+	from definition (gcc3 likes them only in declaration).
+	* package_version.cc: Add 'using namespace std;'.
+	(packageversion::set_requirements): Remove default parameter
+	values from definition (gcc3 likes them only in declaration).
+
 2002-11-10  Robert Collins <rbtcollins@hotmail.com>
 
 	* compress_bz.cc: Don't include bzlib.h directly, the compress_bz.h

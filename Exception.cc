@@ -20,7 +20,7 @@ Exception::Exception (char const *where, char const *message, int _appErrNo) : _
 }
 
 char const *
-Exception::what() const
+Exception::what() const throw()
 {
   return _message;
 }

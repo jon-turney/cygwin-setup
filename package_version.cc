@@ -28,6 +28,8 @@ static const char *cvsid =
 #include "resource.h"
 #include <algorithm>
 
+using namespace std;
+
 /* a default class to avoid special casing empty packageversions */
   
 /* TODO place into the class header */
@@ -368,7 +370,7 @@ processOneDependency(trusts deftrust, size_t depth, PackageSpecification *spec)
 }
 
 int
-packageversion::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
+packageversion::set_requirements (trusts deftrust, size_t depth)
 {
   int changed = 0;
   vector <vector <PackageSpecification *> *>::iterator dp = depends ()->begin();
