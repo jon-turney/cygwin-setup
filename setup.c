@@ -645,20 +645,32 @@ geturl (const char *url, const char *file, int verbose)
 static char *
 findhref (char *buffer, char *date, size_t *filesize)
 {
-  char *ref;
-  char *anchor = strstr (buffer, "<A");
+  char *ref = NULL;
+  char *anchor;
+  char *p = buffer;
 
-  if (!anchor)
-    anchor = strstr (buffer, "<a");
+  while ((p = strchr (p, '<')) != NULL)
+    {
+      char *q = p;
+      char ch = *++p;
 
-  if (!anchor)
-      return 0;
+      if (tolower (ch) != 'a')
+	continue;
 
-  ref = strstr (anchor, "href=");
+      ch = *++p;
+      if (!isspace (ch))
+	continue;
 
-  if (!ref)
-    ref = strstr (anchor, "HREF=");
+      for (++p; isspace (*p); p++)
+	continue;
 
+      if (strnicmp (p, "href=", 5) == 0)
+	{
+	  ref = p;
+	  anchor = q;
+	}
+    }
+  
   if (ref)
     {
       int eatspace;
@@ -666,9 +678,6 @@ findhref (char *buffer, char *date, size_t *filesize)
       char digits[20];
       char *diglast = digits + sizeof (digits) - 1;
       int len;
-
-      if (filesize && (anchor == buffer || !isspace (anchor[-1])))
-	return 0;
 
       ref += ref[5] == '"' ? 6 : 5;
 
@@ -679,6 +688,10 @@ findhref (char *buffer, char *date, size_t *filesize)
 	return ref;
 
       *filesize = 0;
+
+      if (anchor == buffer || !isspace (anchor[-1]))
+	return ref;
+
       eatspace = 1;
       *diglast = '\0';
       for (p = anchor, q = diglast; --p >= buffer; )
@@ -726,7 +739,7 @@ processdirlisting (const char *urlbase, const char *file)
       DWORD urlspace = sizeof (url);
       struct _stat st;
 
-      if (!ref)
+      if (!ref || strnicmp (ref, "http:", 5) == 0)
 	continue;
 
       if (!InternetCombineUrl
@@ -792,7 +805,7 @@ processdirlisting (const char *urlbase, const char *file)
 	      warning ("Downloading: %s...", filename);
 	      fflush (stdout);
 	      res = geturl (url, filename, 0);
-	      if (res && !filesize || !needfile (filename, filedate, filesize))
+	      if ((res && !filesize) || !needfile (filename, filedate, filesize))
 		warning ("Done.\n");
 	      else
 		{
@@ -846,7 +859,7 @@ processdirlisting (const char *urlbase, const char *file)
 static char *
 tmpfilename ()
 {
-  return xstrdup (tmpnam (NULL));
+  return _tempnam (NULL, "su");
 }
 
 static int
@@ -858,7 +871,7 @@ downloaddir (const char *url)
   if (geturl (url, file, 1))
   {
     retval = processdirlisting (url, file);
-    // unlink (file);
+    unlink (file);
   }
   xfree (file);
 
@@ -882,7 +895,7 @@ downloadfrom (const char *url)
   if (geturl (url, file, 1))
     {
       retval = processdirlisting (url, file);
-      // unlink (file);
+      unlink (file);
     }
 
   xfree (file);
@@ -1137,7 +1150,7 @@ getdownloadsource ()
 	  sa_cleanup (&names);
 	}
     }
-  // unlink (filename);
+  unlink (filename);
 
   return retval;
 }

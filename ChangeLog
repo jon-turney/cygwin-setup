@@ -1,3 +1,11 @@
+Wed Apr 26 22:16:57 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (findhref): Change method for scanning for href= to choose
+	the last one on the line.  This is still not foolproof and probably
+	will need to be changed eventually.  Don't abort if no "size" field is
+	evident.
+	(processdirlisting): Fix boolean algebra.
+
 Wed Apr 26 01:10:39 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* main.c (tarx): Add some code for future task of unmounting
