@@ -34,9 +34,9 @@ typedef enum
 
 typedef enum
 {
-  ACTION_UNKNOWN,
-  /* Note that the next six items must be in the same order as the
+  /* Note that the next four items must be in the same order as the
      TRUST items above. */
+  ACTION_UNKNOWN,
   ACTION_PREV,
   ACTION_CURR,
   ACTION_TEST,
@@ -47,9 +47,11 @@ typedef enum
   ACTION_LAST,
   ACTION_ERROR,
   ACTION_SAME = 100,
+  /* Actions taken when installed version matches the selected version. */
   ACTION_SAME_PREV = ACTION_PREV + ACTION_SAME,
   ACTION_SAME_CURR = ACTION_CURR + ACTION_SAME,
   ACTION_SAME_TEST = ACTION_TEST + ACTION_SAME,
+  /* Last action. */
   ACTION_SAME_LAST
 } actions;
 
@@ -90,8 +92,8 @@ typedef struct _Info
   int source_exists;	/* source file exists on disk */
 #ifdef __cplusplus
   _Info (const char *_install, const char *_version,
-	int _install_size, const char *_source = NULL,
-	int _source_size = 0);
+	 int _install_size, const char *_source = NULL,
+	 int _source_size = 0);
 #endif
 } Info;			/* +1 for TRUST_UNKNOWN */
 
@@ -108,14 +110,17 @@ typedef struct
   char *ldesc;		/* long description (multi-line) */
   char *category; /* the category the package belongs to, like "required" or "XFree86" */
   Dependency *required; /* the packages required for this package to work */
-  actions action;	/* ACTION_* - only NEW and UPGRADE get installed */
-  trusts trust;		/* TRUST_* (selects among info[] below) */
-  int srcpicked;	/* SRCACTION_ */
+  actions action;	/* A range of states applicable to this package */
+  trusts trust;		/* Selects among info[] below, a subset of action */
+  int srcpicked;	/* True if source is required */
 
-  Info *installed;
-  trusts installed_ix;
+  Info *installed;	/* Info on installed package */
+  trusts installed_ix;	/* Index into info array for currently installed package */
   excludes exclude;	/* true if this package should be excluded */
 
+  /* The reason for this weird layout is to allow for loops that scan either
+     the info array, based on trust value or the infoscan array based on a pointer,
+     looking for a particular version. */
   Info info[1];			/* First element.  Intentionally allocated prior
 				   to infoscan */
   Info infoscan[NTRUST - 1];	/* +1 for TRUST_UNKNOWN */
