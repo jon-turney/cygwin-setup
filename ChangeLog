@@ -1,3 +1,18 @@
+2003-03-15  Robert Collins  <rbtcollins@hotmail.com>
+
+	* configure: Remove.
+	* aclocal.m4: Remove.
+	* Makefile.in: Remove.
+	* cfgaux: Remove.
+	* cfgaux/compile: Remove.
+	* cfgaux/config.guess: Remove.
+	* cfgaux/config.sub: Remove.
+	* cfgaux/depcomp: Remove.
+	* cfgaux/install-sh: Remove.
+	* cfgaux/ltmain.sh: Remove.
+	* cfgaux/missing: Remove.
+	* cfgaux/mkinstalldirs: Remove.
+
 2003-03-14  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
 	* install.cc (replace_one): Clear Text3.
