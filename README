@@ -34,6 +34,4 @@ Add support for http passwords as well as proxy passwords.
 
 Make the site listbox bigger.
 
-Sort site list by site (NOT url, and skip the ftp. or www. prefix).
-
 download.cc: add a "total progress" indicator, like the install one.
