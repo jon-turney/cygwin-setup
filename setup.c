@@ -1163,7 +1163,8 @@ those as the basis for your installation.\n\n"
 	  root = prompt ("Root directory", defroot);
 	  if (strcmpi (root, wd) == 0)
 	    {
-	      printf ("Please do not use the current directory as the root directory.\nYou should run setup.exe from a temporary directory.\n");
+	      printf ("Please do not use the current directory as the root directory.\n"
+		      "You should run setup.exe from a temporary directory.\n");
 	      continue;
 	    }
 	  if (strchr (root, ' '))
@@ -1210,12 +1211,22 @@ those as the basis for your installation.\n\n"
 	}
       else
 	{
+	  FILE *fp;
+
 	  _chdrive (toupper (*root) - 'A' + 1);
 
 	  xumount (wd, "/usr");
+	  xumount (wd, "/var");
+	  
 	  /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
 	  mkmount (wd, root, "bin", "/usr/bin", 1);
 	  mkmount (wd, root, "lib", "/usr/lib", 1);
+
+	  mkdirp ("var\\run");
+	  /* Create /var/run/utmp */
+	  fp = fopen ("var\\run\\utmp", "wb");
+	  if (fp)
+	    fclose (fp);
 
 	  files.count = NFILE_LIST;
 	  files.array = calloc (sizeof (char *), NFILE_LIST + NFILE_SLOP);
