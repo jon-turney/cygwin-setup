@@ -28,6 +28,8 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "resource.h"
 #include "msg.h"
 
+extern DWORD get_file_size (char *);
+
 NetIO_File::NetIO_File (char *Purl)
   : NetIO (Purl)
 {
@@ -35,8 +37,7 @@ NetIO_File::NetIO_File (char *Purl)
   fd = fopen (path, "rb");
   if (fd)
     {
-      stat (path, &s);
-      file_size = s.st_size;
+      file_size = get_file_size(path);
     }
   else
     {

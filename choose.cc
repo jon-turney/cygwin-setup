@@ -185,7 +185,7 @@ paint (HWND hwnd)
     {
       static char *msg = "Nothing to Install/Update";
       if (source == IDC_SOURCE_DOWNLOAD)
-         msg = "Nothing to Download";
+	 msg = "Nothing to Download";
       TextOut (hdc, HMARGIN, header_height, msg, strlen (msg));
     }
   
@@ -288,18 +288,17 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
       extra[p].pick ++;
       while (extra[p].chooser[extra[p].pick].trust < NTRUST && 
 	(package[p].info[extra[p].chooser[extra[p].pick].trust].install_exists
-        ==0 && source == IDC_SOURCE_CWD) && 
-        package[p].info[extra[p].chooser[extra[p].pick].trust].install &&
-        extra[p].chooser[extra[p].pick].caption != 0)
-          extra[p].pick ++;
+	==0 && source == IDC_SOURCE_CWD) && 
+	package[p].info[extra[p].chooser[extra[p].pick].trust].install &&
+	extra[p].chooser[extra[p].pick].caption != 0)
+	  extra[p].pick ++;
       if (extra[p].chooser[extra[p].pick].caption == 0)
 	extra[p].pick = 0;
     }
 
   if (x >= headers[SRC_COL].x - HMARGIN/2 && x <= headers[SRC_COL+1].x - HMARGIN/2)
     {
-      if (extra[p].chooser[extra[p].pick].src_avail && 
-          package[p].info[extra[p].chooser[extra[p].pick].trust].source_exists)
+      if (extra[p].chooser[extra[p].pick].src_avail ) 
 	package[p].srcaction ^= (SRCACTION_NO^SRCACTION_YES);
     }
 
@@ -367,24 +366,24 @@ static int
 check_existence (int p, int trust, int check_src)
 {
   if (source == IDC_SOURCE_NETINST)
-        return 1;
+	return 1;
   if (source == IDC_SOURCE_DOWNLOAD)
      {
      if ( check_src == 0 && _access(package[p].info[trust].install,0) == 0)
-        return 1;
+	return 1;
      else if ( check_src == 1 && _access(package[p].info[trust].source,0) == 0 )
-        return 1;
+	return 1;
      else
-        return 0;
+	return 0;
      }
   if (source == IDC_SOURCE_CWD)
      {
      if ( check_src == 0  && package[p].info[trust].install &&
-           _access(package[p].info[trust].install,0) == 0 )
-         return 1;
+	   _access(package[p].info[trust].install,0) == 0 )
+	 return 1;
      else if ( check_src == 1 && package[p].info[trust].source && 
-               _access(package[p].info[trust].source,0) == 0 )
-         return 1;
+	       _access(package[p].info[trust].source,0) == 0 )
+	 return 1;
      }
   return 0;
 }
@@ -395,31 +394,31 @@ set_existence ()
   for (int i=0; i<npackages; i++)
     {
       for (int t=0; t<NTRUST; t++)
-        {
-          /* 0 = check install file */
-          package[i].info[t].install_exists = check_existence(i,t,0); 
-          /* 1 = check source file */
-          package[i].info[t].source_exists = check_existence(i,t,1); 
-        }
+	{
+	  /* 0 = check install file */
+	  package[i].info[t].install_exists = check_existence(i,t,0); 
+	  /* 1 = check source file */
+	  package[i].info[t].source_exists = check_existence(i,t,1); 
+	}
       for (int t=0; t<NTRUST; t++)
-        {
-          if (package[i].info[t].install && 
-              extra[i].installed_ver != package[i].info[t].version )
-            {
-            if (source == IDC_SOURCE_NETINST )
-               package[i].info[t].partial_list_display=1;
-            else if (source == IDC_SOURCE_DOWNLOAD )
-               package[i].info[t].partial_list_display = 1-package[i].info[t].install_exists;
-            else if (source == IDC_SOURCE_CWD )
+	{
+	  if (package[i].info[t].install && 
+	      extra[i].installed_ver != package[i].info[t].version )
+	    {
+	    if (source == IDC_SOURCE_NETINST )
+	       package[i].info[t].partial_list_display=1;
+	    else if (source == IDC_SOURCE_DOWNLOAD )
+	       package[i].info[t].partial_list_display = 1-package[i].info[t].install_exists;
+	    else if (source == IDC_SOURCE_CWD )
 	       if (package[i].info[t].install_exists)
-                  package[i].info[t].partial_list_display = 1;
-               else 
+		  package[i].info[t].partial_list_display = 1;
+	       else 
 		  package[i].info[t].partial_list_display = 0;
-            }
-          if (package[i].info[t].partial_list_display )
-            extra[i].in_partial_list = 1;
+	    }
+	  if (package[i].info[t].partial_list_display )
+	    extra[i].in_partial_list = 1;
 	    
-        }
+	}
     }
 }
 
@@ -429,9 +428,9 @@ best_trust (int p, int trust)
   int t;
   t=trust; 
     if (package[p].info[t].install &&
-        ((package[p].info[t].install_exists && source == IDC_SOURCE_CWD) ||
-        (package[p].info[t].install_exists == 0 && 
-        source == IDC_SOURCE_DOWNLOAD) || source == IDC_SOURCE_NETINST))
+	((package[p].info[t].install_exists && source == IDC_SOURCE_CWD) ||
+	(package[p].info[t].install_exists == 0 && 
+	source == IDC_SOURCE_DOWNLOAD) || source == IDC_SOURCE_NETINST))
       return t;
   if (extra[p].installed_file && extra[p].installed_ver == package[p].info[t].version)
     return TRUST_KEEP;
@@ -471,12 +470,12 @@ set_full_list (HWND h, int isfull)
   for (i=j=0; i<npackages; i++)
     {
       if ((isfull || (extra[i].in_partial_list && 
-         extra[i].chooser[extra[i].pick].trust != TRUST_KEEP &&
-         extra[i].chooser[extra[i].pick].trust != TRUST_NONE)) && 
-         (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_NETINST || 
-         package[i].info[TRUST_PREV].install_exists || 
-         package[i].info[TRUST_CURR].install_exists || 
-         package[i].info[TRUST_TEST].install_exists) )
+	 extra[i].chooser[extra[i].pick].trust != TRUST_KEEP &&
+	 extra[i].chooser[extra[i].pick].trust != TRUST_NONE)) && 
+	 (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_NETINST || 
+	 package[i].info[TRUST_PREV].install_exists || 
+	 package[i].info[TRUST_CURR].install_exists || 
+	 package[i].info[TRUST_TEST].install_exists) )
 	package_indexes[j++] = i;
     }
   nindexes = j;
@@ -532,10 +531,10 @@ build_labels ()
 		C.caption = "0.0";
 	      C.trust = t;
 	      if (package[i].info[t].source && 
-                  ((package[i].info[t].source_exists && 
-                  source==IDC_SOURCE_CWD) || 
-                  (package[i].info[t].source_exists==0 && 
-                  source==IDC_SOURCE_DOWNLOAD) || source==IDC_SOURCE_NETINST))
+		  ((package[i].info[t].source_exists && 
+		  source==IDC_SOURCE_CWD) || 
+		  (package[i].info[t].source_exists==0 && 
+		  source==IDC_SOURCE_DOWNLOAD) || source==IDC_SOURCE_NETINST))
 		C.src_avail = 1;
 	      c++;
 	    }
@@ -741,8 +740,8 @@ get_package_version(int p , int trust)
   for (d=v; *d; d++)
     if (strncmp (d, ".tar", 4) == 0)
       {
-        *d = 0;
-        break;
+	*d = 0;
+	break;
       }
   if (v[0])
     {
@@ -761,70 +760,105 @@ get_package_version(int p , int trust)
 static void
 scan2 (char *path, unsigned int size)
 {
-  int i, t;
+  int i, t, c;
   if (strcmp(path+strlen(path)-7,".tar.gz") == 0)
     {
-    char mainpkg[_MAX_PATH],pkginfo[_MAX_PATH], *ver, *verinfo;
+    char mainpkg[_MAX_PATH],pkginfo[_MAX_PATH],tarpkg[_MAX_PATH],*ver,*verinfo;
     strcpy (mainpkg,path);
+    strcpy (tarpkg,path);
     mainpkg[strlen(mainpkg)-7] = 0; /* strip off the tar.gz */
     for (ver=mainpkg; *ver; ver++)
       if ((*ver == '-' || *ver == '_') && isdigit(ver[1]))
-        {
-          *ver++ = 0;
-          break;
+	{
+	  *ver++ = 0;
+	  break;
 	}
     for (i=0; i<npackages; i++)
       {
-        pkginfo[0] = 0;
-        for (t=0; t<NTRUST; t++)
-          {
-          if (package[i].info[t].install)
-            {
-              strcpy (pkginfo,package[i].info[t].install);
-              pkginfo[strlen(pkginfo)-7] = 0; /* strip off the tar.gz */
-              for (verinfo=pkginfo; *verinfo; verinfo++)
-                { 
-                  if ((*verinfo == '-' || *verinfo == '_') && isdigit(verinfo[1]))
-                    {
-                      *verinfo++ = 0;
-                      break;
-	            }
-                }
-            break;
-            }
-          }  
-      if (strcmp(pkginfo,mainpkg) == 0 )
-        {
-        for (t=0; t<NTRUST; t++) 
-          if (package[i].info[t].install && 
-              strcmp (base (package[i].info[t].install), base (path)) == 0)
+	pkginfo[0] = 0;
+	for (t=0; t<NTRUST; t++)
+	  {
+	  if (package[i].info[t].install)
 	    {
-              package[i].info[t].install_exists=1;
-              break;
+	      strcpy (pkginfo,package[i].info[t].install);
+	      pkginfo[strlen(pkginfo)-7] = 0; /* strip off the tar.gz */
+	      for (verinfo=pkginfo; *verinfo; verinfo++)
+		{ 
+		  if ((*verinfo == '-' || *verinfo == '_') && isdigit(verinfo[1]))
+		    {
+		      *verinfo++ = 0;
+		      break;
+		    }
+		}
+	    break;
 	    }
-          else if (t>=NTRUST-1)
-            if (!package[i].info[TRUST_CURR].install)
-              {
-                package[i].info[TRUST_CURR].version = 0;
-                package[i].info[TRUST_CURR].install = strdup(path);
-                package[i].info[TRUST_CURR].install_size = size;
-                package[i].info[TRUST_CURR].install_exists=1;
-                if (package[i].info[TRUST_CURR].version == 0) 
-	          get_package_version(i,TRUST_CURR);
-                break;
-              }
-            else if (!package[i].info[TRUST_PREV].install )
-              {
-                package[i].info[TRUST_PREV].version = 0;
-                package[i].info[TRUST_PREV].install = strdup(path);
-                package[i].info[TRUST_PREV].install_size = size;
-                package[i].info[TRUST_PREV].install_exists=1;
-                if (package[i].info[TRUST_PREV].version == 0) 
-	          get_package_version(i,TRUST_PREV);
-                break;
-              }
-        break;
-        }
+	  }  
+      if (strcmp(pkginfo,mainpkg) == 0 )
+	{
+	for (t=0; t<NTRUST; t++) 
+	  if ((package[i].info[t].install && 
+	      strcmp (base (package[i].info[t].install), base (path)) == 0) ||
+	(package[i].info[t].source &&
+	      strcmp (base (package[i].info[t].source), base (path)) == 0 )) 
+	    {
+	      if (strcmp (base (package[i].info[t].install), base (path)) == 0)
+      package[i].info[t].install_exists=1;
+	else package[i].info[t].source_exists=1;
+	      break;
+	    }
+	  else if (t>=NTRUST-1)
+	    if (!package[i].info[TRUST_CURR].install)
+	      {
+		package[i].info[TRUST_CURR].version = 0;
+		if (strcmp(path+strlen(path)-11 , "-src.tar.gz") == 0)
+		  {
+		    for (c=0 ; c<8 ;c ++ )
+	    tarpkg[(strlen(tarpkg)-11)+c]=tarpkg[(strlen(tarpkg)-7)+c];
+	  package[i].info[TRUST_CURR].install = strdup(tarpkg);
+	  if (!package[i].info[TRUST_CURR].source )
+	    package[i].info[TRUST_CURR].source = strdup(path);
+	  package[i].info[TRUST_CURR].source_size = size;
+		    package[i].info[TRUST_CURR].source_exists=1;
+		    if (package[i].info[TRUST_CURR].version == 0) 
+		get_package_version(i,TRUST_CURR);
+	}
+      else
+	{
+	  package[i].info[TRUST_CURR].install = strdup(path);
+	  package[i].info[TRUST_CURR].install_size = size;
+		    package[i].info[TRUST_CURR].install_exists=1;
+		    if (package[i].info[TRUST_CURR].version == 0) 
+		get_package_version(i,TRUST_CURR);
+	}
+		break;
+	      }
+	    else if (!package[i].info[TRUST_PREV].install )
+	      {
+		package[i].info[TRUST_PREV].version = 0;
+		if (strcmp(path+strlen(path)-11 , "-src.tar.gz") == 0)
+		  {
+		    for (c=0 ; c<8 ;c ++ )
+	     tarpkg[(strlen(tarpkg)-11)+c]=tarpkg[(strlen(tarpkg)-7)+c];
+	  package[i].info[TRUST_PREV].install = strdup(tarpkg);
+	  if (!package[i].info[TRUST_PREV].source )
+	    package[i].info[TRUST_PREV].source = strdup(path);
+	  package[i].info[TRUST_PREV].source_size = size;
+		    package[i].info[TRUST_PREV].source_exists=1;
+		    if (package[i].info[TRUST_PREV].version == 0) 
+		get_package_version(i,TRUST_PREV);
+	}
+      else
+	{
+	  package[i].info[TRUST_PREV].install = strdup(path);
+	  package[i].info[TRUST_PREV].install_size = size;
+		    package[i].info[TRUST_PREV].install_exists=1;
+		    if (package[i].info[TRUST_PREV].version == 0) 
+		get_package_version(i,TRUST_PREV);
+	}
+		break;
+	      }
+	break;
+	}
       } 
     }
 }
@@ -869,14 +903,14 @@ read_installed_db ()
 		{
 		  extra[i].which_is_installed = t;
 		  extra[i].installed_ver = package[i].info[t].version;
-	          if (extra[i].installed_ver == 0) /* still */
+		  if (extra[i].installed_ver == 0) /* still */
 		    get_package_version(i,t);
 		  break;
 		}
 
 	    if (extra[i].installed_ver == 0) /* still */
 	      get_package_version(i, -1);
-            break;
+	    break;
 	  }
     }
   fclose (db);
@@ -914,11 +948,11 @@ do_choose (HINSTANCE h)
       extra[i].pick = 1;
       extra[i].chooser[extra[i].pick].trust = TRUST_NONE;
 	for (int t=0; t<NTRUST; t++)
-          {
-          package[i].info[t].partial_list_display=0;
-          package[i].info[t].install_exists=0;
-          package[i].info[t].source_exists=0;
-          }
+	  {
+	  package[i].info[t].partial_list_display=0;
+	  package[i].info[t].install_exists=0;
+	  package[i].info[t].source_exists=0;
+	  }
     }
 
   register_windows (h);
@@ -955,7 +989,7 @@ do_choose (HINSTANCE h)
 	case TRUST_KEEP:
 	case TRUST_NONE:
 	default:
-          package[i].action = ACTION_SAME;
+	  package[i].action = ACTION_SAME;
 	  break;
 	}
     }

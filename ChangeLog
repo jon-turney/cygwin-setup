@@ -1,3 +1,12 @@
+2001-03-16  Brian Keener <bkeener@thesoftwaresource.com>
+
+	* nio-file.cc (NetIO_File::NetIO_File): Use `get_file_size' instead of
+	`stat'.
+	* choose.cc (list_click): Correct inability to select source code for
+	download.
+	(scan2): Modify to skip source tarballs when scanning disk for
+	installable packages.
+
 2001-03-10  Chris Abbey  <chris_abbey@yahoo.com>
 
 	* install.cc: install sources into /usr/src instead
@@ -19,7 +28,7 @@ Tue Mar  6 19:11:00 2000  Corinna Vinschen <corinna@vinschen.com>
 	* choose.cc (paint): Modify message for nothing to download vs
 	nothing to install/update based on installation method.
 	(list_click): Modify to skip versions in selection process if
-	installing from local directory and installation file does not exist. 
+	installing from local directory and installation file does not exist.
 	Also leaves Source Action set to N/A if the source file does not exist
 	and installing from local directory.
 	(check_existence): New method to check current existence of installation
@@ -31,15 +40,15 @@ Tue Mar  6 19:11:00 2000  Corinna Vinschen <corinna@vinschen.com>
 	installation method selected.
 	(default_trust): Add logic to capture the current trust level and the
 	trust selected for the given package.
-	(set_full_list): Expand decision criteria for displaying a package in  
+	(set_full_list): Expand decision criteria for displaying a package in
 	the selection list to include file existence/non-existence and selected
 	installation method.
 	(build_labels): Modify criteria for label addition to include
 	installation method and file existence/non-existence.
-	(create_listview): Modify to establish package trust level for each  
+	(create_listview): Modify to establish package trust level for each
 	package before setting up the display list.  Also modification to set
 	current trust button as the default.
-	(dialog_cmd): Set response for Prev, Curr, Test button push to perform 
+	(dialog_cmd): Set response for Prev, Curr, Test button push to perform
 	a reset of the selection list in addition to setting the default trust.
 	(get_package_version): New method to provide reusable code for
 	determining the package version from the file name for a specified
@@ -50,20 +59,20 @@ Tue Mar  6 19:11:00 2000  Corinna Vinschen <corinna@vinschen.com>
 	(read_installed_db): Modify to use the new method
 	get_package_version and also enhance handling of the build for the
 	structures package and extra.
-	(do_choose): Add additional initialization of package and extra  
+	(do_choose): Add additional initialization of package and extra
 	structures.  Modify to use read_installed_db all the time despite
 	install method.  Modify output to setup.log.full log file to increase
 	readability by adding additional spacing, expanded code and available
 	versions.
 	* ini.h: Add new fields install_exists, source_exists and
-	partial_list_display to the structure definition for package.   
+	partial_list_display to the structure definition for package.
 	* res.rc (IDD_CHOOSE): Modify choose dialog Prev, Curr, and Test
 	pushbuttons by replacing with Radio Buttons thus allowing the
 	operator to better determine which is selected.
 
 2001-02-20  Brian Keener <bkeener@thesoftwaresource.com>
 
-	* download.cc (do_download): Add new variables total_download_bytes and 
+	* download.cc (do_download): Add new variables total_download_bytes and
 	total_download_bytes_sofar for download progress meter.  Add loop
 	to accumulate the total bytes to download from the selected packages.
 	* geturl.cc: Add state.h and diskfull.h to include list.  Add new
@@ -72,20 +81,20 @@ Tue Mar  6 19:11:00 2000  Corinna Vinschen <corinna@vinschen.com>
 	total packages download progress meter and disk full percent
 	progress meter.  Add variables total_download_bytes and
 	total_download_bytes_sofar for use by progress meters.
-	(dialog_proc): Add new variables gw_iprogress, gw_pprogress, 
-	gw_progress_text, gw_pprogress_text, and gw_iprogress_text to 
-	allow for addition of total packages download progress meter and disk 
-	full percent progress meter.  
+	(dialog_proc): Add new variables gw_iprogress, gw_pprogress,
+	gw_progress_text, gw_pprogress_text, and gw_iprogress_text to
+	allow for addition of total packages download progress meter and disk
+	full percent progress meter.
 	(init_dialog): Ditto.
 	(progress): Ditto.
 	(get_url_to_file): Ditto.
 	* geturl.h: Add external definition for total_download_bytes and
 	total_download_bytes_sofar.
-	* res.rc: Add two additional progress meters (IDC_DLS_IPROGRESS) 
+	* res.rc: Add two additional progress meters (IDC_DLS_IPROGRESS)
 	and (IDC_DLS_PPROGRESS) and three text objects (IDC_DLS_PROGRESS_TEXT)
 	and (IDC_DLS_IPROGRESS_TEXT, IDC_DLS_PPROGRESS_TEXT) for use in the
 	download meters.
-	* resource.h: Add new fields for progress meters and text and update 
+	* resource.h: Add new fields for progress meters and text and update
 	_APS_NEXT_CONTROL_VALUE.
 
 Wed Feb 21 13:05:00 2000  Corinna Vinschen <vinschen@redhat.com>
@@ -241,7 +250,7 @@ Mon Sep 11 22:40 2000  Harold L Hunt II <harold@compasstechnologies.com>
 	* mkdir.cc: Create directories when ERROR_FILE_NOT_FOUND is
 	returned, as it seems Samba 2.0.6+ returns this instead of
 	ERROR_PATH_NOT_FOUND
-	
+
 Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* site.cc (get_initial_list_idx): Don't default to saved URL if it
@@ -346,7 +355,7 @@ Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
 	* resource.h: add uninstall resources
 
 	* res.rc: update mirror list URL
-	
+
 2000-08-24  DJ Delorie  <dj@redhat.com>
 
 	* log.cc, log.h: new files
@@ -407,7 +416,7 @@ Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
 	* resource.h: add choose dialog controls
 
 	* mount.cc: remove debug statement
-	
+
 2000-08-08  DJ Delorie  <dj@redhat.com>
 
 	* Makefile.in (version.c): make version checking more robust
@@ -419,7 +428,7 @@ Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
 	* Makefile.in: generate version.c from ChangeLog, add splash.o
 	* splash.o: new
 	* res.rc: add splash screen
-	
+
 2000-08-02  DJ Delorie  <dj@redhat.com>
 
 	* net.cc: remove proxy password code
@@ -488,7 +497,7 @@ Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
 	(do_site): call get_initial_list_idx
 
 	* concat.cc (concat): avoid segfault when first parm is null
-	
+
 2000-07-13  DJ Delorie  <dj@cygnus.com>
 
 	* postinstall.cc: new
@@ -533,7 +542,7 @@ Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
 	* root.cc: pre-fill in defaults if needed, don't start
 	browse at root_dir unless it's set.
 	* desktop.cc: quote $PATH in case it has spaces in it
-	
+
 2000-07-10  DJ Delorie  <dj@cygnus.com>
 
 	* Makefile.in: add desktop.o and mklink2.o
@@ -547,7 +556,7 @@ Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
 2000-07-10  DJ Delorie  <dj@cygnus.com>
 
 	* ini.cc (do_ini): don't worry about timestamps if we're not
- 	actually installing.
+	actually installing.
 
 2000-07-09  DJ Delorie  <dj@cygnus.com>
 
