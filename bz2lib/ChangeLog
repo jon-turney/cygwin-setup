@@ -1,5 +1,10 @@
 2004-08-28  Max Bowsher  <maxb@ukf.net>
 
+	* Makefile.in, aclocal.m4, configure: Autoreconf. Fixes "make dist"
+	breakage with srcdir != objdir builds.
+
+2004-08-28  Max Bowsher  <maxb@ukf.net>
+
 	* Makefile.am (AUTOMAKE_OPTIONS): Add "foreign" for compatibility with
 	modern automake.
 
