@@ -37,6 +37,7 @@ static const char *cvsid =
 #include "LogFile.h"
 #include "log.h"
 #include "io_stream.h"
+#include "cistring.h"
 
 #include "localdir.h"
 #include "UserSettings.h"
@@ -184,20 +185,50 @@ LocalDirPage::OnNext ()
   save_dialog (h);
   localDir.save ();
   log (LOG_PLAIN, String ("Selected local directory: ") + local_dir);
-  if (SetCurrentDirectoryA (local_dir.cstr_oneuse()))
+  
+  bool trySetCurDir = true;
+  while (trySetCurDir)
     {
-      if (source == IDC_SOURCE_CWD)
+      trySetCurDir = false;
+      if (SetCurrentDirectoryA (local_dir.cstr_oneuse()))
 	{
-	  if (do_fromcwd (GetInstance (), GetHWND ()))
+	  if (source == IDC_SOURCE_CWD)
 	    {
-	      Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
-	      return IDD_INSTATUS;
+	      if (do_fromcwd (GetInstance (), GetHWND ()))
+		{
+		  Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
+		  return IDD_INSTATUS;
+		}
+	      return IDD_CHOOSE;
 	    }
-	  return IDD_CHOOSE;
+	}
+      else
+	{
+	  DWORD err = GetLastError ();
+	  char msgText[1000];
+	  LoadString (hinstance, IDS_ERR_CHDIR, msgText, sizeof (msgText));
+	  char* buf;
+	  char msg[1000];
+	  if (FormatMessage (FORMAT_MESSAGE_FROM_SYSTEM | 
+	    FORMAT_MESSAGE_ALLOCATE_BUFFER, 0, err, LANG_NEUTRAL,
+	    (LPSTR)&buf, 0, 0) != 0)
+	    {
+	      snprintf (msg, sizeof (msg), msgText, local_dir.cstr_oneuse(), 
+	        buf, err);
+	    }
+	    else
+	      snprintf (msg, sizeof (msg), msgText, local_dir.cstr_oneuse(), 
+	        "(unknown error)", err);
+	  log (LOG_PLAIN, msg);
+	  int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | 
+	    MB_ABORTRETRYIGNORE);
+	  
+	  if ((ret == IDABORT) || (ret == IDCANCEL))
+	    return -1;
+	  else
+	    trySetCurDir = (ret == IDRETRY);
 	}
     }
-  else
-    note (h, IDS_ERR_CHDIR, local_dir.cstr_oneuse());
 
   return 0;
 }

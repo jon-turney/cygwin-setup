@@ -484,7 +484,7 @@ BEGIN
     IDS_NOLOGFILE           "Cannot open log file %s for writing"
     IDS_UNINSTALL_COMPLETE  "Uninstalls complete."
     IDS_WININET             "Unable to find or load the Internet Explorer 5 DLLs"
-    IDS_ERR_CHDIR           "Could not change dir to %s"
+    IDS_ERR_CHDIR           "Could not change dir to %s: %s [%.8x]"
     IDS_OLD_SETUP_VERSION   "This setup is version %s, but setup.ini claims version %s is available.\nYou might want to upgrade to get the latest features and bug fixes."
     IDS_DOWNLOAD_FAILED     "Unable to download %s"
     IDS_DOWNLOAD_INCOMPLETE "Download Incomplete.  Try again?"

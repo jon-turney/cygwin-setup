@@ -1,5 +1,12 @@
 2003-10-31  Frank Richter  <frichter@gmx.li>
 
+	* localdir.cc (OnNext): When SelectDirectoryA() fails, display a 
+	message with the error returned from the system instead of just 
+	'could not change dir'. Also, offer the user to 'Retry', 'Ignore' the
+	error or 'Abort' the directory change.
+
+2003-10-31  Frank Richter  <frichter@gmx.li>
+
 	* propsheet.cc (PropSheetWndProc): Don't do child resizing if a the
 	window gets minimized. Otherwise some glitches (e.g. wrong child
 	sizes) occur.
