@@ -68,6 +68,6 @@ void rbset (HWND h, int *ids, int id);
 /* *This* version of fatal (compare with msg.h) uses GetLastError() to
    format a suitable error message.  Similar to perror() */
 
-void fatal (const char *msg) __attribute__ ((noreturn));
+void fatal (const char *msg, DWORD err = ERROR_SUCCESS) __attribute__ ((noreturn));
 
 #endif /* SETUP_DIALOG_H */

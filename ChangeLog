@@ -1,3 +1,10 @@
+2004-11-11  Max Bowsher  <maxb@ukf.net>
+
+	* dialog.cc (fatal): Make capable of handling a passed-in error code,
+	as an alternative to calling GetLastError().
+	* dialog.h (fatal): Adjust prototype as above.
+	* mount.cc (create_mount): Use the above to correctly report errors.
+
 2004-10-28  Max Bowsher  <maxb@ukf.net>
 
 	* LogFile.cc (LogFile::getFileName), splash.cc (SplashPage::Create),

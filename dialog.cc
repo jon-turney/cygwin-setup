@@ -102,9 +102,9 @@ rbset (HWND h, int *ids, int id)
 }
 
 void
-fatal (const char *msg)
+fatal (const char *msg, DWORD err)
 {
-  DWORD e = GetLastError ();
+  DWORD e = (err != ERROR_SUCCESS) ? err : GetLastError();
   char *buf;
   FormatMessage (FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		 0, e, 0, (CHAR *) & buf, 0, 0);
