@@ -21,11 +21,13 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "site.h"
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <process.h>
+#include <algorithm>
 
 #include "dialog.h"
 #include "resource.h"
@@ -38,14 +40,13 @@ static const char *cvsid =
 
 #include "port.h"
 
-#include "site.h"
 #include "propsheet.h"
 
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
 
-list < site_list_type, String, String::casecompare > site_list;
-list < site_list_type, String, String::casecompare > all_site_list;
+SiteList site_list;
+SiteList all_site_list;
 
 void
 site_list_type::init (String const &newurl)
@@ -91,15 +92,39 @@ site_list_type::site_list_type (String const &newurl)
   init (newurl);
 }
 
+site_list_type::site_list_type (site_list_type const &rhs)
+{
+  key = rhs.key;
+  url = rhs.url;
+  displayed_url = rhs.displayed_url;
+}
+
+site_list_type &
+site_list_type::operator= (site_list_type const &rhs)
+{
+  key = rhs.key;
+  url = rhs.url;
+  displayed_url = rhs.displayed_url;
+  return *this;
+}
+
+bool
+site_list_type::operator == (site_list_type const &rhs) const
+{
+  return key.casecompare (rhs.key) == 0; 
+}
+
+bool
+site_list_type::operator < (site_list_type const &rhs) const
+{
+  return key.casecompare (rhs.key) < 0;
+}
+
 static void
 save_dialog (HWND h)
 {
   // Remove anything that was previously in the selected site list.
-  while (site_list.number () > 0)
-    {
-      // we don't delete the object because it's stored in the all_site_list.
-      site_list.removebyindex (1);
-    }
+  site_list.clear ();
 
   HWND listbox = GetDlgItem (h, IDC_URL_LIST);
   int sel_count = SendMessage (listbox, LB_GETSELCOUNT, 0, 0);
@@ -116,7 +141,7 @@ save_dialog (HWND h)
 	{
 	  int mirror =
 	    SendMessage (listbox, LB_GETITEMDATA, sel_buffer[n], 0);
-	  site_list.registerbyobject (*all_site_list[mirror]);
+	  site_list.push_back (all_site_list[mirror]);
 	}
     }
 }
@@ -127,8 +152,9 @@ save_site_url ()
   io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "wb");
   if (f)
     {
-      for (size_t n = 1; n <= site_list.number (); n++)
-        f->write ((site_list[n]->url + "\n").cstr_oneuse(), site_list[n]->url.size() + 1);
+      for (SiteList::const_iterator n = site_list.begin ();
+	   n != site_list.end (); ++n)
+        f->write ((n->url + "\n").cstr_oneuse(), n->url.size() + 1);
       delete f;
     }
 }
@@ -164,15 +190,20 @@ get_site_list (HINSTANCE h, HWND owner)
 	  char *semi = strchr (bol, ';');
 	  if (semi)
 	    *semi = 0;
-	  site_list_type *newsite = new site_list_type (bol);
-	  site_list_type & listobj =
-	    all_site_list.registerbyobject (*newsite);
-	  if (&listobj != newsite)
+	  site_list_type newsite (bol);
+	  SiteList::iterator i = find (all_site_list.begin(),
+				       all_site_list.end(), newsite);
+	  if (i == all_site_list.end())
 	    {
-	      /* That site was already registered */
-	      listobj = *newsite;
-	      delete newsite;
+	      SiteList result;
+	      merge (all_site_list.begin(), all_site_list.end(),
+		     &newsite, &newsite + 1,
+		     inserter (result, result.begin()));
+	      all_site_list = result;
 	    }
+	  else
+	    //TODO: remove and remerge 
+	    *i = newsite;
 	}
     }
   delete[] theString;
@@ -208,8 +239,10 @@ get_saved_sites ()
       if (eos < site)
 	continue;
 
-      String tempKey = site_list_type (String(site)).key;
-      if  (!all_site_list.getbykey (tempKey))
+      site_list_type tempSite(site);
+      SiteList::iterator i = find (all_site_list.begin(),
+				   all_site_list.end(), tempSite);
+      if (i == all_site_list.end())
 	{
 	  /* Don't default to certain machines ever since they suffer
 	     from bandwidth limitations. */
@@ -217,20 +250,15 @@ get_saved_sites ()
 	      || strnicmp (site, NOSAVE2, NOSAVE2_LEN) == 0
 	      || strnicmp (site, NOSAVE3, NOSAVE3_LEN) == 0)
 	    return;
-	  site_list_type *newsite = new site_list_type (site);
-	  site_list_type & listobj =
-	    all_site_list.registerbyobject (*newsite);
-	  if (&listobj != newsite)
-	    /* That site was already registered - shouldn't happen, but safety first */
-	    delete newsite;
+	  SiteList result;
+	  merge (all_site_list.begin(), all_site_list.end(),
+		 &tempSite, &tempSite + 1,
+		 inserter (result, result.begin()));
+	  all_site_list = result;
+	  site_list.push_back (tempSite);
 	}
-      /* TODO: make a site_type method to create a serach key on-the-fly from a 
-         URL
-       */
-      // Was it an allowed URL? 
-      site_list_type *tempSite;
-      if ((tempSite = all_site_list.getbykey (tempKey)))
-	site_list.registerbyobject (*tempSite);
+      else
+	site_list.push_back (tempSite);
     }
   delete f;
 
@@ -247,7 +275,7 @@ do_download_site_info_thread (void *p)
   hinst = (HINSTANCE) (context[0]);
   h = (HWND) (context[1]);
 
-  if (all_site_list.number () == 0
+  if (all_site_list.size() == 0
       && get_site_list (hinst, h))
 	{
 	  // Error: Couldn't download the site info.  Go back to the Net setup page.
@@ -299,9 +327,10 @@ SitePage::OnNext ()
   save_dialog (h);
   save_site_url ();
 
-  // Log all the selected URLs from the list.    
-  for (size_t n = 1; n <= site_list.number (); n++)
-    log (LOG_PLAIN) << "site: " << site_list[n]->url << endLog;
+  // Log all the selected URLs from the list.
+  for (SiteList::const_iterator n = site_list.begin ();
+       n != site_list.end (); ++n)
+    log (LOG_PLAIN) << "site: " << n->url << endLog;
 
   Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
   return IDD_INSTATUS;
@@ -355,18 +384,20 @@ SitePage::PopulateListBox ()
 
   // Populate the list box with the URLs.
   SendMessage (listbox, LB_RESETCONTENT, 0, 0);
-  for (size_t i = 1; i <= all_site_list.number (); i++)
+  for (SiteList::const_iterator i = all_site_list.begin ();
+       i != all_site_list.end (); ++i)
     {
       j = SendMessage (listbox, LB_ADDSTRING, 0,
-		       (LPARAM) all_site_list[i]->displayed_url.cstr_oneuse());
-      SendMessage (listbox, LB_SETITEMDATA, j, i);
+		       (LPARAM) i->displayed_url.cstr_oneuse());
+      SendMessage (listbox, LB_SETITEMDATA, j, j);
     }
 
   // Select the selected ones.
-  for (size_t n = 1; n <= site_list.number (); n++)
+  for (SiteList::const_iterator n = site_list.begin ();
+       n != site_list.end (); ++n)
     {
       int index = SendMessage (listbox, LB_FINDSTRING, (WPARAM) - 1,
-			       (LPARAM) site_list[n]->displayed_url.cstr_oneuse());
+			       (LPARAM) n->displayed_url.cstr_oneuse());
       if (index != LB_ERR)
 	{
 	  // Highlight the selected item
@@ -403,26 +434,22 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 	    String other_url = egetString (GetHWND (), IDC_EDIT_USER_URL);
 	    if (other_url.size())
 	    {
-	    site_list_type *
-	      newsite =
-	      new
-	      site_list_type (other_url);
-	    site_list_type & listobj =
-	      all_site_list.registerbyobject (*newsite);
-	    if (&listobj != newsite)
+	    site_list_type newsite (other_url);
+	    SiteList::iterator i = find (all_site_list.begin(),
+					 all_site_list.end(), newsite);
+	    if (i == all_site_list.end())
 	      {
-		// That site was already registered
-		delete
-		  newsite;
+		all_site_list.push_back (newsite);
+		log (LOG_BABBLE) << "Adding site: " << other_url << endLog;
 	      }
 	    else
 	      {
-		// Log the adding of this new URL.
-		log (LOG_BABBLE) << "Adding site: " << other_url << endLog;
+		*i = newsite;
+		log (LOG_BABBLE) << "Replacing site: " << other_url << endLog;
 	      }
 
 	    // Assume the user wants to use it and select it for him.
-	    site_list.registerbyobject (listobj);
+	    site_list.push_back (newsite);
 
 	    // Update the list box.
 	    PopulateListBox ();

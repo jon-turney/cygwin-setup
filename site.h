@@ -19,7 +19,7 @@
 /* required to parse this file */
 #include <string.h>
 #include <stdlib.h>
-#include "list.h"
+#include <vector>
 #include "String++.h"
 
 #include "proppage.h"
@@ -52,22 +52,32 @@ void do_download_site_info (HINSTANCE h, HWND owner);
 class site_list_type
 {
 public:
-  site_list_type ():url (), displayed_url (), key ()
+  site_list_type ():url (), displayed_url (), key()
   {
   };
+  site_list_type (site_list_type const &);
   site_list_type (String const &);
   /* workaround for missing placement new in gcc 2.95 */
   void init (String const &);
   ~site_list_type () {};
+  site_list_type &operator= (site_list_type const &);
   String url;
   String displayed_url;
   String key;
+  bool operator == (site_list_type const &) const;
+  bool operator != (site_list_type const &) const;
+  bool operator < (site_list_type const &) const;
+  bool operator <= (site_list_type const &) const;
+  bool operator > (site_list_type const &) const;
+  bool operator >= (site_list_type const &) const;
 };
 
+typedef vector <site_list_type> SiteList;
+
 /* user chosen sites */
-extern list < site_list_type, String, String::casecompare > site_list;
+extern SiteList site_list;
 /* potential sites */
-extern list < site_list_type, String, String::casecompare > all_site_list;
+extern SiteList all_site_list;
 
 void save_site_url ();
 

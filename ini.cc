@@ -136,13 +136,14 @@ do_remote_ini (HWND owner)
   GuiParseFeedback myFeedback;
   IniDBBuilderPackage aBuilder(myFeedback);
 
-  for (size_t n = 1; n <= site_list.number (); n++)
+  for (SiteList::const_iterator n = site_list.begin();
+       n != site_list.end(); ++n)
     {
       io_stream *compressed_ini_file =
-	get_url_to_membuf (site_list[n]->url + "/setup.bz2", owner);
+	get_url_to_membuf (n->url + "/setup.bz2", owner);
       io_stream *ini_file = 0;
       if (!compressed_ini_file)
-	ini_file = get_url_to_membuf (site_list[n]->url + "/setup.ini", owner);
+	ini_file = get_url_to_membuf (n->url + "/setup.ini", owner);
       else
 	{
 	  ini_file = compress::decompress (compressed_ini_file);
@@ -150,16 +151,16 @@ do_remote_ini (HWND owner)
 
       if (!ini_file)
 	{
-	  note (owner, IDS_SETUPINI_MISSING, site_list[n]->url.cstr_oneuse());
+	  note (owner, IDS_SETUPINI_MISSING, n->url.cstr_oneuse());
 	  continue;
 	}
  
       if (compressed_ini_file)
-        myFeedback.iniName (site_list[n]->url + "/setup.bz2");
+        myFeedback.iniName (n->url + "/setup.bz2");
       else
-        myFeedback.iniName (site_list[n]->url + "/setup.ini");
+        myFeedback.iniName (n->url + "/setup.ini");
 
-      aBuilder.parse_mirror = site_list[n]->url;
+      aBuilder.parse_mirror = n->url;
       ini_init (ini_file, &aBuilder, myFeedback);
 
       /*yydebug = 1; */
@@ -171,7 +172,7 @@ do_remote_ini (HWND owner)
 	{
 	  /* save known-good setup.ini locally */
 	  String const fp = String ("file://") + local_dir + "/" +
-				   rfc1738_escape_part (site_list[n]->url) +
+				   rfc1738_escape_part (n->url) +
 				   "/setup.ini";
 	  io_stream::mkpath_p (PATH_TO_FILE, fp);
 	  io_stream *inistream = io_stream::open (fp, "wb");

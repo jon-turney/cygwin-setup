@@ -1,5 +1,36 @@
 2002-07-05  Robert Collins  <rbtcollins@hotmail.com>
 
+	* ini.cc (do_remote_ini): Use STL collection for site collection.
+	* site.cc: Include site.h first to ensure it's parsable standalone.
+	Use STL algorithms.
+	(site_list): Convert to an STL container.
+	(all_site_list): Ditto.
+	(site_list_type::site_list_type): Implement copy constructor.
+	(site_list_type::operator=): Implement assignment operator.
+	(site_list_type::operator ==): Implement.
+	(site_list_type::operator <): Ditto.
+	(save_dialog): Use STL collection calls for site collection.
+	(save_site_url): Ditto.
+	(get_site_list): Ditto.
+	(get_saved_sites): Ditto.
+	(do_download_site_info_thread): Ditto.
+	(SitePage::OnNext): Ditto.
+	(SitePage::PopulateListBox): Ditto.
+	(SitePage::OnMessageCmd): Ditto.
+	* site.h: Use STL vectors instead of custom code.
+	(site_list_type::site_list_type): Declare.
+	(site_list_type::operator=): Ditto.
+	(site_list_type::operator ==): Ditto.
+	(site_list_type::operator !=): Ditto.
+	(site_list_type::operator <): Ditto.
+	(site_list_type::operator <=): Ditto.
+	(site_list_type::operator >): Ditto.
+	(site_list_type::operator >=): Ditto.
+	(site_list): Convert to an STL container.
+	(all_site_list): Ditto.
+
+2002-07-05  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc (default_trust): Check package accessibility before
 	triggering an install. (Suggested by Pavel).
 
