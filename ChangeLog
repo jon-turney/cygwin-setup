@@ -1,3 +1,10 @@
+2004-08-31  Max Bowsher  <maxb@ukf.net>
+
+	Attain GCC 3.4 compatibility.
+
+	* PackageSpecification.h (PackageSpecification): Make the
+	unnecessarily private copy-constructor public.
+
 2004-08-30  Max Bowsher  <maxb@ukf.net>
 
 	Rework the implementation of not including -Werror for specific files,

@@ -67,8 +67,6 @@ public:
   static const _operators MoreThanEquals;
 
 private:
-  PackageSpecification (PackageSpecification const &);
-
   String _packageName; /* foobar */
   _operators const * _operator; /* >= */
   String _version;       /* 1.20 */
