@@ -96,6 +96,7 @@ public:
    */
   void add_category (String const &);
   std::set <String, String::caseless> categories;
+  String const getReadableCategoryList () const;
   std::set <packageversion> versions;
 
   /* which one is installed. */

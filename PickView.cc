@@ -30,7 +30,7 @@ static PickView::Header pkg_headers[] = {
   {"New", 3, 0, 0},
   {"Bin?", 4, 0, 0},
   {"Src?", 4, 0, 0},
-  {"Category", 8, 0, 0},
+  {"Categories", 10, 0, 0},
   {"Package", 7, 0, 0},
   {0, 0, 0, 0}
 };

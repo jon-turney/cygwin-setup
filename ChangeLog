@@ -1,3 +1,12 @@
+2002-09-22  Max Bowsher  <maxb@ukf.net>
+
+	* PickView.cc (pkg_headers): Rename column 'Category' to 'Categories'.
+	* package_meta.h (packagemeta::getReadableCategoryList): Declare.
+	* package_meta.cc (packagemeta::getReadableCategoryList): Implement.
+	* PickPackageLine.cc (PickPackageLine::paint): Change to use
+	getReadableCategoryList.
+	Fix x2 argument to IntersectClipRect.
+
 2002-11-25  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* window.h (Window::GetWindowRect): New method declaration.

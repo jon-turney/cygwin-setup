@@ -243,6 +243,22 @@ packagemeta::add_category (String const &cat)
   categories.insert (cat);
 }
 
+String const
+packagemeta::getReadableCategoryList () const
+{
+  String result;
+  for(set<String, String::caseless>::const_iterator it = categories.begin();
+      it != categories.end(); it++)
+  {
+    if (*it == "All")
+      continue;
+    if (result.size() > 0)
+      result += ", ";
+    result += *it;
+  }
+  return result;
+}
+
 static bool
 hasSDesc(packageversion const &pkg)
 {

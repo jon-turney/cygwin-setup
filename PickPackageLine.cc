@@ -136,14 +136,10 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
   /* shows "first" category - do we want to show any? */
   if (pkg.categories.size () && show_cat)
     {
-      String catName;
-      if (pkg.categories.find ("All") == pkg.categories.begin () &&
-	  pkg.categories.size () > 1)
-	catName = *(++pkg.categories.begin());
-      else catName = * pkg.categories.begin ();
+      String catName = pkg.getReadableCategoryList();
       IntersectClipRect (hdc, x + theView.headers[theView.cat_col].x, r,
 			 x + theView.headers[theView.cat_col].x +
-			 theView.headers[theView.cat_col].x, rb);
+			 theView.headers[theView.cat_col].width - HMARGIN / 2, rb);
       TextOut (hdc, x + theView.headers[theView.cat_col].x + HMARGIN / 2, r,
 	       catName.cstr_oneuse(),
 	       catName.size());
