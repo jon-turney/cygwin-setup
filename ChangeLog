@@ -1,3 +1,8 @@
+2003-08-01  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* proppage.h (Copyright): Update copyright dates.
+	(PropertyPage): Document OnNext and OnBack.
+
 2003-07-31  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* proppage.cc (PropertyPage::Create): Use more self-documenting

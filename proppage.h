@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Gary R. Van Sickle.
+ * Copyright (c) 2001, 2002, 2003 Gary R. Van Sickle.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -99,6 +99,12 @@ public:
   virtual void OnDeactivate ()
   {
   };
+
+  // Overload these to perform special processing when the user hits
+  // "Next" or "Back". Return:
+  // 0 == Go to next/previous page in sequence.
+  // -1 == Prevent wizard from changing page.
+  // Resource ID == go to a specific page specified by the resource ID.
   virtual long OnNext ()
   {
     return 0;
@@ -107,6 +113,7 @@ public:
   {
     return 0;
   };
+
   virtual bool OnFinish ()
   {
     return true;
