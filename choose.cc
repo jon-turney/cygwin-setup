@@ -108,7 +108,9 @@ static void set_view_mode (HWND h, views mode);
 packageversion *
 pkgtrustp (packagemeta const &pkg, trusts const t)
 {
-  return t == TRUST_PREV ? pkg.prev : t == TRUST_CURR ? pkg.curr : pkg.exp;
+  return t == TRUST_PREV ? (pkg.prev ? pkg.prev : (pkg.curr ? pkg.curr : pkg.installed))
+    : t == TRUST_CURR ? (pkg.curr ? pkg.curr : pkg.installed) 
+    : pkg.exp;
 }
 
 static int
@@ -481,7 +483,8 @@ set_existence ()
       while (o <= pkg.versions.number () && !mirrors)
 	{
 	  packageversion & ver = *pkg.versions[o];
-	  if (ver.bin.sites.number () || ver.src.sites.number ())
+	  if (ver.bin.sites.number () || ver.bin.Cached () ||
+	      ver.src.sites.number () || ver.src.Cached ())
 	    mirrors = true;
 	  ++o;
 	}
@@ -666,8 +669,19 @@ pick_category_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 {
   int r = y + row * row_height;
   if (show_label)
-    TextOut (hdc, x + chooser->headers[chooser->cat_col].x + HMARGIN / 2 + depth * 8, r,
-	   cat.name, strlen (cat.name));
+    {
+      int by = r + tm.tmHeight - 11;
+      TextOut (hdc, x + chooser->headers[chooser->cat_col].x + HMARGIN / 2 + depth * 8, 
+	  r, cat.name, strlen (cat.name));
+      SIZE s;
+      GetTextExtentPoint32 (hdc, cat.name, strlen (cat.name), &s);
+      SelectObject (bitmap_dc, bm_spin);
+      BitBlt (hdc,
+	          x + chooser->headers[chooser->cat_col].x + 
+		  s.cx + depth * 8 +
+		  ICON_MARGIN +
+		  HMARGIN / 2, by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
+    }
   if (collapsed)
     return;
   int accum_row = row + (show_label ? 1 : 0);

@@ -1,3 +1,12 @@
+2002-01-09  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.cc (pkgtrustp): Fall back to installed if a package is not present in
+	the current trust level. For prev, fall back via curr.
+	(set_existence): Allow sources with no sites, but cached files to be
+	kept.
+	(pick_category_line::paint): Start drawing clickable categories.
+	* fromcwd.cc (found_file): Reinstate local file scanning.
+
 2002-01-07  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
         * fromcwd.cc: Run indent.

@@ -55,6 +55,7 @@ static const char *cvsid =
 #include "package_db.h"
 #include "package_meta.h"
 #include "package_version.h"
+#include "cygpackage.h"
 # if 0
 static int
 is_test_version (char *v)
@@ -76,11 +77,39 @@ found_file (char *path, unsigned int fsize)
   if (f.what[0] != '\0')
     return;
 
-  packagemeta *p = NULL;
   packagedb db;
-  p = db.packages.getbykey (f.pkg);
-  if (p == NULL)
-    p = new packagemeta (f.pkg, path);
+  packagemeta &p = db.packages.registerbykey (f.pkg);
+  packageversion *pv = new cygpackage (f.pkg);
+  ((cygpackage *)pv)->set_canonical_version (f.ver);
+  if (!f.what[0])
+    pv->bin.set_cached (concat ("file://", path, 0));
+  else
+    // patch or src, assume src until someone complains
+    pv->src.set_cached (concat ("file://", path, 0));
+
+  // check for a duplciate version FIXME make this a method or friend
+
+
+  int merged = 0;
+  for (size_t n = 1; !merged && n <= p.versions.number (); n++)
+    if (!strcasecmp(p.versions[n]->Canonical_version(), pv->Canonical_version()))
+      {
+        /* Copy the binary mirror across if this site claims to have an install */
+        if (pv->bin.sites.number ())
+          p.versions[n]->bin.sites.registerbykey (pv->bin.sites[1]->key);
+        /* Ditto for src */
+        if (pv->src.sites.number ())
+          p.versions[n]->src.sites.registerbykey (pv->src.sites[1]->key);
+        /* Copy the descriptions across */
+        if (pv->SDesc () && !p.versions[n]->SDesc ())
+          p.versions[n]->set_sdesc (pv->SDesc ());
+        if (pv->LDesc () && !p.versions[n]->LDesc ())
+          p.versions[n]->set_ldesc (pv->LDesc ());
+        pv = p.versions[n];
+        merged = 1;
+      }
+  if (!merged)
+    p.add_version (*pv); 
 
 #if 0
   // This is handled by the scan2 - there is no need for duplication - or is there?
