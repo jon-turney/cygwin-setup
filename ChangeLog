@@ -1,3 +1,7 @@
+Wed Aug  8 13:53:47 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* desktop.cc (etc_profile): Leave environment variables untouched.
+
 Sat Jul  7 00:40:28 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* choose.cc (set_action): Use default trust for determining reinstall
