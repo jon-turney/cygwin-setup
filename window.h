@@ -1,6 +1,3 @@
-#ifndef SETUP_WINDOW_H
-#define SETUP_WINDOW_H
-
 /*
  * Copyright (c) 2001, 2002, 2003 Gary R. Van Sickle.
  *
@@ -15,6 +12,9 @@
  * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
  *
  */
+
+#ifndef SETUP_WINDOW_H
+#define SETUP_WINDOW_H
 
 // This is the header for the Window class.  It serves both as a window class
 // in its own right and as a base class for other window-like classes (e.g. PropertyPage,
@@ -129,4 +129,4 @@ public:
   RECT ScreenToClient(const RECT &r) const;
 };
 
-#endif // SETUP_WINDOW_H
+#endif /* SETUP_WINDOW_H */

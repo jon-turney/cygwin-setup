@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _COMPRESS_GZ_H_
-#define _COMPRESS_GZ_H_
+#ifndef SETUP_COMPRESS_GZ_H
+#define SETUP_COMPRESS_GZ_H
 
 /* this is the parent class for all compress IO operations. 
  * It 
@@ -80,4 +80,4 @@ private:
   long startpos;		/* start of compressed data in file (header skipped) */
 };
 
-#endif /* _COMPRESS_GZ_H_ */
+#endif /* SETUP_COMPRESS_GZ_H */

@@ -1,6 +1,3 @@
-#ifndef CINSTALL_DESKTOP_H
-#define CINSTALL_DESKTOP_H
-
 /*
  * Copyright (c) 2001, Gary R. Van Sickle.
  *
@@ -15,6 +12,9 @@
  * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
  *
  */
+
+#ifndef SETUP_DESKTOP_H
+#define SETUP_DESKTOP_H
 
 // This is the header for the DesktopSetupPage class.  Allows selection
 // of "create desktop icon" and "add to start menu".
@@ -43,4 +43,4 @@ public:
   virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 
-#endif // CINSTALL_DESKTOP_H
+#endif /* SETUP_DESKTOP_H */

@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef __TAR_H_
-#define __TAR_H_
+#ifndef SETUP_ARCHIVE_TAR_H
+#define SETUP_ARCHIVE_TAR_H
 
 #include "io_stream.h"
 #include "archive.h"
@@ -170,4 +170,4 @@ extern int _tar_verbose;
 extern FILE * _tar_vfile;
 */
 
-#endif
+#endif /* SETUP_ARCHIVE_TAR_H */

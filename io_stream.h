@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _IO_STREAM_H_
-#define _IO_STREAM_H_
+#ifndef SETUP_IO_STREAM_H
+#define SETUP_IO_STREAM_H
 
 /* this is the parent class for all IO operations. It's flexable enough to be cover for
  * HTTP access, local file access, and files being extracted from archives.
@@ -173,4 +173,4 @@ private:
   static int move_copy (String const &, String const &);
 };
 
-#endif /* _IO_STREAM_H_ */
+#endif /* SETUP_IO_STREAM_H */

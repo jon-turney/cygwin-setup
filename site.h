@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _SITE_H_
-#define _SITE_H_
+#ifndef SETUP_SITE_H
+#define SETUP_SITE_H
 
 /* required to parse this file */
 #include <string.h>
@@ -88,4 +88,4 @@ class SiteSetting : public UserSetting
   public:
 };
 
-#endif /* _SITE_H_ */
+#endif /* SETUP_SITE_H */

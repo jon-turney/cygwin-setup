@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _PACKAGE_DB_H_
-#define _PACKAGE_DB_H_
+#ifndef SETUP_PACKAGE_DB_H
+#define SETUP_PACKAGE_DB_H
 
 /* required to parse this file */
 #include <String++.h>
@@ -60,4 +60,4 @@ private:
   static std::vector <packagemeta *> dependencyOrderedPackages;
 };
 
-#endif /* _PACKAGE_DB_H_ */
+#endif /* SETUP_PACKAGE_DB_H */

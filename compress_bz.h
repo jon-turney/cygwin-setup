@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _COMPRESS_BZ_H_
-#define _COMPRESS_BZ_H_
+#ifndef SETUP_COMPRESS_BZ_H
+#define SETUP_COMPRESS_BZ_H
 
 /* this is the bz2 class for all compressed IO operations. 
  */
@@ -77,4 +77,4 @@ private:
   size_t position;
 };
 
-#endif /* _COMPRESS_BZ_H_ */
+#endif /* SETUP_COMPRESS_BZ_H */

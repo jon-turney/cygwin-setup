@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef   _PICKPACKAGELINE_H_
-#define   _PICKPACKAGELINE_H_
+#ifndef SETUP_PICKPACKAGELINE_H
+#define SETUP_PICKPACKAGELINE_H
 
 class PickView;
 #include "package_meta.h"
@@ -47,4 +47,4 @@ private:
   void DrawCheck (int const checked, HDC hdc, int const column, HRGN const clip, int const x, int const by);
 };
 
-#endif // _PICKPACKAGELINE_H_
+#endif /* SETUP_PICKPACKAGELINE_H */

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef   _LOGSINGLETON_H_
-#define   _LOGSINGLETON_H_
+#ifndef SETUP_LOGSINGLETON_H
+#define SETUP_LOGSINGLETON_H
 
 #include "String++.h"
 #include <iostream>
@@ -58,4 +58,4 @@ extern std::ostream& endLog(std::ostream& outs);
 //extern ostream& endLog(ostream& outs);
 
 #define log(X) LogSingleton::GetInstance()(X)
-#endif /* _LOGSINGLETON_H_ */
+#endif /* SETUP_LOGSINGLETON_H */

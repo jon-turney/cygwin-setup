@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _ARCHIVE_H_
-#define _ARCHIVE_H_
+#ifndef SETUP_ARCHIVE_H
+#define SETUP_ARCHIVE_H
 
 /* this is the parent class for all archive IO operations. 
  * It 
@@ -94,4 +94,4 @@ private:
 //  archive () {};
 };
 
-#endif /* _ARCHIVE_H_ */
+#endif /* SETUP_ARCHIVE_H */

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _COMPRESS_H_
-#define _COMPRESS_H_
+#ifndef SETUP_COMPRESS_H
+#define SETUP_COMPRESS_H
 
 /* this is the parent class for all compress IO operations. 
  * It 
@@ -52,4 +52,4 @@ public:
     virtual ~ compress ();
 };
 
-#endif /* _COMPRESS_H_ */
+#endif /* SETUP_COMPRESS_H */

@@ -13,10 +13,10 @@
  *
  */
 
-/* categories for packages */
+#ifndef SETUP_CATEGORY_H
+#define SETUP_CATEGORY_H
 
-#ifndef _CATEGORY_H_
-#define _CATEGORY_H_
+/* categories for packages */
 
 #include "String++.h"
 #include <vector>
@@ -25,4 +25,4 @@
 class packagemeta;
 typedef std::pair <String const, std::vector <packagemeta *> > Category;
 
-#endif /* _CATEGORY_H_ */
+#endif /* SETUP_CATEGORY_H */

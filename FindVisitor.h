@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _FINDVISITOR_H_
-#define _FINDVISITOR_H_
+#ifndef SETUP_FINDVISITOR_H
+#define SETUP_FINDVISITOR_H
 
 class String;
 /* For the wfd definition. See the TODO in find.cc */
@@ -32,4 +32,4 @@ protected:
   FindVisitor & operator= (FindVisitor const &);
 };
 
-#endif // _FINDVISITOR_H_
+#endif /* SETUP_FINDVISITOR_H */

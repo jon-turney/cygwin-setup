@@ -1,6 +1,3 @@
-#ifndef CINSTALL_LOCALDIR_H
-#define CINSTALL_LOCALDIR_H
-
 /*
  * Copyright (c) 2001, Gary R. Van Sickle.
  *
@@ -15,6 +12,9 @@
  * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
  *
  */
+
+#ifndef SETUP_LOCALDIR_H
+#define SETUP_LOCALDIR_H
 
 // This is the header for the LocalDirPage class.  Allows the user to select
 // the local package directory (i.e. where downloaded packages are stored).
@@ -45,4 +45,4 @@ public:
 };
 
 
-#endif
+#endif /* SETUP_LOCALDIR_H */

@@ -14,15 +14,15 @@
  *
  */
 
+#ifndef SETUP_WIN32_H
+#define SETUP_WIN32_H
+
 /* The inital purpose of this file was limit the number of Win32 headers we
    actually have to parse.  The Setup program only uses a few of them,
    so there's no point in parsing them all (even lean-n-mean).  Doing
    this cuts compile time in half. Now it's also the header for the Win32
    class which provides runtime information about the OS
  */
-
-#ifndef SETUP_WIN32_H
-#define SETUP_WIN32_H
 
 #define NOCOMATTRIBUTE
 
@@ -63,5 +63,4 @@ class Win32 {
 };
 
 #endif //_cplusplus
-#endif // SETUP_WIN32_H
-
+#endif /* SETUP_WIN32_H */

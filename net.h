@@ -1,6 +1,3 @@
-#ifndef CINSTALL_NET_H
-#define CINSTALL_NET_H
-
 /*
  * Copyright (c) 2001, Gary R. Van Sickle.
  *
@@ -15,6 +12,9 @@
  * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
  *
  */
+
+#ifndef SETUP_NET_H
+#define SETUP_NET_H
 
 // This is the header for the NetPage class.  It allows the user to select
 // a proxy etc.
@@ -44,4 +44,4 @@ public:
   virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code);
 };
 
-#endif // CINSTALL_NET_H
+#endif /* SETUP_NET_H */

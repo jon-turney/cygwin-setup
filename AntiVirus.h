@@ -1,6 +1,3 @@
-#ifndef CINSTALL_ANTIVIRUS_H
-#define CINSTALL_ANTIVIRUS_H
-
 /*
  * Copyright (c) 2001, Gary R. Van Sickle.
  *
@@ -15,6 +12,9 @@
  * Written by Robert Collisn  <rbtcollins@hotmail.com>
  *
  */
+
+#ifndef SETUP_ANTIVIRUS_H
+#define SETUP_ANTIVIRUS_H
 
 // This is the header for the AntiVirusPage class, which lets the user
 // disable their virus scanner if needed.
@@ -47,4 +47,4 @@ public:
   virtual long OnUnattended ();
 };
 
-#endif /* CINSTALL_ANTIVIRUS_H */
+#endif /* SETUP_ANTIVIRUS_H */

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _CHOOSE_H_
-#define _CHOOSE_H_
+#ifndef SETUP_CHOOSE_H
+#define SETUP_CHOOSE_H
 
 #include "proppage.h"
 
@@ -47,4 +47,4 @@ public:
 };
 
 #endif /* __cplusplus */
-#endif /* _CHOOSE_H_ */
+#endif /* SETUP_CHOOSE_H */

@@ -13,12 +13,12 @@
  *
  */
 
+#ifndef SETUP_PACKAGE_SOURCE_H
+#define SETUP_PACKAGE_SOURCE_H
+
 /* this is the parent class for all package source (not source code - installation
  * source as in http/ftp/disk file) operations.
  */
-
-#ifndef _PACKAGE_SOURCE_H_
-#define _PACKAGE_SOURCE_H_
 
 /* required to parse this file */
 #include "strings.h"
@@ -123,4 +123,4 @@ private:
   unsigned long _installedSize;
 };
 
-#endif /* _PACKAGE_SOURCE_H_ */
+#endif /* SETUP_PACKAGE_SOURCE_H */

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _INI_H_
-#define _INI_H_
+#ifndef SETUP_INI_H
+#define SETUP_INI_H
 
 class io_stream;
 class String;
@@ -43,4 +43,4 @@ excludes;
 
 #endif
 
-#endif /* _INI_H_ */
+#endif /* SETUP_INI_H */

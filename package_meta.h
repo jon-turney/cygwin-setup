@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _PACKAGE_META_H_
-#define _PACKAGE_META_H_
+#ifndef SETUP_PACKAGE_META_H
+#define SETUP_PACKAGE_META_H
 
 class packageversion;
 class packagemeta;
@@ -142,4 +142,4 @@ private:
   bool visited_;
 };
 
-#endif /* _PACKAGE_META_H_ */
+#endif /* SETUP_PACKAGE_META_H */

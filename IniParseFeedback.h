@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _INIPARSEFEEDBACK_H_
-#define _INIPARSEFEEDBACK_H_
+#ifndef SETUP_INIPARSEFEEDBACK_H
+#define SETUP_INIPARSEFEEDBACK_H
 
 
 class String;
@@ -34,4 +34,4 @@ public:
   virtual ~ IniParseFeedback ();
 };
 
-#endif // _INIPARSEFEEDBACK_H_
+#endif /* SETUP_INIPARSEFEEDBACK_H */

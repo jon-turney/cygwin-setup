@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _PICKLINE_H_
-#define _PICKLINE_H_
+#ifndef SETUP_PICKLINE_H
+#define SETUP_PICKLINE_H
 
 #include "win32.h"
 #include "package_meta.h"
@@ -44,4 +44,4 @@ protected:
   PickLine & operator= (PickLine const &);
 };
 
-#endif // _PICKLINE_H_
+#endif /* SETUP_PICKLINE_H */

@@ -12,8 +12,8 @@
  * Written by Jan Nieuwenhuizen <janneke@gnu.org>
  *
  */
-#ifndef SCRIPT_H
-#define SCRIPT_H
+#ifndef SETUP_SCRIPT_H
+#define SETUP_SCRIPT_H
 
 #include "String++.h"
    
@@ -39,4 +39,4 @@ private:
   char const * extension() const;
 };
 
-#endif /* SCRIPT_H */
+#endif /* SETUP_SCRIPT_H */

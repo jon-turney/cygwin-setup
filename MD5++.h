@@ -13,12 +13,12 @@
  *
  */
 
+#ifndef SETUP_MD5___H
+#define SETUP_MD5___H
+
 /* this is the parent class for all package source (not source code - installation
  * source as in http/ftp/disk file) operations.
  */
-
-#ifndef _MD5___H_
-#define _MD5___H_
 
 /* required to parse this file */
 #include "String++.h"
@@ -39,4 +39,4 @@ private:
   bool _set;
 };
 
-#endif /* _MD5___H_ */
+#endif /* SETUP_MD5___H */

@@ -13,10 +13,10 @@
  *
  */
 
-/* A collection of user-related settings */
+#ifndef SETUP_USERSETTINGS_H
+#define SETUP_USERSETTINGS_H
 
-#ifndef _USERSETTINGS_H_
-#define _USERSETTINGS_H_
+/* A collection of user-related settings */
 
 #include <vector>
 
@@ -34,4 +34,4 @@ class UserSettings {
     Settings settings;
 };
 
-#endif /* _USERSETTINGS_H_ */
+#endif /* SETUP_USERSETTINGS_H */

@@ -1,6 +1,3 @@
-#ifndef CINSTALL_SPLASH_H
-#define CINSTALL_SPLASH_H
-
 /*
  * Copyright (c) 2001, Gary R. Van Sickle.
  *
@@ -15,6 +12,9 @@
  * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
  *
  */
+
+#ifndef SETUP_SPLASH_H
+#define SETUP_SPLASH_H
 
 // This is the header for the SplashPage class.  Since the splash page
 // has little to do, there's not much here.
@@ -40,4 +40,4 @@ public:
   };
 };
 
-#endif // CINSTALL_SPLASH_H
+#endif /* SETUP_SPLASH_H */

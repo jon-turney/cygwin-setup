@@ -1,6 +1,3 @@
-#ifndef CINSTALL_SOURCE_H
-#define CINSTALL_SOURCE_H
-
 /*
  * Copyright (c) 2001, Gary R. Van Sickle.
  *
@@ -15,6 +12,9 @@
  * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
  *
  */
+
+#ifndef SETUP_SOURCE_H
+#define SETUP_SOURCE_H
 
 // This is the header for the SourcePage class, which lets the user
 // select Download+Install, Download, or Install From Local Directory.
@@ -41,4 +41,4 @@ public:
   virtual long OnUnattended ();
 };
 
-#endif
+#endif /* SETUP_SOURCE_H */

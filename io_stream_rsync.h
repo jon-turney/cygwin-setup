@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _IO_STREAM_RSYNC_H_
-#define _IO_STREAM_RSYNC_H_
+#ifndef SETUP_IO_STREAM_RSYNC_H
+#define SETUP_IO_STREAM_RSYNC_H
 
 #include "io_stream.h"
 #include "String++.h"
@@ -71,4 +71,4 @@ private:
   String lmode;
 };
 
-#endif /* _IO_STREAM_RSYNC_H_ */
+#endif /* SETUP_IO_STREAM_RSYNC_H */

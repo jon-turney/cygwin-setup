@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _INIDBBUILDER_H_
-#define _INIDBBUILDER_H_
+#ifndef SETUP_INIDBBUILDER_H
+#define SETUP_INIDBBUILDER_H
 
 #include "String++.h"
 #include "PackageSpecification.h"
@@ -63,4 +63,4 @@ public:
   String parse_mirror;
 };
 
-#endif /* _INIDBBUILDER_H_ */
+#endif /* SETUP_INIDBBUILDER_H */

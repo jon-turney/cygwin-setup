@@ -13,10 +13,10 @@
  *
  */
 
-#ifndef _DOWNLOAD_H_
-#define _DOWNLOAD_H_
+#ifndef SETUP_DOWNLOAD_H
+#define SETUP_DOWNLOAD_H
 
 class packagesource;
 int check_for_cached (packagesource & pkgsource);
 
-#endif /* _DOWNLOAD_H_ */
+#endif /* SETUP_DOWNLOAD_H */

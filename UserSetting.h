@@ -13,10 +13,10 @@
  *
  */
 
-/* A user-related settings */
+#ifndef SETUP_USERSETTING_H
+#define SETUP_USERSETTING_H
 
-#ifndef _USERSETTING_H_
-#define _USERSETTING_H_
+/* A user-related settings */
 
 class UserSetting {
   public:
@@ -24,4 +24,4 @@ class UserSetting {
   virtual ~UserSetting();
 };
 
-#endif /* _USERSETTING_H_ */
+#endif /* SETUP_USERSETTING_H */

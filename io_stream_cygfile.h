@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _IO_STREAM_CYGFILE_H_
-#define _IO_STREAM_CYGFILE_H_
+#ifndef SETUP_IO_STREAM_CYGFILE_H
+#define SETUP_IO_STREAM_CYGFILE_H
 
 #include "io_stream.h"
 #include "String++.h"
@@ -65,4 +65,4 @@ private:
   static String cwd;
 };
 
-#endif /* _IO_STREAM_CYGFILE_H_ */
+#endif /* SETUP_IO_STREAM_CYGFILE_H */

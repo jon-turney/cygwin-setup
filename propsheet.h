@@ -1,6 +1,3 @@
-#ifndef CINSTALL_PROPSHEET_H
-#define CINSTALL_PROPSHEET_H
-
 /*
  * Copyright (c) 2001, Gary R. Van Sickle.
  *
@@ -15,6 +12,9 @@
  * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
  *
  */
+
+#ifndef SETUP_PROPSHEET_H
+#define SETUP_PROPSHEET_H
 
 // This is the header for the PropSheet class.  This class encapsulates
 // a Windows property sheet / wizard and interfaces with the PropertyPage class.
@@ -56,4 +56,4 @@ public:
   void PressButton (int button);
 };
 
-#endif // CINSTALL_PROPSHEET_H
+#endif /* SETUP_PROPSHEET_H */

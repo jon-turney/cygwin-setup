@@ -13,9 +13,9 @@
  *
  */
 
+#ifndef SETUP_PICKCATEGORYLINE_H
+#define SETUP_PICKCATEGORYLINE_H
 
-#ifndef   _PICKCATEGORYLINE_H_
-#define   _PICKCATEGORYLINE_H_
 
 class PickView;
 #include <vector>
@@ -86,4 +86,4 @@ private:
   std::vector < PickLine * > bucket;
   PickView& theView;
 };
-#endif // _PICKCATEGORYLINE_H_
+#endif /* SETUP_PICKCATEGORYLINE_H */

@@ -1,6 +1,3 @@
-#ifndef CINSTALL_THREEBAR_H
-#define CINSTALL_THREEBAR_H
-
 /*
  * Copyright (c) 2001, Gary R. Van Sickle.
  *
@@ -15,6 +12,9 @@
  * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
  *
  */
+
+#ifndef SETUP_THREEBAR_H
+#define SETUP_THREEBAR_H
 
 // This is the header for the ThreeBarProgressPage class.  It is a fairly generic
 // progress indicator property page with three progress bars.
@@ -86,4 +86,4 @@ public:
 };
 
 
-#endif // CINSTALL_THREEBAR_H
+#endif /* SETUP_THREEBAR_H */

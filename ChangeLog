@@ -1,3 +1,19 @@
+2003-06-23  Max Bowsher  <maxb@ukf.net>
+
+	* AntiVirus.h, Exception.h, FilterVisitor.h, FindVisitor.h,
+	IOStreamProvider.h, IniDBBuilder.h, IniDBBuilderPackage.h,
+	IniParseFeedback.h, IniParseFindVisitor.h, LogSingleton.h, MD5++.h,
+	PackageSpecification.h, PackageTrust.h, PickCategoryLine.h, PickLine.h,
+	PickPackageLine.h, PickView.h, RECTWrapper.h, ScanFindVisitor.h,
+	String++.h, UserSetting.h, UserSettings.h, archive.h, archive_tar.h,
+	category.h, choose.h, compress.h, compress_bz.h, compress_gz.h,
+	cygpackage.h, desktop.h, download.h, find.h, ini.h, io_stream.h,
+	io_stream_cygfile.h, io_stream_file.h, io_stream_memory.h,
+	io_stream_rsync.h, localdir.h, net.h, package_db.h, package_meta.h,
+	package_source.h, package_version.h, proppage.h, propsheet.h, script.h,
+	site.h, source.h, splash.h, threebar.h, win32.h, window.h:
+	Standardize naming and placement of inclusion guards.
+
 2003-06-22  Benjamin Riefenstahl  <Benjamin.Riefenstahl@epost.de>
 
 	* res.rc (all dialogs): Change font from "MS Sans Serif" to

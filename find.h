@@ -14,8 +14,8 @@
  *
  */
 
-#ifndef   _FIND_H_
-#define   _FIND_H_
+#ifndef SETUP_FIND_H
+#define SETUP_FIND_H
 
 class FindVisitor;
 #include "String++.h"
@@ -34,4 +34,4 @@ private:
   HANDLE h;
 };
 
-#endif // _FIND_H_
+#endif /* SETUP_FIND_H */

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _INIPARSEFINDVISITOR_H_
-#define _INIPARSEFINDVISITOR_H_
+#ifndef SETUP_INIPARSEFINDVISITOR_H
+#define SETUP_INIPARSEFINDVISITOR_H
 
 #include "FindVisitor.h"
 #include "String++.h"
@@ -47,4 +47,4 @@ private:
   String setup_version;
 };
 
-#endif // _INIPARSEFINDVISITOR_H_
+#endif /* SETUP_INIPARSEFINDVISITOR_H */

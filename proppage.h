@@ -1,6 +1,3 @@
-#ifndef CINSTALL_PROPPAGE_H
-#define CINSTALL_PROPPAGE_H
-
 /*
  * Copyright (c) 2001, Gary R. Van Sickle.
  *
@@ -15,6 +12,9 @@
  * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
  *
  */
+
+#ifndef SETUP_PROPPAGE_H
+#define SETUP_PROPPAGE_H
 
 // This is the header for the PropertyPage class.  It works closely with the
 // PropSheet class to implement a single page of the property sheet.
@@ -118,4 +118,4 @@ public:
   };
 };
 
-#endif // CINSTALL_PROPPAGE_H
+#endif /* SETUP_PROPPAGE_H */

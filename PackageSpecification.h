@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _PACKAGESPECIFICATION_H_
-#define _PACKAGESPECIFICATION_H_
+#ifndef SETUP_PACKAGESPECIFICATION_H
+#define SETUP_PACKAGESPECIFICATION_H
 
 /* To parse this file */
 #include "String++.h"
@@ -77,4 +77,4 @@ private:
 std::ostream &
 operator << (std::ostream &os, PackageSpecification const &);
 
-#endif /* _PACKAGESPECIFICATION_H_ */
+#endif /* SETUP_PACKAGESPECIFICATION_H */

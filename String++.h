@@ -13,10 +13,10 @@
  *
  */
 
-// A String class to replace all the char * manipulation. 
+#ifndef SETUP_STRING___H
+#define SETUP_STRING___H
 
-#ifndef CINSTALL_STRING_H
-#define CINSTALL_STRING_H
+// A String class to replace all the char * manipulation. 
 
 #include <stdarg.h>
 #include <sys/types.h>
@@ -107,4 +107,4 @@ String::size() const
   return theData->length;
 }
 
-#endif // CINSTALL_STRING_H
+#endif /* SETUP_STRING___H */

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _INIDBBUILDERPACKAGE_H_
-#define _INIDBBUILDERPACKAGE_H_
+#ifndef SETUP_INIDBBUILDERPACKAGE_H
+#define SETUP_INIDBBUILDERPACKAGE_H
 
 #include "IniDBBuilder.h"
 #include <vector>
@@ -80,4 +80,4 @@ private:
   IniParseFeedback const &_feedback;
 };
 
-#endif /* _INIDBBUILDERPACKAGE_H_ */
+#endif /* SETUP_INIDBBUILDERPACKAGE_H */

@@ -1,6 +1,3 @@
-#ifndef SETUP_RECTWRAPPER_H
-#define SETUP_RECTWRAPPER_H
-
 /*
  * Copyright (c) 2001,2002, Gary R. Van Sickle.
  *
@@ -15,6 +12,9 @@
  * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
  *
  */
+
+#ifndef SETUP_RECTWRAPPER_H
+#define SETUP_RECTWRAPPER_H
 
 
 #include <windows.h>
@@ -66,4 +66,4 @@ inline void RECTWrapper::move(int x, int y)
   OffsetRect(this, x, y);
 };
 
-#endif // SETUP_RECTWRAPPER_H
+#endif /* SETUP_RECTWRAPPER_H */

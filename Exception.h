@@ -13,12 +13,12 @@
  *
  */
 
+#ifndef SETUP_EXCEPTION_H
+#define SETUP_EXCEPTION_H
+
 /* this is the parent class for all package source (not source code - installation
  * source as in http/ftp/disk file) operations.
  */
-
-#ifndef _EXCEPTION_H_
-#define _EXCEPTION_H_
 
 #include <exception>
 #include "String++.h"
@@ -41,4 +41,4 @@ private:
 #define APPERR_IO_ERROR		2
 #define APPERR_LOGIC_ERROR	3
 
-#endif /* _EXCEPTION_H_ */
+#endif /* SETUP_EXCEPTION_H */

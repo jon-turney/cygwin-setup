@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _IO_STREAM_MEMORY_H_
-#define _IO_STREAM_MEMORY_H_
+#ifndef SETUP_IO_STREAM_MEMORY_H
+#define SETUP_IO_STREAM_MEMORY_H
 
 /* needed to parse */
 #include <errno.h>
@@ -74,4 +74,4 @@ private:
   size_t pos;
 };
 
-#endif /* _IO_STREAM_MEMORY_H_ */
+#endif /* SETUP_IO_STREAM_MEMORY_H */

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _IOSTREAMPROVIDER_H_
-#define _IOSTREAMPROVIDER_H_
+#ifndef SETUP_IOSTREAMPROVIDER_H
+#define SETUP_IOSTREAMPROVIDER_H
 
 #include "io_stream.h"
 #include "String++.h"
@@ -40,4 +40,4 @@ protected:
   IOStreamProvider &operator=(IOStreamProvider const &); // no assignment
 };
 
-#endif /* _IOSTREAMPROVIDER_H_ */
+#endif /* SETUP_IOSTREAMPROVIDER_H */

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _PICKVIEW_H_
-#define _PICKVIEW_H_
+#ifndef SETUP_PICKVIEW_H
+#define SETUP_PICKVIEW_H
 
 #include "win32.h"
 #include "String++.h"
@@ -126,4 +126,4 @@ private:
       int column);
 };
 
-#endif // _PICKVIEW_H_
+#endif /* SETUP_PICKVIEW_H */

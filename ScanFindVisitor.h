@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _SCANFINDVISITOR_H_
-#define _SCANFINDVISITOR_H_
+#ifndef SETUP_SCANFINDVISITOR_H
+#define SETUP_SCANFINDVISITOR_H
 
 #include "FindVisitor.h"
 
@@ -33,4 +33,4 @@ private:
   IniDBBuilder &_Builder;
 };
 
-#endif // _SCANFINDVISITOR_H_
+#endif /* SETUP_SCANFINDVISITOR_H */

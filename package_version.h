@@ -13,13 +13,13 @@
  *
  */
 
+#ifndef SETUP_PACKAGE_VERSION_H
+#define SETUP_PACKAGE_VERSION_H
+
 /* This is a package version abstrct class, that should be able to 
  * arbitrate acceess to cygwin binary packages, cygwin source package,
  * and the rpm and deb equivalents of the same.
  */
-
-#ifndef _PACKAGE_VERSION_H_
-#define _PACKAGE_VERSION_H_
 
 /* standard binary package metadata:
  * Name (ie mutt
@@ -213,4 +213,4 @@ protected:
   std::vector <Script> scripts_;
 };
 
-#endif /* _PACKAGE_VERSION_H_ */
+#endif /* SETUP_PACKAGE_VERSION_H */

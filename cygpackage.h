@@ -13,12 +13,12 @@
  *
  */
 
+#ifndef SETUP_CYGPACKAGE_H
+#define SETUP_CYGPACKAGE_H
+
 /* This is a cygwin specific package class, that should be able to 
  * arbitrate acceess to cygwin binary packages amd cygwin source packages
  */
-
-#ifndef _CYGPACKAGE_H_
-#define _CYGPACKAGE_H_
 
 #include "String++.h"
 /* for _MAX_PATH */
@@ -90,4 +90,4 @@ private:
   size_t filesize;
 };
 
-#endif /* _CYGPACKAGE_H_ */
+#endif /* SETUP_CYGPACKAGE_H */

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _PACKAGETRUST_H_
-#define _PACKAGETRUST_H_
+#ifndef SETUP_PACKAGETRUST_H
+#define SETUP_PACKAGETRUST_H
 
 /* Used for selecting a given 'trust' level */
 typedef enum
@@ -27,4 +27,4 @@ typedef enum
 }
 trusts;
 
-#endif /* _PACKAGETRUST_H_ */
+#endif /* SETUP_PACKAGETRUST_H */

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef _FILTERVISITOR_H_
-#define _FILTERVISITOR_H_
+#ifndef SETUP_FILTERVISITOR_H
+#define SETUP_FILTERVISITOR_H
 
 #include "FindVisitor.h"
 #include "String++.h"
@@ -67,4 +67,4 @@ private:
   String _dirPattern;
 };
 
-#endif // _FILTERVISITOR_H_
+#endif /* SETUP_FILTERVISITOR_H */
