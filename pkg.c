@@ -219,7 +219,7 @@ err:
 }
 
 pkg *
-init_pkgs ()
+init_pkgs (int use_current_user)
 {
   LONG res;
   DWORD what;
@@ -229,9 +229,12 @@ init_pkgs ()
   DWORD nc = 0;
   static pkg stuff[1000];
 
-  res = RegCreateKeyEx (HKEY_LOCAL_MACHINE,
+  res = RegCreateKeyEx (use_current_user ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER,
 			"SOFTWARE\\Cygnus Solutions\\Cygwin\\Installed Components",
 			 0, empty,  REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkpkg, &what);
+
+  if (res != ERROR_SUCCESS)
+    return NULL;
 
   for (nc = 0, sz = sizeof (buf);
        RegEnumValue (hkpkg, nc, buf, &sz, NULL, &ty, NULL, NULL) == ERROR_SUCCESS;

@@ -1,3 +1,44 @@
+Sat Apr 29 23:53:30 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* pkg.c (init_pkgs): Accept an argument to control what root registry
+	key should be used.
+	* setup.c (get_pkg_stuff): Use HKCLU registry key if default fails.
+	* setup.h: Reflect init_pkgs prototype change.
+
+Sat Apr 29 23:27:14 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* error.c (winerror): Respond to gcc warning.
+	* path.c (cygpath_pipe): Ditto.
+	* setup.c (filedel): Call sa_cleanup on deleteme.
+	(create_shortcut): Coerce argument to eliminate compiler warning.
+	(tarx): Use installed version of cygwin1.dll, overriding tar file name.
+	(refmatches): New function.  Tests if ref is contained in a list of
+	packages to install.
+	(filematches): New function.  Tests if filename matches one of a list
+	of packages to install.
+	(recurse_dirs): Accept list of packages to install.  Generalize tar.gz
+	test to accomodate _tar.gz.
+	(prompt): Ensure that stdout is flushed prior to asking for input.
+	(findhref): Initialize variables to quiet a compiler warning.
+	(processdirlisting): Accept list of packages to install.  Special case
+	cygwin tar file version number.
+	(downloaddir): Accept list of packages to install.
+	(downloadfrom): Ditto.
+	(create_uninstall): Eliminate unneeded variables.  Quote arguments to
+	regtool.
+	(do_start_menu): Don't create uninstall bat file if updating or user
+	specified a list of packages.
+	(mkmount): Eliminate unneeded variables.
+	(get_pkg_stuff): New function.  Checks for previous unversioned
+	installation.
+	(main): Accept -u and -f options and package names on the command line.
+	Use get_pkg_stuff to initialize package information.  Umount /etc.
+	Call recurse_dirs and downloadfrom with list of package to install.
+	Ensure that all /usr/local directories are created.  Output
+	installation time to setup.log.
+	* setup.h: Add some prototypes.
+	* xsystem.c (xcreate_process): Eliminate unneeded variable.
+
 Sat Apr 29 12:43:08 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (optionprompt): Don't overlap display of already seen options
@@ -128,7 +169,7 @@ Mon Apr 17 00:00:49 2000  Christopher Faylor <cgf@cygnus.com>
 
 Sun Apr 16 18:50:58 2000  Christopher Faylor <cgf@cygnus.com>
 
-	Use "warning" function, where appropriate to output warnings.
+	Use "warning" function, where appropriate, to output warnings.
 	* setup.c (warning): New function -- outputs warning to console and log
 	file.
 	(tarx): Fix index used to reset file protection.

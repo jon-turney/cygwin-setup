@@ -1321,10 +1321,12 @@ static pkg *
 get_pkg_stuff (const char *root, int updating)
 {
   const char *ver, *ans;
-  pkg *pkgstuff = init_pkgs ();
+  pkg *pkgstuff = init_pkgs (0);
   static pkg dummy = {NULL, NULL};
 
-  if (!updating)
+  if (!pkgstuff)
+    pkgstuff = init_pkgs (1);	/* Use HKCU */
+  if (!updating || !pkgstuff)
     return &dummy;
 
   if (pkgstuff->name != NULL)
