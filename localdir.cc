@@ -42,7 +42,7 @@ static const char *cvsid =
 
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
-extern LogFile theLog;
+extern LogFile * theLog;
 void
 save_local_dir ()
 {
@@ -63,15 +63,15 @@ save_local_dir ()
     }
   if (source == IDC_SOURCE_DOWNLOAD || !get_root_dir ().size())
     {
-      theLog.clearFiles();
-      theLog.setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
-      theLog.setFile (0, local_dir + "/setup.log", true);
+      theLog->clearFiles();
+      theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
+      theLog->setFile (0, local_dir + "/setup.log", true);
     }
   else
     {
-      theLog.clearFiles();
-      theLog.setFile (LOG_BABBLE, cygpath ("/var/log/setup.log.full"), false);
-      theLog.setFile (0, cygpath ("/var/log/setup.log"), true);
+      theLog->clearFiles();
+      theLog->setFile (LOG_BABBLE, cygpath ("/var/log/setup.log.full"), false);
+      theLog->setFile (0, cygpath ("/var/log/setup.log"), true);
     }
 }
 

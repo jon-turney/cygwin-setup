@@ -150,7 +150,7 @@ ThreeBarProgressPage Progress;
 // This is a little ugly, but the decision about where to log occurs
 // after the source is set AND the root mount obtained
 // so we make the actual logger available to the appropriate routine(s).
-LogFile theLog;
+LogFile *theLog;
 
 #ifndef __CYGWIN__
 int WINAPI
@@ -171,9 +171,9 @@ main (int argc, char **argv)
   local_dir = String (cwd);
   delete cwd;
 
-  LogSingleton::SetInstance (theLog);
-  theLog.setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
-  theLog.setFile (0, local_dir + "/setup.log", true);
+  LogSingleton::SetInstance (theLog = new LogFile);
+  theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
+  theLog->setFile (0, local_dir + "/setup.log", true);
 
   next_dialog = IDD_SPLASH;
 
@@ -208,7 +208,7 @@ main (int argc, char **argv)
 #endif
 
   if (!GetOption::GetInstance().Process (argc,_argv))
-    theLog.exit(1);
+    theLog->exit(1);
 // #endif
 
   unattended_mode = UnattendedOption;
@@ -249,7 +249,7 @@ main (int argc, char **argv)
   // Create the PropSheet main window
   MainWindow.Create ();
 
-  theLog.exit (0);
+  theLog->exit (0);
   /* Keep gcc happy :} */
   return 0;
 }

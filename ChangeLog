@@ -1,5 +1,12 @@
 2002-11-10  Robert Collins  <rbtcollins@hotmail.com>
 
+	* localdir.cc: Update the extern LogFile to be a pointer.
+	(save_local_dir): Change . to -> for the above.
+	* main.cc (theFile): Change from an instance to a pointer.
+	(main): Change . to -> for the above.
+
+2002-11-10  Robert Collins  <rbtcollins@hotmail.com>
+
 	* LogFile.cc: use 'std::' where needed throughout.
 	(LogFile::createLogFile): Implement a factory for LogFile.
 	(LogFile::LogFile): Update for use with the factory, and to
