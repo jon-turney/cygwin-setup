@@ -49,7 +49,7 @@ public:
   ~CygFileProvider (){}
   int move (String const &a,String const &b) const
     {return io_stream_cygfile::move (a, b);}
-  int mkdir_p (enum path_type_t isadir, String const &path) const
+  int mkdir_p (path_type_t isadir, String const &path) const
     {return cygmkdir_p (isadir, path);}
 protected:
   CygFileProvider() // no creating this
@@ -296,7 +296,7 @@ io_stream_cygfile::error ()
 }
 
 int
-cygmkdir_p (enum path_type_t isadir, String const &_name)
+cygmkdir_p (path_type_t isadir, String const &_name)
 {
   if (!_name.size())
     return 1;

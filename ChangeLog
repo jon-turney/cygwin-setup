@@ -1,3 +1,21 @@
+2004-08-30  Max Bowsher  <maxb@ukf.net>
+
+	Move closer to GCC 3.4 compatibility.
+
+	* IOStreamProvider.h, io_stream_cygfile.cc, io_stream_cygfile.h,
+	io_stream_file.cc: Do not incorrectly use "enum" after it has been
+	hidden inside a typedef.
+	* archive.h: In "virtual func() = 0;", the 0 is a language construct,
+	not some symbol that might evaluate to 0, and gcc 3.4 enforces this.
+	* autoload.c (DllInfo.name): Silence warning by making const.
+	(DLL, autoload_common): __attribute__ ((used)) is now required to
+	prevent gcc being over-eager in it's optimization, and removing these
+	seemingly-unused (used only from assembly) functions.
+	Silences some warnings, too.
+	* Makefile.am (AM_CXXFLAGS, AM_CFLAGS): The options
+	-Wstrict-prototypes -Wmissing-prototypes do not apply to C++ and
+	g++ 3.4 complains about them.
+
 2004-08-29  Max Bowsher  <maxb@ukf.net>
 
 	* Exception.h: Reformatting, #include more, remove incorrect and 

@@ -23,7 +23,7 @@
  * and potentially understanding links in the future
  */
 
-extern int cygmkdir_p (enum path_type_t isadir, String const &path);
+extern int cygmkdir_p (path_type_t isadir, String const &path);
 
 class io_stream_cygfile:public io_stream
 {
@@ -56,7 +56,7 @@ private:
   io_stream_cygfile ()
   {
   };
-  friend int cygmkdir_p (enum path_type_t isadir, String const &_name);
+  friend int cygmkdir_p (path_type_t isadir, String const &_name);
   static String normalise (String const &unixpath);
   FILE *fp;
   int lasterr;

@@ -80,9 +80,9 @@ public:
    * The way this works is that when read returns 0, you are at the end of *a* file.
    * next_file_name will allow read to be called again, if it returns !NULL
    */
-  virtual String const next_file_name () = NULL;
-  virtual archive_file_t next_file_type () = ARCHIVE_FILE_INVALID;
-  virtual String const linktarget () = NULL;
+  virtual String const next_file_name () = 0;
+  virtual archive_file_t next_file_type () = 0;
+  virtual String const linktarget () = 0;
   virtual int skip_file () = 0;
   /* if you are still needing these hints... give up now! */
 //  virtual ~compress ();

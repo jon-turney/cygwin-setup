@@ -32,7 +32,7 @@ public:
   virtual io_stream *open (String const &,String const &) const = 0;
   virtual ~IOStreamProvider (){}
   virtual int move (String const &,String const &) const = 0;
-  virtual int mkdir_p (enum path_type_t isadir, String const &path) const = 0;
+  virtual int mkdir_p (path_type_t isadir, String const &path) const = 0;
   String key; // Do not set - managed automatically.
 protected:
   IOStreamProvider(){} // no base instances

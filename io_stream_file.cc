@@ -56,7 +56,7 @@ public:
   ~FileProvider (){}
   int move (String const &a,String const &b) const
     {return io_stream_file::move (a, b);}
-  int mkdir_p (enum path_type_t isadir, String const &path) const
+  int mkdir_p (path_type_t isadir, String const &path) const
     {
       return ::mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, path.cstr_oneuse());
     }

@@ -27,8 +27,9 @@ SUBDIRS = bz2lib zlib libgetopt++ tests
 # We would like to use -Winline for C++ as well, but some STL code triggers
 # this warning. (Bug verified present in gcc-3.3)
 AM_CXXFLAGS	= -Werror -Wall -Wpointer-arith -Wcomments \
-  -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes
-AM_CFLAGS	= $(AM_CXXFLAGS) -Wmissing-declarations -Winline
+  -Wcast-align -Wwrite-strings 
+AM_CFLAGS	= $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
+		  -Wstrict-prototypes -Wmissing-prototypes
 
 WINDRES		:= @WINDRES@
 

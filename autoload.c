@@ -19,11 +19,11 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "win32.h"
 
 typedef struct {
-  char *name;
+  const char *name;
   HINSTANCE handle;
 } DllInfo;
 
-#define DLL(n) static DllInfo n ## _info __asm__ (#n "_info") = { #n, 0}
+#define DLL(n) __attribute__ ((used)) static DllInfo n ## _info __asm__ (#n "_info") = { #n, 0}
 
 #define Auto(dll, func, size) \
 	__asm__ ("\t.data"); \
@@ -66,7 +66,7 @@ typedef struct {
   char name[100];
 } AutoEntry;
 
-static void autoload_common () __asm__ ("autoload_common");
+__attribute__ ((used)) static void autoload_common (int x) __asm__ ("autoload_common");
 
 static void
 autoload_common (int x)
