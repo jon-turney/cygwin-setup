@@ -53,6 +53,9 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
       RestoreDC (hdc, oldDC);
       return;
     }
+  HRGN oldClip2;
+  if (Win32::OS() == Win32::WinNT) {
+				  
   unsigned int regionsize = GetRegionData (oldClip, 0, 0);
   LPRGNDATA oldClipData = (LPRGNDATA) malloc (regionsize);
   if (GetRegionData (oldClip, regionsize, oldClipData) > regionsize)
@@ -66,7 +69,11 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
       ScreenToClient (WindowFromDC (hdc),
 		      &((POINT *) oldClipData->Buffer)[t + n * 2]);
 
-  HRGN oldClip2 = ExtCreateRegion (NULL, regionsize, oldClipData);
+  oldClip2 = ExtCreateRegion (NULL, regionsize, oldClipData);
+			      }
+  else 
+    oldClip2 = oldClip;  
+  
   SelectClipRgn (hdc, oldClip2);
   if (pkg.installed)
     {

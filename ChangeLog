@@ -1,3 +1,8 @@
+2002-03-17  Robert Collins <rbtcollins@hotmail.com>
+
+	* * PickPackageLine.cc (PickPackageLine::paint): Fix incorrect clip region
+	calculation on win9x systems.
+
 2002-03-16  Robert Collins <rbtcollins@hotmail.com>
 
 	* install.cc (install_one_source): Write the correct length of a string to the
