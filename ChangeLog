@@ -1,3 +1,16 @@
+2002-02-18  Michael A Chase <mchase@ix.netcom.com>
+	* desktop.cc (make_passwd_group): Don't create passwd-grp.bat
+	unnecessarily.
+	
+2002-02-18  Michael A Chase <mchase@ix.netcom.com>
+
+	* log.cc (log_save): Put "\n" at end of log lines instead of "'".
+	
+2002-02-19  Robert Collins <rbtcollins@hotmail.com>
+
+	* mount.cc (create_mount): Avoid a const char*->char* warning.
+	(read_mounts): Ditto.
+
 2002-02-19  Robert Collins  <rbtcollins@hotmail.com>
 
 	* res.rc (IDD_SPLASH): Hide white box.
