@@ -23,6 +23,7 @@
 #include "state.h"
 
 #include "getopt++/BoolOption.h"
+#include "Exception.h"
 
 bool PropertyPage::DoOnceForSheet = true;
 
@@ -114,177 +115,181 @@ PropertyPage::DialogProcReflector (HWND hwnd, UINT message, WPARAM wParam,
 BOOL CALLBACK
 PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 {
-  if (proc != NULL)
+  try
+  {
+    if (proc != NULL)
     {
       proc (GetHWND (), message, wParam, lParam);
     }
 
-  bool retval;
+    bool retval;
 
-  switch (message)
+    switch (message)
     {
-    case WM_INITDIALOG:
-      {
-	OnInit ();
+      case WM_INITDIALOG:
+        {
+          OnInit ();
 
-	setTitleFont ();
-	
-	// Call it here so it stores the initial client rect.
-	sizeProcessor.UpdateSize (GetHWND ());
+          setTitleFont ();
 
-	// TRUE = Set focus to default control (in wParam).
-	return TRUE;
-	break;
-      }
-    case WM_NOTIFY:
-      switch (((NMHDR FAR *) lParam)->code)
-	{
-	case PSN_APPLY:
-	  SetWindowLong (GetHWND (), DWL_MSGRESULT, PSNRET_NOERROR);
-	  return TRUE;
-	  break;
-	case PSN_SETACTIVE:
-	  {
-	    if (DoOnceForSheet)
-	      {
-		// Tell our parent PropSheet what its own HWND is.
-		GetOwner ()->SetHWNDFromPage (((NMHDR FAR *) lParam)->
-					      hwndFrom);
-		GetOwner ()->CenterWindow ();
-		DoOnceForSheet = false;
-	      }
+          // Call it here so it stores the initial client rect.
+          sizeProcessor.UpdateSize (GetHWND ());
 
-	    GetOwner ()->AdjustPageSize (GetHWND ());
-	      
-	    // Set the wizard buttons apropriately
-	    if (IsFirst)
-	      {
-		// Disable "Back" on first page.
-		GetOwner ()->SetButtons (PSWIZB_NEXT);
-	      }
-	    else if (IsLast)
-	      {
-		// Disable "Next", enable "Finish" on last page
-		GetOwner ()->SetButtons (PSWIZB_BACK | PSWIZB_FINISH);
-	      }
-	    else
-	      {
-		// Middle page, enable both "Next" and "Back" buttons
-		GetOwner ()->SetButtons (PSWIZB_BACK | PSWIZB_NEXT);
-	      }
+          // TRUE = Set focus to default control (in wParam).
+          return TRUE;
+          break;
+        }
+      case WM_NOTIFY:
+        switch (((NMHDR FAR *) lParam)->code)
+        {
+          case PSN_APPLY:
+            SetWindowLong (GetHWND (), DWL_MSGRESULT, PSNRET_NOERROR);
+            return TRUE;
+            break;
+          case PSN_SETACTIVE:
+            {
+              if (DoOnceForSheet)
+              {
+                // Tell our parent PropSheet what its own HWND is.
+                GetOwner ()->SetHWNDFromPage (((NMHDR FAR *) lParam)->
+                                              hwndFrom);
+                GetOwner ()->CenterWindow ();
+                DoOnceForSheet = false;
+              }
 
-	    if(!wantsActivation())
-	    {
-	      ::SetWindowLong (GetHWND (), DWL_MSGRESULT, -1);
-	      return TRUE;
-	    }
+              GetOwner ()->AdjustPageSize (GetHWND ());
 
-	    OnActivate ();
+              // Set the wizard buttons apropriately
+              if (IsFirst)
+              {
+                // Disable "Back" on first page.
+                GetOwner ()->SetButtons (PSWIZB_NEXT);
+              }
+              else if (IsLast)
+              {
+                // Disable "Next", enable "Finish" on last page
+                GetOwner ()->SetButtons (PSWIZB_BACK | PSWIZB_FINISH);
+              }
+              else
+              {
+                // Middle page, enable both "Next" and "Back" buttons
+                GetOwner ()->SetButtons (PSWIZB_BACK | PSWIZB_NEXT);
+              }
 
-	    if (unattended_mode) 
-	      {
-		// -2 == disable unattended mode, display page
-		// -1 == display page but stay in unattended mode (progress bars)
-		// 0 == skip to next page
-		// IDD_* == skip to specified page
-		long nextwindow = OnUnattended();
-		if (nextwindow == -2)
-		  {
-		    unattended_mode = false;
-		    SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
-		    return TRUE;
-		  }
-		else if (nextwindow == -1)
-		  {
-		    SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
-		    return TRUE;
-		  }
-		else if (nextwindow == 0)
-		  {
-		    SetWindowLong (GetHWND (), DWL_MSGRESULT, -1);
-		    return TRUE;
-		  }
-		else
-		  {
-		    SetWindowLong (GetHWND (), DWL_MSGRESULT, nextwindow);
-		    return TRUE;
-		  }
-	      } 
-	    else 
-	      {
-		// 0 == Accept activation, -1 = Don't accept
-		::SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
-		return TRUE;
-	      }
+              if(!wantsActivation())
+              {
+                ::SetWindowLong (GetHWND (), DWL_MSGRESULT, -1);
+                return TRUE;
+              }
 
-	  }
-	  break;
-	case PSN_KILLACTIVE:
-	  OnDeactivate ();
-	  // FALSE = Allow deactivation
-	  SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
-	  return TRUE;
-	  break;
-	case PSN_WIZNEXT:
-	  {
-	    LONG retval;
-	    retval = OnNext ();
-	    SetWindowLong (GetHWND (), DWL_MSGRESULT, retval);
-	    return TRUE;
-	  }
-	  break;
-	case PSN_WIZBACK:
-	  {
-	    LONG retval;
-	    retval = OnBack ();
-	    SetWindowLong (GetHWND (), DWL_MSGRESULT, retval);
-	    return TRUE;
-	  }
-	  break;
-	case PSN_WIZFINISH:
-	  retval = OnFinish ();
-	  // False = Allow the wizard to finish
-	  SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
-	  return TRUE;
-	  break;
-	default:
-	  // Unrecognized notification
-	  return FALSE;
-	  break;
-	}
-      break;
-    case WM_COMMAND:
-      {
-	bool retval;
+              OnActivate ();
 
-	retval =
-	  OnMessageCmd (LOWORD (wParam), (HWND) lParam, HIWORD (wParam));
-	if (retval == true)
-	  {
-	    // Handled, return 0
-	    SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
-	    return TRUE;
-	  }
-	else if (cmdproc != NULL)
-	  {
-	    return HANDLE_WM_COMMAND (GetHWND (), wParam, lParam, cmdproc);
-	  }
-	break;
-      }
-    case WM_SIZE:
-      {
-	sizeProcessor.UpdateSize (GetHWND ());
-	break;
-      }
-    default:
-      break;
+              if (unattended_mode) 
+              {
+                // -2 == disable unattended mode, display page
+                // -1 == display page but stay in unattended mode (progress bars)
+                // 0 == skip to next page
+                // IDD_* == skip to specified page
+                long nextwindow = OnUnattended();
+                if (nextwindow == -2)
+                {
+                  unattended_mode = false;
+                  SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+                  return TRUE;
+                }
+                else if (nextwindow == -1)
+                {
+                  SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+                  return TRUE;
+                }
+                else if (nextwindow == 0)
+                {
+                  SetWindowLong (GetHWND (), DWL_MSGRESULT, -1);
+                  return TRUE;
+                }
+                else
+                {
+                  SetWindowLong (GetHWND (), DWL_MSGRESULT, nextwindow);
+                  return TRUE;
+                }
+              } 
+              else 
+              {
+                // 0 == Accept activation, -1 = Don't accept
+                ::SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+                return TRUE;
+              }
+
+            }
+            break;
+          case PSN_KILLACTIVE:
+            OnDeactivate ();
+            // FALSE = Allow deactivation
+            SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
+            return TRUE;
+            break;
+          case PSN_WIZNEXT:
+            {
+              LONG retval;
+              retval = OnNext ();
+              SetWindowLong (GetHWND (), DWL_MSGRESULT, retval);
+              return TRUE;
+            }
+            break;
+          case PSN_WIZBACK:
+            {
+              LONG retval;
+              retval = OnBack ();
+              SetWindowLong (GetHWND (), DWL_MSGRESULT, retval);
+              return TRUE;
+            }
+            break;
+          case PSN_WIZFINISH:
+            retval = OnFinish ();
+            // False = Allow the wizard to finish
+            SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
+            return TRUE;
+            break;
+          default:
+            // Unrecognized notification
+            return FALSE;
+            break;
+        }
+        break;
+      case WM_COMMAND:
+        {
+          bool retval;
+
+          retval =
+            OnMessageCmd (LOWORD (wParam), (HWND) lParam, HIWORD (wParam));
+          if (retval == true)
+          {
+            // Handled, return 0
+            SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+            return TRUE;
+          }
+          else if (cmdproc != NULL)
+          {
+            return HANDLE_WM_COMMAND (GetHWND (), wParam, lParam, cmdproc);
+          }
+          break;
+        }
+      case WM_SIZE:
+        {
+          sizeProcessor.UpdateSize (GetHWND ());
+          break;
+        }
+      default:
+        break;
     }
 
-  if ((message >= WM_APP) && (message < 0xC000))
+    if ((message >= WM_APP) && (message < 0xC000))
     {
       // It's a private app message
       return OnMessageApp (message, wParam, lParam);
     }
+  }
+  TOPLEVEL_CATCH("DialogProc");
 
   // Wasn't handled
   return FALSE;
