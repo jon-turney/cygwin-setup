@@ -111,7 +111,7 @@ Sun Jun 17 12:06:14 2001  Christopher Faylor <cgf@cygnus.com>
 	(do_install): Call check_for_old_cygwin if there were no errors during
 	the install.
 
-at Jun 16 11:33:51  2001  Michael A Chase <mchase@ix.netcom.com>
+Sat Jun 16 11:33:51  2001  Michael A Chase <mchase@ix.netcom.com>
 
 	* choose.cc (_Info::_Info): Test _source paramenter for non-NULL rather
 	than zeroed "source" element.
