@@ -1,3 +1,8 @@
+2003-04-07  Max Bowsher  <maxb@ukf.net>
+
+	* download.cc: Add command line option to suppress MD5 checks.
+	(validateCachedPackage): Test option and possibly skip.
+
 2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Merge setup-200303-troubleshooting fixes in.

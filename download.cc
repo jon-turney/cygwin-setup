@@ -53,15 +53,18 @@ static const char *cvsid =
 
 #include "Exception.h"
 
+#include "getopt++/BoolOption.h"
+
 using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
+static BoolOption NoMD5Option (false, '5', "no-md5", "Suppress MD5 checksum verification");
 
 bool
 validateCachedPackage (String const &fullname, packagesource & pkgsource)
 {
-  if (pkgsource.md5.isSet())
+  if (pkgsource.md5.isSet() && !NoMD5Option)
     {
       // check the MD5 sum of the cached file here
       io_stream *thefile = io_stream::open (fullname, "rb");
