@@ -1,3 +1,8 @@
+2002-03-19  Christopher Faylor  <cgf@redhat.com>
+
+	* Makefile.in (setup_version.c): Add back magic which allows detection
+	of setup.exe version number.
+
 2002-03-17  Robert Collins <rbtcollins@hotmail.com>
 
 	* * PickPackageLine.cc (PickPackageLine::paint): Fix incorrect clip region
