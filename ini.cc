@@ -203,7 +203,7 @@ do_remote_ini (HWND owner)
   return ini_count;
 }
 
-static void
+static bool
 do_ini_thread (HINSTANCE h, HWND owner)
 {
   size_t ini_count = 0;
@@ -213,10 +213,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
     ini_count = do_remote_ini (owner);
 
   if (ini_count == 0)
-    {
-      next_dialog = source == IDC_SOURCE_CWD ? IDD_S_FROM_CWD : IDD_SITE;
-      return;
-    }
+    return false;
 
   if (get_root_dir ().cstr_oneuse())
     {
@@ -266,7 +263,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
 	note (owner, IDS_OLD_SETUP_VERSION, version, setup_version.cstr_oneuse());
     }
 
-  next_dialog = IDD_CHOOSE;
+  return true;
 }
 
 static DWORD WINAPI
@@ -275,10 +272,10 @@ do_ini_thread_reflector(void* p)
 	HANDLE *context;
 	context = (HANDLE*)p;
 
-	do_ini_thread((HINSTANCE)context[0], (HWND)context[1]);
+	bool succeeded = do_ini_thread((HINSTANCE)context[0], (HWND)context[1]);
 
 	// Tell the progress page that we're done downloading
-	Progress.PostMessage(WM_APP_SETUP_INI_DOWNLOAD_COMPLETE, 0, next_dialog);
+	Progress.PostMessage(WM_APP_SETUP_INI_DOWNLOAD_COMPLETE, 0, succeeded);
 
 	ExitThread(0);
 }

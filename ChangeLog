@@ -1,3 +1,11 @@
+2003-07-30  Max Bowsher  <maxb@ukf.net>
+
+	* ini.cc (do_ini_thread): Return bool.
+	(do_ini_thread_reflector): Put returned bool in lParam.
+	* threebar.cc (WM_APP_SETUP_INI_DOWNLOAD_COMPLETE): Rework for new
+	meaning of lParam. Replace erroneous use of do_fromcwd with
+	SetActivePageByID (IDD_SOURCE).
+
 2003-07-30  Robert Collins  <rbtcollins@hotmail.com>
 
 	* ConnectionSetting.cc: New file, persist connection type selection.

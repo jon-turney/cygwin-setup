@@ -26,6 +26,7 @@
 #include "propsheet.h"
 #include "threebar.h"
 #include "cistring.h"
+#include "state.h"
 
 bool ThreeBarProgressPage::Create ()
 {
@@ -206,14 +207,23 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
       }
     case WM_APP_SETUP_INI_DOWNLOAD_COMPLETE:
       {
-	if (lParam == IDD_S_FROM_CWD)
+	if (lParam)
 	  {
-	    // There isn't actually a dialog template named this
-	    do_fromcwd (GetInstance (), GetHWND ());
+	    GetOwner ()->SetActivePageByID (IDD_CHOOSE);
 	  }
 	else
 	  {
-	    GetOwner ()->SetActivePageByID (lParam);
+	    if (source == IDC_SOURCE_CWD)
+	      {
+		// There was a setup.ini file (as found by
+		// do_fromcwd), but it had parse errors.
+		GetOwner ()->SetActivePageByID (IDD_SOURCE);
+	      }
+	    else
+	      {
+		// Download failed, try another site.
+		GetOwner ()->SetActivePageByID (IDD_SITE);
+	      }
 	  }
 	break;
       }
