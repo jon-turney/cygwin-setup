@@ -138,8 +138,8 @@
 
 2004-11-22  Max Bowsher  <maxb@ukf.net>
 
-	* main.cc (main): Fix bug in first 2004-11-20 commit. Avoid referring
-	to the theLog pointer before it is set.
+	* main.cc (main): Fix bug in one of the 2004-11-19 commits.
+	Avoid referring to the theLog pointer before it is set.
 
 2004-11-20  Max Bowsher  <maxb@ukf.net>
 
