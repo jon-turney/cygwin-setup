@@ -1,3 +1,10 @@
+2003-01-19  Max Bowsher  <maxb@ukf.net>
+
+	* resource.h (IDC_CHOOSE_KEEP): Define.
+	* res.rc (IDD_CHOOSE): Add radio button IDC_CHOOSE_KEEP.
+	* choose.cc (create_listview): Add IDC_CHOOSE_KEEP to ta[].
+	(ChooserPage::OnMessageCmd): Handle new IDC_CHOOSE_KEEP button.
+
 2003-01-15  Max Bowsher  <maxb@ukf.net>
 
 	* mkdir.cc [_CYGWIN_]: Implement what was pseudocode.

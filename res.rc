@@ -288,12 +288,14 @@ STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION |
 CAPTION "Select Packages"
 FONT 8, "MS Sans Serif"
 BEGIN
-    CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP | WS_TABSTOP,150,30,27,10
-    CONTROL         "&Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON,185,
-                    30,25,10
-    CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON,220,30,
-                    25,10
+    CONTROL         "&Keep",IDC_CHOOSE_KEEP,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP | WS_TABSTOP,115,30,30,10
+    CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON , 
+                    150,30,27,10
+    CONTROL         "&Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON , 
+                    185,30,25,10
+    CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON , 
+                    220,30,25,10
     PUSHBUTTON      "&View",IDC_CHOOSE_VIEW,255,30,20,10,WS_GROUP
     CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
                     317,1

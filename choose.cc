@@ -437,7 +437,7 @@ create_listview (HWND dlg, RECT * r)
       pkg.set_requirements (chooser->deftrust);
     }
   /* FIXME: do we need to init the desired fields ? */
-  static int ta[] = { IDC_CHOOSE_PREV, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
+  static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_PREV, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
   rbset (dlg, ta, IDC_CHOOSE_CURR);
 }
 
@@ -621,6 +621,20 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
   packagedb db;
   switch (id)
     {
+    case IDC_CHOOSE_KEEP:
+      if (IsDlgButtonChecked (GetHWND (), id))
+      {
+	for (vector <packagemeta *>::iterator i = db.packages.begin ();
+	     i != db.packages.end (); ++i)
+          {
+            packagemeta & pkg = **i;
+            pkg.desired = pkg.installed;
+          }
+        set_view_mode (lv, chooser->get_view_mode ());
+        break;
+      }
+      else
+      return false;
     case IDC_CHOOSE_PREV:
       if (IsDlgButtonChecked (GetHWND (), id))
       {
