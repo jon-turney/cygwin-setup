@@ -182,7 +182,7 @@ make_cygwin_bat ()
 
   fprintf (bat, "%.2s\n", get_root_dir ().cstr_oneuse());
   fprintf (bat, "chdir %s\n\n",
-	   backslash (get_root_dir () + "/bin").cstr_oneuse());
+	   backslash (get_root_dir () + "/bin").replace ("%", "%%").cstr_oneuse());
 
   fprintf (bat, "bash --login -i\n");
 

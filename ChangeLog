@@ -1,5 +1,12 @@
 2003-07-30  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
+	* String++.h (String::replace): New instance functions.
+	* String++.cc (String::replace): Implement.
+	* filemanip.cc (backslash): Change to use String::replace.
+	* desktop.cc (make_cygwin_bat): Escape '%' in path.
+
+2003-07-30  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
 	* String++.h (TOSTRING): New macro.
 	* UserSettings.cc (UserSettings::deRegisterSetting): Fix
 	erroneous __LINE__/__FILE__ usage.

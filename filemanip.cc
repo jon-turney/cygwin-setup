@@ -166,11 +166,5 @@ trail (const char *haystack, const char *needle)
 String
 backslash (String const & aString)
 {
-  char * tempString = aString.cstr();
-  for (char *t = tempString; *t; t++)
-    if (*t == '/')
-      *t = '\\';
-  String theString(tempString);
-  delete[] tempString;
-  return theString;
+  return aString.replace ('/', '\\');
 }
