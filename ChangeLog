@@ -1,5 +1,10 @@
 2001-11-10  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.cc (set_cation): Backout last change.
+	(choose_caption): Ditto.
+
+2001-11-10  Robert Collins  <rbtcollins@hotmail.com>
+
 	* ini.h (actions): Remove - transferred to choose.h.
 	(views): Ditto.
 	* choose.h: Protect class's from "C" compilers.
