@@ -1,5 +1,18 @@
 2002-07-03  Robert Collins  <rbtcollins@hotmail.com>
 
+	* package_meta.cc (packagemeta::set_requirements): Automatically select
+	version of dependent packages that satisfies the requirements.
+	Use processOneDependency to trigger the install of those packages.
+	(checkForInstalled): Check that the package remains installed.
+	(processOneDependency): Helper function for dependent packages.
+	* IniDBBuilderPackage.cc (IniDBBuilderPackage::buildPackage): Add more
+	debug information.
+	Clear out all current state on new packages.
+	(IniDBBuilderPackage::add_correct_version): Copy the dependency list
+	across.
+
+2002-07-03  Robert Collins  <rbtcollins@hotmail.com>
+
 	* ChangeLog: Branched setup-200207 in preparation for release.
 
 2002-07-02  Robert Collins  <rbtcollins@hotmail.com>
