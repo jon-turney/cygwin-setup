@@ -25,7 +25,9 @@
    (otherwise, why would you have asked to install it?).  Note
    that we search recursively. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid = "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 
@@ -56,11 +58,12 @@ is_test_version (char *v)
 }
 
 char *
-canonicalize_version (char *v)
+canonicalize_version (const char *v)
 {
   static char nv[3][100];
   static int idx = 0;
-  char *np, *dp, *ov = v;
+  char *np ;
+  const char *dp;
   int i;
 
   idx = (idx+1) % 3;
@@ -126,7 +129,7 @@ do_fromcwd (HINSTANCE h)
 {
   if (_access ("./setup.ini", 0) == 0)
     {
-      mirror_site = ".";
+      mirror_site = (char *) ".";
       next_dialog = IDD_S_LOAD_INI;
       return;
     }

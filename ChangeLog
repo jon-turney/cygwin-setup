@@ -1,5 +1,12 @@
 2001-11-03  Robert Collins  <rbtcollins@hotmail.com>
 
+	* fromcwd: Fix compiler warnings for cvsid.
+	(canonicalize_version): Fix compilter warnings.
+	(do_fromcwd): Ditto.
+	* version.h: Fix compiler warnings for canonicalize_version.
+
+2001-11-03  Robert Collins  <rbtcollins@hotmail.com>
+
 	* res.rc (IDD_CHOOSE): Move the view caption to the right hand side.
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>

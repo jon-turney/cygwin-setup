@@ -17,4 +17,4 @@
 
 extern char *version;
 
-extern char *canonicalize_version (char *);
+extern char *canonicalize_version (const char *);
