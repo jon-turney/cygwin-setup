@@ -2,8 +2,7 @@ Sat Jun 30 14:05:21  2001  Michael A Chase <mchase@ix.netcom.com>
 
 	* res.rc (IDD_LOCAL_DIR): Change caption to match the other dialog
 	boxes.
-	(IDD_CHOOSE))))))))): Adjust horizontal size so package names are
-	visible.
+	(IDD_CHOOSE): Adjust horizontal size so package names are visible.
 
 	* choose.cc: Restore some more changes from 2001-06-25, throughout.
 	(paint): Wrap some excessively long lines.
