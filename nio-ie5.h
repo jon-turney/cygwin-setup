@@ -22,4 +22,5 @@ public:
   ~NetIO_IE5 ();
   virtual int ok ();
   virtual int read (char *buf, int nbytes);
+  void flush_io();
 };

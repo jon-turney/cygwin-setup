@@ -1,3 +1,10 @@
+2000-08-23  DJ Delorie  <dj@redhat.com>
+
+	* nio-ie5.cc (NetIO_IE5): Fix authentication logic
+	* nio-ie5.h (flush_io): new
+	* netio.cc (load_dialog): note when we're initializing the dialog
+	box, and ignore changes to the edit fields then.
+
 2000-08-21  DJ Delorie  <dj@redhat.com>
 
 	* README: Update

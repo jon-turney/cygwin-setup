@@ -34,6 +34,8 @@ static HINTERNET internet = 0;
 NetIO_IE5::NetIO_IE5 (char *_url)
   : NetIO (_url)
 {
+  int resend = 0;
+
   if (internet == 0)
     internet = InternetOpen ("Cygwin Setup", INTERNET_OPEN_TYPE_PRECONFIG,
 			     NULL, NULL, 0);
@@ -46,25 +48,29 @@ NetIO_IE5::NetIO_IE5 (char *_url)
     INTERNET_FLAG_EXISTING_CONNECT |
     INTERNET_FLAG_PASSIVE;
 
+  connection = InternetOpenUrl (internet, url, NULL, 0, flags, 0);
+
  try_again:
 
   if (net_user && net_passwd)
     {
-      InternetSetOption (internet, INTERNET_OPTION_USERNAME,
+      InternetSetOption (connection, INTERNET_OPTION_USERNAME,
 			 net_user, strlen (net_user));
-      InternetSetOption (internet, INTERNET_OPTION_PASSWORD,
+      InternetSetOption (connection, INTERNET_OPTION_PASSWORD,
 			 net_passwd, strlen (net_passwd));
     }
 
   if (net_proxy_user && net_proxy_passwd)
     {
-      InternetSetOption (internet, INTERNET_OPTION_PROXY_USERNAME,
+      InternetSetOption (connection, INTERNET_OPTION_PROXY_USERNAME,
 			 net_proxy_user, strlen (net_proxy_user));
-      InternetSetOption (internet, INTERNET_OPTION_PROXY_PASSWORD,
+      InternetSetOption (connection, INTERNET_OPTION_PROXY_PASSWORD,
 			 net_proxy_passwd, strlen (net_proxy_passwd));
     }
 
-  connection = InternetOpenUrl (internet, url, NULL, 0, flags, 0);
+  if (resend)
+    if (!HttpSendRequest (connection, 0, 0, 0, 0))
+      connection = 0;
 
   if (!connection)
     {
@@ -93,12 +99,16 @@ NetIO_IE5::NetIO_IE5 (char *_url)
 	{
 	  if (type == 401) /* authorization required */
 	    {
+	      flush_io();
 	      get_auth ();
+	      resend = 1;
 	      goto try_again;
 	    }
 	  else if (type == 407) /* proxy authorization required */
 	    {
+	      flush_io();
 	      get_proxy_auth ();
+	      resend = 1;
 	      goto try_again;
 	    }
 	  else if (type >= 300)
@@ -108,6 +118,16 @@ NetIO_IE5::NetIO_IE5 (char *_url)
 	    }
 	}
     }
+}
+
+void
+NetIO_IE5::flush_io ()
+{
+  DWORD actual = 0;
+  char buf[1024];
+  do {
+    InternetReadFile (connection, buf, 1024, &actual);
+  } while (actual > 0);
 }
 
 NetIO_IE5::~NetIO_IE5 ()

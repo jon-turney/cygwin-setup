@@ -132,12 +132,12 @@ NetIO::open (char *url)
 
 
 static char **user, **passwd;
+static int loading = 0;
 
 static void
 check_if_enable_ok (HWND h)
 {
   int e = 0;
-  msg ("u = %p p = %p", *user, *passwd);
   if (*user && *passwd)
     e = 1;
   EnableWindow (GetDlgItem (h, IDOK), e);
@@ -146,9 +146,11 @@ check_if_enable_ok (HWND h)
 static void
 load_dialog (HWND h)
 {
+  loading = 1;
   eset (h, IDC_NET_USER, *user);
   eset (h, IDC_NET_PASSWD, *passwd);
   check_if_enable_ok (h);
+  loading = 0;
 }
 
 static void
@@ -166,8 +168,11 @@ auth_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDC_NET_USER:
     case IDC_NET_PASSWD:
-      save_dialog (h);
-      check_if_enable_ok (h);
+      if (code == EN_CHANGE && !loading)
+	{
+	  save_dialog (h);
+	  check_if_enable_ok (h);
+	}
       break;
 
     case IDOK:
