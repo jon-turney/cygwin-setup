@@ -217,7 +217,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
       md5 tempMD5;
       tempMD5.set (tempdigest);
 
-      log (LOG_BABBLE, String ("For file") + source.Cached() + " ini digest is" + source.md5.print() + " file digest is " + tempMD5.print());
+      log (LOG_BABBLE, String ("For file ") + source.Cached() + " ini digest is " + source.md5.print() + " file digest is " + tempMD5.print());
       
       if (source.md5 != tempMD5)
 	  throw new Exception ("__LINE__ __FILE__", (String ("Checksum failure for ") + source.Cached()).cstr_oneuse(), APPERR_CORRUPT_PACKAGE);

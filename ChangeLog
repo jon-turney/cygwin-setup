@@ -1,3 +1,7 @@
+2003-01-31  Max Bowsher  <maxb@ukf.net>
+
+	* install.cc (install_one_source): Fix spacing in log message.
+
 2003-01-19  Max Bowsher  <maxb@ukf.net>
 
 	* resource.h (IDC_CHOOSE_KEEP): Define.
