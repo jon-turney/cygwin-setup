@@ -1,3 +1,11 @@
+Mon Apr 17 19:20:52 2000  Vadim Egorov <egorovv@mailandnews.com>
+
+	* setup.c (geturl): Use alternative method for finding filename part of
+	a URL.
+	(processdirlisting): Accomodate strange output from non-MS ftp proxy.
+	(downloaddir): Unlink file containing dir listing.
+	(downloadfrom): Ditto.
+
 Mon Apr 17 00:00:49 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (main): Disallow running setup.exe from the "root".

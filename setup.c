@@ -21,7 +21,7 @@
 
 #define CYGNUS_KEY "Software\\Cygnus Solutions"
 #define DEF_ROOT "C:\\cygwin"
-#define DOWNLOAD_SUBDIR "latest"
+#define DOWNLOAD_SUBDIR "latest/"
 #define SCREEN_LINES 25
 #define COMMAND9X "command.com /E:4096 /c "
 
@@ -580,10 +580,19 @@ geturl (HINTERNET session, const char *url, const char *file, int verbose)
 char *
 findhref (char *buffer)
 {
-  char *ref = strstr (buffer, "href=");
+  char *ref;
+  char *anchor = strstr (buffer, "<A");
+
+  if (!anchor)
+    anchor = strstr (buffer, "<a");
+
+  if (!anchor)
+      return 0;
+
+  ref = strstr (anchor, "href=");
 
   if (!ref)
-    ref = strstr (buffer, "HREF=");
+    ref = strstr (anchor, "HREF=");
 
   if (ref)
     {
@@ -609,7 +618,7 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 
   while (fgets (buffer, sizeof (buffer), in))
     {
-      char *ref = findhref (buffer);
+      char *ref = findhref (buffer[0] ? buffer : buffer + 1);
 
       if (ref)
 	{
@@ -708,7 +717,10 @@ downloaddir (HINTERNET session, const char *url)
   char *file = tmpfilename ();
 
   if (geturl (session, url, file, 1))
+  {
     retval = processdirlisting (session, url, file);
+    unlink (file);
+  }
   xfree (file);
 
   return retval;
@@ -735,7 +747,10 @@ downloadfrom (const char *url)
       char *file = tmpfilename ();
 
       if (geturl (session, url, file, 1))
-	retval = processdirlisting (session, url, file);
+      {
+        retval = processdirlisting (session, url, file);
+        unlink (file);
+      }
 
       xfree (file);
 
@@ -1073,8 +1088,10 @@ main ()
 "Use this program to install the latest version of the Cygwin Utilities\n"
 "from the Internet.\n\n"
 "Alternatively, if you already have already downloaded the appropriate files\n"
-"to the current directory, this program can use those as the basis for your\n"
-"installation.\n", revn);
+"to the current directory (and subdirectories below it), this program can use
+those as the basis for your installation.\n\n"
+"If you are installing from the Internet, please run this program in an empty\n"
+"temporary directory.\n\n", revn);
 
   start = clock ();
   if (!EnumResourceNames (NULL, "FILE", output_file, 0))
