@@ -1,3 +1,12 @@
+Fri Jul  6 18:08:49 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (isinstalled): Modify to properly accomodate special case
+	of "download only".
+	(set_action): Check downloaded components, not installed components if
+	"download only".
+	(set_existence): Always include full list of files when "download
+	only".
+
 Fri Jul  6 00:37:05 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* choose.cc (pick_line::paint): Properly display "na" field when no
@@ -55,13 +64,13 @@ Fri Jun 29 23:07:44 2001  Christopher Faylor <cgf@cygnus.com>
 
 Sat Jun 30 11:01:00 2001 Robert Collins <rbtcollins@hotmail.com>
 
-	* choose.cc: Remove globals full_list, headers, package_indexes and 
+	* choose.cc: Remove globals full_list, headers, package_indexes and
 	nindexes.
 	Add globals cat_headers, pkg_headers and chooser.
 	(add_required): New function.
 	(paint): Use the chooser for header details.
 	Call into the chooser to paint each line.
-	(list_click): Use new global variables. 
+	(list_click): Use new global variables.
 	Call into the chooser to handle the click.
 	Repaint the entire view if packages have been added or removed.
 	(note_width): Get passed a headers struct rather than using a global

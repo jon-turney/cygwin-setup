@@ -88,12 +88,14 @@ static struct _header cat_headers[] = {
 static int add_required(Package *pkg);
 static void set_view_mode (HWND h, views mode);
 
-
 static bool
 isinstalled (Package *pkg, int trust)
 {
-  return pkg->installed && pkg->info[trust].version &&
-	 strcmp (pkg->installed->version, pkg->info[trust].version) == 0;
+  if (source == IDC_SOURCE_DOWNLOAD)
+    return pkg->info[trust].install_exists < 0;
+  else
+    return pkg->installed && pkg->info[trust].version &&
+	   strcasecmp (pkg->installed->version, pkg->info[trust].version) == 0;
 }
 
 /* Set the next action given a current action.  */
@@ -145,28 +147,35 @@ set_action (Package *pkg, bool preinc)
 	pkg->action = ACTION_UNINSTALL;
       /* Fall through intentionally */
       case ACTION_UNINSTALL:
-	if (pkg->installed)
+	if (source != IDC_SOURCE_DOWNLOAD && pkg->installed)
 	  return;
 	break;
       case ACTION_REDO:
-	if (pkg->installed && pkg->info[pkg->installed_ix].install_exists)
-	  {
-	    pkg->trust = pkg->installed_ix;
-	    return;
-	  }
+	{
+	  trusts t = (source == IDC_SOURCE_DOWNLOAD) ? TRUST_CURR : pkg->installed_ix;
+	  if (isinstalled (pkg, t))
+	    {
+	      pkg->trust = t;
+	      return;
+	    }
+	}
 	break;
       case ACTION_SRC_ONLY:
-	if (pkg->info[pkg->trust].source_exists)
-	  {
-	    pkg->srcpicked = 1;
-	    return;
-	  }
+	{
+	  trusts t = (source == IDC_SOURCE_DOWNLOAD) ? TRUST_CURR : pkg->installed_ix;
+	  if (pkg->info[t].source_exists)
+	    {
+	      pkg->srcpicked = 1;
+	      return;
+	    }
+	}
 	break;
       case ACTION_SAME_LAST:
 	pkg->action = ACTION_SKIP;
 	/* Fall through intentionally */
       case ACTION_SKIP:
-	if (!pkg->installed || pkg->trust != pkg->installed_ix)
+	if ((source == IDC_SOURCE_DOWNLOAD) || !pkg->installed
+	    || pkg->trust != pkg->installed_ix)
 	  return;
 	break;
       default:
@@ -196,12 +205,12 @@ add_required (Package *pkg)
   while (dp)
     {
       if ((required = getpkgbyname(dp->package)) == NULL)
-        {
-          dp=dp->next;
-          continue;
-        }
+	{
+	  dp=dp->next;
+	  continue;
+	}
       switch (required->action)
-        {
+	{
 	case ACTION_PREV:
 	case ACTION_CURR:
 	case ACTION_TEST:
@@ -522,7 +531,7 @@ set_existence ()
 	    else
 	      exists |= inf->source_exists = check_existence (inf, 1);
 	  }
-	if (!exists)
+	if (source != IDC_SOURCE_DOWNLOAD  && !exists)
 	  pkg->exclude = EXCLUDE_NOT_FOUND;
       }
 }
@@ -585,34 +594,34 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
   if (pkg)
     {
       if (pkg->installed)
-        {
-          TextOut (hdc, x + chooser->headers[chooser->current_col].x, r,
-                   pkg->installed->version, strlen (pkg->installed->version));
-          SelectObject (bitmap_dc, bm_rtarrow);
-          BitBlt (hdc, x + chooser->headers[chooser->current_col].x
+	{
+	  TextOut (hdc, x + chooser->headers[chooser->current_col].x, r,
+		   pkg->installed->version, strlen (pkg->installed->version));
+	  SelectObject (bitmap_dc, bm_rtarrow);
+	  BitBlt (hdc, x + chooser->headers[chooser->current_col].x
 		       + chooser->headers[0].width + ICON_MARGIN / 2
 		       + HMARGIN / 2,
 		  by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
-        }
+	}
 
       const char *s = choose_caption (pkg);
       TextOut (hdc, x + chooser->headers[chooser->new_col].x
 		    + NEW_COL_SIZE_SLOP, r, s, strlen (s));
       SelectObject (bitmap_dc, bm_spin);
       BitBlt (hdc, x + chooser->headers[chooser->new_col].x, by, 11, 11,
-              bitmap_dc, 0, 0, SRCCOPY);
+	      bitmap_dc, 0, 0, SRCCOPY);
 
       HANDLE check_bm;
       if (!pkg->info[pkg->trust].source_exists || pkg->action != (actions) pkg->trust)
-        check_bm = bm_checkna;
+	check_bm = bm_checkna;
       else if (pkg->srcpicked)
-        check_bm = bm_checkyes;
+	check_bm = bm_checkyes;
       else
-        check_bm = bm_checkno;
+	check_bm = bm_checkno;
 
       SelectObject (bitmap_dc, check_bm);
       BitBlt (hdc, x + chooser->headers[chooser->src_col].x, by, 11, 11,
-              bitmap_dc, 0, 0, SRCCOPY);
+	      bitmap_dc, 0, 0, SRCCOPY);
 
       /* shows "first" category - do we want to show any? */
       if (pkg->category && show_cat)
@@ -620,9 +629,9 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 		 pkg->category->name, strlen (pkg->category->name));
 
       if (pkg->sdesc)
-        s = pkg->sdesc;
+	s = pkg->sdesc;
       else
-        s = pkg->name;
+	s = pkg->name;
       TextOut (hdc, x + chooser->headers[chooser->pkg_col].x, r, s, strlen (s));
     }
   else if (cat)
@@ -737,13 +746,13 @@ _view::init_headers (HDC dc)
   for (Package *pkg = package; pkg->name; pkg++)
     {
       if (pkg->installed)
-        {
-          note_width (headers, dc, pkg->installed->version, 0, current_col);
-          note_width (headers, dc, pkg->installed->version, NEW_COL_SIZE_SLOP,
+	{
+	  note_width (headers, dc, pkg->installed->version, 0, current_col);
+	  note_width (headers, dc, pkg->installed->version, NEW_COL_SIZE_SLOP,
 		      new_col);
-        }
+	}
       for (Info *inf = pkg->infoscan; inf < pkg->infoend; inf++)
-        note_width (headers, dc, inf->version, NEW_COL_SIZE_SLOP, new_col);
+	note_width (headers, dc, inf->version, NEW_COL_SIZE_SLOP, new_col);
       for (Category *cat = pkg->category; cat ; cat = cat->next)
 	note_width (headers, dc, cat->name, 0, cat_col);
       note_width (headers, dc, pkg->name, 0, pkg_col);
@@ -766,12 +775,12 @@ _view::insert_pkg (Package *pkg)
   if (view_mode != VIEW_CATEGORY)
     {
       if (lines == NULL)
-        {
+	{
 	  lines = (pick_line *) calloc (npackages + ncategories,
 					sizeof (pick_line));
 	  nlines = 0;
 	  insert_at (0, line);
-        }
+	}
       else
 	insert_under (0, line);
     }
@@ -820,30 +829,30 @@ _view::insert_category (Category *cat, int collapsed)
     {
       int n=0;
       while (n < nlines)
-        {
-          /* this should be a generic call to list_sort_cmp */
-          if (lines[n].get_category ()
-              && strcasecmp (cat->name, lines[n].get_category ()->name) < 0)
-            {
+	{
+	  /* this should be a generic call to list_sort_cmp */
+	  if (lines[n].get_category ()
+	      && strcasecmp (cat->name, lines[n].get_category ()->name) < 0)
+	    {
 	      insert_at (n, line);
 	      if (!collapsed)
 		for (CategoryPackage *catpkg = cat->packages; catpkg; catpkg = catpkg->next)
 		  insert_pkg (getpkgbyname (catpkg->pkg));
-              n = nlines;
-            }
-          else if (lines[n].get_category () == cat)
-            n = nlines;
-          n++;
+	      n = nlines;
+	    }
+	  else if (lines[n].get_category () == cat)
+	    n = nlines;
+	  n++;
 
-        }
+	}
       if (n == nlines)
-        {
-          /* insert at the end */
+	{
+	  /* insert at the end */
 	  insert_at (n, line);
 	  if (!collapsed)
 	    for (CategoryPackage *catpkg = cat->packages; catpkg; catpkg = catpkg->next)
 	      insert_pkg (getpkgbyname (catpkg->pkg));
-        }
+	}
     }
 }
 
@@ -943,7 +952,7 @@ _view::click (int row, int x)
 	      line.set_line (pkg);
 	      /* this is a nasty hack. It will go away when the hierarchy is coded */
 	      while (n < nlines)
-	        {
+		{
 		  if (lines[n].get_category () || (lines[n].get_pkg ()
 		      && strcasecmp (pkg->name, lines[n].get_pkg ()->name) < 0))
 		    {
@@ -1086,19 +1095,19 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDC_CHOOSE_PREV:
       default_trust (lv, TRUST_PREV);
       for (Package *foo = package; foo->name; foo++)
-        add_required(foo);
+	add_required(foo);
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_CURR:
       default_trust (lv, TRUST_CURR);
       for (Package *foo = package; foo->name; foo++)
-        add_required(foo);
+	add_required(foo);
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_EXP:
       default_trust (lv, TRUST_TEST);
       for (Package *foo = package; foo->name; foo++)
-        add_required(foo);
+	add_required(foo);
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_VIEW:
@@ -1498,14 +1507,14 @@ do_choose (HINSTANCE h)
   nextbutton = 0;
   bm_spin = LoadImage (h, MAKEINTRESOURCE (IDB_SPIN), IMAGE_BITMAP, 0, 0, 0);
   bm_rtarrow = LoadImage (h, MAKEINTRESOURCE (IDB_RTARROW), IMAGE_BITMAP, 
-  			  0, 0, 0);
+			  0, 0, 0);
 
   bm_checkyes = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_YES), IMAGE_BITMAP,
-  			   0, 0, 0);
+			   0, 0, 0);
   bm_checkno = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NO), IMAGE_BITMAP,
-  			   0, 0, 0);
+			   0, 0, 0);
   bm_checkna = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NA), IMAGE_BITMAP,
-  			   0, 0, 0);
+			   0, 0, 0);
 
   register_windows (h);
 
