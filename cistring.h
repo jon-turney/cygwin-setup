@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_CISTRING_H
+#define SETUP_CISTRING_H
+
 // Yep, another string class
 
 #include <windows.h>
@@ -39,3 +42,5 @@ public:
 
   DWORD Format (UINT i, ...);
 };
+
+#endif /* SETUP_CISTRING_H */

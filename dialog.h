@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_DIALOG_H
+#define SETUP_DIALOG_H
+
 #include "win32.h"
 #include "String++.h"
 
@@ -78,3 +81,5 @@ void rbset (HWND h, int *ids, int id);
    format a suitable error message.  Similar to perror() */
 
 void fatal (const char *msg) __attribute__ ((noreturn));
+
+#endif /* SETUP_DIALOG_H */

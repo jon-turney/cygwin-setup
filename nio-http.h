@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_NIO_HTTP_H
+#define SETUP_NIO_HTTP_H
+
 /* Direct HTTP (with or without proxy) */
 
 class SimpleSocket;
@@ -32,3 +35,5 @@ public:
      is complete. */
   virtual int read (char *buf, int nbytes);
 };
+
+#endif /* SETUP_NIO_HTTP_H */

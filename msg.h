@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_MSG_H
+#define SETUP_MSG_H
+
 /* This is for "printf"-like debugging.  Messages go to
    OutputDebugString, which can be seen while debugging under GDB or
    via a debug message monitor. */
@@ -31,3 +34,5 @@ void note (HWND owner, int id, ...);
 
 /* returns IDYES or IDNO, otherwise same as note() */
 int yesno (HWND owner, int id, ...);
+
+#endif /* SETUP_MSG_H */

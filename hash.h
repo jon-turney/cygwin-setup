@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_HASH_H
+#define SETUP_HASH_H
+
 /* Simple hash class for install.cc */
 
 #include  "String++.h"
@@ -36,3 +39,5 @@ public:
 
   char *enumerate (char const *prev = 0);
 };
+
+#endif /* SETUP_HASH_H */

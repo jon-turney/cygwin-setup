@@ -1,3 +1,5 @@
+#ifndef SETUP_MKLINK2_H
+#define SETUP_MKLINK2_H
 
 /* This part of the code must be in C because the C++ interface to COM
 doesn't work. */
@@ -13,3 +15,5 @@ extern "C"
 #ifdef __cplusplus
 };
 #endif
+
+#endif /* SETUP_MKLINK2_H */

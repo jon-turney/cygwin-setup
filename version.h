@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_VERSION_H
+#define SETUP_VERSION_H
+
 /* misc version-related things */
 
 #include "String++.h"
@@ -20,3 +23,5 @@
 extern char *version;
 
 extern String canonicalize_version (String const &);
+
+#endif /* SETUP_VERSION_H */

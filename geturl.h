@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_GETURL_H
+#define SETUP_GETURL_H
+
 /* Download files from the Internet.  These pop up a progress dialog;
    don't forget to dismiss it when you're done downloading for a while */
 
@@ -28,3 +31,5 @@ String get_url_to_string (String const&, HWND owner);
 int get_url_to_file (String const &_url, String const &_filename, int expected_size,
 		     HWND owner, BOOL allow_ftp_auth = FALSE);
 void dismiss_url_status_dialog ();
+
+#endif /* SETUP_GETURL_H */

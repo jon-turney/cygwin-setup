@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_SIMPSOCK_H
+#define SETUP_SIMPSOCK_H
+
 /* Simplified socket access functions */
 
 class SimpleSocket
@@ -36,3 +39,5 @@ public:
   char *gets ();
   int read (char *buf, int len);
 };
+
+#endif /* SETUP_SIMPSOCK_H */

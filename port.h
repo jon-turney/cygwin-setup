@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_PORT_H
+#define SETUP_PORT_H
+
 /* I prefer building a cygwin version of setup for debugging, as I
    find that gdb can debug those programs (and the exceptions they
    cause) better.  This file handles the slight differences between
@@ -25,3 +28,5 @@
 #define _access access
 #define _strdup error dont use strdup
 #endif
+
+#endif /* SETUP_PORT_H */

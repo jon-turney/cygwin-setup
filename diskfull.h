@@ -13,7 +13,12 @@
  *
  */
 
+#ifndef SETUP_DISKFULL_H
+#define SETUP_DISKFULL_H
+
 #include "String++.h"
 
 /* returns 0..100 (percent) */
 int diskfull (String const &path);
+
+#endif /* SETUP_DISKFULL_H */

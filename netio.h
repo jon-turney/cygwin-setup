@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_NETIO_H
+#define SETUP_NETIO_H
+
 /* This is the parent class for all the access methods known to setup
    (i.e. ways to download files from the internet or other sources */
 
@@ -54,3 +57,5 @@ public:
   int get_proxy_auth (HWND owner);
   int get_ftp_auth (HWND owner);
 };
+
+#endif /* SETUP_NETIO_H */

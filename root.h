@@ -1,5 +1,5 @@
-#ifndef CINSTALL_ROOT_H
-#define CINSTALL_ROOT_H
+#ifndef SETUP_ROOT_H
+#define SETUP_ROOT_H
 
 #include "proppage.h"
 
@@ -21,4 +21,4 @@ public:
   virtual long OnUnattended ();
 };
 
-#endif // CINSTALL_ROOT_H
+#endif /* SETUP_ROOT_H */

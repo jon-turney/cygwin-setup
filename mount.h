@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_MOUNT_H
+#define SETUP_MOUNT_H
+
 /* Finds the existing root mount, or returns NULL.  istext is set to
    nonzero if the existing mount is a text mount, else zero for
    binary. */
@@ -35,3 +38,5 @@ void set_cygdrive_flags (int istext, int issystem);
 String cygpath (String const &);
 void set_root_dir (String const);
 String const get_root_dir ();
+
+#endif /* SETUP_MOUNT_H */

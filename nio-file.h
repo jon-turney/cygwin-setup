@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_NIO_FILE_H
+#define SETUP_NIO_FILE_H
+
 /* see nio-file.cc */
 
 class NetIO_File:public NetIO
@@ -24,3 +27,5 @@ public:
   virtual int ok ();
   virtual int read (char *buf, int nbytes);
 };
+
+#endif /* SETUP_NIO_FILE_H */

@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_LOGFILE_H
+#define SETUP_LOGFILE_H
+
 #include "LogSingleton.h"
 #include <sstream>
 
@@ -41,3 +44,5 @@ protected:
 private:
   void log_save (int babble, String const &filename, bool append);
 };
+
+#endif /* SETUP_LOGFILE_H */

@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_STATE_H
+#define SETUP_STATE_H
+
 /* The purpose of this file is to contain all the global variables
    that define the "state" of the install, that is, all the
    information that the user has provided so far.  These are set by
@@ -50,3 +53,5 @@ extern char *net_proxy_passwd;
 extern char *net_ftp_user;
 extern char *net_ftp_passwd;
 
+
+#endif /* SETUP_STATE_H */

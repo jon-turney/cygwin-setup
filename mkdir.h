@@ -13,9 +13,14 @@
  *
  */
 
+#ifndef SETUP_MKDIR_H
+#define SETUP_MKDIR_H
+
 /* Create a directory, and any needed parent directories.  If "isadir"
    is non-zero, "path" is the name of a directory.  If "isadir" is
    zero, "path" is the name of a *file* that we need a directory
    for. */
 
 extern int mkdir_p (int isadir, const char *path);
+
+#endif /* SETUP_MKDIR_H */

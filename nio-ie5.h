@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_NIO_IE5_H
+#define SETUP_NIO_IE5_H
+
 /* see nio-ie5.cc */
 
 class NetIO_IE5:public NetIO
@@ -25,3 +28,5 @@ public:
   virtual int read (char *buf, int nbytes);
   void flush_io ();
 };
+
+#endif /* SETUP_NIO_IE5_H */

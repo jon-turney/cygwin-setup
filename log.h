@@ -13,6 +13,9 @@
  *
  */
 
+#ifndef SETUP_LOG_H
+#define SETUP_LOG_H
+
 /* This is for "printf"-like logging.  Messages are stored in memory
    until they're written out.  "babble" means the message is just idle
    babbling; it can be ignored for shorter logs. */
@@ -23,3 +26,5 @@
 void log (enum log_level level, const char *fmt, ...)
   __attribute__ ((format (printf, 2, 3)));
 void log (enum log_level level, String const &);
+
+#endif /* SETUP_LOG_H */

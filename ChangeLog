@@ -1,3 +1,11 @@
+2003-07-08  Max Bowsher  <maxb@ukf.net>
+
+	* LogFile.h, cistring.h, dialog.h, diskfull.h, filemanip.h, geturl.h,
+	hash.h, log.h, mkdir.h, mklink2.h, mount.h, msg.h, netio.h, nio-file.h,
+	nio-ftp.h, nio-http.h, nio-ie5.h, port.h, simpsock.h, state.h,
+	version.h: Add inclusion guard.
+	* root.h: Standardize naming of inclusion guard.
+
 2003-06-23  Max Bowsher  <maxb@ukf.net>
 
 	* AntiVirus.h, Exception.h, FilterVisitor.h, FindVisitor.h,
