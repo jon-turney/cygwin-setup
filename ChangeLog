@@ -1,5 +1,9 @@
 2001-10-27  Christopher Faylor  <cgf@redhat.com>
 
+	* res.rc: Rearrange info on top line slightly.
+
+2001-10-27  Christopher Faylor  <cgf@redhat.com>
+
 	* desktop.cc (make_passwd_group): Move file creation earlier in the
 	process to ensure that passwd-grp.bat reflects desired operation.
 

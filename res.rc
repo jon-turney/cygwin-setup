@@ -234,7 +234,7 @@ CAPTION "Cygwin Setup"
 FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,0,2,21,20
-    LTEXT           "Select packages to install",IDC_CHOOSE_INST_TEXT,135,5,
+    LTEXT           "Select packages to install",IDC_CHOOSE_INST_TEXT,125,5,
                     99,8
     CONTROL         "",IDC_LISTVIEW_POS,"Static",SS_BLACKFRAME | NOT 
                     WS_VISIBLE,26,15,429,225
@@ -242,13 +242,13 @@ BEGIN
     LTEXT           "= click to choose action, (p) = previous version, (x) = experimental",
                     IDC_STATIC,39,242,220,8
     PUSHBUTTON      "View",IDC_CHOOSE_VIEW,353,5,20,10
-    LTEXT           "",IDC_CHOOSE_VIEWCAPTION,251,5,30,10
+    LTEXT           "",IDC_CHOOSE_VIEWCAPTION,231,5,30,10
     CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON | 
                     WS_GROUP,323,5,25,10
+    CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON,265,
+                    5,27,10
     CONTROL         "&Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON,297,
                     5,25,10
-    CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON,269,
-                    5,27,10
     DEFPUSHBUTTON   "&Next -->",IDOK,311,242,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,375,242,45,15
     PUSHBUTTON      "<-- &Back",IDC_BACK,266,242,45,15
