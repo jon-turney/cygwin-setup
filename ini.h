@@ -103,6 +103,8 @@ typedef struct _Info
   char *install;	/* file name to install */
   int install_size;	/* in bytes */
   int install_exists;	/* install file exists on disk */
+  int derived;		/* True if we "figured out" that this version should
+			   go here but it was not in setup.ini */
   char *source;		/* sources for installed binaries */
   int source_size;	/* in bytes */
   int source_exists;	/* source file exists on disk */
