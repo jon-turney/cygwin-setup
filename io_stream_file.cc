@@ -126,6 +126,7 @@ io_stream_file::remove (String const &path)
       MoveFile (path.cstr_oneuse(), tmp);
       delete[] tmp;
     }
+  SetFileAttributes (path.cstr_oneuse(), w & ~FILE_ATTRIBUTE_READONLY);
   return !DeleteFileA (path.cstr_oneuse());
 #else
   // FIXME: try rmdir if unlink fails - remove the dir

@@ -181,7 +181,7 @@ io_stream_cygfile::remove (String const &path)
 	       normalise(path).cstr_oneuse());
       MoveFile (cygpath (normalise(path)).cstr_oneuse(), tmp);
     }
-  return !DeleteFileA (cygpath (normalise(path)).cstr_oneuse());
+  return io_stream::remove (String ("file://") + cygpath (normalise(path)).cstr_oneuse());
 }
 
 int

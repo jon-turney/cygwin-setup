@@ -1,8 +1,16 @@
 2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
 
+	* io_stream_file.cc (io_stream_file::remove): Use the SetFileAttributes
+	trick to delete read only files.
+	* io_stream_cygfile.cc (io_stream_cygfile::remove): Use file:// to 
+	remove files.
 	* Makefile.am (release): Tweak to be more helpful.
 	* Makefile.in: Regenerate.
-		
+
+2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.am (release): Tweak to be more helpful.
+	* Makefile.in: Regenerate.
 		
 2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
 

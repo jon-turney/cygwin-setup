@@ -301,5 +301,6 @@ release: setup$(EXEEXT) dist-all $(srcdir)/ChangeLog Makefile
 	V=`grep '^\$$Revision.*' $(srcdir)/ChangeLog \
 	| sed -e 's/\$$Revision:* *//' \
 	  -e 's/ *$$.*//'` ;\
+	mv setup.exe setup-$${V}.exe && \
 	mv setup-0.tar.bz2 setup-$${V}.tar.bz2 && \
 	tar cjf setup-$${V}-1-src.tar.bz2 setup-$${V}.tar.bz2
