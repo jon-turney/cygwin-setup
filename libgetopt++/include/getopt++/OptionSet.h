@@ -28,7 +28,7 @@ public:
   virtual ~OptionSet();
   virtual void Register (Option *);
   virtual bool Process (int argc, char **argv, OptionSet *defaultOptionSet=0);
-  virtual void ParameterUsage (ostream &);
+  virtual void ParameterUsage (std::ostream &);
 protected:
   OptionSet (OptionSet const &);
   OptionSet &operator= (OptionSet const &);

@@ -1,5 +1,15 @@
 2002-11-04  Max Bowsher  <maxb@ukf.net>
 
+	* include/getopt++/BoolOption.h: Add 'std::' where needed.
+     	* include/getopt++/Option.h: Ditto.
+    	* include/getopt++/OptionSet.h: Ditto.
+   	* include/getopt++/StringOption.h: Ditto.
+  	* src/BoolOption.cc: Add 'using namespace std;'.
+ 	* src/OptionSet.cc: Ditto.
+	* src/StringOption.cc: Ditto.
+
+2002-11-04  Max Bowsher  <maxb@ukf.net>
+
 	* Makefile.am (libgetopt++_la_LDADD): Remove -lstd++, it is only needed
 	for broken g++ specs on some platforms.
 

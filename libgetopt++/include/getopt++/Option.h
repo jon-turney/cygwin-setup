@@ -30,9 +30,9 @@ class Option
 {
 public:
   virtual ~ Option ();
-  virtual string const shortOption () const = 0;
+  virtual std::string const shortOption () const = 0;
   virtual struct option longOption () const = 0;
-  virtual string const shortHelp () const = 0;
+  virtual std::string const shortHelp () const = 0;
   virtual bool Process (char const *) = 0;
 
 protected:

@@ -21,6 +21,8 @@
 
 #include <iostream>
 
+using namespace std;
+
 OptionSet::OptionSet () : options(0), optCount (0) {}
 OptionSet::~OptionSet ()
 {

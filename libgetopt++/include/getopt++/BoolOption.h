@@ -24,12 +24,12 @@ class BoolOption : public Option
 {
 public:
   BoolOption(bool const defaultvalue, char shortopt, char const *longopt = 0,
-	     string const &shorthelp = string(), 
+	     std::string const &shorthelp = std::string(), 
 	     OptionSet &owner=GetOption::GetInstance());
   virtual ~ BoolOption ();
-  virtual string const shortOption () const;
+  virtual std::string const shortOption () const;
   virtual struct option longOption () const;
-  virtual string const shortHelp () const;
+  virtual std::string const shortHelp () const;
   virtual bool Process (char const *);
   operator bool () const;
  
@@ -39,7 +39,7 @@ private:
   bool _ovalue;
   char _shortopt;
   char const *_longopt;
-  string _shorthelp;
+  std::string _shorthelp;
 };
 
 #endif // _BOOLOPTION_H_

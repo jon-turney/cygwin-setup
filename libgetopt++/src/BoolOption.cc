@@ -15,6 +15,8 @@
 
 #include <getopt++/BoolOption.h>
 
+using namespace std;
+
 BoolOption::BoolOption(bool const defaultvalue, char shortopt, 
 		       char const *longopt, string const &shorthelp, 
 		       OptionSet &owner) : _value (defaultvalue) , 

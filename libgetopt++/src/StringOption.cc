@@ -15,6 +15,8 @@
 
 #include <getopt++/StringOption.h>
 
+using namespace std;
+
 StringOption::StringOption(string const defaultvalue, char shortopt, 
 		       char const *longopt, string const &shorthelp, 
 		       bool const optional, OptionSet &owner) : 
