@@ -1,3 +1,16 @@
+Fri Jun 15 00:01:51 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (isinstalled): Eliminate special download only test.
+	(set_action): Don't move to next state if in ACTION_SAME range and not
+	incrementing.
+	(choose_caption): Display "Retrieve" rather than "Reinstall" when just
+	downloading.
+	(do_choose): Sort packages after all packages have been read.
+	Accomodate the fact that first element in trust array is empty so that
+	log files don't report the wrong trust value.
+	* iniparse.y (new_package): Malloc space for package name or suffer
+	memory corruption.
+
 Thu Jun 14 22:43:59 2001   Robert Collins <rbtcollins@hotmail.com>
 
 	* ini.h (Dependency): New structure.  Declare new function.

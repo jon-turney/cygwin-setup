@@ -92,11 +92,8 @@ int *package_indexes, nindexes;
 static bool
 isinstalled (Package *pkg, int trust)
 {
-  if (source == IDC_SOURCE_DOWNLOAD)
-    return pkg->info[pkg->installed_ix].install_exists < 0;
-  else
-    return pkg->installed && pkg->info[trust].version &&
-	   strcmp (pkg->installed->version, pkg->info[trust].version) == 0;
+  return pkg->installed && pkg->info[trust].version &&
+	 strcmp (pkg->installed->version, pkg->info[trust].version) == 0;
 }
 
 /* Set the next action given a current action.  */
@@ -136,9 +133,13 @@ set_action (Package *pkg, bool preinc)
 	 as the given action. */
       case ACTION_SAME_CURR:
       case ACTION_SAME_TEST:
+	if (!preinc)	/* Previously set to this value */
+	  return;
 	(int) pkg->action -= ACTION_SAME + 1;	/* revert to ACTION_CURR, etc. */
 	break;
       case ACTION_SAME_PREV:
+	if (!preinc)	/* Previously set to this value */
+	  return;
 	pkg->action = ACTION_UNINSTALL;
       /* Fall through intentionally */
       case ACTION_UNINSTALL:
@@ -183,7 +184,7 @@ choose_caption (Package *pkg)
     case ACTION_UNINSTALL:
       return "Uninstall";
     case ACTION_REDO:
-      return "Reinstall";
+      return source == IDC_SOURCE_DOWNLOAD ? "Retrieve" : "Reinstall";
     case ACTION_SRC_ONLY:
       if (pkg->installed && pkg->installed->source_exists)
 	return "Redo Source";
@@ -890,6 +891,8 @@ read_installed_db ()
 	      pkg->info[TRUST_CURR].source_size = srcsz;
 	    }
 	  pkg->installed_ix = TRUST_CURR;
+	  /* Exists on local system but not on download system */
+	  pkg->exclude = EXCLUDE_NOT_FOUND;
 	}
 
       pkg->installed = new Info (inst, f.ver, instsz);
@@ -918,8 +921,6 @@ do_choose (HINSTANCE h)
 {
   int rv;
 
-  qsort (package, npackages, sizeof (package[0]), package_sort);
-
   nextbutton = 0;
   bm_spin = LoadImage (h, MAKEINTRESOURCE (IDB_SPIN), IMAGE_BITMAP, 0, 0, 0);
   bm_rtarrow = LoadImage (h, MAKEINTRESOURCE (IDB_RTARROW), IMAGE_BITMAP, 0, 0, 0);
@@ -936,6 +937,8 @@ do_choose (HINSTANCE h)
   read_installed_db ();
   set_existence ();
 
+  qsort (package, npackages, sizeof (package[0]), package_sort);
+
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_CHOOSE), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
@@ -943,7 +946,7 @@ do_choose (HINSTANCE h)
   log (LOG_BABBLE, "Chooser results...");
   for (Package *pkg = package; pkg->name; pkg++)
     {
-      static char *infos[] = {"prev", "curr", "test"};
+      static char *infos[] = {"nada", "prev", "curr", "test"};
       const char *trust = ((pkg->trust == TRUST_PREV) ? "prev"
 			   : (pkg->trust == TRUST_CURR) ? "curr"
 			   : (pkg->trust == TRUST_TEST) ? "test"
@@ -969,7 +972,7 @@ do_choose (HINSTANCE h)
 		 pkg->info[t].version ?: "(none)",
 		 pkg->info[t].install ?: "(none)",
 		 pkg->info[t].install_size,
-		 (pkg->info[t].install_exists == 1) ? "yes":"no",
+		 (pkg->info[t].install_exists) ? "yes":"no",
 		 pkg->info[t].source ?: "(none)",
 		 pkg->info[t].source_size,
 		 (pkg->info[t].source_exists == 1) ? "yes":"no");

@@ -141,7 +141,7 @@ new_package (char *name)
     {
       cp = package + npackages;
       npackages++;
-      cp->name = name;
+      cp->name = strdup (name);
       trust = TRUST_CURR;
     }
 
