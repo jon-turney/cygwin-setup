@@ -123,11 +123,7 @@ LogFile::exit (int const exit_code)
   AntiVirus::AtExit();
   static int been_here = 0;
   if (been_here)
-#ifndef _CYGWIN_
-    ExitProcess (1);
-#else
-    exit (1);
-#endif
+    ::exit (exit_code);
   been_here = 1;
   
   if (exit_msg)
@@ -140,11 +136,7 @@ LogFile::exit (int const exit_code)
     {
       log_save (i->level, i->key, i->append);
     }
-#ifndef _CYGWIN_
-  ExitProcess (exit_code);
-#else
-  exit (1);
-#endif
+  ::exit (exit_code);
 }
 
 void

@@ -1,3 +1,9 @@
+2002-03-18  Max Bowsher  <maxb@ukf.net>
+
+	* LogFile.cc (LogFile::exit): Use CRT exit() instead of ExitProcess().
+	Use passed exit_code even if been_here.
+	Remove incorrect _CYGWIN_ preprocessor conditional.
+
 2003-03-16  Robert Collins  <rbtcollins@hotmail.com>
 
 	* package_db.h (PackageDBConnectedIterator): Typedef
