@@ -121,7 +121,7 @@ AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6
 DIST_SUBDIRS = bz2lib zlib libgetopt++
 SUBDIRS = bz2lib zlib libgetopt++ @RSYNC@
 
-AM_CFLAGS = -Werror -Wall -Winline -Wpointer-arith \
+AM_CFLAGS = -Werror -Wall -Wpointer-arith \
   -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
   -Wmissing-declarations -Wcomments
 
