@@ -23,8 +23,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "dialog.h"
 #include "resource.h"
 #include "msg.h"
-
-extern char *version;
+#include "version.h"
 
 static void
 load_dialog (HWND h)

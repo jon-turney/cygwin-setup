@@ -151,7 +151,8 @@ version.c : $(srcdir)/ChangeLog Makefile
 	V=`grep '^\$$Revision.*' $(srcdir)/ChangeLog \
 	| sed -e 's/\$$Revision:* *//' \
 	  -e 's/ *$$.*//'` ;\
-	echo "char *version = \"$$V\";" > version.tmp
+	echo "char *version = \"$$V\";" > version.tmp ;\
+	echo "static char *id = \"\\n%%% setup-version $$V\\n\";" >> version.tmp
 	mv version.tmp version.c
 
 %.o: %.rc

@@ -312,7 +312,7 @@ do_desktop_setup()
   make_passwd_group ();
 
   if (root_menu) {
-    start_menu ("Cygwin 1.1 Bash Shell", batname);
+    start_menu ("Cygwin Bash Shell", batname);
   }
 
   if (root_desktop) {
@@ -455,7 +455,7 @@ do_desktop (HINSTANCE h)
   GetVersionEx (&verinfo);
 
   root_desktop = check_desktop("Cygwin",backslash (concat (root_dir, "/cygwin.bat", 0)));
-  root_menu = check_startmenu("Cygwin 1.1 Bash Shell",backslash (concat (root_dir, "/cygwin.bat", 0)));
+  root_menu = check_startmenu("Cygwin Bash Shell",backslash (concat (root_dir, "/cygwin.bat", 0)));
   
   int rv = 0;
 

@@ -36,9 +36,8 @@ BEGIN
     DEFPUSHBUTTON   "Next -->",IDOK,100,75,45,15,WS_DISABLED
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
     ICON            IDI_CYGWIN,-1,5,5,20,20
-    CONTROL         "Download from Internet",
-                    IDC_SOURCE_DOWNLOAD,"Button",BS_AUTORADIOBUTTON,55,15,
-                    152,10
+    CONTROL         "Download from Internet",IDC_SOURCE_DOWNLOAD,"Button",
+                    BS_AUTORADIOBUTTON,55,15,152,10
     CONTROL         "Install from Internet",IDC_SOURCE_NETINST,"Button",
                     BS_AUTORADIOBUTTON,55,30,75,10
     CONTROL         "Install from Local Directory",IDC_SOURCE_CWD,"Button",
@@ -241,7 +240,6 @@ BEGIN
     PUSHBUTTON      "Prev",IDC_CHOOSE_PREV,165,5,25,10
 END
 
-
 IDD_DESKTOP DIALOG DISCARDABLE  0, 0, 215, 95
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup"
@@ -252,10 +250,11 @@ BEGIN
     PUSHBUTTON      "<-- Back",IDC_BACK,55,75,45,15
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
     CONTROL         "Create Desktop Icon",IDC_ROOT_DESKTOP,"Button",
-         BS_AUTOCHECKBOX,55,25,100,8
+                    BS_AUTOCHECKBOX,55,25,100,8
     CONTROL         "Add to Start Menu",IDC_ROOT_MENU,"Button",
-         BS_AUTOCHECKBOX,55,40,100,8
+                    BS_AUTOCHECKBOX,55,40,100,8
 END
+
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -367,6 +366,7 @@ BEGIN
     IDS_UNINSTALL_COMPLETE  "Uninstalls complete."
     IDS_WININET             "Unable to find or load the Internet Explorer 5 DLLs"
     IDS_ERR_CHDIR           "Could not change dir to %s"
+    IDS_OLD_SETUP_VERSION   "This setup is version %s, but setup.ini claims version %s is available.\nYou might want to upgrade to get the latest features and bug fixes."
 END
 
 #endif    // English (U.S.) resources

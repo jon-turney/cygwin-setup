@@ -22,7 +22,8 @@
 #define IDS_NOLOGFILE                   20
 #define IDS_UNINSTALL_COMPLETE          21
 #define IDS_WININET                     22
-#define IDS_ERR_CHDIR			23
+#define IDS_ERR_CHDIR                   23
+#define IDS_OLD_SETUP_VERSION           24
 #define IDD_ROOT                        101
 #define IDD_SOURCE                      102
 #define IDD_OTHER_URL                   103

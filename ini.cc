@@ -35,8 +35,10 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "msg.h"
 #include "mkdir.h"
 #include "log.h"
+#include "version.h"
 
 unsigned int setup_timestamp = 0;
+char *setup_version = 0;
 
 extern "C" int yyparse ();
 /*extern int yydebug;*/
@@ -56,6 +58,11 @@ do_ini (HINSTANCE h)
       next_dialog = IDD_SITE;
       return;
     }
+
+  package = 0;
+  npackages = 0;
+  setup_timestamp = 0;
+  setup_version = 0;
 
   ini_init (ini_file);
 
@@ -97,6 +104,15 @@ do_ini (HINSTANCE h)
 	      fclose (nts);
 	    }
 	}
+    }
+
+  msg ("setup_version is %s, our_version is %s", setup_version?:"(null)", version);
+  if (setup_version)
+    {
+      char *ini_version = canonicalize_version (setup_version);
+      char *our_version = canonicalize_version (version);
+      if (strcmp (our_version, ini_version) < 0)
+	note (IDS_OLD_SETUP_VERSION, version, setup_version);
     }
 
   next_dialog = IDD_CHOOSE;

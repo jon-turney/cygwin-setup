@@ -1,3 +1,19 @@
+2000-09-07  DJ Delorie  <dj@redhat.com>
+
+	* splash.cc: use version.h, not local decl
+	* res.rc: add "old version" message
+	* resource.h: ditto
+	* version.h: new
+	* fromcwd.cc (canonicalize_version): make global
+	* iniparse.y: add setup-version support
+	* inilex.l: add [exp] as alias for [test], add setup-version
+	* Makefile.in (version.c): add setup-version tag
+
+	* desktop.cc (do_desktop): remove 1.1 version number
+	(do_desktop_setup): ditto
+
+	* ini.cc (do_ini): zero out package list just in case we redo it.
+
 2000-09-07  Jeffrey Juliano  <juliano@cs.unc.edu>
 
 	* choose.cc (list_click): Check for nindexes==0; if so, return.

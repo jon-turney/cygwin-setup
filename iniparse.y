@@ -22,12 +22,15 @@
 #include "ini.h"
 #include "iniparse.h"
 
+#include "port.h"
+
 #define YYERROR_VERBOSE 1
 /*#define YYDEBUG 1*/
 
 static Package *cp;
 static int trust;
 extern unsigned int setup_timestamp;
+extern char *setup_version;
 extern int yylineno;
 
 #define cpt (cp->info+trust)
@@ -35,7 +38,7 @@ extern int yylineno;
 %}
 
 %token STRING
-%token SETUP_TIMESTAMP VERSION INSTALL SOURCE SDESC LDESC
+%token SETUP_TIMESTAMP SETUP_VERSION VERSION INSTALL SOURCE SDESC LDESC
 %token T_PREV T_CURR T_TEST T_UNKNOWN
 
 %%
@@ -51,7 +54,8 @@ setup_headers
 
 setup_header
  : SETUP_TIMESTAMP STRING '\n' { setup_timestamp = strtoul ($2, 0, 0); }
- | error { yyerror ("unrecognized line in setup.ini headers"); } '\n'
+ | SETUP_VERSION STRING '\n' { setup_version = _strdup ($2); }
+ | error { yyerror ("unrecognized line in setup.ini headers (do you have the latest setup?)"); } '\n'
  ;
 
 packages
@@ -84,7 +88,7 @@ simple_line
  | T_UNKNOWN			{ trust = TRUST_UNKNOWN; }
  | /* empty */
  | error '\n' { yylineno --;
-		yyerror ("unrecognized line in package %s", cp->name);
+		yyerror ("unrecognized line in package %s (do you have the latest setup?)", cp->name);
 		yylineno ++;
 	      }
  ;

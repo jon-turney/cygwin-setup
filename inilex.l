@@ -45,6 +45,7 @@ STR	[a-zA-Z0-9_./-]+
 			  return STRING; }
 
 "setup-timestamp:"	return SETUP_TIMESTAMP;
+"setup-version:"	return SETUP_VERSION;
 "version:"		return VERSION;
 "install:"		return INSTALL;
 "source:"		return SOURCE;
@@ -55,6 +56,7 @@ STR	[a-zA-Z0-9_./-]+
 
 "[curr]"		return T_CURR;
 "[test]"		return T_TEST;
+"[exp]"			return T_TEST;
 "[prev]"		return T_PREV;
 "["{STR}"]"		return T_UNKNOWN;
 

@@ -42,6 +42,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "dialog.h"
 #include "msg.h"
 #include "find.h"
+#include "version.h"
 
 #include "port.h"
 
@@ -53,7 +54,8 @@ is_test_version (char *v)
   return (i >= 6) ? 1 : 0;
 }
 
-static char *canonicalize_version (char *v)
+char *
+canonicalize_version (char *v)
 {
   static char nv[3][100];
   static int idx = 0;
