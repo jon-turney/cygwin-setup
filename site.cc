@@ -257,6 +257,15 @@ get_site_list (HINSTANCE h)
   return 0;
 }
 
+/* List of machines that should not be used by default when saved
+   in "last-mirror". */
+#define NOSAVE1 "ftp://sources.redhat.com/"
+#define NOSAVE1_LEN (sizeof ("ftp://sources.redhat.com/") - 1)
+#define NOSAVE2 "ftp://sourceware.cygnus.com/"
+#define NOSAVE2_LEN (sizeof ("ftp://sourceware.cygnus.com/") - 1)
+#define NOSAVE3 "ftp://gcc.gnu.org/"
+#define NOSAVE3_LEN (sizeof ("ftp://gcc.gnu.org/") - 1)
+
 static void
 get_initial_list_idx ()
 {
@@ -289,6 +298,12 @@ get_initial_list_idx ()
 
   if (! site_list[i].url)
     {
+      /* Don't default to certain machines ever since they suffer
+	 from bandwidth limitations. */
+      if (strnicmp (site, NOSAVE1, NOSAVE1_LEN) == 0
+	  || strnicmp (site, NOSAVE2, NOSAVE2_LEN) == 0
+	  || strnicmp (site, NOSAVE3, NOSAVE3_LEN) == 0)
+	return;
       site_list[i].displayed_url =
       site_list[i].url = _strdup (site);
       site_list[i+1].url = 0;

@@ -1,3 +1,8 @@
+Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* site.cc (get_initial_list_idx): Don't default to saved URL if it
+	refers to sources.
+
 2000-09-07  DJ Delorie  <dj@redhat.com>
 
 	* splash.cc: use version.h, not local decl
