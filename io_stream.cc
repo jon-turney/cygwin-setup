@@ -111,6 +111,7 @@ int
 io_stream::mklink (const char *from, const char *to,
 		   io_stream_link_t linktype)
 {
+  log (LOG_BABBLE, "io_stream::mklink (%s->%s)", from, to);
   if (!from || IsBadStringPtr (from, MAX_PATH) ||
       !to || IsBadStringPtr (to, MAX_PATH))
     {

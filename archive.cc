@@ -78,11 +78,11 @@ archive::extract (io_stream * original)
 }
 
 int
-archive::extract_file (archive * source, const char *prefix, const char *suffix)
+archive::extract_file (archive * source, const char *prefixURL, const char *prefixPath, const char *suffix)
 {
   if (!source)
     return 1;
-  const char *destfilename = concat (prefix, source->next_file_name (), suffix, 0);
+  const char *destfilename = concat (prefixURL,prefixPath, source->next_file_name (), suffix, 0);
   switch (source->next_file_type ())
     {
     case ARCHIVE_FILE_REGULAR:
@@ -127,7 +127,7 @@ archive::extract_file (archive * source, const char *prefix, const char *suffix)
 	io_stream::remove (destfilename);
 	int ok =
 	  io_stream::mklink (destfilename,
-			     concat (prefix, source->linktarget (), 0),
+			     concat (prefixURL, source->linktarget (), 0),
 			     IO_STREAM_SYMLINK);
 	/* FIXME: check what tar's filelength is set to for symlinks */
 	source->skip_file ();
@@ -141,7 +141,7 @@ archive::extract_file (archive * source, const char *prefix, const char *suffix)
 	io_stream::remove (destfilename);
 	int ok =
 	  io_stream::mklink (destfilename,
-			     concat (prefix, source->linktarget (), 0),
+			     concat (prefixURL, source->linktarget (), 0),
 			     IO_STREAM_HARDLINK);
 	/* FIXME: check what tar's filelength is set to for hardlinks */
 	source->skip_file ();

@@ -114,7 +114,7 @@ static int num_installs, num_replacements, num_uninstalls;
 static void uninstall_one (packagemeta &);
 static int replace_one (packagemeta &);
 static int install_one_source (packagemeta &, packagesource &, char const *,
-			       package_type_t);
+			       char const *, package_type_t);
 static bool rebootneeded;
 
 /* FIXME: upgrades should be a method too */
@@ -144,7 +144,7 @@ replace_one (packagemeta & pkg)
   pkg.uninstall ();
 
   errors +=
-    install_one_source (pkg, pkg.desired->bin, "cygfile:///", package_binary);
+    install_one_source (pkg, pkg.desired->bin, "cygfile://","/", package_binary);
   if (!errors)
     pkg.installed = pkg.desired;
   num_replacements++;
@@ -155,7 +155,7 @@ replace_one (packagemeta & pkg)
 /* install one source at a given prefix. */
 static int
 install_one_source (packagemeta & pkgm, packagesource & source,
-		    char const *prefix, package_type_t type)
+		    char const *prefixURL, char const *prefixPath, package_type_t type)
 {
   int errors = 0;
   Progress.SetText2 (source.Base ());
@@ -205,14 +205,14 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 	    lst->write (concat (fn, "\n", 0), strlen (fn) + 1);
 
 	  /* FIXME: concat leaks memory */
-	  Progress.SetText3 (concat (prefix, fn, 0));
-	  log (LOG_BABBLE, "Installing file %s%s", prefix, fn);
-	  if (archive::extract_file (thefile, prefix) != 0)
+	  Progress.SetText3 (concat (prefixPath, fn, 0));
+	  log (LOG_BABBLE, "Installing file %s%s%s", prefixURL,prefixPath, fn);
+	  if (archive::extract_file (thefile, prefixURL, prefixPath) != 0)
 	    {
 	      //extract to temp location
-	      if (archive::extract_file (thefile, prefix, ".new") != 0)
+	      if (archive::extract_file (thefile, prefixURL, prefixPath, ".new") != 0)
 		{
-		  log (0, "Unable to install file %s%s", prefix, fn);
+		  log (0, "Unable to install file %s%s%s", prefixURL,prefixPath, fn);
 		  errors++;
 		}
 	      else
@@ -321,14 +321,14 @@ install_one (packagemeta & pkg)
   if (pkg.installed != pkg.desired && pkg.desired->binpicked)
     {
       errors +=
-	install_one_source (pkg, pkg.desired->bin, "cygfile:///",
+	install_one_source (pkg, pkg.desired->bin, "cygfile://","/",
 			    package_binary);
       if (!errors)
 	pkg.installed = pkg.desired;
     }
   if (pkg.desired->srcpicked)
     errors +=
-      install_one_source (pkg, pkg.desired->src, "cygfile:///usr/src",
+      install_one_source (pkg, pkg.desired->src, "cygfile://","/usr/src",
 			  package_source);
 
   /* FIXME: make a upgrade method and reinstate this */
