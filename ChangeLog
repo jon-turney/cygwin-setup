@@ -1,3 +1,9 @@
+2003-07-28  Max Bowsher  <maxb@ukf.net>
+
+	* dialog.h: (NEXT): Remove obsolete macro.
+	* site.cc (save_dialog): Remove use of NEXT(), and non-functional
+	unnecessary error handler.
+
 2003-07-28  Robert Collins  <rbtcollins@hotmail.com>
 
 	* package_meta.h (packagemeta::addToCategoryAll): Declare.

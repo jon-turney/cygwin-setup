@@ -163,12 +163,7 @@ save_dialog (HWND h)
   if (sel_count > 0)
     {
       int sel_buffer[sel_count];
-      int sel_count2 = SendMessage (listbox, LB_GETSELITEMS, sel_count,
-				    (LPARAM) sel_buffer);
-      if (sel_count != sel_count2)
-	{
-	  NEXT (IDD_SITE);
-	}
+      SendMessage (listbox, LB_GETSELITEMS, sel_count, (LPARAM) sel_buffer);
       for (int n = 0; n < sel_count; n++)
 	{
 	  int mirror =
