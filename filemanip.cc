@@ -97,7 +97,7 @@ parse_filename (const char *in_fn, fileparse & f)
   f.pkg[0] = f.what[0] = '\0';
   p = base (fn);
   for (ver = p; *ver; ver++)
-    if (*ver == '-')
+    if (*ver == '-' || *ver == '_')
       if (isdigit (ver[1]))
 	{
 	  *ver++ = 0;
