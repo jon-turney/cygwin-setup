@@ -14,9 +14,9 @@ INCLUDES = -I$(top_srcdir)/include
 getoptincludedir = $(includedir)/getopt++
 
 lib_LTLIBRARIES = libgetopt++.la
-check_PROGRAMS = testoption optioniterator
+check_PROGRAMS = tests/testoption tests/optioniterator tests/BoolOptionTest
 
-TESTS = optioniterator
+TESTS = tests/optioniterator tests/BoolOptionTest
 
 EXTRA_libgetopt___la_SOURCES = src/getopt.c
 
@@ -42,8 +42,11 @@ getoptinclude_HEADERS = include/getopt++/Option.h \
   include/getopt++/OptionSet.h \
   include/getopt++/StringOption.h
 
-testoption_SOURCES = tests/testoption.cc
-testoption_LDADD = libgetopt++.la
+tests_testoption_SOURCES = tests/testoption.cc
+tests_testoption_LDADD = libgetopt++.la
 
-optioniterator_SOURCES = tests/optioniterator.cc
-optioniterator_LDADD = libgetopt++.la
+tests_optioniterator_SOURCES = tests/optioniterator.cc
+tests_optioniterator_LDADD = libgetopt++.la
+
+tests_BoolOptionTest_SOURCES = tests/BoolOptionTest.cc
+tests_BoolOptionTest_LDADD = libgetopt++.la
