@@ -219,6 +219,18 @@ private:
   Setup::SIDWrapper everyOneSID, administratorsSID, usid;
   Setup::HANDLEWrapper token;
   bool failed_;
+  struct GroupInfo {
+    GroupInfo() : failed_ (false) {}
+    void get(Setup::HANDLEWrapper &token);
+    bool failed() const {return failed_;}
+    void fail() { failed_ = true; }
+    struct {
+      PSID psid;
+      char buf[MAX_SID_LEN];
+    } gsid;
+    DWORD size;
+    bool failed_;
+  } primaryGroupInfo;
 };
 
 void
@@ -286,6 +298,7 @@ NTSecurity::setDefaultDACL ()
       failed(true);
       return;
     }
+#if 0
 
   initialiseEveryOneSID();
   if (failed())
@@ -319,6 +332,18 @@ NTSecurity::setDefaultDACL ()
         GetLastError () << endLog;
       failed(true);
     }
+#endif
+}
+
+void
+NTSecurity::GroupInfo::get(Setup::HANDLEWrapper &token)
+{
+  if (!GetTokenInformation (token.theHANDLE(), TokenPrimaryGroup, &gsid, sizeof gsid, &size))
+    {
+      log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " << 
+	GetLastError () << endLog;
+      fail();
+    }
 }
 
 void
@@ -329,22 +354,13 @@ NTSecurity::setDefaultSecurity ()
   if (failed())
     return;
 #if 0
-  /* Get the default group */
-  struct {
-    PSID psid;
-    char buf[MAX_SID_LEN];
-  } gsid;
-  DWORD size;
-  if (!GetTokenInformation (token.theHANDLE(), TokenPrimaryGroup, &gsid, sizeof gsid, &size))
-    {
-      log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " << 
-	GetLastError () << endLog;
-      return;
-    }
-
+  primaryGroupInfo.get(token);
+  if (primaryGroupInfo.failed())
+    return;
+    
   /* Get the computer name */
   char compname[MAX_COMPUTERNAME_LENGTH + 1];
-  size = sizeof (compname);
+  DWORD size = sizeof (compname);
   if (!GetComputerName (compname, &size))
     {
       log (LOG_TIMESTAMP) << "GetComputerName() failed: " << 
@@ -365,7 +381,6 @@ NTSecurity::setDefaultSecurity ()
 	GetLastError () << endLog;
       return;
     }
-
   /* Create the None SID from the domain SID.
      On NT the last subauthority of a domain is -1 and it is replaced by the RID.
      On other systems the RID is appended. */
@@ -375,7 +390,7 @@ NTSecurity::setDefaultSecurity ()
   *GetSidSubAuthority (lsid, sz -1) = DOMAIN_GROUP_RID_USERS;
   
   /* See if the group is None */
-  if (!EqualSid (gsid.psid, lsid))
+  if (!EqualSid (primaryGroupInfo.gsid.psid, lsid))
     return;
 
   SID_IDENTIFIER_AUTHORITY sid_auth;
