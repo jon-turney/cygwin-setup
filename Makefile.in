@@ -74,7 +74,6 @@ PROGS	:= setup$(EXEEXT)
 
 OBJS = \
 	autoload.o \
-	argv.o \
 	choose.o \
 	concat.o \
 	desktop.o \
