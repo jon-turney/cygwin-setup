@@ -230,6 +230,14 @@ map_filename (char *fn)
 	 || package[i].action == ACTION_UPGRADE) \
 	&& pi.install)
 
+static int
+exists (char *file)
+{
+  if (_access (file, 0) == 0)
+    return 1;
+  return 0;
+}
+
 void
 do_install (HINSTANCE h)
 {
@@ -325,6 +333,15 @@ do_install (HINSTANCE h)
 	      base = cp+1;
 	  SetWindowText (ins_pkgname, base);
 
+	  if (!exists (local) && exists (base))
+	    local = base;
+	  if (!exists (local))
+	    {
+	      package[i].action = ACTION_ERROR;
+	      note (IDS_ERR_OPEN_READ, local, "No such file");
+	      continue;
+	    }
+
 	  gzFile lst = gzopen (concat (root_dir, "/etc/setup/",
 				       package[i].name, ".lst.gz", 0),
 			       "wb9");
@@ -354,7 +371,8 @@ do_install (HINSTANCE h)
 
 	      SetWindowText (ins_filename, dest_file);
 	      log (LOG_BABBLE, "Installing file %s", dest_file);
-	      tar_read_file (dest_file);
+	      if (tar_read_file (dest_file) != 0)
+		package[i].action = ACTION_ERROR;
 
 	      progress (tar_ftell ());
 	      num_installs ++;

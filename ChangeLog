@@ -1,3 +1,13 @@
+2000-10-04  DJ Delorie  <dj@redhat.com>
+
+	* desktop.cc: quote HOME and USER, don't . ./.profile
+
+	* choose.cc (build_labels): don't include in partial list just
+	because there's a *previous* version available.
+
+	* install.cc (do_install): if installing from local directory with
+	setup.ini and the file isn't found, look in "." also.  Note errors.
+
 2000-10-02  DJ Delorie  <dj@redhat.com>
 
 	* ini.cc (do_ini): save setup.ini locally

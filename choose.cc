@@ -412,7 +412,8 @@ build_labels ()
 	  c++;
 	}
 
-      for (t=0; t<NTRUST; t++)
+      /* we intentionally skip TRUST_PREV */
+      for (t=TRUST_CURR; t<NTRUST; t++)
 	if (package[i].info[t].install)
 	  if (t != extra[i].which_is_installed)
 	    {
