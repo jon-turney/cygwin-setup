@@ -409,6 +409,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 
 ac_unique_file="Makefile.in"
+ac_subdirs_all="$ac_subdirs_all rsync"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -999,6 +1000,7 @@ Optional Features:
   --enable-maintainer-mode enable make rules and dependencies not useful
                           (and sometimes confusing) to the casual installer
   --enable-inilint        Build the inilint tool
+  --enable-rsync          Compile in rsync support
   --disable-dependency-tracking Speeds up one-time builds
   --enable-dependency-tracking  Do not reject slow dependency extractors
   --enable-shared[=PKGS]
@@ -1800,6 +1802,51 @@ if test $ac_cv_enable_inilint = yes; then
 else
   INILINT=
 fi
+
+
+echo "$as_me:$LINENO: checking Whether to enable rsync support" >&5
+echo $ECHO_N "checking Whether to enable rsync support... $ECHO_C" >&6
+# Check whether --enable-rsync or --disable-rsync was given.
+if test "${enable_rsync+set}" = set; then
+  enableval="$enable_rsync"
+  ac_cv_enable_rsync=$enableval
+else
+  ac_cv_enable_rsync=no
+fi;
+echo "$as_me:$LINENO: result: $ac_cv_enable_rsync" >&5
+echo "${ECHO_T}$ac_cv_enable_rsync" >&6
+if test $ac_cv_enable_rsync = yes; then
+
+
+if true; then
+  ENABLERSYNC_TRUE=
+  ENABLERSYNC_FALSE='#'
+else
+  ENABLERSYNC_TRUE='#'
+  ENABLERSYNC_FALSE=
+fi
+
+  RSYNC="rsync"
+  RSYNCLIB=rsync/librsync.la
+
+
+subdirs="$subdirs rsync"
+
+else
+
+
+if false; then
+  ENABLERSYNC_TRUE=
+  ENABLERSYNC_FALSE='#'
+else
+  ENABLERSYNC_TRUE='#'
+  ENABLERSYNC_FALSE=
+fi
+
+  RSYNC=
+  RSYNCLIB=
+fi
+
 
 
 ac_ext=cc
@@ -4103,7 +4150,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 4106 "configure"' > conftest.$ac_ext
+  echo '#line 4153 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7802,7 +7849,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7805 "configure"
+#line 7852 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7900,7 +7947,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7903 "configure"
+#line 7950 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11044,7 +11091,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11047 "configure"
+#line 11094 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11142,7 +11189,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11145 "configure"
+#line 11192 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13791,7 +13838,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13794 "configure"
+#line 13841 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13889,7 +13936,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13892 "configure"
+#line 13939 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15243,6 +15290,20 @@ echo "$as_me: error: conditional \"MAINTAINER_MODE\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${ENABLERSYNC_TRUE}" && test -z "${ENABLERSYNC_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLERSYNC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"ENABLERSYNC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${ENABLERSYNC_TRUE}" && test -z "${ENABLERSYNC_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLERSYNC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"ENABLERSYNC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -15768,6 +15829,11 @@ s,@MAINTAINER_MODE_TRUE@,$MAINTAINER_MODE_TRUE,;t t
 s,@MAINTAINER_MODE_FALSE@,$MAINTAINER_MODE_FALSE,;t t
 s,@MAINT@,$MAINT,;t t
 s,@INILINT@,$INILINT,;t t
+s,@ENABLERSYNC_TRUE@,$ENABLERSYNC_TRUE,;t t
+s,@ENABLERSYNC_FALSE@,$ENABLERSYNC_FALSE,;t t
+s,@subdirs@,$subdirs,;t t
+s,@RSYNC@,$RSYNC,;t t
+s,@RSYNCLIB@,$RSYNCLIB,;t t
 s,@CXX@,$CXX,;t t
 s,@CXXFLAGS@,$CXXFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t
@@ -15807,7 +15873,6 @@ s,@CXXCPP@,$CXXCPP,;t t
 s,@LIBTOOL@,$LIBTOOL,;t t
 s,@WINDRES@,$WINDRES,;t t
 s,@ac_ct_WINDRES@,$ac_ct_WINDRES,;t t
-s,@subdirs@,$subdirs,;t t
 s,@MINGWTARGET_TRUE@,$MINGWTARGET_TRUE,;t t
 s,@MINGWTARGET_FALSE@,$MINGWTARGET_FALSE,;t t
 CEOF

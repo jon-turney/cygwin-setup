@@ -39,6 +39,25 @@ else
 fi
 AC_SUBST(INILINT)
 
+AC_MSG_CHECKING([Whether to enable rsync support])
+AC_ARG_ENABLE(rsync,
+	      AC_HELP_STRING([--enable-rsync],
+			     [Compile in rsync support]),
+	      ac_cv_enable_rsync=$enableval, ac_cv_enable_rsync=no)
+AC_MSG_RESULT([$ac_cv_enable_rsync])
+if test $ac_cv_enable_rsync = yes; then
+  AM_CONDITIONAL(ENABLERSYNC, true)
+  RSYNC="rsync"
+  RSYNCLIB=rsync/librsync.la
+  AC_CONFIG_SUBDIRS(rsync)
+else
+  AM_CONDITIONAL(ENABLERSYNC, false)
+  RSYNC=
+  RSYNCLIB=
+fi
+AC_SUBST(RSYNC)
+AC_SUBST(RSYNCLIB)
+
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AM_PROG_CC_C_O

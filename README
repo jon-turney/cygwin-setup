@@ -3,7 +3,6 @@ net releases.
 
 TODO:
 
-* Chooser dialog needs work.
 * Mirrors list orer is snafued.
 * Don't downgrade if the curr version is <= installed?
 * support rpm/deb files for reading the package from. (To allow the maintainers the use of rpm/deb tools to create packages.)
@@ -53,22 +52,23 @@ WISHLIST:
  * Set ntsec permissions correctly, and for new installs enable ntsec.
    
 recently completed
-* view button is not clear at first view. (the dotted highlight).
-   *  continue downloading past errors, present log of failures at end (partial)
-   * multiple mirror support, with setup.ini from each merged automagically.
-   * installed packages aren't automatically upgraded.
-   * Dependencies should not trigger alterations to user actions for installed packages that have any action other than uninstall.
-   * Wide descriptions can get truncated - ie SSMTP
-   * SKIP and KEEP sometimes appearing for the same package.
-   * Set the screen size for 640x480 users
-   * View mdoe caption on the right hand of the screen
-   * Downloading from the internet should allow redownloading already present files. (This
-        happens via the reinstall/redo already - perhaps this is "done".)
-   * Make skip only ever appear for non-installed packages.
-   *   skip sould be followed by the <prec/curr/exp> from the radio buttons, not by prev.
-   * Src tickbox /source only can be confusing.
-   *   ini.cc: add field in setup.ini to specify whether package is installed by default, or not. (base category does this)
-  * Remove "/" from symlinks (etags.exe->/ctags.exe is an example
-  * Src tickbox /source only can be confusing.
-  * Handle UNC paths for the localdir correctly.
 
+ * view button is not clear at first view. (the dotted highlight).
+ *  continue downloading past errors, present log of failures at end (partial)
+ * multiple mirror support, with setup.ini from each merged automagically.
+ * installed packages aren't automatically upgraded.
+ * Dependencies should not trigger alterations to user actions for installed packages that have any action other than uninstall.
+ * Wide descriptions can get truncated - ie SSMTP
+ * SKIP and KEEP sometimes appearing for the same package.
+ * Set the screen size for 640x480 users
+ * View mdoe caption on the right hand of the screen
+ * Downloading from the internet should allow redownloading already present files. (This
+   happens via the reinstall/redo already - perhaps this is "done".)
+ * Make skip only ever appear for non-installed packages.
+ *   skip sould be followed by the <prec/curr/exp> from the radio buttons, not by prev.
+ * Src tickbox /source only can be confusing.
+ *   ini.cc: add field in setup.ini to specify whether package is installed by default, or not. (base category does this)
+ * Remove "/" from symlinks (etags.exe->/ctags.exe is an example
+ * Src tickbox /source only can be confusing.
+ * Handle UNC paths for the localdir correctly.
+ * Chooser dialog needs work.

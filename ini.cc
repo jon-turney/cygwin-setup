@@ -43,6 +43,7 @@ static const char *cvsid =
 #include "site.h"
 #include "rfc1738.h"
 #include "find.h"
+#include "IniParseFindVisitor.h"
 #include "filemanip.h"
 
 #include "io_stream.h"
@@ -65,65 +66,17 @@ extern int yyparse ();
 static char *error_buf = 0;
 static int error_count = 0;
 
-static int local_ini;
-
-static IniDBBuilder *findBuilder;
-
 static const char *ini_filename;
-
-static void
-find_routine (char *path, unsigned int fsize)
-{
-  const char *setup_ini = trail (path, "\\setup.ini");
-
-  if (setup_ini == NULL)
-    return;
-
-  io_stream *ini_file = io_stream::open (String ("file://") + path, "rb");
-  if (!ini_file)
-    {
-    note (NULL, IDS_SETUPINI_MISSING, (String ("file://") + path).cstr_oneuse());
-    return;
-    }
-  else
-    log (LOG_BABBLE, String ("Found ini file - file://") + local_dir + "/" + path);
-
-  unsigned pathprefix_len = setup_ini - path;
-    /* Copy leading part of path to temporary buffer and unescape it */
-
-  char path_prefix[pathprefix_len + 1];
-  strncpy (path_prefix, path, pathprefix_len);
-  path_prefix[pathprefix_len] = '\0';
-  String mirror = rfc1738_unescape_part (path_prefix);
-
-  /*yydebug = 1; */
-
-  ini_filename = path;
-  if (yyparse () || error_count > 0)
-    MessageBox (0, error_buf, error_count == 1 ? "Parse Error" : "Parse Errors", 0);
-  else
-    local_ini++;
-
-  if (error_buf)
-    *error_buf = '\0';
-  error_count = 0;
-
-  if (findBuilder->timestamp > setup_timestamp)
-    {
-      setup_timestamp = findBuilder->timestamp;
-      setup_version = findBuilder->version;
-    }
-}
 
 static int
 do_local_ini (HWND owner)
 {
-  local_ini = 0;
-  findBuilder = new IniDBBuilderPackage;
-  find (local_dir, find_routine);
-  delete findBuilder;
-  findBuilder = 0;
-  return local_ini; 
+  IniDBBuilderPackage findBuilder;
+  IniParseFindVisitor myVisitor (findBuilder, local_dir);
+  Find (local_dir).accept(myVisitor);
+  setup_timestamp = myVisitor.timeStamp();
+  setup_version = myVisitor.version();
+  return myVisitor.iniCount(); 
 }
 
 static int

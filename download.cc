@@ -95,7 +95,7 @@ check_for_cached (packagesource & pkgsource)
 	  if (pkgsource.md5.isSet())
 	    {
 	      // check the MD5 sum of the cached file here
-	      io_stream *thefile = io_stream::open (String("file://") + fullname, "rb");
+	      io_stream *thefile = io_stream::open (fullname, "rb");
 	      if (!thefile)
 		return 0;
 	      md5_state_t pns;
@@ -114,15 +114,15 @@ check_for_cached (packagesource & pkgsource)
 	      md5 tempMD5;
 	      tempMD5.set (tempdigest);
 	      
-	      log (LOG_BABBLE, String ("For file") + pkgsource.Cached() + 
-		   " ini digest is" + pkgsource.md5.print() + 
+	      log (LOG_BABBLE, String ("For file '") + fullname + 
+		   " ini digest is " + pkgsource.md5.print() + 
 		   " file digest is " + tempMD5.print());
 	      
 	      if (pkgsource.md5 != tempMD5)
 		throw new Exception ("__LINE__ __FILE__", (String ("MD5 Checksum failure for ") + pkgsource.Cached()).cstr_oneuse(), APPERR_CORRUPT_PACKAGE);
 	    }
 	  pkgsource.
-	    set_cached (String ("file://") + fullname );
+	    set_cached (fullname );
 	  return 1;
 	}
 	}

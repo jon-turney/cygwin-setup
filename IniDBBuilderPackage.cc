@@ -64,13 +64,13 @@ IniDBBuilderPackage::buildPackageLDesc (String const &theDesc)
 
 void
 IniDBBuilderPackage::buildPackageInstall (String const &path,
-					  String const &size, String const &md5)
+					  String const &size, unsigned char const * md5)
 {
   process_src (cpv->bin, path, size, md5);
 }
 void
 IniDBBuilderPackage::buildPackageSource (String const &path,
-  					 String const &size, String const &md5)
+  					 String const &size, unsigned char const * md5)
 {
   process_src (cpv->src, path, size, md5);
 }
@@ -152,7 +152,7 @@ IniDBBuilderPackage::add_correct_version()
 
 void
 IniDBBuilderPackage::process_src (packagesource &src, 
-	     String const &path, String const &size, String const& md5)
+	     String const &path, String const &size, unsigned char const* md5)
 {
   if (!cpv->Canonical_version ().size())
     {
@@ -169,7 +169,7 @@ IniDBBuilderPackage::process_src (packagesource &src,
       src.size = atoi(size.cstr_oneuse());
       src.set_canonical (path.cstr_oneuse());
     }
-  if (md5.size() && !src.md5.isSet())
-    src.md5.set((unsigned char *)md5.cstr_oneuse());
+  if (md5 && !src.md5.isSet())
+    src.md5.set(md5);
   src.sites.registerbykey (parse_mirror);
 }

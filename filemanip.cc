@@ -96,6 +96,18 @@ parse_filename (String const &in_fn, fileparse & f)
   fn[n] = '\0';
   f.pkg = f.what = String();
   p = base (fn).cstr();
+  char const *ext;
+  /* TODO: make const and non-const trail variant. */
+  if ((ext = trail (p, "-src")))
+    {
+      f.what = "-src";
+      *(char *)ext = '\0';
+    }
+  else if ((ext = trail (p, "-patch")))
+    {
+      f.what = "-patch";
+      *(char *)ext = '\0';
+    }
   for (ver = p; *ver; ver++)
     if (*ver == '-')
       if (isdigit (ver[1]))
@@ -142,7 +154,7 @@ parse_filename (String const &in_fn, fileparse & f)
 const char *
 trail (const char *haystack, const char *needle)
 {
-  /* See if the path ends in a trailing setup.ini component.
+  /* See if the path ends with a specific suffix.
      Just return if it doesn't. */
   unsigned len = strlen (haystack);
   int prefix_len = len - strlen (needle);

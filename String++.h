@@ -21,6 +21,7 @@
 #include <stdarg.h>
 #include <sys/types.h>
 #include <iosfwd>
+#include <string>
 
 class io_stream;
 class String {
@@ -32,6 +33,7 @@ public:
   // We're notperformance bottlenecked.
   String (const char *); 
   String (int const);
+  String (string const &);
   inline String & operator = (String const &);
   ~String();
   // Up to the user to delete[] these.
@@ -41,6 +43,7 @@ public:
   			      // pretends to be const !!
   inline size_t size() const; // number of characters (!= storage size).
   size_t find (char) const;
+  String substr (size_t start = 0, size_t len = -1) const;
   // operator == and != can be done if/when we have a 'casesensitive' flag to
   // the constructors
   // - means this sorts to the left of the parameter

@@ -22,6 +22,7 @@
 #include "io_stream.h"
 #include <iostream>
 #include <strstream>
+#include <string>
 
 // _data
 
@@ -58,6 +59,11 @@ String::String (int const anInt)
   os << anInt;
   theData = new _data(os.pcount());
   memcpy (theData->theString, os.str(), os.pcount());
+}
+
+String::String (string const &aString) : theData (new _data (aString.c_str() ? strlen (aString.c_str()) : 0))
+{
+  memcpy (theData->theString, aString.c_str(), theData->length);
 }
 
 // able to cache the result if needed.
@@ -114,6 +120,13 @@ String::find(char aChar) const
     if (theData->theString[i] == aChar)
       return i+1;
   return 0;
+}
+
+String
+String::substr(size_t start, size_t len) const
+{
+  // Adapt the C++ string class
+  return string(cstr_oneuse()).substr(start, len);
 }
 
 int

@@ -29,9 +29,9 @@ public:
   virtual void buildPackageSDesc (String const &);
   virtual void buildPackageLDesc (String const &);
   virtual void buildPackageInstall (String const &, String const &,
-				    String const & = String());
+				    unsigned char const[16] = 0);
   virtual void buildPackageSource (String const &, String const &,
-				   String const & = String());
+				   unsigned char const[16] = 0);
   virtual void buildPackageTrust (int);
   virtual void buildPackageRequirement (String const &);
   virtual void buildPackageCategory (String const &);

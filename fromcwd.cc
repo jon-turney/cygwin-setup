@@ -34,122 +34,48 @@ static const char *cvsid =
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <io.h>
 #include <unistd.h>
-#include <ctype.h>
 
 #include "resource.h"
 #include "state.h"
 #include "dialog.h"
 #include "msg.h"
 #include "find.h"
+#include "ScanFindVisitor.h"
 #include "filemanip.h"
 #include "version.h"
-#include "site.h"
-#include "rfc1738.h"
 
 #include "port.h"
 
-#include "package_db.h"
-#include "package_meta.h"
-#include "package_version.h"
-#include "cygpackage.h"
-# if 0
-static int
-is_test_version (char *v)
+#include "IniDBBuilderPackage.h"
+
+/* Trivial class for detecting the existence of setup.ini */
+
+class SetupFindVisitor : public FindVisitor
 {
-  int i;
-  for (i = 0; v[i] && isdigit (v[i]); i++);
-  return (i >= 6) ? 1 : 0;
-}
-#endif
-
-static void
-found_file (char *path, unsigned int fsize)
-{
-  fileparse f;
-
-  if (!parse_filename (path, f))
-    return;
-
-  if (f.what.size() != 0)
-    return;
-
-  packagedb db;
-  packagemeta &p = db.packages.registerbykey (f.pkg);
-  packageversion *pv = new cygpackage (f.pkg);
-  ((cygpackage *)pv)->set_canonical_version (f.ver);
-  if (!f.what.size())
-    pv->bin.set_cached (String ("file://") + path);
-  else
-    // patch or src, assume src until someone complains
-    pv->src.set_cached (String ("file://") + path);
-
-  // check for a duplciate version FIXME make this a method or friend
-
-
-  int merged = 0;
-  for (size_t n = 1; !merged && n <= p.versions.number (); n++)
-    if (!p.versions[n]->Canonical_version().casecompare (pv->Canonical_version()))
-      {
-        /* Copy the binary mirror across if this site claims to have an install */
-        if (pv->bin.sites.number ())
-          p.versions[n]->bin.sites.registerbykey (pv->bin.sites[1]->key);
-        /* Ditto for src */
-        if (pv->src.sites.number ())
-          p.versions[n]->src.sites.registerbykey (pv->src.sites[1]->key);
-        /* Copy the descriptions across */
-        if (pv->SDesc ().size() && !p.versions[n]->SDesc ().size())
-          p.versions[n]->set_sdesc (pv->SDesc ());
-        if (pv->LDesc ().size() && !p.versions[n]->LDesc ().size())
-          p.versions[n]->set_ldesc (pv->LDesc ());
-        pv = p.versions[n];
-        merged = 1;
-      }
-  if (!merged)
-    p.add_version (*pv); 
-
-#if 0
-  // This is handled by the scan2 - there is no need for duplication - or is there?
-
-  int trust = is_test_version (f.ver) ? TRUST_TEST : TRUST_CURR;
-
-  /* See if this version is older than what we have */
-  if (p->info[trust].version)
+public:
+  SetupFindVisitor (): found(false){}
+  virtual void visitFile(String const &basePath, const WIN32_FIND_DATA *theFile)
     {
-      char *ov = canonicalize_version (p->info[trust].version);
-      char *nv = canonicalize_version (f.ver);
-      if (strcmp (ov, nv) > 0)
-	return;
+      if (!String ("setup.ini").casecompare(theFile->cFileName) && 
+	  (theFile->nFileSizeLow || theFile->nFileSizeHigh))
+	found = true;
     }
-
-  if (p->info[trust].version)
-    free (p->info[trust].version);
-  p->info[trust].version = _strdup (f.ver);
-
-  if (p->info[trust].install)
-    free (p->info[trust].install);
-  p->info[trust].install = _strdup (path);
-
-  p->info[trust].install_size = fsize;
-#endif
-}
-
-static bool found_ini;
-
-static void
-check_ini (char *path, unsigned int fsize)
-{
-  if (fsize && trail (path, "setup.ini"))
-    found_ini = true;
-}
-
+  virtual ~ SetupFindVisitor (){}
+  operator bool () const {return found;}
+protected:
+  SetupFindVisitor (SetupFindVisitor const &);
+  SetupFindVisitor & operator= (SetupFindVisitor const &);
+private:
+  bool found;
+};
+  
 void
 do_fromcwd (HINSTANCE h, HWND owner)
 {
   // Assume we won't find the INI file.
-  found_ini = false;
-  find (".", check_ini);
+  SetupFindVisitor found_ini;
+  Find(".").accept(found_ini);
   if (found_ini)
     {
       // Found INI, load it.
@@ -159,43 +85,8 @@ do_fromcwd (HINSTANCE h, HWND owner)
 
   next_dialog = IDD_CHOOSE;
 
-  find (".", found_file);
-
-#if 0
-  // Reinstate this FIXME: Replace obsolete structures first
-  // Now see about source tarballs
-  int i, t;
-  packagemeta *p;
-  char srcpath[_MAX_PATH];
-  for (i = 0; i < npackages; i++)
-    {
-      p = package + i;
-      /* For each version with a binary after running find */
-      for (t = TRUST_PREV; t <= TRUST_TEST; t++)
-	if (p->info[t].install)
-	  {
-	    /* Is there a -src file too? */
-	    int n = find_tar_ext (p->info[t].install);
-	    strcpy (srcpath, p->info[t].install);
-	    strcpy (srcpath + n, "-src.tar.gz");
-	    msg ("looking for %s", srcpath);
-
-	    WIN32_FIND_DATA wfd;
-	    HANDLE h = FindFirstFile (srcpath, &wfd);
-	    if (h == INVALID_HANDLE_VALUE)
-	      {
-		strcpy (srcpath + n, "-src.tar.bz2");
-		h = FindFirstFile (srcpath, &wfd);
-	      }
-	    if (h != INVALID_HANDLE_VALUE)
-	      {
-		msg ("-- got it");
-		FindClose (h);
-		p->info[t].source = _strdup (srcpath);
-		p->info[t].source_size = wfd.nFileSizeLow;
-	      }
-	  }
-    }
-#endif
+  IniDBBuilderPackage myBuilder;
+  ScanFindVisitor myVisitor (myBuilder);
+  Find(".").accept(myVisitor);
   return;
 }

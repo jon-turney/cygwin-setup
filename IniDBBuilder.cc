@@ -23,9 +23,9 @@ void IniDBBuilder::buildPackageVersion (String const &){}
 void IniDBBuilder::buildPackageSDesc (String const &){}
 void IniDBBuilder::buildPackageLDesc (String const &){}
 void IniDBBuilder::buildPackageInstall (String const &, 
-					String const &, String const &){}
+					String const &, unsigned char const[16]){}
 void IniDBBuilder::buildPackageSource (String const &, 
-				       String const &,String const &){}
+				       String const &,unsigned char const[16]){}
 void IniDBBuilder::buildPackageTrust (int){}
 void IniDBBuilder::buildPackageRequirement (String const &){}
 void IniDBBuilder::buildPackageCategory (String const &){}

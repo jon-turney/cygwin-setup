@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2002, Robert Collins.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -10,6 +10,7 @@
  *     http://www.gnu.org/
  *
  * Written by DJ Delorie <dj@cygnus.com>
+ * Rewritten by Robert Collins <rbtcollins@hotmail.com>
  *
  */
 
@@ -21,31 +22,39 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "find.h"
 #include "win32.h"
-#include <stdio.h>
 #include <stdlib.h>
 
-#include "port.h"
+//#include "port.h"
 
 #include "String++.h"
-#include "find.h"
+#include "FindVisitor.h"
+#include <stdexcept>
 
-static char dir[_MAX_PATH];
+Find::Find(String const &starting_dir) : _start_dir (starting_dir), h(INVALID_HANDLE_VALUE)
+{
+}
 
-static int
-find_sub (void (*for_each) (char *, unsigned int))
+Find::~Find()
+{
+  if (h != INVALID_HANDLE_VALUE && h)
+    FindClose (h);
+}
+
+void
+Find::accept (FindVisitor &aVisitor)
 {
   WIN32_FIND_DATA wfd;
-  HANDLE h;
-  char *end = dir + strlen (dir);
-  int rv = 0;
+  if (_start_dir.size() > _MAX_PATH)
+    throw new length_error ("starting dir longer than _MAX_PATH");
 
-  strcpy (end, "\\*");
-
-  h = FindFirstFile (dir, &wfd);
+  h = FindFirstFile ((_start_dir + "/*").cstr_oneuse(), &wfd);
 
   if (h == INVALID_HANDLE_VALUE)
-    return 0;
+    return;
+
+  String basePath = _start_dir + "/";
 
   do
     {
@@ -53,28 +62,13 @@ find_sub (void (*for_each) (char *, unsigned int))
 	  || strcmp (wfd.cFileName, "..") == 0)
 	continue;
 
-      *end = '\\';
-      strcpy (end + 1, wfd.cFileName);
-
+      /* TODO: make a non-win32 file and dir info class and have that as the 
+       * visited node 
+       */
       if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-	find_sub (for_each);
+	aVisitor.visitDirectory (basePath, &wfd);
       else
-	{
-	  for_each (dir, wfd.nFileSizeLow);
-	  rv++;
-	}
-
+	aVisitor.visitFile (basePath, &wfd);
     }
   while (FindNextFile (h, &wfd));
-
-  FindClose (h);
-  return rv;
-}
-
-int
-find (String const &starting_dir, void (*_for_each) (char *, unsigned int))
-{
-  strcpy (dir, starting_dir.cstr_oneuse());
-
-  return find_sub (_for_each);
 }

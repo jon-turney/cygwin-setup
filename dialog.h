@@ -13,6 +13,7 @@
  *
  */
 
+#include "win32.h"
 #include "String++.h"
 
 /* global instance for the application; set in main.cc */

@@ -88,9 +88,9 @@ simple_line
  | LDESC STRING			{ iniBuilder->buildPackageLDesc($2); }
  | CATEGORY categories
  | REQUIRES requires
- | INSTALL STRING STRING MD5    { iniBuilder->buildPackageInstall ($2, $3, $4); }
+ | INSTALL STRING STRING MD5    { iniBuilder->buildPackageInstall ($2, $3, (unsigned char *)$4); }
  | INSTALL STRING STRING	{ iniBuilder->buildPackageInstall ($2, $3); }
- | SOURCE STRING STRING MD5	{ iniBuilder->buildPackageSource ($2, $3, $4); }
+ | SOURCE STRING STRING MD5	{ iniBuilder->buildPackageSource ($2, $3, (unsigned char *)$4); }
  | SOURCE STRING STRING		{ iniBuilder->buildPackageSource ($2, $3); }
  | T_PREV			{ iniBuilder->buildPackageTrust (TRUST_PREV); }
  | T_CURR			{ iniBuilder->buildPackageTrust (TRUST_CURR); }

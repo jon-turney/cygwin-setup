@@ -19,7 +19,8 @@
 # Makefile for Cygwin installer
 
 AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6
-SUBDIRS = bz2lib zlib libgetopt++
+DIST_SUBDIRS = bz2lib zlib libgetopt++
+SUBDIRS = bz2lib zlib libgetopt++ @RSYNC@
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
@@ -67,6 +68,14 @@ else
   inilint_extras =
 endif
 
+if ENABLERSYNC
+  rsync_source = \
+	io_stream_rsync.cc \
+	io_stream_rsync.h 
+else
+  rsync_source = 
+endif
+
 inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32 
 inilint_SOURCES = \
   filemanip.cc \
@@ -91,9 +100,11 @@ inilint_SOURCES = \
   String++.h \
   $(inilint_extras)
 
-setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a libgetopt++/libgetopt++.la \
-  -lstdc++ -luser32 -lkernel32 \
-  -lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid
+setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a \
+	libgetopt++/libgetopt++.la \
+	@RSYNCLIB@ \
+	-lstdc++ -luser32 -lkernel32 \
+	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid 
 setup_LDFLAGS = -mwindows
 setup_SOURCES = \
 	archive.cc \
@@ -130,6 +141,8 @@ setup_SOURCES = \
 	Exception.h \
 	find.cc \
 	find.h \
+	FindVisitor.cc \
+	FindVisitor.h \
 	filemanip.cc \
 	filemanip.h \
 	fromcwd.cc \
@@ -146,6 +159,8 @@ setup_SOURCES = \
 	inilex.cc \
 	iniparse.cc \
 	iniparse.h \
+	IniParseFindVisitor.cc \
+	IniParseFindVisitor.h \
 	install.cc \
 	io_stream.cc \
 	io_stream.h \
@@ -219,6 +234,8 @@ setup_SOURCES = \
 	rfc1738.h \
 	root.cc \
 	root.h \
+	ScanFindVisitor.cc \
+	ScanFindVisitor.h \
 	script.cc \
 	script.h \
 	setup_version.c \
@@ -241,7 +258,8 @@ setup_SOURCES = \
 	win32.cc \
 	win32.h \
 	window.cc \
-	window.h
+	window.h \
+	$(rsync_source)
 	
 setup_version.c : $(srcdir)/ChangeLog Makefile
 	V=`grep '^\$$Revision.*' $(srcdir)/ChangeLog \

@@ -106,6 +106,8 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 RC = @RC@
+RSYNC = @RSYNC@
+RSYNCLIB = @RSYNCLIB@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
@@ -116,7 +118,8 @@ am__quote = @am__quote@
 install_sh = @install_sh@
 
 AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6
-SUBDIRS = bz2lib zlib libgetopt++
+DIST_SUBDIRS = bz2lib zlib libgetopt++
+SUBDIRS = bz2lib zlib libgetopt++ @RSYNC@
 
 AM_CFLAGS = -Werror -Winline -Wall -Wpointer-arith \
   -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
@@ -162,6 +165,12 @@ BUILT_SOURCES = setup_version.c \
 
 @MINGWTARGET_FALSE@inilint_extras = 
 
+@ENABLERSYNC_TRUE@rsync_source = \
+@ENABLERSYNC_TRUE@	io_stream_rsync.cc \
+@ENABLERSYNC_TRUE@	io_stream_rsync.h 
+
+@ENABLERSYNC_FALSE@rsync_source = 
+
 inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32 
 inilint_SOURCES = \
   filemanip.cc \
@@ -187,9 +196,11 @@ inilint_SOURCES = \
   $(inilint_extras)
 
 
-setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a libgetopt++/libgetopt++.la \
-  -lstdc++ -luser32 -lkernel32 \
-  -lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid
+setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a \
+	libgetopt++/libgetopt++.la \
+	@RSYNCLIB@ \
+	-lstdc++ -luser32 -lkernel32 \
+	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid 
 
 setup_LDFLAGS = -mwindows
 setup_SOURCES = \
@@ -227,6 +238,8 @@ setup_SOURCES = \
 	Exception.h \
 	find.cc \
 	find.h \
+	FindVisitor.cc \
+	FindVisitor.h \
 	filemanip.cc \
 	filemanip.h \
 	fromcwd.cc \
@@ -243,6 +256,8 @@ setup_SOURCES = \
 	inilex.cc \
 	iniparse.cc \
 	iniparse.h \
+	IniParseFindVisitor.cc \
+	IniParseFindVisitor.h \
 	install.cc \
 	io_stream.cc \
 	io_stream.h \
@@ -316,6 +331,8 @@ setup_SOURCES = \
 	rfc1738.h \
 	root.cc \
 	root.h \
+	ScanFindVisitor.cc \
+	ScanFindVisitor.h \
 	script.cc \
 	script.h \
 	setup_version.c \
@@ -338,7 +355,8 @@ setup_SOURCES = \
 	win32.cc \
 	win32.h \
 	window.cc \
-	window.h
+	window.h \
+	$(rsync_source)
 
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -358,21 +376,24 @@ am_inilint_OBJECTS = filemanip.$(OBJEXT) LogSingleton.$(OBJEXT) \
 inilint_OBJECTS = $(am_inilint_OBJECTS)
 inilint_DEPENDENCIES = libgetopt++/libgetopt++.la
 inilint_LDFLAGS =
+@ENABLERSYNC_TRUE@am__objects_2 = io_stream_rsync.$(OBJEXT)
+@ENABLERSYNC_FALSE@am__objects_2 =
 am_setup_OBJECTS = archive.$(OBJEXT) archive_tar.$(OBJEXT) \
 	archive_tar_file.$(OBJEXT) autoload.$(OBJEXT) \
 	category.$(OBJEXT) choose.$(OBJEXT) cistring.$(OBJEXT) \
 	compress.$(OBJEXT) compress_bz.$(OBJEXT) compress_gz.$(OBJEXT) \
 	concat.$(OBJEXT) cygpackage.$(OBJEXT) desktop.$(OBJEXT) \
 	dialog.$(OBJEXT) diskfull.$(OBJEXT) download.$(OBJEXT) \
-	Exception.$(OBJEXT) find.$(OBJEXT) filemanip.$(OBJEXT) \
-	fromcwd.$(OBJEXT) geturl.$(OBJEXT) hash.$(OBJEXT) ini.$(OBJEXT) \
-	IniDBBuilder.$(OBJEXT) IniDBBuilderPackage.$(OBJEXT) \
-	inilex.$(OBJEXT) iniparse.$(OBJEXT) install.$(OBJEXT) \
-	io_stream.$(OBJEXT) io_stream_cygfile.$(OBJEXT) \
-	io_stream_file.$(OBJEXT) io_stream_memory.$(OBJEXT) \
-	localdir.$(OBJEXT) log.$(OBJEXT) LogFile.$(OBJEXT) \
-	LogSingleton.$(OBJEXT) main.$(OBJEXT) md5.$(OBJEXT) \
-	MD5++.$(OBJEXT) mkdir.$(OBJEXT) mklink2.$(OBJEXT) \
+	Exception.$(OBJEXT) find.$(OBJEXT) FindVisitor.$(OBJEXT) \
+	filemanip.$(OBJEXT) fromcwd.$(OBJEXT) geturl.$(OBJEXT) \
+	hash.$(OBJEXT) ini.$(OBJEXT) IniDBBuilder.$(OBJEXT) \
+	IniDBBuilderPackage.$(OBJEXT) inilex.$(OBJEXT) \
+	iniparse.$(OBJEXT) IniParseFindVisitor.$(OBJEXT) \
+	install.$(OBJEXT) io_stream.$(OBJEXT) \
+	io_stream_cygfile.$(OBJEXT) io_stream_file.$(OBJEXT) \
+	io_stream_memory.$(OBJEXT) localdir.$(OBJEXT) log.$(OBJEXT) \
+	LogFile.$(OBJEXT) LogSingleton.$(OBJEXT) main.$(OBJEXT) \
+	md5.$(OBJEXT) MD5++.$(OBJEXT) mkdir.$(OBJEXT) mklink2.$(OBJEXT) \
 	mount.$(OBJEXT) msg.$(OBJEXT) net.$(OBJEXT) netio.$(OBJEXT) \
 	nio-ie5.$(OBJEXT) nio-file.$(OBJEXT) nio-ftp.$(OBJEXT) \
 	nio-http.$(OBJEXT) package_db.$(OBJEXT) package_meta.$(OBJEXT) \
@@ -380,11 +401,12 @@ am_setup_OBJECTS = archive.$(OBJEXT) archive_tar.$(OBJEXT) \
 	PickCategoryLine.$(OBJEXT) PickLine.$(OBJEXT) \
 	PickPackageLine.$(OBJEXT) PickView.$(OBJEXT) \
 	postinstall.$(OBJEXT) proppage.$(OBJEXT) propsheet.$(OBJEXT) \
-	rfc1738.$(OBJEXT) root.$(OBJEXT) script.$(OBJEXT) \
-	setup_version.$(OBJEXT) simpsock.$(OBJEXT) site.$(OBJEXT) \
-	source.$(OBJEXT) splash.$(OBJEXT) state.$(OBJEXT) \
-	String++.$(OBJEXT) threebar.$(OBJEXT) version.$(OBJEXT) \
-	win32.$(OBJEXT) window.$(OBJEXT)
+	rfc1738.$(OBJEXT) root.$(OBJEXT) ScanFindVisitor.$(OBJEXT) \
+	script.$(OBJEXT) setup_version.$(OBJEXT) simpsock.$(OBJEXT) \
+	site.$(OBJEXT) source.$(OBJEXT) splash.$(OBJEXT) \
+	state.$(OBJEXT) String++.$(OBJEXT) threebar.$(OBJEXT) \
+	version.$(OBJEXT) win32.$(OBJEXT) window.$(OBJEXT) \
+	$(am__objects_2)
 setup_OBJECTS = $(am_setup_OBJECTS)
 setup_DEPENDENCIES = res.o zlib/libzcygw.a bz2lib/libbz2.a \
 	libgetopt++/libgetopt++.la
@@ -397,15 +419,19 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/cfgaux/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Exception.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/FindVisitor.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/IniDBBuilder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/IniDBBuilderPackage.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IniParseFindVisitor.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/LogFile.Po ./$(DEPDIR)/LogSingleton.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MD5++.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickCategoryLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickPackageLine.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PickView.Po ./$(DEPDIR)/String++.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/archive.Po ./$(DEPDIR)/archive_tar.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PickView.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ScanFindVisitor.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/String++.Po ./$(DEPDIR)/archive.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/archive_tar.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/archive_tar_file.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/autoload.Po ./$(DEPDIR)/category.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/choose.Po ./$(DEPDIR)/cistring.Po \
@@ -422,6 +448,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/io_stream_cygfile.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/io_stream_file.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/io_stream_memory.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/io_stream_rsync.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/localdir.Po ./$(DEPDIR)/log.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/main.Po ./$(DEPDIR)/md5.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mkdir.Po ./$(DEPDIR)/mklink2.Po \
@@ -469,7 +496,6 @@ DIST_COMMON = README ChangeLog Makefile.am Makefile.in aclocal.m4 \
 	cfgaux/compile cfgaux/config.guess cfgaux/config.sub \
 	cfgaux/depcomp cfgaux/install-sh cfgaux/ltmain.sh \
 	cfgaux/missing cfgaux/mkinstalldirs configure configure.in
-DIST_SUBDIRS = $(SUBDIRS)
 SOURCES = $(inilint_SOURCES) $(setup_SOURCES)
 
 all: $(BUILT_SOURCES)
@@ -516,8 +542,10 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Exception.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FindVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IniDBBuilder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IniDBBuilderPackage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IniParseFindVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogSingleton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MD5++.Po@am__quote@
@@ -525,6 +553,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickPackageLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickView.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ScanFindVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/String++.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/archive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/archive_tar.Po@am__quote@
@@ -556,6 +585,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io_stream_cygfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io_stream_file.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io_stream_memory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io_stream_rsync.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/localdir.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
@@ -763,7 +793,7 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	list='$(SUBDIRS)'; for subdir in $$list; do \
+	list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
 	  if test "$$subdir" = .; then :; else \
 	    test -d $(distdir)/$$subdir \
 	    || mkdir $(distdir)/$$subdir \

@@ -1,3 +1,52 @@
+2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
+
+	* rsync: New support library, contains librsync. This is not (yet)
+  	rsync interoperable.
+	* configure.in: --with-rsync to enable rsync support. (Not complete).
+	* Makefile.am: Enable building with rsync.
+	* Makefile.in: Regenerate.
+	* configure: Ditto.
+	* IniDBBuilder.cc (IniDBBuilder::buildPackageInstall): Pass the md5 as
+	an array.
+	(IniDBBuilder::buildPackageSource): Ditto.
+	* IniDBBuilder.h: Ditto.
+	* IniDBBuilderPackage.cc: Ditto.
+	* IniDBBuilderPackage.h: Ditto.
+	* FindVisitor.cc: New file.
+	* FindVisitor.h: New file, interface for visiting a file system
+	aggregate.
+	* IniParseFindVisitor.cc: New file.
+	* IniParseFindVisitor.h: New file, concrete FindVisitor that parses 
+	found setup.ini's.
+	* README: Update TODO's.
+	* String++.cc (String::String): New constructor for <string> inter-
+	operability.
+	(String::substr): New method.
+	* String++.h: Ditto.
+	* choose.cc (scan2): Remove.
+	(scan_downloaded_files): Simplify.
+	* dialog.h: Include parsing pre-requirements.
+	* download.cc (check_for_cached): Fullname was used incorrectly - fix.
+	* filemanip.cc (parse_filename): -src packages where incorrectly parsed.
+	* find.cc: Rewrite. Now uses a Visitor pattern and is re-entrant.
+	* find.h: Ditto.
+	* fromcwd.cc: Remove unneeded includes.
+	(is_test_version): Remove.
+	(found_file): Remove.
+	(SetupFindVisitor): Trivial visitor to detect setup.ini's.
+	(found_ini): Remove.
+	(do_fromcwd): Remove commented code that has be replaced elsewhere.
+	* ini.cc (local_ini): Remove.
+	(findBuilder): Remove.
+	(find_routine): Remove.
+	(do_local_ini): Use new IniParseFindVisitor.
+	* iniparse.y: Typecase MD5 arrays, as we know they are allocated as
+	unsigned char.
+	* postinstall.cc: Remove non-core includes.
+	(run_script_in_postinstall): Remove.
+	(RunFindVisitor): Trivial Visitor, runs each found script.
+	(do_postinstall): Use new find syntax.
+
 2002-05-14  Christopher Faylor  <cgf@redhat.com>
 
 	* ini.cc (find_routine): Don't clear buffer it it's NULL.

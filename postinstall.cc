@@ -21,27 +21,33 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-#include "win32.h"
-
-#include <stdlib.h>
-
-#include "state.h"
 #include "dialog.h"
 #include "find.h"
 #include "mount.h"
 #include "script.h"
+#include "FindVisitor.h"
 
-static void
-run_script_in_etc_postinstall (char *fname, unsigned int size)
+class RunFindVisitor : public FindVisitor
 {
-  run_script ("/etc/postinstall/", fname);
-}
-
+public:
+  RunFindVisitor (){}
+  virtual void visitFile(String const &basePath, const WIN32_FIND_DATA *theFile)
+    {
+      run_script ("/etc/postinstall/", theFile->cFileName);
+    }
+  virtual ~ RunFindVisitor () {}
+protected:
+  RunFindVisitor (RunFindVisitor const &);
+  RunFindVisitor & operator= (RunFindVisitor const &);
+};
+  
 void
 do_postinstall (HINSTANCE h, HWND owner)
 {
   next_dialog = 0;
   init_run_script ();
   SetCurrentDirectory (get_root_dir ().cstr_oneuse());
-  find (cygpath ("/etc/postinstall"), run_script_in_etc_postinstall);
+  RunFindVisitor myVisitor;
+  String postinst = cygpath ("/etc/postinstall");
+  Find (postinst).accept (myVisitor);
 }
