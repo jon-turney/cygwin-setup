@@ -1,3 +1,7 @@
+2003-12-21  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (main): Update to head libgetopt++ syntax.
+
 2003-11-2  Robert Collins  <rbtcollins@hotmail.com>
 
 	* ControlAdjuster.h (ControlPosition::CP_MIDDLE): Rename to

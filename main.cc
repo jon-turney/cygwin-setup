@@ -463,7 +463,7 @@ main (int argc, char **argv)
   _argv = argv;
 #endif
 
-  if (!GetOption::GetInstance().Process (argc,_argv))
+  if (!GetOption::GetInstance().Process (argc,_argv, NULL))
     theLog->exit(1);
 // #endif
 
