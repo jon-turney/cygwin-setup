@@ -16,8 +16,7 @@
 #ifndef SETUP_COMPRESS_BZ_H
 #define SETUP_COMPRESS_BZ_H
 
-/* this is the bz2 class for all compressed IO operations. 
- */
+#include "compress.h"
 
 #ifdef _WIN32
 #undef _WIN32

@@ -13,21 +13,7 @@
  *
  */
 
-/* Archive IO operations
- */
-
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
-#include "win32.h"
-#include <stdio.h>
-#include "log.h"
-
-#include "io_stream.h"
 #include "compress.h"
-#include "zlib/zlib.h"
 #include "compress_gz.h"
 #include "compress_bz.h"
 
@@ -69,50 +55,4 @@ compress::decompress (io_stream * original)
   return NULL;
 }
 
-ssize_t
-compress::read (void *buffer, size_t len)
-{
-  log (LOG_TIMESTAMP, "compress::read called");
-  return 0;
-}
-
-ssize_t
-compress::write (void *buffer, size_t len)
-{
-  log (LOG_TIMESTAMP, "compress::write called");
-  return 0;
-}
-
-ssize_t
-compress::peek (void *buffer, size_t len)
-{
-  log (LOG_TIMESTAMP, "compress::peek called");
-  return 0;
-}
-
-long
-compress::tell ()
-{
-  log (LOG_TIMESTAMP, "bz::tell called");
-  return 0;
-}
-
-int
-compress::error ()
-{
-  log (LOG_TIMESTAMP, "compress::error called");
-  return 0;
-}
-
-const char *
-compress::next_file_name ()
-{
-  log (LOG_TIMESTAMP, "compress::next_file_name called");
-  return NULL;
-}
-
-compress::~compress ()
-{
-  log (LOG_BABBLE, "compress::~compress called");
-  return;
-}
+compress::~compress () {}

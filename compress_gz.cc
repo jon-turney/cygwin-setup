@@ -13,27 +13,16 @@
  *
  */
 
-/* Archive IO operations for gz files
- * Portions copyright under the zlib licence - this class was derived from gzio.c in that
- * library.
+/* 
+ * Portions copyright under the zlib licence - this class was derived from
+ * gzio.c in that library.
  */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
-#include <algorithm>
-#include "win32.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include "log.h"
-
-#include "io_stream.h"
-#include "compress.h"
-#include "zlib/zlib.h"
 #include "compress_gz.h"
+
+#include <stdexcept>
+using namespace std;
+#include <errno.h>
 
 #define HEAD_CRC     0x02	/* bit 1 set: header CRC present */
 #define EXTRA_FIELD  0x04	/* bit 2 set: extra field present */
@@ -404,15 +393,13 @@ compress_gz::peek (void *buffer, size_t len)
 long
 compress_gz::tell ()
 {
-  log (LOG_TIMESTAMP, "compress_gz::tell called");
-  return 0;
+  throw new logic_error("compress_gz::tell is not implemented");
 }
 
 int
 compress_gz::seek (long where, io_stream_seek_t whence)
 {
-  log (LOG_TIMESTAMP, "compress_gz::seek called");
-  return -1;
+  throw new logic_error("compress_gz::seek is not implemented");
 }
 
 int

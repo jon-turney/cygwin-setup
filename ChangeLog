@@ -1,3 +1,15 @@
+2004-12-27  Max Bowsher  <maxb@ukf.net>
+
+	* compress.cc: Refine includes. Remove placeholder function
+	definitions. Make destructor an empty function.
+	* compress.h: Refine includes. Make placeholder functions pure
+	virtual. Add missing const on buffer argument to write function,
+	to match derived classes.
+	* compress_bz.cc, compress_gz.cc: Refine includes. Throw exception,
+	rather than logging and returning an error, when an unimplemented
+	function is called.
+	* compress_bz.h, compress_gz.h: Refine includes.
+
 2004-12-26  Max Bowsher  <maxb@ukf.net>
 
 	The Big Cleanup: Phase "version"

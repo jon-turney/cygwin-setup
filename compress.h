@@ -16,9 +16,7 @@
 #ifndef SETUP_COMPRESS_H
 #define SETUP_COMPRESS_H
 
-/* this is the parent class for all compress IO operations. 
- * It 
- */
+#include "io_stream.h"
 
 class compress:public io_stream
 {
@@ -34,22 +32,22 @@ public:
    * from compress::compress. 
    */
   /* read data (duh!) */
-  virtual ssize_t read (void *buffer, size_t len);
+  virtual ssize_t read (void *buffer, size_t len) = 0;
   /* provide data to (double duh!) */
-  virtual ssize_t write (void *buffer, size_t len);
+  virtual ssize_t write (const void *buffer, size_t len) = 0;
   /* read data without removing it from the class's internal buffer */
-  virtual ssize_t peek (void *buffer, size_t len);
-  virtual long tell ();
+  virtual ssize_t peek (void *buffer, size_t len) = 0;
+  virtual long tell () = 0;
   /* try guessing this one */
-  virtual int error ();
+  virtual int error () = 0;
   /* Find out the next stream name -
    * ie for foo.tar.gz, at offset 0, next_file_name = foo.tar
    * for foobar that is an compress, next_file_name is the next
    * extractable filename.
    */
-  virtual const char *next_file_name () = NULL;
+  virtual const char *next_file_name () = 0;
   /* if you are still needing these hints... give up now! */
-    virtual ~ compress ();
+  virtual ~compress () = 0;
 };
 
 #endif /* SETUP_COMPRESS_H */

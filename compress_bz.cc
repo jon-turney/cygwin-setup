@@ -17,20 +17,11 @@
    derived from the fd convenience functions in the libbz2 package.
  */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
-#include <algorithm>
-#include "win32.h"
-#include <stdio.h>
-#include <errno.h>
-#include "log.h"
-
-#include "io_stream.h"
-#include "compress.h"
 #include "compress_bz.h"
+
+#include <stdexcept>
+using namespace std;
+#include <errno.h>
 
 compress_bz::compress_bz (io_stream * parent) : peeklen (0), position (0)
 {
@@ -139,8 +130,7 @@ compress_bz::read (void *buffer, size_t len)
 
 ssize_t compress_bz::write (const void *buffer, size_t len)
 {
-  log (LOG_TIMESTAMP, "compress_bz::write called");
-  return 0;
+  throw new logic_error("compress_bz::write is not implemented");
 }
 
 ssize_t compress_bz::peek (void *buffer, size_t len)
@@ -179,18 +169,15 @@ long
 compress_bz::tell ()
 {
   if (writing)
-    {
-      log (LOG_TIMESTAMP, "compress_bz::tell called for writing mode");
-      return 0;
-    }
+    throw new logic_error("compress_bz::tell is not implemented "
+                          "in writing mode");
   return position;
 }
 
 int
 compress_bz::seek (long where, io_stream_seek_t whence)
 {
-    log (LOG_TIMESTAMP, "compress_bz::seek called");
-    return -1;
+  throw new logic_error("compress_bz::seek is not implemented");
 }
 
 int
