@@ -1,3 +1,7 @@
+2003-05-31  Max Bowsher  <maxb@ukf.net>
+
+	* res.rc: Resize title controls to fully fill available width.
+
 2003-05-07  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* RECTWrapper.h: New file.
