@@ -1217,7 +1217,9 @@ those as the basis for your installation.\n\n"
 
 	  xumount (wd, "/usr");
 	  xumount (wd, "/var");
-	  
+	  xumount (wd, "/lib");
+	  xumount (wd, "/bin");
+
 	  /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
 	  mkmount (wd, root, "bin", "/usr/bin", 1);
 	  mkmount (wd, root, "lib", "/usr/lib", 1);
