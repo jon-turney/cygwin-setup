@@ -348,3 +348,14 @@ packagedb::connectedEnd()
 {
   return dependencyOrderedPackages.end();
 }
+
+void
+packagedb::markUnVisited()
+{
+  for (vector <packagemeta *>::iterator n = packages.begin ();
+       n != packages.end (); ++n)
+    {
+      packagemeta & pkgm = **n;
+      pkgm.visited(false);
+    }
+}

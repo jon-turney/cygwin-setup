@@ -45,6 +45,7 @@ public:
   packagemeta * findSource (PackageSpecification const &) const;
   PackageDBConnectedIterator connectedBegin();
   PackageDBConnectedIterator connectedEnd();
+  void markUnVisited();
   /* all seen binary packages */
   static std::vector < packagemeta *> packages;
   /* all seen source packages */

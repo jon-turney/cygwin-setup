@@ -91,6 +91,12 @@ hash::add_subdirs (String const &tpath)
 
 /*****************/
 
+void
+packagemeta::PrepareForVisit()
+{
+  packagedb().markUnVisited();
+}
+
 const
   packagemeta::_actions
 packagemeta::Default_action (0);
@@ -129,7 +135,8 @@ packagemeta::packagemeta (packagemeta const &rhs) :
   prevtimestamp (rhs.prevtimestamp), curr (rhs.curr),
   currtimestamp (rhs.currtimestamp), exp (rhs.exp),
   exptimestamp (rhs.exptimestamp), desired (rhs.desired),
-  architecture (rhs.architecture), priority (rhs.priority)
+  architecture (rhs.architecture), priority (rhs.priority),
+  visited_(rhs.visited_)
 {
   
 }
@@ -436,6 +443,9 @@ packagemeta::set_action (packageversion const &default_version)
 int
 packagemeta::set_requirements (trusts deftrust, size_t depth)
 {
+  if (visited())
+    return 0;
+  visited(true);
   int changed = 0;
   /* handle build-depends */
   if (depth == 0 && desired.sourcePackage ().picked())
@@ -570,4 +580,16 @@ packagemeta::trustLabel(packageversion const &aVersion) const
     if (aVersion == exp)
 	return "Test";
     return "Unknown";
+}
+
+void
+packagemeta::visited(bool const &aBool)
+{
+  visited_ = aBool;
+}
+
+bool
+packagemeta::visited() const
+{
+  return visited_;
 }

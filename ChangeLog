@@ -1,3 +1,21 @@
+2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
+
+	* PickCategoryLine.cc (PickCategoryLine::click): Tell packagemeta we
+	are about to perform a visit.
+	* PickPackageLine.cc (PickPackageLine::click): Tell packagemeta we
+	are about to perform a visit.
+	* package_db.cc (packagedb::markUnVisited): Convenience wrapper - 
+	mark all packages as unvisited.
+	* package_db.h (packagedb::markUnVisited): Declare.
+	* package_meta.cc (packagemeta::PrepareForVisit): New static method
+	to prepare for a loop-free visit.
+	(packagemeta::packagemeta): Adjust for new member.
+	(packagemeta::set_requirements): Only visit a node once.
+	(packagemeta::visited): Get and Set methods for new member visited_.
+	* package_meta.h (packagemeta::PrepareForVisit): Declare.
+	(packagemeta::visited): Declare.
+	(packagemeta::visited_): Declare.
+
 2003-04-07  Max Bowsher  <maxb@ukf.net>
 
 	* download.cc: Add command line option to suppress MD5 checks.

@@ -31,10 +31,11 @@ class category;
 class packagemeta
 {
 public:
+  static void PrepareForVisit();
   packagemeta (packagemeta const &);
   packagemeta (String const &pkgname):name (pkgname), key(pkgname), installed_from (),
   prevtimestamp (0), currtimestamp (0),
-    exptimestamp (0), architecture (), priority()
+    exptimestamp (0), architecture (), priority(), visited_(false)
   {
   }
 
@@ -42,14 +43,16 @@ public:
 	       String const &installedfrom):name (pkgname), key(pkgname),
 	       installed_from (installedfrom),
     prevtimestamp (0), currtimestamp (0),
-    exptimestamp (0), architecture (), priority()
+    exptimestamp (0), architecture (), priority(), visited_(false)
   {
-  };
+  }
 
   ~packagemeta ();
 
   void add_version (packageversion &);
   void set_installed (packageversion &);
+  void visited(bool const &);
+  bool visited() const;
 
   class _actions
   {
@@ -136,6 +139,7 @@ protected:
   packagemeta &operator= (packagemeta const &);
 private:
   String trustLabel(packageversion const &) const;
+  bool visited_;
 };
 
 #endif /* _PACKAGE_META_H_ */

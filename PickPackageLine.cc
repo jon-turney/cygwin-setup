@@ -176,6 +176,7 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
       && x <= theView.headers[theView.new_col + 1].x - HMARGIN / 2)
     pkg.set_action (pkg.trustp(theView.deftrust));
   
+  packagemeta::PrepareForVisit();
   /* Add any packages that are needed by this package */
   return pkg.set_requirements ();
 }
