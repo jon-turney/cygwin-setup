@@ -32,7 +32,11 @@
 /* We want a minimum IE version of 3 */
 #define _WIN32_IE 0x0300
 /* libstdc++-v3 _really_ dislikes min & max defined as macros. */
+/* As of gcc 3.3.1, it defines NOMINMAX itself, so test first,
+ * to avoid a redefinition error */
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #include <windows.h>
 #if HAVE_ALLOCA_H
 #include <alloca.h>
