@@ -10,13 +10,19 @@
  *     http://www.gnu.org/
  *
  * Written by DJ Delorie <dj@cygnus.com>
+ * and Robert Collins <rbtcollins@hotmail.com>
  *
  */
 
-/* The purpose of this file is to limit the number of Win32 headers we
+/* The inital purpose of this file was limit the number of Win32 headers we
    actually have to parse.  The Setup program only uses a few of them,
    so there's no point in parsing them all (even lean-n-mean).  Doing
-   this cuts compile time in half. */
+   this cuts compile time in half. Now it's also the header for the Win32
+   class which provides runtime information about the OS
+ */
+
+#ifndef SETUP_WIN32_H
+#define SETUP_WIN32_H
 
 #define NOCOMATTRIBUTE
 
@@ -29,3 +35,17 @@
 
 #include <wininet.h>
 #include <windowsx.h>
+
+/* =========================== */
+#ifdef __cplusplus
+class Win32 {
+  public:
+    enum _os {
+      Win9x,
+      WinNT
+    };
+  static enum _os OS ();
+};
+
+#endif //_cplusplus
+#endif // SETUP_WIN32_H

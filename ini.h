@@ -21,8 +21,6 @@ void ini_init (io_stream *, char const *);
 #define YYSTYPE char *
 
 #ifdef __cplusplus
-/* For enums */
-#include "choose.h"
 
 /* When setup.ini is parsed, the information is stored according to
    the declarations here.  ini.cc (via inilex and iniparse)
@@ -52,29 +50,6 @@ typedef enum
 }
 excludes;
 
-#define is_download_action(pkg) \
-  ((pkg)->action == ACTION_PREV || \
-   (pkg)->action == ACTION_CURR || \
-   (pkg)->action == ACTION_TEST || \
-   (pkg)->action == ACTION_REDO || \
-   (pkg)->action == ACTION_SRC_ONLY)
-
-#define is_upgrade_action(pkg) \
-  (((pkg)->action >= ACTION_CURR && \
-    (pkg)->action <= ACTION_TEST) || \
-   (pkg)->action == ACTION_REDO)
-
-#define is_uninstall_action(pkg) \
-  (is_upgrade_action (pkg) || \
-   (pkg)->action == ACTION_PREV || \
-   (pkg)->action == ACTION_UNINSTALL)
-
-#define is_full_action(pkg) \
-  (((pkg)->action >= ACTION_SAME_PREV && (pkg)->action <= ACTION_SAME_TEST) \
-   || (pkg)->action == ACTION_SKIP)
-
-#define SRCACTION_NO		0
-#define SRCACTION_YES		1
 #endif
 
 #endif /* _INI_H_ */

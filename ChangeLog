@@ -1,3 +1,59 @@
+2002-01-20  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in (OBJS): Add win32.o - win32 support functions.
+	* README: Update todos.
+	* archive.cc (extract_file): Support a suffix for appending to extracted files.
+	* archive.h: Ditto.
+	* choose.cc (set_view_mode): Use the new view::views class.
+	(view::views::Unknown): New static for defaulting view::views variables.
+	(view::views::PackageFull): New static for the current view.
+	(view::views::Package): Ditto.
+	(view::views::Category): Ditto.
+	(topbucket::paint): Remove.
+	(topbucket::empty): Rename to pick_category_line::empty.
+	(topbucket::~topbucket): Remove.
+	(paint): Use the new view::views class.
+	Don't paint 'all' as a category when showing package categoies.
+	(pick_category_line::actiontext): New method.
+	(pick_category_line::paint): Make showing the category optional, and show the
+	'category action'.
+	(pick_category_line::click): Make showing the category optional, and
+	differentiate between the name being clicked, and the action description.
+	(view::view): Use the new view::views class.
+	(view::set_view_mode): Ditto.
+	(view::mode_caption): Ditto.
+	(view::views::caption): New method.
+	(view::set_headers): Use the new view::views class.
+	(view::clear_view): Ditto.
+	(viewsplusplus): Replaced by 
+	(view::views::operator++): New operator.
+	(set_view_mode): Use the new view::views class.
+	(create_listview): Ditto.
+	(dialog_cmd): Ditto.
+	* choose.h (actions): Remove.
+	(views): Remove.
+	(pick_line): Add a new convenience constructor.
+	(top_bucket): Remove.
+	(pick_category_line): Reparent under pick_line, and adsorb top_bucket.
+	(view::views): New class.
+	* ini.h: Don't include choose.h
+	(is_download_action): Remove.
+	(is_upgrade_action): Remove.
+	(is_uninstall_action): Remove.
+	(is_full_action): Remove.
+	* install.cc (num_replacements): New static.
+	(rebootneeded): Ditto.
+	(replace_one): Handle upgrades separate from removal or new installs.
+	(install_one_source): Handle in use files.
+	(install_one): Don't repeat upgrades.
+	(do_install_thread): Initialize new statics.
+	Order actions as uninstall, replace, install.
+	Warn about rebooting if needed.
+	* res.rc (IDS_REBOOT_REQUIRED): New string.
+	* resource.h (IDS_REBOOT_REQUIRED): Give value.
+	* win32.h: Declare class Win32, and update copyright and intent message.
+	* win32.cc: New file.
+
 2002-01-15  Corinna Vinschen  <corinna@vinschen.de>
 
 	* io_stream.cc (io_stream::gets): Eliminate trailing new line chars.

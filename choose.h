@@ -24,43 +24,6 @@ class packagemeta;
 #define CATEGORY_EXPANDED  0
 #define CATEGORY_COLLAPSED 1
 
-typedef enum
-{
-  /* Note that the next four items must be in the same order as the
-     TRUST items in ini.h. */
-  ACTION_UNKNOWN,
-  ACTION_PREV,
-  ACTION_CURR,
-  ACTION_TEST,
-  ACTION_SKIP,
-  ACTION_UNINSTALL,
-  ACTION_REDO,
-  ACTION_SRC_ONLY,
-  ACTION_LAST,
-  ACTION_ERROR,
-  /* Use ACTION_SAME when you want to leve the current version unaltered
-   * even if it that version is not in setup.ini
-   */
-  ACTION_SAME = 100,
-  /* Actions taken when installed version matches the selected version. */
-  ACTION_SAME_PREV = ACTION_PREV + ACTION_SAME,
-  ACTION_SAME_CURR = ACTION_CURR + ACTION_SAME,
-  ACTION_SAME_TEST = ACTION_TEST + ACTION_SAME,
-  /* Last action. */
-  ACTION_SAME_LAST
-}
-actions;
-
-typedef enum
-{
-  VIEW_UNKNOWN,
-  VIEW_PACKAGE_FULL,
-  VIEW_PACKAGE,
-  VIEW_CATEGORY,
-  NVIEW
-}
-views;
-
 struct _header
 {
   const char *text;
@@ -90,9 +53,8 @@ public:
   {
   };
 protected:
-  pick_line ()
-  {
-  };
+  pick_line ()  {  };
+  pick_line (char const *aKey):key(aKey) {};
   pick_line (pick_line const &);
   pick_line & operator= (pick_line const &);
 };
@@ -121,44 +83,12 @@ private:
   packagemeta & pkg;
 };
 
-class topbucket:public pick_line
-{
-public:
-  topbucket ()
-  {
-    key = 0;
-  };
-  virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
-  virtual int click (int const myrow, int const ClickedRow, int const x);
-  virtual int itemcount () const
-  {
-    int t = 0;
-    for (size_t n = 1; n <= bucket.number (); n++)
-        t += bucket[n]->itemcount ();
-      return t;
-  };
-  virtual bool IsContainer (void) const
-  {
-    return true;
-  }
-  virtual void insert (pick_line & aLine)
-  {
-    bucket.registerbyobject (aLine);
-  }
-  virtual void empty (void);
-  virtual ~ topbucket ();
-protected:
-  topbucket (topbucket const &);
-  topbucket & operator= (topbucket const &);
-  list < pick_line, char const *, strcasecmp > bucket;
-};
-
-
-class pick_category_line:public topbucket
+class pick_category_line:public pick_line
 {
 public:
   pick_category_line (Category & _cat, size_t thedepth = 0, bool aBool =
-		      true, bool aBool2 = true):cat (_cat), depth(thedepth)
+		      true, bool aBool2 = true):pick_line (_cat.key), current_default (Default_action), 
+  cat (_cat), labellength (0), depth(thedepth)
   {
     if (aBool)
       {
@@ -170,9 +100,8 @@ public:
 	collapsed = false;
 	show_label = aBool2;
       }
-    
-    key = _cat.key;
   };
+  ~pick_category_line (){ empty (); }
   void ShowLabel(bool aBool = true) {show_label = aBool; if (!show_label) collapsed = false;}
   virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
   virtual int click (int const myrow, int const ClickedRow, int const x);
@@ -185,15 +114,36 @@ public:
         t += bucket[n]->itemcount ();
       return t;
   };
+  virtual bool IsContainer (void) const
+  {
+    return true;
+  }
+  virtual void insert (pick_line & aLine)
+  {
+    bucket.registerbyobject (aLine);
+  }
+  void empty ();
 private:
+  enum _actions {
+    Default_action,
+    Install_action,
+    Reinstall_action,
+    Uninstall_action
+  } current_default;
+  char const * actiontext();
   Category & cat;
   bool collapsed;
   bool show_label;
+  size_t labellength;
   size_t depth;
+  pick_category_line (pick_category_line const &);
+  pick_category_line & operator= (pick_category_line const &);
+  list < pick_line, char const *, strcasecmp > bucket;
 };
 
 class view
 {
+  class views;
 public:
   int num_columns;
   views get_view_mode () 
@@ -221,6 +171,26 @@ public:
     return listheader;
   }
 
+
+  class views {
+    public:
+    static const views Unknown;
+    static const views PackageFull;
+    static const views Package;
+    static const views Category;
+    static const views NView;
+    views () : _value (0) {};
+    views (int aInt) { _value = aInt; if (_value < 0 || _value > 3)
+      _value = 0;}
+    views& operator++ ();
+    bool operator == (views const &rhs) {return _value == rhs._value;}
+    bool operator != (views const &rhs) {return _value != rhs._value;}
+    const char * caption ();
+    
+    private:
+     int _value;
+  };
+  
 private:
     HWND listview;
   HWND listheader;

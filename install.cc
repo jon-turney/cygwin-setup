@@ -20,8 +20,7 @@
    files in /etc/setup/\* and create the mount points. */
 
 #if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
+static const char *cvsid = "\n%%% $Id$\n";
 #endif
 
 #include "win32.h"
@@ -111,7 +110,12 @@ static const char *standard_dirs[] = {
   0
 };
 
-static int num_installs, num_uninstalls;
+static int num_installs, num_replacements, num_uninstalls;
+static void uninstall_one (packagemeta &);
+static int replace_one (packagemeta &);
+static int install_one_source (packagemeta &, packagesource &, char const *,
+			       package_type_t);
+static bool rebootneeded;
 
 /* FIXME: upgrades should be a method too */
 static void
@@ -124,6 +128,28 @@ uninstall_one (packagemeta & pkgm)
   num_uninstalls++;
 }
 
+/* uninstall and install a package, preserving configuration
+ * files and the like.
+ * This method should also know about replacing in-use file.
+ * ASSUMPTIONS: pkgm is installed.
+ *		pkgm has a desired package.
+ */
+static int
+replace_one (packagemeta & pkg)
+{
+  int errors = 0;
+  Progress.SetText1 ("Replacing...");
+  Progress.SetText2 (pkg.name);
+  log (0, "Replacing %s", pkg.name);
+  pkg.uninstall ();
+
+  errors +=
+    install_one_source (pkg, pkg.desired->bin, "cygfile:///", package_binary);
+  if (!errors)
+    pkg.installed = pkg.desired;
+  num_replacements++;
+  return errors;
+}
 
 
 /* install one source at a given prefix. */
@@ -183,8 +209,87 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 	  log (LOG_BABBLE, "Installing file %s%s", prefix, fn);
 	  if (archive::extract_file (thefile, prefix) != 0)
 	    {
-	      log (0, "Unable to install file %s%s", prefix, fn);
-	      errors++;
+	      //extract to temp location
+	      if (archive::extract_file (thefile, prefix, ".new") != 0)
+		{
+		  log (0, "Unable to install file %s%s", prefix, fn);
+		  errors++;
+		}
+	      else
+		//switch Win32::OS
+		{
+		  switch (Win32::OS ())
+		    {
+		    case Win32::Win9x:{
+		      /* Get the short file names */
+		      char source[MAX_PATH];
+		      unsigned int len =
+			GetShortPathName (cygpath ("/", fn, ".new", 0),
+					  source, MAX_PATH);
+		      if (!len || len > MAX_PATH)
+			{
+			  log (0,
+			       "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
+			       cygpath ("/", fn, 0), cygpath ("/", fn, ".new",
+							      0),
+			       GetLastError ());
+			  ++errors;
+			}
+		      else
+			{
+			  char dest[MAX_PATH];
+			  len =
+			    GetShortPathName (cygpath ("/", fn, 0), dest,
+					      MAX_PATH);
+			  if (!len || len > MAX_PATH)
+			    {
+			      log (0,
+				   "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
+				   cygpath ("/", fn, 0), cygpath ("/", fn,
+								  ".new", 0),
+				   GetLastError ());
+			      ++errors;
+
+			    }
+			  else
+			    /* trigger a replacement on reboot */
+			  if (!WritePrivateProfileString
+				("rename", dest, source, "WININIT.INI"))
+			    {
+			      log (0,
+				   "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
+				   cygpath ("/", fn, 0), cygpath ("/", fn,
+								  ".new", 0),
+				   GetLastError ());
+			      ++errors;
+			    }
+
+			}
+		    }
+		      break;
+		    case Win32::WinNT:
+		      /* XXX FIXME: prefix may not be / for in use files -
+		       * although it most likely is
+		       * - we need a io method to get win32 paths 
+		       * or to wrap this system call
+		       */
+		      if (!MoveFileEx (cygpath ("/", fn, ".new", 0),
+				       cygpath ("/", fn, 0),
+				       MOVEFILE_DELAY_UNTIL_REBOOT |
+				       MOVEFILE_REPLACE_EXISTING))
+			{
+			  log (0,
+			       "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
+			       cygpath ("/", fn, 0), cygpath ("/", fn, ".new",
+							      0),
+			       GetLastError ());
+			  ++errors;
+			}
+		      else
+			rebootneeded = true;
+		      break;
+		    }
+		}
 	    }
 
 	  progress (tmp->tell ());
@@ -213,7 +318,7 @@ install_one (packagemeta & pkg)
 {
   int errors = 0;
 
-  if (pkg.desired->binpicked)
+  if (pkg.installed != pkg.desired && pkg.desired->binpicked)
     {
       errors +=
 	install_one_source (pkg, pkg.desired->bin, "cygfile:///",
@@ -306,7 +411,8 @@ do_install_thread (HINSTANCE h, HWND owner)
   int i;
   int errors = 0;
 
-  num_installs = 0, num_uninstalls = 0;
+  num_installs = 0, num_uninstalls = 0, num_replacements = 0;
+  rebootneeded = false;
 
   next_dialog = IDD_DESKTOP;
 
@@ -356,13 +462,33 @@ do_install_thread (HINSTANCE h, HWND owner)
 	}
     }
 
+  /* start with uninstalls - remove files that new packages may replace */
   for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
       if (pkg.installed && (!pkg.desired || pkg.desired != pkg.installed))
+	uninstall_one (pkg);
+    }
+
+  /* now in-place binary upgrades/reinstalls, as these may remove fils 
+   * that have been moved into new packages
+   */
+
+  for (size_t n = 1; n <= db.packages.number (); n++)
+    {
+      packagemeta & pkg = *db.packages[n];
+      if (pkg.installed && pkg.desired && pkg.desired->binpicked)
 	{
-	  uninstall_one (pkg);
+	  int e = 0;
+	  e += replace_one (pkg);
+	  if (e)
+	    errors++;
 	}
+    }
+
+  for (size_t n = 1; n <= db.packages.number (); n++)
+    {
+      packagemeta & pkg = *db.packages[n];
 
       if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
 	{
@@ -374,6 +500,9 @@ do_install_thread (HINSTANCE h, HWND owner)
 	    }
 	}
     }				// end of big package loop
+
+  if (rebootneeded)
+    note (owner, IDS_REBOOT_REQUIRED);
 
   int temperr;
   if ((temperr = db.flush ()))

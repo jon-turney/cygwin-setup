@@ -78,11 +78,11 @@ archive::extract (io_stream * original)
 }
 
 int
-archive::extract_file (archive * source, const char *prefix)
+archive::extract_file (archive * source, const char *prefix, const char *suffix)
 {
   if (!source)
     return 1;
-  const char *destfilename = concat (prefix, source->next_file_name (), 0);
+  const char *destfilename = concat (prefix, source->next_file_name (), suffix, 0);
   switch (source->next_file_type ())
     {
     case ARCHIVE_FILE_REGULAR:

@@ -103,7 +103,13 @@ static struct _header cat_headers[] = {
   {0, 0, 0, 0}
 };
 
-static void set_view_mode (HWND h, views mode);
+static void set_view_mode (HWND h, view::views mode);
+
+// view:: views
+const view::views view::views::Unknown (0);
+const view::views view::views::PackageFull (1);
+const view::views view::views::Package = view::views (2);
+const view::views view::views::Category (3);
 
 packageversion *
 pkgtrustp (packagemeta const &pkg, trusts const t)
@@ -156,43 +162,13 @@ add_required (packagemeta & pkg, size_t depth = 0)
 }
 
 void
-topbucket::paint (HDC hdc, int x, int y, int row, int show_cat)
-{
-  int accum_row = row;
-  for (size_t n = 1; n <= bucket.number (); n++)
-    {
-      bucket[n]->paint (hdc, x, y, accum_row, show_cat);
-      accum_row += bucket[n]->itemcount ();
-    }
-}
-
-void
-topbucket::empty (void)
+pick_category_line::empty (void)
 {
   while (bucket.number ())
     {
       pick_line *line = bucket.removebyindex (1);
       delete line;
     }
-}
-
-topbucket::~topbucket (void)
-{
-  empty ();
-}
-
-int
-topbucket::click (int const myrow, int const ClickedRow, int const x)
-{
-  int accum_row = myrow;
-  for (size_t n = 1; n <= bucket.number (); n++)
-    {
-      accum_row += bucket[n]->itemcount ();
-      if (accum_row > ClickedRow)
-	return bucket[n]->click (accum_row - bucket[n]->itemcount (),
-				 ClickedRow, x);
-    }
-  return 0;
 }
 
 static void
@@ -218,7 +194,7 @@ paint (HWND hwnd)
 		     cr.bottom);
 
   chooser->contents.paint (hdc, x, y, 0, (chooser->get_view_mode () ==
-					  VIEW_CATEGORY) ? 0 : 1);
+					  view::views::Category) ? 0 : 1);
 
   if (chooser->contents.itemcount () == 0)
     {
@@ -635,12 +611,15 @@ pick_pkg_line::paint (HDC hdc, int x, int y, int row, int show_cat)
   /* shows "first" category - do we want to show any? */
   if (pkg.Categories.number () && show_cat)
     {
+      int index = 1;
+      if (!strcasecmp (pkg.Categories[1]->key.name, "All"))
+	index = 2;
       IntersectClipRect (hdc, x + chooser->headers[chooser->cat_col].x, by,
 			 x + chooser->headers[chooser->cat_col].x +
 			 chooser->headers[chooser->cat_col].x, by + 11);
       TextOut (hdc, x + chooser->headers[chooser->cat_col].x + HMARGIN / 2, r,
-	       pkg.Categories[1]->key.name,
-	       strlen (pkg.Categories[1]->key.name));
+	       pkg.Categories[index]->key.name,
+	       strlen (pkg.Categories[index]->key.name));
       SelectClipRgn (hdc, oldClip2);
     }
 
@@ -664,6 +643,20 @@ pick_pkg_line::paint (HDC hdc, int x, int y, int row, int show_cat)
   RestoreDC (hdc, oldDC);
 }
 
+char const *
+pick_category_line::actiontext ()
+{
+  switch (current_default)
+  {
+    case Default_action: return "Default";
+    case Install_action: return "Install";
+    case Reinstall_action: return "Reinstall";
+    case Uninstall_action: return "Uninstall";
+  }
+  // Pacify GCC: (all case options are checked above)
+  return 0;
+}
+
 void
 pick_category_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 {
@@ -673,14 +666,23 @@ pick_category_line::paint (HDC hdc, int x, int y, int row, int show_cat)
       int by = r + tm.tmHeight - 11;
       TextOut (hdc, x + chooser->headers[chooser->cat_col].x + HMARGIN / 2 + depth * 8, 
 	  r, cat.name, strlen (cat.name));
-      SIZE s;
-      GetTextExtentPoint32 (hdc, cat.name, strlen (cat.name), &s);
+      if (!labellength)
+        { 
+    	  SIZE s;
+	  GetTextExtentPoint32 (hdc, cat.name, strlen (cat.name), &s);
+	  labellength = s.cx;
+	}
       SelectObject (bitmap_dc, bm_spin);
       BitBlt (hdc,
 	          x + chooser->headers[chooser->cat_col].x + 
-		  s.cx + depth * 8 +
+		  labellength + depth * 8 +
 		  ICON_MARGIN +
 		  HMARGIN / 2, by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
+      TextOut (hdc,
+	       x + chooser->headers[chooser->cat_col].x + 
+	       labellength + depth * 8 + 
+	       ICON_MARGIN + SPIN_WIDTH +
+	       HMARGIN, r, actiontext(), strlen (actiontext()));
     }
   if (collapsed)
     return;
@@ -716,11 +718,23 @@ pick_category_line::click (int const myrow, int const ClickedRow, int const x)
 {
   if (myrow == ClickedRow && show_label)
     {
-      collapsed = !collapsed;
-      int accum_row = 0;
-      for (size_t n = 1; n <= bucket.number (); n++)
-	accum_row += bucket[n]->itemcount ();
-      return collapsed ? accum_row : -accum_row;
+      if ((size_t) x >= chooser->headers[chooser->cat_col].x +
+	labellength + depth * 8 +
+	ICON_MARGIN +
+	HMARGIN / 2)
+        {
+	  for (size_t n = 1; n <= bucket.number (); n++)
+	   ; 
+	  return 0;
+        }
+      else
+        {
+          collapsed = !collapsed;
+          int accum_row = 0;
+          for (size_t n = 1; n <= bucket.number (); n++)
+	    accum_row += bucket[n]->itemcount ();
+          return collapsed ? accum_row : -accum_row;
+	}
     }
   else
     {
@@ -798,10 +812,10 @@ contents (cat, 0, false, true), listview (lv)
 
   header_height = wp.cy;
 
-  view_mode = VIEW_PACKAGE;
+  view_mode = view::views::Package;
   set_headers ();
   init_headers (dc);
-  view_mode = VIEW_CATEGORY;
+  view_mode = view::views::Category;
   set_headers ();
   init_headers (dc);
 
@@ -812,27 +826,28 @@ contents (cat, 0, false, true), listview (lv)
 }
 
 void
-view::set_view_mode (views _mode)
+view::set_view_mode (view::views _mode)
 {
-  if (_mode == NVIEW)
-    view_mode = VIEW_PACKAGE_FULL;
-  else
-    view_mode = _mode;
+  view_mode = _mode;
   set_headers ();
 }
 
 const char *
 view::mode_caption ()
 {
-  switch (view_mode)
+  return view_mode.caption ();
+}
+
+const char *
+view::views::caption ()
+{
+  switch (_value)
     {
-    case VIEW_UNKNOWN:
-      return "";
-    case VIEW_PACKAGE_FULL:
+    case 1:
       return "Full";
-    case VIEW_PACKAGE:
+    case 2:
       return "Partial";
-    case VIEW_CATEGORY:
+    case 3:
       return "Category";
     default:
       return "";
@@ -844,12 +859,11 @@ int DoInsertItem (HWND hwndHeader, int iInsertAfter, int nWidth, LPSTR lpsz);
 void
 view::set_headers ()
 {
-  switch (view_mode)
+  if (view_mode == views::Unknown)
+    return;
+  if (view_mode == views::PackageFull ||
+      view_mode == views::Package)
     {
-    case VIEW_UNKNOWN:
-      return;
-    case VIEW_PACKAGE_FULL:
-    case VIEW_PACKAGE:
       headers = pkg_headers;
       current_col = 0;
       new_col = 1;
@@ -857,8 +871,9 @@ view::set_headers ()
       cat_col = 3;
       pkg_col = 4;
       last_col = 4;
-      break;
-    case VIEW_CATEGORY:
+    }
+  else if (view_mode == views::Category)
+    {
       headers = cat_headers;
       current_col = 1;
       new_col = 2;
@@ -866,10 +881,9 @@ view::set_headers ()
       cat_col = 0;
       pkg_col = 4;
       last_col = 4;
-      break;
-    default:
-      return;
     }
+  else
+    return;
   while (int n = SendMessage (listheader, HDM_GETITEMCOUNT, 0, 0))
     {
       SendMessage (listheader, HDM_DELETEITEM, n - 1, 0);
@@ -931,7 +945,7 @@ view::init_headers (HDC dc)
 void
 view::insert_pkg (packagemeta & pkg)
 {
-  if (view_mode != VIEW_CATEGORY)
+  if (view_mode != views::Category)
     {
       pick_pkg_line & line = *new pick_pkg_line (pkg);
       contents.insert (line);
@@ -972,38 +986,22 @@ void
 view::clear_view (void)
 {
   contents.empty ();
-  switch (view_mode)
-  {
-  case VIEW_UNKNOWN:
-    break;
-  case VIEW_PACKAGE_FULL:
-  case VIEW_PACKAGE:
-    contents.ShowLabel (false);
-    break;
-  case VIEW_CATEGORY:
-    contents.ShowLabel ();
-    break;
-  default:
+  if (view_mode == views::Unknown)
     return;
-  }
+  if (view_mode == views::PackageFull ||
+      view_mode == views::Package)
+    contents.ShowLabel (false);
+  else if (view_mode == views::Category)
+    contents.ShowLabel ();
 }
 
-static views
-viewsplusplus (views theview)
+view::views& 
+view::views::operator++ ()
 {
-  switch (theview)
-    {
-    case VIEW_UNKNOWN:
-      return VIEW_PACKAGE_FULL;
-    case VIEW_PACKAGE_FULL:
-      return VIEW_PACKAGE;
-    case VIEW_PACKAGE:
-      return VIEW_CATEGORY;
-    case VIEW_CATEGORY:
-      return NVIEW;
-    default:
-      return VIEW_UNKNOWN;
-    }
+  ++_value;
+  if (_value > Category._value)
+    _value = 1;
+  return *this;
 }
 
 int
@@ -1013,15 +1011,14 @@ view::click (int row, int x)
 }
 
 static void
-set_view_mode (HWND h, views mode)
+set_view_mode (HWND h, view::views mode)
 {
   chooser->set_view_mode (mode);
 
   chooser->clear_view ();
   packagedb db;
-  switch (chooser->get_view_mode ())
+  if (chooser->get_view_mode () == view::views::Package)
     {
-    case VIEW_PACKAGE:
       for (size_t n = 1; n <= db.packages.number (); n++)
 	{
 	  packagemeta & pkg = *db.packages[n];
@@ -1030,21 +1027,20 @@ set_view_mode (HWND h, views mode)
 		  && (pkg.desired->srcpicked || pkg.desired->binpicked)))
 	    chooser->insert_pkg (pkg);
 	}
-      break;
-    case VIEW_PACKAGE_FULL:
+    }
+  else if (chooser->get_view_mode () == view::views::PackageFull)
+    {
       for (size_t n = 1; n <= db.packages.number (); n++)
 	{
 	  packagemeta & pkg = *db.packages[n];
 	  chooser->insert_pkg (pkg);
 	}
-      break;
-    case VIEW_CATEGORY:
+    }
+  else if (chooser->get_view_mode () == view::views::Category)
+    {
       /* start collapsed. TODO: make this a chooser flag */
       for (size_t n = 1; n <= db.categories.number (); n++)
 	chooser->insert_category (db.categories[n], CATEGORY_COLLAPSED);
-      break;
-    default:
-      break;
     }
 
   RECT r;
@@ -1110,10 +1106,10 @@ create_listview (HWND dlg, RECT * r)
 		       hinstance, 0);
   ShowWindow (lv, SW_SHOW);
   packagedb db;
-  chooser = new view (VIEW_CATEGORY, lv, db.categories.registerbykey("All"));
+  chooser = new view (view::views::Category, lv, db.categories.registerbykey("All"));
 
   default_trust (lv, TRUST_CURR);
-  set_view_mode (lv, VIEW_CATEGORY);
+  set_view_mode (lv, view::views::Category);
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE, "Failed to set View button caption %ld",
 	 GetLastError ());
@@ -1162,7 +1158,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_VIEW:
-      set_view_mode (lv, viewsplusplus (chooser->get_view_mode ()));
+      set_view_mode (lv, ++chooser->get_view_mode ());
       if (!SetDlgItemText
 	  (h, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
 	log (LOG_BABBLE, "Failed to set View button caption %ld",

@@ -50,10 +50,11 @@ public:
    * The stream is not taken over - it will not be automatically deleted
    */
   virtual io_stream *extract_file () = NULL;
-  /* extract the next file to the given prefix in one step
+  /* extract the next file to the given prefix in one step, and name it with the
+   * given suffix.
    * returns 1 on failure.
    */
-  static int extract_file (archive *, const char *);
+  static int extract_file (archive *, const char *, const char * = NULL);
 
   /* 
    * To create a stream that will be compressed, you should open the url, and then get a new stream

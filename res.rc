@@ -462,6 +462,7 @@ BEGIN
     IDS_ERR_RENAME          "Can't rename %s to %s: %s"
     IDS_NOTHING_INSTALLED   "Nothing needed to be installed"
     IDS_INSTALL_COMPLETE    "Installation Complete"
+    IDS_REBOOT_REQUIRED     "In-use files have been replaced. You need to reboot as soon as possible to activate the new versions. Cygwin may operate incorrectly until you reboot."
 END
 
 STRINGTABLE DISCARDABLE 

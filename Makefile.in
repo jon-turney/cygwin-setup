@@ -143,6 +143,7 @@ OBJS = \
 	state.o \
 	threebar.o \
 	version.o \
+	win32.o \
 	window.o \
 	$E
 
