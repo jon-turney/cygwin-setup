@@ -1047,20 +1047,33 @@ mkmount (const char *mountexedir, const char *root, const char *dospath,
   return xsystem (buffer) == 0;
 }
 
+static char rev[] = " $Revision$";
 int
 main ()
 {
   int retval = 1;		/* Default to error code */
   clock_t start;
   char *logpath = NULL;
+  char *revn, *p;
 
-  puts ( "\n\n\n\n"
-"This is the Cygwin setup utility ($Revision$), built on " __DATE__ " " __TIME__ ".\n\n"
+  revn = strchr (rev, ':');
+  if (!revn || (p = strchr (revn, ' ')) == NULL)
+    revn = "";
+  else
+    {
+      revn = rev;
+      revn[1] = '(';
+      *p = ')';
+      p[1] = '\0';
+    }
+
+  printf ( "\n\n\n\n"
+"This is the Cygwin setup utility%s, built on " __DATE__ " " __TIME__ ".\n\n"
 "Use this program to install the latest version of the Cygwin Utilities\n"
 "from the Internet.\n\n"
 "Alternatively, if you already have already downloaded the appropriate files\n"
 "to the current directory, this program can use those as the basis for your\n"
-"installation.\n");
+"installation.\n", revn);
 
   start = clock ();
   if (!EnumResourceNames (NULL, "FILE", output_file, 0))
