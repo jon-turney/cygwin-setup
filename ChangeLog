@@ -1,3 +1,24 @@
+2004-11-18  Max Bowsher  <maxb@ukf.net>
+
+	* archive.h (archive::~archive): Define a pure virtual destructor to
+	enforce the abstract nature of this class.
+	* archive.cc (archive::~archive): Pure virtual destructors require an
+	implementation! Add one.
+	* io_stream.h (io_stream::destroyed): Remove this severely
+	brain-damaged implementation of a weakly-enforced abstract class.
+	The pure virtual destructor was strongly enforcing the abstract nature
+	anyway.
+	* io_stream.cc (io_stream::~io_stream): Empty out horribly pointless
+	code from the pure virtual destructor.
+	* archive_tar.cc (archive_tar::~archive_tar): Remove all
+	reference to the removed "destroyed" member.
+	* archive_tar_file.cc (archive_tar_file::~archive_tar_file): Ditto.
+	* compress_bz.cc (compress_bz::~compress_bz): Ditto.
+	* compress_gz.cc (compress_gz::~compress_gz): Ditto.
+	* io_stream_cygfile.cc (io_stream_cygfile::~io_stream_cygfile): Ditto.
+	* io_stream_file.cc (io_stream_file::~io_stream_file): Ditto.
+	* io_stream_memory.cc (io_stream_memory::~io_stream_memory): Ditto.
+
 2004-11-17  Max Bowsher  <maxb@ukf.net>
 
 	* mount.cc (create_mount): Fix operator precedence error introduced in

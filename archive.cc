@@ -173,6 +173,8 @@ archive::extract_file (archive * source, String const &prefixURL, String const &
   return 0;
 }
 
+archive::~archive () {};
+
 #if 0
 ssize_t archive::read (void *buffer, size_t len)
 {
@@ -213,9 +215,4 @@ archive::next_file_name ()
   return NULL;
 }
 
-archive::~archive ()
-{
-  log (LOG_TIMESTAMP, "archive::~archive called");
-  return;
-}
 #endif

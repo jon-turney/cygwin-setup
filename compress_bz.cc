@@ -219,6 +219,4 @@ compress_bz::~compress_bz ()
 {
   if (initialisedOk)
     BZ2_bzDecompressEnd (&strm);
-  destroyed = 1;
-  return;
 }

@@ -164,11 +164,8 @@ public:
   
 protected:
   void operator= (const io_stream &);
-    io_stream () : destroyed (0)
-  {
-  };
+  io_stream() {};
   io_stream (const io_stream &);
-  unsigned int destroyed;
 private:
   static int move_copy (String const &, String const &);
 };

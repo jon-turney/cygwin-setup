@@ -245,7 +245,6 @@ archive_tar::~archive_tar ()
 {
   if (state.parent)
     delete state.parent;
-  destroyed = 1;
 }
 
 # if 0

@@ -241,10 +241,4 @@ io_stream::exists (String const &name)
 
 /* virtual members */
 
-io_stream::~io_stream ()
-{
-  if (!destroyed)
-    log (LOG_TIMESTAMP) << "io_stream::~io_stream: It looks like a class "
-      << "hasn't overriden the destructor!" << endLog;
-  return;
-}
+io_stream::~io_stream () {}

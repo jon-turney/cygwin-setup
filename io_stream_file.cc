@@ -91,7 +91,6 @@ io_stream_file::~io_stream_file ()
 {
   if (fp)
     fclose (fp);
-  destroyed = 1;
 }
 
 int

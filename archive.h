@@ -51,7 +51,7 @@ public:
    * returns NULL on failure.
    * The stream is not taken over - it will not be automatically deleted
    */
-  virtual io_stream *extract_file () = NULL;
+  virtual io_stream *extract_file () = 0;
   /* extract the next file to the given prefixURL+Path in one step, and name it with the
    * given suffix.
    * returns 1 on failure.
@@ -85,7 +85,7 @@ public:
   virtual String const linktarget () = 0;
   virtual int skip_file () = 0;
   /* if you are still needing these hints... give up now! */
-//  virtual ~compress ();
+  virtual ~archive() = 0;
 protected:
   void operator= (const archive &);
   archive () {};
