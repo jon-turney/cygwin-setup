@@ -1,3 +1,30 @@
+Sat Jun 30 23:08:01 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (scan2): Restore source scanning eliminated by previous
+	checkin.
+
+Sat Jun 30 23:02:57 2001  Robert Collins  <rbtcollins@hotmail.com>
+
+	Merge some category changes from main branch to allow consistent
+	parsing of categories prior to release of new setup.exe
+	* choose.cc (getcategorybyname): New function.
+	* ini.h (_CategoryPackage): New struct.
+	(_Category): New struct.
+	(_Package): Change category to Category * from char *.
+	(extern Category category): New global variable.
+	(extern in ncategories): Ditto.
+	(getcategorybyname): New prototype.
+	(catpackagecategorybyname): New prototype.
+	(register_category): New prototype.
+	(add_category): New prototype.
+	* iniparse.y: Parse multiple categories per package.
+	(category): New global variable.
+	(ncategories): New global variable.
+	(new_package): Compare package against NULL, not 0.
+	(new_requirement): Source formatting fix.
+	(register_category): New function.
+	(add_category): New function.
+
 Sat Jun 30 15:18:33 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* ini.h (struct _Info): Add "derived" element.
@@ -29,7 +56,7 @@ Sun Jun 17 12:06:14 2001  Christopher Faylor <cgf@cygnus.com>
 	(do_install): Call check_for_old_cygwin if there were no errors during
 	the install.
 
-at Jun 16 11:33:51  2001  Michael A Chase <mchase@ix.netcom.com>
+Sat Jun 16 11:33:51  2001  Michael A Chase <mchase@ix.netcom.com>
 
 	* choose.cc (_Info::_Info): Test _source paramenter for non-NULL rather
 	than zeroed "source" element.
@@ -61,7 +88,7 @@ Fri Jun 15 00:01:51 2001  Christopher Faylor <cgf@cygnus.com>
 	* iniparse.y (new_package): Malloc space for package name or suffer
 	memory corruption.
 
-Thu Jun 14 22:43:59 2001   Robert Collins <rbtcollins@hotmail.com>
+Thu Jun 14 22:43:59 2001  Robert Collins  <rbtcollins@hotmail.com>
 
 	* ini.h (Dependency): New structure.  Declare new function.
 	* inilex.l (yylex): Detect new setup.ini options - category and requires.

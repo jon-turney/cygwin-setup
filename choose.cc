@@ -804,6 +804,17 @@ getpkgbyname (const char *pkgname)
   return NULL;
 }
 
+/* Return a pointer to a category given the name. */
+Category *
+getcategorybyname (const char *categoryname)
+{
+  for (Category *cat = category; cat; cat=cat->next)
+    if (strcasecmp (cat->name, categoryname) == 0)
+      return cat;
+
+  return NULL;
+}
+
 /* Find out where to put existing tar file in local directory in
    known package array. */
 static void
@@ -815,7 +826,7 @@ scan2 (char *path, unsigned int size)
   if (!parse_filename (path, f))
     return;
 
-  if (f.what[0] != '\0')
+  if (f.what[0] != '\0' && f.what[0] != 's')
     return;
 
   pkg = getpkgbyname (f.pkg);

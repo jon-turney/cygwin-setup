@@ -103,6 +103,19 @@ typedef struct _Info
 #endif
 } Info;			/* +1 for TRUST_UNKNOWN */
 
+typedef struct _CategoryPackage
+{
+  struct _CategoryPackage *next;  /* The next package pointer in the list */
+  char *pkg;			  /* This should be Package *, but the packages can move*/
+} CategoryPackage;
+
+typedef struct _Category
+{
+  struct _Category *next; /* the next category in the list */
+  char *name;		  /* the category */
+  CategoryPackage *packages; /* the packages in this category */
+} Category;
+
 typedef struct _Dependency
 {
   struct _Dependency *next; /* the next package in this dependency list */
@@ -114,8 +127,8 @@ typedef struct
   char *name;		/* package name, like "cygwin" */
   char *sdesc;		/* short description (replaces "name" if provided) */
   char *ldesc;		/* long description (multi-line) */
-  char *category; /* the category the package belongs to, like "required" or "XFree86" */
   Dependency *required; /* the packages required for this package to work */
+  Category *category;   /* the categories the package belongs to */ 
   actions action;	/* A range of states applicable to this package */
   trusts trust;		/* Selects among info[] below, a subset of action */
   int srcpicked;	/* True if source is required */
@@ -135,6 +148,8 @@ typedef struct
 
 extern Package *package;
 extern int npackages;
+extern Category *category;
+extern int ncategories;
 
 #ifdef __cplusplus
 extern "C" {
@@ -144,6 +159,10 @@ Package *new_package (char *name);
 void	ini_init (char *string);
 Package *getpkgbyname (const char *pkgname);
 void    new_requirement (Package *package, char *dependson);
+Category *getcategorybyname (const char *categoryname);
+Category *getpackagecategorybyname (Package *pkg, const char *categoryname); 
+Category *register_category (char *name);
+void    add_category (Package *package, Category *cat);
 
 #ifdef __cplusplus
 }
