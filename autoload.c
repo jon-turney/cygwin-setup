@@ -45,6 +45,15 @@ Auto (wininet, InternetQueryOptionA, 16);
 Auto (wininet, HttpQueryInfoA, 20);
 Auto (wininet, HttpSendRequestA, 20);
 
+DLL (advapi32);
+
+Auto (advapi32, AddAccessAllowedAce, 16);
+Auto (advapi32, AllocateAndInitializeSid, 44);
+Auto (advapi32, FreeSid, 4);
+Auto (advapi32, InitializeAcl, 12);
+Auto (advapi32, OpenProcessToken, 12);
+Auto (advapi32, SetTokenInformation, 16);
+
 typedef struct {
   DllInfo *dll;
   char name[100];
