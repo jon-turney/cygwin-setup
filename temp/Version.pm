@@ -17,7 +17,7 @@ sub Normalize {
     defined($transform) and &{$transform}($_);
     s!^(.*/)([^/]*)$!$2!o;
     $pre .= length($1) ? $1 : '';
-    s/^((?:[a-z]\d|\D)*)//io;
+    s/^((?:(?:[a-z][a-z]*\d)*[^a-z\d])+)//oi;
     $pre .= $1;
     $post .= $1 while s/([-\._](bz2|gz)|[-\._]bin|[-\._]tar|[-\._]tgz|[-\._]Z|[-\._]?elf|[-\._]lnx|[-\._][a-z]*doc[a-z]*|[-\._]linux|[-\._]hacker|[-\._]tool|[-\._]src)//;
     $_ = '0' unless length($_);
