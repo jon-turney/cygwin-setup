@@ -31,7 +31,7 @@ load_dialog (HWND h)
 {
   char buffer[100];
   HANDLE v = GetDlgItem (h, IDC_VERSION);
-  sprintf (buffer, "Version %s", version);
+  sprintf (buffer, "Version %s", version[0] ? version : "[unknown]");
   SetWindowText (v, buffer);
 }
 

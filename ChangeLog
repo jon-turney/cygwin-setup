@@ -1,3 +1,8 @@
+2000-08-08  DJ Delorie  <dj@redhat.com>
+
+	* Makefile.in (version.c): make version checking more robust
+	* splash.cc (load_dialog): handle case where there's no version
+
 2000-08-07  DJ Delorie  <dj@redhat.com>
 
 	* (all): add cvsid tags

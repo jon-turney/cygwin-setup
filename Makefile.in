@@ -142,10 +142,10 @@ $(ZLIB): zlib/Makefile
 	$(MAKE) -C $(@D) $(@F) CC="$(CC)" CFLAGS='$(MINGW_CFLAGS)'
 
 version.c : $(srcdir)/ChangeLog Makefile
-	grep '^\$$Revision.*' $(srcdir)/ChangeLog \
-	| sed -e 's/\$$Revision: /char *version = \"/' \
-	  -e 's/ *$$.*/\";/' \
-	> version.tmp
+	V=`grep '^\$$Revision.*' $(srcdir)/ChangeLog \
+	| sed -e 's/\$$Revision:* *//' \
+	  -e 's/ *$$.*//'` ;\
+	echo "char *version = \"$$V\";" > version.tmp
 	mv version.tmp version.c
 
 %.o: %.rc
