@@ -76,7 +76,7 @@ PropertyPage::FirstDialogProcReflector (HWND hwnd, UINT message,
   if (message != WM_INITDIALOG)
     {
       // Don't handle anything until we get a WM_INITDIALOG message, which
-      // will have our this pointer with it.
+      // will have our 'this' pointer with it.
       return FALSE;
     }
 

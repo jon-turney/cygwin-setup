@@ -1,5 +1,9 @@
 2003-08-01  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
+	* proppage.cc (PropertyPage::FirstDialogProcReflector): Modify comment.
+
+2003-08-01  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
 	* proppage.h (Copyright): Update copyright dates.
 	(PropertyPage): Document OnNext and OnBack.
 
