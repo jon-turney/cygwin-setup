@@ -69,8 +69,6 @@ static const char *cvsid =
 
 using namespace std;
 
-int next_dialog;
-
 HINSTANCE hinstance;
 
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");

@@ -221,7 +221,7 @@ download_one (packagesource & pkgsource, HWND owner)
   return 1;
 }
 
-static void
+static int
 do_download_thread (HINSTANCE h, HWND owner)
 {
   int errors = 0;
@@ -306,8 +306,7 @@ do_download_thread (HINSTANCE h, HWND owner)
     {
       if (yesno (owner, IDS_DOWNLOAD_INCOMPLETE) == IDYES)
 	{
-	  next_dialog = IDD_SITE;
-	  return;
+	  return IDD_SITE;
 	}
     }
 
@@ -317,10 +316,10 @@ do_download_thread (HINSTANCE h, HWND owner)
 	exit_msg = IDS_DOWNLOAD_INCOMPLETE;
       else if (!unattended_mode)
 	exit_msg = IDS_DOWNLOAD_COMPLETE;
-      next_dialog = 0;
+      return 0;
     }
   else
-    next_dialog = IDD_S_INSTALL;
+    return IDD_S_INSTALL;
 }
 
 static DWORD WINAPI
@@ -331,7 +330,8 @@ do_download_reflector (void *p)
 
   try
   {
-    do_download_thread ((HINSTANCE) context[0], (HWND) context[1]);
+    int next_dialog =
+      do_download_thread ((HINSTANCE) context[0], (HWND) context[1]);
 
     // Tell the progress page that we're done downloading
     Progress.PostMessage (WM_APP_DOWNLOAD_THREAD_COMPLETE, 0, next_dialog);

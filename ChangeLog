@@ -1,5 +1,13 @@
 2004-10-25  Max Bowsher  <maxb@ukf.net>
 
+	* main.cc (next_dialog): Remove this legacy global variable.
+	* download.cc (do_download_thread): Return a value instead of setting
+	a global variable, then returning void.
+	(do_download_reflector): Look for the next dialog code as a return
+	value instead of a global variable.
+
+2004-10-25  Max Bowsher  <maxb@ukf.net>
+
 	* port.h: Remove this redundant file - all contained definitions are
 	duplicated in "win32.h".
 	* Makefile.am, UserSetting.cc, UserSettings.cc, archive.cc,
