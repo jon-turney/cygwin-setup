@@ -36,7 +36,6 @@ public:
 
   bool Create ();
 
-  virtual void OnInit ();
   virtual void OnActivate ();
   virtual long OnNext ();
   virtual long OnBack ();
@@ -86,6 +85,9 @@ class SiteSetting : public UserSetting
   public:
     virtual void load();
     virtual void save();
+  private:
+    void getSavedSites();
+    void registerSavedSite(char const *);
 };
 
 #endif /* SETUP_SITE_H */

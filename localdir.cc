@@ -47,7 +47,24 @@ extern LogFile * theLog;
 static LocalDirSetting localDir;
 
 void 
-LocalDirSetting::load(){}
+LocalDirSetting::load(){
+  static int inited = 0;
+  if (inited)
+    return;
+  io_stream *f =
+    io_stream::open ("cygfile:///etc/setup/last-cache", "rt");
+  if (!f)
+    f = io_stream::open ("file://last-cache", "rt");
+  if (f)
+    {
+      char localdir[1000];
+      char *fg_ret = f->gets (localdir, 1000);
+      delete f;
+      if (fg_ret)
+        local_dir = String (localdir);
+    }
+  inited = 1;
+}
 
 void 
 LocalDirSetting::save()
@@ -156,28 +173,6 @@ bool
 LocalDirPage::Create ()
 {
   return PropertyPage::Create (NULL, dialog_cmd, IDD_LOCAL_DIR);
-}
-
-void
-LocalDirPage::OnInit ()
-{
-  static int inited = 0;
-  if (!inited)
-    {
-      io_stream *f =
-	io_stream::open ("cygfile:///etc/setup/last-cache", "rt");
-      if (!f)
-	f = io_stream::open ("file://last-cache", "rt");
-      if (f)
-	{
-	  char localdir[1000];
-	  char *fg_ret = f->gets (localdir, 1000);
-	  delete f;
-	  if (fg_ret)
-	    local_dir = String (localdir);
-	}
-      inited = 1;
-    }
 }
 
 void

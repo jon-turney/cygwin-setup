@@ -1,5 +1,22 @@
 2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* localdir.h (LocalDirPage::OnInit): Remove.
+	* localdir.cc (LocalDirPage::OnInit): Move to LocalDirSetting
+	::load().
+	(LocalDirSetting::load): Copied from LocalDirPage::OnInit.
+	* site.h (SitePage::OnInit): Remove.
+	(SitePage::getSavedSites): New member, replaces get_saved_sites.
+	(SitePage::registerSavedSite): New member, replaces 
+	register_saved_site.
+	* site.cc (SitePage::OnInit): Move to SiteSetting::load().
+	(SiteSetting::load): Copied from SitePage::OnInit.
+	(SitePage::getSavedSites): Renamed from get_saved_sites.
+	(SitePage::registerSavedSite): Renamed from register_saved_site.
+	(do_download_site_info_thread): Don't look at the list size for
+	determining if the download was successful.
+	
+2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.h (ChooserPage::setViewMode): Remove HWND from 
 	signature.
 	(ChooserPage::defaultTrust): Ditto.

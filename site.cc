@@ -58,7 +58,14 @@ StringOption SiteOption("", 's', "site", "Download site", false);
 static SiteSetting ChosenSites;
 
 void 
-SiteSetting::load(){}
+SiteSetting::load()
+{
+  string SiteOptionString = SiteOption;
+  if (SiteOptionString.size()) 
+    registerSavedSite (SiteOptionString.c_str());
+  else
+    getSavedSites ();
+}
 
 void 
 SiteSetting::save()
@@ -232,8 +239,8 @@ get_site_list (HINSTANCE h, HWND owner)
 #define NOSAVE3 "ftp://gcc.gnu.org/"
 #define NOSAVE3_LEN (sizeof ("ftp://gcc.gnu.org/") - 1)
 
-static void
-register_saved_site (const char * site)
+void
+SiteSetting::registerSavedSite (const char * site)
 {
   site_list_type tempSite(site);
   SiteList::iterator i = find (all_site_list.begin(),
@@ -257,8 +264,8 @@ register_saved_site (const char * site)
     site_list.push_back (tempSite);
 }
 
-static void
-get_saved_sites ()
+void
+SiteSetting::getSavedSites ()
 {
   io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "rt");
   if (!f)
@@ -276,7 +283,7 @@ get_saved_sites ()
       if (eos < site)
 	continue;
 
-      register_saved_site (site);
+      registerSavedSite (site);
 
     }
   delete f;
@@ -293,9 +300,8 @@ do_download_site_info_thread (void *p)
 
   hinst = (HINSTANCE) (context[0]);
   h = (HWND) (context[1]);
-
-  if (all_site_list.size() == 0
-      && get_site_list (hinst, h))
+  static bool downloaded = false;
+  if (!downloaded && get_site_list (hinst, h))
 	{
 	  // Error: Couldn't download the site info.  Go back to the Net setup page.
 	  MessageBox (h, TEXT ("Can't get list of download sites.\n\
@@ -306,10 +312,13 @@ Make sure your network settings are correct and try again."), NULL, MB_OK);
 				IDD_NET);
 
 	}
-  else
-  // Everything worked, go to the site select page
-  // Tell the progress page that we're done downloading
-  Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_SITE);
+  else 
+    {
+      downloaded = true;
+      // Everything worked, go to the site select page
+      // Tell the progress page that we're done downloading
+      Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_SITE);
+    }
 
   ExitThread(0);
 }
@@ -330,16 +339,6 @@ do_download_site_info (HINSTANCE hinst, HWND owner)
 bool SitePage::Create ()
 {
   return PropertyPage::Create (IDD_SITE);
-}
-
-void
-SitePage::OnInit ()
-{
-  string SiteOptionString = SiteOption;
-  if (SiteOptionString.size()) 
-    register_saved_site (SiteOptionString.c_str());
-  else
-    get_saved_sites ();
 }
 
 long
