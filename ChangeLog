@@ -1,3 +1,9 @@
+2003-03-09  Robert Collins  <rbtcollins@hotmail.com>
+
+	* package_version.cc (_defaultversion::pick(bool)): Override this and do nothing.
+	(packageversion::pick(bool): Use a mutator function rather than direct member access.
+	* package_version.h (_packageversion::pick(bool)): Move method from _packageversion.
+
 2003-02-16  Pavel Tsekov  <ptsekov@gmx.net>
 
 	* install.cc (install_one_source): Remove the MD5 verification 

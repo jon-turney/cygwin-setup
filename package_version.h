@@ -183,6 +183,7 @@ public:
   std::vector <std::vector <PackageSpecification *> *> depends, predepends, recommends,
   suggests, replaces, conflicts, provides, binaries;
   
+  virtual void pick(bool const &newValue) { picked = newValue;}
   bool picked;	/* non zero if this version is to be installed */
 		/* This will also trigger reinstalled if it is set */
   /* a change - install/uninstall/reinstall/source install

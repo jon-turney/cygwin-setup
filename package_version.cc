@@ -56,6 +56,7 @@ public:
   String const LDesc () {return String();}
   void set_ldesc (String const &) {}
   void uninstall (){}
+  void pick(bool const &newValue){/* Ignore attempts to pick this!. Throw an exception here if you want to detect such attemtps instead */}
 };
 static _defaultversion defaultversion;
 
@@ -265,7 +266,7 @@ packageversion::picked () const
 void 
 packageversion::pick (bool aBool)
 {
-  data->picked = aBool;
+  data->pick(aBool);
 }
 
 bool
