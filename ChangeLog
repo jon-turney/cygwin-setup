@@ -1,3 +1,7 @@
+2000-09-28  DJ Delorie  <dj@redhat.com>
+
+	* nio-ftp.cc (ftp_line): handle continuations more robustly
+
 2000-09-14  Brian Keener  <bkeener@thesoftwaresource.com>
 
 	* res.rc: increased the size of the site dialog (IDD_SITE) & the

@@ -22,11 +22,12 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "winsock.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "resource.h"
 #include "state.h"
 #include "simpsock.h"
-#include "msg.h"
+#include "log.h"
 
 #include "netio.h"
 #include "nio-ftp.h"
@@ -42,7 +43,8 @@ ftp_line (SimpleSocket *s)
 {
   do {
     last_line = s->gets ();
-  } while (last_line && last_line[3] != ' ');
+    log (LOG_BABBLE, "ftp > %s", last_line);
+  } while (last_line && (!isdigit (last_line[0]) || last_line[3] != ' '));
   return atoi (last_line ?: "0");
 }
 
