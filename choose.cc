@@ -587,7 +587,7 @@ default_trust (HWND h, trusts trust)
       {
 	pkg->action = (actions) trust;
 	if (!pkg->installed && pkg->category
-	    && !(getpackagecategorybyname (pkg, "Required")
+	    && !(getpackagecategorybyname (pkg, "Base")
 		 || getpackagecategorybyname (pkg, "Misc")))
 	  pkg->action = keep_or_skip (pkg);
 	set_action (pkg, 0);

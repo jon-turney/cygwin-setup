@@ -1,5 +1,9 @@
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.cc (default_trust): Change the "Required" forced install category to "Base".
+
+2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc: Ran indent.
 	(set_action): When the requested trust level is missing and the level was not
 	user requested, set the action to ACTION_SAME_CURR.
