@@ -20,6 +20,15 @@ TODO:
  * Remove *empty* directories on uninstalls
  * Correctly overwrite -r--r--r-- files.
  * Make setup.exe available through Add/Remove
+ * Going back, changing the local cache dir, and going forward again does not correctly reparse inis in the new dir.
+	Reproduction: Choose an incorrect cache dir, go back, correct it.  Chooser shows all packages in Misc.
+ * BSOD switching to install mode after downloading lots of software. Was anyone ever able to come up with a reproduction method for this? 
+ * Sometimes packages set to 'Keep' appear in the 'Partial' view. I(Max) have seen this myself from time to time, but can't duplicate it on demand. Can anyone?
+ * Chooser scrollbar sometimes lost with odd font sizes. Seperate message sent asking for reproduction method. 
+ * Setup not properly realizing that versions are unavailable, leading to "Cannot open (null) for reading".
+ * "compress_bz::error called" appears in the log every time a package is installed, even if everything works. Reproducability: 100%.
+ * Cancelling during MD5 check just stops the GUI updating until the check completes, and then continues with setup as if Cancel had not been clicked. 
+ * Toggling from All Default to All Install takes *way* too long.
  	   
 WISHLIST:
  * rsync:// support
@@ -48,8 +57,8 @@ WISHLIST:
  * save all options
  * run a different script after finishing setup.
  * Show bin and src download size
- * Set ntsec permissions correctly, and for new installs enable ntsec.
  * Log postinstall scripts to a file.
+ * Confirm cancellation of setup if in the middle of doing something.
    
 recently completed
 
@@ -73,3 +82,4 @@ recently completed
  * Handle UNC paths for the localdir correctly.
  * Chooser dialog needs work.
  * A command line option to prevent overwrite-on-reboot functionality.
+ * Set ntsec permissions correctly, and for new installs enable ntsec.

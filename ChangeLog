@@ -1,3 +1,7 @@
+2003-03-09  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Update readme of bugs and wishes.
+
 2003-03-05  Max Bowsher  <maxb@ukf.net>
 
 	* netio.cc (save_dialog): Allocate an empty string if the password is
