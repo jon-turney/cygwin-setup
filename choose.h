@@ -23,8 +23,6 @@
 #define CATEGORY_EXPANDED  0
 #define CATEGORY_COLLAPSED 1
 
-#ifdef __cplusplus
-
 class ChooserPage:public PropertyPage
 {
 public:
@@ -62,5 +60,5 @@ public:
   }
   template <trusts aTrust> void changeTrust();
 };
-#endif /* __cplusplus */
+
 #endif /* SETUP_CHOOSE_H */

@@ -250,20 +250,44 @@ packagemeta::add_category (String const &cat)
   categories.insert (cat);
 }
 
+struct StringConcatenator {
+    StringConcatenator(String aString) : gap(aString){}
+    void operator()(String const &aString) 
+    {
+      if (result.size() != 0)
+        result += gap;
+      result += aString;
+    }
+    String result;
+    String gap;
+};
+
+/* Todo fully paramterise */
+template <class _Visitor, class _Predicate>
+struct _visit_if {
+  _visit_if(_Visitor v, _Predicate p) : visitor(v), predicate (p) {}
+  void operator() (String const &aString) {
+    if (predicate(aString))
+      visitor(aString);
+  }
+  _Visitor visitor;
+  _Predicate predicate;
+};
+
+template <class _Visitor, class _Predicate>
+_visit_if<_Visitor, _Predicate>
+visit_if(_Visitor visitor, _Predicate predicate)
+{
+  return _visit_if<_Visitor, _Predicate>(visitor, predicate);
+}
+
 String const
 packagemeta::getReadableCategoryList () const
 {
-  String result;
-  for(set<String, String::caseless>::const_iterator it = categories.begin();
-      it != categories.end(); it++)
-  {
-    if (*it == "All")
-      continue;
-    if (result.size() > 0)
-      result += ", ";
-    result += *it;
-  }
-  return result;
+  return for_each(categories.begin(), categories.end(), 
+    visit_if (
+      StringConcatenator(", "), bind1st(not_equal_to<String>(), "All"))
+              ).visitor.result;
 }
 
 static bool
@@ -593,18 +617,6 @@ packagemeta::visited() const
 {
   return visited_;
 }
-
-struct StringConcatenator {
-    StringConcatenator(String aString) : gap(aString){}
-    void operator()(String const &aString) 
-    {
-      if (result.size() != 0)
-        result += gap;
-      result += aString;
-    }
-    String result;
-    String gap;
-};
 
 void
 packagemeta::logSelectionStatus() const

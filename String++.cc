@@ -237,6 +237,18 @@ String::operator == (char const *rhs) const
     return compare (rhs) ? false : true;
 }
 
+bool
+String::operator != (String const &rhs) const
+{
+  return !(*this == rhs);
+}
+
+bool
+String::operator != (char const *rhs) const
+{
+  return !(*this == rhs);
+}
+
 String
 String::absorb (unsigned char *aString, size_t aLength)
 {

@@ -1,5 +1,15 @@
 2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	* String++.h (String::operator !=): Declare for char * and String.
+	* String++.cc (String::operator !=): Implement.
+	* package_meta.cc(StringConcatenator): Move above all users.
+	(_visit_if): Predicate support for visitors.
+	(packagemeta::getReadableCategoryList): Refactor to use 
+	StringConcatenator with a predicate.
+	* choose.h: Remove unneeded c++ guards.
+
+2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc (scan_downloaded_files): Rename to packagemeta::ScanDownloadedFiles.
 	(scanAVersion): Rename to packageversion::scan.
 	(GetParentRect): Rename to ChooserPage::getParentRect.
