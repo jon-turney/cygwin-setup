@@ -280,7 +280,9 @@ packageversion::uninstall ()
 packagesource *
 packageversion::source ()
 {
-  return &data->source;
+  if (!data->sources.size())
+    data->sources.push_back (packagesource());
+  return &data->sources[0];
 }
 
 bool
@@ -461,8 +463,21 @@ _packageversion::sourcePackage ()
 bool
 _packageversion::accessible() const
 {
-  return ((::source != IDC_SOURCE_CWD) && source.sites.size()) ||
-    source.Cached ();
+  bool cached = true;
+  for (vector<packagesource>::const_iterator i = sources.begin();
+       i!=sources.end(); ++i)
+    if (!i->Cached ())
+      cached = false;
+  if (cached) 
+    return true;
+  if (::source == IDC_SOURCE_CWD)
+    return false;
+  unsigned int retrievable = 0;
+  for (vector<packagesource>::const_iterator i = sources.begin();
+      i!=sources.end(); ++i)
+    if (i->sites.size() || i->Cached ())
+      retrievable += 1;
+  return retrievable == sources.size();
 }
 
 bool

@@ -1,5 +1,12 @@
 2002-07-15  Robert Collins  <rbtcollins@hotmail.com>
 
+	* package_version.h (packageversion::sources): Support multiple files in
+	a single package version.
+	* package_version.cc (_packageversion::accessible): Ditto.
+	(packageversion::source): Ditto.
+
+2002-07-15  Robert Collins  <rbtcollins@hotmail.com>
+
 	* iniparse.y: Implement support for multiple source files for a source
 	package.
 	* IniDBBuilder.h (IniDBBuilder::buildSourceFile): Ditto.

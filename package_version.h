@@ -128,7 +128,13 @@ public:
 
   void uninstall ();
   /* invariant: never null */
-  packagesource *source(); /* where can we source the files from */
+  packagesource *source(); /* where can we source the file from */
+  /* invariant: never null */
+  vector <packagesource> *sources(); /* expose the list of files.
+					source() returns the 'default' file
+					sources() allows managing multiple files
+					in a single package
+					*/
 
   bool accessible () const;
 
@@ -185,7 +191,7 @@ public:
 
 
   virtual void uninstall () = 0;
-  packagesource source; /* where can we source the files from */
+  vector<packagesource> sources; /* where can we source the files from */
 
   bool accessible () const;
 
