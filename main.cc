@@ -453,21 +453,14 @@ main (int argc, char **argv)
     char **_argv;
 #ifndef __CYGWIN__
     int argc;
-    //  char **_argv;
-#ifndef __CYGWIN__
     for (argc = 0, _argv = __argv; *_argv; _argv++)++argc;
     _argv = __argv;
-#else
-    //  for (argc = 0, _argv = argv; *_argv; _argv++)++argc;
-    _argv = argv;
-#endif
 #else
     _argv = argv;
 #endif
 
     if (!GetOption::GetInstance().Process (argc,_argv, NULL))
       theLog->exit(1);
-    // #endif
 
     if (HelpOption)
     {

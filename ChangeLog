@@ -1,5 +1,10 @@
 2004-11-19  Max Bowsher  <maxb@ukf.net>
 
+	* main.cc (main): Remove some junk code - either commented out, or
+	contained within unreachable preprocessor conditional sections.
+
+2004-11-19  Max Bowsher  <maxb@ukf.net>
+
 	* install.cc (Installer::installOneSource): Avoid leaking the open
 	file handles of every tarball that is installed.
 
