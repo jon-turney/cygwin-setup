@@ -44,7 +44,14 @@ save_local_dir ()
 {
   mkdir_p (1, local_dir);
 
-  io_stream *f = io_stream::open ("cygfile:///etc/setup/last-cache", "wb");
+  io_stream *f;
+  if (get_root_dir ())
+    {
+      f = io_stream::open ("cygfile:///etc/setup/last-cache", "wb");
+      io_stream::remove ("file://last-cache");
+    }
+  else
+    f = io_stream::open ("file://last-cache", "wb");
   if (f)
     {
       char temp[1000];
@@ -152,6 +159,8 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       switch (source)
 	{
 	case IDC_SOURCE_DOWNLOAD:
+	  NEXT (IDD_SOURCE);
+	  break;
 	case IDC_SOURCE_NETINST:
 	case IDC_SOURCE_CWD:
 	  NEXT (IDD_ROOT);
@@ -193,6 +202,8 @@ do_local_dir (HINSTANCE h)
     {
       io_stream *f =
 	io_stream::open ("cygfile:///etc/setup/last-cache", "rt");
+      if (!f)
+	f = io_stream::open ("file://last-cache", "rt");
       if (f)
 	{
 	  char localdir[1000];

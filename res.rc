@@ -241,7 +241,7 @@ BEGIN
     CONTROL         "SPIN",IDC_STATIC,"Static",SS_BITMAP,22,235,15,13
     LTEXT           "= click to choose action, (p) = previous version, (x) = experimental",
                     IDC_STATIC,35,234,220,8
-    PUSHBUTTON      "View",IDC_CHOOSE_VIEW,353,5,20,10
+    PUSHBUTTON      "&View",IDC_CHOOSE_VIEW,353,5,20,10
     LTEXT           "",IDC_CHOOSE_VIEWCAPTION,390,5,30,10
     CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON | 
                     WS_GROUP,323,5,25,10
