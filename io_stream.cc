@@ -113,10 +113,11 @@ io_stream::mklink (const char *from, const char *to,
 {
   if (!from || IsBadStringPtr (from, MAX_PATH) ||
       !to || IsBadStringPtr (to, MAX_PATH))
-  {
-    log (LOG_TIMESTAMP, "invalid string in from or to parameters to mklink");
-    return 1;
-  }
+    {
+      log (LOG_TIMESTAMP,
+	   "invalid string in from or to parameters to mklink");
+      return 1;
+    }
   /* iterate through the known url prefixes */
   if (!strncasecmp ("file://", from, 7))
     {
@@ -135,6 +136,70 @@ io_stream::mklink (const char *from, const char *to,
 	return io_stream_cygfile::mklink (&from[10], &to[10], linktype);
       log (LOG_TIMESTAMP, "Attempt to link across url providers");
       return 1;
+    }
+#if 0
+  if (!strmcasecmp ("http://", from, 7))
+    {
+      /* http urls can symlink to http or ftp url's */
+    }
+#endif
+  log (LOG_TIMESTAMP, "Unsupported url providers for %s", from);
+  return 1;
+}
+
+int
+io_stream::move_copy (const char *from, const char *to)
+{
+  /* parameters are ok - checked before calling us, and we are private */
+  io_stream *in = io_stream::open (to, "wb");
+  io_stream *out = io_stream::open (from, "rb");
+  char buffer[16384];
+  ssize_t countin, countout;
+  while ((countin = in->read (buffer, 16384)) > 0)
+    {
+      countout = out->write (buffer, countin);
+      if (countout != countin)
+	{
+	  log (LOG_TIMESTAMP, "Failed to write %ld bytes to %s", countin, to);
+	  io_stream::remove (to);
+	  delete out;
+	  delete in;
+	  return 1;
+	}
+
+    }
+  /* TODO:
+     out->set_mtime (in->get_mtime ());
+   */
+  delete in;
+  delete out;
+  io_stream::remove (from);
+  return 0;
+}
+
+int
+io_stream::move (const char *from, const char *to)
+{
+  if (!from || IsBadStringPtr (from, MAX_PATH) ||
+      !to || IsBadStringPtr (to, MAX_PATH))
+    {
+      log (LOG_TIMESTAMP, "invalid string in from or to parameters to move");
+      return 1;
+    }
+  /* iterate through the known url prefixes */
+  if (!strncasecmp ("file://", from, 7))
+    {
+      /* TODO: allow 'move' to cygfile url's */
+      if (!strncasecmp ("file://", to, 7))
+	return io_stream::move_copy (from, to);
+      return io_stream_file::move (&from[7], &to[7]);
+    }
+  if (!strncasecmp ("cygfile://", from, 10))
+    {
+      /* TODO: allow -> file urls */
+      if (!strncasecmp ("cygfile://", to, 10))
+	return io_stream::move_copy (from, to);
+      return io_stream_cygfile::move (&from[10], &to[10]);
     }
 #if 0
   if (!strmcasecmp ("http://", from, 7))

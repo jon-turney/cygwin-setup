@@ -1,5 +1,19 @@
 2001-11-23  Robert Collins  <rbtcollins@hotmail.com>
 
+	* install.cc (badrename): Remove.
+	(do_install): Use packagedb flush method to write /etc/setup/installed.db.
+	* io_stream.cc (io_stream::move_copy): New method.
+	(io_stream::move): New method.
+	* io_stream.h (io_stream): New methods move and move_copy.
+	* io_stream_cygfile.cc (io_stream_cygfile::move): New method.
+	* io_stream_cygfile.h (io_stream_cygfile): New method move.
+	* io_stream_file.cc (io_stream_file::move): New method.
+	* io_stream_file.h (io_stream_file): New method move.
+	* package_db.cc (packagedb::flush): New method.
+	* package_db.h (packagedb): New method flush.
+
+2001-11-23  Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.in (OBJS): Add package_version.
 	* ategory.cc (Category::Category): Update constructors.
 	* category_list.cc (CategoryList::register_category): Insert correctly.

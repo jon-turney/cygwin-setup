@@ -30,7 +30,7 @@ public:
   static int remove (const char *);
   static int mklink (const char *, const char *, io_stream_link_t);
     io_stream_cygfile (const char *, const char *);
-  virtual ~io_stream_cygfile ();
+    virtual ~ io_stream_cygfile ();
   /* read data (duh!) */
   virtual ssize_t read (void *buffer, size_t len);
   /* provide data to (double duh!) */
@@ -43,15 +43,19 @@ public:
   virtual int error ();
   virtual int set_mtime (int);
   /* not relevant yet */
-  virtual int get_mtime () { return 0;};
+  virtual int get_mtime ()
+  {
+    return 0;
+  };
   /* dummy for io_stream_file */
   virtual const char *next_file_name ()
   {
     return NULL;
   };
+  static int move (char const *, char const *);
 private:
   /* always require parameters */
-    io_stream_cygfile ()
+  io_stream_cygfile ()
   {
   };
   FILE *fp;

@@ -180,29 +180,30 @@ io_stream_cygfile::mklink (const char *from, const char *to,
 
 /* virtuals */
 
-ssize_t io_stream_cygfile::read (void *buffer, size_t len)
+ssize_t
+io_stream_cygfile::read (void *buffer, size_t len)
 {
   if (fp)
     return fread (buffer, 1, len, fp);
   return 0;
 }
 
-ssize_t io_stream_cygfile::write (const void *buffer, size_t len)
+ssize_t
+io_stream_cygfile::write (const void *buffer, size_t len)
 {
   if (fp)
     return fwrite (buffer, 1, len, fp);
   return 0;
 }
 
-ssize_t io_stream_cygfile::peek (void *buffer, size_t len)
+ssize_t
+io_stream_cygfile::peek (void *buffer, size_t len)
 {
   log (LOG_TIMESTAMP, "io_stream_cygfile::peek called");
   if (fp)
     {
-      int
-	pos = ftell (fp);
-      ssize_t
-	rv = fread (buffer, 1, len, fp);
+      int pos = ftell (fp);
+      ssize_t rv = fread (buffer, 1, len, fp);
       fseek (fp, pos, SEEK_SET);
       return rv;
     }
@@ -223,9 +224,9 @@ int
 io_stream_cygfile::seek (long where, io_stream_seek_t whence)
 {
   if (fp)
-  {
-    return fseek (fp, where, (int) whence);
-  }
+    {
+      return fseek (fp, where, (int) whence);
+    }
   lasterr = EBADF;
   return -1;
 }
@@ -249,7 +250,6 @@ cygmkdir_p (int isadir, const char *name)
     return 1;
   return mkdir_p (isadir, cygpath (name, 0));
 }
-
 
 int
 io_stream_cygfile::set_mtime (int mtime)
@@ -279,4 +279,17 @@ io_stream_cygfile::set_mtime (int mtime)
   if (!fp)
     lasterr = errno;
   return 1;
+}
+
+int
+io_stream_cygfile::move (char const *from, char const *to)
+{
+  if (!from || IsBadStringPtr (from, MAX_PATH) || !from[0] ||
+      !to || IsBadStringPtr (to, MAX_PATH) || !to[0])
+    return 1;
+  get_root_dir_now ();
+  if (!get_root_dir ())
+    /* TODO: assign a errno for "no mount table :} " */
+    return 1;
+  return rename (cygpath (from, 0), cygpath (to, 0));
 }

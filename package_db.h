@@ -30,6 +30,8 @@ public:
   packagemeta *getpackagebyname (const char *);
   /* 0 on success */
   int addpackage (packagemeta &);
+  /* 0 on success */
+  int flush ();
   /* all seen categories */
   static CategoryList categories;
 private:

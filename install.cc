@@ -165,15 +165,6 @@ progress (int bytes)
     }
 }
 
-static void
-badrename (char *o, char *n)
-{
-  const char *err = strerror (errno);
-  if (!err)
-    err = "(unknown error)";
-  note (IDS_ERR_RENAME, o, n, err);
-}
-
 static const char *standard_dirs[] = {
   "/bin",
   "/etc",
@@ -394,8 +385,8 @@ check_for_old_cygwin ()
 	{
 	  sprintf (msg, "Couldn't delete file %s.\r\n"
 		   "Is the DLL in use by another application?\r\n"
-		   "You should delete the old version of cygwin1.dll\r\nat your earliest convenience.",
-		   buf);
+		   "You should delete the old version of cygwin1.dll\r\n"
+		   "at your earliest convenience.", buf);
 	  MessageBox (NULL, buf, "Couldn't delete file",
 		      MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
 	}
@@ -481,57 +472,15 @@ do_install (HINSTANCE h)
 
   ShowWindow (ins_dialog, SW_HIDE);
 
-  char *odbn = cygpath ("/etc/setup/installed.db", 0);
-  char *ndbn = cygpath ("/etc/setup/installed.db.new", 0);
-  char *sdbn = cygpath ("/etc/setup/installed.db.old", 0);
-
-  mkdir_p (0, ndbn);
-
-  FILE *odb = fopen (odbn, "rt");
-  FILE *ndb = fopen (ndbn, "wb");
-
-  if (!ndb)
+  packagedb db;
+  int temperr;
+  if ((temperr = db.flush ()))
     {
-      const char *err = strerror (errno);
+      const char *err = strerror (temperr);
       if (!err)
 	err = "(unknown error)";
-      fatal (IDS_ERR_OPEN_WRITE, ndb, err);
+      fatal (IDS_ERR_OPEN_WRITE, err);
     }
-
-  fprintf (ndb, "INSTALLED.DB 2\n");
-  for (Package * pkg = package; pkg->name; pkg++)
-    if (is_download_action (pkg))
-      {
-	Info *pi = pkg->info + pkg->installed_ix;
-	fprintf (ndb, "%s %s %d\n", pkg->name, pi->install, pi->install_size);
-      }
-
-  packagedb db;
-  if (db.getfirstpackage ())
-    {
-      packagemeta *pkgm = db.getfirstpackage ();
-      while (pkgm)
-	{
-	  if (pkgm->installed)
-	    /* size here is irrelevant - as we can assume that this install source
-	     * no longer exists, and it does not correlate to used disk space
-	     */
-	    fprintf (ndb, "%s %s %d\n", pkgm->name, pkgm->installed_from, 0);
-	  pkgm = db.getnextpackage ();
-	}
-    }
-
-  if (odb)
-    fclose (odb);
-  fclose (ndb);
-
-  remove (sdbn);
-  if (odb && rename (odbn, sdbn))
-    badrename (odbn, sdbn);
-
-  remove (odbn);
-  if (rename (ndbn, odbn))
-    badrename (ndbn, odbn);
 
   if (!errors)
     check_for_old_cygwin ();

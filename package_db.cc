@@ -180,6 +180,50 @@ packagedb::addpackage (packagemeta & newpackage)
   return 0;
 }
 
+int
+packagedb::flush ()
+{
+  /* naive approach - just dump the lot */
+  char const *odbn = "cygfile:///etc/setup/installed.db";
+  char const *ndbn = "cygfile:///etc/setup/installed.db.new";
+
+  io_stream::mkpath_p (PATH_TO_FILE, ndbn);
+
+  io_stream *ndb = io_stream::open (ndbn, "wb");
+
+  if (!ndb)
+    return errno ? errno : 1;
+
+  ndb->write ("INSTALLED.DB 2\n", strlen ("INSTALLED.DB 2\n"));
+  if (getfirstpackage ())
+    {
+      packagemeta *pkgm = getfirstpackage ();
+      while (pkgm)
+	{
+	  if (pkgm->installed)
+	    {
+	      char line[2048];
+
+	      /* size here is irrelevant - as we can assume that this install source
+	         * no longer exists, and it does not correlate to used disk space
+	       */
+	      sprintf (line, "%s %s %d\n", pkgm->name, pkgm->installed_from,
+		       0);
+	      ndb->write (line, strlen (line));
+	    }
+	  pkgm = getnextpackage ();
+	}
+    }
+
+  delete ndb;
+
+  io_stream::remove (odbn);
+
+  if (io_stream::move (ndbn, odbn))
+    return errno ? errno : 1;
+  return 0;
+}
+
 packagemeta **
   packagedb::packages =
   0;

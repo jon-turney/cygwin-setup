@@ -111,29 +111,30 @@ io_stream_file::mklink (const char *from, const char *to,
 /* virtuals */
 
 
-ssize_t io_stream_file::read (void *buffer, size_t len)
+ssize_t
+io_stream_file::read (void *buffer, size_t len)
 {
   if (fp)
     return fread (buffer, 1, len, fp);
   return 0;
 }
 
-ssize_t io_stream_file::write (const void *buffer, size_t len)
+ssize_t
+io_stream_file::write (const void *buffer, size_t len)
 {
   if (fp)
     return fwrite (buffer, 1, len, fp);
   return 0;
 }
 
-ssize_t io_stream_file::peek (void *buffer, size_t len)
+ssize_t
+io_stream_file::peek (void *buffer, size_t len)
 {
   log (LOG_TIMESTAMP, "io_stream_file::peek called");
   if (fp)
     {
-      int
-	pos = ftell (fp);
-      ssize_t
-	rv = fread (buffer, 1, len, fp);
+      int pos = ftell (fp);
+      ssize_t rv = fread (buffer, 1, len, fp);
       fseek (fp, pos, SEEK_SET);
       return rv;
     }
@@ -153,12 +154,12 @@ io_stream_file::tell ()
 int
 io_stream_file::seek (long where, io_stream_seek_t whence)
 {
-    if (fp)
-        {
-	      return fseek (fp, where, (int) whence);
-	        }
-      lasterr = EBADF;
-        return -1;
+  if (fp)
+    {
+      return fseek (fp, where, (int) whence);
+    }
+  lasterr = EBADF;
+  return -1;
 }
 
 int
@@ -197,4 +198,13 @@ io_stream_file::set_mtime (int mtime)
   if (!fp)
     lasterr = errno;
   return 1;
+}
+
+int
+io_stream_file::move (char const *from, char const *to)
+{
+  if (!from || IsBadStringPtr (from, MAX_PATH) || !from[0] ||
+      !to || IsBadStringPtr (to, MAX_PATH) || !to[0])
+    return 1;
+  return rename (from, to);
 }
