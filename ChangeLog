@@ -1,3 +1,8 @@
+2002-12-11  Abraham Backus  <abraham@backus.com>
+
+	* nio-http.cc (NetIO_HTTP::NetIO_HTTP): Leave port out of Host header,
+	unless non-default.
+
 2002-12-11  Max Bowsher  <maxb@ukf.net>
 
 	* package_meta.cc: Change 'endl' to 'endLog' as appropriate.

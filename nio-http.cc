@@ -113,7 +113,14 @@ retry_get:
     s->printf ("GET %s HTTP/1.0\r\n", Purl);
   else
     s->printf ("GET %s HTTP/1.0\r\n", path);
-  s->printf ("Host: %s:%d\r\n", host, port);
+
+  // Default HTTP port is 80. Host header can have no port if requested port
+  // is the same as the default.  Some HTTP servers don't behave as expected
+  // when they receive a Host header with the unnecessary default port value.
+  if (port == 80)
+    s->printf ("Host: %s\r\n", host);
+  else
+    s->printf ("Host: %s:%d\r\n", host, port);
 
   if (net_user && net_passwd)
     s->printf ("Authorization: Basic %s\r\n",
