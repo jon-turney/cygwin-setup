@@ -1,5 +1,9 @@
 2002-04-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* compress_gz.cc (compress_gz::error): EOF is not an error condition.
+
+2002-04-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.am: Add libgetopt++ to the subdirs list.
 	Search the libgetopt++ header directory.
 	Link against libgetopt++.la.

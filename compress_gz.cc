@@ -417,7 +417,9 @@ compress_gz::seek (long where, io_stream_seek_t whence)
 int
 compress_gz::error ()
 {
-  return z_err;
+  if (z_err && z_err != Z_STREAM_END)
+    return z_err;
+  return 0;
 }
 
 int

@@ -186,7 +186,6 @@ setup_SOURCES = \
 	nio-file.cc \
 	nio-ftp.cc \
 	nio-http.cc \
-	Option.cc \
 	package_db.cc \
 	package_meta.cc \
 	package_source.cc \
@@ -235,10 +234,10 @@ am_setup_OBJECTS = archive.$(OBJEXT) archive_tar.$(OBJEXT) \
 	main.$(OBJEXT) mkdir.$(OBJEXT) mklink2.$(OBJEXT) \
 	mount.$(OBJEXT) msg.$(OBJEXT) net.$(OBJEXT) netio.$(OBJEXT) \
 	nio-ie5.$(OBJEXT) nio-file.$(OBJEXT) nio-ftp.$(OBJEXT) \
-	nio-http.$(OBJEXT) Option.$(OBJEXT) package_db.$(OBJEXT) \
-	package_meta.$(OBJEXT) package_source.$(OBJEXT) \
-	package_version.$(OBJEXT) PickCategoryLine.$(OBJEXT) \
-	PickLine.$(OBJEXT) PickPackageLine.$(OBJEXT) PickView.$(OBJEXT) \
+	nio-http.$(OBJEXT) package_db.$(OBJEXT) package_meta.$(OBJEXT) \
+	package_source.$(OBJEXT) package_version.$(OBJEXT) \
+	PickCategoryLine.$(OBJEXT) PickLine.$(OBJEXT) \
+	PickPackageLine.$(OBJEXT) PickView.$(OBJEXT) \
 	postinstall.$(OBJEXT) proppage.$(OBJEXT) propsheet.$(OBJEXT) \
 	rfc1738.$(OBJEXT) root.$(OBJEXT) script.$(OBJEXT) \
 	setup_version.$(OBJEXT) simpsock.$(OBJEXT) site.$(OBJEXT) \
@@ -257,8 +256,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/cfgaux/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Option.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/PickCategoryLine.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/PickCategoryLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickPackageLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickView.Po ./$(DEPDIR)/String++.Po \
@@ -368,7 +366,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickCategoryLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickPackageLine.Po@am__quote@

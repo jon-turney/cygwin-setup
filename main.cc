@@ -146,6 +146,7 @@ int WINAPI
 WinMain (HINSTANCE h,
 	 HINSTANCE hPrevInstance, LPSTR command_line, int cmd_show)
 {
+
   hinstance = h;
 
   next_dialog = IDD_SPLASH;
