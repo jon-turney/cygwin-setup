@@ -41,9 +41,11 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "log.h"
 #include "find.h"
 
-#define HMARGIN 10
-#define ROW_MARGIN 5
-#define ICON_MARGIN 4
+#define HMARGIN		10
+#define ROW_MARGIN	5
+#define ICON_MARGIN	4
+
+#define CHECK_SIZE	11
 
 #define TRUST_KEEP	101
 #define TRUST_UNINSTALL	102
@@ -60,7 +62,7 @@ static TEXTMETRIC tm;
 static int header_height;
 static HANDLE sysfont;
 static int row_height;
-static HANDLE bm_spin, bm_rtarrow;
+static HANDLE bm_spin, bm_rtarrow, bm_checkyes, bm_checkno, bm_checkna;
 static HDC bitmap_dc;
 
 static struct {
@@ -70,10 +72,16 @@ static struct {
   int x;
 } headers[] = {
   { "Current", 7, 0, 0 },
+#define CURRENT_COL 0
   { "New", 3, 0, 0 },
+#define NEW_COL 1
+  { "Src?", 4, 0, 0 },
+#define SRC_COL 2
   { "Package", 7, 0, 0 },
+#define PACKAGE_COL 3
   { 0, 0, 0, 0 }
 };
+#define NUM_COLUMNS (sizeof(headers)/(sizeof(headers[0]))-1)
 
 int *package_indexes, nindexes;
 
@@ -88,6 +96,7 @@ struct ExtraPackageInfo {
   int which_is_installed; /* == TRUST* or -1 */
 
   struct {
+    int src_avail;
     int trust;		/* may be keep or uninstall */
     char *caption;	/* ==0 at EOL */
   } chooser[NTRUST+3];	/* one extra for NULL above */
@@ -131,27 +140,40 @@ paint (HWND hwnd)
       int by = r + tm.tmHeight - 11;
       if (extra[i].installed_ver && extra[i].installed_ver[0])
 	{
-	  TextOut (hdc, x+headers[0].x, r, extra[i].installed_ver, strlen (extra[i].installed_ver));
+	  TextOut (hdc, x+headers[CURRENT_COL].x, r,
+		   extra[i].installed_ver, strlen (extra[i].installed_ver));
 	  SelectObject (bitmap_dc, bm_rtarrow);
-	  BitBlt (hdc, x+headers[0].x+headers[0].width+ICON_MARGIN/2+HMARGIN/2, by,
+	  BitBlt (hdc, x+headers[CURRENT_COL].x+headers[0].width+ICON_MARGIN/2+HMARGIN/2, by,
 		  11, 11, bitmap_dc, 0, 0, SRCCOPY);
 	}
 
       char *s = extra[i].chooser[extra[i].pick].caption;
       if (s)
 	{
-	  TextOut (hdc, x+headers[1].x + 11 + ICON_MARGIN, r,
+	  TextOut (hdc, x+headers[NEW_COL].x + 11 + ICON_MARGIN, r,
 		   s, strlen (s));
 	  if (extra[i].npick > 1)
 	    {
 	      SelectObject (bitmap_dc, bm_spin);
-	      BitBlt (hdc, x+headers[1].x, by, 11, 11,
+	      BitBlt (hdc, x+headers[NEW_COL].x, by, 11, 11,
 		      bitmap_dc, 0, 0, SRCCOPY);
 	    }
 	}
 
+      HANDLE check_bm = bm_checkna;
+      if (extra[i].chooser[extra[i].pick].src_avail)
+	{
+	  if (package[i].srcaction == SRCACTION_NO)
+	    check_bm = bm_checkno;
+	  else if (package[i].srcaction == SRCACTION_YES)
+	    check_bm = bm_checkyes;
+	}
+      SelectObject (bitmap_dc, check_bm);
+      BitBlt (hdc, x+headers[SRC_COL].x, by, 11, 11,
+	      bitmap_dc, 0, 0, SRCCOPY);
+
       if (package[i].name)
-	TextOut (hdc, x+headers[2].x, r, package[i].name, strlen(package[i].name));
+	TextOut (hdc, x+headers[PACKAGE_COL].x, r, package[i].name, strlen(package[i].name));
     }
 
   if (nindexes == 0)
@@ -247,9 +269,6 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
   x += scroll_ulc_x;
   y += scroll_ulc_y - header_height;
 
-  if (x < headers[1].x - HMARGIN/2 || x > headers[2].x - HMARGIN/2)
-    return 0;
-
   r = (y + ROW_MARGIN/2) / row_height;
 
   if (r < 0 || r >= npackages)
@@ -257,13 +276,22 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 
   int p = package_indexes[r];
 
-  extra[p].pick ++;
-  if (extra[p].chooser[extra[p].pick].caption == 0)
-    extra[p].pick = 0;
+  if (x >= headers[NEW_COL].x - HMARGIN/2 && x <= headers[NEW_COL+1].x - HMARGIN/2)
+    {
+      extra[p].pick ++;
+      if (extra[p].chooser[extra[p].pick].caption == 0)
+	extra[p].pick = 0;
+    }
+
+  if (x >= headers[SRC_COL].x - HMARGIN/2 && x <= headers[SRC_COL+1].x - HMARGIN/2)
+    {
+      if (extra[p].chooser[extra[p].pick].src_avail)
+	package[p].srcaction ^= (SRCACTION_NO^SRCACTION_YES);
+    }
 
   RECT rect;
-  rect.left = headers[1].x - scroll_ulc_x;
-  rect.right = headers[2].x - scroll_ulc_x;
+  rect.left = headers[NEW_COL].x - scroll_ulc_x;
+  rect.right = headers[SRC_COL+1].x - scroll_ulc_x;
   rect.top = header_height + r * row_height - scroll_ulc_y;
   rect.bottom = rect.top + row_height;
   InvalidateRect (hwnd, &rect, TRUE);
@@ -420,10 +448,13 @@ build_labels ()
 	      if (C.caption == 0 || C.caption[0] == 0)
 		C.caption = "0.0";
 	      C.trust = t;
+	      if (package[i].info[t].source)
+		C.src_avail = 1;
 	      c++;
 	      /* we intentionally skip TRUST_PREV */
 	      if (t != TRUST_PREV || !extra[i].installed_ver)
 		extra[i].in_partial_list = 1;
+
 	    }
 
       if (c == 0)
@@ -482,19 +513,21 @@ create_listview (HWND dlg, RECT *r)
     note_width (dc, headers[i].text, 0, i);
   for (i=0; i<npackages; i++)
     {
-      note_width (dc, extra[i].installed_ver, 0, 0);
-      note_width (dc, extra[i].installed_ver, 11+ICON_MARGIN, 1);
+      note_width (dc, extra[i].installed_ver, 0, CURRENT_COL);
+      note_width (dc, extra[i].installed_ver, 11+ICON_MARGIN, NEW_COL);
       for (t=0; t<NTRUST; t++)
-	note_width (dc, package[i].info[t].version, 11+ICON_MARGIN, 1);
-      note_width (dc, package[i].name, 0, 2);
-      note_width (dc, package[i].sdesc, 0, 2);
+	note_width (dc, package[i].info[t].version, 11+ICON_MARGIN, NEW_COL);
+      note_width (dc, package[i].name, 0, PACKAGE_COL);
+      note_width (dc, package[i].sdesc, 0, PACKAGE_COL);
     }
-  note_width (dc, "keep", 11+ICON_MARGIN, 1);
-  note_width (dc, "uninstall", 11+ICON_MARGIN, 1);
+  note_width (dc, "keep", 11+ICON_MARGIN, NEW_COL);
+  note_width (dc, "uninstall", 11+ICON_MARGIN, NEW_COL);
 
-  headers[0].x = HMARGIN/2;
-  headers[1].x = headers[0].x + headers[0].width + HMARGIN + 11 + ICON_MARGIN;
-  headers[2].x = headers[1].x + headers[1].width + HMARGIN;
+  headers[CURRENT_COL].x = HMARGIN/2;
+  headers[NEW_COL].x = (headers[CURRENT_COL].x + headers[CURRENT_COL].width
+			+ HMARGIN + 11 + ICON_MARGIN);
+  headers[SRC_COL].x = headers[NEW_COL].x + headers[NEW_COL].width + HMARGIN;
+  headers[PACKAGE_COL].x = headers[SRC_COL].x + headers[SRC_COL].width + HMARGIN;
 
   set_full_list (lv, full_list);
   default_trust (lv, TRUST_CURR);
@@ -688,20 +721,6 @@ read_installed_db ()
   fclose (db);
 }
 
-static void
-foo1() {
-  int i;
-
-  for (i=0; i<npackages; i++)
-    if (package[i].action == ACTION_UNKNOWN)
-      package[i].action = ACTION_NEW;
-
-  if (source == IDC_SOURCE_CWD)
-    next_dialog = IDD_S_INSTALL;
-  else
-    next_dialog = IDD_S_DOWNLOAD;
-}
-
 int
 package_sort (const void *va, const void *vb)
 {
@@ -721,12 +740,14 @@ do_choose (HINSTANCE h)
   bm_spin = LoadImage (h, MAKEINTRESOURCE (IDB_SPIN), IMAGE_BITMAP, 0, 0, 0);
   bm_rtarrow = LoadImage (h, MAKEINTRESOURCE (IDB_RTARROW), IMAGE_BITMAP, 0, 0, 0);
 
+  bm_checkyes = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_YES), IMAGE_BITMAP, 0, 0, 0);
+  bm_checkno = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NO), IMAGE_BITMAP, 0, 0, 0);
+  bm_checkna = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NA), IMAGE_BITMAP, 0, 0, 0);
+
   extra = (ExtraPackageInfo *) malloc (npackages * sizeof (ExtraPackageInfo));
   memset (extra, 0, npackages * sizeof (ExtraPackageInfo));
   for (i=0; i<npackages; i++)
-    {
-      extra[i].which_is_installed = -1;
-    }
+    extra[i].which_is_installed = -1;
 
   register_windows (h);
 
@@ -782,7 +803,8 @@ do_choose (HINSTANCE h)
 			    : (package[i].action == ACTION_ERROR) ? "error"
 			    : "unknown");
 
-      log (LOG_BABBLE, "[%s] action=%s trust=%s", package[i].name, action, trust);
+      log (LOG_BABBLE, "[%s] action=%s trust=%s src? %s", package[i].name, action, trust,
+	   package[i].srcaction == SRCACTION_NO ? "no" : "yes");
       for (int t=0; t<NTRUST; t++)
 	{
 	  if (package[i].info[t].install)

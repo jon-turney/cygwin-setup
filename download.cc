@@ -36,6 +36,46 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #define pi (package[i].info[package[i].trust])
 
+static int
+download_one (char *name, int expected_size)
+{
+  char *local = name;
+  int errors = 0;
+
+  struct stat s;
+  if (stat (local, &s) >= 0)
+    if (s.st_size == expected_size)
+      return 0;
+
+  mkdir_p (0, local);
+
+  if (get_url_to_file (concat (MIRROR_SITE, "/", name, 0),
+		       concat (local, ".tmp", 0),
+		       expected_size))
+    {
+      note (IDS_DOWNLOAD_FAILED, name);
+      return 1;
+    }
+  else
+    {
+      stat (concat (local, ".tmp", 0), &s);
+      if (s.st_size == expected_size)
+	{
+	  log (0, "Downloaded %s", local);
+	  rename (concat (local, ".tmp", 0), local);
+	}
+      else
+	{
+	  log (0, "Download %s wrong size (%d actual vs %d expected)",
+	       local, s.st_size, expected_size);
+	  note (IDS_DOWNLOAD_SHORT, local, s.st_size, expected_size);
+	  return 1;
+	}
+    }
+
+  return 0;
+}
+
 void
 do_download (HINSTANCE h)
 {
@@ -45,40 +85,12 @@ do_download (HINSTANCE h)
   for (i=0; i<npackages; i++)
     if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE)
       {
-	char *local = pi.install;
-
-	struct stat s;
-	if (stat (local, &s) >= 0)
-	  if (s.st_size == pi.install_size)
-	    continue;
-
-	mkdir_p (0, local);
-
-	if (get_url_to_file (concat (MIRROR_SITE, "/", pi.install, 0),
-			     concat (local, ".tmp", 0),
-			     pi.install_size))
-	  {
-	    note (IDS_DOWNLOAD_FAILED, pi.install);
-	    package[i].action = ACTION_ERROR;
-	    errors ++;
-	    continue;
-	  }
-	else
-	  {
-	    stat (concat (local, ".tmp", 0), &s);
-	    if (s.st_size == pi.install_size)
-	      {
-		log (0, "Downloaded %s", local);
-		rename (concat (local, ".tmp", 0), local);
-	      }
-	    else
-	      {
-		log (0, "Download %s wrong size (%d actual vs %d expected)", local, s.st_size, pi.install_size);
-		note (IDS_DOWNLOAD_SHORT, local, s.st_size, pi.install_size);
-		package[i].action = ACTION_ERROR;
-		errors ++;
-	      }
-	  }
+	int e = download_one (pi.install, pi.install_size);
+	if (package[i].srcaction == SRCACTION_YES && pi.source)
+	  e += download_one (pi.source, pi.source_size);
+	errors += e;
+	if (e)
+	  package[i].action = ACTION_ERROR;
       }
 
   dismiss_url_status_dialog ();

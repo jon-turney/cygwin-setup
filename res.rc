@@ -334,6 +334,9 @@ END
 SPIN                    BITMAP  DISCARDABLE     "choose-spin.bmp"
 IDB_SPIN                BITMAP  DISCARDABLE     "choose-spin.bmp"
 IDB_RTARROW             BITMAP  DISCARDABLE     "choose-rtarrow.bmp"
+IDB_CHECK_YES           BITMAP  DISCARDABLE     "check-yes.bmp"
+IDB_CHECK_NO            BITMAP  DISCARDABLE     "check-no.bmp"
+IDB_CHECK_NA            BITMAP  DISCARDABLE     "check-na.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //

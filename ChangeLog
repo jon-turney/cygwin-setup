@@ -1,3 +1,14 @@
+2000-10-23  DJ Delorie  <dj@redhat.com>
+
+	* ini.h: add source actions
+	* fromcwd.cc: check for available sources
+	* res.rc: add checkbox bitmaps
+	* resource.h: ditto
+	* check-*.bmp: new
+	* choose.cc: add source column
+	* download.cc: download sources if called for
+	* install.cc: [un]install sources too
+
 2000-10-22  DJ Delorie  <dj@redhat.com>
 
 	* choose.cc (build_labels): Don't skip TRUST_PREV completely; only

@@ -238,11 +238,138 @@ exists (char *file)
   return 0;
 }
 
+	  
+static int num_installs, num_uninstalls;
+
+static void
+uninstall_one (char *name, int action)
+{
+  hash dirs;
+  char line[_MAX_PATH];
+
+  gzFile lst = gzopen (concat (root_dir, "/etc/setup/",
+			       name, ".lst.gz", 0),
+		       "rb");
+  if (lst)
+    {
+      SetWindowText (ins_pkgname, name);
+      SetWindowText (ins_action, "Uninstalling...");
+      if (action == ACTION_UPGRADE)
+	log (0, "Uninstalling old %s", name);
+      else
+	log (0, "Uninstalling %s", name);
+
+      while (gzgets (lst, line, sizeof (line)))
+	{
+	  if (line[strlen(line)-1] == '\n')
+	    line[strlen(line)-1] = 0;
+
+	  dirs.add_subdirs (line);
+
+	  char *d = map_filename (line);
+	  DWORD dw = GetFileAttributes (d);
+	  if (dw != 0xffffffff && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+	    {
+	      log (LOG_BABBLE, "unlink %s", d);
+	      DeleteFile (d);
+	    }
+	}
+      gzclose (lst);
+
+      remove (concat (root_dir, "/etc/setup/", name, ".lst.gz", 0));
+
+      dirs.reverse_sort ();
+      char *subdir = 0;
+      while ((subdir = dirs.enumerate (subdir)) != 0)
+	{
+	  char *d = map_filename (subdir);
+	  if (RemoveDirectory (d))
+	    log (LOG_BABBLE, "rmdir %s", d);
+	}
+      num_uninstalls ++;
+    }
+}
+
+	  
+static int
+install_one (char *name, char *file, int file_size, int action)
+{
+  int errors = 0;
+  char *local = file, *cp, *fn, *base;
+
+  base = local;
+  for (cp=local; *cp; cp++)
+    if (*cp == '/' || *cp == '\\' || *cp == ':')
+      base = cp+1;
+  SetWindowText (ins_pkgname, base);
+
+  if (!exists (local) && exists (base))
+    local = base;
+  if (!exists (local))
+    {
+      note (IDS_ERR_OPEN_READ, local, "No such file");
+      return 1;
+    }
+
+  gzFile lst = gzopen (concat (root_dir, "/etc/setup/",
+			       name, ".lst.gz", 0),
+		       "wb9");
+
+  package_bytes = file_size;
+
+  switch (action)
+    {
+    case ACTION_NEW:
+      SetWindowText (ins_action, "Installing...");
+      break;
+    case ACTION_UPGRADE:
+      SetWindowText (ins_action, "Upgrading...");
+      break;
+    }
+
+  log (0, "Installing %s", local);
+  tar_open (local);
+  while (fn = tar_next_file ())
+    {
+      char *dest_file;
+
+      if (lst)
+	gzprintf (lst, "%s\n", fn);
+
+      dest_file = map_filename (fn);
+
+      SetWindowText (ins_filename, dest_file);
+      log (LOG_BABBLE, "Installing file %s", dest_file);
+      if (tar_read_file (dest_file) != 0)
+	{
+	  log (0, "Unable to install file %s", dest_file);
+	  errors ++;
+	}
+
+      progress (tar_ftell ());
+      num_installs ++;
+    }
+  tar_close ();
+
+  total_bytes_sofar += file_size;
+  progress (0);
+
+  int df = diskfull (root_dir);
+  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
+
+  if (lst)
+    gzclose (lst);
+
+  return errors;
+}
+
 void
 do_install (HINSTANCE h)
 {
-  int i, num_installs = 0, num_uninstalls = 0;
+  int i;
   int errors = 0;
+
+  num_installs = 0, num_uninstalls = 0;
 
   next_dialog = IDD_DESKTOP;
 
@@ -282,121 +409,23 @@ do_install (HINSTANCE h)
       if (package[i].action == ACTION_UNINSTALL
 	  || (package[i].action == ACTION_UPGRADE && pi.install))
 	{
-	  hash dirs;
-	  char line[_MAX_PATH];
-
-	  gzFile lst = gzopen (concat (root_dir, "/etc/setup/",
-				       package[i].name, ".lst.gz", 0),
-			       "rb");
-	  if (lst)
-	    {
-	      SetWindowText (ins_pkgname, package[i].name);
-	      SetWindowText (ins_action, "Uninstalling...");
-	      if (package[i].action == ACTION_UPGRADE)
-		log (0, "Uninstalling old %s", package[i].name);
-	      else
-		log (0, "Uninstalling %s", package[i].name);
-
-	      while (gzgets (lst, line, sizeof (line)))
-		{
-		  if (line[strlen(line)-1] == '\n')
-		    line[strlen(line)-1] = 0;
-
-		  dirs.add_subdirs (line);
-
-		  char *d = map_filename (line);
-		  DWORD dw = GetFileAttributes (d);
-		  if (dw != 0xffffffff && !(dw & FILE_ATTRIBUTE_DIRECTORY))
-		    {
-		      log (LOG_BABBLE, "unlink %s", d);
-		      DeleteFile (d);
-		    }
-		}
-	      gzclose (lst);
-
-	      dirs.reverse_sort ();
-	      char *subdir = 0;
-	      while ((subdir = dirs.enumerate (subdir)) != 0)
-		{
-		  char *d = map_filename (subdir);
-		  if (RemoveDirectory (d))
-		    log (LOG_BABBLE, "rmdir %s", d);
-		}
-	      num_uninstalls ++;
-	    }
+	  uninstall_one (package[i].name, package[i].action);
+	  uninstall_one (concat (package[i].name, "-src", 0), package[i].action);
 	}
 
       if ((package[i].action == ACTION_NEW
 	   || package[i].action == ACTION_UPGRADE)
 	  && pi.install)
 	{
-	  char *local = pi.install, *cp, *fn, *base;
-
-	  base = local;
-	  for (cp=pi.install; *cp; cp++)
-	    if (*cp == '/' || *cp == '\\' || *cp == ':')
-	      base = cp+1;
-	  SetWindowText (ins_pkgname, base);
-
-	  if (!exists (local) && exists (base))
-	    local = base;
-	  if (!exists (local))
+	  int e = install_one (package[i].name, pi.install, pi.install_size, package[i].action);
+	  if (package[i].srcaction == SRCACTION_YES && pi.source)
+	    e += install_one (concat (package[i].name, "-src", 0), pi.source, pi.source_size,
+			      package[i].action);
+	  if (e)
 	    {
 	      package[i].action = ACTION_ERROR;
-	      note (IDS_ERR_OPEN_READ, local, "No such file");
-	      errors ++;
-	      continue;
+	      errors++;
 	    }
-
-	  gzFile lst = gzopen (concat (root_dir, "/etc/setup/",
-				       package[i].name, ".lst.gz", 0),
-			       "wb9");
-
-	  package_bytes = pi.install_size;
-
-	  switch (package[i].action)
-	    {
-	    case ACTION_NEW:
-	      SetWindowText (ins_action, "Installing...");
-	      break;
-	    case ACTION_UPGRADE:
-	      SetWindowText (ins_action, "Upgrading...");
-	      break;
-	    }
-
-	  log (0, "Installing %s", local);
-	  tar_open (local);
-	  while (fn = tar_next_file ())
-	    {
-	      char *dest_file;
-
-	      if (lst)
-		gzprintf (lst, "%s\n", fn);
-
-	      dest_file = map_filename (fn);
-
-	      SetWindowText (ins_filename, dest_file);
-	      log (LOG_BABBLE, "Installing file %s", dest_file);
-	      if (tar_read_file (dest_file) != 0)
-		{
-		  package[i].action = ACTION_ERROR;
-		  log (0, "Unable to install file %s", dest_file);
-		  errors ++;
-		}
-
-	      progress (tar_ftell ());
-	      num_installs ++;
-	    }
-	  tar_close ();
-
-	  total_bytes_sofar += pi.install_size;
-	  progress (0);
-
-	  df = diskfull (root_dir);
-	  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
-
-	  if (lst)
-	    gzclose (lst);
 	}
     } // end of big package loop
 
@@ -447,8 +476,13 @@ do_install (HINSTANCE h)
 
   LOOP_PACKAGES
     {
-      fprintf (ndb, "%s %s %d\n", package[i].name,
-	       pi.install, pi.install_size);
+      if (package[i].srcaction == SRCACTION_YES)
+	fprintf (ndb, "%s %s %d %s %d\n", package[i].name,
+		 pi.install, pi.install_size,
+		 pi.source, pi.source_size);
+      else
+	fprintf (ndb, "%s %s %d\n", package[i].name,
+		 pi.install, pi.install_size);
     }
 
   if (odb)

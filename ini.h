@@ -36,11 +36,15 @@
 #define ACTION_UNINSTALL	4
 #define ACTION_ERROR		5
 
+#define SRCACTION_NO		0
+#define SRCACTION_YES		1
+
 typedef struct {
   char *name;	/* package name, like "cygwin" */
   char *sdesc;	/* short description (replaces "name" if provided) */
   char *ldesc;	/* long description (multi-line) */
   int action;	/* ACTION_* - only NEW and UPGRADE get installed */
+  int srcaction;/* SRCACTION_ */
   int trust;	/* TRUST_* (selects among info[] below) */
 
   struct {

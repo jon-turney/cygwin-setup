@@ -154,5 +154,31 @@ do_fromcwd (HINSTANCE h)
 
   find (".", found_file);
 
+  // Now see about source tarballs
+  int i, t;
+  Package *p;
+  char srcpath[_MAX_PATH];
+  for (i=0; i<npackages; i++)
+    {
+      p = package+i;
+      for (t=TRUST_PREV; t<=TRUST_TEST; t++)
+	if (p->info[t].install)
+	  {
+	    strcpy (srcpath, p->info[t].install);
+	    strcpy (srcpath + strlen (srcpath) - 7, "-src.tar.gz");
+	    msg ("looking for %s", srcpath);
+
+	    WIN32_FIND_DATA wfd;
+	    HANDLE h = FindFirstFile (srcpath, &wfd);
+	    if (h != INVALID_HANDLE_VALUE)
+	      {
+		msg("-- got it");
+		FindClose (h);
+		p->info[t].source = _strdup (srcpath);
+		p->info[t].source_size = wfd.nFileSizeLow;
+	      }
+	  }
+    }
+
   return;
 }

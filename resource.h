@@ -24,9 +24,9 @@
 #define IDS_WININET                     22
 #define IDS_ERR_CHDIR                   23
 #define IDS_OLD_SETUP_VERSION           24
-#define IDS_DOWNLOAD_FAILED		25
-#define IDS_DOWNLOAD_INCOMPLETE		26
-#define IDS_INSTALL_INCOMPLETE		27
+#define IDS_DOWNLOAD_FAILED             25
+#define IDS_DOWNLOAD_INCOMPLETE         26
+#define IDS_INSTALL_INCOMPLETE          27
 #define IDD_ROOT                        101
 #define IDD_SOURCE                      102
 #define IDD_OTHER_URL                   103
@@ -49,6 +49,9 @@
 #define IDI_SPIN                        120
 #define IDI_CYGWIN                      121
 #define IDD_LOCAL_DIR                   122
+#define IDB_CHECK_YES                   123
+#define IDB_CHECK_NO                    124
+#define IDB_CHECK_NA                    125
 #define IDC_SOURCE_DOWNLOAD             1000
 #define IDC_SOURCE_NETINST              1001
 #define IDC_SOURCE_CWD                  1002
@@ -98,7 +101,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        123
+#define _APS_NEXT_RESOURCE_VALUE        126
 #define _APS_NEXT_COMMAND_VALUE         40003
 #define _APS_NEXT_CONTROL_VALUE         1045
 #define _APS_NEXT_SYMED_VALUE           101
