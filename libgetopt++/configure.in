@@ -10,7 +10,7 @@ dnl
 AC_INIT(src/GetOption.cc)
 AC_PREREQ(2.52)
 AC_CONFIG_AUX_DIR(cfgaux)
-AM_INIT_AUTOMAKE(GetOpt++, 0.0.1-DEVEL)
+AM_INIT_AUTOMAKE(GetOpt++, 0.0.2-DEVEL)
 AM_CONFIG_HEADER(include/autoconf.h)
 AC_REVISION($Revision$)dnl
 AC_PREFIX_DEFAULT(/usr/local)

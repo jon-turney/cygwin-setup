@@ -1,3 +1,16 @@
+2003-03-19 Robert Collins  <rbtcollins@hotmail.com>
+
+	* configure.in: Bump version number.
+	* Makefile.am: Add DefaultFormatter.h to installed files.
+	* src/OptionSet.cc (OptionSet::ParameterUsage): Use new
+	default DefaultFormatter to format parameters.
+	* include/getopt++/OptionSet.h: Update copyright.
+	* include/getopt++/DefaultFormatter.h: Format the help from an Option.
+	* tests/testoption.cc: Include a -h|--help option to test help
+	formatting.
+	Insert copyright statement.
+	* tests/optioniterator.cc: Insert copyright statement.
+
 2003-03-18  Robert Collins  <rbtcollins@hotmail.com>
 
 	* include/getopt++/OptionSet.h (OptionSet): Convert to use a vector.

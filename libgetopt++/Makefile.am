@@ -36,8 +36,10 @@ libgetopt___la_SOURCES = src/GetOption.cc src/Option.cc src/BoolOption.cc \
 libgetopt___la_LDFLAGS = -version-info 0:0:0
 
 getoptinclude_HEADERS = include/getopt++/Option.h \
+  include/getopt++/BoolOption.h \
+  include/getopt++/DefaultFormatter.h \
   include/getopt++/GetOption.h \
-  include/getopt++/BoolOption.h include/getopt++/OptionSet.h \
+  include/getopt++/OptionSet.h \
   include/getopt++/StringOption.h
 
 testoption_SOURCES = tests/testoption.cc

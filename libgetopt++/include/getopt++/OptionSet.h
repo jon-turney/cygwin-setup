@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2002 Robert Collins.
+ * Copyright (c) 2003 Robert Collins.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -37,7 +38,7 @@ protected:
   // force initialisation of variables
   void Init ();
 private:
-  std::vector<Option *>options;
+  std::vector<Option *> options;
 };
 
 #endif // _OPTIONSET_H_

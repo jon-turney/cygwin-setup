@@ -19,6 +19,7 @@
 #endif
 #include "getopt++/OptionSet.h"
 #include "getopt++/Option.h"
+#include "getopt++/DefaultFormatter.h"
 
 #include <iostream>
 
@@ -51,22 +52,15 @@ bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
     }
 //  log (LOG_TIMESTAMP, "Process command line options\n");
   struct option longopts[options.size() + 1];
-  string
-    shortopts;
+  string shortopts;
   for (std::vector<Option *>::iterator i = options.begin(); i != options.end(); ++i)
     {
       shortopts += (*i)->shortOption ();
       longopts[distance(options.begin(), i)] = (*i)->longOption ();
     }
-  char const *
-    opts = shortopts.c_str ();
+  char const * opts = shortopts.c_str ();
   {
-    struct option
-      foo = {
-	0,
-	0,
-	0,
-    0 };
+    struct option foo = {0, 0, 0, 0};
     longopts[options.size()] = foo;
   }
 // where is this correctly defined?  opterr=0;
@@ -105,32 +99,10 @@ OptionSet::Register (Option * anOption)
     options.push_back(anOption);
 }
 
-/* Show the options on the left, the short description on the right.
- * descriptions must be < 40 characters in length
- */
 void
 OptionSet::ParameterUsage (ostream &aStream)
 {
-  for (std::vector<Option *>::iterator i = options.begin(); i != options.end(); ++i)
-    {
-      Option *anOption = (*i);
-      string output = string() + " -" + anOption->shortOption ()[0];
-      output += " --" ;
-      output += anOption->longOption ().name;
-      output += string (40 - output.size(), ' ');
-      string helpmsg = anOption->shortHelp();
-      while (helpmsg.size() > 40)
-	{
-	  // TODO: consider using a line breaking class here.
-	  int pos = helpmsg.substr(0,40).find_last_of(" ");
-	  output += helpmsg.substr(0,pos);
-	  helpmsg.erase (0,pos+1);
-	  aStream << output << endl;
-	  output = string (40, ' ');
-	}
-      output += helpmsg;
-      aStream << output << endl;
-    }
+  for_each (options.begin(), options.end(), DefaultFormatter (aStream));
 }
 
 std::vector<Option *> const &
