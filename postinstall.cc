@@ -26,7 +26,6 @@ static const char *cvsid =
 #include "mount.h"
 #include "script.h"
 #include "FindVisitor.h"
-#include "FilterVisitor.h"
 #include "package_db.h"
 #include "package_meta.h"
 #include "resource.h"
@@ -45,6 +44,9 @@ public:
   RunFindVisitor (vector<Script> *scripts) : _scripts(scripts) {}
   virtual void visitFile(String const &basePath, const WIN32_FIND_DATA *theFile)
     {
+      String fileName(theFile->cFileName);
+      if (fileName.substr(fileName.size() - 5) == ".done")
+        return;
       String fn = String("/etc/postinstall/")+theFile->cFileName;
       _scripts->push_back(Script (fn));
     }
@@ -111,13 +113,11 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
       ++k;
       Progress.SetBar2 (k, numpkg);
     }
-  ExcludeNameFilter notDone("*.done");
   String postinst = cygpath ("/etc/postinstall");
   vector<Script> scripts;
   RunFindVisitor myVisitor (&scripts);
-  FilterVisitor excludeDoneVisitor(&myVisitor, &notDone);
   Progress.SetBar1 (0, 1);
-  Find (postinst).accept (excludeDoneVisitor);
+  Find (postinst).accept (myVisitor);
   for_each (scripts.begin(), scripts.end(),
 	    RunScript("No package", scripts.size()));
   Progress.SetBar2 (numpkg, numpkg);

@@ -61,7 +61,6 @@ public:
 	{
 	  return s1.casecompare (s2) < 0;
 	}};
-  bool matches (String const &pattern) const;
   String replace (char pattern, char replacement) const;
   String replace (String const &pattern, String const &replacement) const;
     

@@ -1,3 +1,16 @@
+2004-12-25  Max Bowsher  <maxb@ukf.net>
+
+	Remove some overcomplications.
+
+	* Makefile.am (setup_SOURCES): Remove FilterVisitor.{cc,h}.
+	* FilterVisitor.cc, FilterVisitor.h: Delete.
+	* String++.cc (strmatch, String::matches): Remove.
+	* String++.h (String::matches): Remove.
+	* postinstall.cc: Do not include "FilterVisitor.h".
+	(RunFindVisitor): Exclude items with the extension ".done".
+	(do_postinstall_thread): Remove overcomplicated exclusion of items
+	with the extension ".done".
+	
 2004-12-24  Max Bowsher  <maxb@ukf.net>
 
 	* String++.cc, String++.h: Remove unused and incomplete code.
