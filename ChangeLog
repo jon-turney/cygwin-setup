@@ -1,5 +1,10 @@
 2003-03-16  Max Bowsher  <maxb@ukf.net>
 
+	* .cvsignore: Create, to ignore configure, aclocal.m4, Makefile.in and
+	autom4te.cache.
+
+2003-03-16  Max Bowsher  <maxb@ukf.net>
+
 	* UserSettings.cc (UserSettings::Instance): Remove premature return.
 
 2003-03-15  Robert Collins  <rbtcollins@hotmail.com>
