@@ -24,6 +24,8 @@
 
 class NetPage:public PropertyPage
 {
+  void CheckIfEnableNext ();
+
 public:
   NetPage ()
   {
@@ -37,6 +39,8 @@ public:
   virtual void OnInit ();
   virtual long OnNext ();
   virtual long OnBack ();
+
+  virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code);
 };
 
 #endif // CINSTALL_NET_H

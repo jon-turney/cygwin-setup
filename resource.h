@@ -107,6 +107,10 @@
 #define IDC_INS_BL_PACKAGE              1053
 #define IDC_INS_BL_TOTAL                1054
 #define IDC_INS_BL_DISK                 1055
+#define IDC_STATIC_HEADER_TITLE         1060
+#define IDC_STATIC_WELCOME_TITLE        1061
+#define IDC_EDIT_USER_URL               1062
+#define IDC_BUTTON_ADD_URL              1063
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -115,9 +119,9 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        128
+#define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1056
+#define _APS_NEXT_CONTROL_VALUE         1064
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

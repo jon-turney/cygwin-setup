@@ -36,8 +36,14 @@ public:
   bool Create ();
 
   virtual void OnInit ();
+  virtual void OnActivate ();
   virtual long OnNext ();
   virtual long OnBack ();
+
+  virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code);
+
+  void PopulateListBox();
+  void CheckControlsAndDisableAccordingly () const;
 };
 
 void do_download_site_info (HINSTANCE h, HWND owner);

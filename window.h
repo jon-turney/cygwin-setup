@@ -39,6 +39,11 @@ class Window
 
   Window *Parent;
 
+  // FIXME: replace with <vector> when we get a chance.
+  static const int MAXFONTS = 5;
+  HFONT Fonts[MAXFONTS];
+  int FontCounter;
+
 protected:
   void SetHWND (HWND h)
   {
@@ -79,11 +84,21 @@ public:
   {
     return::GetDlgItem (GetHWND (), id);
   };
+  bool SetDlgItemFont(int id, const TCHAR *fontname, int Pointsize,
+	  int Weight = FW_NORMAL, bool Italic = false, bool Underline = false, bool Strikeout = false);
+
+  UINT IsButtonChecked (int nIDButton) const;
 
   void PostMessage (UINT uMsg, WPARAM wParam = 0, LPARAM lParam = 0);
 
   virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
   {
+    return false;
+  };
+
+  virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code)
+  {
+    // Not processed.
     return false;
   };
 

@@ -19,6 +19,7 @@
 #include "proppage.h"
 #include "propsheet.h"
 #include "win32.h"
+#include "resource.h"
 
 bool PropertyPage::DoOnceForSheet = true;
 
@@ -111,6 +112,11 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
     case WM_INITDIALOG:
       {
 	OnInit ();
+
+	// Set header title font of each internal page to MS Sans Serif, Bold, 8 Pt.
+	// This will just silently fail on the first and last pages.
+	SetDlgItemFont(IDC_STATIC_HEADER_TITLE, "MS Sans Serif", 8, FW_BOLD);
+
 	// TRUE = Set focus to default control (in wParam).
 	return TRUE;
 	break;
@@ -130,13 +136,6 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 		GetOwner ()->SetHWNDFromPage (((NMHDR FAR *) lParam)->
 					      hwndFrom);
 		GetOwner ()->CenterWindow ();
-		// Add a minimize box to the parent property sheet.  We do this here
-		// instead of in the sheet class mainly because it will work with either
-		// modal or modeless sheets.
-		LONG style =::GetWindowLong (((NMHDR FAR *) lParam)->hwndFrom,
-					     GWL_STYLE);
-		::SetWindowLong (((NMHDR FAR *) lParam)->hwndFrom, GWL_STYLE,
-				 style | WS_MINIMIZEBOX);
 		DoOnceForSheet = false;
 	      }
 
@@ -145,19 +144,16 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 	      {
 		// Disable "Back" on first page.
 		GetOwner ()->SetButtons (PSWIZB_NEXT);
-		//::PropSheet_SetWizButtons(((NMHDR FAR *) lParam)->hwndFrom, PSWIZB_NEXT);
 	      }
 	    else if (IsLast)
 	      {
 		// Disable "Next", enable "Finish" on last page
 		GetOwner ()->SetButtons (PSWIZB_BACK | PSWIZB_FINISH);
-		//::PropSheet_SetWizButtons(((NMHDR FAR *) lParam)->hwndFrom, PSWIZB_BACK | PSWIZB_FINISH);
 	      }
 	    else
 	      {
 		// Middle page, enable both "Next" and "Back" buttons
 		GetOwner ()->SetButtons (PSWIZB_BACK | PSWIZB_NEXT);
-		//::PropSheet_SetWizButtons(((NMHDR FAR *) lParam)->hwndFrom, PSWIZB_BACK | PSWIZB_NEXT);
 	      }
 
 	    OnActivate ();
@@ -202,11 +198,23 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 	}
       break;
     case WM_COMMAND:
-      if (cmdproc != NULL)
-	{
-	  return HANDLE_WM_COMMAND (GetHWND (), wParam, lParam, cmdproc);
-	}
-      break;
+      {
+	bool retval;
+
+	retval =
+	  OnMessageCmd (LOWORD (wParam), (HWND) lParam, HIWORD (wParam));
+	if (retval == true)
+	  {
+	    // Handled, return 0
+	    SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+	    return TRUE;
+	  }
+	else if (cmdproc != NULL)
+	  {
+	    return HANDLE_WM_COMMAND (GetHWND (), wParam, lParam, cmdproc);
+	  }
+	break;
+      }
     default:
       break;
     }

@@ -51,8 +51,8 @@ protected:
 				      LPARAM lParam);
 
 public:
-  PropertyPage ();
-  virtual ~ PropertyPage ();
+    PropertyPage ();
+    virtual ~ PropertyPage ();
 
   PROPSHEETPAGE *GetPROPSHEETPAGEPtr ()
   {

@@ -38,8 +38,8 @@ class PropSheet:public Window
   HPROPSHEETPAGE *CreatePages ();
 
 public:
-  PropSheet ();
-  virtual ~ PropSheet ();
+    PropSheet ();
+    virtual ~ PropSheet ();
 
   // Should be private and friended to PropertyPage
   void SetHWNDFromPage (HWND h);

@@ -35,7 +35,23 @@ DLLVERSIONINFO;
 typedef HRESULT CALLBACK (*DLLGETVERSIONPROC) (DLLVERSIONINFO * pdvi);
 #define PROPSHEETHEADER_V1_SIZE 40
 
-
+// Sort of a "hidden" Windows structure.  Used in the PropSheetCallback.
+#include <pshpack1.h>
+typedef struct DLGTEMPLATEEX
+{
+  WORD dlgVer;
+  WORD signature;
+  DWORD helpID;
+  DWORD exStyle;
+  DWORD style;
+  WORD cDlgItems;
+  short x;
+  short y;
+  short cx;
+  short cy;
+}
+DLGTEMPLATEEX, *LPDLGTEMPLATEEX;
+#include <poppack.h>
 
 PropSheet::PropSheet ()
 {
@@ -83,6 +99,28 @@ PropSheet::CreatePages ()
   return retarray;
 }
 
+static int CALLBACK
+PropSheetProc (HWND hwndDlg, UINT uMsg, LPARAM lParam)
+{
+  switch (uMsg)
+    {
+    case PSCB_PRECREATE:
+      {
+	// Add a minimize box to the sheet/wizard.
+	if (((LPDLGTEMPLATEEX) lParam)->signature == 0xFFFF)
+	  {
+	    ((LPDLGTEMPLATEEX) lParam)->style |= WS_MINIMIZEBOX;
+	  }
+	else
+	  {
+	    ((LPDLGTEMPLATE) lParam)->style |= WS_MINIMIZEBOX;
+	  }
+      }
+      return TRUE;
+    }
+  return TRUE;
+}
+
 static DWORD
 GetPROPSHEETHEADERSize ()
 {
@@ -126,15 +164,16 @@ GetPROPSHEETHEADERSize ()
   return retval;
 }
 
-bool PropSheet::Create (const Window * Parent, DWORD Style)
+bool
+PropSheet::Create (const Window * Parent, DWORD Style)
 {
-  PROPSHEETHEADER
-    p;
+  PROPSHEETHEADER p;
 
   PageHandles = CreatePages ();
 
   p.dwSize = GetPROPSHEETHEADERSize ();
-  p.dwFlags = PSH_NOAPPLYNOW | PSH_WIZARD /*| PSH_MODELESS */ ;
+  p.dwFlags =
+    PSH_NOAPPLYNOW | PSH_WIZARD | PSH_USECALLBACK /*| PSH_MODELESS */ ;
   if (Parent != NULL)
     {
       p.hwndParent = Parent->GetHWND ();
@@ -147,7 +186,7 @@ bool PropSheet::Create (const Window * Parent, DWORD Style)
   p.nPages = NumPropPages;
   p.nStartPage = 0;
   p.phpage = PageHandles;
-  p.pfnCallback = NULL;
+  p.pfnCallback = PropSheetProc;
 
 
   PropertySheet (&p);
@@ -188,13 +227,15 @@ PropSheet::AddPage (PropertyPage * p)
   NumPropPages++;
 }
 
-bool PropSheet::SetActivePage (int i)
+bool
+PropSheet::SetActivePage (int i)
 {
   // Posts a message to the message queue, so this won't block
   return static_cast < bool > (::PropSheet_SetCurSel (GetHWND (), NULL, i));
 }
 
-bool PropSheet::SetActivePageByID (int resource_id)
+bool
+PropSheet::SetActivePageByID (int resource_id)
 {
   // Posts a message to the message queue, so this won't block
   return static_cast < bool >

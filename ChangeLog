@@ -1,3 +1,114 @@
+2001-01-04  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* cistring.cc: Run d2u.
+	* cistring.h: Run d2u.
+
+	* desktop.cc (etc_profile): Remove "test -f ./.bashrc && . ./.bashrc"
+	from the generated /etc/profile.  Bash will source this file
+	automatically, and having this here merely results in .bashrc being
+	executed twice. Run d2u.
+	* desktop.h: Run d2u.
+
+	* propsheet.cc: Run d2u.
+	(PropSheetProc): New function.  Add minimize box here instead of in
+	PropertyPage::DialogProc.
+	(PropSheet::Create): Change to use creation callback PropSheetProc.
+	(DLGTEMPLATEEX): Add 'hidden' Windows struct definition.
+
+	* propsheet.h: Run indent, d2u.
+	* proppage.h: Run indent, d2u.
+
+	* proppage.cc: Run d2u.
+	(PropertyPage::DialogProc): Remove minimize-box-adding
+	functionality.  Remove commented-out "PropSheet_SetWizButtons" calls.
+	Add support for calling virtual OnMessageCmd.  Add setting of fonts in
+	WM_INITDIALOG handler.
+	(resource.h): New include for resource IDs.
+
+	* res.rc: Resize and rearrange property page dialog templates
+	to bring them in line with "Microsoft's Backward Compatible Wizard 97"
+	specification.  Run d2u.
+	(IDD_SITE): Add an edit control and an "Add" button in order to
+	combine the IDD_SITE and IDD_OTHER_URL functionality onto one page.
+	(IDD_OTHER_URL): Remove dialog template.
+	(IDD_DLSTATUS): Remove dialog template.
+
+	* site.cc: Run d2u.
+	(SitePage::OnBack): Remove NEXT() macro invocation.
+	(SitePage::OnActivate): New member function.
+	(load_dialog): Remove.  Functionality subsumed into
+	SitePage::OnActivate.
+	(save_dialog): Change to support both list and user URLs.  Remove
+	OTHER_IDX and mirror_idx logic.
+	(SitePage::PopulateListBox): New member function.
+	(SitePage::CheckControlsAndDisableAccordingly): New member function.
+	(SitePage::OnMessageCmd): New override.
+	(check_if_enable_next): Remove.
+	(dialog_cmd): Remove.
+	(do_download_site_info_thread): Remove calls to NEXT() macro.
+	(SitePage::Create): Call the single-param PropertyPage::Create
+	overload.
+	(other_url): New static taken from other.cc.
+	(SitePage::OnNext): Remove mirror_idx logic.
+	(SitePage::OnInit): Remove "Other URL" entry from list box.  Remove
+	list box populating code, now handled in SitePage::PopulateListBox.
+	(mirror_idx, NO_IDX, OTHER_IDX): Remove.
+	(save_site_url): Fix potential buffer overflow problem.  Switched to
+	TCHAR in grossly premature preparation for multilingual support.
+	* site.h: Run d2u.
+	(SitePage::OnActivate): New member function.
+	(SitePage::CheckControlsAndDisableAccordingly) New member.
+	(SitePage::OnMessageCmd): New override.
+	(do_download_site_info_thread): Add MessageBox call on failure to
+	download site list.
+
+	* splash.cc: Run d2u.
+	(SplashPage::OnInit): Set the font for the title.
+	* splash.h: Run d2u.
+
+	* threebar.cc: Run d2u.
+	* threebar.h: Run d2u.
+
+	* window.h: Run d2u.
+	(Window::IsButtonChecked): New member function declaration.
+	(Window::OnMessageCmd): New member function.
+	(Window::SetDlgItemFont): New member function declaration.
+	(Window::MAXFONTS, Window::Fonts, Window::FontCounter): New data
+	members.
+	* window.cc: Run d2u.
+	(Window::IsButtonChecked): New member function definition.
+	(Window::SetDlgItemFont): New member function definition.
+	(Window::Window): Add initialization for FontCounter.
+	(Window::~Window): Delete any fonts we created.
+
+	* geturl.cc: Run d2u.
+	(progress): Remove the "3" field width from the "%3d"
+	percent-complete format indicator.  Causes line to not start at
+	beginning of text box, and does little to help with "jumping", since
+	the "bytes downloaded so far" field is variable-width anyway.  Change
+	kb/s format field to "%03.1" to 0-pad the kb/s number in the event of
+	painfully slow connections, or temporary slowdowns in faster
+	connections should such more-instantaneous functionality become
+	available.
+
+	* net.h: Run d2u.
+	(NetPage::OnMessageCmd): New member function declaration.
+	(NetPage::CheckIfEnableNext): New member function declaration.
+	* net.cc: Run d2u.
+	(NetPage::OnMessageCmd): New member function definition.
+	(dialog_cmd): Remove, subsumed into NetPage::OnMessageCmd.
+	(check_if_enable_next): Remove.
+	(NetPage::CheckIfEnableNext): New member function, subsumes
+	check_if_enable_next.
+	(propsheet.h): Add include.
+	(NetPage::Init): Add call to CheckIfEnableNext.
+	(load_dialog): Remove call to check_if_enable_next.
+	(NetPage::Create): Call single-template-ID-parameter overload of
+	PropertyPage::Create instead of three-parameter one.
+
+	* Makefile.in (OBJS): Remove other.o.
+	* other.cc: Remove file.
+
 2002-01-01  Robert Collins  <rbtcollins@hotmail.com>
 
 	* README: Update TODO's.

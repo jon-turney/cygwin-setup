@@ -88,8 +88,6 @@ static const char *etc_profile[] = {
   "$ '",
   "",
   "cd \"$HOME\"",
-  "",
-  "test -f ./.bashrc && . ./.bashrc",
   0
 };
 

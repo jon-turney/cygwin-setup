@@ -36,4 +36,7 @@ SplashPage::OnInit ()
   ver.Format (IDS_VERSION_INFO, version[0] ? version : "[unknown]");
 
   SetWindowText (GetDlgItem (IDC_VERSION), ver.c_str ());
+
+  // Set the font for the IDC_STATIC_WELCOME_TITLE
+  SetDlgItemFont(IDC_STATIC_WELCOME_TITLE, "Ariel", 12, FW_BOLD);
 }

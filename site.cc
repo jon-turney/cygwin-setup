@@ -45,12 +45,10 @@ static const char *cvsid =
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
 
-#define NO_IDX (-1)
-#define OTHER_IDX (-2)
-
 list < site_list_type, const char *, strcasecmp > site_list;
 list < site_list_type, const char *, strcasecmp > all_site_list;
-static int mirror_idx = NO_IDX;
+
+static char *other_url = 0;
 
 void
 site_list_type::init (char const *newurl)
@@ -92,40 +90,16 @@ site_list_type::site_list_type (char const *newurl)
 }
 
 static void
-check_if_enable_next (HWND h)
-{
-  EnableWindow (GetDlgItem (h, IDOK),
-		SendMessage (GetDlgItem (h, IDC_URL_LIST), LB_GETSELCOUNT, 0,
-			     0) > 0 ? 1 : 0);
-}
-
-static void
-load_dialog (HWND h)
-{
-  HWND listbox = GetDlgItem (h, IDC_URL_LIST);
-  for (size_t n = 1; n <= site_list.number (); n++)
-    {
-      int index = SendMessage (listbox, LB_FINDSTRING, (WPARAM) - 1,
-			       (LPARAM) site_list[n]->displayed_url);
-      if (index != LB_ERR)
-	{
-	  // Highlight the selected item
-	  SendMessage (listbox, LB_SELITEMRANGE, TRUE, (index << 16) | index);
-	  // Make sure it's fully visible
-	  SendMessage (listbox, LB_SETCARETINDEX, index, FALSE);
-	}
-    }
-  check_if_enable_next (h);
-}
-
-static void
 save_dialog (HWND h)
 {
-  HWND listbox = GetDlgItem (h, IDC_URL_LIST);
-  mirror_idx = 0;
+  // Remove anything that was previously in the selected site list.
   while (site_list.number () > 0)
-    /* we don't delete the object because it's stored in the all_site_list. */
-    site_list.removebyindex (1);
+    {
+      // we don't delete the object because it's stored in the all_site_list.
+      site_list.removebyindex (1);
+    }
+
+  HWND listbox = GetDlgItem (h, IDC_URL_LIST);
   int sel_count = SendMessage (listbox, LB_GETSELCOUNT, 0, 0);
   if (sel_count > 0)
     {
@@ -140,15 +114,8 @@ save_dialog (HWND h)
 	{
 	  int mirror =
 	    SendMessage (listbox, LB_GETITEMDATA, sel_buffer[n], 0);
-	  if (mirror == OTHER_IDX)
-	    mirror_idx = OTHER_IDX;
-	  else
-	    site_list.registerbyobject (*all_site_list[mirror]);
+	  site_list.registerbyobject (*all_site_list[mirror]);
 	}
-    }
-  else
-    {
-      NEXT (IDD_SITE);
     }
 }
 
@@ -160,27 +127,15 @@ save_site_url ()
     {
       if (f)
 	{
-	  char temp[_MAX_PATH];
-	  /* TODO: potential buffer overflow. we need snprintf asap. */
 	  // FIXME: write all selected sites
+	  TCHAR *temp;
+	  temp = new TCHAR[sizeof (TCHAR) * (strlen (site_list[n]->url) + 2)];
 	  sprintf (temp, "%s\n", site_list[n]->url);
 	  f->write (temp, strlen (temp));
+	  delete[]temp;
 	}
     }
   delete f;
-}
-
-static BOOL
-dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
-{
-  switch (id)
-    {
-
-    case IDC_URL_LIST:
-      check_if_enable_next (h);
-      break;
-    }
-  return 0;
 }
 
 static int
@@ -302,7 +257,8 @@ do_download_site_info_thread (void *p)
       if (get_site_list (hinst, h))
 	{
 	  // Error: Couldn't download the site info.  Go back to the Net setup page.
-	  NEXT (IDD_NET);
+	  MessageBox (h, TEXT ("Can't get list of download sites.\n\
+Make sure your network settings are corect and try again."), NULL, MB_OK);
 
 	  // Tell the progress page that we're done downloading
 	  Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0,
@@ -313,7 +269,6 @@ do_download_site_info_thread (void *p)
     }
 
   // Everything worked, go to the site select page
-  NEXT (IDD_SITE);
 
   // Tell the progress page that we're done downloading
   Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_SITE);
@@ -334,32 +289,15 @@ do_download_site_info (HINSTANCE hinst, HWND owner)
 
 }
 
-bool
-SitePage::Create ()
+bool SitePage::Create ()
 {
-  return PropertyPage::Create (NULL, dialog_cmd, IDD_SITE);
+  return PropertyPage::Create (IDD_SITE);
 }
 
 void
 SitePage::OnInit ()
 {
-  HWND h = GetHWND ();
-  int j;
-  HWND listbox;
-
   get_saved_sites ();
-
-  listbox = GetDlgItem (IDC_URL_LIST);
-  for (size_t i = 1; i <= all_site_list.number (); i++)
-    {
-      j =
-	SendMessage (listbox, LB_ADDSTRING, 0,
-		     (LPARAM) all_site_list[i]->displayed_url);
-      SendMessage (listbox, LB_SETITEMDATA, j, i);
-    }
-  j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM) "Other URL");
-  SendMessage (listbox, LB_SETITEMDATA, j, OTHER_IDX);
-  load_dialog (h);
 }
 
 long
@@ -368,19 +306,14 @@ SitePage::OnNext ()
   HWND h = GetHWND ();
 
   save_dialog (h);
-  if (mirror_idx == OTHER_IDX)
-    NEXT (IDD_OTHER_URL);
-  else
-    {
-      save_site_url ();
-      NEXT (IDD_S_LOAD_INI);
+  save_site_url ();
 
-      for (size_t n = 1; n <= site_list.number (); n++)
-	log (0, "site: %s", site_list[n]->url);
+  // Log all the selected URLs from the list.    
+  for (size_t n = 1; n <= site_list.number (); n++)
+    log (0, "site: %s", site_list[n]->url);
 
-      Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
-      return IDD_INSTATUS;
-    }
+  Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
+  return IDD_INSTATUS;
 
   return 0;
 }
@@ -391,6 +324,126 @@ SitePage::OnBack ()
   HWND h = GetHWND ();
 
   save_dialog (h);
-  NEXT (IDD_NET);
+
+  // Go back to the net connection type page
   return 0;
+}
+
+void
+SitePage::OnActivate ()
+{
+  // Fill the list box with all known sites.
+  PopulateListBox ();
+
+  // Load the user URL box with whatever it was last time.
+  eset (GetHWND (), IDC_EDIT_USER_URL, other_url);
+
+  // Get the enabled/disabled states of the controls set accordingly.
+  CheckControlsAndDisableAccordingly ();
+}
+
+void
+SitePage::CheckControlsAndDisableAccordingly () const
+{
+  DWORD ButtonFlags = PSWIZB_BACK;
+
+  // Check that at least one download site is selected.
+  if (SendMessage (GetDlgItem (IDC_URL_LIST), LB_GETSELCOUNT, 0, 0) > 0)
+    {
+      // At least one official site selected, enable "Next".
+      ButtonFlags |= PSWIZB_NEXT;
+    }
+  GetOwner ()->SetButtons (ButtonFlags);
+}
+
+void
+SitePage::PopulateListBox ()
+{
+  int j;
+  HWND listbox = GetDlgItem (IDC_URL_LIST);
+
+  // Populate the list box with the URLs.
+  SendMessage (listbox, LB_RESETCONTENT, 0, 0);
+  for (size_t i = 1; i <= all_site_list.number (); i++)
+    {
+      j = SendMessage (listbox, LB_ADDSTRING, 0,
+		       (LPARAM) all_site_list[i]->displayed_url);
+      SendMessage (listbox, LB_SETITEMDATA, j, i);
+    }
+
+  // Select the selected ones.
+  for (size_t n = 1; n <= site_list.number (); n++)
+    {
+      int index = SendMessage (listbox, LB_FINDSTRING, (WPARAM) - 1,
+			       (LPARAM) site_list[n]->displayed_url);
+      if (index != LB_ERR)
+	{
+	  // Highlight the selected item
+	  SendMessage (listbox, LB_SELITEMRANGE, TRUE, (index << 16) | index);
+	  // Make sure it's fully visible
+	  SendMessage (listbox, LB_SETCARETINDEX, index, FALSE);
+	}
+    }
+}
+
+bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
+{
+  switch (id)
+    {
+    case IDC_EDIT_USER_URL:
+      {
+	if (code == EN_CHANGE)
+	  {
+	    // Text in edit box may have changed.
+	    other_url = eget (GetHWND (), IDC_EDIT_USER_URL, other_url);
+	  }
+	break;
+      }
+    case IDC_URL_LIST:
+      {
+	if (code == LBN_SELCHANGE)
+	  {
+	    CheckControlsAndDisableAccordingly ();
+	  }
+	break;
+      }
+    case IDC_BUTTON_ADD_URL:
+      {
+	if (code == BN_CLICKED)
+	  {
+	    // User pushed the Add button.
+	    other_url = eget (GetHWND (), IDC_EDIT_USER_URL, other_url);
+	    site_list_type *
+	      newsite =
+	      new
+	      site_list_type (other_url);
+	    site_list_type & listobj =
+	      all_site_list.registerbyobject (*newsite);
+	    if (&listobj != newsite)
+	      {
+		// That site was already registered
+		delete
+		  newsite;
+	      }
+	    else
+	      {
+		// Log the adding of this new URL.
+		log (0, "Adding site: %s", other_url);
+	      }
+
+	    // Assume the user wants to use it and select it for him.
+	    site_list.registerbyobject (listobj);
+
+	    // Update the list box.
+	    PopulateListBox ();
+	  }
+	break;
+      }
+    default:
+      // Wasn't recognized or handled.
+      return false;
+    }
+
+  // Was handled since we never got to default above.
+  return true;
 }

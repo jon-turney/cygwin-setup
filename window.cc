@@ -38,10 +38,19 @@ Window::Window ()
 {
   WindowHandle = NULL;
   Parent = NULL;
+  FontCounter = 0;
 }
 
 Window::~Window ()
 {
+  // Delete any fonts we created.
+  int i;
+  for (i = 0; i < FontCounter; i++)
+    {
+      DeleteObject (Fonts[i]);
+    }
+  FontCounter = 0;
+
   // FIXME: Maybe do some reference counting and do this Unregister
   // when there are no more of us left.  Not real critical unless
   // we're in a DLL which we're not right now.
@@ -259,4 +268,50 @@ void
 Window::PostMessage (UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   ::PostMessage (GetHWND (), uMsg, wParam, lParam);
+}
+
+UINT Window::IsButtonChecked (int nIDButton) const
+{
+  return::IsDlgButtonChecked (GetHWND (), nIDButton);
+}
+
+bool
+  Window::SetDlgItemFont (int id, const TCHAR * fontname, int Pointsize,
+			  int Weight, bool Italic, bool Underline,
+			  bool Strikeout)
+{
+  HWND ctrl;
+  ctrl = GetDlgItem (id);
+  if (ctrl == NULL)
+    {
+      // Couldn't get that ID
+      return false;
+    }
+
+  // We need the DC for the point size calculation.
+  HDC hdc = GetDC (ctrl);
+
+  // Create the font.  We have to keep it around until the dialog item
+  // goes away - basically until we're destroyed.
+  HFONT hfnt;
+  hfnt =
+    CreateFont (-MulDiv (Pointsize, GetDeviceCaps (hdc, LOGPIXELSY), 72), 0,
+		0, 0, Weight, Italic ? TRUE : FALSE,
+		Underline ? TRUE : FALSE, Strikeout ? TRUE : FALSE,
+		ANSI_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS,
+		PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE, fontname);
+  if (hfnt == NULL)
+    {
+      // Font creation failed
+      return false;
+    }
+
+  // Set the new fint, and redraw any text which was already in the item.
+  SendMessage (ctrl, WM_SETFONT, (WPARAM) hfnt, TRUE);
+
+  // Save it for later.
+  Fonts[FontCounter] = hfnt;
+  FontCounter++;
+
+  return true;
 }

@@ -31,16 +31,18 @@ static const char *cvsid =
 #include "log.h"
 
 #include "net.h"
-
+#include "propsheet.h"
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
 
 static int rb[] = { IDC_NET_IE5, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
 
-static void
-check_if_enable_next (HWND h)
+void
+NetPage::CheckIfEnableNext ()
 {
   int e = 0, p = 0, pu = 0;
+  DWORD ButtonFlags = PSWIZB_BACK;
+
   if (net_method == IDC_NET_IE5)
     pu = 1;
   if (net_method == IDC_NET_IE5 || net_method == IDC_NET_DIRECT)
@@ -51,9 +53,16 @@ check_if_enable_next (HWND h)
       if (net_proxy_host && net_proxy_port)
 	e = 1;
     }
-  EnableWindow (GetDlgItem (h, IDOK), e);
-  EnableWindow (GetDlgItem (h, IDC_PROXY_HOST), p);
-  EnableWindow (GetDlgItem (h, IDC_PROXY_PORT), p);
+	if (e)
+	{
+		// There's something in the proxy and port boxes, enable "Next".
+		ButtonFlags |= PSWIZB_NEXT;
+	}
+
+  GetOwner ()->SetButtons (ButtonFlags);
+
+  EnableWindow (GetDlgItem (IDC_PROXY_HOST), p);
+  EnableWindow (GetDlgItem (IDC_PROXY_PORT), p);
 }
 
 static void
@@ -64,7 +73,6 @@ load_dialog (HWND h)
   if (net_proxy_port == 0)
     net_proxy_port = 80;
   eset (h, IDC_PROXY_PORT, net_proxy_port);
-  check_if_enable_next (h);
 }
 
 static void
@@ -75,28 +83,10 @@ save_dialog (HWND h)
   net_proxy_port = eget (h, IDC_PROXY_PORT);
 }
 
-static BOOL
-dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
-{
-  switch (id)
-    {
-
-    case IDC_NET_IE5:
-    case IDC_NET_DIRECT:
-    case IDC_NET_PROXY:
-    case IDC_PROXY_HOST:
-    case IDC_PROXY_PORT:
-      save_dialog (h);
-      check_if_enable_next (h);
-      break;
-    }
-  return 0;
-}
-
 bool
 NetPage::Create ()
 {
-  return PropertyPage::Create (NULL, dialog_cmd, IDD_NET);
+  return PropertyPage::Create (IDD_NET);
 }
 
 void
@@ -106,6 +96,7 @@ NetPage::OnInit ()
 
   net_method = IDC_NET_DIRECT;
   load_dialog (h);
+  CheckIfEnableNext();
 
   // Check to see if any radio buttons are selected. If not, select a default.
   if ((!SendMessage (GetDlgItem (IDC_NET_IE5), BM_GETCHECK, 0, 0) ==
@@ -135,4 +126,27 @@ NetPage::OnBack ()
 {
   save_dialog (GetHWND ());
   return 0;
+}
+
+bool
+NetPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
+{
+  switch (id)
+    {
+    case IDC_NET_IE5:
+    case IDC_NET_DIRECT:
+    case IDC_NET_PROXY:
+    case IDC_PROXY_HOST:
+    case IDC_PROXY_PORT:
+      save_dialog (GetHWND());
+      CheckIfEnableNext ();
+      break;
+
+    default:
+      // Wasn't recognized or handled.
+      return false;
+    }
+
+  // Was handled since we never got to default above.
+  return true;
 }
