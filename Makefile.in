@@ -100,7 +100,7 @@ $(libmingw32): $(mingw_build)/Makefile
 	@$(MAKE) -C $(@D) $(@F)
 
 $(ZLIB): zlib/Makefile
-	@$(MAKE) -C zlib CFLAGS='$(MINGW_CFLAGS)'
+	@$(MAKE) -C zlib CFLAGS='$(MINGW_CFLAGS) -DNO_ERRNO_H -Derrno=_errno'
 
 %.exe.gz: %.exe
 	gzip -9nf $?

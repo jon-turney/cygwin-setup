@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <wininet.h>
 #include <assert.h>
+#include <ctype.h>
 #include <direct.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -13,40 +14,76 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-/*
- * TODO:
- *    Setup type: User, Full, Custom
- *
- */
-
 #include "setup.h"
 #include "strarry.h"
 #include "zlib/zlib.h"
 
 #define CYGNUS_KEY "Software\\Cygnus Solutions"
 #define DEF_ROOT "C:\\cygwin"
+#define DOWNLOAD_SUBDIR "latest"
+#define SCREEN_LINES 25
+#define COMMAND9X "command.com /E:4096 /c "
+
+char *wd;
 
 int downloaddir (HINTERNET session, const char *url);
+char *pathcat (const char *arg1, const char *arg2);
+
+int
+xsystem (const char *cmd)
+{
+  int retval;
+  char *command;
+
+  if (cmd[1] != ':' && strncmp (cmd, "\\\\", 2) != 0)
+    command = pathcat (wd, cmd);
+  else
+    command = xstrdup (cmd);
+
+  retval = system (command);
+
+  xfree (command);
+
+  return retval;
+}
 
 int
 create_shortcut (const char *target, const char *shortcut)
 {
   HRESULT hres;
   IShellLink *sl;
+  char *path, *args;
 
   if (!SUCCEEDED (CoInitialize (NULL)))
     return 0;
 
   hres =
     CoCreateInstance (&CLSID_ShellLink, NULL,
-		      CLSCTX_INPROC_SERVER,
-		      &IID_IShellLink,
-		      (LPVOID *) & sl);
+		      CLSCTX_INPROC_SERVER, &IID_IShellLink, (LPVOID *) & sl);
   if (SUCCEEDED (hres))
     {
       IPersistFile *pf;
+      int quoted = 0;
+      char *c;
 
-      sl->lpVtbl->SetPath (sl, target);
+      /* Get the command only. */
+      path = xstrdup (target);
+      for (c = path; quoted || (*c != ' ' && *c); ++c)
+	{
+	  if (*c == '\"')
+	    quoted = !quoted;
+	}
+      if (*c)
+	{
+	  *c = '\0';
+	  args = c + 1;
+	}
+      else
+	args = "";
+
+      sl->lpVtbl->SetPath (sl, path);
+      sl->lpVtbl->SetArguments (sl, args);
+      xfree (path);
 
       hres = sl->lpVtbl->QueryInterface (sl, &IID_IPersistFile, &pf);
 
@@ -103,8 +140,7 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
 	      || fwrite (buffer, 1, bytes_needed, out) != bytes_needed)
 	    {
 	      printf ("Unable to write decompressed file to %s: %s",
-		      name,
-		      _strerror (""));
+		      name, _strerror (""));
 	    }
 	  else
 	    retval = TRUE;
@@ -115,8 +151,7 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
 	  const char *msg = gzerror (gzf, &errnum);
 	  printf ("bytes_needed = %d, ", bytes_needed);
 	  printf ("Unable to decompress %s: Error #%d, %s\n", name,
-		  errnum,
-		  msg);
+		  errnum, msg);
 	}
       xfree (buffer);
       fclose (out);
@@ -147,8 +182,7 @@ pathcvt (char target, const char *path)
       /* Get the Windows version of the root path from cygpath. */
       sprintf (buffer, "cygpath -%c \"%s\"", target, path);
       if (in && dup2 (hpipe[1], fileno (stdout)) == 0
-	  && close (hpipe[1]) == 0
-	  && system (buffer) == 0)
+	  && close (hpipe[1]) == 0 && xsystem (buffer) == 0)
 	{
 	  fgets (buffer, sizeof (buffer), in);
 	  buffer[strcspn (buffer, "\r\n")] = '\0';
@@ -196,7 +230,7 @@ pathcat (const char *arg1, const char *arg2)
   char path[_MAX_PATH];
   size_t len;
 
-  assert (!strchr (arg1, '/') && !strchr (arg2, '/'));
+  assert (!strchr (arg1, '/'));
   strcpy (path, arg1);
 
   /* Remove any trailing slash */
@@ -237,7 +271,7 @@ recurse_dirs (const char *dir, const char *logpath)
 		continue;
 
 	      if (find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY
-	      /* && strlen(find_data.cFileName) */ )
+		  /* && strlen(find_data.cFileName) */ )
 		{
 		  char *subdir = pathcat (dir, find_data.cFileName);
 		  if (subdir)
@@ -290,7 +324,7 @@ recurse_dirs (const char *dir, const char *logpath)
 		      xfree (dpath);
 
 		      printf ("Installing %s\n", find_data.cFileName);
-		      if (system (command))
+		      if (xsystem (command))
 			{
 			  printf ("Unable to extract \"%s\": %s",
 				  find_data.cFileName, _strerror (""));
@@ -315,14 +349,12 @@ recurse_dirs (const char *dir, const char *logpath)
 }
 
 
-/* Add an element to the beginning of the PATH. */
 void
-addpath (const char *element)
+setpath (const char *element)
 {
-  char *path = getenv ("PATH");
-  char *buffer = xmalloc (strlen (path) + strlen (element) + 7);
+  char *buffer = xmalloc (strlen (element) + 7);
 
-  sprintf (buffer, "PATH=%s;%s", element, path);
+  sprintf (buffer, "PATH=%s", element);
   putenv (buffer);
 
   xfree (buffer);
@@ -345,23 +377,56 @@ prompt (const char *text, const char *def)
 int
 optionprompt (const char *text, SA * options)
 {
-  size_t n, response;
+  size_t n, lbound, response;
   char buf[5];
 
-  puts (text);
-
-  for (n = 0; n < options->count; ++n)
-    printf ("\t%d. %s\n", n + 1, options->array[n]);
+  n = 0;
 
   do
     {
-      printf ("Select an option from 1-%d: ", n);
+      char *or;
+      size_t base = n;
+      enum
+      { CONTINUE, REPEAT, ALL }
+      mode;
+
+      if (!base)
+	puts (text);
+
+      for (n = 0; n < base + SCREEN_LINES - 2 && n < options->count; ++n)
+	printf ("\t%d. %s\n", n + 1, options->array[n]);
+
+      lbound = n - (SCREEN_LINES - (base ? 2 : 3));
+      if (n < options->count)
+	{
+	  mode = CONTINUE;
+	  or = " or [continue]";
+	}
+      else if (options->count > SCREEN_LINES - 2)
+	{
+	  mode = REPEAT;
+	  or = " or [repeat]";
+	}
+      else
+	{
+	  mode = ALL;
+	  or = "";
+	}
+      printf ("Select an option from %d-%d%s: ", lbound, n, or);
       if (!fgets (buf, sizeof (buf), stdin))
 	continue;
 
+      if (mode == CONTINUE && (!isalnum (*buf) || strchr ("cC", *buf)))
+	continue;
+      else if (mode == REPEAT && (!isalnum (*buf) || strchr ("rR", *buf)))
+	{
+	  n = 0;
+	  continue;
+	}
+
       response = atoi (buf);
     }
-  while (response < 1 || response > n);
+  while (response < lbound || response > n);
 
   return response - 1;
 }
@@ -423,8 +488,7 @@ geturl (HINTERNET session, const char *url, const char *file)
 		    {
 		      char *user, *password;
 
-		      /* Have to read any pending data, WININET
-		         peculiarity. */
+		      /* Have to read any pending data, WININET peculiarity. */
 		      char *buffer = xmalloc (len);
 		      do
 			{
@@ -452,7 +516,7 @@ geturl (HINTERNET session, const char *url, const char *file)
 			      (connect, INTERNET_OPTION_PROXY_PASSWORD,
 			       password,
 			       strlen (password))
-			    || !HttpSendRequest (connect, NULL, 0, NULL, 0))
+			      || !HttpSendRequest (connect, NULL, 0, NULL, 0))
 			    {
 			      xfree (password);
 			      winerror ();
@@ -493,8 +557,7 @@ geturl (HINTERNET session, const char *url, const char *file)
 		  {
 		    DWORD readbytes;
 
-		    if (!InternetReadFile
-			(connect, buffer, size, &readbytes))
+		    if (!InternetReadFile (connect, buffer, size, &readbytes))
 		      winerror ();
 		    else if (!readbytes)
 		      {
@@ -634,8 +697,7 @@ downloaddir (HINTERNET session, const char *url)
 }
 
 
-HINTERNET
-opensession ()
+HINTERNET opensession ()
 {
   return InternetOpen ("Cygwin Setup", INTERNET_OPEN_TYPE_PRECONFIG, NULL,
 		       NULL, 0);
@@ -680,10 +742,10 @@ create_uninstall (const char *folder, const char *shellscut,
   FILE *logfile = fopen (log, "r");
   clock_t start;
 
-  /* I am not completely sure how safe it is to "preload" cygwin1.dll, but
-     it greatly speeds up the execution of cygpath which is eventually
-     called by utodpath in a loop that can be executed thousands of times. */
-  HINSTANCE lib = NULL;		// LoadLibrary("\\usr\\bin\\cygwin1.dll");
+  /* I am not completely sure how safe it is to "preload" cygwin1.dll, but it 
+     greatly speeds up the execution of cygpath which is eventually called by 
+     utodpath in a loop that can be executed thousands of times. */
+  HINSTANCE lib = LoadLibrary ("\\usr\\bin\\cygwin1.dll");
   printf ("Creating the uninstall file... 0%%");
   fflush (stdout);
   start = clock ();
@@ -716,8 +778,7 @@ create_uninstall (const char *folder, const char *shellscut,
 
 	      getcwd (cwd, sizeof (cwd));
 	      fprintf (uninst,
-		       "@echo off\n" "%c:\n" "cd \"%s\"\n", *cwd,
-		       cwd);
+		       "@echo off\n" "%c:\n" "cd \"%s\"\n", *cwd, cwd);
 	      for (n = 0; n < lines.count; ++n)
 		{
 		  char *dpath;
@@ -766,7 +827,7 @@ create_uninstall (const char *folder, const char *shellscut,
 #ifndef NDEBUG
   printf ("\nUninstall script creation took %.0f seconds.\n",
 	  (double) (clock () - start) / CLK_TCK);
-#endif /*
+#endif /* 
         */
   if (lib)
     FreeLibrary (lib);
@@ -814,10 +875,31 @@ do_start_menu (const char *root, const char *logfile)
 	      shortcut = pathcat (folder, "Cygwin 1.1.0.lnk");
 	      if (shortcut)
 		{
-		  if (create_shortcut (batch_name, shortcut))
+		  char *cmdline;
+		  OSVERSIONINFO verinfo;
+		  verinfo.dwOSVersionInfoSize = sizeof (verinfo);
+
+		  /* If we are running Win9x, build a command line. */
+		  GetVersionEx (&verinfo);
+		  if (verinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
+		    cmdline = xstrdup (batch_name);
+		  else
+		    {
+		      char *pccmd;
+		      char windir[MAX_PATH];
+		      GetWindowsDirectory (windir, sizeof (windir));
+
+		      pccmd = pathcat (windir, COMMAND9X);
+		      cmdline =
+			xmalloc (strlen (pccmd) + strlen (batch_name) + 1);
+		      strcat (strcpy (cmdline, pccmd), batch_name);
+		      xfree (pccmd);
+		    }
+
+		  if (create_shortcut (cmdline, shortcut))
 		    {
 		      char *uninstscut =
-		      pathcat (folder, "Uninstall Cygwin 1.1.0.lnk");
+			pathcat (folder, "Uninstall Cygwin 1.1.0.lnk");
 		      if (uninstscut)
 			{
 			  if (create_uninstall
@@ -826,6 +908,7 @@ do_start_menu (const char *root, const char *logfile)
 			  xfree (uninstscut);
 			}
 		    }
+		  xfree (cmdline);
 		  xfree (shortcut);
 		}
 	      xfree (folder);
@@ -861,9 +944,10 @@ getdownloadsource ()
 	  size_t option;
 	  int ready4urls = 0;
 	  char buf[256];
-	  SA urls;
+	  SA urls, names;	/* These must stay sync'd. */
 
 	  sa_init (&urls);
+	  sa_init (&names);
 
 	  while (fgets (buf, sizeof (buf), in))
 	    {
@@ -882,10 +966,21 @@ getdownloadsource ()
 
 		      if (ref[len - 1] == '/')
 			{
+			  char *name;
 			  char *url = xmalloc (len + 13);
 
-			  strcat (strcpy (url, ref), "cygwin-1.1.0");
+			  strcat (strcpy (url, ref), DOWNLOAD_SUBDIR);
 			  sa_add (&urls, url);
+
+			  /* Get just the sites name. */
+			  name = strstr (url, "//");
+			  if (name)
+			    name += 2;
+			  else
+			    name = url;
+			  *strchr (name, '/') = '\0';
+			  sa_add (&names, url);
+
 			  xfree (url);
 			}
 		    }
@@ -893,14 +988,16 @@ getdownloadsource ()
 	    }
 
 	  sa_add (&urls, "Other");
+	  sa_add (&names, "Other");
 	  option =
-	    optionprompt ("Select a download location close to you:", &urls);
+	    optionprompt ("Select a download location close to you:", &names);
 	  if (option == urls.count - 1)
 	    retval = prompt ("Download url", NULL);
 	  else
 	    retval = xstrdup (urls.array[option]);
 
 	  sa_cleanup (&urls);
+	  sa_cleanup (&names);
 	}
     }
   unlink (filename);
@@ -955,12 +1052,11 @@ mkmount (const char *mountexedir, const char *root, const char *dospath,
   /* Mount the directory. */
   mount = pathcat (mountexedir, "mount");
   sprintf (buffer, "%s %s -b \"%s\" %s", mount, force ? "-f" : "",
-	   fulldospath,
-	   unixpath);
+	   fulldospath, unixpath);
   xfree (mount);
   xfree (fulldospath);
 
-  return system (buffer) == 0;
+  return xsystem (buffer) == 0;
 }
 
 int
@@ -973,21 +1069,19 @@ main ()
     }
   else
     {
-      char *wd = _getcwd (NULL, 0);
       char *defroot, *update;
       char *root;
       int done;
       HKEY cu = NULL, lm = NULL;
 
-      addpath (wd);
+      wd = _getcwd (NULL, 0);
+      setpath (wd);
 
       /* Begin prompting user for setup requirements. */
       printf ("Press <enter> to accept the default value.\n");
 
-      /* If some Cygnus software has been installed, assume there is a
-         root
-         mount in the registry. Otherwise use C:\cygwin for the
-         default root
+      /* If some Cygnus software has been installed, assume there is a root
+         mount in the registry. Otherwise use C:\cygwin for the default root
          directory. */
       if (RegOpenKey (HKEY_CURRENT_USER, CYGNUS_KEY, &cu) == ERROR_SUCCESS
 	  || RegOpenKey (HKEY_LOCAL_MACHINE, CYGNUS_KEY,
@@ -1002,8 +1096,7 @@ main ()
       else
 	defroot = xstrdup (DEF_ROOT);
 
-      /* Get the root directory and warn the user if there are any spaces
-         in
+      /* Get the root directory and warn the user if there are any spaces in
          the path. */
       for (done = 0; !done;)
 	{
@@ -1042,14 +1135,12 @@ main ()
 	}
       xfree (update);
 
-      /* Make the root directory the current directory so that
-         recurse_dirs
+      /* Make the root directory the current directory so that recurse_dirs
          will * extract the packages into the correct path. */
       if (chdir (root) == -1)
 	{
 	  printf ("Unable to make \"%s\" the current directory: %s\n",
-		  root,
-		  _strerror (""));
+		  root, _strerror (""));
 	}
       else
 	{
@@ -1060,11 +1151,10 @@ main ()
 	      _chdrive (toupper (*root) - 'A' + 1);
 
 	      /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
-	      mkmount (wd, root, "usr\\bin", "/bin", 0);
-	      mkmount (wd, root, "usr\\lib", "/lib", 0);
+	      mkmount (wd, root, "usr\\bin", "/bin", 1);
+	      mkmount (wd, root, "usr\\lib", "/lib", 1);
 
-	      /* Extract all of the packages that are stored with setup or
-	         in
+	      /* Extract all of the packages that are stored with setup or in
 	         subdirectories of its location */
 	      if (recurse_dirs (wd, logpath))
 		{
@@ -1075,7 +1165,7 @@ main ()
 		  mount = pathcat (wd, "mount");
 		  sprintf (buffer, "%s -f -b \"%s\" /", mount, root);
 		  xfree (mount);
-		  if (system (buffer))
+		  if (xsystem (buffer))
 		    {
 		      printf
 			("Unable to mount \"%s\" as the root directory: %s",

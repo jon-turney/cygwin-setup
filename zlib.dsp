@@ -85,59 +85,59 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\adler32.c
+SOURCE=.\zlib\adler32.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\compress.c
+SOURCE=.\zlib\compress.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\crc32.c
+SOURCE=.\zlib\crc32.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\deflate.c
+SOURCE=.\zlib\deflate.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\gzio.c
+SOURCE=.\zlib\gzio.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\infblock.c
+SOURCE=.\zlib\infblock.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\infcodes.c
+SOURCE=.\zlib\infcodes.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\inffast.c
+SOURCE=.\zlib\inffast.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\inflate.c
+SOURCE=.\zlib\inflate.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\inftrees.c
+SOURCE=.\zlib\inftrees.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\infutil.c
+SOURCE=.\zlib\infutil.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\trees.c
+SOURCE=.\zlib\trees.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\uncompr.c
+SOURCE=.\zlib\uncompr.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\zutil.c
+SOURCE=.\zlib\zutil.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -145,47 +145,47 @@ SOURCE=.\zlib-1.1.3\zutil.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\deflate.h
+SOURCE=.\zlib\deflate.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\infblock.h
+SOURCE=.\zlib\infblock.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\infcodes.h
+SOURCE=.\zlib\infcodes.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\inffast.h
+SOURCE=.\zlib\inffast.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\inffixed.h
+SOURCE=.\zlib\inffixed.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\inftrees.h
+SOURCE=.\zlib\inftrees.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\infutil.h
+SOURCE=.\zlib\infutil.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\trees.h
+SOURCE=.\zlib\trees.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\zconf.h
+SOURCE=.\zlib\zconf.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\zlib.h
+SOURCE=.\zlib\zlib.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\zlib-1.1.3\zutil.h
+SOURCE=.\zlib\zutil.h
 # End Source File
 # End Group
 # End Target
