@@ -157,7 +157,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 {
   int errors = 0;
   Progress.SetText2 (source.Base ());
-  if (!io_stream::exists (source.Cached ()))
+  if (!source.Cached () || !io_stream::exists (source.Cached ()))
     {
       note (NULL, IDS_ERR_OPEN_READ, source.Cached (), "No such file");
       return 1;

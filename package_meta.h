@@ -46,6 +46,7 @@ public:
     next = cat.packages;
     cat.packages = this;
   };
+  ~CategoryPackage ();
   Category & key;
   CategoryPackage *next;	/* The next package pointer in the list */
   packagemeta *pkg;
@@ -74,9 +75,7 @@ public:
   {
   };
 
-  ~packagemeta ()
-  {
-  };
+  ~packagemeta ();
 
   void add_version (packageversion &);
   void set_installed (packageversion &);
