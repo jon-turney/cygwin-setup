@@ -1,3 +1,12 @@
+Sat Apr 22 16:37:03 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (findhref): Decode file size, when appropriate.
+	(needfile): New function.  Returns 1 when file should be
+	downloaded.
+	(processdirlisting): Always download if file size does not
+	match.  Prompt when download fails for some reason.
+	(getdownloadsource): Accomodate findhref argument changes.
+
 Sat Apr 22 15:13:42 2000  Christopher Faylor <cgf@cygnus.com>
 
 	Throughout, use global session handle rather than reinitializing for

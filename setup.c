@@ -50,7 +50,7 @@
 
 char *wd = NULL;
 
-int downloaddir (const char *url);
+static int downloaddir (const char *url);
 
 static SA files = {NULL, 0, 0};
 static FILE *logfp = NULL;
@@ -67,7 +67,7 @@ warning (const char *fmt, ...)
     vfprintf (logfp, fmt, args);
 }
 
-int
+static int
 create_shortcut (const char *target, const char *shortcut)
 {
   HRESULT hres;
@@ -621,7 +621,7 @@ geturl (const char *url, const char *file, int verbose)
 }
 
 char *
-findhref (char *buffer)
+findhref (char *buffer, char *date, size_t *filesize)
 {
   char *ref;
   char *anchor = strstr (buffer, "<A");
@@ -639,18 +639,54 @@ findhref (char *buffer)
 
   if (ref)
     {
+      int eatspace;
+      char *p, *q;
+      char digits[20];
+      char *diglast = digits + sizeof (digits) - 1;
       int len;
+
+      if (filesize && (anchor == buffer || !isspace (anchor[-1])))
+	return 0;
+
       ref += ref[5] == '"' ? 6 : 5;
 
       len = strcspn (ref, "\" >");
 
       ref[len] = '\0';
+      if (!filesize)
+	return ref;
+
+      *filesize = 0;
+      eatspace = 1;
+      *diglast = '\0';
+      for (p = anchor, q = diglast; --p >= buffer; )
+	if (!isspace (*p))
+	  {
+	    eatspace = 0;
+	    if (isdigit (*p))
+	      *--q = *p;
+	  }
+	else if (!eatspace)
+	  break;
+
+      if (q < diglast)
+	*filesize = atoi (q);
     }
 
   return ref;
 }
 
-int
+static int
+needfile (const char *filename, char *date, size_t filesize)
+{
+  struct _stat st;
+
+  if (!filesize || _stat (filename, &st))
+    return 1;	/* file doesn't exist or is somehow not accessible */
+  return st.st_size != filesize;
+}
+
+static int
 processdirlisting (const char *urlbase, const char *file)
 {
   int retval;
@@ -661,80 +697,118 @@ processdirlisting (const char *urlbase, const char *file)
 
   while (fgets (buffer, sizeof (buffer), in))
     {
-      char *ref = findhref (buffer[0] ? buffer : buffer + 1);
+      size_t filesize;
+      char filedate[80];
+      char *ref = findhref (buffer[0] ? buffer : buffer + 1, filedate, &filesize);
+      char url[256];
+      DWORD urlspace = sizeof (url);
+      struct _stat st;
 
-      if (ref)
+      if (!ref)
+	continue;
+
+      if (!InternetCombineUrl
+	  (urlbase, ref, url, &urlspace,
+	   ICU_BROWSER_MODE | ICU_ENCODE_SPACES_ONLY | ICU_NO_META))
 	{
-	  char url[256];
-	  DWORD urlspace = sizeof (url);
+	  warning ("Unable to download from %s", ref);
+	  winerror ();
+	}
+      else if (ref[strlen (ref) - 1] == '/')
+	{
+	  if (strcmp (url + strlen (url) - 2, "./") != 0)
+	    downloaddir (url);
+	}
+      else if (strstr (url, ".tar.gz") && !strstr (url, "-src"))
+	{
+	  int download = 0;
+	  char *filename = strrchr (url, '/') + 1;
+	  if (download_when == ALWAYS || needfile (filename, filedate, filesize))
+	    download = 1;
+	  else
+	    {
+	      char text[_MAX_PATH];
+	      char *answer;
 
-	  if (!InternetCombineUrl
-	      (urlbase, ref, url, &urlspace,
-	       ICU_BROWSER_MODE | ICU_ENCODE_SPACES_ONLY | ICU_NO_META))
-	    {
-	      warning ("Unable to download from %s", ref);
-	      winerror ();
-	    }
-	  else if (ref[strlen (ref) - 1] == '/')
-	    {
-	      if (strcmp (url + strlen (url) - 2, "./") != 0)
-		downloaddir (url);
-	    }
-	  else if (strstr (url, ".tar.gz") && !strstr (url, "-src"))
-	    {
-	      int download = 0;
-	      char *filename = strrchr (url, '/') + 1;
-	      if (download_when == ALWAYS || _access (filename, 0) == -1)
-		download = 1;
+	      if (download_when == NEVER)
+		answer = xstrdup ("N");
 	      else
 		{
-		  char text[_MAX_PATH];
-		  char *answer;
-
-		  if (download_when == NEVER)
-		    answer = xstrdup ("N");
-		  else
-		    {
-		      sprintf (text, "Replace %s from the net (ynAN)", filename);
-		      answer = prompt (text, "y");
-		    }
-
-		  if (answer)
-		    {
-		      switch (*answer)
-			{
-			case 'a':
-			case 'A':
-			  download_when = ALWAYS;
-			  /* purposely fall through */
-			case 'y':
-			case 'Y':
-			  download = 1;
-			  break;
-			case 'N':
-			  download_when = NEVER;
-			  warning ("Skipping %s\n", filename);
-			case 'n':
-			default:
-			  download = 0;
-			}
-		      xfree (answer);
-		    }
+		  sprintf (text, "Replace %s from the Internet (ynAN)", filename);
+		  answer = prompt (text, "y");
 		}
 
-	      if (download)
+	      if (answer)
 		{
-		  warning ("Downloading: %s...", filename);
-		  fflush (stdout);
-		  if (geturl (url, filename, 0))
+		  switch (*answer)
 		    {
-		      warning ("Done.\n");
+		    case 'a':
+		    case 'A':
+		      download_when = ALWAYS;
+		      /* purposely fall through */
+		    case 'y':
+		    case 'Y':
+		      download = 1;
+		      break;
+		    case 'N':
+		      download_when = NEVER;
+		      warning ("Skipping %s\n", filename);
+		    case 'n':
+		    default:
+		      download = 0;
 		    }
-		  else
+		  xfree (answer);
+		}
+	    }
+
+	  if (!download)
+	    continue;
+
+	  for (;;)		/* file retrieval loop */
+	    {
+	      int res;
+	      warning ("Downloading: %s...", filename);
+	      fflush (stdout);
+	      res = geturl (url, filename, 0);
+	      if (res && !filesize || !needfile (filename, filedate, filesize))
+		warning ("Done.\n");
+	      else
+		{
+		  for (;;)	/* prompt loop */
 		    {
-		      warning ("\nUnable to retrieve %s\n", url);
+		      char a;
+		      char *answer;
+		      if (!res)
+			warning ("Download failed.\n");
+		      else
+			fprintf (logfp, "Downloaded file size does not match (%ld).\n",
+				 filesize);
+		      answer = prompt (res ? "Downloaded file size does not match (Abort, Retry, Fail)" :
+					     "Download failed (Abort, Retry, Fail)", "R");
+		      a = toupper (*answer);
+		      xfree (answer);
+		      switch (a)
+			{
+			case 'R':
+			  break;	/* try it again */
+			case 'A':
+			  exit (1);	/* abort program */
+			case 'F':
+			  warning ("Deleting %s.\n", filename);
+			  unlink (filename); 
+			  goto noget;	/* Keep trying to download the rest */
+			default:
+			  continue;	/* erroneous response */
+			}
+
+		      break;	/* from prompt loop */
 		    }
 		}
+
+	    noget:
+	      break;		/* Leave from file retrieval for loop.
+				   Either we successfully downloaded the file
+				   or the user said don't bother. */
 	    }
 	}
     }
@@ -753,7 +827,7 @@ tmpfilename ()
   return xstrdup (tmpnam (NULL));
 }
 
-int
+static int
 downloaddir (const char *url)
 {
   int retval = 0;
@@ -998,7 +1072,7 @@ getdownloadsource ()
 		}
 	      else
 		{
-		  char *ref = findhref (buf);
+		  char *ref = findhref (buf, NULL, NULL);
 
 		  if (ref)
 		    {
