@@ -211,6 +211,7 @@ int ZEXPORT gzsetparams (file, level, strategy)
     int level;
     int strategy;
 {
+#ifndef NO_DEFLATE
     gz_stream *s = (gz_stream*)file;
 
     if (s == NULL || s->mode != 'w') return Z_STREAM_ERROR;
@@ -226,6 +227,9 @@ int ZEXPORT gzsetparams (file, level, strategy)
     }
 
     return deflateParams (&(s->stream), level, strategy);
+#else
+    return Z_OK;
+#endif
 }
 
 /* ===========================================================================
@@ -769,6 +773,18 @@ z_off_t ZEXPORT gztell (file)
     gzFile file;
 {
     return gzseek(file, 0L, SEEK_CUR);
+}
+
+/* ===========================================================================
+     Returns the starting position for the next gzread or gzwrite on the
+   given compressed file. This position represents a number of bytes in the
+   uncompressed data stream.
+*/
+z_off_t ZEXPORT gzctell (file)
+    gzFile file;
+{
+    gz_stream *s = (gz_stream *)file;
+    return ftell(s->file);
 }
 
 /* ===========================================================================

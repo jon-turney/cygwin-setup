@@ -1,6 +1,32 @@
 This directory contains the source for the setup program for the cygwin
 net releases.
 
-If you have any problems the initial version of this program was
-written by Ron Parker.  Currently, March 2000, he may be reached at
-rdparker@butlermfg.com.
+
+
+To-Do list:
+
+-- mandatory --
+
+cygwin.bat
+
+install icon
+
+-- future --
+
+install.cc: read old .lst.gz file before overwriting it; remove any
+files in the old install that aren't also in the new install.
+
+add netio subclasses for direct HTTP, FTP and proxy connections
+
+change nio-ie5 to auto-load the wininet DLL
+
+choose.cc: add a dialog to let user choose what to install and
+which versions to install
+
+ini.cc: add field in setup.ini to specify whether package is installed
+by default, or not.
+
+install.cc: scan newly installed files for README files, show list to
+user, let them read them if they want.
+
+main.cc: add splash screen and copyright notice

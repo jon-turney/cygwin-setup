@@ -1,3 +1,12 @@
+2000-07-06  DJ Delorie  <dj@cygnus.com>
+
+	* Replace everything with a new GUI version
+	* zlib/gzio.c: add gzctell() for progress displays
+
+2000-06-22  DJ Delorie  <dj@cygnus.com>
+
+	* setup.c (tarx): re-add call to write_pkg()
+
 2000-06-07  DJ Delorie  <dj@cygnus.com>
 
 	* cygcalls.c: new, call cygwin1.dll functions directly

@@ -13,11 +13,19 @@
  *
  */
 
+/* Built-in tar functionality.  See tar.h for usage. */
+
+#include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include "zlib/zlib.h"
 #include "tar.h"
+#include "mkdir.h"
+
+#include "port.h"
 
 #define FACTOR (0x19db1ded53ea710LL)
 #define NSPERSEC 10000000LL
@@ -60,12 +68,13 @@ static int  file_length;
 static tar_header_type tar_header;
 static char buf[512];
 
+static int _tar_file_size = 0;
 int _tar_verbose = 0;
 FILE * _tar_vfile = 0;
 #define vp if(_tar_verbose) fprintf
 #define vp2 if(_tar_verbose>1) fprintf
 
-static gzFile *g = 0;
+static gzFile g = 0;
 
 static char *
 xstrdup (char *c)
@@ -80,10 +89,15 @@ xstrdup (char *c)
 int
 tar_open (char *pathname)
 {
+  struct stat s;
   if (_tar_vfile == 0)
     _tar_vfile = stderr;
 
   vp2 (_tar_vfile, "tar: open `%s'\n", pathname);
+  if (stat (pathname, &s) < 0)
+    return 1;
+  _tar_file_size = s.st_size;
+
   g = gzopen (pathname, "rb");
   if (sizeof (tar_header) != 512)
     {
@@ -94,6 +108,12 @@ tar_open (char *pathname)
     }
   err = 0;
   return g ? 0 : 1;
+}
+
+int
+tar_ftell ()
+{
+  return gzctell (g);
 }
 
 static void
@@ -187,71 +207,6 @@ tar_next_file ()
       skip_file ();
       return tar_next_file ();
     }
-}
-
-static char mkdir_last_warn [_MAX_PATH] = { 0 };
-
-static int
-mkdir_p (int isadir, char *path)
-{
-  char saved_char, *slash = 0;
-  char *c;
-  DWORD d, gse;
-
-  vp2 (_tar_vfile, "mkdir_p checking %d %s\n", isadir, path);
-  d = GetFileAttributes (path);
-  if (d != 0xffffffff && d & FILE_ATTRIBUTE_DIRECTORY)
-    {
-      vp2 (_tar_vfile, "mkdir_p it's a directory\n");
-      return 0;
-    }
-
-  if (isadir)
-    {
-      vp2 (_tar_vfile, "mkdir_p mkdir %s\n", path);
-      if (CreateDirectory (path, 0))
-	return 0;
-      gse = GetLastError ();
-      if (gse != ERROR_PATH_NOT_FOUND)
-	{
-	  vp2 (_tar_vfile, "mkdir_p returned %d\n", gse);
-	  if (gse == ERROR_ALREADY_EXISTS)
-	    {
-	      if (DeleteFileA (path))
-		{
-		  fprintf(stderr, "warning: deleting \"%s\" so I can make a directory there\n",
-			  path);
-		  return mkdir_p (isadir, path);
-		}
-	    }
-	  return 1;
-	}
-    }
-
-  for (c=path; *c; c++)
-    {
-      if (*c == ':')
-	slash = 0;
-      if (*c == '/' || *c == '\\')
-	slash = c;
-    }
-
-  if (!slash)
-    return 0;
-
-  saved_char = *slash;
-  *slash = 0;
-  if (mkdir_p (1, path))
-    {
-      *slash = saved_char;
-      return 1;
-    }
-  *slash = saved_char;
-
-  if (!isadir)
-    return 0;
-
-  return mkdir_p (isadir, path);
 }
 
 static void

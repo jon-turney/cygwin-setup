@@ -9,20 +9,13 @@
  *     A copy of the GNU General Public License can be found at
  *     http://www.gnu.org/
  *
- * Written by Ron Parker <parkerrd@hotmail.com>
+ * Written by DJ Delorie <dj@cygnus.com>
  *
  */
 
-/* strarry.h: strarry struct */
+/* Pass a null-terminated list of strings, and it concatenates them
+   into a single string.  Warning - it assumes the result is a file
+   name or URL, and will canonicalize the result accordingly
+   (i.e. replace \ with /, collapse multiple /// to a single /, etc.)  */
 
-#include <stddef.h>
-typedef struct strarry
-{
-  char **array;
-  size_t count;
-  size_t index;
-} SA;
-void sa_init (SA *);		/* Initialize the struct. */
-void sa_add (SA *, const char *);	/* Add a string to the array. */
-void sa_cleanup (SA *);	/* Deallocate all of the memory. */
-
+char * concat (char *s, ...);

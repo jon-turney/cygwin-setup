@@ -25,6 +25,9 @@ int	tar_open (char *pathname);
 /* returns pointer to static buf containing name of next file */
 char *	tar_next_file ();
 
+/* byte position in [compressed] file */
+int	tar_ftell ();
+
 /* pass adjusted path, returns zero on success, nonzero on failure */
 int	tar_read_file (char *path);
 
@@ -35,6 +38,8 @@ int	tar_close ();
    end , returns zero if completely successful, nonzero (counts
    errors) on failure */
 int	tar_auto (char *pathname, char **map);
+
+int	tar_mkdir_p (int isadir, char *path);
 
 /*
 extern int _tar_verbose;

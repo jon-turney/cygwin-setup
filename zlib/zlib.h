@@ -788,6 +788,11 @@ ZEXTERN z_off_t ZEXPORT    gztell OF((gzFile file));
    gztell(file) is equivalent to gzseek(file, 0L, SEEK_CUR)
 */
 
+ZEXTERN z_off_t ZEXPORT    gzctell OF((gzFile file));
+/*
+   current position of compressed file
+*/
+
 ZEXTERN int ZEXPORT gzeof OF((gzFile file));
 /*
      Returns 1 when EOF has previously been detected reading the given

@@ -13,10 +13,9 @@
  *
  */
 
-#include "../cygwin/include/sys/mount.h"
-#include "../cygwin/include/mntent.h"
+/* Create a directory, and any needed parent directories.  If "isadir"
+   is non-zero, "path" is the name of a directory.  If "isadir" is
+   zero, "path" is the name of a *file* that we need a directory
+   for. */
 
-/* returns zero on success, nonzero on failure */
-int cygcall_load_dll (char *name); 
-
-int cygcall_unload_dll (); 
+extern int mkdir_p (int isadir, char *path);
