@@ -1,3 +1,11 @@
+2003-10-31  Frank Richter  <frichter@gmx.li>
+
+	* propsheet.cc (PropSheetWndProc): Don't do child resizing if a the
+	window gets minimized. Otherwise some glitches (e.g. wrong child
+	sizes) occur.
+	Added support for WM_GETMINMAXINFO. Prevents the property sheet from
+	getting smaller than the original size.
+
 2003-11-1  Robert Collins  <rbtcollins@hotmail.com>
 
 	* ControlAdjuster.h (ControlDimension): Add.

@@ -109,12 +109,15 @@ struct PropSheetData
   RECTWrapper lastClientRect;
   bool gotPage;
   RECTWrapper pageRect;
+  bool hasMinRect;
+  RECTWrapper minRect;
   
   PropSheetData ()
   {
     oldWndProc = 0;
     clientRectValid = false;
     gotPage = false;
+    hasMinRect = false;
   }
   
 // @@@ Ugly. Really only works because only one PS is used now.
@@ -168,35 +171,62 @@ static LRESULT CALLBACK PropSheetWndProc (HWND hwnd, UINT uMsg,
         GetClientRect (hwnd, &clientRect);
 	
 	/*
-	  The first time we get a WM_SIZE, the client rect will be all zeros.
+	  When the window is minimized, the client rect is reduced to 
+	  (0,0-0,0), which causes child adjusting to screw slightly up. Work 
+	  around by not adjusting child upon minimization - it isn't really
+	  needed then, anyway.
 	 */
-	if (psd.clientRectValid)
+	if (wParam != SIZE_MINIMIZED)
 	  {
-	    const int dX =
-	      clientRect.width () - psd.lastClientRect.width ();
-	    const int dY =
-	      clientRect.height () - psd.lastClientRect.height ();
-	      
-	    ControlAdjuster::AdjustControls (hwnd, PropSheetControlsInfo, 
-	      dX, dY);
-	    
-	    psd.pageRect.right += dX;
-	    psd.pageRect.bottom += dY;
-	      
 	    /*
-	      The pages are child windows, but don't have IDs.
-	      So change them by enumerating all childs and adjust all dilogs
-	      among them.
+	      The first time we get a WM_SIZE, the client rect will be all zeros.
 	     */
-	    if (psd.gotPage)
-	      EnumChildWindows (hwnd, &EnumPages, 0);	
+	    if (psd.clientRectValid)
+	      {
+		const int dX =
+		  clientRect.width () - psd.lastClientRect.width ();
+		const int dY =
+		  clientRect.height () - psd.lastClientRect.height ();
+		  
+		ControlAdjuster::AdjustControls (hwnd, PropSheetControlsInfo, 
+		  dX, dY);
+		
+		psd.pageRect.right += dX;
+		psd.pageRect.bottom += dY;
+		  
+		/*
+		  The pages are child windows, but don't have IDs.
+		  So change them by enumerating all childs and adjust all 
+		  dialogs among them.
+		 */
+		if (psd.gotPage)
+		  EnumChildWindows (hwnd, &EnumPages, 0);	
+	      }
+	    else
+	      {
+		psd.clientRectValid = true;
+	      }
+	    /*
+	      Store away the current size and use it as the minmal window size.
+	     */
+	    if (!psd.hasMinRect)
+	      {
+		GetWindowRect (hwnd, &psd.minRect);
+		psd.hasMinRect = true;
+	      }
+	    
+	    psd.lastClientRect = clientRect;
 	  }
-	else
+      }
+      break;
+    case WM_GETMINMAXINFO:
+      {
+	if (psd.hasMinRect)
 	  {
-	    psd.clientRectValid = true;
+	    LPMINMAXINFO mmi = (LPMINMAXINFO)lParam;
+	    mmi->ptMinTrackSize.x = psd.minRect.width ();
+	    mmi->ptMinTrackSize.y = psd.minRect.height ();
 	  }
-	
-	psd.lastClientRect = clientRect;
       }
       break;
     }
@@ -356,7 +386,7 @@ PropSheet::AdjustPageSize (HWND page)
     isn't in it's final size. My guess is that the sheet first creates the
     page, and then resizes itself to have the right metrics to contain the 
     page and moves it to it's position. For our purposes, however, we need
-    the final metrucs of the page. So, the first time this method is called,
+    the final metrics of the page. So, the first time this method is called,
     we basically grab the size of the page, but calculate the top/left coords
     ourselves.
    */
