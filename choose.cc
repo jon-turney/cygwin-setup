@@ -850,9 +850,9 @@ _Info::_Info (const char *_install, const char *_version, int _install_size,
   install = strdup (_install);
   version = strdup (_version);
   install_size = _install_size;
-  if (source)
+  if (_source)
     {
-      source = strdup (source);
+      source = strdup (_source);
       source_size = _source_size;
     }
 }
