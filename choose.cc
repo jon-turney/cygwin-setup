@@ -62,8 +62,6 @@ static const char *cvsid =
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
 
-#define alloca __builtin_alloca
-
 static int initialized = 0;
 
 static HWND lv, nextbutton, choose_inst_text;
