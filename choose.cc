@@ -52,7 +52,7 @@ static const char *cvsid =
 
 #include "package_db.h"
 #include "package_meta.h"
-#include "package.h"
+#include "package_version.h"
 
 #include "port.h"
 

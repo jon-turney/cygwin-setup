@@ -24,12 +24,13 @@ public:
     hash ();
    ~hash ();
 
-  void add (char *string);
-  int has (char *string);
+  void add (char const *string);
+  int has (char const *string);
 
+  /* FIXME: this specialty should be done via a derived class */
   /* specialty for install.cc */
-  void add_subdirs (char *path);
+  void add_subdirs (char const *path);
   void reverse_sort ();
 
-  char *enumerate (char *prev = 0);
+  char *enumerate (char const *prev = 0);
 };

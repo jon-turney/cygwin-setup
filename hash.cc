@@ -51,7 +51,7 @@ hash::~hash ()
 
 
 void
-hash::add (char *string)
+hash::add (char const *string)
 {
   int i;
   for (i = 0; i < h->numkeys; i++)
@@ -69,7 +69,7 @@ hash::add (char *string)
 
 
 int
-hash::has (char *string)
+hash::has (char const *string)
 {
   int i;
   for (i = 0; i < h->numkeys; i++)
@@ -79,7 +79,7 @@ hash::has (char *string)
 }
 
 char *
-hash::enumerate (char *prev)
+hash::enumerate (char const *prev)
 {
   if (prev == 0)
     h->prev_index = -1;

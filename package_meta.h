@@ -16,41 +16,57 @@
 #ifndef _PACKAGE_META_H_
 #define _PACKAGE_META_H_
 
-class genericpackage;
+class packageversion;
 
 class packagemeta
 {
 public:
-  packagemeta (char const *pkgname):versions (0), versioncount (0),
-    versionspace (0), installed (0), prev (0), exp (0)
+  packagemeta (char const *pkgname):installed_from (0), versions (0),
+    versioncount (0), versionspace (0), installed (0), prev (0), exp (0)
   {
     name = new char[strlen (pkgname) + 1];
       strcpy (name, pkgname);
   };
+
+  packagemeta (char const *pkgname,
+	       char const *installedfrom):installed_from (0), versions (0),
+    versioncount (0), versionspace (0), installed (0), prev (0), exp (0)
+  {
+    name = new char[strlen (pkgname) + 1];
+    strcpy (name, pkgname);
+    installed_from = new char[strlen (installedfrom) + 1];
+    strcpy (installed_from, installedfrom);
+  };
+
+
   ~packagemeta ()
   {
     delete name;
+    if (installed_from)
+      delete installed_from;
   };
 
-  void add_version (genericpackage &);
-  void set_installed (genericpackage &);
+  void add_version (packageversion &);
+  void set_installed (packageversion &);
+  void uninstall ();
 
-
-  /* array of versions of this package that we know about */
   char *name;
+  /* legacy variable used to output data for installed.db versions <= 2 */
+  char *installed_from;
+
   /* this array is //NOT// sorted - too many pointer to get out of joint. */
   /* we can have member functions to return sorted details if desired */
-  genericpackage **versions;
+  packageversion **versions;
   size_t versioncount;
   size_t versionspace;
   /* which one is installed. */
-  genericpackage *installed;
+  packageversion *installed;
   /* which one is listed as "prev" in our available packages db */
-  genericpackage *prev;
+  packageversion *prev;
   /* ditto for current - stable */
-  genericpackage *curr;
+  packageversion *curr;
   /* and finally the experimental version */
-  genericpackage *exp;
+  packageversion *exp;
 };
 
 #endif /* _PACKAGE_META_H_ */

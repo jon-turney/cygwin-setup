@@ -34,7 +34,7 @@ static const char *cvsid =
 
 #include "filemanip.h"
 
-#include "package.h"
+#include "package_version.h"
 #include "cygpackage.h"
 #include "package_db.h"
 #include "package_meta.h"
@@ -57,6 +57,8 @@ packagedb::getpackagebyname (const char *search)
 
 packagedb::packagedb ()
 {
+  db = 0;
+  curr_package = 0;
   if (!installeddbread)
     {
       /* no parameters. Read in the local installation database. */
@@ -76,6 +78,7 @@ packagedb::packagedb ()
 	  else
 	    dbver = 1;
 	  delete db;
+	  db = 0;
 	  /* Later versions may not use installed.db other than to record the version. */
 	  if (dbver == 1 || dbver == 2)
 	    {
@@ -98,7 +101,7 @@ packagedb::packagedb ()
 		  packagemeta *pkg = getpackagebyname (pkgname);
 		  if (!pkg)
 		    {
-		      pkg = new packagemeta (pkgname);
+		      pkg = new packagemeta (pkgname, inst);
 		      /* we should install a new handler then not check this...
 		       */
 		      //if (!pkg)
@@ -116,6 +119,7 @@ packagedb::packagedb ()
 
 		}
 	      delete db;
+	      db = 0;
 	    }
 	  else
 	    // unknown dbversion
@@ -123,8 +127,6 @@ packagedb::packagedb ()
 	}
       installeddbread = 1;
     }
-  db = 0;
-  curr_package = 0;
 }
 
 packagemeta *
@@ -166,7 +168,14 @@ packagedb::addpackage (packagemeta & newpackage)
       packages = newpackages;
       packagespace += 100;
     }
-  packages[packagecount] = &newpackage;
+  size_t n;
+  for (n = 0;
+       n < packagecount
+       && strcasecmp (packages[n]->name, newpackage.name) < 0; n++);
+  /* insert at n */
+  memmove (&packages[n + 1], &packages[n],
+	   (packagecount - n) * sizeof (packagemeta *));
+  packages[n] = &newpackage;
   packagecount++;
   return 0;
 }
@@ -174,14 +183,9 @@ packagedb::addpackage (packagemeta & newpackage)
 packagemeta **
   packagedb::packages =
   0;
-size_t
-  packagedb::packagecount =
-  0;
-size_t
-  packagedb::packagespace =
-  0;
+size_t packagedb::packagecount = 0;
+size_t packagedb::packagespace = 0;
 int
   packagedb::installeddbread =
   0;
-CategoryList
-  packagedb::categories;
+CategoryList packagedb::categories = CategoryList ();

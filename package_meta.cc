@@ -28,20 +28,71 @@ static const char *cvsid =
 #include "compress.h"
 
 #include "filemanip.h"
+#include "hash.h"
+#include "log.h"
+/* io_stream needs a bit of tweaking to get rid of this. TODO */
+#include "mount.h"
+/* this goes at the same time */
+#include "win32.h"
 
-#include "package.h"
+#include "package_version.h"
 #include "cygpackage.h"
 #include "package_meta.h"
 
+static const char *standard_dirs[] = {
+  "/bin",
+  "/etc",
+  "/lib",
+  "/tmp",
+  "/usr",
+  "/usr/bin",
+  "/usr/lib",
+  "/usr/src",
+  "/usr/local",
+  "/usr/local/bin",
+  "/usr/local/etc",
+  "/usr/local/lib",
+  "/usr/tmp",
+  "/var/run",
+  "/var/tmp",
+  0
+};
+
 void
-packagemeta::add_version (genericpackage & thepkg)
+hash::add_subdirs (char const *tpath)
+{
+  char *nonp, *pp;
+  char *path = strdup (tpath);
+  for (nonp = path; *nonp == '\\' || *nonp == '/'; nonp++);
+  for (pp = path + strlen (path) - 1; pp > nonp; pp--)
+    if (*pp == '/' || *pp == '\\')
+      {
+	int i, s = 0;
+	char c = *pp;
+	*pp = 0;
+	for (i = 0; standard_dirs[i]; i++)
+	  if (strcmp (standard_dirs[i] + 1, path) == 0)
+	    {
+	      s = 1;
+	      break;
+	    }
+	if (s == 0)
+	  add (path);
+	*pp = c;
+      }
+}
+
+void
+packagemeta::add_version (packageversion & thepkg)
 {
   if (versionspace == versioncount)
     {
-      genericpackage **newversions =
-	(genericpackage **) realloc (versions,
-				     sizeof (genericpackage *) *
-				     (versionspace + 5));
+      packageversion **newversions = (packageversion **) realloc (versions,
+								  sizeof
+								  (packageversion
+								   *) *
+								  (versionspace
+								   + 5));
       if (!newversions)
 	{
 	  //die badly
@@ -56,7 +107,7 @@ packagemeta::add_version (genericpackage & thepkg)
 
 /* assumption: package thepkg is already in the metadata list. */
 void
-packagemeta::set_installed (genericpackage & thepkg)
+packagemeta::set_installed (packageversion & thepkg)
 {
   for (size_t n = 0; n < versioncount; n++)
     {
@@ -66,4 +117,43 @@ packagemeta::set_installed (genericpackage & thepkg)
 	  return;
 	}
     }
+}
+
+/* uninstall a package if it's installed */
+void
+packagemeta::uninstall ()
+{
+  if (installed)
+    {
+      /* this will need to be pushed down to the version, or even the source level
+       * to allow differences between formats to be seamlessly managed
+       * but for now: here is ok
+       */
+      hash dirs;
+      const char *line = installed->getfirstfile ();
+      while (line)
+	{
+	  dirs.add_subdirs (line);
+
+	  char *d = cygpath ("/", line, NULL);
+	  DWORD dw = GetFileAttributes (d);
+	  if (dw != 0xffffffff && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+	    {
+	      log (LOG_BABBLE, "unlink %s", d);
+	      DeleteFile (d);
+	    }
+	  line = installed->getnextfile ();
+	}
+      installed->uninstall ();
+
+      dirs.reverse_sort ();
+      char *subdir = 0;
+      while ((subdir = dirs.enumerate (subdir)) != 0)
+	{
+	  char *d = cygpath ("/", subdir, NULL);
+	  if (RemoveDirectory (d))
+	    log (LOG_BABBLE, "rmdir %s", d);
+	}
+    }
+  installed = 0;
 }

@@ -13,13 +13,13 @@
  *
  */
 
-/* This is a generic package class, that should be able to 
+/* This is a package version abstrct class, that should be able to 
  * arbitrate acceess to cygwin binary packages, cygwin source package,
  * and the rpm and deb equivalents of the same.
  */
 
-#ifndef _PACKAGE_H_
-#define _PACKAGE_H_
+#ifndef _PACKAGE_VERSION_H_
+#define _PACKAGE_VERSION_H_
 
 /* standard binary package metadata:
  * Name (ie mutt
@@ -38,6 +38,7 @@
  */
 
 class CategoryList;
+class packagesource;
 
 typedef enum
 {
@@ -62,7 +63,7 @@ typedef enum
 }
 package_type_t;
 
-class genericpackage
+class packageversion
 {
 public:
   /* name is needed here, because if we are querying a file, the data may be embedded in
@@ -78,13 +79,20 @@ public:
    */
   virtual const char *getfirstfile () = 0;
   virtual const char *getnextfile () = 0;
-  virtual CategoryList &Categories () = 0;
+  virtual CategoryList & Categories () = 0;
+  virtual void uninstall () = 0;
+  packagesource *getfirstsource ();
+  packagesource *getnextsource ();
 
-    virtual ~ genericpackage ()
+
+    virtual ~ packageversion ()
   {
   };
 
-private:
+protected:
+  packagesource ** sources;
+  size_t sourcecount;
+  size_t sourcespace;
 };
 
-#endif /* _PACKAGE_H_ */
+#endif /* _PACKAGE_VERSION_H_ */

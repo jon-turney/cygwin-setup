@@ -46,7 +46,6 @@ static const char *cvsid =
 #include "msg.h"
 #include "mount.h"
 #include "log.h"
-#include "hash.h"
 #include "mount.h"
 #include "filemanip.h"
 #include "io_stream.h"
@@ -54,6 +53,9 @@ static const char *cvsid =
 #include "compress_gz.h"
 #include "archive.h"
 #include "archive_tar.h"
+
+#include "package_db.h"
+#include "package_meta.h"
 
 #include "port.h"
 
@@ -191,42 +193,16 @@ static const char *standard_dirs[] = {
   0
 };
 
-void
-hash::add_subdirs (char *path)
-{
-  char *nonp, *pp;
-  for (nonp = path; *nonp == '\\' || *nonp == '/'; nonp++);
-  for (pp = path + strlen (path) - 1; pp > nonp; pp--)
-    if (*pp == '/' || *pp == '\\')
-      {
-	int i, s = 0;
-	char c = *pp;
-	*pp = 0;
-	for (i = 0; standard_dirs[i]; i++)
-	  if (strcmp (standard_dirs[i] + 1, path) == 0)
-	    {
-	      s = 1;
-	      break;
-	    }
-	if (s == 0)
-	  add (path);
-	*pp = c;
-      }
-}
-
 static int num_installs, num_uninstalls;
 
+/* FIXME: upgrades should be a method too */
 static void
-uninstall_one (Package * pkg, bool src)
+uninstall_one (Package * pkg)
 {
-  hash dirs;
-  char line[_MAX_PATH];
+  packagedb db;
+  packagemeta *pkgm = db.getpackagebyname (pkg->name);
 
-  io_stream *tmp =
-    io_stream::open (concat ("cygfile:///etc/setup/", pkg->name,
-			     (src ? "-src.lst.gz" : ".lst.gz"), 0), "rb");
-  io_stream *lst = compress::decompress (tmp);
-  if (lst)
+  if (pkgm)
     {
       SetWindowText (ins_pkgname, pkg->name);
       SetWindowText (ins_action, "Uninstalling...");
@@ -234,36 +210,12 @@ uninstall_one (Package * pkg, bool src)
 	log (0, "Uninstalling %s", pkg->name);
       else
 	log (0, "Uninstalling old %s", pkg->name);
+      pkgm->uninstall ();
 
-      while (lst->gets (line, sizeof (line)))
-	{
-	  if (line[strlen (line) - 1] == '\n')
-	    line[strlen (line) - 1] = 0;
-
-	  dirs.add_subdirs (line);
-
-	  char *d = cygpath ("/", line, NULL);
-	  DWORD dw = GetFileAttributes (d);
-	  if (dw != 0xffffffff && !(dw & FILE_ATTRIBUTE_DIRECTORY))
-	    {
-	      log (LOG_BABBLE, "unlink %s", d);
-	      DeleteFile (d);
-	    }
-	}
-      delete lst;
-
-      remove (cygpath ("/etc/setup/", pkg->name, ".lst.gz", 0));
-
-      dirs.reverse_sort ();
-      char *subdir = 0;
-      while ((subdir = dirs.enumerate (subdir)) != 0)
-	{
-	  char *d = cygpath ("/", subdir, NULL);
-	  if (RemoveDirectory (d))
-	    log (LOG_BABBLE, "rmdir %s", d);
-	}
       num_uninstalls++;
+
       pkg->installed_ix = TRUST_UNKNOWN;
+
       if (pkg->installed)
 	{
 	  free (pkg->installed);
@@ -509,8 +461,7 @@ do_install (HINSTANCE h)
     {
       if (is_uninstall_action (pkg))
 	{
-	  uninstall_one (pkg, 0);
-	  uninstall_one (pkg, 1);
+	  uninstall_one (pkg);
 	}
 
       if (is_download_action (pkg))
@@ -547,21 +498,6 @@ do_install (HINSTANCE h)
       fatal (IDS_ERR_OPEN_WRITE, ndb, err);
     }
 
-  if (odb)
-    {
-      char line[1000], pkgname[1000];
-      while (fgets (line, 1000, odb))
-	{
-	  sscanf (line, "%s", pkgname);
-	  Package *pkg = getpkgbyname (pkgname);
-	  if (!pkg
-	      || (!is_download_action (pkg)
-		  && pkg->action != ACTION_UNINSTALL))
-	    fputs (line, ndb);
-	}
-
-    }
-
   fprintf (ndb, "INSTALLED.DB 2\n");
   for (Package * pkg = package; pkg->name; pkg++)
     if (is_download_action (pkg))
@@ -569,6 +505,21 @@ do_install (HINSTANCE h)
 	Info *pi = pkg->info + pkg->installed_ix;
 	fprintf (ndb, "%s %s %d\n", pkg->name, pi->install, pi->install_size);
       }
+
+  packagedb db;
+  if (db.getfirstpackage ())
+    {
+      packagemeta *pkgm = db.getfirstpackage ();
+      while (pkgm)
+	{
+	  if (pkgm->installed)
+	    /* size here is irrelevant - as we can assume that this install source
+	     * no longer exists, and it does not correlate to used disk space
+	     */
+	    fprintf (ndb, "%s %s %d\n", pkgm->name, pkgm->installed_from, 0);
+	  pkgm = db.getnextpackage ();
+	}
+    }
 
   if (odb)
     fclose (odb);

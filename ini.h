@@ -21,7 +21,7 @@
 extern "C"
 {
 #endif
-void ini_init (char *string);
+  void ini_init (char *string);
 #define YYSTYPE char *
 
 #ifdef __cplusplus
@@ -94,15 +94,22 @@ typedef struct _Info
   char *source;			/* sources for installed binaries */
   unsigned int source_size;	/* in bytes */
   int source_exists;		/* source file exists on disk */
+    _Info ():version (0), install (0), install_size (0), install_exists (0),
+    derived (0), source (0), source_size (0)
+  {
+  };
   _Info (const char *_install, const char *_version,
-	   int _install_size, const char *_source = NULL,
-	   int _source_size = 0);
+	 int _install_size, const char *_source = NULL, int _source_size = 0);
 }
+
 Info;				/* +1 for TRUST_UNKNOWN */
 
 class CategoryPackage
 {
 public:
+  CategoryPackage ():next (0), pkgname (0)
+  {
+  };
   CategoryPackage *next;	/* The next package pointer in the list */
   char *pkgname;		/* This should be Package *, but the packages can move */
 };
@@ -117,6 +124,10 @@ Dependency;			/* Dependencies can be used for
 class Package
 {
 public:
+  Package ():name (0), sdesc (0), ldesc (0), category (0), required (0),
+    srcpicked (0), installed (0)
+  {
+  };
   char *name;			/* package name, like "cygwin" */
   char *sdesc;			/* short description (replaces "name" if provided) */
   char *ldesc;			/* long description (multi-line) */
@@ -142,13 +153,12 @@ public:
 extern Package *package;
 extern int npackages;
 
-  Package *new_package (char *name);
-  Package *getpkgbyname (const char *pkgname);
-  void new_requirement (Package * package, char *dependson);
-  Category *getpackagecategorybyname (Package * pkg,
-				      const char *categoryname);
-  void add_category (Package * package, Category * cat);
+Package *new_package (char *name);
+Package *getpkgbyname (const char *pkgname);
+void new_requirement (Package * package, char *dependson);
+Category *getpackagecategorybyname (Package * pkg, const char *categoryname);
+void add_category (Package * package, Category * cat);
 
 #endif
 
-#endif				/* _INI_H_ */
+#endif /* _INI_H_ */

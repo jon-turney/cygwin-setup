@@ -22,7 +22,7 @@
 
 #include "category_list.h"
 
-class cygpackage:public genericpackage
+class cygpackage:public packageversion
 {
 public:
   virtual const char *Name ();
@@ -40,6 +40,8 @@ public:
   {
     return categories;
   };
+  virtual void uninstall ();
+
 
   /* pass the name of the package when constructing */
   cygpackage (const char *);

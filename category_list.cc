@@ -57,9 +57,10 @@ CategoryList::register_category (const char *catname)
       /* insert at n */
       if (n)
 	_categories[n - 1]->next = tempcat;
-      tempcat->next = ncategories >= n ? _categories[n] : 0;
+      if (n < ncategories)
+	tempcat->next = _categories[n];
       memmove (&_categories[n + 1], &_categories[n],
-	       ncategories * sizeof (Category *));
+	       (ncategories - n) * sizeof (Category *));
       _categories[n] = tempcat;
       ncategories++;
     }

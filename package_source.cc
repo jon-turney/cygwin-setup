@@ -13,23 +13,11 @@
  *
  */
 
-/* categories for packages */
+/* this is the parent class for all package source (not source code - installation
+ * source as in http/ftp/disk file) operations. 
+ */
 
-#include <stdlib.h>
-#include <string.h>
-
-#include "category.h"
-
-/* normal members */
-
-Category::Category ():next (0), name (0), packages (0)
-{
-}
-
-Category::Category (const char *categoryname):
-next (0),
-packages (0)
-{
-  /* FIXME: search the global category list for name, and reuse that pointer */
-  name = strdup (categoryname);
-}
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif

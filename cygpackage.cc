@@ -30,7 +30,7 @@ static const char *cvsid =
 #include "io_stream.h"
 #include "compress.h"
 
-#include "package.h"
+#include "package_version.h"
 #include "cygpackage.h"
 
 /* this constructor creates an installed package */
@@ -131,6 +131,14 @@ cygpackage::getnextfile ()
   return 0;
 }
 
+void
+cygpackage::uninstall ()
+{
+  if (listdata)
+    delete listdata;
+  listdata = 0;
+  io_stream::remove (concat ("cygfile:///etc/setup/", name, ".lst.gz", 0));
+}
 
 const char *
 cygpackage::Name ()
@@ -151,7 +159,8 @@ cygpackage::Package_version ()
 }
 
 #if 0
-package_stability_t cygpackage::Stability ()
+package_stability_t
+cygpackage::Stability ()
 {
   return stability;
 }

@@ -1,3 +1,49 @@
+2001-11-23  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in (OBJS): Add package_version.
+	* ategory.cc (Category::Category): Update constructors.
+	* category_list.cc (CategoryList::register_category): Insert correctly.
+	* choose.cc: Include package_version.h, not package.h.
+	* cygpackage.cc: Ditto.
+	(cygpackage::uninstall): New method.
+	* cygpackage.h (cygpackage): Rename genericpackage to packageversion.
+	New method uninstall.
+	* hash.cc (add, has, enumerate): Change prototype to be accurate.
+	* hash.h (hash): Change prototypes to be accurate.
+	* ini.h (_Info): New parameterless constructor.
+	(CategoryPackage): New constructor.
+	(Package): Ditto.
+	* install.cc: Don't include unneeded headers.
+	Include package database headers.
+	(hash::add_subdirs): Remove.
+	(uninstall_one): Use packagemeta->uninstall to perform the uninstallation.
+	Don't uninstall source packages.
+	(do_install): Just can uninstall_one once as we ignore source packages now.
+	Don't copy the installed.old database accross, instead iterate through the 
+	packagedb packages list and write the isntalled packages out.
+	* package_db.cc: Include package_version.h, not package.h.
+	(packagedb::packagedb): Never let db be undefined.
+	Record the installation filename, so we can reconstruct installed.db.
+	(packagedb::addpackage): Insert packages in alpha sorted order.
+	(packagedb::categories): Initialise correctly.
+	* package_meta.cc: Include win32 and mount headers as a workaround to
+	current io_stream limitations. Include a TODO about that.
+	(standard_dirs): New, from install.cc.
+	(hash::add_subdirs): New, from install.cc.
+	(packagemeta::set_installed): Rename genericpackage to packageversion.
+	(packagemeta::uninstall): New method.
+	* package_meta.h: Rename genericpackage to packageversion.
+	(packagemeta): Update constructor.
+	(add_version, set_installed): Rename genericpackage to packageversion.
+	(uninstall): New method.
+	(installed_from): New member.
+	* package_source.cc: New file.
+	* package_source.h: New file.
+	* package_version.cc: New file.
+	* package_version.h: New file.
+	* package.cc: Removed.
+	* package.h: Removed.
+	
 2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in (OBJS): Add category.o and category_list.o.

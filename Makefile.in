@@ -125,6 +125,7 @@ OBJS = \
 	other.o \
 	package_db.o \
 	package_meta.o \
+	package_version.o \
 	postinstall.o \
 	res.o \
 	root.o \
