@@ -21,6 +21,8 @@ AC_ARG_WITH(system-zlib,
 
 dnl LIB_AC_PROG_CC
 
+AC_PROG_CC
+
 if test -z "$with_target_subdir" || test "$with_target_subdir" = "."; then
    COMPPATH=.
 else

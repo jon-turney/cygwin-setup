@@ -1,5 +1,11 @@
 2002-04-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	* Makefile.in: Regenerate
+	* configure: Regenerate
+	* configure.in: Check for the correct C compiler.
+	
+2002-04-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* acinclude.m4: Remove.
 	* configure: Regenerate.
 	* aclocal.m4: Regenerate.
