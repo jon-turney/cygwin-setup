@@ -5,14 +5,6 @@ net releases.
 
 To-Do list:
 
--- mandatory --
-
-cygwin.bat
-
-install icon
-
--- future --
-
 install.cc: read old .lst.gz file before overwriting it; remove any
 files in the old install that aren't also in the new install.
 
@@ -30,3 +22,5 @@ install.cc: scan newly installed files for README files, show list to
 user, let them read them if they want.
 
 main.cc: add splash screen and copyright notice
+
+Add uninstall capability

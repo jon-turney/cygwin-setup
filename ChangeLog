@@ -6,6 +6,7 @@
 	* res.rc: add cygwin.ico as a file also
 	* desktop.cc: new, do shortcuts, batch files, and icons
 	* mklink2.c: new, for COM
+	* README: update to-do list
 
 2000-07-10  DJ Delorie  <dj@cygnus.com>
 
