@@ -1,0 +1,25 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.53)
+AC_INIT
+AC_CONFIG_SRCDIR([bzlib.h])
+AC_CONFIG_AUX_DIR(../cfgaux)
+AM_INIT_AUTOMAKE(libbz2, 0.0)
+AM_MAINTAINER_MODE
+
+CPPFLAGS=-U_WIN32
+AC_CANONICAL_HOST
+AC_CHECK_TOOL(AR, ar, ar)
+AC_CHECK_TOOL(NM, nm, nm)
+AC_CHECK_TOOL(RANLIB, ranlib, ranlib)
+dnl LIB_AC_PROG_CC
+AC_PROG_INSTALL
+AC_HEADER_STDC([])
+AC_EXEEXT
+AC_OBJEXT
+
+AC_SUBST(installdata)dnl
+AC_SUBST(uninstalldata)dnl
+
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
