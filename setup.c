@@ -1059,7 +1059,7 @@ mkmount (const char *mountexedir, const char *root, const char *dospath,
   xfree (mount);
   xfree (fulldospath);
 
-  return xsystem (buffer) == 0;
+  return xcreate_process (1, NULL, NULL, NULL, buffer) != 0;
 }
 
 static char rev[] = " $Revision$ ";
@@ -1071,6 +1071,7 @@ main ()
   char *logpath = NULL;
   char *revn, *p;
 
+  setbuf (stdout, NULL);
   SetEnvironmentVariable ("CYGWIN", NULL);
   revn = strchr (rev, ':');
   if (!revn || (p = strchr (revn + 2, ' ')) == NULL)

@@ -1,3 +1,10 @@
+Tue Apr 18 17:28:55 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (mkmount): Use xcreate_process to start mount process,
+	avoiding the shell.
+	(main): Don't do buffering on stdout or prompts won't be displayed
+	correctly if running in a cygwin shell with CYGWIN=tty.
+
 Tue Apr 18 15:35:19 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (main): Remove the CYGWIN environment variable before
