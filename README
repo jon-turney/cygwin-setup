@@ -1,6 +1,15 @@
 This directory contains the source for the setup program for the cygwin
 net releases.
 
+RELEASE BLOCKERS:
+ * Remove *empty* directories on uninstalls. (done?)
+ * Correctly overwrite -r--r--r-- files. (done?)
+ * Going back, changing the local cache dir, and going forward again does not
+   correctly reparse inis in the new dir.
+   Reproduction: Choose an incorrect cache dir, go back, correct it.
+   Chooser shows all packages in Misc.
+ * "compress_bz::error called" appears in the log every time a package is
+   installed, even if everything works.
 TODO:
  * Don't downgrade if the curr version is <= installed?
  * Support rpm/deb files for reading the package from. (To allow the
@@ -15,16 +24,8 @@ TODO:
       return that information from 2)
    5) Something to return a list of files associated with a package.
  * Mark versions as prev/curr/test in the GUI when clicking through them.
- * Remove *empty* directories on uninstalls. (done?)
- * Correctly overwrite -r--r--r-- files. (done?)
  * Make setup.exe available through Add/Remove
- * Going back, changing the local cache dir, and going forward again does not
-   correctly reparse inis in the new dir.
-   Reproduction: Choose an incorrect cache dir, go back, correct it.
-   Chooser shows all packages in Misc.
  * Chooser scrollbar sometimes lost with odd font sizes.
- * "compress_bz::error called" appears in the log every time a package is
-   installed, even if everything works.
  * Cancelling during MD5 check just stops the GUI updating until the check
    completes, and then continues with setup as if Cancel had not been clicked. 
  * Toggling from All Default to All Install takes *way* too long.
