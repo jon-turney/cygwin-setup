@@ -1,6 +1,16 @@
+2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.cc: Ran indent.
+	(set_action): When the requested trust level is missing and the level was not
+	user requested, set the action to ACTION_SAME_CURR.
+
 2001-11-01  Christopher Faylor  <cgf@redhat.com>
 
-	* Makefile.in (mingw_getopt.o): Fix typo in non-verbose compilation.
+        * Makefile.in (mingw_getopt.o): Fix typo in non-verbose compilation.
+
+2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.cc (_view::init_headers): Resync with the paint logic.
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 

@@ -25,7 +25,8 @@
    install packages, or to install packages that aren't installed by
    default. */
 
-static char *cvsid = "\n%%% $Id$\n";
+static char *cvsid =
+  "\n%%% $Id$\n";
 
 #include "win32.h"
 #include <stdio.h>
@@ -71,40 +72,41 @@ static view *chooser = NULL;
 static trusts deftrust = TRUST_UNKNOWN;
 
 static struct _header pkg_headers[] = {
-  { "Current", 7, 0, 0 },
-  { "New", 3, 0, 0 },
-  { "Src?", 4, 0, 0 },
-  { "Category", 8, 0, 0 },
-  { "Package", 7, 0, 0 },
-  { 0, 0, 0, 0 }
+  {"Current", 7, 0, 0},
+  {"New", 3, 0, 0},
+  {"Src?", 4, 0, 0},
+  {"Category", 8, 0, 0},
+  {"Package", 7, 0, 0},
+  {0, 0, 0, 0}
 };
 
 static struct _header cat_headers[] = {
-  { "Category", 8, 0, 0 },
-  { "Current", 7, 0, 0 },
-  { "New", 3, 0, 0 },
-  { "Src?", 4, 0, 0 },
-  { "Package", 7, 0, 0 },
-  { 0, 0, 0, 0 }
+  {"Category", 8, 0, 0},
+  {"Current", 7, 0, 0},
+  {"New", 3, 0, 0},
+  {"Src?", 4, 0, 0},
+  {"Package", 7, 0, 0},
+  {0, 0, 0, 0}
 };
 
-static int add_required(Package *pkg);
+static int add_required (Package * pkg);
 static void set_view_mode (HWND h, views mode);
 
 static bool
-isinstalled (Package *pkg, int trust)
+isinstalled (Package * pkg, int trust)
 {
   if (source == IDC_SOURCE_DOWNLOAD)
     return pkg->info[trust].install_exists < 0;
   else
     return pkg->installed && pkg->info[trust].version &&
-	   strcasecmp (pkg->installed->version, pkg->info[trust].version) == 0;
+      strcasecmp (pkg->installed->version, pkg->info[trust].version) == 0;
 }
 
 /* Set the next action given a current action.  */
 static void
-set_action (Package *pkg, bool preinc)
+set_action (Package * pkg, bool preinc)
 {
+  /* preinc is only used by 'click' */
   if (!pkg->action || preinc)
     {
       ((int) pkg->action)++;
@@ -127,7 +129,7 @@ set_action (Package *pkg, bool preinc)
       case ACTION_TEST:
 	/* Try to find the next best action.  We may not have all of
 	   prev, curr, or test but we should have at least one of those. */
-	Info *inf;
+	Info * inf;
 	inf = pkg->info + pkg->action;
 	if (inf->version && inf->install_exists)
 	  {
@@ -135,20 +137,25 @@ set_action (Package *pkg, bool preinc)
 	      (int) pkg->action += ACTION_SAME;
 	    return;
 	  }
+	/* the passed in trust level is missing... */
+	if (!preinc /* auto set */
+	    && pkg->installed 
+	    && pkg->action > ACTION_CURR) /* There is no current version */
+	    (int)pkg->action = ACTION_SAME_CURR;
 	break;
-      /* ACTION_SAME_* are used when the installed version is the same
-	 as the given action. */
+	/* ACTION_SAME_* are used when the installed version is the same
+	   as the given action. */
       case ACTION_SAME_CURR:
       case ACTION_SAME_TEST:
-	if (!preinc)	/* Previously set to this value */
+	if (!preinc)		/* Previously set to this value */
 	  return;
 	(int) pkg->action -= ACTION_SAME + 1;	/* revert to ACTION_CURR, etc. */
 	break;
       case ACTION_SAME_PREV:
-	if (!preinc)	/* Previously set to this value */
+	if (!preinc)		/* Previously set to this value */
 	  return;
 	pkg->action = ACTION_UNINSTALL;
-      /* Fall through intentionally */
+	/* Fall through intentionally */
       case ACTION_UNINSTALL:
 	if (source != IDC_SOURCE_DOWNLOAD && pkg->installed)
 	  return;
@@ -176,8 +183,7 @@ set_action (Package *pkg, bool preinc)
 	pkg->action = ACTION_SKIP;
 	/* Fall through intentionally */
       case ACTION_SKIP:
-	if ((source == IDC_SOURCE_DOWNLOAD) || !pkg->installed
-	    || pkg->trust != pkg->installed_ix)
+	if (source == IDC_SOURCE_DOWNLOAD && !pkg->installed)
 	  return;
 	break;
       default:
@@ -186,7 +192,7 @@ set_action (Package *pkg, bool preinc)
 }
 
 static int
-add_required (Package *pkg)
+add_required (Package * pkg)
 {
   Dependency *dp;
   Package *required;
@@ -206,9 +212,9 @@ add_required (Package *pkg)
     }
   while (dp)
     {
-      if ((required = getpkgbyname(dp->package)) == NULL)
+      if ((required = getpkgbyname (dp->package)) == NULL)
 	{
-	  dp=dp->next;
+	  dp = dp->next;
 	  continue;
 	}
       switch (required->action)
@@ -224,7 +230,7 @@ add_required (Package *pkg)
 	case ACTION_SAME_LAST:
 	  /* we are installing a user selected version */
 	  break;
-	
+
 	case ACTION_UNINSTALL:
 	  /* it's already installed - leave it */
 	  required->action = (actions) required->installed_ix;
@@ -236,23 +242,23 @@ add_required (Package *pkg)
 	case ACTION_ERROR:
 	case ACTION_UNKNOWN:
 	  /* the current install will fail */
-	  required->action = ACTION_UNKNOWN; /* this find prev, then curr, then test. */
-	  set_action(required, 0);	  /* we need a find_best that gets installed, */
-	  changed++;			  /* then current, then prev, then test */
+	  required->action = ACTION_UNKNOWN;	/* this find prev, then curr, then test. */
+	  set_action (required, 0);	/* we need a find_best that gets installed, */
+	  changed++;		/* then current, then prev, then test */
 	  chooser->insert_pkg (required);
 	  break;
 	default:
 	  log (0, "invalid state %d\n", required->action);
 	}
       changed += add_required (required);
-      dp=dp->next;
+      dp = dp->next;
     }
   return changed;
 }
 
 /* Return an appropriate caption given the current action. */
 const char *
-choose_caption (Package *pkg)
+choose_caption (Package * pkg)
 {
   set_action (pkg, 0);
   switch (pkg->action)
@@ -278,7 +284,7 @@ choose_caption (Package *pkg)
     case ACTION_SKIP:
       return "Skip";
     }
-    return "???";
+  return "???";
 }
 
 static void
@@ -303,20 +309,22 @@ paint (HWND hwnd)
   y = cr.top - scroll_ulc_y + header_height;
 
 
-  for (i = 0; i <= chooser->last_col ; i++)
+  for (i = 0; i <= chooser->last_col; i++)
     {
       TextOut (hdc, x + chooser->headers[i].x, 3, chooser->headers[i].text,
 	       chooser->headers[i].slen);
-      MoveToEx (hdc, x + chooser->headers[i].x, header_height-3, &p);
+      MoveToEx (hdc, x + chooser->headers[i].x, header_height - 3, &p);
       LineTo (hdc, x + chooser->headers[i].x + chooser->headers[i].width,
-	      header_height-3);
+	      header_height - 3);
     }
 
-  IntersectClipRect (hdc, cr.left, cr.top + header_height, cr.right, cr.bottom);
+  IntersectClipRect (hdc, cr.left, cr.top + header_height, cr.right,
+		     cr.bottom);
 
   for (ii = 0; ii < chooser->nlines; ii++)
-      chooser->lines[ii].paint (hdc, x, y, ii,
-			 (chooser->get_view_mode () == VIEW_CATEGORY) ? 0 : 1);
+    chooser->lines[ii].paint (hdc, x, y, ii,
+			      (chooser->get_view_mode () ==
+			       VIEW_CATEGORY) ? 0 : 1);
 
   if (chooser->nlines == 0)
     {
@@ -359,14 +367,14 @@ scroll_common (HWND hwnd, int which, int *var, int code)
       si.nPos -= row_height;
       break;
     case SB_PAGEDOWN:
-      si.nPos += si.nPage * 9/10;
+      si.nPos += si.nPage * 9 / 10;
       break;
     case SB_PAGEUP:
-      si.nPos -= si.nPage * 9/10;
+      si.nPos -= si.nPage * 9 / 10;
       break;
     }
 
-  if ((int)si.nPos < 0)
+  if ((int) si.nPos < 0)
     si.nPos = 0;
   if (si.nPos + si.nPage > si.nMax)
     si.nPos = si.nMax - si.nPage;
@@ -405,7 +413,7 @@ list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos)
 static LRESULT CALLBACK
 list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 {
-  int row,refresh;
+  int row, refresh;
 
   if (chooser->nlines == 0)
     return 0;
@@ -415,13 +423,13 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
   x += scroll_ulc_x;
   y += scroll_ulc_y - header_height;
 
-  row = (y + ROW_MARGIN/2) / row_height;
+  row = (y + ROW_MARGIN / 2) / row_height;
 
   if (row < 0 || row >= chooser->nlines)
     return 0;
 
   refresh = chooser->click (row, x);
- 
+
   if (refresh)
     {
       RECT r;
@@ -429,7 +437,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
       SCROLLINFO si;
       memset (&si, 0, sizeof (si));
       si.cbSize = sizeof (si);
-      si.fMask = SIF_ALL; /* SIF_RANGE was giving strange behaviour */
+      si.fMask = SIF_ALL;	/* SIF_RANGE was giving strange behaviour */
       si.nMin = 0;
 
       si.nMax = chooser->nlines * row_height;
@@ -502,7 +510,8 @@ register_windows (HINSTANCE hinst)
 }
 
 static void
-note_width (struct _header *hdrs, HDC dc, char *string, int addend, int column)
+note_width (struct _header *hdrs, HDC dc, char *string, int addend,
+	    int column)
 {
   if (!string)
     return;
@@ -513,12 +522,12 @@ note_width (struct _header *hdrs, HDC dc, char *string, int addend, int column)
 }
 
 static int
-check_existence (Info *inf, int check_src)
+check_existence (Info * inf, int check_src)
 {
   if (source == IDC_SOURCE_NETINST)
     return 1;
   if (source == IDC_SOURCE_CWD)
-    return 0;  /* should have already been determined */
+    return 0;			/* should have already been determined */
   if (check_src)
     return (inf->source && _access (inf->source, 0) == 0) ? -1 : 1;
   else
@@ -531,11 +540,11 @@ check_existence (Info *inf, int check_src)
 static void
 set_existence ()
 {
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     if (!pkg->exclude)
       {
 	int exists = 0;
-	for (Info *inf = pkg->infoscan; inf < pkg->infoend; inf++)
+	for (Info * inf = pkg->infoscan; inf < pkg->infoend; inf++)
 	  {
 	    if (inf->install_exists)
 	      exists = 1;
@@ -546,7 +555,7 @@ set_existence ()
 	    else
 	      exists |= inf->source_exists = check_existence (inf, 1);
 	  }
-	if (source != IDC_SOURCE_DOWNLOAD  && !exists)
+	if (source != IDC_SOURCE_DOWNLOAD && !exists)
 	  pkg->exclude = EXCLUDE_NOT_FOUND;
       }
 }
@@ -554,13 +563,13 @@ set_existence ()
 static void
 fill_missing_category ()
 {
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     if (!pkg->exclude && !pkg->category)
       add_category (pkg, register_category ("Misc"));
 }
 
 static actions
-keep_or_skip (Package *pkg)
+keep_or_skip (Package * pkg)
 {
   if (pkg->installed)
     return (actions) pkg->installed_ix;
@@ -573,12 +582,13 @@ default_trust (HWND h, trusts trust)
   int i, t, c;
 
   deftrust = trust;
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     if (!pkg->exclude)
       {
 	pkg->action = (actions) trust;
-	if (!pkg->installed && pkg->category && !(getpackagecategorybyname (pkg, "Required") ||
-			       getpackagecategorybyname (pkg, "Misc")))
+	if (!pkg->installed && pkg->category
+	    && !(getpackagecategorybyname (pkg, "Required")
+		 || getpackagecategorybyname (pkg, "Misc")))
 	  pkg->action = keep_or_skip (pkg);
 	set_action (pkg, 0);
       }
@@ -590,14 +600,14 @@ default_trust (HWND h, trusts trust)
 }
 
 void
-pick_line::set_line (Package *_pkg)
+pick_line::set_line (Package * _pkg)
 {
   pkg = _pkg;
   cat = NULL;
 }
 
 void
-pick_line::set_line (Category *_cat)
+pick_line::set_line (Category * _cat)
 {
   cat = _cat;
   pkg = NULL;
@@ -616,21 +626,21 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 		   pkg->installed->version, strlen (pkg->installed->version));
 	  SelectObject (bitmap_dc, bm_rtarrow);
 	  BitBlt (hdc, x + chooser->headers[chooser->current_col].x
-		       + chooser->headers[0].width + ICON_MARGIN / 2
-		       + HMARGIN / 2,
-		  by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
+		  + chooser->headers[0].width + ICON_MARGIN / 2
+		  + HMARGIN / 2, by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
 	}
 
       const char *s = choose_caption (pkg);
       TextOut (hdc, x + chooser->headers[chooser->new_col].x
-		    + NEW_COL_SIZE_SLOP, r, s, strlen (s));
+	       + NEW_COL_SIZE_SLOP, r, s, strlen (s));
       SelectObject (bitmap_dc, bm_spin);
       BitBlt (hdc, x + chooser->headers[chooser->new_col].x, by, 11, 11,
 	      bitmap_dc, 0, 0, SRCCOPY);
 
       HANDLE check_bm;
       if (!pkg->info[pkg->trust].source_exists
-	  || (pkg->action != ACTION_REDO && pkg->action != (actions) pkg->trust))
+	  || (pkg->action != ACTION_REDO
+	      && pkg->action != (actions) pkg->trust))
 	check_bm = bm_checkna;
       else if (pkg->srcpicked)
 	check_bm = bm_checkyes;
@@ -651,12 +661,13 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
       else
 	{
 	  static char buf[512];
-	  strcpy(buf,pkg->name);
-	  strcat(buf,": ");
-	  strcat(buf,pkg->sdesc);
+	  strcpy (buf, pkg->name);
+	  strcat (buf, ": ");
+	  strcat (buf, pkg->sdesc);
 	  s = buf;
 	}
-      TextOut (hdc, x + chooser->headers[chooser->pkg_col].x, r, s, strlen (s));
+      TextOut (hdc, x + chooser->headers[chooser->pkg_col].x, r, s,
+	       strlen (s));
     }
   else if (cat)
     TextOut (hdc, x + chooser->headers[chooser->cat_col].x, r, cat->name,
@@ -669,23 +680,23 @@ pick_line::click (int x)
   if (pkg)
     {
       if (pkg->info[pkg->trust].source_exists
-	  && x >= chooser->headers[chooser->src_col].x - HMARGIN/2
-	  && x <= chooser->headers[chooser->src_col + 1].x - HMARGIN/2)
+	  && x >= chooser->headers[chooser->src_col].x - HMARGIN / 2
+	  && x <= chooser->headers[chooser->src_col + 1].x - HMARGIN / 2)
 	pkg->srcpicked ^= 1;
 
       if (x >= chooser->headers[chooser->new_col].x - (HMARGIN / 2)
-	  && x <= chooser->headers[chooser->new_col + 1].x - HMARGIN/2)
+	  && x <= chooser->headers[chooser->new_col + 1].x - HMARGIN / 2)
 	{
 	  set_action (pkg, 1);
 	  /* Add any packages that are needed by this package */
-	  return add_required  (pkg);
+	  return add_required (pkg);
 	}
     }
   else if (cat)
     {
       /* handle the catalog being clicked ... does this belong up a level.. ? */
     }
-  
+
   return 0;
 }
 
@@ -708,7 +719,7 @@ void
 _view::set_view_mode (views _mode)
 {
   if (_mode == NVIEW)
-      view_mode = VIEW_PACKAGE_FULL;
+    view_mode = VIEW_PACKAGE_FULL;
   else
     view_mode = _mode;
   set_headers ();
@@ -719,11 +730,16 @@ _view::mode_caption ()
 {
   switch (view_mode)
     {
-    case VIEW_UNKNOWN:      return "";
-    case VIEW_PACKAGE_FULL: return "Full";
-    case VIEW_PACKAGE:      return "Partial";
-    case VIEW_CATEGORY:     return "Category";
-    default:                return "";
+    case VIEW_UNKNOWN:
+      return "";
+    case VIEW_PACKAGE_FULL:
+      return "Full";
+    case VIEW_PACKAGE:
+      return "Partial";
+    case VIEW_CATEGORY:
+      return "Category";
+    default:
+      return "";
     }
 }
 
@@ -734,8 +750,8 @@ _view::set_headers (void)
     {
     case VIEW_UNKNOWN:
       return;
-    case VIEW_PACKAGE_FULL: 
-    case VIEW_PACKAGE:      
+    case VIEW_PACKAGE_FULL:
+    case VIEW_PACKAGE:
       headers = pkg_headers;
       current_col = 0;
       new_col = 1;
@@ -767,7 +783,7 @@ _view::init_headers (HDC dc)
 
   for (i = 0; headers[i].text; i++)
     note_width (headers, dc, headers[i].text, 0, i);
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     {
       if (pkg->installed)
 	{
@@ -775,24 +791,33 @@ _view::init_headers (HDC dc)
 	  note_width (headers, dc, pkg->installed->version, NEW_COL_SIZE_SLOP,
 		      new_col);
 	}
-      for (Info *inf = pkg->infoscan; inf < pkg->infoend; inf++)
+      for (Info * inf = pkg->infoscan; inf < pkg->infoend; inf++)
 	note_width (headers, dc, inf->version, NEW_COL_SIZE_SLOP, new_col);
-      for (Category *cat = pkg->category; cat ; cat = cat->next)
+      for (Category * cat = pkg->category; cat; cat = cat->next)
 	note_width (headers, dc, cat->name, 0, cat_col);
-      note_width (headers, dc, pkg->name, 0, pkg_col);
-      note_width (headers, dc, pkg->sdesc, 0, pkg_col);
+      if (!pkg->sdesc)
+	note_width (headers, dc, pkg->name, 0, pkg_col);
+      else
+	{
+	  static char buf[512];
+	  strcpy (buf, pkg->name);
+	  strcat (buf, ": ");
+	  strcat (buf, pkg->sdesc);
+	  note_width (headers, dc, buf, 0, pkg_col);
+	}
     }
   note_width (headers, dc, "keep", NEW_COL_SIZE_SLOP, new_col);
   note_width (headers, dc, "uninstall", NEW_COL_SIZE_SLOP, new_col);
 
-  headers[0].x = HMARGIN/2;
-  for (i = 1; i <= last_col ; i++)
-    headers[i].x = headers[i-1].x + headers[i-1].width + ((i == new_col) ?
-		   NEW_COL_SIZE_SLOP : 0) + HMARGIN;
+  headers[0].x = HMARGIN / 2;
+  for (i = 1; i <= last_col; i++)
+    headers[i].x = headers[i - 1].x + headers[i - 1].width + ((i == new_col) ?
+							      NEW_COL_SIZE_SLOP
+							      : 0) + HMARGIN;
 }
 
 void
-_view::insert_pkg (Package *pkg)
+_view::insert_pkg (Package * pkg)
 {
   pick_line line;
   if (pkg->exclude)
@@ -813,11 +838,11 @@ _view::insert_pkg (Package *pkg)
   else
     {
 //      assert (lines); /* protect against a coding change in future */
-      for (Category *cat = pkg->category; cat; cat = cat->next)
+      for (Category * cat = pkg->category; cat; cat = cat->next)
 	{
 	  /* insert the package under this category in the list. If this category is not
 	     visible, add it */
-	  int n=0;
+	  int n = 0;
 	  while (n < nlines)
 	    {
 	      /* this should be a generic call to list_sort_cmp */
@@ -840,23 +865,25 @@ _view::insert_pkg (Package *pkg)
 }
 
 void
-_view::insert_category (Category *cat, int collapsed)
+_view::insert_category (Category * cat, int collapsed)
 {
   pick_line line;
   line.set_line (cat);
   if (lines == NULL)
     {
-      lines = (pick_line *) malloc ((npackages + ncategories) * sizeof (pick_line));
-      memset (lines, '\0', (npackages + ncategories) * sizeof (pick_line) );
+      lines =
+	(pick_line *) malloc ((npackages + ncategories) * sizeof (pick_line));
+      memset (lines, '\0', (npackages + ncategories) * sizeof (pick_line));
       nlines = 0;
       insert_at (0, line);
       if (!collapsed)
-	for (CategoryPackage *catpkg = cat->packages; catpkg; catpkg = catpkg->next)
+	for (CategoryPackage * catpkg = cat->packages; catpkg;
+	     catpkg = catpkg->next)
 	  insert_pkg (getpkgbyname (catpkg->pkgname));
     }
   else
     {
-      int n=0;
+      int n = 0;
       while (n < nlines)
 	{
 	  /* this should be a generic call to list_sort_cmp */
@@ -865,7 +892,8 @@ _view::insert_category (Category *cat, int collapsed)
 	    {
 	      insert_at (n, line);
 	      if (!collapsed)
-		for (CategoryPackage *catpkg = cat->packages; catpkg; catpkg = catpkg->next)
+		for (CategoryPackage * catpkg = cat->packages; catpkg;
+		     catpkg = catpkg->next)
 		  insert_pkg (getpkgbyname (catpkg->pkgname));
 	      n = nlines;
 	    }
@@ -879,7 +907,8 @@ _view::insert_category (Category *cat, int collapsed)
 	  /* insert at the end */
 	  insert_at (n, line);
 	  if (!collapsed)
-	    for (CategoryPackage *catpkg = cat->packages; catpkg; catpkg = catpkg->next)
+	    for (CategoryPackage * catpkg = cat->packages; catpkg;
+		 catpkg = catpkg->next)
 	      insert_pkg (getpkgbyname (catpkg->pkgname));
 	}
     }
@@ -934,7 +963,9 @@ _view::insert_under (int linen, pick_line line)
   while (n < nlines)
     {
       if (lines[n].get_category () || (lines[n].get_pkg ()
-	  && strcasecmp (line.get_pkg ()->name, lines[n].get_pkg ()->name) < 0))
+				       && strcasecmp (line.get_pkg ()->name,
+						      lines[n].get_pkg ()->
+						      name) < 0))
 	{
 	  insert_at (n, line);
 	  n = nlines;
@@ -959,15 +990,20 @@ _view::clear_view (void)
 }
 
 static views
-viewsplusplus(views theview)
+viewsplusplus (views theview)
 {
   switch (theview)
     {
-    case VIEW_UNKNOWN:      return VIEW_PACKAGE_FULL;
-    case VIEW_PACKAGE_FULL: return VIEW_PACKAGE;
-    case VIEW_PACKAGE:      return VIEW_CATEGORY;
-    case VIEW_CATEGORY:     return NVIEW;
-    default:                return VIEW_UNKNOWN;
+    case VIEW_UNKNOWN:
+      return VIEW_PACKAGE_FULL;
+    case VIEW_PACKAGE_FULL:
+      return VIEW_PACKAGE;
+    case VIEW_PACKAGE:
+      return VIEW_CATEGORY;
+    case VIEW_CATEGORY:
+      return NVIEW;
+    default:
+      return VIEW_UNKNOWN;
     }
 }
 
@@ -981,12 +1017,14 @@ _view::click (int row, int x)
   else
     {
       /* if we are the last line or the next line is a category too, expand */
-      if (row == (nlines -1) || lines[row + 1].get_category ())
+      if (row == (nlines - 1) || lines[row + 1].get_category ())
 	{
 	  int count = nlines;
-	  for (CategoryPackage *catpkg = lines[row].get_category ()->packages; catpkg; catpkg = catpkg->next)
+	  for (CategoryPackage * catpkg =
+	       lines[row].get_category ()->packages; catpkg;
+	       catpkg = catpkg->next)
 	    {
-	      Package * pkg = getpkgbyname (catpkg->pkgname);
+	      Package *pkg = getpkgbyname (catpkg->pkgname);
 	      int n = row + 1;
 	      pick_line line;
 	      line.set_line (pkg);
@@ -994,7 +1032,10 @@ _view::click (int row, int x)
 	      while (n < nlines)
 		{
 		  if (lines[n].get_category () || (lines[n].get_pkg ()
-		      && strcasecmp (pkg->name, lines[n].get_pkg ()->name) < 0))
+						   && strcasecmp (pkg->name,
+								  lines[n].
+								  get_pkg ()->
+								  name) < 0))
 		    {
 		      insert_at (n, line);
 		      n = nlines;
@@ -1009,7 +1050,7 @@ _view::click (int row, int x)
 		{
 		  /* insert at the end of this category */
 		  insert_at (n, line);
-		  n=nlines + 1;
+		  n = nlines + 1;
 		}
 	    }
 	  return nlines - count;
@@ -1018,9 +1059,10 @@ _view::click (int row, int x)
 	/* contract */
 	{
 	  int count = 0, n = row + 1;
-	  while (n < nlines &! lines[n].get_category ())
+	  while (n < nlines & !lines[n].get_category ())
 	    {
-	      memmove (&lines[n], &lines[n + 1], (nlines - n) * sizeof (pick_line));
+	      memmove (&lines[n], &lines[n + 1],
+		       (nlines - n) * sizeof (pick_line));
 	      nlines--;
 	      count++;
 	    }
@@ -1037,25 +1079,25 @@ set_view_mode (HWND h, views mode)
   chooser->set_view_mode (mode);
 
   chooser->clear_view ();
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     if (!pkg->exclude)
       set_action (pkg, 0);
 
   switch (chooser->get_view_mode ())
     {
     case VIEW_PACKAGE:
-      for (Package *pkg = package; pkg->name; pkg++)
-	if (!pkg->exclude && !is_full_action (pkg)) 
-	  chooser->insert_pkg (pkg); 
+      for (Package * pkg = package; pkg->name; pkg++)
+	if (!pkg->exclude && !is_full_action (pkg))
+	  chooser->insert_pkg (pkg);
       break;
     case VIEW_PACKAGE_FULL:
-      for (Package *pkg = package; pkg->name; pkg++)
-	if (!pkg->exclude) 
-	  chooser->insert_pkg (pkg); 
+      for (Package * pkg = package; pkg->name; pkg++)
+	if (!pkg->exclude)
+	  chooser->insert_pkg (pkg);
       break;
     case VIEW_CATEGORY:
       /* start collapsed. TODO: make this a chooser flag */
-      for (Category *cat = category; cat; cat = cat->next)
+      for (Category * cat = category; cat; cat = cat->next)
 	chooser->insert_category (cat, CATEGORY_COLLAPSED);
       break;
     default:
@@ -1069,7 +1111,9 @@ set_view_mode (HWND h, views mode)
   si.cbSize = sizeof (si);
   si.fMask = SIF_ALL;
   si.nMin = 0;
-  si.nMax = chooser->headers[chooser->last_col].x + chooser->headers[chooser->last_col].width + HMARGIN;
+  si.nMax =
+    chooser->headers[chooser->last_col].x +
+    chooser->headers[chooser->last_col].width + HMARGIN;
   si.nPage = r.right;
   SetScrollInfo (h, SB_HORZ, &si, TRUE);
 
@@ -1086,7 +1130,7 @@ set_view_mode (HWND h, views mode)
 }
 
 static void
-create_listview (HWND dlg, RECT *r)
+create_listview (HWND dlg, RECT * r)
 {
   int i, t;
   lv = CreateWindowEx (WS_EX_CLIENTEDGE,
@@ -1094,11 +1138,10 @@ create_listview (HWND dlg, RECT *r)
 		       "listviewwindow",
 		       WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_VISIBLE,
 		       r->left, r->top,
-		       r->right-r->left + 1, r->bottom-r->top + 1,
+		       r->right - r->left + 1, r->bottom - r->top + 1,
 		       dlg,
-		       (HMENU) MAKEINTRESOURCE(IDC_CHOOSE_LIST),
-		       hinstance,
-		       0);
+		       (HMENU) MAKEINTRESOURCE (IDC_CHOOSE_LIST),
+		       hinstance, 0);
   ShowWindow (lv, SW_SHOW);
   HDC dc = GetDC (lv);
   sysfont = GetStockObject (DEFAULT_GUI_FONT);
@@ -1117,10 +1160,10 @@ create_listview (HWND dlg, RECT *r)
 
   default_trust (lv, TRUST_CURR);
   set_view_mode (lv, VIEW_CATEGORY);
-  if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption()))
-    log (LOG_BABBLE, "Failed to set View button caption %d", GetLastError() );
-  for (Package *foo = package; foo->name; foo++)
-    add_required(foo);
+  if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
+    log (LOG_BABBLE, "Failed to set View button caption %d", GetLastError ());
+  for (Package * foo = package; foo->name; foo++)
+    add_required (foo);
   static int ta[] = { IDC_CHOOSE_CURR, 0 };
   rbset (dlg, ta, IDC_CHOOSE_CURR);
 
@@ -1134,26 +1177,28 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     {
     case IDC_CHOOSE_PREV:
       default_trust (lv, TRUST_PREV);
-      for (Package *foo = package; foo->name; foo++)
-	add_required(foo);
+      for (Package * foo = package; foo->name; foo++)
+	add_required (foo);
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_CURR:
       default_trust (lv, TRUST_CURR);
-      for (Package *foo = package; foo->name; foo++)
-	add_required(foo);
+      for (Package * foo = package; foo->name; foo++)
+	add_required (foo);
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_EXP:
       default_trust (lv, TRUST_TEST);
-      for (Package *foo = package; foo->name; foo++)
-	add_required(foo);
+      for (Package * foo = package; foo->name; foo++)
+	add_required (foo);
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_VIEW:
       set_view_mode (lv, viewsplusplus (chooser->get_view_mode ()));
-      if (!SetDlgItemText (h, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption()))
-	log (LOG_BABBLE, "Failed to set View button caption %d", GetLastError() );
+      if (!SetDlgItemText
+	  (h, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
+	log (LOG_BABBLE, "Failed to set View button caption %d",
+	     GetLastError ());
       break;
 
     case IDOK:
@@ -1178,7 +1223,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 }
 
 static void
-GetParentRect (HWND parent, HWND child, RECT *r)
+GetParentRect (HWND parent, HWND child, RECT * r)
 {
   POINT p;
   GetWindowRect (child, r);
@@ -1205,7 +1250,7 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_INITDIALOG:
       nextbutton = GetDlgItem (h, IDOK);
       frame = GetDlgItem (h, IDC_LISTVIEW_POS);
-      choose_inst_text = GetDlgItem(h,IDC_CHOOSE_INST_TEXT);
+      choose_inst_text = GetDlgItem (h, IDC_CHOOSE_INST_TEXT);
       if (source == IDC_SOURCE_DOWNLOAD)
 	SetWindowText (choose_inst_text, "Select packages to download ");
       else
@@ -1258,7 +1303,7 @@ find_tar_ext (const char *path)
 
 /* Parse a filename into package, version, and extension components. */
 int
-parse_filename (const char *in_fn, fileparse& f)
+parse_filename (const char *in_fn, fileparse & f)
 {
   char *p, *ver;
   char fn[strlen (in_fn) + 1];
@@ -1324,7 +1369,7 @@ parse_filename (const char *in_fn, fileparse& f)
 Package *
 getpkgbyname (const char *pkgname)
 {
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     if (strcasecmp (pkg->name, pkgname) == 0)
       return pkg;
 
@@ -1335,7 +1380,7 @@ getpkgbyname (const char *pkgname)
 Category *
 getcategorybyname (const char *categoryname)
 {
-  for (Category *cat = category; cat; cat=cat->next)
+  for (Category * cat = category; cat; cat = cat->next)
     if (strcasecmp (cat->name, categoryname) == 0)
       return cat;
 
@@ -1344,9 +1389,9 @@ getcategorybyname (const char *categoryname)
 
 /* Return a pointer to a category of a given package given the name. */
 Category *
-getpackagecategorybyname (Package *pkg, const char *categoryname)
+getpackagecategorybyname (Package * pkg, const char *categoryname)
 {
-  for (Category *cat = pkg->category; cat; cat = cat->next)
+  for (Category * cat = pkg->category; cat; cat = cat->next)
     if (strcasecmp (cat->name, categoryname) == 0)
       return cat;
 
@@ -1385,7 +1430,7 @@ scan2 (char *path, unsigned int size)
   Info *hole = NULL;
   Info *maybe_hole = NULL;
   int cmp = 0;
-  for (Info *inf = pkg->infoscan; inf < pkg->infoend; inf++)
+  for (Info * inf = pkg->infoscan; inf < pkg->infoend; inf++)
     if (!inf->version || inf->derived)
       {
 	if (cmp > 0)
@@ -1462,7 +1507,7 @@ scan_downloaded_files ()
 }
 
 _Info::_Info (const char *_install, const char *_version, int _install_size,
-	    const char *_source, int _source_size)
+	      const char *_source, int _source_size)
 {
   memset (this, 0, sizeof (*this));
   install = strdup (_install);
@@ -1522,7 +1567,8 @@ read_installed_db ()
 
       if (!pkg->installed_ix)
 	for (trusts t = TRUST_PREV; t < NTRUST; ((int) t)++)
-	  if (pkg->info[t].install && strcmp (f.ver, pkg->info[t].version) == 0)
+	  if (pkg->info[t].install
+	      && strcmp (f.ver, pkg->info[t].version) == 0)
 	    {
 	      pkg->installed_ix = t;
 	      break;
@@ -1534,8 +1580,8 @@ read_installed_db ()
 int
 package_sort (const void *va, const void *vb)
 {
-  Package *a = (Package *)va;
-  Package *b = (Package *)vb;
+  Package *a = (Package *) va;
+  Package *b = (Package *) vb;
   return strcasecmp (a->name, b->name);
 }
 
@@ -1546,15 +1592,15 @@ do_choose (HINSTANCE h)
 
   nextbutton = 0;
   bm_spin = LoadImage (h, MAKEINTRESOURCE (IDB_SPIN), IMAGE_BITMAP, 0, 0, 0);
-  bm_rtarrow = LoadImage (h, MAKEINTRESOURCE (IDB_RTARROW), IMAGE_BITMAP, 
+  bm_rtarrow = LoadImage (h, MAKEINTRESOURCE (IDB_RTARROW), IMAGE_BITMAP,
 			  0, 0, 0);
 
   bm_checkyes = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_YES), IMAGE_BITMAP,
 			   0, 0, 0);
   bm_checkno = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NO), IMAGE_BITMAP,
-			   0, 0, 0);
+			  0, 0, 0);
   bm_checkna = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NA), IMAGE_BITMAP,
-			   0, 0, 0);
+			  0, 0, 0);
 
   register_windows (h);
 
@@ -1572,13 +1618,12 @@ do_choose (HINSTANCE h)
     fatal (IDS_DIALOG_FAILED);
 
   log (LOG_BABBLE, "Chooser results...");
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     {
-      static char *infos[] = {"nada", "prev", "curr", "test"};
+      static char *infos[] = { "nada", "prev", "curr", "test" };
       const char *trust = ((pkg->trust == TRUST_PREV) ? "prev"
 			   : (pkg->trust == TRUST_CURR) ? "curr"
-			   : (pkg->trust == TRUST_TEST) ? "test"
-			   : "unknown");
+			   : (pkg->trust == TRUST_TEST) ? "test" : "unknown");
       const char *action = choose_caption (pkg);
       const char *installed = ((pkg->installed_ix == -1) ? "none"
 			       : (pkg->installed_ix == TRUST_PREV) ? "prev"
@@ -1595,7 +1640,7 @@ do_choose (HINSTANCE h)
 	{
 	  /* List categories the package belongs to */
 	  char *categories = "";
-	  int  categories_len = 0;
+	  int categories_len = 0;
 	  Category *cp;
 	  for (cp = pkg->category; cp; cp = cp->next)
 	    if (cp->name)
@@ -1604,7 +1649,7 @@ do_choose (HINSTANCE h)
 	  if (categories_len > 0)
 	    {
 	      categories = (char *) malloc (categories_len);
-	      strcpy(categories, pkg->category->name);
+	      strcpy (categories, pkg->category->name);
 	      for (cp = pkg->category->next; cp; cp = cp->next)
 		if (cp->name)
 		  {
@@ -1619,7 +1664,7 @@ do_choose (HINSTANCE h)
 	{
 	  /* List other packages this package depends on */
 	  char *requires = "";
-	  int  requires_len = 0;
+	  int requires_len = 0;
 	  Dependency *dp;
 	  for (dp = pkg->required; dp; dp = dp->next)
 	    if (dp->package)
@@ -1628,7 +1673,7 @@ do_choose (HINSTANCE h)
 	  if (requires_len > 0)
 	    {
 	      requires = (char *) malloc (requires_len);
-	      strcpy(requires, pkg->required->package);
+	      strcpy (requires, pkg->required->package);
 	      for (dp = pkg->required->next; dp; dp = dp->next)
 		if (dp->package)
 		  {
@@ -1644,14 +1689,14 @@ do_choose (HINSTANCE h)
 	{
 	  if (pkg->info[t].install)
 	    log (LOG_BABBLE, "     [%s] ver=%s\n"
-			     "          inst=%s %d exists=%s\n"
-			     "          src=%s %d exists=%s",
+		 "          inst=%s %d exists=%s\n"
+		 "          src=%s %d exists=%s",
 		 infos[t],
-		 pkg->info[t].version ?: "(none)",
-		 pkg->info[t].install ?: "(none)",
+		 pkg->info[t].version ? : "(none)",
+		 pkg->info[t].install ? : "(none)",
 		 pkg->info[t].install_size,
 		 (pkg->info[t].install_exists) ? "yes" : "no",
-		 pkg->info[t].source ?: "(none)",
+		 pkg->info[t].source ? : "(none)",
 		 pkg->info[t].source_size,
 		 (pkg->info[t].source_exists) ? "yes" : "no");
 	}
