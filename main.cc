@@ -234,9 +234,15 @@ set_default_sec ()
       /* Set the default group to one of the above computed SID. */
       PSID nsid = NULL;
       if (isusers)
+      {
 	nsid = usid;
+	log(LOG_TIMESTAMP) << "Changing gid to Users" << endLog;
+      }
       else if (isadmins)
+      {
 	nsid = asid;
+	log(LOG_TIMESTAMP) << "Changing gid to Administrators" << endLog;
+      }
       if (nsid && !SetTokenInformation (token, TokenPrimaryGroup, &nsid, sizeof nsid))
 	log (LOG_TIMESTAMP) << "SetTokenInformation() failed: " << 
 	  GetLastError () << endLog;

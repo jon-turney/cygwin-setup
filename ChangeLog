@@ -1,3 +1,7 @@
+2003-02-28  Max Bowsher  <maxb@ukf.net>
+
+	* main.cc (set_default_sec): Add logging.
+
 2003-02-28  Pierre Humblet  <pierre.humblet@ieee.org>
 
 	* main.cc (set_default_dacl): Replace with set_default_sec.
