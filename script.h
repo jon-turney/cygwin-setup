@@ -21,7 +21,7 @@
    we have a Bourne shell, execute it using sh.  Otherwise, if fname
    has suffix .bat, execute using cmd */
    
-void run_script (String const &dir, String const &fname, BOOL to_log = FALSE);
+void run_script (String const &dir, String const &fname);
 
 /* Initialisation stuff for run_script: sh, cmd, CYGWINROOT and PATH */
 void init_run_script ();

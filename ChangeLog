@@ -1,5 +1,10 @@
 2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
 
+	* script.cc (run_script): Always pass TRUE to Script::run.
+	* script.h (run_script): Remove optional to_log parameter.
+
+2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
+
 	* script.cc (run_script): Move functionality into Script.
 	(Script::run): Absorb run_script.
 

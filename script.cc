@@ -197,9 +197,9 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
 }
 
 void
-run_script (String const &dir, String const &fname, BOOL to_log)
+run_script (String const &dir, String const &fname)
 {
-  Script (dir + fname).run (to_log);
+  Script (dir + fname).run (TRUE);
 }
 
 void
