@@ -24,6 +24,7 @@ static const char *cvsid =
 #include "package_version.h"
 #include "package_db.h"
 #include "package_meta.h"
+#include "LogSingleton.h"
 #include "state.h"
 #include "resource.h"
 #include <algorithm>
@@ -375,8 +376,12 @@ processOneDependency(trusts deftrust, size_t depth, PackageSpecification *spec)
   DependencyProcessor processor (deftrust, depth);
 
   packageversion trusted = required->trustp(deftrust);
-  if (spec->satisfies (trusted))
-      select (processor,required,trusted);
+  if (spec->satisfies (trusted)) {
+      return select (processor,required,trusted);
+  }
+
+  log (LOG_TIMESTAMP) << "Warning, the default trust level for package "
+    << trusted.Name() << " does not meet this specification " << *spec << endl;
   
   set <packageversion>::iterator v;
   for (v = required->versions.begin();

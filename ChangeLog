@@ -1,5 +1,12 @@
 2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.cc (ChooserPage::OnNext): Remove extracted comment.
+	* package_version.cc (processOneDependency): Return once selecting
+	a package (bugfix to prevous rework).
+	Log if the default trust fails the package specification.
+
+2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* package_meta.h (packagemeta::logAllVersions): Declare.
 	(packagemeta::trustLabel): Ditto.
 	* choose.cc (ChooserPage::OnNext): Get each package to log all it's 

@@ -595,26 +595,6 @@ ChooserPage::OnNext ()
 	}
 #endif
       pkg.logAllVersions();
-#if 0
-
-      /* FIXME: Reinstate this code, but spit out all mirror sites */
-
-      for (int t = 1; t < NTRUST; t++)
-	{
-	  if (pkg->info[t].install)
-	    log (LOG_BABBLE) << "     [%s] ver=%s\n"
-		 "          inst=%s %d exists=%s\n"
-		 "          src=%s %d exists=%s",
-		 infos[t],
-		 pkg->info[t].version ? : "(none)",
-		 pkg->info[t].install ? : "(none)",
-		 pkg->info[t].install_size,
-		 (pkg->info[t].install_exists) ? "yes" : "no",
-		 pkg->info[t].source ? : "(none)",
-		 pkg->info[t].source_size,
-		 (pkg->info[t].source_exists) ? "yes" : "no");
-	}
-#endif
     }
   return IDD_INSTATUS;
 }
