@@ -17,6 +17,7 @@
 #define SETUP_CHOOSE_H
 
 #include "proppage.h"
+#include "package_meta.h"
 
 #define CATEGORY_EXPANDED  0
 #define CATEGORY_COLLAPSED 1
@@ -44,7 +45,17 @@ public:
   {
     return OnNext ();
   }; 
+  private:
+  void keepClicked ();
+  template<class C> bool ifChecked(int const &id, void (C::*fn)()) {
+     if (IsDlgButtonChecked (GetHWND (), id)) {
+       (this->*fn)();
+       return true;
+     }
+    else
+      return false;
+  }
+  template <trusts aTrust> void changeTrust();
 };
-
 #endif /* __cplusplus */
 #endif /* SETUP_CHOOSE_H */

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2000, 2001 Red Hat, Inc.
+ * Copyright (c) 2003 Robert Collins <rbtcollins@hotmail.com>
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -633,6 +634,29 @@ ChooserPage::OnBack ()
     return IDD_SITE;
 }
 
+void
+ChooserPage::keepClicked()
+{
+  packagedb db;
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+        i != db.packages.end (); ++i)
+    {
+      packagemeta & pkg = **i;
+      pkg.desired = pkg.installed;
+    }
+  set_view_mode (lv, chooser->get_view_mode ());
+}
+
+template <trusts aTrust>
+void
+ChooserPage::changeTrust()
+{
+  default_trust (lv, aTrust);
+  packagedb db;
+  for_each(db.packages.begin(), db.packages.end(), SetRequirement(aTrust));
+  set_view_mode (lv, chooser->get_view_mode ());
+}
+
 bool
 ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
@@ -642,68 +666,16 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       return false;
     }
 
-  packagedb db;
   switch (id)
     {
     case IDC_CHOOSE_KEEP:
-      if (IsDlgButtonChecked (GetHWND (), id))
-      {
-	for (vector <packagemeta *>::iterator i = db.packages.begin ();
-	     i != db.packages.end (); ++i)
-          {
-            packagemeta & pkg = **i;
-            pkg.desired = pkg.installed;
-          }
-        set_view_mode (lv, chooser->get_view_mode ());
-        break;
-      }
-      else
-      return false;
+       return ifChecked(id, &ChooserPage::keepClicked);
     case IDC_CHOOSE_PREV:
-      if (IsDlgButtonChecked (GetHWND (), id))
-      {
-        default_trust (lv, TRUST_PREV);
-	for (vector <packagemeta *>::iterator i = db.packages.begin ();
-	     i != db.packages.end (); ++i)
-          {
-            packagemeta & pkg = **i;
-            pkg.set_requirements (TRUST_PREV);
-          }
-        set_view_mode (lv, chooser->get_view_mode ());
-        break;
-      }
-      else
-      return false;
+       return ifChecked(id, &ChooserPage::changeTrust<TRUST_PREV>);
     case IDC_CHOOSE_CURR:
-      if (IsDlgButtonChecked (GetHWND (), id))
-      {
-        default_trust (lv, TRUST_CURR);
-	for (vector <packagemeta *>::iterator i = db.packages.begin ();
-	     i != db.packages.end (); ++i)
-          {
-            packagemeta & pkg = **i;
-            pkg.set_requirements (TRUST_CURR);
-          }
-        set_view_mode (lv, chooser->get_view_mode ());
-        break;
-      }
-      else
-      return false;
+       return ifChecked(id, &ChooserPage::changeTrust<TRUST_CURR>);
     case IDC_CHOOSE_EXP:
-      if (IsDlgButtonChecked (GetHWND (), id))
-      {
-        default_trust (lv, TRUST_TEST);
-	for (vector <packagemeta *>::iterator i = db.packages.begin ();
-	     i != db.packages.end (); ++i)
-          {
-            packagemeta & pkg = **i;
-            pkg.set_requirements (TRUST_TEST);
-          }
-        set_view_mode (lv, chooser->get_view_mode ());
-        break;
-      }
-      else
-      return false;
+       return ifChecked(id, &ChooserPage::changeTrust<TRUST_TEST>);
     case IDC_CHOOSE_VIEW:
       set_view_mode (lv, ++chooser->get_view_mode ());
       if (!SetDlgItemText
@@ -711,8 +683,7 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       log (LOG_BABBLE) << "Failed to set View button caption " << 
            GetLastError () << endLog;
       break;
-
-
+      
     default:
       // Wasn't recognized or handled.
       return false;

@@ -1,3 +1,12 @@
+2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.cc: Update copyright.
+	(ChooserPage::keepClicked): Extracted from OnMessageCmd.
+	(ChooserPage::changeTrust): Ditto.
+	* choose.h (ChooserPage): Declare keepClicked and changeTrust.
+	(ChooserPage::ifChecked): Extracted from OnMessageCmd.
+	* package_meta.h (SetRequirement): Adapter for visiting package collections.
+
 2003-07-26  Max Bowsher  <maxb@ukf.net>
 
 	* tests/.cvsignore: New file, listing Makefile.in.
