@@ -82,6 +82,12 @@ STR	[a-zA-Z0-9_./:\+-]+
 "Maintainer:"		BEGIN (eolstate); return MAINTAINER;
 "Architecture:"		return ARCHITECTURE;
 "Source:"		return SOURCEPACKAGE;
+"Binary:"		return BINARYPACKAGE;
+"Build-Depends:"	return BUILDDEPENDS;
+"Standards-Version:"	return STANDARDSVERSION; 
+"Format:"		return FORMAT;
+"Directory:"		return DIRECTORY;
+"Files:"		return FILES;
 
 "category:"|"Section:"	return CATEGORY;
 "Priority:"		return PRIORITY;

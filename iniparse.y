@@ -53,6 +53,7 @@ void add_correct_version();
 %token SUGGESTS CONFLICTS REPLACES PROVIDES PACKAGENAME STRTOEOL PARAGRAPH LEX_EOF
 %token EMAIL COMMA OR NL AT
 %token OPENBRACE CLOSEBRACE EQUAL GT LT GTEQUAL LTEQUAL 
+%token BINARYPACKAGE BUILDDEPENDS STANDARDSVERSION FORMAT DIRECTORY FILES
 
 %%
 
@@ -103,12 +104,16 @@ singleitem /* non-empty */
  | MAINTAINER STRING NL		{ iniBuilder->buildMaintainer ($2); }
  | ARCHITECTURE STRING NL 	{ iniBuilder->buildArchitecture ($2); }
  | FILESIZE STRING NL		{ iniBuilder->buildInstallSize($2); }
+ | FORMAT STRING NL		{ /* TODO */ }
+ | DIRECTORY STRING NL		{ /* TODO */ }
+ | STANDARDSVERSION STRING NL	{ /* TODO */ }
  | MD5LINE MD5 NL	{ iniBuilder->buildInstallMD5 ((unsigned char *)$2); }
  | SOURCEPACKAGE source NL
  | CATEGORY categories NL
  | INSTALL STRING { iniBuilder->buildPackageInstall ($2); } installmeta NL
  | SOURCE STRING STRING sourceMD5 NL {iniBuilder->buildPackageSource ($2, $3);}
  | PROVIDES 		{ iniBuilder->buildBeginProvides(); } packagelist NL
+ | BINARYPACKAGE  { /* TODO */ } packagelist NL
  | CONFLICTS	{ iniBuilder->buildBeginConflicts(); } versionedpackagelist NL
  | DEPENDS { iniBuilder->buildBeginDepends(); } versionedpackagelist NL
  | REQUIRES { iniBuilder->buildBeginDepends(); }versionedpackagelistsp NL
@@ -116,6 +121,8 @@ singleitem /* non-empty */
  | RECOMMENDS { iniBuilder->buildBeginRecommends(); }   versionedpackagelist NL
  | SUGGESTS { iniBuilder->buildBeginSuggests(); } versionedpackagelist NL
  | REPLACES { iniBuilder->buildBeginReplaces(); }       versionedpackagelist NL
+ | BUILDDEPENDS { /* todo */ } versionedpackagelist NL
+ | FILES NL SourceFilesList
  | DESCTAG mlinedesc
  | LEX_EOF			{ YYACCEPT; }
  | error 			{ yyerror (String("unrecognized line ") 
@@ -194,6 +201,10 @@ operator /* non-empty */
  | GT { iniBuilder->buildPackageListOperator (PackageSpecification::MoreThan); }
  | LTEQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::LessThanEquals); }
  | GTEQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::MoreThanEquals); }
+ ;
+ 
+SourceFilesList: /* empty */
+ | SourceFilesList MD5 STRING STRING NL
  ;
  
 %%
