@@ -36,7 +36,7 @@ public:
   RunFindVisitor (){}
   virtual void visitFile(String const &basePath, const WIN32_FIND_DATA *theFile)
     {
-      run_script ("/etc/postinstall/", theFile->cFileName);
+      run_script ("/etc/postinstall/", theFile->cFileName, TRUE);
     }
   virtual ~ RunFindVisitor () {}
 protected:
@@ -57,7 +57,7 @@ do_postinstall (HINSTANCE h, HWND owner)
       packagemeta & pkg = **i;
       if (pkg.installed)
 	for (std::vector<Script>::iterator script=pkg.installed.scripts().begin(); script != pkg.installed.scripts().end(); ++script) 
-	  run_script ("/etc/postinstall/", script->baseName());
+	  run_script ("/etc/postinstall/", script->baseName(), TRUE);
       ++i;
     }
   RunFindVisitor myVisitor;

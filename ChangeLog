@@ -1,3 +1,18 @@
+2003-03-18  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
+	* script.cc (run): Add file_out parameter.
+	Redirect output of subprocess to file, creating the
+	path if necessary.  Minimize the script window.
+	(run_script): Add optional to_log boolean parameter.
+	If to_log, redirect output to temporary file and then
+	import it into LOG_BABBLE.
+	(OutputLog): New helper class.
+	(operator<<): New operation on OutputLog.
+	* script.h (run_script): Add optional to_log parameter.
+	* postinstall.cc (RunFindVisitor::visitFile): Instruct
+	run_script() to log script output.
+	(do_postinstall): Ditto.
+
 2003-03-20  Robert Collins  <rbtcollins@hotmail.com>
 
 	* package_meta.cc (packagemeta::set_action): The logic 
