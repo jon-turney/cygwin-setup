@@ -197,12 +197,6 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
 }
 
 void
-run_script (String const &dir, String const &fname)
-{
-  Script (dir + fname).run ();
-}
-
-void
 Script::run() const
 {
   char *ext = strrchr (scriptName.cstr_oneuse(), '.');
@@ -246,9 +240,9 @@ void
 try_run_script (String const &dir, String const &fname)
 {
   if (io_stream::exists (String ("cygfile://")+ dir + fname + ".sh"))
-    run_script (dir.cstr_oneuse(), (fname + ".sh").cstr_oneuse());
+    Script (dir + fname+ ".sh").run ();
   if (io_stream::exists (String ("cygfile://")+ dir + fname + ".bat"))
-    run_script (dir.cstr_oneuse(), (fname + ".bat").cstr_oneuse());
+    Script (dir + fname+ ".bat").run ();
 }
 
 char const Script::ETCPostinstall[] = "/etc/postinstall/";

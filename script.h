@@ -16,13 +16,7 @@
 #define SCRIPT_H
 
 #include "String++.h"
-
-/* Run the script fname, found in dir.  If fname has suffix .sh, and
-   we have a Bourne shell, execute it using sh.  Otherwise, if fname
-   has suffix .bat, execute using cmd */
    
-void run_script (String const &dir, String const &fname);
-
 /* Initialisation stuff for run_script: sh, cmd, CYGWINROOT and PATH */
 void init_run_script ();
 
@@ -35,6 +29,9 @@ public:
   Script (String const &fileName);
   String baseName() const;
   String fullName() const;
+/* Run the script.  If it it's suffix is .sh, and
+   we have a Bourne shell, execute it using sh.  Otherwise, if the 
+   suffix is .bat, execute using cmd */
   void run() const;
 private:
   String scriptName;
