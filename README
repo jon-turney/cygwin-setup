@@ -27,6 +27,7 @@ TODO:
  * Toggling from All Default to All Install takes *way* too long.
  * Remove installed packages from Misc when other (non-All) categories are
    found.
+ * Local package scan stops updating when it stops being the active window.
  	   
 WISHLIST:
  * rsync:// support.
