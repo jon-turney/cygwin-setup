@@ -23,6 +23,7 @@ public:
   LogFile();
   void clearFiles(); // delete all target filenames
   void setFile (int minlevel, String const &path, bool append);
+  String getFileName (int level) const;
   /* Some platforms don't call destructors. So this call exists
    * which guarantees to flush any log data...
    * but doesn't call generic C++ destructors

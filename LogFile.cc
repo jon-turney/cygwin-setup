@@ -31,6 +31,8 @@ static const char *cvsid =
 #include <time.h>
 #include <string>
 #include "AntiVirus.h"
+#include "filemanip.h"
+#include "cistring.h"
 
 using namespace std;
 
@@ -101,6 +103,20 @@ LogFile::setFile (int minlevel, String const &path, bool append)
   files.insert (t);
 }
 
+String
+LogFile::getFileName (int level) const
+{
+  for (FileSet::iterator i = files.begin();
+       i != files.end(); ++i)
+    {
+      if (i->level == level)
+        return i->key;
+    }
+  cistring bad_file;
+  bad_file.Format(IDS_MISSING_LOG);
+  return bad_file.c_str();
+}
+
 void
 LogFile::exit (int const exit_code)
 {
@@ -115,7 +131,7 @@ LogFile::exit (int const exit_code)
   been_here = 1;
   
   if (exit_msg)
-    note (NULL, exit_msg);
+    note (NULL, exit_msg, backslash(getFileName(LOG_BABBLE)).cstr_oneuse());
   
   log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
 

@@ -120,6 +120,7 @@
 #define IDC_DISABLE_AV			1067
 #define IDC_LEAVE_AV			1068
 #define IDC_CHOOSE_KEEP			1069
+#define IDS_MISSING_LOG			1070
 #define IDC_STATIC                      -1
 
 // Next default values for new objects

@@ -1,5 +1,16 @@
 2003-02-01  Igor Pechtchanski <pechtcha@cs.nyu.edu>
 
+	* res.rc (IDS_INSTALL_INCOMPLETE): Change hard-coded
+	log filename to %s.
+	(IDS_MISSING_LOG): New string resource.
+	* resource.h (IDS_MISSING_LOG): New resource.
+	* LogFile.cc (LogFile::exit): Pass log filename for
+	LOG_BABBLE to note().
+	(LogFile::getFileName): New function.
+	* LogFile.h (LogFile::getFileName): New function.
+
+2003-02-01  Igor Pechtchanski <pechtcha@cs.nyu.edu>
+
 	* String++.cc: Don't include concat.h.
 	* Makefile.am: Remove concat.cc and concat.h references.
 	* concat.h: Remove.
