@@ -80,6 +80,9 @@ static char *etc_profile[] = {
   "$ '",
   "",
   "cd $HOME",
+  "",
+  "test -f ./.profile && . ./.profile",
+  "test -f ./.bashrc && . ./.bashrc",
   0
 };
 
