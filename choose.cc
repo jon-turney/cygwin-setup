@@ -288,6 +288,7 @@ paint (HWND hwnd)
 
   SelectObject (hdc, sysfont);
   SetBkColor (hdc, GetSysColor (COLOR_WINDOW));
+  SetTextColor (hdc, GetSysColor (COLOR_WINDOWTEXT));
 
   RECT cr;
   GetClientRect (hwnd, &cr);
