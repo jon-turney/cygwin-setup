@@ -680,5 +680,10 @@ void
 packagemeta::setDefaultCategories()
 {
   add_category ("Misc");
+}
+
+void
+packagemeta::addToCategoryAll()
+{
   add_category ("All");
 }

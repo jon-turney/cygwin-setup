@@ -1,3 +1,11 @@
+2003-07-28  Robert Collins  <rbtcollins@hotmail.com>
+
+	* package_meta.h (packagemeta::addToCategoryAll): Declare.
+	* package_meta.cc (packagemeta::addToCategoryAll): New method, 
+	separated to allow clear iteration.
+	* choose.cc (ChooserPage::fillMissingCategory): BUGFIX: "all" is
+	meant to be added unconditionally.
+	
 2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Generic.h: New file, home for generic programming tools.

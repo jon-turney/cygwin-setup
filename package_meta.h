@@ -56,6 +56,7 @@ public:
   bool visited() const;
   bool hasNoCategories() const;
   void setDefaultCategories();
+  void addToCategoryAll();
 
   class _actions
   {

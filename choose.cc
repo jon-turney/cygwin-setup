@@ -65,8 +65,9 @@ extern ThreeBarProgressPage Progress;
 void
 ChooserPage::fillMissingCategory ()
 {
-   packagedb db;
+  packagedb db;
   for_each(db.packages.begin(), db.packages.end(), visit_if(mem_fun(&packagemeta::setDefaultCategories), mem_fun(&packagemeta::hasNoCategories)));
+  for_each(db.packages.begin(), db.packages.end(), mem_fun(&packagemeta::addToCategoryAll));
 }
 
 void
