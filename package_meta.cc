@@ -379,7 +379,7 @@ packagemeta::set_action (packageversion const &default_version)
       if (i != versions.end())
 	{
 	  desired = *i;
-	  desired.pick (true);
+	  desired.pick (desired.accessible());
 	  desired.sourcePackage ().pick (false);
 	}
       else
@@ -421,8 +421,10 @@ checkForInstalled (PackageSpecification *spec)
   packagemeta *required = db.findBinary (*spec);
   if (!required)
     return false;
-  if (spec->satisfies (required->installed))
-    /* done, found a satisfactory installed version */
+  if (spec->satisfies (required->installed) 
+      && required->desired == required->installed )
+    /* done, found a satisfactory installed version that will remain 
+       installed */
     return true;
   return false;
 }
@@ -455,6 +457,33 @@ checkForSatisfiable (PackageSpecification *spec)
   return false;
 }
 
+static int
+processOneDependency(trusts deftrust, size_t depth, PackageSpecification *spec)
+{
+  /* TODO: add this to a set of packages to be offered to meet the
+     requirement. For now, simply set the install to the first
+     satisfactory version. The user can step through the list if
+     desired */
+  packagedb db;
+  packagemeta *required = db.findBinary (*spec);
+  set <packageversion>::iterator v;
+  for (v = required->versions.begin();
+    v != required->versions.end() && !spec->satisfies (*v); ++v);
+  if (v != required->versions.end())
+    {
+      /* preserve source */
+      bool sourceticked = required->desired.sourcePackage().picked();
+      /* install this version */
+      required->desired = *v;
+      required->desired.pick (required->installed != required->desired);
+      required->desired.sourcePackage().pick (sourceticked);
+      /* does this requirement have requirements? */
+      return required->set_requirements (deftrust, depth + 1);
+    }
+  /* else assert !! */
+  return 0;
+}
+
 int
 packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
 {
@@ -483,7 +512,6 @@ packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
       if (i != (*dp)->end())
 	{
 	  /* we found an installed ok package */
-	  /* todo: ensure that it will remain installed */
 	  /* next and clause */
 	  ++dp;
 	  continue;
@@ -493,11 +521,10 @@ packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
       if (i != (*dp)->end())
 	{
 	  /* we found a package that can be up/downgraded to meet the 
-	     requirement
+	     requirement. (*i is the packagespec that can be satisfied.)
 	     */
-	  /* TODO: set an appropriate desired version */
 	  ++dp;
-	  ++changed;
+	  changed += processOneDependency (deftrust, depth, *i) + 1;
 	  continue;
 	}
       /* check each or clause for an installable version */
@@ -507,27 +534,10 @@ packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
 	  /* we found a package that can be installed to meet the
 	     requirement
 	     */
-	  /* TODO: set an appropriate desired version */
 	  ++dp;
-	  ++changed;
+	  changed += processOneDependency (deftrust, depth, *i) + 1;
 	  continue;
 	}
-#if 0      
-//      version updating and installing code, once the package is selected
-      if (!required->desired)
-	{
-	  /* it's set to uninstall */
-	  required->set_action (required->trustp (deftrust));
-	}
-      else if (required->desired != required->installed
-	       && !required->desired.picked())
-	{
-	  /* it's set to change to a different version source only */
-	  required->desired.pick (true);
-	}
-      /* does this requirement have requirements? */
-      changed += required->set_requirements (deftrust, depth + 1);
-#endif
       ++dp;
     }
   return changed;

@@ -50,14 +50,30 @@ IniDBBuilderPackage::buildVersion (String const &aVersion)
     }
 }
 
+void dumpAndList (vector<vector <PackageSpecification *> *> *currentAndList);
+
 void
 IniDBBuilderPackage::buildPackage (String const &name)
 {
+#if DEBUG
+  if (cp)
+    {
+      log (LOG_BABBLE) << "Finished with package " << cp->name << endLog;
+      if (cbpv)
+	{
+	  log (LOG_BABBLE) << "Version " << cbpv.Canonical_version() << endLog;
+	  log (LOG_BABBLE) << "Depends:" << endLog;
+	  dumpAndList (cbpv.depends());
+	}
+    }
+#endif
   packagedb db;
   cp = &db.packages.registerbykey(name);
   cbpv = cygpackage::createInstance (name);
   cspv = packageversion ();
   currentSpec = NULL;
+  currentOrList = NULL;
+  currentAndList = NULL;
   trust = TRUST_CURR;
 #if DEBUG
   log (LOG_BABBLE) << "Created package " << name << endLog;
@@ -172,7 +188,8 @@ void
 IniDBBuilderPackage::buildBeginDepends ()
 {
 #if DEBUG
-  log (LOG_BABBLE) << "Beginning of a depends statement" << endLog;
+  log (LOG_BABBLE) << "Beginning of a depends statement for " << cp->name 
+    << endLog;
   dumpAndList (currentAndList);
 #endif
   currentSpec = NULL;
@@ -457,10 +474,17 @@ IniDBBuilderPackage::add_correct_version()
           ver.set_sdesc (cbpv.SDesc ());
         if (cbpv.LDesc ().size() && !n->LDesc ().size())
           ver.set_ldesc (cbpv.LDesc ());
+	if (cbpv.depends()->size() && !ver.depends ()->size())
+	  *ver.depends() = *cbpv.depends();
+	/* TODO: other package lists */
+	/* Prevent dangling references */
+	currentOrList = NULL;
+	currentAndList = NULL;
+	currentSpec = NULL;
         cbpv = *n;
         merged = 1;
       }
-    if (!merged)
+  if (!merged)
     cp->add_version (cbpv);
   /* trust setting */
   switch (trust)
