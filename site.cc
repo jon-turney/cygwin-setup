@@ -251,9 +251,6 @@ get_site_list (HINSTANCE h)
 
   qsort (site_list, nmirrors, sizeof (site_list_type), site_sort);
 
-  for (int i=0; i<nmirrors; i++)
-    msg ("site[%d] = \"%s\"", i, site_list[i].sort_key);
-
   return 0;
 }
 
