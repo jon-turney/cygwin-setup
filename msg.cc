@@ -40,7 +40,7 @@ mbox (int type, int id, va_list args)
     ExitProcess (0);
 
   vsprintf (buf, fmt, args);
-  return MessageBox (0, buf, "Cygwin Setup", type);
+  return MessageBox (0, buf, "Cygwin Setup", type | MB_TOPMOST);
 }
 
 void
