@@ -1,3 +1,7 @@
+2001-11-12  Christopher Faylor  <cgf@redhat.com>
+
+	* desktop.cc (check_startmenu): Change start menu name to "Cygwin".
+
 2001-10-27  Christopher Faylor  <cgf@redhat.com>
 
 	* desktop.cc (make_passwd_group): Move file creation earlier in the
