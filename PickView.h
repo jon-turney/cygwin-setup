@@ -52,7 +52,8 @@ public:
   int click (int row, int x);
   int current_col;
   int new_col;
-  int src_col;
+  int bintick_col;
+  int srctick_col;
   int cat_col;
   int pkg_col;
   int last_col;

@@ -26,6 +26,7 @@
 static PickView::Header pkg_headers[] = {
   {"Current", 7, 0, 0},
   {"New", 3, 0, 0},
+  {"Bin?", 4, 0, 0},
   {"Src?", 4, 0, 0},
   {"Category", 8, 0, 0},
   {"Package", 7, 0, 0},
@@ -36,6 +37,7 @@ static PickView::Header cat_headers[] = {
   {"Category", 8, 0, 0},
   {"Current", 7, 0, 0},
   {"New", 3, 0, 0},
+  {"Bin?", 4, 0, 0},
   {"Src?", 4, 0, 0},
   {"Package", 7, 0, 0},
   {0, 0, 0, 0}
@@ -84,20 +86,22 @@ PickView::set_headers ()
       headers = pkg_headers;
       current_col = 0;
       new_col = 1;
-      src_col = 2;
-      cat_col = 3;
-      pkg_col = 4;
-      last_col = 4;
+      bintick_col = new_col + 1;
+      srctick_col = bintick_col + 1;
+      cat_col = srctick_col + 1;
+      pkg_col = cat_col + 1;
+      last_col = pkg_col + 1;
     }
   else if (view_mode == views::Category)
     {
       headers = cat_headers;
       current_col = 1;
-      new_col = 2;
-      src_col = 3;
+      new_col = current_col + 1;
+      bintick_col = new_col + 1;
+      srctick_col = bintick_col + 1;
       cat_col = 0;
-      pkg_col = 4;
-      last_col = 4;
+      pkg_col = srctick_col + 1;
+      last_col = pkg_col;
     }
   else
     return;
@@ -308,7 +312,8 @@ PickView::init_headers (HDC dc)
   for (i = 0; headers[i].text; i++)
     note_width (headers, dc, headers[i].text, HMARGIN, i);
   /* src checkbox */
-  note_width (headers, dc, 0, HMARGIN + 11, src_col);
+  note_width (headers, dc, 0, HMARGIN + 11, bintick_col);
+  note_width (headers, dc, 0, HMARGIN + 11, srctick_col);
   packagedb db;
   for (size_t n = 1; n <= db.categories.number (); n++)
       note_width (headers, dc, String ("+ ")+db.categories[n]->name, HMARGIN, cat_col);

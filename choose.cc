@@ -170,7 +170,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
       rect.left =
 	chooser->headers[chooser->new_col].x - chooser->scroll_ulc_x;
       rect.right =
-	chooser->headers[chooser->src_col + 1].x - chooser->scroll_ulc_x;
+	chooser->headers[chooser->srctick_col + 1].x - chooser->scroll_ulc_x;
       rect.top =
 	chooser->header_height + row * chooser->row_height -
 	chooser->scroll_ulc_y;

@@ -1,3 +1,18 @@
+2002-03-15  Robert Collins <rbtcollins@hotmail.com>
+
+	* PickPackageLine.cc (PickPackageLine::DrawCheck): New method factored out from
+	paint().
+	(PickPackageLine::paint): Use DrawCheck to draw the src tick box, and the new
+	bin tickbox.
+	(PickPackageLine::click): Handle the new bin tickbox.
+	* PickPackageLine.h (PickPackageLine::DrawCheck): Declare this.
+	* PickView.cc (pkg_headers): Add a Bin? column.
+	(cat_headers): Ditto.
+	(PickView::set_headers): Ditto.
+	(PickView::init_headers): Ditto.
+	* PickView.h (PickView): Ditto.
+	* choose.cc (list_click): Use the new name for src_col to set the clip rectangle.
+
 2002-02-24  Michael A Chase <mchase@ix.netcom.com>
 
 	* io_stream_cygfile.cc (io_stream_cygfile::mklink): Fix up Robert's 
