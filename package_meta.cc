@@ -97,6 +97,18 @@ CategoryPackage::~CategoryPackage()
 
 /*****************/
 
+/*****************/
+
+CategoryPackage::~CategoryPackage()
+{
+  CategoryPackage **temp = &key.packages;
+  while (*temp != this)
+    temp = &((*temp)->next);
+  *temp = next;
+}
+
+/*****************/
+
 const
   packagemeta::_actions
 packagemeta::Default_action (0);
@@ -134,6 +146,20 @@ packagemeta::_actions & packagemeta::_actions::operator++ ()
   if (_value > 3)
     _value = 0;
   return *this;
+}
+
+packagemeta::~packagemeta()
+{
+  while (Categories.number ())
+    {
+      CategoryPackage *catpkg = Categories.removebyindex (1);
+      delete catpkg;
+    }
+  while (versions.number ())
+    {
+      packageversion *pv = versions.removebyindex(1);
+      delete pv;
+    }
 }
 
 packagemeta::~packagemeta()

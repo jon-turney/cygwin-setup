@@ -43,6 +43,8 @@ public:
 private:
   packagemeta & pkg;
   PickView & theView;
+  // XXX make checked an enum or tri-valued class of its own
+  void DrawCheck (int const checked, HDC hdc, int const column, HRGN const clip, int const x, int const by);
 };
 
 #endif // _PICKPACKAGELINE_H_

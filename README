@@ -20,6 +20,7 @@ TODO:
 * When installing and enough packages default to visible, the RH scrollbar is 
   sometimes hidden.
 * Mark versions as prev/curr/test in the GUI when clicking through them.
+* Remove *empty* directories on uninstalls
 
  	   
 WISHLIST:
@@ -49,6 +50,7 @@ WISHLIST:
  * save all options
  * run a different script after finishing setup.
  * Show bin and src download size
+ * Set ntsec permissions correctly, and for new installs enable ntsec.
    
 recently completed
 * view button is not clear at first view. (the dotted highlight).

@@ -18,6 +18,28 @@
 #include "package_version.h"
 
 void
+PickPackageLine::DrawCheck (int const checked, HDC hdc, int const column, HRGN const clip, int const x, int const by)
+{
+  HANDLE check_bm;
+  if (checked == 0)
+    check_bm = theView.bm_checkna;
+  else if (checked == 1)
+    check_bm = theView.bm_checkyes;
+  else if (checked == 2)
+    check_bm = theView.bm_checkno;
+  else
+    return;
+  
+  SelectObject (theView.bitmap_dc, check_bm);
+  IntersectClipRect (hdc, x + theView.headers[column].x, by,
+		    x + theView.headers[column].x +
+		    theView.headers[column].width, by + 11);
+  BitBlt (hdc, x + theView.headers[column].x + HMARGIN / 2, by, 11,
+	  11, theView.bitmap_dc, 0, 0, SRCCOPY);
+  SelectClipRgn (hdc, clip);
+}
+
+void
 PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
 {
   int r = y + row * theView.row_height;
@@ -31,6 +53,9 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
       RestoreDC (hdc, oldDC);
       return;
     }
+  HRGN oldClip2;
+  if (Win32::OS() == Win32::WinNT) {
+				  
   unsigned int regionsize = GetRegionData (oldClip, 0, 0);
   LPRGNDATA oldClipData = (LPRGNDATA) malloc (regionsize);
   if (GetRegionData (oldClip, regionsize, oldClipData) > regionsize)
@@ -44,7 +69,11 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
       ScreenToClient (WindowFromDC (hdc),
 		      &((POINT *) oldClipData->Buffer)[t + n * 2]);
 
-  HRGN oldClip2 = ExtCreateRegion (NULL, regionsize, oldClipData);
+  oldClip2 = ExtCreateRegion (NULL, regionsize, oldClipData);
+			      }
+  else 
+    oldClip2 = oldClip;  
+  
   SelectClipRgn (hdc, oldClip2);
   if (pkg.installed)
     {
@@ -77,25 +106,31 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
 	  SRCCOPY);
   SelectClipRgn (hdc, oldClip2);
 
-  HANDLE check_bm;
+  int checked;
+
+  if (/* uninstall or skip */ !pkg.desired ||
+      /* current version */ pkg.desired == pkg.installed ||
+      /* no source */ !pkg.desired->bin.sites.number ())
+    checked = 0;
+  else if (pkg.desired->binpicked)
+    checked = 1;
+  else
+    checked = 2;
+      
+  DrawCheck (checked, hdc, theView.bintick_col, oldClip2, x, by);
+  
   if ( /* uninstall */ !pkg.desired ||
       /* source only */ (!pkg.desired->binpicked
-			 && pkg.desired->srcpicked) ||
+			 && pkg.desired->srcpicked && pkg.desired == pkg.installed) ||
       /* when no source mirror available */
       !pkg.desired->src.sites.number ())
-    check_bm = theView.bm_checkna;
+    checked = 0;
   else if (pkg.desired->srcpicked)
-    check_bm = theView.bm_checkyes;
+    checked = 1;
   else
-    check_bm = theView.bm_checkno;
+    checked = 2;
 
-  SelectObject (theView.bitmap_dc, check_bm);
-  IntersectClipRect (hdc, x + theView.headers[theView.src_col].x, by,
-		     x + theView.headers[theView.src_col].x +
-		     theView.headers[theView.src_col].width, by + 11);
-  BitBlt (hdc, x + theView.headers[theView.src_col].x + HMARGIN / 2, by, 11,
-	  11, theView.bitmap_dc, 0, 0, SRCCOPY);
-  SelectClipRgn (hdc, oldClip2);
+  DrawCheck (checked, hdc, theView.srctick_col, oldClip2, x, by);
 
   /* shows "first" category - do we want to show any? */
   if (pkg.Categories.number () && show_cat)
@@ -129,9 +164,13 @@ int
 PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
 {
   // assert (myrow == ClickedRow);
+  if (pkg.desired && pkg.desired->bin.sites.number ()
+      && x >= theView.headers[theView.bintick_col].x - HMARGIN / 2
+      && x <= theView.headers[theView.bintick_col + 1].x - HMARGIN / 2)
+    pkg.desired->binpicked ^= 1;
   if (pkg.desired && pkg.desired->src.sites.number ()
-      && x >= theView.headers[theView.src_col].x - HMARGIN / 2
-      && x <= theView.headers[theView.src_col + 1].x - HMARGIN / 2)
+      && x >= theView.headers[theView.srctick_col].x - HMARGIN / 2
+      && x <= theView.headers[theView.srctick_col + 1].x - HMARGIN / 2)
     pkg.desired->srcpicked ^= 1;
 
   if (x >= theView.headers[theView.new_col].x - HMARGIN / 2

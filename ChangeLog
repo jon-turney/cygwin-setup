@@ -1,7 +1,63 @@
+2002-03-20  Robert Collins  <rbtcollins@hotmail.com>
+
+	* package_meta.h (packamgemeta::trustp): Make 'test' choice leave installed
+	packages alone.
+	* README: Update with latest requests.
+	* Various: MTC fixes from setup200202 branch.
+
 2002-03-19  Christopher Faylor  <cgf@redhat.com>
 
 	* Makefile.in (setup_version.c): Add back magic which allows detection
 	of setup.exe version number.
+
+2002-03-17  Robert Collins <rbtcollins@hotmail.com>
+
+	* * PickPackageLine.cc (PickPackageLine::paint): Fix incorrect clip region
+	calculation on win9x systems.
+
+2002-03-16  Robert Collins <rbtcollins@hotmail.com>
+
+	* install.cc (install_one_source): Write the correct length of a string to the
+	lst file (Thanks to Pavel Tsekov for reporting the bug).
+
+2002-03-15  Robert Collins <rbtcollins@hotmail.com>
+
+	* choose.cc (list_click): Always refresh the entire chooser, as our
+	package state change mechanism is broken with the new improved list classes.
+
+2002-03-15  Robert Collins <rbtcollins@hotmail.com>
+
+	* desktop.cc (make_passwd_group): Check for .lnk suffix on /etc/passwd and
+	/etc/group.
+
+2002-03-15  Robert Collins <rbtcollins@hotmail.com>
+
+	* PickPackageLine.cc (PickPackageLine::DrawCheck): New method factored out from
+	paint().
+	(PickPackageLine::paint): Use DrawCheck to draw the src tick box, and the new
+	bin tickbox.
+	(PickPackageLine::click): Handle the new bin tickbox.
+	* PickPackageLine.h (PickPackageLine::DrawCheck): Declare this.
+	* PickView.cc (pkg_headers): Add a Bin? column.
+	(cat_headers): Ditto.
+	(PickView::set_headers): Ditto.
+	(PickView::init_headers): Ditto.
+	* PickView.h (PickView): Ditto.
+	* choose.cc (list_click): Use the new name for src_col to set the clip rectangle.
+
+2002-02-24  Michael A Chase <mchase@ix.netcom.com>
+
+	* io_stream_cygfile.cc (io_stream_cygfile::mklink): Fix up Robert's
+	fixup.
+
+2002-02-24  Michael A Chase <mchase@ix.netcom.com>
+
+	* desktop.cc (make_link): Add "file://" prefix to io_stream::mkpath_p()
+	call.
+	(make_passwd_group): Ditto.
+	* localdir.cc (save_local_dir): Ditto.
+	* io_stream_cygfile.cc (io_stream_cygfile::mklink): Wrap long lines.
+	Add "cygfile://" prefix to io_stream::open() calls.
 
 2002-02-24  Robert Collins <rbtcollins@hotmail.com>
 
@@ -72,7 +128,7 @@
 
 2002-02-05  Jason Tishler  <jason@tishler.net>
 
-        * download.cc (do_download_thread): Fix off-by-one error.
+	 * download.cc (do_download_thread): Fix off-by-one error.
 	
 2002-02-19  Robert Collins  <rbtcollins@hotmail.com>
 

@@ -111,7 +111,7 @@ make_link (String const &linkpath, String const &title, String const &target)
   msg ("make_link %s, %s, %s\n",
        fname.cstr_oneuse(), title.cstr_oneuse(), target.cstr_oneuse());
 
-  io_stream::mkpath_p (PATH_TO_FILE, fname);
+  io_stream::mkpath_p (PATH_TO_FILE, String ("file://") + fname);
 
   String exepath;
 
@@ -278,9 +278,10 @@ static void
 make_passwd_group ()
 {
   String fname = cygpath ("/etc/postinstall/passwd-grp.bat");
-  io_stream::mkpath_p (PATH_TO_FILE, fname);
+  io_stream::mkpath_p (PATH_TO_FILE, String("file://") + fname);
 
-  if (uexists ("/etc/passwd") && uexists ("/etc/group"))
+  if ((uexists ("/etc/passwd") || uexists ("/etc/passwd.lnk"))
+      && (uexists ("/etc/group") || uexists ("/etc/group.lnk")))
     return;
 
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
@@ -301,9 +302,9 @@ make_passwd_group ()
   FILE *p = fopen (fname.cstr_oneuse(), "wt");
   if (!p)
     return;
-  if (!uexists ("/etc/passwd"))
+  if (!(uexists ("/etc/passwd") || uexists ("/etc/passwd.lnk")))
     fprintf (p, "bin\\mkpasswd -l > etc\\passwd\n");
-  if (!uexists ("/etc/group"))
+  if (!(uexists ("/etc/group") || uexists ("/etc/group.lnk")))
     fprintf (p, "bin\\mkgroup -l > etc\\group\n");
   fclose (p);
 }

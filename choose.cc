@@ -139,8 +139,12 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 
   refresh = chooser->click (row, x);
 
+  // XXX we need a method to queryt he database to see if more
+  // than just one package has changed! Until then...
+#if 0
   if (refresh)
     {
+#endif
       RECT r;
       GetClientRect (lv, &r);
       SCROLLINFO si;
@@ -162,7 +166,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
       SetScrollInfo (lv, SB_VERT, &si, TRUE);
 
       InvalidateRect (lv, &r, TRUE);
-
+#if 0
     }
   else
     {
@@ -177,6 +181,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
       rect.bottom = rect.top + chooser->row_height;
       InvalidateRect (hwnd, &rect, TRUE);
     }
+#endif
   return 0;
 }
 
