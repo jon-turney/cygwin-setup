@@ -50,7 +50,7 @@ static const char *cvsid =
 
 #include "rfc1738.h"
 
-#include "IniState.h"
+#include "IniDBBuilderPackage.h"
   
 extern ThreeBarProgressPage Progress;
 
@@ -64,6 +64,8 @@ static char *error_buf = 0;
 static int error_count = 0;
 
 static int local_ini;
+
+static IniDBBuilder *findBuilder;
 
 static void
 find_routine (char *path, unsigned int fsize)
@@ -84,8 +86,8 @@ find_routine (char *path, unsigned int fsize)
   /* Attempt to unescape the string */
   path[strlen(path) -10] = '\0';
   String mirror = rfc1738_unescape_part (path);
-  IniState state;
-  ini_init (ini_file, mirror, &state);
+  findBuilder->parse_mirror = mirror;
+  ini_init (ini_file, findBuilder);
 
   /*yydebug = 1; */
 
@@ -93,10 +95,10 @@ find_routine (char *path, unsigned int fsize)
     MessageBox (0, error_buf, error_count == 1 ? "Parse Error" : "Parse Errors", 0);
   else
     local_ini++;
-  if (state.timestamp > setup_timestamp)
+  if (findBuilder->timestamp > setup_timestamp)
     {
-      setup_timestamp = state.timestamp;
-      setup_version = state.version;
+      setup_timestamp = findBuilder->timestamp;
+      setup_version = findBuilder->version;
     }
 }
 
@@ -104,7 +106,10 @@ static int
 do_local_ini (HWND owner)
 {
   local_ini = 0;
+  findBuilder = new IniDBBuilderPackage;
   find (local_dir, find_routine);
+  delete findBuilder;
+  findBuilder = 0;
   return local_ini; 
 }
 
@@ -112,6 +117,7 @@ static int
 do_remote_ini (HWND owner)
 {
   size_t ini_count = 0;
+  IniDBBuilderPackage *aBuilder = new IniDBBuilderPackage;
   
   for (size_t n = 1; n <= site_list.number (); n++)
     {
@@ -124,8 +130,8 @@ do_remote_ini (HWND owner)
 	  continue;
 	}
 
-      IniState state;
-      ini_init (ini_file, site_list[n]->url, &state);
+      aBuilder->parse_mirror = site_list[n]->url;
+      ini_init (ini_file, aBuilder);
 
       /*yydebug = 1; */
 
@@ -149,12 +155,13 @@ do_remote_ini (HWND owner)
 	    }
 	  ++ini_count;
 	}
-      if (state.timestamp > setup_timestamp)
+      if (aBuilder->timestamp > setup_timestamp)
 	{
-	  setup_timestamp = state.timestamp;
-	  setup_version = state.version;
+	  setup_timestamp = aBuilder->timestamp;
+	  setup_version = aBuilder->version;
 	}
     }
+  delete aBuilder;
   return ini_count;
 }
 

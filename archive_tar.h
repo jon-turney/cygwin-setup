@@ -88,10 +88,6 @@ public:
   virtual int seek (long where, io_stream_seek_t whence);
   /* try guessing this one */
   virtual int error ();
-  virtual String next_file_name ()
-  {
-    return NULL;
-  };
   virtual int get_mtime ();
   virtual size_t get_size () {return state.file_length;};
   virtual int set_mtime (int)

@@ -157,11 +157,15 @@ inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32
 inilint_SOURCES = \
   filemanip.cc \
   filemanip.h \
+  IniDBBuilder.cc \
+  IniDBBuilder.h \
   inilex.cc \
   inilintmain.cc \
   iniparse.cc \
   iniparse.h \
-  IniState.h \
+  io_stream.h \
+  io_stream.cc \
+  PackageTrust.h \
   rfc1738.cc \
   rfc1738.h \
   String++.cc \
@@ -217,10 +221,13 @@ setup_SOURCES = \
 	hash.h \
 	ini.cc \
 	ini.h \
+	IniDBBuilder.cc \
+	IniDBBuilder.h \
+	IniDBBuilderPackage.cc \
+	IniDBBuilderPackage.h \
 	inilex.cc \
 	iniparse.cc \
 	iniparse.h \
-	IniState.h \
 	install.cc \
 	io_stream.cc \
 	io_stream.h \
@@ -268,6 +275,7 @@ setup_SOURCES = \
 	package_source.h \
 	package_version.cc \
 	package_version.h \
+	PackageTrust.h \
 	PickCategoryLine.cc \
 	PickCategoryLine.h \
 	PickLine.cc \
@@ -320,9 +328,9 @@ EXTRA_PROGRAMS = inilint$(EXEEXT)
 noinst_PROGRAMS = setup$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 
-am_inilint_OBJECTS = filemanip.$(OBJEXT) inilex.$(OBJEXT) \
-	inilintmain.$(OBJEXT) iniparse.$(OBJEXT) rfc1738.$(OBJEXT) \
-	String++.$(OBJEXT)
+am_inilint_OBJECTS = filemanip.$(OBJEXT) IniDBBuilder.$(OBJEXT) \
+	inilex.$(OBJEXT) inilintmain.$(OBJEXT) iniparse.$(OBJEXT) \
+	io_stream.$(OBJEXT) rfc1738.$(OBJEXT) String++.$(OBJEXT)
 inilint_OBJECTS = $(am_inilint_OBJECTS)
 inilint_DEPENDENCIES = libgetopt++/libgetopt++.la
 inilint_LDFLAGS =
@@ -334,6 +342,7 @@ am_setup_OBJECTS = archive.$(OBJEXT) archive_tar.$(OBJEXT) \
 	dialog.$(OBJEXT) diskfull.$(OBJEXT) download.$(OBJEXT) \
 	Exception.$(OBJEXT) find.$(OBJEXT) filemanip.$(OBJEXT) \
 	fromcwd.$(OBJEXT) geturl.$(OBJEXT) hash.$(OBJEXT) ini.$(OBJEXT) \
+	IniDBBuilder.$(OBJEXT) IniDBBuilderPackage.$(OBJEXT) \
 	inilex.$(OBJEXT) iniparse.$(OBJEXT) install.$(OBJEXT) \
 	io_stream.$(OBJEXT) io_stream_cygfile.$(OBJEXT) \
 	io_stream_file.$(OBJEXT) io_stream_memory.$(OBJEXT) \
@@ -362,7 +371,10 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/cfgaux/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Exception.Po ./$(DEPDIR)/MD5++.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Exception.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IniDBBuilder.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IniDBBuilderPackage.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/MD5++.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickCategoryLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickPackageLine.Po \
@@ -478,6 +490,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Exception.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IniDBBuilder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IniDBBuilderPackage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MD5++.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickCategoryLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickLine.Po@am__quote@

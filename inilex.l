@@ -52,7 +52,7 @@ STR	[a-zA-Z0-9_./+-]+
 	  val = val - 'a' + 10;
 	else
 	  val = val - '0';
-	((unsigned char *) yylval) [i / 2] += val << ((i % 2) ? 4 : 0);
+	((unsigned char *) yylval) [i / 2] += val << ((i % 2) ? 0 : 4);
       }
     return MD5;
 }
@@ -104,17 +104,13 @@ STR	[a-zA-Z0-9_./+-]+
 #include "io_stream.h"
 
 static io_stream *input_stream = 0;
-extern char *parse_mirror;
-IniState *parseState;
+extern IniDBBuilder *iniBuilder;
 
 void
-ini_init(io_stream *stream, String const &mirror, IniState *state)
+ini_init(io_stream *stream, IniDBBuilder *aBuilder)
 {
   input_stream = stream;
-  if (parse_mirror)
-    delete[] parse_mirror;
-  parse_mirror = mirror.cstr();
-  parseState = state;
+  iniBuilder = aBuilder;
 }
 
 static int

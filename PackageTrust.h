@@ -13,18 +13,18 @@
  *
  */
 
-#ifndef _INISTATE_H_
-#define _INISTATE_H_
+#ifndef _PACKAGETRUST_H_
+#define _PACKAGETRUST_H_
 
-/* To parse this */
-#include "String++.h"
-
-class IniState
+/* Used for selecting a given 'trust' level */
+typedef enum
 {
-public:
-  IniState() : timestamp (0), version() {}
-  unsigned int timestamp;
-  String version;
-};
+  TRUST_UNKNOWN,
+  TRUST_PREV,
+  TRUST_CURR,
+  TRUST_TEST,
+  NTRUST
+}
+trusts;
 
-#endif /* _INISTATE_H_ */
+#endif /* _PACKAGETRUST_H_ */

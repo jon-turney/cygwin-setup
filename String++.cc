@@ -21,6 +21,7 @@
 #include "concat.h"
 #include "io_stream.h"
 #include <iostream>
+#include <strstream>
 
 // _data
 
@@ -49,6 +50,14 @@ String::~String ()
 {
   if (--theData->count == 0)
     delete theData;
+}
+
+String::String (int const anInt)
+{
+  ostrstream os;
+  os << anInt;
+  theData = new _data(os.pcount());
+  memcpy (theData->theString, os.str(), os.pcount());
 }
 
 // able to cache the result if needed.

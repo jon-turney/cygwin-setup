@@ -19,7 +19,8 @@
 class io_stream;
 class String;
 class IniState;
-void ini_init (io_stream *, String const &, IniState *);
+class IniDBBuilder;
+void ini_init (io_stream *, IniDBBuilder *);
 #define YYSTYPE char *
 
 #ifdef __cplusplus

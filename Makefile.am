@@ -61,11 +61,15 @@ inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32
 inilint_SOURCES = \
   filemanip.cc \
   filemanip.h \
+  IniDBBuilder.cc \
+  IniDBBuilder.h \
   inilex.cc \
   inilintmain.cc \
   iniparse.cc \
   iniparse.h \
-  IniState.h \
+  io_stream.h \
+  io_stream.cc \
+  PackageTrust.h \
   rfc1738.cc \
   rfc1738.h \
   String++.cc \
@@ -119,10 +123,13 @@ setup_SOURCES = \
 	hash.h \
 	ini.cc \
 	ini.h \
+	IniDBBuilder.cc \
+	IniDBBuilder.h \
+	IniDBBuilderPackage.cc \
+	IniDBBuilderPackage.h \
 	inilex.cc \
 	iniparse.cc \
 	iniparse.h \
-	IniState.h \
 	install.cc \
 	io_stream.cc \
 	io_stream.h \
@@ -170,6 +177,7 @@ setup_SOURCES = \
 	package_source.h \
 	package_version.cc \
 	package_version.h \
+	PackageTrust.h \
 	PickCategoryLine.cc \
 	PickCategoryLine.h \
 	PickLine.cc \

@@ -496,7 +496,7 @@ cygpath (String const &thePath)
     }
 
   if (!match)
-    return NULL;
+    return String();
 
   String native;
   if (max_len == thePath.size ())

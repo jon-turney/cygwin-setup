@@ -47,11 +47,6 @@ public:
     return 0;
   };
   virtual size_t get_size ();
-  /* dummy for io_stream_file */
-  virtual String next_file_name ()
-  {
-    return NULL;
-  };
   static int move (String const &,String const &);
 private:
   /* always require parameters */

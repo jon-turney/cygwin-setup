@@ -31,6 +31,7 @@ public:
   inline String (String const &);
   // We're notperformance bottlenecked.
   String (const char *); 
+  String (int const);
   inline String & operator = (String const &);
   ~String();
   // Up to the user to delete[] these.

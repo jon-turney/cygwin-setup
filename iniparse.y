@@ -21,35 +21,24 @@
 #include <string.h>
 
 #include "win32.h"
-#include "package_db.h"
-#include "category.h"
 #include "ini.h"
 #include "iniparse.h"
-#include "filemanip.h"
+#include "PackageTrust.h"
 
 extern int yyerror (String  const &s);
 int yylex ();
 
 #include "port.h"
 
-#include "package_meta.h"
-#include "package_version.h"
-#include "cygpackage.h"
-#include "IniState.h"
+#include "IniDBBuilder.h"
 
 #define YYERROR_VERBOSE 1
 /*#define YYDEBUG 1*/
 
-static packagemeta *cp = 0;
-extern IniState *parseState;
+IniDBBuilder *iniBuilder;
 extern int yylineno;
 
-char * parse_mirror = 0;
-static cygpackage *cpv = 0;
-static int trust;
-
 void add_correct_version();
-void process_src (cygpackage *, packagesource &src, char *, char*, char* = 0);
 %}
 
 %token STRING
@@ -71,8 +60,8 @@ setup_headers
  ;
 
 setup_header
- : SETUP_TIMESTAMP STRING '\n' { parseState->timestamp = strtoul ($2, 0, 0); }
- | SETUP_VERSION STRING '\n' { parseState->version = $2; }
+ : SETUP_TIMESTAMP STRING '\n' { iniBuilder->buildTimestamp ($2); }
+ | SETUP_VERSION STRING '\n' { iniBuilder->buildVersion ($2); }
  | '\n'
  | error { yyerror ("unrecognized line in setup.ini headers (do you have the latest setup?)"); } '\n'
  ;
@@ -83,7 +72,7 @@ packages
  ;
 
 package
- : '@' STRING '\n'		{packagedb db; cp = &db.packages.registerbykey($2); cpv = new cygpackage ($2); trust = TRUST_CURR;}
+ : '@' STRING '\n'		{ iniBuilder->buildPackage ($2);}
    lines
  ;
 
@@ -93,113 +82,34 @@ lines
  ;
 
 simple_line
- : PACKAGEVERSION STRING	{ cpv->set_canonical_version ($2); 
-   				  add_correct_version ();}
- | SDESC STRING			{ cpv->set_sdesc ($2); }
- | LDESC STRING			{ cpv->set_ldesc ($2); }
+ : PACKAGEVERSION STRING	{ iniBuilder->buildPackageVersion ($2); }
+ | SDESC STRING			{ iniBuilder->buildPackageSDesc($2); }
+ | LDESC STRING			{ iniBuilder->buildPackageLDesc($2); }
  | CATEGORY categories
  | REQUIRES requires
- | INSTALL STRING STRING MD5    { process_src (cpv, cpv->bin, $2, $3, $4); }
- | INSTALL STRING STRING	{ process_src (cpv, cpv->bin, $2, $3); }
- | SOURCE STRING STRING MD5	{ process_src (cpv, cpv->src, $2, $3, $4); }
- | SOURCE STRING STRING		{ process_src (cpv, cpv->src, $2, $3); }
- | T_PREV			{ trust = TRUST_PREV; cpv = new cygpackage (cp->name); }
- | T_CURR			{ trust = TRUST_CURR; cpv = new cygpackage (cp->name); }
- | T_TEST			{ trust = TRUST_TEST; cpv = new cygpackage (cp->name); }
- | T_UNKNOWN			{ trust = TRUST_UNKNOWN; }
+ | INSTALL STRING STRING MD5    { iniBuilder->buildPackageInstall ($2, $3, $4); }
+ | INSTALL STRING STRING	{ iniBuilder->buildPackageInstall ($2, $3); }
+ | SOURCE STRING STRING MD5	{ iniBuilder->buildPackageSource ($2, $3, $4); }
+ | SOURCE STRING STRING		{ iniBuilder->buildPackageSource ($2, $3); }
+ | T_PREV			{ iniBuilder->buildPackageTrust (TRUST_PREV); }
+ | T_CURR			{ iniBuilder->buildPackageTrust (TRUST_CURR); }
+ | T_TEST			{ iniBuilder->buildPackageTrust (TRUST_TEST); }
+ | T_UNKNOWN			{ iniBuilder->buildPackageTrust (TRUST_UNKNOWN); }
  | /* empty */
- | error '\n' { yylineno --;
-		yyerror (String("unrecognized line in package ") + cp->name + " (do you have the latest setup?)");
-		yylineno ++;
+ | error '\n' { --yylineno;
+		yyerror (String("unrecognized line ") + yylineno + " (do you have the latest setup?)");
+		++yylineno;
 	      }
  ;
 
 requires
- : STRING			{ cpv->new_requirement($1); } requires
- | STRING			{ cpv->new_requirement($1); }
+ : STRING			{ iniBuilder->buildPackageRequirement($1); } requires
+ | STRING			{ iniBuilder->buildPackageRequirement($1); }
  ;
 
 categories
- : STRING			{ packagedb db; cp->add_category (db.categories.registerbykey ($1));
- 				} categories
- | STRING			{ packagedb db; cp->add_category (db.categories.registerbykey ($1)); }
+ : STRING			{ iniBuilder->buildPackageCategory ($1); } categories
+ | STRING			{ iniBuilder->buildPackageCategory ($1); }
  ;
 
 %%
-
-void
-add_correct_version()
-{
-  int merged = 0;
-  for (size_t n = 1; !merged && n <= cp->versions.number (); n++)
-      if (!cp->versions[n]->Canonical_version().casecompare(cpv->Canonical_version()))
-      {
-	/* ASSUMPTIONS:
-	   categories and requires are consistent for the same version across
-	   all mirrors
-	   */
-	/* Copy the binary mirror across if this site claims to have an install */
-	if (cpv->bin.sites.number ())
-	  cp->versions[n]->bin.sites.registerbykey (cpv->bin.sites[1]->key);
-	/* Ditto for src */
-	if (cpv->src.sites.number ())
-	  cp->versions[n]->src.sites.registerbykey (cpv->src.sites[1]->key);
-	/* Copy the descriptions across */
-	if (cpv->SDesc ().size() && !cp->versions[n]->SDesc ().size())
-	  cp->versions[n]->set_sdesc (cpv->SDesc ());
-	if (cpv->LDesc ().size() && !cp->versions[n]->LDesc ().size())
-	  cp->versions[n]->set_ldesc (cpv->LDesc ());
-	cpv = (cygpackage *)cp->versions[n];
-	merged = 1;
-      }
-    if (!merged)
-    cp->add_version (*cpv);
-  /* trust setting */
-  switch (trust)
-  {
-    case TRUST_CURR:
-      if (cp->currtimestamp < parseState->timestamp)
-      {
-	cp->currtimestamp = parseState->timestamp;
-	cp->curr = cpv;
-      }
-    break;
-    case TRUST_PREV:
-    if (cp->prevtimestamp < parseState->timestamp)
-    {
-        cp->prevtimestamp = parseState->timestamp;
-	  cp->prev = cpv;
-    }
-    break;
-    case TRUST_TEST:
-    if (cp->exptimestamp < parseState->timestamp)
-    {
-        cp->exptimestamp = parseState->timestamp;
-	cp->exp = cpv;
-    }
-    break;
-  }
-}
-
-void
-process_src (cygpackage *cpv, packagesource &src, char *path, char*size, char*md5 )
-{ 
-  if (!cpv->Canonical_version ().size())
-    {
-      fileparse f;
-        if (parse_filename (path, f))
-	  {
-	    cpv->set_canonical_version (f.ver);
-	    add_correct_version ();
-	  }
-    }
-  
-  if (!src.size)
-    {
-      src.size = atoi(size);
-      src.set_canonical (path);
-    }
-  if (md5 && !src.md5.isSet())
-    src.md5.set((unsigned char *)md5);
-  src.sites.registerbykey (parse_mirror);
-}

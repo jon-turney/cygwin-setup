@@ -35,16 +35,16 @@ static const char *cvsid =
 /* this constructor creates an invalid package - further details MUST be provided */
 cygpackage::cygpackage (String const &pkgname):
 name (pkgname),
-vendor (0),
-packagev (0),
-canonical (0),
-fn (0),
-sdesc (0),
-ldesc (0),
+vendor (),
+packagev (),
+canonical (),
+fn (),
+sdesc (),
+ldesc (),
 status (package_installed),
 type (package_binary),
-listdata (0),
-listfile (0)
+listdata (),
+listfile ()
 {
   memset( getfilenamebuffer, '\0', _MAX_PATH);
 
@@ -60,12 +60,12 @@ cygpackage::cygpackage (String const &pkgname, String const &filename, size_t co
 			package_type_t const newtype):
 name (pkgname),
 fn (filename),
-sdesc (0),
-ldesc (0),
+sdesc (),
+ldesc (),
 status (newstatus),
 type (newtype),
-listdata (0),
-listfile (0),
+listdata (),
+listfile (),
 filesize (fs)
 {
   memset( getfilenamebuffer, '\0', _MAX_PATH);

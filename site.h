@@ -52,7 +52,7 @@ void do_download_site_info (HINSTANCE h, HWND owner);
 class site_list_type
 {
 public:
-  site_list_type ():url (), displayed_url (0), key (0)
+  site_list_type ():url (), displayed_url (), key ()
   {
   };
   site_list_type (String const &);

@@ -16,17 +16,6 @@
 #ifndef _PACKAGE_META_H_
 #define _PACKAGE_META_H_
 
-/* Used for selecting a given 'trust' level */
-typedef enum
-{
-  TRUST_UNKNOWN,
-  TRUST_PREV,
-  TRUST_CURR,
-  TRUST_TEST,
-  NTRUST
-}
-trusts;
-
 class packageversion;
 class packagemeta;
 class category;
@@ -35,6 +24,7 @@ class category;
 #include "list.h"
 #include "String++.h"
 #include "category.h"
+#include "PackageTrust.h"
 
 /* 
    For cleanliness this may need to be put in its own file later. */
@@ -57,7 +47,7 @@ public:
 class packagemeta
 {
 public:
-  packagemeta (String const &pkgname):name (pkgname), key(pkgname), installed_from (0),
+  packagemeta (String const &pkgname):name (pkgname), key(pkgname), installed_from (),
     //versions (0),
 //    versioncount (0), versionspace (0), 
   installed (0), prev (0), prevtimestamp (0), curr (0), currtimestamp (0),

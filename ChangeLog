@@ -1,3 +1,44 @@
+2002-05-04 Robert Collins  <rbtcollins@hotmail.com>
+
+	* IniDBBuilder.cc: New file.
+	* IniDBBuilder.h: New file.
+	* IniDBBuilderPackage.cc: New file.
+	* IniDBBuilderPackage.h: New file.
+	* PackageTrust.h: New file.
+	* IniState.h: Remove, wasn't thought out well enough.
+	* Makefile.am (inilint_SOURCES): Add more requirements.
+	(setup_SOURCES): Add new Builder base and concrete classes.
+	* Makefile.in: Regenerate.
+	* String++.cc (String::String): Implement int contructor.
+	* String++.h (String): Declare int constructor.
+	* archive_tar.cc (archive_tar::next_file_name): Return String() when
+	no filename exists.
+	* archive_tar.h (archive_tar_file): Remove get_next_filename method,
+	it's not needed.
+	* ini.cc: Replace IniState wuth IniDBBuilderPacakge.
+	(find_routine): Use new IniDBBuilder to configure the parser.
+	(do_local_ini): Ditto.
+	(do_remote_ini): Ditto.
+	* ini.h: Use IniDBBuilder to initialise parsing.
+	* inilex.l (MD5): Parse the MD5 string correctly, we had the nibbles 
+	swapped.
+	(ini_init): Use an IniDBBuilder rather than static variables.
+	* iniparse.y: Hand off all the object creation to a builder, rather
+	than hardcoding the behaviour. This allows run-time configured 
+	behaviour.
+	* io_stream_cygfile.h (io_stream_cygfile): Remove get_next_filename 
+	method, it's not needed.
+	* io_stream_file.h (io_stream_file): Ditto.
+	* mount.cc (cygpath): Return String() for missing mounts.
+	* package_meta.cc (packagemeta::SDesc): Return String() for blank
+	descriptions.
+	* package_meta.h (trusts): Remove - replaced by PackageTrust.h.
+	(packagemeta::packagemeta): Fix incorrect syntax in String constructor
+	usage.
+	* cygpackage.cc (cygpackage::cygpackage): Fix incorrect syntax in 
+	String constructor usage.
+	* site.h (site_list_type): Ditto.
+
 2002-05-03 Robert Collins  <rbtcollins@hotmail.com>
 
 	* String++.h: Declare a << operator that accepts String objects.

@@ -235,7 +235,7 @@ packagemeta::SDesc () const
   for (size_t n = 1; n <= versions.number (); ++n)
     if (versions[n]->SDesc ().size())
       return versions[n]->SDesc ();
-  return NULL;
+  return String();
 };
 
 /* Return an appropriate caption given the current action. */

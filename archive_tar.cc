@@ -154,14 +154,14 @@ archive_tar::next_file_name ()
 
   /* See if we're at end of file */
   if (r != 512)
-    return NULL;
+    return String();
 
   /* See if the header is all zeros (i.e. last block) */
   int n = 0;
   for (r = 512 / sizeof (int); r; r--)
     n |= ((int *) &state.tar_header)[r - 1];
   if (n == 0)
-    return NULL;
+    return String();
 
   if (!state.have_longname && state.tar_header.typeflag != 'L')
     {
@@ -237,7 +237,7 @@ archive_tar::next_file_name ()
       skip_file ();
       return next_file_name ();
     }
-  return NULL;
+  return String();
 }
 
 archive_tar::~archive_tar ()
