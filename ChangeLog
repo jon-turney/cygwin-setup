@@ -1,3 +1,8 @@
+2002-12-11  Max Bowsher  <maxb@ukf.net>
+
+	* package_meta.cc: Change 'endl' to 'endLog' as appropriate.
+	* package_version.cc: Ditto.
+
 2002-09-22  Max Bowsher  <maxb@ukf.net>
 
 	* PickView.cc (pkg_headers): Rename column 'Category' to 'Categories'.

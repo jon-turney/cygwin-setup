@@ -381,7 +381,8 @@ processOneDependency(trusts deftrust, size_t depth, PackageSpecification *spec)
   }
 
   log (LOG_TIMESTAMP) << "Warning, the default trust level for package "
-    << trusted.Name() << " does not meet this specification " << *spec << endl;
+    << trusted.Name() << " does not meet this specification " << *spec
+    << endLog;
   
   set <packageversion>::iterator v;
   for (v = required->versions.begin();

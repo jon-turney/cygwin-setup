@@ -537,7 +537,7 @@ packagemeta::logAllVersions () const
     for (set<packageversion>::iterator i = versions.begin();
 	 i != versions.end(); ++i)
 	log (LOG_BABBLE) << "    [" << trustLabel(*i) <<
-	  "] ver=" << i->Canonical_version() << endl;
+	  "] ver=" << i->Canonical_version() << endLog;
 #if 0
     log (LOG_BABBLE) << "      inst=" << i->
       /* FIXME: Reinstate this code, but spit out all mirror sites */
