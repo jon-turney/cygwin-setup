@@ -221,6 +221,12 @@ packageversion::depends()
   return &data->depends;
 }
 
+const vector <vector <PackageSpecification *> *> *
+packageversion::depends() const
+{
+  return &data->depends;
+}
+
 vector <vector <PackageSpecification *> *> *
 packageversion::predepends()
 {
@@ -563,3 +569,21 @@ _packageversion::scripts()
 {
   return scripts_;
 }
+
+void dumpAndList (vector<vector <PackageSpecification *> *> const *currentAndList, std::ostream &logger)
+{
+  if (currentAndList)
+    {
+      logger << "AND list is:" << std::endl;
+      for (vector<vector <PackageSpecification *> *>::const_iterator iAnd =
+	   currentAndList->begin(); iAnd != currentAndList->end(); ++iAnd)
+	{
+    	  for (vector<PackageSpecification *>::const_iterator i= 
+	       (*iAnd)->begin();
+    	       i != (*iAnd)->end(); ++i)
+   	      logger << **i << " |" << std::endl;
+	  logger << "end of OR list," << std::endl;
+	}
+    }
+}
+

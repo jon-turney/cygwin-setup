@@ -1,3 +1,11 @@
+2004-04-25  Robert Collins  <rbtcollins@hotmail.com>
+
+	* IniDBBuilderPackage.cc (dumpAndList): Move out to packageversion for reuse.
+	* package_meta.cc (packagemeta::logAllVersions): log dependencies.
+	* package_version.cc (packageversion::depends): provide a const accessor.
+	(dumpAndList): Moved from INIDBBuilder.cc.
+	* package_version.h: declare new method and function.
+
 2003-12-21  Robert Collins  <rbtcollins@hotmail.com>
 
 	* main.cc (main): Update to head libgetopt++ syntax.

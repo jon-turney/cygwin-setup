@@ -120,6 +120,7 @@ public:
   /* invariant: these never return NULL */
   std::vector <std::vector <PackageSpecification *> *> *depends(), *predepends(), 
   *recommends(), *suggests(), *replaces(), *conflicts(), *provides(), *binaries();
+  const std::vector <std::vector <PackageSpecification *> *> *depends() const; 
 
   bool picked() const;   /* true if this version is to be installed */
   void pick(bool); /* trigger an install/reinsall */
@@ -214,5 +215,8 @@ protected:
   packageversion sourceVersion;
   std::vector <Script> scripts_;
 };
+
+// not sure where this belongs :}.
+void dumpAndList (std::vector<std::vector <PackageSpecification *> *> const *currentAndList, std::ostream &);
 
 #endif /* SETUP_PACKAGE_VERSION_H */

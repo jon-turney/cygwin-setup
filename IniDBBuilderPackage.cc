@@ -61,8 +61,6 @@ IniDBBuilderPackage::buildVersion (String const &aVersion)
     }
 }
 
-void dumpAndList (vector<vector <PackageSpecification *> *> *currentAndList);
-
 void
 IniDBBuilderPackage::buildPackage (String const &name)
 {
@@ -74,7 +72,7 @@ IniDBBuilderPackage::buildPackage (String const &name)
 	{
 	  log (LOG_BABBLE) << "Version " << cbpv.Canonical_version() << endLog;
 	  log (LOG_BABBLE) << "Depends:" << endLog;
-	  dumpAndList (cbpv.depends());
+	  dumpAndList (cbpv.depends(), log(LOG_BABBLE));
 	}
     }
 #endif
@@ -187,30 +185,13 @@ IniDBBuilderPackage::buildPackageCategory (String const &name)
   cp->add_category (name);
 }
 
-void dumpAndList (vector<vector <PackageSpecification *> *> *currentAndList)
-{
-  if (currentAndList)
-    {
-      log (LOG_BABBLE) << "AND list is:" << endLog;
-      for (vector<vector <PackageSpecification *> *>::const_iterator iAnd =
-	   currentAndList->begin(); iAnd != currentAndList->end(); ++iAnd)
-	{
-    	  for (vector<PackageSpecification *>::const_iterator i= 
-	       (*iAnd)->begin();
-    	       i != (*iAnd)->end(); ++i)
-   	      log(LOG_BABBLE) << **i << " |" << endLog;
-	  log (LOG_BABBLE) << "end of OR list," << endLog;
-	}
-    }
-}
-
 void
 IniDBBuilderPackage::buildBeginDepends ()
 {
 #if DEBUG
   log (LOG_BABBLE) << "Beginning of a depends statement for " << cp->name 
     << endLog;
-  dumpAndList (currentAndList);
+  dumpAndList (currentAndList, log(LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -222,7 +203,7 @@ IniDBBuilderPackage::buildBeginPreDepends ()
 {
 #if DEBUG
   log (LOG_BABBLE) << "Beginning of a predepends statement" << endLog;
-  dumpAndList (currentAndList);
+  dumpAndList (currentAndList, log(LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -289,7 +270,7 @@ IniDBBuilderPackage::buildBeginRecommends ()
 {
 #if DEBUG
   log (LOG_BABBLE) << "Beginning of a recommends statement" << endLog;
-  dumpAndList (currentAndList);
+  dumpAndList (currentAndList, log(LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -301,7 +282,7 @@ IniDBBuilderPackage::buildBeginSuggests ()
 {
 #if DEBUG
   log (LOG_BABBLE) << "Beginning of a suggests statement" << endLog;
-  dumpAndList (currentAndList);
+  dumpAndList (currentAndList, log(LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -313,7 +294,7 @@ IniDBBuilderPackage::buildBeginReplaces ()
 {
 #if DEBUG
   log (LOG_BABBLE) << "Beginning of a replaces statement" << endLog;
-  dumpAndList (currentAndList);
+  dumpAndList (currentAndList, log(LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -325,7 +306,7 @@ IniDBBuilderPackage::buildBeginConflicts ()
 {
 #if DEBUG
   log (LOG_BABBLE) << "Beginning of a conflicts statement" << endLog;
-  dumpAndList (currentAndList);
+  dumpAndList (currentAndList, log(LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -337,7 +318,7 @@ IniDBBuilderPackage::buildBeginProvides ()
 {
 #if DEBUG
   log (LOG_BABBLE) << "Beginning of a provides statement" << endLog;
-  dumpAndList (currentAndList);
+  dumpAndList (currentAndList, log(LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -349,7 +330,7 @@ IniDBBuilderPackage::buildBeginBuildDepends ()
 {
 #if DEBUG
   log (LOG_BABBLE) << "Beginning of a Build-Depends statement" << endLog;
-  dumpAndList (currentAndList);
+  dumpAndList (currentAndList, log(LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -362,7 +343,7 @@ IniDBBuilderPackage::buildBeginBinary ()
 {
 #if DEBUG
   log (LOG_BABBLE) << "Beginning of a Binary statement" << endLog;
-  dumpAndList (currentAndList);
+  dumpAndList (currentAndList, log(LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
