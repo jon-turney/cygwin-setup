@@ -71,7 +71,7 @@ private:
   bool found;
 };
   
-void
+bool
 do_fromcwd (HINSTANCE h, HWND owner)
 {
   // Assume we won't find the INI file.
@@ -80,15 +80,12 @@ do_fromcwd (HINSTANCE h, HWND owner)
   if (found_ini)
     {
       // Found INI, load it.
-      next_dialog = IDD_S_LOAD_INI;
-      return;
+      return true;
     }
-
-  next_dialog = IDD_CHOOSE;
 
   IniParseFeedback myFeedback;
   IniDBBuilderPackage myBuilder(myFeedback);
   ScanFindVisitor myVisitor (myBuilder);
   Find(".").accept(myVisitor);
-  return;
+  return false;
 }

@@ -193,13 +193,12 @@ LocalDirPage::OnNext ()
     {
       if (source == IDC_SOURCE_CWD)
 	{
-	  do_fromcwd (GetInstance (), GetHWND ());
-	  if (next_dialog == IDD_S_LOAD_INI)
+	  if (do_fromcwd (GetInstance (), GetHWND ()))
 	    {
 	      Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
 	      return IDD_INSTATUS;
 	    }
-	  return next_dialog;
+	  return IDD_CHOOSE;
 	}
     }
   else
