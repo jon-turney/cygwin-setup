@@ -122,9 +122,19 @@ packagemeta::uninstall ()
 
 	  char *d = cygpath ("/", line, NULL);
 	  DWORD dw = GetFileAttributes (d);
-	  if (dw != 0xffffffff && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+	  if (dw != INVALID_FILE_ATTRIBUTES && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
 	      log (LOG_BABBLE, "unlink %s", d);
+	      SetFileAttributes (d, dw & ~FILE_ATTRIBUTE_READONLY);
+	      DeleteFile (d);
+	    }
+	  /* Check for Windows shortcut of same name. */
+	  d = concat (d, ".lnk", NULL);
+	  dw = GetFileAttributes (d);
+	  if (dw != INVALID_FILE_ATTRIBUTES && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+	    {
+	      log (LOG_BABBLE, "unlink %s", d);
+	      SetFileAttributes (d, dw & ~FILE_ATTRIBUTE_READONLY);
 	      DeleteFile (d);
 	    }
 	  line = installed->getnextfile ();

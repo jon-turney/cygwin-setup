@@ -241,10 +241,9 @@ io_stream::gets (char *buffer, size_t length)
       pos++;
       if (*(pos - 1) == '\n')
 	{
-	  /* end of line */
-	  /* TODO: remove the \r if it is present depending on the 
-	   * file's mode 
-	   */
+	  --pos; /* end of line, remove from buffer */
+	  if (pos > buffer && *(pos - 1) == '\r')
+	    --pos;
 	  break;
 	}
     }

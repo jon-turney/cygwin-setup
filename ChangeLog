@@ -1,3 +1,10 @@
+2002-01-15  Corinna Vinschen  <corinna@vinschen.de>
+
+	* io_stream.cc (io_stream::gets): Eliminate trailing new line chars.
+	* package_meta.cc (packagemeta::uninstall): Check for additional
+	Windows shortcut.  Unset R/O file attribute before trying to delete
+	file.
+
 2002-01-09  Robert Collins  <rbtcollins@hotmail.com>
 
 	* choose.cc (pkgtrustp): Fall back to installed if a package is not present in
