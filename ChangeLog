@@ -1,5 +1,12 @@
 2003-07-29  Robert Collins  <rbtcollins@hotmail.com>
 
+	* PickView.h (PickView::refresh): New method.
+	* PickView.cc (PickView::refresh): Extracted from various
+	ChooserPage callers.
+	* choose.cc: Use PickView::refresh wherever possible.
+
+2003-07-29  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.h (ChooserPage::createListView): Remove last parameter.
 	(ChooserPage::getDefaultListViewSize): Extracted method.
 	* choose.cc (ChooserPage::createListView): Remove last parameter.

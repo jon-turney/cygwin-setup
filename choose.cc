@@ -144,7 +144,7 @@ ChooserPage::OnInit ()
 void
 ChooserPage::OnActivate()
 {
-    chooser->setViewMode (chooser->get_view_mode ());
+    chooser->refresh();;
 }
 
 void
@@ -192,7 +192,7 @@ ChooserPage::keepClicked()
       packagemeta & pkg = **i;
       pkg.desired = pkg.installed;
     }
-  chooser->setViewMode (chooser->get_view_mode ());
+  chooser->refresh();;
 }
 
 template <trusts aTrust>
@@ -202,7 +202,7 @@ ChooserPage::changeTrust()
   chooser->defaultTrust (aTrust);
   packagedb db;
   for_each(db.packages.begin(), db.packages.end(), SetRequirement(aTrust));
-  chooser->setViewMode (chooser->get_view_mode ());
+  chooser->refresh();;
 }
 
 bool

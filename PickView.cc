@@ -826,3 +826,9 @@ PickView::defaultTrust (trusts trust)
         packagedb::categories.erase (n++);
       }
 }
+
+void
+PickView::refresh()
+{
+  setViewMode (get_view_mode ());
+}

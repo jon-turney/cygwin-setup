@@ -64,6 +64,7 @@ public:
   void insert_category (Category *, bool);
   void clear_view (void);
   int click (int row, int x);
+  void refresh();
   int current_col;
   int new_col;
   int bintick_col;
