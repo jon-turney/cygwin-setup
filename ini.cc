@@ -68,7 +68,7 @@ static const char *ini_filename;
 static void
 find_routine (char *path, unsigned int fsize)
 {
-  const char *setup_ini = trail (path, "\\setup.ini");
+  const char *setup_ini = trail (path, "/setup.ini");
 
   if (setup_ini == NULL)
     return;

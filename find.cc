@@ -40,7 +40,7 @@ find_sub (void (*for_each) (char *, unsigned int))
   char *end = dir + strlen (dir);
   int rv = 0;
 
-  strcpy (end, "\\*");
+  strcpy (end, "/*");
 
   h = FindFirstFile (dir, &wfd);
 
@@ -53,7 +53,7 @@ find_sub (void (*for_each) (char *, unsigned int))
 	  || strcmp (wfd.cFileName, "..") == 0)
 	continue;
 
-      *end = '\\';
+      *end = '/';
       strcpy (end + 1, wfd.cFileName);
 
       if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)

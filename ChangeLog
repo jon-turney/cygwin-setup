@@ -1,3 +1,14 @@
+2002-05-16  Christopher Faylor  <cgf@redhat.com>
+
+	* find.cc (find_sub): Revert to using forward slash.  It's prettier.
+	* ini.cc (find_routine): Ditto.
+	* fromcwd.cc (check_ini): Check for trailing "/setup.ini" component
+	rather than just trailing "setup.ini".
+	* postinstall.cc (run_script_in_etc_postinstal): Skip over leading
+	pathname component since find returns full MS-DOS path, now.
+	(do_postinstall): Save length of MS-DOS version of '/etc/postinstall'
+	in static (sigh) for later use.
+
 2002-05-14  Christopher Faylor  <cgf@redhat.com>
 
 	* ini.cc (find_routine): Don't clear buffer it it's NULL.

@@ -31,10 +31,11 @@ static const char *cvsid =
 #include "mount.h"
 #include "script.h"
 
+static int postinstall_len;
 static void
 run_script_in_etc_postinstall (char *fname, unsigned int size)
 {
-  run_script ("/etc/postinstall/", fname);
+  run_script ("/etc/postinstall", fname + postinstall_len);
 }
 
 void
@@ -43,5 +44,7 @@ do_postinstall (HINSTANCE h, HWND owner)
   next_dialog = 0;
   init_run_script ();
   SetCurrentDirectory (get_root_dir ().cstr_oneuse());
-  find (cygpath ("/etc/postinstall"), run_script_in_etc_postinstall);
+  String postinstall = cygpath ("/etc/postinstall");
+  postinstall_len = postinstall.size ();
+  find (postinstall, run_script_in_etc_postinstall);
 }
