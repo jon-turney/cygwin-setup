@@ -290,6 +290,7 @@ NTSecurity::setDefaultDACL ()
   PTOKEN_DEFAULT_DACL dacl = (PTOKEN_DEFAULT_DACL) buf;
   dacl->DefaultDacl = (PACL) (buf + sizeof *dacl);
 
+#if 0
   /* Initialize the ACL for containing one ACE. */
   if (!InitializeAcl (dacl->DefaultDacl, TOKEN_ACL_SIZE (1), ACL_REVISION))
     {
@@ -298,7 +299,6 @@ NTSecurity::setDefaultDACL ()
       failed(true);
       return;
     }
-#if 0
 
   initialiseEveryOneSID();
   if (failed())

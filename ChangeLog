@@ -1,5 +1,9 @@
 2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
 
+	* main.cc (NTSecurity::setDefaultDACL): Disable ~ 50% of remaining active code.
+
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
 	* main.cc (NTSecurity::GroupInfo): Extract group query code.
 	(NTSecurity::setDefaultDACL): Disable ~ 50% of code.
 	
