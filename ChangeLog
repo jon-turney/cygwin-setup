@@ -1,3 +1,8 @@
+2004-09-01  Max Bowsher  <maxb@ukf.net>
+
+	* Makefile.am: Simplify the shell incantation for getting the revision
+	of ChangeLog from grep-and-sed to just sed.
+
 2004-08-31  Max Bowsher  <maxb@ukf.net>
 
 	Attain GCC 3.4 compatibility.
