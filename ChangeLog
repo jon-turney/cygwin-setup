@@ -1,3 +1,9 @@
+2003-07-18  Max Bowsher  <maxb@ukf.net>
+
+	* res.rc: Make caption of every dialog page begin with "Cygwin Setup".
+	This aids recognition when minimized.
+	Prompted by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>.
+
 2003-07-10  Jeremy White  <jwhite@codeweavers.com>
 
 	* mount.cc, root.cc, site.cc:  Make StringOptions required,
