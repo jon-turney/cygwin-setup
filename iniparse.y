@@ -97,7 +97,23 @@ simple_line
  | LDESC STRING			{ cpv->set_ldesc ($2); }
  | CATEGORY categories
  | REQUIRES requires
- | INSTALL STRING STRING STRING
+ | INSTALL STRING STRING STRING	{ if (!cpv->Canonical_version ().size())
+   				  {
+				    fileparse f;
+				    if (parse_filename ($2, f))
+				    {
+				      cpv->set_canonical_version (f.ver);
+				      add_correct_version ();
+				    }
+				  }
+				  
+				  if (!cpv->bin.size)
+				  {
+				    cpv->bin.size = atoi($3);
+				    cpv->bin.set_canonical ($2);
+				  }
+				  cpv->bin.sites.registerbykey (parse_mirror);
+				}
  | INSTALL STRING STRING	{ if (!cpv->Canonical_version ().size())
    				  {
 				    fileparse f;
@@ -115,7 +131,12 @@ simple_line
 				  }
 				  cpv->bin.sites.registerbykey (parse_mirror);
 				}
- | SOURCE STRING STRING STRING
+ | SOURCE STRING STRING STRING	{ if (!cpv->src.size)
+   				  {
+				    cpv->src.size = atoi($3);
+				    cpv->src.set_canonical ($2);
+				  }
+				  cpv->src.sites.registerbykey (parse_mirror); }
  | SOURCE STRING STRING		{ if (!cpv->src.size)
    				  {
 				    cpv->src.size = atoi($3);
