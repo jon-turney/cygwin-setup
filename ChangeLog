@@ -1,3 +1,8 @@
+2003-08-03  Max Bowsher  <maxb@ukf.net>
+
+	* ChangeLog: Fix broken line-wrapping throughout. Clarify that
+	"Ran automake" in 2003-07-26 entry was in bz2lib and zlib subdirs.
+
 2003-08-03  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* propsheet.cc (Copyright): Update copyright dates.
@@ -381,14 +386,16 @@
 
 2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc (scan_downloaded_files): Rename to packagemeta::ScanDownloadedFiles.
+	* choose.cc (scan_downloaded_files): Rename to
+	packagemeta::ScanDownloadedFiles.
 	(scanAVersion): Rename to packageversion::scan.
 	(GetParentRect): Rename to ChooserPage::getParentRect.
 	* choose.h (ChooserPage::getParentRect): Declare.
 	* package_meta.h (packagemeta::ScanDownloadedFiles): Declare.
 	* package_version.h (packageversion::scan): Declare.
 	* package_version.cc (packageversion::scan): Move from choose.cc
-	* package_meta.cc (packagemeta::ScanDownloadedFiles): Move from choose.cc
+	* package_meta.cc (packagemeta::ScanDownloadedFiles): Move from
+	choose.cc
 
 2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -422,7 +429,8 @@
 	(ChooserPage::changeTrust): Ditto.
 	* choose.h (ChooserPage): Declare keepClicked and changeTrust.
 	(ChooserPage::ifChecked): Extracted from OnMessageCmd.
-	* package_meta.h (SetRequirement): Adapter for visiting package collections.
+	* package_meta.h (SetRequirement): Adapter for visiting package
+	collections.
 
 2003-07-26  Max Bowsher  <maxb@ukf.net>
 
@@ -432,8 +440,10 @@
 
 	Save used local cache dir from initial run of setup, so the user doesn't
 	need to retype it.
-	* localdir.h (LocalDirSetting): UserSetting class for the local cache dir.
-	* localdir.cc (LocalDirSetting::save): Replace save_local_dir, and update callers.
+	* localdir.h (LocalDirSetting): UserSetting class for the local cache
+	dir.
+	* localdir.cc (LocalDirSetting::save): Replace save_local_dir, and
+	update callers.
 
 2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -441,7 +451,8 @@
 	retype it.
 	* main.cc (main): Load and save all user settings.
 	* site.cc (SiteSetting::save): Migrate logic from save_site_url.
-	(SitePage::OnNext): Use ChosenSites.save() to remove uneeded save_site_url call.
+	(SitePage::OnNext): Use ChosenSites.save() to remove uneeded
+	save_site_url call.
 	(save_site_url): Delete.
 	* site.h (save_site_url): Remove declaration.
 	* .cvsignore: Update autoconf generated files.
@@ -453,7 +464,8 @@
 	* tests/UserSettingsTest.cc: Test UserSettings interface.
 	* Makefile.am: Add the tests dir to recurse into.
 	* configure.in: Ditto.
-	* UserSetting.h: Add load and save methods to allow global serialisation.
+	* UserSetting.h: Add load and save methods to allow global
+	serialisation.
 	Add explicit copy and assignment operators to prevent synthetics.
 	Make the constructor protected to prevent direct instantiation.
 	* UserSettings.h (UserSettings::loadAllSettings): New method.
@@ -461,7 +473,8 @@
 	* UserSettings.cc: Implement new methods.
 	* site.cc: Implement stubs for new required UserSetting methods.
 	* site.h (ChosenSite): Ditto.
-	* Ran automake.
+	* bz2lib/: Ran automake.
+	* zlib/: Ran automake.
 	
 2003-07-23  Max Bowsher  <maxb@ukf.net>
 
@@ -639,7 +652,8 @@
 	
 2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
 
-	* main.cc (NTSecurity::setDefaultDACL): Adjust commented code for auto_ptr use.
+	* main.cc (NTSecurity::setDefaultDACL): Adjust commented code for
+	auto_ptr use.
 	
 2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -649,7 +663,8 @@
 	
 2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
 
-	* main.cc (NTSecurity::setDefaultDACL): Disable ~ 50% of remaining active code.
+	* main.cc (NTSecurity::setDefaultDACL): Disable ~ 50% of remaining
+	active code.
 
 2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -658,13 +673,14 @@
 	
 2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
 
-	* main.cc (NTSecurity::setDefaultSecurity): Disable ~ 50% of security code.
+	* main.cc (NTSecurity::setDefaultSecurity): Disable ~ 50% of security
+	code.
 
 2003-04-01  Robert Collins  <rbtcollins@hotmail.com>
 
-	* main.cc (NTSecurity::setDefaultSecurity): Remove double declaration of sz.
-	User TokenGroupCollection to abstract token searching logic, eliminate isadmin
-	and isuser temporary variables.
+	* main.cc (NTSecurity::setDefaultSecurity): Remove double declaration of
+	sz. User TokenGroupCollection to abstract token searching logic,
+	eliminate isadmin and isuser temporary variables.
 	(TokenGroupCollection): New class for querying token group information.
 	
 2003-04-01  Robert Collins  <rbtcollins@hotmail.com>
@@ -683,7 +699,8 @@
 	(HANDLEWrapper): Likewise for HANDLES.
 	(NTSecurity): Worker class for set_default_sec().
 	(set_default_sec): Move body into NTSecurity::setDefaultSecurity().
-	(NTSecurity::setDefaultSecurity): Eliminate goto out: via memory managing objects.
+	(NTSecurity::setDefaultSecurity): Eliminate goto out: via memory
+	managing objects.
 
 2003-04-01  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
@@ -1151,7 +1168,7 @@
 
 	* main.cc (main): Use the factory for LogFile.
 	* String++.cc: Update to use sstream.
-       	(String::String): Use a ostringstream for libC++ 3.2.
+	(String::String): Use a ostringstream for libC++ 3.2.
 	* LogFile.h (LogFile): Make createLogFile static.
 
 2002-11-10  Robert Collins  <rbtcollins@hotmail.com>
@@ -1249,8 +1266,8 @@
 2002-11-04  Max Bowsher  <maxb@ukf.net>
 
 	* Makefile.am (%.o: %.rc): Make windres use $(CC) not hardcoded gcc.
-       	(inilint_LDADD): Remove -lstd++.
-      	(setup_LDADD): Ditto.
+	(inilint_LDADD): Remove -lstd++.
+	(setup_LDADD): Ditto.
 
 2002-09-22  Max Bowsher  <maxb@ukf.net>
 
@@ -1658,7 +1675,7 @@
 	(packagemeta::sourceAccessible): Ditto.
 	* package_meta.h: Adjust packageversion accessors to the new
 	reference calls. (i.e. "->" to "." and"*" to "" ) throughout.
-       	(packagemeta::packagemeta): Declare copy constructor.
+	(packagemeta::packagemeta): Declare copy constructor.
 	Remove self initialising members.
 	(packagemeta::set_action): Update parameters for new packageversion.
 	(packagemeta::trustp): Ditto.
@@ -1821,7 +1838,7 @@
 	identifying the bug.
 	(cygpackage::getnextfile): Ditto.
 	* download.cc: Use LogSIngletion calls throughout.
-       	(validateCachedPackage): A refactoring of the 
+	(validateCachedPackage): A refactoring of the 
 	check_for_cached code to eliminate duplciation.
 	(check_for_cached): Use validateCachedPackage to check packages.
 	* ini.cc (GuiParseFeedback): Provide gui feedback on ini name and 
@@ -1845,7 +1862,7 @@
 	* package_meta.h (packagemeta::packagemeta): Initialise new members.
 	(packagemeta::architecture): What platform does this package run on? 
 	This may need to move in the future to a per packagefile object.
-       	(packagemeta::priority): What priority does this package have?
+	(packagemeta::priority): What priority does this package have?
 	* package_source.h (packagesource::packagesource): Initialise new
 	members.
 	(packagesource::installedSize): How much space does the package need?
@@ -2103,7 +2120,7 @@
 2002-05-10  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in: Regenerate.
- 	* iniparse.y: Use left recursion, not right in the lines rule to
+	* iniparse.y: Use left recursion, not right in the lines rule to
 	avoid stack overflows.
 	* README: Update TODO's.
 	* io_stream_file.cc: Native builds need to include sys/stat.h
@@ -2340,7 +2357,7 @@
 
 	* Makefile.am: Remove dependecy rules that automake emits.
 	Correct badly copied dependency info for manually compiled files.
-       	(setup_SOURCES): Add all used headers.
+	(setup_SOURCES): Add all used headers.
 	(EXTRA_DIST): Include non compilate but required sources.
 	(setup_LDADD): Remove mingw32, it is autodetected.
 	* Makefile.in: Regenerate.
@@ -2475,30 +2492,30 @@
 
 2002-03-26  Pavel Tsekov  <ptsekov@gmx.net>
 
-        * mkdir.cc (mkdir_p): Stop processing if the path is exhausted.
+	* mkdir.cc (mkdir_p): Stop processing if the path is exhausted.
 
 2002-03-26 Ton van Overbeek  <tvoverbe@cistron.nl>
 
-        * PickPackageLine.cc (PickPackageline::paint): Adjust clipping rectangle
-        to textheight, so large fonts work.
+	* PickPackageLine.cc (PickPackageline::paint): Adjust clipping rectangle
+	to textheight, so large fonts work.
 
 2003-03-26  Robert Collins  <rbtcollins@hotmail.com>
 
-        * io_stream_cygfile.cc (io_stream_cygfile::mklink): Don't translate
-        symlinks.
+	* io_stream_cygfile.cc (io_stream_cygfile::mklink): Don't translate
+	symlinks.
 
 2003-03-26  Robert Collins  <rbtcollins@hotmail.com>
 
-        * io_stream_cygfile.cc (cwd): New static for cwd storage.
-        (io_stream_cygfile::normalise): New method.
-        (io_stream_cygfile::io_stream_cygfile): Use it.
-        (io_stream_cygfile::exists): Ditto.
-        (io_stream_cygfile::remove): Ditto.
-        (io_stream_cygfile::mklink): And again.
-        (cygmkdir_p): Yes, again.
-        (io_stream_cygfile::move): And once more.
-        * io_stream_cygfile.h (io_stream_cygfile::normalise): Declare.
-        (io_stream_cygfile::cwd): Ditto.
+	* io_stream_cygfile.cc (cwd): New static for cwd storage.
+	(io_stream_cygfile::normalise): New method.
+	(io_stream_cygfile::io_stream_cygfile): Use it.
+	(io_stream_cygfile::exists): Ditto.
+	(io_stream_cygfile::remove): Ditto.
+	(io_stream_cygfile::mklink): And again.
+	(cygmkdir_p): Yes, again.
+	(io_stream_cygfile::move): And once more.
+	* io_stream_cygfile.h (io_stream_cygfile::normalise): Declare.
+	(io_stream_cygfile::cwd): Ditto.
 
 2003-03-26  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -2517,8 +2534,8 @@
 
 2002-03-20  Robert Collins  <rbtcollins@hotmail.com>
 
-	* package_meta.h (packamgemeta::trustp): Make 'test' choice leave installed
-	packages alone.
+	* package_meta.h (packamgemeta::trustp): Make 'test' choice leave
+	installed packages alone.
 	* README: Update with latest requests.
 	* Various: MTC fixes from setup200202 branch.
 
@@ -2529,30 +2546,31 @@
 
 2002-03-17  Robert Collins <rbtcollins@hotmail.com>
 
-	* * PickPackageLine.cc (PickPackageLine::paint): Fix incorrect clip region
+	* PickPackageLine.cc (PickPackageLine::paint): Fix incorrect clip region
 	calculation on win9x systems.
 
 2002-03-16  Robert Collins <rbtcollins@hotmail.com>
 
-	* install.cc (install_one_source): Write the correct length of a string to the
-	lst file (Thanks to Pavel Tsekov for reporting the bug).
+	* install.cc (install_one_source): Write the correct length of a string
+	to the lst file (Thanks to Pavel Tsekov for reporting the bug).
 
 2002-03-15  Robert Collins <rbtcollins@hotmail.com>
 
 	* choose.cc (list_click): Always refresh the entire chooser, as our
-	package state change mechanism is broken with the new improved list classes.
+	package state change mechanism is broken with the new improved list
+	classes.
 
 2002-03-15  Robert Collins <rbtcollins@hotmail.com>
 
-	* desktop.cc (make_passwd_group): Check for .lnk suffix on /etc/passwd and
-	/etc/group.
+	* desktop.cc (make_passwd_group): Check for .lnk suffix on /etc/passwd
+	and /etc/group.
 
 2002-03-15  Robert Collins <rbtcollins@hotmail.com>
 
-	* PickPackageLine.cc (PickPackageLine::DrawCheck): New method factored out from
-	paint().
-	(PickPackageLine::paint): Use DrawCheck to draw the src tick box, and the new
-	bin tickbox.
+	* PickPackageLine.cc (PickPackageLine::DrawCheck): New method factored
+	out from paint().
+	(PickPackageLine::paint): Use DrawCheck to draw the src tick box, and
+	the new bin tickbox.
 	(PickPackageLine::click): Handle the new bin tickbox.
 	* PickPackageLine.h (PickPackageLine::DrawCheck): Declare this.
 	* PickView.cc (pkg_headers): Add a Bin? column.
@@ -2560,7 +2578,8 @@
 	(PickView::set_headers): Ditto.
 	(PickView::init_headers): Ditto.
 	* PickView.h (PickView): Ditto.
-	* choose.cc (list_click): Use the new name for src_col to set the clip rectangle.
+	* choose.cc (list_click): Use the new name for src_col to set the clip
+	rectangle.
 
 2002-02-24  Michael A Chase <mchase@ix.netcom.com>
 
@@ -2615,7 +2634,8 @@
 	* choose.cc: Include cygpackage.h for scan2 use.
 	(set_existence): Ignore setup.ini mirrors when installing from cwd.
 	(scan2): Process any valid file.
-	Add cache entries when a file matching a setup.ini listed version is found.
+	Add cache entries when a file matching a setup.ini listed version is
+	found.
 	* filemanip.cc (parse_filename): Remove pkgtar - not used anywhere else.
 	* filemanip.h (filemanip::pkgtar): Remove.
 	* package_meta.cc (CategoryPackage::~CategoryPackage): New method.
@@ -2645,7 +2665,7 @@
 
 2002-02-05  Jason Tishler  <jason@tishler.net>
 
-	 * download.cc (do_download_thread): Fix off-by-one error.
+	* download.cc (do_download_thread): Fix off-by-one error.
 	
 2002-02-19  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -2692,7 +2712,8 @@
 	(do_install_thread): Use new cygpath.
 	Use new create_mount.
 	* io_stream.cc (io_stream::move): Use new log().
-	* io_stream_cygfile (io_stream_cygfile::io_stream_cygfile): Use new cygpath.
+	* io_stream_cygfile (io_stream_cygfile::io_stream_cygfile): Use new
+	cygpath.
 	(io_stream_cygfile::exists): Ditto.
 	(io_stream_cygfile::remove): Ditto.
 	(io_stream_cygfile::mklink): Ditto.
@@ -2734,16 +2755,18 @@
 2002-02-19  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in (OBJS): Add new object.
-	* PickCategoryLine.cc (PickCategoryLine::paint): Print a "+" before the name.
+	* PickCategoryLine.cc (PickCategoryLine::paint): Print a "+" before the
+	name.
 	* PickCategoryLine.h (PickCategoryLine::bucket): Use the String class.
 	* PickLine.h (Pickline::key): Change to a String to help plug leaks.
 	(PickLine::Pickline): Accept a String for the key.
-	* PickPackageLine.cc (PickPackageLine::paint): Convert all char use to Strings.
-	* PickPackageLine.h (PickPackageLine::PickPackageLine): The key is automatically
-	initialisednow.
+	* PickPackageLine.cc (PickPackageLine::paint): Convert all char use to
+	Strings.
+	* PickPackageLine.h (PickPackageLine::PickPackageLine): The key is
+	automatically initialised now.
 	* PickView.cc (PickView::note_width): Convert all char * use to Strings.
-	(PickView::init_header): Move category length checking out of the inner loop for
-	efficiency.
+	(PickView::init_header): Move category length checking out of the inner
+	loop for efficiency.
 	Convert all char use to Strings.
 	* PickView.h: Include the String++ header.
 	(PickView::note_width): Update the prototype.
@@ -3191,7 +3214,8 @@
 	(pick_category_line::click): Ditto.
 	(set_view_mode): Adjust for moved statics.
 	(create_listview): Ditto.
-	* choose.h: Remove Category and packagemeta forward defines - not needed.
+	* choose.h: Remove Category and packagemeta forward defines -
+	not needed.
 	Don't include unneeded headers list and package_meta.
 	(_header): Move to PickView.h.
 	(pick_line): Move to PickLine.h.
@@ -3216,14 +3240,16 @@
 
 2002-01-21  Robert Collins  <rbtcollins@hotmail.com>
 
-	* archive_tar.cc (archive_tar::~archive_tar): Mark the stream as destroyed.
+	* archive_tar.cc (archive_tar::~archive_tar): Mark the stream as
+	destroyed.
 	* archive_tar_file.cc (archive_tar_file::~archive_tar_file): Ditto.
 	* compress.cc (compress::~compress): Be less verbose.
 	* compress_bz.cc (compress_bz::~compress_bz): Ditto.
 	Mark the stream as destroyed.
-	* compress_gz.cc (compress_gz::~compress_gz): Mark the stream as destroyed.
-	* io_stream.cc (io_stream::~io_stream): Only warn when the stream is not marked
-	as destroyed.
+	* compress_gz.cc (compress_gz::~compress_gz): Mark the stream as
+	destroyed.
+	* io_stream.cc (io_stream::~io_stream): Only warn when the stream is not
+	marked as destroyed.
 	* io_stream_cygfile.cc (io_stream_cygfile::~io_stream_cygfile): Mark the
 	stream as destroyed.
 	* io_stream_file.cc (io_stream_file::~io_stream_file): Ditto.
@@ -3254,11 +3280,12 @@
 	(do_install_thread): Call mallinfo to force a consistency check. Appears
 	to fix a 'inuse' error in -DDEBUG builds.
 	Use delete[] for strings.
-	* io_stream_cygfile.cc (io_stream_cygfile::io_stream_cygfile): Use new char,
-	not strdup.
+	* io_stream_cygfile.cc (io_stream_cygfile::io_stream_cygfile): Use new
+	char, not strdup.
 	(io_stream_cygfile::~io_stream_cygfile): Use delete[], not free.
 	(io_stream_cygfile::remove): Use new char, not strdup.
-	* io_stream_file.cc (io_stream_file::io_stream_file): Use new char, not strdup.
+	* io_stream_file.cc (io_stream_file::io_stream_file): Use new char, not
+	strdup.
 	(io_stream_file::io_stream_file): Use delete[], not free.
 	(io_stream_file::remove): Use new char, not strdup.
 	* io_stream_memory.cc (memblock::~memblock): Use delete[], not free.
@@ -3289,7 +3316,8 @@
 
 	* Makefile.in (OBJS): Add win32.o - win32 support functions.
 	* README: Update todos.
-	* archive.cc (extract_file): Support a suffix for appending to extracted files.
+	* archive.cc (extract_file): Support a suffix for appending to extracted
+	files.
 	* archive.h: Ditto.
 	* choose.cc (set_view_mode): Use the new view::views class.
 	(view::views::Unknown): New static for defaulting view::views variables.
@@ -3302,10 +3330,11 @@
 	(paint): Use the new view::views class.
 	Don't paint 'all' as a category when showing package categoies.
 	(pick_category_line::actiontext): New method.
-	(pick_category_line::paint): Make showing the category optional, and show the
-	'category action'.
+	(pick_category_line::paint): Make showing the category optional, and
+	show the 'category action'.
 	(pick_category_line::click): Make showing the category optional, and
-	differentiate between the name being clicked, and the action description.
+	differentiate between the name being clicked, and the action
+	description.
 	(view::view): Use the new view::views class.
 	(view::set_view_mode): Ditto.
 	(view::mode_caption): Ditto.
@@ -3350,8 +3379,8 @@
 
 2002-01-09  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc (pkgtrustp): Fall back to installed if a package is not present in
-	the current trust level. For prev, fall back via curr.
+	* choose.cc (pkgtrustp): Fall back to installed if a package is not
+	present in the current trust level. For prev, fall back via curr.
 	(set_existence): Allow sources with no sites, but cached files to be
 	kept.
 	(pick_category_line::paint): Start drawing clickable categories.
@@ -3370,7 +3399,8 @@
 	* category.h (Categorycmp): Add a const safe version.
 	(Category): Add operator ==.
 	* choose.cc (fill_missing_category): Add every package to "All".
-	(pick_category_line::paint): Add support for hidden labels, and a tree depth.
+	(pick_category_line::paint): Add support for hidden labels, and a tree
+	depth.
 	(pick_category_line::click): Ditto.
 	(view::view): Pass in a top level category to use.
 	(view::insert_pkg): Special case - skip category "All".
@@ -3387,8 +3417,8 @@
 
 	* cygpackage.h (cygpackage): Make set_[s|l]desc virtual.
 	* iniparse.y (add_correct_version): Copy descriptions across.
-	* package_meta.cc (SDesc): Iterate through versions, return the first with a
-	description.
+	* package_meta.cc (SDesc): Iterate through versions, return the first
+	with a description.
 	* package_version.h (packageversion): Add new virtuals set_[l|s]desc.
 
 2001-01-04  Robert Collins  <rbtcollins@hotmail.com>
@@ -3797,14 +3827,16 @@
 
 2001-12-21  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc (listview_proc): Update the scrollbar when the headers are dragged.
+	* choose.cc (listview_proc): Update the scrollbar when the headers are
+	dragged.
 	(pick_pkg_line::paint): Clip columns to prevent overlap.
 
 2001-12-20  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in: Add libcomctl32.a for setup.exe.
 	* archive.h (archive): Prevent non-child direct creation of the class.
-	* archive_tar.h (archive_tar): Prevent inaccurate synthetic copy and assignment.
+	* archive_tar.h (archive_tar): Prevent inaccurate synthetic copy and
+	assignment.
 	* choose.cc: Include commctrl for the choose header.
 	(NEW_COL_SIZE_SLOP): Define without magic numbers.
 	(pkgtrustp): Convert to function.
@@ -3823,13 +3855,16 @@
 	Use new chooser itemcount method.
 	(scroll_common): Rename to view::scroll.
 	Scroll the header window separately.
-	(list_vscroll, list_hscroll, list_click): Update for new chooser methods.
+	(list_vscroll, list_hscroll, list_click): Update for new chooser
+	methods.
 	(listview_proc): Look for header messages.
 	(note_width): Accept stringless calls.
 	(pick_line::set_line): Remove.
 	(pick_line::paint): Remove.
-	(pick_pkg_line::paint): Paint this one line, using the header column widths.
-	(pick_category_line::paint): Paint this category, and anything in the bucket.
+	(pick_pkg_line::paint): Paint this one line, using the header column
+	widths.
+	(pick_category_line::paint): Paint this category, and anything in the
+	bucket.
 	(pick_line::click): Remove.
 	(pick_pkg_line::click): Handle a click.
 	(pick_category_line::click): Handle a click.
@@ -3846,7 +3881,8 @@
 	(set_view_mode): Use list syntax for package list.
 	Update for new chooser methods.
 	(DoInsertItem): New helper function. (Needs a home somewhere).
-	(create_listview): Remove choose control code and use the constructor instead.
+	(create_listview): Remove choose control code and use the constructor
+	instead.
 	(dialog_cmd,scan2,do_choose): Use list syntax for package list.
 	* choose.h: Include newly required headers list and package_meta.
 	(_voew): Rename to view.
@@ -3861,7 +3897,8 @@
 	* iniparse.y (pacakges): Use list syntax for package list.
 	* install.cc (uninstall_one): Use list syntax for package list.
 	(do_install): Use list syntax for package list.
-	* io_stream.h (io_stream): Prevent non-child direct creation of the class.
+	* io_stream.h (io_stream): Prevent non-child direct creation of the
+	class.
 	Prevent inaccurate synthetic copy and assignment.
 	* list.h: Include required header stdlib.
 	Work on const correctness.
@@ -3888,7 +3925,8 @@
 	* resource.h (IDC_CHOOSE_LISTHEADER): New ID.
 	* source.cc: Include package_db for db manipulation.
 	(save_dialog): Set the db task.
-	* win32.h: Tell the w32 include headers what IE version to expect/require.
+	* win32.h: Tell the w32 include headers what IE version to
+	expect/require.
 
 2001-12-06  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -3905,11 +3943,13 @@
 	* choose.cc (set_action): Prevent NULL pointer dereference.
 	(package_sort): Remove.
 	* fromcwd.cc (canonicalize_version): Moved to version.cc.
-	(check_ini): New function for use with find to see if there is a cached setup.ini.
+	(check_ini): New function for use with find to see if there is a cached
+	setup.ini.
 	(do_fromcwd): Check for a cached setup.ini from any mirror site.
 	* ini.cc (find_routine): New function, for finding cached setup.ini's.
 	(do_local_ini): New function, drives parsing of local ini's.
-	(do_remote_ini): New function, drives parsing and caching of remote ini's.
+	(do_remote_ini): New function, drives parsing and caching of remote
+	ini's.
 	(do_ini): Move guts to do_remote_ini and do_local_ini.
 	* list.h (removebyindex): New method.
 	* other.cc (save_dialog): Use new site_list and all_site_list to add the
@@ -3919,15 +3959,15 @@
 	* site.cc (site_list_type): Move to site.h
 	(site_list): New global, sites chosen by the user.
 	(all_site_list): New global, all potential sites.
-	(site_list_type::init): New method, parses a mirror.lst URL string into a
-	site_list_type object.
+	(site_list_type::init): New method, parses a mirror.lst URL string into
+	a site_list_type object.
 	(site_list_type::site_list_type): New method.
 	(check_if_enable_next): Examine the control, not a local variable.
 	(load_dialog): Select all the user chosen sites by default.
 	(save_dialog): Adjust for multiple selection semantics.
 	(save_site_url): Save all user chosen sites.
-	(dialog_cmd): Don't save the dialog when the listbox recieves a message -
-	thats not needed.
+	(dialog_cmd): Don't save the dialog when the listbox recieves a message
+	- thats not needed.
 	Remove obsolete other_url reference.
 	(dialog_proc): Use all_site_list instead of site_list.
 	(site_sort): Remove.
@@ -3950,7 +3990,8 @@
 	* archive.cc (archive::extract_file): Use new io_stream method 'copy'.
 	* archive_tar.h (archive_tar_file): Implement get_size virtual.
 	(archive_tar): Ditto.
-	* choose.cc (set_action): Use [] operator instead of getnth - its more readable.
+	* choose.cc (set_action): Use [] operator instead of getnth - its more
+	readable.
 	(paint): Ditto.
 	(_view::init_headers): Ditto.
 	(_view::insert_pkg): Ditto.
@@ -3963,13 +4004,17 @@
 	(_Info::_Info): Remove.
 	* compress_bz.h (compress_bz): Implement get_size virtual.
 	* compress_gz.h (compress_gz): Implement get_size virtual.
-	* cygpackage.cc (cygpackage::destroy): Use array delete for char * objects.
+	* cygpackage.cc (cygpackage::destroy): Use array delete for char *
+	objects.
 	* download.cc (get_file_size): Move to filemanip.cc.
-	(check_for_cached): Use [] operator instead of getnth - its more readable.
+	(check_for_cached): Use [] operator instead of getnth - its more
+	readable.
 	(download_one): Ditto.
 	* filemanip.cc: New file.
-	* geturl.cc (init_dialog): Make url a pointer to const as it is not modified.
-	(get_url_to_membuf): New function - contains get_url_to_string worker code.
+	* geturl.cc (init_dialog): Make url a pointer to const as it is not
+	modified.
+	(get_url_to_membuf): New function - contains get_url_to_string worker
+	code.
 	(get_url_to_string): Becomes a trivial wrapper to get_url_to_membuf.
 	* geturl.h: Declare new prototype.
 	* ini.cc (do_ini): Use get_url_to_membuf and pass ini_init an io_stream.
@@ -3980,10 +4025,12 @@
 	(ini_init): Use an io_stream for getting the characters.
 	(ini_getchar): Ditto.
 	* iniparse.y: Declare yylex as a C++ function.
-	(add_correct_version): Use [] operator instead of getnth - its more readable.
+	(add_correct_version): Use [] operator instead of getnth - its more
+	readable.
 	* io_stream.cc (io_stream::move_copy): Use the copy method.
 	(io_stream::copy): New method to simply copy from one stream to another.
-	* io_stream.h (io_stream): New static method copy, and virtual method get_size.
+	* io_stream.h (io_stream): New static method copy, and virtual method
+	get_size.
 	* io_stream_cygfile.cc (io_stream_cygfile::get_size): Implement this.
 	* io_stream_cygfile.h (io_stream_cygfile::get_size): Declare this.
 	* io_stream_file.cc (io_stream_file::get_size): Implement this.
@@ -3992,12 +4039,13 @@
 	(io_stream_memory::get_size): Implement this.
 	(io_stream_memory::st_size): Delete this.
 	* list.h: Change getnth into the [] operator.
-	* netio.cc (NetIO::NetIO): Change prototype to reflect Purl not being modified.
+	* netio.cc (NetIO::NetIO): Change prototype to reflect Purl not being
+	modified.
 	(NetIO::set_url): Ditto.
 	(NetIO::open): Ditto.
 	* netio.h: As for netio.cc.
-	* nio-file.cc (NetIO_File::NetIO_File): Change prototype to reflect Purl not
-	being modified.
+	* nio-file.cc (NetIO_File::NetIO_File): Change prototype to reflect
+	Purl not being modified.
 	* nio-file.h: Ditto.
 	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Ditto.
 	* nio-ftp.h (NetIO_FTP::NetIO_FTP): Ditto.
@@ -4009,12 +4057,13 @@
 	* package_source.cc (packagesource::set_canonical): Ditto.
 	(packagesource::set_cached): Ditto.
 	* package_source.h (site::~site): Ditto.
-	* site.cc: Change site_list_type to a class, and search and replace sort_key to
-	key globally.
+	* site.cc: Change site_list_type to a class, and search and replace
+	sort_key to key globally.
 
 2001-12-01  Robert Collins  <rbtcollins@hotmail.com>
 
-	* package_source.cc (packagesource::set_canonical): Filename was out by one.
+	* package_source.cc (packagesource::set_canonical): Filename was out by
+	one.
 
 2001-11-30  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -4053,8 +4102,8 @@
 
 2001-11-30  Robert Collins  <rbtcollins@hotmail.com>
 
-	* package_db.cc (packagedb::flush): Write a canonical version for all packages
-	irrespective of the media they were installed from.
+	* package_db.cc (packagedb::flush): Write a canonical version for all
+	packages irrespective of the media they were installed from.
 
 2001-11-29  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -4066,7 +4115,8 @@
 	(pkgtrustp): New macro.
 	(set_action): Use packagemeta.
 	(add_required): Ditto.
-	(choose_caption): Example package to choose caption, rather than state flags.
+	(choose_caption): Example package to choose caption, rather than state
+	flags.
 	(check_existence): Remove.
 	(set_existence): Remove old code.
 	(fill_missing_category): Use packagemeta.
@@ -4083,7 +4133,8 @@
 	(scan2): Use packagemeta. Temporarily comment out the holefinding code.
 	(read_installed_db): Remove.
 	(package_sort): Use packagemeta.
-	(do_choose): Use packagemeta. Don't sort the packages - the db does that.
+	(do_choose): Use packagemeta. Don't sort the packages - the db does
+	that.
 	* choose.h: Use packagemeta.
 	* cygpackage.cc (cygpackage::cygpackage): Initialise all variables.
 	(cygpackage::cygpackage): Ditto.
@@ -4104,8 +4155,8 @@
 	* desktop.cc: Include packagedb headers.
 	(make_password_group): Use packagemeta.
 	* download.cc: Include packagedb headers.
-	(check_for_cached): New method to find any cached file and fill out the database
-	info.
+	(check_for_cached): New method to find any cached file and fill out the
+	database info.
 	(download_one): Take a packagesource, support multiple mirrors.
 	(do_download): Use packagemeta.
 	* from cwd.cc: Include packagedb headers.
@@ -4114,7 +4165,8 @@
 	* ini.h (CategoryPackage): Remove.
 	(Dependency): Remove.
 	(Package): Remove.
-	(new_package,getpkgbyname,getpackagecategorybyname,add_category): Remove.
+	(new_package,getpkgbyname,getpackagecategorybyname,add_category):
+	Remove.
 	* inilex.l: Support multiple mirrors.
 	* iniparse.y: Include packagedb headers.
 	(parser): Use packagemeta.
@@ -4127,8 +4179,9 @@
 	(install_one): Use packagemeta.
 	(do_install): Use packagemeta.
 	* io_stream.cc (io_stream::move): Bugfix on move/copy case.
-	* io_stream_cygfile.cc (io-stream_cygfile::set_mtime): Do not reopen the file
-	after setting the mtime, it makes no sense, and results in 0 length files.
+	* io_stream_cygfile.cc (io-stream_cygfile::set_mtime): Do not reopen the
+	file after setting the mtime, it makes no sense, and results in 0 length
+	files.
 	* io_stream_file.cc (io-stream_file::set_mtime): Ditto.
 	* list.h: New file, template class for a form of list.
 	* package_db.cc (packagedb::registerpackage): New function.
@@ -4169,7 +4222,8 @@
 2001-11-23  Robert Collins  <rbtcollins@hotmail.com>
 
 	* install.cc (badrename): Remove.
-	(do_install): Use packagedb flush method to write /etc/setup/installed.db.
+	(do_install): Use packagedb flush method to write
+	/etc/setup/installed.db.
 	* io_stream.cc (io_stream::move_copy): New method.
 	(io_stream::move): New method.
 	* io_stream.h (io_stream): New methods move and move_copy.
@@ -4198,11 +4252,12 @@
 	* install.cc: Don't include unneeded headers.
 	Include package database headers.
 	(hash::add_subdirs): Remove.
-	(uninstall_one): Use packagemeta->uninstall to perform the uninstallation.
-	Don't uninstall source packages.
-	(do_install): Just can uninstall_one once as we ignore source packages now.
-	Don't copy the installed.old database accross, instead iterate through the
-	packagedb packages list and write the isntalled packages out.
+	(uninstall_one): Use packagemeta->uninstall to perform the
+	uninstallation. Don't uninstall source packages.
+	(do_install): Just can uninstall_one once as we ignore source packages
+	now.  Don't copy the installed.old database accross, instead iterate
+	through the packagedb packages list and write the installed packages
+	out.
 	* package_db.cc: Include package_version.h, not package.h.
 	(packagedb::packagedb): Never let db be undefined.
 	Record the installation filename, so we can reconstruct installed.db.
@@ -4251,9 +4306,11 @@
 	(ncategories): Remove.
 	(register_category): Remove.
 	* package.h: New virtual &Categories.
-	* package_db.cc (packagedb::packagedb): Don't read the installed db twice.
+	* package_db.cc (packagedb::packagedb): Don't read the installed db
+	twice.
 	(packagedb::categories): Declare.
-	* package_db.h (packagedb): New member categories for global categories list.
+	* package_db.h (packagedb): New member categories for global categories
+	list.
 
 2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -4263,7 +4320,8 @@
 2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
 
 	* install.cc (do_install): Write a version 2 installed.db file.
-	* package_db.cc (packagedb::packagedb): Read version 1 and 2 installed.db files.
+	* package_db.cc (packagedb::packagedb): Read version 1 and 2
+	installed.db files.
 
 2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -4310,7 +4368,8 @@
 	(io_stream): Update write() and add seek().
 	* io_stream_cygfile.cc (io_stream_cygfile::write): New prototype.
 	(io_stream_cygfile::seek): New function.
-	* io_stream_cygfile.h (io_stream_cygfile): Update write() and add seek().
+	* io_stream_cygfile.h (io_stream_cygfile): Update write() and add
+	seek().
 	* io_stream_file.cc (io_stream_file::write): New prototype.
 	(io_stream_file::seek): New function.
 	* io_stream_file.h (io_stream_file): Update write() and add seek().
@@ -4337,7 +4396,8 @@
 2001-11-13  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in (CFLAGS): Add warnings and -Werr.
-	(WARNONLY_FLAGS): For sources that produce (harmless) errors no matter what.
+	(WARNONLY_FLAGS): For sources that produce (harmless) errors no matter
+	what.
 	(OBJS): Add io_stream class' objects.
 	(autoload.o): Use WARNONLY_FLAGS.
 	(inilex.o): Ditto.
@@ -4350,7 +4410,8 @@
 	* autoload.c: Fix compiler warnings (unused, deprecated conversion).
 	* choose.cc: Use io_stream.h, not mount.h.
 	Run indent.
-	(find_tar_ext): Rewritten to use strstr, and to accept .tar as an extension.
+	(find_tar_ext): Rewritten to use strstr, and to accept .tar as an
+	extension.
 	(read_installed_db): Use io_streams.
 	* choose.h: Run indent.
 	* compress.cc: New file.
@@ -4551,8 +4612,8 @@
 	 (actions): New enum, from ini.h. This may not be the 'right' place
 	but that place doesn't exist yet.
 	(_views): New enum, from ini.h.
-	* choose.cc (set_action): Handle installed packages with a version not in
-	setup.ini.
+	* choose.cc (set_action): Handle installed packages with a version not
+	in setup.ini.
 	(choose_caption): Ditto.
 	* iniparse.y: Rearrange header order to handle new ini.h.
 
@@ -4561,20 +4622,23 @@
 	* ini.h (_Info): Fix compiler warnings (signed vs unsigned comparison).
 	(registry_category): Fix compiler warning (deprecated conversion).
 	* iniparse.y (registry_category): Ditto.
-	* choose.cc (cvsid): Fix compiler warnings (unused, deprecated conversion).
+	* choose.cc (cvsid): Fix compiler warnings (unused, deprecated
+	conversion).
 	(add_requried): Remove unused variable.
 	(choose_caption): Handle all enumeration values via a default.
 	(paint): Fix compiler warnings (unused, deprecated conversion).
-	(scroll_common): Fix compiler warnings (unused, signed vs unsigned comparison).
+	(scroll_common): Fix compiler warnings (unused, signed vs unsigned
+	comparison).
 	(list_clicK): Fix compiler warnings (signed vs unsigned comparison).
 	(note_width): Fix compiler warnings (deprecated conversion).
 	(keep_or_skip): Fix compiler warnings (unused).
 	(_view::mode_caption): Fix compiler warnings (deprecated conversion).
 	(set_view_mode): Fix compiler warnings (unused).
-	(create_listview): Fix compiler warnings (unused, incorrect format, reaches
-	end of function).
+	(create_listview): Fix compiler warnings (unused, incorrect format,
+	reaches end of function).
 	(dialog_proc): Fix compiler warnings (unused).
-	(read_installed_db): Fix compiler warnings (unused, deprecated conversion).
+	(read_installed_db): Fix compiler warnings (unused, deprecated
+	conversion).
 	* choose.h (_header): Fix compiler warnings (deprecated conversion).
 	(_view): Ditto.
 
@@ -4605,15 +4669,19 @@
 
 2001-11-09  Robert Collins  <rbtcollins@hotmail.com>
 
-	* simpsock.cc (cvsid): Avoid compiler warnings (not used, deprecated conversion).
-	(SimpleSocket::SimpleSocket): Avoid compiler warnings (deprecated conversion).
+	* simpsock.cc (cvsid): Avoid compiler warnings (not used, deprecated
+	conversion).
+	(SimpleSocket::SimpleSocket): Avoid compiler warnings (deprecated
+	conversion).
 	(SimpleSocket::printf): Ditto.
 	(SimpleSocket::write): Ditto.
 	* simpsock.h (SimpleSocket): Avoid compiler warnings for constructor,
 	printf and write.
-	* nio-ftp.cc (cvsid): Avoid compiler warnings (not used, deprecated conversion).
+	* nio-ftp.cc (cvsid): Avoid compiler warnings (not used, deprecated
+	conversion).
 	(NetIO_FTP::NetIO_FTP): Remove unused variable done.
-	* nio-http.cc (cvsid): Avoid compiler warnings (not used, deprecated conversion).
+	* nio-http.cc (cvsid): Avoid compiler warnings (not used, deprecated
+	conversion).
 
 2001-11-07  Charles Wilson  <cwilson@ece.gatech.edu>
 
@@ -4628,8 +4696,8 @@
 2001-11-06  Pavel Tsekov  <ptsekov@syntrex.com>
 
 	* fromcwd.cc (found_file): Free() memory containing the version and
-	filepath information for a given package, before replacing the pointers which
-	reference this memory.
+	filepath information for a given package, before replacing the pointers
+	which reference this memory.
 
 2001-11-06  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -4648,18 +4716,19 @@
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc (set_action): Correctly allow skip for any uninstalled package.
+	* choose.cc (set_action): Correctly allow skip for any uninstalled
+	package.
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc (default_trust): Change the "Required" forced install category to
-	"Base".
+	* choose.cc (default_trust): Change the "Required" forced install
+	category to "Base".
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
 	* choose.cc: Ran indent.
-	(set_action): When the requested trust level is missing and the level was not
-	user requested, set the action to ACTION_SAME_CURR.
+	(set_action): When the requested trust level is missing and the level
+	was not user requested, set the action to ACTION_SAME_CURR.
 
 2001-11-01  Christopher Faylor  <cgf@redhat.com>
 
@@ -4671,13 +4740,13 @@
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc (add_required): Allow SKIP and SRC_ONLY for currently installed
-	packages.
+	* choose.cc (add_required): Allow SKIP and SRC_ONLY for currently
+	installed packages.
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc (default_trust): Autoset currently installed packages per the user's
-	selection of prev/curr/exp.
+	* choose.cc (default_trust): Autoset currently installed packages per
+	the user's selection of prev/curr/exp.
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -4688,7 +4757,8 @@
 	* geturl.cc (is_showing): Remove.
 	(is_local_install): New static variable. Controls whether the
 	progress dialog and the supporting thread will be created.
-	(dialog_proc): Return TRUE to WM_INITDIALOG as specified by the WIN32 API.
+	(dialog_proc): Return TRUE to WM_INITDIALOG as specified by the WIN32
+	API.
 	(init_dialog): Remove usage of SetForegroundWindow and is_showing.
 	This prevents the progress dialog to gain control over the
 	application and fixes the "setup.exe going to background" problem.
@@ -4705,17 +4775,21 @@
 	* choose.cc (list_click): Change r to row for clarity.
 	When we shrink the list below 1 page, scroll to the top of the list.
 	(_view::click): Return the actual change for contractions.
-	(dialog_proc): Return TRUE to WM_INITDIALOG as specified by the Win32 API.
+	(dialog_proc): Return TRUE to WM_INITDIALOG as specified by the Win32
+	API.
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc (dialog_cmd): Swap cygwin root selection and local dir selection order.
+	* choose.cc (dialog_cmd): Swap cygwin root selection and local dir
+	selection order.
 	* localdir.cc: Ran indent.
 	(get_root_dir_now): New function.
 	(save_local_dir): New function.
-	(dialog_cmd): Use it and swap cygwin root selection and local dir selection order.
+	(dialog_cmd): Use it and swap cygwin root selection and local dir
+	selection order.
 	(do_local_dir): If there is a saved local dir, read it in.
-	* net.cc (dialog_cmd): Swap cygwin root selection and local dir selection order.
+	* net.cc (dialog_cmd): Swap cygwin root selection and local dir
+	selection order.
 	* root.cc (dialog_cmd): Ditto.
 	* source.cc (dialog_cmd): Ditto.
 
@@ -4743,17 +4817,18 @@
 
 2001-10-31  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc(_view::insert_under): Handle linen > nlines and lines[linen] with neither
-	a package nor a category. The lines[linen] bug was reported by Matt (matt@usa.net).
-	(read_installed_db): Bugfix for testing whether a package has a source tarball.
-	Reported by Matt (matt@usa.net).
-	* geturl.cc(dialog): Rename gw_dialog to local_gw_dialog to avoid programmer
-	confusion and lint errors. Reported by Matt (matt@usa.net).
+	* choose.cc(_view::insert_under): Handle linen > nlines and lines[linen]
+	with neither a package nor a category. The lines[linen] bug was reported
+	by Matt (matt@usa.net).
+	(read_installed_db): Bugfix for testing whether a package has a source
+	tarball.  Reported by Matt (matt@usa.net).
+	* geturl.cc(dialog): Rename gw_dialog to local_gw_dialog to avoid
+	programmer confusion and lint errors. Reported by Matt (matt@usa.net).
 
 2001-10-31  Robert Collins  <rbtcollins@hotmail.com>
 
-	* argv.cc: New file, converts arguments for -mwindows programs. (Simplified derivation
-	from dcrt0.cc.)
+	* argv.cc: New file, converts arguments for -mwindows
+	programs. (Simplified derivation from dcrt0.cc.)
 	* argv.h: New file.
 	* Makefile,in: Add argv.o and mingw_getopt.o to setup.exe object list.
 	Add mingw_getopt.o build rule.
@@ -4896,7 +4971,8 @@ Sat Jun 30 14:05:21  2001  Michael A Chase <mchase@ix.netcom.com>
 
 Sat Jun 30 23:04:59 2001  Christopher Faylor <cgf@cygnus.com>
 
-	* choose.cc (scan2): Restore source scanning eliminated by previous checkin.
+	* choose.cc (scan2): Restore source scanning eliminated by previous
+	checkin.
 
 Sat Jun 30 15:18:33 2001  Christopher Faylor <cgf@cygnus.com>
 
@@ -5046,7 +5122,8 @@ Fri Jun 15 00:01:51 2001  Christopher Faylor <cgf@cygnus.com>
 Thu Jun 14 22:43:59 2001   Robert Collins <rbtcollins@hotmail.com>
 
 	* ini.h (Dependency): New structure.  Declare new function.
-	* inilex.l (yylex): Detect new setup.ini options - category and requires.
+	* inilex.l (yylex): Detect new setup.ini options - category and
+	requires.
 	* iniparse.y: Declare new setup.ini token values.
 	(yyparse): Parse new token values.
 	(new_requirement): New function.
@@ -5732,8 +5809,8 @@ Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* res.rc: mark password boxes as *being* password boxes.
 
-	* fromcwd.cc (canonicalize_version): use multiple buffers so that multiple
-	calls won't use the same buffer.
+	* fromcwd.cc (canonicalize_version): use multiple buffers so that
+	multiple calls won't use the same buffer.
 	* choose.cc (create_listview): don't default to full list if no changes
 	(base): return computed value, not temporary :-(
 	(do_choose): don't use installed.db if we're only downloading.
@@ -5950,11 +6027,12 @@ Mon Sep 11 19:35:24 2000  Christopher Faylor <cgf@cygnus.com>
 	* tar.h: New file; header for same.
 	* ctar.c: New file; test program for same.
 	* Makefile.in: add built-in tar, remove tar.exe and gzip.exe
-	* path.c (pathcat): convert slashes and canonicalize, instead of aborting
+	* path.c (pathcat): convert slashes and canonicalize, instead of
+	aborting
 	* setup.c (tarx): add support for built-in tar
 	(main): accept unix-style slashes, check root dir for drive letters,
-	warn about installing in /, make sure cwd is empty for internet installs,
-	defer mounts to end of install, support built-in tar.
+	warn about installing in /, make sure cwd is empty for internet
+	installs, defer mounts to end of install, support built-in tar.
 
 Fri May 19 23:44:37 2000  Christopher Faylor <cgf@cygnus.com>
 
