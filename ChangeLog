@@ -1,3 +1,12 @@
+2002-01-27  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in: Remove the dlmalloc object by default.
+	* install.cc (do_install_thread): Remove the mallinfo call for 'working around'
+	the crashing issue.
+	* package_db.h: Include <string.h> - it's needed to parse this.
+	* package_source.cc (site::site):  Move here from the header file.
+	* package_source.h (site): Stop the constructor being inlinable.
+
 2002-01-26  Robert Collins  <rbtcollins@hotmail.com>
 
 	* filemanip.cc (find_tar_ext): Add a descriptive comment.

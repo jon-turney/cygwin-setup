@@ -26,6 +26,12 @@ static const char *cvsid =
 #include <strings.h>
 #include "package_source.h"
 
+site::site (char const *newkey)
+{
+  key = new char[strlen (newkey) + 1];
+  strcpy (key, newkey);
+};
+  
 void
 packagesource::set_canonical (char const *fn)
 {

@@ -13,11 +13,11 @@
 # Makefile for Cygwin installer
 
 # Memory debugging
-MC_OBJS = dlmalloc.o
+# MC_OBJS = dlmalloc.o
 #MC_DEFS = -DDEBUG
 # Use the below when building production releases
 #MC_OBJS =
-MC_DEFS =
+#MC_DEFS =
 
 SHELL := @SHELL@
 

@@ -43,11 +43,7 @@
 class site
 {
 public:
-  site (char const *newkey)
-  {
-    key = new char[strlen (newkey + 1)];
-      strcpy (key, newkey);
-  };
+  site (char const *newkey);
   ~site ()
   {
     if (key)

@@ -18,6 +18,7 @@
 
 /* required to parse this file */
 #include "list.h"
+#include <string.h>
 //class CategoryList;
 class Category;
 class packagemeta;
