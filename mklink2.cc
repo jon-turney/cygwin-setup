@@ -20,9 +20,9 @@ make_link_2 (char const *exepath, char const *args, char const *icon, char const
   IPersistFile *pf;
   WCHAR widepath[_MAX_PATH];
 
-  CoCreateInstance (CLSID_ShellLink, NULL,
-		    CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID *) & sl);
-  sl->lpVtbl->QueryInterface (sl, IID_IPersistFile, (void **) &pf);
+  CoCreateInstance (&CLSID_ShellLink, NULL,
+		    CLSCTX_INPROC_SERVER, &IID_IShellLink, (LPVOID *) & sl);
+  sl->lpVtbl->QueryInterface (sl, &IID_IPersistFile, (void **) &pf);
 
   sl->lpVtbl->SetPath (sl, exepath);
   sl->lpVtbl->SetArguments (sl, args);
