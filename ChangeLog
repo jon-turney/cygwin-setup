@@ -1,5 +1,12 @@
 2003-04-01  Robert Collins  <rbtcollins@hotmail.com>
 
+	* main.cc (NTSecurity::setDefaultSecurity): Remove double declaration of sz.
+	User TokenGroupCollection to abstract token searching logic, eliminate isadmin
+	and isuser temporary variables.
+	(TokenGroupCollection): New class for querying token group information.
+	
+2003-04-01  Robert Collins  <rbtcollins@hotmail.com>
+
 	* main.cc (NTSecurity::setDefaultSecurity): Extract esid initialisation.
 	Move local variables to just before first use.
 	SetTokenInformationFailures where being handled inconsistently.

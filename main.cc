@@ -1,5 +1,6 @@
  /*
  * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2003, Robert Collins <rbtcollins@hotmail.com>
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -10,6 +11,8 @@
  *     http://www.gnu.org/
  *
  * Written by DJ Delorie <dj@cygnus.com>
+ *            Robert Collins <rbtcollins@hotmail.com>
+ *
  *
  */
 
@@ -147,6 +150,57 @@ HANDLEWrapper::theHANDLE() const
 
 };
 
+class TokenGroupCollection {
+  public:
+  TokenGroupCollection(DWORD, Setup::HANDLEWrapper &);
+  ~TokenGroupCollection();
+  /* prevent synthetics */
+  TokenGroupCollection &operator=(TokenGroupCollection const &);
+  TokenGroupCollection (TokenGroupCollection const &);
+  bool find (Setup::SIDWrapper const &) const;
+  bool populated() const { return populated_;}
+  void populate();
+  private:
+  mutable bool populated_;
+  char *buffer;
+  DWORD bufferSize;
+  Setup::HANDLEWrapper &token;
+};
+
+TokenGroupCollection::TokenGroupCollection(DWORD aSize, Setup::HANDLEWrapper &aHandle) : populated_(false), buffer(new char[aSize]), bufferSize(aSize), token(aHandle)
+{
+}
+
+TokenGroupCollection::~TokenGroupCollection()
+{
+  if (buffer)
+    delete[] buffer;
+}
+
+void
+TokenGroupCollection::populate()
+{
+  if (!GetTokenInformation (token.theHANDLE(), TokenGroups, buffer, bufferSize, &bufferSize))
+    {
+      log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " <<
+	  	GetLastError () << endLog;
+	return;
+    }
+  populated_ = true;
+}
+
+bool
+TokenGroupCollection::find (Setup::SIDWrapper const &aSID) const
+{
+  if (!populated())
+    return false;
+  TOKEN_GROUPS *groups = (TOKEN_GROUPS *) buffer;
+  for (DWORD pg = 0; pg < groups->GroupCount; ++pg)
+    if (EqualSid(groups->Groups[pg].Sid, aSID.theSID()))
+      return true;
+  return false;
+}
+
 class NTSecurity
 {
 public:
@@ -162,7 +216,7 @@ private:
   bool const &failed() const;
   void initialiseEveryOneSID();
   void setDefaultDACL ();
-  Setup::SIDWrapper everyOneSID, asid, usid;
+  Setup::SIDWrapper everyOneSID, administratorsSID, usid;
   Setup::HANDLEWrapper token;
   bool failed_;
 };
@@ -174,7 +228,7 @@ set_default_sec()
   worker.setDefaultSecurity();
 }
 
-NTSecurity::NTSecurity() : everyOneSID (), asid(), usid(), token(), failed_(false)
+NTSecurity::NTSecurity() : everyOneSID (), administratorsSID(), usid(), token(), failed_(false)
 {}
 
 NTSecurity::~NTSecurity()
@@ -300,11 +354,10 @@ NTSecurity::setDefaultSecurity ()
 
   /* Get the local domain SID */
   SID_NAME_USE use;
-  DWORD sz;
   char domain[MAX_COMPUTERNAME_LENGTH + 1];
   char lsid[MAX_SID_LEN];
   size = sizeof (lsid);
-  sz = sizeof (domain);
+  DWORD sz = sizeof (domain);
   if (!LookupAccountName (NULL, compname, lsid, &size, 
 			  domain, &sz, &use)) 
     {
@@ -325,12 +378,11 @@ NTSecurity::setDefaultSecurity ()
   if (!EqualSid (gsid.psid, lsid))
     return;
 
-  bool isadmins = false, isusers = false;
   SID_IDENTIFIER_AUTHORITY sid_auth;
   sid_auth = (SID_IDENTIFIER_AUTHORITY) { SECURITY_NT_AUTHORITY };
   /* Get the SID for "Administrators" S-1-5-32-544 */
   if (!AllocateAndInitializeSid (&sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
-				 DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &asid.theSID()))
+				 DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &administratorsSID.theSID()))
     {
 	log (LOG_TIMESTAMP) << "AllocateAndInitializeSid() failed: " <<
 	GetLastError () << endLog;
@@ -352,35 +404,20 @@ NTSecurity::setDefaultSecurity ()
 	    GetLastError () << endLog;
       return;
     }
-  else 
-    {
-      char buf[size];
-      TOKEN_GROUPS *groups = (TOKEN_GROUPS *) buf;
-
-      if (!GetTokenInformation (token.theHANDLE(), TokenGroups, buf, size, &size))
-        {
-          log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " <<
-	  	GetLastError () << endLog;
-	  return;
-	}
-      else
-        /* See if admins or users is present */
-        for (DWORD pg = 0; pg < groups->GroupCount; ++pg)
-          {
-	    isadmins = isadmins || EqualSid(groups->Groups[pg].Sid, asid.theSID());
-	    isusers = isusers || EqualSid(groups->Groups[pg].Sid, usid.theSID());
-	  }
-    }
+  TokenGroupCollection ntGroups(size, token);
+  ntGroups.populate();
+  if (!ntGroups.populated())
+    return;
   /* Set the default group to one of the above computed SID. */
   PSID nsid = NULL;
-  if (isusers)
+  if (ntGroups.find (usid))
     {
       nsid = usid.theSID();
       log(LOG_TIMESTAMP) << "Changing gid to Users" << endLog;
     }
-  else if (isadmins)
+  else if (ntGroups.find (administratorsSID))
     {
-      nsid = asid.theSID();
+      nsid = administratorsSID.theSID();
       log(LOG_TIMESTAMP) << "Changing gid to Administrators" << endLog;
     }
   if (nsid && !SetTokenInformation (token.theHANDLE(), TokenPrimaryGroup, &nsid, sizeof nsid))
