@@ -25,6 +25,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "resource.h"
 #include "state.h"
 #include "msg.h"
+#include "log.h"
 
 static int rb[] = { IDC_NET_IE5, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
 
@@ -143,5 +144,9 @@ do_net (HINSTANCE h)
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_NET), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
+
+  log (0, "net: %s",
+       (net_method == IDC_NET_IE5) ? "IE5" :
+       (net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy");
 }
 

@@ -31,6 +31,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "resource.h"
 #include "netio.h"
 #include "msg.h"
+#include "log.h"
 
 static int is_showing = 0;
 static HWND gw_dialog = 0;
@@ -46,7 +47,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
   switch (id)
     {
     case IDCANCEL:
-      ExitProcess (0);
+      exit_setup (0);
     }
 }
 
@@ -157,11 +158,13 @@ struct GUBuf {
 char *
 get_url_to_string (char *_url)
 {
+  log (LOG_BABBLE, "get_url_to_string %s", _url);
   init_dialog (_url, 0);
   NetIO *n = NetIO::open (_url);
   if (!n || !n->ok ())
     {
       delete n;
+      log (LOG_BABBLE, "get_url_to_string failed!");
       return 0;
     }
 
@@ -203,6 +206,7 @@ get_url_to_string (char *_url)
 int
 get_url_to_file (char *_url, char *_filename, int expected_length)
 {
+  log (LOG_BABBLE, "get_url_to_file %s %s", _url, _filename);
   init_dialog (_url, expected_length);
 
   remove (_filename); /* but ignore errors */
@@ -211,6 +215,7 @@ get_url_to_file (char *_url, char *_filename, int expected_length)
   if (!n || !n->ok ())
     {
       delete n;
+      log (LOG_BABBLE, "get_url_to_file failed!");
       return 1;
     }
 

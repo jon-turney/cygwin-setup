@@ -26,6 +26,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "zlib/zlib.h"
 #include "tar.h"
 #include "mkdir.h"
+#include "log.h"
 
 #include "port.h"
 
@@ -83,7 +84,7 @@ xstrdup (char *c)
 {
   char *r = (char *) malloc (strlen (c) + 1);
   if (!r)
-    exit (1);
+    exit_setup (1);
   strcpy (r, c);
   return r;
 }
@@ -106,7 +107,7 @@ tar_open (char *pathname)
       /* drastic, but important */
       fprintf (stderr, "compilation error: tar header struct not 512"
 	       " bytes (it's %d)\n", sizeof (tar_header));
-      exit (1);
+      exit_setup (1);
     }
   err = 0;
   return g ? 0 : 1;

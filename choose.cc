@@ -38,6 +38,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "ini.h"
 #include "concat.h"
 #include "msg.h"
+#include "log.h"
 
 #define HMARGIN 10
 #define ROW_MARGIN 5
@@ -716,6 +717,35 @@ do_choose (HINSTANCE h)
 	default:
 	  package[i].action = ACTION_SAME;
 	  break;
+	}
+    }
+
+  log (LOG_BABBLE, "Chooser results...");
+  for (i=0; i<npackages; i++)
+    {
+      static char *infos[] = {"prev", "curr", "test"};
+      const char *trust = ((package[i].trust == TRUST_PREV) ? "prev"
+			   : (package[i].trust == TRUST_CURR) ? "curr"
+			   : (package[i].trust == TRUST_TEST) ? "test"
+			   : "unknown");
+      const char *action = ((package[i].action == ACTION_UNKNOWN) ? "unknown"
+			    : (package[i].action == ACTION_SAME) ? "same"
+			    : (package[i].action == ACTION_NEW) ? "new"
+			    : (package[i].action == ACTION_UPGRADE) ? "upgrade"
+			    : (package[i].action == ACTION_ERROR) ? "error"
+			    : "unknown");
+
+      log (LOG_BABBLE, "[%s] action=%s trust=%s", package[i].name, action, trust);
+      for (int t=0; t<NTRUST; t++)
+	{
+	  if (package[i].info[t].install)
+	    log (LOG_BABBLE, "[%s] ver %s inst %s %d src %s %d",
+		 infos[t],
+		 package[i].info[t].version ?: "(none)",
+		 package[i].info[t].install ?: "(none)",
+		 package[i].info[t].install_size,
+		 package[i].info[t].source ?: "(none)",
+		 package[i].info[t].source_size);
 	}
     }
 }

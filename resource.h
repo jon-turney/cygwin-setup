@@ -19,6 +19,7 @@
 #define IDS_ROOT_ABSOLUTE               17
 #define IDS_DOWNLOAD_COMPLETE           18
 #define IDS_CVSID                       19
+#define IDS_NOLOGFILE                   20
 #define IDD_ROOT                        101
 #define IDD_SOURCE                      102
 #define IDD_OTHER_URL                   103

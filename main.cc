@@ -28,6 +28,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "win32.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "resource.h"
 #include "dialog.h"
 #include "state.h"
@@ -35,6 +36,9 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "netio.h"
 #include "find.h"
 #include "mount.h"
+#include "log.h"
+
+#include "port.h"
 
 void netio_test (char *);
 
@@ -52,6 +56,12 @@ WinMain (HINSTANCE h,
   hinstance = h;
 
   next_dialog = IDD_SPLASH;
+
+  log (LOG_TIMESTAMP, "Starting cygwin install");
+
+  char cwd[_MAX_PATH];
+  GetCurrentDirectory (sizeof (cwd), cwd);
+  log (0, "Current Directory: %s", cwd);
 
   while (next_dialog)
     {
@@ -77,8 +87,5 @@ WinMain (HINSTANCE h,
 	}
     }
 
-  if (exit_msg)
-    note (exit_msg);
-
-  return 0;
+  exit_setup (0);
 }

@@ -84,6 +84,7 @@ OBJS = \
 	inilex.o \
 	iniparse.o \
 	install.o \
+	log.o \
 	main.o \
 	mkdir.o \
 	mklink2.o \

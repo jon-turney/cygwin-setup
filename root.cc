@@ -31,6 +31,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "msg.h"
 #include "mount.h"
 #include "concat.h"
+#include "log.h"
 
 static int rb[] = { IDC_ROOT_TEXT, IDC_ROOT_BINARY, 0 };
 static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
@@ -233,5 +234,9 @@ do_root (HINSTANCE h)
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_ROOT), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
+
+  log (0, "root: %s %s %s", root_dir,
+       (root_text == IDC_ROOT_TEXT) ? "text" : "binary",
+       (root_scope == IDC_ROOT_USER) ? "user" : "system");
 }
 

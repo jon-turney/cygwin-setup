@@ -34,6 +34,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "dialog.h"
 #include "msg.h"
 #include "mkdir.h"
+#include "log.h"
 
 unsigned int setup_timestamp = 0;
 
@@ -84,7 +85,7 @@ do_ini (HINSTANCE h)
 	    {
 	      int yn = yesno (IDS_OLD_SETUPINI);
 	      if (yn == IDNO)
-		ExitProcess (0);
+		exit_setup (1);
 	    }
 	}
       if (setup_timestamp)

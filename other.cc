@@ -26,7 +26,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "resource.h"
 #include "state.h"
 #include "msg.h"
-
+#include "log.h"
 
 /* private shared function, from site.cc */
 void save_site_url (void);
@@ -99,5 +99,7 @@ do_other (HINSTANCE h)
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_OTHER_URL), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
+
+  log (0, "site: %s", other_url);
 }
 

@@ -30,6 +30,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "msg.h"
 #include "concat.h"
 #include "mount.h"
+#include "log.h"
 
 #include "port.h"
 
@@ -313,5 +314,8 @@ do_site (HINSTANCE h)
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_SITE), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
+
+  if (mirror_idx != OTHER_IDX)
+    log (0, "site: %s", mirror_site);
 }
 

@@ -1,5 +1,25 @@
 2000-08-24  DJ Delorie  <dj@redhat.com>
 
+	* log.cc, log.h: new files
+	* Makefile.in (OBJS): add log.o
+	* tar.cc: use exit_setup instead of exit
+	* dialog.cc (fatal): use exit_setup instead of ExitProcess
+	* msg.cc (fatal): ditto
+	* install.cc (dialog_cmd): ditto
+	* ini.cc (do_ini): ditto
+	* main.cc (main): add logging
+	* source.cc (do_source): ditto
+	* root.cc (do_source): ditto
+	* site.cc (do_site): ditto
+	* other.cc (do_other): ditto
+	* net.cc (do_net): ditto
+	* choose.cc (do_choose): ditto
+	* download.cc (do_download): ditto
+	* install.cc (do_install): ditto
+	* msg.cc (fatal): ditto
+
+	* res.rc: mark password boxes as *being* password boxes.
+
 	* fromcwd.cc (canonicalize_version): use multiple buffers so that multiple
 	calls won't use the same buffer.
 	* choose.cc (create_listview): don't default to full list if no changes

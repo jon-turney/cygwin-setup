@@ -32,6 +32,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "geturl.h"
 #include "state.h"
 #include "mkdir.h"
+#include "log.h"
 
 #define pi (package[i].info[package[i].trust])
 
@@ -56,6 +57,7 @@ do_download (HINSTANCE h)
 			     concat (local, ".tmp", 0),
 			     pi.install_size))
 	  {
+	    log (0, "Download %s failed", local);
 	    package[i].action = ACTION_ERROR;
 	    continue;
 	  }
@@ -64,10 +66,12 @@ do_download (HINSTANCE h)
 	    stat (concat (local, ".tmp", 0), &s);
 	    if (s.st_size == pi.install_size)
 	      {
+		log (0, "Downloaded %s", local);
 		rename (concat (local, ".tmp", 0), local);
 	      }
 	    else
 	      {
+		log (0, "Download %s wrong size (%d vs %d)", local, s.st_size, pi.install_size);
 		note (IDS_DOWNLOAD_SHORT, local, s.st_size, pi.install_size);
 		package[i].action = ACTION_ERROR;
 	      }

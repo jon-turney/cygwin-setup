@@ -23,6 +23,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include <stdlib.h>
 #include "dialog.h"
 #include "msg.h"
+#include "log.h"
 
 char *
 eget (HWND h, int id, char *var)
@@ -92,5 +93,5 @@ fatal (char *msg)
 		 0,
 		 0);
   MessageBox (0, buf, msg, 0);
-  ExitProcess (0);
+  exit_setup (1);
 }

@@ -25,7 +25,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "resource.h"
 #include "state.h"
 #include "msg.h"
-
+#include "log.h"
 
 static int rb[] = { IDC_SOURCE_DOWNLOAD, IDC_SOURCE_NETINST, IDC_SOURCE_CWD, 0 };
 
@@ -109,5 +109,9 @@ do_source (HINSTANCE h)
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_SOURCE), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
+
+  log (0, "source: %s",
+       (source == IDC_SOURCE_DOWNLOAD) ? "download" :
+       (source == IDC_SOURCE_NETINST) ? "network install" : "from cwd");
 }
 

@@ -22,6 +22,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include <stdio.h>
 #include <stdarg.h>
 #include "dialog.h"
+#include "log.h"
 
 void
 msg (char *fmt, ...)
@@ -34,7 +35,7 @@ msg (char *fmt, ...)
 }
 
 static int
-mbox (int type, int id, va_list args)
+mbox (char *name, int type, int id, va_list args)
 {
   char buf[1000], fmt[1000];
 
@@ -42,6 +43,7 @@ mbox (int type, int id, va_list args)
     ExitProcess (0);
 
   vsprintf (buf, fmt, args);
+  log (0, "mbox %s: %s", name, buf);
   return MessageBox (0, buf, "Cygwin Setup", type | MB_TOPMOST);
 }
 
@@ -50,7 +52,7 @@ note (int id, ...)
 {
   va_list args;
   va_start (args, id);
-  mbox (0, id, args);
+  mbox ("note", 0, id, args);
 }
 
 void
@@ -58,8 +60,8 @@ fatal (int id, ...)
 {
   va_list args;
   va_start (args, id);
-  mbox (0, id, args);
-  ExitProcess (1);
+  mbox ("fatal", 0, id, args);
+  exit_setup (1);
 }
 
 int
@@ -67,5 +69,5 @@ yesno (int id, ...)
 {
   va_list args;
   va_start (args, id);
-  return mbox (MB_YESNO, id, args);
+  return mbox ("yesno", MB_YESNO, id, args);
 }

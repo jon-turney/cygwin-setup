@@ -42,6 +42,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "diskfull.h"
 #include "msg.h"
 #include "mount.h"
+#include "log.h"
 
 static HWND ins_dialog = 0;
 static HWND ins_pkgname = 0;
@@ -61,7 +62,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
   switch (id)
     {
     case IDCANCEL:
-      ExitProcess (0);
+      exit_setup (1);
     }
 }
 
@@ -236,6 +237,7 @@ do_install (HINSTANCE h)
 
       package_bytes = pi.install_size;
 
+      log (0, "Installing %s", local);
       tar_open (local);
       while (fn = tar_next_file ())
 	{
@@ -255,6 +257,7 @@ do_install (HINSTANCE h)
 	    dest_file = concat (root_dir, "/", fn, 0);
 
 	  SetWindowText (ins_filename, dest_file);
+	  log (LOG_BABBLE, "Installing file %s", dest_file);
 	  tar_read_file (dest_file);
 
 	  progress (tar_ftell ());
