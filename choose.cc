@@ -62,7 +62,7 @@ using namespace std;
 extern ThreeBarProgressPage Progress;
 
 void
-ChooserPage::createListview (HWND dlg, RECT * r)
+ChooserPage::createListview (RECT * r)
 {
   packagedb db;
   chooser = new PickView (*db.categories.find("All"));
@@ -74,13 +74,13 @@ ChooserPage::createListview (HWND dlg, RECT * r)
 
   chooser->defaultTrust (TRUST_CURR);
   chooser->setViewMode (PickView::views::Category);
-  if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
+  if (!SetDlgItemText (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE) << "Failed to set View button caption %ld" << 
 	 GetLastError () << endLog;
   for_each (db.packages.begin(), db.packages.end(), bind2nd(mem_fun(&packagemeta::set_requirements), chooser->deftrust));
   /* FIXME: do we need to init the desired fields ? */
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_PREV, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
-  rbset (dlg, ta, IDC_CHOOSE_CURR);
+  rbset (GetHWND (), ta, IDC_CHOOSE_CURR);
 }
 
 /* TODO: review ::overrides for possible consolidation */
@@ -132,7 +132,7 @@ ChooserPage::OnInit ()
   r.top += 2;
   r.bottom -= 2;
   
-  createListview (GetHWND (), &r);
+  createListview (&r);
 }
 
 void

@@ -1,3 +1,9 @@
+2003-07-29  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.cc (ChooserPage::createListView): Remove unneeded 
+	parameter.
+	* choose.h: Ditto.
+
 2003-07-29  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* dialog.h (do_fromcwd): Change function declaration.
