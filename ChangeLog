@@ -1,3 +1,12 @@
+2003-07-30  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
+	* String++.h (TOSTRING): New macro.
+	* UserSettings.cc (UserSettings::deRegisterSetting): Fix
+	erroneous __LINE__/__FILE__ usage.
+	* download.cc (validateCachedPackage, check_for_cached): Ditto.
+	* geturl.cc (getUrlToStream): Ditto.
+	* install.cc (md5_one): Ditto.
+
 2003-07-30  Max Bowsher  <maxb@ukf.net>
 
 	* ini.cc (do_ini_thread): Return bool.

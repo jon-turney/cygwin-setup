@@ -109,4 +109,10 @@ String::size() const
   return theData->length;
 }
 
+#define __TOSTRING__(X) #X
+/* Note the layer of indirection here is needed to allow
+   stringification of the expansion of macros, i.e. "#define foo
+   bar", "TOSTRING(foo)", to yield "bar". */
+#define TOSTRING(X) __TOSTRING__(X)
+
 #endif /* SETUP_STRING___H */

@@ -125,7 +125,7 @@ getUrlToStream (String const &_url, HWND owner, io_stream *output)
     {
       delete n;
       log (LOG_BABBLE) <<  "getUrlToStream failed!" << endLog;
-      throw new Exception ("__LINE__ __FILE__", "Error opening url",  APPERR_IO_ERROR);
+      throw new Exception (TOSTRING(__LINE__) " " __FILE__, "Error opening url",  APPERR_IO_ERROR);
     }
 
   if (n->file_size)

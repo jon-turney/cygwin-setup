@@ -656,7 +656,7 @@ void md5_one (const packagesource& source)
       // check the MD5 sum of the cached file here
       io_stream *thefile = io_stream::open (source.Cached (), "rb");
       if (!thefile)
-	throw new Exception ("__LINE__ __FILE__", String ("IO Error opening ") + source.Cached(), APPERR_IO_ERROR);
+	throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("IO Error opening ") + source.Cached(), APPERR_IO_ERROR);
       md5_state_t pns;
       md5_init (&pns);
       
@@ -666,7 +666,7 @@ void md5_one (const packagesource& source)
 	  md5_append (&pns, buffer, count);
       delete thefile;
       if (count < 0)
-	throw new Exception ("__LINE__ __FILE__", String ("IO Error reading ") + source.Cached(), APPERR_IO_ERROR);
+	throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("IO Error reading ") + source.Cached(), APPERR_IO_ERROR);
       
       md5_byte_t tempdigest[16];
       md5_finish(&pns, tempdigest);
@@ -676,6 +676,6 @@ void md5_one (const packagesource& source)
       log (LOG_BABBLE, String ("For file ") + source.Cached() + " ini digest is " + source.md5.print() + " file digest is " + tempMD5.print());
       
       if (source.md5 != tempMD5)
-	  throw new Exception ("__LINE__ __FILE__", String ("Checksum failure for ") + source.Cached(), APPERR_CORRUPT_PACKAGE);
+	  throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("Checksum failure for ") + source.Cached(), APPERR_CORRUPT_PACKAGE);
     }
 }
