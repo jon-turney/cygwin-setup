@@ -1,5 +1,9 @@
 2002-11-25  Robert Collins  <rbtcollins@hotmail.com>
 
+	* AntiVirus.cc: Change 'd' to 'D' to fix command line conflict.
+
+2002-11-25  Robert Collins  <rbtcollins@hotmail.com>
+
 	* AntiVirus.cc: New file.
 	* AntiVirus.h: Ditto.
 	* LogFile.cc: Include AntiVirus.h for class definition.
