@@ -1,5 +1,13 @@
 2002-07-05  Robert Collins  <rbtcollins@hotmail.com>
 
+	* LogFile.cc: Use STL containers rather than custom containers.
+	(filedef): Create == and < operators for STL use.
+	(files): Convert to an STL set.
+	(LogFile::setFile): Use STL operations on files.
+	(LogFile::exit): Ditto.
+
+2002-07-05  Robert Collins  <rbtcollins@hotmail.com>
+
 	* ini.cc (do_remote_ini): Use STL collection for site collection.
 	* site.cc: Include site.h first to ensure it's parsable standalone.
 	Use STL algorithms.

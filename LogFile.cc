@@ -23,11 +23,11 @@ static const char *cvsid =
 #include "LogFile.h"
 #include "io_stream.h"
 #include "win32.h"
-#include "list.h"
 #include "msg.h"
 #include "resource.h"
 #include <iostream>
 #include <strstream>
+#include <set>
 #include <time.h>
 #include <string>
 
@@ -38,6 +38,15 @@ public:
   int level;
   String key;
   bool append;
+  filedef (String const &_path) : key (_path) {}
+  bool operator == (filedef const &rhs) const
+    {
+      return key.casecompare (rhs.key) == 0;
+    }
+  bool operator < (filedef const &rhs) const
+    {
+      return key.casecompare (rhs.key) < 0;
+    }
 };
 
 /* another */
@@ -54,7 +63,8 @@ static LogEnt **next_logent = &first_logent;
 static LogEnt *currEnt = 0;
 int exit_msg = 0;
 
-static list<filedef, String, String::casecompare> files;
+typedef set<filedef> FileSet;
+static FileSet files;
 static ostrstream *theStream;
 
 LogFile::LogFile()
@@ -67,25 +77,20 @@ LogFile::~LogFile(){}
 void
 LogFile::clearFiles ()
 {
-  while (files.number())
-    {
-      filedef *f = files.removebyindex(1);
-      delete f;
-    }
+  files.clear ();
 }
 
 void
 LogFile::setFile (int minlevel, String const &path, bool append)
 {
-  filedef *f = files.getbykey (path);
-  if (!f)
-    {
-      f = new filedef;
-      f->key = path;
-      files.registerbyobject (*f);
-    }
-  f->level = minlevel;
-  f->append = append;
+  FileSet::iterator f = files.find (filedef(path));
+  if (f != files.end ())
+    files.erase (f);
+  
+  filedef t (path);
+  t.level = minlevel;
+  t.append = append;
+  files.insert (t);
 }
 
 void
@@ -105,10 +110,10 @@ LogFile::exit (int const exit_code)
   
   log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
 
-  for (unsigned int i = 1; i <= files.number(); ++i)
+  for (FileSet::iterator i = files.begin();
+       i != files.end(); ++i)
     {
-      filedef *f = files[i];
-      log_save (f->level, f->key, f->append);
+      log_save (i->level, i->key, i->append);
     }
 #ifndef _CYGWIN_
   ExitProcess (exit_code);
