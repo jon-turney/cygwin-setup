@@ -45,7 +45,7 @@ extern ThreeBarProgressPage Progress;
 void
 save_local_dir ()
 {
-  io_stream::mkpath_p (PATH_TO_DIR, local_dir);
+  io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + local_dir);
 
   io_stream *f;
   if (get_root_dir ().size())

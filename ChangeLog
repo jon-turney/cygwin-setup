@@ -1,3 +1,12 @@
+2002-02-24  Michael A Chase <mchase@ix.netcom.com>
+
+	* desktop.cc (make_link): Add "file://" prefix to io_stream::mkpath_p()
+	call.
+	(make_passwd_group): Ditto.
+	* localdir.cc (save_local_dir): Ditto.
+	* io_stream_cygfile.cc (io_stream_cygfile::mklink): Wrap long lines.
+	Add "cygfile://" prefix to io_stream::open() calls.
+		    
 2002-02-24  Robert Collins <rbtcollins@hotmail.com>
 
 	* log.cc (log_save): Fix creating /var/log.

@@ -111,7 +111,7 @@ make_link (String const &linkpath, String const &title, String const &target)
   msg ("make_link %s, %s, %s\n",
        fname.cstr_oneuse(), title.cstr_oneuse(), target.cstr_oneuse());
 
-  io_stream::mkpath_p (PATH_TO_FILE, fname);
+  io_stream::mkpath_p (PATH_TO_FILE, String ("file://") + fname);
 
   String exepath;
 
@@ -278,7 +278,7 @@ static void
 make_passwd_group ()
 {
   String fname = cygpath ("/etc/postinstall/passwd-grp.bat");
-  io_stream::mkpath_p (PATH_TO_FILE, fname);
+  io_stream::mkpath_p (PATH_TO_FILE, String ("file://") + fname);
 
   if (uexists ("/etc/passwd") && uexists ("/etc/group"))
     return;
