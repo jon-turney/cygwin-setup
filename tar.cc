@@ -23,7 +23,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include <sys/types.h>
 #include <sys/fcntl.h>
 
-#include "zlib/zlib.h"
+#include "zlib.h"
 #include "tar.h"
 #include "mkdir.h"
 #include "log.h"

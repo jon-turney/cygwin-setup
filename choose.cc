@@ -1354,7 +1354,7 @@ parse_filename (const char *in_fn, fileparse & f)
 	  strcpy (f.what, p + 1);
 	  *p = '\0';
 	  p = f.pkgtar + (p - fn) + n;
-	  memmove (p - 4, p, strlen (p));
+	  memmove (p - n, p, strlen (p));
 	}
     }
 

@@ -30,7 +30,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
-#include "zlib/zlib.h"
+#include "zlib.h"
 
 #include "resource.h"
 #include "ini.h"

@@ -44,14 +44,15 @@ OBJCOPY		:= @OBJCOPY@
 
 include $(srcdir)/../Makefile.common
 
-MINGW_INCLUDES	:= -I. -I$(srcdir) -I$(mingw_source)/include $(w32api_include) -I$(updir)/bz2lib
+MINGW_INCLUDES	:=-I. -I$(srcdir) -I$(mingw_source)/include $(w32api_include) \
+		  -I$(updir)/bz2lib -I$(updir)/zlib
 
 MINGW_CXXFLAGS	:= -MMD $(CXXFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
 MINGW_CFLAGS	:= -MMD $(CFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
 
-ZLIB		:= zlib/libzcygw.a
+ZLIB		:= $(bupdir)/zlib/libzcygw.a
 BZ2LIB		:= $(bupdir)/bz2lib/libbz2.a
-libmingw32.a	:= $(mingw_build)/libmingw32.a
+libmingw32	:= $(mingw_build)/libmingw32.a
 libuser32	:= $(w32api_lib)/libuser32.a
 libkernel32	:= $(w32api_lib)/libkernel32.a
 
@@ -141,7 +142,6 @@ endif
 
 clean:
 	rm -f *.o $(PROGS) iniparse.c* iniparse.h* inilex.c* *.d
-	$(MAKE) -C zlib clean
 
 realclean: clean
 	rm -f  Makefile config.cache
@@ -156,7 +156,7 @@ install: all
 $(libmingw32): $(mingw_build)/Makefile
 	@$(MAKE) -C $(@D) $(@F)
 
-$(ZLIB): zlib/Makefile
+$(ZLIB): $(bupdir)/zlib/Makefile
 	$(MAKE) -C $(@D) $(@F) CC="$(CC)" CFLAGS='$(MINGW_CFLAGS)'
 
 $(BZ2LIB): $(bupdir)/bz2lib/Makefile
