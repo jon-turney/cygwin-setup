@@ -46,7 +46,12 @@ PackageSpecification::setVersion (String const &aVersion)
 bool
 PackageSpecification::satisfies (packageversion const &aPackage) const
 {
-  return false;
+  if (_packageName.casecompare (aPackage.Name()) != 0)
+    return false;
+  if (_operator && _version.size() 
+      && !_operator->satisfies (aPackage.Canonical_version (), _version))
+    return false;
+  return true;
 }
 
 String
@@ -95,4 +100,23 @@ PackageSpecification::_operators::caption () const
     }
   // Pacify GCC: (all case options are checked above)
   return "Unknown operator";
+}
+
+bool
+PackageSpecification::_operators::satisfies (String const &lhs, String const &rhs) const
+{
+  switch (_value)
+    {
+    case 0:
+      return lhs.casecompare (rhs) == 0;
+    case 1:
+      return lhs.casecompare (rhs) < 0;
+    case 2:
+      return lhs.casecompare (rhs) > 0;
+    case 3:
+      return lhs.casecompare (rhs) <= 0;
+    case 4:
+      return lhs.casecompare (rhs) >= 0;
+    }
+  return false;
 }

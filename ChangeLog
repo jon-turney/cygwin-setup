@@ -1,3 +1,12 @@
+2002-07-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* IniDBBuilderPackage.cc (IniDBBuilderPackage::buildPackageSource):
+	Clear out package selections when generating implicit source packages.
+	* PackageSpecification.cc (PackageSpecification::satisfies): Implement.
+	(PackageSpecification::_operators::satisfies): Implement.
+	* PackageSpecification.h (PackageSpecification::_operators::satisfies):
+	Worker function for testing versions.
+
 2002-07-01  Robert Collins  <rbtcollins@hotmail.com>
 
 	* IniDBBuilder.cc (IniDBBuilder::buildPackageRequirement): Remove.

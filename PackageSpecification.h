@@ -56,6 +56,7 @@ public:
       bool operator == (_operators const &rhs) { return _value == rhs._value; }
       bool operator != (_operators const &rhs) { return _value != rhs._value; }
       const char *caption () const;
+      bool satisfies (String const &lhs, String const &rhs) const;
     private:
       int _value;
     };

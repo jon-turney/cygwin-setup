@@ -104,6 +104,12 @@ IniDBBuilderPackage::buildPackageSource (String const &path, String const &size)
       csp = new packagemeta (*cp);
       /* delete versions information */
       csp->versions.clear();
+      csp->desired = packageversion();
+      csp->installed = packageversion();
+      csp->prev = packageversion();
+      csp->curr = packageversion();
+      csp->exp = packageversion();
+      db.sourcePackages.push_back (csp);
     }
   /* create a source packageversion */
   cspv = cygpackage::createInstance (cbpv.Name());
