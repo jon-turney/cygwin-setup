@@ -1,0 +1,11 @@
+Sat Apr  1 20:48:09 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* Makefile.in: New file.
+	* configure.in: New file.
+	* configure: New file.
+	* zlib/Makefile.am: New file.
+	* zlib/configure.in: New file.
+	* zlib/aclocal.m4: New file.
+	* zlib/acinclude.m4: New file.
+	* zlib/configure: Regenerate from configure.in.
+	* zlib/Makefile.in: Regenerate from Makefile.am
