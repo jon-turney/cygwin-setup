@@ -28,6 +28,9 @@ char *wd;
 
 int downloaddir (HINTERNET session, const char *url);
 char *pathcat (const char *arg1, const char *arg2);
+char *pathcvt (char target, const char *path);
+char *dtoupath (const char *path);
+char *utodpath (const char *path);
 
 int xsystem (const char *cmd);
 
@@ -146,90 +149,6 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
     }
 
   return retval;
-}
-
-char *
-pathcvt (char target, const char *path)
-{
-  int hpipe[2];
-  char *retval;
-
-  /* If there is an error try using the original style path anyway. */
-  if (_pipe (hpipe, 256, O_BINARY) == -1)
-    retval = xstrdup (path);
-  else
-    {
-      int hold = dup (fileno (stdout));
-      FILE *in = fdopen (hpipe[0], "r");
-      char buffer[1024];
-
-      /* Get the Windows version of the root path from cygpath. */
-      sprintf (buffer, "cygpath -%c \"%s\"", target, path);
-      if (in && dup2 (hpipe[1], fileno (stdout)) == 0
-	  && close (hpipe[1]) == 0 && xsystem (buffer) == 0)
-	{
-	  fgets (buffer, sizeof (buffer), in);
-	  buffer[strcspn (buffer, "\r\n")] = '\0';
-	  retval = xstrdup (buffer);
-	}
-      if (dup2 (hold, fileno (stdout)) != 0)
-	{
-	  fprintf (stderr, "Unexpected error redirecting program output.\n");
-	  exit (1);
-	}
-      close (hold);
-      fclose (in);
-    }
-
-  return retval;
-}
-
-char *
-dtoupath (const char *path)
-{
-  char *retval = pathcvt ('u', path);
-  size_t len = strlen (retval);
-  if (len > 2 && retval[len - 1] == '/')	/* Trim the trailing slash
-						   off of a nonroot path. */
-    retval[len - 1] = '\0';
-
-  return retval;
-}
-
-char *
-utodpath (const char *path)
-{
-  char *retval = pathcvt ('w', path);
-  size_t len = strlen (retval);
-  if (len > 3 && retval[len - 1] == '\\')	/* Trim the trailing slash
-						   off of a nonroot path. */
-    retval[len - 1] = '\0';
-
-  return retval;
-}
-
-char *
-pathcat (const char *arg1, const char *arg2)
-{
-  char path[_MAX_PATH];
-  size_t len;
-
-  assert (!strchr (arg1, '/'));
-  strcpy (path, arg1);
-
-  /* Remove any trailing slash */
-  len = strlen (path);
-  if (path[--len] == '\\')
-    path[len] = '\0';
-
-  strcat (path, "\\");
-
-  if (*arg2 == '\\')
-    ++arg2;
-
-  strcat (path, arg2);
-
-  return xstrdup (path);
 }
 
 int
@@ -615,7 +534,7 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
   char buffer[256];
   static enum {UNKNOWN, ALWAYS, NEVER} download_when = {UNKNOWN};
 
-  FILE *in = fopen (file, "r");
+  FILE *in = fopen (file, "rt");
 
   while (fgets (buffer, sizeof (buffer), in))
     {
@@ -795,7 +714,7 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 
 	  qsort (lines.array, lines.count, sizeof (char *), reverse_sort);
 
-	  uninst = fopen ("bin\\uninst.bat", "w");
+	  uninst = fopen ("bin\\uninst.bat", "wt");
 
 	  if (uninst)
 	    {
@@ -875,7 +794,7 @@ do_start_menu (const char *root, FILE *logfp)
   /* Create the batch file for the start menu. */
   if (batch_name)
     {
-      batch = fopen (batch_name, "w");
+      batch = fopen (batch_name, "wt");
       if (batch)
 	{
 	  LPITEMIDLIST progfiles;
@@ -962,7 +881,7 @@ getdownloadsource ()
     fputs ("Unable to retrieve the list of cygwin mirrors.\n", stderr);
   else
     {
-      FILE *in = fopen (filename, "r");
+      FILE *in = fopen (filename, "rt");
 
       if (!in)
 	fprintf (stderr, "Unable to open %s for input.\n", filename);
@@ -1183,7 +1102,7 @@ main ()
 
 	  if (logpath)
 	    {
-	      FILE *logfp = fopen (logpath, "w+b");
+	      FILE *logfp = fopen (logpath, "w+t");
 	      HANDLE Hlog;
 
 	      if (logfp == NULL)
@@ -1236,7 +1155,7 @@ main ()
 		}
 
 	      fclose (logfp);
-	      unlink (logpath);
+	      /* unlink (logpath);*/
 	      xfree (logpath);
 	    }
 	}

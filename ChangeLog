@@ -1,3 +1,18 @@
+Mon Apr 10 22:44:56 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* path.c: New file.
+	(pathfp): New function.  Preliminary work for new -f cygpath
+	functionality.
+	* Makefile.in: Add new file.
+	(pathcvt): Move to new file.
+	(dtoupath): Ditto.
+	(utodpath): Ditto.
+	(pathcat): Ditto.
+	* setup.c (processdirlisting): Always open file in text mode.
+	(create_uninstall): Ditto.
+	(getdownloadsource): Ditto.
+	(main): Ditto.
+
 Mon Apr 10 20:33:40 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* xsystem.c: New file.
@@ -34,24 +49,25 @@ Sun Apr  9 02:15:47 2000  Christopher Faylor <cgf@cygnus.com>
 Fri Apr  7 17:04:02  Ron Parker <rdparker@sourceware.cygnus.com>
 
 	* README: Added info about non-working mingw implementation
-	* gzip.exe.gz: Replaced with a version from the same build as the other 
+	* gzip.exe.gz: Replace with a version from the same build as the other
 	tools.
-	* tar.exe.gz: Replaced with a version from the same build as the other 
+	* tar.exe.gz: Replace with a version from the same build as the other
 	tools.
-	* mount.exe.gz: Added to repository until, mingw can build setup.
+	* mount.exe.gz: Add to repository until, mingw can build setup.
 	* cygpath.exe.gz: ditto
 	* cygwin1.dll.gz: ditto
-	* setup.c: Overwrite /bin and /lib mounts. Generate working shortcut for 
-	Win9x. Display only a screenfull of options at a time. Call all tools with
-	an absolute path.
-	* setup.dsp: Restored the carriage returns, MS Developer Studio needs them.
+	* setup.c: Overwrite /bin and /lib mounts.  Generate working shortcut
+	for Win9x.  Display only a screenfull of options at a time.  Call all
+	tools with an absolute path.
+	* setup.dsp: Restore the carriage returns, MS Developer Studio needs
+	them.
 	* setup.dsw: ditto
 	* zlib.dsw: ditto
 
 Thu Apr  6 19:15:27 2000  Christopher Faylor <cgf@cygnus.com>
 
-	* Makefile.in: Add "-nostdinc" to regular CFLAGS.
-	Add target to grab cygwin1.dll from ../cygwin subdirectory.
+	* Makefile.in: Add "-nostdinc" to regular CFLAGS.  Add target to grab
+	cygwin1.dll from ../cygwin subdirectory.
 	* gzip.exe.gz: Update.
 	* tar.exe.gz: Update.
 

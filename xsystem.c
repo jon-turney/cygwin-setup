@@ -16,7 +16,6 @@
 
 #include "setup.h"
 #include "strarry.h"
-#include "zlib/zlib.h"
 
 extern char *pathcat (const char *, const char *);
 
