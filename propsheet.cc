@@ -21,6 +21,8 @@
 #include "propsheet.h"
 #include "proppage.h"
 #include "resource.h"
+#include "RECTWrapper.h"
+#include "ControlAdjuster.h"
 
 //#include <shlwapi.h>
 // ...but since there is no shlwapi.h in mingw yet:
@@ -99,6 +101,110 @@ PropSheet::CreatePages ()
   return retarray;
 }
 
+// Stuff needed by the PropSheet wndproc hook
+struct PropSheetData
+{
+  WNDPROC oldWndProc;
+  bool clientRectValid;
+  RECTWrapper lastClientRect;
+  bool gotPage;
+  RECTWrapper pageRect;
+  
+  PropSheetData ()
+  {
+    oldWndProc = 0;
+    clientRectValid = false;
+    gotPage = false;
+  }
+  
+// @@@ Ugly. Really only works because only one PS is used now.
+  static PropSheetData& Instance()
+  {
+    static PropSheetData TheInstance;
+    return TheInstance;  
+  }
+};
+
+static ControlAdjuster::ControlInfo PropSheetControlsInfo[] = {
+  {0x3023, false, false, true,  true },	// Back
+  {0x3024, false, false, true,  true },	// Next
+  {0x3025, false, false, true,  true },	// Finish
+  {0x3026, true,  false, true,  true },	// Line above buttons
+  {	2, false, false, true,  true },	// Cancel
+  {0, false, false, false, false}
+};
+
+static bool IsDialog (HWND hwnd)
+{
+  char className[7];
+  GetClassName (hwnd, className, sizeof (className));
+  
+  return (strcmp (className, "#32770") == 0);
+}
+
+BOOL CALLBACK EnumPages (HWND hwnd, LPARAM lParam)
+{
+  // Is it really a dialog?
+  if (IsDialog (hwnd))
+    {
+      PropSheetData& psd = PropSheetData::Instance();
+      SetWindowPos (hwnd, 0, psd.pageRect.left, psd.pageRect.top, 
+	psd.pageRect.width (), psd.pageRect.height (), 
+	SWP_NOACTIVATE | SWP_NOZORDER);
+    }
+
+  return TRUE;
+}
+
+static LRESULT CALLBACK PropSheetWndProc (HWND hwnd, UINT uMsg, 
+  WPARAM wParam, LPARAM lParam)
+{
+  PropSheetData& psd = PropSheetData::Instance();
+  switch (uMsg)
+    {
+    case WM_SIZE:
+      {
+        RECTWrapper clientRect;
+        GetClientRect (hwnd, &clientRect);
+	
+	/*
+	  The first time we get a WM_SIZE, the client rect will be all zeros.
+	 */
+	if (psd.clientRectValid)
+	  {
+	    const int dX =
+	      clientRect.width () - psd.lastClientRect.width ();
+	    const int dY =
+	      clientRect.height () - psd.lastClientRect.height ();
+	      
+	    ControlAdjuster::AdjustControls (hwnd, PropSheetControlsInfo, 
+	      dX, dY);
+	    
+	    psd.pageRect.right += dX;
+	    psd.pageRect.bottom += dY;
+	      
+	    /*
+	      The pages are child windows, but don't have IDs.
+	      So change them by enumerating all childs and adjust all dilogs
+	      among them.
+	     */
+	    if (psd.gotPage)
+	      EnumChildWindows (hwnd, &EnumPages, 0);	
+	  }
+	else
+	  {
+	    psd.clientRectValid = true;
+	  }
+	
+	psd.lastClientRect = clientRect;
+      }
+      break;
+    }
+  
+  return CallWindowProc (psd.oldWndProc, 
+    hwnd, uMsg, wParam, lParam);
+}
+
 static int CALLBACK
 PropSheetProc (HWND hwndDlg, UINT uMsg, LPARAM lParam)
 {
@@ -106,15 +212,29 @@ PropSheetProc (HWND hwndDlg, UINT uMsg, LPARAM lParam)
     {
     case PSCB_PRECREATE:
       {
+	const LONG additionalStyle = 
+	  (WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME);
 	// Add a minimize box to the sheet/wizard.
 	if (((LPDLGTEMPLATEEX) lParam)->signature == 0xFFFF)
 	  {
-	    ((LPDLGTEMPLATEEX) lParam)->style |= WS_MINIMIZEBOX;
+	    ((LPDLGTEMPLATEEX) lParam)->style |= additionalStyle;
 	  }
 	else
 	  {
-	    ((LPDLGTEMPLATE) lParam)->style |= WS_MINIMIZEBOX;
+	    ((LPDLGTEMPLATE) lParam)->style |= additionalStyle;
 	  }
+      }
+      return TRUE;
+    case PSCB_INITIALIZED:
+      {
+        /*
+	  Hook into the window proc.
+	  We need to catch some messages for resizing.
+	 */
+        PropSheetData::Instance().oldWndProc = 
+	  (WNDPROC)GetWindowLongPtr (hwndDlg, GWLP_WNDPROC);
+	SetWindowLongPtr (hwndDlg, GWLP_WNDPROC, 
+	  (LONG_PTR)&PropSheetWndProc);
       }
       return TRUE;
     }
@@ -218,6 +338,50 @@ PropSheet::SetHWNDFromPage (HWND h)
   // If we're a modal dialog, there's no way for us to know our window handle unless
   // one of our pages tells us through this function.
   SetHWND (h);
+}
+
+/*
+  Adjust the size of a page so that it fits nicely into the window.
+ */
+void
+PropSheet::AdjustPageSize (HWND page)
+{
+  PropSheetData& psd = PropSheetData::Instance();
+  if (!psd.clientRectValid) return;
+
+  /*
+    It's probably not obvious what's done here:
+    When this method is called the first time, the first page is already
+    created and sized, but at the coordinates (0,0). The sheet, however,
+    isn't in it's final size. My guess is that the sheet first creates the
+    page, and then resizes itself to have the right metrics to contain the 
+    page and moves it to it's position. For our purposes, however, we need
+    the final metrucs of the page. So, the first time this method is called,
+    we basically grab the size of the page, but calculate the top/left coords
+    ourselves.
+   */
+  
+  if (!psd.gotPage)
+    {
+      psd.gotPage = true;
+
+      RECTWrapper& pageRect = psd.pageRect;
+      ::GetWindowRect (page, &pageRect);
+      // We want client coords.
+      ::ScreenToClient (page, (LPPOINT)&pageRect.left);
+      ::ScreenToClient (page, (LPPOINT)&pageRect.right);
+
+      LONG dialogBaseUnits = ::GetDialogBaseUnits ();
+      // The margins in DUs are a result of "educated guesses" and T&E.
+      int marginX = MulDiv (5, LOWORD(dialogBaseUnits), 4);
+      int marginY = MulDiv (5, HIWORD(dialogBaseUnits), 8);
+
+      pageRect.move (marginX, marginY);
+    }
+
+  SetWindowPos (page, 0, psd.pageRect.left, psd.pageRect.top, 
+    psd.pageRect.width (), psd.pageRect.height (), 
+    SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
 void

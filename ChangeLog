@@ -1,3 +1,30 @@
+2003-10-16  Frank Richter  <frichter@gmx.li>
+
+	* ControlAdjuster.cc: New file, helper to move elements of a dialog 
+	along when the it's resized. 
+	* ControlAdjuster.h: Ditto.
+	* Makefile.am: Add new source files.
+	* proppage.cc (PropertyPage::DialogProc): Adjust some common
+	controls (Cygwin icon top right, separator below) when a page is
+	resized.
+	(PropertyPage::PropertyPage): Dito.
+	* propsheet.cc (IsDialog): New. Test whether a window is a dialog.
+	Used internally by resize logic.
+	(EnumPages): New. Used internally by resize logic: resizes the
+	property sheet's individual pages.
+	(PropSheetWndProc): New. Hook for the propery sheet window proc.
+	(PropSheetProc): More style tweaks, add maximize box and thick border
+	as well. Hook into the property sheet's window proc.
+	(PropSheet::AdjustPageSize): New. Adjust the metrics of a single page
+	to fit nicely into the property sheet. Part of resize logic.
+	* res.rc (All dialogs): The top-right Cygwin icon and top separator
+	now have IDs distinct from IDC_STATIC, so their metrics can be 
+	adjusted upon a resize. Also, all those Cygwin icons are at the exact
+	same spot now.
+	* choose.cc (ChooserPage::ChooserPage): Now the controls on the 
+	chooser page move/size when the page size is changed.
+	* choose.h: Dito.
+
 2003-10-23  Jerry D. Hedden <jerry@hedden.us>
 
 	* ConnectionSetting.cc (ConnectionSetting::load): Load proxysettings.

@@ -24,6 +24,7 @@
 #include <prsht.h>
 
 #include "window.h"
+#include "ControlAdjuster.h"
 
 class PropSheet;
 
@@ -39,7 +40,7 @@ class PropertyPage:public Window
 
   // For setting the back/finish buttons properly.
   bool IsFirst, IsLast;
-
+  
   static BOOL CALLBACK FirstDialogProcReflector (HWND hwnd, UINT message,
 						 WPARAM wParam,
 						 LPARAM lParam);
@@ -48,6 +49,8 @@ class PropertyPage:public Window
   void setTitleFont ();
 
 protected:
+    SizeProcessor sizeProcessor;
+  
     virtual BOOL CALLBACK DialogProc (UINT message, WPARAM wParam,
 				      LPARAM lParam);
 

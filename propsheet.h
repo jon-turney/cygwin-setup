@@ -45,6 +45,7 @@ public:
 
   // Should be private and friended to PropertyPage
   void SetHWNDFromPage (HWND h);
+  void AdjustPageSize (HWND page);
 
   virtual bool Create (const Window * Parent = NULL,
 		       DWORD Style =

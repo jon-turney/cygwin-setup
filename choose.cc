@@ -56,10 +56,31 @@ static const char *cvsid =
 #include "port.h"
 #include "threebar.h"
 #include "Generic.h"
+#include "ControlAdjuster.h"
 
 using namespace std;
 
 extern ThreeBarProgressPage Progress;
+
+/*
+  Sizing information.
+ */
+static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
+  {IDC_CHOOSE_KEEP, 		false, true,  true,  false},
+  {IDC_CHOOSE_PREV, 		false, true,  true,  false},
+  {IDC_CHOOSE_CURR, 		false, true,  true,  false},
+  {IDC_CHOOSE_EXP, 		false, true,  true,  false},
+  {IDC_CHOOSE_VIEW, 		false, true,  true,  false},
+  {IDC_LISTVIEW_POS, 		false, true,  true,  false},
+  {IDC_CHOOSE_VIEWCAPTION,	false, true,  true,  false},
+  {IDC_CHOOSE_LIST,		true,  true,  true,  true },
+  {0, false, false, false, false}
+};
+
+ChooserPage::ChooserPage ()
+{
+  sizeProcessor.AddControlInfo (ChooserControlsInfo);
+}
 
 void
 ChooserPage::createListview ()

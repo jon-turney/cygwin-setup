@@ -26,12 +26,23 @@
 
 bool PropertyPage::DoOnceForSheet = true;
 
+/*
+  Sizing information for some controls that are common to all pages.
+ */
+static ControlAdjuster::ControlInfo DefaultControlsInfo[] = {
+  {IDC_HEADICON, 	false, true,  true,  false},
+  {IDC_HEADSEPARATOR, 	true,  true,  true,  false},
+  {0, false, false, false, false}
+};
+
 PropertyPage::PropertyPage ()
 {
   proc = NULL;
   cmdproc = NULL;
   IsFirst = false;
   IsLast = false;
+  
+  sizeProcessor.AddControlInfo (DefaultControlsInfo);
 }
 
 PropertyPage::~PropertyPage ()
@@ -117,6 +128,9 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 	OnInit ();
 
 	setTitleFont ();
+	
+	// Call it here so it stores the initial client rect.
+	sizeProcessor.UpdateSize (GetHWND ());
 
 	// TRUE = Set focus to default control (in wParam).
 	return TRUE;
@@ -140,6 +154,8 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 		DoOnceForSheet = false;
 	      }
 
+	    GetOwner ()->AdjustPageSize (GetHWND ());
+	      
 	    // Set the wizard buttons apropriately
 	    if (IsFirst)
 	      {
@@ -253,6 +269,11 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 	  {
 	    return HANDLE_WM_COMMAND (GetHWND (), wParam, lParam, cmdproc);
 	  }
+	break;
+      }
+    case WM_SIZE:
+      {
+	sizeProcessor.UpdateSize (GetHWND ());
 	break;
       }
     default:

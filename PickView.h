@@ -19,6 +19,7 @@
 #include "win32.h"
 #include "String++.h"
 #include "window.h"
+#include "RECTWrapper.h"
 
 #define HMARGIN 10
 #define ROW_MARGIN      5
@@ -134,6 +135,11 @@ private:
   static ATOM WindowClassAtom;
   HWND listheader;
   views view_mode;
+
+  // Stuff needed to handle resizing
+  bool hasClientRect;
+  RECTWrapper lastClientRect;
+  
   void set_headers ();
   void init_headers (HDC dc);
   void note_width (Header *hdrs, HDC dc, String const &string, int addend,

@@ -140,6 +140,8 @@ setup_SOURCES = \
 	compress_gz.h \
 	ConnectionSetting.cc \
 	ConnectionSetting.h \
+	ControlAdjuster.cc \
+	ControlAdjuster.h \
 	cygpackage.cc \
 	cygpackage.h \
 	desktop.cc \

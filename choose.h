@@ -25,9 +25,7 @@
 class ChooserPage:public PropertyPage
 {
 public:
-  ChooserPage ()
-  {
-  };
+  ChooserPage ();
   virtual ~ ChooserPage ()
   {
   };

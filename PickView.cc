@@ -440,7 +440,7 @@ PickView::init_headers (HDC dc)
 
 
 PickView::PickView (Category &cat) : deftrust (TRUST_UNKNOWN),
-contents (*this, cat, 0, false, true)
+contents (*this, cat, 0, false, true), hasClientRect (false)
 {
 }
 
@@ -705,6 +705,30 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
      break;
    }
       }
+    case WM_SIZE:
+      {
+        // Note: WM_SIZE msgs only appear when 'just' scrolling the window
+	RECT clientRect = GetWindowRect ();
+	if (hasClientRect)
+	  {
+	    int dx = clientRect.right - clientRect.left - lastClientRect.width();
+	    if (dx != 0)
+	      {
+		headers[last_col].width += dx;
+		
+		set_headers ();
+		
+		::MoveWindow (listheader, -scroll_ulc_x, 0,
+			    headers[last_col].x +
+			    headers[last_col].width, header_height, TRUE);
+	      }
+	  }
+	  else
+	    hasClientRect = true;
+	lastClientRect = clientRect;
+	return 0;
+      }
+      
     default:
       return DefWindowProc (GetHWND(), message, wParam, lParam);
     }
@@ -740,7 +764,7 @@ PickView::paint (HWND hwnd)
       static const char *msg = "Nothing to Install/Update";
       if (source == IDC_SOURCE_DOWNLOAD)
   msg = "Nothing to Download";
-      TextOut (hdc, HMARGIN, header_height, msg, strlen (msg));
+      TextOut (hdc, x + HMARGIN, y, msg, strlen (msg));
     }
 
   EndPaint (hwnd, &ps);

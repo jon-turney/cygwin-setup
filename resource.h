@@ -122,6 +122,8 @@
 #define IDC_CHOOSE_KEEP			1069
 #define IDS_MISSING_LOG			1070
 #define IDS_SKIP_PACKAGE		1071
+#define IDC_HEADICON                    1072
+#define IDC_HEADSEPARATOR               1073
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
