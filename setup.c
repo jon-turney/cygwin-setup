@@ -13,6 +13,7 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdarg.h>
 
 #include "setup.h"
 #include "strarry.h"
@@ -37,6 +38,17 @@ char *wd;
 int downloaddir (HINTERNET session, const char *url);
 
 static SA files = {NULL, 0, 0};
+static FILE *logfp = NULL;
+
+void
+warning (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  vfprintf (stderr, fmt, args);
+  if (logfp)
+    vfprintf (logfp, fmt, args);
+}
 
 int
 create_shortcut (const char *target, const char *shortcut)
@@ -117,7 +129,7 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
       size_t bytes = SizeofResource (NULL, rsrc);
 
       if (bytes != fwrite (data, 1, bytes, out))
-	printf ("Unable to write %s: %s", name, _strerror (""));
+	warning ("Unable to write %s: %s", name, _strerror (""));
 
       bytes_needed = *(int *) ((char *) data + bytes - sizeof (int));
       buffer = (char *) xmalloc (bytes_needed);
@@ -130,7 +142,7 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
 	  if (fseek (out, 0, SEEK_SET)
 	      || fwrite (buffer, 1, bytes_needed, out) != bytes_needed)
 	    {
-	      printf ("Unable to write decompressed file to %s: %s",
+	      warning ("Unable to write decompressed file to %s: %s",
 		      name, _strerror (""));
 	    }
 	  else
@@ -140,8 +152,8 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
 	{
 	  int errnum;
 	  const char *msg = gzerror (gzf, &errnum);
-	  printf ("bytes_needed = %d, ", bytes_needed);
-	  printf ("Unable to decompress %s: Error #%d, %s\n", name,
+	  warning ("bytes_needed = %d, ", bytes_needed);
+	  warning ("Unable to decompress %s: Error #%d, %s\n", name,
 		  errnum, msg);
 	}
       xfree (buffer);
@@ -149,14 +161,14 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
     }
   else
     {
-      printf ("Unable to write %s: %s", name, _strerror (""));
+      warning ("Unable to write %s: %s", name, _strerror (""));
     }
 
   return retval;
 }
 
 static int
-tarx (const char *dir, const char *fn, FILE *logfp)
+tarx (const char *dir, const char *fn)
 {
   char *path, *dpath;
   char buffer0[2049];
@@ -180,7 +192,7 @@ tarx (const char *dir, const char *fn, FILE *logfp)
   hin = (HANDLE) _get_osfhandle (hpipe[1]);
   if (xcreate_process (0, NULL, hin, hin, buffer) == 0)
     {
-      printf ("Unable to extract \"%s\": %s", fn, _strerror (""));
+      warning ("Unable to extract \"%s\": %s", fn, _strerror (""));
       return 0;
     }
   _close (hpipe[1]);
@@ -215,13 +227,15 @@ tarx (const char *dir, const char *fn, FILE *logfp)
   fclose (fp);
 
   while (++filehere <= files.index)
-    (void) chmod (files.array[files.index], 0777);
+    if (chmod (files.array[filehere], 0777))
+      warning ("Unable to reset protection on '%s' - %s\n",
+	       files.array[filehere], _strerror (""));
 
   return 1;
 }
 
 int
-recurse_dirs (const char *dir, FILE *logfp)
+recurse_dirs (const char *dir)
 {
   int err = 0;
   int retval = 0;
@@ -248,7 +262,7 @@ recurse_dirs (const char *dir, FILE *logfp)
 		  char *subdir = pathcat (dir, find_data.cFileName);
 		  if (subdir)
 		    {
-		      if (!recurse_dirs (subdir, logfp))
+		      if (!recurse_dirs (subdir))
 			{
 			  xfree (subdir);
 			  err = 1;
@@ -285,7 +299,7 @@ recurse_dirs (const char *dir, FILE *logfp)
 			  continue;
 			}
 
-		      if (!tarx (dir, find_data.cFileName, logfp))
+		      if (!tarx (dir, find_data.cFileName))
 			{
 			  err = 1;
 			  break;
@@ -509,7 +523,7 @@ geturl (HINTERNET session, const char *url, const char *file, int verbose)
 		  }
 		else if (type != HTTP_STATUS_OK)
 		  {
-		    printf ("Error retrieving \"%s\".\n", url);
+		    warning ("Error retrieving \"%s\".\n", url);
 		    return 0;
 		  }
 		else
@@ -530,7 +544,7 @@ geturl (HINTERNET session, const char *url, const char *file, int verbose)
 
 	      FILE *out = fopen (file, "wb");
 	      if (!out)
-		printf ("Unable to open \"%s\" for output: %s\n", file,
+		warning ("Unable to open \"%s\" for output: %s\n", file,
 			_strerror (""));
 	      else
 		{
@@ -547,7 +561,7 @@ geturl (HINTERNET session, const char *url, const char *file, int verbose)
 			}
 		      else if (fwrite (buffer, 1, readbytes, out) != readbytes)
 			{
-			  printf ("Error writing \"%s\": %s\n", file,
+			  warning ("Error writing \"%s\": %s\n", file,
 				  _strerror (""));
 			  break;
 			}
@@ -606,7 +620,7 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 	      (urlbase, ref, url, &urlspace,
 	       ICU_BROWSER_MODE | ICU_ENCODE_SPACES_ONLY | ICU_NO_META))
 	    {
-	      printf ("Unable to download from %s", ref);
+	      warning ("Unable to download from %s", ref);
 	      winerror ();
 	    }
 	  else if (ref[strlen (ref) - 1] == '/')
@@ -647,7 +661,7 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 			  break;
 			case 'N':
 			  download_when = NEVER;
-			  fprintf (stderr, "Skipping %s\n", filename);
+			  warning ("Skipping %s\n", filename);
 			case 'n':
 			default:
 			  download = 0;
@@ -658,15 +672,15 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 
 	      if (download)
 		{
-		  printf ("Downloading: %s...", filename);
+		  warning ("Downloading: %s...", filename);
 		  fflush (stdout);
 		  if (geturl (session, url, filename, 0))
 		    {
-		      printf ("Done.\n");
+		      warning ("Done.\n");
 		    }
 		  else
 		    {
-		      printf ("\nUnable to retrieve %s\n", url);
+		      warning ("\nUnable to retrieve %s\n", url);
 		    }
 		}
 	    }
@@ -746,7 +760,7 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
   clock_t start;
   HINSTANCE lib;
   
-  printf ("Creating the uninstall file...");
+  warning ("Creating the uninstall file...");
   fflush (stdout);
   if (files.array)
     {
@@ -805,7 +819,7 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
   if (lib)
     FreeLibrary (lib);
 
-  printf ("Done.\n");
+  warning ("Done.\n");
   return retval;
 }
 
@@ -911,7 +925,7 @@ getdownloadsource ()
       FILE *in = fopen (filename, "rt");
 
       if (!in)
-	fprintf (stderr, "Unable to open %s for input.\n", filename);
+	warning ("Unable to open %s for input.\n", filename);
       else
 	{
 	  size_t option;
@@ -1038,6 +1052,7 @@ main ()
 {
   int retval = 1;		/* Default to error code */
   clock_t start;
+  char *logpath = NULL;
 
   puts ( "\n\n\n\n"
 "This is the Cygwin setup utility.\n\n"
@@ -1061,6 +1076,18 @@ main ()
 
       wd = _getcwd (NULL, 0);
       setpath (wd);
+
+      logpath = pathcat (wd, "setup.log");
+
+      if (logpath)
+	logfp = fopen (logpath, "wt");
+
+      if (logfp == NULL)
+	{
+	  fprintf (stderr, "Unable to open log file '%s' for writing - %s\n",
+		   logpath, _strerror (""));
+	  exit (1);
+	}
 
       /* Begin prompting user for setup requirements. */
       printf ("Press <enter> to accept the default value.\n");
@@ -1125,78 +1152,61 @@ main ()
          will * extract the packages into the correct path. */
       if (chdir (root) == -1)
 	{
-	  printf ("Unable to make \"%s\" the current directory: %s\n",
-		  root, _strerror (""));
+	  warning ("Unable to make \"%s\" the current directory: %s\n",
+		   root, _strerror (""));
 	}
       else
 	{
-	  char *logpath = pathcat (wd, "setup.log");
+	  _chdrive (toupper (*root) - 'A' + 1);
 
-	  if (logpath)
+	  /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
+	  mkmount (wd, root, "bin", "/usr/bin", 1);
+	  mkmount (wd, root, "lib", "/usr/lib", 1);
+
+	  files.count = NFILE_LIST;
+	  files.array = calloc (sizeof (char *), NFILE_LIST + NFILE_SLOP);
+	  files.index = -1;
+
+	  /* Extract all of the packages that are stored with setup or in
+	     subdirectories of its location */
+	  if (recurse_dirs (wd))
 	    {
-	      FILE *logfp = fopen (logpath, "w+t");
+	      char *mount;
+	      char buffer[1024];
 
-	      if (logfp == NULL)
+	      /* Mount the new root directory. */
+	      mount = pathcat (wd, "mount");
+	      sprintf (buffer, "%s -f -b \"%s\" /", mount, root);
+	      xfree (mount);
+	      if (xsystem (buffer))
 		{
-		  fprintf (stderr, "Unable to open log file '%s' for writing - %s\n",
-			   logpath, _strerror (""));
-		  exit (1);
+		  printf
+		    ("Unable to mount \"%s\" as the root directory: %s",
+		     root, _strerror (""));
 		}
-
-	      _chdrive (toupper (*root) - 'A' + 1);
-
-	      /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
-	      mkmount (wd, root, "bin", "/usr/bin", 1);
-	      mkmount (wd, root, "lib", "/usr/lib", 1);
-
-	      files.count = NFILE_LIST;
-	      files.array = calloc (sizeof (char *), NFILE_LIST + NFILE_SLOP);
-	      files.index = -1;
-
-	      /* Extract all of the packages that are stored with setup or in
-	         subdirectories of its location */
-	      if (recurse_dirs (wd, logfp))
+	      else
 		{
-		  char *mount;
-		  char buffer[1024];
+		  char **a;
+		  /* bash expects a /tmp */
+		  char *tmpdir = pathcat (root, "tmp");
 
-		  /* Mount the new root directory. */
-		  mount = pathcat (wd, "mount");
-		  sprintf (buffer, "%s -f -b \"%s\" /", mount, root);
-		  xfree (mount);
-		  if (xsystem (buffer))
+		  if (tmpdir)
 		    {
-		      printf
-			("Unable to mount \"%s\" as the root directory: %s",
-			 root, _strerror (""));
+		      files.array[++files.index] = tmpdir;
+		      mkdir (tmpdir);	/* Ignore the result, it may
+					       exist. */
 		    }
-		  else
-		    {
-		      char **a;
-		      /* bash expects a /tmp */
-		      char *tmpdir = pathcat (root, "tmp");
 
-		      if (tmpdir)
-			{
-			  files.array[++files.index] = tmpdir;
-			  mkdir (tmpdir);	/* Ignore the result, it may
-						   exist. */
-			}
+		  files.array[++files.index] = pathcat (root, "usr\\local");
+		  files.array[++files.index] = pathcat (root, "usr\\local\\bin");
+		  files.array[++files.index] = pathcat (root, "usr\\local\\lib");
+		  mkdirp (files.array[files.index]);
+		  mkdir (files.array[files.index - 1]);
 
-		      files.array[++files.index] = pathcat (root, "usr\\local");
-		      files.array[++files.index] = pathcat (root, "usr\\local\\bin");
-		      files.array[++files.index] = pathcat (root, "usr\\local\\lib");
-		      mkdirp (files.array[files.index]);
-		      mkdir (files.array[files.index - 1]);
-
-		      if (do_start_menu (root))
-			retval = 0;	/* Everything worked return
-					   successful code */
-		    }
+		  if (do_start_menu (root))
+		    retval = 0;	/* Everything worked return
+				       successful code */
 		}
-
-	      fclose (logfp);
-	      xfree (logpath);
 	    }
 	}
 
@@ -1209,6 +1219,12 @@ main ()
 
   printf ("\nInstallation took %.0f seconds.\n",
           (double) (clock () - start) / CLK_TCK);
+
+  if (logpath)
+    {
+      fclose (logfp);
+      xfree (logpath);
+    }
 
   return retval;
 }

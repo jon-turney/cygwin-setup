@@ -1,3 +1,11 @@
+Sun Apr 16 18:50:58 2000  Christopher Faylor <cgf@cygnus.com>
+
+	Use "warning" function, where appropriate to output warnings.
+	* setup.c (warning): New function -- outputs warning to console and log
+	file.
+	(tarx): Fix index used to reset file protection.
+	(main): Open the log file earlier so that more stuff can be sent to it.
+
 Sat Apr 15 20:05:33 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (processdirlisting): Make "N" option a little less aggressive.
