@@ -13,6 +13,8 @@
 #
 # Makefile for Cygwin installer
 
+AUTOMAKE_OPTIONS = foreign
+
 AM_CFLAGS	= -mwindows -U_WIN32
 AM_CXXFLAGS	= -fno-exceptions -fno-rtti -mwindows -U_WIN32
 

@@ -1,3 +1,8 @@
+2004-08-28  Max Bowsher  <maxb@ukf.net>
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Add "foreign" for compatibility with
+	modern automake.
+
 2002-04-29  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in: Regenerate.
