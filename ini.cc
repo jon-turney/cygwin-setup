@@ -337,7 +337,8 @@ fprintf (FILE * f, const char *fmt, ...)
   va_start (args, fmt);
   if (f == stderr)
     {
-      rv = vsprintf (buf, fmt, args);
+      rv = vsnprintf (buf, 1000, fmt, args);
+      /* todo check here for overflows too */
       strcat (stderrbuf, buf);
       if (char *nl = strchr (stderrbuf, '\n'))
 	{

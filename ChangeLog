@@ -1,5 +1,15 @@
 2002-06-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* msg.cc (msg): Use vsnprintf to avoid buffer overflows.
+	(mbox): Ditto.
+	* ini.cc (fprintf): Ditto.
+	* log.cc (log): Ditto.
+	* package_db.cc (packagedb::sourcePackages): Split out source packages
+	from binary packages.
+	* package_db.h: Ditto.
+
+2002-06-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* PackageSpecification.h: New file. Abstracts the ability to refer
 	to another package, by name, or name and version.
 	* PackageSpecification.cc: Ditto.

@@ -48,6 +48,6 @@ log (enum log_level level, const char *fmt, ...)
   char buf[1000];
   va_list args;
   va_start (args, fmt);
-  vsprintf (buf, fmt, args);
+  vsnprintf (buf, 1000, fmt, args);
   log (level, String(buf));
 }

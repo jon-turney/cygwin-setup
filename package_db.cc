@@ -169,6 +169,7 @@ list < packagemeta, String,
 list < Category, String,
   String::casecompare >
   packagedb::categories;
+vector <packagemeta *> packagedb::sourcePackages;
 PackageDBActions
   packagedb::task =
   PackageDB_Install;

@@ -19,6 +19,7 @@
 /* required to parse this file */
 #include "list.h"
 #include <String++.h>
+#include <vector.h>
 class Category;
 class packagemeta;
 class io_stream;
@@ -35,8 +36,10 @@ public:
   packagedb ();
   /* 0 on success */
   int flush ();
-  /* all seen packages */
+  /* all seen binary packages */
   static list < packagemeta, String, String::casecompare > packages;
+  /* all seen source packages */
+  static vector <packagemeta *> sourcePackages;
   /* all seen categories */
   static list < Category, String, String::casecompare > categories;
   static PackageDBActions task;

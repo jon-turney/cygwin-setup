@@ -30,10 +30,10 @@ static const char *cvsid =
 void
 msg (const char *fmt, ...)
 {
-  char buf[1000];
+  char buf[2000];
   va_list args;
   va_start (args, fmt);
-  vsprintf (buf, fmt, args);
+  vsnprintf (buf, 2000, fmt, args);
   OutputDebugString (buf);
 }
 
@@ -45,7 +45,7 @@ mbox (HWND owner, const char *name, int type, int id, va_list args)
   if (LoadString (hinstance, id, fmt, sizeof (fmt)) <= 0)
     ExitProcess (0);
 
-  vsprintf (buf, fmt, args);
+  vsnprintf (buf, 1000, fmt, args);
   log (LOG_PLAIN, String ("mbox ") + name + ": " + buf);
   return MessageBox (owner, buf, "Cygwin Setup", type);
 }
