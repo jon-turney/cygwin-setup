@@ -222,18 +222,11 @@ private:
   Setup::SIDWrapper everyOneSID, administratorsSID, usid;
   Setup::HANDLEWrapper token;
   bool failed_;
-  struct GroupInfo {
-    GroupInfo() : failed_ (false) {}
-    void get(Setup::HANDLEWrapper &token);
-    bool failed() const {return failed_;}
-    void fail() { failed_ = true; }
-    struct {
-      PSID psid;
-      char buf[MAX_SID_LEN];
-    } gsid;
-    DWORD size;
-    bool failed_;
-  } primaryGroupInfo;
+  struct {
+    PSID psid;
+    char buf[MAX_SID_LEN];
+  } osid;
+  DWORD size;
 };
 
 void
@@ -340,16 +333,6 @@ NTSecurity::setDefaultDACL ()
 }
 
 void
-NTSecurity::GroupInfo::get(Setup::HANDLEWrapper &token)
-{
-  if (!GetTokenInformation (token.theHANDLE(), TokenPrimaryGroup, &gsid, sizeof gsid, &size))
-    {
-      NoteFailedAPI ("GetTokenInformation");
-      fail();
-    }
-}
-
-void
 NTSecurity::setDefaultSecurity ()
 {
 
@@ -357,42 +340,20 @@ NTSecurity::setDefaultSecurity ()
   if (failed())
     return;
 
-  primaryGroupInfo.get(token);
-  if (primaryGroupInfo.failed())
-    return;
-    
-  /* Get the computer name */
-  char compname[MAX_COMPUTERNAME_LENGTH + 1];
-  DWORD size = sizeof (compname);
-  if (!GetComputerName (compname, &size))
+  /* Get the user */
+  if (!GetTokenInformation (token.theHANDLE(), TokenUser, &osid, 
+			    sizeof osid, &size))
     {
-      NoteFailedAPI("GetComputerName");
+      NoteFailedAPI("GetTokenInformation");
       return;
     }
-
-  /* Get the local domain SID */
-  SID_NAME_USE use;
-  char domain[MAX_COMPUTERNAME_LENGTH + 1];
-  char lsid[MAX_SID_LEN];
-  size = sizeof (lsid);
-  DWORD sz = sizeof (domain);
-  if (!LookupAccountName (NULL, compname, lsid, &size, 
-			  domain, &sz, &use)) 
+  /* Make it the owner */
+  if (!SetTokenInformation (token.theHANDLE(), TokenOwner, &osid, 
+			    sizeof osid))
     {
-      NoteFailedAPI("LookupAccountName");
+      NoteFailedAPI("SetTokenInformation");
       return;
     }
-  /* Create the None SID from the domain SID.
-     On NT the last subauthority of a domain is -1 and it is replaced by the RID.
-     On other systems the RID is appended. */
-  sz = *GetSidSubAuthorityCount (lsid);
-  if (*GetSidSubAuthority (lsid, sz -1) != (DWORD) -1) 
-    *GetSidSubAuthorityCount (lsid) = ++sz;
-  *GetSidSubAuthority (lsid, sz -1) = DOMAIN_GROUP_RID_USERS;
-  
-  /* See if the group is None */
-  if (!EqualSid (primaryGroupInfo.gsid.psid, lsid))
-    return;
 
   SID_IDENTIFIER_AUTHORITY sid_auth;
   sid_auth = (SID_IDENTIFIER_AUTHORITY) { SECURITY_NT_AUTHORITY };

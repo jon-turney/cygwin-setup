@@ -1,3 +1,8 @@
+2003-07-31  Pierre Humblet  <pierre.humblet@ieee.org>
+
+	* main.cc (set_default_sec): Set token owner from token user.
+	Always try to set the token primary group to Users or Admins.
+
 2003-07-30  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
 	* String++.h (String::replace): New instance functions.
