@@ -16,6 +16,8 @@
 /* The purpose of this file is to manage access to files stored on the
    local disk (i.e. "downloading" setup.ini).  Called from netio.cc */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include <stdio.h>
 #include <sys/types.h>

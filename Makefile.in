@@ -99,8 +99,10 @@ OBJS = \
 	root.o \
 	site.o \
 	source.o \
+	splash.o \
 	state.o \
 	tar.o \
+	version.o \
 	$E
 
 .SUFFIXES:
@@ -138,6 +140,12 @@ $(libmingw32): $(mingw_build)/Makefile
 
 $(ZLIB): zlib/Makefile
 	$(MAKE) -C $(@D) $(@F) CC="$(CC)" CFLAGS='$(MINGW_CFLAGS)'
+
+version.c : $(srcdir)/ChangeLog Makefile
+	grep '^\$$Revision.*' $(srcdir)/ChangeLog \
+	| sed -e 's/\$$Revision$$.*/\";/' \
+	> version.tmp
+	mv version.tmp version.c
 
 %.o: %.rc
 ifdef VERBOSE

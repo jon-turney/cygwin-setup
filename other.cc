@@ -16,6 +16,8 @@
 /* This handles the "other URL" option from the mirror site
    selection. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include <shlobj.h>
 #include <stdio.h>

@@ -23,6 +23,8 @@
    those don't count, although they could).  Replace the IDD_S_* with
    IDD_* if you create a real dialog for those steps. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 
 #include <stdio.h>
@@ -49,12 +51,13 @@ WinMain (HINSTANCE h,
 {
   hinstance = h;
 
-  next_dialog = IDD_SOURCE;
+  next_dialog = IDD_SPLASH;
 
   while (next_dialog)
     {
       switch (next_dialog)
 	{
+	case IDD_SPLASH:	do_splash (h);	break;
 	case IDD_SOURCE:	do_source (h);	break;
 	case IDD_ROOT:		do_root (h);	break;
 	case IDD_NET:		do_net (h);	break;

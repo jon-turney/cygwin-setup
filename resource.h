@@ -18,6 +18,7 @@
 #define IDS_ERR_OPEN_READ               16
 #define IDS_ROOT_ABSOLUTE               17
 #define IDS_DOWNLOAD_COMPLETE           18
+#define IDS_CVSID                       19
 #define IDD_ROOT                        101
 #define IDD_SOURCE                      102
 #define IDD_OTHER_URL                   103
@@ -34,6 +35,7 @@
 #define IDD_PROXY_AUTH                  113
 #define IDD_S_POSTINSTALL               114
 #define IDD_NET_AUTH                    114
+#define IDD_SPLASH                      115
 #define IDI_CYGWIN                      200
 #define IDC_SOURCE_DOWNLOAD             1000
 #define IDC_SOURCE_NETINST              1001
@@ -52,7 +54,6 @@
 #define IDC_PROXY_HOST                  1014
 #define IDC_PROXY_PORT                  1015
 #define IDC_PROXY_USER                  1016
-#define IDC_PROXY_PASSWD                1017
 #define IDC_DLS_PROGRESS                1019
 #define IDC_DLS_URL                     1020
 #define IDC_DLS_RATE                    1021
@@ -65,6 +66,7 @@
 #define IDC_ROOT_USER                   1029
 #define IDC_NET_USER                    1030
 #define IDC_NET_PASSWD                  1031
+#define IDC_VERSION                     1033
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -75,7 +77,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        115
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1032
+#define _APS_NEXT_CONTROL_VALUE         1034
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

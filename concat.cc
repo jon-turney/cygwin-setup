@@ -16,6 +16,8 @@
 /* See concat.h.  Note that we canonicalize the result, this avoids
    multiple slashes being interpreted as UNCs. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>

@@ -16,6 +16,8 @@
 /* The purpose of this file is to download all the files we need to
    do the installation. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 
 #include <stdio.h>

@@ -18,6 +18,8 @@
    must already have installed and configured IE5.  This module is
    called from netio.cc, which is called from geturl.cc */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 
 #include "resource.h"

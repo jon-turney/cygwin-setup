@@ -17,6 +17,8 @@
    netio.cc.  We add a progress dialog and some convenience functions
    (like collect to string or file */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include "commctrl.h"
 

@@ -25,6 +25,8 @@
    (otherwise, why would you have asked to install it?).  Note
    that we search recursively. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 
 #include <stdio.h>

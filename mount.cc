@@ -17,6 +17,8 @@
    Cygwin's mount table.  If the format or location of the mount table
    changes, this is the file to change to match it. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 
 #include <stdio.h>

@@ -18,6 +18,8 @@
    flex parsers are provided also.  We check to see if this setup.ini
    is older than the one we used last time, and if so, warn the user. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 
 #include <stdio.h>

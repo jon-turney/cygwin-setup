@@ -12,6 +12,9 @@
  * Written by DJ Delorie <dj@cygnus.com>
  *
  */
+
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 
 typedef struct {

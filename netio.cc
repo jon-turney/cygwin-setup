@@ -17,6 +17,8 @@
    methods known to setup.  To add a new method, create a pair of
    nio-*.[ch] files and add the logic to NetIO::open here */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>

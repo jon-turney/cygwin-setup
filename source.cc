@@ -17,6 +17,8 @@
    user choose the source of the install - from the net, from the
    current directory, or to just download files. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include <stdio.h>
 #include "dialog.h"

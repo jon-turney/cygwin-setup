@@ -18,6 +18,8 @@
    that unlike other do_* functions, this one is called directly from
    install.cc */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include <shlobj.h>
 

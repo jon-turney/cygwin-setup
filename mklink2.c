@@ -1,6 +1,8 @@
 #include "win32.h"
 #include "shlobj.h"
 
+static char *cvsid = "\n%%% $Id$\n";
+
 /* This part of the code must be in C because the C++ interface to COM
 doesn't work. */
 

@@ -16,6 +16,8 @@
 /* The purpose of this file is to get the list of mirror sites and ask
    the user which mirror site they want to download from. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>

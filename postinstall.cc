@@ -16,6 +16,8 @@
 /* The purpose of this file is to run all the post-install scripts
    in their various forms. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 
 #include <stdlib.h>

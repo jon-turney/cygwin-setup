@@ -16,6 +16,8 @@
 /* The purpose of this file is to doa recursive find on a given
    directory, calling a given function for each file found. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>

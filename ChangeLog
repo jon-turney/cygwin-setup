@@ -1,3 +1,10 @@
+2000-08-07  DJ Delorie  <dj@redhat.com>
+
+	* (all): add cvsid tags
+	* Makefile.in: generate version.c from ChangeLog, add splash.o
+	* splash.o: new
+	* res.rc: add splash screen
+	
 2000-08-02  DJ Delorie  <dj@redhat.com>
 
 	* net.cc: remove proxy password code
@@ -563,3 +570,6 @@ Sat Apr  1 20:48:09 2000  Christopher Faylor <cgf@cygnus.com>
 	* zlib/acinclude.m4: New file.
 	* zlib/configure: Regenerate from configure.in.
 	* zlib/Makefile.in: Regenerate from Makefile.am
+
+%%% $Id$
+$Revision$

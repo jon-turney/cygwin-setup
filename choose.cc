@@ -25,6 +25,8 @@
    install packages, or to install packages that aren't installed by
    default. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include <stdio.h>
 #include "dialog.h"

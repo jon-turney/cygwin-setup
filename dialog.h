@@ -38,6 +38,7 @@ D(do_postinstall);
 D(do_root);
 D(do_site);
 D(do_source);
+D(do_splash);
 
 #undef D
 

@@ -18,6 +18,8 @@
    handle disks bigger than 2G, and a new API that isn't always
    available. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 
 #include "diskfull.h"

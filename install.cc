@@ -19,6 +19,8 @@
    handling two tasks in one thread.  We also create or update all the
    files in /etc/setup/* and create the mount points. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include "commctrl.h"
 

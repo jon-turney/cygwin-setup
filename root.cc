@@ -17,6 +17,8 @@
    root of the installation to be, and to ask whether the user prefers
    text or binary mounts. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include <shlobj.h>
 #include <stdio.h>
