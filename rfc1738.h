@@ -38,5 +38,6 @@
 #include "String++.h"
 char const *rfc1738_escape_part (char const *);
 String rfc1738_escape_part (String const &);
+String rfc1738_unescape_part (String const &);
 
 #endif

@@ -49,11 +49,18 @@ static const char *cvsid =
 #include "rfc1738.h"
 
 #include "threebar.h"
+
+#include "md5.h"
+
+#include "Exception.h"
+
+#include "download.h"
+  
 extern ThreeBarProgressPage Progress;
 
 /* 0 on failure
  */
-static int
+int
 check_for_cached (packagesource & pkgsource)
 {
   /* search algo:
@@ -61,6 +68,10 @@ check_for_cached (packagesource & pkgsource)
      (Note that the cache dir is represented by a mirror site of
      file://local_dir
    */
+
+  // Already found one.
+  if (pkgsource.Cached())
+    return 1;
 
   DWORD size;
   if ((size =
@@ -77,20 +88,48 @@ check_for_cached (packagesource & pkgsource)
      2) is there a version from one of the selected mirror sites available ?
    */
   for (size_t n = 1; n <= pkgsource.sites.number (); n++)
+    {
+      String fullname = local_dir + "/" +
+	rfc1738_escape_part (pkgsource.sites[n]->key) + "/" +
+	pkgsource.Canonical ();
     if ((size =
-	 get_file_size (local_dir + "/" +
-			 rfc1738_escape_part (pkgsource.sites[n]->key) + "/" +
-			 pkgsource.Canonical ())) > 0)
+	 get_file_size (fullname)) > 0)
       if (size == pkgsource.size)
 	{
+	  if (pkgsource.md5.isSet())
+	    {
+	      // check the MD5 sum of the cached file here
+	      io_stream *thefile = io_stream::open (String("file://") + fullname, "rb");
+	      if (!thefile)
+		return 0;
+	      md5_state_t pns;
+	      md5_init (&pns);
+
+	      unsigned char buffer[16384];
+	      ssize_t count;
+	      while ((count = thefile->read (buffer, 16384)) > 0)
+		md5_append (&pns, buffer, count);
+	      delete thefile;
+	      if (count < 0)
+		throw new Exception ("__LINE__ __FILE__", (String ("IO Error reading ") + pkgsource.Cached()).cstr_oneuse(), APPERR_IO_ERROR);
+
+	      md5_byte_t tempdigest[16];
+	      md5_finish(&pns, tempdigest);
+	      md5 tempMD5;
+	      tempMD5.set (tempdigest);
+	      
+	      log (LOG_BABBLE, String ("For file") + pkgsource.Cached() + 
+		   " ini digest is" + pkgsource.md5.print() + 
+		   " file digest is " + tempMD5.print());
+	      
+	      if (pkgsource.md5 != tempMD5)
+		throw new Exception ("__LINE__ __FILE__", (String ("MD5 Checksum failure for ") + pkgsource.Cached()).cstr_oneuse(), APPERR_CORRUPT_PACKAGE);
+	    }
 	  pkgsource.
-	    set_cached (String ("file://") + local_dir + "/" +
-			 rfc1738_escape_part (pkgsource.sites[n]->
-					      key) + "/" +
-			 pkgsource.Canonical ());
+	    set_cached (String ("file://") + fullname );
 	  return 1;
 	}
-
+	}
   return 0;
 }
 
@@ -98,9 +137,22 @@ check_for_cached (packagesource & pkgsource)
 static int
 download_one (packagesource & pkgsource, HWND owner)
 {
-  if (check_for_cached (pkgsource) && source != IDC_SOURCE_DOWNLOAD)
-    return 0;
-
+  try
+    {
+      if (check_for_cached (pkgsource))
+        return 0;
+    }
+  catch (Exception * e)
+    {
+      // We know what to do with these..
+      if (e->errNo() == APPERR_CORRUPT_PACKAGE)
+	{
+	  fatal (owner, IDS_CORRUPT_PACKAGE, pkgsource.Canonical());
+    	  return 1;
+	}
+      // Unexpected exception.
+      throw e;
+    }
   /* try the download sites one after another */
 
   int success = 0;
@@ -165,14 +217,21 @@ do_download_thread (HINSTANCE h, HWND owner)
       if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
 	{
 	  packageversion *version = pkg.desired;
-	  if (!
-	      (check_for_cached (version->bin)
-	       && source != IDC_SOURCE_DOWNLOAD) && pkg.desired->binpicked)
-	    total_download_bytes += version->bin.size;
-	  if (!
-	      (check_for_cached (version->src)
-	       && source != IDC_SOURCE_DOWNLOAD) && pkg.desired->srcpicked)
-	    total_download_bytes += version->src.size;
+	  try 
+	    {
+    	      if (!check_for_cached (version->bin) && pkg.desired->binpicked)
+      		  total_download_bytes += version->bin.size;
+    	      if (!check_for_cached (version->src) && pkg.desired->srcpicked)
+      		  total_download_bytes += version->src.size;
+	    }
+	  catch (Exception * e)
+	    {
+	      // We know what to do with these..
+	      if (e->errNo() == APPERR_CORRUPT_PACKAGE)
+		fatal (owner, IDS_CORRUPT_PACKAGE, pkg.name.cstr_oneuse());
+	      // Unexpected exception.
+	      throw e;
+	    }
 	}
     }
 

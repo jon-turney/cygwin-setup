@@ -49,6 +49,7 @@ static cygpackage *cpv = 0;
 static int trust;
 
 void add_correct_version();
+void process_src (cygpackage *, packagesource &src, char *, char*, char* = 0);
 %}
 
 %token STRING
@@ -56,6 +57,7 @@ void add_correct_version();
 %token CATEGORY REQUIRES
 %token APATH PPATH INCLUDE_SETUP EXCLUDE_PACKAGE DOWNLOAD_URL
 %token T_PREV T_CURR T_TEST T_UNKNOWN
+%token MD5
 
 %%
 
@@ -97,29 +99,10 @@ simple_line
  | LDESC STRING			{ cpv->set_ldesc ($2); }
  | CATEGORY categories
  | REQUIRES requires
- | INSTALL STRING STRING	{ if (!cpv->Canonical_version ().size())
-   				  {
-				    fileparse f;
-				    if (parse_filename ($2, f))
-				    {
-				      cpv->set_canonical_version (f.ver);
-				      add_correct_version ();
-				    }
-				  }
-				  
-				  if (!cpv->bin.size)
-				  {
-				    cpv->bin.size = atoi($3);
-				    cpv->bin.set_canonical ($2);
-				  }
-				  cpv->bin.sites.registerbykey (parse_mirror);
-				}
- | SOURCE STRING STRING		{ if (!cpv->src.size)
-   				  {
-				    cpv->src.size = atoi($3);
-				    cpv->src.set_canonical ($2);
-				  }
-				  cpv->src.sites.registerbykey (parse_mirror); }
+ | INSTALL STRING STRING MD5    { process_src (cpv, cpv->bin, $2, $3, $4); }
+ | INSTALL STRING STRING	{ process_src (cpv, cpv->bin, $2, $3); }
+ | SOURCE STRING STRING MD5	{ process_src (cpv, cpv->src, $2, $3, $4); }
+ | SOURCE STRING STRING		{ process_src (cpv, cpv->src, $2, $3); }
  | T_PREV			{ trust = TRUST_PREV; cpv = new cygpackage (cp->name); }
  | T_CURR			{ trust = TRUST_CURR; cpv = new cygpackage (cp->name); }
  | T_TEST			{ trust = TRUST_TEST; cpv = new cygpackage (cp->name); }
@@ -196,4 +179,27 @@ add_correct_version()
     }
     break;
   }
+}
+
+void
+process_src (cygpackage *cpv, packagesource &src, char *path, char*size, char*md5 )
+{ 
+  if (!cpv->Canonical_version ().size())
+    {
+      fileparse f;
+        if (parse_filename (path, f))
+	  {
+	    cpv->set_canonical_version (f.ver);
+	    add_correct_version ();
+	  }
+    }
+  
+  if (!src.size)
+    {
+      src.size = atoi(size);
+      src.set_canonical (path);
+    }
+  if (md5 && !src.md5.isSet())
+    src.md5.set((unsigned char *)md5);
+  src.sites.registerbykey (parse_mirror);
 }

@@ -41,6 +41,22 @@ STR	[a-zA-Z0-9_./+-]+
 
 %%
 
+[0123456789abcdef]{32,32}       {
+    yylval = (char *) new unsigned char[16];
+    for (int i=0; i< 16; ++i)
+      ((unsigned char *) yylval) [i] = 0;
+    for (int i=0; i< 32; ++i)
+      {
+	unsigned char val = (unsigned char) yytext[i];
+	if (val > '9')
+	  val = val - 'a' + 10;
+	else
+	  val = val - '0';
+	((unsigned char *) yylval) [i / 2] += val << ((i % 2) ? 4 : 0);
+      }
+    return MD5;
+}
+
 \"[^"]*\"		{ yylval = new char [strlen (yytext+1) + 1];
 			  strcpy (yylval, yytext+1);
 			  yylval[strlen (yylval)-1] = 0;

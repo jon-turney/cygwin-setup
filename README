@@ -21,7 +21,7 @@ TODO:
   sometimes hidden.
 * Mark versions as prev/curr/test in the GUI when clicking through them.
 * Remove *empty* directories on uninstalls
-
+* Correctly overwrite -r--r--r-- files.
  	   
 WISHLIST:
   *  rsync:// support

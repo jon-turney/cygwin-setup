@@ -114,6 +114,8 @@
 #define IDC_EDIT_USER_URL               1062
 #define IDC_BUTTON_ADD_URL              1063
 #define IDS_REBOOT_REQUIRED		1064
+#define IDS_CORRUPT_PACKAGE		1065
+#define IDS_INSTALL_ERROR		1066
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -124,7 +126,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1065
+#define _APS_NEXT_CONTROL_VALUE         1067
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

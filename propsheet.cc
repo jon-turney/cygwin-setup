@@ -189,6 +189,7 @@ PropSheet::Create (const Window * Parent, DWORD Style)
   p.pfnCallback = PropSheetProc;
 
 
+  // The winmain event loop actually resides in here.
   PropertySheet (&p);
 
   // Do a modeless property sheet...

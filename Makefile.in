@@ -119,18 +119,22 @@ SUBDIRS = bz2lib zlib libgetopt++
 
 AM_CFLAGS = -Werror -Winline -Wall -Wpointer-arith \
   -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
-  -Wmissing-declarations -Wcomments -mwindows
+  -Wmissing-declarations -Wcomments
 
-AM_CXXFLAGS = $(AM_CFLAGS) -fno-rtti
+AM_CXXFLAGS = $(AM_CFLAGS) 
 
 INCLUDES = -I$(srcdir)/bz2lib -I$(srcdir)/libgetopt++/include
 
-noinst_PROGRAMS = setup
+noinst_PROGRAMS = \
+  setup
+
+
+EXTRA_PROGRAMS = inilint
 
 # to avoid false errors that assembly generates
 WARNONLY_CFLAGS = -Winline -Wall -Wpointer-arith -Wcast-align \
 	-Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
-	-Wmissing-declarations -Wcomments $(INCLUDES) -mwindows
+	-Wmissing-declarations -Wcomments $(INCLUDES)
 
 
 EXTRA_DIST = \
@@ -149,10 +153,23 @@ BUILT_SOURCES = setup_version.c \
 	iniparse.cc
 
 
+inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32 
+inilint_SOURCES = \
+  inilex.cc \
+  inilintmain.cc \
+  iniparse.cc \
+  iniparse.h \
+  rfc1738.cc \
+  rfc1738.h \
+  String++.cc \
+  String++.h
+
+
 setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a libgetopt++/libgetopt++.la \
   -lstdc++ -luser32 -lkernel32 \
   -lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid
 
+setup_LDFLAGS = -mwindows
 setup_SOURCES = \
 	archive.cc \
 	archive.h \
@@ -183,6 +200,9 @@ setup_SOURCES = \
 	diskfull.cc \
 	diskfull.h \
 	download.cc \
+	download.h \
+	Exception.cc \
+	Exception.h \
 	find.cc \
 	find.h \
 	filemanip.cc \
@@ -212,6 +232,10 @@ setup_SOURCES = \
 	log.cc \
 	log.h \
 	main.cc \
+	md5.c \
+	md5.h \
+	MD5++.cc \
+	MD5++.h \
 	mkdir.cc \
 	mkdir.h \
 	mklink2.cc \
@@ -288,21 +312,28 @@ subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/cfgaux/mkinstalldirs
 CONFIG_CLEAN_FILES =
+EXTRA_PROGRAMS = inilint$(EXEEXT)
 noinst_PROGRAMS = setup$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 
+am_inilint_OBJECTS = inilex.$(OBJEXT) inilintmain.$(OBJEXT) \
+	iniparse.$(OBJEXT) rfc1738.$(OBJEXT) String++.$(OBJEXT)
+inilint_OBJECTS = $(am_inilint_OBJECTS)
+inilint_DEPENDENCIES = libgetopt++/libgetopt++.la
+inilint_LDFLAGS =
 am_setup_OBJECTS = archive.$(OBJEXT) archive_tar.$(OBJEXT) \
 	archive_tar_file.$(OBJEXT) autoload.$(OBJEXT) \
 	category.$(OBJEXT) choose.$(OBJEXT) cistring.$(OBJEXT) \
 	compress.$(OBJEXT) compress_bz.$(OBJEXT) compress_gz.$(OBJEXT) \
 	concat.$(OBJEXT) cygpackage.$(OBJEXT) desktop.$(OBJEXT) \
 	dialog.$(OBJEXT) diskfull.$(OBJEXT) download.$(OBJEXT) \
-	find.$(OBJEXT) filemanip.$(OBJEXT) fromcwd.$(OBJEXT) \
-	geturl.$(OBJEXT) hash.$(OBJEXT) ini.$(OBJEXT) inilex.$(OBJEXT) \
-	iniparse.$(OBJEXT) install.$(OBJEXT) io_stream.$(OBJEXT) \
-	io_stream_cygfile.$(OBJEXT) io_stream_file.$(OBJEXT) \
-	io_stream_memory.$(OBJEXT) localdir.$(OBJEXT) log.$(OBJEXT) \
-	main.$(OBJEXT) mkdir.$(OBJEXT) mklink2.$(OBJEXT) \
+	Exception.$(OBJEXT) find.$(OBJEXT) filemanip.$(OBJEXT) \
+	fromcwd.$(OBJEXT) geturl.$(OBJEXT) hash.$(OBJEXT) ini.$(OBJEXT) \
+	inilex.$(OBJEXT) iniparse.$(OBJEXT) install.$(OBJEXT) \
+	io_stream.$(OBJEXT) io_stream_cygfile.$(OBJEXT) \
+	io_stream_file.$(OBJEXT) io_stream_memory.$(OBJEXT) \
+	localdir.$(OBJEXT) log.$(OBJEXT) main.$(OBJEXT) md5.$(OBJEXT) \
+	MD5++.$(OBJEXT) mkdir.$(OBJEXT) mklink2.$(OBJEXT) \
 	mount.$(OBJEXT) msg.$(OBJEXT) net.$(OBJEXT) netio.$(OBJEXT) \
 	nio-ie5.$(OBJEXT) nio-file.$(OBJEXT) nio-ftp.$(OBJEXT) \
 	nio-http.$(OBJEXT) package_db.$(OBJEXT) package_meta.$(OBJEXT) \
@@ -318,7 +349,6 @@ am_setup_OBJECTS = archive.$(OBJEXT) archive_tar.$(OBJEXT) \
 setup_OBJECTS = $(am_setup_OBJECTS)
 setup_DEPENDENCIES = res.o zlib/libzcygw.a bz2lib/libbz2.a \
 	libgetopt++/libgetopt++.la
-setup_LDFLAGS =
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -327,7 +357,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/cfgaux/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/PickCategoryLine.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Exception.Po ./$(DEPDIR)/MD5++.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/PickCategoryLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickPackageLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickView.Po ./$(DEPDIR)/String++.Po \
@@ -343,18 +374,19 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/find.Po ./$(DEPDIR)/fromcwd.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/geturl.Po ./$(DEPDIR)/hash.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ini.Po ./$(DEPDIR)/inilex.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/iniparse.Po ./$(DEPDIR)/install.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/io_stream.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/inilintmain.Po ./$(DEPDIR)/iniparse.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/install.Po ./$(DEPDIR)/io_stream.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/io_stream_cygfile.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/io_stream_file.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/io_stream_memory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/localdir.Po ./$(DEPDIR)/log.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/main.Po ./$(DEPDIR)/mkdir.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mklink2.Po ./$(DEPDIR)/mount.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/msg.Po ./$(DEPDIR)/net.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/netio.Po ./$(DEPDIR)/nio-file.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/nio-ftp.Po ./$(DEPDIR)/nio-http.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/nio-ie5.Po ./$(DEPDIR)/package_db.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/main.Po ./$(DEPDIR)/md5.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mkdir.Po ./$(DEPDIR)/mklink2.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mount.Po ./$(DEPDIR)/msg.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/net.Po ./$(DEPDIR)/netio.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/nio-file.Po ./$(DEPDIR)/nio-ftp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/nio-http.Po ./$(DEPDIR)/nio-ie5.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/package_db.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/package_meta.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/package_source.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/package_version.Po \
@@ -384,7 +416,7 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXFLAGS = @CXXFLAGS@
-DIST_SOURCES = $(setup_SOURCES)
+DIST_SOURCES = $(inilint_SOURCES) $(setup_SOURCES)
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
@@ -395,7 +427,7 @@ DIST_COMMON = README ChangeLog Makefile.am Makefile.in aclocal.m4 \
 	cfgaux/depcomp cfgaux/install-sh cfgaux/ltmain.sh \
 	cfgaux/missing cfgaux/mkinstalldirs configure configure.in
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(setup_SOURCES)
+SOURCES = $(inilint_SOURCES) $(setup_SOURCES)
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -427,6 +459,9 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+inilint$(EXEEXT): $(inilint_OBJECTS) $(inilint_DEPENDENCIES) 
+	@rm -f inilint$(EXEEXT)
+	$(CXXLINK) $(inilint_LDFLAGS) $(inilint_OBJECTS) $(inilint_LDADD) $(LIBS)
 setup$(EXEEXT): $(setup_OBJECTS) $(setup_DEPENDENCIES) 
 	@rm -f setup$(EXEEXT)
 	$(CXXLINK) $(setup_LDFLAGS) $(setup_OBJECTS) $(setup_LDADD) $(LIBS)
@@ -437,6 +472,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Exception.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MD5++.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickCategoryLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickPackageLine.Po@am__quote@
@@ -465,6 +502,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ini.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inilex.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inilintmain.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iniparse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/install.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io_stream.Po@am__quote@
@@ -474,6 +512,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/localdir.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md5.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mkdir.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mklink2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mount.Po@am__quote@
@@ -861,7 +900,7 @@ inilex.o: inilex.cc
 @AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-       $(AM_CPPFLAGS) $(CPPFLAGS) $(WARNONLY_CFLAGS) $(CXXFLAGS) -fno-rtti -c -o $@ $< 
+       $(AM_CPPFLAGS) $(CPPFLAGS) $(WARNONLY_CFLAGS) $(CXXFLAGS) -c -o $@ $< 
 
 iniparse.cc iniparse.h : iniparse.y
 	bison -d -o iniparse.cc $(srcdir)/iniparse.y

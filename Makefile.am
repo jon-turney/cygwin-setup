@@ -25,19 +25,22 @@ SUBDIRS = bz2lib zlib libgetopt++
 
 AM_CFLAGS	= -Werror -Winline -Wall -Wpointer-arith \
   -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
-  -Wmissing-declarations -Wcomments -mwindows
-AM_CXXFLAGS	= $(AM_CFLAGS) -fno-rtti
+  -Wmissing-declarations -Wcomments
+AM_CXXFLAGS	= $(AM_CFLAGS) 
 
 WINDRES		:= @WINDRES@
 
 INCLUDES	= -I$(srcdir)/bz2lib -I$(srcdir)/libgetopt++/include
 
-noinst_PROGRAMS = setup
+noinst_PROGRAMS = \
+  setup
+
+EXTRA_PROGRAMS = inilint
 
 # to avoid false errors that assembly generates
 WARNONLY_CFLAGS	= -Winline -Wall -Wpointer-arith -Wcast-align \
 	-Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
-	-Wmissing-declarations -Wcomments $(INCLUDES) -mwindows
+	-Wmissing-declarations -Wcomments $(INCLUDES)
 
 EXTRA_DIST = \
   check-na.bmp \
@@ -53,9 +56,21 @@ BUILT_SOURCES = setup_version.c \
   	inilex.cc \
 	iniparse.cc
 
+inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32 
+inilint_SOURCES = \
+  inilex.cc \
+  inilintmain.cc \
+  iniparse.cc \
+  iniparse.h \
+  rfc1738.cc \
+  rfc1738.h \
+  String++.cc \
+  String++.h
+
 setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a libgetopt++/libgetopt++.la \
   -lstdc++ -luser32 -lkernel32 \
   -lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid
+setup_LDFLAGS = -mwindows
 setup_SOURCES = \
 	archive.cc \
 	archive.h \
@@ -86,6 +101,9 @@ setup_SOURCES = \
 	diskfull.cc \
 	diskfull.h \
 	download.cc \
+	download.h \
+	Exception.cc \
+	Exception.h \
 	find.cc \
 	find.h \
 	filemanip.cc \
@@ -115,6 +133,10 @@ setup_SOURCES = \
 	log.cc \
 	log.h \
 	main.cc \
+	md5.c \
+	md5.h \
+	MD5++.cc \
+	MD5++.h \
 	mkdir.cc \
 	mkdir.h \
 	mklink2.cc \
@@ -210,7 +232,7 @@ inilex.o: inilex.cc
 @AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-       $(AM_CPPFLAGS) $(CPPFLAGS) $(WARNONLY_CFLAGS) $(CXXFLAGS) -fno-rtti -c -o $@ $< 
+       $(AM_CPPFLAGS) $(CPPFLAGS) $(WARNONLY_CFLAGS) $(CXXFLAGS) -c -o $@ $< 
 
 iniparse.cc iniparse.h : iniparse.y
 	bison -d -o iniparse.cc $(srcdir)/iniparse.y

@@ -222,3 +222,13 @@ rfc1738_unescape (char *s)
     }
   s[i] = '\0';
 }
+
+String
+rfc1738_unescape_part (String const &url)
+{
+  char *t = url.cstr();
+  rfc1738_unescape (t);
+  String rv (t);
+  delete[] t;
+  return rv;
+}

@@ -62,6 +62,11 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "port.h"
 
 #include "threebar.h"
+
+#include "md5.h"
+
+#include "Exception.h"
+
 extern ThreeBarProgressPage Progress;
 
 static int total_bytes = 0;
@@ -183,6 +188,34 @@ install_one_source (packagemeta & pkgm, packagesource & source,
   strcpy (msg, "Installing");
   Progress.SetText1 (msg);
   log (LOG_PLAIN, String (msg) + " " + source.Cached ());
+  
+  if (source.md5.isSet())
+    {
+      // check the MD5 sum of the cached file here
+      io_stream *thefile = io_stream::open (source.Cached (), "rb");
+      if (!thefile)
+	  return 0;
+      md5_state_t pns;
+      md5_init (&pns);
+      
+      unsigned char buffer[16384];
+      ssize_t count;
+      while ((count = thefile->read (buffer, 16384)) > 0)
+	  md5_append (&pns, buffer, count);
+      delete thefile;
+      if (count < 0)
+	throw new Exception ("__LINE__ __FILE__", (String ("IO Error reading ") + source.Cached()).cstr_oneuse(), APPERR_IO_ERROR);
+      
+      md5_byte_t tempdigest[16];
+      md5_finish(&pns, tempdigest);
+      md5 tempMD5;
+      tempMD5.set (tempdigest);
+
+      log (LOG_BABBLE, String ("For file") + source.Cached() + " ini digest is" + source.md5.print() + " file digest is " + tempMD5.print());
+      
+      if (source.md5 != tempMD5)
+	  throw new Exception ("__LINE__ __FILE__", (String ("Checksum failure for ") + source.Cached()).cstr_oneuse(), APPERR_CORRUPT_PACKAGE);
+    }
   io_stream *tmp = io_stream::open (source.Cached (), "rb");
   archive *thefile = 0;
   if (tmp)
@@ -489,10 +522,21 @@ do_install_thread (HINSTANCE h, HWND owner)
       packagemeta & pkg = *db.packages[n];
       if (pkg.installed && pkg.desired && pkg.desired->binpicked)
 	{
-	  int e = 0;
-	  e += replace_one (pkg);
-	  if (e)
-	    errors++;
+	  try {
+	      int e = 0;
+	    e += replace_one (pkg);
+ 	    if (e)
+	      errors++;
+	  }
+	  catch (exception *e)
+	    {
+	      if (yesno (owner, IDS_INSTALL_ERROR, e->what()) != IDYES)
+		{
+		  log (LOG_TIMESTAMP, String ("User cancelled setup after install error"));
+		  exit_setup (1);
+		  return;
+		}
+	    }
 	}
     }
 
@@ -502,11 +546,21 @@ do_install_thread (HINSTANCE h, HWND owner)
 
       if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
 	{
-	  int e = 0;
-	  e += install_one (pkg);
-	  if (e)
+	  try
 	    {
-	      errors++;
+    	      int e = 0;
+    	      e += install_one (pkg);
+    	      if (e)
+		  errors++;
+	    }
+	  catch (exception *e)
+	    {
+	      if (yesno (owner, IDS_INSTALL_ERROR, e->what()) != IDYES)
+		{
+		  log (LOG_TIMESTAMP, String ("User cancelled setup after install error"));
+		  exit_setup (1);
+		  return;
+		}
 	    }
 	}
     }				// end of big package loop

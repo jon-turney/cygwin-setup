@@ -1,3 +1,40 @@
+2002-05-01  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.am (AM_CFLAGS): Remove -mwindows, it's a linker flag. 
+	Remove -fno-rtti, we need it for exceptions.
+	(AM_CXXFLAGS): Ditto.
+	(WARNONLY_CFLAGS): Ditto.
+	(EXTRA_PROGRAMS): Add with initial linter sources - not functional yet.
+	(setup_LDFLAGS): Add and set to -mwindows.
+	(setup_SOURCES): Add new sources.
+	* Makefile.in: Regenerate.
+	* README: Update TODO.
+	* choose.cc (scan_downloaded_files): Use ini information if it's
+	available.
+	* configure: Regenerate.
+	* download.cc (check_for_cached): Make reusable from elsewhere.
+	Throw exceptions on errors (as opposed to failures).
+	Check MD5 sum when it's known.
+	(download_one): Never force a download.
+	Handle corrupt package exceptions.
+	* ini.cc (find_routine): Reverse escape the URL to correctly identify
+	the site URL.
+	* inilex.l (MD5): Provide a parsing rule (note: lowercase is required).
+	* iniparse.y: Allow calculation of MD5 sums, and allow src only 
+	packages.
+	(process_src): New helper function.
+	* isntall.cc (install_one_source): Check MD5 sums when possible.
+	Throw exceptions on errors.
+	(do_install_thread): Handle exceptions for installation calls.
+	* package_source.h: Store MD5 information.
+	* propsheet.cc (PropSheet::Create): Add a useful comment.
+	* res.rc (IDS_INSTALL_ERROR): Define.
+	(IDS_CORRUPT_PACKAGE): Define.
+	* resource.h (IDS_INSTALL_ERROR): Define.
+	(IDS_CORRUPT_PACKAGE): Define.
+	* rfc1738.cc (rfc1738_unescape_part): Implement.
+	* rfc1738.h (rfc1738_unescape_part): Declare.
+
 2002-04-29  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.am: Remove dependecy rules that automake emits.

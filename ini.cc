@@ -47,6 +47,8 @@ static const char *cvsid =
 #include "io_stream.h"
 
 #include "threebar.h"
+
+#include "rfc1738.h"
 extern ThreeBarProgressPage Progress;
 
 unsigned int setup_timestamp = 0;
@@ -80,7 +82,10 @@ find_routine (char *path, unsigned int fsize)
   setup_timestamp = 0;
   setup_version = 0;
 
-  ini_init (ini_file, String ("file://") + local_dir + "/" + path);
+  /* Attempt to unescape the string */
+  path[strlen(path) -10] = '\0';
+  String mirror = rfc1738_unescape_part (path);
+  ini_init (ini_file, mirror);
 
   /*yydebug = 1; */
 

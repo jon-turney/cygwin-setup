@@ -60,6 +60,9 @@ static const char *cvsid =
 
 #include "port.h"
 #include "threebar.h"
+
+#include "download.h"
+  
 extern ThreeBarProgressPage Progress;
 
 static int initialized = 0;
@@ -664,6 +667,19 @@ static void
 scan_downloaded_files ()
 {
   find (".", scan2);
+  // This is truely ugly
+  // Do one or the other!
+  packagedb db;
+  for (size_t n = 1; n <= db.packages.number (); ++n)
+    {
+      packagemeta & pkg = *db.packages[n];
+      for (size_t m = 1; m <= pkg.versions.number (); ++m)
+	{
+	  packageversion *version = pkg.versions[m];
+	  check_for_cached (version->bin);
+	  check_for_cached (version->src);
+	}
+    }
 }
 
 void

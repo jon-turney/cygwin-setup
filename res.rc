@@ -478,10 +478,12 @@ BEGIN
     IDS_OLD_SETUP_VERSION   "This setup is version %s, but setup.ini claims version %s is available.\nYou might want to upgrade to get the latest features and bug fixes."
     IDS_DOWNLOAD_FAILED     "Unable to download %s"
     IDS_DOWNLOAD_INCOMPLETE "Download Incomplete.  Try again?"
+    IDS_INSTALL_ERROR	    "Installation error (%s), Continue with other packages?"
     IDS_INSTALL_INCOMPLETE  "Installation incomplete.  Check /setup.log.full for details"
     IDS_VERSION_INFO        "Setup.exe version %1"
     IDS_CYGWIN_SETUP        "Cygwin Setup"
     IDS_CYGWIN_SETUP_WITH_PROGRESS "%1!d!%% - Cygwin Setup"
+    IDS_CORRUPT_PACKAGE     "Package file %s has a corrupt local copy, please remove and retry."
 END
 
 #endif    // English (U.S.) resources
