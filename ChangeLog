@@ -1,5 +1,10 @@
 2001-01-04  Robert Collins  <rbtcollins@hotmail.com>
 
+	* script.cc (run_script): Change cygpath:// to cygfile://.
+	* install.cc (do_install_thread): Fix off-by-one errors.
+
+2001-01-04  Robert Collins  <rbtcollins@hotmail.com>
+
 	* package_db.cc (packagedb::flush): Fix an off-by-one error.
 
 2002-01-04  Jan Nieuwenhuizen  <janneke@gnu.org>

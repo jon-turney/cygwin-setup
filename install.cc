@@ -343,7 +343,7 @@ do_install_thread (HINSTANCE h, HWND owner)
   init_run_script ();
 
   packagedb db;
-  for (size_t n = 1; n < db.packages.number (); n++)
+  for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
 
@@ -356,7 +356,7 @@ do_install_thread (HINSTANCE h, HWND owner)
 	}
     }
 
-  for (size_t n = 1; n < db.packages.number (); n++)
+  for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
       if (pkg.installed && (!pkg.desired || pkg.desired != pkg.installed))
