@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001, Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #define pi (package[i].info[package[i].trust])
 
-static DWORD
+DWORD
 get_file_size (char *name)
 {
   HANDLE h;

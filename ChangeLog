@@ -1,3 +1,7 @@
+Tue Mar  6 19:31:00 2000  Corinna Vinschen <corinna@vinschen.com>
+
+	* download.cc (get_file_size): Remove `static'.
+
 Tue Mar  6 19:11:00 2000  Corinna Vinschen <corinna@vinschen.com>
 
 	* tar.cc (tar_open): Use `get_file_size' instead of `stat'.
