@@ -16,6 +16,22 @@
 #ifndef _INI_H_
 #define _INI_H_
 
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+void ini_init (char *string);
+#define YYSTYPE char *
+
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+/* For enums */
+#include "choose.h"
+
 /* When setup.ini is parsed, the information is stored according to
    the declarations here.  ini.cc (via inilex and iniparse)
    initializes these structures.  choose.cc sets the action and trust
@@ -24,14 +40,6 @@
    selected packages. */
 
 /* the classes here store installation info *shrug* */
-/* forward typedefs */
-
-typedef struct _Category Category;
-typedef struct _Package Package;
-
-#include "choose.h"
-
-#define YYSTYPE char *
 
 /* lowest number must be most trusted, highest least trusted */
 typedef enum
@@ -86,11 +94,9 @@ typedef struct _Info
   char *source;			/* sources for installed binaries */
   unsigned int source_size;	/* in bytes */
   int source_exists;		/* source file exists on disk */
-#ifdef __cplusplus
-    _Info (const char *_install, const char *_version,
+  _Info (const char *_install, const char *_version,
 	   int _install_size, const char *_source = NULL,
 	   int _source_size = 0);
-#endif
 }
 Info;				/* +1 for TRUST_UNKNOWN */
 
@@ -101,9 +107,10 @@ typedef struct _CategoryPackage
 }
 CategoryPackage;
 
-struct _Category
+class Category
 {
-  struct _Category *next;	/* the next category in the list */
+public:
+  Category *next;	/* the next category in the list */
   char *name;			/* the category */
   CategoryPackage *packages;	/* the packages in this category */
 };
@@ -115,8 +122,9 @@ typedef struct _Dependency
 }
 Dependency;			/* Dependencies can be used for
 				   recommended/required/related... */
-struct _Package
+class Package
 {
+public:
   char *name;			/* package name, like "cygwin" */
   char *sdesc;			/* short description (replaces "name" if provided) */
   char *ldesc;			/* long description (multi-line) */
@@ -144,13 +152,7 @@ extern int npackages;
 extern Category *category;
 extern int ncategories;
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
   Package *new_package (char *name);
-  void ini_init (char *string);
   Package *getpkgbyname (const char *pkgname);
   void new_requirement (Package * package, char *dependson);
   Category *getcategorybyname (const char *categoryname);
@@ -159,8 +161,6 @@ extern "C"
   Category *register_category (const char *name);
   void add_category (Package * package, Category * cat);
 
-#ifdef __cplusplus
-}
 #endif
 
 #endif				/* _INI_H_ */

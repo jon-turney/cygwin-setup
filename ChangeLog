@@ -1,5 +1,10 @@
 2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.h: Don't include ini.h
+	* ini.h: Allow pure c++ in the header file.
+
+2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
+
 	* install.cc (do_install): Write a version 2 installed.db file.
 	* package_db.cc (packagedb::packagedb): Read version 1 and 2 installed.db files.
 

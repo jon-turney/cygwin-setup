@@ -16,7 +16,8 @@
 #ifndef _CHOOSE_H_
 #define _CHOOSE_H_
 
-#include "ini.h"
+class Category;
+class Package;
 
 #define CATEGORY_EXPANDED  0
 #define CATEGORY_COLLAPSED 1
