@@ -1,3 +1,8 @@
+2003-03-10  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.h (ChooserPage): Override OnActivate.
+	* choose.cc (ChooserPage::OnActivate): Refresh the current view when activating the dialog.
+
 2003-03-09  Robert Collins  <rbtcollins@hotmail.com>
 
 	* package_version.cc (_defaultversion::pick(bool)): Override this and do nothing.

@@ -564,6 +564,12 @@ ChooserPage::OnInit ()
   create_listview (GetHWND (), &r);
 }
 
+void
+ChooserPage::OnActivate()
+{
+    set_view_mode (lv, chooser->get_view_mode ());
+}
+
 long
 ChooserPage::OnNext ()
 {
