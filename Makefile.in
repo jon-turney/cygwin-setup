@@ -124,7 +124,6 @@ OBJS = \
 	nio-file.o \
 	nio-ftp.o \
 	nio-http.o \
-	other.o \
 	package_db.o \
 	package_meta.o \
 	package_source.o \
@@ -135,6 +134,7 @@ OBJS = \
 	res.o \
 	rfc1738.o \
 	root.o \
+	script.o \
 	setup_version.o \
 	simpsock.o \
 	site.o \
@@ -175,7 +175,8 @@ clean:
 	$(MAKE) -C zlib clean
 
 realclean: clean
-	rm -f  Makefile config.cache
+	rm -f Makefile
+	rm -f config.cache config.log config.status 
 
 install: all
 	$(SHELL) $(updir1)/mkinstalldirs $(bindir) $(etcdir)

@@ -37,6 +37,7 @@ static const char *cvsid =
 
 
 #include "category.h"
+#include "script.h"
 
 #include "package_version.h"
 #include "cygpackage.h"
@@ -113,6 +114,8 @@ packagemeta::uninstall ()
        */
       hash dirs;
       const char *line = installed->getfirstfile ();
+
+      try_run_script ("/etc/preremove/", name);
       while (line)
 	{
 	  dirs.add_subdirs (line);
@@ -136,6 +139,7 @@ packagemeta::uninstall ()
 	  if (RemoveDirectory (d))
 	    log (LOG_BABBLE, "rmdir %s", d);
 	}
+      try_run_script ("/etc/postremove/", name);
     }
   installed = 0;
 }

@@ -13,7 +13,7 @@
  *
  */
 
-/* The purpose of this file is to intall all the packages selected in
+/* The purpose of this file is to install all the packages selected in
    the install list (in ini.h).  Note that we use a separate thread to
    maintain the progress dialog, so we avoid the complexity of
    handling two tasks in one thread.  We also create or update all the
@@ -55,6 +55,7 @@ static const char *cvsid =
 #include "compress_gz.h"
 #include "archive.h"
 #include "archive_tar.h"
+#include "script.h"
 
 #include "package_db.h"
 #include "package_meta.h"
@@ -337,6 +338,9 @@ do_install_thread (HINSTANCE h, HWND owner)
   create_mount ("/usr/bin", cygpath ("/bin", 0), istext, issystem);
   create_mount ("/usr/lib", cygpath ("/lib", 0), istext, issystem);
   set_cygdrive_flags (istext, issystem);
+
+  /* Let's hope people won't uninstall packages before installing [b]ash */
+  init_run_script ();
 
   packagedb db;
   for (size_t n = 1; n < db.packages.number (); n++)

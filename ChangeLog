@@ -1,3 +1,20 @@
+2002-01-04  Jan Nieuwenhuizen  <janneke@gnu.org>
+
+	* Makefile.in (realclean): more clean.
+	(OBJS): Add script.o.
+	* postinstall.cc (run_script_in_etc_postinstall): New function.
+	(do_postinstall): Split off new funtion init_run_script ().
+	(init_run_script):
+	(run):
+	(run_script): Move to script.cc.  Replace some deprecated remove
+	and move calls.
+	* script.h:
+	* script.cc: New file.
+	* Forward port cygwin-20010707.jcn3.patch.
+	* package_meta.cc (uninstall): Run pre- and postremove scripts.
+	* install.cc: Typo fix.
+	(do_install): Run script initialisation.
+											
 2001-01-04  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* cistring.cc: Run d2u.

@@ -24,118 +24,24 @@ static const char *cvsid =
 #include "win32.h"
 
 #include <stdlib.h>
-#include <unistd.h>
 
 #include "state.h"
 #include "dialog.h"
 #include "find.h"
-#include "concat.h"
 #include "mount.h"
-
-#include "port.h"
-
-static char *sh = 0;
-static const char *cmd = 0;
-static OSVERSIONINFO verinfo;
+#include "script.h"
 
 static void
-run (const char *sh, const char *args, const char *file)
+run_script_in_etc_postinstall (char *fname, unsigned int size)
 {
-  BOOL b;
-  char cmdline[_MAX_PATH];
-  STARTUPINFO si;
-  PROCESS_INFORMATION pi;
-
-  sprintf (cmdline, "%s %s %s", sh, args, file);
-  memset (&pi, 0, sizeof (pi));
-  memset (&si, 0, sizeof (si));
-  si.cb = sizeof (si);
-  si.lpTitle = (char *) "Cygwin Setup Post-Install Script";
-  si.dwFlags = STARTF_USEPOSITION;
-
-  b = CreateProcess (0, cmdline, 0, 0, 0,
-		     CREATE_NEW_CONSOLE, 0, get_root_dir (), &si, &pi);
-
-  if (b)
-    WaitForSingleObject (pi.hProcess, INFINITE);
+  run_script ("/etc/postinstall/", fname);
 }
-
-static void
-each (char *fname, unsigned int size)
-{
-  char *ext = strrchr (fname, '.');
-  if (!ext)
-    return;
-
-  if (sh && strcmp (ext, ".sh") == 0)
-    {
-      char *f2 = concat ("/etc/postinstall/", fname, 0);
-      run (sh, "-c", f2);
-      free (f2);
-    }
-  else if (cmd && strcmp (ext, ".bat") == 0)
-    {
-      char *f2 = backslash (cygpath ("/etc/postinstall/", fname, 0));
-      run (cmd, "/c", f2);
-      free (f2);
-    }
-  else
-    return;
-
-  /* if file exists then delete it otherwise just ignore no file error */
-  remove (cygpath ("/etc/postinstall/", fname, ".done", 0));
-
-  rename (cygpath ("/etc/postinstall/", fname, 0),
-	  cygpath ("/etc/postinstall/", fname, ".done", 0));
-}
-
-static const char *shells[] = {
-  "/bin/sh.exe",
-  "/usr/bin/sh.exe",
-  "/bin/bash.exe",
-  "/usr/bin/bash.exe",
-  0
-};
 
 void
 do_postinstall (HINSTANCE h, HWND owner)
 {
   next_dialog = 0;
-  int i;
-  for (i = 0; shells[i]; i++)
-    {
-      sh = backslash (cygpath (shells[i], 0));
-      if (_access (sh, 0) == 0)
-	break;
-      free (sh);
-      sh = 0;
-    }
-
-  char old_path[_MAX_PATH];
-  GetEnvironmentVariable ("PATH", old_path, sizeof (old_path));
-  SetEnvironmentVariable ("PATH",
-			  backslash (cygpath ("/bin;",
-					      get_root_dir (), "/usr/bin;",
-					      old_path, 0)));
-
-  SetEnvironmentVariable ("CYGWINROOT", get_root_dir ());
+  init_run_script ();
   SetCurrentDirectory (get_root_dir ());
-
-  verinfo.dwOSVersionInfoSize = sizeof (verinfo);
-  GetVersionEx (&verinfo);
-
-  switch (verinfo.dwPlatformId)
-    {
-    case VER_PLATFORM_WIN32_NT:
-      cmd = "cmd.exe";
-      break;
-    case VER_PLATFORM_WIN32_WINDOWS:
-      cmd = "command.com";
-      break;
-    default:
-      cmd = "command.com";
-      break;
-    }
-
-  find (cygpath ("/etc/postinstall", 0), each);
+  find (cygpath ("/etc/postinstall", 0), run_script_in_etc_postinstall);
 }
