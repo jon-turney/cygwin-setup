@@ -1,3 +1,5 @@
+//Microsoft Developer Studio generated resource script.
+//
 /*
  * Copyright (c) 2000, Red Hat, Inc.
  *
@@ -12,10 +14,6 @@
  * Written by DJ Delorie <dj@cygnus.com>
  *
  */
-
-
-//Microsoft Developer Studio generated resource script.
-//
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -70,18 +68,20 @@ BEGIN
     DEFPUSHBUTTON   "Next -->",IDOK,100,75,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
     EDITTEXT        IDC_ROOT_DIR,55,25,127,12,ES_AUTOHSCROLL
-    LTEXT           "Select install root directory",IDC_STATIC,55,15,135,11
+    LTEXT           "Select install root directory",IDC_STATIC,55,15,85,11
     PUSHBUTTON      "<-- Back",IDC_BACK,55,75,45,15
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
-    PUSHBUTTON      "Browse...",IDC_ROOT_BROWSE,55,40,45,15
-    CONTROL         "Text",IDC_ROOT_TEXT,"Button",BS_AUTORADIOBUTTON,120,45,
-                    30,10
-    CONTROL         "Binary",IDC_ROOT_BINARY,"Button",BS_AUTORADIOBUTTON,120,
-                    55,35,10
-    CONTROL         "System",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP,160,45,39,10
-    CONTROL         "User",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON,160,55,
-                    31,10
+    PUSHBUTTON      "Browse...",IDC_ROOT_BROWSE,150,10,34,14
+    CONTROL         "DOS",IDC_ROOT_TEXT,"Button",BS_AUTORADIOBUTTON,125,45,
+                    31,8
+    CONTROL         "Unix",IDC_ROOT_BINARY,"Button",BS_AUTORADIOBUTTON,160,
+                    45,30,8
+    CONTROL         "All",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,125,60,25,8
+    CONTROL         "Just Me",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON,160,
+                    60,50,8
+    RTEXT           "Default Text File Type :",IDC_STATIC,20,45,100,8
+    RTEXT           "Install For :",IDC_STATIC,55,60,65,8
 END
 
 IDD_SITE DIALOG DISCARDABLE  0, 0, 215, 95
@@ -258,13 +258,13 @@ BEGIN
     IDS_ERR_RENAME          "Can't rename %s to %s: %s"
     IDS_NOTHING_INSTALLED   "Nothing needed to be installed"
     IDS_INSTALL_COMPLETE    "Installation Complete"
-    IDS_DOWNLOAD_COMPLETE   "Download Complete"
 END
 
 STRINGTABLE DISCARDABLE 
 BEGIN
     IDS_ERR_OPEN_READ       "Can't open %s for reading: %s"
     IDS_ROOT_ABSOLUTE       "The install directory must be absolute, with both a drive letter and leading slash, like C:\\Cygwin"
+    IDS_DOWNLOAD_COMPLETE   "Download Complete"
 END
 
 #endif    // English (U.S.) resources

@@ -10,8 +10,6 @@ files in the old install that aren't also in the new install.
 
 add netio subclasses for direct HTTP, FTP and proxy connections
 
-change nio-ie5 to auto-load the wininet DLL
-
 choose.cc: add a dialog to let user choose what to install and
 which versions to install
 
@@ -24,8 +22,6 @@ user, let them read them if they want.
 main.cc: add splash screen and copyright notice
 
 Add uninstall capability
-
-In the root dialog, explain the various options better.
 
 Delay the user/password prompts (web proxy) until we get a "proxy
 password required" error.

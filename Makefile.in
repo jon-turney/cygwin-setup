@@ -70,6 +70,7 @@ ALL_LDFLAGS	:= ${filter-out -I%, \
 PROGS	:= setup$(EXEEXT)
 
 OBJS = \
+	autoload.o \
 	choose.o \
 	concat.o \
 	desktop.o \

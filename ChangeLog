@@ -1,5 +1,11 @@
 2000-07-18  DJ Delorie  <dj@redhat.com>
 
+	* autoload.c: new, autoload dlls that might not be available.
+	* Makefile.in (OBJS): add autoload.o
+
+	* res.rc: rewrite root options (text/binary, system/user) to be
+	more obvious.
+
 	* site.cc (get_site_list): trim displayed URL, sort by domain
 
 	* net.cc (do_net): make IE5 default to checked, for now
