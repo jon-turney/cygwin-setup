@@ -1,3 +1,7 @@
+2003-01-15  Max Bowsher  <maxb@ukf.net>
+
+	* mount.cc [MAINTAINER_FEATURES]: Add --override-registry-name option.
+
 2002-12-11  Abraham Backus  <abraham@backus.com>
 
 	* nio-http.cc (NetIO_HTTP::NetIO_HTTP): Leave port out of Host header,

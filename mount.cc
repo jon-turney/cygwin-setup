@@ -74,6 +74,14 @@ enum
 
 #include "String++.h"
 
+#ifdef MAINTAINER_FEATURES
+#include "getopt++/GetOption.h"
+#include "getopt++/StringOption.h"
+static StringOption CygwinRegistryNameOption (CYGWIN_INFO_CYGWIN_REGISTRY_NAME, '#', "override-registry-name", "Override registry name to allow parallel installs for testing purposes");
+#undef CYGWIN_INFO_CYGWIN_REGISTRY_NAME
+#define CYGWIN_INFO_CYGWIN_REGISTRY_NAME (((std::string)CygwinRegistryNameOption).c_str())
+#endif
+
 /* Used when treating / and \ as equivalent. */
 #define SLASH_P(ch) \
     ({ \
@@ -137,7 +145,7 @@ create_mount (String const posix, String const win32, int istext,
 
   remove_mount (posix);
 
-  sprintf (buf, "Software\\%s\\%s\\%s\\%s",
+  snprintf (buf, sizeof(buf), "Software\\%s\\%s\\%s\\%s",
 	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.cstr_oneuse ());
@@ -166,7 +174,7 @@ remove1 (HKEY rkey, String const posix)
 {
   char buf[1000];
 
-  sprintf (buf, "Software\\%s\\%s\\%s\\%s",
+  snprintf (buf, sizeof(buf), "Software\\%s\\%s\\%s\\%s",
 	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.cstr_oneuse ());
@@ -223,7 +231,7 @@ set_cygdrive_flags (int istext, int issystem)
   int found_system = 0;
 
   char buf[1000];
-  sprintf (buf, "Software\\%s\\%s\\%s",
+  snprintf (buf, sizeof(buf), "Software\\%s\\%s\\%s",
 	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME);
@@ -366,7 +374,7 @@ read_mounts ()
      arbitrarily large number of mounts. */
   for (int issystem = 0; issystem <= 1; issystem++)
     {
-      sprintf (buf, "Software\\%s\\%s\\%s",
+      snprintf (buf, sizeof(buf), "Software\\%s\\%s\\%s",
 	       CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
 	       CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
 	       CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME);
