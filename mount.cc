@@ -152,8 +152,9 @@ create_mount (String const posix, String const win32, int istext,
 	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.cstr_oneuse ());
 
   HKEY kr = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
-  if (rv = RegCreateKeyEx (kr, buf, 0, (char *)"Cygwin", 0, KEY_ALL_ACCESS,
-		      0, &key, &disposition) != ERROR_SUCCESS)
+  rv = RegCreateKeyEx (kr, buf, 0, (char *)"Cygwin", 0, KEY_ALL_ACCESS,
+                       0, &key, &disposition);
+  if (rv != ERROR_SUCCESS)
     fatal ("mount", rv);
 
   RegSetValueEx (key, "native", 0, REG_SZ, (BYTE *) win32.cstr_oneuse (),
