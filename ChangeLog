@@ -14,6 +14,7 @@
 	* install.cc: ditto
 	* main.cc: add postinstall, exit_msg
 	* resource.h: add postinstall
+	* README: add more to-do items
 
 2000-07-12  DJ Delorie  <dj@cygnus.com>
 

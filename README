@@ -24,3 +24,20 @@ user, let them read them if they want.
 main.cc: add splash screen and copyright notice
 
 Add uninstall capability
+
+In the root dialog, explain the various options better.
+
+Delay the user/password prompts (web proxy) until we get a "proxy
+password required" error.
+
+Add support for http passwords as well as proxy passwords.
+
+Make the site listbox bigger.
+
+Sort site list by site (NOT url, and skip the ftp. or www. prefix).
+
+download.cc: add a "total progress" indicator, like the install one.
+
+Enhance the setup.ini parser's error messages.
+
+If a site fails, return to the site list to pick another one.
