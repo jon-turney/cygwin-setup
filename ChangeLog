@@ -1,3 +1,7 @@
+2003-05-07  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* RECTWrapper.h: New file.
+
 2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
 
 	* script.cc (Script::extension): Extract method from Script::run.
