@@ -23,6 +23,7 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include <algorithm>
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -230,7 +231,7 @@ compress_gz::read (void *buffer, size_t len)
 
   if (peeklen)
     {
-      ssize_t tmplen = min (peeklen, len);
+      ssize_t tmplen = std::min (peeklen, len);
       peeklen -= tmplen;
       memcpy (buffer, peekbuf, tmplen);
       memmove (peekbuf, peekbuf + tmplen, tmplen);

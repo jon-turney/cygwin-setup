@@ -20,6 +20,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 #endif
 
 #include <errno.h>
+#include <algorithm>
 
 #include "zlib/zlib.h"
 #include "io_stream.h"
@@ -45,7 +46,7 @@ ssize_t archive_tar_file::read (void *buffer, size_t len)
 {
   /* how many bytes do we want to give the user */
   int
-    want = min (len, state.file_length - state.file_offset);
+    want = std::min (len, state.file_length - state.file_offset);
   /* how many do we need to read after that to line up the file pointer */
   int
     roundup = (512 - (want % 512)) % 512;
@@ -84,7 +85,7 @@ ssize_t archive_tar_file::write (const void *buffer, size_t len)
 ssize_t archive_tar_file::peek (void *buffer, size_t len)
 {
   int
-    want = min (len, state.file_length - state.file_offset);
+    want = std::min (len, state.file_length - state.file_offset);
   if (want)
     {
       ssize_t
