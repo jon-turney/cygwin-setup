@@ -64,7 +64,8 @@ site_list_type::init (String const &newurl)
 
   
   dot = dots + strlen (dots);
-  char *dp = new char[2 * newurl.size() + 3];
+  char *dpsave, *dp = new char[2 * newurl.size() + 3];
+  dpsave = dp;
   while (dot != dots)
     {
       if (*dot == '.' || *dot == '/')
@@ -82,7 +83,7 @@ site_list_type::init (String const &newurl)
   strcpy (dp, dots);
   delete[] dots;
   key = String (dp);
-  delete[] dp;
+  delete[] dpsave;
 }
 
 site_list_type::site_list_type (String const &newurl)

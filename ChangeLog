@@ -1,3 +1,11 @@
+2003-03-26  Robert Collins  <rbtcollins@hotmail.com>
+
+	* mklink2.cc: Moved from mklink2.c to avoid 'not a prototype error'.
+	Make g++ compatible.
+	* mklink2.c: Remove.
+	* site.cc (site_list_type::init): Delete the correct memory address.
+	Thanks to Pavel Tsekov for tracking this down.
+
 2002-03-19  Christopher Faylor  <cgf@redhat.com>
 
 	* Makefile.in (setup_version.c): Need a preceding newline in version
