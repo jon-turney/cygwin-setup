@@ -1,5 +1,12 @@
 2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
 
+	* postinstall.cc (RunScript::operator()): Use new run syntax.
+	* script.h (Script::run): Eliminate to_log parameter.
+	* script.cc (Script::run): Ditto.
+	(run_script): Use new run syntax.
+
+2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
+
 	* script.cc (Script::run): Eliminate temp variable 'f2'.
 	Rename temp variable 'f2' to 'windowsName' for increased clarity.
 

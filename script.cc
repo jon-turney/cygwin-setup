@@ -199,16 +199,17 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
 void
 run_script (String const &dir, String const &fname)
 {
-  Script (dir + fname).run (TRUE);
+  Script (dir + fname).run ();
 }
 
 void
-Script::run(BOOL to_log) const
+Script::run() const
 {
   char *ext = strrchr (scriptName.cstr_oneuse(), '.');
   if (!ext)
     return;
 
+  BOOL to_log (TRUE);
   String log_name = "";
   if (to_log)
     {

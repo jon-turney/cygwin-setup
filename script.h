@@ -35,7 +35,7 @@ public:
   Script (String const &fileName);
   String baseName() const;
   String fullName() const;
-  void run(BOOL to_log = FALSE) const;
+  void run() const;
 private:
   String scriptName;
   static char const ETCPostinstall[];

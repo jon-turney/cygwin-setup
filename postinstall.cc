@@ -70,7 +70,7 @@ public:
   void operator() (Script const &aScript) 
     {
       Progress.SetText3 (aScript.fullName().cstr_oneuse());
-      aScript.run(TRUE);
+      aScript.run();
       ++_cnt;
       Progress.SetBar1 (_cnt, _num);
     }
