@@ -138,6 +138,8 @@ setup_SOURCES = \
 	compress_bz.h \
 	compress_gz.cc \
 	compress_gz.h \
+	ConnectionSetting.cc \
+	ConnectionSetting.h \
 	cygpackage.cc \
 	cygpackage.h \
 	desktop.cc \

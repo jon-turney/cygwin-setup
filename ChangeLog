@@ -1,5 +1,13 @@
 2003-07-30  Robert Collins  <rbtcollins@hotmail.com>
 
+	* ConnectionSetting.cc: New file, persist connection type selection.
+	* ConnectionSetting.h: Ditto.
+	* net.cc: Hold a ConnectionSetting instance to trigger the logic.
+	(NetPage::OnInit): Don't force net_method to any value.
+	* Makefile.am: Add new source files.
+	
+2003-07-30  Robert Collins  <rbtcollins@hotmail.com>
+
 	* SourceSetting.cc: New file, persist source selection.
 	* SourceSetting.h: Ditto.
 	* source.cc: Hold a Source setting instance to trigger the logic.

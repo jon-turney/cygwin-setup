@@ -33,9 +33,11 @@ static const char *cvsid =
 #include "net.h"
 #include "propsheet.h"
 #include "threebar.h"
+#include "ConnectionSetting.h"
 extern ThreeBarProgressPage Progress;
 
 static int rb[] = { IDC_NET_IE5, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
+static ConnectionSetting theSetting;
 
 void
 NetPage::CheckIfEnableNext ()
@@ -94,7 +96,8 @@ NetPage::OnInit ()
 {
   HWND h = GetHWND ();
 
-  net_method = IDC_NET_DIRECT;
+  if (!net_method)
+    net_method = IDC_NET_DIRECT;
   load_dialog (h);
   CheckIfEnableNext();
 
