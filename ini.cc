@@ -28,6 +28,7 @@ static const char *cvsid =
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <process.h>
 
 #include "ini.h"
 #include "resource.h"
@@ -44,6 +45,9 @@ static const char *cvsid =
 #include "find.h"
 
 #include "io_stream.h"
+
+#include "threebar.h"
+extern ThreeBarProgressPage Progress;
 
 unsigned int setup_timestamp = 0;
 char *setup_version = 0;
@@ -64,7 +68,7 @@ find_routine (char *path, unsigned int fsize)
   io_stream *ini_file = io_stream::open (concat ("file://", local_dir,"/", path, 0), "rb");
   if (!ini_file)
     {
-    note (IDS_SETUPINI_MISSING, path);
+    note (NULL, IDS_SETUPINI_MISSING, path);
     return;
     }
 
@@ -83,7 +87,7 @@ find_routine (char *path, unsigned int fsize)
 }
 
 static int
-do_local_ini ()
+do_local_ini (HWND owner)
 {
   local_ini = 0;
   find (local_dir, find_routine);
@@ -91,18 +95,18 @@ do_local_ini ()
 }
 
 static int
-do_remote_ini ()
+do_remote_ini (HWND owner)
 {
   size_t ini_count = 0;
+  
   for (size_t n = 1; n <= site_list.number (); n++)
     {
       io_stream *ini_file =
-	get_url_to_membuf (concat (site_list[n]->url, "/setup.ini", 0));
-      dismiss_url_status_dialog ();
+	get_url_to_membuf (concat (site_list[n]->url, "/setup.ini", 0), owner);
 
       if (!ini_file)
 	{
-	  note (IDS_SETUPINI_MISSING, site_list[n]->url);
+	  note (owner, IDS_SETUPINI_MISSING, site_list[n]->url);
 	  continue;
 	}
 
@@ -139,14 +143,14 @@ do_remote_ini ()
   return ini_count;
 }
 
-void
-do_ini (HINSTANCE h)
+static void
+do_ini_thread (HINSTANCE h, HWND owner)
 {
   size_t ini_count = 0;
   if (source == IDC_SOURCE_CWD)
-    ini_count = do_local_ini ();
+    ini_count = do_local_ini (owner);
   else
-    ini_count = do_remote_ini ();
+    ini_count = do_remote_ini (owner);
 
   if (ini_count == 0)
     {
@@ -171,7 +175,7 @@ do_ini (HINSTANCE h)
 	  if (old_timestamp && setup_timestamp
 	      && (old_timestamp > setup_timestamp))
 	    {
-	      int yn = yesno (IDS_OLD_SETUPINI);
+	      int yn = yesno (owner, IDS_OLD_SETUPINI);
 	      if (yn == IDNO)
 		exit_setup (1);
 	    }
@@ -197,11 +201,37 @@ do_ini (HINSTANCE h)
       char *ini_version = canonicalize_version (setup_version);
       char *our_version = canonicalize_version (version);
       if (strcmp (our_version, ini_version) < 0)
-	note (IDS_OLD_SETUP_VERSION, version, setup_version);
+	note (owner, IDS_OLD_SETUP_VERSION, version, setup_version);
     }
 
-  next_dialog = IDD_CHOOSE;
+  next_dialog = IDD_CHOOSER;
 }
+
+static void
+do_ini_thread_reflector(void* p)
+{
+	HANDLE *context;
+	context = (HANDLE*)p;
+
+	do_ini_thread((HINSTANCE)context[0], (HWND)context[1]);
+
+	// Tell the progress page that we're done downloading
+	Progress.PostMessage(WM_APP_SETUP_INI_DOWNLOAD_COMPLETE, 0, next_dialog);
+
+	_endthread();
+}
+
+static HANDLE context[2];
+
+void
+do_ini (HINSTANCE h, HWND owner)
+{
+	context[0] = h;
+	context[1] = owner;
+
+	_beginthread(do_ini_thread_reflector, 0, context);
+}
+
 
 extern int yylineno;
 

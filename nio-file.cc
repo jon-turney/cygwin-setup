@@ -45,7 +45,7 @@ NetIO (Purl)
       const char *err = strerror (errno);
       if (!err)
 	err = "(unknown error)";
-      note (IDS_ERR_OPEN_READ, path, err);
+      note (NULL, IDS_ERR_OPEN_READ, path, err);
     }
 }
 

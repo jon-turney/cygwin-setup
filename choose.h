@@ -16,6 +16,8 @@
 #ifndef _CHOOSE_H_
 #define _CHOOSE_H_
 
+#include "proppage.h"
+
 class Category;
 class packagemeta;
 
@@ -84,61 +86,83 @@ public:
   virtual void insert (pick_line &) = 0;
   // Never allocate to key, always allocated elsewhere
   char const *key;
-  virtual ~pick_line () {};
+    virtual ~ pick_line ()
+  {
+  };
 protected:
-  pick_line () {};
+  pick_line ()
+  {
+  };
   pick_line (pick_line const &);
-  pick_line &operator= (pick_line const &);
+  pick_line & operator= (pick_line const &);
 };
 
-class pick_pkg_line : public pick_line
+class pick_pkg_line:public pick_line
 {
 public:
-  pick_pkg_line (packagemeta &apkg) : pkg (apkg) {
-  key = apkg.key;};
+  pick_pkg_line (packagemeta & apkg):pkg (apkg)
+  {
+    key = apkg.key;
+  };
   virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
   virtual int click (int const myrow, int const ClickedRow, int const x);
-  virtual int itemcount () const {return 1;}
-  virtual bool IsContainer (void) const {return false;}
-  virtual void insert (pick_line &) {};
+  virtual int itemcount () const
+  {
+    return 1;
+  }
+  virtual bool IsContainer (void) const
+  {
+    return false;
+  }
+  virtual void insert (pick_line &)
+  {
+  };
 private:
   packagemeta & pkg;
 };
 
-class topbucket : public pick_line
+class topbucket:public pick_line
 {
 public:
-  topbucket () {
-    key = 0;};
+  topbucket ()
+  {
+    key = 0;
+  };
   virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
   virtual int click (int const myrow, int const ClickedRow, int const x);
-  virtual int itemcount () const 
+  virtual int itemcount () const
   {
     int t = 0;
     for (size_t n = 1; n <= bucket.number (); n++)
         t += bucket[n]->itemcount ();
-    return t;
+      return t;
   };
-  virtual bool IsContainer (void) const {return true;}
-  virtual void insert (pick_line &aLine) 
+  virtual bool IsContainer (void) const
+  {
+    return true;
+  }
+  virtual void insert (pick_line & aLine)
   {
     bucket.registerbyobject (aLine);
   }
   virtual void empty (void);
-  virtual ~topbucket ();
+  virtual ~ topbucket ();
 protected:
   topbucket (topbucket const &);
-  topbucket &operator= (topbucket const &);
+  topbucket & operator= (topbucket const &);
 private:
-  list <pick_line, char const *, strcasecmp> bucket;
+  list < pick_line, char const *, strcasecmp > bucket;
 };
-  
 
-class pick_category_line : public topbucket
+
+class pick_category_line:public topbucket
 {
 public:
-  pick_category_line (Category & _cat, bool aBool = true) : cat (_cat), collapsed (aBool) {
-  key = _cat.key;};
+  pick_category_line (Category & _cat, bool aBool =
+		      true):cat (_cat), collapsed (aBool)
+  {
+    key = _cat.key;
+  };
   virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
   virtual int click (int const myrow, int const ClickedRow, int const x);
   virtual int itemcount () const
@@ -147,16 +171,16 @@ public:
       return 1;
     int t = 1;
     for (size_t n = 1; n <= bucket.number (); n++)
-      t += bucket[n]->itemcount ();
-    return t;
+        t += bucket[n]->itemcount ();
+      return t;
   };
-  virtual void insert (pick_line &aLine)
+  virtual void insert (pick_line & aLine)
   {
-      bucket.registerbyobject (aLine);
+    bucket.registerbyobject (aLine);
   }
-  private:
-  Category &cat;
-  list <pick_line, char const *, strcasecmp> bucket;
+private:
+  Category & cat;
+  list < pick_line, char const *, strcasecmp > bucket;
   bool collapsed;
 };
 
@@ -186,14 +210,35 @@ public:
 //  int nlines;
   topbucket contents;
   void scroll (HWND hwnd, int which, int *var, int code);
-  HWND ListHeader (void) const {return listheader;}
+  HWND ListHeader (void) const
+  {
+    return listheader;
+  }
 
 private:
-  HWND listview;
+    HWND listview;
   HWND listheader;
   views view_mode;
   void set_headers ();
   void init_headers (HDC dc);
+
 };
+
+class ChooserPage:public PropertyPage
+{
+public:
+  ChooserPage ()
+  {
+  };
+  virtual ~ ChooserPage ()
+  {
+  };
+
+  virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+  bool Create ();
+  virtual void OnActivate ();
+};
+
 #endif /* __cplusplus */
 #endif /* _CHOOSE_H_ */

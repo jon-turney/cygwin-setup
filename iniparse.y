@@ -148,7 +148,7 @@ categories
 void
 add_correct_version()
 {
-    int merged = 0;
+	int merged = 0;
     for (size_t n = 1; !merged && n <= cp->versions.number (); n++)
       if (!strcasecmp(cp->versions[n]->Canonical_version(), cpv->Canonical_version()))
       {

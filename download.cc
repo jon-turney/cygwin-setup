@@ -25,6 +25,7 @@ static const char *cvsid =
 
 #include <stdio.h>
 #include <unistd.h>
+#include <process.h>
 
 #include "resource.h"
 #include "msg.h"
@@ -46,6 +47,9 @@ static const char *cvsid =
 #include "package_source.h"
 
 #include "rfc1738.h"
+
+#include "threebar.h"
+extern ThreeBarProgressPage Progress;
 
 /* 0 on failure
  */
@@ -95,7 +99,7 @@ check_for_cached (packagesource & pkgsource)
 
 /* download a file from a mirror site to the local cache. */
 static int
-download_one (packagesource & pkgsource)
+download_one (packagesource & pkgsource, HWND owner)
 {
   if (check_for_cached (pkgsource) && source != IDC_SOURCE_DOWNLOAD)
     return 0;
@@ -106,14 +110,15 @@ download_one (packagesource & pkgsource)
   for (size_t n = 1; n <= pkgsource.sites.number () && !success; n++)
     {
       const char *local = concat (local_dir, "/",
-				  rfc1738_escape_part (pkgsource.sites[n]->key), "/",
+				  rfc1738_escape_part (pkgsource.sites[n]->
+						       key), "/",
 				  pkgsource.Canonical (), 0);
       io_stream::mkpath_p (PATH_TO_FILE, concat ("file://", local, 0));
 
       if (get_url_to_file
 	  (concat
 	   (pkgsource.sites[n]->key, "/", pkgsource.Canonical (), 0),
-	   concat (local, ".tmp", 0), pkgsource.size))
+	   concat (local, ".tmp", 0), pkgsource.size, owner))
 	{
 	  /* FIXME: note new source ? */
 	  continue;
@@ -146,8 +151,8 @@ download_one (packagesource & pkgsource)
   return 1;
 }
 
-void
-do_download (HINSTANCE h)
+static void
+do_download_thread (HINSTANCE h, HWND owner)
 {
   int errors = 0;
   total_download_bytes = 0;
@@ -157,19 +162,19 @@ do_download (HINSTANCE h)
   /* calculate the amount needed */
   for (size_t n = 1; n < db.packages.number (); n++)
     {
-      packagemeta &pkg = * db.packages[n];
+      packagemeta & pkg = *db.packages[n];
       if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
-      {
-	packageversion *version = pkg.desired;
-	if (!
-	    (check_for_cached (version->bin)
-	     && source != IDC_SOURCE_DOWNLOAD))
-	  total_download_bytes += version->bin.size;
-	if (!
-	    (check_for_cached (version->src)
-	     && source != IDC_SOURCE_DOWNLOAD))
-	  total_download_bytes += version->src.size;
-      }
+	{
+	  packageversion *version = pkg.desired;
+	  if (!
+	      (check_for_cached (version->bin)
+	       && source != IDC_SOURCE_DOWNLOAD) && pkg.desired->binpicked)
+	    total_download_bytes += version->bin.size;
+	  if (!
+	      (check_for_cached (version->src)
+	       && source != IDC_SOURCE_DOWNLOAD) && pkg.desired->srcpicked)
+	    total_download_bytes += version->src.size;
+	}
     }
 
   /* and do the download. FIXME: This here we assign a new name for the cached version
@@ -177,28 +182,26 @@ do_download (HINSTANCE h)
    */
   for (size_t n = 1; n < db.packages.number (); n++)
     {
-      packagemeta &pkg = * db.packages[n];
-    if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
-      {
-	int e = 0;
-	packageversion *version = pkg.desired;
-	if (version->binpicked)
-	  e += download_one (version->bin);
-	if (version->srcpicked)
-	  e += download_one (version->src);
-	errors += e;
+      packagemeta & pkg = *db.packages[n];
+      if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
+	{
+	  int e = 0;
+	  packageversion *version = pkg.desired;
+	  if (version->binpicked)
+	    e += download_one (version->bin, owner);
+	  if (version->srcpicked)
+	    e += download_one (version->src, owner);
+	  errors += e;
 #if 0
-	if (e)
-	  pkg->action = ACTION_ERROR;
+	  if (e)
+	    pkg->action = ACTION_ERROR;
 #endif
-      }
+	}
     }
-
-  dismiss_url_status_dialog ();
 
   if (errors)
     {
-      if (yesno (IDS_DOWNLOAD_INCOMPLETE) == IDYES)
+      if (yesno (owner, IDS_DOWNLOAD_INCOMPLETE) == IDYES)
 	{
 	  next_dialog = IDD_SITE;
 	  return;
@@ -215,4 +218,29 @@ do_download (HINSTANCE h)
     }
   else
     next_dialog = IDD_S_INSTALL;
+}
+
+static void
+do_download_reflector (void *p)
+{
+  HANDLE *context;
+  context = (HANDLE *) p;
+
+  do_download_thread ((HINSTANCE) context[0], (HWND) context[1]);
+
+  // Tell the progress page that we're done downloading
+  Progress.PostMessage (WM_APP_DOWNLOAD_THREAD_COMPLETE, 0, next_dialog);
+
+  _endthread ();
+}
+
+static HANDLE context[2];
+
+void
+do_download (HINSTANCE h, HWND owner)
+{
+  context[0] = h;
+  context[1] = owner;
+
+  _beginthread (do_download_reflector, 0, context);
 }

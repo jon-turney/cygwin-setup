@@ -44,7 +44,7 @@ NetIO (_url)
       HINSTANCE h = LoadLibrary ("wininet.dll");
       if (!h)
 	{
-	  note (IDS_WININET);
+	  note (NULL, IDS_WININET);
 	  connection = 0;
 	  return;
 	}
@@ -112,14 +112,14 @@ try_again:
 	  if (type == 401)	/* authorization required */
 	    {
 	      flush_io ();
-	      get_auth ();
+	      get_auth (NULL);
 	      resend = 1;
 	      goto try_again;
 	    }
 	  else if (type == 407)	/* proxy authorization required */
 	    {
 	      flush_io ();
-	      get_proxy_auth ();
+	      get_proxy_auth (NULL);
 	      resend = 1;
 	      goto try_again;
 	    }

@@ -33,6 +33,8 @@ static const char *cvsid =
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <process.h>
+
 #include "zlib/zlib.h"
 
 #include "resource.h"
@@ -61,109 +63,31 @@ static const char *cvsid =
 
 #include "port.h"
 
-static HWND ins_dialog = 0;
-static HWND ins_action = 0;
-static HWND ins_pkgname = 0;
-static HWND ins_filename = 0;
-static HWND ins_pprogress = 0;
-static HWND ins_iprogress = 0;
-static HWND ins_diskfull = 0;
-static HANDLE init_event;
+#include "threebar.h"
+extern ThreeBarProgressPage Progress;
 
 static int total_bytes = 0;
 static int total_bytes_sofar = 0;
 static int package_bytes = 0;
 
-static bool
-dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
-{
-  switch (id)
-    {
-    case IDCANCEL:
-      exit_setup (1);
-    }
-  return 0;
-}
-
-static BOOL CALLBACK
-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
-{
-  switch (message)
-    {
-    case WM_INITDIALOG:
-      ins_dialog = h;
-      ins_action = GetDlgItem (h, IDC_INS_ACTION);
-      ins_pkgname = GetDlgItem (h, IDC_INS_PKG);
-      ins_filename = GetDlgItem (h, IDC_INS_FILE);
-      ins_pprogress = GetDlgItem (h, IDC_INS_PPROGRESS);
-      ins_iprogress = GetDlgItem (h, IDC_INS_IPROGRESS);
-      ins_diskfull = GetDlgItem (h, IDC_INS_DISKFULL);
-      SetEvent (init_event);
-      return TRUE;
-    case WM_COMMAND:
-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
-    }
-  return FALSE;
-}
-
-static WINAPI DWORD
-dialog (void *)
-{
-  int rv = 0;
-  MSG m;
-  HWND ins_dialog = CreateDialog (hinstance, MAKEINTRESOURCE (IDD_INSTATUS),
-				  0, dialog_proc);
-  if (ins_dialog == 0)
-    fatal ("create dialog");
-  ShowWindow (ins_dialog, SW_SHOWNORMAL);
-  UpdateWindow (ins_dialog);
-  while (GetMessage (&m, 0, 0, 0) > 0)
-    {
-      TranslateMessage (&m);
-      DispatchMessage (&m);
-    }
-  return rv;
-}
-
 static void
 init_dialog ()
 {
-  if (ins_dialog == 0)
-    {
-      DWORD tid;
-      HANDLE thread;
-      init_event = CreateEvent (0, 0, 0, 0);
-      thread = CreateThread (0, 0, dialog, 0, 0, &tid);
-      WaitForSingleObject (init_event, 10000);
-      CloseHandle (init_event);
-      SendMessage (ins_pprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
-      SendMessage (ins_iprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
-      SendMessage (ins_diskfull, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
-    }
-
-  SetWindowText (ins_pkgname, "");
-  SetWindowText (ins_filename, "");
-  SendMessage (ins_pprogress, PBM_SETPOS, (WPARAM) 0, 0);
-  SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) 0, 0);
-  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) 0, 0);
-  ShowWindow (ins_dialog, SW_SHOWNORMAL);
+  Progress.SetText2 ("");
+  Progress.SetText3 ("");
 }
 
 static void
 progress (int bytes)
 {
-  int perc;
-
-  if (package_bytes > 100)
+  if (package_bytes > 0)
     {
-      perc = bytes / (package_bytes / 100);
-      SendMessage (ins_pprogress, PBM_SETPOS, (WPARAM) perc, 0);
+      Progress.SetBar1 (bytes, package_bytes);
     }
 
-  if (total_bytes > 100)
+  if (total_bytes > 0)
     {
-      perc = (total_bytes_sofar + bytes) / (total_bytes / 100);
-      SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) perc, 0);
+      Progress.SetBar2 (total_bytes_sofar + bytes, total_bytes);
     }
 }
 
@@ -192,11 +116,11 @@ static int num_installs, num_uninstalls;
 static void
 uninstall_one (packagemeta & pkgm)
 {
-      SetWindowText (ins_pkgname, pkgm.name);
-      SetWindowText (ins_action, "Uninstalling...");
-      log (0, "Uninstalling %s", pkgm.name);
-      pkgm.uninstall ();
-      num_uninstalls++;
+  Progress.SetText1 ("Uninstalling...");
+  Progress.SetText2 (pkgm.name);
+  log (0, "Uninstalling %s", pkgm.name);
+  pkgm.uninstall ();
+  num_uninstalls++;
 }
 
 
@@ -207,10 +131,10 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 		    char const *prefix, package_type_t type)
 {
   int errors = 0;
-  SetWindowText (ins_pkgname, source.Base ());
+  Progress.SetText2 (source.Base ());
   if (!io_stream::exists (source.Cached ()))
     {
-      note (IDS_ERR_OPEN_READ, source.Cached (), "No such file");
+      note (NULL, IDS_ERR_OPEN_READ, source.Cached (), "No such file");
       return 1;
     }
   io_stream *lst = 0;
@@ -232,7 +156,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 
   char msg[64];
   strcpy (msg, "Installing");
-  SetWindowText (ins_action, msg);
+  Progress.SetText1 (msg);
   log (0, "%s%s", msg, source.Cached ());
   io_stream *tmp = io_stream::open (source.Cached (), "rb");
   archive *thefile = 0;
@@ -254,7 +178,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 	    lst->write (concat (fn, "\n", 0), strlen (fn) + 1);
 
 	  /* FIXME: concat leaks memory */
-	  SetWindowText (ins_filename, concat (prefix, fn, 0));
+	  Progress.SetText3 (concat (prefix, fn, 0));
 	  log (LOG_BABBLE, "Installing file %s%s", prefix, fn);
 	  if (archive::extract_file (thefile, prefix) != 0)
 	    {
@@ -274,7 +198,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
   progress (0);
 
   int df = diskfull (get_root_dir ());
-  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
+  Progress.SetBar3 (df);
 
   if (lst)
     delete lst;
@@ -289,17 +213,17 @@ install_one (packagemeta & pkg)
   int errors = 0;
 
   if (pkg.desired->binpicked)
-  {
-    errors +=
-      install_one_source (pkg, pkg.desired->bin, "cygfile:///",
-			  package_binary);
-    if (!errors)
-      pkg.installed = pkg.desired;
-  }
-  if (pkg.desired->srcpicked)
+    {
       errors +=
-	    install_one_source (pkg, pkg.desired->src, "cygfile:///usr/src",
-		                        package_source);
+	install_one_source (pkg, pkg.desired->bin, "cygfile:///",
+			    package_binary);
+      if (!errors)
+	pkg.installed = pkg.desired;
+    }
+  if (pkg.desired->srcpicked)
+    errors +=
+      install_one_source (pkg, pkg.desired->src, "cygfile:///usr/src",
+			  package_source);
 
   /* FIXME: make a upgrade method and reinstate this */
 #if 0
@@ -375,8 +299,8 @@ check_for_old_cygwin ()
   return;
 }
 
-void
-do_install (HINSTANCE h)
+static void
+do_install_thread (HINSTANCE h, HWND owner)
 {
   int i;
   int errors = 0;
@@ -398,15 +322,13 @@ do_install (HINSTANCE h)
   io_stream *utmp = io_stream::open ("cygfile:///var/run/utmp", "wb");
   delete utmp;
 
-  dismiss_url_status_dialog ();
-
   init_dialog ();
 
   total_bytes = 0;
   total_bytes_sofar = 0;
 
   int df = diskfull (get_root_dir ());
-  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
+  Progress.SetBar3 (df);
 
   int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
@@ -419,27 +341,26 @@ do_install (HINSTANCE h)
   packagedb db;
   for (size_t n = 1; n < db.packages.number (); n++)
     {
-      packagemeta &pkg = * db.packages[n];
+      packagemeta & pkg = *db.packages[n];
 
-    if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
-      {
-	if (pkg.desired->srcpicked)
-	  total_bytes += pkg.desired->src.size;
-	if (pkg.desired->binpicked)
-	  total_bytes += pkg.desired->bin.size;
-      }
+      if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
+	{
+	  if (pkg.desired->srcpicked)
+	    total_bytes += pkg.desired->src.size;
+	  if (pkg.desired->binpicked)
+	    total_bytes += pkg.desired->bin.size;
+	}
     }
 
   for (size_t n = 1; n < db.packages.number (); n++)
     {
-      packagemeta &pkg = * db.packages[n];
+      packagemeta & pkg = *db.packages[n];
       if (pkg.installed && (!pkg.desired || pkg.desired != pkg.installed))
 	{
 	  uninstall_one (pkg);
 	}
 
-      if (pkg.desired
-	  && (pkg.desired->srcpicked || pkg.desired->binpicked))
+      if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
 	{
 	  int e = 0;
 	  e += install_one (pkg);
@@ -450,15 +371,13 @@ do_install (HINSTANCE h)
 	}
     }				// end of big package loop
 
-  ShowWindow (ins_dialog, SW_HIDE);
-
   int temperr;
   if ((temperr = db.flush ()))
     {
       const char *err = strerror (temperr);
       if (!err)
 	err = "(unknown error)";
-      fatal (IDS_ERR_OPEN_WRITE, err);
+      fatal (owner, IDS_ERR_OPEN_WRITE, err);
     }
 
   if (!errors)
@@ -478,4 +397,29 @@ do_install (HINSTANCE h)
     exit_msg = IDS_INSTALL_INCOMPLETE;
   else
     exit_msg = IDS_INSTALL_COMPLETE;
+}
+
+static void
+do_install_reflector (void *p)
+{
+  HANDLE *context;
+  context = (HANDLE *) p;
+
+  do_install_thread ((HINSTANCE) context[0], (HWND) context[1]);
+
+  // Tell the progress page that we're done downloading
+  Progress.PostMessage (WM_APP_INSTALL_THREAD_COMPLETE);
+
+  _endthread ();
+}
+
+static HANDLE context[2];
+
+void
+do_install (HINSTANCE h, HWND owner)
+{
+  context[0] = h;
+  context[1] = owner;
+
+  _beginthread (do_install_reflector, 0, context);
 }

@@ -31,6 +31,8 @@ static const char *cvsid =
 #include "log.h"
 #include "package_db.h"
 
+#include "source.h"
+
 static int rb[] =
   { IDC_SOURCE_NETINST, IDC_SOURCE_DOWNLOAD, IDC_SOURCE_CWD, 0 };
 
@@ -45,7 +47,8 @@ save_dialog (HWND h)
 {
   source = rbget (h, rb);
   packagedb db;
-  db.task = source == IDC_SOURCE_DOWNLOAD ? PackageDB_Download : PackageDB_Install;
+  db.task =
+    source == IDC_SOURCE_DOWNLOAD ? PackageDB_Download : PackageDB_Install;
 }
 
 static BOOL
@@ -60,65 +63,61 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       save_dialog (h);
       break;
 
-    case IDOK:
-      save_dialog (h);
-      if (source == IDC_SOURCE_DOWNLOAD)
-	NEXT (IDD_LOCAL_DIR);
-      else
-	NEXT (IDD_ROOT);
-      break;
-
-    case IDC_BACK:
-      save_dialog (h);
-      NEXT (0);
-      break;
-
-    case IDCANCEL:
-      NEXT (0);
-      break;
-
     default:
       break;
     }
   return 0;
 }
 
-static BOOL CALLBACK
-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+bool
+SourcePage::Create ()
 {
-  switch (message)
-    {
-    case WM_INITDIALOG:
-      load_dialog (h);
-      // Check to see if any radio buttons are selected. If not, select a default.
-      if (
-	  (!SendMessage
-	   (GetDlgItem (h, IDC_SOURCE_DOWNLOAD), BM_GETCHECK, 0,
-	    0) == BST_CHECKED)
-	  && (!SendMessage (GetDlgItem (h, IDC_SOURCE_CWD), BM_GETCHECK, 0, 0)
-	      == BST_CHECKED))
-	{
-	  SendMessage (GetDlgItem (h, IDC_SOURCE_NETINST), BM_SETCHECK,
-		       BST_CHECKED, 0);
-	}
-      return FALSE;
-    case WM_COMMAND:
-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
-    }
-  return FALSE;
+  return PropertyPage::Create (NULL, dialog_cmd, IDD_SOURCE);
 }
 
 void
-do_source (HINSTANCE h)
+SourcePage::OnActivate ()
 {
-  int rv = 0;
-  /* source = IDC_SOURCE_CWD; */
   if (!source)
     source = IDC_SOURCE_NETINST;
-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_SOURCE), 0, dialog_proc);
-  if (rv == -1)
-    fatal (IDS_DIALOG_FAILED);
+  load_dialog (GetHWND ());
+  // Check to see if any radio buttons are selected. If not, select a default.
+  if ((!SendMessage
+       (GetDlgItem (IDC_SOURCE_DOWNLOAD), BM_GETCHECK, 0,
+	0) == BST_CHECKED)
+      && (!SendMessage (GetDlgItem (IDC_SOURCE_CWD), BM_GETCHECK, 0, 0)
+	  == BST_CHECKED))
+    {
+      SendMessage (GetDlgItem (IDC_SOURCE_NETINST), BM_SETCHECK,
+		   BST_CHECKED, 0);
+    }
+}
 
+long
+SourcePage::OnNext ()
+{
+  HWND h = GetHWND ();
+
+  save_dialog (h);
+  if (source == IDC_SOURCE_DOWNLOAD)
+    {
+      // If all we're doing is downloading,skip the root directory page
+      return IDD_LOCAL_DIR;
+    }
+
+  return 0;
+}
+
+long
+SourcePage::OnBack ()
+{
+  save_dialog (GetHWND ());
+  return 0;
+}
+
+void
+SourcePage::OnDeactivate ()
+{
   log (0, "source: %s",
        (source == IDC_SOURCE_DOWNLOAD) ? "download" :
        (source == IDC_SOURCE_NETINST) ? "network install" : "from cwd");

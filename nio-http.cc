@@ -148,14 +148,14 @@ retry_get:
     }
   if (code == 401)		/* authorization required */
     {
-      get_auth ();
+      get_auth (NULL);
       delete
 	s;
       goto retry_get;
     }
   if (code == 407)		/* proxy authorization required */
     {
-      get_proxy_auth ();
+      get_proxy_auth (NULL);
       delete
 	s;
       goto retry_get;
@@ -163,7 +163,7 @@ retry_get:
   if (code == 500		/* ftp authentication through proxy required */
       && net_method == IDC_NET_PROXY && !strncmp (url, "ftp://", 6))
     {
-      get_ftp_auth ();
+      get_ftp_auth (NULL);
       if (net_ftp_user && net_ftp_passwd)
 	{
 	  delete

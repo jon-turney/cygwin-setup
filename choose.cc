@@ -36,6 +36,7 @@ static const char *cvsid =
 #include <stdlib.h>
 #include <io.h>
 #include <ctype.h>
+#include <process.h>
 
 #include "dialog.h"
 #include "resource.h"
@@ -47,6 +48,7 @@ static const char *cvsid =
 #include "find.h"
 #include "filemanip.h"
 #include "io_stream.h"
+#include "propsheet.h"
 #include "choose.h"
 #include "category.h"
 
@@ -55,6 +57,8 @@ static const char *cvsid =
 #include "package_version.h"
 
 #include "port.h"
+#include "threebar.h"
+extern ThreeBarProgressPage Progress;
 
 #define alloca __builtin_alloca
 
@@ -690,9 +694,7 @@ HWND DoCreateHeader (HWND hwndParent);
 view::view (views _mode, HWND lv):listview (lv)
 {
 
-  HDC
-    dc =
-    GetDC (listview);
+  HDC dc = GetDC (listview);
   sysfont = GetStockObject (DEFAULT_GUI_FONT);
   SelectObject (dc, sysfont);
   GetTextMetrics (dc, &tm);
@@ -711,20 +713,15 @@ view::view (views _mode, HWND lv):listview (lv)
   if (row_height < irh)
     row_height = irh;
 
-  RECT
-    rcParent;
-  HDLAYOUT
-    hdl;
-  WINDOWPOS
-    wp;
+  RECT rcParent;
+  HDLAYOUT hdl;
+  WINDOWPOS wp;
 
   // Ensure that the common control DLL is loaded, and then create
   // the header control.
-  INITCOMMONCONTROLSEX
-    controlinfo = {
-    sizeof (INITCOMMONCONTROLSEX),
-    ICC_LISTVIEW_CLASSES
-  };
+  INITCOMMONCONTROLSEX controlinfo =
+  {
+  sizeof (INITCOMMONCONTROLSEX), ICC_LISTVIEW_CLASSES};
   InitCommonControlsEx (&controlinfo);
 
   if ((listheader = CreateWindowEx (0, WC_HEADER, (LPCTSTR) NULL,
@@ -908,10 +905,12 @@ view::insert_pkg (packagemeta & pkg)
 void
 view::insert_category (Category * cat, bool collapsed)
 {
+
   pick_category_line & catline = *new pick_category_line (*cat, collapsed);
   for (CategoryPackage * catpkg = cat->packages; catpkg;
        catpkg = catpkg->next)
     {
+
       pick_pkg_line & line = *new pick_pkg_line (*catpkg->pkg);
       catline.insert (line);
     }
@@ -1163,6 +1162,7 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
       r.top += 2;
       r.bottom -= 2;
       create_listview (h, &r);
+
 #if 0
       load_dialog (h);
 #endif
@@ -1267,7 +1267,7 @@ scan_downloaded_files ()
 }
 
 void
-do_choose (HINSTANCE h)
+do_choose (HINSTANCE h, HWND owner)
 {
   int rv;
 
@@ -1291,9 +1291,9 @@ do_choose (HINSTANCE h)
   set_existence ();
   fill_missing_category ();
 
-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_CHOOSE), 0, dialog_proc);
+  rv = DialogBox (h, MAKEINTRESOURCE (IDD_CHOOSE), owner, dialog_proc);
   if (rv == -1)
-    fatal (IDS_DIALOG_FAILED);
+    fatal (owner, IDS_DIALOG_FAILED);
 
   log (LOG_BABBLE, "Chooser results...");
   packagedb db;
@@ -1376,4 +1376,87 @@ do_choose (HINSTANCE h)
 	}
 #endif
     }
+}
+
+#define WM_APP_START_CHOOSE        WM_APP+0
+#define WM_APP_CHOOSE_IS_FINISHED  WM_APP+1
+
+extern void do_choose (HINSTANCE h, HWND owner);
+
+void
+do_choose_thread (void *p)
+{
+  ChooserPage *cp;
+
+  cp = static_cast < ChooserPage * >(p);
+
+  do_choose (cp->GetInstance (), cp->GetHWND ());
+
+  cp->PostMessage (WM_APP_CHOOSE_IS_FINISHED);
+
+  _endthread ();
+}
+
+bool
+ChooserPage::Create ()
+{
+  return PropertyPage::Create (IDD_CHOOSER);
+}
+
+void
+ChooserPage::OnActivate ()
+{
+  GetOwner ()->SetButtons (0);
+  PostMessage (WM_APP_START_CHOOSE);
+}
+
+bool
+ChooserPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+  switch (uMsg)
+    {
+    case WM_APP_START_CHOOSE:
+      {
+	// Start the chooser thread.
+	_beginthread (do_choose_thread, 0, this);
+	break;
+      }
+    case WM_APP_CHOOSE_IS_FINISHED:
+      {
+	switch (next_dialog)
+	  {
+	  case 0:
+	    {
+	      // Cancel
+	      GetOwner ()->PressButton (PSBTN_CANCEL);
+	      break;
+	    }
+	  case IDD_LOCAL_DIR:
+	  case IDD_SITE:
+	    {
+	      // Back
+	      GetOwner ()->SetActivePageByID (next_dialog);
+	      break;
+	    }
+	  case IDD_S_DOWNLOAD:
+	    {
+	      // Next, start download from internet
+	      Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
+	      GetOwner ()->SetActivePageByID (IDD_INSTATUS);
+	      break;
+	    }
+	  case IDD_S_INSTALL:
+	    {
+	      // Next, install
+	      Progress.SetActivateTask (WM_APP_START_INSTALL);
+	      GetOwner ()->SetActivePageByID (IDD_INSTATUS);
+	      break;
+	    }
+	  }
+      }
+    default:
+      return false;
+      break;
+    }
+  return true;
 }

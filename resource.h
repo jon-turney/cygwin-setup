@@ -27,6 +27,7 @@
 #define IDS_DOWNLOAD_FAILED             25
 #define IDS_DOWNLOAD_INCOMPLETE         26
 #define IDS_INSTALL_INCOMPLETE          27
+#define IDS_VERSION_INFO                28
 #define IDD_ROOT                        101
 #define IDD_SOURCE                      102
 #define IDD_OTHER_URL                   103
@@ -53,6 +54,7 @@
 #define IDB_CHECK_NO                    124
 #define IDB_CHECK_NA                    125
 #define IDD_FTP_AUTH                    126
+#define IDD_CHOOSER                     127
 #define IDC_SOURCE_DOWNLOAD             1000
 #define IDC_SOURCE_NETINST              1001
 #define IDC_SOURCE_CWD                  1002
@@ -99,9 +101,12 @@
 #define IDC_DLS_PROGRESS_TEXT           1047
 #define IDC_DLS_PPROGRESS_TEXT          1048
 #define IDC_DLS_IPROGRESS_TEXT          1049
-#define IDC_CHOOSE_INST_TEXT      1050
+#define IDC_CHOOSE_INST_TEXT            1050
 #define IDC_CHOOSE_VIEWCAPTION          1051
-#define IDC_CHOOSE_LISTHEADER		1052
+#define IDC_CHOOSE_LISTHEADER           1052
+#define IDC_INS_BL_PACKAGE              1053
+#define IDC_INS_BL_TOTAL                1054
+#define IDC_INS_BL_DISK                 1055
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -110,9 +115,9 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        127
+#define _APS_NEXT_RESOURCE_VALUE        128
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1053
+#define _APS_NEXT_CONTROL_VALUE         1056
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -1,0 +1,4728 @@
+? ar
+? copyandspawn.cc
+? foo.patch
+? Guidelines.txt
+? io_stream-net_latest.diff
+? io_stream-net_latest_Makefile.in.diff
+? pavel20011206.patch
+? Proprety.patch
+? replaceself.patch
+? setupfix.patch
+? URLParser.cc
+? URLParser.h
+Index: Makefile.in
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/Makefile.in,v
+retrieving revision 2.39
+diff -u -p -r2.39 Makefile.in
+--- Makefile.in	2001/12/20 11:49:53	2.39
++++ Makefile.in	2001/12/20 12:35:57
+@@ -87,6 +87,7 @@ OBJS = \
+ 	autoload.o \
+ 	category.o \
+ 	choose.o \
++	cistring.o \
+ 	compress.o \
+ 	compress_bz.o \
+ 	compress_gz.o \
+@@ -129,6 +130,8 @@ OBJS = \
+ 	package_source.o \
+ 	package_version.o \
+ 	postinstall.o \
++	proppage.o \
++	propsheet.o \
+ 	res.o \
+ 	rfc1738.o \
+ 	root.o \
+@@ -138,7 +141,9 @@ OBJS = \
+ 	source.o \
+ 	splash.o \
+ 	state.o \
++	threebar.o \
+ 	version.o \
++	window.o \
+ 	$E
+ 
+ .SUFFIXES:
+Index: choose.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/choose.cc,v
+retrieving revision 2.79
+diff -u -p -r2.79 choose.cc
+--- choose.cc	2001/12/20 11:49:53	2.79
++++ choose.cc	2001/12/20 12:35:59
+@@ -36,6 +36,7 @@ static const char *cvsid =
+ #include <stdlib.h>
+ #include <io.h>
+ #include <ctype.h>
++#include <process.h>
+ 
+ #include "dialog.h"
+ #include "resource.h"
+@@ -47,6 +48,7 @@ static const char *cvsid =
+ #include "find.h"
+ #include "filemanip.h"
+ #include "io_stream.h"
++#include "propsheet.h"
+ #include "choose.h"
+ #include "category.h"
+ 
+@@ -55,6 +57,8 @@ static const char *cvsid =
+ #include "package_version.h"
+ 
+ #include "port.h"
++#include "threebar.h"
++extern ThreeBarProgressPage Progress;
+ 
+ #define alloca __builtin_alloca
+ 
+@@ -1089,6 +1093,7 @@ dialog_proc (HWND h, UINT message, WPARA
+       r.top += 2;
+       r.bottom -= 2;
+       create_listview (h, &r);
++
+ #if 0
+       load_dialog (h);
+ #endif
+@@ -1193,7 +1198,7 @@ scan_downloaded_files ()
+ }
+ 
+ void
+-do_choose (HINSTANCE h)
++do_choose (HINSTANCE h, HWND owner)
+ {
+   int rv;
+ 
+@@ -1217,9 +1222,9 @@ do_choose (HINSTANCE h)
+   set_existence ();
+   fill_missing_category ();
+ 
+-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_CHOOSE), 0, dialog_proc);
++  rv = DialogBox (h, MAKEINTRESOURCE (IDD_CHOOSE), owner, dialog_proc);
+   if (rv == -1)
+-    fatal (IDS_DIALOG_FAILED);
++    fatal (owner, IDS_DIALOG_FAILED);
+ 
+   log (LOG_BABBLE, "Chooser results...");
+   packagedb db;
+@@ -1302,4 +1307,63 @@ do_choose (HINSTANCE h)
+ 	}
+ #endif
+     }
++}
++
++#define WM_APP_START_CHOOSE        WM_APP+0
++#define WM_APP_CHOOSE_IS_FINISHED  WM_APP+1
++
++extern void
++do_choose (HINSTANCE h, HWND owner);
++
++void do_choose_thread(void *p)
++{
++	ChooserPage *cp;
++
++	cp = static_cast<ChooserPage*>(p);
++
++	do_choose(cp->GetInstance(), cp->GetHWND());
++
++	cp->PostMessage(WM_APP_CHOOSE_IS_FINISHED);
++
++	_endthread();
++}
++
++bool ChooserPage::Create()
++{
++  return PropertyPage::Create(IDD_CHOOSER);
++}
++
++void ChooserPage::OnActivate()
++{
++  GetOwner()->SetButtons(0);
++  PostMessage(WM_APP_START_CHOOSE);
++}
++
++bool ChooserPage::OnMessageApp(UINT uMsg, WPARAM wParam, LPARAM lParam)
++{
++	switch(uMsg)
++	{
++	case WM_APP_START_CHOOSE:
++		{
++			// Start the chooser thread.
++			_beginthread(do_choose_thread, 0, this);
++			break;
++		}
++	case WM_APP_CHOOSE_IS_FINISHED:
++		{
++			if(next_dialog == 0)
++			{
++				// Cancel
++				GetOwner()->PressButton(PSBTN_CANCEL);
++				break;
++			}
++			Progress.SetActivateTask(WM_APP_START_DOWNLOAD);
++			GetOwner()->SetActivePageByID(IDD_INSTATUS);
++			break;
++		}
++	default:
++		return false;
++		break;
++	}
++	return true;
+ }
+Index: choose.h
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/choose.h,v
+retrieving revision 2.9
+diff -u -p -r2.9 choose.h
+--- choose.h	2001/12/20 11:49:53	2.9
++++ choose.h	2001/12/20 12:35:59
+@@ -16,6 +16,8 @@
+ #ifndef _CHOOSE_H_
+ #define _CHOOSE_H_
+ 
++#include "proppage.h"
++
+ class Category;
+ class packagemeta;
+ 
+@@ -195,5 +197,18 @@ private:
+   void set_headers ();
+   void init_headers (HDC dc);
+ };
++
++class ChooserPage : public PropertyPage
++{
++public:
++	ChooserPage() {};
++	virtual ~ChooserPage() {};
++	
++	virtual bool OnMessageApp(UINT uMsg, WPARAM wParam, LPARAM lParam);
++	
++	bool Create();
++	virtual void OnActivate();
++};
++
+ #endif /* __cplusplus */
+ #endif /* _CHOOSE_H_ */
+Index: cistring.cc
+===================================================================
+RCS file: cistring.cc
+diff -N cistring.cc
+--- /dev/null	Tue May  5 13:32:27 1998
++++ cistring.cc	Thu Dec 20 04:35:59 2001
+@@ -0,0 +1,52 @@
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// Yep, another string class
++
++#include "cistring.h"
++#include <stdlib.h>
++
++DWORD
++cistring::Format (UINT i, ...)
++{
++  TCHAR FormatStringBuffer[256];
++  TCHAR *Buff;
++  va_list arglist;
++  DWORD numchars;
++
++  // Get the string from the stringtable (FormatMessage() can only work with
++  // literal strings or *message*table entries, which are different for some
++  // inexplicable reason).
++  LoadString (GetModuleHandle (NULL), i, FormatStringBuffer, 256);
++
++  va_start (arglist, i);
++  numchars =::
++    FormatMessage (FORMAT_MESSAGE_ALLOCATE_BUFFER |
++		   FORMAT_MESSAGE_FROM_STRING, FormatStringBuffer, i, 0,
++		   (LPTSTR) & Buff, 0, &arglist);
++  va_end (arglist);
++
++  if (numchars == 0)
++    {
++      // Something went wrong.
++      return 0;
++    }
++
++  buffer = new TCHAR[(numchars + 1) * sizeof (TCHAR)];
++  memcpy (buffer, Buff, (numchars + 1) * sizeof (TCHAR));
++  LocalFree (Buff);
++
++  return numchars;
++}
+Index: cistring.h
+===================================================================
+RCS file: cistring.h
+diff -N cistring.h
+--- /dev/null	Tue May  5 13:32:27 1998
++++ cistring.h	Thu Dec 20 04:35:59 2001
+@@ -0,0 +1,41 @@
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// Yep, another string class
++
++#include <windows.h>
++
++class cistring
++{
++  TCHAR *buffer;
++public:
++    cistring ()
++  {
++    buffer = NULL;
++  };
++  cistring (const TCHAR * s);
++  ~cistring ()
++  {
++    if (buffer != NULL)
++      delete[]buffer;
++  };
++
++  const TCHAR *c_str ()
++  {
++    return buffer;
++  };
++
++  DWORD Format (UINT i, ...);
++};
+Index: desktop.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/desktop.cc,v
+retrieving revision 2.19
+diff -u -p -r2.19 desktop.cc
+--- desktop.cc	2001/12/20 11:49:53	2.19
++++ desktop.cc	2001/12/20 12:35:59
+@@ -48,6 +48,8 @@ static const char *cvsid =
+ #include "package_meta.h"
+ #include "package_version.h"
+ 
++#include "desktop.h"
++
+ static OSVERSIONINFO verinfo;
+ 
+ /* Lines starting with '@' are conditionals - include 'N' for NT,
+@@ -444,56 +446,48 @@ dialog_cmd (HWND h, int id, HWND hwndctl
+       save_dialog (h);
+       check_if_enable_next (h);
+       break;
+-
+-    case IDOK:
+-      save_dialog (h);
+-      do_desktop_setup ();
+-      NEXT (IDD_S_POSTINSTALL);
+-      break;
+-
+-    case IDC_BACK:
+-      save_dialog (h);
+-      NEXT (IDD_CHOOSE);
+-      break;
+-
+-    case IDCANCEL:
+-      NEXT (0);
+-      break;
+     }
+   return 0;
+ }
+ 
+-static BOOL CALLBACK
+-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
++bool
++DesktopSetupPage::Create ()
+ {
+-  switch (message)
+-    {
+-    case WM_INITDIALOG:
+-      load_dialog (h);
+-      return FALSE;
+-    case WM_COMMAND:
+-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
+-    }
+-  return FALSE;
++  return PropertyPage::Create (NULL, dialog_cmd, IDD_DESKTOP);
+ }
+ 
+ void
+-do_desktop (HINSTANCE h)
++DesktopSetupPage::OnInit ()
+ {
++  // FIXME: This CoInitialize() feels like it could be moved to startup in main.cc.
+   CoInitialize (NULL);
+-
+   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
+   GetVersionEx (&verinfo);
+-
+   root_desktop =
+     check_desktop ("Cygwin", backslash (cygpath ("/cygwin.bat", 0)));
+   root_menu =
+     check_startmenu ("Cygwin Bash Shell",
+ 		     backslash (cygpath ("/cygwin.bat", 0)));
++  load_dialog (GetHWND ());
++}
+ 
+-  int rv = 0;
++long
++DesktopSetupPage::OnBack ()
++{
++  HWND h = GetHWND ();
++  save_dialog (h);
++  NEXT (IDD_CHOOSE);
++  return IDD_CHOOSER;
++}
++
++bool
++DesktopSetupPage::OnFinish ()
++{
++  HWND h = GetHWND ();
++  save_dialog (h);
++  do_desktop_setup ();
++  NEXT (IDD_S_POSTINSTALL);
++  do_postinstall (GetInstance (), h);
+ 
+-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_DESKTOP), 0, dialog_proc);
+-  if (rv == -1)
+-    fatal (IDS_DIALOG_FAILED);
++  return true;
+ }
+Index: desktop.h
+===================================================================
+RCS file: desktop.h
+diff -N desktop.h
+--- /dev/null	Tue May  5 13:32:27 1998
++++ desktop.h	Thu Dec 20 04:35:59 2001
+@@ -0,0 +1,41 @@
++#ifndef CINSTALL_DESKTOP_H
++#define CINSTALL_DESKTOP_H
++
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the header for the DesktopSetupPage class.  Allows selection
++// of "create desktop icon" and "add to start menu".
++
++#include "proppage.h"
++
++class DesktopSetupPage:public PropertyPage
++{
++public:
++  DesktopSetupPage ()
++  {
++  };
++  virtual ~ DesktopSetupPage ()
++  {
++  };
++
++  bool Create ();
++
++  virtual void OnInit ();
++  virtual bool OnFinish ();
++  virtual long OnBack ();
++};
++
++#endif // CINSTALL_DESKTOP_H
+Index: dialog.h
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/dialog.h,v
+retrieving revision 2.4
+diff -u -p -r2.4 dialog.h
+--- dialog.h	2001/11/13 01:49:31	2.4
++++ dialog.h	2001/12/20 12:35:59
+@@ -22,7 +22,7 @@ extern int next_dialog;
+ /* either "nothing to do" or "setup complete" or something like that */
+ extern int exit_msg;
+ 
+-#define D(x) void x(HINSTANCE _h)
++#define D(x) void x(HINSTANCE _h, HWND owner)
+ 
+ /* prototypes for all the do_* functions (most called by main.cc) */
+ 
+Index: download.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/download.cc,v
+retrieving revision 2.18
+diff -u -p -r2.18 download.cc
+--- download.cc	2001/12/20 11:49:53	2.18
++++ download.cc	2001/12/20 12:35:59
+@@ -25,6 +25,7 @@ static const char *cvsid =
+ 
+ #include <stdio.h>
+ #include <unistd.h>
++#include <process.h>
+ 
+ #include "resource.h"
+ #include "msg.h"
+@@ -47,6 +48,9 @@ static const char *cvsid =
+ 
+ #include "rfc1738.h"
+ 
++#include "threebar.h"
++extern ThreeBarProgressPage Progress;
++
+ /* 0 on failure
+  */
+ static int
+@@ -95,7 +99,7 @@ check_for_cached (packagesource & pkgsou
+ 
+ /* download a file from a mirror site to the local cache. */
+ static int
+-download_one (packagesource & pkgsource)
++download_one (packagesource & pkgsource, HWND owner)
+ {
+   if (check_for_cached (pkgsource) && source != IDC_SOURCE_DOWNLOAD)
+     return 0;
+@@ -106,14 +110,15 @@ download_one (packagesource & pkgsource)
+   for (size_t n = 1; n <= pkgsource.sites.number () && !success; n++)
+     {
+       const char *local = concat (local_dir, "/",
+-				  rfc1738_escape_part (pkgsource.sites[n]->key), "/",
++				  rfc1738_escape_part (pkgsource.sites[n]->
++						       key), "/",
+ 				  pkgsource.Canonical (), 0);
+       io_stream::mkpath_p (PATH_TO_FILE, concat ("file://", local, 0));
+ 
+       if (get_url_to_file
+ 	  (concat
+ 	   (pkgsource.sites[n]->key, "/", pkgsource.Canonical (), 0),
+-	   concat (local, ".tmp", 0), pkgsource.size))
++	   concat (local, ".tmp", 0), pkgsource.size, owner))
+ 	{
+ 	  /* FIXME: note new source ? */
+ 	  continue;
+@@ -146,8 +151,8 @@ download_one (packagesource & pkgsource)
+   return 1;
+ }
+ 
+-void
+-do_download (HINSTANCE h)
++static void
++do_download_thread (HINSTANCE h, HWND owner)
+ {
+   int errors = 0;
+   total_download_bytes = 0;
+@@ -157,19 +162,19 @@ do_download (HINSTANCE h)
+   /* calculate the amount needed */
+   for (size_t n = 1; n < db.packages.number (); n++)
+     {
+-      packagemeta &pkg = * db.packages[n];
++      packagemeta & pkg = *db.packages[n];
+       if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
+-      {
+-	packageversion *version = pkg.desired;
+-	if (!
+-	    (check_for_cached (version->bin)
+-	     && source != IDC_SOURCE_DOWNLOAD))
+-	  total_download_bytes += version->bin.size;
+-	if (!
+-	    (check_for_cached (version->src)
+-	     && source != IDC_SOURCE_DOWNLOAD))
+-	  total_download_bytes += version->src.size;
+-      }
++	{
++	  packageversion *version = pkg.desired;
++	  if (!
++	      (check_for_cached (version->bin)
++	       && source != IDC_SOURCE_DOWNLOAD) && pkg.desired->binpicked)
++	    total_download_bytes += version->bin.size;
++	  if (!
++	      (check_for_cached (version->src)
++	       && source != IDC_SOURCE_DOWNLOAD) && pkg.desired->srcpicked)
++	    total_download_bytes += version->src.size;
++	}
+     }
+ 
+   /* and do the download. FIXME: This here we assign a new name for the cached version
+@@ -177,28 +182,28 @@ do_download (HINSTANCE h)
+    */
+   for (size_t n = 1; n < db.packages.number (); n++)
+     {
+-      packagemeta &pkg = * db.packages[n];
+-    if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
+-      {
+-	int e = 0;
+-	packageversion *version = pkg.desired;
+-	if (version->binpicked)
+-	  e += download_one (version->bin);
+-	if (version->srcpicked)
+-	  e += download_one (version->src);
+-	errors += e;
++      packagemeta & pkg = *db.packages[n];
++      if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
++	{
++	  int e = 0;
++	  packageversion *version = pkg.desired;
++	  if (version->binpicked)
++	    e += download_one (version->bin, owner);
++	  if (version->srcpicked)
++	    e += download_one (version->src, owner);
++	  errors += e;
+ #if 0
+-	if (e)
+-	  pkg->action = ACTION_ERROR;
++	  if (e)
++	    pkg->action = ACTION_ERROR;
+ #endif
+-      }
++	}
+     }
+ 
+   dismiss_url_status_dialog ();
+ 
+   if (errors)
+     {
+-      if (yesno (IDS_DOWNLOAD_INCOMPLETE) == IDYES)
++      if (yesno (owner, IDS_DOWNLOAD_INCOMPLETE) == IDYES)
+ 	{
+ 	  next_dialog = IDD_SITE;
+ 	  return;
+@@ -215,4 +220,29 @@ do_download (HINSTANCE h)
+     }
+   else
+     next_dialog = IDD_S_INSTALL;
++}
++
++static void
++do_download_reflector (void *p)
++{
++  HANDLE *context;
++  context = (HANDLE *) p;
++
++  do_download_thread ((HINSTANCE) context[0], (HWND) context[1]);
++
++  // Tell the progress page that we're done downloading
++  Progress.PostMessage (WM_APP_DOWNLOAD_THREAD_COMPLETE, 0, next_dialog);
++
++  _endthread ();
++}
++
++static HANDLE context[2];
++
++void
++do_download (HINSTANCE h, HWND owner)
++{
++  context[0] = h;
++  context[1] = owner;
++
++  _beginthread (do_download_reflector, 0, context);
+ }
+Index: fromcwd.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/fromcwd.cc,v
+retrieving revision 2.16
+diff -u -p -r2.16 fromcwd.cc
+--- fromcwd.cc	2001/12/20 11:49:53	2.16
++++ fromcwd.cc	2001/12/20 12:36:00
+@@ -118,7 +118,7 @@ check_ini (char *path, unsigned int fsiz
+ }
+ 
+ void
+-do_fromcwd (HINSTANCE h)
++do_fromcwd (HINSTANCE h, HWND owner)
+ {
+   found_ini = true;
+   find (".", check_ini);
+Index: geturl.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/geturl.cc,v
+retrieving revision 2.15
+diff -u -p -r2.15 geturl.cc
+--- geturl.cc	2001/12/02 03:25:11	2.15
++++ geturl.cc	2001/12/20 12:36:00
+@@ -43,119 +43,33 @@ static const char *cvsid =
+ #include "diskfull.h"
+ #include "mount.h"
+ 
+-static HWND gw_dialog = 0;
+-static HWND gw_url = 0;
+-static HWND gw_rate = 0;
+-static HWND gw_progress = 0;
+-static HWND gw_pprogress = 0;
+-static HWND gw_iprogress = 0;
+-static HWND gw_progress_text = 0;
+-static HWND gw_pprogress_text = 0;
+-static HWND gw_iprogress_text = 0;
+-static HANDLE init_event;
++#include "threebar.h"
++extern ThreeBarProgressPage Progress;
++
+ static int max_bytes = 0;
+ static int is_local_install = 0;
+ 
+ int total_download_bytes = 0;
+ int total_download_bytes_sofar = 0;
+ 
+-static BOOL
+-dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
+-{
+-  switch (id)
+-    {
+-    case IDCANCEL:
+-      exit_setup (0);
+-    }
+-  return 0;
+-}
+-
+-static BOOL CALLBACK
+-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+-{
+-  switch (message)
+-    {
+-    case WM_INITDIALOG:
+-      gw_dialog = h;
+-      gw_url = GetDlgItem (h, IDC_DLS_URL);
+-      gw_rate = GetDlgItem (h, IDC_DLS_RATE);
+-      gw_progress = GetDlgItem (h, IDC_DLS_PROGRESS);
+-      gw_pprogress = GetDlgItem (h, IDC_DLS_PPROGRESS);
+-      gw_iprogress = GetDlgItem (h, IDC_DLS_IPROGRESS);
+-      gw_progress_text = GetDlgItem (h, IDC_DLS_PROGRESS_TEXT);
+-      gw_pprogress_text = GetDlgItem (h, IDC_DLS_PPROGRESS_TEXT);
+-      gw_iprogress_text = GetDlgItem (h, IDC_DLS_IPROGRESS_TEXT);
+-      SetEvent (init_event);
+-      return TRUE;
+-    case WM_COMMAND:
+-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
+-    }
+-  return FALSE;
+-}
+-
+-static WINAPI DWORD
+-dialog (void *)
+-{
+-  MSG m;
+-  HWND local_gw_dialog =
+-    CreateDialog (hinstance, MAKEINTRESOURCE (IDD_DLSTATUS),
+-		  0, dialog_proc);
+-  ShowWindow (local_gw_dialog, SW_SHOWNORMAL);
+-  UpdateWindow (local_gw_dialog);
+-  while (GetMessage (&m, 0, 0, 0) > 0)
+-    {
+-      TranslateMessage (&m);
+-      DispatchMessage (&m);
+-    }
+-  return 0;
+-}
+-
+ static DWORD start_tics;
+ 
+ static void
+-init_dialog (char const *url, int length)
++init_dialog (char const *url, int length, HWND owner)
+ {
+   if (is_local_install)
+     return;
+-  if (gw_dialog == 0)
+-    {
+-      DWORD tid;
+-      HANDLE thread;
+-      init_event = CreateEvent (0, 0, 0, 0);
+-      thread = CreateThread (0, 0, dialog, 0, 0, &tid);
+-      WaitForSingleObject (init_event, 1000);
+-      CloseHandle (init_event);
+-      SendMessage (gw_progress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
+-      SendMessage (gw_pprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
+-      SendMessage (gw_iprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
+-    }
++
+   char const *sl = url;
+   char const *cp;
+   for (cp = url; *cp; cp++)
+     if (*cp == '/' || *cp == '\\' || *cp == ':')
+       sl = cp + 1;
+   max_bytes = length;
+-  SetWindowText (gw_url, sl);
+-  SetWindowText (gw_rate, "Connecting...");
+-  SendMessage (gw_progress, PBM_SETPOS, (WPARAM) 0, 0);
+-  ShowWindow (gw_progress, (length > 0) ? SW_SHOW : SW_HIDE);
+-  if (length > 0)
+-    SetWindowText (gw_progress_text, "Package");
+-  else
+-    SetWindowText (gw_progress_text, "       ");
+-  ShowWindow (gw_pprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
+-  if (total_download_bytes > 0)
+-    {
+-      SetWindowText (gw_pprogress_text, "Total");
+-      SetWindowText (gw_iprogress_text, "Disk");
+-    }
+-  else
+-    {
+-      SetWindowText (gw_pprogress_text, "     ");
+-      SetWindowText (gw_iprogress_text, "    ");
+-    }
+-  ShowWindow (gw_iprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
+-  ShowWindow (gw_dialog, SW_SHOWNORMAL);
++  Progress.SetText1 ("Downloading...");
++  Progress.SetText2 (sl);
++  Progress.SetText3 ("Connecting...");
++  Progress.SetBar1 (0);
+   start_tics = GetTickCount ();
+ }
+ 
+@@ -166,7 +80,7 @@ progress (int bytes)
+   if (is_local_install)
+     return;
+   static char buf[100];
+-  int kbps;
++  double kbps;
+   static unsigned int last_tics = 0;
+   DWORD tics = GetTickCount ();
+   if (tics == start_tics)	// to prevent division by zero
+@@ -175,36 +89,31 @@ progress (int bytes)
+     return;
+   last_tics = tics;
+ 
+-  kbps = bytes / (tics - start_tics);
+-  ShowWindow (gw_progress, (max_bytes > 0) ? SW_SHOW : SW_HIDE);
+-  ShowWindow (gw_pprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
+-  ShowWindow (gw_iprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
+-  if (max_bytes > 100)
+-    {
+-      int perc = bytes / (max_bytes / 100);
+-      SendMessage (gw_progress, PBM_SETPOS, (WPARAM) perc, 0);
+-      sprintf (buf, "%3d %%  (%dk/%dk)  %d kb/s\n",
++  kbps = ((double) bytes) / (double) (tics - start_tics);
++  if (max_bytes > 0)
++    {
++      int perc = (int) (100.0 * ((double) bytes) / (double) max_bytes);
++      Progress.SetBar1 (bytes, max_bytes);
++      sprintf (buf, "%3d %%  (%dk/%dk)  %2.1f kb/s\n",
+ 	       perc, bytes / 1000, max_bytes / 1000, kbps);
+       if (total_download_bytes > 0)
+ 	{
+-	  int totalperc =
+-	    (total_download_bytes_sofar +
+-	     bytes) / (total_download_bytes / 100);
+-	  SendMessage (gw_pprogress, PBM_SETPOS, (WPARAM) totalperc, 0);
++	  Progress.SetBar2 (total_download_bytes_sofar + bytes,
++			    total_download_bytes);
+ 	}
+     }
+   else
+-    sprintf (buf, "%d  %d kb/s\n", bytes, kbps);
++    sprintf (buf, "%d  %2.1f kb/s\n", bytes, kbps);
+ 
+-  SetWindowText (gw_rate, buf);
++  Progress.SetText3 (buf);
+ }
+ 
+ io_stream *
+-get_url_to_membuf (char const *_url)
++get_url_to_membuf (char const *_url, HWND owner)
+ {
+   log (LOG_BABBLE, "get_url_to_membuf %s", _url);
+   is_local_install = (source == IDC_SOURCE_CWD);
+-  init_dialog (_url, 0);
++  init_dialog (_url, 0, owner);
+   NetIO *n = NetIO::open (_url);
+   if (!n || !n->ok ())
+     {
+@@ -254,9 +163,9 @@ get_url_to_membuf (char const *_url)
+ }
+ 
+ char *
+-get_url_to_string (char const *_url)
++get_url_to_string (char const *_url, HWND owner)
+ {
+-  io_stream *stream = get_url_to_membuf (_url);
++  io_stream *stream = get_url_to_membuf (_url, owner);
+   if (!stream)
+     return 0;
+   size_t bytes = stream->get_size ();
+@@ -264,10 +173,11 @@ get_url_to_string (char const *_url)
+     {
+       /* zero length, or error retrieving length */
+       delete stream;
+-      log (LOG_BABBLE, "get_url_to_string(): couldn't retrieve buffer size, or zero length buffer");
++      log (LOG_BABBLE,
++	   "get_url_to_string(): couldn't retrieve buffer size, or zero length buffer");
+       return 0;
+     }
+-  char *rv = new char [bytes + 1];
++  char *rv = new char[bytes + 1];
+   if (!rv)
+     {
+       delete stream;
+@@ -276,22 +186,22 @@ get_url_to_string (char const *_url)
+     }
+   /* membufs are quite safe */
+   stream->read (rv, bytes);
+-  rv [bytes] = '\0';
++  rv[bytes] = '\0';
+   delete stream;
+   return rv;
+ }
+ 
+ int
+ get_url_to_file (char *_url, char *_filename, int expected_length,
+-		 BOOL allow_ftp_auth)
++		 HWND owner, BOOL allow_ftp_auth)
+ {
+   log (LOG_BABBLE, "get_url_to_file %s %s", _url, _filename);
+   if (total_download_bytes > 0)
+     {
+       int df = diskfull (get_root_dir ());
+-      SendMessage (gw_iprogress, PBM_SETPOS, (WPARAM) df, 0);
++      Progress.SetBar3 (df);
+     }
+-  init_dialog (_url, expected_length);
++  init_dialog (_url, expected_length, owner);
+ 
+   remove (_filename);		/* but ignore errors */
+ 
+@@ -309,7 +219,7 @@ get_url_to_file (char *_url, char *_file
+       const char *err = strerror (errno);
+       if (!err)
+ 	err = "(unknown error)";
+-      fatal (IDS_ERR_OPEN_WRITE, _filename, err);
++      fatal (owner, IDS_ERR_OPEN_WRITE, _filename, err);
+     }
+ 
+   if (n->file_size)
+@@ -338,15 +248,16 @@ get_url_to_file (char *_url, char *_file
+   if (total_download_bytes > 0)
+     {
+       int df = diskfull (get_root_dir ());
+-      SendMessage (gw_iprogress, PBM_SETPOS, (WPARAM) df, 0);
++      Progress.SetBar3 (df);
+     }
+ 
+   return 0;
+ }
+ 
++// FIXME: I think this can go now, I don't think anything calls it.
+ void
+ dismiss_url_status_dialog ()
+ {
+-  if (!is_local_install)
+-    ShowWindow (gw_dialog, SW_HIDE);
++  //if (!is_local_install)
++  //ShowWindow (gw_dialog, SW_HIDE);
+ }
+Index: geturl.h
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/geturl.h,v
+retrieving revision 2.4
+diff -u -p -r2.4 geturl.h
+--- geturl.h	2001/12/02 03:25:11	2.4
++++ geturl.h	2001/12/20 12:36:00
+@@ -21,8 +21,8 @@ extern int total_download_bytes_sofar;
+ 
+ class io_stream;
+ 
+-io_stream *get_url_to_membuf (char const *);
+-char *get_url_to_string (char const *);
++io_stream *get_url_to_membuf (char const *, HWND owner);
++char *get_url_to_string (char const *, HWND owner);
+ int get_url_to_file (char *_url, char *_filename, int expected_size,
+-		     BOOL allow_ftp_auth = FALSE);
++		     HWND owner, BOOL allow_ftp_auth = FALSE);
+ void dismiss_url_status_dialog ();
+Index: ini.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/ini.cc,v
+retrieving revision 2.15
+diff -u -p -r2.15 ini.cc
+--- ini.cc	2001/12/03 22:22:09	2.15
++++ ini.cc	2001/12/20 12:36:00
+@@ -28,6 +28,7 @@ static const char *cvsid =
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <stdarg.h>
++#include <process.h>
+ 
+ #include "ini.h"
+ #include "resource.h"
+@@ -45,6 +46,9 @@ static const char *cvsid =
+ 
+ #include "io_stream.h"
+ 
++#include "threebar.h"
++extern ThreeBarProgressPage Progress;
++
+ unsigned int setup_timestamp = 0;
+ char *setup_version = 0;
+ 
+@@ -59,50 +63,54 @@ static int local_ini;
+ static void
+ find_routine (char *path, unsigned int fsize)
+ {
+-  if (!strstr (path, "/setup.ini") )
++  if (!strstr (path, "/setup.ini"))
+     return;
+-  io_stream *ini_file = io_stream::open (concat ("file://", local_dir,"/", path, 0), "rb");
++  io_stream *ini_file =
++    io_stream::open (concat ("file://", local_dir, "/", path, 0), "rb");
+   if (!ini_file)
+     {
+-    note (IDS_SETUPINI_MISSING, path);
+-    return;
++      note (NULL, IDS_SETUPINI_MISSING, path);
++      return;
+     }
+ 
+   /* FIXME: only use most recent copy */
+   setup_timestamp = 0;
+   setup_version = 0;
+ 
+-  ini_init (ini_file, concat ("file://", local_dir,"/", path, 0));
++  ini_init (ini_file, concat ("file://", local_dir, "/", path, 0));
+ 
+   /*yydebug = 1; */
+ 
+   if (yyparse () || error_count > 0)
+-    MessageBox (0, error_buf, error_count == 1 ? "Parse Error" : "Parse Errors", 0);
++    MessageBox (0, error_buf,
++		error_count == 1 ? "Parse Error" : "Parse Errors", 0);
+   else
+     local_ini++;
+ }
+ 
+ static int
+-do_local_ini ()
++do_local_ini (HWND owner)
+ {
+   local_ini = 0;
+   find (local_dir, find_routine);
+-  return local_ini; 
++  return local_ini;
+ }
+ 
+ static int
+-do_remote_ini ()
++do_remote_ini (HWND owner)
+ {
+   size_t ini_count = 0;
++
+   for (size_t n = 1; n <= site_list.number (); n++)
+     {
+       io_stream *ini_file =
+-	get_url_to_membuf (concat (site_list[n]->url, "/setup.ini", 0));
++	get_url_to_membuf (concat (site_list[n]->url, "/setup.ini", 0),
++			   owner);
+       dismiss_url_status_dialog ();
+ 
+       if (!ini_file)
+ 	{
+-	  note (IDS_SETUPINI_MISSING, site_list[n]->url);
++	  note (owner, IDS_SETUPINI_MISSING, site_list[n]->url);
+ 	  continue;
+ 	}
+ 
+@@ -139,14 +147,14 @@ do_remote_ini ()
+   return ini_count;
+ }
+ 
+-void
+-do_ini (HINSTANCE h)
++static void
++do_ini_thread (HINSTANCE h, HWND owner)
+ {
+   size_t ini_count = 0;
+   if (source == IDC_SOURCE_CWD)
+-    ini_count = do_local_ini ();
++    ini_count = do_local_ini (owner);
+   else
+-    ini_count = do_remote_ini ();
++    ini_count = do_remote_ini (owner);
+ 
+   if (ini_count == 0)
+     {
+@@ -171,7 +179,7 @@ do_ini (HINSTANCE h)
+ 	  if (old_timestamp && setup_timestamp
+ 	      && (old_timestamp > setup_timestamp))
+ 	    {
+-	      int yn = yesno (IDS_OLD_SETUPINI);
++	      int yn = yesno (owner, IDS_OLD_SETUPINI);
+ 	      if (yn == IDNO)
+ 		exit_setup (1);
+ 	    }
+@@ -197,11 +205,37 @@ do_ini (HINSTANCE h)
+       char *ini_version = canonicalize_version (setup_version);
+       char *our_version = canonicalize_version (version);
+       if (strcmp (our_version, ini_version) < 0)
+-	note (IDS_OLD_SETUP_VERSION, version, setup_version);
++	note (owner, IDS_OLD_SETUP_VERSION, version, setup_version);
+     }
++
++  next_dialog = IDD_CHOOSER;
++}
++
++static void
++do_ini_thread_reflector (void *p)
++{
++  HANDLE *context;
++  context = (HANDLE *) p;
++
++  do_ini_thread ((HINSTANCE) context[0], (HWND) context[1]);
++
++  // Tell the progress page that we're done downloading
++  Progress.PostMessage (WM_APP_SETUP_INI_DOWNLOAD_COMPLETE, 0, next_dialog);
++
++  _endthread ();
++}
+ 
+-  next_dialog = IDD_CHOOSE;
++static HANDLE context[2];
++
++void
++do_ini (HINSTANCE h, HWND owner)
++{
++  context[0] = h;
++  context[1] = owner;
++
++  _beginthread (do_ini_thread_reflector, 0, context);
+ }
++
+ 
+ extern int yylineno;
+ 
+Index: install.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/install.cc,v
+retrieving revision 2.31
+diff -u -p -r2.31 install.cc
+--- install.cc	2001/12/20 11:49:53	2.31
++++ install.cc	2001/12/20 12:36:00
+@@ -33,6 +33,8 @@ static const char *cvsid =
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <errno.h>
++#include <process.h>
++
+ #include "zlib/zlib.h"
+ 
+ #include "resource.h"
+@@ -61,109 +63,31 @@ static const char *cvsid =
+ 
+ #include "port.h"
+ 
+-static HWND ins_dialog = 0;
+-static HWND ins_action = 0;
+-static HWND ins_pkgname = 0;
+-static HWND ins_filename = 0;
+-static HWND ins_pprogress = 0;
+-static HWND ins_iprogress = 0;
+-static HWND ins_diskfull = 0;
+-static HANDLE init_event;
++#include "threebar.h"
++extern ThreeBarProgressPage Progress;
+ 
+ static int total_bytes = 0;
+ static int total_bytes_sofar = 0;
+ static int package_bytes = 0;
+ 
+-static bool
+-dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
+-{
+-  switch (id)
+-    {
+-    case IDCANCEL:
+-      exit_setup (1);
+-    }
+-  return 0;
+-}
+-
+-static BOOL CALLBACK
+-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+-{
+-  switch (message)
+-    {
+-    case WM_INITDIALOG:
+-      ins_dialog = h;
+-      ins_action = GetDlgItem (h, IDC_INS_ACTION);
+-      ins_pkgname = GetDlgItem (h, IDC_INS_PKG);
+-      ins_filename = GetDlgItem (h, IDC_INS_FILE);
+-      ins_pprogress = GetDlgItem (h, IDC_INS_PPROGRESS);
+-      ins_iprogress = GetDlgItem (h, IDC_INS_IPROGRESS);
+-      ins_diskfull = GetDlgItem (h, IDC_INS_DISKFULL);
+-      SetEvent (init_event);
+-      return TRUE;
+-    case WM_COMMAND:
+-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
+-    }
+-  return FALSE;
+-}
+-
+-static WINAPI DWORD
+-dialog (void *)
+-{
+-  int rv = 0;
+-  MSG m;
+-  HWND ins_dialog = CreateDialog (hinstance, MAKEINTRESOURCE (IDD_INSTATUS),
+-				  0, dialog_proc);
+-  if (ins_dialog == 0)
+-    fatal ("create dialog");
+-  ShowWindow (ins_dialog, SW_SHOWNORMAL);
+-  UpdateWindow (ins_dialog);
+-  while (GetMessage (&m, 0, 0, 0) > 0)
+-    {
+-      TranslateMessage (&m);
+-      DispatchMessage (&m);
+-    }
+-  return rv;
+-}
+-
+ static void
+ init_dialog ()
+ {
+-  if (ins_dialog == 0)
+-    {
+-      DWORD tid;
+-      HANDLE thread;
+-      init_event = CreateEvent (0, 0, 0, 0);
+-      thread = CreateThread (0, 0, dialog, 0, 0, &tid);
+-      WaitForSingleObject (init_event, 10000);
+-      CloseHandle (init_event);
+-      SendMessage (ins_pprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
+-      SendMessage (ins_iprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
+-      SendMessage (ins_diskfull, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
+-    }
+-
+-  SetWindowText (ins_pkgname, "");
+-  SetWindowText (ins_filename, "");
+-  SendMessage (ins_pprogress, PBM_SETPOS, (WPARAM) 0, 0);
+-  SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) 0, 0);
+-  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) 0, 0);
+-  ShowWindow (ins_dialog, SW_SHOWNORMAL);
++  Progress.SetText2 ("");
++  Progress.SetText3 ("");
+ }
+ 
+ static void
+ progress (int bytes)
+ {
+-  int perc;
+-
+-  if (package_bytes > 100)
++  if (package_bytes > 0)
+     {
+-      perc = bytes / (package_bytes / 100);
+-      SendMessage (ins_pprogress, PBM_SETPOS, (WPARAM) perc, 0);
++      Progress.SetBar1 (bytes, package_bytes);
+     }
+ 
+-  if (total_bytes > 100)
++  if (total_bytes > 0)
+     {
+-      perc = (total_bytes_sofar + bytes) / (total_bytes / 100);
+-      SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) perc, 0);
++      Progress.SetBar2 (total_bytes_sofar + bytes, total_bytes);
+     }
+ }
+ 
+@@ -192,11 +116,11 @@ static int num_installs, num_uninstalls;
+ static void
+ uninstall_one (packagemeta & pkgm)
+ {
+-      SetWindowText (ins_pkgname, pkgm.name);
+-      SetWindowText (ins_action, "Uninstalling...");
+-      log (0, "Uninstalling %s", pkgm.name);
+-      pkgm.uninstall ();
+-      num_uninstalls++;
++  Progress.SetText1 ("Uninstalling...");
++  Progress.SetText2 (pkgm.name);
++  log (0, "Uninstalling %s", pkgm.name);
++  pkgm.uninstall ();
++  num_uninstalls++;
+ }
+ 
+ 
+@@ -207,10 +131,10 @@ install_one_source (packagemeta & pkgm, 
+ 		    char const *prefix, package_type_t type)
+ {
+   int errors = 0;
+-  SetWindowText (ins_pkgname, source.Base ());
++  Progress.SetText2 (source.Base ());
+   if (!io_stream::exists (source.Cached ()))
+     {
+-      note (IDS_ERR_OPEN_READ, source.Cached (), "No such file");
++      note (NULL, IDS_ERR_OPEN_READ, source.Cached (), "No such file");
+       return 1;
+     }
+   io_stream *lst = 0;
+@@ -232,7 +156,7 @@ install_one_source (packagemeta & pkgm, 
+ 
+   char msg[64];
+   strcpy (msg, "Installing");
+-  SetWindowText (ins_action, msg);
++  Progress.SetText1 (msg);
+   log (0, "%s%s", msg, source.Cached ());
+   io_stream *tmp = io_stream::open (source.Cached (), "rb");
+   archive *thefile = 0;
+@@ -254,7 +178,7 @@ install_one_source (packagemeta & pkgm, 
+ 	    lst->write (concat (fn, "\n", 0), strlen (fn) + 1);
+ 
+ 	  /* FIXME: concat leaks memory */
+-	  SetWindowText (ins_filename, concat (prefix, fn, 0));
++	  Progress.SetText3 (concat (prefix, fn, 0));
+ 	  log (LOG_BABBLE, "Installing file %s%s", prefix, fn);
+ 	  if (archive::extract_file (thefile, prefix) != 0)
+ 	    {
+@@ -274,7 +198,7 @@ install_one_source (packagemeta & pkgm, 
+   progress (0);
+ 
+   int df = diskfull (get_root_dir ());
+-  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
++  Progress.SetBar3 (df);
+ 
+   if (lst)
+     delete lst;
+@@ -289,17 +213,17 @@ install_one (packagemeta & pkg)
+   int errors = 0;
+ 
+   if (pkg.desired->binpicked)
+-  {
+-    errors +=
+-      install_one_source (pkg, pkg.desired->bin, "cygfile:///",
+-			  package_binary);
+-    if (!errors)
+-      pkg.installed = pkg.desired;
+-  }
+-  if (pkg.desired->srcpicked)
++    {
+       errors +=
+-	    install_one_source (pkg, pkg.desired->src, "cygfile:///usr/src",
+-		                        package_source);
++	install_one_source (pkg, pkg.desired->bin, "cygfile:///",
++			    package_binary);
++      if (!errors)
++	pkg.installed = pkg.desired;
++    }
++  if (pkg.desired->srcpicked)
++    errors +=
++      install_one_source (pkg, pkg.desired->src, "cygfile:///usr/src",
++			  package_source);
+ 
+   /* FIXME: make a upgrade method and reinstate this */
+ #if 0
+@@ -375,8 +299,8 @@ check_for_old_cygwin ()
+   return;
+ }
+ 
+-void
+-do_install (HINSTANCE h)
++static void
++do_install_thread (HINSTANCE h, HWND owner)
+ {
+   int i;
+   int errors = 0;
+@@ -398,15 +322,13 @@ do_install (HINSTANCE h)
+   io_stream *utmp = io_stream::open ("cygfile:///var/run/utmp", "wb");
+   delete utmp;
+ 
+-  dismiss_url_status_dialog ();
+-
+   init_dialog ();
+ 
+   total_bytes = 0;
+   total_bytes_sofar = 0;
+ 
+   int df = diskfull (get_root_dir ());
+-  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
++  Progress.SetBar3 (df);
+ 
+   int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;
+   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
+@@ -419,27 +341,26 @@ do_install (HINSTANCE h)
+   packagedb db;
+   for (size_t n = 1; n < db.packages.number (); n++)
+     {
+-      packagemeta &pkg = * db.packages[n];
++      packagemeta & pkg = *db.packages[n];
+ 
+-    if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
+-      {
+-	if (pkg.desired->srcpicked)
+-	  total_bytes += pkg.desired->src.size;
+-	if (pkg.desired->binpicked)
+-	  total_bytes += pkg.desired->bin.size;
+-      }
++      if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
++	{
++	  if (pkg.desired->srcpicked)
++	    total_bytes += pkg.desired->src.size;
++	  if (pkg.desired->binpicked)
++	    total_bytes += pkg.desired->bin.size;
++	}
+     }
+ 
+   for (size_t n = 1; n < db.packages.number (); n++)
+     {
+-      packagemeta &pkg = * db.packages[n];
++      packagemeta & pkg = *db.packages[n];
+       if (pkg.installed && (!pkg.desired || pkg.desired != pkg.installed))
+ 	{
+ 	  uninstall_one (pkg);
+ 	}
+ 
+-      if (pkg.desired
+-	  && (pkg.desired->srcpicked || pkg.desired->binpicked))
++      if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
+ 	{
+ 	  int e = 0;
+ 	  e += install_one (pkg);
+@@ -450,15 +371,13 @@ do_install (HINSTANCE h)
+ 	}
+     }				// end of big package loop
+ 
+-  ShowWindow (ins_dialog, SW_HIDE);
+-
+   int temperr;
+   if ((temperr = db.flush ()))
+     {
+       const char *err = strerror (temperr);
+       if (!err)
+ 	err = "(unknown error)";
+-      fatal (IDS_ERR_OPEN_WRITE, err);
++      fatal (owner, IDS_ERR_OPEN_WRITE, err);
+     }
+ 
+   if (!errors)
+@@ -478,4 +397,29 @@ do_install (HINSTANCE h)
+     exit_msg = IDS_INSTALL_INCOMPLETE;
+   else
+     exit_msg = IDS_INSTALL_COMPLETE;
++}
++
++static void
++do_install_reflector (void *p)
++{
++  HANDLE *context;
++  context = (HANDLE *) p;
++
++  do_install_thread ((HINSTANCE) context[0], (HWND) context[1]);
++
++  // Tell the progress page that we're done downloading
++  Progress.PostMessage (WM_APP_INSTALL_THREAD_COMPLETE, next_dialog);
++
++  _endthread ();
++}
++
++static HANDLE context[2];
++
++void
++do_install (HINSTANCE h, HWND owner)
++{
++  context[0] = h;
++  context[1] = owner;
++
++  _beginthread (do_install_reflector, 0, context);
+ }
+Index: localdir.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/localdir.cc,v
+retrieving revision 2.5
+diff -u -p -r2.5 localdir.cc
+--- localdir.cc	2001/11/14 00:11:35	2.5
++++ localdir.cc	2001/12/20 12:36:00
+@@ -39,6 +39,8 @@ static const char *cvsid =
+ #include "mkdir.h"
+ #include "io_stream.h"
+ 
++#include "localdir.h"
++
+ void
+ save_local_dir ()
+ {
+@@ -128,74 +130,20 @@ dialog_cmd (HWND h, int id, HWND hwndctl
+     case IDC_LOCAL_DIR_BROWSE:
+       browse (h);
+       break;
+-
+-    case IDOK:
+-      save_dialog (h);
+-      save_local_dir ();
+-      if (SetCurrentDirectoryA (local_dir))
+-	{
+-	  switch (source)
+-	    {
+-	    case IDC_SOURCE_DOWNLOAD:
+-	    case IDC_SOURCE_NETINST:
+-	      NEXT (IDD_NET);
+-	      break;
+-	    case IDC_SOURCE_CWD:
+-	      NEXT (IDD_S_FROM_CWD);
+-	      break;
+-	    default:
+-	      msg ("source is default? %d\n", source);
+-	      NEXT (0);
+-	      break;
+-	    }
+-	}
+-      else
+-	note (IDS_ERR_CHDIR, local_dir);
+-
+-      break;
+-
+-    case IDC_BACK:
+-      save_dialog (h);
+-      switch (source)
+-	{
+-	case IDC_SOURCE_DOWNLOAD:
+-	  NEXT (IDD_SOURCE);
+-	  break;
+-	case IDC_SOURCE_NETINST:
+-	case IDC_SOURCE_CWD:
+-	  NEXT (IDD_ROOT);
+-	  break;
+-	default:
+-	  msg ("source is default? %d\n", source);
+-	  NEXT (0);
+-	}
+-      break;
+-
+-    case IDCANCEL:
+-      NEXT (0);
+-      break;
+     }
+   return 0;
+ }
++
++//extern char cwd[_MAX_PATH];
+ 
+-static BOOL CALLBACK
+-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
++bool
++LocalDirPage::Create ()
+ {
+-  switch (message)
+-    {
+-    case WM_INITDIALOG:
+-      load_dialog (h);
+-      return FALSE;
+-    case WM_COMMAND:
+-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
+-    }
+-  return FALSE;
++  return PropertyPage::Create (NULL, dialog_cmd, IDD_LOCAL_DIR);
+ }
+ 
+-extern char cwd[_MAX_PATH];
+-
+ void
+-do_local_dir (HINSTANCE h)
++LocalDirPage::OnInit ()
+ {
+   static int inited = 0;
+   if (!inited)
+@@ -217,11 +165,43 @@ do_local_dir (HINSTANCE h)
+ 	}
+       inited = 1;
+     }
++}
++
++void
++LocalDirPage::OnActivate ()
++{
++  load_dialog (GetHWND ());
++}
+ 
+-  int rv = 0;
+-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_LOCAL_DIR), 0, dialog_proc);
+-  if (rv == -1)
+-    fatal (IDS_DIALOG_FAILED);
++long
++LocalDirPage::OnNext ()
++{
++  HWND h = GetHWND ();
+ 
++  save_dialog (h);
++  save_local_dir ();
+   log (0, "Selected local directory: %s", local_dir);
++  if (SetCurrentDirectoryA (local_dir))
++    {
++      if (source == IDC_SOURCE_CWD)
++	{
++	  return IDD_S_FROM_CWD;
++	}
++    }
++  else
++    note (h, IDS_ERR_CHDIR, local_dir);
++
++  return 0;
++}
++
++long
++LocalDirPage::OnBack ()
++{
++  save_dialog (GetHWND ());
++  if (source == IDC_SOURCE_DOWNLOAD)
++    {
++      // Downloading only, skip the unix root page
++      return IDD_SOURCE;
++    }
++  return 0;
+ }
+Index: localdir.h
+===================================================================
+RCS file: localdir.h
+diff -N localdir.h
+--- /dev/null	Tue May  5 13:32:27 1998
++++ localdir.h	Thu Dec 20 04:36:00 2001
+@@ -0,0 +1,44 @@
++#ifndef CINSTALL_LOCALDIR_H
++#define CINSTALL_LOCALDIR_H
++
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the header for the LocalDirPage class.  Allows the user to select
++// the local package directory (i.e. where downloaded packages are stored).
++
++
++#include "proppage.h"
++
++class LocalDirPage:public PropertyPage
++{
++public:
++  LocalDirPage ()
++  {
++  };
++  virtual ~ LocalDirPage ()
++  {
++  };
++
++  bool Create ();
++
++  void OnActivate ();
++  void OnInit ();
++  long OnNext ();
++  long OnBack ();
++};
++
++
++#endif
+Index: log.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/log.cc,v
+retrieving revision 2.5
+diff -u -p -r2.5 log.cc
+--- log.cc	2001/11/13 01:49:32	2.5
++++ log.cc	2001/12/20 12:36:00
+@@ -86,7 +86,7 @@ log_save (int babble, const char *filena
+   FILE *f = fopen (filename, append ? "at" : "wt");
+   if (!f)
+     {
+-      fatal (IDS_NOLOGFILE, filename);
++      fatal (NULL, IDS_NOLOGFILE, filename);
+       return;
+     }
+ 
+@@ -115,7 +115,7 @@ exit_setup (int exit_code)
+   been_here = 1;
+ 
+   if (exit_msg)
+-    note (exit_msg);
++    note (NULL, exit_msg);
+ 
+   log (LOG_TIMESTAMP, "Ending cygwin install");
+ 
+Index: main.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/main.cc,v
+retrieving revision 2.9
+diff -u -p -r2.9 main.cc
+--- main.cc	2001/11/13 01:49:32	2.9
++++ main.cc	2001/12/20 12:36:00
+@@ -29,6 +29,7 @@ static const char *cvsid =
+ #endif
+ 
+ #include "win32.h"
++#include <commctrl.h>
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -42,7 +43,20 @@ static const char *cvsid =
+ #include "version.h"
+ 
+ #include "port.h"
++#include "proppage.h"
++#include "propsheet.h"
+ 
++// Page class headers
++#include "splash.h"
++#include "source.h"
++#include "root.h"
++#include "localdir.h"
++#include "net.h"
++#include "site.h"
++#include "choose.h"
++#include "threebar.h"
++#include "desktop.h"
++
+ int next_dialog;
+ int exit_msg = 0;
+ 
+@@ -123,6 +137,12 @@ out:
+   FreeSid (sid);
+ }
+ 
++extern BOOL CALLBACK
++root_dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam);
++
++// Other threads talk to this page, so we need to have it externable.
++ThreeBarProgressPage Progress;
++
+ int WINAPI
+ WinMain (HINSTANCE h,
+ 	 HINSTANCE hPrevInstance, LPSTR command_line, int cmd_show)
+@@ -133,6 +153,16 @@ WinMain (HINSTANCE h,
+ 
+   log (LOG_TIMESTAMP, "Starting cygwin install, version %s", version);
+ 
++  SplashPage Splash;
++  SourcePage Source;
++  RootPage Root;
++  LocalDirPage LocalDir;
++  NetPage Net;
++  SitePage Site;
++  ChooserPage Chooser;
++  DesktopSetupPage Desktop;
++  PropSheet MainWindow;
++
+   char cwd[_MAX_PATH];
+   GetCurrentDirectory (sizeof (cwd), cwd);
+   local_dir = strdup (cwd);
+@@ -150,58 +180,36 @@ WinMain (HINSTANCE h,
+   if (iswinnt)
+     set_default_dacl ();
+ 
+-  while (next_dialog)
+-    {
+-      switch (next_dialog)
+-	{
+-	case IDD_SPLASH:
+-	  do_splash (h);
+-	  break;
+-	case IDD_SOURCE:
+-	  do_source (h);
+-	  break;
+-	case IDD_LOCAL_DIR:
+-	  do_local_dir (h);
+-	  break;
+-	case IDD_ROOT:
+-	  do_root (h);
+-	  break;
+-	case IDD_NET:
+-	  do_net (h);
+-	  break;
+-	case IDD_SITE:
+-	  do_site (h);
+-	  break;
+-	case IDD_OTHER_URL:
+-	  do_other (h);
+-	  break;
+-	case IDD_S_LOAD_INI:
+-	  do_ini (h);
+-	  break;
+-	case IDD_S_FROM_CWD:
+-	  do_fromcwd (h);
+-	  break;
+-	case IDD_CHOOSE:
+-	  do_choose (h);
+-	  break;
+-	case IDD_S_DOWNLOAD:
+-	  do_download (h);
+-	  break;
+-	case IDD_S_INSTALL:
+-	  do_install (h);
+-	  break;
+-	case IDD_DESKTOP:
+-	  do_desktop (h);
+-	  break;
+-	case IDD_S_POSTINSTALL:
+-	  do_postinstall (h);
+-	  break;
+-
+-	default:
+-	  next_dialog = 0;
+-	  break;
+-	}
+-    }
++  // Initialize common controls
++  InitCommonControls ();
++
++  // Init window class lib
++  Window::SetAppInstance (h);
++
++  // Create pages
++  Splash.Create ();
++  Source.Create ();
++  Root.Create ();
++  LocalDir.Create ();
++  Net.Create ();
++  Site.Create ();
++  Chooser.Create ();
++  Progress.Create ();
++  Desktop.Create ();
++
++  // Add pages to sheet
++  MainWindow.AddPage (&Splash);
++  MainWindow.AddPage (&Source);
++  MainWindow.AddPage (&Root);
++  MainWindow.AddPage (&LocalDir);
++  MainWindow.AddPage (&Net);
++  MainWindow.AddPage (&Site);
++  MainWindow.AddPage (&Chooser);
++  MainWindow.AddPage (&Progress);
++  MainWindow.AddPage (&Desktop);
++
++  // Create the PropSheet main window
++  MainWindow.Create ();
+ 
+   exit_setup (0);
+   /* Keep gcc happy :} */
+Index: msg.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/msg.cc,v
+retrieving revision 2.2
+diff -u -p -r2.2 msg.cc
+--- msg.cc	2001/11/13 01:49:32	2.2
++++ msg.cc	2001/12/20 12:36:00
+@@ -38,7 +38,7 @@ msg (const char *fmt, ...)
+ }
+ 
+ static int
+-mbox (const char *name, int type, int id, va_list args)
++mbox (HWND owner, const char *name, int type, int id, va_list args)
+ {
+   char buf[1000], fmt[1000];
+ 
+@@ -47,30 +47,30 @@ mbox (const char *name, int type, int id
+ 
+   vsprintf (buf, fmt, args);
+   log (0, "mbox %s: %s", name, buf);
+-  return MessageBox (0, buf, "Cygwin Setup", type | MB_TOPMOST);
++  return MessageBox (owner, buf, "Cygwin Setup", type /*| MB_TOPMOST */ );
+ }
+ 
+ void
+-note (int id, ...)
++note (HWND owner, int id, ...)
+ {
+   va_list args;
+   va_start (args, id);
+-  mbox ("note", 0, id, args);
++  mbox (owner, "note", 0, id, args);
+ }
+ 
+ void
+-fatal (int id, ...)
++fatal (HWND owner, int id, ...)
+ {
+   va_list args;
+   va_start (args, id);
+-  mbox ("fatal", 0, id, args);
++  mbox (owner, "fatal", 0, id, args);
+   exit_setup (1);
+ }
+ 
+ int
+-yesno (int id, ...)
++yesno (HWND owner, int id, ...)
+ {
+   va_list args;
+   va_start (args, id);
+-  return mbox ("yesno", MB_YESNO, id, args);
++  return mbox (owner, "yesno", MB_YESNO, id, args);
+ }
+Index: msg.h
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/msg.h,v
+retrieving revision 2.1
+diff -u -p -r2.1 msg.h
+--- msg.h	2001/11/13 01:49:32	2.1
++++ msg.h	2001/12/20 12:36:00
+@@ -23,11 +23,11 @@ void msg (const char *fmt, ...);
+    is interpreted like printf.  The program exits when the user
+    presses OK. */
+ 
+-void fatal (int id, ...);
++void fatal (HWND owner, int id, ...);
+ 
+ /* Similar, but the program continues when the user presses OK */
+ 
+-void note (int id, ...);
++void note (HWND owner, int id, ...);
+ 
+ /* returns IDYES or IDNO, otherwise same as note() */
+-int yesno (int id, ...);
++int yesno (HWND owner, int id, ...);
+Index: net.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/net.cc,v
+retrieving revision 2.7
+diff -u -p -r2.7 net.cc
+--- net.cc	2001/11/13 01:49:32	2.7
++++ net.cc	2001/12/20 12:36:00
+@@ -30,6 +30,11 @@ static const char *cvsid =
+ #include "msg.h"
+ #include "log.h"
+ 
++#include "net.h"
++
++#include "threebar.h"
++extern ThreeBarProgressPage Progress;
++
+ static int rb[] = { IDC_NET_IE5, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
+ 
+ static void
+@@ -84,71 +89,50 @@ dialog_cmd (HWND h, int id, HWND hwndctl
+       save_dialog (h);
+       check_if_enable_next (h);
+       break;
+-
+-    case IDOK:
+-      save_dialog (h);
+-      switch (source)
+-	{
+-	case IDC_SOURCE_NETINST:
+-	case IDC_SOURCE_DOWNLOAD:
+-	  NEXT (IDD_SITE);
+-	  break;
+-	case IDC_SOURCE_CWD:
+-	  NEXT (0);
+-	  break;
+-	default:
+-	  msg ("source is default? %d\n", source);
+-	  NEXT (0);
+-	}
+-      break;
+-
+-    case IDC_BACK:
+-      save_dialog (h);
+-      NEXT (IDD_LOCAL_DIR);
+-      break;
+-
+-    case IDCANCEL:
+-      NEXT (0);
+-      break;
+     }
+   return 0;
+ }
+ 
+-static BOOL CALLBACK
+-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
++bool
++NetPage::Create ()
+ {
+-  switch (message)
+-    {
+-    case WM_INITDIALOG:
+-      load_dialog (h);
+-
+-      // Check to see if any radio buttons are selected. If not, select a default.
+-      if (
+-	  (!SendMessage (GetDlgItem (h, IDC_NET_IE5), BM_GETCHECK, 0, 0) ==
+-	   BST_CHECKED)
+-	  && (!SendMessage (GetDlgItem (h, IDC_NET_PROXY), BM_GETCHECK, 0, 0)
+-	      == BST_CHECKED))
+-	{
+-	  SendMessage (GetDlgItem (h, IDC_NET_DIRECT), BM_CLICK, 0, 0);
+-	}
+-      return FALSE;
+-    case WM_COMMAND:
+-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
+-    }
+-  return FALSE;
++  return PropertyPage::Create (NULL, dialog_cmd, IDD_NET);
+ }
+ 
+ void
+-do_net (HINSTANCE h)
++NetPage::OnInit ()
+ {
+-  int rv = 0;
++  HWND h = GetHWND ();
+ 
+   net_method = IDC_NET_DIRECT;
+-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_NET), 0, dialog_proc);
+-  if (rv == -1)
+-    fatal (IDS_DIALOG_FAILED);
++  load_dialog (h);
++
++  // Check to see if any radio buttons are selected. If not, select a default.
++  if ((!SendMessage (GetDlgItem (IDC_NET_IE5), BM_GETCHECK, 0, 0) ==
++       BST_CHECKED)
++      && (!SendMessage (GetDlgItem (IDC_NET_PROXY), BM_GETCHECK, 0, 0)
++	  == BST_CHECKED))
++    {
++      SendMessage (GetDlgItem (IDC_NET_DIRECT), BM_CLICK, 0, 0);
++    }
++}
++
++long
++NetPage::OnNext ()
++{
++  save_dialog (GetHWND ());
+ 
+   log (0, "net: %s",
+        (net_method == IDC_NET_IE5) ? "IE5" :
+        (net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy");
++
++  Progress.SetActivateTask (WM_APP_START_SITE_INFO_DOWNLOAD);
++  return IDD_INSTATUS;
++}
++
++long
++NetPage::OnBack ()
++{
++  save_dialog (GetHWND ());
++  return 0;
+ }
+Index: net.h
+===================================================================
+RCS file: net.h
+diff -N net.h
+--- /dev/null	Tue May  5 13:32:27 1998
++++ net.h	Thu Dec 20 04:36:00 2001
+@@ -0,0 +1,42 @@
++#ifndef CINSTALL_NET_H
++#define CINSTALL_NET_H
++
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the header for the NetPage class.  It allows the user to select
++// a proxy etc.
++
++
++#include "proppage.h"
++
++class NetPage:public PropertyPage
++{
++public:
++  NetPage ()
++  {
++  };
++  virtual ~ NetPage ()
++  {
++  };
++
++  bool Create ();
++
++  virtual void OnInit ();
++  virtual long OnNext ();
++  virtual long OnBack ();
++};
++
++#endif // CINSTALL_NET_H
+Index: netio.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/netio.cc,v
+retrieving revision 2.5
+diff -u -p -r2.5 netio.cc
+--- netio.cc	2001/12/02 03:25:11	2.5
++++ netio.cc	2001/12/20 12:36:00
+@@ -229,29 +229,29 @@ auth_proc (HWND h, UINT message, WPARAM 
+ }
+ 
+ static int
+-auth_common (HINSTANCE h, int id)
++auth_common (HINSTANCE h, int id, HWND owner)
+ {
+-  return DialogBox (h, MAKEINTRESOURCE (id), 0, auth_proc);
++  return DialogBox (h, MAKEINTRESOURCE (id), owner, auth_proc);
+ }
+ 
+ int
+-NetIO::get_auth ()
++NetIO::get_auth (HWND owner)
+ {
+   user = &net_user;
+   passwd = &net_passwd;
+-  return auth_common (hinstance, IDD_NET_AUTH);
++  return auth_common (hinstance, IDD_NET_AUTH, owner);
+ }
+ 
+ int
+-NetIO::get_proxy_auth ()
++NetIO::get_proxy_auth (HWND owner)
+ {
+   user = &net_proxy_user;
+   passwd = &net_proxy_passwd;
+-  return auth_common (hinstance, IDD_PROXY_AUTH);
++  return auth_common (hinstance, IDD_PROXY_AUTH, owner);
+ }
+ 
+ int
+-NetIO::get_ftp_auth ()
++NetIO::get_ftp_auth (HWND owner)
+ {
+   if (net_ftp_user)
+     {
+@@ -267,5 +267,5 @@ NetIO::get_ftp_auth ()
+     return IDCANCEL;
+   user = &net_ftp_user;
+   passwd = &net_ftp_passwd;
+-  return auth_common (hinstance, IDD_FTP_AUTH);
++  return auth_common (hinstance, IDD_FTP_AUTH, owner);
+ }
+Index: netio.h
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/netio.h,v
+retrieving revision 2.4
+diff -u -p -r2.4 netio.h
+--- netio.h	2001/12/02 03:25:11	2.4
++++ netio.h	2001/12/20 12:36:00
+@@ -50,7 +50,7 @@ public:
+   /* Helper functions for http/ftp protocols.  Both return nonzero for
+      "cancel", zero for "ok".  They set net_proxy_user, etc, in
+      state.h */
+-  int get_auth ();
+-  int get_proxy_auth ();
+-  int get_ftp_auth ();
++  int get_auth (HWND owner);
++  int get_proxy_auth (HWND owner);
++  int get_ftp_auth (HWND owner);
+ };
+Index: nio-file.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/nio-file.cc,v
+retrieving revision 2.4
+diff -u -p -r2.4 nio-file.cc
+--- nio-file.cc	2001/12/02 03:25:11	2.4
++++ nio-file.cc	2001/12/20 12:36:00
+@@ -45,7 +45,7 @@ NetIO (Purl)
+       const char *err = strerror (errno);
+       if (!err)
+ 	err = "(unknown error)";
+-      note (IDS_ERR_OPEN_READ, path, err);
++      note (NULL, IDS_ERR_OPEN_READ, path, err);
+     }
+ }
+ 
+Index: nio-ftp.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/nio-ftp.cc,v
+retrieving revision 2.8
+diff -u -p -r2.8 nio-ftp.cc
+--- nio-ftp.cc	2001/12/02 03:25:11	2.8
++++ nio-ftp.cc	2001/12/20 12:36:02
+@@ -95,7 +95,7 @@ NetIO_FTP::NetIO_FTP (char const *Purl, 
+ 	}
+       if (code == 530)		/* Authentication failed, retry */
+ 	{
+-	  get_ftp_auth ();
++	  get_ftp_auth (NULL);
+ 	  if (net_ftp_user && net_ftp_passwd)
+ 	    goto auth_retry;
+ 	}
+Index: nio-http.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/nio-http.cc,v
+retrieving revision 2.9
+diff -u -p -r2.9 nio-http.cc
+--- nio-http.cc	2001/12/02 03:25:11	2.9
++++ nio-http.cc	2001/12/20 12:36:02
+@@ -148,14 +148,14 @@ retry_get:
+     }
+   if (code == 401)		/* authorization required */
+     {
+-      get_auth ();
++      get_auth (NULL);
+       delete
+ 	s;
+       goto retry_get;
+     }
+   if (code == 407)		/* proxy authorization required */
+     {
+-      get_proxy_auth ();
++      get_proxy_auth (NULL);
+       delete
+ 	s;
+       goto retry_get;
+@@ -163,7 +163,7 @@ retry_get:
+   if (code == 500		/* ftp authentication through proxy required */
+       && net_method == IDC_NET_PROXY && !strncmp (url, "ftp://", 6))
+     {
+-      get_ftp_auth ();
++      get_ftp_auth (NULL);
+       if (net_ftp_user && net_ftp_passwd)
+ 	{
+ 	  delete
+Index: nio-ie5.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/nio-ie5.cc,v
+retrieving revision 2.4
+diff -u -p -r2.4 nio-ie5.cc
+--- nio-ie5.cc	2001/12/02 03:25:11	2.4
++++ nio-ie5.cc	2001/12/20 12:36:02
+@@ -44,7 +44,7 @@ NetIO (_url)
+       HINSTANCE h = LoadLibrary ("wininet.dll");
+       if (!h)
+ 	{
+-	  note (IDS_WININET);
++	  note (NULL, IDS_WININET);
+ 	  connection = 0;
+ 	  return;
+ 	}
+@@ -112,14 +112,14 @@ try_again:
+ 	  if (type == 401)	/* authorization required */
+ 	    {
+ 	      flush_io ();
+-	      get_auth ();
++	      get_auth (NULL);
+ 	      resend = 1;
+ 	      goto try_again;
+ 	    }
+ 	  else if (type == 407)	/* proxy authorization required */
+ 	    {
+ 	      flush_io ();
+-	      get_proxy_auth ();
++	      get_proxy_auth (NULL);
+ 	      resend = 1;
+ 	      goto try_again;
+ 	    }
+Index: other.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/other.cc,v
+retrieving revision 2.3
+diff -u -p -r2.3 other.cc
+--- other.cc	2001/12/03 22:22:09	2.3
++++ other.cc	2001/12/20 12:36:02
+@@ -103,12 +103,12 @@ dialog_proc (HWND h, UINT message, WPARA
+ }
+ 
+ void
+-do_other (HINSTANCE h)
++do_other (HINSTANCE h, HWND owner)
+ {
+   int rv = 0;
+-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_OTHER_URL), 0, dialog_proc);
++  rv = DialogBox (h, MAKEINTRESOURCE (IDD_OTHER_URL), owner, dialog_proc);
+   if (rv == -1)
+-    fatal (IDS_DIALOG_FAILED);
++    fatal (owner, IDS_DIALOG_FAILED);
+ 
+   log (0, "site: %s", other_url);
+ }
+Index: postinstall.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/postinstall.cc,v
+retrieving revision 2.4
+diff -u -p -r2.4 postinstall.cc
+--- postinstall.cc	2001/11/13 01:49:32	2.4
++++ postinstall.cc	2001/12/20 12:36:02
+@@ -98,7 +98,7 @@ static const char *shells[] = {
+ };
+ 
+ void
+-do_postinstall (HINSTANCE h)
++do_postinstall (HINSTANCE h, HWND owner)
+ {
+   next_dialog = 0;
+   int i;
+Index: proppage.cc
+===================================================================
+RCS file: proppage.cc
+diff -N proppage.cc
+--- /dev/null	Tue May  5 13:32:27 1998
++++ proppage.cc	Thu Dec 20 04:36:02 2001
+@@ -0,0 +1,226 @@
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the implementation of the PropertyPage class.  It works closely with the
++// PropSheet class to implement a single page of the property sheet.
++
++#include "proppage.h"
++#include "propsheet.h"
++#include "win32.h"
++
++bool
++  PropertyPage::DoOnceForSheet =
++  true;
++
++PropertyPage::PropertyPage ()
++{
++  proc = NULL;
++  cmdproc = NULL;
++  IsFirst = false;
++  IsLast = false;
++}
++
++PropertyPage::~PropertyPage ()
++{
++}
++
++bool
++PropertyPage::Create (int TemplateID)
++{
++  return Create (NULL, NULL, TemplateID);
++}
++
++bool
++PropertyPage::Create (DLGPROC dlgproc, int TemplateID)
++{
++  return Create (dlgproc, NULL, TemplateID);
++}
++
++bool
++PropertyPage::Create (DLGPROC dlgproc,
++		      BOOL (*cproc) (HWND h, int id, HWND hwndctl, UINT code),
++		      int TemplateID)
++{
++  psp.dwSize = sizeof (PROPSHEETPAGE);
++  psp.dwFlags = 0;
++  psp.hInstance = GetInstance ();
++  psp.pfnDlgProc = FirstDialogProcReflector;
++  psp.pszTemplate = (LPCSTR) TemplateID;
++  psp.lParam = (LPARAM) this;
++  psp.pfnCallback = NULL;
++
++  proc = dlgproc;
++  cmdproc = cproc;
++
++  return true;
++}
++
++BOOL CALLBACK
++PropertyPage::FirstDialogProcReflector (HWND hwnd, UINT message,
++					WPARAM wParam, LPARAM lParam)
++{
++  PropertyPage *This;
++
++  if (message != WM_INITDIALOG)
++    {
++      // Don't handle anything until we get a WM_INITDIALOG message, which
++      // will have our this pointer with it.
++      return FALSE;
++    }
++
++  This = (PropertyPage *) (((PROPSHEETPAGE *) lParam)->lParam);
++
++  SetWindowLong (hwnd, DWL_USER, (DWORD) This);
++  SetWindowLong (hwnd, DWL_DLGPROC, (DWORD) DialogProcReflector);
++
++  This->SetHWND (hwnd);
++  return This->DialogProc (message, wParam, lParam);
++}
++
++BOOL CALLBACK
++PropertyPage::DialogProcReflector (HWND hwnd, UINT message, WPARAM wParam,
++				   LPARAM lParam)
++{
++  PropertyPage *This;
++
++  This = (PropertyPage *) GetWindowLong (hwnd, DWL_USER);
++
++  return This->DialogProc (message, wParam, lParam);
++}
++
++BOOL CALLBACK
++PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
++{
++  if (proc != NULL)
++    {
++      proc (GetHWND (), message, wParam, lParam);
++    }
++
++  bool retval;
++
++  switch (message)
++    {
++    case WM_INITDIALOG:
++      {
++	OnInit ();
++	// TRUE = Set focus to default control (in wParam).
++	return TRUE;
++	break;
++      }
++    case WM_NOTIFY:
++      switch (((NMHDR FAR *) lParam)->code)
++	{
++	case PSN_APPLY:
++	  SetWindowLong (GetHWND (), DWL_MSGRESULT, PSNRET_NOERROR);
++	  return TRUE;
++	  break;
++	case PSN_SETACTIVE:
++	  {
++	    if (DoOnceForSheet)
++	      {
++		// Tell our parent PropSheet what its own HWND is.
++		GetOwner ()->SetHWNDFromPage (((NMHDR FAR *) lParam)->
++					      hwndFrom);
++		GetOwner ()->CenterWindow ();
++		// Add a minimize box to the parent property sheet.  We do this here
++		// instead of in the sheet class mainly because it will work with either
++		// modal or modeless sheets.
++		LONG style =::GetWindowLong (((NMHDR FAR *) lParam)->hwndFrom,
++					     GWL_STYLE);
++		::SetWindowLong (((NMHDR FAR *) lParam)->hwndFrom, GWL_STYLE,
++				 style | WS_MINIMIZEBOX);
++		DoOnceForSheet = false;
++	      }
++
++	    // Set the wizard buttons apropriately
++	    if (IsFirst)
++	      {
++		// Disable "Back" on first page.
++		GetOwner ()->SetButtons (PSWIZB_NEXT);
++		//::PropSheet_SetWizButtons(((NMHDR FAR *) lParam)->hwndFrom, PSWIZB_NEXT);
++	      }
++	    else if (IsLast)
++	      {
++		// Disable "Next", enable "Finish" on last page
++		GetOwner ()->SetButtons (PSWIZB_BACK | PSWIZB_FINISH);
++		//::PropSheet_SetWizButtons(((NMHDR FAR *) lParam)->hwndFrom, PSWIZB_BACK | PSWIZB_FINISH);
++	      }
++	    else
++	      {
++		// Middle page, enable both "Next" and "Back" buttons
++		GetOwner ()->SetButtons (PSWIZB_BACK | PSWIZB_NEXT);
++		//::PropSheet_SetWizButtons(((NMHDR FAR *) lParam)->hwndFrom, PSWIZB_BACK | PSWIZB_NEXT);
++	      }
++
++	    OnActivate ();
++
++	    // 0 == Accept activation, -1 = Don't accept
++	    ::SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
++	    return TRUE;
++	  }
++	  break;
++	case PSN_KILLACTIVE:
++	  OnDeactivate ();
++	  // FALSE = Allow deactivation
++	  SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
++	  return TRUE;
++	  break;
++	case PSN_WIZNEXT:
++	  {
++	    LONG retval;
++	    retval = OnNext ();
++	    SetWindowLong (GetHWND (), DWL_MSGRESULT, retval);
++	    return TRUE;
++	  }
++	  break;
++	case PSN_WIZBACK:
++	  {
++	    LONG retval;
++	    retval = OnBack ();
++	    SetWindowLong (GetHWND (), DWL_MSGRESULT, retval);
++	    return TRUE;
++	  }
++	  break;
++	case PSN_WIZFINISH:
++	  retval = OnFinish ();
++	  // False = Allow the wizard to finish
++	  SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
++	  return TRUE;
++	  break;
++	default:
++	  // Unrecognized notification
++	  return FALSE;
++	  break;
++	}
++      break;
++    case WM_COMMAND:
++      if (cmdproc != NULL)
++	{
++	  return HANDLE_WM_COMMAND (GetHWND (), wParam, lParam, cmdproc);
++	}
++      break;
++    default:
++      break;
++    }
++
++  if ((message >= WM_APP) && (message < 0xC000))
++    {
++      // It's a private app message
++      return OnMessageApp (message, wParam, lParam);
++    }
++
++  // Wasn't handled
++  return FALSE;
++}
+Index: proppage.h
+===================================================================
+RCS file: proppage.h
+diff -N proppage.h
+--- /dev/null	Tue May  5 13:32:27 1998
++++ proppage.h	Thu Dec 20 04:36:02 2001
+@@ -0,0 +1,117 @@
++#ifndef CINSTALL_PROPPAGE_H
++#define CINSTALL_PROPPAGE_H
++
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the header for the PropertyPage class.  It works closely with the
++// PropSheet class to implement a single page of the property sheet.
++
++
++#include <windows.h>
++#include <prsht.h>
++
++#include "window.h"
++
++class PropSheet;
++
++class PropertyPage:public Window
++{
++  static bool DoOnceForSheet;
++  PROPSHEETPAGE psp;
++  DLGPROC proc;
++    BOOL (*cmdproc) (HWND h, int id, HWND hwndctl, UINT code);
++
++  // The sheet that owns this page.
++  PropSheet *OurSheet;
++
++  // For setting the back/finish buttons properly.
++  bool IsFirst, IsLast;
++
++  static BOOL CALLBACK FirstDialogProcReflector (HWND hwnd, UINT message,
++						 WPARAM wParam,
++						 LPARAM lParam);
++  static BOOL CALLBACK DialogProcReflector (HWND hwnd, UINT message,
++					    WPARAM wParam, LPARAM lParam);
++
++protected:
++    virtual BOOL CALLBACK DialogProc (UINT message, WPARAM wParam,
++				      LPARAM lParam);
++
++public:
++    PropertyPage ();
++    virtual ~ PropertyPage ();
++
++  PROPSHEETPAGE *GetPROPSHEETPAGEPtr ()
++  {
++    return &psp;
++  };
++
++  // FIXME: These should be private and friended to PropSheet.
++  void YouAreBeingAddedToASheet (PropSheet * ps)
++  {
++    OurSheet = ps;
++  };
++  void YouAreFirst ()
++  {
++    IsFirst = true;
++    IsLast = false;
++  };
++  void YouAreLast ()
++  {
++    IsFirst = false;
++    IsLast = true;
++  };
++  void YouAreMiddle ()
++  {
++    IsFirst = false;
++    IsLast = false;
++  };
++
++  virtual bool Create (int TemplateID);
++  virtual bool Create (DLGPROC dlgproc, int TemplateID);
++  virtual bool Create (DLGPROC dlgproc,
++		       BOOL (*cmdproc) (HWND h, int id, HWND hwndctl,
++					UINT code), int TemplateID);
++
++  virtual void OnInit ()
++  {
++  };
++  virtual void OnActivate ()
++  {
++  };
++  virtual void OnDeactivate ()
++  {
++  };
++  virtual long OnNext ()
++  {
++    return 0;
++  };
++  virtual long OnBack ()
++  {
++    return 0;
++  };
++  virtual bool OnFinish ()
++  {
++    return true;
++  };
++
++  PropSheet *GetOwner () const
++  {
++    return OurSheet;
++  };
++};
++
++#endif // CINSTALL_PROPPAGE_H
+Index: propsheet.cc
+===================================================================
+RCS file: propsheet.cc
+diff -N propsheet.cc
+--- /dev/null	Tue May  5 13:32:27 1998
++++ propsheet.cc	Thu Dec 20 04:36:03 2001
+@@ -0,0 +1,217 @@
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the implementation of the PropSheet class.  This class encapsulates
++// a Windows property sheet / wizard and interfaces with the PropertyPage class.
++// It's named PropSheet instead of PropertySheet because the latter conflicts with
++// the Windows function of the same name.
++
++#include "propsheet.h"
++#include "proppage.h"
++
++//#include <shlwapi.h>
++// ...but since there is no shlwapi.h in mingw yet:
++typedef struct _DllVersionInfo
++{
++  DWORD cbSize;
++  DWORD dwMajorVersion;
++  DWORD dwMinorVersion;
++  DWORD dwBuildNumber;
++  DWORD dwPlatformID;
++}
++DLLVERSIONINFO;
++typedef HRESULT CALLBACK (*DLLGETVERSIONPROC) (DLLVERSIONINFO * pdvi);
++#define PROPSHEETHEADER_V1_SIZE 40
++
++
++
++PropSheet::PropSheet ()
++{
++  NumPropPages = 0;
++}
++
++PropSheet::~PropSheet ()
++{
++}
++
++HPROPSHEETPAGE *
++PropSheet::CreatePages ()
++{
++  HPROPSHEETPAGE *retarray;
++
++  // Create the return array
++  retarray = new HPROPSHEETPAGE[NumPropPages];
++
++  // Create the pages with CreatePropertySheetPage().
++  // We do it here rather than in the PropertyPages themselves
++  // because, for reasons known only to Microsoft, these handles will be
++  // destroyed by the property sheet before the PropertySheet() call returns,
++  // at least if it's modal (don't know about modeless).
++  int i;
++  for (i = 0; i < NumPropPages; i++)
++    {
++      retarray[i] =
++	CreatePropertySheetPage (PropertyPages[i]->GetPROPSHEETPAGEPtr ());
++
++      // Set position info
++      if (i == 0)
++	{
++	  PropertyPages[i]->YouAreFirst ();
++	}
++      else if (i == NumPropPages - 1)
++	{
++	  PropertyPages[i]->YouAreLast ();
++	}
++      else
++	{
++	  PropertyPages[i]->YouAreMiddle ();
++	}
++    }
++
++  return retarray;
++}
++
++static DWORD
++GetPROPSHEETHEADERSize ()
++{
++  // For compatibility with all versions of comctl32.dll, we have to do this.
++
++  DLLVERSIONINFO vi;
++  HMODULE mod;
++  DLLGETVERSIONPROC DllGetVersion;
++  DWORD retval = 0;
++
++
++  // This 'isn't safe' in a DLL, according to MSDN
++  mod = LoadLibrary ("comctl32.dll");
++
++  DllGetVersion = (DLLGETVERSIONPROC) GetProcAddress (mod, "DllGetVersion");
++  if (DllGetVersion == NULL)
++    {
++      // Something's wildly broken, punt.
++      retval = PROPSHEETHEADER_V1_SIZE;
++    }
++  else
++    {
++      vi.cbSize = sizeof (DLLVERSIONINFO);
++      DllGetVersion (&vi);
++
++      if ((vi.dwMajorVersion < 4) ||
++	  ((vi.dwMajorVersion == 4) && (vi.dwMinorVersion < 71)))
++	{
++	  // Recent.
++	  retval = sizeof (PROPSHEETHEADER);
++	}
++      else
++	{
++	  // Old (== Win95/NT4 w/o IE 4 or better)
++	  retval = PROPSHEETHEADER_V1_SIZE;
++	}
++    }
++
++  FreeLibrary (mod);
++
++  return retval;
++}
++
++bool
++PropSheet::Create (const Window * Parent, DWORD Style)
++{
++  PROPSHEETHEADER p;
++
++  PageHandles = CreatePages ();
++
++  p.dwSize = GetPROPSHEETHEADERSize ();
++  p.dwFlags = PSH_NOAPPLYNOW | PSH_WIZARD /*| PSH_MODELESS */ ;
++  if (Parent != NULL)
++    {
++      p.hwndParent = Parent->GetHWND ();
++    }
++  else
++    {
++      p.hwndParent = NULL;
++    }
++  p.hInstance = GetInstance ();
++  p.nPages = NumPropPages;
++  p.nStartPage = 0;
++  p.phpage = PageHandles;
++  p.pfnCallback = NULL;
++
++
++  PropertySheet (&p);
++
++  // Do a modeless property sheet...
++  //SetHWND((HWND)PropertySheet(&p));
++  /*Show(SW_SHOWNORMAL);
++
++     // ...but pretend it's modal
++     MessageLoop();
++     MessageBox(NULL, "DONE", NULL, MB_OK);
++
++     // FIXME: Enable the parent before destroying this window to prevent another window
++     // from becoming the foreground window
++     // ala: EnableWindow(<parent_hwnd>, TRUE);
++     //DestroyWindow(WindowHandle);
++   */
++  SetHWND (NULL);
++
++
++  return true;
++}
++
++void
++PropSheet::SetHWNDFromPage (HWND h)
++{
++  // If we're a modal dialog, there's no way for us to know our window handle unless
++  // one of our pages tells us through this function.
++  SetHWND (h);
++}
++
++void
++PropSheet::AddPage (PropertyPage * p)
++{
++  // Add a page to the property sheet.
++  p->YouAreBeingAddedToASheet (this);
++  PropertyPages[NumPropPages] = p;
++  NumPropPages++;
++}
++
++bool
++PropSheet::SetActivePage (int i)
++{
++  // Posts a message to the message queue, so this won't block
++  return static_cast < bool > (::PropSheet_SetCurSel (GetHWND (), NULL, i));
++}
++
++bool
++PropSheet::SetActivePageByID (int resource_id)
++{
++  // Posts a message to the message queue, so this won't block
++  return static_cast < bool >
++    (::PropSheet_SetCurSelByID (GetHWND (), resource_id));
++}
++
++void
++PropSheet::SetButtons (DWORD flags)
++{
++  // Posts a message to the message queue, so this won't block
++  ::PropSheet_SetWizButtons (GetHWND (), flags);
++}
++
++void
++PropSheet::PressButton (int button)
++{
++  ::PropSheet_PressButton (GetHWND (), button);
++}
+Index: propsheet.h
+===================================================================
+RCS file: propsheet.h
+diff -N propsheet.h
+--- /dev/null	Tue May  5 13:32:27 1998
++++ propsheet.h	Thu Dec 20 04:36:03 2001
+@@ -0,0 +1,59 @@
++#ifndef CINSTALL_PROPSHEET_H
++#define CINSTALL_PROPSHEET_H
++
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the header for the PropSheet class.  This class encapsulates
++// a Windows property sheet / wizard and interfaces with the PropertyPage class.
++// It's named PropSheet instead of PropertySheet because the latter conflicts with
++// the Windows function of the same name.
++
++
++#include <windows.h>
++#include <prsht.h>
++
++#include "window.h"
++
++class PropertyPage;
++
++class PropSheet:public Window
++{
++  PropertyPage *PropertyPages[MAXPROPPAGES];
++  int NumPropPages;
++
++  HPROPSHEETPAGE *PageHandles;
++  HPROPSHEETPAGE *CreatePages ();
++
++public:
++    PropSheet ();
++    virtual ~ PropSheet ();
++
++  // Should be private and friended to PropertyPage
++  void SetHWNDFromPage (HWND h);
++
++  virtual bool Create (const Window * Parent = NULL,
++		       DWORD Style =
++		       WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN);
++
++  void AddPage (PropertyPage * p);
++
++  bool SetActivePage (int i);
++  bool SetActivePageByID (int resource_id);
++  void SetButtons (DWORD flags);
++  void PressButton (int button);
++};
++
++#endif // CINSTALL_PROPSHEET_H
+Index: res.rc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/res.rc,v
+retrieving revision 2.31
+diff -u -p -r2.31 res.rc
+--- res.rc	2001/12/03 22:22:09	2.31
++++ res.rc	2001/12/20 12:36:03
+@@ -29,7 +29,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_U
+ //
+ 
+ IDD_SOURCE DIALOG DISCARDABLE  0, 0, 215, 95
+-STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
++STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+ CAPTION "Cygwin Setup"
+ FONT 8, "MS Sans Serif"
+ BEGIN
+@@ -40,26 +40,21 @@ BEGIN
+                     BS_AUTORADIOBUTTON,55,30,89,10
+     CONTROL         "Install from &Local Directory",IDC_SOURCE_CWD,"Button",
+                     BS_AUTORADIOBUTTON,55,45,99,10
+-    DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
+-    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+ END
+ 
+-IDD_LOCAL_DIR DIALOG DISCARDABLE  0, 0, 215, 95
+-STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
++IDD_LOCAL_DIR DIALOG DISCARDABLE  0, 0, 227, 94
++STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+ CAPTION "Cygwin Setup"
+ FONT 8, "MS Sans Serif"
+ BEGIN
+     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
+-    PUSHBUTTON      "B&rowse...",IDC_LOCAL_DIR_BROWSE,150,10,34,14
++    PUSHBUTTON      "B&rowse...",IDC_LOCAL_DIR_BROWSE,185,30,34,14
+     LTEXT           "Local Package &Directory",IDC_STATIC,55,15,85,11
+-    EDITTEXT        IDC_LOCAL_DIR,55,25,127,12,ES_AUTOHSCROLL
+-    DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
+-    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+-    PUSHBUTTON      "<-- &Back",IDC_BACK,55,75,45,15
++    EDITTEXT        IDC_LOCAL_DIR,55,30,127,15,ES_AUTOHSCROLL
+ END
+ 
+ IDD_ROOT DIALOG DISCARDABLE  0, 0, 215, 95
+-STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
++STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+ CAPTION "Cygwin Setup"
+ FONT 8, "MS Sans Serif"
+ BEGIN
+@@ -77,23 +72,17 @@ BEGIN
+                     WS_GROUP,125,60,25,8
+     CONTROL         "Just &Me",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON,160,
+                     60,50,8
+-    DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
+-    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+-    PUSHBUTTON      "<-- &Back",IDC_BACK,55,75,45,15
+ END
+ 
+-IDD_SITE DIALOG DISCARDABLE  0, 0, 222, 206
+-STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
++IDD_SITE DIALOG DISCARDABLE  0, 0, 247, 94
++STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+ CAPTION "Cygwin Setup"
+ FONT 8, "MS Sans Serif"
+ BEGIN
+     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
+-    LTEXT           "Select Download &Sites",IDC_STATIC,55,5,135,11
+-    LISTBOX         IDC_URL_LIST,55,20,160,155,LBS_NOINTEGRALHEIGHT | 
+-    		    LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+-    DEFPUSHBUTTON   "&Next -->",IDOK,105,185,45,15
+-    PUSHBUTTON      "Cancel",IDCANCEL,170,185,45,15
+-    PUSHBUTTON      "<-- &Back",IDC_BACK,60,185,45,15
++    LTEXT           "Select Download &Site",IDC_STATIC,55,5,135,11
++    LISTBOX         IDC_URL_LIST,55,20,185,65,LBS_NOINTEGRALHEIGHT | 
++                    LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+ END
+ 
+ IDD_OTHER_URL DIALOG DISCARDABLE  0, 0, 215, 95
+@@ -109,32 +98,31 @@ BEGIN
+     PUSHBUTTON      "<-- &Back",IDC_BACK,55,75,45,15
+ END
+ 
+-IDD_NET DIALOGEX 0, 0, 215, 95
+-STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
++IDD_NET DIALOG DISCARDABLE  0, 0, 247, 106
++STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+ CAPTION "Cygwin Setup"
+ FONT 8, "MS Sans Serif"
+ BEGIN
+-    ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
+     CONTROL         "&Direct Connection",IDC_NET_DIRECT,"Button",
+-                    BS_AUTORADIOBUTTON,55,10,73,10
++                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,55,10,73,10
+     CONTROL         "Use &IE5 Settings",IDC_NET_IE5,"Button",
+-                    BS_AUTORADIOBUTTON,55,25,69,10
++                    BS_AUTORADIOBUTTON | WS_TABSTOP,55,25,69,10
+     CONTROL         "Use HTTP/FTP &Proxy:",IDC_NET_PROXY,"Button",
+-                    BS_AUTORADIOBUTTON,55,40,88,10
+-    LTEXT           "Proxy &Host",IDC_STATIC,10,55,50,15,SS_CENTERIMAGE,
+-                    WS_EX_RIGHT
+-    EDITTEXT        IDC_PROXY_HOST,65,55,80,12,ES_AUTOHSCROLL | WS_DISABLED
+-    LTEXT           "Por&t",IDC_STATIC,155,55,20,15,SS_CENTERIMAGE,
+-                    WS_EX_RIGHT
+-    EDITTEXT        IDC_PROXY_PORT,180,55,30,12,ES_AUTOHSCROLL | WS_DISABLED
+-    DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
+-    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+-    PUSHBUTTON      "<-- &Back",IDC_BACK,55,75,45,15
++                    BS_AUTORADIOBUTTON | WS_TABSTOP,55,40,88,10
++    EDITTEXT        IDC_PROXY_HOST,115,60,120,12,ES_AUTOHSCROLL | 
++                    WS_DISABLED | WS_GROUP
++    EDITTEXT        IDC_PROXY_PORT,115,80,30,12,ES_AUTOHSCROLL | WS_DISABLED
++    GROUPBOX        "",IDC_STATIC,55,50,185,50
++    ICON            IDI_CYGWIN,IDC_STATIC,5,5,21,20
++    RTEXT           "Proxy &Host",IDC_STATIC,60,60,50,12,SS_CENTERIMAGE | 
++                    NOT WS_GROUP
++    RTEXT           "Por&t",IDC_STATIC,80,80,30,12,SS_CENTERIMAGE | NOT 
++                    WS_GROUP
+ END
+ 
+ IDD_DLSTATUS DIALOG DISCARDABLE  0, 0, 215, 95
+-STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_VISIBLE | 
+-    WS_CAPTION | WS_SYSMENU
++STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
++    WS_SYSMENU
+ CAPTION "Cygwin Setup"
+ FONT 8, "MS Sans Serif"
+ BEGIN
+@@ -154,26 +142,25 @@ BEGIN
+     RTEXT           "Disk",IDC_DLS_IPROGRESS_TEXT,5,60,45,8
+ END
+ 
+-IDD_INSTATUS DIALOG DISCARDABLE  0, 0, 215, 95
+-STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_VISIBLE | 
+-    WS_CAPTION | WS_SYSMENU
++IDD_INSTATUS DIALOG DISCARDABLE  0, 0, 252, 94
++STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
++    WS_SYSMENU
+ CAPTION "Cygwin Setup"
+ FONT 8, "MS Sans Serif"
+ BEGIN
+-    ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
+-    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
++    ICON            IDI_CYGWIN,IDC_STATIC,5,5,21,20
+     LTEXT           "Installing...",IDC_INS_ACTION,55,5,135,8
+     LTEXT           "(PKG)",IDC_INS_PKG,55,15,150,8
+     LTEXT           "(FILE)",IDC_INS_FILE,55,25,155,8
+     CONTROL         "Progress1",IDC_INS_DISKFULL,"msctls_progress32",
+-                    PBS_SMOOTH | WS_BORDER,55,60,155,10
++                    PBS_SMOOTH | WS_BORDER,90,60,155,10
+     CONTROL         "Progress1",IDC_INS_IPROGRESS,"msctls_progress32",
+-                    PBS_SMOOTH | WS_BORDER,55,50,155,10
++                    PBS_SMOOTH | WS_BORDER,90,50,155,10
+     CONTROL         "Progress1",IDC_INS_PPROGRESS,"msctls_progress32",
+-                    PBS_SMOOTH | WS_BORDER,55,40,155,10
+-    RTEXT           "Package",IDC_STATIC,5,40,45,8
+-    RTEXT           "Total",IDC_STATIC,10,50,40,8
+-    RTEXT           "Disk",IDC_STATIC,5,60,45,8
++                    PBS_SMOOTH | WS_BORDER,90,40,155,10
++    RTEXT           "Package",IDC_INS_BL_PACKAGE,40,40,45,8
++    RTEXT           "Total",IDC_INS_BL_TOTAL,45,50,40,8
++    RTEXT           "Disk",IDC_INS_BL_DISK,40,60,45,8
+ END
+ 
+ IDD_PROXY_AUTH DIALOG DISCARDABLE  0, 0, 215, 95
+@@ -210,8 +197,9 @@ BEGIN
+     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+ END
+ 
+-IDD_SPLASH DIALOG DISCARDABLE  0, 0, 215, 95
+-STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
++IDD_SPLASH DIALOG DISCARDABLE  0, 0, 216, 94
++STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
++    WS_CAPTION | WS_SYSMENU
+ CAPTION "Cygwin Setup"
+ FONT 8, "MS Sans Serif"
+ BEGIN
+@@ -223,17 +211,26 @@ BEGIN
+                     8
+     LTEXT           "http://sources.redhat.com/cygwin/",IDC_STATIC,55,50,112,
+                     8
+-    DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
+-    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+ END
+ 
+-IDD_CHOOSE DIALOG DISCARDABLE  0, 0, 429, 266
+-STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_CAPTION | 
+-    WS_SYSMENU
++IDD_CHOOSE DIALOGEX 0, 0, 430, 266
++STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
++    WS_CAPTION | WS_SYSMENU
++EXSTYLE WS_EX_CONTROLPARENT
+ CAPTION "Cygwin Setup"
+ FONT 8, "MS Sans Serif"
+ BEGIN
+-    ICON            IDI_CYGWIN,IDC_STATIC,0,2,21,20
++    DEFPUSHBUTTON   "&Next -->",IDOK,311,242,45,15,WS_GROUP
++    PUSHBUTTON      "Cancel",IDCANCEL,375,242,45,15
++    PUSHBUTTON      "<-- &Back",IDC_BACK,266,242,45,15
++    CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON | 
++                    WS_GROUP | WS_TABSTOP,265,5,27,10
++    CONTROL         "&Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON,297,
++                    5,25,10
++    CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON,323,5,
++                    25,10
++    PUSHBUTTON      "&View",IDC_CHOOSE_VIEW,353,5,20,10,WS_GROUP
++    ICON            IDI_CYGWIN,IDC_STATIC,0,2,20,20
+     LTEXT           "Select packages to install",IDC_CHOOSE_INST_TEXT,125,5,
+                     99,8
+     CONTROL         "",IDC_LISTVIEW_POS,"Static",SS_BLACKFRAME | NOT 
+@@ -241,21 +238,12 @@ BEGIN
+     CONTROL         "SPIN",IDC_STATIC,"Static",SS_BITMAP,22,235,15,13
+     LTEXT           "= click to choose action, (p) = previous version, (x) = experimental",
+                     IDC_STATIC,35,234,220,8
+-    PUSHBUTTON      "&View",IDC_CHOOSE_VIEW,353,5,20,10
+     LTEXT           "",IDC_CHOOSE_VIEWCAPTION,390,5,30,10
+-    CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON | 
+-                    WS_GROUP,323,5,25,10
+-    CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON,265,
+-                    5,27,10
+-    CONTROL         "&Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON,297,
+-                    5,25,10
+-    DEFPUSHBUTTON   "&Next -->",IDOK,311,242,45,15
+-    PUSHBUTTON      "Cancel",IDCANCEL,375,242,45,15
+-    PUSHBUTTON      "<-- &Back",IDC_BACK,266,242,45,15
+ END
+ 
+ IDD_DESKTOP DIALOG DISCARDABLE  0, 0, 215, 95
+-STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
++STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
++    WS_CAPTION | WS_SYSMENU
+ CAPTION "Cygwin Setup"
+ FONT 8, "MS Sans Serif"
+ BEGIN
+@@ -264,12 +252,9 @@ BEGIN
+                     BS_AUTOCHECKBOX,55,25,100,8
+     CONTROL         "Add to &Start Menu",IDC_ROOT_MENU,"Button",
+                     BS_AUTOCHECKBOX,55,40,100,8
+-    DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
+-    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+-    PUSHBUTTON      "<-- &Back",IDC_BACK,55,75,45,15
+ END
+ 
+-IDD_FTP_AUTH DIALOGEX 0, 0, 215, 95
++IDD_FTP_AUTH DIALOG DISCARDABLE  0, 0, 215, 95
+ STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+ CAPTION "Cygwin Setup"
+ FONT 8, "MS Sans Serif"
+@@ -286,7 +271,16 @@ BEGIN
+     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+ END
+ 
++IDD_CHOOSER DIALOG DISCARDABLE  0, 0, 186, 90
++STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
++    WS_SYSMENU
++CAPTION "Cygwin Setup"
++FONT 8, "MS Sans Serif"
++BEGIN
++    LTEXT           "Don't look here",IDC_STATIC,25,38,134,8
++END
+ 
++
+ #ifdef APSTUDIO_INVOKED
+ /////////////////////////////////////////////////////////////////////////////
+ //
+@@ -339,9 +333,21 @@ CYGWIN.ICON             FILE    DISCARDA
+ #ifdef APSTUDIO_INVOKED
+ GUIDELINES DESIGNINFO DISCARDABLE 
+ BEGIN
++    IDD_LOCAL_DIR, DIALOG
++    BEGIN
++        RIGHTMARGIN, 215
++    END
++
++    IDD_SITE, DIALOG
++    BEGIN
++        RIGHTMARGIN, 215
++        BOTTOMMARGIN, 93
++    END
++
+     IDD_NET, DIALOG
+     BEGIN
+-        BOTTOMMARGIN, 49
++        RIGHTMARGIN, 215
++        BOTTOMMARGIN, 60
+     END
+ 
+     IDD_PROXY_AUTH, DIALOG
+@@ -354,10 +360,23 @@ BEGIN
+         BOTTOMMARGIN, 49
+     END
+ 
++    IDD_CHOOSE, DIALOG
++    BEGIN
++        RIGHTMARGIN, 429
++    END
++
+     IDD_FTP_AUTH, DIALOG
+     BEGIN
+         BOTTOMMARGIN, 49
+     END
++
++    IDD_CHOOSER, DIALOG
++    BEGIN
++        LEFTMARGIN, 7
++        RIGHTMARGIN, 179
++        TOPMARGIN, 7
++        BOTTOMMARGIN, 83
++    END
+ END
+ #endif    // APSTUDIO_INVOKED
+ 
+@@ -409,6 +428,7 @@ BEGIN
+     IDS_DOWNLOAD_FAILED     "Unable to download %s"
+     IDS_DOWNLOAD_INCOMPLETE "Download Incomplete.  Try again?"
+     IDS_INSTALL_INCOMPLETE  "Installation incomplete.  Check /setup.log.full for details"
++    IDS_VERSION_INFO        "Setup.exe version %1"
+ END
+ 
+ #endif    // English (U.S.) resources
+Index: resource.h
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/resource.h,v
+retrieving revision 2.13
+diff -u -p -r2.13 resource.h
+--- resource.h	2001/12/20 11:49:54	2.13
++++ resource.h	2001/12/20 12:36:03
+@@ -27,6 +27,7 @@
+ #define IDS_DOWNLOAD_FAILED             25
+ #define IDS_DOWNLOAD_INCOMPLETE         26
+ #define IDS_INSTALL_INCOMPLETE          27
++#define IDS_VERSION_INFO                28
+ #define IDD_ROOT                        101
+ #define IDD_SOURCE                      102
+ #define IDD_OTHER_URL                   103
+@@ -53,6 +54,7 @@
+ #define IDB_CHECK_NO                    124
+ #define IDB_CHECK_NA                    125
+ #define IDD_FTP_AUTH                    126
++#define IDD_CHOOSER                     127
+ #define IDC_SOURCE_DOWNLOAD             1000
+ #define IDC_SOURCE_NETINST              1001
+ #define IDC_SOURCE_CWD                  1002
+@@ -99,9 +101,12 @@
+ #define IDC_DLS_PROGRESS_TEXT           1047
+ #define IDC_DLS_PPROGRESS_TEXT          1048
+ #define IDC_DLS_IPROGRESS_TEXT          1049
+-#define IDC_CHOOSE_INST_TEXT      1050
++#define IDC_CHOOSE_INST_TEXT            1050
+ #define IDC_CHOOSE_VIEWCAPTION          1051
+ #define IDC_CHOOSE_LISTHEADER		1052
++#define IDC_INS_BL_PACKAGE              1053
++#define IDC_INS_BL_TOTAL                1054
++#define IDC_INS_BL_DISK                 1055
+ #define IDC_STATIC                      -1
+ 
+ // Next default values for new objects
+@@ -110,9 +115,9 @@
+ #ifndef APSTUDIO_READONLY_SYMBOLS
+ #define _APS_NO_MFC                     1
+ #define _APS_3D_CONTROLS                     1
+-#define _APS_NEXT_RESOURCE_VALUE        127
++#define _APS_NEXT_RESOURCE_VALUE        128
+ #define _APS_NEXT_COMMAND_VALUE         40003
+-#define _APS_NEXT_CONTROL_VALUE         1053
++#define _APS_NEXT_CONTROL_VALUE         1056
+ #define _APS_NEXT_SYMED_VALUE           101
+ #endif
+ #endif
+Index: root.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/root.cc,v
+retrieving revision 2.7
+diff -u -p -r2.7 root.cc
+--- root.cc	2001/11/13 01:49:32	2.7
++++ root.cc	2001/12/20 12:36:03
+@@ -35,6 +35,7 @@ static const char *cvsid =
+ #include "mount.h"
+ #include "concat.h"
+ #include "log.h"
++#include "root.h"
+ 
+ static int rb[] = { IDC_ROOT_TEXT, IDC_ROOT_BINARY, 0 };
+ static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
+@@ -143,64 +144,56 @@ dialog_cmd (HWND h, int id, HWND hwndctl
+     case IDC_ROOT_BROWSE:
+       browse (h);
+       break;
+-
+-    case IDOK:
+-      save_dialog (h);
+-
+-      if (!directory_is_absolute ())
+-	{
+-	  note (IDS_ROOT_ABSOLUTE);
+-	  break;
+-	}
+-
+-      if (directory_is_rootdir ())
+-	if (IDNO == yesno (IDS_ROOT_SLASH))
+-	  break;
+-
+-      if (directory_has_spaces ())
+-	if (IDNO == yesno (IDS_ROOT_SPACE))
+-	  break;
+-
+-      NEXT (IDD_LOCAL_DIR);
+-      break;
+-
+-    case IDC_BACK:
+-      save_dialog (h);
+-      NEXT (IDD_SOURCE);
+-      break;
+-
+-    case IDCANCEL:
+-      NEXT (0);
+-      break;
+     }
+   return 0;
+ }
+ 
+-static BOOL CALLBACK
+-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
++bool
++RootPage::Create ()
+ {
+-  switch (message)
+-    {
+-    case WM_INITDIALOG:
+-      load_dialog (h);
+-      return FALSE;
+-    case WM_COMMAND:
+-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
+-    }
+-  return FALSE;
++  return PropertyPage::Create (NULL, dialog_cmd, IDD_ROOT);
+ }
+ 
+ void
+-do_root (HINSTANCE h)
++RootPage::OnInit ()
+ {
+-  int rv = 0;
+   if (!get_root_dir ())
+     read_mounts ();
+-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_ROOT), 0, dialog_proc);
+-  if (rv == -1)
+-    fatal (IDS_DIALOG_FAILED);
++  load_dialog (GetHWND ());
++}
+ 
++long
++RootPage::OnNext ()
++{
++  HWND h = GetHWND ();
++
++  save_dialog (h);
++
++  if (!directory_is_absolute ())
++    {
++      note (h, IDS_ROOT_ABSOLUTE);
++      return -1;
++    }
++  else if (directory_is_rootdir () && (IDNO == yesno (h, IDS_ROOT_SLASH)))
++    return -1;
++  else if (directory_has_spaces () && (IDNO == yesno (h, IDS_ROOT_SPACE)))
++    return -1;
++
++  NEXT (IDD_LOCAL_DIR);
++
+   log (0, "root: %s %s %s", get_root_dir (),
+        (root_text == IDC_ROOT_TEXT) ? "text" : "binary",
+        (root_scope == IDC_ROOT_USER) ? "user" : "system");
++
++  return 0;
++}
++
++long
++RootPage::OnBack ()
++{
++  HWND h = GetHWND ();
++
++  save_dialog (h);
++  NEXT (IDD_SOURCE);
++  return 0;
+ }
+Index: root.h
+===================================================================
+RCS file: root.h
+diff -N root.h
+--- /dev/null	Tue May  5 13:32:27 1998
++++ root.h	Thu Dec 20 04:36:03 2001
+@@ -0,0 +1,23 @@
++#ifndef CINSTALL_ROOT_H
++#define CINSTALL_ROOT_H
++
++#include "proppage.h"
++
++class RootPage:public PropertyPage
++{
++public:
++  RootPage ()
++  {
++  };
++  virtual ~ RootPage ()
++  {
++  };
++
++  bool Create ();
++
++  void OnInit ();
++  virtual long OnNext ();
++  virtual long OnBack ();
++};
++
++#endif // CINSTALL_ROOT_H
+Index: site.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/site.cc,v
+retrieving revision 2.10
+diff -u -p -r2.10 site.cc
+--- site.cc	2001/12/03 22:22:09	2.10
++++ site.cc	2001/12/20 12:36:03
+@@ -25,6 +25,7 @@ static const char *cvsid =
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <process.h>
+ 
+ #include "dialog.h"
+ #include "resource.h"
+@@ -38,6 +39,12 @@ static const char *cvsid =
+ 
+ #include "port.h"
+ 
++#include "site.h"
++#include "propsheet.h"
++
++#include "threebar.h"
++extern ThreeBarProgressPage Progress;
++
+ #define NO_IDX (-1)
+ #define OTHER_IDX (-2)
+ 
+@@ -101,7 +108,12 @@ load_dialog (HWND h)
+       int index = SendMessage (listbox, LB_FINDSTRING, (WPARAM) - 1,
+ 			       (LPARAM) site_list[n]->displayed_url);
+       if (index != LB_ERR)
+-	SendMessage (listbox, LB_SELITEMRANGE, TRUE, (index << 16) | index);
++	{
++	  // Highlight the selected item
++	  SendMessage (listbox, LB_SELITEMRANGE, TRUE, (index << 16) | index);
++	  // Make sure it's fully visible
++	  SendMessage (listbox, LB_SETCARETINDEX, index, FALSE);
++	}
+     }
+   check_if_enable_next (h);
+ }
+@@ -167,63 +179,18 @@ dialog_cmd (HWND h, int id, HWND hwndctl
+     case IDC_URL_LIST:
+       check_if_enable_next (h);
+       break;
+-
+-    case IDOK:
+-      save_dialog (h);
+-      if (mirror_idx == OTHER_IDX)
+-	NEXT (IDD_OTHER_URL);
+-      else
+-	{
+-	  save_site_url ();
+-	  NEXT (IDD_S_LOAD_INI);
+-	}
+-      break;
+-
+-    case IDC_BACK:
+-      save_dialog (h);
+-      NEXT (IDD_NET);
+-      break;
+-
+-    case IDCANCEL:
+-      NEXT (0);
+-      break;
+     }
+   return 0;
+ }
+ 
+-static BOOL CALLBACK
+-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+-{
+-  int j;
+-  HWND listbox;
+-  switch (message)
+-    {
+-    case WM_INITDIALOG:
+-      listbox = GetDlgItem (h, IDC_URL_LIST);
+-      for (size_t i = 1; i <= all_site_list.number (); i++)
+-	{
+-	  j =
+-	    SendMessage (listbox, LB_ADDSTRING, 0,
+-			 (LPARAM) all_site_list[i]->displayed_url);
+-	  SendMessage (listbox, LB_SETITEMDATA, j, i);
+-	}
+-      j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM) "Other URL");
+-      SendMessage (listbox, LB_SETITEMDATA, j, OTHER_IDX);
+-      load_dialog (h);
+-      return FALSE;
+-    case WM_COMMAND:
+-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
+-    }
+-  return FALSE;
+-}
+-
+ static int
+-get_site_list (HINSTANCE h)
++get_site_list (HINSTANCE h, HWND owner)
+ {
+   char mirror_url[1000];
++
+   if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
+     return 1;
+-  char *mirrors = get_url_to_string (mirror_url);
++  char *mirrors = get_url_to_string (mirror_url, owner);
+   dismiss_url_status_dialog ();
+   if (!mirrors)
+     return 1;
+@@ -320,24 +287,106 @@ get_saved_sites ()
+ 
+ }
+ 
+-void
+-do_site (HINSTANCE h)
++static void
++do_download_site_info_thread (void *p)
+ {
+-  int rv = 0;
++  HANDLE *context;
++  HINSTANCE hinst;
++  HWND h;
++  context = (HANDLE *) p;
++
++  hinst = (HINSTANCE) (context[0]);
++  h = (HWND) (context[1]);
+ 
+   if (all_site_list.number () == 0)
+-    if (get_site_list (h))
+-      {
+-	NEXT (IDD_NET);
+-	return;
+-      }
++    {
++      if (get_site_list (hinst, h))
++	{
++	  // Error: Couldn't download the site info.  Go back to the Net setup page.
++	  NEXT (IDD_NET);
++	  return;
++	}
++    }
++
++  // Everything worked, go to the site select page
++  NEXT (IDD_SITE);
++
++  // Tell the progress page that we're done downloading
++  Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, next_dialog);
++
++  _endthread ();
++}
+ 
++static HANDLE context[2];
++
++void
++do_download_site_info (HINSTANCE hinst, HWND owner)
++{
++
++  context[0] = hinst;
++  context[1] = owner;
++
++  _beginthread (do_download_site_info_thread, 0, context);
++
++}
++
++bool
++SitePage::Create ()
++{
++  return PropertyPage::Create (NULL, dialog_cmd, IDD_SITE);
++}
++
++void
++SitePage::OnInit ()
++{
++  HWND h = GetHWND ();
++  int j;
++  HWND listbox;
++
+   get_saved_sites ();
++
++  listbox = GetDlgItem (IDC_URL_LIST);
++  for (size_t i = 1; i <= all_site_list.number (); i++)
++    {
++      j =
++	SendMessage (listbox, LB_ADDSTRING, 0,
++		     (LPARAM) all_site_list[i]->displayed_url);
++      SendMessage (listbox, LB_SETITEMDATA, j, i);
++    }
++  j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM) "Other URL");
++  SendMessage (listbox, LB_SETITEMDATA, j, OTHER_IDX);
++  load_dialog (h);
++}
+ 
+-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_SITE), 0, dialog_proc);
+-  if (rv == -1)
+-    fatal (IDS_DIALOG_FAILED);
++long
++SitePage::OnNext ()
++{
++  HWND h = GetHWND ();
+ 
+-  for (size_t n = 1; n <= site_list.number (); n++)
+-    log (0, "site: %s", site_list[n]->url);
++  save_dialog (h);
++  if (mirror_idx == OTHER_IDX)
++    NEXT (IDD_OTHER_URL);
++  else
++    {
++      save_site_url ();
++      NEXT (IDD_S_LOAD_INI);
++
++      for (size_t n = 1; n <= site_list.number (); n++)
++	log (0, "site: %s", site_list[n]->url);
++
++      Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
++      return IDD_INSTATUS;
++    }
++
++  return 0;
++}
++
++long
++SitePage::OnBack ()
++{
++  HWND h = GetHWND ();
++
++  save_dialog (h);
++  NEXT (IDD_NET);
++  return 0;
+ }
+Index: site.h
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/site.h,v
+retrieving revision 2.1
+diff -u -p -r2.1 site.h
+--- site.h	2001/12/03 22:22:09	2.1
++++ site.h	2001/12/20 12:36:03
+@@ -17,17 +17,41 @@
+ #define _SITE_H_
+ 
+ /* required to parse this file */
+-#include <strings.h>
++#include <string.h>
++#include <stdlib.h>
+ #include "list.h"
+ 
++#include "proppage.h"
++
++class SitePage:public PropertyPage
++{
++public:
++  SitePage ()
++  {
++  };
++  virtual ~ SitePage ()
++  {
++  };
++
++  bool Create ();
++
++  void OnInit ();
++  long OnNext ();
++  long OnBack ();
++};
++
++void do_download_site_info (HINSTANCE h, HWND owner);
++
+ class site_list_type
+ {
+ public:
+-  site_list_type () : url(0), displayed_url (0), key (0) {};
++  site_list_type ():url (0), displayed_url (0), key (0)
++  {
++  };
+   site_list_type (char const *);
+   /* workaround for missing placement new in gcc 2.95 */
+   void init (char const *);
+-  ~site_list_type () 
++  ~site_list_type ()
+   {
+     if (url)
+       free (url);
+@@ -42,9 +66,9 @@ public:
+ };
+ 
+ /* user chosen sites */
+-extern list <site_list_type, const char *, strcasecmp> site_list;
++extern list < site_list_type, const char *, strcasecmp > site_list;
+ /* potential sites */
+-extern list <site_list_type, const char *, strcasecmp> all_site_list;
++extern list < site_list_type, const char *, strcasecmp > all_site_list;
+ 
+ void save_site_url ();
+ 
+Index: source.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/source.cc,v
+retrieving revision 2.9
+diff -u -p -r2.9 source.cc
+--- source.cc	2001/12/20 11:49:54	2.9
++++ source.cc	2001/12/20 12:36:03
+@@ -31,6 +31,8 @@ static const char *cvsid =
+ #include "log.h"
+ #include "package_db.h"
+ 
++#include "source.h"
++
+ static int rb[] =
+   { IDC_SOURCE_NETINST, IDC_SOURCE_DOWNLOAD, IDC_SOURCE_CWD, 0 };
+ 
+@@ -45,7 +47,8 @@ save_dialog (HWND h)
+ {
+   source = rbget (h, rb);
+   packagedb db;
+-  db.task = source == IDC_SOURCE_DOWNLOAD ? PackageDB_Download : PackageDB_Install;
++  db.task =
++    source == IDC_SOURCE_DOWNLOAD ? PackageDB_Download : PackageDB_Install;
+ }
+ 
+ static BOOL
+@@ -60,65 +63,61 @@ dialog_cmd (HWND h, int id, HWND hwndctl
+       save_dialog (h);
+       break;
+ 
+-    case IDOK:
+-      save_dialog (h);
+-      if (source == IDC_SOURCE_DOWNLOAD)
+-	NEXT (IDD_LOCAL_DIR);
+-      else
+-	NEXT (IDD_ROOT);
+-      break;
+-
+-    case IDC_BACK:
+-      save_dialog (h);
+-      NEXT (0);
+-      break;
+-
+-    case IDCANCEL:
+-      NEXT (0);
+-      break;
+-
+     default:
+       break;
+     }
+   return 0;
+ }
+ 
+-static BOOL CALLBACK
+-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
++bool
++SourcePage::Create ()
+ {
+-  switch (message)
+-    {
+-    case WM_INITDIALOG:
+-      load_dialog (h);
+-      // Check to see if any radio buttons are selected. If not, select a default.
+-      if (
+-	  (!SendMessage
+-	   (GetDlgItem (h, IDC_SOURCE_DOWNLOAD), BM_GETCHECK, 0,
+-	    0) == BST_CHECKED)
+-	  && (!SendMessage (GetDlgItem (h, IDC_SOURCE_CWD), BM_GETCHECK, 0, 0)
+-	      == BST_CHECKED))
+-	{
+-	  SendMessage (GetDlgItem (h, IDC_SOURCE_NETINST), BM_SETCHECK,
+-		       BST_CHECKED, 0);
+-	}
+-      return FALSE;
+-    case WM_COMMAND:
+-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
+-    }
+-  return FALSE;
++  return PropertyPage::Create (NULL, dialog_cmd, IDD_SOURCE);
+ }
+ 
+ void
+-do_source (HINSTANCE h)
++SourcePage::OnActivate ()
+ {
+-  int rv = 0;
+-  /* source = IDC_SOURCE_CWD; */
+   if (!source)
+     source = IDC_SOURCE_NETINST;
+-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_SOURCE), 0, dialog_proc);
+-  if (rv == -1)
+-    fatal (IDS_DIALOG_FAILED);
++  load_dialog (GetHWND ());
++  // Check to see if any radio buttons are selected. If not, select a default.
++  if ((!SendMessage
++       (GetDlgItem (IDC_SOURCE_DOWNLOAD), BM_GETCHECK, 0,
++	0) == BST_CHECKED)
++      && (!SendMessage (GetDlgItem (IDC_SOURCE_CWD), BM_GETCHECK, 0, 0)
++	  == BST_CHECKED))
++    {
++      SendMessage (GetDlgItem (IDC_SOURCE_NETINST), BM_SETCHECK,
++		   BST_CHECKED, 0);
++    }
++}
+ 
++long
++SourcePage::OnNext ()
++{
++  HWND h = GetHWND ();
++
++  save_dialog (h);
++  if (source == IDC_SOURCE_DOWNLOAD)
++    {
++      // If all we're doing is downloading,skip the root directory page
++      return IDD_LOCAL_DIR;
++    }
++
++  return 0;
++}
++
++long
++SourcePage::OnBack ()
++{
++  save_dialog (GetHWND ());
++  return 0;
++}
++
++void
++SourcePage::OnDeactivate ()
++{
+   log (0, "source: %s",
+        (source == IDC_SOURCE_DOWNLOAD) ? "download" :
+        (source == IDC_SOURCE_NETINST) ? "network install" : "from cwd");
+Index: source.h
+===================================================================
+RCS file: source.h
+diff -N source.h
+--- /dev/null	Tue May  5 13:32:27 1998
++++ source.h	Thu Dec 20 04:36:03 2001
+@@ -0,0 +1,43 @@
++#ifndef CINSTALL_SOURCE_H
++#define CINSTALL_SOURCE_H
++
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the header for the SourcePage class, which lets the user
++// select Download+Install, Download, or Install From Local Directory.
++
++
++#include "proppage.h"
++
++class SourcePage:public PropertyPage
++{
++public:
++  SourcePage ()
++  {
++  };
++  virtual ~ SourcePage ()
++  {
++  };
++
++  bool Create ();
++
++  void OnActivate ();
++  void OnDeactivate ();
++  long OnNext ();
++  long OnBack ();
++};
++
++#endif
+Index: splash.cc
+===================================================================
+RCS file: /cvs/src/src/winsup/cinstall/splash.cc,v
+retrieving revision 2.6
+diff -u -p -r2.6 splash.cc
+--- splash.cc	2001/11/13 01:49:32	2.6
++++ splash.cc	2001/12/20 12:36:03
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2000, Red Hat, Inc.
++ * Copyright (c) 2001, Gary R. Van Sickle.
+  *
+  *     This program is free software; you can redistribute it and/or modify
+  *     it under the terms of the GNU General Public License as published by
+@@ -9,71 +9,31 @@
+  *     A copy of the GNU General Public License can be found at
+  *     http://www.gnu.org/
+  *
+- * Written by DJ Delorie <dj@cygnus.com>
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
+  *
+  */
+ 
+-/* The purpose of this file is to display the program name, version,
+-   copyright notice, and project URL. */
++// This is the implementation of the SplashPage class.  Since the splash page
++// has little to do, there's not much here.
+ 
+-#if 0
+-static const char *cvsid =
+-  "\n%%% $Id$\n";
+-#endif
+-
+-#include "win32.h"
+ #include <stdio.h>
+-#include "dialog.h"
+-#include "resource.h"
+-#include "msg.h"
+ #include "version.h"
++#include "resource.h"
++#include "cistring.h"
++#include "splash.h"
+ 
+-static void
+-load_dialog (HWND h)
++bool
++SplashPage::Create ()
+ {
+-  char buffer[100];
+-  HWND v = GetDlgItem (h, IDC_VERSION);
+-  sprintf (buffer, "Setup.exe version %s",
+-	   version[0] ? version : "[unknown]");
+-  SetWindowText (v, buffer);
++  return PropertyPage::Create (IDD_SPLASH);
+ }
+ 
+-static BOOL
+-dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
++void
++SplashPage::OnInit ()
+ {
+-  switch (id)
+-    {
+-
+-    case IDOK:
+-      NEXT (IDD_SOURCE);
+-      break;
+-
+-    case IDCANCEL:
+-      NEXT (0);
+-      break;
+-    }
+-  return 0;
+-}
++  cistring ver;
+ 
+-static BOOL CALLBACK
+-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+-{
+-  switch (message)
+-    {
+-    case WM_INITDIALOG:
+-      load_dialog (h);
+-      return TRUE;
+-    case WM_COMMAND:
+-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
+-    }
+-  return FALSE;
+-}
++  ver.Format (IDS_VERSION_INFO, version[0] ? version : "[unknown]");
+ 
+-void
+-do_splash (HINSTANCE h)
+-{
+-  int rv = 0;
+-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_SPLASH), 0, dialog_proc);
+-  if (rv == -1)
+-    fatal (IDS_DIALOG_FAILED);
++  SetWindowText (GetDlgItem (IDC_VERSION), ver.c_str ());
+ }
+Index: splash.h
+===================================================================
+RCS file: splash.h
+diff -N splash.h
+--- /dev/null	Tue May  5 13:32:27 1998
++++ splash.h	Thu Dec 20 04:36:03 2001
+@@ -0,0 +1,38 @@
++#ifndef CINSTALL_SPLASH_H
++#define CINSTALL_SPLASH_H
++
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the header for the SplashPage class.  Since the splash page
++// has little to do, there's not much here.
++
++#include "proppage.h"
++
++class SplashPage:public PropertyPage
++{
++public:
++  SplashPage ()
++  {
++  };
++  virtual ~ SplashPage ()
++  {
++  };
++
++  bool Create ();
++  void OnInit ();
++};
++
++#endif // CINSTALL_SPLASH_H
+Index: threebar.cc
+===================================================================
+RCS file: threebar.cc
+diff -N threebar.cc
+--- /dev/null	Tue May  5 13:32:27 1998
++++ threebar.cc	Thu Dec 20 04:36:03 2001
+@@ -0,0 +1,199 @@
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the implementation of the ThreeBarProgressPage class.  It is a fairly generic
++// progress indicator property page with three progress bars.
++
++#include "win32.h"
++#include "commctrl.h"
++#include "resource.h"
++
++#include "dialog.h"
++#include "site.h"
++
++#include "propsheet.h"
++#include "threebar.h"
++
++bool
++ThreeBarProgressPage::Create ()
++{
++  return PropertyPage::Create (IDD_INSTATUS);
++}
++
++void
++ThreeBarProgressPage::OnInit ()
++{
++  // Get HWNDs to the dialog controls
++  ins_action = GetDlgItem (IDC_INS_ACTION);
++  ins_pkgname = GetDlgItem (IDC_INS_PKG);
++  ins_filename = GetDlgItem (IDC_INS_FILE);
++  // Bars
++  ins_pprogress = GetDlgItem (IDC_INS_PPROGRESS);
++  ins_iprogress = GetDlgItem (IDC_INS_IPROGRESS);
++  ins_diskfull = GetDlgItem (IDC_INS_DISKFULL);
++  // Bar labels
++  ins_bl_package = GetDlgItem (IDC_INS_BL_PACKAGE);
++  ins_bl_total = GetDlgItem (IDC_INS_BL_TOTAL);
++  ins_bl_disk = GetDlgItem (IDC_INS_BL_DISK);
++}
++
++void
++ThreeBarProgressPage::SetText1 (const TCHAR * t)
++{
++  SetWindowText (ins_action, t);
++}
++
++void
++ThreeBarProgressPage::SetText2 (const TCHAR * t)
++{
++  SetWindowText (ins_pkgname, t);
++}
++
++void
++ThreeBarProgressPage::SetText3 (const TCHAR * t)
++{
++  SetWindowText (ins_filename, t);
++}
++
++void
++ThreeBarProgressPage::SetBar1 (long progress, long max)
++{
++  int percent = (int) (100.0 * ((double) progress) / (double) max);
++  SendMessage (ins_pprogress, PBM_SETPOS, (WPARAM) percent, 0);
++}
++
++void
++ThreeBarProgressPage::SetBar2 (long progress, long max)
++{
++  int percent = (int) (100.0 * ((double) progress) / (double) max);
++  SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) percent, 0);
++}
++
++void
++ThreeBarProgressPage::SetBar3 (long progress, long max)
++{
++  int percent = (int) (100.0 * ((double) progress) / (double) max);
++  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) percent, 0);
++}
++
++void
++ThreeBarProgressPage::EnableSingleBar (bool enable)
++{
++  // Switch to/from single bar mode
++  ShowWindow (ins_bl_total, enable ? SW_HIDE : SW_SHOW);
++  ShowWindow (ins_bl_disk, enable ? SW_HIDE : SW_SHOW);
++  ShowWindow (ins_iprogress, enable ? SW_HIDE : SW_SHOW);
++  ShowWindow (ins_diskfull, enable ? SW_HIDE : SW_SHOW);
++}
++
++void
++ThreeBarProgressPage::OnActivate ()
++{
++  // Disable back and next buttons
++  GetOwner ()->SetButtons (0);
++
++  // Set all bars to 0
++  SetBar1 (0);
++  SetBar2 (0);
++  SetBar3 (0);
++
++  switch (task)
++    {
++    case WM_APP_START_SITE_INFO_DOWNLOAD:
++    case WM_APP_START_SETUP_INI_DOWNLOAD:
++      // For these tasks, show only a single progress bar.
++      EnableSingleBar ();
++      break;
++    default:
++      // Show the normal 3-bar view by default
++      EnableSingleBar (false);
++      break;
++    }
++
++  Window::PostMessage (task);
++}
++
++bool
++ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
++{
++  switch (uMsg)
++    {
++    case WM_APP_START_DOWNLOAD:
++      {
++	// Start the package download thread.
++	do_download (GetInstance (), GetHWND ());
++	break;
++      }
++    case WM_APP_DOWNLOAD_THREAD_COMPLETE:
++      {
++	if (lParam == IDD_S_INSTALL)
++	  {
++	    // Download is complete and we want to go on to the install.
++	    Window::PostMessage (WM_APP_START_INSTALL);
++	  }
++	else if (lParam != 0)
++	  {
++	    // Download failed for some reason, go back to site selection page
++	    GetOwner ()->SetActivePageByID (lParam);
++	  }
++	else
++	  {
++	    // Was a download-only, and is complete or failed.
++	    GetOwner ()->PressButton (PSBTN_CANCEL);
++	  }
++	break;
++      }
++    case WM_APP_START_INSTALL:
++      {
++	// Start the install thread.
++	do_install (GetInstance (), GetHWND ());
++	break;
++      }
++    case WM_APP_INSTALL_THREAD_COMPLETE:
++      {
++	// Re-enable and "Push" the Next button
++	GetOwner ()->SetButtons (PSWIZB_NEXT);
++	GetOwner ()->PressButton (PSBTN_NEXT);
++	break;
++      }
++    case WM_APP_START_SITE_INFO_DOWNLOAD:
++      {
++	do_download_site_info (GetInstance (), GetHWND ());
++	break;
++      }
++    case WM_APP_SITE_INFO_DOWNLOAD_COMPLETE:
++      {
++	GetOwner ()->SetActivePageByID (lParam);
++	break;
++      }
++    case WM_APP_START_SETUP_INI_DOWNLOAD:
++      {
++	do_ini (GetInstance (), GetHWND ());
++	break;
++      }
++    case WM_APP_SETUP_INI_DOWNLOAD_COMPLETE:
++      {
++	GetOwner ()->SetActivePageByID (lParam);
++	break;
++      }
++    default:
++      {
++	// Not handled
++	return false;
++      }
++    }
++
++  return true;
++}
+Index: threebar.h
+===================================================================
+RCS file: threebar.h
+diff -N threebar.h
+--- /dev/null	Tue May  5 13:32:27 1998
++++ threebar.h	Thu Dec 20 04:36:03 2001
+@@ -0,0 +1,81 @@
++#ifndef CINSTALL_THREEBAR_H
++#define CINSTALL_THREEBAR_H
++
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the header for the ThreeBarProgressPage class.  It is a fairly generic
++// progress indicator property page with three progress bars.
++
++
++#include "win32.h"
++#include "proppage.h"
++
++#define WM_APP_START_DOWNLOAD              WM_APP+0
++#define WM_APP_DOWNLOAD_THREAD_COMPLETE    WM_APP+1
++#define WM_APP_START_INSTALL               WM_APP+2
++#define WM_APP_INSTALL_THREAD_COMPLETE     WM_APP+3
++#define WM_APP_START_SITE_INFO_DOWNLOAD    WM_APP+4
++#define WM_APP_SITE_INFO_DOWNLOAD_COMPLETE WM_APP+5
++#define WM_APP_START_SETUP_INI_DOWNLOAD    WM_APP+6
++#define WM_APP_SETUP_INI_DOWNLOAD_COMPLETE WM_APP+7
++
++class ThreeBarProgressPage:public PropertyPage
++{
++  HWND ins_dialog;
++  HWND ins_action;
++  HWND ins_pkgname;
++  HWND ins_filename;
++  HWND ins_pprogress;
++  HWND ins_iprogress;
++  HWND ins_diskfull;
++  HWND ins_bl_package;
++  HWND ins_bl_total;
++  HWND ins_bl_disk;
++
++  int task;
++
++  void EnableSingleBar (bool enable = true);
++
++public:
++    ThreeBarProgressPage ()
++  {
++  };
++  virtual ~ ThreeBarProgressPage ()
++  {
++  };
++
++  bool Create ();
++
++  virtual void OnInit ();
++  virtual void OnActivate ();
++  virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam);
++
++  void SetText1 (const TCHAR * t);
++  void SetText2 (const TCHAR * t);
++  void SetText3 (const TCHAR * t);
++
++  void SetBar1 (long progress, long max = 100);
++  void SetBar2 (long progress, long max = 100);
++  void SetBar3 (long progress, long max = 100);
++
++  void SetActivateTask (int t)
++  {
++    task = t;
++  };
++};
++
++
++#endif // CINSTALL_THREEBAR_H
+Index: window.cc
+===================================================================
+RCS file: window.cc
+diff -N window.cc
+--- /dev/null	Tue May  5 13:32:27 1998
++++ window.cc	Thu Dec 20 04:36:03 2001
+@@ -0,0 +1,269 @@
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the implementation of the Window class.  It serves both as a window class
++// in its own right and as a base class for other window-like classes (e.g. PropertyPage,
++// PropSheet).
++
++#include <windows.h>
++#include "window.h"
++
++ATOM
++  Window::WindowClassAtom =
++  0;
++HINSTANCE
++  Window::AppInstance =
++  NULL;
++
++// FIXME: I know, this is brutal.  Mutexing should at least make window creation threadsafe,
++// but if somebody has any ideas as to how to get rid of it entirely, please tell me / do so.
++struct REFLECTION_INFO
++{
++  Window *
++    This;
++  bool
++    FirstCall;
++};
++REFLECTION_INFO
++  ReflectionInfo;
++
++Window::Window ()
++{
++  WindowHandle = NULL;
++  Parent = NULL;
++}
++
++Window::~Window ()
++{
++  // FIXME: Maybe do some reference counting and do this Unregister
++  // when there are no more of us left.  Not real critical unless
++  // we're in a DLL which we're not right now.
++  //UnregisterClass(WindowClassAtom, InstanceHandle);
++}
++
++LRESULT CALLBACK
++Window::FirstWindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
++				  LPARAM lParam)
++{
++  // Get our this pointer
++  REFLECTION_INFO *rip = &ReflectionInfo;
++
++  if (rip->FirstCall)
++    {
++      rip->FirstCall = false;
++
++      // Set the Window handle so the real WindowProc has one to work with.
++      rip->This->WindowHandle = hwnd;
++
++      // Set a backreference to this class instance in the HWND.
++      // FIXME: Should really be SetWindowLongPtr(), but it appears to
++      // not be defined yet.
++      SetWindowLong (hwnd, GWL_USERDATA, (LONG) rip->This);
++
++      // Set a new WindowProc now that we have the peliminaries done.
++      // Like subclassing, only not.
++      SetWindowLong (hwnd, GWL_WNDPROC, (LONG) & Window::WindowProcReflector);
++    }
++
++  return rip->This->WindowProc (uMsg, wParam, lParam);
++}
++
++LRESULT CALLBACK
++Window::WindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
++			     LPARAM lParam)
++{
++  Window *This;
++
++  // Get our this pointer
++  // FIXME: Should really be GetWindowLongPtr(), but it appears to
++  // not be defined yet.
++  This = (Window *) GetWindowLong (hwnd, GWL_USERDATA);
++
++  return This->WindowProc (uMsg, wParam, lParam);
++}
++
++bool
++Window::Create (Window * parent, DWORD Style)
++{
++  // First register the window class, if we haven't already
++  if (RegisterWindowClass () == false)
++    {
++      // Registration failed
++      return false;
++    }
++
++  // Set up the reflection info, so that the Windows window can find us.
++  ReflectionInfo.This = this;
++  ReflectionInfo.FirstCall = true;
++
++  Parent = parent;
++
++  // Create the window instance
++  WindowHandle = CreateWindow ("MainWindowClass",	//MAKEINTATOM(WindowClassAtom),     // window class atom (name)
++			       "Hello",	// no title-bar string yet
++			       // Style bits
++			       Style,
++			       // Default positions and size
++			       CW_USEDEFAULT,
++			       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
++			       // Parent Window 
++			       parent ==
++			       NULL ? (HWND) NULL : parent->GetHWND (),
++			       // use class menu 
++			       (HMENU) NULL,
++			       // The application instance 
++			       GetInstance (), (LPVOID) NULL);
++
++  if (WindowHandle == NULL)
++    {
++      // Failed
++      return false;
++    }
++
++  return true;
++}
++
++bool
++Window::RegisterWindowClass ()
++{
++  if (WindowClassAtom == 0)
++    {
++      // We're not registered yet
++      WNDCLASSEX wc;
++
++      wc.cbSize = sizeof (wc);
++      // Some sensible style defaults
++      wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
++      // Our default window procedure.  This replaces itself
++      // on the first call with the simpler Window::WindowProcReflector().
++      wc.lpfnWndProc = Window::FirstWindowProcReflector;
++      // No class bytes
++      wc.cbClsExtra = 0;
++      // One pointer to REFLECTION_INFO in the extra window instance bytes
++      wc.cbWndExtra = 4;
++      // The app instance
++      wc.hInstance = GetInstance ();
++      // Use a bunch of system defaults for the GUI elements
++      wc.hIcon = NULL;
++      wc.hIconSm = NULL;
++      wc.hCursor = NULL;
++      wc.hbrBackground = (HBRUSH) (COLOR_BACKGROUND + 1);
++      // No menu
++      wc.lpszMenuName = NULL;
++      // We'll get a little crazy here with the class name
++      wc.lpszClassName = "MainWindowClass";
++
++      // All set, try to register
++      WindowClassAtom = RegisterClassEx (&wc);
++
++      if (WindowClassAtom == 0)
++	{
++	  // Failed
++	  return false;
++	}
++    }
++
++  // We're registered, or already were before the call,
++  // return success in either case.
++  return true;
++}
++
++void
++Window::Show (int State)
++{
++  ::ShowWindow (WindowHandle, State);
++}
++
++void
++Window::CenterWindow ()
++{
++  RECT WindowRect, ParentRect;
++  int WindowWidth, WindowHeight;
++  POINT p;
++
++  // Get the window rectangle
++  GetWindowRect (GetHWND (), &WindowRect);
++
++  if (GetParent () == NULL)
++    {
++      // Center on desktop window
++      GetWindowRect (GetDesktopWindow (), &ParentRect);
++    }
++  else
++    {
++      // Center on client area of parent
++      GetClientRect (GetParent ()->GetHWND (), &ParentRect);
++    }
++
++  WindowWidth = WindowRect.right - WindowRect.left;
++  WindowHeight = WindowRect.bottom - WindowRect.top;
++
++  // Find center of area we're centering on
++  p.x = (ParentRect.right - ParentRect.left) / 2;
++  p.y = (ParentRect.bottom - ParentRect.top) / 2;
++
++  // Convert that to screen coords
++  if (GetParent () == NULL)
++    {
++      ClientToScreen (GetDesktopWindow (), &p);
++    }
++  else
++    {
++      ClientToScreen (GetParent ()->GetHWND (), &p);
++    }
++
++  // Calculate new top left corner for window
++  p.x -= WindowWidth / 2;
++  p.y -= WindowHeight / 2;
++
++  // And finally move the window
++  MoveWindow (GetHWND (), p.x, p.y, WindowWidth, WindowHeight, TRUE);
++}
++
++LRESULT
++Window::WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam)
++{
++  switch (uMsg)
++    {
++    default:
++      return DefWindowProc (WindowHandle, uMsg, wParam, lParam);
++    }
++
++  return 0;
++}
++
++bool
++Window::MessageLoop ()
++{
++  MSG msg;
++
++  while (GetMessage (&msg, NULL, 0, 0) != 0
++	 && GetMessage (&msg, (HWND) NULL, 0, 0) != -1)
++    {
++      if (!IsWindow (WindowHandle) || !IsDialogMessage (WindowHandle, &msg))
++	{
++	  TranslateMessage (&msg);
++	  DispatchMessage (&msg);
++	}
++    }
++
++  return true;
++}
++
++void
++Window::PostMessage (UINT uMsg, WPARAM wParam, LPARAM lParam)
++{
++  ::PostMessage (GetHWND (), uMsg, wParam, lParam);
++}
+Index: window.h
+===================================================================
+RCS file: window.h
+diff -N window.h
+--- /dev/null	Tue May  5 13:32:27 1998
++++ window.h	Thu Dec 20 04:36:03 2001
+@@ -0,0 +1,95 @@
++#ifndef CINSTALL_WINDOW_H
++#define CINSTALL_WINDOW_H
++
++/*
++ * Copyright (c) 2001, Gary R. Van Sickle.
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     A copy of the GNU General Public License can be found at
++ *     http://www.gnu.org/
++ *
++ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
++ *
++ */
++
++// This is the header for the Window class.  It serves both as a window class
++// in its own right and as a base class for other window-like classes (e.g. PropertyPage,
++// PropSheet).
++
++#include <windows.h>
++
++class Window
++{
++  static ATOM WindowClassAtom;
++  static HINSTANCE AppInstance;
++
++
++  bool RegisterWindowClass ();
++  static LRESULT CALLBACK FirstWindowProcReflector (HWND hwnd, UINT uMsg,
++						    WPARAM wParam,
++						    LPARAM lParam);
++  static LRESULT CALLBACK WindowProcReflector (HWND hwnd, UINT uMsg,
++					       WPARAM wParam, LPARAM lParam);
++
++  HWND WindowHandle;
++
++  Window *Parent;
++
++protected:
++  void SetHWND (HWND h)
++  {
++    WindowHandle = h;
++  };
++
++public:
++  Window ();
++  virtual ~ Window ();
++
++  static void SetAppInstance (HINSTANCE h)
++  {
++    AppInstance = h;
++  };
++
++  virtual LRESULT WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam);
++  virtual bool MessageLoop ();
++
++  virtual bool Create (Window * Parent = NULL,
++		       DWORD Style =
++		       WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN);
++  void Show (int State);
++
++  HWND GetHWND () const
++  {
++    return WindowHandle;
++  };
++  HINSTANCE GetInstance () const
++  {
++    return AppInstance;
++  };
++
++  Window *GetParent () const
++  {
++    return Parent;
++  };
++  HWND GetDlgItem (int id) const
++  {
++    return::GetDlgItem (GetHWND (), id);
++  };
++
++  void PostMessage (UINT uMsg, WPARAM wParam = 0, LPARAM lParam = 0);
++
++  virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
++  {
++    return false;
++  };
++
++  // Center the window on the parent, or on screen if no parent.
++  void CenterWindow ();
++
++};
++
++#endif // CINSTALL_WINDOW_H

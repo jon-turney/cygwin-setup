@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2001, Gary R. Van Sickle.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -9,71 +9,31 @@
  *     A copy of the GNU General Public License can be found at
  *     http://www.gnu.org/
  *
- * Written by DJ Delorie <dj@cygnus.com>
+ * Written by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>
  *
  */
 
-/* The purpose of this file is to display the program name, version,
-   copyright notice, and project URL. */
+// This is the implementation of the SplashPage class.  Since the splash page
+// has little to do, there's not much here.
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
-#include "win32.h"
 #include <stdio.h>
-#include "dialog.h"
-#include "resource.h"
-#include "msg.h"
 #include "version.h"
+#include "resource.h"
+#include "cistring.h"
+#include "splash.h"
 
-static void
-load_dialog (HWND h)
+bool
+SplashPage::Create ()
 {
-  char buffer[100];
-  HWND v = GetDlgItem (h, IDC_VERSION);
-  sprintf (buffer, "Setup.exe version %s",
-	   version[0] ? version : "[unknown]");
-  SetWindowText (v, buffer);
-}
-
-static BOOL
-dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
-{
-  switch (id)
-    {
-
-    case IDOK:
-      NEXT (IDD_SOURCE);
-      break;
-
-    case IDCANCEL:
-      NEXT (0);
-      break;
-    }
-  return 0;
-}
-
-static BOOL CALLBACK
-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
-{
-  switch (message)
-    {
-    case WM_INITDIALOG:
-      load_dialog (h);
-      return TRUE;
-    case WM_COMMAND:
-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
-    }
-  return FALSE;
+  return PropertyPage::Create (IDD_SPLASH);
 }
 
 void
-do_splash (HINSTANCE h)
+SplashPage::OnInit ()
 {
-  int rv = 0;
-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_SPLASH), 0, dialog_proc);
-  if (rv == -1)
-    fatal (IDS_DIALOG_FAILED);
+  cistring ver;
+
+  ver.Format (IDS_VERSION_INFO, version[0] ? version : "[unknown]");
+
+  SetWindowText (GetDlgItem (IDC_VERSION), ver.c_str ());
 }

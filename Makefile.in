@@ -87,6 +87,7 @@ OBJS = \
 	autoload.o \
 	category.o \
 	choose.o \
+	cistring.o \
 	compress.o \
 	compress_bz.o \
 	compress_gz.o \
@@ -129,6 +130,8 @@ OBJS = \
 	package_source.o \
 	package_version.o \
 	postinstall.o \
+	proppage.o \
+	propsheet.o \
 	res.o \
 	rfc1738.o \
 	root.o \
@@ -138,7 +141,9 @@ OBJS = \
 	source.o \
 	splash.o \
 	state.o \
+	threebar.o \
 	version.o \
+	window.o \
 	$E
 
 .SUFFIXES:

@@ -118,15 +118,17 @@ check_ini (char *path, unsigned int fsize)
 }
 
 void
-do_fromcwd (HINSTANCE h)
+do_fromcwd (HINSTANCE h, HWND owner)
 {
-  found_ini = true;
+  // Assume we won't find the INI file.
+  found_ini = false;
   find (".", check_ini);
   if (found_ini)
   {
-      next_dialog = IDD_S_LOAD_INI;
+      // No INI found, we'll have to download one.
+	  next_dialog = IDD_S_LOAD_INI;
       return;
-    }
+  }
 
   next_dialog = IDD_CHOOSE;
 

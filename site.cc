@@ -25,6 +25,7 @@ static const char *cvsid =
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <process.h>
 
 #include "dialog.h"
 #include "resource.h"
@@ -37,6 +38,12 @@ static const char *cvsid =
 #include "site.h"
 
 #include "port.h"
+
+#include "site.h"
+#include "propsheet.h"
+
+#include "threebar.h"
+extern ThreeBarProgressPage Progress;
 
 #define NO_IDX (-1)
 #define OTHER_IDX (-2)
@@ -101,7 +108,12 @@ load_dialog (HWND h)
       int index = SendMessage (listbox, LB_FINDSTRING, (WPARAM) - 1,
 			       (LPARAM) site_list[n]->displayed_url);
       if (index != LB_ERR)
-	SendMessage (listbox, LB_SELITEMRANGE, TRUE, (index << 16) | index);
+	{
+	  // Highlight the selected item
+	  SendMessage (listbox, LB_SELITEMRANGE, TRUE, (index << 16) | index);
+	  // Make sure it's fully visible
+	  SendMessage (listbox, LB_SETCARETINDEX, index, FALSE);
+	}
     }
   check_if_enable_next (h);
 }
@@ -167,64 +179,18 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDC_URL_LIST:
       check_if_enable_next (h);
       break;
-
-    case IDOK:
-      save_dialog (h);
-      if (mirror_idx == OTHER_IDX)
-	NEXT (IDD_OTHER_URL);
-      else
-	{
-	  save_site_url ();
-	  NEXT (IDD_S_LOAD_INI);
-	}
-      break;
-
-    case IDC_BACK:
-      save_dialog (h);
-      NEXT (IDD_NET);
-      break;
-
-    case IDCANCEL:
-      NEXT (0);
-      break;
     }
   return 0;
 }
 
-static BOOL CALLBACK
-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
-{
-  int j;
-  HWND listbox;
-  switch (message)
-    {
-    case WM_INITDIALOG:
-      listbox = GetDlgItem (h, IDC_URL_LIST);
-      for (size_t i = 1; i <= all_site_list.number (); i++)
-	{
-	  j =
-	    SendMessage (listbox, LB_ADDSTRING, 0,
-			 (LPARAM) all_site_list[i]->displayed_url);
-	  SendMessage (listbox, LB_SETITEMDATA, j, i);
-	}
-      j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM) "Other URL");
-      SendMessage (listbox, LB_SETITEMDATA, j, OTHER_IDX);
-      load_dialog (h);
-      return FALSE;
-    case WM_COMMAND:
-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
-    }
-  return FALSE;
-}
-
 static int
-get_site_list (HINSTANCE h)
+get_site_list (HINSTANCE h, HWND owner)
 {
   char mirror_url[1000];
+
   if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
     return 1;
-  char *mirrors = get_url_to_string (mirror_url);
-  dismiss_url_status_dialog ();
+  char *mirrors = get_url_to_string (mirror_url, owner);
   if (!mirrors)
     return 1;
 
@@ -320,24 +286,111 @@ get_saved_sites ()
 
 }
 
-void
-do_site (HINSTANCE h)
+static void
+do_download_site_info_thread (void *p)
 {
-  int rv = 0;
+  HANDLE *context;
+  HINSTANCE hinst;
+  HWND h;
+  context = (HANDLE *) p;
+
+  hinst = (HINSTANCE) (context[0]);
+  h = (HWND) (context[1]);
 
   if (all_site_list.number () == 0)
-    if (get_site_list (h))
-      {
-	NEXT (IDD_NET);
-	return;
-      }
+    {
+      if (get_site_list (hinst, h))
+	{
+	  // Error: Couldn't download the site info.  Go back to the Net setup page.
+	  NEXT (IDD_NET);
+
+	  // Tell the progress page that we're done downloading
+	  Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0,
+				IDD_NET);
+
+	  _endthread ();
+	}
+    }
+
+  // Everything worked, go to the site select page
+  NEXT (IDD_SITE);
+
+  // Tell the progress page that we're done downloading
+  Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_SITE);
+
+  _endthread ();
+}
+
+static HANDLE context[2];
+
+void
+do_download_site_info (HINSTANCE hinst, HWND owner)
+{
+
+  context[0] = hinst;
+  context[1] = owner;
+
+  _beginthread (do_download_site_info_thread, 0, context);
+
+}
+
+bool
+SitePage::Create ()
+{
+  return PropertyPage::Create (NULL, dialog_cmd, IDD_SITE);
+}
+
+void
+SitePage::OnInit ()
+{
+  HWND h = GetHWND ();
+  int j;
+  HWND listbox;
 
   get_saved_sites ();
 
-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_SITE), 0, dialog_proc);
-  if (rv == -1)
-    fatal (IDS_DIALOG_FAILED);
+  listbox = GetDlgItem (IDC_URL_LIST);
+  for (size_t i = 1; i <= all_site_list.number (); i++)
+    {
+      j =
+	SendMessage (listbox, LB_ADDSTRING, 0,
+		     (LPARAM) all_site_list[i]->displayed_url);
+      SendMessage (listbox, LB_SETITEMDATA, j, i);
+    }
+  j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM) "Other URL");
+  SendMessage (listbox, LB_SETITEMDATA, j, OTHER_IDX);
+  load_dialog (h);
+}
 
-  for (size_t n = 1; n <= site_list.number (); n++)
-    log (0, "site: %s", site_list[n]->url);
+long
+SitePage::OnNext ()
+{
+  HWND h = GetHWND ();
+
+  save_dialog (h);
+  if (mirror_idx == OTHER_IDX)
+    NEXT (IDD_OTHER_URL);
+  else
+    {
+      save_site_url ();
+      NEXT (IDD_S_LOAD_INI);
+
+      for (size_t n = 1; n <= site_list.number (); n++)
+	log (0, "site: %s", site_list[n]->url);
+
+      Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
+      return IDD_INSTATUS;
+    }
+
+  return 0;
+}
+
+long
+SitePage::OnBack ()
+{
+  HWND h = GetHWND ();
+
+  save_dialog (h);
+  NEXT (IDD_NET);
+  return 0;
 }

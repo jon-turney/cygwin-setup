@@ -48,6 +48,8 @@ static const char *cvsid =
 #include "package_meta.h"
 #include "package_version.h"
 
+#include "desktop.h"
+
 static OSVERSIONINFO verinfo;
 
 /* Lines starting with '@' are conditionals - include 'N' for NT,
@@ -444,56 +446,48 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       save_dialog (h);
       check_if_enable_next (h);
       break;
-
-    case IDOK:
-      save_dialog (h);
-      do_desktop_setup ();
-      NEXT (IDD_S_POSTINSTALL);
-      break;
-
-    case IDC_BACK:
-      save_dialog (h);
-      NEXT (IDD_CHOOSE);
-      break;
-
-    case IDCANCEL:
-      NEXT (0);
-      break;
     }
   return 0;
 }
 
-static BOOL CALLBACK
-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+bool
+DesktopSetupPage::Create ()
 {
-  switch (message)
-    {
-    case WM_INITDIALOG:
-      load_dialog (h);
-      return FALSE;
-    case WM_COMMAND:
-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
-    }
-  return FALSE;
+  return PropertyPage::Create (NULL, dialog_cmd, IDD_DESKTOP);
 }
 
 void
-do_desktop (HINSTANCE h)
+DesktopSetupPage::OnInit ()
 {
+  // FIXME: This CoInitialize() feels like it could be moved to startup in main.cc.
   CoInitialize (NULL);
-
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
   GetVersionEx (&verinfo);
-
   root_desktop =
     check_desktop ("Cygwin", backslash (cygpath ("/cygwin.bat", 0)));
   root_menu =
     check_startmenu ("Cygwin Bash Shell",
 		     backslash (cygpath ("/cygwin.bat", 0)));
+  load_dialog (GetHWND ());
+}
 
-  int rv = 0;
+long
+DesktopSetupPage::OnBack ()
+{
+  HWND h = GetHWND ();
+  save_dialog (h);
+  NEXT (IDD_CHOOSE);
+  return IDD_CHOOSER;
+}
 
-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_DESKTOP), 0, dialog_proc);
-  if (rv == -1)
-    fatal (IDS_DIALOG_FAILED);
+bool
+DesktopSetupPage::OnFinish ()
+{
+  HWND h = GetHWND ();
+  save_dialog (h);
+  do_desktop_setup ();
+  NEXT (IDD_S_POSTINSTALL);
+  do_postinstall (GetInstance (), h);
+
+  return true;
 }

@@ -39,6 +39,11 @@ static const char *cvsid =
 #include "mkdir.h"
 #include "io_stream.h"
 
+#include "localdir.h"
+
+#include "threebar.h"
+extern ThreeBarProgressPage Progress;
+
 void
 save_local_dir ()
 {
@@ -128,74 +133,18 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDC_LOCAL_DIR_BROWSE:
       browse (h);
       break;
-
-    case IDOK:
-      save_dialog (h);
-      save_local_dir ();
-      if (SetCurrentDirectoryA (local_dir))
-	{
-	  switch (source)
-	    {
-	    case IDC_SOURCE_DOWNLOAD:
-	    case IDC_SOURCE_NETINST:
-	      NEXT (IDD_NET);
-	      break;
-	    case IDC_SOURCE_CWD:
-	      NEXT (IDD_S_FROM_CWD);
-	      break;
-	    default:
-	      msg ("source is default? %d\n", source);
-	      NEXT (0);
-	      break;
-	    }
-	}
-      else
-	note (IDS_ERR_CHDIR, local_dir);
-
-      break;
-
-    case IDC_BACK:
-      save_dialog (h);
-      switch (source)
-	{
-	case IDC_SOURCE_DOWNLOAD:
-	  NEXT (IDD_SOURCE);
-	  break;
-	case IDC_SOURCE_NETINST:
-	case IDC_SOURCE_CWD:
-	  NEXT (IDD_ROOT);
-	  break;
-	default:
-	  msg ("source is default? %d\n", source);
-	  NEXT (0);
-	}
-      break;
-
-    case IDCANCEL:
-      NEXT (0);
-      break;
     }
   return 0;
 }
 
-static BOOL CALLBACK
-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+bool
+LocalDirPage::Create ()
 {
-  switch (message)
-    {
-    case WM_INITDIALOG:
-      load_dialog (h);
-      return FALSE;
-    case WM_COMMAND:
-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
-    }
-  return FALSE;
+  return PropertyPage::Create (NULL, dialog_cmd, IDD_LOCAL_DIR);
 }
 
-extern char cwd[_MAX_PATH];
-
 void
-do_local_dir (HINSTANCE h)
+LocalDirPage::OnInit ()
 {
   static int inited = 0;
   if (!inited)
@@ -217,11 +166,49 @@ do_local_dir (HINSTANCE h)
 	}
       inited = 1;
     }
+}
 
-  int rv = 0;
-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_LOCAL_DIR), 0, dialog_proc);
-  if (rv == -1)
-    fatal (IDS_DIALOG_FAILED);
+void
+LocalDirPage::OnActivate ()
+{
+  load_dialog (GetHWND ());
+}
 
+long
+LocalDirPage::OnNext ()
+{
+  HWND h = GetHWND ();
+
+  save_dialog (h);
+  save_local_dir ();
   log (0, "Selected local directory: %s", local_dir);
+  if (SetCurrentDirectoryA (local_dir))
+    {
+      if (source == IDC_SOURCE_CWD)
+	{
+	  do_fromcwd (GetInstance (), GetHWND ());
+	  if (next_dialog == IDD_S_LOAD_INI)
+	    {
+	      Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
+	      return IDD_INSTATUS;
+	    }
+	  return next_dialog;
+	}
+    }
+  else
+    note (h, IDS_ERR_CHDIR, local_dir);
+
+  return 0;
+}
+
+long
+LocalDirPage::OnBack ()
+{
+  save_dialog (GetHWND ());
+  if (source == IDC_SOURCE_DOWNLOAD)
+    {
+      // Downloading only, skip the unix root page
+      return IDD_SOURCE;
+    }
+  return 0;
 }

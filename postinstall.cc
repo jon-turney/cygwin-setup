@@ -98,7 +98,7 @@ static const char *shells[] = {
 };
 
 void
-do_postinstall (HINSTANCE h)
+do_postinstall (HINSTANCE h, HWND owner)
 {
   next_dialog = 0;
   int i;

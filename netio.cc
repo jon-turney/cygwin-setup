@@ -229,29 +229,29 @@ auth_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 static int
-auth_common (HINSTANCE h, int id)
+auth_common (HINSTANCE h, int id, HWND owner)
 {
-  return DialogBox (h, MAKEINTRESOURCE (id), 0, auth_proc);
+  return DialogBox (h, MAKEINTRESOURCE (id), owner, auth_proc);
 }
 
 int
-NetIO::get_auth ()
+NetIO::get_auth (HWND owner)
 {
   user = &net_user;
   passwd = &net_passwd;
-  return auth_common (hinstance, IDD_NET_AUTH);
+  return auth_common (hinstance, IDD_NET_AUTH, owner);
 }
 
 int
-NetIO::get_proxy_auth ()
+NetIO::get_proxy_auth (HWND owner)
 {
   user = &net_proxy_user;
   passwd = &net_proxy_passwd;
-  return auth_common (hinstance, IDD_PROXY_AUTH);
+  return auth_common (hinstance, IDD_PROXY_AUTH, owner);
 }
 
 int
-NetIO::get_ftp_auth ()
+NetIO::get_ftp_auth (HWND owner)
 {
   if (net_ftp_user)
     {
@@ -267,5 +267,5 @@ NetIO::get_ftp_auth ()
     return IDCANCEL;
   user = &net_ftp_user;
   passwd = &net_ftp_passwd;
-  return auth_common (hinstance, IDD_FTP_AUTH);
+  return auth_common (hinstance, IDD_FTP_AUTH, owner);
 }

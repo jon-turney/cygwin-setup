@@ -95,7 +95,7 @@ NetIO_FTP::NetIO_FTP (char const *Purl, BOOL allow_ftp_auth):NetIO (Purl, allow_
 	}
       if (code == 530)		/* Authentication failed, retry */
 	{
-	  get_ftp_auth ();
+	  get_ftp_auth (NULL);
 	  if (net_ftp_user && net_ftp_passwd)
 	    goto auth_retry;
 	}

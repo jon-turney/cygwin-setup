@@ -38,7 +38,7 @@ msg (const char *fmt, ...)
 }
 
 static int
-mbox (const char *name, int type, int id, va_list args)
+mbox (HWND owner, const char *name, int type, int id, va_list args)
 {
   char buf[1000], fmt[1000];
 
@@ -47,30 +47,30 @@ mbox (const char *name, int type, int id, va_list args)
 
   vsprintf (buf, fmt, args);
   log (0, "mbox %s: %s", name, buf);
-  return MessageBox (0, buf, "Cygwin Setup", type | MB_TOPMOST);
+  return MessageBox (owner, buf, "Cygwin Setup", type);
 }
 
 void
-note (int id, ...)
+note (HWND owner, int id, ...)
 {
   va_list args;
   va_start (args, id);
-  mbox ("note", 0, id, args);
+  mbox (owner, "note", 0, id, args);
 }
 
 void
-fatal (int id, ...)
+fatal (HWND owner, int id, ...)
 {
   va_list args;
   va_start (args, id);
-  mbox ("fatal", 0, id, args);
+  mbox (owner, "fatal", 0, id, args);
   exit_setup (1);
 }
 
 int
-yesno (int id, ...)
+yesno (HWND owner, int id, ...)
 {
   va_list args;
   va_start (args, id);
-  return mbox ("yesno", MB_YESNO, id, args);
+  return mbox (owner, "yesno", MB_YESNO, id, args);
 }

@@ -17,17 +17,41 @@
 #define _SITE_H_
 
 /* required to parse this file */
-#include <strings.h>
+#include <string.h>
+#include <stdlib.h>
 #include "list.h"
+
+#include "proppage.h"
+
+class SitePage:public PropertyPage
+{
+public:
+  SitePage ()
+  {
+  };
+  virtual ~ SitePage ()
+  {
+  };
+
+  bool Create ();
+
+  virtual void OnInit ();
+  virtual long OnNext ();
+  virtual long OnBack ();
+};
+
+void do_download_site_info (HINSTANCE h, HWND owner);
 
 class site_list_type
 {
 public:
-  site_list_type () : url(0), displayed_url (0), key (0) {};
+  site_list_type ():url (0), displayed_url (0), key (0)
+  {
+  };
   site_list_type (char const *);
   /* workaround for missing placement new in gcc 2.95 */
   void init (char const *);
-  ~site_list_type () 
+  ~site_list_type ()
   {
     if (url)
       free (url);
@@ -42,9 +66,9 @@ public:
 };
 
 /* user chosen sites */
-extern list <site_list_type, const char *, strcasecmp> site_list;
+extern list < site_list_type, const char *, strcasecmp > site_list;
 /* potential sites */
-extern list <site_list_type, const char *, strcasecmp> all_site_list;
+extern list < site_list_type, const char *, strcasecmp > all_site_list;
 
 void save_site_url ();
 

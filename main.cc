@@ -29,6 +29,7 @@ static const char *cvsid =
 #endif
 
 #include "win32.h"
+#include <commctrl.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,6 +43,19 @@ static const char *cvsid =
 #include "version.h"
 
 #include "port.h"
+#include "proppage.h"
+#include "propsheet.h"
+
+// Page class headers
+#include "splash.h"
+#include "source.h"
+#include "root.h"
+#include "localdir.h"
+#include "net.h"
+#include "site.h"
+#include "choose.h"
+#include "threebar.h"
+#include "desktop.h"
 
 int next_dialog;
 int exit_msg = 0;
@@ -123,6 +137,9 @@ out:
   FreeSid (sid);
 }
 
+// Other threads talk to this page, so we need to have it externable.
+ThreeBarProgressPage Progress;
+
 int WINAPI
 WinMain (HINSTANCE h,
 	 HINSTANCE hPrevInstance, LPSTR command_line, int cmd_show)
@@ -132,6 +149,16 @@ WinMain (HINSTANCE h,
   next_dialog = IDD_SPLASH;
 
   log (LOG_TIMESTAMP, "Starting cygwin install, version %s", version);
+
+  SplashPage Splash;
+  SourcePage Source;
+  RootPage Root;
+  LocalDirPage LocalDir;
+  NetPage Net;
+  SitePage Site;
+  ChooserPage Chooser;
+  DesktopSetupPage Desktop;
+  PropSheet MainWindow;
 
   char cwd[_MAX_PATH];
   GetCurrentDirectory (sizeof (cwd), cwd);
@@ -150,58 +177,36 @@ WinMain (HINSTANCE h,
   if (iswinnt)
     set_default_dacl ();
 
-  while (next_dialog)
-    {
-      switch (next_dialog)
-	{
-	case IDD_SPLASH:
-	  do_splash (h);
-	  break;
-	case IDD_SOURCE:
-	  do_source (h);
-	  break;
-	case IDD_LOCAL_DIR:
-	  do_local_dir (h);
-	  break;
-	case IDD_ROOT:
-	  do_root (h);
-	  break;
-	case IDD_NET:
-	  do_net (h);
-	  break;
-	case IDD_SITE:
-	  do_site (h);
-	  break;
-	case IDD_OTHER_URL:
-	  do_other (h);
-	  break;
-	case IDD_S_LOAD_INI:
-	  do_ini (h);
-	  break;
-	case IDD_S_FROM_CWD:
-	  do_fromcwd (h);
-	  break;
-	case IDD_CHOOSE:
-	  do_choose (h);
-	  break;
-	case IDD_S_DOWNLOAD:
-	  do_download (h);
-	  break;
-	case IDD_S_INSTALL:
-	  do_install (h);
-	  break;
-	case IDD_DESKTOP:
-	  do_desktop (h);
-	  break;
-	case IDD_S_POSTINSTALL:
-	  do_postinstall (h);
-	  break;
+  // Initialize common controls
+  InitCommonControls ();
 
-	default:
-	  next_dialog = 0;
-	  break;
-	}
-    }
+  // Init window class lib
+  Window::SetAppInstance (h);
+
+  // Create pages
+  Splash.Create ();
+  Source.Create ();
+  Root.Create ();
+  LocalDir.Create ();
+  Net.Create ();
+  Site.Create ();
+  Chooser.Create ();
+  Progress.Create ();
+  Desktop.Create ();
+
+  // Add pages to sheet
+  MainWindow.AddPage (&Splash);
+  MainWindow.AddPage (&Source);
+  MainWindow.AddPage (&Root);
+  MainWindow.AddPage (&LocalDir);
+  MainWindow.AddPage (&Net);
+  MainWindow.AddPage (&Site);
+  MainWindow.AddPage (&Chooser);
+  MainWindow.AddPage (&Progress);
+  MainWindow.AddPage (&Desktop);
+
+  // Create the PropSheet main window
+  MainWindow.Create ();
 
   exit_setup (0);
   /* Keep gcc happy :} */

@@ -50,7 +50,7 @@ public:
   /* Helper functions for http/ftp protocols.  Both return nonzero for
      "cancel", zero for "ok".  They set net_proxy_user, etc, in
      state.h */
-  int get_auth ();
-  int get_proxy_auth ();
-  int get_ftp_auth ();
+  int get_auth (HWND owner);
+  int get_proxy_auth (HWND owner);
+  int get_ftp_auth (HWND owner);
 };

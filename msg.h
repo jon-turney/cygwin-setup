@@ -23,11 +23,11 @@ void msg (const char *fmt, ...);
    is interpreted like printf.  The program exits when the user
    presses OK. */
 
-void fatal (int id, ...);
+void fatal (HWND owner, int id, ...);
 
 /* Similar, but the program continues when the user presses OK */
 
-void note (int id, ...);
+void note (HWND owner, int id, ...);
 
 /* returns IDYES or IDNO, otherwise same as note() */
-int yesno (int id, ...);
+int yesno (HWND owner, int id, ...);

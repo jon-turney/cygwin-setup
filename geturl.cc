@@ -43,119 +43,33 @@ static const char *cvsid =
 #include "diskfull.h"
 #include "mount.h"
 
-static HWND gw_dialog = 0;
-static HWND gw_url = 0;
-static HWND gw_rate = 0;
-static HWND gw_progress = 0;
-static HWND gw_pprogress = 0;
-static HWND gw_iprogress = 0;
-static HWND gw_progress_text = 0;
-static HWND gw_pprogress_text = 0;
-static HWND gw_iprogress_text = 0;
-static HANDLE init_event;
+#include "threebar.h"
+extern ThreeBarProgressPage Progress;
+
 static int max_bytes = 0;
 static int is_local_install = 0;
 
 int total_download_bytes = 0;
 int total_download_bytes_sofar = 0;
 
-static BOOL
-dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
-{
-  switch (id)
-    {
-    case IDCANCEL:
-      exit_setup (0);
-    }
-  return 0;
-}
-
-static BOOL CALLBACK
-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
-{
-  switch (message)
-    {
-    case WM_INITDIALOG:
-      gw_dialog = h;
-      gw_url = GetDlgItem (h, IDC_DLS_URL);
-      gw_rate = GetDlgItem (h, IDC_DLS_RATE);
-      gw_progress = GetDlgItem (h, IDC_DLS_PROGRESS);
-      gw_pprogress = GetDlgItem (h, IDC_DLS_PPROGRESS);
-      gw_iprogress = GetDlgItem (h, IDC_DLS_IPROGRESS);
-      gw_progress_text = GetDlgItem (h, IDC_DLS_PROGRESS_TEXT);
-      gw_pprogress_text = GetDlgItem (h, IDC_DLS_PPROGRESS_TEXT);
-      gw_iprogress_text = GetDlgItem (h, IDC_DLS_IPROGRESS_TEXT);
-      SetEvent (init_event);
-      return TRUE;
-    case WM_COMMAND:
-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
-    }
-  return FALSE;
-}
-
-static WINAPI DWORD
-dialog (void *)
-{
-  MSG m;
-  HWND local_gw_dialog =
-    CreateDialog (hinstance, MAKEINTRESOURCE (IDD_DLSTATUS),
-		  0, dialog_proc);
-  ShowWindow (local_gw_dialog, SW_SHOWNORMAL);
-  UpdateWindow (local_gw_dialog);
-  while (GetMessage (&m, 0, 0, 0) > 0)
-    {
-      TranslateMessage (&m);
-      DispatchMessage (&m);
-    }
-  return 0;
-}
-
 static DWORD start_tics;
 
 static void
-init_dialog (char const *url, int length)
+init_dialog (char const *url, int length, HWND owner)
 {
   if (is_local_install)
     return;
-  if (gw_dialog == 0)
-    {
-      DWORD tid;
-      HANDLE thread;
-      init_event = CreateEvent (0, 0, 0, 0);
-      thread = CreateThread (0, 0, dialog, 0, 0, &tid);
-      WaitForSingleObject (init_event, 1000);
-      CloseHandle (init_event);
-      SendMessage (gw_progress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
-      SendMessage (gw_pprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
-      SendMessage (gw_iprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
-    }
+
   char const *sl = url;
   char const *cp;
   for (cp = url; *cp; cp++)
     if (*cp == '/' || *cp == '\\' || *cp == ':')
       sl = cp + 1;
   max_bytes = length;
-  SetWindowText (gw_url, sl);
-  SetWindowText (gw_rate, "Connecting...");
-  SendMessage (gw_progress, PBM_SETPOS, (WPARAM) 0, 0);
-  ShowWindow (gw_progress, (length > 0) ? SW_SHOW : SW_HIDE);
-  if (length > 0)
-    SetWindowText (gw_progress_text, "Package");
-  else
-    SetWindowText (gw_progress_text, "       ");
-  ShowWindow (gw_pprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
-  if (total_download_bytes > 0)
-    {
-      SetWindowText (gw_pprogress_text, "Total");
-      SetWindowText (gw_iprogress_text, "Disk");
-    }
-  else
-    {
-      SetWindowText (gw_pprogress_text, "     ");
-      SetWindowText (gw_iprogress_text, "    ");
-    }
-  ShowWindow (gw_iprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
-  ShowWindow (gw_dialog, SW_SHOWNORMAL);
+  Progress.SetText1("Downloading...");
+  Progress.SetText2(sl);
+  Progress.SetText3("Connecting...");
+  Progress.SetBar1(0);
   start_tics = GetTickCount ();
 }
 
@@ -166,7 +80,7 @@ progress (int bytes)
   if (is_local_install)
     return;
   static char buf[100];
-  int kbps;
+  double kbps;
   static unsigned int last_tics = 0;
   DWORD tics = GetTickCount ();
   if (tics == start_tics)	// to prevent division by zero
@@ -175,36 +89,30 @@ progress (int bytes)
     return;
   last_tics = tics;
 
-  kbps = bytes / (tics - start_tics);
-  ShowWindow (gw_progress, (max_bytes > 0) ? SW_SHOW : SW_HIDE);
-  ShowWindow (gw_pprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
-  ShowWindow (gw_iprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
-  if (max_bytes > 100)
+  kbps = ((double)bytes) / (double)(tics - start_tics);
+  if (max_bytes > 0)
     {
-      int perc = bytes / (max_bytes / 100);
-      SendMessage (gw_progress, PBM_SETPOS, (WPARAM) perc, 0);
-      sprintf (buf, "%3d %%  (%dk/%dk)  %d kb/s\n",
+      int perc = (int)(100.0 * ((double)bytes) / (double)max_bytes);
+      Progress.SetBar1(bytes, max_bytes);
+      sprintf (buf, "%3d %%  (%dk/%dk)  %2.1f kb/s\n",
 	       perc, bytes / 1000, max_bytes / 1000, kbps);
       if (total_download_bytes > 0)
 	{
-	  int totalperc =
-	    (total_download_bytes_sofar +
-	     bytes) / (total_download_bytes / 100);
-	  SendMessage (gw_pprogress, PBM_SETPOS, (WPARAM) totalperc, 0);
+      Progress.SetBar2(total_download_bytes_sofar + bytes, total_download_bytes);
 	}
     }
   else
-    sprintf (buf, "%d  %d kb/s\n", bytes, kbps);
+    sprintf (buf, "%d  %2.1f kb/s\n", bytes, kbps);
 
-  SetWindowText (gw_rate, buf);
+  Progress.SetText3(buf);
 }
 
 io_stream *
-get_url_to_membuf (char const *_url)
+get_url_to_membuf (char const *_url, HWND owner)
 {
-  log (LOG_BABBLE, "get_url_to_membuf %s", _url);
+	log (LOG_BABBLE, "get_url_to_membuf %s", _url);
   is_local_install = (source == IDC_SOURCE_CWD);
-  init_dialog (_url, 0);
+  init_dialog (_url, 0, owner);
   NetIO *n = NetIO::open (_url);
   if (!n || !n->ok ())
     {
@@ -254,9 +162,9 @@ get_url_to_membuf (char const *_url)
 }
 
 char *
-get_url_to_string (char const *_url)
+get_url_to_string (char const *_url, HWND owner)
 {
-  io_stream *stream = get_url_to_membuf (_url);
+  io_stream *stream = get_url_to_membuf (_url, owner);
   if (!stream)
     return 0;
   size_t bytes = stream->get_size ();
@@ -283,15 +191,15 @@ get_url_to_string (char const *_url)
 
 int
 get_url_to_file (char *_url, char *_filename, int expected_length,
-		 BOOL allow_ftp_auth)
+		 HWND owner, BOOL allow_ftp_auth)
 {
   log (LOG_BABBLE, "get_url_to_file %s %s", _url, _filename);
   if (total_download_bytes > 0)
     {
       int df = diskfull (get_root_dir ());
-      SendMessage (gw_iprogress, PBM_SETPOS, (WPARAM) df, 0);
+	  Progress.SetBar3(df);
     }
-  init_dialog (_url, expected_length);
+  init_dialog (_url, expected_length, owner);
 
   remove (_filename);		/* but ignore errors */
 
@@ -309,7 +217,7 @@ get_url_to_file (char *_url, char *_filename, int expected_length,
       const char *err = strerror (errno);
       if (!err)
 	err = "(unknown error)";
-      fatal (IDS_ERR_OPEN_WRITE, _filename, err);
+      fatal (owner, IDS_ERR_OPEN_WRITE, _filename, err);
     }
 
   if (n->file_size)
@@ -338,15 +246,9 @@ get_url_to_file (char *_url, char *_filename, int expected_length,
   if (total_download_bytes > 0)
     {
       int df = diskfull (get_root_dir ());
-      SendMessage (gw_iprogress, PBM_SETPOS, (WPARAM) df, 0);
+	  Progress.SetBar3(df);
     }
 
   return 0;
 }
 
-void
-dismiss_url_status_dialog ()
-{
-  if (!is_local_install)
-    ShowWindow (gw_dialog, SW_HIDE);
-}

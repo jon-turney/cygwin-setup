@@ -86,7 +86,7 @@ log_save (int babble, const char *filename, int append)
   FILE *f = fopen (filename, append ? "at" : "wt");
   if (!f)
     {
-      fatal (IDS_NOLOGFILE, filename);
+      fatal (NULL, IDS_NOLOGFILE, filename);
       return;
     }
 
@@ -115,7 +115,7 @@ exit_setup (int exit_code)
   been_here = 1;
 
   if (exit_msg)
-    note (exit_msg);
+    note (NULL, exit_msg);
 
   log (LOG_TIMESTAMP, "Ending cygwin install");
 

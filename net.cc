@@ -30,6 +30,11 @@ static const char *cvsid =
 #include "msg.h"
 #include "log.h"
 
+#include "net.h"
+
+#include "threebar.h"
+extern ThreeBarProgressPage Progress;
+
 static int rb[] = { IDC_NET_IE5, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
 
 static void
@@ -84,71 +89,50 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       save_dialog (h);
       check_if_enable_next (h);
       break;
-
-    case IDOK:
-      save_dialog (h);
-      switch (source)
-	{
-	case IDC_SOURCE_NETINST:
-	case IDC_SOURCE_DOWNLOAD:
-	  NEXT (IDD_SITE);
-	  break;
-	case IDC_SOURCE_CWD:
-	  NEXT (0);
-	  break;
-	default:
-	  msg ("source is default? %d\n", source);
-	  NEXT (0);
-	}
-      break;
-
-    case IDC_BACK:
-      save_dialog (h);
-      NEXT (IDD_LOCAL_DIR);
-      break;
-
-    case IDCANCEL:
-      NEXT (0);
-      break;
     }
   return 0;
 }
 
-static BOOL CALLBACK
-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+bool
+NetPage::Create ()
 {
-  switch (message)
-    {
-    case WM_INITDIALOG:
-      load_dialog (h);
-
-      // Check to see if any radio buttons are selected. If not, select a default.
-      if (
-	  (!SendMessage (GetDlgItem (h, IDC_NET_IE5), BM_GETCHECK, 0, 0) ==
-	   BST_CHECKED)
-	  && (!SendMessage (GetDlgItem (h, IDC_NET_PROXY), BM_GETCHECK, 0, 0)
-	      == BST_CHECKED))
-	{
-	  SendMessage (GetDlgItem (h, IDC_NET_DIRECT), BM_CLICK, 0, 0);
-	}
-      return FALSE;
-    case WM_COMMAND:
-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
-    }
-  return FALSE;
+  return PropertyPage::Create (NULL, dialog_cmd, IDD_NET);
 }
 
 void
-do_net (HINSTANCE h)
+NetPage::OnInit ()
 {
-  int rv = 0;
+  HWND h = GetHWND ();
 
   net_method = IDC_NET_DIRECT;
-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_NET), 0, dialog_proc);
-  if (rv == -1)
-    fatal (IDS_DIALOG_FAILED);
+  load_dialog (h);
+
+  // Check to see if any radio buttons are selected. If not, select a default.
+  if ((!SendMessage (GetDlgItem (IDC_NET_IE5), BM_GETCHECK, 0, 0) ==
+       BST_CHECKED)
+      && (!SendMessage (GetDlgItem (IDC_NET_PROXY), BM_GETCHECK, 0, 0)
+	  == BST_CHECKED))
+    {
+      SendMessage (GetDlgItem (IDC_NET_DIRECT), BM_CLICK, 0, 0);
+    }
+}
+
+long
+NetPage::OnNext ()
+{
+  save_dialog (GetHWND ());
 
   log (0, "net: %s",
        (net_method == IDC_NET_IE5) ? "IE5" :
        (net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy");
+
+  Progress.SetActivateTask (WM_APP_START_SITE_INFO_DOWNLOAD);
+  return IDD_INSTATUS;
+}
+
+long
+NetPage::OnBack ()
+{
+  save_dialog (GetHWND ());
+  return 0;
 }

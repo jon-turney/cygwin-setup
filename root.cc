@@ -35,6 +35,7 @@ static const char *cvsid =
 #include "mount.h"
 #include "concat.h"
 #include "log.h"
+#include "root.h"
 
 static int rb[] = { IDC_ROOT_TEXT, IDC_ROOT_BINARY, 0 };
 static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
@@ -143,64 +144,56 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDC_ROOT_BROWSE:
       browse (h);
       break;
-
-    case IDOK:
-      save_dialog (h);
-
-      if (!directory_is_absolute ())
-	{
-	  note (IDS_ROOT_ABSOLUTE);
-	  break;
-	}
-
-      if (directory_is_rootdir ())
-	if (IDNO == yesno (IDS_ROOT_SLASH))
-	  break;
-
-      if (directory_has_spaces ())
-	if (IDNO == yesno (IDS_ROOT_SPACE))
-	  break;
-
-      NEXT (IDD_LOCAL_DIR);
-      break;
-
-    case IDC_BACK:
-      save_dialog (h);
-      NEXT (IDD_SOURCE);
-      break;
-
-    case IDCANCEL:
-      NEXT (0);
-      break;
     }
   return 0;
 }
 
-static BOOL CALLBACK
-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+bool
+RootPage::Create ()
 {
-  switch (message)
-    {
-    case WM_INITDIALOG:
-      load_dialog (h);
-      return FALSE;
-    case WM_COMMAND:
-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
-    }
-  return FALSE;
+  return PropertyPage::Create (NULL, dialog_cmd, IDD_ROOT);
 }
 
 void
-do_root (HINSTANCE h)
+RootPage::OnInit ()
 {
-  int rv = 0;
   if (!get_root_dir ())
     read_mounts ();
-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_ROOT), 0, dialog_proc);
-  if (rv == -1)
-    fatal (IDS_DIALOG_FAILED);
+  load_dialog (GetHWND ());
+}
+
+long
+RootPage::OnNext ()
+{
+  HWND h = GetHWND ();
+
+  save_dialog (h);
+
+  if (!directory_is_absolute ())
+    {
+      note (h, IDS_ROOT_ABSOLUTE);
+      return -1;
+    }
+  else if (directory_is_rootdir () && (IDNO == yesno (h, IDS_ROOT_SLASH)))
+    return -1;
+  else if (directory_has_spaces () && (IDNO == yesno (h, IDS_ROOT_SPACE)))
+    return -1;
+
+  NEXT (IDD_LOCAL_DIR);
 
   log (0, "root: %s %s %s", get_root_dir (),
        (root_text == IDC_ROOT_TEXT) ? "text" : "binary",
        (root_scope == IDC_ROOT_USER) ? "user" : "system");
+
+  return 0;
+}
+
+long
+RootPage::OnBack ()
+{
+  HWND h = GetHWND ();
+
+  save_dialog (h);
+  NEXT (IDD_SOURCE);
+  return 0;
 }

@@ -103,12 +103,12 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 void
-do_other (HINSTANCE h)
+do_other (HINSTANCE h, HWND owner)
 {
   int rv = 0;
-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_OTHER_URL), 0, dialog_proc);
+  rv = DialogBox (h, MAKEINTRESOURCE (IDD_OTHER_URL), owner, dialog_proc);
   if (rv == -1)
-    fatal (IDS_DIALOG_FAILED);
+    fatal (owner, IDS_DIALOG_FAILED);
 
   log (0, "site: %s", other_url);
 }

@@ -1,3 +1,244 @@
+2001-12-23  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* window.h (Window): New file, new class.
+	* window.cc (Window): New file, new class.
+
+	* threebar.h (ThreeBarProgressPage): New file, new class.
+	* threebar.cc (ThreeBarProgressPage): New file, new class.
+
+	* splash.h (SplashPage): New file, new class.
+	* splash.cc (SplashPage): Replace file with implementation of new
+	class.
+
+	* source.h (SourcePage): New file, new class.
+	* source.cc: Run indent.
+	(SourcePage): Add class implementation to this file.
+	(do_source): Remove, functionality subsumed by SourcePage::Create()
+	and SourcePage::OnDeactivate().
+	(dialog_proc): Remove, functionality subsumed by 
+	SourcePage::OnActivate().
+
+	* site.h: Run indent.
+	(SitePage): Add class declaration.
+	* site.cc: Run indent.
+	(SitePage): Add class implementation.
+	(do_download_site_info_thread): New function.
+	(context): New var.  Context info for do_download_site_info_thread().
+	(do_download_site_info): New function.
+	(SitePage::Create, SitePage::OnInit SitePage::OnNext)
+	(SitePage::OnBack): SitePage class implementation..
+	(dialog_cmd): Remove IDOK, ID_BACK, and IDCANCEL handlers, now handled
+	by SitePage members.
+	(dialog_proc): Remove, now handled by SitePage::OnInit and base class
+	functionality.
+	(do_site): Remove, now handled by do_download_site_info_thread() and
+	SitePage::OnNext functionality.
+	(get_site_list): Remove dismiss_url_status_dialog() call.
+
+	* root.h (RootPage): New file, new class.
+	* root.cc: Run indent.
+	(dialog_cmd): Pass parent HWND parameter to note(), yesno().
+	(dialog_proc): Remove.
+	(do_root): Remove
+	(dialog_cmd): Remove IDOK, ID_BACK, and IDCANCEL clauses from switch.
+	(RootPage::OnInit): New member function.  Move get_root_dir() logic to
+	here from do_root().
+	(RootPage::Create): New member function.
+	(RootPage::OnNext): New member function.  Move IDOK logic from 
+	dialog_cmd() to here.
+	(RootPage::OnBack): New member function.
+
+	* propsheet.h (PropSheet): New file, new class.
+	* propsheet.cc (PropSheet): New file, new class.
+
+	* proppage.h (PropertyPage): New file, new class.
+	* proppage.cc (PropertyPage): New file, new class.
+
+	* postinstall.cc (do_postinstall): Add owner parameter.
+
+	* other.cc (do_other): Add owner parameter.
+
+	* nio-file.cc (NetIO::Purl): Pass NULL parent param to note().
+	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Pass NULL parent param to 
+	get_ftp_auth().
+	* nio-http.cc (retry_get): Pass NULL parent param to get_auth(), 
+	get_proxy_auth(),
+	and get_ftp_auth().
+	* nio-ie5.cc (NetIO::_url): Pass NULL parent param to note(), 
+	get_auth(), get_proxy_auth().
+
+	* netio.h (get_auth, get_proxy_auth, get_ftp_auth): Add owner param.
+	* netio.cc (auth_common, NetIO::get_auth, NetIO::get_proxy_auth, 
+	NetIO::get_ftp_auth)
+	(auth_common): Add owner param.  Pass owner param to DialogBox.
+	(NetIO::get_auth, NetIO::get_proxy_auth, NetIO::get_ftp_auth): Pass 
+	owner param to auth_common().
+
+	* net.h (NetPage): New file, new class.
+	* net.cc: Run indent.
+	(net.h, threebar.h): Add includes.
+	(Progress): Add extern.
+	(dialog_cmd): Remove IDOK, IDC_BACK, and IDCANCEL cases, now handled by
+	property sheet logic.  Saved temporarily for reference.
+	(NetPage::Create, NetPage::OnInit, NetPage::OnDeactivate, 
+	NetPage::OnNext, NetPage::OnBack):
+	New implementation of NetPage class members.
+	(do_net): Remove.
+	(dialog_proc): Remove.
+
+	* msg.h (fatal, note, yesno): Add owner param.
+	* msg.c (fatal, note, yesno, mbox): Add owner param.
+	(mbox): Remove MB_TOPMOST from MessageBox call.  Unnecessary and wrong
+	now that we have a parent.
+
+	* main.cc: Run indent.
+	(commctrl.h, proppage.h, propsheet.h, splash.h, source.h) 
+	(localdir.h, net.h, site.h, choose.h, threebar.h, desktop.h): Include
+	headers.
+	(root_dialog_proc): extern into this file.
+	(Progress): Progress dialog defined here, used in several other files.
+	(WinMain): Instantiate and create Splash, Source, Root, LocalDir, Net,
+	Site, Chooser, Desktop pages and MainWindow sheet.  Call
+	InitCommonControls() to make sure Windows is set up for our use of
+	property sheets. Add pages to sheet.
+	Call MainWindow.Create() to "DoModal".  Remove main loop, that logic is
+	now handled by the PropSheet class.
+	(root.h): Add include.
+
+	* log.cc (log_save): Pass NULL parent to fatal().
+	(exit_setup): Pass NULL parent to note().
+
+	* localdir.h (LocalDirPage): New file, new class.
+	* localdir.cc:  Run indent.
+	(localdir.h): New include.
+	(threebar.h): New include.
+	(Progress): extern into this file.
+	(LocalDirPage::Create, LocalDirPage::OnInit, LocalDirPage::OnActivate)
+	(LocalDirPage::OnNext, LocalDirPage::OnBack): Implementation of 
+	LocalDirPage.
+	(LocalDirPage::OnNext): Move log() call from do_local_dir() to here.
+	(dialog_cmd): Remove IDOK, ID_BACK, and IDCANCEL handlers.
+	(do_local_dir): Remove.
+	(dialog_proc): Remove.
+	(cwd): Remove, not used by anything.
+
+	* install.cc: Run indent.
+	(process.h, threebar.h): New includes.
+	(Progress): extern into this file.
+	(ins_dialog, ins_action, ins_pkgname, ins_filename, ins_pprogress)
+	(ins_iprogress, ins_diskfull, init_event): Remove, now handled by
+	ThreeBarProgressPage.
+	(dialog_cmd, dialog_proc, dialog): Removed, handled in 
+	ThreeBarProgressPage.
+	(init_dialog): Remove all mention of the above ins_* handles.  Now 
+	handled in ThreeBarProgressPage.  Altered SetWindowText()s to call 
+	ThreeBarProgressPage instance Progress directly.
+	(progress): Alter bar update logic to call ThreeBarProgressPage
+	instance Progress directly.
+	(uninstall_one): Alter SetWindowText()s to call ThreeBarProgressPage
+	instance Progress directly.
+	(install_one_source): Alter SetWindowText()s to call 
+	ThreeBarProgressPage
+	instance Progress directly. Pass NULL parent to note().
+	(do_install_thread): Rename from do_install(), added owner param.  
+	Alter SetWindowText()s to call ThreeBarProgressPage instance Progress
+	directly.
+	Remove dismiss_url_status_dialog() call, no longer necessary.  Remove
+	ShowWindow(<hide>) call, also unnecessary now.  Pass owner handle to 
+	fatal().
+	(do_install_reflector): New function.
+	(do_install): New function.
+
+	* ini.cc (process.h, threebar.h): New includes.
+	(Progress): externed into this file.
+	(find_routine): Pass NULL parent to note().
+	(do_local_ini): Add owner param.
+	(do_remote_ini): Add owner param.  Pass owner to get_url_to_membuf() 
+	and note().  Remove call to dismiss_url_status_dialog().
+	(do_ini_thread): Rename from do_ini().  Add owner param.  Pass owner to
+	do_local_ini(), do_remote_ini(), yesno(), and note().  Set next_dialog 
+	to IDD_CHOOSER on exit.
+	(do_ini_thread_reflector): New function.
+	(context): New var.  Context for do_ini_thread.
+	(do_ini): New function.
+
+	* geturl.h (get_url_to_membuf, get_url_to_string, get_url_to_file): Add
+	owner param.
+	* geturl.cc (gw_dialog, gw_url, gw_rate, gw_progress, gw_pprogress, 
+	gw_iprogress)
+	(gw_progress_text, gw_pprogress_text, gw_iprogress_text, init_event): 
+	Removed.
+	(threebar.h): New include.
+	(Progress): externed into this file.
+	(dialog_cmd, dialog_proc, dialog): Removed, handled by 
+	ThreeBarProgressPage now.
+	(init_dialog): Remove "if (gw_dialog == 0)" clause.  Alter 
+	SetWindowText()s
+	and bar setting SendMessage()s to call ThreeBarProgressPage instance 
+	Progress directly.  Remove "one bar only" logic, this is now handled
+	explicitly in the ThreeBarProgressPage class.
+	(progress): Altered bar and text update logic to call 
+	ThreeBarProgressPage instance Progress directly.  Changed kbps
+	calculation to floating point and now print out a single decimal
+	place.
+	(get_url_to_membuf): Add owner param.  Pass it to init_dialog.
+	(get_url_to_string): Add owner param.  Pass it to get_url_to_membuf.
+	(get_url_to_file): Add owner param.  Pass it to init_dialog. Alter bar 
+	update logic to call ThreeBarProgressPage instance Progress directly.
+	(dismiss_url_status_dialog):  Remove.
+
+	* fromcwd.cc (do_fromcwd): Add owner param.  Initialize found_ini to
+	false, was true.
+
+	* download.cc: Run indent.
+	(process.h, threebar.h): New includes.
+	(Progress): externed into this file.
+	(download_one): Add owner param.  Pass it to get_url_to_file().
+	(do_download_thread): Renamed from do_download.  Add owner param. When
+	calculating total_download_bytes, take binpicked and srcpicked into
+	account.  Remove call to dismiss_url_status_dialog(), no longer needed.
+	Pass owner handle to download_one() and yesno().
+	(do_download_reflector, do_download): New functions.
+	(context): New var.  Context for do_download_thread().
+
+	* dialog.h (D(x)): Add owner param.
+
+	* desktop.h (DesktopSetupPage): New file, new class.
+	* desktop.cc: Run indent.
+	(desktop.h): Add include.
+	(dialog_proc, do_desktop): Remove, now handled in 
+	DesktopSetupPage::OnInit().
+	(dialog_cmd): Remove IDOK, IDC_BACK, and IDCANCEL cases, handled in
+	DesktopSetupPage::OnFinish(), DesktopSetupPage::OnBack(), and PropSheet
+	resp.
+	(DesktopSetupPage::Create, DesktopSetupPage::OnInit)
+	(DesktopSetupPage::OnBack, DesktopSetupPage::OnFinish): Implementation
+	of DesktopSetupPage.
+
+	* cistring.h: New file, new class.
+	* cistring.cc: New file, new class.
+
+	* choose.h: Run indent.
+	(Chooser): New class declaration.
+	* choose.cc: Run indent.
+	(do_choose): Add owner param.  Pass it to DialogBox() and 
+	fatal().
+	(Chooser): New class implementation.
+
+	* res.rc (IDS_VERSION_INFO): New string.
+	(IDD_SOURCE, IDD_LOCAL_DIR, IDD_ROOT, IDD_SITE, IDD_OTHER_URL)
+	(IDD_DLSTATUS, IDD_INSTATUS, IDD_SPLASH, IDD_CHOOSE, IDD_DESKTOP):
+	Change WS_POPUP to WS_CHILD.  Numerous positioning/size changes
+	throughout.
+	(IDD_CHOOSE): Give template the WS_EX_CONTROLPARENT style to enable
+	TAB control navigation etc.  Give the controls a reasonable tab order.
+	Grouped radio buttons.  Something's still not right, can't tab away
+	from back/next/cancel group reliably.
+	* resource.h (IDD_CHOOSER): New dialog ID.
+
+	* Makefile.in (OBJS): Add cistring.o, proppage.o, propsheet.o,
+	threebar.o, and window.o.
+
 2001-12-21  Robert Collins  <rbtcollins@hotmail.com>
 
 	* choose.cc (listview_proc): Update the scrollbar when the headers are dragged.
