@@ -1,3 +1,13 @@
+2004-11-20  Max Bowsher  <maxb@ukf.net>
+
+	Repair the broken detection of wrongly-sized package files.
+	
+	* download.cc (validateCachedPackage): Make static, since not used
+	elsewhere. Improve logging. Migrate file-size tests to here, alongside
+	the MD5 tests.
+	(check_for_cached): Remove broken testing of file-size, now covered by
+	the above. Code cleanups.
+
 2004-11-19  Max Bowsher  <maxb@ukf.net>
 
 	* package_version.cc (dumpAndList): Make dependencies much more

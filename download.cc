@@ -61,9 +61,17 @@ extern ThreeBarProgressPage Progress;
 
 static BoolOption NoMD5Option (false, '5', "no-md5", "Suppress MD5 checksum verification");
 
-bool
+static bool
 validateCachedPackage (String const &fullname, packagesource & pkgsource)
 {
+  DWORD size = get_file_size(fullname);
+  if (size != pkgsource.size)
+  {
+    log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
+      << " - Size mismatch: Ini-file: " << pkgsource.size
+      << " != On-disk: " << size << endLog;
+    return false;
+  }
   if (pkgsource.md5.isSet() && !NoMD5Option)
     {
       // check the MD5 sum of the cached file here
@@ -88,19 +96,25 @@ validateCachedPackage (String const &fullname, packagesource & pkgsource)
 	}
       delete thefile;
       if (count < 0)
-	throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("IO Error reading ") + pkgsource.Cached(), APPERR_IO_ERROR);
+        throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+                             String ("IO Error reading ") + fullname,
+                             APPERR_IO_ERROR);
       
       md5_byte_t tempdigest[16];
       md5_finish(&pns, tempdigest);
       md5 tempMD5;
       tempMD5.set (tempdigest);
       
-      log (LOG_BABBLE) << "For file '" << fullname << 
-	   " ini digest is " << pkgsource.md5.print() <<
-	   " file digest is " << tempMD5.print() << endLog;
-      
       if (pkgsource.md5 != tempMD5)
-	return false;
+      {
+        log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
+          << " - MD5 mismatch: Ini-file: " << pkgsource.md5.print() 
+          << " != On-disk: " << tempMD5.print() << endLog;
+        return false;
+      }
+
+      log (LOG_BABBLE) << "MD5 verified OK: " << fullname
+        << pkgsource.md5.print() << endLog;
     }
   return true;
 }
@@ -121,35 +135,37 @@ check_for_cached (packagesource & pkgsource)
     return 1;
   
   String prefix = String ("file://") + local_dir +  "/";
-  DWORD size;
-  if ((size = get_file_size (prefix + pkgsource.Canonical ())) > 0)
-    if (size == pkgsource.size)
-      {
-	if (validateCachedPackage (prefix + pkgsource.Canonical (), pkgsource))
-	  pkgsource.set_cached (prefix + pkgsource.Canonical ());
-	else
-	  throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("Package validation failure for ") + prefix + pkgsource.Canonical (), APPERR_CORRUPT_PACKAGE);
-	return 1;
-      }
+  String fullname = prefix + pkgsource.Canonical();
+  if (io_stream::exists(fullname))
+  {
+    if (validateCachedPackage (fullname, pkgsource))
+      pkgsource.set_cached (fullname);
+    else
+      throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+          String ("Package validation failure for ") + fullname,
+          APPERR_CORRUPT_PACKAGE);
+    return 1;
+  }
 
   /*
      2) is there a version from one of the selected mirror sites available ?
-   */
+     */
   for (packagesource::sitestype::const_iterator n = pkgsource.sites.begin();
        n != pkgsource.sites.end(); ++n)
+  {
+    String fullname = prefix + rfc1738_escape_part (n->key) + "/" +
+      pkgsource.Canonical ();
+    if (io_stream::exists(fullname))
     {
-      String fullname = prefix + rfc1738_escape_part (n->key) + "/" +
-	pkgsource.Canonical ();
-    if ((size = get_file_size (fullname)) > 0)
-      if (size == pkgsource.size)
-	{
-	  if (validateCachedPackage (fullname, pkgsource))
-	    pkgsource.set_cached (fullname );
-	  else
-	    throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("Package validation failure for ") + fullname, APPERR_CORRUPT_PACKAGE);
-	  return 1;
-	}
+      if (validateCachedPackage (fullname, pkgsource))
+        pkgsource.set_cached (fullname);
+      else
+        throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+            String ("Package validation failure for ") + fullname,
+            APPERR_CORRUPT_PACKAGE);
+      return 1;
     }
+  }
   return 0;
 }
 
