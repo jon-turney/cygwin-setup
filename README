@@ -18,6 +18,14 @@ TODO:
 	   
 	   
 WISHLIST:
+  *  Some way to download *all* the source
+  *  When clicking on a category that is showing a partial list (auto added items due to dependencies) show the full list rather than minising.
+  *  continue downloading past errors, present log of failures at end
+  *   skip sould be followed by the <prec/curr/exp> from the radio buttons, not by prev.
+  *   incremental/recoverable download capability.
+  *   build-depends
+  *   FTP control connections should be closed when we are awaiting user input.
+  *   Show a sdesc for each category
   *   ini.cc: add field in setup.ini to specify whether package is installed by default, or not.
   * Add friendly error reporting to simpsock.cc
   * scan newly installed files for README files, show list to user, let them read them if they want.
