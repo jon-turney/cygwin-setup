@@ -1,3 +1,7 @@
+2003-02-28  Max Bowsher  <maxb@ukf.net>
+
+	* main.cc (set_default_sec): Add logging.
+
 2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
 
 	Backport from HEAD
