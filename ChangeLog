@@ -1,3 +1,8 @@
+2003-06-22  Benjamin Riefenstahl  <Benjamin.Riefenstahl@epost.de>
+
+	* res.rc (all dialogs): Change font from "MS Sans Serif" to
+	"MS Shell Dlg".
+
 2003-06-22  Max Bowsher  <maxb@ukf.net>
 
 	* Makefile.am: Clarify comment.
