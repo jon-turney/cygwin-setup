@@ -29,23 +29,7 @@ char *wd;
 int downloaddir (HINTERNET session, const char *url);
 char *pathcat (const char *arg1, const char *arg2);
 
-int
-xsystem (const char *cmd)
-{
-  int retval;
-  char *command;
-
-  if (cmd[1] != ':' && strncmp (cmd, "\\\\", 2) != 0)
-    command = pathcat (wd, cmd);
-  else
-    command = xstrdup (cmd);
-
-  retval = system (command);
-
-  xfree (command);
-
-  return retval;
-}
+int xsystem (const char *cmd);
 
 int
 create_shortcut (const char *target, const char *shortcut)
@@ -249,7 +233,7 @@ pathcat (const char *arg1, const char *arg2)
 }
 
 int
-recurse_dirs (const char *dir, const char *logpath)
+recurse_dirs (const char *dir, HANDLE Hlog)
 {
   int err = 0;
   int retval = 0;
@@ -276,7 +260,7 @@ recurse_dirs (const char *dir, const char *logpath)
 		  char *subdir = pathcat (dir, find_data.cFileName);
 		  if (subdir)
 		    {
-		      if (!recurse_dirs (subdir, logpath))
+		      if (!recurse_dirs (subdir, Hlog))
 			{
 			  xfree (subdir);
 			  err = 1;
@@ -318,13 +302,12 @@ recurse_dirs (const char *dir, const char *logpath)
 
 		      dpath = pathcat (dir, find_data.cFileName);
 		      path = dtoupath (dpath);
-		      sprintf (command, "tar xvfUz \"%s\" >>%s", path,
-			       logpath);
+		      sprintf (command, "tar xvfUz \"%s\"", path);
 		      xfree (path);
 		      xfree (dpath);
 
 		      printf ("Installing %s\n", find_data.cFileName);
-		      if (xsystem (command))
+		      if (xcreate_process (1, NULL, Hlog, NULL, command) == 0)
 			{
 			  printf ("Unable to extract \"%s\": %s",
 				  find_data.cFileName, _strerror (""));
@@ -775,12 +758,11 @@ reverse_sort (const void *arg1, const void *arg2)
 
 int
 create_uninstall (const char *wd, const char *folder, const char *shellscut,
-		  const char *shortcut, const char *log)
+		  const char *shortcut, FILE *logfile)
 {
   int retval = 0;
   char buffer[MAX_PATH];
   char *cygwin1_dll;
-  FILE *logfile = fopen (log, "r");
   clock_t start;
   HINSTANCE lib;
   
@@ -865,8 +847,6 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 	  sa_cleanup (&lines);
 	  retval = 1;
 	}
-      fclose (logfile);
-      unlink (log);
     }
 
 #ifndef NDEBUG
@@ -884,12 +864,14 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 
 /* Writes the startup batch file. */
 int
-do_start_menu (const char *root, const char *logfile)
+do_start_menu (const char *root, FILE *logfp)
 {
   FILE *batch;
   char *batch_name = pathcat (root, "bin\\cygwin.bat");
   int retval = 0;
 
+  fflush (logfp);
+  fseek (logfp, 0, SEEK_SET);
   /* Create the batch file for the start menu. */
   if (batch_name)
     {
@@ -902,7 +884,7 @@ do_start_menu (const char *root, const char *logfile)
 
 	  fprintf (batch,
 		   "@echo off\n"
-		   "SET MAKE_MODE=UNIX\n"
+		   "SET MAKE_MODE=unix\n"
 		   "SET PATH=%s\\bin;%%PATH%%\n"
 		   "bash\n", root, root);
 	  fclose (batch);
@@ -948,7 +930,7 @@ do_start_menu (const char *root, const char *logfile)
 		      if (uninstscut)
 			{
 			  if (create_uninstall
-			      (wd, folder, shortcut, uninstscut, logfile))
+			      (wd, folder, shortcut, uninstscut, logfp))
 			    retval = 1;
 			  xfree (uninstscut);
 			}
@@ -1201,6 +1183,17 @@ main ()
 
 	  if (logpath)
 	    {
+	      FILE *logfp = fopen (logpath, "w+b");
+	      HANDLE Hlog;
+
+	      if (logfp == NULL)
+		{
+		  fprintf (stderr, "Unable to open log file '%s' for writing - %s\n",
+			   logpath, _strerror (""));
+		  exit (1);
+		}
+
+	      Hlog = (HANDLE) _get_osfhandle (fileno (logfp));
 	      _chdrive (toupper (*root) - 'A' + 1);
 
 	      /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
@@ -1209,7 +1202,7 @@ main ()
 
 	      /* Extract all of the packages that are stored with setup or in
 	         subdirectories of its location */
-	      if (recurse_dirs (wd, logpath))
+	      if (recurse_dirs (wd, Hlog))
 		{
 		  char *mount;
 		  char buffer[1024];
@@ -1236,12 +1229,14 @@ main ()
 			  xfree (tmpdir);
 			}
 
-		      if (do_start_menu (root, logpath))
+		      if (do_start_menu (root, logfp))
 			retval = 0;	/* Everything worked return
 					   successful code */
 		    }
 		}
 
+	      fclose (logfp);
+	      unlink (logpath);
 	      xfree (logpath);
 	    }
 	}

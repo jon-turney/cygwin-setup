@@ -62,6 +62,8 @@ ALL_LDFLAGS:=${filter-out -I%, \
 
 PROGS:=setup$(EXEEXT)
 
+OBJS:=error.o memory.o setup.o strarry.o cinstall.o xsystem.o 
+
 BUNDLED_FILES:=cygwin1.dll.gz $(srcdir)/tar.exe.gz $(srcdir)/gzip.exe.gz \
 	       mount.exe.gz cygpath.exe.gz
 .SUFFIXES:
@@ -72,12 +74,12 @@ BUNDLED_FILES:=cygwin1.dll.gz $(srcdir)/tar.exe.gz $(srcdir)/gzip.exe.gz \
 
 all: Makefile $(PROGS)
 
-setup$(EXEEXT): error.o memory.o setup.o strarry.o cinstall.o $(ALL_DEP_LDLIBS)
+setup$(EXEEXT): $(OBJS) $(ALL_DEP_LDLIBS)
 ifdef VERBOSE
-	$(CC) -o $@ ${wordlist 1,5,$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
+	$(CC) -o $@ ${wordlist 1,6,$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
 else
-	@echo $(CC) -o $@ ${wordlist 1,5,$^} ${filter-out -B%, $(ALL_LDFLAGS) $(ALL_LDLIBS)};\
-	$(CC) -o $@ ${wordlist 1,5,$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
+	@echo $(CC) -o $@ ${wordlist 1,6,$^} ${filter-out -B%, $(ALL_LDFLAGS) $(ALL_LDLIBS)};\
+	$(CC) -o $@ ${wordlist 1,6,$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
 endif
 	@chmod a-x $@
 

@@ -1,3 +1,16 @@
+Mon Apr 10 20:33:40 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* xsystem.c: New file.
+	* Makefile.in: Accomodate new file.
+	* setup.c (xsystem): Move to new file.
+	(recurse_dirs): Accept handle to output log file.  Don't use ">"
+	redirection to trap tar output.  Use supplied handle instead.
+	(create_uninstall): Accept FILE pointer to opened log file.  Don't
+	unlink log file here.
+	(do_start_menu): Accept FILE pointer to pass to create_uninstall.
+	(main): Open log file here and pass it to various functions.  Unlink
+	when done.
+
 Mon Apr 10 17:15:52 2000  Christopher Faylor <cgf@cygnus.com>
 
 	Change occurrences of .usr.bin to .bin throughout.
