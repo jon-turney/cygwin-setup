@@ -1,3 +1,8 @@
+Fri Jun 15 20:54:43 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (scan2): Insert unknown tar archives, found on disk, into
+	the highest available "hole" in the trust array.
+
 Fri Jun 15 00:20:48 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* choose.cc (set_existence): Use pointer method for indexing in trust

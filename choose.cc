@@ -805,8 +805,11 @@ scan2 (char *path, unsigned int size)
   if (pkg == NULL)
     return;
 
+  Info *hole = NULL;
   for (Info *inf = pkg->infoscan; inf < pkg->infoend; inf++)
-    if (inf->version && strcmp (f.ver, inf->version) == 0)
+    if (!inf->version)
+      hole = inf;
+    else if (strcmp (f.ver, inf->version) == 0)
       {
 	if (f.what[0] == 's')
 	  inf->source_exists = -1;
@@ -815,20 +818,23 @@ scan2 (char *path, unsigned int size)
 	return;
       }
 
-  for (int t = TRUST_CURR; t >= TRUST_PREV; t--)
-    if (!pkg->info[t].install)
-      {
-	Info *inf = pkg->info + t;
-	inf->version = strdup (f.ver);
-	inf->install = strdup (f.pkgtar);
-	if (!inf->source && f.what[0] == 's')
-	  {
-	    inf->source = strdup (path);
-	    inf->source_exists = 1;
-	  }
-	inf->source_size = size;
-	break;
-      }
+  if (hole)
+    {
+      hole->version = strdup (f.ver);
+      hole->install = strdup (f.pkgtar);
+      if (!hole->source && f.what[0] == 's')
+	{
+	  hole->source = strdup (path);
+	  hole->source_exists = -1;
+	  hole->source_size = size;
+	}
+      else
+	{
+	  hole->install = strdup (path);
+	  hole->install_exists = -1;
+	  hole->install_size = size;
+	}
+    }
 }
 
 static void
