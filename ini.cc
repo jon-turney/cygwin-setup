@@ -51,29 +51,32 @@ do_ini (HINSTANCE h)
   /*  yydebug = 0;*/
   yyparse();
 
-  mkdir_p (1, concat (root_dir, "/etc/setup", 0));
+  if (root_dir)
+    {
+      mkdir_p (1, concat (root_dir, "/etc/setup", 0));
 
-  unsigned int old_timestamp = 0;
-  FILE *ots = fopen (concat (root_dir, "/etc/setup/timestamp", 0), "rt");
-  if (ots)
-    {
-      fscanf (ots, "%u", &old_timestamp);
-      fclose (ots);
-      if (old_timestamp && setup_timestamp
-	  && (old_timestamp > setup_timestamp))
+      unsigned int old_timestamp = 0;
+      FILE *ots = fopen (concat (root_dir, "/etc/setup/timestamp", 0), "rt");
+      if (ots)
 	{
-	  int yn = yesno (IDS_OLD_SETUPINI);
-	  if (yn == IDNO)
-	    ExitProcess (0);
+	  fscanf (ots, "%u", &old_timestamp);
+	  fclose (ots);
+	  if (old_timestamp && setup_timestamp
+	      && (old_timestamp > setup_timestamp))
+	    {
+	      int yn = yesno (IDS_OLD_SETUPINI);
+	      if (yn == IDNO)
+		ExitProcess (0);
+	    }
 	}
-    }
-  if (setup_timestamp)
-    {
-      FILE *nts = fopen (concat (root_dir, "/etc/setup/timestamp", 0), "wt");
-      if (nts)
+      if (setup_timestamp)
 	{
-	  fprintf (nts, "%u", setup_timestamp);
-	  fclose (nts);
+	  FILE *nts = fopen (concat (root_dir, "/etc/setup/timestamp", 0), "wt");
+	  if (nts)
+	    {
+	      fprintf (nts, "%u", setup_timestamp);
+	      fclose (nts);
+	    }
 	}
     }
 
