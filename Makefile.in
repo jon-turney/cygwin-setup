@@ -38,8 +38,8 @@ include $(srcdir)/../Makefile.common
 
 MINGW_INCLUDES:=-I$(mingw_source)/include -I$(w32api_include)
 
-MINGW_CXXFLAGS:=$(CXXFLAGS) -mno-cygwin $(MINGW_INCLUDES)
-MINGW_CFLAGS:=$(CFLAGS) -mno-cygwin $(MINGW_INCLUDES)
+MINGW_CXXFLAGS:=$(CXXFLAGS) -nostdinc++ -mno-cygwin $(MINGW_INCLUDES)
+MINGW_CFLAGS:=$(CFLAGS) -nostdinc -mno-cygwin $(MINGW_INCLUDES)
 
 ZLIB=zlib/libzcygw.a
 libmingw32.a:=$(mingw_build)/libmingw32.a
@@ -112,10 +112,10 @@ $(ZLIB): zlib/Makefile
 $(utils_build)/%.exe: $(utils_build)/Makefile
 	@$(MAKE) -C $(utils_build) $(@F)
 
-%.dll.gz: %.dll
-	gzip -9nf $?
+%.dll.gz: new-%.dll
+	gzip -9nfc $? > $@
 
-%.dll: $(cygwin_build)/new-%.dll
+%.dll: $(cygwin_build)/%.dll
 	$(OBJCOPY) --strip-unneeded $? $@
 
 $(cygwin_build)/%.dll: $(cygwin_build)/Makefile
