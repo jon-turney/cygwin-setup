@@ -461,7 +461,7 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
 	  desired = default_version;
 	  if (desired)
 	    {
-	      desired.pick (desired == installed);
+	      desired.pick (desired != installed);
 	      desired.sourcePackage ().pick (false);
 	    }
 	}

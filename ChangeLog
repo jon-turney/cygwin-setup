@@ -1,3 +1,8 @@
+2003-03-20  Robert Collins  <rbtcollins@hotmail.com>
+
+	* package_meta.cc (packagemeta::set_action): The logic 
+	test for the default action was reversed.
+
 2003-03-18  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
 	* postinstall.cc (do_postinstall): Filter out '*.done'.
