@@ -1,5 +1,10 @@
 2002-02-24  Michael A Chase <mchase@ix.netcom.com>
 
+	* io_stream_cygfile.cc (io_stream_cygfile::mklink): Fix up Robert's 
+	fixup.
+
+2002-02-24  Michael A Chase <mchase@ix.netcom.com>
+
 	* desktop.cc (make_link): Add "file://" prefix to io_stream::mkpath_p()
 	call.
 	(make_passwd_group): Ditto.

@@ -128,13 +128,13 @@ io_stream_cygfile::mklink (String const &from, String const &to,
 	/* textmode alert: should we translate when linking from an binmode to a
 	   text mode mount and vice verca?
 	 */
-	io_stream *in = io_stream::open (String ("cygfile://") + cygpath (to), "rb");
+	io_stream *in = io_stream::open (String ("cygfile://") + to, "rb");
 	if (!in)
 	  {
 	    log (LOG_TIMESTAMP, String("could not open ") + to +" for reading in mklink");
 	    return 1;
 	  }
-	io_stream *out = io_stream::open (String ("cygfile://") + cygpath (from), "wb");
+	io_stream *out = io_stream::open (String ("cygfile://") + from, "wb");
 	if (!out)
 	  {
 	    log (LOG_TIMESTAMP, String("could not open ") + from + " for writing in mklink");
