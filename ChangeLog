@@ -1,3 +1,11 @@
+2002-05-10  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in: Regenerate.
+ 	* iniparse.y: Use left recursion, not right in the lines rule to
+	avoid stack overflows.
+	* README: Update TODO's.
+	* io_stream_file.cc: Native builds need to include sys/stat.h
+
 2002-05-06  John Marshall  <jmarshall@acm.org>
 
 	* site.cc (SitePage::OnMessageCmd): recalculate navigation

@@ -29,9 +29,14 @@ static const char *cvsid =
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
-
+#if HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
+#include <stdexcept>
+  
 #include "io_stream_file.h"
 #include "IOStreamProvider.h"
+
 
 /* completely private iostream registration class */
 class FileProvider : public IOStreamProvider
@@ -49,7 +54,9 @@ public:
   int move (String const &a,String const &b) const
     {return io_stream_file::move (a, b);}
   int mkdir_p (enum path_type_t isadir, String const &path) const
-    {return ::mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, path.cstr_oneuse());}
+    {
+      return ::mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, path.cstr_oneuse());
+    }
 protected:
   FileProvider() // no creating this
     {

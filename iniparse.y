@@ -77,7 +77,7 @@ package
  ;
 
 lines
- : simple_line '\n' lines
+ : lines '\n' simple_line
  | simple_line
  ;
 

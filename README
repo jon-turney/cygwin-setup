@@ -5,7 +5,6 @@ TODO:
 
 * Chooser dialog needs work.
 * Mirrors list orer is snafued.
-* Handle UNC paths for the localdir correctly.
 * Don't downgrade if the curr version is <= installed?
 * support rpm/deb files for reading the package from. (To allow the maintainers the use of rpm/deb tools to create packages.)
   * make a librar(y|ies) for setup and cygcheck to use containing 
@@ -22,6 +21,7 @@ TODO:
 * Mark versions as prev/curr/test in the GUI when clicking through them.
 * Remove *empty* directories on uninstalls
 * Correctly overwrite -r--r--r-- files.
+* Make setup.exe available through Add/Remove
  	   
 WISHLIST:
   *  rsync:// support
@@ -70,4 +70,5 @@ recently completed
    *   ini.cc: add field in setup.ini to specify whether package is installed by default, or not. (base category does this)
   * Remove "/" from symlinks (etags.exe->/ctags.exe is an example
   * Src tickbox /source only can be confusing.
+  * Handle UNC paths for the localdir correctly.
 
