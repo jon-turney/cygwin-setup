@@ -1,3 +1,16 @@
+Mon May  7 23:33:30 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* winsup/cinstall/res.rc: Added accelerators and improved focus order.
+	Removed WS_DISABLED from "OK" buttons to accomodate default focus
+	changes in net.cc and source.cc.
+	* winsup/cinstall/net.cc (dialog_proc): If no radio button is selected,
+	a default is selected.
+	* winsup/cinstall/source.cc (dialog_proc): Ditto.
+	(check_if_enable_next): Removed.  No longer needed since a radio button
+	will always be selected.
+	(load_dialog): Removed call to check_if_enable_next.
+	(dialog_cmd): Ditto.  Also added default to switch.
+
 Tue Apr 24 23:42:02 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* res.rc: Resize affected text.

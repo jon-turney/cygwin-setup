@@ -126,6 +126,13 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_INITDIALOG:
       load_dialog (h);
+
+      // Check to see if any radio buttons are selected. If not, select a default.
+      if ((!SendMessage(GetDlgItem (h, IDC_NET_IE5), BM_GETCHECK, 0, 0) == BST_CHECKED)
+        && (!SendMessage(GetDlgItem (h, IDC_NET_PROXY), BM_GETCHECK, 0, 0) == BST_CHECKED))
+        {
+          SendMessage(GetDlgItem (h, IDC_NET_DIRECT), BM_CLICK, 0, 0);
+        }
       return FALSE;
     case WM_COMMAND:
       return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);

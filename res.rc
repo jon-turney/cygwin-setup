@@ -40,7 +40,7 @@ BEGIN
                     BS_AUTORADIOBUTTON,55,30,89,10
     CONTROL         "Install from &Local Directory",IDC_SOURCE_CWD,"Button",
                     BS_AUTORADIOBUTTON,55,45,99,10
-    DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15,WS_DISABLED
+    DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
 END
 
@@ -68,14 +68,14 @@ BEGIN
     LTEXT           "Select install root &directory",IDC_STATIC,55,15,85,11
     EDITTEXT        IDC_ROOT_DIR,55,25,127,12,ES_AUTOHSCROLL
     RTEXT           "Default &Text File Type :",IDC_STATIC,20,45,100,8
-    CONTROL         "DOS",IDC_ROOT_TEXT,"Button",BS_AUTORADIOBUTTON,125,45,
+    CONTROL         "D&OS",IDC_ROOT_TEXT,"Button",BS_AUTORADIOBUTTON,125,45,
                     31,8
-    CONTROL         "Unix",IDC_ROOT_BINARY,"Button",BS_AUTORADIOBUTTON,160,
+    CONTROL         "&Unix",IDC_ROOT_BINARY,"Button",BS_AUTORADIOBUTTON,160,
                     45,30,8
     RTEXT           "&Install For :",IDC_STATIC,55,60,65,8
-    CONTROL         "All",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | 
+    CONTROL         "&All",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | 
                     WS_GROUP,125,60,25,8
-    CONTROL         "Just Me",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON,160,
+    CONTROL         "Just &Me",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON,160,
                     60,50,8
     DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
@@ -127,7 +127,7 @@ BEGIN
     LTEXT           "Por&t",IDC_STATIC,155,55,20,15,SS_CENTERIMAGE,
                     WS_EX_RIGHT
     EDITTEXT        IDC_PROXY_PORT,180,55,30,12,ES_AUTOHSCROLL | WS_DISABLED
-    DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15,WS_DISABLED
+    DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
     PUSHBUTTON      "<-- &Back",IDC_BACK,55,75,45,15
 END

@@ -27,7 +27,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "msg.h"
 #include "log.h"
 
-static int rb[] = { IDC_SOURCE_DOWNLOAD, IDC_SOURCE_NETINST, IDC_SOURCE_CWD, 0 };
+static int rb[] = { IDC_SOURCE_NETINST, IDC_SOURCE_DOWNLOAD, IDC_SOURCE_CWD, 0 };
 
 static void
 check_if_enable_next (HWND h)
@@ -40,7 +40,6 @@ load_dialog (HWND h)
 {
   int i;
   rbset (h, rb, source);
-  check_if_enable_next (h);
 }
 
 static void
@@ -60,7 +59,6 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDC_SOURCE_NETINST:
     case IDC_SOURCE_CWD:
       save_dialog (h);
-      check_if_enable_next (h);
       break;
 
     case IDOK:
@@ -76,6 +74,9 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDCANCEL:
       NEXT (0);
       break;
+
+    default:
+      break;
     }
 }
 
@@ -86,6 +87,12 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_INITDIALOG:
       load_dialog (h);
+      // Check to see if any radio buttons are selected. If not, select a default.
+      if ((!SendMessage(GetDlgItem (h, IDC_SOURCE_DOWNLOAD), BM_GETCHECK, 0, 0) == BST_CHECKED)
+        && (!SendMessage(GetDlgItem (h, IDC_SOURCE_CWD), BM_GETCHECK, 0, 0) == BST_CHECKED))
+        {
+          SendMessage(GetDlgItem (h, IDC_SOURCE_NETINST), BM_SETCHECK, BST_CHECKED, 0);
+        }
       return FALSE;
     case WM_COMMAND:
       return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
