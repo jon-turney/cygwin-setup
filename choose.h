@@ -17,7 +17,7 @@
 #define _CHOOSE_H_
 
 class Category;
-class Package;
+class packagemeta;
 
 #define CATEGORY_EXPANDED  0
 #define CATEGORY_COLLAPSED 1
@@ -74,10 +74,10 @@ typedef class _view view;
 class pick_line
 {
 public:
-  void set_line (Package * _pkg);
+  void set_line (packagemeta * _pkg);
   void set_line (Category * _cat);
   void paint (HDC hdc, int x, int y, int row, int show_cat);
-  Package *get_pkg (void)
+  packagemeta *get_pkg (void)
   {
     return pkg;
   };
@@ -87,7 +87,7 @@ public:
   };
   int click (int x);
 private:
-    Package * pkg;
+    packagemeta * pkg;
   Category *cat;
 };
 
@@ -103,7 +103,7 @@ public:
   struct _header *headers;
     _view (views mode, HDC dc);
   const char *mode_caption ();
-  void insert_pkg (Package *);
+  void insert_pkg (packagemeta &);
   void insert_category (Category *, int);
   void clear_view (void);
   int click (int row, int x);

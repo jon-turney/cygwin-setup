@@ -32,6 +32,9 @@ public:
   int addpackage (packagemeta &);
   /* 0 on success */
   int flush ();
+  /* return an existing record if it exists, otherwise make a new one */
+  packagemeta &registerpackage (char const *);
+  size_t npackages () {return packagecount;};
   /* all seen categories */
   static CategoryList categories;
 private:

@@ -125,9 +125,11 @@ OBJS = \
 	other.o \
 	package_db.o \
 	package_meta.o \
+	package_source.o \
 	package_version.o \
 	postinstall.o \
 	res.o \
+	rfc1738.o \
 	root.o \
 	simpsock.o \
 	site.o \

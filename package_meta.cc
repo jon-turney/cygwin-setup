@@ -35,6 +35,9 @@ static const char *cvsid =
 /* this goes at the same time */
 #include "win32.h"
 
+  
+#include "category.h"
+
 #include "package_version.h"
 #include "cygpackage.h"
 #include "package_meta.h"
@@ -101,6 +104,8 @@ packagemeta::add_version (packageversion & thepkg)
       versions = newversions;
       versionspace += 5;
     }
+  /* FIXME: insert in sorted order */
+  /* FIXME: And handle unversioned items */
   versions[versioncount] = &thepkg;
   versioncount++;
 }
@@ -157,3 +162,20 @@ packagemeta::uninstall ()
     }
   installed = 0;
 }
+
+
+void
+packagemeta::add_category (Category &cat)
+{
+  /* add a new record for the package list */
+  /* TODO: alpabetical inserts ? */
+  categories.register_category (cat.name);
+
+  CategoryPackage *templink = new CategoryPackage (*this);
+  /* tell the category we are linking from we exist */
+  templink->next = cat.packages;
+  cat.packages = templink;
+}
+
+char const *
+packagemeta::SDesc () {return versions[0]->SDesc ();};

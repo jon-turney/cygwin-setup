@@ -50,6 +50,10 @@ static const char *cvsid =
 
 #include "port.h"
 
+#include "package_db.h"
+#include "package_meta.h"
+#include "package_version.h"
+# if 0
 static int
 is_test_version (char *v)
 {
@@ -57,7 +61,7 @@ is_test_version (char *v)
   for (i = 0; v[i] && isdigit (v[i]); i++);
   return (i >= 6) ? 1 : 0;
 }
-
+#endif
 char *
 canonicalize_version (const char *v)
 {
@@ -98,16 +102,14 @@ found_file (char *path, unsigned int fsize)
   if (f.what[0] != '\0')
     return;
 
-  Package *p = NULL;
-  for (int i = 0; i < npackages; i++)
-    if (strcmp (package[i].name, f.pkg) == 0)
-      {
-	p = package + i;
-	break;
-      }
-
+  packagemeta *p = NULL;
+  packagedb db;
+  p = db.getpackagebyname (f.pkg);
   if (p == NULL)
-    p = new_package (f.pkg);
+    p = new packagemeta (f.pkg, path);
+
+#if 0
+  // This is handled by the scan2 - there is no need for duplication - or is there?
 
   int trust = is_test_version (f.ver) ? TRUST_TEST : TRUST_CURR;
 
@@ -129,6 +131,7 @@ found_file (char *path, unsigned int fsize)
   p->info[trust].install = _strdup (path);
 
   p->info[trust].install_size = fsize;
+#endif
 }
 
 void
@@ -145,16 +148,20 @@ do_fromcwd (HINSTANCE h)
 
   find (".", found_file);
 
+#if 0
+  // Reinstate this FIXME: 
   // Now see about source tarballs
   int i, t;
-  Package *p;
+  packagemeta *p;
   char srcpath[_MAX_PATH];
   for (i = 0; i < npackages; i++)
     {
       p = package + i;
+      /* For each version with a binary after running find */
       for (t = TRUST_PREV; t <= TRUST_TEST; t++)
 	if (p->info[t].install)
 	  {
+	    /* Is there a -src file too? */
 	    int n = find_tar_ext (p->info[t].install);
 	    strcpy (srcpath, p->info[t].install);
 	    strcpy (srcpath + n, "-src.tar.gz");
@@ -176,6 +183,6 @@ do_fromcwd (HINSTANCE h)
 	      }
 	  }
     }
-
+#endif
   return;
 }

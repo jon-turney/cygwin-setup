@@ -38,7 +38,19 @@
  */
 
 class CategoryList;
-class packagesource;
+class Dependency;
+
+/* Required for parsing */
+#include "package_source.h"
+ 
+class Dependency
+{
+    public:
+        Dependency *next;     /* the next package in this dependency list */
+	  char const *package;          /* the name of the package that is depended on */
+}
+;                       /* Dependencies can be used for
+			                              recommended/required/related... */
 
 typedef enum
 {
@@ -71,6 +83,7 @@ public:
   virtual const char *Name () = 0;
   virtual const char *Vendor_version () = 0;
   virtual const char *Package_version () = 0;
+  virtual const char *Canonical_version () = 0;
   virtual package_status_t Status () = 0;
 //  virtual package_stability_t Stability () = 0;
   virtual package_type_t Type () = 0;
@@ -79,20 +92,58 @@ public:
    */
   virtual const char *getfirstfile () = 0;
   virtual const char *getnextfile () = 0;
-  virtual CategoryList & Categories () = 0;
+  virtual char const *SDesc () = 0;
+  virtual char const *LDesc () = 0;
+  /* FIXME: review this - these are UI variables, should be consistent across all
+   * children package types
+   */
+  void new_requirement (char const *dependson) {Dependency *dp;
+    if (!dependson)
+        return;
+    dp = new Dependency;
+    dp->next = required;
+    dp->package = dependson;
+    required = dp;}
+  Dependency *required;
+  int srcpicked; /* non zero if the source for this is required */
+  int binpicked; /* non zero if the binary is required  - 
+		    This will also trigger reinstalled if it is set */
+  
+  
   virtual void uninstall () = 0;
+  packagesource bin;
+  packagesource src;
+  /* ALL mirrors must have the same identical files */
+  size_t install_size;
+  size_t src_size;
   packagesource *getfirstsource ();
   packagesource *getnextsource ();
+  /* get the packagesource struct for the given mirror.
+   * ie, the mirror might be the local download directory, in which case
+   * if the package hasn't been downloaded this returns NULL
+   */
+  packagesource *getsourcebymirror (char const *);
+  size_t mirrorcount (){return sourcecount;};
 
+  packagesource *srcgetsourcebymirror (char const *);
+  size_t srcmirrorcount () {return srcsourcecount;};
 
+  packageversion ();
     virtual ~ packageversion ()
   {
   };
+
+  /* TODO: Implement me:
+  static package_meta * scan_package (io_stream *);
+     */
 
 protected:
   packagesource ** sources;
   size_t sourcecount;
   size_t sourcespace;
+  packagesource ** srcsources;
+  size_t srcsourcecount;
+  size_t srcsourcespace;
 };
 
 #endif /* _PACKAGE_VERSION_H_ */

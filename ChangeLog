@@ -1,3 +1,9 @@
+2001-11-26  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* nio-http.cc (NetIO_HTTP::NetIO_HTTP): Stop header parsing when
+	SimpleSocket::gets() returns a zero-length string, so that we
+	don't end up eating the entire stream thinking it's all header info.
+
 2001-11-23  Robert Collins  <rbtcollins@hotmail.com>
 
 	* install.cc (badrename): Remove.

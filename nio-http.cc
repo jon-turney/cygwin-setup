@@ -180,7 +180,9 @@ retry_get:
       s = 0;
       return;
     }
-  while ((l = s->gets ()) != 0)
+  
+  // Eat the header, picking out the Content-Length in the process
+  while (((l = s->gets ()) != NULL) && (*l != '\0'))
     {
       if (_strnicmp (l, "Content-Length:", 15) == 0)
 	sscanf (l, "%*s %d", &file_size);

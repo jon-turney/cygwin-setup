@@ -26,7 +26,7 @@ categoriesspace (0)
 {
 }
 
-Category *
+Category &
 CategoryList::register_category (const char *catname)
 {
   Category *tempcat = getcategorybyname (catname);
@@ -64,7 +64,7 @@ CategoryList::register_category (const char *catname)
       _categories[n] = tempcat;
       ncategories++;
     }
-  return tempcat;
+  return *tempcat;
 }
 
 Category *
