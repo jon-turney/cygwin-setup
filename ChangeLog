@@ -1,5 +1,10 @@
 2002-05-12  Robert Collins  <rbtcollins@hotmail.com>
 
+	* ini.cc (do_remote_ini): Use setup.bz2 if it exists in preference to
+	setup.ini.
+
+2002-05-12  Robert Collins  <rbtcollins@hotmail.com>
+
 	* geturl.h: Declare getUrlToStream.
 	* geturl.cc (getUrlToStream):  New function.
 	(get_url_to_membuf): Refactor to use getUrlToStream.

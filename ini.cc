@@ -51,6 +51,7 @@ static const char *cvsid =
 #include "rfc1738.h"
 
 #include "IniDBBuilderPackage.h"
+#include "compress.h"
   
 extern ThreeBarProgressPage Progress;
 
@@ -121,8 +122,15 @@ do_remote_ini (HWND owner)
   
   for (size_t n = 1; n <= site_list.number (); n++)
     {
-      io_stream *ini_file =
-	get_url_to_membuf (site_list[n]->url + "/setup.ini", owner);
+      io_stream *compressed_ini_file =
+	get_url_to_membuf (site_list[n]->url + "/setup.bz2", owner);
+      io_stream *ini_file = 0;
+      if (!compressed_ini_file)
+	ini_file = get_url_to_membuf (site_list[n]->url + "/setup.ini", owner);
+      else
+	{
+	  ini_file = compress::decompress (compressed_ini_file);
+	}
 
       if (!ini_file)
 	{
@@ -150,7 +158,6 @@ do_remote_ini (HWND owner)
 	    {
 	      if (io_stream::copy (ini_file, inistream))
 		io_stream::remove (fp.cstr_oneuse());
-	      delete ini_file;
 	      delete inistream;
 	    }
 	  ++ini_count;
@@ -160,6 +167,8 @@ do_remote_ini (HWND owner)
 	  setup_timestamp = aBuilder->timestamp;
 	  setup_version = aBuilder->version;
 	}
+      delete ini_file;
+      delete compressed_ini_file;
     }
   delete aBuilder;
   return ini_count;
