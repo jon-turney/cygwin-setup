@@ -39,6 +39,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "concat.h"
 #include "msg.h"
 #include "log.h"
+#include "find.h"
 
 #define HMARGIN 10
 #define ROW_MARGIN 5
@@ -340,7 +341,7 @@ default_trust (HWND h, int trust)
   for (i=0; i<npackages; i++)
     {
       t = best_trust (i, trust);
-      extra[i].pick = 0;
+      extra[i].pick = 1;
       for (c=0; c<extra[i].npick; c++)
 	if (t == extra[i].chooser[c].trust)
 	  extra[i].pick = c;
@@ -400,11 +401,9 @@ build_labels ()
 #define C extra[i].chooser[c]
       if (extra[i].installed_ver)
 	{
-#if 0
 	  C.caption = "Uninstall";
 	  C.trust = TRUST_UNINSTALL;
 	  c++;
-#endif
 	  C.caption = "Keep";
 	  C.trust = TRUST_KEEP;
 	  c++;
@@ -594,6 +593,31 @@ base (char *s)
 }
 
 static void
+scan2 (char *path, unsigned int size)
+{
+  int i, t;
+  for (i=0; i<npackages; i++)
+    for (t=0; t<NTRUST; t++)
+      if (package[i].info[t].install
+	  && strcmp (base (package[i].info[t].install), base (path)) == 0
+	  && package[i].info[t].install_size == size)
+	{
+	  extra[i].installed_file = package[i].info[t].install;
+	  extra[i].installed_size = size;
+	  extra[i].which_is_installed = t;
+	  extra[i].installed_ver = package[i].info[t].version;
+	  if (!extra[i].installed_ver)
+	    extra[i].installed_ver = "0";
+	}
+}
+
+static void
+scan_downloaded_files ()
+{
+  find (".", scan2);
+}
+
+static void
 read_installed_db ()
 {
   int i;
@@ -689,7 +713,9 @@ do_choose (HINSTANCE h)
 
   register_windows (h);
 
-  if (source != IDC_SOURCE_DOWNLOAD)
+  if (source == IDC_SOURCE_DOWNLOAD)
+    scan_downloaded_files ();
+  else
     read_installed_db ();
   build_labels ();
 
@@ -711,8 +737,11 @@ do_choose (HINSTANCE h)
 	  package[i].trust = extra[i].chooser[extra[i].pick].trust;
 	  break;
 
-	case TRUST_KEEP:
 	case TRUST_UNINSTALL:
+	  package[i].action = ACTION_UNINSTALL;
+	  break;
+
+	case TRUST_KEEP:
 	case TRUST_NONE:
 	default:
 	  package[i].action = ACTION_SAME;
@@ -732,6 +761,7 @@ do_choose (HINSTANCE h)
 			    : (package[i].action == ACTION_SAME) ? "same"
 			    : (package[i].action == ACTION_NEW) ? "new"
 			    : (package[i].action == ACTION_UPGRADE) ? "upgrade"
+			    : (package[i].action == ACTION_UNINSTALL) ? "uninstall"
 			    : (package[i].action == ACTION_ERROR) ? "error"
 			    : "unknown");
 

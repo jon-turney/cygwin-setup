@@ -1,3 +1,39 @@
+2000-08-29  DJ Delorie  <dj@redhat.com>
+
+	* choose.cc (scan_downloaded_files): scan for existing files, so
+	that the user only sees new downloads.
+
+	* nio-ie5.cc (NetIO_IE5): pre-check for wininet.dll, enable dial-up
+	* site.cc (do_site): if we can't download the mirror list, go back
+	to the net setup box to choose another transport.
+	* autoload.c: add more functions
+	* Makefile.in (ALL_DEP_LDLIBS): remove wininet.a
+	* resource.h: add WININET message
+
+	* net.cc (do_net): no longer default to IE5
+	* simpsock.h (class SimpleSocket): new, simplify socket operations
+	* simpsock.cc: ditto
+	* nio-http.h: new, for direct http protocol
+	* nio-http.cc: ditto
+	* nio-ftp.h: new, for direct http protocol
+	* nio-ftp.cc: ditto
+	* netio.cc (set_url): move initialization here to handle redirections
+	(open): add direct http/ftp
+	* netio.h (NetIO::set_url): new
+
+	* log.cc (log_save): create directory for log if needed
+
+	* hash.cc, hash.h: new
+	* Makefile: add hash.o
+	* choose.cc: enable "uninstall" option
+	* download.cc: invert action test to accomodate uninstalling
+	* ini.h: add ACTION_UNINSTALL
+	* install.cc: add uninstall functionality
+	* res.rc: make install tag changeable
+	* resource.h: add uninstall resources
+
+	* res.rc: update mirror list URL
+	
 2000-08-24  DJ Delorie  <dj@redhat.com>
 
 	* log.cc, log.h: new files

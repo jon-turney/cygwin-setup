@@ -34,12 +34,16 @@ typedef struct {
 
 DLL (wininet);
 
+Auto (wininet, InternetAttemptConnect, 4);
 Auto (wininet, InternetCloseHandle, 4);
 Auto (wininet, InternetGetLastResponseInfoA, 12);
 Auto (wininet, InternetOpenA, 20);
 Auto (wininet, InternetOpenUrlA, 24);
 Auto (wininet, InternetReadFile, 16);
 Auto (wininet, InternetSetOptionA, 16);
+Auto (wininet, InternetQueryOptionA, 16);
+Auto (wininet, HttpQueryInfoA, 20);
+Auto (wininet, HttpSendRequestA, 20);
 
 typedef struct {
   DllInfo *dll;

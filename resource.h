@@ -20,6 +20,8 @@
 #define IDS_DOWNLOAD_COMPLETE           18
 #define IDS_CVSID                       19
 #define IDS_NOLOGFILE                   20
+#define IDS_UNINSTALL_COMPLETE          21
+#define IDS_WININET                     22
 #define IDD_ROOT                        101
 #define IDD_SOURCE                      102
 #define IDD_OTHER_URL                   103
@@ -77,6 +79,7 @@
 #define IDC_CHOOSE_CURR                 1037
 #define IDC_CHOOSE_PREV                 1038
 #define IDC_CHOOSE_LIST                 1039
+#define IDC_INS_ACTION                  1040
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -87,7 +90,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        119
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1040
+#define _APS_NEXT_CONTROL_VALUE         1041
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

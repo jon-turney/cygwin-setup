@@ -305,7 +305,7 @@ do_site (HINSTANCE h)
   if (site_list == 0)
     if (get_site_list (h))
       {
-	NEXT (0);
+	NEXT (IDD_NET);
 	return;
       }
 

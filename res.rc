@@ -107,9 +107,9 @@ BEGIN
     CONTROL         "Use IE5 Settings",IDC_NET_IE5,"Button",
                     BS_AUTORADIOBUTTON,55,10,69,10
     CONTROL         "Direct Connection",IDC_NET_DIRECT,"Button",
-                    BS_AUTORADIOBUTTON | WS_DISABLED,55,25,73,10
+                    BS_AUTORADIOBUTTON,55,25,73,10
     CONTROL         "Use HTTP/FTP Proxy:",IDC_NET_PROXY,"Button",
-                    BS_AUTORADIOBUTTON | WS_DISABLED,55,40,88,10
+                    BS_AUTORADIOBUTTON,55,40,88,10
     EDITTEXT        IDC_PROXY_HOST,65,55,80,12,ES_AUTOHSCROLL | WS_DISABLED
     LTEXT           "Proxy",IDC_STATIC,10,55,50,15,SS_CENTERIMAGE,
                     WS_EX_RIGHT
@@ -141,7 +141,7 @@ CAPTION "Cygwin Setup"
 FONT 8, "MS Sans Serif"
 BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
-    LTEXT           "Installing...",IDC_STATIC,55,5,135,8
+    LTEXT           "Installing...",IDC_INS_ACTION,55,5,135,8
     LTEXT           "(PKG)",IDC_INS_PKG,55,15,150,8
     LTEXT           "(FILE)",IDC_INS_FILE,55,25,155,8
     CONTROL         "Progress1",IDC_INS_DISKFULL,"msctls_progress32",
@@ -156,7 +156,7 @@ BEGIN
     RTEXT           "Disk",IDC_STATIC,5,60,45,8
 END
 
-IDD_PROXY_AUTH DIALOGEX 0, 0, 215, 95
+IDD_PROXY_AUTH DIALOG DISCARDABLE  0, 0, 215, 95
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup"
 FONT 8, "MS Sans Serif"
@@ -173,7 +173,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
 END
 
-IDD_NET_AUTH DIALOGEX 0, 0, 215, 95
+IDD_NET_AUTH DIALOG DISCARDABLE  0, 0, 215, 95
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup"
 FONT 8, "MS Sans Serif"
@@ -316,7 +316,7 @@ STRINGTABLE DISCARDABLE
 BEGIN
     IDS_ROOT_SLASH          "Warning: we recommend you do NOT use the root of your hard drive as the cygwin root.  Proceed anyway?"
     IDS_ROOT_SPACE          "You should not choose a root path that include spaces in directory names.  Proceed anyway?"
-    IDS_MIRROR_LST          "http://sourceware.cygnus.com/cygwin/mirrors.lst"
+    IDS_MIRROR_LST          "http://sources.redhat.com/cygwin/mirrors.lst"
     IDS_DIALOG_FAILED       "Unable to create Dialog Box"
     IDS_CYGWIN_FUNC_MISSING "Error: unable to find function `%s' in %s"
     IDS_DOWNLOAD_SHORT      "Download error: %s too short (%d, wanted %d)"
@@ -335,6 +335,8 @@ BEGIN
     IDS_DOWNLOAD_COMPLETE   "Download Complete"
     IDS_CVSID               "\n%%% $Id$\n"
     IDS_NOLOGFILE           "Cannot open log file %s for writing"
+    IDS_UNINSTALL_COMPLETE  "Uninstalls complete."
+    IDS_WININET             "Unable to find or load the Internet Explorer 5 DLLs"
 END
 
 #endif    // English (U.S.) resources

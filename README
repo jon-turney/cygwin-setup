@@ -5,18 +5,11 @@ net releases.
 
 To-Do list:
 
-install.cc: read old .lst.gz file before overwriting it; remove any
-files in the old install that aren't also in the new install.
-
-add netio subclasses for direct HTTP, FTP and proxy connections
-
 ini.cc: add field in setup.ini to specify whether package is installed
 by default, or not.
 
 install.cc: scan newly installed files for README files, show list to
 user, let them read them if they want.
-
-Add uninstall capability
 
 Make the site listbox bigger.
 
@@ -28,3 +21,5 @@ the current chooser.
 
 remember which packages were selected to be skipped, and which prev/curr/exp
 option was last selected, and recall them each time the chooser runs.
+
+Add friendly error reporting to simpsock.cc

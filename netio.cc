@@ -30,11 +30,32 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "netio.h"
 #include "nio-file.h"
 #include "nio-ie5.h"
+#include "nio-http.h"
+#include "nio-ftp.h"
 #include "dialog.h"
+#include "log.h"
 
 #include "port.h"
 
 NetIO::NetIO (char *Purl)
+{
+  set_url (Purl);
+}
+
+NetIO::~NetIO ()
+{
+  if (url)
+    free (url);
+  if (proto)
+    free (proto);
+  if (host)
+    free (host);
+  if (path)
+    free (path);
+}
+
+void
+NetIO::set_url (char *Purl)
 {
   char *bp, *ep, c;
 
@@ -58,7 +79,7 @@ NetIO::NetIO (char *Purl)
   *ep = ':';
   bp = ep+3;
 
-  ep += strcspn (bp, ":/");
+  ep = bp + strcspn (bp, ":/");
   c = *ep;
   *ep = 0;
   host = _strdup (bp);
@@ -72,18 +93,6 @@ NetIO::NetIO (char *Purl)
 
   if (*ep)
     path = _strdup (ep);
-}
-
-NetIO::~NetIO ()
-{
-  if (url)
-    free (url);
-  if (proto)
-    free (proto);
-  if (host)
-    free (host);
-  if (path)
-    free (path);
 }
 
 int
@@ -114,12 +123,20 @@ NetIO::open (char *url)
     rv = new NetIO_File (url);
   else if (net_method == IDC_NET_IE5)
     rv = new NetIO_IE5 (url);
-#if 0
-  else if (net_method == IDC_NET_DIRECT)
-    rv = new NetIO_Direct (url);
   else if (net_method == IDC_NET_PROXY)
-    rv = new NetIO_Proxy (url);
-#endif
+    rv = new NetIO_HTTP (url);
+  else if (net_method == IDC_NET_DIRECT)
+    {
+      switch (proto)
+	{
+	case http:
+	  rv = new NetIO_HTTP (url);
+	  break;
+	case ftp:
+	  rv = new NetIO_FTP (url);
+	  break;
+	}
+    }
 
   if (!rv->ok ())
     {
@@ -182,6 +199,7 @@ auth_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDCANCEL:
       EndDialog (h, 1);
+      exit_setup (1);
       break;
     }
 }

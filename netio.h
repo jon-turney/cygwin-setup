@@ -19,6 +19,8 @@
 class NetIO {
 protected:
   NetIO (char *url);
+  void set_url (char *url);
+
 public:
   /* if nonzero, this is the estimated total file size */
   int file_size;

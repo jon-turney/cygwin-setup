@@ -42,7 +42,7 @@ do_download (HINSTANCE h)
   int i;
 
   for (i=0; i<npackages; i++)
-    if (package[i].action != ACTION_SAME)
+    if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE)
       {
 	char *local = pi.install;
 
@@ -71,7 +71,7 @@ do_download (HINSTANCE h)
 	      }
 	    else
 	      {
-		log (0, "Download %s wrong size (%d vs %d)", local, s.st_size, pi.install_size);
+		log (0, "Download %s wrong size (%d actual vs %d expected)", local, s.st_size, pi.install_size);
 		note (IDS_DOWNLOAD_SHORT, local, s.st_size, pi.install_size);
 		package[i].action = ACTION_ERROR;
 	      }

@@ -23,17 +23,18 @@
 #define YYSTYPE char *
 
 /* lowest number must be most trusted, highest least trusted */
-#define TRUST_PREV	0
-#define TRUST_CURR	1
-#define TRUST_TEST	2
+#define TRUST_PREV		0
+#define TRUST_CURR		1
+#define TRUST_TEST		2
 #define NTRUST 3
-#define TRUST_UNKNOWN	3 /* intentionally not in NTRUST */
+#define TRUST_UNKNOWN		3 /* intentionally not in NTRUST */
 
-#define ACTION_UNKNOWN	0
-#define ACTION_SAME	1
-#define ACTION_NEW	2
-#define ACTION_UPGRADE	3
-#define ACTION_ERROR	4
+#define ACTION_UNKNOWN		0
+#define ACTION_SAME		1
+#define ACTION_NEW		2
+#define ACTION_UPGRADE		3
+#define ACTION_UNINSTALL	4
+#define ACTION_ERROR		5
 
 typedef struct {
   char *name;	/* package name, like "cygwin" */

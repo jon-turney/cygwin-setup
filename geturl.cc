@@ -235,7 +235,7 @@ get_url_to_file (char *_url, char *_filename, int expected_length)
   progress (0);
   while (1)
     {
-      char buf[2048];
+      char buf[8192];
       int count;
       count = n->read (buf, sizeof (buf));
       if (count <= 0)

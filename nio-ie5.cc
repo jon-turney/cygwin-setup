@@ -37,8 +37,18 @@ NetIO_IE5::NetIO_IE5 (char *_url)
   int resend = 0;
 
   if (internet == 0)
-    internet = InternetOpen ("Cygwin Setup", INTERNET_OPEN_TYPE_PRECONFIG,
-			     NULL, NULL, 0);
+    {
+      HINSTANCE h = LoadLibrary ("wininet.dll");
+      if (!h)
+	{
+	  note (IDS_WININET);
+	  connection = 0;
+	  return;
+	}
+      InternetAttemptConnect (0);
+      internet = InternetOpen ("Cygwin Setup", INTERNET_OPEN_TYPE_PRECONFIG,
+			       NULL, NULL, 0);
+    }
 
   DWORD flags =
     INTERNET_FLAG_DONT_CACHE |

@@ -29,6 +29,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "dialog.h"
 #include "state.h"
 #include "concat.h"
+#include "mkdir.h"
 
 struct LogEnt {
   LogEnt *next;
@@ -74,6 +75,8 @@ log_save (int babble, char *filename, int append)
   if (been_here)
     return;
   been_here = 1;
+
+  mkdir_p (0, filename);
 
   FILE *f = fopen (filename, append ? "at" : "wt");
   if (!f)
