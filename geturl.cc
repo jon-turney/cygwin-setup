@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001, Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -246,7 +246,8 @@ get_url_to_string (char *_url)
 }
 
 int
-get_url_to_file (char *_url, char *_filename, int expected_length)
+get_url_to_file (char *_url, char *_filename, int expected_length,
+		 BOOL allow_ftp_auth)
 {
   log (LOG_BABBLE, "get_url_to_file %s %s", _url, _filename);
   if (total_download_bytes > 0)
@@ -258,7 +259,7 @@ get_url_to_file (char *_url, char *_filename, int expected_length)
 
   remove (_filename); /* but ignore errors */
 
-  NetIO *n = NetIO::open (_url);
+  NetIO *n = NetIO::open (_url, allow_ftp_auth);
   if (!n || !n->ok ())
     {
       delete n;

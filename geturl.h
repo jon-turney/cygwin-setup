@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001, Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -20,5 +20,6 @@ extern int total_download_bytes;
 extern int total_download_bytes_sofar;
 
 char  *get_url_to_string (char *_url);
-int    get_url_to_file (char *_url, char *_filename, int expected_size);
+int    get_url_to_file (char *_url, char *_filename, int expected_size,
+			BOOL allow_ftp_auth = FALSE);
 void   dismiss_url_status_dialog ();

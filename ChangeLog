@@ -1,3 +1,24 @@
+Tue Mar  6 19:14:00 2001  Corinna Vinschen <corinna@vinschen.de>
+
+	* geturl.cc (get_url_to_file): Add parameter `allow_ftp_auth'.
+	* geturl.h: Change declaration of `get_url_to_file' accordingly.
+	* netio.cc (NetIO::NetIO): Add parameter `allow_ftp_auth'.
+	Set member `ftp_auth'.
+	(NetIO::open): Add parameter `allow_ftp_auth'. Use it in calls
+	to constructors of derived classes.
+	(NetIO::get_ftp_auth): New method.
+	* netio.h: Change class definition accordingly.
+	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Add parameter `allow_ftp_auth'.
+	Take global variables `net_ftp_user' and `net_ftp_passwd' into account.
+	Add code for ftp authentication retry.
+	* nio-ftp.h: Change class definition accordingly.
+	* nio-http.cc (NetIO_HTTP::NetIO_HTTP): Add parameter `allow_ftp_auth'.
+	Add code for ftp authentication retry in case of proxy connection.
+	* nio-http.h: Change class definition accordingly.
+	* res.rc: Add FTP authentication dialog.
+	* resource.h: Add new constants used in res.rc.
+	* state.h: Add variables `net_ftp_user' and `net_ftp_passwd'.
+
 Sun May 27 17:12:23 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* res.rc (IDD_SPLASH): Add a copyright year.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001, Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -37,9 +37,10 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #include "port.h"
 
-NetIO::NetIO (char *Purl)
+NetIO::NetIO (char *Purl, BOOL allow_ftp_auth)
 {
   set_url (Purl);
+  ftp_auth = allow_ftp_auth;
 }
 
 NetIO::~NetIO ()
@@ -108,7 +109,7 @@ NetIO::read (char *buf, int nbytes)
 }
 
 NetIO *
-NetIO::open (char *url)
+NetIO::open (char *url, BOOL allow_ftp_auth)
 {
   NetIO *rv = 0;
   enum {http, ftp, file} proto;
@@ -124,7 +125,7 @@ NetIO::open (char *url)
   else if (net_method == IDC_NET_IE5)
     rv = new NetIO_IE5 (url);
   else if (net_method == IDC_NET_PROXY)
-    rv = new NetIO_HTTP (url);
+    rv = new NetIO_HTTP (url, allow_ftp_auth);
   else if (net_method == IDC_NET_DIRECT)
     {
       switch (proto)
@@ -133,7 +134,7 @@ NetIO::open (char *url)
 	  rv = new NetIO_HTTP (url);
 	  break;
 	case ftp:
-	  rv = new NetIO_FTP (url);
+	  rv = new NetIO_FTP (url, allow_ftp_auth);
 	  break;
 	}
     }
@@ -238,4 +239,24 @@ NetIO::get_proxy_auth ()
   user = &net_proxy_user;
   passwd = &net_proxy_passwd;
   return auth_common (hinstance, IDD_PROXY_AUTH);
+}
+
+int
+NetIO::get_ftp_auth ()
+{
+  if (net_ftp_user)
+    {
+      free (net_ftp_user);
+      net_ftp_user = NULL;
+    }
+  if (net_ftp_passwd)
+    {
+      free (net_ftp_passwd);
+      net_ftp_passwd = NULL;
+    }
+  if (!ftp_auth)
+    return IDCANCEL;
+  user = &net_ftp_user;
+  passwd = &net_ftp_passwd;
+  return auth_common (hinstance, IDD_FTP_AUTH);
 }

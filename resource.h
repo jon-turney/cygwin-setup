@@ -52,6 +52,7 @@
 #define IDB_CHECK_YES                   123
 #define IDB_CHECK_NO                    124
 #define IDB_CHECK_NA                    125
+#define IDD_FTP_AUTH                    126
 #define IDC_SOURCE_DOWNLOAD             1000
 #define IDC_SOURCE_NETINST              1001
 #define IDC_SOURCE_CWD                  1002
@@ -107,7 +108,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        126
+#define _APS_NEXT_RESOURCE_VALUE        127
 #define _APS_NEXT_COMMAND_VALUE         40003
 #define _APS_NEXT_CONTROL_VALUE         1051
 #define _APS_NEXT_SYMED_VALUE           101

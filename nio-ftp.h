@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001, Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ class NetIO_FTP : public NetIO {
   SimpleSocket *s;
 
 public:
-  NetIO_FTP (char *url);
+  NetIO_FTP (char *url, BOOL allow_ftp_auth = FALSE);
   virtual ~NetIO_FTP ();
 
   /* If !ok() that means the transfer isn't happening. */

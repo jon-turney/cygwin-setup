@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001, Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@ extern char *	net_user;
 extern char *	net_passwd;
 extern char *	net_proxy_user;
 extern char *	net_proxy_passwd;
+extern char *	net_ftp_user;
+extern char *	net_ftp_passwd;
 
 extern char *	mirror_site;
 extern char *	other_url;

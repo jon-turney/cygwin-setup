@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001, Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "state.h"
 #include "simpsock.h"
 #include "msg.h"
+#include "concat.h"
 
 #include "netio.h"
 #include "nio-http.h"
@@ -83,8 +84,8 @@ base64_encode (char *username, char *password)
   return rv;
 }
 
-NetIO_HTTP::NetIO_HTTP (char *Purl)
-  : NetIO (Purl)
+NetIO_HTTP::NetIO_HTTP (char *Purl, BOOL allow_ftp_auth)
+  : NetIO (Purl, allow_ftp_auth)
 {
  retry_get:
   if (port == 0)
@@ -146,6 +147,20 @@ NetIO_HTTP::NetIO_HTTP (char *Purl)
       get_proxy_auth ();
       delete s;
       goto retry_get;
+    }
+  if (code == 500 /* ftp authentication through proxy required */
+      && net_method == IDC_NET_PROXY
+      && !strncmp (url, "ftp://", 6))
+    {
+      get_ftp_auth ();
+      if (net_ftp_user && net_ftp_passwd)
+        {
+	  delete s;
+	  url = concat ("ftp://", net_ftp_user,
+	  		":", net_ftp_passwd,
+			"@", url + 6, 0);
+          goto retry_get;
+	}
     }
   if (code >= 300)
     {

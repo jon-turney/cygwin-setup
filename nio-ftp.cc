@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001, Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -48,8 +48,8 @@ ftp_line (SimpleSocket *s)
   return atoi (last_line ?: "0");
 }
 
-NetIO_FTP::NetIO_FTP (char *Purl)
-  : NetIO (Purl)
+NetIO_FTP::NetIO_FTP (char *Purl, BOOL allow_ftp_auth)
+  : NetIO (Purl, allow_ftp_auth)
 {
   s = 0;
   int code;
@@ -72,12 +72,26 @@ NetIO_FTP::NetIO_FTP (char *Purl)
       SimpleSocket *c = new SimpleSocket (host, port);
       int done = 0;
       code = ftp_line (c);
-      c->printf ("USER anonymous\r\n");
+
+auth_retry:
+      if (net_ftp_user)
+        c->printf ("USER %s\r\n", net_ftp_user);
+      else
+        c->printf ("USER anonymous\r\n");
       code = ftp_line (c);
       if (code == 331)
 	{
-	  c->printf ("PASS cygwin-setup@\r\n");
+	  if (net_ftp_passwd)
+	    c->printf ("PASS %s\r\n", net_ftp_passwd);
+	  else
+	    c->printf ("PASS cygwin-setup@\r\n");
 	  code = ftp_line (c);
+	}
+      if (code == 530) /* Authentication failed, retry */
+        {
+	  get_ftp_auth ();
+	  if (net_ftp_user && net_ftp_passwd)
+	    goto auth_retry;
 	}
 
       if (code < 200 || code >= 300)

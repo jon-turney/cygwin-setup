@@ -18,8 +18,9 @@
 
 class NetIO {
 protected:
-  NetIO (char *url);
+  NetIO (char *url, BOOL allow_ftp_auth = FALSE);
   void set_url (char *url);
+  BOOL ftp_auth;
 
 public:
   /* if nonzero, this is the estimated total file size */
@@ -36,7 +37,7 @@ public:
      the given URL.  It uses the network setup state in state.h.  If
      anything fails, either the return values is NULL or the returned
      object is !ok() */
-  static NetIO * open (char *url);
+  static NetIO * open (char *url, BOOL allow_ftp_auth = FALSE);
 
   /* If !ok() that means the transfer isn't happening. */
   virtual int ok ();
@@ -50,4 +51,5 @@ public:
      state.h */
   int get_auth ();
   int get_proxy_auth ();
+  int get_ftp_auth ();
 };
