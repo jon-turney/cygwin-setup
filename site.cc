@@ -199,11 +199,13 @@ get_site_list (HINSTANCE h, HWND owner)
     return 1;
   char *bol, *eol, *nl, *theString;
   {
-  String mirrors = get_url_to_string (mirror_url, owner);
-  if (!mirrors.size())
-    return 1;
+    String mirrors = get_url_to_string (mirror_url, owner);
+    if (!mirrors.size())
+      return 1;
 
-  nl = theString = mirrors.cstr();}
+    theString = mirrors.cstr();
+    nl = theString;
+  }
 
   while (*nl)
     {
@@ -216,7 +218,11 @@ get_site_list (HINSTANCE h, HWND owner)
       while (eol > bol && eol[-1] == '\r')
 	eol--;
       *eol = 0;
-      if (bol[0] != '#' && bol[0] > ' ')
+      if (*bol == '#' || !*bol)
+        continue;
+      /* Accept only the URL schemes we can understand. */
+      if (strncmp(bol, "http://", 7) == 0 ||
+	  strncmp(bol, "ftp://", 6) == 0)
 	{
 	  char *semi = strchr (bol, ';');
 	  if (semi)
