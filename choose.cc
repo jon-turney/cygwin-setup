@@ -62,11 +62,12 @@ using namespace std;
 extern ThreeBarProgressPage Progress;
 
 void
-ChooserPage::createListview (RECT * r)
+ChooserPage::createListview ()
 {
   packagedb db;
   chooser = new PickView (*db.categories.find("All"));
-  if (!chooser->Create(this, WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_VISIBLE,r))
+  RECT r = getDefaultListViewSize();
+  if (!chooser->Create(this, WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_VISIBLE,&r))
     // TODO throw exception
     exit (11);
   chooser->init(PickView::views::Category);
@@ -113,6 +114,16 @@ ChooserPage::setPrompt(char const *aString)
   ::SetWindowText (GetDlgItem (IDC_CHOOSE_INST_TEXT), aString);
 }
 
+RECT
+ChooserPage::getDefaultListViewSize()
+{
+  RECT result;
+  getParentRect (GetHWND (), GetDlgItem (IDC_LISTVIEW_POS), &result);
+  result.top += 2;
+  result.bottom -= 2;
+  return result;
+}
+
 void
 ChooserPage::OnInit ()
 {
@@ -127,12 +138,7 @@ ChooserPage::OnInit ()
     setPrompt("Select packages to download ");
   else
     setPrompt("Select packages to install ");
-  RECT r;
-  getParentRect (GetHWND (), GetDlgItem (IDC_LISTVIEW_POS), &r);
-  r.top += 2;
-  r.bottom -= 2;
-  
-  createListview (&r);
+  createListview ();
 }
 
 void

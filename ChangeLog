@@ -1,5 +1,12 @@
 2003-07-29  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.h (ChooserPage::createListView): Remove last parameter.
+	(ChooserPage::getDefaultListViewSize): Extracted method.
+	* choose.cc (ChooserPage::createListView): Remove last parameter.
+	(ChooserPage::getDefaultListViewSize): Extracted method.
+
+2003-07-29  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc (ChooserPage::createListView): Remove unneeded 
 	parameter.
 	* choose.h: Ditto.
