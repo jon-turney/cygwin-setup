@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2000, Red Hat, Inc.
  * Copyright (c) 2003, Robert Collins <rbtcollins@hotmail.com>
  *
@@ -43,7 +43,7 @@ static const char *cvsid =
 #include "find.h"
 #include "mount.h"
 #include "LogFile.h"
-#include "version.h"
+#include "setup_version.h"
 
 #include "proppage.h"
 #include "propsheet.h"
@@ -443,7 +443,7 @@ main (int argc, char **argv)
     theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
     theLog->setFile (0, local_dir + "/setup.log", true);
 
-    log (LOG_PLAIN) << "Starting cygwin install, version " << version << endLog;
+    log (LOG_PLAIN) << "Starting cygwin install, version " << setup_version << endLog;
 
     UserSettings::Instance().loadAllSettings();
 

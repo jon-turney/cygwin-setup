@@ -36,7 +36,6 @@ static const char *cvsid =
 #include "msg.h"
 #include "state.h"
 #include "dialog.h"
-#include "version.h"
 #include "mount.h"
 
 #include "mklink2.h"

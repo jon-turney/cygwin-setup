@@ -1,3 +1,34 @@
+2004-12-26  Max Bowsher  <maxb@ukf.net>
+
+	The Big Cleanup: Phase "version"
+
+	* String++.h (operator std::string): Add.
+	* desktop.cc, fromcwd.cc: Remove irrelevant include.
+
+	* version.cc, version.h: Delete, replacing all functionality in new
+	files.
+
+	* setup_version.h: Add, taking over declaration of generated version
+	symbol functionality.
+
+	* Makefile.am (setup_SOURCES): Sync with new/deleted files.
+	(setup_version.c): Rename the symbol 'version' to 'setup_version'.
+	* main.cc: Modify includes.
+	(main): Adapt to setup_version rename.
+	* splash.cc: Modify includes.
+	(SplashPage::OnInit): Adapt to setup_version rename.
+
+	* csu_util/version_compare.cc, csu_util/version_compare.h: Add,
+	containing a completely rewritten replacement for canonical_version().
+
+	* IniDBBuilderPackage.cc: Modify includes.
+	(IniDBBuilderPackage::buildVersion): Use new version_compare API.
+	* ini.cc: Modify includes.
+	(setup_version): Rename...
+	(ini_setup_version): ...to this.
+	(do_local_ini, do_remote_ini): Adapt to above change.
+	(do_ini_thread): Adapt to above change. Use new version_compare API.
+
 2004-12-25  Max Bowsher  <maxb@ukf.net>
 
 	* install.cc (Installer::installOneSource): Remove a stray "break;"

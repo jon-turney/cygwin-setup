@@ -14,13 +14,17 @@
  */
 
 #include "IniDBBuilderPackage.h"
+
+#include "csu_util/version_compare.h"
+
+#include "setup_version.h"
+
 #include "IniParseFeedback.h"
 #include "package_db.h"
 #include "package_meta.h"
 #include "package_version.h"
 #include "cygpackage.h"
 #include "filemanip.h"
-#include "version.h"
 // for strtoul
 #include <string.h>
 #include "LogSingleton.h"
@@ -53,10 +57,7 @@ IniDBBuilderPackage::buildVersion (String const &aVersion)
   version = aVersion;
   if (version.size())
     {
-      String ini_version = canonicalize_version (version);
-      String our_version = canonicalize_version (::version);
-      // XXX useversion < operator
-      if (our_version.compare (ini_version) < 0)
+      if (version_compare(setup_version, version) < 0)
 	_feedback.warning("The current ini file is from a newer version of setup.exe. If you have any trouble installing, please download a fresh version from http://www.cygwin.com/setup.exe");
     }
 }

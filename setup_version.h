@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2004, Max Bowsher
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -9,19 +9,14 @@
  *     A copy of the GNU General Public License can be found at
  *     http://www.gnu.org/
  *
- * Written by DJ Delorie <dj@cygnus.com>
  *
  */
 
-#ifndef SETUP_VERSION_H
-#define SETUP_VERSION_H
+#ifndef SETUP_SETUP_VERSION_H
+#define SETUP_SETUP_VERSION_H
 
-/* misc version-related things */
+/* This is a declaration for a string defined in the *generated* source
+ * file setup_version.c . */
+extern const char *setup_version;
 
-#include "String++.h"
-
-extern char *version;
-
-extern String canonicalize_version (String const &);
-
-#endif /* SETUP_VERSION_H */
+#endif /* SETUP_SETUP_VERSION_H */

@@ -245,6 +245,7 @@ setup_SOURCES = \
 	ScanFindVisitor.h \
 	script.cc \
 	script.h \
+	setup_version.h \
 	setup_version.c \
 	simpsock.cc \
 	simpsock.h \
@@ -266,13 +267,13 @@ setup_SOURCES = \
 	UserSetting.h \
 	UserSettings.cc \
 	UserSettings.h \
-	version.cc \
-	version.h \
 	win32.h \
 	window.cc \
 	window.h \
 	csu_util/MD5Sum.cc \
 	csu_util/MD5Sum.h \
+	csu_util/version_compare.cc \
+	csu_util/version_compare.h \
 	libmd5-rfc/md5.c \
 	libmd5-rfc/md5.h
 	
@@ -281,7 +282,7 @@ setup_version.c : $(srcdir)/ChangeLog Makefile
 	  $(srcdir)/ChangeLog` ;\
 	(echo '#define VERSION_PREFIX "%%% setup-version"';\
         echo 'static const char version_store[] = VERSION_PREFIX " '$$V'";';\
-        echo 'const char *version = version_store + sizeof (VERSION_PREFIX);') > version.tmp;\
+        echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp;\
 	mv version.tmp setup_version.c
 
 %.o: %.rc

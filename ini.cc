@@ -23,6 +23,12 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "ini.h"
+
+#include "csu_util/version_compare.h"
+
+#include "setup_version.h"
+
 #include "win32.h"
 
 #include <stdio.h>
@@ -30,7 +36,6 @@ static const char *cvsid =
 #include <stdarg.h>
 #include <process.h>
 
-#include "ini.h"
 #include "resource.h"
 #include "String++.h"
 #include "state.h"
@@ -38,7 +43,6 @@ static const char *cvsid =
 #include "dialog.h"
 #include "msg.h"
 #include "log.h"
-#include "version.h"
 #include "mount.h"
 #include "site.h"
 #include "rfc1738.h"
@@ -60,7 +64,7 @@ static const char *cvsid =
 extern ThreeBarProgressPage Progress;
 
 unsigned int setup_timestamp = 0;
-String setup_version;
+String ini_setup_version;
 
 extern int yyparse ();
 /*extern int yydebug;*/
@@ -126,7 +130,7 @@ do_local_ini (HWND owner)
   IniParseFindVisitor myVisitor (findBuilder, local_dir, myFeedback);
   Find (local_dir).accept(myVisitor);
   setup_timestamp = myVisitor.timeStamp();
-  setup_version = myVisitor.version();
+  ini_setup_version = myVisitor.version();
   return myVisitor.iniCount(); 
 }
 
@@ -196,7 +200,7 @@ do_remote_ini (HWND owner)
       if (aBuilder.timestamp > setup_timestamp)
 	{
 	  setup_timestamp = aBuilder.timestamp;
-	  setup_version = aBuilder.version;
+	  ini_setup_version = aBuilder.version;
 	}
       delete ini_file;
       delete compressed_ini_file;
@@ -252,16 +256,14 @@ do_ini_thread (HINSTANCE h, HWND owner)
 	}
     }
 
-  msg ("setup_version is %s, our_version is %s", setup_version.size() ? 
-       setup_version.cstr_oneuse() : "(null)",
-       version);
-  if (setup_version.size())
+  msg (".ini setup_version is %s, our setup_version is %s", ini_setup_version.size() ? 
+       ini_setup_version.cstr_oneuse() : "(null)",
+       setup_version);
+  if (ini_setup_version.size())
     {
-      String ini_version = canonicalize_version (setup_version);
-      String our_version = canonicalize_version (version);
-      // XXX useversion < operator
-      if (our_version.compare (ini_version) < 0)
-	note (owner, IDS_OLD_SETUP_VERSION, version, setup_version.cstr_oneuse());
+      if (version_compare(setup_version, ini_setup_version) < 0)
+	note (owner, IDS_OLD_SETUP_VERSION, setup_version,
+              ini_setup_version.cstr_oneuse());
     }
 
   return true;

@@ -43,7 +43,6 @@ static const char *cvsid =
 #include "find.h"
 #include "ScanFindVisitor.h"
 #include "filemanip.h"
-#include "version.h"
 
 #include "IniDBBuilderPackage.h"
 #include "IniParseFeedback.h"

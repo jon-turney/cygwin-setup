@@ -13,11 +13,10 @@
  *
  */
 
-// This is the implementation of the SplashPage class.  Since the splash page
-// has little to do, there's not much here.
+/* This is the implementation of the SplashPage class.  Since the splash page
+ * has little to do, there's not much here. */
 
-#include <stdio.h>
-#include "version.h"
+#include "setup_version.h"
 #include "resource.h"
 #include "String++.h"
 #include "splash.h"
@@ -32,6 +31,6 @@ void
 SplashPage::OnInit ()
 {
   String ver = "Setup.exe version ";
-  ver += (version[0] ? version : "[unknown]");
+  ver += (setup_version[0] ? setup_version : "[unknown]");
   ::SetWindowText (GetDlgItem (IDC_VERSION), ver.cstr_oneuse());
 }
