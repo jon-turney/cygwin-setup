@@ -19,7 +19,7 @@
 # Makefile for Cygwin installer
 
 AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6
-## SUBDIRS = src
+SUBDIRS = bz2lib zlib
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 

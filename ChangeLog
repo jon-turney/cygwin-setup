@@ -1,5 +1,9 @@
 2002-04-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	* Makefile.am: Add zlib and bz2lib to SUBDIRS.
+
+2002-04-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* aclocal.m4: New file, cached macros.
 	* bootstrap.sh: New file, calls required autotools in appropriate 
 	order.
