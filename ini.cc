@@ -237,7 +237,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
 	note (owner, IDS_OLD_SETUP_VERSION, version, setup_version.cstr_oneuse());
     }
 
-  next_dialog = IDD_CHOOSER;
+  next_dialog = IDD_CHOOSE;
 }
 
 static DWORD WINAPI

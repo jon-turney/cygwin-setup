@@ -33,10 +33,12 @@ public:
   {
   };
 
-  virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam);
+  virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code);
 
   bool Create ();
-  virtual void OnActivate ();
+  virtual void OnInit ();
+  virtual long OnNext ();
+  virtual long OnBack ();
 };
 
 #endif /* __cplusplus */

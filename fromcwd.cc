@@ -157,7 +157,7 @@ do_fromcwd (HINSTANCE h, HWND owner)
       return;
     }
 
-  next_dialog = IDD_CHOOSER;
+  next_dialog = IDD_CHOOSE;
 
   find (".", found_file);
 

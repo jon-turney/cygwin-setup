@@ -92,7 +92,7 @@ BEGIN
                     7,0,258,8,NOT WS_GROUP
 END
 
-IDD_SITE DIALOG DISCARDABLE 0, 0, 317, 179
+IDD_SITE DIALOG DISCARDABLE  0, 0, 317, 179
 STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
     WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_CONTROLPARENT
@@ -226,34 +226,6 @@ BEGIN
                     IDC_STATIC,115,33,195,54
 END
 
-IDD_CHOOSE DIALOG DISCARDABLE  0, 0, 430, 266
-STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
-    WS_CAPTION | WS_SYSMENU
-EXSTYLE WS_EX_CONTROLPARENT
-CAPTION "Cygwin Setup"
-FONT 8, "MS Sans Serif"
-BEGIN
-    DEFPUSHBUTTON   "&Next -->",IDOK,311,242,45,15,WS_GROUP
-    PUSHBUTTON      "Cancel",IDCANCEL,375,242,45,15
-    PUSHBUTTON      "<-- &Back",IDC_BACK,266,242,45,15
-    CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP | WS_TABSTOP,265,5,27,10
-    CONTROL         "&Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON,297,
-                    5,25,10
-    CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON,323,5,
-                    25,10
-    PUSHBUTTON      "&View",IDC_CHOOSE_VIEW,353,5,20,10,WS_GROUP
-    ICON            IDI_CYGWIN,IDC_STATIC,0,2,20,20
-    LTEXT           "Select packages to install",IDC_CHOOSE_INST_TEXT,125,5,
-                    99,8
-    CONTROL         "",IDC_LISTVIEW_POS,"Static",SS_BLACKFRAME | NOT 
-                    WS_VISIBLE,22,17,398,217
-    CONTROL         "SPIN",IDC_STATIC,"Static",SS_BITMAP,22,235,15,13
-    LTEXT           "= click to choose action, (p) = previous version, (x) = experimental",
-                    IDC_STATIC,35,234,220,8
-    LTEXT           "",IDC_CHOOSE_VIEWCAPTION,390,5,30,10
-END
-
 IDD_DESKTOP DIALOG DISCARDABLE  0, 0, 317, 179
 STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
     WS_CAPTION | WS_SYSMENU
@@ -290,14 +262,29 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
 END
 
-IDD_CHOOSER DIALOG DISCARDABLE  0, 0, 247, 116
+IDD_CHOOSE DIALOG DISCARDABLE  0, 0, 317, 179
 STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Cygwin Setup"
 FONT 8, "MS Sans Serif"
 BEGIN
-    CTEXT           "This space intentionally left blank",IDC_STATIC,57,45,
-                    134,8
+    CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP | WS_TABSTOP,150,30,27,10
+    CONTROL         "&Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON,185,
+                    30,25,10
+    CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON,220,30,
+                    25,10
+    PUSHBUTTON      "&View",IDC_CHOOSE_VIEW,255,30,20,10,WS_GROUP
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
+                    317,1
+    CONTROL         "",IDC_LISTVIEW_POS,"Static",SS_BLACKFRAME | NOT 
+                    WS_VISIBLE,7,41,303,134
+    ICON            IDI_CYGWIN,IDC_STATIC,290,0,20,20
+    LTEXT           "Select the packages you want setup to install.",
+                    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Select Packages",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT 
+                    WS_GROUP
+    LTEXT           "",IDC_CHOOSE_VIEWCAPTION,280,30,30,10
 END
 
 
@@ -404,11 +391,6 @@ BEGIN
         BOTTOMMARGIN, 116
     END
 
-    IDD_CHOOSE, DIALOG
-    BEGIN
-        RIGHTMARGIN, 429
-    END
-
     IDD_DESKTOP, DIALOG
     BEGIN
         RIGHTMARGIN, 285
@@ -420,12 +402,12 @@ BEGIN
         BOTTOMMARGIN, 49
     END
 
-    IDD_CHOOSER, DIALOG
+    IDD_CHOOSE, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 240
+        RIGHTMARGIN, 310
         TOPMARGIN, 7
-        BOTTOMMARGIN, 109
+        BOTTOMMARGIN, 172
     END
 END
 #endif    // APSTUDIO_INVOKED

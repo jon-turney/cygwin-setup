@@ -1,3 +1,39 @@
+2002-04-02  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* choose.cc: Run indent.
+	(nextbutton): Remove static variable.
+	(default_trust): Remove use of nextbutton.
+	(set_view_mode): Ditto.
+	(create_listview): Add IDC_CHOOSE_PREV and IDC_CHOOSE_NEXT to ta[] so
+	rbset() sets the prev/next/curr radio buttons properly.
+	(dialog_cmd): Delete function.
+	(dialog_proc): Delete function.  Move WM_INITDIALOG functionality to
+	ChooserPage::OnInit.
+	(do_choose): Delete function.  Move pre-DialogBox() code to
+	ChooserPage::OnInit(), post-DialogBox() code to	ChooserPage::OnNext.
+	(WM_APP_START_CHOOSE): Remove define.
+	(WM_APP_CHOOSE_IS_FINISHED): Remove define.
+	(do_choose_thread): Delete function.
+	(ChooserPage::OnActivate): Delete method.
+	(ChooserPage::OnMessageApp): Delete method.
+	(ChooserPage::OnInit): New method.
+	(ChooserPage::OnNext): New method.
+	(ChooserPage::OnBack): New method.
+	(ChooserPage::OnMessageCmd): New method.
+	* choose.h: Run indent.
+	(ChooserPage::OnMessageApp): Delete declaration.
+	(ChooserPage::OnActivate): Ditto.
+	(ChooserPage::OnMessageCmd): New declaration.
+	(ChooserPage::OnInit): Ditto.
+	(ChooserPage::OnNext): Ditto.
+	(ChooserPage::OnBack): Ditto.
+	* desktop.cc (DesktopSetupPage::OnBack): Replace use of IDD_CHOOSER
+	with IDD_CHOOSE.
+	* fromcwd.cc (do_fromcwd): Replace use of IDD_CHOOSER with IDD_CHOOSE.
+	* ini.cc (do_ini_thread): Replace use of IDD_CHOOSER with IDD_CHOOSE.
+	* res.rc (IDD_CHOOSE): Remove dialog template.
+	(IDD_CHOOSER): Alter dialog template to fit wizard size and format.
+
 2002-05-12  Robert Collins  <rbtcollins@hotmail.com>
 
 	* LogFile.cc (endLog): Work around an apparent libg++-3 bug causing

@@ -65,7 +65,7 @@ extern ThreeBarProgressPage Progress;
 
 static int initialized = 0;
 
-static HWND lv, nextbutton, choose_inst_text;
+static HWND lv, choose_inst_text;
 static PickView *chooser = NULL;
 
 static void set_view_mode (HWND h, PickView::views mode);
@@ -281,8 +281,8 @@ set_existence ()
       while (o <= pkg.versions.number () && !mirrors)
 	{
 	  packageversion & ver = *pkg.versions[o];
-	  if (((source != IDC_SOURCE_CWD) && (ver.bin.sites.number () 
-	      || ver.src.sites.number ()))
+	  if (((source != IDC_SOURCE_CWD) && (ver.bin.sites.number ()
+					      || ver.src.sites.number ()))
 	      || ver.bin.Cached () || ver.src.Cached ())
 	    mirrors = true;
 	  ++o;
@@ -335,8 +335,6 @@ default_trust (HWND h, trusts trust)
   RECT r;
   GetClientRect (h, &r);
   InvalidateRect (h, &r, TRUE);
-  if (nextbutton)
-    SetFocus (nextbutton);
   // and then do the same for categories with no packages.
   size_t n = 1;
   while (n <= db.categories.number ())
@@ -402,9 +400,6 @@ set_view_mode (HWND h, PickView::views mode)
   chooser->scroll_ulc_x = chooser->scroll_ulc_y = 0;
 
   InvalidateRect (h, &r, TRUE);
-
-  if (nextbutton)
-    SetFocus (nextbutton);
 }
 
 static void
@@ -436,72 +431,8 @@ create_listview (HWND dlg, RECT * r)
       pkg.set_requirements (chooser->deftrust);
     }
   /* FIXME: do we need to init the desired fields ? */
-  static int ta[] = { IDC_CHOOSE_CURR, 0 };
+  static int ta[] = { IDC_CHOOSE_PREV, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
   rbset (dlg, ta, IDC_CHOOSE_CURR);
-
-}
-
-static BOOL
-dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
-{
-  packagedb db;
-  switch (id)
-    {
-    case IDC_CHOOSE_PREV:
-      default_trust (lv, TRUST_PREV);
-      for (size_t n = 1; n <= db.packages.number (); n++)
-	{
-	  packagemeta & pkg = *db.packages[n];
-	  pkg.set_requirements (TRUST_PREV);
-	}
-      set_view_mode (lv, chooser->get_view_mode ());
-      break;
-    case IDC_CHOOSE_CURR:
-      default_trust (lv, TRUST_CURR);
-      for (size_t n = 1; n <= db.packages.number (); n++)
-	{
-	  packagemeta & pkg = *db.packages[n];
-	  pkg.set_requirements (TRUST_CURR);
-	}
-      set_view_mode (lv, chooser->get_view_mode ());
-      break;
-    case IDC_CHOOSE_EXP:
-      default_trust (lv, TRUST_TEST);
-      for (size_t n = 1; n <= db.packages.number (); n++)
-	{
-	  packagemeta & pkg = *db.packages[n];
-	  pkg.set_requirements (TRUST_TEST);
-	}
-      set_view_mode (lv, chooser->get_view_mode ());
-      break;
-    case IDC_CHOOSE_VIEW:
-      set_view_mode (lv, ++chooser->get_view_mode ());
-      if (!SetDlgItemText
-	  (h, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-	log (LOG_BABBLE, "Failed to set View button caption %ld",
-	     GetLastError ());
-      break;
-
-    case IDOK:
-      if (source == IDC_SOURCE_CWD)
-	NEXT (IDD_S_INSTALL);
-      else
-	NEXT (IDD_S_DOWNLOAD);
-      break;
-
-    case IDC_BACK:
-      initialized = 0;
-      if (source == IDC_SOURCE_CWD)
-	NEXT (IDD_LOCAL_DIR);
-      else
-	NEXT (IDD_SITE);
-      break;
-
-    case IDCANCEL:
-      NEXT (0);
-      break;
-    }
-  return 0;
 }
 
 static void
@@ -519,36 +450,6 @@ GetParentRect (HWND parent, HWND child, RECT * r)
   ScreenToClient (parent, &p);
   r->right = p.x;
   r->bottom = p.y;
-}
-
-static BOOL CALLBACK
-dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
-{
-  HWND frame;
-  RECT r;
-  switch (message)
-    {
-    case WM_INITDIALOG:
-      nextbutton = GetDlgItem (h, IDOK);
-      frame = GetDlgItem (h, IDC_LISTVIEW_POS);
-      choose_inst_text = GetDlgItem (h, IDC_CHOOSE_INST_TEXT);
-      if (source == IDC_SOURCE_DOWNLOAD)
-	SetWindowText (choose_inst_text, "Select packages to download ");
-      else
-	SetWindowText (choose_inst_text, "Select packages to install ");
-      GetParentRect (h, frame, &r);
-      r.top += 2;
-      r.bottom -= 2;
-      create_listview (h, &r);
-
-#if 0
-      load_dialog (h);
-#endif
-      return TRUE;
-    case WM_COMMAND:
-      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
-    }
-  return FALSE;
 }
 
 /* Find out where to put existing tar file in local directory in
@@ -699,14 +600,19 @@ scan_downloaded_files ()
     }
 }
 
-void
-do_choose (HINSTANCE h, HWND owner)
+bool
+ChooserPage::Create ()
 {
-  int rv;
+  return PropertyPage::Create (IDD_CHOOSE);
+}
 
-  nextbutton = 0;
+void
+ChooserPage::OnInit ()
+{
+  HWND frame;
+  RECT r;
 
-  register_windows (h);
+  register_windows (GetInstance ());
 
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_CWD)
     scan_downloaded_files ();
@@ -714,9 +620,31 @@ do_choose (HINSTANCE h, HWND owner)
   set_existence ();
   fill_missing_category ();
 
-  rv = DialogBox (h, MAKEINTRESOURCE (IDD_CHOOSE), owner, dialog_proc);
-  if (rv == -1)
-    fatal (owner, IDS_DIALOG_FAILED);
+  frame = GetDlgItem (IDC_LISTVIEW_POS);
+  choose_inst_text = GetDlgItem (IDC_CHOOSE_INST_TEXT);
+  if (source == IDC_SOURCE_DOWNLOAD)
+    ::SetWindowText (choose_inst_text, "Select packages to download ");
+  else
+    ::SetWindowText (choose_inst_text, "Select packages to install ");
+  GetParentRect (GetHWND (), frame, &r);
+  r.top += 2;
+  r.bottom -= 2;
+  create_listview (GetHWND (), &r);
+}
+
+long
+ChooserPage::OnNext ()
+{
+  if (source == IDC_SOURCE_CWD)
+    {
+      // Next, install
+      Progress.SetActivateTask (WM_APP_START_INSTALL);
+    }
+  else
+    {
+      // Next, start download from internet
+      Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
+    }
 
   log (LOG_BABBLE, "Chooser results...");
   packagedb db;
@@ -777,86 +705,87 @@ do_choose (HINSTANCE h, HWND owner)
 	}
 #endif
     }
+  return IDD_INSTATUS;
 }
 
-#define WM_APP_START_CHOOSE        WM_APP+0
-#define WM_APP_CHOOSE_IS_FINISHED  WM_APP+1
-
-extern void do_choose (HINSTANCE h, HWND owner);
-
-DWORD WINAPI
-do_choose_thread (void *p)
+long
+ChooserPage::OnBack ()
 {
-  ChooserPage *cp;
-
-  cp = static_cast < ChooserPage * >(p);
-
-  do_choose (cp->GetInstance (), cp->GetHWND ());
-
-  cp->PostMessage (WM_APP_CHOOSE_IS_FINISHED);
-
-  ExitThread (0);
+  initialized = 0;
+  if (source == IDC_SOURCE_CWD)
+    return IDD_LOCAL_DIR;
+  else
+    return IDD_SITE;
 }
 
-bool ChooserPage::Create ()
+bool
+ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
-  return PropertyPage::Create (IDD_CHOOSER);
-}
-
-void
-ChooserPage::OnActivate ()
-{
-  GetOwner ()->SetButtons (0);
-  PostMessage (WM_APP_START_CHOOSE);
-}
-
-bool ChooserPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-  switch (uMsg)
+  if (code != BN_CLICKED)
     {
-    case WM_APP_START_CHOOSE:
-      {
-	// Start the chooser thread.
-	DWORD threadID;
-	CreateThread(NULL, 0, do_choose_thread, this, 0, &threadID);
-	break;
-      }
-    case WM_APP_CHOOSE_IS_FINISHED:
-      {
-	switch (next_dialog)
-	  {
-	  case 0:
-	    {
-	      // Cancel
-	      GetOwner ()->PressButton (PSBTN_CANCEL);
-	      break;
-	    }
-	  case IDD_LOCAL_DIR:
-	  case IDD_SITE:
-	    {
-	      // Back
-	      GetOwner ()->SetActivePageByID (next_dialog);
-	      break;
-	    }
-	  case IDD_S_DOWNLOAD:
-	    {
-	      // Next, start download from internet
-	      Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
-	      GetOwner ()->SetActivePageByID (IDD_INSTATUS);
-	      break;
-	    }
-	  case IDD_S_INSTALL:
-	    {
-	      // Next, install
-	      Progress.SetActivateTask (WM_APP_START_INSTALL);
-	      GetOwner ()->SetActivePageByID (IDD_INSTATUS);
-	      break;
-	    }
-	  }
-      }
-    default:
+      // Not a click notification, we don't care.
       return false;
-      break;
     }
+
+  packagedb db;
+  switch (id)
+    {
+    case IDC_CHOOSE_PREV:
+      if (IsDlgButtonChecked (GetHWND (), id))
+      {
+        default_trust (lv, TRUST_PREV);
+        for (size_t n = 1; n <= db.packages.number (); n++)
+          {
+            packagemeta & pkg = *db.packages[n];
+            pkg.set_requirements (TRUST_PREV);
+          }
+        set_view_mode (lv, chooser->get_view_mode ());
+        break;
+      }
+      else
+      return false;
+    case IDC_CHOOSE_CURR:
+      if (IsDlgButtonChecked (GetHWND (), id))
+      {
+        default_trust (lv, TRUST_CURR);
+        for (size_t n = 1; n <= db.packages.number (); n++)
+          {
+            packagemeta & pkg = *db.packages[n];
+            pkg.set_requirements (TRUST_CURR);
+          }
+        set_view_mode (lv, chooser->get_view_mode ());
+        break;
+      }
+      else
+      return false;
+    case IDC_CHOOSE_EXP:
+      if (IsDlgButtonChecked (GetHWND (), id))
+      {
+        default_trust (lv, TRUST_TEST);
+        for (size_t n = 1; n <= db.packages.number (); n++)
+          {
+            packagemeta & pkg = *db.packages[n];
+            pkg.set_requirements (TRUST_TEST);
+          }
+        set_view_mode (lv, chooser->get_view_mode ());
+        break;
+      }
+      else
+      return false;
+    case IDC_CHOOSE_VIEW:
+      set_view_mode (lv, ++chooser->get_view_mode ());
+      if (!SetDlgItemText
+        (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
+      log (LOG_BABBLE, "Failed to set View button caption %ld",
+           GetLastError ());
+      break;
+
+
+    default:
+      // Wasn't recognized or handled.
+      return false;
+    }
+
+  // Was handled since we never got to default above.
   return true;
 }
