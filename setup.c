@@ -197,7 +197,7 @@ tarx (const char *dir, const char *fn, FILE *logfp)
       if (strchr (buffer, ':') != NULL)
 	{
 	  s = buffer;
-	  fprintf (stderr, "%s\n", buffer);
+	  fprintf (stderr, "%s\n", s);
 	}
       else
 	{
