@@ -143,8 +143,8 @@ private:
 
 class view
 {
-  class views;
 public:
+  class views;
   int num_columns;
   views get_view_mode () 
   {
