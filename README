@@ -4,8 +4,6 @@ net releases.
 RELEASE BLOCKERS:
  * Remove *empty* directories on uninstalls. (done?)
  * Correctly overwrite -r--r--r-- files. (done?)
- * "compress_bz::error called" appears in the log every time a package is
-   installed, even if everything works.
 TODO:
  * Don't downgrade if the curr version is <= installed?
  * Support rpm/deb files for reading the package from. (To allow the
@@ -53,7 +51,6 @@ WISHLIST:
    complete install set for a different machine).
  * New view - "action / category / package"
  * New view - show installed packages only. Probably not categorised.
- * New view - show non installed packages only.
  * Don't ask about the start menu or desktop options if they already exist.
  * Save the manual proxy settings so they don't need to be retyped.
  * Detect files in multiple packages.
@@ -104,3 +101,6 @@ Recently Completed
    Chooser shows all packages in Misc.
    - more details: packages get the correct categories assigned, but have misc added IF they where already installed.
      cycling the view adds the previously missing categories correctly.
+ * "compress_bz::error called" appears in the log every time a package is
+   installed, even if everything works.
+ * New view - show non installed packages only.
