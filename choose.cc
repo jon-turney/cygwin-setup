@@ -676,6 +676,25 @@ scan_downloaded_files ()
 	  packageversion *version = pkg.versions[m];
 	  check_for_cached (version->bin);
 	  check_for_cached (version->src);
+	  if (source == IDC_SOURCE_CWD)
+	    {
+	      /* Remove mirror sites.
+	       * FIXME: This is a bit of a hack. a better way is to abstract
+	       * the availability logic to the package
+	       */
+	      if (!version->bin.Cached())
+		while (version->bin.sites.number())
+		  {
+		    site *asite = version->bin.sites.removebyindex(1);
+		    delete asite;
+		  }
+	      if (!version->src.Cached())
+		while (version->src.sites.number())
+		  {
+		    site *asite = version->src.sites.removebyindex(1);
+		    delete asite;
+		  }
+	    }
 	}
     }
 }
