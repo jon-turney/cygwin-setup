@@ -1,3 +1,12 @@
+2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
+
+	Backport from HEAD
+        * desktop.cc (etc_profile): Remove.
+        (make_etc_profile): Remove.
+        (uexists): Remove.
+        (make_passwd_group): Remove.
+        (do_desktop_setup): Don't call removed functions.
+
 2003-02-28  Max Bowsher  <maxb@ukf.net>
 
 	Backport from HEAD

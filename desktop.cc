@@ -64,37 +64,6 @@ static OSVERSIONINFO verinfo;
 	@*
    */
 
-static const char *etc_profile[] = {
-  "PATH=\"/usr/local/bin:/usr/bin:/bin:$PATH\"",
-  "",
-  "USER=\"`id -un`\"",
-  "",
-  "# Set up USER's home directory",
-  "if [ -z \"$HOME\" ]; then",
-  "  HOME=\"/home/$USER\"",
-  "fi",
-  "",
-  "if [ ! -d \"$HOME\" ]; then",
-  "  mkdir -p \"$HOME\"",
-  "fi",
-  "",
-  "export HOME USER",
-  "",
-  "for i in /etc/profile.d/*.sh ; do",
-  "  if [ -f $i ]; then",
-  "    . $i",
-  "  fi",
-  "done",
-  "",
-  "export MAKE_MODE=unix",
-  "export PS1='\\[\\033]0;\\w\\007",
-  "\\033[32m\\]\\u@\\h \\[\\033[33m\\w\\033[0m\\]",
-  "$ '",
-  "",
-  "cd \"$HOME\"",
-  0
-};
-
 #define COMMAND9XARGS String("/E:4096 /c")
 #define COMMAND9XEXE  String("\\command.com")
 
@@ -216,101 +185,6 @@ make_cygwin_bat ()
 }
 
 static void
-make_etc_profile ()
-{
-  String fname = cygpath ("/etc/profile");
-
-  /* if the file exists, don't overwrite it */
-  if (_access (fname.cstr_oneuse(), 0) == 0)
-    return;
-
-  char os;
-  switch (verinfo.dwPlatformId)
-    {
-    case VER_PLATFORM_WIN32_NT:
-      os = 'N';
-      break;
-    case VER_PLATFORM_WIN32_WINDOWS:
-      if (verinfo.dwMinorVersion == 0)
-	os = '5';
-      else
-	os = '8';
-      break;
-    default:
-      os = '?';
-      break;
-    }
-  msg ("os is %c", os);
-
-  FILE *p = fopen (fname.cstr_oneuse(), "wb");
-  if (!p)
-    return;
-
-  int i, allow = 1;
-  for (i = 0; etc_profile[i]; i++)
-    {
-      if (etc_profile[i][0] == '@')
-	{
-	  allow = 0;
-	  msg ("profile: %s", etc_profile[i]);
-	  for (const char *cp = etc_profile[i] + 1; *cp; cp++)
-	    if (*cp == os || *cp == '*')
-	      allow = 1;
-	  msg ("allow is %d\n", allow);
-	}
-      else if (allow)
-	fprintf (p, "%s\n", etc_profile[i]);
-    }
-
-  fclose (p);
-}
-
-static int
-uexists (const char *path)
-{
-  String f = cygpath (path);
-  int a = _access (f.cstr_oneuse(), 0);
-  if (a == 0)
-    return 1;
-  return 0;
-}
-
-static void
-make_passwd_group ()
-{
-  String fname = cygpath ("/etc/postinstall/passwd-grp.bat");
-  io_stream::mkpath_p (PATH_TO_FILE, String("file://") + fname);
-
-  if ((uexists ("/etc/passwd") || uexists ("/etc/passwd.lnk"))
-      && (uexists ("/etc/group") || uexists ("/etc/group.lnk")))
-    return;
-
-  if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
-    {
-      packagedb db;
-      packagemeta *pkg = db.packages.getbykey ("cygwin");
-      if (pkg && pkg->installed)
-	{
-	  /* mkpasswd and mkgroup are not working on 9x/ME up to 1.1.5-4 */
-	  String border_version = canonicalize_version ("1.1.5-4");
-	  String inst_version =
-	    canonicalize_version (pkg->installed->Canonical_version ());
-	  if (inst_version.compare(border_version) <= 0)
-	    return;
-	}
-    }
-
-  FILE *p = fopen (fname.cstr_oneuse(), "wt");
-  if (!p)
-    return;
-  if (!(uexists ("/etc/passwd") || uexists ("/etc/passwd.lnk")))
-    fprintf (p, "bin\\mkpasswd -l > etc\\passwd\n");
-  if (!(uexists ("/etc/group") || uexists ("/etc/group.lnk")))
-    fprintf (p, "bin\\mkgroup -l > etc\\group\n");
-  fclose (p);
-}
-
-static void
 save_icon ()
 {
   iconname = backslash (cygpath ("/cygwin.ico"));
@@ -338,8 +212,6 @@ do_desktop_setup ()
   save_icon ();
 
   make_cygwin_bat ();
-  make_etc_profile ();
-  make_passwd_group ();
 
   if (root_menu)
     {
