@@ -43,8 +43,14 @@ static const char *cvsid =
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
 extern LogFile * theLog;
-void
-save_local_dir ()
+
+static LocalDirSetting localDir;
+
+void 
+LocalDirSetting::load(){}
+
+void 
+LocalDirSetting::save()
 {
   io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + local_dir);
 
@@ -186,7 +192,7 @@ LocalDirPage::OnNext ()
   HWND h = GetHWND ();
 
   save_dialog (h);
-  save_local_dir ();
+  localDir.save ();
   log (LOG_PLAIN, String ("Selected local directory: ") + local_dir);
   if (SetCurrentDirectoryA (local_dir.cstr_oneuse()))
     {

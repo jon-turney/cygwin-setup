@@ -1,5 +1,12 @@
 2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	Save used local cache dir from initial run of setup, so the user doesn't
+	need to retype it.
+	* localdir.h (LocalDirSetting): UserSetting class for the local cache dir.
+	* localdir.cc (LocalDirSetting::save): Replace save_local_dir, and update callers.
+
+2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	Save used site from initial run of setup, so the user doesn't need to 
 	retype it.
 	* main.cc (main): Load and save all user settings.

@@ -44,5 +44,12 @@ public:
   };
 };
 
+#include "UserSetting.h"
+class LocalDirSetting : public UserSetting 
+{
+  public:
+    virtual void load();
+    virtual void save();
+};
 
 #endif /* SETUP_LOCALDIR_H */
