@@ -33,7 +33,6 @@ static const char *cvsid =
 #include <stdexcept>
 #include "AntiVirus.h"
 #include "filemanip.h"
-#include "cistring.h"
 
 using namespace std;
 
@@ -113,9 +112,7 @@ LogFile::getFileName (int level) const
       if (i->level == level)
         return i->key;
     }
-  cistring bad_file;
-  bad_file.Format(IDS_MISSING_LOG);
-  return bad_file.c_str();
+  return "<no log was in use>";
 }
 
 void

@@ -25,7 +25,7 @@
 
 #include "propsheet.h"
 #include "threebar.h"
-#include "cistring.h"
+#include "String++.h"
 #include "state.h"
 
 #include "ControlAdjuster.h"
@@ -109,9 +109,9 @@ ThreeBarProgressPage::SetBar2 (long progress, long max)
 {
   int percent = (int) (100.0 * ((double) progress) / (double) max);
   SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) percent, 0);
-  cistring s;
-  s.Format (IDS_CYGWIN_SETUP_WITH_PROGRESS, percent);
-  GetOwner ()->SetWindowText (s.c_str ());
+  String s(percent);
+  s += "% - Cygwin Setup";
+  GetOwner ()->SetWindowText (s.cstr_oneuse());
 }
 
 void

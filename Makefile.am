@@ -125,8 +125,6 @@ setup_SOURCES = \
 	category.h \
 	choose.cc \
 	choose.h \
-	cistring.cc \
-	cistring.h \
 	compress.cc \
 	compress.h \
 	compress_bz.cc \

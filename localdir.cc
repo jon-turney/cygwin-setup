@@ -37,7 +37,6 @@ static const char *cvsid =
 #include "LogFile.h"
 #include "log.h"
 #include "io_stream.h"
-#include "cistring.h"
 
 #include "localdir.h"
 #include "UserSettings.h"

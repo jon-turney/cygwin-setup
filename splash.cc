@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include "version.h"
 #include "resource.h"
-#include "cistring.h"
+#include "String++.h"
 #include "splash.h"
 
 bool
@@ -31,9 +31,7 @@ SplashPage::Create ()
 void
 SplashPage::OnInit ()
 {
-  cistring ver;
-
-  ver.Format (IDS_VERSION_INFO, version[0] ? version : "[unknown]");
-
-  ::SetWindowText (GetDlgItem (IDC_VERSION), ver.c_str ());
+  String ver = "Setup.exe version ";
+  ver += (version[0] ? version : "[unknown]");
+  ::SetWindowText (GetDlgItem (IDC_VERSION), ver.cstr_oneuse());
 }

@@ -1,3 +1,16 @@
+2004-10-28  Max Bowsher  <maxb@ukf.net>
+
+	* LogFile.cc (LogFile::getFileName), splash.cc (SplashPage::Create),
+	threebar.cc (ThreeBarProgressPage::SetBar2):
+	Migrate from cistring and string resources
+	to String and string literals.
+	* localdir.cc: Remove unneeded #include of "cistring.h".
+	* cistring.cc, cistring.h: Remove this now-redundant class.
+	* Makefile.am: Remove mention of the above removed files.
+	* res.rc, resource.h: Remove obsolete strings and IDs, both those
+	obseleted by and obselete before the above changes.
+	* res.rc: Merge the 2 adjacent STRINGTABLEs.
+
 2004-10-27  Max Bowsher  <maxb@ukf.net>
 
 	* Makefile.am (setup_SOURCES): Add "RECTWrapper.h". It was missing.
