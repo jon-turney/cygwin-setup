@@ -212,7 +212,7 @@ setup_version.c : $(srcdir)/ChangeLog Makefile
 	V=`grep '^\$$Revision.*' $(srcdir)/ChangeLog \
 	| sed -e 's/\$$Revision:* *//' \
 	  -e 's/ *$$.*//'` ;\
-	(echo '#define VERSION_PREFIX "%%% setup-version"';\
+	(echo '#define VERSION_PREFIX "\n%%% setup-version"';\
         echo 'static const char version_store[] = VERSION_PREFIX " '$$V'";';\
         echo 'const char *version = version_store + sizeof (VERSION_PREFIX);') > version.tmp;\
 	mv version.tmp setup_version.c

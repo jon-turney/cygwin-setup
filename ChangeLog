@@ -1,5 +1,10 @@
 2002-03-19  Christopher Faylor  <cgf@redhat.com>
 
+	* Makefile.in (setup_version.c): Need a preceding newline in version
+	string.
+
+2002-03-19  Christopher Faylor  <cgf@redhat.com>
+
 	* Makefile.in (setup_version.c): Add back magic which allows detection
 	of setup.exe version number.
 
