@@ -1,6 +1,6 @@
 2001-12-28  Christopher Faylor  <cgf@redhat.com>
 
-	* Makefile.in (iniparse.o): Accomodate newer bisons.
+	* Makefile.in (iniparse.o): Accommodate newer bisons.
 
 2001-12-23  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
