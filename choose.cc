@@ -183,7 +183,7 @@ set_action (Package * pkg, bool preinc)
 	pkg->action = ACTION_SKIP;
 	/* Fall through intentionally */
       case ACTION_SKIP:
-	if (!pkg->installed)
+	if (!pkg->installed_ix)
 	  return;
 	break;
       default:
