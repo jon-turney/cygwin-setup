@@ -8,7 +8,7 @@ dnl
 dnl     A copy of the GNU General Public License can be found at
 dnl     http://www.gnu.org/
 dnl
-dnl Written by Ron Parker <parkerrd@hotmail.com>
+dnl Written by Christopher Faylor <cgf@redhat.com>
 
 dnl Autoconf configure script for Cygwin utilities.
 dnl

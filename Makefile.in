@@ -8,7 +8,7 @@
 #     A copy of the GNU General Public License can be found at
 #     http://www.gnu.org/
 #
-# Written by Ron Parker <parkerrd@hotmail.com>
+# Written by Christopher Faylor <cgf@redhat.com>
 #
 # Makefile for Cygwin installer
 
