@@ -1,3 +1,10 @@
+2001-11-03  Pavel Tsekov  <ptsekov@syntrex.com>
+
+	* install.cc (known_file_types): A new global variable, containing a set
+	of known file extensions for packages handled by setup.exe.
+	(install_one): Checks for the existence of the tarball
+	based on a set of well-known package extensions.
+
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
 	* res.rc (IDD_CHOOSE): Tweak for use on a 640x480 screen.

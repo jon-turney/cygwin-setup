@@ -50,6 +50,13 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #include "port.h"
 
+char *known_file_types[] = {
+  "tar.gz",
+  "tar.bz2",
+  0
+};
+
+
 static HWND ins_dialog = 0;
 static HWND ins_action = 0;
 static HWND ins_pkgname = 0;
@@ -300,17 +307,27 @@ install_one (Package *pkg, bool isSrc)
 
   char name[strlen (pkg->name) + strlen (extra) + 1];
   strcat (strcpy (name, pkg->name), extra);
-  
-  char *basef = base (file);
-  SetWindowText (ins_pkgname, basef);
 
-  if (!exists (file))
-    file = basef;
-  if (!exists (file))
+  char file_buf[MAX_PATH + 1];
+  int file_exists = 0;
+  int ext = find_tar_ext(file) + 1;
+  strncpy (file_buf, file, ext);
+  file_buf[ext] = '\0';
+  file = (char *) &file_buf;
+  char *basef = base (file);
+  
+  for (int c = 0; !file_exists && known_file_types[c]; c++)
+    {
+      strcpy ((char *) &file_buf[ext], known_file_types[c]);
+      file_exists = exists (file) || exists (basef);
+    }
+  if (!file_exists)
     {
       note (IDS_ERR_OPEN_READ, file, "No such file");
       return 1;
     }
+  else
+    SetWindowText (ins_pkgname, basef);
 
   gzFile lst = gzopen (cygpath ("/etc/setup/", name, ".lst.gz", 0),
 		       "wb9");
