@@ -17,6 +17,8 @@
 #define _OPTIONSET_H_
 
 #include <getopt.h>
+#include <iosfwd>
+
 class Option;
 
 class OptionSet
@@ -24,8 +26,9 @@ class OptionSet
 public:
   OptionSet();
   ~OptionSet();
-  void Register (Option *);
-  bool Process (int argc, char **argv);
+  virtual void Register (Option *);
+  virtual bool Process (int argc, char **argv, OptionSet *defaultOptionSet=0);
+  virtual void ParameterUsage (ostream &);
 protected:
   OptionSet (OptionSet const &);
   OptionSet &operator= (OptionSet const &);

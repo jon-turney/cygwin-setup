@@ -13,45 +13,50 @@
  *
  */
 
-#include <getopt++/BoolOption.h>
+#include <getopt++/StringOption.h>
 
-BoolOption::BoolOption(bool const defaultvalue, char shortopt, 
+StringOption::StringOption(String const defaultvalue, char shortopt, 
 		       char const *longopt, String const &shorthelp, 
-		       OptionSet &owner) : _value (defaultvalue) , 
-		       _ovalue (defaultvalue), _shortopt(shortopt), 
+		       bool const optional, OptionSet &owner) : 
+		       _value (defaultvalue) , _shortopt(shortopt),
 		       _longopt (longopt), _shorthelp (shorthelp)
 {
+  if (!optional)
+    _optional = required_argument;
+  else
+    _optional = optional_argument;
   owner.Register (this);
 };
 
-BoolOption::~ BoolOption () {};
+StringOption::~ StringOption () {};
 
 String const 
-BoolOption::shortOption () const
+StringOption::shortOption () const
 {
-  return String() + _shortopt;
+  return String() + _shortopt + ":";
 }
 
 struct option 
-BoolOption::longOption () const
+StringOption::longOption () const
 {
-  struct option foo = {_longopt, no_argument, NULL, _shortopt};
+  struct option foo = {_longopt, _optional, NULL, _shortopt};
   return foo;
 }
 
 String const 
-BoolOption::shortHelp () const
+StringOption::shortHelp () const
 {
   return _shorthelp;
 }
 
 bool 
-BoolOption::Process (char const *)
+StringOption::Process (char const *optarg)
 {
-  _value = !_ovalue;
+  if (optarg)
+    _value = optarg;
 }
 
-BoolOption::operator bool () const
+StringOption::operator String () const
 {
   return _value;
 }

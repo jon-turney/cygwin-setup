@@ -1,3 +1,23 @@
+2002-04-20  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.am (libgetopt___la_SOURCES): Add OptionSet.cc and 
+	StringOption.cc for new functionality.
+	(getoptinclude_HEADERS): Install the new headers.
+	* include/getopt++/BoolOption.h (BoolOption::shortOption): Change
+	to align with new Option header.
+	* include/getopt++/Option.h (Option::shortOption): Change to allow
+	short options with arguments.
+	* include/getopt++/OptionSet.h: Implement ParameterUsage to show 
+	program options.
+	Change Process to include a fallback OptionSet - for picking up 
+	non-option arguments.
+	* include/getopt++/StringOption.h: New file.
+	* src/BoolOption.cc (BoolOption::shortOption): Change as per the header.
+	* src/OptionSet.cc (OptionSet::Process): Pass on umnparameterised
+	arguments.
+	(OptionSet::ParameterUsage): Implement.
+	* src/StringOption.cc: New file.
+
 2002-04-14  Robert Collins  <rbtcollins@hotmail.com>
 
 	* include/BoolOption.h: Move to

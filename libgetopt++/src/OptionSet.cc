@@ -19,6 +19,8 @@
 #include "getopt++/OptionSet.h"
 #include "getopt++/Option.h"
 
+#include <iostream>
+
 OptionSet::OptionSet () : options(0), optCount (0) {}
 OptionSet::~OptionSet ()
 {
@@ -32,7 +34,7 @@ OptionSet::Init()
   optCount = 0;
 }
 
-bool OptionSet::Process (int argc, char **argv)
+bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
 {
   if (argc == 1)
     {
@@ -88,6 +90,8 @@ bool OptionSet::Process (int argc, char **argv)
 	    }
 	}
     }
+    if (optind < argc && optind > 0 && defaultOptionSet)
+      return defaultOptionSet->Process (argc - optind, &argv[optind]);
 #if HAVE_STRING___H
   delete[]opts;
 #endif
@@ -104,4 +108,22 @@ OptionSet::Register (Option * anOption)
   t[optCount++] = anOption;
   delete[]options;
   options = t;
+}
+
+/* Show the options on the left, the short description on the right.
+ * descriptions must be < 40 characters in length
+ */
+void
+OptionSet::ParameterUsage (ostream &aStream)
+{
+  for (int i = 0; i < optCount; ++i)
+    {
+      Option *anOption = options[i];
+      String output = String() + " -" + anOption->shortOption ()[0];
+      output += " --" ;
+      output += anOption->longOption ().name;
+      output += String (40 - output.size(), ' ');
+      output += anOption->shortHelp();
+      aStream << output << endl;
+    }
 }

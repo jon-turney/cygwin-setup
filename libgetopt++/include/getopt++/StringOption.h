@@ -13,33 +13,32 @@
  *
  */
 
-#ifndef _BOOLOPTION_H_
-#define _BOOLOPTION_H_
+#ifndef _STRINGOPTION_H_
+#define _STRINGOPTION_H_
 
 #include <getopt++/Option.h>
 #include <getopt++/GetOption.h>
 
 // Each registered option must implement this class.
-class BoolOption : public Option
+class StringOption : public Option
 {
 public:
-  BoolOption(bool const defaultvalue, char shortopt, char const *longopt = 0,
-	     String const &shorthelp = String(), 
+  StringOption(String const defaultvalue, char shortopt, char const *longopt = 0,
+	     String const &shorthelp = String(), bool const optional = true,
 	     OptionSet &owner=GetOption::GetInstance());
-  virtual ~ BoolOption ();
+  virtual ~ StringOption ();
   virtual String const shortOption () const;
   virtual struct option longOption () const;
   virtual String const shortHelp () const;
   virtual bool Process (char const *);
-  operator bool () const;
- 
+  operator String () const;
 
 private:
-  bool _value;
-  bool _ovalue;
+  int _optional;
+  String _value;
   char _shortopt;
   char const *_longopt;
   String _shorthelp;
 };
 
-#endif // _BOOLOPTION_H_
+#endif // _STRINGOPTION_H_

@@ -35,7 +35,7 @@ class Option
 {
 public:
   virtual ~ Option ();
-  virtual char const shortOption () const = 0;
+  virtual String const shortOption () const = 0;
   virtual struct option longOption () const = 0;
   virtual String const shortHelp () const = 0;
   virtual bool Process (char const *) = 0;

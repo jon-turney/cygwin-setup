@@ -17,12 +17,14 @@ lib_LTLIBRARIES = libgetopt++.la
 check_PROGRAMS = testoption
 
 libgetopt___la_SOURCES = src/GetOption.cc src/Option.cc src/BoolOption.cc \
-	src/OptionSet.cc
+	src/OptionSet.cc \
+	src/StringOption.cc
 libgetopt___la_LDFLAGS = -lstdc++ -version-info 0:0:0
 
 getoptinclude_HEADERS = include/getopt++/Option.h \
   include/getopt++/GetOption.h \
-  include/getopt++/BoolOption.h include/getopt++/OptionSet.h
+  include/getopt++/BoolOption.h include/getopt++/OptionSet.h \
+  include/getopt++/StringOption.h
 
 testoption_SOURCES = tests/testoption.cc
 testoption_LDADD = libgetopt++.la
