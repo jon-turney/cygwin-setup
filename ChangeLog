@@ -1,3 +1,10 @@
+Thu May 10 22:35:59 2001  Christopher Faylor <cgf@cygnus.com>
+
+	Reformat file after botched patch formatting.
+	* choose.cc (which_trust): Eliminate variable.
+	(default_trust): Don't set which_trust.
+	(do_choose): Use selected trust when reinstalling or installing source.
+
 Thu May 10 21:04:18 2001  Christopher Faylor <cgf@cygnus.com>
 
 	Change concat to cygpath throughout.
