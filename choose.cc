@@ -803,7 +803,10 @@ _view::insert_pkg (Package *pkg)
 	      /* this should be a generic call to list_sort_cmp */
 	      if (lines[n].get_category ()
 		  && cat->name == lines[n].get_category ()->name)
+		{
 		  insert_under (n, line);
+		  n = nlines;
+		}
 	      n++;
 	    }
 	  if (n == nlines)
