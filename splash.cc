@@ -58,7 +58,7 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_INITDIALOG:
       load_dialog (h);
-      return FALSE;
+      return TRUE;
     case WM_COMMAND:
       return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }

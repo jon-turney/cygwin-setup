@@ -1,3 +1,7 @@
+2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* splash.cc (dialog_proc): Return TRUE as specified in the WIN32 API.
+
 2001-11-02  Pavel Tsekov  <ptsekov@syntrex.com>
 
 	* geturl.cc (is_showing): Remove.
