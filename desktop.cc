@@ -35,6 +35,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "mkdir.h"
 #include "dialog.h"
 #include "version.h"
+#include "mount.h"
 
 #include "port.h"
 
@@ -176,7 +177,7 @@ desktop_icon (char *title, char *target)
 static void
 make_cygwin_bat ()
 {
-  batname = backslash (concat (root_dir, "/cygwin.bat", 0));
+  batname = backslash (cygpath ("/cygwin.bat", 0));
 
   /* if the batch file exists, don't overwrite it */
   if (_access (batname, 0) == 0)
@@ -199,7 +200,7 @@ make_cygwin_bat ()
 static void
 make_etc_profile ()
 {
-  char *fname = concat (root_dir, "/etc/profile", 0);
+  char *fname = cygpath ("/etc/profile", 0);
 
   /* if the file exists, don't overwrite it */
   if (_access (fname, 0) == 0)
@@ -249,7 +250,7 @@ make_etc_profile ()
 static int
 uexists (char *path)
 {
-  char *f = concat (root_dir, path, 0);
+  char *f = cygpath (path, 0);
   int a = _access (f, 0);
   free (f);
   if (a == 0)
@@ -284,7 +285,7 @@ make_passwd_group ()
   if (uexists ("/etc/passwd") && uexists ("/etc/group"))
     return;
 
-  char *fname = concat (root_dir, "/etc/postinstall/passwd-grp.bat", 0);
+  char *fname = cygpath ("/etc/postinstall/passwd-grp.bat", 0);
   mkdir_p (0, fname);
 
   FILE *p = fopen (fname, "wb");
@@ -302,7 +303,7 @@ make_passwd_group ()
 static void
 save_icon ()
 {
-  iconname = backslash (concat (root_dir, "/cygwin.ico", 0));
+  iconname = backslash (cygpath ("/cygwin.ico", 0));
 
   HRSRC rsrc = FindResource (NULL, "CYGWIN.ICON", "FILE");
   if (rsrc == NULL)
@@ -473,8 +474,8 @@ do_desktop (HINSTANCE h)
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
   GetVersionEx (&verinfo);
 
-  root_desktop = check_desktop("Cygwin",backslash (concat (root_dir, "/cygwin.bat", 0)));
-  root_menu = check_startmenu("Cygwin Bash Shell",backslash (concat (root_dir, "/cygwin.bat", 0)));
+  root_desktop = check_desktop("Cygwin",backslash (cygpath ("/cygwin.bat", 0)));
+  root_menu = check_startmenu("Cygwin Bash Shell",backslash (cygpath ("/cygwin.bat", 0)));
 
   int rv = 0;
 

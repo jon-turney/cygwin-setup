@@ -22,6 +22,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "win32.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "../cygwin/include/cygwin/version.h"
 #include "../cygwin/include/sys/mount.h"
 
@@ -29,31 +30,34 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "msg.h"
 #include "resource.h"
 #include "dialog.h"
+#include "state.h"
+#include "concat.h"
 
+static struct mnt
+  {
+    char *native;
+    char *posix;
+    int istext;
+  } mount_table[255];
 
 static char *
-find2 (HKEY rkey, int *istext)
+find2 (HKEY rkey, int *istext, char *what)
 {
   char buf[1000];
   char *retval = 0;
-  HKEY key;
   DWORD retvallen = 0;
   DWORD flags = 0;
   DWORD type;
+  HKEY key;
 
-  sprintf (buf, "Software\\%s\\%s\\%s\\/",
-	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
-	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
-	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME);
-
-  if (RegOpenKeyEx (rkey, buf, 0, KEY_READ, &key) != ERROR_SUCCESS)
+  if (RegOpenKeyEx (rkey, what, 0, KEY_READ, &key) != ERROR_SUCCESS)
     return 0;
 
   if (RegQueryValueEx (key, "native", 0, &type, 0, &retvallen)
       == ERROR_SUCCESS)
     {
-      retval = new char[retvallen+1];
-      if (RegQueryValueEx (key, "native", 0, &type, (BYTE *)retval, &retvallen)
+      retval = new char[retvallen + 1];
+      if (RegQueryValueEx (key, "native", 0, &type, (BYTE *) retval, &retvallen)
 	  != ERROR_SUCCESS)
 	{
 	  delete retval;
@@ -68,24 +72,8 @@ find2 (HKEY rkey, int *istext)
 
   if (retval)
     *istext = (flags & MOUNT_BINARY) ? 0 : 1;
-  return retval;
-}
 
-char *
-find_root_mount (int *istext, int *issystem)
-{
-  char *rv;
-  if (rv = find2 (HKEY_CURRENT_USER, istext))
-    {
-      *issystem = 0;
-      return rv;
-    }
-  if (rv = find2 (HKEY_LOCAL_MACHINE, istext))
-    {
-      *issystem = 1;
-      return rv;
-    }
-  return 0;
+  return retval;
 }
 
 void
@@ -225,4 +213,200 @@ set_cygdrive_flags (int istext, int issystem)
     set_cygdrive_flags (key, istext, cygdrive_flags);
 
   RegCloseKey(key);
+}
+
+int
+in_table (struct mnt *m)
+{
+  for (struct mnt *m1 = mount_table; m1 < m; m1++)
+    if (strcasecmp (m1->posix, m->posix) == 0)
+      return 1;
+  return 0;
+}
+
+/*
+ * is_admin () determines whether or not the current user is a member of the
+ * Administrators group.  On Windows 9X, the current user is considered an
+ * Administrator by definition.
+ */
+
+static int
+is_admin ()
+{
+  // Windows 9X users are considered Administrators by definition
+  OSVERSIONINFO verinfo;
+  verinfo.dwOSVersionInfoSize = sizeof (verinfo);
+  GetVersionEx (&verinfo);
+  if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
+    return 1;
+
+  // Get the process token for the current process
+  HANDLE token;
+  BOOL status = OpenProcessToken (GetCurrentProcess(), TOKEN_QUERY, &token);
+  if (!status)
+    return 0;
+
+  // Get the group token information
+  UCHAR token_info[1024];
+  PTOKEN_GROUPS groups = (PTOKEN_GROUPS) token_info;
+  DWORD token_info_len = sizeof (token_info);
+  status = GetTokenInformation (token, TokenGroups, token_info, token_info_len, &token_info_len);
+  CloseHandle(token);
+  if (!status)
+    return 0;
+
+  // Create the Administrators group SID
+  PSID admin_sid;
+  SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
+  status = AllocateAndInitializeSid (&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &admin_sid);
+  if (!status)
+    return 0;
+
+  // Check to see if the user is a member of the Administrators group
+  status = 0;
+  for (UINT i=0; i<groups->GroupCount; i++) {
+    if (EqualSid(groups->Groups[i].Sid, admin_sid)) {
+      status = 1;
+      break;
+    }
+  }
+
+  // Destroy the Administrators group SID
+  FreeSid (admin_sid);
+
+  // Return whether or not the user is a member of the Administrators group
+  return status;
+}
+
+void
+read_mounts ()
+{
+  DWORD posix_path_size;
+  int res;
+  struct mnt *m = mount_table;
+  DWORD disposition;
+  char buf[10000];
+
+  /* Loop through subkeys */
+  /* FIXME: we would like to not check MAX_MOUNTS but the heap in the
+     shared area is currently statically allocated so we can't have an
+     arbitrarily large number of mounts. */
+  for (int issystem = 0; issystem <= 1; issystem++)
+    {
+      sprintf (buf, "Software\\%s\\%s\\%s",
+	       CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
+	       CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
+	       CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME);
+
+      HKEY key = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
+      if (RegCreateKeyEx (key, buf, 0, "Cygwin", 0, KEY_ALL_ACCESS,
+			  0, &key, &disposition) != ERROR_SUCCESS)
+	break;
+      for (int i = 0; ;i++, m++)
+	{
+	  m->posix = new char [MAX_PATH + 1];
+	  posix_path_size = MAX_PATH;
+	  /* FIXME: if maximum posix_path_size is 256, we're going to
+	     run into problems if we ever try to store a mount point that's
+	     over 256 but is under MAX_PATH. */
+	  res = RegEnumKeyEx (key, i, m->posix, &posix_path_size, NULL,
+			      NULL, NULL, NULL);
+
+	  if (res == ERROR_NO_MORE_ITEMS)
+	    break;
+
+	  if (in_table (m))
+	    m--;
+	  else if (res != ERROR_SUCCESS)
+	    break;
+	  else
+	    {
+	      m->native = find2 (key, &m->istext, m->posix);
+	      if (strcmp (m->posix, "/") == 0)
+		{
+		  root_dir = m->native;
+		  if (m->istext)
+		    root_text = IDC_ROOT_TEXT;
+		  else
+		    root_text = IDC_ROOT_BINARY;
+		  if (issystem)
+		    root_scope = IDC_ROOT_SYSTEM;
+		  else
+		    root_scope = IDC_ROOT_USER;
+		}
+	    }
+	}
+      RegCloseKey (key);
+    }
+
+  if (!root_dir)
+    {
+      char windir[_MAX_PATH];
+      GetWindowsDirectory (windir, sizeof (windir));
+      windir[2] = 0;
+      root_dir = concat (windir, "\\cygwin", 0);
+      root_text = IDC_ROOT_BINARY;
+      root_scope = (is_admin()) ? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
+      m->posix = strdup ("/");
+      m->native = root_dir;
+    }
+
+}
+
+/* Return non-zero if PATH1 is a prefix of PATH2.
+   Both are assumed to be of the same path style and / vs \ usage.
+   Neither may be "".
+   LEN1 = strlen (PATH1).  It's passed because often it's already known.
+
+   Examples:
+   /foo/ is a prefix of /foo  <-- may seem odd, but desired
+   /foo is a prefix of /foo/
+   / is a prefix of /foo/bar
+   / is not a prefix of foo/bar
+   foo/ is a prefix foo/bar
+   /foo is not a prefix of /foobar
+*/
+
+static int
+path_prefix_p (const char *path1, const char *path2, int len1)
+{
+  /* Handle case where PATH1 has trailing '/' and when it doesn't.  */
+  if (len1 > 0 && SLASH_P (path1[len1 - 1]))
+    len1--;
+
+  if (len1 == 0)
+    return SLASH_P (path2[0]) && !SLASH_P (path2[1]);
+
+  if (strncasecmp (path1, path2, len1) != 0)
+    return 0;
+
+  return SLASH_P (path2[len1]) || path2[len1] == 0 || path1[len1 - 1] == ':';
+}
+
+char *
+cygpath (const char *s, ...)
+{
+  va_list v;
+  int i, max_len = -1;
+  struct mnt *m, *match;
+
+  va_start (v, s);
+  char *path = vconcat (s, v);
+
+  for (m = mount_table; m->posix ; m++)
+    {
+      int n = strlen (m->posix);
+      if (n < max_len || !path_prefix_p (m->posix, path, n))
+	continue;
+      max_len = n;
+      match = m;
+    }
+
+  char *native;
+  if (max_len == strlen (path))
+    native = strdup (match->native);
+  else
+    native = concat (match->native, "/", path + max_len, NULL);
+  free (path);
+  return native;
 }

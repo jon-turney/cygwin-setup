@@ -27,6 +27,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "dialog.h"
 #include "find.h"
 #include "concat.h"
+#include "mount.h"
 
 #include "port.h"
 
@@ -71,15 +72,15 @@ each (char *fname, unsigned int size)
     }
   else if (cmd && strcmp (ext, ".bat") == 0)
     {
-      char *f2 = backslash (concat (root_dir, "/etc/postinstall/", fname, 0));
+      char *f2 = backslash (cygpath ("/etc/postinstall/", fname, 0));
       run (cmd, "/c", f2);
       free (f2);
     }
   else
     return;
 
-  rename (concat (root_dir, "/etc/postinstall/", fname, 0),
-	  concat (root_dir, "/etc/postinstall/", fname, ".done", 0));
+  rename (cygpath ("/etc/postinstall/", fname, 0),
+	  cygpath ("/etc/postinstall/", fname, ".done", 0));
 }
 
 static char *shells [] = {
@@ -97,7 +98,7 @@ do_postinstall (HINSTANCE h)
   int i;
   for (i=0; shells[i]; i++)
     {
-      sh = backslash (concat (root_dir, shells[i], 0));
+      sh = backslash (cygpath (shells[i], 0));
       if (_access (sh, 0) == 0)
 	break;
       free (sh);
@@ -107,7 +108,7 @@ do_postinstall (HINSTANCE h)
   char old_path[_MAX_PATH];
   GetEnvironmentVariable ("PATH", old_path, sizeof (old_path));
   SetEnvironmentVariable ("PATH",
-			  backslash (concat (root_dir, "/bin;",
+			  backslash (cygpath ("/bin;",
 					     root_dir, "/usr/bin;",
 					     old_path, 0)));
 
@@ -130,5 +131,5 @@ do_postinstall (HINSTANCE h)
       break;
     }
 
-  find (concat (root_dir, "/etc/postinstall", 0), each);
+  find (cygpath ("/etc/postinstall", 0), each);
 }

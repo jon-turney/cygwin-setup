@@ -42,6 +42,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "log.h"
 #include "find.h"
 #include "filemanip.h"
+#include "mount.h"
 
 #include "port.h"
 
@@ -949,7 +950,7 @@ read_installed_db ()
   char line[1000], pkg[1000], inst[1000], src[1000];
   int instsz, srcsz;
 
-  FILE *db = fopen (concat (root_dir, "/etc/setup/installed.db", 0), "rt");
+  FILE *db = fopen (cygpath ("/etc/setup/installed.db", 0), "rt");
   if (!db)
     return;
 

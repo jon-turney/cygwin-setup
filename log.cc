@@ -30,6 +30,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "state.h"
 #include "concat.h"
 #include "mkdir.h"
+#include "mount.h"
 
 struct LogEnt {
   LogEnt *next;
@@ -121,8 +122,8 @@ exit_setup (int exit_code)
     }
   else
     {
-      log_save (LOG_BABBLE, concat (root_dir, "/setup.log.full", 0), 0);
-      log_save (0, concat (root_dir, "/setup.log", 0), 1);
+      log_save (LOG_BABBLE, cygpath ("/setup.log.full", 0), 0);
+      log_save (0, cygpath ("/setup.log", 0), 1);
     }
 
   ExitProcess (exit_code);

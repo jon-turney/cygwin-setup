@@ -89,7 +89,7 @@ get_root_dir ()
   int issystem;
   if (root_dir)
     return;
-  root_dir = find_root_mount (&istext, &issystem);
+  read_mounts ();
 }
 
 void
@@ -102,7 +102,7 @@ save_site_url ()
   if (! root_dir)
     return;
 
-  FILE *f = fopen (concat (root_dir, "/etc/setup/last-mirror", 0), "wb");
+  FILE *f = fopen (cygpath ("/etc/setup/last-mirror", 0), "wb");
   if (!f)
     return;
   fprintf (f, "%s\n", MIRROR_SITE);
@@ -273,7 +273,7 @@ get_initial_list_idx ()
   if (! root_dir)
     return;
 
-  FILE *f = fopen (concat (root_dir, "/etc/setup/last-mirror", 0), "rt");
+  FILE *f = fopen (cygpath ("/etc/setup/last-mirror", 0), "rt");
   if (!f)
     return;
 

@@ -36,6 +36,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "mkdir.h"
 #include "log.h"
 #include "version.h"
+#include "mount.h"
 
 unsigned int setup_timestamp = 0;
 char *setup_version = 0;
@@ -89,10 +90,10 @@ do_ini (HINSTANCE h)
 
   if (root_dir)
     {
-      mkdir_p (1, concat (root_dir, "/etc/setup", 0));
+      mkdir_p (1, cygpath ("/etc/setup", 0));
 
       unsigned int old_timestamp = 0;
-      FILE *ots = fopen (concat (root_dir, "/etc/setup/timestamp", 0), "rt");
+      FILE *ots = fopen (cygpath ("/etc/setup/timestamp", 0), "rt");
       if (ots)
 	{
 	  fscanf (ots, "%u", &old_timestamp);
@@ -107,7 +108,7 @@ do_ini (HINSTANCE h)
 	}
       if (setup_timestamp)
 	{
-	  FILE *nts = fopen (concat (root_dir, "/etc/setup/timestamp", 0), "wt");
+	  FILE *nts = fopen (cygpath ("/etc/setup/timestamp", 0), "wt");
 	  if (nts)
 	    {
 	      fprintf (nts, "%u", setup_timestamp);

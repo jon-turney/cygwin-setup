@@ -45,6 +45,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "mount.h"
 #include "log.h"
 #include "hash.h"
+#include "mount.h"
 
 #include "port.h"
 
@@ -208,22 +209,6 @@ hash::add_subdirs (char *path)
       }
 }
 
-char *
-map_filename (char *fn, const char *extra = 0)
-{
-  char *dest_file;
-  char *root_dir_with_extra = concat (root_dir, extra, 0);
-  while (*fn == '/' || *fn == '\\')
-    fn++;
-  if (strncmp (fn, "usr/bin/", 8) == 0)
-    dest_file = concat (root_dir_with_extra, "/bin/", fn+8, 0);
-  else if (strncmp (fn, "usr/lib/", 8) == 0)
-    dest_file = concat (root_dir_with_extra, "/lib/", fn+8, 0);
-  else
-    dest_file = concat (root_dir_with_extra, "/", fn, 0);
-  return dest_file;
-}
-
 static int
 exists (char *file)
 {
@@ -231,7 +216,6 @@ exists (char *file)
     return 1;
   return 0;
 }
-
 
 static int num_installs, num_uninstalls;
 
@@ -241,7 +225,7 @@ uninstall_one (char *name, int action)
   hash dirs;
   char line[_MAX_PATH];
 
-  gzFile lst = gzopen (concat (root_dir, "/etc/setup/",
+  gzFile lst = gzopen (cygpath ("/etc/setup/",
 			       name, ".lst.gz", 0),
 		       "rb");
   if (lst)
@@ -260,7 +244,7 @@ uninstall_one (char *name, int action)
 
 	  dirs.add_subdirs (line);
 
-	  char *d = map_filename (line);
+	  char *d = cygpath ("/", line, NULL);
 	  DWORD dw = GetFileAttributes (d);
 	  if (dw != 0xffffffff && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
@@ -270,13 +254,13 @@ uninstall_one (char *name, int action)
 	}
       gzclose (lst);
 
-      remove (concat (root_dir, "/etc/setup/", name, ".lst.gz", 0));
+      remove (cygpath ("/etc/setup/", name, ".lst.gz", 0));
 
       dirs.reverse_sort ();
       char *subdir = 0;
       while ((subdir = dirs.enumerate (subdir)) != 0)
 	{
-	  char *d = map_filename (subdir);
+	  char *d = cygpath ("/", subdir, NULL);
 	  if (RemoveDirectory (d))
 	    log (LOG_BABBLE, "rmdir %s", d);
 	}
@@ -305,7 +289,7 @@ install_one (char *name, char *file, int file_size, int action, BOOL isSrc)
       return 1;
     }
 
-  gzFile lst = gzopen (concat (root_dir, "/etc/setup/",
+  gzFile lst = gzopen (cygpath ("/etc/setup/",
 			       name, ".lst.gz", 0),
 		       "wb9");
 
@@ -333,7 +317,7 @@ install_one (char *name, char *file, int file_size, int action, BOOL isSrc)
       if (lst)
 	gzprintf (lst, "%s\n", fn);
 
-      dest_file = map_filename (fn, isSrc?"/usr/src":NULL);
+      dest_file = cygpath (isSrc ? "/usr/src/" : "/", fn, NULL);
 
       SetWindowText (ins_filename, dest_file);
       log (LOG_BABBLE, "Installing file %s", dest_file);
@@ -344,6 +328,7 @@ install_one (char *name, char *file, int file_size, int action, BOOL isSrc)
 	}
 
       progress (tar_ftell ());
+      free (dest_file); 
       num_installs++;
     }
   tar_close ();
@@ -374,13 +359,13 @@ do_install (HINSTANCE h)
 
   for (i=0; standard_dirs[i]; i++)
     {
-      char *p = concat (root_dir, standard_dirs[i], 0);
+      char *p = cygpath (standard_dirs[i], 0);
       mkdir_p (1, p);
       free (p);
     }
 
   /* Create /var/run/utmp */
-  char *utmp = concat (root_dir, "/var/run/utmp", 0);
+  char *utmp = cygpath ("/var/run/utmp", 0);
   FILE *ufp = fopen (utmp, "wb");
   if (ufp)
     fclose (ufp);
@@ -436,9 +421,9 @@ do_install (HINSTANCE h)
 
   ShowWindow (ins_dialog, SW_HIDE);
 
-  char *odbn = concat (root_dir, "/etc/setup/installed.db", 0);
-  char *ndbn = concat (root_dir, "/etc/setup/installed.db.new", 0);
-  char *sdbn = concat (root_dir, "/etc/setup/installed.db.old", 0);
+  char *odbn = cygpath ("/etc/setup/installed.db", 0);
+  char *ndbn = cygpath ("/etc/setup/installed.db.new", 0);
+  char *sdbn = cygpath ("/etc/setup/installed.db.old", 0);
 
   mkdir_p (0, ndbn);
 
@@ -528,8 +513,8 @@ do_install (HINSTANCE h)
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
 
   create_mount ("/", root_dir, istext, issystem);
-  create_mount ("/usr/bin", concat (root_dir, "/bin", 0), istext, issystem);
-  create_mount ("/usr/lib", concat (root_dir, "/lib", 0), istext, issystem);
+  create_mount ("/usr/bin", cygpath ("/bin", 0), istext, issystem);
+  create_mount ("/usr/lib", cygpath ("/lib", 0), istext, issystem);
   set_cygdrive_flags (istext, issystem);
 
   if (errors)

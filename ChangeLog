@@ -1,3 +1,23 @@
+Thu May 10 21:04:18 2001  Christopher Faylor <cgf@cygnus.com>
+
+	Change concat to cygpath throughout.
+	Change map_filename to cygpath throughout.
+	* concat.cc (vconcat): New function.
+	(concat): Use vconcat.
+	* concat.h: Reflect above.
+	* install.cc (map_filename): Eliminate.
+	(install_one): Free dest_file.
+	* mount.cc (find2): Expect input key to be pointing to mount record.
+	(in_table): New function.
+	(is_admin): Move from root.cc.
+	(read_mounts): New function.
+	(path_prefix_p): New function.
+	(cygpath): New function.
+	* mount.h: Define new functions and structure.
+	* root.cc (in_table): Move to mount.cc.
+	(do_root): Call read_mounts to initialize root stuff and mount table.
+	* site.cc (get_root_dir): Ditto.
+
 2001-05-09  Matt Hargett <matt@use.net>
 
 	* Makefile.in: Remove *.rc from clean.
