@@ -1,3 +1,8 @@
+2002-06-10  Robert Collins  <rbtcollins@hotmail.com>
+
+        * IniParseFindVisitor (IniParseFindVisitor::visitFile): Apply Max
+	Bowshers fix for the crash with a root level setup.ini.
+
 2002-06-05  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Branch for a new release.

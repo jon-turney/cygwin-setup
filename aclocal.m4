@@ -1,4 +1,4 @@
-# aclocal.m4 generated automatically by aclocal 1.6 -*- Autoconf -*-
+# aclocal.m4 generated automatically by aclocal 1.6.1 -*- Autoconf -*-
 
 # Copyright 1996, 1997, 1998, 1999, 2000, 2001, 2002
 # Free Software Foundation, Inc.
@@ -86,9 +86,9 @@ _AM_IF_OPTION([no-define],,
 # Some tools Automake needs.
 AC_REQUIRE([AM_SANITY_CHECK])dnl
 AC_REQUIRE([AC_ARG_PROGRAM])dnl
-AM_MISSING_PROG(ACLOCAL, "aclocal-${am__api_version}")
+AM_MISSING_PROG(ACLOCAL, aclocal-${am__api_version})
 AM_MISSING_PROG(AUTOCONF, autoconf)
-AM_MISSING_PROG(AUTOMAKE, "automake-${am__api_version}")
+AM_MISSING_PROG(AUTOMAKE, automake-${am__api_version})
 AM_MISSING_PROG(AUTOHEADER, autoheader)
 AM_MISSING_PROG(MAKEINFO, makeinfo)
 AM_MISSING_PROG(AMTAR, tar)
@@ -138,7 +138,7 @@ AC_DEFUN([AM_AUTOMAKE_VERSION],[am__api_version="1.6"])
 # Call AM_AUTOMAKE_VERSION so it can be traced.
 # This function is AC_REQUIREd by AC_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-	 [AM_AUTOMAKE_VERSION([1.6])])
+	 [AM_AUTOMAKE_VERSION([1.6.1])])
 
 # Helper functions for option handling.                    -*- Autoconf -*-
 
@@ -1417,7 +1417,7 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
   i=0
   testring="ABCD"
 
-  case $host_os in
+  case $build_os in
   msdosdjgpp*)
     # On DJGPP, this test can blow up pretty badly due to problems in libc
     # (any single argument exceeding 2000 bytes causes a buffer overrun
@@ -2236,6 +2236,12 @@ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
   case $host_vendor in
     sni)
       shlibpath_overrides_runpath=no
+      need_lib_prefix=no
+      export_dynamic_flag_spec='${wl}-Blargedynsym'
+      runpath_var=LD_RUN_PATH
+      ;;
+    siemens)
+      need_lib_prefix=no
       ;;
     motorola)
       need_lib_prefix=no
@@ -2868,6 +2874,9 @@ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
     lt_cv_deplibs_check_method="file_magic ELF [[0-9]][[0-9]]*-bit [[LM]]SB dynamic lib"
     lt_cv_file_magic_test_file=/lib/libc.so
     ;;
+  siemens)
+    lt_cv_deplibs_check_method=pass_all
+    ;;
   esac
   ;;
 
@@ -3403,7 +3412,7 @@ case $host_os in
     # as there is no search path for DLLs.
     _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
     _LT_AC_TAGVAR(allow_undefined_flag, $1)=
-    _LT_AC_TAGVAR(always_export_symbols, $1)=yes
+    _LT_AC_TAGVAR(always_export_symbols, $1)=no
 
     if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
       _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
@@ -3974,7 +3983,7 @@ if AC_TRY_EVAL(ac_compile); then
   done
 
   # Clean up.
-  rm -f a.out
+  rm -f a.out a.exe
 else
   echo "libtool.m4: error: problem compiling C++ test program"
 fi
@@ -5122,11 +5131,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
       ;;
 
     sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
-      if test "x$host_vendor" = xsni; then
-	_LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-LD'
-      else
-	_LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
-      fi
+      _LT_AC_TAGVAR(lt_prog_compiler_wl, $1)='-Wl,'
       _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-KPIC'
       _LT_AC_TAGVAR(lt_prog_compiler_static, $1)='-Bstatic'
       ;;
@@ -5306,7 +5311,7 @@ EOF
       # as there is no search path for DLLs.
       _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
       _LT_AC_TAGVAR(allow_undefined_flag, $1)=
-      _LT_AC_TAGVAR(always_export_symbols, $1)=yes
+      _LT_AC_TAGVAR(always_export_symbols, $1)=no
 
       if $LD --help 2>&1 | egrep 'auto-import' > /dev/null; then
         _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
@@ -5374,6 +5379,7 @@ EOF
 	   set dummy \$symbol;
 	   case \[$]# in
 	     2) echo "   \[$]2 @ \$_lt_hint ; " >> $output_objdir/$soname-def;;
+	     4) echo "   \[$]2 \[$]3 \[$]4 ; " >> $output_objdir/$soname-def; _lt_hint=`expr \$_lt_hint - 1`;;
 	     *) echo "   \[$]2 @ \$_lt_hint \[$]3 ; " >> $output_objdir/$soname-def;;
 	   esac;
 	   _lt_hint=`expr 1 + \$_lt_hint`;
@@ -5605,7 +5611,7 @@ EOF
       # hardcode_libdir_flag_spec is actually meaningless, as there is
       # no search path for DLLs.
       _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)=' '
-      _LT_AC_TAGVAR(allow_undefined_flag, $1)=unsupported
+      _LT_AC_TAGVAR(allow_undefined_flag, $1)=
       # Tell ltmain to make .lib files, not .a files.
       libext=lib
       # FIXME: Setting linknames here is a bad hack.
@@ -5852,13 +5858,23 @@ EOF
       ;;
 
     sysv4)
-      if test "x$host_vendor" = xsni; then
-	_LT_AC_TAGVAR(archive_cmds, $1)='$LD -G -Bsymbolic -h $soname -o $lib $libobjs $deplibs $linker_flags'
-	_LT_AC_TAGVAR(hardcode_direct, $1)=yes # is this really true???
-      else
-	_LT_AC_TAGVAR(archive_cmds, $1)='$LD -G -h $soname -o $lib $libobjs $deplibs $linker_flags'
-	_LT_AC_TAGVAR(hardcode_direct, $1)=no #Motorola manual says yes, but my tests say they lie
-      fi
+      case $host_vendor in
+	sni)
+	  _LT_AC_TAGVAR(archive_cmds, $1)='$LD -G -h $soname -o $lib $libobjs $deplibs $linker_flags'
+	  _LT_AC_TAGVAR(hardcode_direct, $1)=yes # is this really true???
+	;;
+	siemens)
+	  ## LD is ld it makes a PLAMLIB
+	  ## CC just makes a GrossModule.
+	  _LT_AC_TAGVAR(archive_cmds, $1)='$LD -G -o $lib $libobjs $deplibs $linker_flags'
+	  _LT_AC_TAGVAR(reload_cmds, $1)='$CC -r -o $output$reload_objs'
+	  _LT_AC_TAGVAR(hardcode_direct, $1)=no
+        ;;
+	motorola)
+	  _LT_AC_TAGVAR(archive_cmds, $1)='$LD -G -h $soname -o $lib $libobjs $deplibs $linker_flags'
+	  _LT_AC_TAGVAR(hardcode_direct, $1)=no #Motorola manual says yes, but my tests say they lie
+	;;
+      esac
       runpath_var='LD_RUN_PATH'
       _LT_AC_TAGVAR(hardcode_shlibpath_var, $1)=no
       ;;
@@ -6204,67 +6220,45 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_prog in sed gsed; do
+  for lt_ac_prog in sed gsed; do
     for ac_exec_ext in '' $ac_executable_extensions; do
-      if $as_executable_p "$as_dir/$ac_prog$ac_exec_ext"; then
-        _sed_list="$_sed_list $as_dir/$ac_prog$ac_exec_ext"
+      if $as_executable_p "$as_dir/$lt_ac_prog$ac_exec_ext"; then
+        lt_ac_sed_list="$lt_ac_sed_list $as_dir/$lt_ac_prog$ac_exec_ext"
       fi
     done
   done
 done
-
-  # Create a temporary directory, and hook for its removal unless debugging.
-$debug ||
-{
-  trap 'exit_status=$?; rm -rf $tmp && exit $exit_status' 0
-  trap '{ (exit 1); exit 1; }' 1 2 13 15
-}
-
-# Create a (secure) tmp directory for tmp files.
-: ${TMPDIR=/tmp}
-{
-  tmp=`(umask 077 && mktemp -d -q "$TMPDIR/sedXXXXXX") 2>/dev/null` &&
-  test -n "$tmp" && test -d "$tmp"
-}  ||
-{
-  tmp=$TMPDIR/sed$$-$RANDOM
-  (umask 077 && mkdir $tmp)
-} ||
-{
-   echo "$me: cannot create a temporary directory in $TMPDIR" >&2
-   { (exit 1); exit 1; }
-}
-  _max=0
-  _count=0
-  # Add /usr/xpg4/bin/sed as it is typically found on Solaris
-  # along with /bin/sed that truncates output.
-  for _sed in $_sed_list /usr/xpg4/bin/sed; do
-    test ! -f ${_sed} && break
-    cat /dev/null > "$tmp/sed.in"
-    _count=0
-    echo $ECHO_N "0123456789$ECHO_C" >"$tmp/sed.in"
-    # Check for GNU sed and select it if it is found.
-    if "${_sed}" --version 2>&1 < /dev/null | egrep '(GNU)' > /dev/null; then
-      lt_cv_path_SED=${_sed}
-      break;
+lt_ac_max=0
+lt_ac_count=0
+# Add /usr/xpg4/bin/sed as it is typically found on Solaris
+# along with /bin/sed that truncates output.
+for lt_ac_sed in $lt_ac_sed_list /usr/xpg4/bin/sed; do
+  test ! -f $lt_ac_sed && break
+  cat /dev/null > conftest.in
+  lt_ac_count=0
+  echo $ECHO_N "0123456789$ECHO_C" >conftest.in
+  # Check for GNU sed and select it if it is found.
+  if "$lt_ac_sed" --version 2>&1 < /dev/null | grep 'GNU' > /dev/null; then
+    lt_cv_path_SED=$lt_ac_sed
+    break;
+  fi
+  while true; do
+    cat conftest.in conftest.in >conftest.tmp
+    mv conftest.tmp conftest.in
+    cp conftest.in conftest.nl
+    echo >>conftest.nl
+    $lt_ac_sed -e 's/a$//' < conftest.nl >conftest.out || break
+    cmp -s conftest.out conftest.nl || break
+    # 10000 chars as input seems more than enough
+    test $lt_ac_count -gt 10 && break
+    lt_ac_count=`expr $lt_ac_count + 1`
+    if test $lt_ac_count -gt $lt_ac_max; then
+      lt_ac_max=$lt_ac_count
+      lt_cv_path_SED=$lt_ac_sed
     fi
-    while true; do
-      cat "$tmp/sed.in" "$tmp/sed.in" >"$tmp/sed.tmp"
-      mv "$tmp/sed.tmp" "$tmp/sed.in"
-      cp "$tmp/sed.in" "$tmp/sed.nl"
-      echo >>"$tmp/sed.nl"
-      ${_sed} -e 's/a$//' < "$tmp/sed.nl" >"$tmp/sed.out" || break
-      cmp -s "$tmp/sed.out" "$tmp/sed.nl" || break
-      # 10000 chars as input seems more than enough
-      test $_count -gt 10 && break
-      _count=`expr $_count + 1`
-      if test $_count -gt $_max; then
-        _max=$_count
-        lt_cv_path_SED=$_sed
-      fi
-    done
   done
-  rm -rf "$tmp"
+done
+SED=$lt_cv_path_SED
 ])
 AC_MSG_RESULT([$SED])
 ])
