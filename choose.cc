@@ -99,12 +99,15 @@ isinstalled (Package *pkg, int trust)
 	   strcmp (pkg->installed->version, pkg->info[trust].version) == 0;
 }
 
+/* Set the next action given a current action.  */
 static void
 set_action (Package *pkg, bool preinc)
 {
   pkg->srcpicked = 0;
   if (!pkg->action || preinc)
     ((int) pkg->action)++;
+
+  /* Exercise the action state machine. */
   for (;; ((int) pkg->action)++)
     switch (pkg->action)
       {
@@ -118,6 +121,8 @@ set_action (Package *pkg, bool preinc)
       case ACTION_PREV:
       case ACTION_CURR:
       case ACTION_TEST:
+	/* Try to find the next best action.  We may not have all of
+	   prev, curr, or test but we should have at least one of those. */
 	Info *inf;
 	inf = pkg->info + pkg->action;
 	if (inf->version && inf->install_exists)
@@ -127,6 +132,8 @@ set_action (Package *pkg, bool preinc)
 	    return;
 	  }
 	break;
+      /* ACTION_SAME_* are used when the installed version is the same
+	 as the given action. */
       case ACTION_SAME_CURR:
       case ACTION_SAME_TEST:
 	(int) pkg->action -= ACTION_SAME + 1;	/* revert to ACTION_CURR, etc. */
@@ -152,6 +159,7 @@ set_action (Package *pkg, bool preinc)
       }
 }
 
+/* Return an appropriate caption given the current action. */
 const char *
 choose_caption (Package *pkg)
 {
@@ -434,6 +442,8 @@ check_existence (Info *inf, int check_src)
   return 0;
 }
 
+/* Iterate over the package list, setting the "existence" flags
+   for the source or binary. */
 static void
 set_existence ()
 {
@@ -699,6 +709,7 @@ find_tar_ext (const char *path)
   return p - path;
 }
 
+/* Parse a filename into package, version, and extension components. */
 int
 parse_filename (const char *in_fn, fileparse& f)
 {
@@ -762,11 +773,12 @@ parse_filename (const char *in_fn, fileparse& f)
   return 1;
 }
 
+/* Return a pointer to a package given the name. */
 Package *
 getpkgbyname (const char *pkgname)
 {
   for (int i = 0; i < npackages; i++)
-    if (strcmp (package[i].name, pkgname) == 0)
+    if (strcasecmp (package[i].name, pkgname) == 0)
       return package + i;
 
   return NULL;

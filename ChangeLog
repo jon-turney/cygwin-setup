@@ -1,3 +1,8 @@
+Wed Jun 13 23:33:08 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc:  Add some comments.
+	(getpkgbyname): Use strcasecmp for comparisons.
+
 Wed Jun 13 16:07:00 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* install.cc (do_install): Avoid checking for download action if
