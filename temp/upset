@@ -1,5 +1,8 @@
 #!/usr/bin/perl -s
 
+use FindBin;
+use lib "$FindBin::Bin";
+
 use Version;
 use vars qw'$d';
 use strict;
@@ -40,10 +43,12 @@ while (<>) {
 	warn "Unknown setup construct at $.\n";
 	next;
     };
+    0 while $text =~ s/\s+$//g;
     if ($text =~ /^"[^"]*$/) {
 	$text .= "\n";
 	do {
 	    $_ = <>;
+	    0 while $_ =~ s/\s+\n/\n/g;
 	    $text .= $_;
 	} while (!/"/);
 	chomp $text;
@@ -110,20 +115,23 @@ sub setup_hint($$) {
 	    warn "Unknown setup construct at $f:$.\n";
 	    next;
 	};
+	0 while $text =~ s/\s+$//g;
 	if ($text =~ /^"[^"]*$/) {
 	    $text .= "\n";
 	    do {
 		$_ = <F>;
+		0 while $_ =~ s/\s+\n/\n/g;
 		$text .= $_;
-	    } while (!/"/);
+	    } while (!/"/o);
 	    chomp $text;
 	};
+	$text = "\"$text\"" if $text =~ /\s/o && $text !~ /^"/o;
 	if ($key =~ $main::replacekeys) {
 	    $pkgbase->{''}{$key} = $text;
 	} else {
 	    $key = '' if $key eq 'curr';
 	    $text = '0' if $text eq '-';
-	    my ($norver, $ver) = (Version::Normalize(($text =~ /[a-z]/ ? '' : 'dummy') . $text))[1,2];
+	    my ($norver, $ver) = (Version::Normalize(($text =~ /^[a-z]/ ? '' : 'dummy-') . $text))[1,2];
 	    push(@{$pkgbase->{'override'}}, {'n'=>$key, 'ver'=>$ver, 'norver'=>$norver});
 	}
     };
@@ -131,8 +139,6 @@ sub setup_hint($$) {
 }
 
 sub versort {
-    my $namepat = shift;
-    $namepat =~ s/^((?:\\.|[^[\[\].*])*)(.*?)((?:\\.|[^[\[\].*])*)$/$1\($2\)$3/;
     my ($key, %vals, %fns, @ret, $matched, $rawver);
     local $_;
     foreach my $f (@_) {
@@ -184,7 +190,7 @@ sub dir_update(\%) {
 	}
 	next unless defined($n);
 	$pkgbase->{$n}{'version'} = $ver;
-	$pkgbase->{$n}{$key} = $f;
+	$pkgbase->{$n}{$key} = $f . ' ' . -s $f;
     }
 }
 
