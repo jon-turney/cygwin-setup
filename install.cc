@@ -523,6 +523,7 @@ do_install (HINSTANCE h)
   create_mount ("/", root_dir, istext, issystem);
   create_mount ("/usr/bin", concat (root_dir, "/bin", 0), istext, issystem);
   create_mount ("/usr/lib", concat (root_dir, "/lib", 0), istext, issystem);
+  set_cygdrive_flags (istext, issystem);
 
   if (errors)
     exit_msg = IDS_INSTALL_INCOMPLETE;

@@ -1,3 +1,13 @@
+Sun Nov 5 12:51:42 2000  Jason Tishler  <jt@dothill.com>
+
+	* install.cc (do_install): Add call to set_cygdrive_flags to sync
+	the mount modes.
+	* mount.cc (set_cygdrive_flags): New function.
+	(get_cygdrive_flags): Ditto.
+	(default_cygdrive): Ditto.
+	(set_cygdrive_flags): Ditto.
+	* mount.h: Add prototype for set_cygdrive_flags.
+
 2000-10-23  DJ Delorie  <dj@redhat.com>
 
 	* ini.h: add source actions

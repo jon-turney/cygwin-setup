@@ -139,3 +139,90 @@ remove_mount (char *posix)
   remove1 (HKEY_LOCAL_MACHINE, posix);
   remove1 (HKEY_CURRENT_USER, posix);
 }
+
+static void
+set_cygdrive_flags (HKEY key, int istext, DWORD cygdrive_flags)
+{
+  int cur_istext = (cygdrive_flags & MOUNT_BINARY) ? 0 : 1;
+  if (cur_istext != istext)
+    {
+      if (!istext)
+	cygdrive_flags |= MOUNT_BINARY;
+      else
+	cygdrive_flags &= ~MOUNT_BINARY;
+      RegSetValueEx (key, CYGWIN_INFO_CYGDRIVE_FLAGS, 0, REG_DWORD,
+		     (BYTE *)&cygdrive_flags, sizeof (cygdrive_flags));
+    }
+}
+
+static LONG
+get_cygdrive_flags (HKEY key, DWORD *cygdrive_flags)
+{
+  DWORD retvallen = sizeof(*cygdrive_flags);
+  LONG status = RegQueryValueEx (key, CYGWIN_INFO_CYGDRIVE_FLAGS, 0, 0,
+				 (BYTE *)cygdrive_flags, &retvallen);
+  return status;
+}
+
+static DWORD
+default_cygdrive(HKEY key)
+{
+  RegSetValueEx (key, CYGWIN_INFO_CYGDRIVE_PREFIX, 0, REG_SZ,
+		 (BYTE *)CYGWIN_INFO_CYGDRIVE_DEFAULT_PREFIX,
+		 strlen (CYGWIN_INFO_CYGDRIVE_DEFAULT_PREFIX) + 1);
+  DWORD cygdrive_flags = MOUNT_AUTO;
+  RegSetValueEx (key, CYGWIN_INFO_CYGDRIVE_FLAGS, 0, REG_DWORD,
+		 (BYTE *)&cygdrive_flags, sizeof (cygdrive_flags));
+  return cygdrive_flags;
+}
+
+void
+set_cygdrive_flags (int istext, int issystem)
+{
+  int found_system = 0;
+
+  char buf[1000];
+  sprintf (buf, "Software\\%s\\%s\\%s",
+	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
+	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
+	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME);
+
+  if (issystem)
+    {
+      HKEY key;
+      DWORD disposition;
+      LONG status = RegCreateKeyEx (HKEY_LOCAL_MACHINE, buf, 0, 0, 0,
+      				    KEY_ALL_ACCESS, 0, &key, &disposition);
+      if (status == ERROR_SUCCESS)
+	{
+	  DWORD cygdrive_flags = 0;
+	  status = get_cygdrive_flags (key, &cygdrive_flags);
+	  if (status == ERROR_SUCCESS)
+	    {
+	      set_cygdrive_flags (key, istext, cygdrive_flags);
+	      found_system = 1;
+	    }
+	  RegCloseKey(key);
+	}
+    }
+
+  HKEY key;
+  DWORD disposition;
+  LONG status = RegCreateKeyEx (HKEY_CURRENT_USER, buf, 0, 0, 0, KEY_ALL_ACCESS,
+				0, &key, &disposition);
+  if (status != ERROR_SUCCESS)
+    fatal ("set_cygdrive_flags");
+
+  DWORD cygdrive_flags = 0;
+  status = get_cygdrive_flags (key, &cygdrive_flags);
+  if (status == ERROR_FILE_NOT_FOUND && !found_system)
+    {
+      cygdrive_flags = default_cygdrive(key);
+      status = ERROR_SUCCESS;
+    }
+
+  if (status == ERROR_SUCCESS)
+    set_cygdrive_flags (key, istext, cygdrive_flags);
+
+  RegCloseKey(key);
+}
