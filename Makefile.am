@@ -192,8 +192,6 @@ setup_SOURCES = \
 	LogSingleton.cc \
 	LogSingleton.h \
 	main.cc \
-	md5.c \
-	md5.h \
 	MD5++.cc \
 	MD5++.h \
 	mkdir.cc \
@@ -277,7 +275,9 @@ setup_SOURCES = \
 	win32.cc \
 	win32.h \
 	window.cc \
-	window.h
+	window.h \
+	libmd5-rfc/md5.c \
+	libmd5-rfc/md5.h
 	
 setup_version.c : $(srcdir)/ChangeLog Makefile
 	V=`sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \

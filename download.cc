@@ -49,7 +49,7 @@ static const char *cvsid =
 
 #include "threebar.h"
 
-#include "md5.h"
+#include "libmd5-rfc/md5.h"
 
 #include "Exception.h"
 

@@ -61,7 +61,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 
 #include "threebar.h"
 
-#include "md5.h"
+#include "libmd5-rfc/md5.h"
 
 #include "Exception.h"
 #include "getopt++/BoolOption.h"
