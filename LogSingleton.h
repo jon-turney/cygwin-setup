@@ -26,7 +26,7 @@ enum log_level {
 };
 
 // Logging class. Default logging level is PLAIN.
-class LogSingleton : public ostream
+class LogSingleton : public std::ostream
 {
 public:
   // Singleton support
@@ -40,9 +40,9 @@ public:
   __attribute__ ((noreturn)) virtual void exit (int const exit_code) = 0;
   virtual ~LogSingleton();
   // get a specific verbosity stream.
-  virtual ostream &operator() (enum log_level level) = 0;
+  virtual std::ostream &operator() (enum log_level level) = 0;
 
-  friend ostream& endLog(ostream& outs);
+  friend std::ostream& endLog(std::ostream& outs);
   
 protected:
   LogSingleton(); // Only child classs can be created.
@@ -54,7 +54,7 @@ private:
 };
 
 /* End of a Log comment */
-extern ostream& endLog(ostream& outs);
+extern std::ostream& endLog(std::ostream& outs);
 //extern ostream& endLog(ostream& outs);
 
 #define log(X) LogSingleton::GetInstance()(X)

@@ -1,5 +1,9 @@
 2002-11-04  Max Bowsher  <maxb@ukf.net>
 
+	* LogSingleton.h: Add 'std::' where needed.
+
+2002-11-04  Max Bowsher  <maxb@ukf.net>
+
 	* archive_tar_file.cc: Include <algorithm>.
 	Change min(a,b) to std::min(a,b)
 	* compress_bz.cc: Ditto.
