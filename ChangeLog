@@ -1,4 +1,20 @@
-2000-09-05  Brian Keener  <bkeener@thesoftwaresource.com>
+2000-09-06  Andrej Borsenkow  <Andrej.Borsenkow@mow.siemens.ru>
+
+	* localdir.cc: new, local package directory selection dialog; cd
+	into selected directory
+	* Makefile.in (OBJS): add localdir.o
+	* dialog.h: add prototype for do_local_dir
+	* main.cc (WinMain): initialize local_dir to cwd; add call to
+	do_local_dir
+	* net.cc (dialog_cmd): make DO_LOCAL_DIR next dialog
+	* source.cc (dialog_cmd): ditto
+	* res.rc: add DO_LOCAL_DIR dialog; remove "current directory" from
+	presented choices in IDD_SOURCE; add IDS_ERR_CHDIR error string
+	* resource.h: defines for DO_LOCAL_DIR dialog; define IDS_ERR_CHDIR
+	* root.cc (dialog_cmd): make DO_LOCAL_DIR previous dialog
+	* state.h: add local_dir variable
+
+2000-09-06  Brian Keener  <bkeener@thesoftwaresource.com>
 
 	* desktop.cc: added logic to handle to the new dialog and to
 	default the setting for the new checkboxes based on whether the

@@ -32,6 +32,7 @@ D(do_download);
 D(do_fromcwd);
 D(do_ini);
 D(do_install);
+D(do_local_dir);
 D(do_net);
 D(do_other);
 D(do_postinstall);

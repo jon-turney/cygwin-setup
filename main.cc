@@ -61,6 +61,7 @@ WinMain (HINSTANCE h,
 
   char cwd[_MAX_PATH];
   GetCurrentDirectory (sizeof (cwd), cwd);
+  local_dir = strdup (cwd);
   log (0, "Current Directory: %s", cwd);
 
   while (next_dialog)
@@ -69,6 +70,7 @@ WinMain (HINSTANCE h,
 	{
 	case IDD_SPLASH:	do_splash (h);	break;
 	case IDD_SOURCE:	do_source (h);	break;
+	case IDD_LOCAL_DIR:	do_local_dir (h); break;
 	case IDD_ROOT:		do_root (h);	break;
 	case IDD_NET:		do_net (h);	break;
 	case IDD_SITE:		do_site (h);	break;

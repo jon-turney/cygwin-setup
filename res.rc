@@ -36,13 +36,27 @@ BEGIN
     DEFPUSHBUTTON   "Next -->",IDOK,100,75,45,15,WS_DISABLED
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
     ICON            IDI_CYGWIN,-1,5,5,20,20
-    CONTROL         "Download from Internet to Current Directory",
+    CONTROL         "Download from Internet",
                     IDC_SOURCE_DOWNLOAD,"Button",BS_AUTORADIOBUTTON,55,15,
                     152,10
     CONTROL         "Install from Internet",IDC_SOURCE_NETINST,"Button",
                     BS_AUTORADIOBUTTON,55,30,75,10
-    CONTROL         "Install from Current Directory",IDC_SOURCE_CWD,"Button",
+    CONTROL         "Install from Local Directory",IDC_SOURCE_CWD,"Button",
                     BS_AUTORADIOBUTTON,55,45,104,10
+END
+
+IDD_LOCAL_DIR DIALOG DISCARDABLE  0, 0, 215, 95
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Local package directory"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Next -->",IDOK,100,75,45,15
+    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+    EDITTEXT        IDC_LOCAL_DIR,55,25,127,12,ES_AUTOHSCROLL
+    LTEXT           "Local Package Directory",IDC_STATIC,55,15,85,11
+    PUSHBUTTON      "<-- Back",IDC_BACK,55,75,45,15
+    ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
+    PUSHBUTTON      "Browse...",IDC_LOCAL_DIR_BROWSE,150,10,34,14
 END
 
 IDD_ROOT DIALOG DISCARDABLE  0, 0, 215, 95
@@ -352,6 +366,7 @@ BEGIN
     IDS_NOLOGFILE           "Cannot open log file %s for writing"
     IDS_UNINSTALL_COMPLETE  "Uninstalls complete."
     IDS_WININET             "Unable to find or load the Internet Explorer 5 DLLs"
+    IDS_ERR_CHDIR           "Could not change dir to %s"
 END
 
 #endif    // English (U.S.) resources

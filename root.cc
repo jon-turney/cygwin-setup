@@ -202,7 +202,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDC_BACK:
       save_dialog (h);
-      NEXT (IDD_SOURCE);
+      NEXT (IDD_LOCAL_DIR);
       break;
 
     case IDCANCEL:

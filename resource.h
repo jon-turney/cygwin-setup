@@ -22,6 +22,7 @@
 #define IDS_NOLOGFILE                   20
 #define IDS_UNINSTALL_COMPLETE          21
 #define IDS_WININET                     22
+#define IDS_ERR_CHDIR			23
 #define IDD_ROOT                        101
 #define IDD_SOURCE                      102
 #define IDD_OTHER_URL                   103
@@ -43,6 +44,7 @@
 #define IDB_RTARROW                     119
 #define IDI_SPIN                        120
 #define IDI_CYGWIN                      121
+#define IDD_LOCAL_DIR                   122
 #define IDC_SOURCE_DOWNLOAD             1000
 #define IDC_SOURCE_NETINST              1001
 #define IDC_SOURCE_CWD                  1002
@@ -82,6 +84,8 @@
 #define IDC_INS_ACTION                  1040
 #define IDC_ROOT_DESKTOP                1041
 #define IDC_ROOT_MENU                   1042
+#define IDC_LOCAL_DIR_BROWSE            1043
+#define IDC_LOCAL_DIR                   1044
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -90,9 +94,9 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        122
+#define _APS_NEXT_RESOURCE_VALUE        123
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1043
+#define _APS_NEXT_CONTROL_VALUE         1045
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
