@@ -1,5 +1,9 @@
 2003-03-14  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
+	* install.cc (replace_one): Clear Text3.
+
+2003-03-14  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
 	* install.cc (install_one_source): Add logging for successful
 	replace-on-reboot scheduling. Factor out duplicate code.
 	Set rebootneeded on Win9x.

@@ -150,6 +150,7 @@ replace_one (packagemeta & pkg)
   int errors = 0;
   Progress.SetText1 ("Replacing...");
   Progress.SetText2 (pkg.name.cstr_oneuse());
+  Progress.SetText3 ("");
   log (LOG_PLAIN, String( "Replacing ")  + pkg.name);
   pkg.uninstall ();
 
