@@ -1211,7 +1211,7 @@ mkmount (const char *mountexedir, const char *root, const char *dospath,
   return xcreate_process (1, NULL, NULL, NULL, buffer) != 0;
 }
 
-static char rev[] = " $Revision$ ";
+static char rev[] = "$Revision$ ";
 
 int
 main ()
@@ -1231,8 +1231,8 @@ main ()
     revn = "";
   else
     {
-      revn = rev;
-      revn[1] = '(';
+      revn--;
+      memcpy (revn, " (v", 3);
       *p = ')';
       p[1] = '\0';
     }
