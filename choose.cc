@@ -492,11 +492,6 @@ create_listview (HWND dlg, RECT *r)
   headers[2].x = headers[1].x + headers[1].width + HMARGIN;
 
   set_full_list (lv, full_list);
-  if (!full_list && nindexes == 0)
-    {
-      full_list = !full_list;
-      set_full_list (lv, full_list);
-    }
   default_trust (lv, TRUST_CURR);
 }
 
@@ -594,7 +589,7 @@ base (char *s)
 	rv = s+1;
       s++;
     }
-  return s;
+  return rv;
 }
 
 static void
@@ -636,7 +631,7 @@ read_installed_db ()
 	    if (extra[i].installed_ver == 0) /* still */
 	      {
 		char *v, *d;
-		for (v=inst; *v; v++)
+		for (v=base (inst); *v; v++)
 		  if (*v == '-' && isdigit(v[1]))
 		    {
 		      v++;
@@ -693,7 +688,8 @@ do_choose (HINSTANCE h)
 
   register_windows (h);
 
-  read_installed_db ();
+  if (source != IDC_SOURCE_DOWNLOAD)
+    read_installed_db ();
   build_labels ();
 
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_CHOOSE), 0, dialog_proc);

@@ -1,3 +1,11 @@
+2000-08-24  DJ Delorie  <dj@redhat.com>
+
+	* fromcwd.cc (canonicalize_version): use multiple buffers so that multiple
+	calls won't use the same buffer.
+	* choose.cc (create_listview): don't default to full list if no changes
+	(base): return computed value, not temporary :-(
+	(do_choose): don't use installed.db if we're only downloading.
+
 2000-08-23  DJ Delorie  <dj@redhat.com>
 
 	* nio-ie5.cc (NetIO_IE5): Fix authentication logic

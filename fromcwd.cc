@@ -55,9 +55,13 @@ is_test_version (char *v)
 
 static char *canonicalize_version (char *v)
 {
-  static char nv[100];
-  char *np=nv, *dp, *ov = v;
+  static char nv[3][100];
+  static int idx = 0;
+  char *np, *dp, *ov = v;
   int i;
+
+  idx = (idx+1) % 3;
+  np = nv[idx];
 
   while (*v)
     {
@@ -73,7 +77,7 @@ static char *canonicalize_version (char *v)
 	*np++ = *v++;
     }
   *np++ = 0;
-  return nv;
+  return nv[idx];
 }
 
 static void
