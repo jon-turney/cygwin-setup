@@ -1,6 +1,6 @@
 Wed Jun 13 16:07:00 2001  Christopher Faylor <cgf@cygnus.com>
 
-	* install.cc (do_install): Avoid checking for download action of
+	* install.cc (do_install): Avoid checking for download action if
 	package wasn't currently retrieved.
 
 Wed Jun 13 11:27:22 2001  Christopher Faylor <cgf@cygnus.com>
