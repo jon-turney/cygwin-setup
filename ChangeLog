@@ -1,5 +1,15 @@
 2003-04-01  Robert Collins  <rbtcollins@hotmail.com>
 
+	* main.cc (NTSecurity::setDefaultSecurity): Extract esid initialisation.
+	Move local variables to just before first use.
+	SetTokenInformationFailures where being handled inconsistently.
+	Remove assignments from if statements.
+	(NTSecurity::esid): Rename to everyOneSID.
+	(NTSecurity::initialiseEveryOneSID): new method.
+	(NTSecurity::setDefaultDACL): Extract method for default DACL logic.
+
+2003-04-01  Robert Collins  <rbtcollins@hotmail.com>
+
 	* main.cc (SIDWrapper): Manage SID memory.
 	(HANDLEWrapper): Likewise for HANDLES.
 	(NTSecurity): Worker class for set_default_sec().
