@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001, Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #include "zlib/zlib.h"
 #include "tar.h"
@@ -33,6 +31,8 @@ static char *cvsid = "\n%%% $Id$\n";
 #define FACTOR (0x19db1ded53ea710LL)
 #define NSPERSEC 10000000LL
 #define SYMLINK_COOKIE "!<symlink>"
+
+extern DWORD get_file_size (char *);
 
 typedef struct {
   char name[100];               /*   0 */
@@ -92,14 +92,14 @@ xstrdup (char *c)
 int
 tar_open (char *pathname)
 {
-  struct stat s;
   if (_tar_vfile == 0)
     _tar_vfile = stderr;
 
   vp2 (_tar_vfile, "tar: open `%s'\n", pathname);
-  if (stat (pathname, &s) < 0)
+  DWORD size;
+  if ((size = get_file_size (pathname)) == 0)
     return 1;
-  _tar_file_size = s.st_size;
+  _tar_file_size = size;
 
   g = gzopen (pathname, "rb");
   if (sizeof (tar_header) != 512)
