@@ -59,6 +59,7 @@ public:
   void pick(bool const &newValue){/* Ignore attempts to pick this!. Throw an exception here if you want to detect such attemtps instead */}
   virtual void addScript(Script const &) {}
   virtual std::vector <Script> &scripts() { scripts_.clear();  return scripts_;}
+  virtual bool accessible () const {return false;}
   private:
     std::vector <Script> scripts_;
 };
@@ -514,7 +515,7 @@ _packageversion::sourcePackage ()
 bool
 _packageversion::accessible() const
 {
-  bool cached = true;
+  bool cached (sources.size() > 0);
   for (vector<packagesource>::const_iterator i = sources.begin();
        i!=sources.end(); ++i)
     if (!i->Cached ())
@@ -528,7 +529,7 @@ _packageversion::accessible() const
       i!=sources.end(); ++i)
     if (i->sites.size() || i->Cached ())
       retrievable += 1;
-  return retrievable == sources.size();
+  return retrievable > 0;
 }
 
 bool
