@@ -35,7 +35,7 @@ CC		:= @CC@
 CC_FOR_TARGET	:= $(CC)
 CXX		:= @CXX@
 
-CFLAGS		:= @CFLAGS@ -nostdinc
+CFLAGS		:= @CFLAGS@
 CXXFLAGS	:= @CXXFLAGS@ $(CFLAGS) -fno-exceptions -fno-rtti
 CXX		:= @CXX@
 
@@ -44,7 +44,7 @@ OBJCOPY		:= @OBJCOPY@
 
 include $(srcdir)/../Makefile.common
 
-MINGW_INCLUDES	:= -I. -I$(srcdir) -I$(mingw_source)/include -I$(w32api_include) -I$(updir)/bz2lib
+MINGW_INCLUDES	:= -I. -I$(srcdir) -I$(mingw_source)/include $(w32api_include) -I$(updir)/bz2lib
 
 MINGW_CXXFLAGS	:= -MMD $(CXXFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
 MINGW_CFLAGS	:= -MMD $(CFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
@@ -163,10 +163,10 @@ version.c : $(srcdir)/ChangeLog Makefile
 
 %.o: %.rc
 ifdef VERBOSE
-	$(WINDRES) --include-dir $(srcdir) --include-dir $(w32api_include) -o $@ $<
+	$(WINDRES) --include-dir $(srcdir) --include-dir $(w32api_source)/include -o $@ $<
 else
 	@echo $(WINDRES) -o $@ $(<F)
-	@$(WINDRES) --include-dir $(srcdir) --include-dir $(w32api_include) -o $@ $<
+	@$(WINDRES) --include-dir $(srcdir) --include-dir $(w32api_source)/include -o $@ $<
 endif
 
 %.o: %.c

@@ -46,6 +46,8 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #include "port.h"
 
+#define alloca __builtin_alloca
+
 #define HMARGIN	10
 #define ROW_MARGIN	5
 #define ICON_MARGIN	4
@@ -281,10 +283,14 @@ paint (HWND hwnd)
       BitBlt (hdc, x + headers[SRC_COL].x, by, 11, 11,
 	      bitmap_dc, 0, 0, SRCCOPY);
 
+      s = package[i].name;
       if (package[i].sdesc)
-	s = package[i].sdesc;
-      else
-	s = package[i].name;
+	{
+	  char *news = (char *) alloca (strlen (s) + strlen (package[i].sdesc)
+	      	       + sizeof (": "));
+	  sprintf (news, "%s: %s", s, package[i].sdesc);
+	  s = news;
+	}
       TextOut (hdc, x + headers[PACKAGE_COL].x, r, s, strlen (s));
     }
 

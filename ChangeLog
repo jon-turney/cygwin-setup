@@ -1,3 +1,9 @@
+2001-10-16  Christopher Faylor  <cgf@redhat.com>
+
+	* choose.cc (paint): Add package name to sdesc for display.
+	* res.rc: Enlarge chooser screen.
+	* Makefile.in: Accomodate new gcc.
+
 Sun Aug 26 12:50:01 2001  John Marshall  <jmarshall@acm.org>
 
 	* fromcwd.cc (found_file): Use correct package name when adding an
