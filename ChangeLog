@@ -1,3 +1,13 @@
+2002-01-26  Robert Collins  <rbtcollins@hotmail.com>
+
+	* filemanip.cc (find_tar_ext): Add a descriptive comment.
+
+2002-01-25  Michael A Chase <mchase@ix.netcom.com>
+
+	* filemanip.cc (find_tar_ext): Clean up tests for .tar.gz and .tar.
+	* fromcwd.cc (do_fromcwd): Expand FIXME comment in source file check.
+	* install.cc (install_one_source): Add space between words in log() call.
+  
 2002-01-22  Robert Collins  <rbtcollins@hotmail.com>
 
 	* log.cc (exit_setup): When saving to the download dir, explicity specify

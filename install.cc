@@ -184,7 +184,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
   char msg[64];
   strcpy (msg, "Installing");
   Progress.SetText1 (msg);
-  log (0, "%s%s", msg, source.Cached ());
+  log (0, "%s %s", msg, source.Cached ());
   io_stream *tmp = io_stream::open (source.Cached (), "rb");
   archive *thefile = 0;
   if (tmp)

@@ -61,18 +61,22 @@ base (const char *s)
   return (char *) rv;
 }
 
+/* returns the number of characters of path that
+ * precede the extension
+ */
 int
 find_tar_ext (const char *path)
 {
   char *end = strchr (path, '\0');
   /* check in longest first order */
-  char *ext = strstr (path, ".tar.bz2");
-  if (ext)
-    return (end - ext) == 8 ? ext - path : 0;
-  if ((ext = strstr (path, ".tar.gz")));
-  return (end - ext) == 7 ? ext - path : 0;
-  if ((ext = strstr (path, ".tar")));
-  return (end - ext) == 4 ? ext - path : 0;
+  char *ext;
+  if ((ext = strstr (path, ".tar.bz2")) && (end - ext) == 8)
+    return ext - path;
+  if ((ext = strstr (path, ".tar.gz")) && (end - ext) == 7)
+    return ext - path;
+  if ((ext = strstr (path, ".tar")) && (end - ext) == 4)
+    return ext - path;
+  return 0;
 }
 
 /* Parse a filename into package, version, and extension components. */

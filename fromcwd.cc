@@ -164,7 +164,7 @@ do_fromcwd (HINSTANCE h, HWND owner)
   find (".", found_file);
 
 #if 0
-  // Reinstate this FIXME: 
+  // Reinstate this FIXME: Replace obsolete structures first
   // Now see about source tarballs
   int i, t;
   packagemeta *p;
