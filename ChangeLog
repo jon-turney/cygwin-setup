@@ -1,5 +1,9 @@
 2002-01-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* res.rc (IDD_LOCAL_DIR): Fix typo reported by Rene <Hoeck@extern.lrz-muenchen.de>
+
+2002-01-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* README: Update Todo's.
 	* list.h: Run indent.
 	(list): New methods checksize and insert to reduce code duplication.
