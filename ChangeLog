@@ -1,5 +1,9 @@
 2003-03-10  Robert Collins  <rbtcollins@hotmail.com>
 
+	* UserSettings.cc (UserSettings::init): Really initialize all members.
+
+2003-03-10  Robert Collins  <rbtcollins@hotmail.com>
+
 	* Exception.h: Add a logic error exception id.
 	* Makefile.am: Add new sources.
 	* UserSettings.cc: New file.

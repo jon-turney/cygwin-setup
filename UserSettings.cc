@@ -47,6 +47,7 @@ UserSettings::Instance()
 void
 UserSettings::init ()
 {
+  *this = UserSettings();
   inited = 42;
 }
 
