@@ -1,3 +1,12 @@
+2004-12-23  Max Bowsher  <maxb@ukf.net>
+
+	* choose.cc (ChooserPage::OnNext): Relegate some overly verbose
+	logging to an #ifdef DEBUG section.
+	* geturl.h (dismiss_url_status_dialog): Remove stale function
+	declaration, for which there is no definition.
+	* io_stream_cygfile.cc (io_stream_cygfile::io_stream_cygfile):
+	Motivated by the recent unexplained hang bug, add some extra logging.
+
 2004-11-22  Max Bowsher  <maxb@ukf.net>
 
 	* MD5++.cc, MD5++.h: Remove this class.

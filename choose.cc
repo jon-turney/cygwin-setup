@@ -178,7 +178,9 @@ ChooserPage::logResults()
 long
 ChooserPage::OnNext ()
 {
+#ifdef DEBUG
   logResults();
+#endif
 
   if (source == IDC_SOURCE_CWD)
     {

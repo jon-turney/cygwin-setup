@@ -121,21 +121,30 @@ io_stream_cygfile::io_stream_cygfile (String const &name, String const &mode) : 
 {
   errno = 0;
   if (!name.size() || !mode.size())
+  {
+    log(LOG_TIMESTAMP, "io_stream_cygfile: Bad parameters");
     return;
+  }
 
   /* do this every time because the mount points may change due to fwd/back button use...
    * TODO: make this less...manual
    */
   get_root_dir_now ();
   if (!get_root_dir ().size())
+  {
     /* TODO: assign a errno for "no mount table :} " */
+    log(LOG_TIMESTAMP, "io_stream_cygfile: Error reading mounts");
     return;
+  }
 
   fname = cygpath (normalise(name));
   lmode = mode;
   fp = fopen (fname.cstr_oneuse(), mode.cstr_oneuse());
   if (!fp)
+  {
     lasterr = errno;
+    log(LOG_TIMESTAMP, String("io_stream_cygfile: fopen failed") + String(errno) + " " + strerror(errno));
+  }
 }
 
 io_stream_cygfile::~io_stream_cygfile ()
