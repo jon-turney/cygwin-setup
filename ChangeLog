@@ -1,3 +1,8 @@
+Thu Jul  5 00:34:23 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (scan2): Ensure that older versions do not show up in
+	"Test" slot.
+
 Mon Jul  2 15:47:59 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* choose.cc (set_action): Allow "Skip" action if trust != installed.
