@@ -1,5 +1,12 @@
 2002-07-08  Robert Collins  <rbtcollins@hotmail.com>
 
+	* install.cc (NoReplaceOnReboot): New command line option to prevent
+	replacing in use files.
+	(install_one_source): Check the option and use it.
+	* README: Update TODO lists.
+
+2002-07-08  Robert Collins  <rbtcollins@hotmail.com>
+
 	* PickCategoryLine.cc: Change bucket to use STL container syntax 
 	throughout.
 	(PickCategoryLine::paint): Use new Category type syntax.

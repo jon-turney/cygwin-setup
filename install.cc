@@ -65,12 +65,17 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "md5.h"
 
 #include "Exception.h"
+#include "getopt++/BoolOption.h"
 
 extern ThreeBarProgressPage Progress;
 
 static int total_bytes = 0;
 static int total_bytes_sofar = 0;
 static int package_bytes = 0;
+
+static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot", 
+				     "Disable replacing in-use files on next "
+				     "reboot.");
 
 static void
 init_dialog ()
@@ -243,6 +248,13 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 	  log (LOG_BABBLE, String("Installing file ") + prefixURL + prefixPath + fn);
 	  if (archive::extract_file (thefile, prefixURL, prefixPath) != 0)
 	    {
+	      if (NoReplaceOnReboot)
+		{
+		  ++errors;
+		  log (LOG_PLAIN, String("Not replacing in-use file ") +
+		       prefixURL + prefixPath + fn);
+		}
+	      else
 	      //extract to temp location
 	      if (archive::extract_file (thefile, prefixURL, prefixPath, ".new") != 0)
 		{
