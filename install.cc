@@ -487,7 +487,6 @@ do_install_thread (HINSTANCE h, HWND owner)
 	{
 	  if (pkg.desired.picked())
 	    {
-	      int do_skip = 0;
 	      try
 		{
 		  md5_one (*pkg.desired.source ());
@@ -495,30 +494,23 @@ do_install_thread (HINSTANCE h, HWND owner)
 	      catch (Exception *e)
 		{
 		  if (yesno (owner, IDS_SKIP_PACKAGE, e->what()) == IDYES)
-		    {
-		      do_skip = 1;
 		      pkg.desired.pick (false);
-		    }
 		}
-	      if (do_skip != 0)
+	      if (pkg.desired.picked())
 		total_bytes += pkg.desired.source()->size;
 	    }
 	  if (pkg.desired.sourcePackage ().picked())
 	    {
-	      int do_skip = 0;
 	      try
 		{
 		  md5_one (*pkg.desired.sourcePackage ().source ());
 		}
 	      catch (Exception *e)
 		{
-		  if (yesno (owner, IDS_CORRUPT_PACKAGE, e->what()) == IDYES)
-		    {
-		      do_skip = 1;
+		  if (yesno (owner, IDS_SKIP_PACKAGE, e->what()) == IDYES)
 		      pkg.desired.sourcePackage ().pick (false);
-		    }
 		}
-	      if (do_skip != 0)
+	      if (pkg.desired.sourcePackage().picked())
 	        total_bytes += pkg.desired.sourcePackage ().source()->size;
 	    }
 	}

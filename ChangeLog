@@ -1,3 +1,16 @@
+2003-03-13  Robert Collins  <rbtcollins@hotmail.com>
+
+	* install.cc (do_install_thread): Use a query method rather than temp variable do_skip.
+
+2003-03-09  Pavel Tsekov  <ptsekov at gmx dot net>
+
+	* install.cc (do_install_thread): Use IDS_SKIP_PACKAGE 
+	instead of IDS_CORRUPT_PACKAGE when asking the user to take
+	action if the hash verification check fails for a source package.
+	Do not increase the value of 'total_bytes' variable if the
+	user chooses to skip over a package, which failed the hash
+	verification.
+
 2003-03-10  Max Bowsher  <maxb@ukf.net>
 
 	* Makefile.am: Add foreign to AUTOMAKE_OPTIONS.
