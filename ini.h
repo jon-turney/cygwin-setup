@@ -51,8 +51,11 @@ typedef struct {
     char *version;	/* version part of filename */
     char *install;	/* file name to install */
     int install_size;	/* in bytes */
+    int install_exists; /* install file exists on disk */
     char *source;	/* sources for installed binaries */
     int source_size;	/* in bytes */
+    int source_exists;  /* source file exists on disk */
+    int partial_list_display;/* display this version in partial list */
   } info[NTRUST+1];	/* +1 for TRUST_UNKNOWN */
 } Package;
 

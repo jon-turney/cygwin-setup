@@ -239,9 +239,9 @@ BEGIN
     LTEXT           "= click to choose action, (p) = previous version, (x) = experimental",
                     IDC_STATIC,65,170,220,8
     PUSHBUTTON      "Full/Part",IDC_CHOOSE_FULLPART,250,5,35,10
-    PUSHBUTTON      "Exp",IDC_CHOOSE_EXP,215,5,25,10
-    PUSHBUTTON      "Curr",IDC_CHOOSE_CURR,190,5,25,10
-    PUSHBUTTON      "Prev",IDC_CHOOSE_PREV,165,5,25,10
+    CONTROL         "Exp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON | WS_GROUP,215,5,25,10
+    CONTROL         "Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON,189,5,25,10
+    CONTROL         "Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON,161,5,27,10
     DEFPUSHBUTTON   "&Next -->",IDOK,175,185,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,240,185,45,15
     PUSHBUTTON      "<-- &Back",IDC_BACK,130,185,45,15
