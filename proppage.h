@@ -93,7 +93,7 @@ public:
   virtual void OnActivate ()
   {
   };
-  virtual bool wantsActivation ()
+  virtual bool wantsActivation () const
   {
     return true;
   };

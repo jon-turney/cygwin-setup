@@ -1,3 +1,7 @@
+2003-10-07  Robert Collins <rbtcollins@hotmail.com>
+
+	* proppage.h (PropertyPage::wantsActivation): const correctness fix.
+
 2003-08-19  Max Bowsher  <maxb@ukf.net>
 
 	* win32.h: Define NOMINMAX only if not already defined - because
