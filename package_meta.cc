@@ -468,10 +468,21 @@ packagemeta::set_action (_actions action, packageversion * default_version)
       if (desired)
 	{
 	  if (desired != installed)
-	    desired->binpicked = 1;
+	    if (desired->bin.sites.number())
+	      {
+		desired->binpicked = 1;
+		desired->srcpicked = 0;
+	      }
+	    else
+	      {
+		desired->binpicked = 0;
+		desired->srcpicked = 1;
+	      }
 	  else
-	    desired->binpicked = 0;
-	  desired->srcpicked = 0;
+	    {
+	      desired->binpicked = 0;
+	      desired->srcpicked = 0;
+	    }
 	}
       return;
     }
