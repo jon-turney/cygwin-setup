@@ -65,12 +65,12 @@ PROGS:=setup$(EXEEXT)
 OBJS:=error.o memory.o setup.o strarry.o cinstall.o path.o xsystem.o
 
 BUNDLED_FILES:=cygwin1.dll.gz $(srcdir)/tar.exe.gz $(srcdir)/gzip.exe.gz \
-	       mount.exe.gz cygpath.exe.gz
+	       mount.exe.gz cygpath.exe.gz umount.exe.gz
 .SUFFIXES:
 .NOEXPORT:
 
 .PHONY: all install clean realclean
-.PRECIOUS: $(utils_build)/cygpath.exe $(utils_build)/mount.exe $(cygwin_build)/new-cygwin1.dll
+.PRECIOUS: $(utils_build)/cygpath.exe $(utils_build)/mount.exe $(utils_build)/umount.exe $(cygwin_build)/new-cygwin1.dll
 
 all: Makefile $(PROGS)
 

@@ -34,6 +34,7 @@
 #endif
 
 char *wd;
+HANDLE devnull;
 
 int downloaddir (HINTERNET session, const char *url);
 
@@ -1029,6 +1030,16 @@ mkdirp (const char *dir)
     }
 }
 
+void
+xumount (const char *mountexedir, const char *unixpath)
+{
+  char *umount = pathcat (mountexedir, "umount");
+  char buffer[1024];
+
+  sprintf (buffer, "%s %s", umount, unixpath);
+  (void) xcreate_process (1, NULL, devnull, devnull, buffer);
+  xfree (umount);
+}
 
 /* This routine assumes that the cwd is the root directory. */
 int
@@ -1042,6 +1053,7 @@ mkmount (const char *mountexedir, const char *root, const char *dospath,
     fulldospath = xstrdup (dospath);
   else
     {
+      xumount (mountexedir, unixpath);
       /* Make sure the mount point exists. */
       mount = utodpath (unixpath);
       mkdirp (mount);
@@ -1070,6 +1082,9 @@ main ()
   clock_t start;
   char *logpath = NULL;
   char *revn, *p;
+  int fd = _open ("nul", _O_WRONLY | _O_BINARY);
+
+  devnull = (HANDLE) _get_osfhandle (fd);
 
   setbuf (stdout, NULL);
   SetEnvironmentVariable ("CYGWIN", NULL);
@@ -1197,6 +1212,7 @@ those as the basis for your installation.\n\n"
 	{
 	  _chdrive (toupper (*root) - 'A' + 1);
 
+	  xumount (wd, "/usr");
 	  /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
 	  mkmount (wd, root, "bin", "/usr/bin", 1);
 	  mkmount (wd, root, "lib", "/usr/lib", 1);

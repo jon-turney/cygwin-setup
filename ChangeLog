@@ -1,3 +1,11 @@
+Tue Apr 18 19:16:56 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* Makefile.in: Add umount to list of files to include in setup.exe.
+	* setup.c (xumount): New function for unmounting directories.
+	(main): Unmount /usr.
+	(mkmount): Unmount "unix directory" before trying to figure out where
+	to create the directory.
+
 Tue Apr 18 17:28:55 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (mkmount): Use xcreate_process to start mount process,
