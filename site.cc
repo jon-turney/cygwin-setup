@@ -54,6 +54,9 @@ SiteList all_site_list;
 
 StringOption SiteOption("", 's', "site", "Download site");
 
+/* XXX make into a singleton? */
+static SiteSetting ChosenSites;
+
 void
 site_list_type::init (String const &newurl)
 {

@@ -409,6 +409,10 @@ setup_SOURCES = \
 	String++.h \
 	threebar.cc \
 	threebar.h \
+	UserSetting.cc \
+	UserSetting.h \
+	UserSettings.cc \
+	UserSettings.h \
 	version.cc \
 	version.h \
 	win32.cc \
@@ -476,7 +480,8 @@ am__setup_SOURCES_DIST = AntiVirus.cc AntiVirus.h archive.cc archive.h \
 	root.h ScanFindVisitor.cc ScanFindVisitor.h script.cc script.h \
 	setup_version.c simpsock.cc simpsock.h site.cc site.h source.cc \
 	source.h splash.cc splash.h state.cc state.h String++.cc \
-	String++.h threebar.cc threebar.h version.cc version.h win32.cc \
+	String++.h threebar.cc threebar.h UserSetting.cc UserSetting.h \
+	UserSettings.cc UserSettings.h version.cc version.h win32.cc \
 	win32.h window.cc window.h io_stream_rsync.cc io_stream_rsync.h
 @ENABLERSYNC_TRUE@am__objects_2 = io_stream_rsync.$(OBJEXT)
 @ENABLERSYNC_FALSE@am__objects_2 =
@@ -508,8 +513,8 @@ am_setup_OBJECTS = AntiVirus.$(OBJEXT) archive.$(OBJEXT) \
 	script.$(OBJEXT) setup_version.$(OBJEXT) simpsock.$(OBJEXT) \
 	site.$(OBJEXT) source.$(OBJEXT) splash.$(OBJEXT) \
 	state.$(OBJEXT) String++.$(OBJEXT) threebar.$(OBJEXT) \
-	version.$(OBJEXT) win32.$(OBJEXT) window.$(OBJEXT) \
-	$(am__objects_2)
+	UserSetting.$(OBJEXT) UserSettings.$(OBJEXT) version.$(OBJEXT) \
+	win32.$(OBJEXT) window.$(OBJEXT) $(am__objects_2)
 setup_OBJECTS = $(am_setup_OBJECTS)
 setup_DEPENDENCIES = res.o zlib/libzcygw.a bz2lib/libbz2.a \
 	libgetopt++/libgetopt++.la
@@ -531,7 +536,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/PickPackageLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickView.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ScanFindVisitor.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/String++.Po ./$(DEPDIR)/archive.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/String++.Po ./$(DEPDIR)/UserSetting.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/UserSettings.Po ./$(DEPDIR)/archive.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/archive_tar.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/archive_tar_file.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/autoload.Po ./$(DEPDIR)/category.Po \
@@ -656,6 +662,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickView.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ScanFindVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/String++.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UserSetting.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UserSettings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/archive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/archive_tar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/archive_tar_file.Po@am__quote@

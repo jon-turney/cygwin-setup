@@ -39,5 +39,6 @@ private:
 // Where should these live?
 #define APPERR_CORRUPT_PACKAGE	1
 #define APPERR_IO_ERROR		2
+#define APPERR_LOGIC_ERROR	3
 
 #endif /* _EXCEPTION_H_ */

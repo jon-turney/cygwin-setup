@@ -1,5 +1,16 @@
 2003-03-10  Robert Collins  <rbtcollins@hotmail.com>
 
+	* Exception.h: Add a logic error exception id.
+	* Makefile.am: Add new sources.
+	* UserSettings.cc: New file.
+	* UserSettings.h: New file.
+	* UserSetting.cc: New file.
+	* UserSetting.h: New file.
+	* site.h: Add a SiteSetting as example of a UserSetting.
+	* site.cc (ChosenSites): Add a instance of SiteSetting to trigger registration.
+
+2003-03-10  Robert Collins  <rbtcollins@hotmail.com>
+
 	* compress_bz.cc (compress_bz::read): adjust incorrect assignment of lasterr.
 	(compress_bz::error): Return lasterr which will indicate any error.
 
