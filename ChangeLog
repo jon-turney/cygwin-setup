@@ -1,5 +1,11 @@
 2002-05-11  Robert Collins  <rbtcollins@hotmail.com>
 
+	* Makefile.am: Add a release target to automate some of the routine
+	work.
+	* Makefile.in: Regenerate.
+
+2002-05-11  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc (scan_downloaded_files): On local installs remove all
 	mirror sites if no cached copy of a package is found.
 

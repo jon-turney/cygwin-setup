@@ -275,3 +275,9 @@ iniparse.cc iniparse.h : iniparse.y
 inilex.cc : inilex.l iniparse.h
 	flex -8 $(srcdir)/inilex.l
 	mv lex.yy.c inilex.cc
+
+# Make a distribution package and tarball
+release: setup$(EXEEXT) dist-all
+	$(STRIP) setup.exe
+	upx --best setup.exe
+	mv setup-0.tar.bz2 setup-src.tar.bz2
