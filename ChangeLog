@@ -1,3 +1,8 @@
+2003-03-04  Pavel Tsekov  <ptsekov@gmx.net>
+
+	* compress_gz.cc (compress_gz::construct): Always initialize key members
+	to ensure the destructor does the right thing.
+
 2003-02-28  Max Bowsher  <maxb@ukf.net>
 
 	* main.cc (set_default_sec): Add logging.
