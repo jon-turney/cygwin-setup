@@ -146,12 +146,6 @@ ignore_line ()
     }
 }
 
-void
-pushnl ()
-{
-  unput ('\n');
-}
-
 int
 yybol ()
 {
