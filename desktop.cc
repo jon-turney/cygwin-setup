@@ -280,9 +280,9 @@ make_passwd_group ()
   String fname = cygpath ("/etc/postinstall/passwd-grp.bat");
   io_stream::mkpath_p (PATH_TO_FILE, fname);
 
-  FILE *p = fopen (fname.cstr_oneuse(), "wt");
-  if (!p)
+  if (uexists ("/etc/passwd") && uexists ("/etc/group"))
     return;
+
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
     {
       packagedb db;
@@ -294,19 +294,17 @@ make_passwd_group ()
 	  String inst_version =
 	    canonicalize_version (pkg->installed->Canonical_version ());
 	  if (inst_version.compare(border_version) <= 0)
-	    goto out;
+	    return;
 	}
     }
 
-  if (uexists ("/etc/passwd") && uexists ("/etc/group"))
-    goto out;
-
+  FILE *p = fopen (fname.cstr_oneuse(), "wt");
+  if (!p)
+    return;
   if (!uexists ("/etc/passwd"))
     fprintf (p, "bin\\mkpasswd -l > etc\\passwd\n");
   if (!uexists ("/etc/group"))
     fprintf (p, "bin\\mkgroup -l > etc\\group\n");
-
-out:
   fclose (p);
 }
 

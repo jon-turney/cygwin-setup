@@ -106,7 +106,7 @@ log_save (int babble, String const &filename, int append)
 	  char *tstr = l->msg.cstr();
 	  f->write (tstr, strlen (tstr));
 	  if (tstr[strlen (tstr) - 1] != '\n')
-	    f->write ("'\n", 1);
+	    f->write ("\n", 1);
 	}
     }
 
