@@ -28,6 +28,8 @@
 #define IDS_DOWNLOAD_INCOMPLETE         26
 #define IDS_INSTALL_INCOMPLETE          27
 #define IDS_VERSION_INFO                28
+#define IDS_CYGWIN_SETUP                29
+#define IDS_CYGWIN_SETUP_WITH_PROGRESS  30
 #define IDD_ROOT                        101
 #define IDD_SOURCE                      102
 #define IDD_OTHER_URL                   103

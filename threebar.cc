@@ -25,9 +25,9 @@
 
 #include "propsheet.h"
 #include "threebar.h"
+#include "cistring.h"
 
-bool
-ThreeBarProgressPage::Create ()
+bool ThreeBarProgressPage::Create ()
 {
   return PropertyPage::Create (IDD_INSTATUS);
 }
@@ -52,19 +52,19 @@ ThreeBarProgressPage::OnInit ()
 void
 ThreeBarProgressPage::SetText1 (const TCHAR * t)
 {
-  SetWindowText (ins_action, t);
+  ::SetWindowText (ins_action, t);
 }
 
 void
 ThreeBarProgressPage::SetText2 (const TCHAR * t)
 {
-  SetWindowText (ins_pkgname, t);
+  ::SetWindowText (ins_pkgname, t);
 }
 
 void
 ThreeBarProgressPage::SetText3 (const TCHAR * t)
 {
-  SetWindowText (ins_filename, t);
+  ::SetWindowText (ins_filename, t);
 }
 
 void
@@ -79,6 +79,9 @@ ThreeBarProgressPage::SetBar2 (long progress, long max)
 {
   int percent = (int) (100.0 * ((double) progress) / (double) max);
   SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) percent, 0);
+  cistring s;
+  s.Format (IDS_CYGWIN_SETUP_WITH_PROGRESS, percent);
+  GetOwner ()->SetWindowText (s.c_str ());
 }
 
 void
@@ -126,7 +129,7 @@ ThreeBarProgressPage::OnActivate ()
 }
 
 bool
-ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
+  ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   switch (uMsg)
     {

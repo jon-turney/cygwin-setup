@@ -22,6 +22,8 @@
 
 #include <windows.h>
 
+class String;
+
 class Window
 {
   static ATOM WindowClassAtom;
@@ -84,8 +86,9 @@ public:
   {
     return::GetDlgItem (GetHWND (), id);
   };
-  bool SetDlgItemFont(int id, const TCHAR *fontname, int Pointsize,
-	  int Weight = FW_NORMAL, bool Italic = false, bool Underline = false, bool Strikeout = false);
+  bool SetDlgItemFont (int id, const TCHAR * fontname, int Pointsize,
+		       int Weight = FW_NORMAL, bool Italic =
+		       false, bool Underline = false, bool Strikeout = false);
 
   UINT IsButtonChecked (int nIDButton) const;
 
@@ -104,6 +107,9 @@ public:
 
   // Center the window on the parent, or on screen if no parent.
   void CenterWindow ();
+
+  // Set the title of the window.
+  void SetWindowText (const String & s);
 
 };
 

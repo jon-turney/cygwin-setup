@@ -1,3 +1,26 @@
+2002-02-24  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* res.rc (STRINGTABLE): Add IDS_CYGWIN_SETUP and
+	IDS_CYGWIN_SETUP_WITH_PROGRESS strings.
+	* resource.h: Add IDS_CYGWIN_SETUP and
+	IDS_CYGWIN_SETUP_WITH_PROGRESS IDs.
+
+	* splash.cc (OnInit): Qualify SetWindowText() call with global scope
+	operator (::SetWindowText()).
+
+	* threebar.cc: Run indent.
+	(cistring.h): Add include.
+	(SetText1, SetText2, SetText3): Qualify SetWindowText() call with
+	global scope operator.
+	(SetBar2): Add logic for writing percent complete into window title.
+
+	* window.h: Run indent.
+	(SetWindowText): New function.
+	(String): Add forward declaration.
+	* window.cc: Run indent.
+	(String++.h): Add include.
+	(SetWindowText): New function.
+
 2002-02-24  Robert Collins <rbtcollins@hotmail.com>
 
 	* README: Update TODO list.

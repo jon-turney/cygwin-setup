@@ -19,6 +19,7 @@
 
 #include <windows.h>
 #include "window.h"
+#include "String++.h"
 
 ATOM Window::WindowClassAtom = 0;
 HINSTANCE Window::AppInstance = NULL;
@@ -314,4 +315,10 @@ bool
   FontCounter++;
 
   return true;
+}
+
+void
+Window::SetWindowText (const String & s)
+{
+  ::SetWindowText (WindowHandle, s.cstr_oneuse ());
 }
