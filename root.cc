@@ -134,7 +134,7 @@ directory_is_rootdir ()
 {
   char *c;
   for (c = root_dir; *c; c++)
-    if (isslash(c[0]) && c[1] && !isslash(c[1]))
+    if (isslash (c[0]) && c[1] && !isslash (c[1]))
       return 0;
   return 1;
 }
@@ -167,7 +167,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       break;
 
     case IDOK:
-      save_dialog(h);
+      save_dialog (h);
 
       if (! directory_is_absolute ())
 	{
@@ -186,24 +186,24 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       switch (source)
 	{
 	case IDC_SOURCE_NETINST:
-	  NEXT(IDD_NET);
+	  NEXT (IDD_NET);
 	  break;
 	case IDC_SOURCE_CWD:
-	  NEXT(IDD_S_FROM_CWD);
+	  NEXT (IDD_S_FROM_CWD);
 	  break;
 	default:
-	  msg("source is default? %d\n", source);
-	  NEXT(0);
+	  msg ("source is default? %d\n", source);
+	  NEXT (0);
 	}
       break;
 
     case IDC_BACK:
-      save_dialog(h);
-      NEXT(IDD_SOURCE);
+      save_dialog (h);
+      NEXT (IDD_SOURCE);
       break;
 
     case IDCANCEL:
-      NEXT(0);
+      NEXT (0);
       break;
     }
 }
@@ -214,10 +214,10 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
   switch (message)
     {
     case WM_INITDIALOG:
-      load_dialog(h);
+      load_dialog (h);
       return FALSE;
     case WM_COMMAND:
-      return HANDLE_WM_COMMAND(h, wParam, lParam, dialog_cmd);
+      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }
   return FALSE;
 }
@@ -227,7 +227,7 @@ do_root (HINSTANCE h)
 {
   int rv = 0;
   if (!root_dir)
-    read_mount_table();
+    read_mount_table ();
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_ROOT), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);

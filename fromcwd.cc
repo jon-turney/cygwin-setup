@@ -94,7 +94,7 @@ found_file (char *path, unsigned int fsize)
   else
     sl = path;
   strcpy (base, sl);
-  base[strlen(base)-7] = 0; /* remove .tar.gz */
+  base[strlen (base) - 7] = 0; /* remove .tar.gz */
   for (ver=base; *ver; ver++)
     if ((*ver == '-' || *ver == '_') && isdigit (ver[1]))
       {

@@ -59,7 +59,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
   switch (id)
     {
     case IDCANCEL:
-      ExitProcess(0);
+      ExitProcess (0);
     }
 }
 
@@ -80,7 +80,7 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
       SetEvent (init_event);
       return FALSE;
     case WM_COMMAND:
-      return HANDLE_WM_COMMAND(h, wParam, lParam, dialog_cmd);
+      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }
   return FALSE;
 }
@@ -242,14 +242,14 @@ do_install (HINSTANCE h)
 	    fn++;
 
 	  if (lst)
-	    gzprintf(lst, "%s\n", fn);
+	    gzprintf (lst, "%s\n", fn);
 
 	  if (strncmp (fn, "usr/bin/", 8) == 0)
-	    dest_file = concat(root_dir, "/bin/", fn+8, 0);
+	    dest_file = concat (root_dir, "/bin/", fn+8, 0);
 	  else if (strncmp (fn, "usr/lib/", 8) == 0)
-	    dest_file = concat(root_dir, "/lib/", fn+8, 0);
+	    dest_file = concat (root_dir, "/lib/", fn+8, 0);
 	  else
-	    dest_file = concat(root_dir, "/", fn, 0);
+	    dest_file = concat (root_dir, "/", fn, 0);
 
 	  SetWindowText (ins_filename, dest_file);
 	  tar_read_file (dest_file);
@@ -298,7 +298,7 @@ do_install (HINSTANCE h)
       while (fgets (line, 1000, odb))
 	{
 	  printit = 1;
-	  sscanf(line, "%s", pkg);
+	  sscanf (line, "%s", pkg);
 	  LOOP_PACKAGES
 	    {
 	      if (strcmp (pkg, package[i].name) == 0)

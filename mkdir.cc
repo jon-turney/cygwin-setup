@@ -41,12 +41,10 @@ mkdir_p (int isadir, char *path)
 	{
 	  if (gse == ERROR_ALREADY_EXISTS)
 	    {
+	      fprintf (stderr, "warning: deleting \"%s\" so I can make a directory there\n",
+		       path);
 	      if (DeleteFileA (path))
-		{
-		  fprintf(stderr, "warning: deleting \"%s\" so I can make a directory there\n",
-			  path);
-		  return mkdir_p (isadir, path);
-		}
+		return mkdir_p (isadir, path);
 	    }
 	  return 1;
 	}

@@ -71,8 +71,8 @@ static char buf[512];
 static int _tar_file_size = 0;
 int _tar_verbose = 0;
 FILE * _tar_vfile = 0;
-#define vp if(_tar_verbose) fprintf
-#define vp2 if(_tar_verbose>1) fprintf
+#define vp if (_tar_verbose) fprintf
+#define vp2 if (_tar_verbose>1) fprintf
 
 static gzFile g = 0;
 
@@ -131,7 +131,7 @@ tar_next_file ()
 {
   int r, n;
   char *c;
-  r = gzread(g, &tar_header, 512);
+  r = gzread (g, &tar_header, 512);
 
   /* See if we're at end of file */
   if (r != 512)
@@ -139,18 +139,18 @@ tar_next_file ()
 
   /* See if the header is all zeros (i.e. last block) */
   n = 0;
-  for (r = 512/sizeof(int); r; r--)
+  for (r = 512/sizeof (int); r; r--)
     n |= ((int *)&tar_header)[r-1];
   if (n == 0)
     return 0;
 
   if (!have_longname && tar_header.typeflag != 'L')
     {
-      memcpy(file_name, tar_header.name, 100);
+      memcpy (file_name, tar_header.name, 100);
       file_name[100] = 0;
     }
 
-  sscanf(tar_header.size, "%o", &file_length);
+  sscanf (tar_header.size, "%o", &file_length);
 
   vp2 (_tar_vfile, "%c %9d %s\n", tar_header.typeflag, file_length, file_name);
 
@@ -160,11 +160,11 @@ tar_next_file ()
       if (file_length > _MAX_PATH)
 	{
 	  skip_file ();
-	  fprintf(stderr, "error: long file name exceeds %d characters\n",
-		  _MAX_PATH);
+	  fprintf (stderr, "error: long file name exceeds %d characters\n",
+		   _MAX_PATH);
 	  err ++;
 	  gzread (g, &tar_header, 512);
-	  sscanf(tar_header.size, "%o", &file_length);
+	  sscanf (tar_header.size, "%o", &file_length);
 	  skip_file ();
 	  return tar_next_file ();
 	}
@@ -185,8 +185,8 @@ tar_next_file ()
     case '3': /* char */
     case '4': /* block */
     case '6': /* fifo */
-      fprintf(stderr, "warning: not extracting special file %s\n",
-	      file_name);
+      fprintf (stderr, "warning: not extracting special file %s\n",
+	       file_name);
       err ++;
       return tar_next_file ();
 
@@ -248,8 +248,8 @@ common_fopen (char *path)
     }
   if (!out)
     {
-      fprintf(stderr, "unable to write to file %s\n", path);
-      perror("The error was");
+      fprintf (stderr, "unable to write to file %s\n", path);
+      perror ("The error was");
       skip_file ();
       return 0;
     }
@@ -271,7 +271,7 @@ prepare_for_file (char *path)
 	i++;
 	sprintf (tmp, "%s.old-%d", path, i);
       } while (GetFileAttributes (tmp) != 0xffffffff);
-      fprintf(stderr, "warning: moving directory \"%s\" out of the way.\n", path);
+      fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n", path);
       MoveFile (path, tmp);
       free (tmp);
     }
@@ -337,7 +337,7 @@ tar_read_file (char *path)
 
     case '1':	/* hard links; we just copy */
       for (tmr = tar_map_result; tmr; tmr=tmr->next)
-	if (strcmp(tmr->stored_name, tar_header.linkname) == 0)
+	if (strcmp (tmr->stored_name, tar_header.linkname) == 0)
 	  break;
       if (!tmr)
 	{
@@ -377,8 +377,8 @@ tar_read_file (char *path)
 
     case '5':	/* directories */
       vp (_tar_vfile, "D %s\n", path);
-      while (path[0] && path[strlen(path)-1] == '/')
-	path[strlen(path)-1] = 0;
+      while (path[0] && path[strlen (path)-1] == '/')
+	path[strlen (path) - 1] = 0;
       return mkdir_p (1, path);
 
 
@@ -389,20 +389,20 @@ tar_read_file (char *path)
 		      FILE_ATTRIBUTE_NORMAL, 0);
       if (h == INVALID_HANDLE_VALUE)
 	{
-	  fprintf(stderr, "error: unable to create symlink \"%s\" -> \"%s\"\n",
-		  path, tar_header.linkname);
+	  fprintf (stderr, "error: unable to create symlink \"%s\" -> \"%s\"\n",
+		   path, tar_header.linkname);
 	  return 1;
 	}
       strcpy (buf, SYMLINK_COOKIE);
       strcat (buf, tar_header.linkname);
-      if (WriteFile (h, buf, strlen(buf)+1, &w, NULL))
+      if (WriteFile (h, buf, strlen (buf) + 1, &w, NULL))
 	{
 	  CloseHandle (h);
 	  SetFileAttributesA (path, FILE_ATTRIBUTE_SYSTEM);
 	  return 0;
 	}
       CloseHandle (h);
-      fprintf(stderr, "error: unable to write symlink \"%s\"\n", path);
+      fprintf (stderr, "error: unable to write symlink \"%s\"\n", path);
       DeleteFileA (path);
       return 1;
     }
@@ -475,7 +475,7 @@ tar_auto (char *pathname, char **maplist)
       int l = strlen (c);
       for (i=0; i<nmaps; i++)
 	if (l >= map[i].from_len
-	    && strncmp(c, map[i].from, map[i].from_len) == 0)
+	    && strncmp (c, map[i].from, map[i].from_len) == 0)
 	  {
 	    strcpy (newname, map[i].to);
 	    strcpy (newname+map[i].to_len, c + map[i].from_len);

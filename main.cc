@@ -42,10 +42,10 @@ int exit_msg = 0;
 HINSTANCE hinstance;
 
 int WINAPI
-WinMain(HINSTANCE h,
-	HINSTANCE hPrevInstance,
-	LPSTR command_line,
-	int cmd_show)
+WinMain (HINSTANCE h,
+	 HINSTANCE hPrevInstance,
+	 LPSTR command_line,
+	 int cmd_show)
 {
   hinstance = h;
 

@@ -35,24 +35,24 @@ concat (char *s, ...)
   va_start (v, s);
   while (1)
     {
-      arg = va_arg(v, char *);
+      arg = va_arg (v, char *);
       if (arg == 0)
 	break;
-      len += strlen(arg);
+      len += strlen (arg);
     }
-  va_end(v);
+  va_end (v);
 
   rv = (char *) malloc (len+1);
-  strcpy(rv, s);
-  va_start(v, s);
+  strcpy (rv, s);
+  va_start (v, s);
   while (1)
   {
-    arg = va_arg(v, char *);
+    arg = va_arg (v, char *);
     if (arg == 0)
       break;
-    strcat(rv, arg);
+    strcat (rv, arg);
   }
-  va_end(v);
+  va_end (v);
 
   /* concat is only used for urls and files, so we can safely
      canonicalize the results */

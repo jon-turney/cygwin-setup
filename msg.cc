@@ -22,7 +22,7 @@
 #include "dialog.h"
 
 void
-msg(char *fmt, ...)
+msg (char *fmt, ...)
 {
   char buf[1000];
   va_list args;
@@ -31,11 +31,12 @@ msg(char *fmt, ...)
   OutputDebugString (buf);
 }
 
-static int mbox (int type, int id, va_list args)
+static int
+mbox (int type, int id, va_list args)
 {
   char buf[1000], fmt[1000];
 
-  if (LoadString (hinstance, id, fmt, sizeof(fmt)) <= 0)
+  if (LoadString (hinstance, id, fmt, sizeof (fmt)) <= 0)
     ExitProcess (0);
 
   vsprintf (buf, fmt, args);

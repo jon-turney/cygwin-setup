@@ -44,7 +44,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
   switch (id)
     {
     case IDCANCEL:
-      ExitProcess(0);
+      ExitProcess (0);
     }
 }
 
@@ -63,7 +63,7 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
       SetEvent (init_event);
       return FALSE;
     case WM_COMMAND:
-      return HANDLE_WM_COMMAND(h, wParam, lParam, dialog_cmd);
+      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }
   return FALSE;
 }
@@ -114,7 +114,7 @@ init_dialog (char *url, int length)
       SetForegroundWindow (gw_dialog);
       is_showing = 1;
     }
-  start_tics = GetTickCount();
+  start_tics = GetTickCount ();
 }
 
 
@@ -124,7 +124,7 @@ progress (int bytes)
   static char buf[100];
   int kbps;
   static int last_tics = 0;
-  DWORD tics = GetTickCount();
+  DWORD tics = GetTickCount ();
   if (tics == start_tics) // to prevent division by zero
     return;
   if (tics < last_tics + 200) // to prevent flickering updates
@@ -137,11 +137,11 @@ progress (int bytes)
     {
       int perc = bytes / (max_bytes / 100);
       SendMessage (gw_progress, PBM_SETPOS, (WPARAM) perc, 0);
-      sprintf(buf, "%3d %%  (%dk/%dk)  %d kb/s\n",
-	      perc, bytes/1000, max_bytes/1000, kbps);
+      sprintf (buf, "%3d %%  (%dk/%dk)  %d kb/s\n",
+	       perc, bytes/1000, max_bytes/1000, kbps);
     }
   else
-    sprintf(buf, "%d  %d kb/s\n", bytes, kbps);
+    sprintf (buf, "%d  %d kb/s\n", bytes, kbps);
 
   SetWindowText (gw_rate, buf);
 }
@@ -212,7 +212,7 @@ get_url_to_file (char *_url, char *_filename, int expected_length)
       return 1;
     }
 
-  FILE *f = fopen(_filename, "wb");
+  FILE *f = fopen (_filename, "wb");
   if (!f)
     {
       char *err = strerror (errno);

@@ -113,22 +113,22 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDOK:
       save_dialog (h);
       if (mirror_idx == OTHER_IDX)
-	NEXT(IDD_OTHER_URL);
+	NEXT (IDD_OTHER_URL);
       else
 	{
 	  other_url = 0;
 	  save_site_url ();
-	  NEXT(IDD_S_LOAD_INI);
+	  NEXT (IDD_S_LOAD_INI);
 	}
       break;
 
     case IDC_BACK:
       save_dialog (h);
-      NEXT(IDD_NET);
+      NEXT (IDD_NET);
       break;
 
     case IDCANCEL:
-      NEXT(0);
+      NEXT (0);
       break;
     }
 }
@@ -152,7 +152,7 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
       load_dialog (h);
       return FALSE;
     case WM_COMMAND:
-      return HANDLE_WM_COMMAND(h, wParam, lParam, dialog_cmd);
+      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }
   return FALSE;
 }
@@ -255,7 +255,7 @@ do_site (HINSTANCE h)
   if (site_list == 0)
     if (get_site_list (h))
       {
-	NEXT(0);
+	NEXT (0);
 	return;
       }
 

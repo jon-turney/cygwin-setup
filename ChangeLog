@@ -1,3 +1,8 @@
+2000-07-17  DJ Delorie  <dj@cygnus.com>
+
+	* coding standards fixups, many files
+	* mkdir.cc: warn about deletions *before* deleting them
+
 2000-07-17  Jeff Juliano  <juliano@cs.unc.edu>
 
 	* res.rc (IDD_OTHER_URL): reorder to give default focus to entry

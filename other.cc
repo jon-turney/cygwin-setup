@@ -60,18 +60,18 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       break;
 
     case IDOK:
-      save_dialog(h);
+      save_dialog (h);
       save_site_url ();
-      NEXT(IDD_S_LOAD_INI);
+      NEXT (IDD_S_LOAD_INI);
       break;
 
     case IDC_BACK:
-      save_dialog(h);
-      NEXT(IDD_SITE);
+      save_dialog (h);
+      NEXT (IDD_SITE);
       break;
 
     case IDCANCEL:
-      NEXT(0);
+      NEXT (0);
       break;
     }
 }
@@ -82,10 +82,10 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
   switch (message)
     {
     case WM_INITDIALOG:
-      load_dialog(h);
+      load_dialog (h);
       return FALSE;
     case WM_COMMAND:
-      return HANDLE_WM_COMMAND(h, wParam, lParam, dialog_cmd);
+      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }
   return FALSE;
 }

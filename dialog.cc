@@ -31,9 +31,9 @@ eget (HWND h, int id, char *var)
       free (var);
       var = 0;
     }
-  if (GetDlgItemText (h, id, tmp, sizeof(tmp)) > 0) 
+  if (GetDlgItemText (h, id, tmp, sizeof (tmp)) > 0) 
     {
-      var = (char *) malloc (strlen(tmp)+1);
+      var = (char *) malloc (strlen (tmp)+1);
       strcpy (var, tmp);
     }
   return var;
@@ -80,7 +80,7 @@ rbset (HWND h, int *ids, int id)
 void
 fatal (char *msg)
 {
-  DWORD e = GetLastError();
+  DWORD e = GetLastError ();
   char *buf;
   FormatMessage (FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		 0,

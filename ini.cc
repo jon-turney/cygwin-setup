@@ -49,7 +49,7 @@ do_ini (HINSTANCE h)
 
   setup_timestamp = 0;
   /*  yydebug = 0;*/
-  yyparse();
+  yyparse ();
 
   if (root_dir)
     {
@@ -89,10 +89,10 @@ extern "C" int yyerror (char *s)
   ExitProcess (0);
 }
 
-extern "C" int fprintf(FILE *f, const char *s, ...);
+extern "C" int fprintf (FILE *f, const char *s, ...);
 
 int
-fprintf(FILE *f, const char *fmt, ...)
+fprintf (FILE *f, const char *fmt, ...)
 {
   char buf[1000];
   int rv;

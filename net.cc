@@ -91,38 +91,38 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       break;
 
     case IDOK:
-      save_dialog(h);
+      save_dialog (h);
       switch (source)
 	{
 	case IDC_SOURCE_NETINST:
 	case IDC_SOURCE_DOWNLOAD:
-	  NEXT(IDD_SITE);
+	  NEXT (IDD_SITE);
 	  break;
 	case IDC_SOURCE_CWD:
-	  NEXT(0);
+	  NEXT (0);
 	  break;
 	default:
-	  msg("source is default? %d\n", source);
-	  NEXT(0);
+	  msg ("source is default? %d\n", source);
+	  NEXT (0);
 	}
       break;
 
     case IDC_BACK:
-      save_dialog(h);
+      save_dialog (h);
       switch (source)
 	{
 	case IDC_SOURCE_DOWNLOAD:
-	  NEXT(IDD_SOURCE);
+	  NEXT (IDD_SOURCE);
 	  break;
 	case IDC_SOURCE_NETINST:
 	case IDC_SOURCE_CWD:
-	  NEXT(IDD_ROOT);
+	  NEXT (IDD_ROOT);
 	  break;
 	}
       break;
 
     case IDCANCEL:
-      NEXT(0);
+      NEXT (0);
       break;
     }
 }
@@ -133,10 +133,10 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
   switch (message)
     {
     case WM_INITDIALOG:
-      load_dialog(h);
+      load_dialog (h);
       return FALSE;
     case WM_COMMAND:
-      return HANDLE_WM_COMMAND(h, wParam, lParam, dialog_cmd);
+      return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }
   return FALSE;
 }
