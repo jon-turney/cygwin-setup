@@ -1071,6 +1071,7 @@ main ()
   char *logpath = NULL;
   char *revn, *p;
 
+  SetEnvironmentVariable ("CYGWIN", NULL);
   revn = strchr (rev, ':');
   if (!revn || (p = strchr (revn + 2, ' ')) == NULL)
     revn = "";
