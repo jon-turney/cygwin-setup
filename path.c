@@ -134,21 +134,23 @@ pathcat (const char *arg1, const char *arg2)
 {
   char path[_MAX_PATH];
   size_t len;
+  char *s, *d;
 
-  assert (!strchr (arg1, '/'));
   strcpy (path, arg1);
-
-  /* Remove any trailing slash */
-  len = strlen (path);
-  if (path[--len] == '\\')
-    path[len] = '\0';
-
   strcat (path, "\\");
-
-  if (*arg2 == '\\')
-    ++arg2;
-
   strcat (path, arg2);
+
+  for (s=path; *s; s++)
+    if (*s == '/')
+      *s = '\\';
+  for (s=d=path; *s; s++)
+    {
+      *d++ = *s;
+      if (*s == '\\')
+	while (s[1] == '\\')
+	  s++;
+    }
+  *d = 0;
 
   return xstrdup (path);
 }

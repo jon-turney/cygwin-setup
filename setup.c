@@ -56,6 +56,8 @@
 char *wd = NULL;
 static char *tarpgm;
 
+static char *tar_map[8];
+
 static int downloaddir (SA *installme, const char *url);
 
 static SA files = {NULL, 0, 0};
@@ -257,6 +259,9 @@ xumount (const char *mountexedir, const char *unixpath)
   xfree (umount);
 }
 
+extern FILE * _tar_vfile;
+extern int _tar_verbose;
+
 static int
 tarx (const char *dir, const char *fn)
 {
@@ -282,75 +287,12 @@ tarx (const char *dir, const char *fn)
       return 1;
     }
 
-  dpath = pathcat (dir, fn);
-  path = dtoupath (dpath);
-  sprintf (buffer, "%s xvfUz \"%s\"", tarpgm, path);
-  xfree (path);
-  xfree (dpath);
-
   printf ("Installing %s\n", fn);
 
-  if (_pipe (hpipe, 256, O_TEXT) == -1)
-    return 0;
-
-  hin = (HANDLE) _get_osfhandle (hpipe[1]);
-  hproc = (HANDLE) xcreate_process (0, NULL, hin, hin, buffer);
-  if (!hproc)
-    {
-      warning ("Unable to extract \"%s\": %s", fn, _strerror (""));
-      return 0;
-    }
-
-  CloseHandle (hproc);
-  _close (hpipe[1]);
-  fp = fdopen (hpipe[0], "rt");
-
-  filehere = files.index;
-  while (fgets (buffer, sizeof (buffer0), fp))
-    {
-      char *s = strchr (buffer, '\n');
-
-      if (s)
-	*s = '\0';
-
-      if (strchr (buffer, ':') != NULL)
-	{
-	  s = buffer;
-	  fprintf (stderr, "%s\n", s);
-	}
-      else
-	{
-	  if (++files.index >= files.count)
-	    files.array = realloc (files.array,
-				   NFILE_SLOP + (files.count += NFILE_LIST));
-	  s = buffer;
-	  if (*s != '/')
-	    *--s = '/';
-#if 0 /* too simplistic */
-	  e = strchr (s, '\0') - 1;
-	  if (e > s && *e == '/')
-	    {
-	      *e = '\0';
-	      xumount (wd, s);
-	    }
-#endif
-
-	  s = files.array[files.index] = utodpath (s);
-	}
-
-      fprintf (logfp, "%s\n", s);
-    }
-  fclose (fp);
-
-  while (++filehere <= files.index)
-    if (chmod (files.array[filehere], 0777))
-      warning ("Unable to reset protection on '%s' - %s\n",
-	       files.array[filehere], _strerror (""));
-
-  warning ("%s package '%s'\n", write_pkg (pkg, pkgname, pkgversion) ?
-			      "Updated" : "Refreshed", pkgname);
-
-  return 1;
+  dpath = pathcat (dir, fn);
+  _tar_vfile = logfp;
+  _tar_verbose = 2;
+  return !tar_auto (dpath, tar_map);
 }
 
 static int
@@ -1420,6 +1362,37 @@ get_pkg_stuff (int updating)
   return use_default_pkgs (pkgstuff);
 }
 
+static void
+do_tar_map (int i, char *from, char *root, char *to)
+{
+  char *t;
+  tar_map[i] = from;
+  i++;
+  tar_map[i] = (char *) xmalloc (strlen(root) + strlen(to) + 3);
+  t = tar_map[i];
+  strcpy (t, root);
+  if (t[strlen(t)-1] == '/' && to[0] == '/')
+    to ++;
+  strcat (t, to);
+}
+
+static int
+current_directory_not_empty ()
+{
+  WIN32_FIND_DATA find_data;
+  HANDLE h = FindFirstFile ("*", &find_data);
+  int count = 0;
+  if (h != INVALID_HANDLE_VALUE)
+    do
+      {
+	if (strcmp (find_data.cFileName, ".")
+	    && strcmp (find_data.cFileName, ".."))
+	  count ++;
+      } while (FindNextFile (h, &find_data));
+  FindClose (h);
+  return count;
+}
+
 static char rev[] = "$Revision$ ";
 
 int
@@ -1534,6 +1507,10 @@ those as the basis for your installation.\n\n"
       for (done = 0; !done;)
 	{
 	  root = prompt ("Root directory", defroot);
+	  /* convert to windows format */
+	  for (p=root; *p; p++)
+	    if (*p == '/')
+	      *p = '\\';
 	  if (strcmpi (root, wd) == 0)
 	    {
 	      printf ("Please do not use the current directory as the root directory.\n"
@@ -1550,9 +1527,27 @@ those as the basis for your installation.\n\n"
 	      if (toupper (*temp) == 'Y')
 		done = 1;
 	      xfree (temp);
+	      continue;
 	    }
-	  else
-	    done = 1;
+	  if (!isalpha (root[0]) || root[1] != ':' || (root[2] != '\\'))
+	    {
+	      printf ("The root directory should include a drive letter and leading\n");
+	      printf ("slash, like c:\\cygwin or g:\\local\\unix\n");
+	      continue;
+	    }
+	  if (root[3] == '\0' || root[3] == '\\')
+	    {
+	      char *yesno, y;
+	      printf ("We strongly recommend that you DO NOT install Cygwin in the root\n");
+	      printf ("of a partition.  This install will put many files in the root if\n");
+	      printf ("you choose this option.\n");
+	      yesno = prompt ("Are you sure you want to install there", "N");
+	      y = yesno[0];
+	      free (yesno);
+	      if (y != 'y' && y != 'Y')
+		  continue;
+	    }
+	  done = 1;
 	}
       xfree (defroot);
 
@@ -1565,7 +1560,16 @@ those as the basis for your installation.\n\n"
 
       if (toupper (*update) == 'I')
 	{
-	  char *dir = getdownloadsource ();
+	  char *dir;
+
+	  if (current_directory_not_empty ())
+	    {
+	      fprintf (stderr, "\nThe current directory is not empty.  Please run setup in an\n");
+	      fprintf (stderr, "empty temporary directory when installing from the Internet.\n\n");
+	      exit (1);
+	    }
+
+	  dir = getdownloadsource ();
 
 	  if (!dir)
 	    {
@@ -1590,7 +1594,6 @@ those as the basis for your installation.\n\n"
       /* Create the root directory. */
       mkdirp (root);		/* Ignore any return value since it may
 				   already exist. */
-      mkmount (wd, "", "/", 1);
 
       /* Make the root directory the current directory so that recurse_dirs
 	 will * extract the packages into the correct path. */
@@ -1605,15 +1608,11 @@ those as the basis for your installation.\n\n"
 
 	  _chdrive (toupper (*root) - 'A' + 1);
 
-	  xumount (wd, "/usr");
-	  xumount (wd, "/var");
-	  xumount (wd, "/lib");
-	  xumount (wd, "/bin");
-	  xumount (wd, "/etc");
+	  do_tar_map (0, "usr/bin/", root, "/bin/");
+	  do_tar_map (2, "usr/lib/", root, "/lib/");
+	  do_tar_map (4, "", root, "/");
+	  tar_map[6] = tar_map[7] = 0;
 
-	  /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
-	  mkmount (wd, "bin", "/usr/bin", 1);
-	  mkmount (wd, "lib", "/usr/lib", 1);
 
 	  mkdirp ("var\\run");
 	  /* Create /var/run/utmp */
@@ -1646,6 +1645,19 @@ those as the basis for your installation.\n\n"
 	      if (do_start_menu ())
 		retval = 0;	/* Everything worked return
 				   successful code */
+
+	      warning ("Creating mount points...");
+	      xumount (wd, "/usr");
+	      xumount (wd, "/var");
+	      xumount (wd, "/lib");
+	      xumount (wd, "/bin");
+	      xumount (wd, "/etc");
+	      
+	      /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
+	      mkmount (wd, "", "/", 1);
+	      mkmount (wd, "bin", "/usr/bin", 1);
+	      mkmount (wd, "lib", "/usr/lib", 1);
+
 	    }
 	}
 
@@ -1654,6 +1666,7 @@ those as the basis for your installation.\n\n"
       chdir (wd);
       _chdrive (toupper (*wd) - 'A' + 1);
       xfree (wd);
+
     }
 
 out:
