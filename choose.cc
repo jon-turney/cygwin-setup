@@ -1157,7 +1157,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDC_BACK:
       initialized = 0;
       if (source == IDC_SOURCE_CWD)
-	NEXT (IDD_ROOT);
+	NEXT (IDD_LOCAL_DIR);
       else
 	NEXT (IDD_SITE);
       break;

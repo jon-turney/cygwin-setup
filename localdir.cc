@@ -18,7 +18,8 @@
    root of the installation to be, and to ask whether the user prefers
    text or binary mounts. */
 
-static char *cvsid = "\n%%% $Id$\n";
+static char *cvsid =
+  "\n%%% $Id$\n";
 
 #include "win32.h"
 #include <shlobj.h>
@@ -33,6 +34,34 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "mount.h"
 #include "concat.h"
 #include "log.h"
+#include "mkdir.h"
+
+static void
+get_root_dir_now ()
+{
+  int istext;
+  int issystem;
+  if (get_root_dir ())
+    return;
+  read_mounts ();
+}
+
+void
+save_local_dir ()
+{
+  get_root_dir_now ();
+  if (!get_root_dir ())
+    return;
+
+  mkdir_p (1, local_dir);
+
+  FILE *f = fopen (cygpath ("/etc/setup/last-cache", 0), "wb");
+  if (!f)
+    return;
+  fprintf (f, "%s", local_dir);
+  fclose (f);
+}
+
 
 static void
 check_if_enable_next (HWND h)
@@ -61,7 +90,7 @@ browse_cb (HWND h, UINT msg, LPARAM lp, LPARAM data)
     {
     case BFFM_INITIALIZED:
       if (local_dir)
-	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM)local_dir);
+	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) local_dir);
       break;
     }
   return 0;
@@ -105,18 +134,20 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDOK:
       save_dialog (h);
+      save_local_dir ();
       if (SetCurrentDirectoryA (local_dir))
 	{
 	  switch (source)
 	    {
 	    case IDC_SOURCE_DOWNLOAD:
+	    case IDC_SOURCE_NETINST:
 	      NEXT (IDD_NET);
 	      break;
-	    case IDC_SOURCE_NETINST:
 	    case IDC_SOURCE_CWD:
-	      NEXT (IDD_ROOT);
+	      NEXT (IDD_S_FROM_CWD);
 	      break;
 	    default:
+	      msg ("source is default? %d\n", source);
 	      NEXT (0);
 	      break;
 	    }
@@ -128,7 +159,19 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDC_BACK:
       save_dialog (h);
-      NEXT (IDD_SOURCE);
+      switch (source)
+	{
+	case IDC_SOURCE_DOWNLOAD:
+	  NEXT (IDD_SOURCE);
+	  break;
+	case IDC_SOURCE_NETINST:
+	case IDC_SOURCE_CWD:
+	  NEXT (IDD_ROOT);
+	  break;
+	default:
+	  msg ("source is default? %d\n", source);
+	  NEXT (0);
+	}
       break;
 
     case IDCANCEL:
@@ -156,6 +199,25 @@ extern char cwd[_MAX_PATH];
 void
 do_local_dir (HINSTANCE h)
 {
+  static int inited = 0;
+  if (!inited)
+    {
+      FILE *f = fopen (cygpath ("/etc/setup/last-cache", 0), "rt");
+      if (f)
+	{
+	  char localdir[1000];
+	  localdir[0] = '\0';
+	  char *fg_ret = fgets (localdir, 1000, f);
+	  fclose (f);
+	  if (fg_ret)
+	    {
+	      free (local_dir);
+	      local_dir = strdup (localdir);
+	    }
+	}
+      inited = 1;
+    }
+
   int rv = 0;
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_LOCAL_DIR), 0, dialog_proc);
   if (rv == -1)
@@ -163,4 +225,3 @@ do_local_dir (HINSTANCE h)
 
   log (0, "Selected local directory: %s", local_dir);
 }
-

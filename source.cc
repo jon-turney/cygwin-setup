@@ -63,7 +63,15 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDOK:
       save_dialog (h);
-      NEXT (IDD_LOCAL_DIR);
+      switch (source)
+	{
+	case IDC_SOURCE_DOWNLOAD:
+	  NEXT (IDD_LOCAL_DIR);
+	  break;
+	default:
+	  NEXT (IDD_ROOT);
+	  break;
+	}
       break;
 
     case IDC_BACK:

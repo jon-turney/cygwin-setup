@@ -1,3 +1,15 @@
+2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.cc (dialog_cmd): Swap cygwin root selection and local dir selection order.
+	* localdir.cc: Ran indent.
+	(get_root_dir_now): New function.
+	(save_local_dir): New function.
+	(dialog_cmd): Use it and swap cygwin root selection and local dir selection order.
+	(do_local_dir): If there is a saved local dir, read it in.
+	* net.cc (dialog_cmd): Swap cygwin root selection and local dir selection order.
+	* root.cc (dialog_cmd): Ditto.
+	* source.cc (dialog_cmd): Ditto.
+
 2001-11-01  Robert Collins  <rbtcollins@hotmail.com>
 
 	* choose.cc(list_vscroll): Return 0 as required by win32.

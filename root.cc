@@ -157,23 +157,12 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 	if (IDNO == yesno (IDS_ROOT_SPACE))
 	  break;
 
-      switch (source)
-	{
-	case IDC_SOURCE_NETINST:
-	  NEXT (IDD_NET);
-	  break;
-	case IDC_SOURCE_CWD:
-	  NEXT (IDD_S_FROM_CWD);
-	  break;
-	default:
-	  msg ("source is default? %d\n", source);
-	  NEXT (0);
-	}
+      NEXT (IDD_LOCAL_DIR);
       break;
 
     case IDC_BACK:
       save_dialog (h);
-      NEXT (IDD_LOCAL_DIR);
+      NEXT (IDD_SOURCE);
       break;
 
     case IDCANCEL:
