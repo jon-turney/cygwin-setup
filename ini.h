@@ -29,7 +29,7 @@ typedef enum
   TRUST_PREV,
   TRUST_CURR,
   TRUST_TEST,
-  NTRUST,
+  NTRUST
 } trusts;
 
 typedef enum
@@ -79,7 +79,7 @@ typedef enum
 
 #define SRCACTION_NO		0
 #define SRCACTION_YES		1
-typedef struct
+typedef struct _Info
 {
   char *version;	/* version part of filename */
   char *install;	/* file name to install */
@@ -88,6 +88,11 @@ typedef struct
   char *source;		/* sources for installed binaries */
   int source_size;	/* in bytes */
   int source_exists;	/* source file exists on disk */
+#ifdef __cplusplus
+  _Info (const char *_install, const char *_version,
+	int _install_size, const char *_source = NULL,
+	int _source_size = 0);
+#endif
 } Info;			/* +1 for TRUST_UNKNOWN */
 
 typedef struct
@@ -100,7 +105,7 @@ typedef struct
   int srcpicked;	/* SRCACTION_ */
 
   Info *installed;
-  int installed_ix;
+  trusts installed_ix;
   excludes exclude;	/* true if this package should be excluded */
 
   Info info[NTRUST];	/* +1 for TRUST_UNKNOWN */

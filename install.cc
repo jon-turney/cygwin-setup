@@ -265,6 +265,12 @@ uninstall_one (Package *pkg, bool src)
 	    log (LOG_BABBLE, "rmdir %s", d);
 	}
       num_uninstalls++;
+      pkg->installed_ix = TRUST_UNKNOWN;
+      if (pkg->installed)
+	{
+	  free (pkg->installed);
+	  pkg->installed = NULL;
+	}
     }
 }
 
@@ -377,7 +383,13 @@ install_one (Package *pkg, bool isSrc)
     gzclose (lst);
 
   if (!errors)
-    pkg->installed_ix = pkg->trust;
+    {
+      Info *inf = pkg->info + pkg->trust;
+      pkg->installed_ix = pkg->trust;
+      if (pkg->installed)
+	free (pkg->installed);
+      pkg->installed = new Info (inf->install, inf->version, inf->install_size, inf->source, inf->source_size);
+    }
 
   return errors;
 }
@@ -485,7 +497,7 @@ do_install (HINSTANCE h)
 	{
 	  sscanf (line, "%s", pkgname);
 	  Package *pkg = getpkgbyname (pkgname);
-	  if (!pkg || !is_download_action (pkg))
+	  if (!pkg || (!is_download_action (pkg) && pkg->action != ACTION_UNINSTALL))
 	    fputs (line, ndb);
 	}
 

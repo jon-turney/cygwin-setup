@@ -1,3 +1,18 @@
+Thu Jun 14 22:11:53 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (set_action): Set trust on "redo".
+	(_Info::_Info): New constructor.
+	(read_installed_db): Use new constructor.  Use trusts type for
+	iterator.
+	* ini.h (struct _Info): Label struct, add constructor.
+	(Package): Make installed_ix a type 'trusts.'
+	* install.cc (uninstall_one): Unset any installed info for current
+	package.
+	(install_one): Allocate new Info struct for installed reflecting new
+	installed info.
+	(do_install): Don't output line to installed.db if package is being
+	uninstalled.
+
 Thu Jun 14 20:33:01 2001  Robert Collins <rbtcollins@hotmail.com>
 
 	* choose.cc (getpkgbyname): Use consistent method for scanning package

@@ -142,9 +142,14 @@ set_action (Package *pkg, bool preinc)
 	pkg->action = ACTION_UNINSTALL;
       /* Fall through intentionally */
       case ACTION_UNINSTALL:
-      case ACTION_REDO:
 	if (pkg->installed)
 	  return;
+      case ACTION_REDO:
+	if (pkg->installed)
+	  {
+	    pkg->trust = pkg->installed_ix;
+	    return;
+	  }
       case ACTION_SRC_ONLY:
 	if (pkg->installed && pkg->installed->source_exists)
 	  return;
@@ -832,6 +837,20 @@ scan_downloaded_files ()
   find (".", scan2);
 }
 
+_Info::_Info (const char *_install, const char *_version, int _install_size,
+	    const char *_source, int _source_size)
+{
+  memset (this, 0, sizeof (*this));
+  install = strdup (_install);
+  version = strdup (_version);
+  install_size = _install_size;
+  if (source)
+    {
+      source = strdup (source);
+      source_size = _source_size;
+    }
+}
+
 static void
 read_installed_db ()
 {
@@ -873,15 +892,14 @@ read_installed_db ()
 	  pkg->installed_ix = TRUST_CURR;
 	}
 
-      int t;
-      pkg->installed = new Info;
+      pkg->installed = new Info (inst, f.ver, instsz);
       memset (pkg->installed, 0, sizeof (*pkg->installed));
       pkg->installed->install = strdup (inst);
       pkg->installed->version = strdup (f.ver);
       pkg->installed->install_size = instsz;
 
       if (!pkg->installed_ix)
-	for (t = 1; t < NTRUST; t++)
+	for (trusts t = TRUST_PREV; t < NTRUST; ((int) t)++)
 	  if (pkg->info[t].install && strcmp (f.ver, pkg->info[t].version) == 0)
 	    {
 	      pkg->installed_ix = t;
