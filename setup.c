@@ -184,6 +184,17 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
   return retval;
 }
 
+static void
+xumount (const char *mountexedir, const char *unixpath)
+{
+  char *umount = pathcat (mountexedir, "umount");
+  char buffer[1024];
+
+  sprintf (buffer, "%s %s", umount, unixpath);
+  (void) xcreate_process (1, NULL, devnull, devnull, buffer);
+  xfree (umount);
+}
+
 static int
 tarx (const char *dir, const char *fn)
 {
@@ -230,12 +241,22 @@ tarx (const char *dir, const char *fn)
 	}
       else
 	{
+	  char *e;
 	  if (++files.index >= files.count)
 	    files.array = realloc (files.array,
 				   NFILE_SLOP + (files.count += NFILE_LIST));
 	  s = buffer;
 	  if (*s != '/')
 	    *--s = '/';
+#if 0 /* too simplistic */
+	  e = strchr (s, '\0') - 1;
+	  if (e > s && *e == '/')
+	    {
+	      *e = '\0';
+	      xumount (wd, s);
+	    }
+#endif
+	
 	  s = files.array[files.index] = utodpath (s);
 	}
 
@@ -251,7 +272,7 @@ tarx (const char *dir, const char *fn)
   return 1;
 }
 
-int
+static int
 recurse_dirs (const char *dir)
 {
   int err = 0;
@@ -339,7 +360,7 @@ recurse_dirs (const char *dir)
 }
 
 
-void
+static void
 setpath (const char *element)
 {
   char *buffer = xmalloc (strlen (element) + 7);
@@ -350,7 +371,7 @@ setpath (const char *element)
   xfree (buffer);
 }
 
-char *
+static char *
 prompt (const char *text, const char *def)
 {
   char buffer[_MAX_PATH];
@@ -364,7 +385,7 @@ prompt (const char *text, const char *def)
   return xstrdup (strlen (buffer) ? buffer : def ? def : "");
 }
 
-int
+static int
 optionprompt (const char *text, SA * options)
 {
   size_t n, lbound, response;
@@ -421,7 +442,7 @@ optionprompt (const char *text, SA * options)
   return response - 1;
 }
 
-int
+static int
 geturl (const char *url, const char *file, int verbose)
 {
   DWORD type, size;
@@ -456,6 +477,7 @@ geturl (const char *url, const char *file, int verbose)
     {
       DWORD flags = INTERNET_FLAG_DONT_CACHE |
 		    INTERNET_FLAG_KEEP_CONNECTION |
+		    INTERNET_FLAG_PRAGMA_NOCACHE |
 		    INTERNET_FLAG_RELOAD;
 
       if (is_ftp)
@@ -620,7 +642,7 @@ geturl (const char *url, const char *file, int verbose)
   return retval;
 }
 
-char *
+static char *
 findhref (char *buffer, char *date, size_t *filesize)
 {
   char *ref;
@@ -821,7 +843,7 @@ processdirlisting (const char *urlbase, const char *file)
   return retval;
 }
 
-char *
+static char *
 tmpfilename ()
 {
   return xstrdup (tmpnam (NULL));
@@ -836,7 +858,7 @@ downloaddir (const char *url)
   if (geturl (url, file, 1))
   {
     retval = processdirlisting (url, file);
-    unlink (file);
+    // unlink (file);
   }
   xfree (file);
 
@@ -844,13 +866,14 @@ downloaddir (const char *url)
 }
 
 
-HINTERNET opensession ()
+static HINTERNET
+opensession ()
 {
   return InternetOpen ("Cygwin Setup", INTERNET_OPEN_TYPE_PRECONFIG, NULL,
 		       NULL, 0);
 }
 
-int
+static int
 downloadfrom (const char *url)
 {
   int retval = 0;
@@ -859,7 +882,7 @@ downloadfrom (const char *url)
   if (geturl (url, file, 1))
     {
       retval = processdirlisting (url, file);
-      unlink (file);
+      // unlink (file);
     }
 
   xfree (file);
@@ -867,13 +890,13 @@ downloadfrom (const char *url)
   return retval;
 }
 
-int
+static int
 reverse_sort (const void *arg1, const void *arg2)
 {
   return -strcmp (*(char **) arg1, *(char **) arg2);
 }
 
-int
+static int
 create_uninstall (const char *wd, const char *folder, const char *shellscut,
 		  const char *shortcut)
 {
@@ -947,7 +970,7 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 
 
 /* Writes the startup batch file. */
-int
+static int
 do_start_menu (const char *root)
 {
   FILE *batch;
@@ -1029,7 +1052,7 @@ do_start_menu (const char *root)
   return retval;
 }
 
-char *
+static char *
 getdownloadsource ()
 {
   char *retval = NULL;
@@ -1114,14 +1137,14 @@ getdownloadsource ()
 	  sa_cleanup (&names);
 	}
     }
-  unlink (filename);
+  // unlink (filename);
 
   return retval;
 }
 
 
 /* Basically a mkdir -p /somedir function. */
-void
+static void
 mkdirp (const char *dir)
 {
   if (mkdir (dir) == -1 && errno != EEXIST)
@@ -1141,19 +1164,8 @@ mkdirp (const char *dir)
     }
 }
 
-void
-xumount (const char *mountexedir, const char *unixpath)
-{
-  char *umount = pathcat (mountexedir, "umount");
-  char buffer[1024];
-
-  sprintf (buffer, "%s %s", umount, unixpath);
-  (void) xcreate_process (1, NULL, devnull, devnull, buffer);
-  xfree (umount);
-}
-
 /* This routine assumes that the cwd is the root directory. */
-int
+static int
 mkmount (const char *mountexedir, const char *root, const char *dospath,
 	 const char *unixpath, int force)
 {
@@ -1186,6 +1198,7 @@ mkmount (const char *mountexedir, const char *root, const char *dospath,
 }
 
 static char rev[] = " $Revision$ ";
+
 int
 main ()
 {
