@@ -87,7 +87,6 @@ static void
 found_file (char *path, unsigned int fsize)
 {
   fileparse f;
-  char base[_MAX_PATH];
 
   if (!parse_filename (path, f))
     return;
@@ -104,7 +103,7 @@ found_file (char *path, unsigned int fsize)
       }
 
   if (p == NULL)
-      p = new_package (strdup (base));
+      p = new_package (f.pkg);
 
   int trust = is_test_version (f.ver) ? TRUST_TEST : TRUST_CURR;
 

@@ -1,3 +1,8 @@
+Sun Aug 26 12:50:01 2001  John Marshall  <jmarshall@acm.org>
+
+	* fromcwd.cc (found_file): Use correct package name when adding an
+	unknown package rather than random stack garbage.
+
 Sun Aug 12 14:25:21 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* desktop.cc (make_passwd_group): .bat files need \r\n endings.
