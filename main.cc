@@ -428,6 +428,19 @@ main (int argc, char **argv)
     local_dir = String (cwd);
     delete cwd;
 
+    // TODO: make an equivalent for __argv under cygwin.
+    char **_argv;
+#ifndef __CYGWIN__
+    int argc;
+    for (argc = 0, _argv = __argv; *_argv; _argv++)++argc;
+    _argv = __argv;
+#else
+    _argv = argv;
+#endif
+
+    if (!GetOption::GetInstance().Process (argc,_argv, NULL))
+      theLog->exit(1);
+
     LogSingleton::SetInstance (*(theLog = LogFile::createLogFile()));
     theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
     theLog->setFile (0, local_dir + "/setup.log", true);
@@ -448,19 +461,6 @@ main (int argc, char **argv)
     PropSheet MainWindow;
 
     log (LOG_TIMESTAMP) << "Current Directory: " << local_dir << endLog;
-
-    // TODO: make an equivalent for __argv under cygwin.
-    char **_argv;
-#ifndef __CYGWIN__
-    int argc;
-    for (argc = 0, _argv = __argv; *_argv; _argv++)++argc;
-    _argv = __argv;
-#else
-    _argv = argv;
-#endif
-
-    if (!GetOption::GetInstance().Process (argc,_argv, NULL))
-      theLog->exit(1);
 
     if (HelpOption)
     {

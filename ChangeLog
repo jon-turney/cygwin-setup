@@ -1,5 +1,11 @@
 2004-11-19  Max Bowsher  <maxb@ukf.net>
 
+	* main.cc (main): Move option parsing code earlier - it must execute
+	before any significant object creations, which might test options in
+	their initialization.
+
+2004-11-19  Max Bowsher  <maxb@ukf.net>
+
 	* main.cc (main): Remove some junk code - either commented out, or
 	contained within unreachable preprocessor conditional sections.
 
