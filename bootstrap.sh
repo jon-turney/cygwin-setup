@@ -16,6 +16,22 @@ bootstrap() {
   fi
 }
 
+# Make sure we are running in the right directory
+if [ ! -f cygpackage.cc ]; then
+  echo "You must run this script from the directory containing it"
+  exit 1
+fi
+
+# Run bootstrap in required subdirs, iff it has not yet been run
+if [ ! -f libgetopt++/configure ]; then
+  echo "Running bootstrap.sh in libgetopt++"
+  (
+    cd libgetopt++
+    ./bootstrap.sh
+  )
+  echo "Continuing with bootstrap in current directory"
+fi
+
 # Make sure cfgaux exists
 mkdir -p cfgaux
 

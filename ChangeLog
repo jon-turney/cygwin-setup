@@ -1,3 +1,8 @@
+2003-03-09  Max Bowsher  <maxb@ukf.net>
+
+	* bootstrap.sh: Add sanity check of current directory.
+	Recurse into libgetopt++ if needed.
+
 2003-03-09  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Update readme of bugs and wishes.
