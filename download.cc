@@ -60,7 +60,7 @@ download_one (char *name, int expected_size)
   int errors = 0;
 
   DWORD size;
-  if (size = get_file_size (local) > 0)
+  if ((size = get_file_size (local)) > 0)
     if (size == expected_size)
       return 0;
 
