@@ -27,11 +27,13 @@ static const char *cvsid =
 
 #include "port.h"
 
-static void (*for_each) (char *, unsigned int);
+#include "String++.h"
+#include "find.h"
+
 static char dir[_MAX_PATH], *found_part;
 
 static int
-find_sub ()
+find_sub (void (*for_each) (char *, unsigned int))
 {
   WIN32_FIND_DATA wfd;
   HANDLE h;
@@ -55,7 +57,7 @@ find_sub ()
       strcpy (end, wfd.cFileName);
 
       if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-	find_sub ();
+	find_sub (for_each);
       else
 	{
 	  for_each (found_part, wfd.nFileSizeLow);
@@ -70,11 +72,10 @@ find_sub ()
 }
 
 int
-find (const char *starting_dir, void (*_for_each) (char *, unsigned int))
+find (String const &starting_dir, void (*_for_each) (char *, unsigned int))
 {
-  strcpy (dir, starting_dir);
-  for_each = _for_each;
+  strcpy (dir, starting_dir.cstr_oneuse());
   found_part = dir + strlen (dir) + 1;
 
-  return find_sub ();
+  return find_sub (_for_each);
 }

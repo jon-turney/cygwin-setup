@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2002, Robert Collins.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -16,6 +17,10 @@
 
 #ifndef __TAR_H_
 #define __TAR_H_
+
+#include "io_stream.h"
+#include "archive.h"
+#include "String++.h"
 
 typedef struct
 {
@@ -42,8 +47,8 @@ tar_header_type;
 typedef struct tar_map_result_type_s
 {
   struct tar_map_result_type_s *next;
-  char *stored_name;
-  char *mapped_name;
+  String stored_name;
+  String mapped_name;
 }
 tar_map_result_type;
 
@@ -83,7 +88,7 @@ public:
   virtual int seek (long where, io_stream_seek_t whence);
   /* try guessing this one */
   virtual int error ();
-  virtual char *next_file_name ()
+  virtual String next_file_name ()
   {
     return NULL;
   };
@@ -118,7 +123,7 @@ public:
    * for foobar that is an compress, next_file_name is the next
    * extractable filename.
    */
-  virtual const char *next_file_name ();
+  virtual String const next_file_name ();
   virtual archive_file_t next_file_type ();
   /* returns the mtime of the archive file, not of the current file */
   virtual int get_mtime ();
@@ -129,7 +134,7 @@ public:
   {
     return 1;
   };
-  virtual const char *linktarget ();
+  virtual String const linktarget ();
   virtual int skip_file ();
   /* if you are still needing these hints... give up now! */
   virtual ~ archive_tar ();

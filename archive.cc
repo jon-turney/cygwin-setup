@@ -26,7 +26,7 @@ static const char *cvsid =
 #include <stdlib.h>
 #include "log.h"
 #include "port.h"
-#include "concat.h"
+#include "String++.h"
 
 #include "io_stream.h"
 #include "archive.h"
@@ -78,11 +78,11 @@ archive::extract (io_stream * original)
 }
 
 int
-archive::extract_file (archive * source, const char *prefixURL, const char *prefixPath, const char *suffix)
+archive::extract_file (archive * source, String const &prefixURL, String const &prefixPath, String suffix)
 {
   if (!source)
     return 1;
-  const char *destfilename = concat (prefixURL,prefixPath, source->next_file_name (), suffix, 0);
+  String const destfilename = prefixURL+prefixPath+ source->next_file_name ()+ suffix;
   switch (source->next_file_type ())
     {
     case ARCHIVE_FILE_REGULAR:
@@ -91,25 +91,25 @@ archive::extract_file (archive * source, const char *prefixURL, const char *pref
 	/* TODO: remove in-the-way directories via mkpath_p */
 	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
 	{
-	  log (LOG_TIMESTAMP, "Failed to make the path for %s", destfilename);
+	  log (LOG_TIMESTAMP, String ("Failed to make the path for ") + destfilename);
 	  return 1;}
 	io_stream::remove (destfilename);
 	io_stream *tmp = io_stream::open (destfilename, "wb");
 	if (!tmp)
 	{
-	  log (LOG_TIMESTAMP, "Failed to open %s for writing", destfilename);
+	  log (LOG_TIMESTAMP, String ("Failed to open ") + destfilename + " for writing.");
 	  return 1;
 	}
 	io_stream *in = source->extract_file ();
 	if (!in)
 	  {
 	    delete tmp;
-	    log (LOG_TIMESTAMP, "Failed to extract the file %s from the archive",destfilename);
+	    log (LOG_TIMESTAMP, String("Failed to extract the file ") + destfilename + " from the archive");
 	    return 1;
 	  }
 	if (io_stream::copy (in, tmp))
 	  {
-	    log (LOG_TIMESTAMP, "Failed to output %s", destfilename);
+	    log (LOG_TIMESTAMP, String("Failed to output ") + destfilename);
 	    delete tmp;
 	    io_stream::remove (destfilename);
 	    return 1;
@@ -122,12 +122,12 @@ archive::extract_file (archive * source, const char *prefixURL, const char *pref
     case ARCHIVE_FILE_SYMLINK:
       {
 	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
-	{log (LOG_TIMESTAMP, "Failed to make the path for %s", destfilename);
+	{log (LOG_TIMESTAMP, "Failed to make the path for %s", destfilename.cstr_oneuse());
 	  return 1;}
 	io_stream::remove (destfilename);
 	int ok =
 	  io_stream::mklink (destfilename,
-			     concat (prefixURL, source->linktarget (), 0),
+	      prefixURL+ source->linktarget (),
 			     IO_STREAM_SYMLINK);
 	/* FIXME: check what tar's filelength is set to for symlinks */
 	source->skip_file ();
@@ -136,12 +136,12 @@ archive::extract_file (archive * source, const char *prefixURL, const char *pref
     case ARCHIVE_FILE_HARDLINK:
       {
 	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
-	{log (LOG_TIMESTAMP, "Failed to make the path for %s", destfilename);
+	{log (LOG_TIMESTAMP, "Failed to make the path for %s", destfilename.cstr_oneuse());
 	  return 1;}
 	io_stream::remove (destfilename);
 	int ok =
 	  io_stream::mklink (destfilename,
-			     concat (prefixURL, source->linktarget (), 0),
+	      prefixURL + source->linktarget (),
 			     IO_STREAM_HARDLINK);
 	/* FIXME: check what tar's filelength is set to for hardlinks */
 	source->skip_file ();
@@ -149,8 +149,8 @@ archive::extract_file (archive * source, const char *prefixURL, const char *pref
       }
     case ARCHIVE_FILE_DIRECTORY:
       {
-	char *path = (char *) alloca (strlen (destfilename));
-	strcpy (path, destfilename);
+	char *path = (char *) alloca (destfilename.size());
+	strcpy (path, destfilename.cstr_oneuse());
 	while (path[0] && path[strlen (path) - 1] == '/')
 	  path[strlen (path) - 1] = 0;
 	source->skip_file ();

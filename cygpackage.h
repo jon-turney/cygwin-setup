@@ -20,13 +20,15 @@
 #ifndef _CYGPACKAGE_H_
 #define _CYGPACKAGE_H_
 
+#include "String++.h"
+
 class cygpackage:public packageversion
 {
 public:
-  virtual const char *Name ();
-  virtual const char *Vendor_version ();
-  virtual const char *Package_version ();
-  virtual char const *Canonical_version ();
+  virtual String const Name ();
+  virtual String const Vendor_version ();
+  virtual String const Package_version ();
+  virtual String const Canonical_version ();
   virtual package_status_t Status ()
   {
     return status;
@@ -35,13 +37,13 @@ public:
   {
     return type;
   };
-  virtual void set_sdesc (char const *);
-  virtual void set_ldesc (char const *);
-  virtual char const *SDesc ()
+  virtual void set_sdesc (String const &);
+  virtual void set_ldesc (String const &);
+  virtual String const SDesc ()
   {
     return sdesc;
   };
-  virtual char const *LDesc ()
+  virtual String const LDesc ()
   {
     return ldesc;
   };
@@ -49,26 +51,26 @@ public:
 
 
   /* pass the name of the package when constructing */
-  cygpackage (const char *);
-  cygpackage (const char *, const char *, size_t, const char *,
-	      package_status_t, package_type_t);
-  void set_canonical_version (char const *);
+  cygpackage (String const &);
+  cygpackage (String const &, String const &, size_t const, String const &,
+	      package_status_t const, package_type_t const);
+  void set_canonical_version (String const &);
 
 
   virtual ~ cygpackage ();
   /* TODO: we should probably return a metaclass - file name & path & size & type
      - ie doc/script/binary
    */
-  virtual const char *getfirstfile ();
-  virtual const char *getnextfile ();
+  virtual String const getfirstfile ();
+  virtual String const getnextfile ();
 private:
   void destroy ();
-  char *name;
-  char *vendor;
-  char *packagev;
-  char *canonical;
-  char *fn;
-  char *sdesc, *ldesc;
+  String name;
+  String vendor;
+  String packagev;
+  String canonical;
+  String fn;
+  String sdesc, ldesc;
   char getfilenamebuffer[_MAX_PATH];
 
 //  package_stability_t stability;

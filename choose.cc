@@ -42,7 +42,6 @@ static const char *cvsid =
 #include "resource.h"
 #include "state.h"
 #include "ini.h"
-#include "concat.h"
 #include "msg.h"
 #include "log.h"
 #include "find.h"
@@ -549,7 +548,7 @@ scan2 (char *path, unsigned int size)
   if (!parse_filename (path, f))
     return;
 
-  if (f.what[0] != '\0' && f.what[0] != 's')
+  if (f.what.size() != 0 && f.what.cstr_oneuse()[0] != 's')
     return;
 
   packagedb db;
@@ -597,9 +596,9 @@ scan2 (char *path, unsigned int size)
   int added = 0;
   for (size_t n = 1; n <= pkg->versions.number (); n++)
     {
-      if (!strcasecmp (f.ver, pkg->versions[n]->Canonical_version ()))
+      if (!f.ver.casecompare (pkg->versions[n]->Canonical_version ()))
 	{
-	  /* FIXME: Add a mirror entry */
+	  /* FIXME: Add a cached entry */
 	  added = 1;
 	}
     }
@@ -659,56 +658,33 @@ do_choose (HINSTANCE h, HWND owner)
       const char *trust = ((pkg.desired == pkg.prev) ? "prev"
 			   : (pkg.desired == pkg.curr) ? "curr"
 			   : (pkg.desired == pkg.exp) ? "test" : "unknown");
-      const char *action = pkg.action_caption ();
-      const char *installed =
+      String action = pkg.action_caption ();
+      String const installed =
 	pkg.installed ? pkg.installed->Canonical_version () : "none";
 
       log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s"
 	   " src?=%s",
-	   pkg.name, action, trust, installed,
+	   pkg.name.cstr_oneuse(), action.cstr_oneuse(), trust, installed.cstr_oneuse(),
 	   pkg.desired && pkg.desired->srcpicked ? "yes" : "no");
       if (pkg.Categories.number ())
 	{
 	  /* List categories the package belongs to */
-	  int categories_len = 0;
-	  for (size_t n = 1; n <= pkg.Categories.number (); n++)
-	    categories_len += strlen (pkg.Categories[n]->key.name) + 2;
+	  String all_categories = pkg.Categories[1]->key.name;
+	  for (size_t n = 2; n <= pkg.Categories.number (); n++)
+	    all_categories += String(", ") + pkg.Categories[n]->key.name;
 
-	  if (categories_len > 0)
-	    {
-	      char *categories = new char [categories_len];
-	      strcpy (categories, pkg.Categories[1]->key.name);
-	      for (size_t n = 2; n <= pkg.Categories.number (); n++)
-		{
-		  strcat (categories, ", ");
-		  strcat (categories, pkg.Categories[n]->key.name);
-		}
-	      log (LOG_BABBLE, "     categories=%s", categories);
-	      delete[] categories;
-	    }
+	  log (LOG_BABBLE, String ("     categories=") + all_categories);
 	}
       if (pkg.desired && pkg.desired->required)
 	{
 	  /* List other packages this package depends on */
-	  int requires_len = 0;
-	  Dependency *dp;
-	  for (dp = pkg.desired->required; dp; dp = dp->next)
-	    if (dp->package)
-	      requires_len += strlen (dp->package) + 2;
+	  Dependency *dp=pkg.desired->required;
+	  String requires = dp->package;
+	  for (dp = dp->next ; dp; dp = dp->next)
+	    if (dp->package.size())
+	      requires += String (", ") + dp->package;
 
-	  if (requires_len > 0)
-	    {
-	      char *requires = new char [requires_len];
-	      strcpy (requires, pkg.desired->required->package);
-	      for (dp = pkg.desired->required->next; dp; dp = dp->next)
-		if (dp->package)
-		  {
-		    strcat (requires, ", ");
-		    strcat (requires, dp->package);
-		  }
-	      log (LOG_BABBLE, "     requires=%s", requires);
-	      delete[] requires;
-	    }
+	      log (LOG_BABBLE, String("     requires=")+ requires);
 	}
 #if 0
 

@@ -17,16 +17,21 @@
    until they're written out.  "babble" means the message is just idle
    babbling; it can be ignored for shorter logs. */
 
-#define LOG_BABBLE	1
-#define LOG_TIMESTAMP	2
+#include "String++.h"
 
-void log (int flags, const char *fmt, ...)
+enum log_level {
+  LOG_BABBLE = 1,
+  LOG_TIMESTAMP	= 2
+};
+
+void log (enum log_level level, const char *fmt, ...)
   __attribute__ ((format (printf, 2, 3)));
+void log (enum log_level level, String const &);
 
 /* Here, "babble" means to write out the babble also.  If "append" is
    nonzero, the log is appended to any existing file. */
 
-void log_save (int babble, const char *filename, int append);
+void log_save (int writebabble, String const &filename, int append);
 
 /* This is the only legal way to exit.  It writes out all the logs and things */
 

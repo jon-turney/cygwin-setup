@@ -31,7 +31,7 @@ static const char *cvsid =
 #include "msg.h"
 #include "ini.h"
 #include "dialog.h"
-#include "concat.h"
+#include "String++.h"
 #include "geturl.h"
 #include "state.h"
 #include "mkdir.h"
@@ -64,13 +64,12 @@ check_for_cached (packagesource & pkgsource)
 
   DWORD size;
   if ((size =
-       get_file_size (concat (local_dir, "/", pkgsource.Canonical (), 0))) >
+       get_file_size (local_dir +  "/" + pkgsource.Canonical ())) >
       0)
     if (size == pkgsource.size)
       {
 	pkgsource.
-	  set_cached (concat
-		      ("file://", local_dir, "/", pkgsource.Canonical (), 0));
+	  set_cached (String ("file://") + local_dir +  "/" + pkgsource.Canonical ());
 	return 1;
       }
 
@@ -79,18 +78,16 @@ check_for_cached (packagesource & pkgsource)
    */
   for (size_t n = 1; n <= pkgsource.sites.number (); n++)
     if ((size =
-	 get_file_size (concat
-			(local_dir, "/",
-			 rfc1738_escape_part (pkgsource.sites[n]->key), "/",
-			 pkgsource.Canonical (), 0))) > 0)
+	 get_file_size (local_dir + "/" +
+			 rfc1738_escape_part (pkgsource.sites[n]->key) + "/" +
+			 pkgsource.Canonical ())) > 0)
       if (size == pkgsource.size)
 	{
 	  pkgsource.
-	    set_cached (concat
-			("file://", local_dir, "/",
+	    set_cached (String ("file://") + local_dir + "/" +
 			 rfc1738_escape_part (pkgsource.sites[n]->
-					      key), "/",
-			 pkgsource.Canonical (), 0));
+					      key) + "/" +
+			 pkgsource.Canonical ());
 	  return 1;
 	}
 
@@ -109,38 +106,38 @@ download_one (packagesource & pkgsource, HWND owner)
   int success = 0;
   for (size_t n = 1; n <= pkgsource.sites.number () && !success; n++)
     {
-      const char *local = concat (local_dir, "/",
+      String const local = local_dir + "/" +
 				  rfc1738_escape_part (pkgsource.sites[n]->
-						       key), "/",
-				  pkgsource.Canonical (), 0);
-      io_stream::mkpath_p (PATH_TO_FILE, concat ("file://", local, 0));
+						       key) + "/" +
+				  pkgsource.Canonical ();
+      io_stream::mkpath_p (PATH_TO_FILE, (String ("file://") + local).cstr_oneuse());
 
-      if (get_url_to_file
-	  (concat
-	   (pkgsource.sites[n]->key, "/", pkgsource.Canonical (), 0),
-	   concat (local, ".tmp", 0), pkgsource.size, owner))
+      if (get_url_to_file(String (pkgsource.sites[n]->key) +  "/" + pkgsource.Canonical (),
+	   local + ".tmp", pkgsource.size, owner))
 	{
 	  /* FIXME: note new source ? */
 	  continue;
 	}
       else
 	{
-	  size_t size = get_file_size (concat (local, ".tmp", 0));
+	  size_t size = get_file_size (local + ".tmp");
 	  if (size == pkgsource.size)
 	    {
-	      log (0, "Downloaded %s", local);
-	      if (_access (local, 0) == 0)
-		remove (local);
-	      rename (concat (local, ".tmp", 0), local);
+	      log (LOG_TIMESTAMP, "Downloaded %s", local.cstr_oneuse());
+	      if (_access (local.cstr_oneuse(), 0) == 0)
+		remove (local.cstr_oneuse());
+	      rename ((local + ".tmp").cstr_oneuse(), local.cstr_oneuse());
 	      success = 1;
-	      pkgsource.set_cached (concat ("file://", local, 0));
+	      pkgsource.set_cached (String ("file://") + local);
+	      // FIXME: move the downloaded file to the 
+	      //  original locations - without the mirror site dir in the way
 	      continue;
 	    }
 	  else
 	    {
-	      log (0, "Download %s wrong size (%u actual vs %d expected)",
-		   local, size, pkgsource.size);
-	      remove (concat (local, ".tmp", 0));
+	      log (LOG_TIMESTAMP, "Download %s wrong size (%u actual vs %d expected)",
+		   local.cstr_oneuse(), size, pkgsource.size);
+	      remove ((local + ".tmp").cstr_oneuse());
 	      continue;
 	    }
 	}

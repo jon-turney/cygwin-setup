@@ -23,6 +23,7 @@
 
 #include "ini.h"
 #include "iniparse.h"
+#include "String++.h"
 
 #define YY_INPUT(buf,result,max_size) { result = ini_getchar(buf, max_size); }
 
@@ -90,13 +91,12 @@ static io_stream *input_stream = 0;
 extern char *parse_mirror;
 
 void
-ini_init(io_stream *stream, char const *mirror)
+ini_init(io_stream *stream, String const &mirror)
 {
   input_stream = stream;
   if (parse_mirror)
     delete[] parse_mirror;
-  parse_mirror = new char[strlen (mirror) + 1];
-  strcpy (parse_mirror, mirror);
+  parse_mirror = mirror.cstr();
 }
 
 static int

@@ -152,6 +152,7 @@ OBJS = \
 	source.o \
 	splash.o \
 	state.o \
+	String++.o \
 	threebar.o \
 	version.o \
 	win32.o \

@@ -17,19 +17,21 @@
    nonzero if the existing mount is a text mount, else zero for
    binary. */
 
+#include "String++.h"
+
 char *find_mount (int *istext, int *issystem, char *path);
 
 /* Similar to the mount and umount functions, but simplified */
 
-void create_mount (const char *posix, const char *win32, int istext,
+void create_mount (String const posix, String const win32, int istext,
 		   int issystem);
-void remove_mount (const char *posix);
+void remove_mount (String const posix);
 void read_mounts ();
 
 /* Sets the cygdrive flags.  Used to make the automounted drives' binary/text
 mode consistent with the standard Cygwin mounts. */
 
 void set_cygdrive_flags (int istext, int issystem);
-char *cygpath (const char *s, ...);
-void set_root_dir (const char *);
-const char *get_root_dir ();
+String cygpath (const char *s, ...);
+void set_root_dir (String const);
+String const get_root_dir ();

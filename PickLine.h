@@ -29,8 +29,7 @@ public:
   // this may indicate bad inheritance model.
   virtual bool IsContainer (void) const = 0;
   virtual void insert (PickLine &) = 0;
-  // Never allocate to key, always allocated elsewhere
-  char const *key;
+  String const key;
   virtual ~ PickLine ()
   {
   };
@@ -38,7 +37,7 @@ protected:
   PickLine ()
   {
   };
-  PickLine (char const *aKey):key (aKey)
+  PickLine (String const &aKey):key (aKey)
   {
   };
   PickLine (PickLine const &);

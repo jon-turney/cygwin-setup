@@ -32,7 +32,7 @@ static const char *cvsid =
 
 #include "ini.h"
 #include "resource.h"
-#include "concat.h"
+#include "String++.h"
 #include "state.h"
 #include "geturl.h"
 #include "dialog.h"
@@ -65,18 +65,20 @@ find_routine (char *path, unsigned int fsize)
 {
   if (!strstr (path, "setup.ini") )
     return;
-  io_stream *ini_file = io_stream::open (concat ("file://", local_dir,"/", path, 0), "rb");
+  io_stream *ini_file = io_stream::open (String ("file://") + local_dir + "/" + path, "rb");
   if (!ini_file)
     {
-    note (NULL, IDS_SETUPINI_MISSING, path);
+    note (NULL, IDS_SETUPINI_MISSING, (String ("file://") + local_dir + "/" + path).cstr_oneuse());
     return;
     }
+  else
+    log (LOG_BABBLE, String ("Found ini file - file://") + local_dir + "/" + path);
 
   /* FIXME: only use most recent copy */
   setup_timestamp = 0;
   setup_version = 0;
 
-  ini_init (ini_file, concat ("file://", local_dir,"/", path, 0));
+  ini_init (ini_file, String ("file://") + local_dir + "/" + path);
 
   /*yydebug = 1; */
 
@@ -102,11 +104,11 @@ do_remote_ini (HWND owner)
   for (size_t n = 1; n <= site_list.number (); n++)
     {
       io_stream *ini_file =
-	get_url_to_membuf (concat (site_list[n]->url, "/setup.ini", 0), owner);
+	get_url_to_membuf (site_list[n]->url + "/setup.ini", owner);
 
       if (!ini_file)
 	{
-	  note (owner, IDS_SETUPINI_MISSING, site_list[n]->url);
+	  note (owner, IDS_SETUPINI_MISSING, site_list[n]->url.cstr_oneuse());
 	  continue;
 	}
 
@@ -124,19 +126,18 @@ do_remote_ini (HWND owner)
       else
 	{
 	  /* save known-good setup.ini locally */
-	  char const *fp = concat ("file://", local_dir, "/",
-				   rfc1738_escape_part (site_list[n]->url),
-				   "/setup.ini", 0);
+	  String const fp = String ("file://") + local_dir + "/" +
+				   rfc1738_escape_part (site_list[n]->url) +
+				   "/setup.ini";
 	  io_stream::mkpath_p (PATH_TO_FILE, fp);
 	  io_stream *inistream = io_stream::open (fp, "wb");
 	  if (inistream && !ini_file->seek (0, IO_SEEK_SET))
 	    {
 	      if (io_stream::copy (ini_file, inistream))
-		io_stream::remove (fp);
+		io_stream::remove (fp.cstr_oneuse());
 	      delete ini_file;
 	      delete inistream;
 	    }
-	  delete[] fp;
 	  ++ini_count;
 	}
     }
@@ -158,7 +159,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
       return;
     }
 
-  if (get_root_dir ())
+  if (get_root_dir ().cstr_oneuse())
     {
       io_stream::mkpath_p (PATH_TO_DIR, "cygfile:///etc/setup");
 
@@ -198,9 +199,10 @@ do_ini_thread (HINSTANCE h, HWND owner)
        version);
   if (setup_version)
     {
-      char *ini_version = canonicalize_version (setup_version);
-      char *our_version = canonicalize_version (version);
-      if (strcmp (our_version, ini_version) < 0)
+      String ini_version = canonicalize_version (setup_version);
+      String our_version = canonicalize_version (version);
+      // XXX useversion < operator
+      if (our_version.compare (ini_version) < 0)
 	note (owner, IDS_OLD_SETUP_VERSION, version, setup_version);
     }
 

@@ -16,20 +16,22 @@
 #ifndef _IO_STREAM_CYGFILE_H_
 #define _IO_STREAM_CYGFILE_H_
 
+#include "io_stream.h"
+#include "String++.h"
 
 /* io_stream on disk files using cygwin paths
  * and potentially understanding links in the future
  */
 
-extern int cygmkdir_p (int isadir, const char *path);
+extern int cygmkdir_p (enum path_type_t isadir, String const &path);
 
 class io_stream_cygfile:public io_stream
 {
 public:
-  static int exists (const char *);
-  static int remove (const char *);
-  static int mklink (const char *, const char *, io_stream_link_t);
-    io_stream_cygfile (const char *, const char *);
+  static int exists (String const &);
+  static int remove (String const &);
+  static int mklink (String const &, String const &, io_stream_link_t);
+    io_stream_cygfile (String const &, String const &);
     virtual ~ io_stream_cygfile ();
   /* read data (duh!) */
   virtual ssize_t read (void *buffer, size_t len);
@@ -49,11 +51,11 @@ public:
   };
   virtual size_t get_size ();
   /* dummy for io_stream_file */
-  virtual const char *next_file_name ()
+  virtual String next_file_name ()
   {
     return NULL;
   };
-  static int move (char const *, char const *);
+  static int move (String const &,String const &);
 private:
   /* always require parameters */
   io_stream_cygfile ()
@@ -61,8 +63,8 @@ private:
   };
   FILE *fp;
   int lasterr;
-  char *fname;
-  char *lmode;
+  String fname;
+  String lmode;
 };
 
 #endif /* _IO_STREAM_CYGFILE_H_ */

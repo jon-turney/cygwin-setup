@@ -54,22 +54,22 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
 			 theView.headers[theView.current_col].width, by + 11);
       TextOut (hdc,
 	       x + theView.headers[theView.current_col].x + HMARGIN / 2, r,
-	       pkg.installed->Canonical_version (),
-	       strlen (pkg.installed->Canonical_version ()));
+	       pkg.installed->Canonical_version ().cstr_oneuse(),
+	       pkg.installed->Canonical_version ().size());
       SelectObject (theView.bitmap_dc, theView.bm_rtarrow);
       BitBlt (hdc, x + theView.headers[theView.new_col].x + HMARGIN / 2,
 	      by, 11, 11, theView.bitmap_dc, 0, 0, SRCCOPY);
       SelectClipRgn (hdc, oldClip2);
     }
 
-  const char *s = pkg.action_caption ();
+  String s = pkg.action_caption ();
   IntersectClipRect (hdc, x + theView.headers[theView.new_col].x,
 		     by,
 		     x + theView.headers[theView.new_col].x +
 		     theView.headers[theView.new_col].width, by + 11);
   TextOut (hdc,
 	   x + theView.headers[theView.new_col].x + HMARGIN / 2 +
-	   NEW_COL_SIZE_SLOP, r, s, strlen (s));
+	   NEW_COL_SIZE_SLOP, r, s.cstr_oneuse(), s.size());
   SelectObject (theView.bitmap_dc, theView.bm_spin);
   BitBlt (hdc,
 	  x + theView.headers[theView.new_col].x + ICON_MARGIN / 2 +
@@ -101,32 +101,25 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
   if (pkg.Categories.number () && show_cat)
     {
       int index = 1;
-      if (!strcasecmp (pkg.Categories[1]->key.name, "All"))
+      if (!pkg.Categories[1]->key.name.casecompare( "All"))
 	index = 2;
       IntersectClipRect (hdc, x + theView.headers[theView.cat_col].x, by,
 			 x + theView.headers[theView.cat_col].x +
 			 theView.headers[theView.cat_col].x, by + 11);
       TextOut (hdc, x + theView.headers[theView.cat_col].x + HMARGIN / 2, r,
-	       pkg.Categories[index]->key.name,
-	       strlen (pkg.Categories[index]->key.name));
+	       pkg.Categories[index]->key.name.cstr_oneuse(),
+	       pkg.Categories[index]->key.name.size());
       SelectClipRgn (hdc, oldClip2);
     }
 
-  if (!pkg.SDesc ())
-    s = pkg.name;
-  else
-    {
-      static char buf[512];
-      strcpy (buf, pkg.name);
-      strcat (buf, ": ");
-      strcat (buf, pkg.SDesc ());
-      s = buf;
-    }
+  s = pkg.name;
+  if (pkg.SDesc ().size())
+    s += String(": ") + pkg.SDesc ();
   IntersectClipRect (hdc, x + theView.headers[theView.pkg_col].x, by,
 		     x + theView.headers[theView.pkg_col].x +
 		     theView.headers[theView.pkg_col].width, by + 11);
-  TextOut (hdc, x + theView.headers[theView.pkg_col].x + HMARGIN / 2, r, s,
-	   strlen (s));
+  TextOut (hdc, x + theView.headers[theView.pkg_col].x + HMARGIN / 2, r, s.cstr_oneuse(),
+	   s.size());
   DeleteObject (oldClip);
   DeleteObject (oldClip2);
   RestoreDC (hdc, oldDC);

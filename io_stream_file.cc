@@ -36,79 +36,68 @@ static const char *cvsid =
 #define FACTOR (0x19db1ded53ea710LL)
 #define NSPERSEC 10000000LL
 
-io_stream_file::io_stream_file (const char *name, const char *mode)
+io_stream_file::io_stream_file (String const &name, String const &mode):
+fp(), fname(name),lmode (mode)
 {
-  fname = NULL;
-  fp = NULL;
   errno = 0;
-  if (!name || IsBadStringPtr (name, MAX_PATH) || !name[0] ||
-      !mode || IsBadStringPtr (mode, 5) || !mode[0])
+  if (!name.size() || !mode.size())
     return;
-  lmode = new char[strlen(mode) + 1];
-  strcpy (lmode,mode);
-  fname = new char[strlen(name) + 1];
-  strcpy (fname,name);
-  fp = fopen (name, mode);
+  fp = fopen (name.cstr_oneuse(), mode.cstr_oneuse());
   if (!fp)
     lasterr = errno;
 }
 
 io_stream_file::~io_stream_file ()
 {
-  if (fname)
-    delete[] fname;
-  if (lmode)
-    delete[] lmode;
   if (fp)
     fclose (fp);
   destroyed = 1;
 }
 
 int
-io_stream_file::exists (const char *path)
+io_stream_file::exists (String const &path)
 {
-  if (_access (path, 0) == 0)
+  if (_access (path.cstr_oneuse(), 0) == 0)
     return 1;
   return 0;
 }
 
 int
-io_stream_file::remove (const char *path)
+io_stream_file::remove (String const &path)
 {
-  if (!path)
+  if (!path.size())
     return 1;
 
-  unsigned long w = GetFileAttributes (path);
+  unsigned long w = GetFileAttributes (path.cstr_oneuse());
   if (w != 0xffffffff && w & FILE_ATTRIBUTE_DIRECTORY)
     {
-      char *tmp = new char [strlen (path) + 10];
+      char *tmp = new char [path.size() + 10];
       int i = 0;
       do
 	{
 	  i++;
-	  sprintf (tmp, "%s.old-%d", path, i);
+	  sprintf (tmp, "%s.old-%d", path.cstr_oneuse(), i);
 	}
       while (GetFileAttributes (tmp) != 0xffffffff);
       fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-	       path);
-      MoveFile (path, tmp);
+	       path.cstr_oneuse());
+      MoveFile (path.cstr_oneuse(), tmp);
       delete[] tmp;
     }
-  return !DeleteFileA (path);
+  return !DeleteFileA (path.cstr_oneuse());
 
 }
 
 int
-io_stream_file::mklink (const char *from, const char *to,
+io_stream_file::mklink (String const &from, String const &to,
 			io_stream_link_t linktype)
 {
-  /* FIXME: badstring check */
-  if (!from || !to)
+  if (!from.size() || !to.size())
     return 1;
   switch (linktype)
     {
     case IO_STREAM_SYMLINK:
-      return mkcygsymlink (from, to);
+      return mkcygsymlink (from.cstr_oneuse(), to.cstr_oneuse());
     case IO_STREAM_HARDLINK:
       return 1;
     }
@@ -180,7 +169,7 @@ io_stream_file::error ()
 int
 io_stream_file::set_mtime (int mtime)
 {
-  if (!fname)
+  if (!fname.size())
     return 1;
   if (fp)
     fclose (fp);
@@ -189,7 +178,7 @@ io_stream_file::set_mtime (int mtime)
   ftime.dwHighDateTime = ftimev >> 32;
   ftime.dwLowDateTime = ftimev;
   HANDLE h =
-    CreateFileA (fname, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    CreateFileA (fname.cstr_oneuse(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
 		 0, OPEN_EXISTING,
 		 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
   if (h)
@@ -202,18 +191,17 @@ io_stream_file::set_mtime (int mtime)
 }
 
 int
-io_stream_file::move (char const *from, char const *to)
+io_stream_file::move (String const &from, String const &to)
 {
-  if (!from || IsBadStringPtr (from, MAX_PATH) || !from[0] ||
-      !to || IsBadStringPtr (to, MAX_PATH) || !to[0])
+  if (!from.size()|| !to.size())
     return 1;
-  return rename (from, to);
+  return rename (from.cstr_oneuse(), to.cstr_oneuse());
 }
 
 size_t
 io_stream_file::get_size ()
 {
-  if (!fname)
+  if (!fname.size())
     return 0;
   return get_file_size (fname);
 }

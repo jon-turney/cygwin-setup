@@ -41,7 +41,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "dialog.h"
 #include "concat.h"
 #include "geturl.h"
-#include "mkdir.h"
 #include "state.h"
 #include "diskfull.h"
 #include "msg.h"
@@ -113,8 +112,8 @@ static const char *standard_dirs[] = {
 static int num_installs, num_replacements, num_uninstalls;
 static void uninstall_one (packagemeta &);
 static int replace_one (packagemeta &);
-static int install_one_source (packagemeta &, packagesource &, char const *,
-			       char const *, package_type_t);
+static int install_one_source (packagemeta &, packagesource &, String const &,
+			       String const &, package_type_t);
 static bool rebootneeded;
 
 /* FIXME: upgrades should be a method too */
@@ -122,8 +121,8 @@ static void
 uninstall_one (packagemeta & pkgm)
 {
   Progress.SetText1 ("Uninstalling...");
-  Progress.SetText2 (pkgm.name);
-  log (0, "Uninstalling %s", pkgm.name);
+  Progress.SetText2 (pkgm.name.cstr_oneuse());
+  log (LOG_TIMESTAMP, String("Uninstalling ") + pkgm.name);
   pkgm.uninstall ();
   num_uninstalls++;
 }
@@ -139,8 +138,8 @@ replace_one (packagemeta & pkg)
 {
   int errors = 0;
   Progress.SetText1 ("Replacing...");
-  Progress.SetText2 (pkg.name);
-  log (0, "Replacing %s", pkg.name);
+  Progress.SetText2 (pkg.name.cstr_oneuse());
+  log (LOG_TIMESTAMP, String( "Replacing ")  + pkg.name);
   pkg.uninstall ();
 
   errors +=
@@ -155,7 +154,7 @@ replace_one (packagemeta & pkg)
 /* install one source at a given prefix. */
 static int
 install_one_source (packagemeta & pkgm, packagesource & source,
-		    char const *prefixURL, char const *prefixPath, package_type_t type)
+		    String const &prefixURL, String const &prefixPath, package_type_t type)
 {
   int errors = 0;
   Progress.SetText2 (source.Base ());
@@ -169,7 +168,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
     {
       io_stream *tmp =
 	io_stream::
-	open (concat ("cygfile:///etc/setup/", pkgm.name, ".lst.gz", 0),
+	open (String ("cygfile:///etc/setup/") + pkgm.name + ".lst.gz",
 	      "wb");
       lst = new compress_gz (tmp, "w9");
       if (lst->error ())
@@ -184,7 +183,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
   char msg[64];
   strcpy (msg, "Installing");
   Progress.SetText1 (msg);
-  log (0, "%s %s", msg, source.Cached ());
+  log (LOG_TIMESTAMP, "%s %s", msg, source.Cached ());
   io_stream *tmp = io_stream::open (source.Cached (), "rb");
   archive *thefile = 0;
   if (tmp)
@@ -198,21 +197,25 @@ install_one_source (packagemeta & pkgm, packagesource & source,
   /* FIXME: potential leak of either *tmp or *tmp2 */
   if (thefile)
     {
-      const char *fn;
-      while ((fn = thefile->next_file_name ()))
+      String fn;
+      while ((fn = thefile->next_file_name ()).size())
 	{
 	  if (lst)
-	    lst->write (concat (fn, "\n", 0), strlen (fn) + 1);
+	    {
+	      String tmp=fn + "\n";
+	      lst->write (tmp.cstr_oneuse(), tmp.size() + 1);
+	    }
 
-	  /* FIXME: concat leaks memory */
-	  Progress.SetText3 (concat (prefixPath, fn, 0));
-	  log (LOG_BABBLE, "Installing file %s%s%s", prefixURL,prefixPath, fn);
+	  String canonicalfn = prefixPath + fn;
+
+	  Progress.SetText3 (canonicalfn.cstr_oneuse());
+	  log (LOG_BABBLE, String("Installing file ") + prefixURL + prefixPath + fn);
 	  if (archive::extract_file (thefile, prefixURL, prefixPath) != 0)
 	    {
 	      //extract to temp location
 	      if (archive::extract_file (thefile, prefixURL, prefixPath, ".new") != 0)
 		{
-		  log (0, "Unable to install file %s%s%s", prefixURL,prefixPath, fn);
+		  log (LOG_TIMESTAMP, String("Unable to install file ")+ prefixURL+prefixPath+ fn);
 		  errors++;
 		}
 	      else
@@ -224,14 +227,13 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 		      /* Get the short file names */
 		      char source[MAX_PATH];
 		      unsigned int len =
-			GetShortPathName (cygpath ("/", fn, ".new", 0),
+			GetShortPathName (cygpath ("/", fn.cstr_oneuse(), ".new", 0).cstr_oneuse(),
 					  source, MAX_PATH);
 		      if (!len || len > MAX_PATH)
 			{
-			  log (0,
+			  log (LOG_TIMESTAMP,
 			       "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-			       cygpath ("/", fn, 0), cygpath ("/", fn, ".new",
-							      0),
+			       cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(), cygpath ("/", fn.cstr_oneuse(), ".new", 0).cstr_oneuse(),
 			       GetLastError ());
 			  ++errors;
 			}
@@ -239,14 +241,14 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 			{
 			  char dest[MAX_PATH];
 			  len =
-			    GetShortPathName (cygpath ("/", fn, 0), dest,
+			    GetShortPathName (cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(), dest,
 					      MAX_PATH);
 			  if (!len || len > MAX_PATH)
 			    {
-			      log (0,
+			      log (LOG_TIMESTAMP,
 				   "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-				   cygpath ("/", fn, 0), cygpath ("/", fn,
-								  ".new", 0),
+				   cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(), cygpath ("/", fn.cstr_oneuse(),
+								  ".new", 0).cstr_oneuse(),
 				   GetLastError ());
 			      ++errors;
 
@@ -256,10 +258,10 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 			  if (!WritePrivateProfileString
 				("rename", dest, source, "WININIT.INI"))
 			    {
-			      log (0,
+			      log (LOG_TIMESTAMP,
 				   "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-				   cygpath ("/", fn, 0), cygpath ("/", fn,
-								  ".new", 0),
+				   cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(), cygpath ("/", fn.cstr_oneuse(),
+								  ".new", 0).cstr_oneuse(),
 				   GetLastError ());
 			      ++errors;
 			    }
@@ -273,15 +275,14 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 		       * - we need a io method to get win32 paths 
 		       * or to wrap this system call
 		       */
-		      if (!MoveFileEx (cygpath ("/", fn, ".new", 0),
-				       cygpath ("/", fn, 0),
+		      if (!MoveFileEx (cygpath ("/", fn.cstr_oneuse(), ".new", 0).cstr_oneuse(),
+				       cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(),
 				       MOVEFILE_DELAY_UNTIL_REBOOT |
 				       MOVEFILE_REPLACE_EXISTING))
 			{
-			  log (0,
+			  log (LOG_TIMESTAMP,
 			       "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-			       cygpath ("/", fn, 0), cygpath ("/", fn, ".new",
-							      0),
+			       cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(), cygpath ("/", fn.cstr_oneuse(), ".new", 0).cstr_oneuse(),
 			       GetLastError ());
 			  ++errors;
 			}
@@ -303,7 +304,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 
   progress (0);
 
-  int df = diskfull (get_root_dir ());
+  int df = diskfull (get_root_dir ().cstr_oneuse());
   Progress.SetBar3 (df);
 
   if (lst)
@@ -416,14 +417,13 @@ do_install_thread (HINSTANCE h, HWND owner)
 
   next_dialog = IDD_DESKTOP;
 
-  mkdir_p (1, get_root_dir ());
+  io_stream::mkpath_p (PATH_TO_DIR, get_root_dir ());
 
   for (i = 0; standard_dirs[i]; i++)
     {
-      char *p = cygpath (standard_dirs[i], 0);
-      if (p)
-	mkdir_p (1, p);
-      delete[] p;
+      String p = cygpath (standard_dirs[i], 0);
+      if (p.size())
+	io_stream::mkpath_p (PATH_TO_DIR, p);
     }
 
   /* Create /var/run/utmp */
@@ -435,13 +435,13 @@ do_install_thread (HINSTANCE h, HWND owner)
   total_bytes = 0;
   total_bytes_sofar = 0;
 
-  int df = diskfull (get_root_dir ());
+  int df = diskfull (get_root_dir ().cstr_oneuse());
   Progress.SetBar3 (df);
 
   int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
 
-  create_mount ("/", get_root_dir (), istext, issystem);
+  create_mount ("/", get_root_dir ().cstr_oneuse(), istext, issystem);
   create_mount ("/usr/bin", cygpath ("/bin", 0), istext, issystem);
   create_mount ("/usr/lib", cygpath ("/lib", 0), istext, issystem);
   set_cygdrive_flags (istext, issystem);
@@ -511,7 +511,8 @@ do_install_thread (HINSTANCE h, HWND owner)
       const char *err = strerror (temperr);
       if (!err)
 	err = "(unknown error)";
-      fatal (owner, IDS_ERR_OPEN_WRITE, err);
+      fatal (owner, IDS_ERR_OPEN_WRITE, "Package Database",
+	  err);
     }
 
   if (!errors)

@@ -22,6 +22,9 @@
  * case.
  */
 
+#include <stdio.h>
+#include "String++.h"
+
 /* Some things don't fit cleanly just - TODO
  * make mkdir_p fit in the hierarchy
  */
@@ -91,20 +94,20 @@ public:
    * will return non-NULL. To access the files within the archive use io_stream::factory
    * to create a new stream that will read from the archive.
    */
-  static io_stream *open (const char *, const char *);
-  static int remove (const char *);
-  static int exists (const char *);
+  static io_stream *open (String const &, String const &);
+  static int remove (String const &);
+  static int exists (String const &);
   /* moves physical stream source to dest. A copy will be attempted if a 
    * pointer flip fails.
    */
-  static int move (char const *, char const *);
+  static int move (String const &, String const &);
   /* ensure that we have access to the entire path */
   /* Create a directory, and any needed parent directories.
    * returns 1 on failure.
    */
-  static int mkpath_p (path_type_t, const char *);
+  static int mkpath_p (path_type_t, String const &);
   /* link from, to, type. Returns 1 on failure */
-  static int mklink (const char *, const char *, io_stream_link_t);
+  static int mklink (String const &, String const &, io_stream_link_t);
   /* copy from stream to stream - 0 on success */
   static ssize_t copy (io_stream *, io_stream *);
   /* TODO: we may need two versions of each of these:
@@ -150,7 +153,10 @@ public:
    */
 //  virtual const char* next_file_name() = NULL;
   /* if you are still needing these hints... give up now! */
-    virtual ~ io_stream () = 0;
+  virtual ~ io_stream () = 0;
+
+  io_stream& operator << (io_stream&);
+  
 protected:
   void operator= (const io_stream &);
     io_stream () : destroyed (0)
@@ -159,7 +165,7 @@ protected:
   io_stream (const io_stream &);
   unsigned int destroyed;
 private:
-  static int move_copy (char const *, char const *);
+  static int move_copy (String const &, String const &);
 };
 
 #endif /* _IO_STREAM_H_ */

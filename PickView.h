@@ -17,6 +17,7 @@
 #define _PICKVIEW_H_
 
 #include "win32.h"
+#include "String++.h"
 
 #define HMARGIN 10
 #define ROW_MARGIN      5
@@ -118,7 +119,7 @@ private:
   views view_mode;
   void set_headers ();
   void init_headers (HDC dc);
-  void note_width (Header *hdrs, HDC dc, const char *string, int addend,
+  void note_width (Header *hdrs, HDC dc, String const &string, int addend,
       int column);
 
 };

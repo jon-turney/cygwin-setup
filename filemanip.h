@@ -13,18 +13,21 @@
  *
  */
 
+#include "String++.h"
+
 extern int find_tar_ext (const char *path);
 
 typedef struct
 {
-  char pkgtar[MAX_PATH + 1];
-  char pkg[MAX_PATH + 1];
-  char ver[MAX_PATH + 1];
-  char tail[MAX_PATH + 1];
-  char what[16];
+  String pkgtar;
+  String pkg;
+  String ver;
+  String tail;
+  String what;
 }
 fileparse;
 
-int parse_filename (const char *in_fn, fileparse & f);
-char *base (const char *name);
-unsigned int get_file_size (const char *name);
+int parse_filename (String const & in_fn, fileparse & f);
+String base (String const &);
+unsigned int get_file_size (String const &);
+String backslash (String const &);

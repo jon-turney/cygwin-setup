@@ -18,8 +18,7 @@
    changes, this is the file to change to match it. */
 
 #if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
+static const char *cvsid = "\n%%% $Id$\n";
 #endif
 
 #include "win32.h"
@@ -36,54 +35,56 @@ static const char *cvsid =
 #include "state.h"
 #include "concat.h"
 
+#include "String++.h"
+
 static struct mnt
 {
-  const char *native;
-  char *posix;
+  String native;
+  String posix;
   int istext;
 }
 mount_table[255];
 
 struct mnt *root_here = NULL;
 
-static char *
-find2 (HKEY rkey, int *istext, char *what)
+static String
+find2 (HKEY rkey, int *istext, String const &what)
 {
-  char *retval = 0;
-  DWORD retvallen = 0;
-  DWORD flags = 0;
-  DWORD type;
   HKEY key;
 
-  if (RegOpenKeyEx (rkey, what, 0, KEY_READ, &key) != ERROR_SUCCESS)
+  if (RegOpenKeyEx (rkey, what.cstr_oneuse (), 0, KEY_READ, &key) !=
+      ERROR_SUCCESS)
     return 0;
 
+  DWORD retvallen = 0;
+  DWORD type;
+
+  String Sretval;
   if (RegQueryValueEx (key, "native", 0, &type, 0, &retvallen)
       == ERROR_SUCCESS)
     {
-      retval = new char [MAX_PATH + 1];
+      char retval[retvallen];
       if (RegQueryValueEx
 	  (key, "native", 0, &type, (BYTE *) retval,
-	   &retvallen) != ERROR_SUCCESS)
-	{
-	  delete[] retval;
-	  retval = 0;
-	}
+	   &retvallen) == ERROR_SUCCESS)
+	Sretval = String (retval);
     }
 
+  DWORD flags = 0;
   retvallen = sizeof (flags);
   RegQueryValueEx (key, "flags", 0, &type, (BYTE *) & flags, &retvallen);
 
   RegCloseKey (key);
 
-  if (retval)
+  if (Sretval.size ())
     *istext = (flags & MOUNT_BINARY) ? 0 : 1;
 
-  return retval;
+  return Sretval;
 }
 
 void
-create_mount (const char *posix, const char *win32, int istext, int issystem)
+create_mount (String const posix, String const win32, int istext,
+	      int issystem)
 {
   char buf[1000];
   HKEY key;
@@ -95,15 +96,15 @@ create_mount (const char *posix, const char *win32, int istext, int issystem)
   sprintf (buf, "Software\\%s\\%s\\%s\\%s",
 	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
-	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix);
+	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.cstr_oneuse ());
 
   HKEY kr = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
-  if (RegCreateKeyEx (kr, buf, 0, (char *) "Cygwin", 0, KEY_ALL_ACCESS,
+  if (RegCreateKeyEx (kr, buf, 0, "Cygwin", 0, KEY_ALL_ACCESS,
 		      0, &key, &disposition) != ERROR_SUCCESS)
     fatal ("mount");
 
-  RegSetValueEx (key, "native", 0, REG_SZ, (BYTE *) win32,
-		 strlen (win32) + 1);
+  RegSetValueEx (key, "native", 0, REG_SZ, (BYTE *) win32.cstr_oneuse (),
+		 win32.size () + 1);
   flags = 0;
   if (!istext)
     flags |= MOUNT_BINARY;
@@ -117,20 +118,20 @@ create_mount (const char *posix, const char *win32, int istext, int issystem)
 }
 
 static void
-remove1 (HKEY rkey, const char *posix)
+remove1 (HKEY rkey, String const posix)
 {
   char buf[1000];
 
   sprintf (buf, "Software\\%s\\%s\\%s\\%s",
 	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
-	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix);
+	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.cstr_oneuse ());
 
   RegDeleteKey (rkey, buf);
 }
 
 void
-remove_mount (const char *posix)
+remove_mount (String const posix)
 {
   remove1 (HKEY_LOCAL_MACHINE, posix);
   remove1 (HKEY_CURRENT_USER, posix);
@@ -228,7 +229,7 @@ static int
 in_table (struct mnt *m)
 {
   for (struct mnt * m1 = mount_table; m1 < m; m1++)
-    if (strcasecmp (m1->posix, m->posix) == 0)
+    if (m1->posix.casecompare (m->posix) == 0)
       return 1;
   return 0;
 }
@@ -304,12 +305,10 @@ read_mounts ()
   char buf[10000];
 
   root_here = NULL;
-  for (mnt * m1 = mount_table; m1->posix; m1++)
+  for (mnt * m1 = mount_table; m1->posix.size (); m1++)
     {
-      delete[] m1->posix;
-      if (m1->native)
-	delete[] m1->native;
-      m1->posix = NULL;
+      m1->posix = String ();	//empty string;
+      m1->native = String ();
     }
 
   /* Loop through subkeys */
@@ -324,37 +323,37 @@ read_mounts ()
 	       CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME);
 
       HKEY key = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
-      if (RegCreateKeyEx (key, buf, 0, (char *) "Cygwin", 0, KEY_ALL_ACCESS,
+      if (RegCreateKeyEx (key, buf, 0, "Cygwin", 0, KEY_ALL_ACCESS,
 			  0, &key, &disposition) != ERROR_SUCCESS)
 	break;
       for (int i = 0;; i++, m++)
 	{
-	  m->posix = new char [MAX_PATH + 1];
+	  char aBuffer[MAX_PATH + 1];
 	  posix_path_size = MAX_PATH;
 	  /* FIXME: if maximum posix_path_size is 256, we're going to
 	     run into problems if we ever try to store a mount point that's
 	     over 256 but is under MAX_PATH. */
-	  res = RegEnumKeyEx (key, i, m->posix, &posix_path_size, NULL,
+	  res = RegEnumKeyEx (key, i, aBuffer, &posix_path_size, NULL,
 			      NULL, NULL, NULL);
 
 	  if (res == ERROR_NO_MORE_ITEMS)
 	    {
-	      delete[] m->posix;
-	      m->posix = NULL;
+	      m->posix = String ();
 	      break;
 	    }
+	  m->posix = String (aBuffer);
 
-	  if (!*m->posix || in_table (m))
+	  if (!m->posix.size () || in_table (m))
 	    goto no_go;
 	  else if (res != ERROR_SUCCESS)
 	    break;
 	  else
 	    {
 	      m->native = find2 (key, &m->istext, m->posix);
-	      if (!m->native)
+	      if (!m->native.size ())
 		goto no_go;
 
-	      if (strcmp (m->posix, "/") == 0)
+	      if (m->posix == "/")
 		{
 		  root_here = m;
 		  if (m->istext)
@@ -369,9 +368,8 @@ read_mounts ()
 	    }
 	  continue;
 	no_go:
-	  delete[] m->posix;
-	  m->posix = NULL;
-	  m--;
+	  m->posix = String ();
+	  --m;
 	}
       RegCloseKey (key);
     }
@@ -379,34 +377,32 @@ read_mounts ()
   if (!root_here)
     {
       root_here = m;
-      m->posix = new char [2];
-      strcpy (m->posix, "/");
+      m->posix = String ("/");
       char windir[_MAX_PATH];
       root_text = IDC_ROOT_BINARY;
       root_scope = (is_admin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
       GetWindowsDirectory (windir, sizeof (windir));
       windir[2] = 0;
-      set_root_dir (concat (windir, "\\cygwin", 0));
+      set_root_dir (String (windir) + "\\cygwin");
       m++;
     }
 }
 
 void
-set_root_dir (const char *val)
+set_root_dir (String const val)
 {
   root_here->native = val;
 }
 
-const char *
+String const
 get_root_dir ()
 {
-  return root_here ? root_here->native : NULL;
+  return root_here ? root_here->native : String ();
 }
 
 /* Return non-zero if PATH1 is a prefix of PATH2.
    Both are assumed to be of the same path style and / vs \ usage.
    Neither may be "".
-   LEN1 = strlen (PATH1).  It's passed because often it's already known.
 
    Examples:
    /foo/ is a prefix of /foo  <-- may seem odd, but desired
@@ -418,39 +414,33 @@ get_root_dir ()
 */
 
 static int
-path_prefix_p (const char *path1, const char *path2, int len1)
+path_prefix_p (String const path1, String const path2)
 {
+  size_t len1 = path1.size ();
   /* Handle case where PATH1 has trailing '/' and when it doesn't.  */
-  if (len1 > 0 && SLASH_P (path1[len1 - 1]))
-    len1--;
+  if (len1 > 0 && SLASH_P (path1.cstr_oneuse ()[len1 - 1]))
+    --len1;
 
   if (len1 == 0)
-    return SLASH_P (path2[0]) && !SLASH_P (path2[1]);
+    return SLASH_P (path2.cstr_oneuse ()[0])
+      && !SLASH_P (path2.cstr_oneuse ()[1]);
 
-  if (strncasecmp (path1, path2, len1) != 0)
+  if (path1.casecompare (path2, len1) != 0)
     return 0;
 
-  return SLASH_P (path2[len1]) || path2[len1] == 0 || path1[len1 - 1] == ':';
+  return SLASH_P (path2.cstr_oneuse ()[len1]) || path2.size () == len1
+    || path1.cstr_oneuse ()[len1 - 1] == ':';
 }
 
-char *
-cygpath (const char *s, ...)
+static String
+cygpath (String const &thePath)
 {
-  va_list v;
-  int max_len = -1;
+  size_t max_len = 0;
   struct mnt *m, *match = NULL;
-
-  va_start (v, s);
-  char *path = vconcat (s, v);
-  if (strncmp (path, "./", 2) == 0)
-    memmove (path, path + 2, strlen (path + 2) + 1);
-  if (strncmp (path, "/./", 3) == 0)
-    memmove (path + 1, path + 3, strlen (path + 3) + 1);
-
-  for (m = mount_table; m->posix; m++)
+  for (m = mount_table; m->posix.size (); m++)
     {
-      int n = strlen (m->posix);
-      if (n < max_len || !path_prefix_p (m->posix, path, n))
+      size_t n = m->posix.size ();
+      if (n <= max_len || !path_prefix_p (m->posix, thePath))
 	continue;
       max_len = n;
       match = m;
@@ -459,14 +449,29 @@ cygpath (const char *s, ...)
   if (!match)
     return NULL;
 
-  char *native;
-  if (max_len == (int) strlen (path))
-  {
-    native = new char [strlen (match->native) + 1];
-    strcpy (native, match->native);
-  }
+  String native;
+  if (max_len == thePath.size ())
+    {
+      native = match->native;
+    }
   else
-    native = concat (match->native, "/", path + max_len, NULL);
-  delete[] path;
+    native = match->native + "/" + String (thePath.cstr_oneuse () + max_len);
   return native;
+}
+
+String
+cygpath (const char *s, ...)
+{
+  va_list v;
+
+  va_start (v, s);
+  char *path = vconcat (s, v);
+  if (strncmp (path, "./", 2) == 0)
+    memmove (path, path + 2, strlen (path + 2) + 1);
+  if (strncmp (path, "/./", 3) == 0)
+    memmove (path + 1, path + 3, strlen (path + 3) + 1);
+
+  String thePath (path);
+  delete[]path;
+  return cygpath (thePath);
 }

@@ -41,42 +41,34 @@ static const char *cvsid =
 static void
 get_root_dir_now ()
 {
-  if (get_root_dir ())
+  if (get_root_dir ().size())
     return;
   read_mounts ();
 }
 
-io_stream_cygfile::io_stream_cygfile (const char *name, const char *mode)
+io_stream_cygfile::io_stream_cygfile (String const &name, String const &mode) : fp(), fname()
 {
-  fname = NULL;
-  fp = NULL;
   errno = 0;
-  if (!name || IsBadStringPtr (name, MAX_PATH) || !name[0] ||
-      !mode || IsBadStringPtr (mode, 5) || !mode[0])
+  if (!name.size() || !mode.size())
     return;
 
   /* do this every time because the mount points may change due to fwd/back button use...
    * TODO: make this less...manual
    */
   get_root_dir_now ();
-  if (!get_root_dir ())
+  if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
     return;
 
-  fname = cygpath (name, 0);
-  lmode = new char[strlen(mode) + 1];
-  strcpy (lmode,mode);
-  fp = fopen (fname, mode);
+  fname = cygpath (name.cstr_oneuse(), 0);
+  lmode = mode;
+  fp = fopen (fname.cstr_oneuse(), mode.cstr_oneuse());
   if (!fp)
     lasterr = errno;
 }
 
 io_stream_cygfile::~io_stream_cygfile ()
 {
-  if (lmode)
-    delete[] lmode;
-  if (fname)
-    delete[] fname;
   if (fp)
     fclose (fp);
   destroyed = 1;
@@ -84,97 +76,83 @@ io_stream_cygfile::~io_stream_cygfile ()
 
 /* Static members */
 int
-io_stream_cygfile::exists (const char *path)
+io_stream_cygfile::exists (String const &path)
 {
   get_root_dir_now ();
-  if (get_root_dir () && _access (cygpath (path, 0), 0) == 0)
+  if (get_root_dir ().size() && _access (cygpath (path.cstr_oneuse(), 0).cstr_oneuse(), 0) == 0)
     return 1;
   return 0;
 }
 
 int
-io_stream_cygfile::remove (const char *path)
+io_stream_cygfile::remove (String const &path)
 {
-  if (!path)
+  if (!path.size())
     return 1;
   get_root_dir_now ();
-  if (!get_root_dir ())
+  if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
 
-  unsigned long w = GetFileAttributes (cygpath (path, 0));
+  unsigned long w = GetFileAttributes (cygpath (path.cstr_oneuse(),0).cstr_oneuse());
   if (w != 0xffffffff && w & FILE_ATTRIBUTE_DIRECTORY)
     {
-      char *tmp = new char [strlen (cygpath (path, 0)) + 10];
+      char tmp[cygpath (path.cstr_oneuse(),0).size() + 10];
       int i = 0;
       do
 	{
-	  i++;
-	  sprintf (tmp, "%s.old-%d", cygpath (path, 0), i);
+	  ++i;
+	  sprintf (tmp, "%s.old-%d", cygpath (path.cstr_oneuse(),0).cstr_oneuse(), i);
 	}
       while (GetFileAttributes (tmp) != 0xffffffff);
       fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-	       path);
-      MoveFile (cygpath (path, 0), tmp);
-      delete[] tmp;
+	       path.cstr_oneuse());
+      MoveFile (cygpath (path.cstr_oneuse(),0).cstr_oneuse(), tmp);
     }
-  return !DeleteFileA (cygpath (path, 0));
+  return !DeleteFileA (cygpath (path.cstr_oneuse(),0).cstr_oneuse());
 }
 
 int
-io_stream_cygfile::mklink (const char *from, const char *to,
+io_stream_cygfile::mklink (String const &from, String const &to,
 			   io_stream_link_t linktype)
 {
-  /* FIXME: badstring check */
-  if (!from || !to)
+  if (!from.size() || !to.size())
     return 1;
   switch (linktype)
     {
     case IO_STREAM_SYMLINK:
-      return mkcygsymlink (cygpath (from, 0), to);
+      return mkcygsymlink (cygpath (from.cstr_oneuse(),0).cstr_oneuse(), to.cstr_oneuse());
     case IO_STREAM_HARDLINK:
       {
 	/* For now, just copy */
 	/* textmode alert: should we translate when linking from an binmode to a
 	   text mode mount and vice verca?
 	 */
-	io_stream *in = io_stream::open (cygpath (to, 0), "rb");
+	io_stream *in = io_stream::open (cygpath (to.cstr_oneuse(),0), "rb");
 	if (!in)
 	  {
-	    log (LOG_TIMESTAMP, "could not open %s for reading in mklink",
-		 to);
+	    log (LOG_TIMESTAMP, String("could not open ") + to +" for reading in mklink");
 	    return 1;
 	  }
-	io_stream *out = io_stream::open (cygpath (from, 0), "wb");
+	io_stream *out = io_stream::open (cygpath (from.cstr_oneuse(),0), "wb");
 	if (!out)
 	  {
-	    log (LOG_TIMESTAMP, "could not open %s for writing in mklink",
-		 from);
+	    log (LOG_TIMESTAMP, String("could not open ")+ from + " for writing in mklink");
 	    delete in;
 	    return 1;
 	  }
 
-	ssize_t len;
-	char buf[16384];
-	while ((len = in->read (buf, 16384)) > 0)
+	if (io_stream::copy (in, out))
 	  {
-	    ssize_t wrote = out->write (buf, len);
-	    if (wrote != len)
-	      {
-		log (LOG_TIMESTAMP, "error writing to %s in mklink", from);
-		delete in;
-		delete out;
-		return 1;
-	      }
+	    log (LOG_TIMESTAMP, String ("Failed to hardlink ")+ from + "->"  +to +
+		" during file copy.");
+	    delete in;
+	    delete out;
+	    return 1;
 	  }
 	delete in;
 	delete out;
-	if (len == 0)
-	  return 0;
-	log (LOG_TIMESTAMP,
-	     "read error reading %s while copying to %s (emulated hardlink)",
-	     to, from);
-	return 1;
+	return 0;
       }
     }
   return 1;
@@ -243,21 +221,21 @@ io_stream_cygfile::error ()
 }
 
 int
-cygmkdir_p (int isadir, const char *name)
+cygmkdir_p (enum path_type_t isadir, String const &name)
 {
-  if (!name || IsBadStringPtr (name, MAX_PATH) || !name[0])
+  if (!name.size())
     return 1;
   get_root_dir_now ();
-  if (!get_root_dir ())
+  if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
-  return mkdir_p (isadir, cygpath (name, 0));
+  return mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, cygpath (name.cstr_oneuse(),0).cstr_oneuse());
 }
 
 int
 io_stream_cygfile::set_mtime (int mtime)
 {
-  if (!fname)
+  if (!fname.size())
     return 1;
   if (fp)
     fclose (fp);
@@ -266,7 +244,7 @@ io_stream_cygfile::set_mtime (int mtime)
   ftime.dwHighDateTime = ftimev >> 32;
   ftime.dwLowDateTime = ftimev;
   HANDLE h =
-    CreateFileA (fname, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    CreateFileA (fname.cstr_oneuse(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
 		 0, OPEN_EXISTING,
 		 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
   if (h)
@@ -292,22 +270,21 @@ io_stream_cygfile::set_mtime (int mtime)
 }
 
 int
-io_stream_cygfile::move (char const *from, char const *to)
+io_stream_cygfile::move (String const &from, String const &to)
 {
-  if (!from || IsBadStringPtr (from, MAX_PATH) || !from[0] ||
-      !to || IsBadStringPtr (to, MAX_PATH) || !to[0])
+  if (!from.size() || !to.size())
     return 1;
   get_root_dir_now ();
-  if (!get_root_dir ())
+  if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
-  return rename (cygpath (from, 0), cygpath (to, 0));
+  return rename (cygpath (from.cstr_oneuse(),0).cstr_oneuse(), cygpath (to.cstr_oneuse(),0).cstr_oneuse());
 }
 
 size_t
 io_stream_cygfile::get_size ()
 {
-  if (!fname)
+  if (!fname.size() )
     return 0;
   return get_file_size (fname);
 }

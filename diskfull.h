@@ -13,5 +13,7 @@
  *
  */
 
+#include "String++.h"
+
 /* returns 0..100 (percent) */
-int diskfull (const char *path);
+int diskfull (String const &path);

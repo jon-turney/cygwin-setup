@@ -82,7 +82,7 @@ private:
   size_t depth;
   PickCategoryLine (PickCategoryLine const &);
   PickCategoryLine & operator= (PickCategoryLine const &);
-  list < PickLine, char const *, strcasecmp > bucket;
+  list < PickLine, String, String::casecompare > bucket;
   PickView& theView;
 };
 #endif // _PICKCATEGORYLINE_H_

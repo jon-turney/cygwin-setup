@@ -26,9 +26,11 @@
  
  */
 
+#include "String++.h"
+
 extern int source;
 
-extern char *local_dir;
+extern String local_dir;
 
 extern int root_text;
 extern int root_scope;
@@ -46,4 +48,3 @@ extern char *net_proxy_passwd;
 extern char *net_ftp_user;
 extern char *net_ftp_passwd;
 
-extern int trust_level;

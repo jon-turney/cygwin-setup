@@ -23,9 +23,8 @@ class PickView;
 class PickPackageLine:public PickLine
 {
 public:
-  PickPackageLine (PickView &aView, packagemeta & apkg):pkg (apkg), theView (aView)
+  PickPackageLine (PickView &aView, packagemeta & apkg):PickLine (apkg.key), pkg (apkg), theView (aView)
   {
-    key = apkg.key;
   };
   virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
   virtual int click (int const myrow, int const ClickedRow, int const x);

@@ -30,13 +30,13 @@ static const char *cvsid =
 #include "filemanip.h"
 
 unsigned int
-get_file_size (const char *name)
+get_file_size (String const &name)
 {
   HANDLE h;
   WIN32_FIND_DATA buf;
   DWORD ret = 0;
 
-  h = FindFirstFileA (name, &buf);
+  h = FindFirstFileA (name.cstr_oneuse(), &buf);
   if (h != INVALID_HANDLE_VALUE)
     {
       if (buf.nFileSizeHigh == 0)
@@ -46,19 +46,22 @@ get_file_size (const char *name)
   return ret;
 }
 
-char *
-base (const char *s)
+String 
+base (String const &aString)
 {
-  if (!s)
+  if (!aString.size())
     return 0;
-  const char *rv = s;
+  const char *t = aString.cstr();
+  const char *s = t;
+  String rv = s;
   while (*s)
     {
       if ((*s == '/' || *s == ':' || *s == '\\') && s[1])
 	rv = s + 1;
       s++;
     }
-  return (char *) rv;
+  delete[] t;
+  return rv;
 }
 
 /* returns the number of characters of path that
@@ -81,64 +84,78 @@ find_tar_ext (const char *path)
 
 /* Parse a filename into package, version, and extension components. */
 int
-parse_filename (const char *in_fn, fileparse & f)
+parse_filename (String const &in_fn, fileparse & f)
 {
   char *p, *ver;
-  char fn[strlen (in_fn) + 1];
-
-  strcpy (fn, in_fn);
+  char fn[in_fn.size() + 1];
+  strcpy (fn, in_fn.cstr_oneuse());
+  
   int n = find_tar_ext (fn);
 
   if (!n)
     return 0;
 
-  strcpy (f.tail, fn + n);
+  f.tail = fn + n;
   fn[n] = '\0';
-  f.pkg[0] = f.what[0] = '\0';
-  p = base (fn);
+  f.pkg = f.what = String();
+  p = base (fn).cstr();
   for (ver = p; *ver; ver++)
-    if (*ver == '-' || *ver == '_')
+    if (*ver == '-')
       if (isdigit (ver[1]))
 	{
 	  *ver++ = 0;
-	  strcpy (f.pkg, p);
+	  f.pkg = p;
 	  break;
 	}
       else if (strcasecmp (ver, "-src") == 0 ||
 	       strcasecmp (ver, "-patch") == 0)
 	{
 	  *ver++ = 0;
-	  strcpy (f.pkg, p);
-	  strcpy (f.what, strlwr (ver));
-	  strcpy (f.pkgtar, p);
-	  strcat (f.pkgtar, f.tail);
+	  f.pkg = p;
+	  f.what = strlwr (ver);
+	  f.pkgtar = String(p) + f.tail;
 	  ver = strchr (ver, '\0');
 	  break;
 	}
 
-  if (!f.pkg[0])
-    strcpy (f.pkg, p);
+  if (!f.pkg.size())
+    f.pkg = p;
 
-  if (!f.what[0])
+  if (!f.what.size())
     {
       int n;
-      p = strchr (ver, '\0');
-      strcpy (f.pkgtar, in_fn);
-      if ((p -= 4) >= ver && strcasecmp (p, "-src") == 0)
+      char *p1 = strchr (ver, '\0');
+      f.pkgtar = in_fn;
+      if ((p1 -= 4) >= ver && strcasecmp (p1, "-src") == 0)
 	n = 4;
-      else if ((p -= 2) >= ver && strcasecmp (p, "-patch") == 0)
+      else if ((p1 -= 2) >= ver && strcasecmp (p1, "-patch") == 0)
 	n = 6;
       else
 	n = 0;
       if (n)
 	{
-	  strcpy (f.what, p + 1);
-	  *p = '\0';
-	  p = f.pkgtar + (p - fn) + n;
-	  memmove (p - n, p, strlen (p));
+	  // XXX This maybe broken. What does it do?
+	  f.what = p1 + 1;
+	  *p1 = '\0';
+	  p1 = p + (p1 - fn) + n;
+	  memmove (p1 - n, p1, strlen (p1));
+	  f.pkgtar = p;
 	}
     }
 
-  strcpy (f.ver, *ver ? ver : "0.0");
+  f.ver = *ver ? ver : "0.0";
+  delete[] p;
   return 1;
+}
+
+String
+backslash (String const & aString)
+{
+  char * tempString = aString.cstr();
+  for (char *t = tempString; *t; t++)
+    if (*t == '/')
+      *t = '\\';
+  String theString(tempString);
+  delete[] tempString;
+  return theString;
 }

@@ -18,8 +18,7 @@
 
 /* required to parse this file */
 #include "list.h"
-#include <string.h>
-//class CategoryList;
+#include <String++.h>
 class Category;
 class packagemeta;
 class io_stream;
@@ -37,9 +36,9 @@ public:
   /* 0 on success */
   int flush ();
   /* all seen packages */
-  static list < packagemeta, char const *, strcasecmp > packages;
+  static list < packagemeta, String, String::casecompare > packages;
   /* all seen categories */
-  static list < Category, char const *, strcasecmp > categories;
+  static list < Category, String, String::casecompare > categories;
   static PackageDBActions task;
 private:
   static int installeddbread;	/* do we have to reread this */

@@ -63,11 +63,10 @@ static const char *standard_dirs[] = {
 };
 
 void
-hash::add_subdirs (char const *tpath)
+hash::add_subdirs (String const &tpath)
 {
   char *nonp, *pp;
-  char *path = new char[strlen (tpath) + 1];
-  strcpy (path, tpath);
+  char *path = tpath.cstr();
   for (nonp = path; *nonp == '\\' || *nonp == '/'; nonp++);
   for (pp = path + strlen (path) - 1; pp > nonp; pp--)
     if (*pp == '/' || *pp == '\\')
@@ -152,31 +151,31 @@ packagemeta::uninstall ()
        * but for now: here is ok
        */
       hash dirs;
-      const char *line = installed->getfirstfile ();
+      String line = installed->getfirstfile ();
 
       try_run_script ("/etc/preremove/", name);
-      while (line)
+      while (line.size())
 	{
 	  dirs.add_subdirs (line);
 
-	  char *d = cygpath ("/", line, NULL);
-	  DWORD dw = GetFileAttributes (d);
+	  String d = cygpath ("/", line.cstr_oneuse(),0);
+	  DWORD dw = GetFileAttributes (d.cstr_oneuse());
 	  if (dw != INVALID_FILE_ATTRIBUTES
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
-	      log (LOG_BABBLE, "unlink %s", d);
-	      SetFileAttributes (d, dw & ~FILE_ATTRIBUTE_READONLY);
-	      DeleteFile (d);
+	      log (LOG_BABBLE, String("unlink ")+ d);
+	      SetFileAttributes (d.cstr_oneuse(), dw & ~FILE_ATTRIBUTE_READONLY);
+	      DeleteFile (d.cstr_oneuse());
 	    }
 	  /* Check for Windows shortcut of same name. */
-	  d = concat (d, ".lnk", NULL);
-	  dw = GetFileAttributes (d);
+	  d += ".lnk";
+	  dw = GetFileAttributes (d.cstr_oneuse());
 	  if (dw != INVALID_FILE_ATTRIBUTES
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
-	      log (LOG_BABBLE, "unlink %s", d);
-	      SetFileAttributes (d, dw & ~FILE_ATTRIBUTE_READONLY);
-	      DeleteFile (d);
+	      log (LOG_BABBLE, String("unlink ") + d);
+	      SetFileAttributes (d.cstr_oneuse(), dw & ~FILE_ATTRIBUTE_READONLY);
+	      DeleteFile (d.cstr_oneuse());
 	    }
 	  line = installed->getnextfile ();
 	}
@@ -186,9 +185,9 @@ packagemeta::uninstall ()
       char *subdir = 0;
       while ((subdir = dirs.enumerate (subdir)) != 0)
 	{
-	  char *d = cygpath ("/", subdir, NULL);
-	  if (RemoveDirectory (d))
-	    log (LOG_BABBLE, "rmdir %s", d);
+	  String d = cygpath ("/", subdir,0);
+	  if (RemoveDirectory (d.cstr_oneuse()))
+	    log (LOG_BABBLE, String("rmdir ")+ d);
 	}
       try_run_script ("/etc/postremove/", name);
     }
@@ -204,17 +203,17 @@ packagemeta::add_category (Category & cat)
   catpack.pkg = this;
 }
 
-char const *
+String const
 packagemeta::SDesc () const
 {
   for (size_t n = 1; n <= versions.number (); ++n)
-    if (versions[n]->SDesc ())
+    if (versions[n]->SDesc ().size())
       return versions[n]->SDesc ();
   return NULL;
 };
 
 /* Return an appropriate caption given the current action. */
-char const *
+String 
 packagemeta::action_caption ()
 {
   if (!desired && installed)

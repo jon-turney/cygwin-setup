@@ -6,7 +6,7 @@ doesn't work. */
 extern "C"
 {
 #endif
-  void make_link_2 (char *exepath, char *args, char *icon, char *lname);
+  void make_link_2 (char const *exepath, char const *args, char const *icon, char const *lname);
 
   int mkcygsymlink (const char *from, const char *to);
 

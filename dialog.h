@@ -13,6 +13,8 @@
  *
  */
 
+#include "String++.h"
+
 /* global instance for the application; set in main.cc */
 extern HINSTANCE hinstance;
 
@@ -51,13 +53,18 @@ D (do_splash);
 
 char *eget (HWND h, int id, char *var);
 
+/* Get the value of an EditText control. */
+
+String egetString (HWND h, int id);
+
 /* Same, but convert the value to an integer */
 
 int eget (HWND h, int id);
 
-/* Set the EditText control to the given string or integer */
+/* Set the EditText control to the given value */
 
 void eset (HWND h, int id, const char *var);
+void eset (HWND h, int id, String const);
 void eset (HWND h, int id, int var);
 
 /* RadioButtons.  ids is a null-terminated list of IDs.  Get

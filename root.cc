@@ -33,7 +33,6 @@ static const char *cvsid =
 #include "state.h"
 #include "msg.h"
 #include "mount.h"
-#include "concat.h"
 #include "log.h"
 #include "root.h"
 
@@ -43,7 +42,7 @@ static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
 static void
 check_if_enable_next (HWND h)
 {
-  EnableWindow (GetDlgItem (h, IDOK), root_text && get_root_dir ()
+  EnableWindow (GetDlgItem (h, IDOK), root_text && get_root_dir ().size()
 		&& root_scope);
 }
 
@@ -61,7 +60,7 @@ save_dialog (HWND h)
 {
   root_text = rbget (h, rb);
   root_scope = rbget (h, su);
-  set_root_dir (eget (h, IDC_ROOT_DIR, (char *) get_root_dir ()));
+  set_root_dir (egetString (h, IDC_ROOT_DIR));
 }
 
 static int CALLBACK
@@ -70,8 +69,8 @@ browse_cb (HWND h, UINT msg, LPARAM lp, LPARAM data)
   switch (msg)
     {
     case BFFM_INITIALIZED:
-      if (get_root_dir ())
-	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) get_root_dir ());
+      if (get_root_dir ().size())
+	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) get_root_dir ().cstr_oneuse());
       break;
     }
   return 0;
@@ -102,26 +101,34 @@ browse (HWND h)
 static int
 directory_is_absolute ()
 {
-  const char *r = get_root_dir ();
+  
+  const char *r = get_root_dir ().cstr();
   if (isalpha (r[0]) && r[1] == ':' && (r[2] == '\\' || r[2] == '/'))
-    return 1;
+    {
+      delete [] r;
+      return 1;
+    }
+  delete[]r;
   return 0;
 }
 
 static int
 directory_is_rootdir ()
 {
+  char *t=get_root_dir ().cstr();
   const char *c;
-  for (c = get_root_dir (); *c; c++)
+  for (c = t; *c; c++)
     if (isslash (c[0]) && c[1] && !isslash (c[1]))
-      return 0;
+    {delete[]t;
+      return 0;}
+      delete[]t;
   return 1;
 }
 
 static int
 directory_has_spaces ()
 {
-  if (strchr (get_root_dir (), ' '))
+  if (get_root_dir ().find(' '))
     return 1;
   return 0;
 }
@@ -157,7 +164,7 @@ RootPage::Create ()
 void
 RootPage::OnInit ()
 {
-  if (!get_root_dir ())
+  if (!get_root_dir ().size())
     read_mounts ();
   load_dialog (GetHWND ());
 }
@@ -181,9 +188,9 @@ RootPage::OnNext ()
 
   NEXT (IDD_LOCAL_DIR);
 
-  log (0, "root: %s %s %s", get_root_dir (),
-       (root_text == IDC_ROOT_TEXT) ? "text" : "binary",
-       (root_scope == IDC_ROOT_USER) ? "user" : "system");
+  log (LOG_TIMESTAMP, String ("root: ") + get_root_dir () + 
+       (root_text == IDC_ROOT_TEXT ? " text" : " binary")  +
+       (root_scope == IDC_ROOT_USER ? " user" : " system"));
 
   return 0;
 }

@@ -26,9 +26,12 @@ static const char *cvsid =
 #include <ctype.h>
 
 #include "port.h"
-char *
-canonicalize_version (const char *v)
+#include "version.h"
+  
+String 
+canonicalize_version (String const &aString)
 {
+  char *v =aString.cstr();
   static char nv[3][100];
   static int idx = 0;
   char *np;
@@ -52,5 +55,6 @@ canonicalize_version (const char *v)
 	*np++ = *v++;
     }
   *np++ = 0;
+  delete[] v;
   return nv[idx];
 }

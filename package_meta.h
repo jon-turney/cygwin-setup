@@ -33,7 +33,7 @@ class category;
 
 /* Required to parse this completely */
 #include "list.h"
-#include "strings.h"
+#include "String++.h"
 #include "category.h"
 
 /* 
@@ -56,36 +56,26 @@ public:
 class packagemeta
 {
 public:
-  packagemeta (char const *pkgname):installed_from (0),
+  packagemeta (String const &pkgname):name (pkgname), key(pkgname), installed_from (0),
     //versions (0),
 //    versioncount (0), versionspace (0), 
   installed (0), prev (0), prevtimestamp (0), curr (0), currtimestamp (0),
     exp (0), exptimestamp (0), desired (0)
   {
-    name = new char[strlen (pkgname) + 1];
-      strcpy (name, pkgname);
-    key = name;
-  };
+  }
 
-  packagemeta (char const *pkgname,
-	       char const *installedfrom):installed_from (0),
+  packagemeta (String const &pkgname,
+	       String const &installedfrom):name (pkgname), key(pkgname),
+	       installed_from (installedfrom),
     //versions (0),    versioncount (0), versionspace (0), 
    
     installed (0), prev (0), prevtimestamp (0), curr (0), currtimestamp (0),
     exp (0), exptimestamp (0), desired (0)
   {
-    name = new char[strlen (pkgname) + 1];
-    key = name;
-    strcpy (name, pkgname);
-    installed_from = new char[strlen (installedfrom) + 1];
-    strcpy (installed_from, installedfrom);
   };
 
   ~packagemeta ()
   {
-    delete[] name;
-    if (installed_from)
-      delete[] installed_from;
   };
 
   void add_version (packageversion &);
@@ -116,7 +106,7 @@ public:
   void uninstall ();
   int set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0);
 
-  char const *action_caption ();
+  String action_caption ();
   packageversion * trustp (trusts const t) const
   {
     return t == TRUST_PREV ? (prev ? prev : (curr ? curr : installed))
@@ -124,20 +114,20 @@ public:
 	 : exp;
   }
 
-  char *name;			/* package name, like "cygwin" */
-  char *key;
+  String name;			/* package name, like "cygwin" */
+  String key;
   /* legacy variable used to output data for installed.db versions <= 2 */
-  char *installed_from;
+  String installed_from;
   /* SDesc is global in theory, across all package versions. 
      LDesc is not: it can be different per version */
-  char const *SDesc () const;
+  String const SDesc () const;
   /* what categories does this package belong in. Note that if multiple versions
    * of a package disagree.... the first one read in will take precedence.
    */
   void add_category (Category &);
   list < CategoryPackage, Category &, Categorycmp > Categories;
 
-  list < packageversion, char const *, strcasecmp > versions;
+  list < packageversion, String, String::casecompare > versions;
   /* which one is installed. */
   packageversion *installed;
   /* which one is listed as "prev" in our available packages db */

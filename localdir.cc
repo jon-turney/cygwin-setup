@@ -36,7 +36,6 @@ static const char *cvsid =
 #include "mount.h"
 #include "concat.h"
 #include "log.h"
-#include "mkdir.h"
 #include "io_stream.h"
 
 #include "localdir.h"
@@ -47,10 +46,10 @@ extern ThreeBarProgressPage Progress;
 void
 save_local_dir ()
 {
-  mkdir_p (1, local_dir);
+  io_stream::mkpath_p (PATH_TO_DIR, local_dir);
 
   io_stream *f;
-  if (get_root_dir ())
+  if (get_root_dir ().size())
     {
       f = io_stream::open ("cygfile:///etc/setup/last-cache", "wb");
       io_stream::remove ("file://last-cache");
@@ -59,9 +58,7 @@ save_local_dir ()
     f = io_stream::open ("file://last-cache", "wb");
   if (f)
     {
-      char temp[1000];
-      sprintf (temp, "%s", local_dir);
-      f->write (temp, strlen (temp));
+      f->write (local_dir.cstr_oneuse(), local_dir.size());
       delete f;
     }
 }
@@ -69,7 +66,7 @@ save_local_dir ()
 static void
 check_if_enable_next (HWND h)
 {
-  EnableWindow (GetDlgItem (h, IDOK), local_dir != 0);
+  EnableWindow (GetDlgItem (h, IDOK), local_dir.size() != 0);
 }
 
 static void
@@ -82,7 +79,7 @@ load_dialog (HWND h)
 static void
 save_dialog (HWND h)
 {
-  local_dir = eget (h, IDC_LOCAL_DIR, local_dir);
+  local_dir = egetString (h, IDC_LOCAL_DIR);
 }
 
 
@@ -92,8 +89,8 @@ browse_cb (HWND h, UINT msg, LPARAM lp, LPARAM data)
   switch (msg)
     {
     case BFFM_INITIALIZED:
-      if (local_dir)
-	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) local_dir);
+      if (local_dir.size())
+	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) local_dir.cstr_oneuse());
       break;
     }
   return 0;
@@ -159,12 +156,7 @@ LocalDirPage::OnInit ()
 	  char *fg_ret = f->gets (localdir, 1000);
 	  delete f;
 	  if (fg_ret)
-	    {
-	      delete [] local_dir;
-	      local_dir = new char [strlen(localdir) +1];
-	      local_dir[strlen(localdir)] = '\0';
-	      strcpy (local_dir, localdir);
-	    }
+	    local_dir = String (localdir);
 	}
       inited = 1;
     }
@@ -183,8 +175,8 @@ LocalDirPage::OnNext ()
 
   save_dialog (h);
   save_local_dir ();
-  log (0, "Selected local directory: %s", local_dir);
-  if (SetCurrentDirectoryA (local_dir))
+  log (LOG_TIMESTAMP, "Selected local directory: %s", local_dir.cstr_oneuse());
+  if (SetCurrentDirectoryA (local_dir.cstr_oneuse()))
     {
       if (source == IDC_SOURCE_CWD)
 	{
@@ -198,7 +190,7 @@ LocalDirPage::OnNext ()
 	}
     }
   else
-    note (h, IDS_ERR_CHDIR, local_dir);
+    note (h, IDS_ERR_CHDIR, local_dir.cstr_oneuse());
 
   return 0;
 }

@@ -33,7 +33,7 @@ char *
 eget (HWND h, int id, char *var)
 {
   char tmp[4000];
-  if (var && var != get_root_dir ())
+  if (var && var != get_root_dir ().cstr_oneuse())
     {
       delete [] var;
       var = NULL;
@@ -45,6 +45,16 @@ eget (HWND h, int id, char *var)
       strcpy (var, tmp);
     }
   return var;
+}
+
+String
+egetString (HWND h, int id)
+{
+  String aString;
+  char tmp[4000];
+  if (GetDlgItemText (h, id, tmp, sizeof (tmp)) > 0)
+    aString = String (tmp);
+  return aString;
 }
 
 int
@@ -59,6 +69,12 @@ void
 eset (HWND h, int id, const char *val)
 {
   SetDlgItemText (h, id, val);
+}
+
+void
+eset (HWND h, int id, String const aString)
+{
+  SetDlgItemText (h, id, aString.cstr_oneuse());
 }
 
 void

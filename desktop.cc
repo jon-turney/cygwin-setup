@@ -34,8 +34,6 @@ static const char *cvsid =
 #include "ini.h"
 #include "msg.h"
 #include "state.h"
-#include "concat.h"
-#include "mkdir.h"
 #include "dialog.h"
 #include "version.h"
 #include "mount.h"
@@ -48,7 +46,12 @@ static const char *cvsid =
 #include "package_meta.h"
 #include "package_version.h"
 
+#include "filemanip.h"
+#include "String++.h"
+#include "io_stream.h"
+  
 #include "desktop.h"
+
 
 static OSVERSIONINFO verinfo;
 
@@ -91,72 +94,75 @@ static const char *etc_profile[] = {
   0
 };
 
-#define COMMAND9XARGS "/E:4096 /c"
-#define COMMAND9XEXE  "\\command.com"
+#define COMMAND9XARGS String("/E:4096 /c")
+#define COMMAND9XEXE  String("\\command.com")
 
-static char *batname;
-static char *iconname;
+static String batname;
+static String iconname;
 
 static void
-make_link (const char *linkpath, const char *title, const char *target)
+make_link (String const &linkpath, String const &title, String const &target)
 {
-  char argbuf[_MAX_PATH];
-  char *fname = concat (linkpath, "/", title, ".lnk", 0);
+  String fname = linkpath + "/" + title + ".lnk";
 
-  if (_access (fname, 0) == 0)
+  if (_access (fname.cstr_oneuse(), 0) == 0)
     return;			/* already exists */
 
-  msg ("make_link %s, %s, %s\n", fname, title, target);
+  msg ("make_link %s, %s, %s\n", fname.cstr_oneuse(), title.cstr_oneuse(), target.cstr_oneuse());
 
-  mkdir_p (0, fname);
+  io_stream::mkpath_p (PATH_TO_FILE, fname);
 
-  char *exepath;
+  String exepath;
 
+  String argbuf;
   /* If we are running Win9x, build a command line. */
   if (verinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
-      exepath = concat (target, 0);
-      sprintf (argbuf, " ");
+      exepath = target;
+      argbuf = " ";
+//      sprintf (argbuf, " ");
     }
   else
     {
       char windir[MAX_PATH];
 
       GetWindowsDirectory (windir, sizeof (windir));
-      exepath = concat (windir, COMMAND9XEXE, 0);
-      sprintf (argbuf, "%s %s", COMMAND9XARGS, target);
+      exepath = String(windir) + COMMAND9XEXE;
+      argbuf = COMMAND9XARGS + " " + target;
+//      sprintf (argbuf, "%s %s", COMMAND9XARGS, target.cstr_oneuse());
     }
 
-  msg ("make_link_2 (%s, %s, %s, %s)", exepath, argbuf, iconname, fname);
-  make_link_2 (exepath, argbuf, iconname, fname);
+  msg ("make_link_2 (%s, %s, %s, %s)", exepath.cstr_oneuse(), argbuf.cstr_oneuse(), iconname.cstr_oneuse(), fname.cstr_oneuse());
+  make_link_2 (exepath.cstr_oneuse(), argbuf.cstr_oneuse(), iconname.cstr_oneuse(), fname.cstr_oneuse());
 }
 
 static void
-start_menu (const char *title, const char *target)
+start_menu (String const &title, String const &target)
 {
-  char path[_MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
   SHGetSpecialFolderLocation (NULL,
 			      issystem ? CSIDL_COMMON_PROGRAMS :
 			      CSIDL_PROGRAMS, &id);
-  SHGetPathFromIDList (id, path);
-// following lines added because it appears Win95 does not use common programs
-// unless it comes into play when multiple users for Win95 is enabled
-  msg ("Program directory for program link: %s", path);
-  if (strlen (path) == 0)
+  char _path[_MAX_PATH];
+  SHGetPathFromIDList (id, _path);
+  String path(_path);
+  // Win95 does not use common programs unless multiple users for Win95 is enabled
+  msg ("Program directory for program link: %s", path.cstr_oneuse());
+  if (path.size() == 0)
     {
       SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
-      SHGetPathFromIDList (id, path);
-      msg ("Program directory for program link changed to: %s", path);
+      SHGetPathFromIDList (id, _path);
+      path = String(_path);
+      msg ("Program directory for program link changed to: %s", path.cstr_oneuse());
     }
 // end of Win95 addition
-  strcat (path, "/Cygwin");
+  path += "/Cygwin";
   make_link (path, title, target);
 }
 
 static void
-desktop_icon (const char *title, const char *target)
+desktop_icon (String const &title, String const &target)
 {
   char path[_MAX_PATH];
   LPITEMIDLIST id;
@@ -185,18 +191,18 @@ make_cygwin_bat ()
   batname = backslash (cygpath ("/cygwin.bat", 0));
 
   /* if the batch file exists, don't overwrite it */
-  if (_access (batname, 0) == 0)
+  if (_access (batname.cstr_oneuse(), 0) == 0)
     return;
 
-  FILE *bat = fopen (batname, "wt");
+  FILE *bat = fopen (batname.cstr_oneuse(), "wt");
   if (!bat)
     return;
 
   fprintf (bat, "@echo off\n\n");
 
-  fprintf (bat, "%.2s\n", get_root_dir ());
+  fprintf (bat, "%.2s\n", get_root_dir ().cstr_oneuse());
   fprintf (bat, "chdir %s\n\n",
-	   backslash (concat (get_root_dir () + 2, "/bin", 0)));
+	   backslash (get_root_dir () + "/bin").cstr_oneuse());
 
   fprintf (bat, "bash --login -i\n");
 
@@ -206,10 +212,10 @@ make_cygwin_bat ()
 static void
 make_etc_profile ()
 {
-  char *fname = cygpath ("/etc/profile", 0);
+  String fname = cygpath ("/etc/profile", 0);
 
   /* if the file exists, don't overwrite it */
-  if (_access (fname, 0) == 0)
+  if (_access (fname.cstr_oneuse(), 0) == 0)
     return;
 
   char os;
@@ -230,7 +236,7 @@ make_etc_profile ()
     }
   msg ("os is %c", os);
 
-  FILE *p = fopen (fname, "wb");
+  FILE *p = fopen (fname.cstr_oneuse(), "wb");
   if (!p)
     return;
 
@@ -256,9 +262,8 @@ make_etc_profile ()
 static int
 uexists (const char *path)
 {
-  char *f = cygpath (path, 0);
-  int a = _access (f, 0);
-  delete[] f;
+  String f = cygpath (path, 0);
+  int a = _access (f.cstr_oneuse(), 0);
   if (a == 0)
     return 1;
   return 0;
@@ -267,10 +272,10 @@ uexists (const char *path)
 static void
 make_passwd_group ()
 {
-  char *fname = cygpath ("/etc/postinstall/passwd-grp.bat", 0);
-  mkdir_p (0, fname);
+  String fname = cygpath ("/etc/postinstall/passwd-grp.bat", 0);
+  io_stream::mkpath_p (PATH_TO_FILE, fname);
 
-  FILE *p = fopen (fname, "wt");
+  FILE *p = fopen (fname.cstr_oneuse(), "wt");
   if (!p)
     return;
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
@@ -280,10 +285,10 @@ make_passwd_group ()
       if (pkg && pkg->installed)
 	{
 	  /* mkpasswd and mkgroup are not working on 9x/ME up to 1.1.5-4 */
-	  char *border_version = canonicalize_version ("1.1.5-4");
-	  char *inst_version =
+	  String border_version = canonicalize_version ("1.1.5-4");
+	  String inst_version =
 	    canonicalize_version (pkg->installed->Canonical_version ());
-	  if (strcmp (inst_version, border_version) <= 0)
+	  if (inst_version.compare(border_version) <= 0)
 	    goto out;
 	}
     }
@@ -314,7 +319,7 @@ save_icon ()
   char *data = (char *) LockResource (res);
   int len = SizeofResource (NULL, rsrc);
 
-  FILE *f = fopen (iconname, "wb");
+  FILE *f = fopen (iconname.cstr_oneuse(), "wb");
   if (f)
     {
       fwrite (data, 1, len, f);
@@ -360,7 +365,7 @@ load_dialog (HWND h)
 }
 
 static int
-check_desktop (const char *title, const char *target)
+check_desktop (String const title, String const target)
 {
   char path[_MAX_PATH];
   LPITEMIDLIST id;
@@ -379,21 +384,21 @@ check_desktop (const char *title, const char *target)
       msg ("Desktop directory for deskop link changed to: %s", path);
     }
   // end of Win95 addition
-  char *fname = concat (path, "/", title, ".lnk", 0);
+  String fname = String::concat (path, "/", title.cstr_oneuse(), ".lnk", 0);
 
-  if (_access (fname, 0) == 0)
+  if (_access (fname.cstr_oneuse(), 0) == 0)
     return 0;			/* already exists */
 
-  fname = concat (path, "/", title, ".pif", 0);	/* check for a pif as well */
+  fname = String::concat (path, "/", title.cstr_oneuse(), ".pif", 0);	/* check for a pif as well */
 
-  if (_access (fname, 0) == 0)
+  if (_access (fname.cstr_oneuse(), 0) == 0)
     return 0;			/* already exists */
 
   return IDC_ROOT_DESKTOP;
 }
 
 static int
-check_startmenu (const char *title, const char *target)
+check_startmenu (String const title, String const target)
 {
   char path[_MAX_PATH];
   LPITEMIDLIST id;
@@ -413,14 +418,14 @@ check_startmenu (const char *title, const char *target)
     }
   // end of Win95 addition
   strcat (path, "/Cygwin");
-  char *fname = concat (path, "/", title, ".lnk", 0);
+  String fname = String::concat (path, "/", title.cstr_oneuse(), ".lnk", 0);
 
-  if (_access (fname, 0) == 0)
+  if (_access (fname.cstr_oneuse(), 0) == 0)
     return 0;			/* already exists */
 
-  fname = concat (path, "/", title, ".pif", 0);	/* check for a pif as well */
+  fname = String::concat (path, "/", title.cstr_oneuse(), ".pif", 0);	/* check for a pif as well */
 
-  if (_access (fname, 0) == 0)
+  if (_access (fname.cstr_oneuse(), 0) == 0)
     return 0;			/* already exists */
 
   return IDC_ROOT_MENU;

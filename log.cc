@@ -35,58 +35,66 @@ static const char *cvsid =
 #include "mkdir.h"
 #include "mount.h"
 
+#include "io_stream.h"
+
 struct LogEnt
 {
   LogEnt *next;
-  int flags;
+  enum log_level level;
   time_t when;
-  char msg[1];
+  String msg;
 };
 
 static LogEnt *first_logent = 0;
 static LogEnt **next_logent = &first_logent;
 
+void 
+log (enum log_level level, String const &message)
+{
+  LogEnt *l = new LogEnt;
+  l->next = 0;
+  l->level = level;
+  time (&(l->when));
+  *next_logent = l;
+  next_logent = &(l->next);
+  l->msg = message;
+
+  char b[100];
+  b[0]='\0';
+  if (level == LOG_TIMESTAMP)
+    {
+      struct tm *tm = localtime (&(l->when));
+      strftime (b, 1000, "%Y/%m/%d %H:%M:%S ", tm);
+    }
+  l->msg = String (b) + message;
+
+  msg ("LOG: %d %s", l->level, l->msg.cstr_oneuse());
+}
+
 void
-log (int flags, const char *fmt, ...)
+log (enum log_level level, const char *fmt, ...)
 {
   char buf[1000];
   va_list args;
   va_start (args, fmt);
   vsprintf (buf, fmt, args);
-
-  LogEnt *l = (LogEnt *) malloc (sizeof (LogEnt) + strlen (buf) + 20);
-  l->next = 0;
-  l->flags = flags;
-  time (&(l->when));
-  *next_logent = l;
-  next_logent = &(l->next);
-
-  char *b = l->msg;
-  if (flags & LOG_TIMESTAMP)
-    {
-      struct tm *tm = localtime (&(l->when));
-      strftime (b, 1000, "%Y/%m/%d %H:%M:%S ", tm);
-      b += strlen (b);
-    }
-
-  strcpy (b, buf);
-  msg ("LOG: %d %s", l->flags, l->msg);
+  log (level, String(buf));
 }
 
 void
-log_save (int babble, const char *filename, int append)
+log_save (int babble, String const &filename, int append)
 {
   static int been_here = 0;
   if (been_here)
     return;
   been_here = 1;
 
-  mkdir_p (0, filename);
+  io_stream::mkpath_p (PATH_TO_FILE, filename);
 
-  FILE *f = fopen (filename, append ? "at" : "wt");
+  io_stream *f = io_stream::open(String("file://")+filename, append ? "at" : "wt");
   if (!f)
     {
-      fatal (NULL, IDS_NOLOGFILE, filename);
+      fatal (NULL, IDS_NOLOGFILE, filename.cstr_oneuse());
       return;
     }
 
@@ -94,15 +102,16 @@ log_save (int babble, const char *filename, int append)
 
   for (l = first_logent; l; l = l->next)
     {
-      if (babble || !(l->flags & LOG_BABBLE))
+      if (babble || !(l->level == LOG_BABBLE))
 	{
-	  fputs (l->msg, f);
-	  if (l->msg[strlen (l->msg) - 1] != '\n')
-	    fputc ('\n', f);
+	  char *tstr = l->msg.cstr();
+	  f->write (tstr, strlen (tstr));
+	  if (tstr[strlen (tstr) - 1] != '\n')
+	    f->write ("'\n", 1);
 	}
     }
 
-  fclose (f);
+  delete f;
   been_here = 0;
 }
 
@@ -119,15 +128,15 @@ exit_setup (int exit_code)
 
   log (LOG_TIMESTAMP, "Ending cygwin install");
 
-  if (source == IDC_SOURCE_DOWNLOAD || !get_root_dir ())
+  if (source == IDC_SOURCE_DOWNLOAD || !get_root_dir ().size())
     {
-      log_save (LOG_BABBLE, concat (local_dir, "/setup.log.full", 0), 0);
-      log_save (0, concat (local_dir, "/setup.log", 0), 1);
+      log_save (LOG_BABBLE, local_dir + "/setup.log.full", 0);
+      log_save (0, local_dir + "/setup.log", 1);
     }
   else
     {
-      log_save (LOG_BABBLE, cygpath ("/setup.log.full", 0), 0);
-      log_save (0, cygpath ("/setup.log", 0), 1);
+      log_save (LOG_BABBLE, cygpath ("/var/log/setup.log.full", 0), 0);
+      log_save (0, cygpath ("/var/log/setup.log", 0), 1);
     }
 
   ExitProcess (exit_code);

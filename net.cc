@@ -113,7 +113,7 @@ NetPage::OnNext ()
 {
   save_dialog (GetHWND ());
 
-  log (0, "net: %s",
+  log (LOG_TIMESTAMP, "net: %s",
        (net_method == IDC_NET_IE5) ? "IE5" :
        (net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy");
 

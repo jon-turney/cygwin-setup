@@ -19,5 +19,6 @@
    (bytes).  find() returns the number of files found.  Directories
    are scanned but not included in the "found" files. */
 
-extern int find (const char *starting_dir,
+class String;
+extern int find (String const &starting_dir,
 		 void (*for_each) (char *, unsigned int));

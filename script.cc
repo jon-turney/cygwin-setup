@@ -28,10 +28,11 @@ static const char *cvsid =
 #include <stdio.h>
 #include "log.h"
 #include "concat.h"
+#include "filemanip.h"
 #include "mount.h"
 #include "io_stream.h"
 
-static char *sh = 0;
+static String sh = String();
 static const char *cmd = 0;
 static OSVERSIONINFO verinfo;
 
@@ -48,21 +49,20 @@ init_run_script ()
 {
   for (int i = 0; shells[i]; i++)
     {
-      sh = backslash (cygpath (shells[i], 0));
-      if (_access (sh, 0) == 0)
+      sh = backslash (cygpath (shells[i],0).cstr_oneuse());
+      if (_access (sh.cstr_oneuse(), 0) == 0)
 	break;
-      delete[] sh;
-      sh = 0;
+      sh = String();
     }
   
   char old_path[_MAX_PATH];
   GetEnvironmentVariable ("PATH", old_path, sizeof (old_path));
   SetEnvironmentVariable ("PATH",
 			  backslash (cygpath ("/bin;",
-					      get_root_dir (), "/usr/bin;",
-					      old_path, 0)));
+					      get_root_dir ().cstr_oneuse(), "/usr/bin;",
+					      old_path, 0)).cstr_oneuse());
 
-  SetEnvironmentVariable ("CYGWINROOT", get_root_dir ());
+  SetEnvironmentVariable ("CYGWINROOT", get_root_dir ().cstr_oneuse());
 
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
   GetVersionEx (&verinfo);
@@ -97,30 +97,30 @@ run (const char *sh, const char *args, const char *file)
   si.dwFlags = STARTF_USEPOSITION;
 
   b = CreateProcess (0, cmdline, 0, 0, 0,
-		     CREATE_NEW_CONSOLE, 0, get_root_dir (), &si, &pi);
+		     CREATE_NEW_CONSOLE, 0, get_root_dir ().cstr_oneuse(), &si, &pi);
 
   if (b)
     WaitForSingleObject (pi.hProcess, INFINITE);
 }
 
 void
-run_script (char const *dir, char const *fname)
+run_script (String const &dir, String const &fname)
 {
-  char *ext = strrchr (fname, '.');
+  char *ext = strrchr (fname.cstr_oneuse(), '.');
   if (!ext)
     return;
 
-  if (sh && strcmp (ext, ".sh") == 0)
+  if (sh.size() && strcmp (ext, ".sh") == 0)
     {
-      char *f2 = concat (dir, fname, 0);
-      log (0, "running: %s -c %s", sh, f2);
-      run (sh, "-c", f2);
+      char *f2 = concat (dir.cstr_oneuse(), fname.cstr_oneuse(), 0);
+      log (LOG_TIMESTAMP, "running: %s -c %s", sh.cstr_oneuse(), f2);
+      run (sh.cstr_oneuse(), "-c", f2);
       delete[] f2;
     }
   else if (cmd && strcmp (ext, ".bat") == 0)
     {
-      char *f2 = backslash (cygpath (dir, fname, 0));
-      log (0, "running: %s /c %s", cmd, f2);
+      char *f2 = backslash (cygpath (dir.cstr_oneuse(), fname.cstr_oneuse(),0)).cstr();
+      log (LOG_TIMESTAMP, "running: %s /c %s", cmd, f2);
       run (cmd, "/c", f2);
       delete[] f2;
     }
@@ -128,18 +128,18 @@ run_script (char const *dir, char const *fname)
     return;
 
   /* if file exists then delete it otherwise just ignore no file error */
-  io_stream::remove (concat ("cygfile://", dir, fname, ".done", 0));
+  io_stream::remove (String ("cygfile://") + dir+ fname+ ".done");
 
-  io_stream::move (concat ("cygfile://", dir, fname, 0),
-		   concat ("cygfile://", dir, fname, ".done", 0));
+  io_stream::move (String ("cygfile://")+ dir+ fname,
+		   String ("cygfile://")+ dir+ fname+ ".done");
 }
 
 void
-try_run_script (char const *dir, char const *fname)
+try_run_script (String const &dir, String const &fname)
 {
-  if (io_stream::exists (concat ("cygfile://", dir, fname, ".sh", 0)))
-    run_script (dir, concat (fname, ".sh", 0));
-  if (io_stream::exists (concat ("cygfile://", dir, fname, ".bat", 0)))
-    run_script (dir, concat (fname, ".bat", 0));
+  if (io_stream::exists (String ("cygfile://")+ dir+ fname+ ".sh"))
+    run_script (dir.cstr_oneuse(), concat (fname.cstr_oneuse(), ".sh", 0));
+  if (io_stream::exists (String ("cygfile://")+ dir+ fname+ ".bat"))
+    run_script (dir.cstr_oneuse(), concat (fname.cstr_oneuse(), ".bat", 0));
 }
 

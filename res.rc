@@ -59,7 +59,7 @@ BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,290,0,21,20
     CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
                     317,1
-    LTEXT           "Select a directory where you want Setup to store the installation files it dowmloads.  The directory will be created if it does not already exist.",
+    LTEXT           "Select a directory where you want Setup to store the installation files it downloads.  The directory will be created if it does not already exist.",
                     IDC_STATIC,21,9,248,16,NOT WS_GROUP
     LTEXT           "Select Local Package Directory",IDC_STATIC_HEADER_TITLE,
                     7,0,258,8,NOT WS_GROUP

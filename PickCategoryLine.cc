@@ -33,13 +33,14 @@ PickCategoryLine::paint (HDC hdc, int x, int y, int row, int show_cat)
   if (show_label)
     {
       int by = r + theView.tm.tmHeight - 11;
+      String temp=(String("+ ") +cat.name);
       TextOut (hdc,
 	       x + theView.headers[theView.cat_col].x + HMARGIN / 2 +
-	       depth * 8, r, cat.name, strlen (cat.name));
+	       depth * 8, r, temp.cstr_oneuse(), temp.size());
       if (!labellength)
 	{
 	  SIZE s;
-	  GetTextExtentPoint32 (hdc, cat.name, strlen (cat.name), &s);
+	  GetTextExtentPoint32 (hdc, temp.cstr_oneuse(), temp.size(), &s);
 	  labellength = s.cx;
 	}
       SelectObject (theView.bitmap_dc, theView.bm_spin);

@@ -20,6 +20,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "list.h"
+#include "String++.h"
 
 #include "proppage.h"
 
@@ -51,30 +52,22 @@ void do_download_site_info (HINSTANCE h, HWND owner);
 class site_list_type
 {
 public:
-  site_list_type ():url (0), displayed_url (0), key (0)
+  site_list_type ():url (), displayed_url (0), key (0)
   {
   };
-  site_list_type (char const *);
+  site_list_type (String const &);
   /* workaround for missing placement new in gcc 2.95 */
-  void init (char const *);
-  ~site_list_type ()
-  {
-    if (url)
-      delete[] url;
-    if (displayed_url)
-      delete[] displayed_url;
-    if (key)
-      delete[] key;
-  };
-  char *url;
-  char *displayed_url;
-  char *key;
+  void init (String const &);
+  ~site_list_type () {};
+  String url;
+  String displayed_url;
+  String key;
 };
 
 /* user chosen sites */
-extern list < site_list_type, const char *, strcasecmp > site_list;
+extern list < site_list_type, String, String::casecompare > site_list;
 /* potential sites */
-extern list < site_list_type, const char *, strcasecmp > all_site_list;
+extern list < site_list_type, String, String::casecompare > all_site_list;
 
 void save_site_url ();
 

@@ -139,7 +139,7 @@ archive_tar::skip_file ()
   return 0;
 }
 
-const char *
+String const
 archive_tar::next_file_name ()
 {
   char *c;
@@ -149,7 +149,7 @@ archive_tar::next_file_name ()
       return state.filename;
     else
       /* End of tar */
-      return NULL;
+      return String();
 
   int r = state.parent->read (&state.tar_header, 512);
 
@@ -292,14 +292,14 @@ archive_tar::next_file_type ()
     }
 }
 
-const char *
+String const
 archive_tar::linktarget ()
 {
   /* TODO: consider .. path traversal issues */
   if (next_file_type () == ARCHIVE_FILE_SYMLINK ||
       next_file_type () == ARCHIVE_FILE_HARDLINK)
     return state.tar_header.linkname;
-  return NULL;
+  return String();
 }
 
 io_stream *

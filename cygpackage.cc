@@ -24,8 +24,7 @@ static const char *cvsid =
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <strings.h>
-#include "concat.h"
+#include "String++.h"
 
 #include "io_stream.h"
 #include "compress.h"
@@ -34,7 +33,8 @@ static const char *cvsid =
 #include "cygpackage.h"
 
 /* this constructor creates an invalid package - further details MUST be provided */
-cygpackage::cygpackage (const char *pkgname):
+cygpackage::cygpackage (String const &pkgname):
+name (pkgname),
 vendor (0),
 packagev (0),
 canonical (0),
@@ -46,8 +46,6 @@ type (package_binary),
 listdata (0),
 listfile (0)
 {
-  name = new char [strlen (pkgname) +1];
-  strcpy (name, pkgname);
   memset( getfilenamebuffer, '\0', _MAX_PATH);
 
   /* FIXME: query the install database for the currently installed 
@@ -57,10 +55,11 @@ listfile (0)
 
 /* create a package given explicit details - perhaps should be modified to take the
    filename and do it's own parsing? */
-cygpackage::cygpackage (const char *pkgname, const char *filename, size_t fs,
-			const char *version, package_status_t newstatus,
-			package_type_t newtype):
-fn (0),
+cygpackage::cygpackage (String const &pkgname, String const &filename, size_t const fs,
+			String const &version, package_status_t const newstatus,
+			package_type_t const newtype):
+name (pkgname),
+fn (filename),
 sdesc (0),
 ldesc (0),
 status (newstatus),
@@ -69,38 +68,33 @@ listdata (0),
 listfile (0),
 filesize (fs)
 {
-  name = new char [strlen (pkgname) +1];
-  strcpy (name, pkgname);
-  fn = new char [strlen (filename) +1];
-  strcpy (fn, filename);
   memset( getfilenamebuffer, '\0', _MAX_PATH);
   set_canonical_version (version);
 }
 
 /* tell the version */
 void
-cygpackage::set_canonical_version (char const *version)
+cygpackage::set_canonical_version (String const &version)
 {
-  char *curr = strchr (version, '-');
-  canonical = new char [strlen (version) +1];
-  strcpy (canonical, version);
+  canonical = version;
+  char *start = strchr (canonical.cstr_oneuse(), '-');
+  char*curr=start;
   if (curr)
     {
       char *next;
       while ((next = strchr (curr + 1, '-')))
 	curr = next;
       /* curr = last - in the version string */
-      packagev = new char [strlen (curr + 1) +1];
-      strcpy (packagev, curr + 1);
-      vendor = new char [strlen (version) +1];
-      strcpy (vendor, version);
-      vendor[curr - version] = '\0';
+      packagev = curr + 1;
+      char tvendor [version.size() +1];
+      strcpy (tvendor, version.cstr_oneuse());
+      tvendor[curr - start] = '\0';
+      vendor=tvendor;
     }
   else
     {
       packagev = 0;
-      vendor = new char [strlen (version) +1];
-      strcpy (vendor, version);
+      vendor = version;
     }
   key = canonical;
 }
@@ -115,40 +109,22 @@ cygpackage::~cygpackage ()
 void
 cygpackage::destroy ()
 {
-
-  if (name)
-    delete[] name;
-  if (vendor)
-    delete[] vendor;
-  if (packagev)
-    delete[] packagev;
-  if (canonical)
-    delete[] canonical;
-  if (fn)
-    delete[] fn;
-  if (listdata)
-    delete listdata;
-  if (sdesc)
-    delete[] sdesc;
-  if (ldesc)
-    delete[] ldesc;
 }
 
-const char *
+String const
 cygpackage::getfirstfile ()
 {
   if (listdata)
     delete listdata;
   listfile =
-    io_stream::open (concat ("cygfile:///etc/setup/", name, ".lst.gz", 0),
-		     "rb");
+    io_stream::open (String ("cygfile:///etc/setup/") + name + ".lst.gz", "rb");
   listdata = compress::decompress (listfile);
   if (!listdata)
     return 0;
   return listdata->gets (getfilenamebuffer, sizeof (getfilenamebuffer));
 }
 
-const char *
+String const
 cygpackage::getnextfile ()
 {
   if (listdata)
@@ -162,49 +138,43 @@ cygpackage::uninstall ()
   if (listdata)
     delete listdata;
   listdata = 0;
-  io_stream::remove (concat ("cygfile:///etc/setup/", name, ".lst.gz", 0));
+  io_stream::remove (String("cygfile:///etc/setup/") + name + ".lst.gz");
 }
 
-const char *
+String const
 cygpackage::Name ()
 {
   return name;
 }
 
-const char *
+String const
 cygpackage::Vendor_version ()
 {
   return vendor;
 }
 
-const char *
+String const
 cygpackage::Package_version ()
 {
   return packagev;
 }
 
-const char *
+String  const
 cygpackage::Canonical_version ()
 {
   return canonical;
 }
 
 void
-cygpackage::set_sdesc (char const *desc)
+cygpackage::set_sdesc (String const &desc)
 {
-  if (sdesc)
-    delete sdesc;
-  sdesc = new char[strlen (desc) + 1];
-  strcpy (sdesc, desc);
+  sdesc = desc;
 }
 
 void
-cygpackage::set_ldesc (char const *desc)
+cygpackage::set_ldesc (String const &desc)
 {
-  if (ldesc)
-    delete ldesc;
-  ldesc = new char[strlen (desc) + 1];
-  strcpy (ldesc, desc);
+  ldesc = desc;
 }
 
 #if 0

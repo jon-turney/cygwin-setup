@@ -44,6 +44,9 @@ static const char *cvsid =
 #include "mount.h"
 
 #include "threebar.h"
+
+#include "String++.h"  
+
 extern ThreeBarProgressPage Progress;
 
 static int max_bytes = 0;
@@ -55,14 +58,15 @@ int total_download_bytes_sofar = 0;
 static DWORD start_tics;
 
 static void
-init_dialog (char const *url, int length, HWND owner)
+init_dialog (String const &url, int length, HWND owner)
 {
   if (is_local_install)
     return;
 
-  char const *sl = url;
+  char const *temp = url.cstr();
+  char const *sl = temp;
   char const *cp;
-  for (cp = url; *cp; cp++)
+  for (cp = sl; *cp; cp++)
     if (*cp == '/' || *cp == '\\' || *cp == ':')
       sl = cp + 1;
   max_bytes = length;
@@ -71,6 +75,7 @@ init_dialog (char const *url, int length, HWND owner)
   Progress.SetText3("Connecting...");
   Progress.SetBar1(0);
   start_tics = GetTickCount ();
+  delete[] temp;
 }
 
 
@@ -108,12 +113,12 @@ progress (int bytes)
 }
 
 io_stream *
-get_url_to_membuf (char const *_url, HWND owner)
+get_url_to_membuf (String const &_url, HWND owner)
 {
-	log (LOG_BABBLE, "get_url_to_membuf %s", _url);
+  log (LOG_BABBLE, "get_url_to_membuf %s", _url.cstr_oneuse());
   is_local_install = (source == IDC_SOURCE_CWD);
   init_dialog (_url, 0, owner);
-  NetIO *n = NetIO::open (_url);
+  NetIO *n = NetIO::open (_url.cstr_oneuse());
   if (!n || !n->ok ())
     {
       delete n;
@@ -161,49 +166,44 @@ get_url_to_membuf (char const *_url, HWND owner)
   return membuf;
 }
 
-char *
-get_url_to_string (char const *_url, HWND owner)
+// predicate: url has no '\0''s in it.
+String
+get_url_to_string (String const &_url, HWND owner)
 {
   io_stream *stream = get_url_to_membuf (_url, owner);
   if (!stream)
-    return 0;
+    return String();
   size_t bytes = stream->get_size ();
   if (!bytes)
     {
       /* zero length, or error retrieving length */
       delete stream;
       log (LOG_BABBLE, "get_url_to_string(): couldn't retrieve buffer size, or zero length buffer");
-      return 0;
+      return String();
     }
-  char *rv = new char [bytes + 1];
-  if (!rv)
-    {
-      delete stream;
-      log (LOG_BABBLE, "get_url_to_string(): new failed for rv!");
-      return 0;
-    }
+  char temp [bytes + 1];
   /* membufs are quite safe */
-  stream->read (rv, bytes);
-  rv [bytes] = '\0';
+  stream->read (temp, bytes);
+  temp [bytes] = '\0';
   delete stream;
-  return rv;
+  return String(temp);
 }
 
 int
-get_url_to_file (char *_url, char *_filename, int expected_length,
+get_url_to_file (String const &_url, String const &_filename, int expected_length,
 		 HWND owner, BOOL allow_ftp_auth)
 {
-  log (LOG_BABBLE, "get_url_to_file %s %s", _url, _filename);
+  log (LOG_BABBLE, "get_url_to_file %s %s", _url.cstr_oneuse(), _filename.cstr_oneuse());
   if (total_download_bytes > 0)
     {
-      int df = diskfull (get_root_dir ());
-	  Progress.SetBar3(df);
+      int df = diskfull (get_root_dir ().cstr_oneuse());
+      Progress.SetBar3(df);
     }
   init_dialog (_url, expected_length, owner);
 
-  remove (_filename);		/* but ignore errors */
+  remove (_filename.cstr_oneuse());		/* but ignore errors */
 
-  NetIO *n = NetIO::open (_url, allow_ftp_auth);
+  NetIO *n = NetIO::open (_url.cstr_oneuse(), allow_ftp_auth);
   if (!n || !n->ok ())
     {
       delete n;
@@ -211,13 +211,13 @@ get_url_to_file (char *_url, char *_filename, int expected_length,
       return 1;
     }
 
-  FILE *f = fopen (_filename, "wb");
+  FILE *f = fopen (_filename.cstr_oneuse(), "wb");
   if (!f)
     {
       const char *err = strerror (errno);
       if (!err)
 	err = "(unknown error)";
-      fatal (owner, IDS_ERR_OPEN_WRITE, _filename, err);
+      fatal (owner, IDS_ERR_OPEN_WRITE, _filename.cstr_oneuse(), err);
     }
 
   if (n->file_size)
@@ -245,7 +245,7 @@ get_url_to_file (char *_url, char *_filename, int expected_length,
 
   if (total_download_bytes > 0)
     {
-      int df = diskfull (get_root_dir ());
+      int df = diskfull (get_root_dir ().cstr_oneuse());
 	  Progress.SetBar3(df);
     }
 

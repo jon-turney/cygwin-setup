@@ -181,6 +181,12 @@ rfc1738_escape_part (const char *url)
 {
   return rfc1738_do_escape (url, 1);
 }
+String
+rfc1738_escape_part (String const &url)
+{
+  char const *t = rfc1738_do_escape (url.cstr_oneuse(), 1);
+  return String (t);
+}
 
 /*
  *  rfc1738_unescape() - Converts escaped characters (%xy numbers) in 

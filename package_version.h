@@ -42,12 +42,15 @@ class Dependency;
 
 /* Required for parsing */
 #include "package_source.h"
+#include "String++.h"
 
 class Dependency
 {
 public:
+  Dependency (String const &aPackage) : package (aPackage) {}
+  Dependency (Dependency const &);
   Dependency * next;		/* the next package in this dependency list */
-  char const *package;		/* the name of the package that is depended on */
+  String const package;		/* the name of the package that is depended on */
 }
  ;				/* Dependencies can be used for
 				   recommended/required/related... */
@@ -79,36 +82,34 @@ class packageversion
 {
 public:
   /* for list inserts/mgmt. */
-  const char *key;
+  String key;
   /* name is needed here, because if we are querying a file, the data may be embedded in
      the file */
-  virtual const char *Name () = 0;
-  virtual const char *Vendor_version () = 0;
-  virtual const char *Package_version () = 0;
-  virtual const char *Canonical_version () = 0;
+  virtual String const Name () = 0;
+  virtual String const Vendor_version () = 0;
+  virtual String const Package_version () = 0;
+  virtual String const Canonical_version () = 0;
   virtual package_status_t Status () = 0;
 //  virtual package_stability_t Stability () = 0;
   virtual package_type_t Type () = 0;
   /* TODO: we should probably return a metaclass - file name & path & size & type
      - ie doc/script/binary
    */
-  virtual const char *getfirstfile () = 0;
-  virtual const char *getnextfile () = 0;
-  virtual char const *SDesc () = 0;
-  virtual void set_sdesc (char const *) = 0;
-  virtual char const *LDesc () = 0;
-  virtual void set_ldesc (char const *) = 0;
+  virtual String const getfirstfile () = 0;
+  virtual String const getnextfile () = 0;
+  virtual String const SDesc () = 0;
+  virtual void set_sdesc (String const &) = 0;
+  virtual String const LDesc () = 0;
+  virtual void set_ldesc (String const &) = 0;
   /* FIXME: review this - these are UI variables, should be consistent across all
    * children package types
    */
-  void new_requirement (char const *dependson)
+  void new_requirement (String const &dependson)
   {
-    Dependency *dp;
-    if (!dependson)
+    if (!dependson.size())
         return;
-      dp = new Dependency;
+    Dependency *dp = new Dependency (dependson);
       dp->next = required;
-      dp->package = dependson;
       required = dp;
   }
   Dependency *required;

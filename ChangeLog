@@ -1,3 +1,320 @@
+2002-02-19  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in (OBJS): Add new object.
+	* PickCategoryLine.cc (PickCategoryLine::paint): Print a "+" before the name.
+	* PickCategoryLine.h (PickCategoryLine::bucket): Use the String class.
+	* PickLine.h (Pickline::key): Change to a String to help plug leaks.
+	(PickLine::Pickline): Accept a String for the key.
+	* PickPackageLine.cc (PickPackageLine::paint): Convert all char use to Strings.
+	* PickPackageLine.h (PickPackageLine::PickPackageLine): The key is automatically
+	initialisednow.
+	* PickView.cc (PickView::note_width): Convert all char * use to Strings.
+	(PickView::init_header): Move category length checking out of the inner loop for
+	efficiency.
+	Convert all char use to Strings.
+	* PickView.h: Include the String++ header.
+	(PickView::note_width): Update the prototype.
+	* String++.cc: New file, implements a reference counting string class.
+	* String++.h: New file, declares a reference counting string class.
+	* archive.cc: Include String++ instead of concat.
+	(archive::extract_file): Convert char * usage to Strings.
+	* archive.h: Inlude the String++ header.
+	(archive::extract_file): Update prototype.
+	(archive::next_file_name): Convert to a String.
+	(archive::linktarget): Ditto.
+	* archive_tar.cc (archive_tar::next_file_name): Convert to String usage.
+	(archive_tar::linktarget): Ditto.
+	* arhive_tar.h: Update the copyright.
+	Explicitly include the relevant headers.
+	(tar_map_result_type): Convert to String usage.
+	(archive_tar::next_file_name): Update prototype.
+	(archive_tar::linktarget): Ditto.
+	* category.cc (Category::Category): Update initialisers.
+	Convert to String usage.
+	(Categorycmp): Update to String usage.
+	* category.h: Include the String++ header.
+	(Category::Category): Update to String usage.
+	(Category::name): Ditto.
+	(Category::key): Ditto.
+	* choose.cc: Remove concat.h, it's not needed.
+	(scan2): Update to String usage.
+	(do_choose): Ditto.
+	* cygpackage.cc: Update includes for use of String class.
+	(cygpackage::cygpackage): Update for String usage.
+	(cygpackage::set_canonical_version): Ditto.
+	(cygpackage::destroy): Ditto.
+	(cygpackage::getfirstfile): Ditto.
+	(cygpackage::getnextfile): Ditto.
+	(cygpackage::Name): Ditto.
+	(cygpackage::Vendor_version): Ditto.
+	(cygpackage::Package_version): Ditto.
+	(cygpackage::Canonical_version): Ditto.
+	(cygpackage::set_sdesc): Ditto.
+	(cygpackage::set_ldesc): Ditto.
+	* cygpackage.h: Include String++.h for parsing this file.
+	(cygpackage::cygpackage): Update for String usage.
+	(cygpackage::set_canonical_version): Ditto.
+	(cygpackage::destroy): Ditto.
+	(cygpackage::getfirstfile): Ditto.
+	(cygpackage::getnextfile): Ditto.
+	(cygpackage::Name): Ditto.
+	(cygpackage::Vendor_version): Ditto.
+	(cygpackage::Package_version): Ditto.
+	(cygpackage::Canonical_version): Ditto.
+	(cygpackage::set_sdesc): Ditto.
+	(cygpackage::set_ldesc): Ditto.
+	(cygpackage::name): Ditto.
+	(cygpackage::vendor): Ditto.
+	(cygpackage::packagev): Ditto.
+	(cygpackage::canonical): Ditto.
+	(cygpackage::fn): Ditto.
+	(cygpackage::sdesc): Ditto.
+	(cygpackage::ldesc): Ditto.
+	* desktop.cc: Update includes for use of String class.
+	(batname): Update for String usage.
+	(iconname): Ditto.
+	(make_link): Ditto.
+	(start)menu): Ditto.
+	(desktop_icon): Ditto.
+	(make_cygwin_bat): Ditto.
+	(make_etc_profile): Ditto.
+	(uexists): Ditto.
+	(make_passwd_group): Ditto.
+	(save_icon): Ditto.
+	(check_desktop): Ditto.
+	(check_startmenu): Ditto.
+	* dialog.cc (eget): Update for String usage.
+	(egetString): New function.
+	(eset): New variant for Strings.
+	* dialog.h: Include String++.h for parsing this file.
+	(egetString): New function.
+	(eset): New variant for Strings.
+	* diskfull.cc (diskfull): Update for String usage.
+	* diskfull.h: Include String++.h for parsing this file.
+	(diskfull): Update for String usage.
+	* download.cc: Update includes for use of String class.
+	(check_for_cached): Update for String usage.
+	(download_one): Ditto.
+	* filemanip.cc (get_file_size): Ditto.
+	(base): Ditto.
+	(parse_filename): Ditto.
+	(backslash): Ditto.
+	* filemanip.h: Include String++.h for parsing this file.
+	(fileparse): Update for String usage.
+	(base): Ditto.
+	(parse_filename): Ditto.
+	Don't consider '_' to be a separator.
+	(backslash): Ditto.
+	* find.cc: Update includes for use of String class.
+	(find_sub): Make more flexible.
+	(find): Update for String usage.
+	* find.h (find): Use Strings.
+	* fromcwd.cc (found_file): Update for String usage.
+	* geturl.cc: Ditto.
+	(init_dialog): Ditto.
+	(get_url_to_membuf): Ditto.
+	(get_url_to_string): Ditto.
+	(get_url_to_file): Ditto.
+	* geturl.h: Ditto.
+	(get_url_to_membuf): Ditto.
+	(get_url_to_string): Ditto.
+	(get_url_to_file): Ditto.
+	* hash.h: Ditto.
+	(add_subdirs): Ditto.
+	* ini.cc: Update includes for String usage.
+	(find_routine): Update for String usage.
+	(do_remote_ini): Ditto.
+	(do_ini_thread): Ditto.
+	* ini.h (ini_init): Ditto.
+	* inilex.l: Update includes for String usage.
+	(ini_init): Update for String usage.
+	* iniparse.y: Ditto.
+	(add_correct_version): Ditto.
+	* install.cc: Update includes for String usage.
+	(install_one_source): Update for String usage.
+	(uninstall_one): Ditto.
+	(replace_one): Ditto.
+	(install_one_source): Ditto.
+	(do_install_thread): Ditto.
+	* io_stream.cc: Update includes for String usage.
+	(io_stream::open): Update for String usage.
+	(io_stream::mkpath_p): Ditto.
+	(io_stream::remove): Ditto.
+	(io_stream::mklink): Ditto.
+	(io_stream::move_copy): Ditto.
+	(io_stream::move): Ditto.
+	(io_stream::exists): Ditto.
+	* io_stream.h: Update includes to allow correct parsing.
+	(io_stream::open): Update for String usage.
+	(io_stream::mkpath_p): Ditto.
+	(io_stream::remove): Ditto.
+	(io_stream::mklink): Ditto.
+	(io_stream::move_copy): Ditto.
+	(io_stream::move): Ditto.
+	(io_stream::exists): Ditto.
+	* io_stream_cygfile.cc: Update includes for String usage.
+	(get_root_dir_now): Update for String usage.
+	(io_stream_cygfile::io_stream_cygfile): Ditto.
+	(io_stream_cygfile::~io_stream_cygfile): Ditto.
+	(io_stream_cygfile::exists): Ditto.
+	(io_stream_cygfile::remove): Ditto.
+	(io_stream_cygfile::mklink): Ditto.
+	(cygmkdir_p): Ditto.
+	(io_stream_cygfile::set_mtime): Ditto.
+	(io_stream_cygfile::move): Ditto.
+	(io_stream_cygfile::get_size): Ditto.
+	* io_stream_cygfile.h: Update includes for String usage.
+	(io_stream_cygfile::io_stream_cygfile): Update for String usage.
+	(io_stream_cygfile::~io_stream_cygfile): Ditto.
+	(io_stream_cygfile::exists): Ditto.
+	(io_stream_cygfile::remove): Ditto.
+	(io_stream_cygfile::mklink): Ditto.
+	(cygmkdir_p): Ditto.
+	(io_stream_cygfile::set_mtime): Ditto.
+	(io_stream_cygfile::move): Ditto.
+	(io_stream_cygfile::get_size): Ditto.
+	(io_stream_cygfile::fname): Ditto.
+	(io_stream_cygfile::lmode): Ditto.
+	* io_stream_file.cc: Update includes for String usage.
+	(io_stream_file::io_stream_file): Update for String usage.
+	(io_stream_file::~io_stream_file): Ditto.
+	(io_stream_file::exists): Ditto.
+	(io_stream_file::remove): Ditto.
+	(io_stream_file::mklink): Ditto.
+	(io_stream_file::set_mtime): Ditto.
+	(io_stream_file::move): Ditto.
+	(io_stream_file::get_size): Ditto.
+	* io_stream_file.h: Update includes for String usage.
+	* io_stream_file.cc: Update includes for String usage.
+	(io_stream_file::io_stream_file): Update for String usage.
+	(io_stream_file::~io_stream_file): Ditto.
+	(io_stream_file::exists): Ditto.
+	(io_stream_file::remove): Ditto.
+	(io_stream_file::mklink): Ditto.
+	(io_stream_file::set_mtime): Ditto.
+	(io_stream_file::move): Ditto.
+	(io_stream_file::get_size): Ditto.
+	(io_stream_file::fname): Ditto.
+	(io_stream_file::lmode): Ditto.
+	* localdir.cc: Update includes for String usage.
+	(save_local_dir): Update for String usage.
+	(check_if_enable_next): Ditto.
+	(load_dialog): Ditto.
+	(browse_cb): Ditto.
+	(LocalDirPage::OnInit): Ditto.
+	(LocalDirPage::OnNext): Ditto.
+	* log.cc: Update includes for String usage.
+	(struct LogEnt): Update for String usage.
+	(log): Ditto.
+	(log_save): Ditto.
+	(exit_setup): Ditto.
+	* log.h: Update includes for String usage.
+	(log_level): Update for String usage.
+	(log): Ditto.
+	(log_save): Ditto.
+	* main.cc (WinMain): Update for String usage.
+	* mklink2.c (make_link_2): Update for String usage.
+	* mklink2.h (make_link_2): Update for String usage.
+	* mount.cc: Update includes for String usage.
+	(mount_table): Update for String usage.
+	(find2): Ditto.
+	(create_mount): Ditto.
+	(remove1): Ditto.
+	(remove_mount): Ditto.
+	(read_mounts): Ditto.
+	(set_root_dir): Ditto.
+	(get_root_dir): Ditto.
+	(path_prefix_p): Ditto.
+	(cygpath): Ditto.
+	* mount.h: Update includes for String usage.
+	(create_mount): Update for String usage.
+	(remove_mount): Ditto.
+	(cygpath): Ditto.
+	(set_root_dir): Ditto.
+	(get_root_dir): Ditto.
+	* msg.cc (mbox): Ditto.
+	* net.cc (NetPage::OnNext): Ditto.
+	* package_db.cc (packagedb::flush): Ditto.
+	(packagedb::packages): Ditto.
+	(packagedb::categories): Ditto.
+	* package_db.h: Update includes for String usage.
+	(packagedb::packages): Update for String usage.
+	(packagedb::categories): Ditto.
+	* package_meta.cc: Update includes for String usage.
+	(hash::add_subdirs): Update for String usage.
+	(packagemeta::uninstall): Ditto.
+	(packagemeta::SDesc): Ditto.
+	(packagemeta::action_caption): Ditto.
+	* package_meta.h: Update includes for String usage.
+	(packagemeta::packagemeta): Update for String usage.
+	(packagemeta::~packagemeta): Ditto.
+	(packagemeta::uninstall): Ditto.
+	(packagemeta::SDesc): Ditto.
+	(packagemeta::action_caption): Ditto.
+	(package_source.cc site::site): Ditto.
+	(packagesource::set_canonical): Ditto.
+	(packagesource::set_cached): Ditto.
+	* package_source.h: Update includes for String usage.
+	(site::site): Update for String usage.
+	(packagesource::set_canonical): Ditto.
+	(packagesource::set_cached): Ditto.
+	(packagesource::packagesource): Ditto.
+	(packagesource::sites): Ditto.
+	(packagesource::cached): Ditto.
+	* package_version.h: Update includes for String usage.
+	(Dependency): Update for String usage.
+	(packageversion): Ditto.
+	* postinstall.cc: Update includes for String usage.
+	(do_postinstall): Update for String usage.
+	* res.rc (IDD_LOCAL_DIR): Fix typo again!
+	* rfc1738.cc (rfc1738_escape_part): Update for String usage.
+	* rfc1738.h: Update includes for String usage.
+	(rfc1738_escape_part): Update for String usage.
+	* root.cc: Update includes for String usage.
+	(check_if_enable_next): Update for String usage.
+	(save_dialog): Ditto.
+	(browse_cb): Ditto.
+	(directory_is_absolute): Ditto.
+	(directory_is_rootdir): Ditto.
+	(directory_has_spaces): Ditto.
+	(RootPage::OnInit): Ditto.
+	(RootPage::OnNext): Ditto.
+	* script.cc: Update includes for String usage.
+	(init_run_script): Update for String usage.
+	(run): Ditto.
+	(run_script): Ditto.
+	(try_run_script): Ditto.
+	* script.h: Update includes for String usage.
+	(run_script): Update for String usage.
+	(try_run_script): Ditto.
+	* site.cc site_list): Ditto.
+	(all_site_list): Ditto.
+	(other_url): Eliminate.
+	(site_list_type::init): Update for String usage.
+	(site_list_type::site_list_type): Ditto.
+	(get_site_list): Ditto.
+	(get_saved_sites): Ditto.
+	(do_download_site_info_thread): Ditto.
+	(SitePage::OnNext): Ditto.
+	(SitePage::OnActivate): Ditto.
+	(SitePage::PopulateListBox): Ditto.
+	(SitePage::OnMessageCmd): Handle empty url's.
+	* site.h: Update includes for String usage.
+	(site_list_type::site_list_type): Update for String usage.
+	(site_list_type::init): Ditto.
+	(site_list_type::~site_list_type): Ditto.
+	(site_list_type::url): Ditto.
+	(site_list_type::displayed_url): Ditto.
+	(site_list_type::key): Ditto.
+	* source.cc (SourcePage::OnDeactivate): Ditto.
+	* state.h: Update includes for String usage.
+	(local_dir): Update for String usage.
+	(trust_level): Remove.
+	* version.cc: Update includes for String usage.
+	(canonicalize_version): Update for String usage.
+	* version.h: Update includes for String usage.
+	(canonicalize_version): Update for String usage.
+	
 2002-02-15  Christopher Faylor  <cgf@redhat.com>
 
 	* filemanip.c (parse_filename): Revert previous change.

@@ -20,9 +20,10 @@ extern int total_download_bytes;
 extern int total_download_bytes_sofar;
 
 class io_stream;
+class String;
 
-io_stream *get_url_to_membuf (char const *, HWND owner);
-char *get_url_to_string (char const *, HWND owner);
-int get_url_to_file (char *_url, char *_filename, int expected_size,
+io_stream *get_url_to_membuf (String const &, HWND owner);
+String get_url_to_string (String const&, HWND owner);
+int get_url_to_file (String const &_url, String const &_filename, int expected_size,
 		     HWND owner, BOOL allow_ftp_auth = FALSE);
 void dismiss_url_status_dialog ();

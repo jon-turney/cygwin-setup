@@ -111,17 +111,17 @@ PickView::set_headers ()
 }
 
 void
-PickView::note_width (PickView::Header *hdrs, HDC dc, const char *string, int addend,
+PickView::note_width (PickView::Header *hdrs, HDC dc, String const &string, int addend,
             int column)
 {
-  if (!string)
+  if (!string.size())
     {
       if (hdrs[column].width < addend)
         hdrs[column].width = addend;
       return;
     }
   SIZE s;
-  GetTextExtentPoint32 (dc, string, strlen (string), &s);
+  GetTextExtentPoint32 (dc, string.cstr_oneuse(), string.size(), &s);
   if (hdrs[column].width < s.cx + addend)
     hdrs[column].width = s.cx + addend;
 }
@@ -310,6 +310,8 @@ PickView::init_headers (HDC dc)
   /* src checkbox */
   note_width (headers, dc, 0, HMARGIN + 11, src_col);
   packagedb db;
+  for (size_t n = 1; n <= db.categories.number (); n++)
+      note_width (headers, dc, String ("+ ")+db.categories[n]->name, HMARGIN, cat_col);
   for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
@@ -321,18 +323,10 @@ PickView::init_headers (HDC dc)
           note_width (headers, dc,
                       pkg.versions[n]->Canonical_version (),
                       NEW_COL_SIZE_SLOP + HMARGIN, new_col);
-      for (size_t n = 1; n <= db.categories.number (); n++)
-        note_width (headers, dc, db.categories[n]->name, HMARGIN, cat_col);
-      if (!pkg.SDesc ())
-        note_width (headers, dc, pkg.name, HMARGIN, pkg_col);
-      else
-        {
-          static char buf[512];
-          strcpy (buf, pkg.name);
-          strcat (buf, ": ");
-          strcat (buf, pkg.SDesc ());
-          note_width (headers, dc, buf, HMARGIN, pkg_col);
-        }
+      String s = pkg.name;
+      if (pkg.SDesc ().size())
+	s += String (": ") + pkg.SDesc ();
+      note_width (headers, dc, s, HMARGIN, pkg_col);
     }
   note_width (headers, dc, "keep", NEW_COL_SIZE_SLOP + HMARGIN, new_col);
   note_width (headers, dc, "uninstall", NEW_COL_SIZE_SLOP + HMARGIN, new_col);

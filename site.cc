@@ -45,31 +45,28 @@ static const char *cvsid =
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
 
-list < site_list_type, const char *, strcasecmp > site_list;
-list < site_list_type, const char *, strcasecmp > all_site_list;
-
-static char *other_url = 0;
+list < site_list_type, String, String::casecompare > site_list;
+list < site_list_type, String, String::casecompare > all_site_list;
 
 void
-site_list_type::init (char const *newurl)
+site_list_type::init (String const &newurl)
 {
-  url = new char [strlen (newurl) +1];
-  strcpy (url, newurl);
-  displayed_url = new char [strlen (newurl) +1];
-  strcpy (displayed_url, newurl);
-  char *dot = strchr (displayed_url, '.');
-  if (dot)
-    {
-      dot = strchr (dot, '/');
-      if (dot)
-	*dot = 0;
-    }
-  key = new char[2 * strlen (newurl) + 3];
+  url = newurl;
 
-  dot = displayed_url;
-  dot += strlen (dot);
-  char *dp = key;
-  while (dot != displayed_url)
+  char *dots = newurl.cstr();
+  char *dot = strchr (dots, '.');
+  if (dot)
+      {
+         dot = strchr (dot, '/');
+        if (dot)
+	        *dot = 0;
+   }
+  displayed_url = String (dots);
+
+  
+  dot = dots + strlen (dots);
+  char *dp = new char[2 * newurl.size() + 3];
+  while (dot != dots)
     {
       if (*dot == '.' || *dot == '/')
 	{
@@ -80,13 +77,16 @@ site_list_type::init (char const *newurl)
 	    *dp++ = *sp++;
 	  *dp++ = ' ';
 	}
-      dot--;
+      --dot;
     }
   *dp++ = ' ';
-  strcpy (dp, displayed_url);
+  strcpy (dp, dots);
+  delete[] dots;
+  key = String (dp);
+  delete[] dp;
 }
 
-site_list_type::site_list_type (char const *newurl)
+site_list_type::site_list_type (String const &newurl)
 {
   init (newurl);
 }
@@ -125,19 +125,12 @@ void
 save_site_url ()
 {
   io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "wb");
-  for (size_t n = 1; n <= site_list.number (); n++)
+  if (f)
     {
-      if (f)
-	{
-	  // FIXME: write all selected sites
-	  TCHAR *temp;
-	  temp = new TCHAR[sizeof (TCHAR) * (strlen (site_list[n]->url) + 2)];
-	  sprintf (temp, "%s\n", site_list[n]->url);
-	  f->write (temp, strlen (temp));
-	  delete[] temp;
-	}
+      for (size_t n = 1; n <= site_list.number (); n++)
+        f->write ((site_list[n]->url + "\n").cstr_oneuse(), site_list[n]->url.size() + 1);
+      delete f;
     }
-  delete f;
 }
 
 static int
@@ -147,13 +140,14 @@ get_site_list (HINSTANCE h, HWND owner)
 
   if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
     return 1;
-  char *mirrors = get_url_to_string (mirror_url, owner);
-  if (!mirrors)
+  char *bol, *eol, *nl, *theString;
+  {
+  String mirrors = get_url_to_string (mirror_url, owner);
+  if (!mirrors.size())
     return 1;
 
-  char *bol, *eol, *nl;
+  nl = theString = mirrors.cstr();}
 
-  nl = mirrors;
   while (*nl)
     {
       bol = nl;
@@ -178,7 +172,7 @@ get_site_list (HINSTANCE h, HWND owner)
 	    delete newsite;
 	}
     }
-  delete[] mirrors;
+  delete[] theString;
 
   return 0;
 }
@@ -211,12 +205,8 @@ get_saved_sites ()
       if (eos < site)
 	continue;
 
-      bool found = false;
-      for (size_t i = 1; !found && i <= all_site_list.number (); i++)
-	if (!strcasecmp (site, all_site_list[i]->url))
-	  found = true;
-
-      if (!found)
+      String tempKey = site_list_type (String(site)).key;
+      if  (!all_site_list.getbykey (tempKey))
 	{
 	  /* Don't default to certain machines ever since they suffer
 	     from bandwidth limitations. */
@@ -234,10 +224,10 @@ get_saved_sites ()
       /* TODO: make a site_type method to create a serach key on-the-fly from a 
          URL
        */
-      found = false;
-      for (size_t i = 1; !found && i <= all_site_list.number (); i++)
-	if (!strcasecmp (site, all_site_list[i]->url))
-	  site_list.registerbyobject (*all_site_list[i]);
+      // Was it an allowed URL? 
+      site_list_type *tempSite;
+      if ((tempSite = all_site_list.getbykey (tempKey)))
+	site_list.registerbyobject (*tempSite);
     }
   delete f;
 
@@ -254,9 +244,8 @@ do_download_site_info_thread (void *p)
   hinst = (HINSTANCE) (context[0]);
   h = (HWND) (context[1]);
 
-  if (all_site_list.number () == 0)
-    {
-      if (get_site_list (hinst, h))
+  if (all_site_list.number () == 0
+      && get_site_list (hinst, h))
 	{
 	  // Error: Couldn't download the site info.  Go back to the Net setup page.
 	  MessageBox (h, TEXT ("Can't get list of download sites.\n\
@@ -266,12 +255,9 @@ Make sure your network settings are corect and try again."), NULL, MB_OK);
 	  Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0,
 				IDD_NET);
 
-	  _endthread ();
 	}
-    }
-
+  else
   // Everything worked, go to the site select page
-
   // Tell the progress page that we're done downloading
   Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_SITE);
 
@@ -312,7 +298,7 @@ SitePage::OnNext ()
 
   // Log all the selected URLs from the list.    
   for (size_t n = 1; n <= site_list.number (); n++)
-    log (0, "site: %s", site_list[n]->url);
+    log (LOG_TIMESTAMP, "site: %s", site_list[n]->url.cstr_oneuse());
 
   Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
   return IDD_INSTATUS;
@@ -337,8 +323,8 @@ SitePage::OnActivate ()
   // Fill the list box with all known sites.
   PopulateListBox ();
 
-  // Load the user URL box with whatever it was last time.
-  eset (GetHWND (), IDC_EDIT_USER_URL, other_url);
+  // Load the user URL box with nothing - it is in the list already.
+  eset (GetHWND (), IDC_EDIT_USER_URL, "");
 
   // Get the enabled/disabled states of the controls set accordingly.
   CheckControlsAndDisableAccordingly ();
@@ -369,7 +355,7 @@ SitePage::PopulateListBox ()
   for (size_t i = 1; i <= all_site_list.number (); i++)
     {
       j = SendMessage (listbox, LB_ADDSTRING, 0,
-		       (LPARAM) all_site_list[i]->displayed_url);
+		       (LPARAM) all_site_list[i]->displayed_url.cstr_oneuse());
       SendMessage (listbox, LB_SETITEMDATA, j, i);
     }
 
@@ -377,7 +363,7 @@ SitePage::PopulateListBox ()
   for (size_t n = 1; n <= site_list.number (); n++)
     {
       int index = SendMessage (listbox, LB_FINDSTRING, (WPARAM) - 1,
-			       (LPARAM) site_list[n]->displayed_url);
+			       (LPARAM) site_list[n]->displayed_url.cstr_oneuse());
       if (index != LB_ERR)
 	{
 	  // Highlight the selected item
@@ -394,11 +380,7 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
     {
     case IDC_EDIT_USER_URL:
       {
-	if (code == EN_CHANGE)
-	  {
-	    // Text in edit box may have changed.
-	    other_url = eget (GetHWND (), IDC_EDIT_USER_URL, other_url);
-	  }
+	// FIXME: Make Enter here cause an ADD, not a NEXT.
 	break;
       }
     case IDC_URL_LIST:
@@ -406,6 +388,7 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 	if (code == LBN_SELCHANGE)
 	  {
 	    CheckControlsAndDisableAccordingly ();
+	    save_dialog (GetHWND ());
 	  }
 	break;
       }
@@ -414,7 +397,9 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 	if (code == BN_CLICKED)
 	  {
 	    // User pushed the Add button.
-	    other_url = eget (GetHWND (), IDC_EDIT_USER_URL, other_url);
+	    String other_url = egetString (GetHWND (), IDC_EDIT_USER_URL);
+	    if (other_url.size())
+	    {
 	    site_list_type *
 	      newsite =
 	      new
@@ -430,7 +415,7 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 	    else
 	      {
 		// Log the adding of this new URL.
-		log (0, "Adding site: %s", other_url);
+		log (LOG_BABBLE, "Adding site: %s", other_url.cstr_oneuse());
 	      }
 
 	    // Assume the user wants to use it and select it for him.
@@ -438,6 +423,8 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 
 	    // Update the list box.
 	    PopulateListBox ();
+	    eset (GetHWND (), IDC_EDIT_USER_URL, "");
+	    }
 	  }
 	break;
       }

@@ -35,6 +35,8 @@
 #ifndef _RFC1738_H_
 #define _RFC1738_H_
 
+#include "String++.h"
 char const *rfc1738_escape_part (char const *);
+String rfc1738_escape_part (String const &);
 
 #endif

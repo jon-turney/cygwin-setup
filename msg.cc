@@ -46,7 +46,7 @@ mbox (HWND owner, const char *name, int type, int id, va_list args)
     ExitProcess (0);
 
   vsprintf (buf, fmt, args);
-  log (0, "mbox %s: %s", name, buf);
+  log (LOG_TIMESTAMP, "mbox %s: %s", name, buf);
   return MessageBox (owner, buf, "Cygwin Setup", type);
 }
 

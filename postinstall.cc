@@ -42,6 +42,6 @@ do_postinstall (HINSTANCE h, HWND owner)
 {
   next_dialog = 0;
   init_run_script ();
-  SetCurrentDirectory (get_root_dir ());
+  SetCurrentDirectory (get_root_dir ().cstr_oneuse());
   find (cygpath ("/etc/postinstall", 0), run_script_in_etc_postinstall);
 }

@@ -12,7 +12,7 @@ static const char *cvsid =
 doesn't work. */
 
 void
-make_link_2 (char *exepath, char *args, char *icon, char *lname)
+make_link_2 (char const *exepath, char const *args, char const *icon, char const *lname)
 {
   IShellLink *sl;
   IPersistFile *pf;

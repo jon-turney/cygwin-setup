@@ -18,6 +18,8 @@
 #ifndef _CATEGORY_H_
 #define _CATEGORY_H_
 
+#include "String++.h"
+
 class Category;
 class CategoryPackage;
 
@@ -30,12 +32,12 @@ class Category
 {
 public:
   Category ();
-  Category (char const *);
+  Category (String const &);
   bool operator== (Category const &rhs) const {return Categorycmp (*this, rhs) ? false : true;}
 
   Category *next;		/* the next category in the list */
-  const char *name;		/* the category */
-  const char *key;		/* always == name */
+  String const name;			/* the category */
+  String const key;		/* always == name */
   CategoryPackage *packages;	/* the packages in this category */
 };
 

@@ -125,6 +125,7 @@ packagedb::flush ()
 
   io_stream *ndb = io_stream::open (ndbn, "wb");
 
+  // XXX if this failed, try removing any existing .new database?
   if (!ndb)
     return errno ? errno : 1;
 
@@ -141,9 +142,9 @@ packagedb::flush ()
 	   * also note that we are writing a fictional install source 
 	   * to keep cygcheck happy.               
 	   */
-	  sprintf (line, "%s %s %d\n", pkgm.name,
-		   concat (pkgm.name, "-",
-			   pkgm.installed->Canonical_version (),
+	  sprintf (line, "%s %s %d\n", pkgm.name.cstr_oneuse(),
+		   concat (pkgm.name.cstr_oneuse(), "-",
+			   pkgm.installed->Canonical_version ().cstr_oneuse(),
 			   ".tar.bz2", 0), 0);
 	  ndb->write (line, strlen (line));
 	}
@@ -161,11 +162,11 @@ packagedb::flush ()
 int
   packagedb::installeddbread =
   0;
-list < packagemeta, char const *,
-  strcasecmp >
+list < packagemeta, String,
+  String::casecompare >
   packagedb::packages;
-list < Category, char const *,
-  strcasecmp >
+list < Category, String,
+  String::casecompare >
   packagedb::categories;
 PackageDBActions
   packagedb::task =

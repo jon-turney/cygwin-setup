@@ -31,7 +31,7 @@ typedef BOOL WINAPI (*GDFS) (LPCTSTR, PULARGE_INTEGER, PULARGE_INTEGER,
 			     PULARGE_INTEGER);
 
 int
-diskfull (const char *path)
+diskfull (String const &path)
 {
   WINAPI GDFS gdfs = 0;
 
@@ -43,7 +43,7 @@ diskfull (const char *path)
       if (gdfs)
 	{
 	  ULARGE_INTEGER avail, total, free;
-	  if (gdfs (path, &avail, &total, &free))
+	  if (gdfs (path.cstr_oneuse(), &avail, &total, &free))
 	    {
 	      int perc = avail.QuadPart * 100 / total.QuadPart;
 	      return 100 - perc;
@@ -52,10 +52,10 @@ diskfull (const char *path)
     }
 
   char root[4];
-  if (path[1] != ':')
+  if (path.cstr_oneuse()[1] != ':')
     return 0;
 
-  root[0] = path[0];
+  root[0] = path.cstr_oneuse()[0];
   root[1] = ':';
   root[2] = '\\';
   root[3] = 0;

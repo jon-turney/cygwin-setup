@@ -17,7 +17,8 @@
 #define _INI_H_
 
 class io_stream;
-void ini_init (io_stream *, char const *);
+class String;
+void ini_init (io_stream *, String const &);
 #define YYSTYPE char *
 
 #ifdef __cplusplus

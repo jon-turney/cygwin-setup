@@ -20,6 +20,8 @@
  * It 
  */
 
+#include "String++.h"
+
 /* The read/write the archive stream to get the archive data is flawed.
  * The problem is that you then need a *different* gzip etc class to be able
  * to ungzip a gzip from within an archive.
@@ -54,7 +56,7 @@ public:
    * given suffix.
    * returns 1 on failure.
    */
-  static int extract_file (archive *, const char *, const char *, const char * = NULL);
+  static int extract_file (archive *, String const &, String const &, String const = String());
 
   /* 
    * To create a stream that will be compressed, you should open the url, and then get a new stream
@@ -78,9 +80,9 @@ public:
    * The way this works is that when read returns 0, you are at the end of *a* file.
    * next_file_name will allow read to be called again, if it returns !NULL
    */
-  virtual const char *next_file_name () = NULL;
+  virtual String const next_file_name () = NULL;
   virtual archive_file_t next_file_type () = ARCHIVE_FILE_INVALID;
-  virtual const char *linktarget () = NULL;
+  virtual String const linktarget () = NULL;
   virtual int skip_file () = 0;
   /* if you are still needing these hints... give up now! */
 //  virtual ~compress ();

@@ -74,25 +74,25 @@ found_file (char *path, unsigned int fsize)
   if (!parse_filename (path, f))
     return;
 
-  if (f.what[0] != '\0')
+  if (f.what.size() != 0)
     return;
 
   packagedb db;
   packagemeta &p = db.packages.registerbykey (f.pkg);
   packageversion *pv = new cygpackage (f.pkg);
   ((cygpackage *)pv)->set_canonical_version (f.ver);
-  if (!f.what[0])
-    pv->bin.set_cached (concat ("file://", path, 0));
+  if (!f.what.size())
+    pv->bin.set_cached (String ("file://") + path);
   else
     // patch or src, assume src until someone complains
-    pv->src.set_cached (concat ("file://", path, 0));
+    pv->src.set_cached (String ("file://") + path);
 
   // check for a duplciate version FIXME make this a method or friend
 
 
   int merged = 0;
   for (size_t n = 1; !merged && n <= p.versions.number (); n++)
-    if (!strcasecmp(p.versions[n]->Canonical_version(), pv->Canonical_version()))
+    if (!p.versions[n]->Canonical_version().casecompare (pv->Canonical_version()))
       {
         /* Copy the binary mirror across if this site claims to have an install */
         if (pv->bin.sites.number ())
@@ -101,9 +101,9 @@ found_file (char *path, unsigned int fsize)
         if (pv->src.sites.number ())
           p.versions[n]->src.sites.registerbykey (pv->src.sites[1]->key);
         /* Copy the descriptions across */
-        if (pv->SDesc () && !p.versions[n]->SDesc ())
+        if (pv->SDesc ().size() && !p.versions[n]->SDesc ().size())
           p.versions[n]->set_sdesc (pv->SDesc ());
-        if (pv->LDesc () && !p.versions[n]->LDesc ())
+        if (pv->LDesc ().size() && !p.versions[n]->LDesc ().size())
           p.versions[n]->set_ldesc (pv->LDesc ());
         pv = p.versions[n];
         merged = 1;

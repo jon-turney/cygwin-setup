@@ -97,7 +97,7 @@ simple_line
  | LDESC STRING			{ cpv->set_ldesc ($2); }
  | CATEGORY categories
  | REQUIRES requires
- | INSTALL STRING STRING	{ if (!cpv->Canonical_version ())
+ | INSTALL STRING STRING	{ if (!cpv->Canonical_version ().size())
    				  {
 				    fileparse f;
 				    if (parse_filename ($2, f))
@@ -126,7 +126,7 @@ simple_line
  | T_UNKNOWN			{ trust = TRUST_UNKNOWN; }
  | /* empty */
  | error '\n' { yylineno --;
-		yyerror ("unrecognized line in package %s (do you have the latest setup?)", cp->name);
+		yyerror ("unrecognized line in package %s (do you have the latest setup?)", cp->name.cstr_oneuse());
 		yylineno ++;
 	      }
  ;
@@ -149,7 +149,7 @@ add_correct_version()
 {
   int merged = 0;
   for (size_t n = 1; !merged && n <= cp->versions.number (); n++)
-      if (!strcasecmp(cp->versions[n]->Canonical_version(), cpv->Canonical_version()))
+      if (!cp->versions[n]->Canonical_version().casecompare(cpv->Canonical_version()))
       {
 	/* ASSUMPTIONS:
 	   categories and requires are consistent for the same version across
@@ -162,9 +162,9 @@ add_correct_version()
 	if (cpv->src.sites.number ())
 	  cp->versions[n]->src.sites.registerbykey (cpv->src.sites[1]->key);
 	/* Copy the descriptions across */
-	if (cpv->SDesc () && !cp->versions[n]->SDesc ())
+	if (cpv->SDesc ().size() && !cp->versions[n]->SDesc ().size())
 	  cp->versions[n]->set_sdesc (cpv->SDesc ());
-	if (cpv->LDesc () && !cp->versions[n]->LDesc ())
+	if (cpv->LDesc ().size() && !cp->versions[n]->LDesc ().size())
 	  cp->versions[n]->set_ldesc (cpv->LDesc ());
 	cpv = (cygpackage *)cp->versions[n];
 	merged = 1;

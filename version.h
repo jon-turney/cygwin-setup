@@ -15,6 +15,8 @@
 
 /* misc version-related things */
 
+#include "String++.h"
+
 extern char *version;
 
-extern char *canonicalize_version (const char *);
+extern String canonicalize_version (String const &);

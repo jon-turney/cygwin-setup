@@ -15,6 +15,8 @@
 
 /* Simple hash class for install.cc */
 
+#include  "String++.h"
+
 class hash_internals;
 
 class hash
@@ -29,7 +31,7 @@ public:
 
   /* FIXME: this specialty should be done via a derived class */
   /* specialty for install.cc */
-  void add_subdirs (char const *path);
+  void add_subdirs (String const &path);
   void reverse_sort ();
 
   char *enumerate (char const *prev = 0);

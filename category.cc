@@ -22,29 +22,25 @@
 
 /* normal members */
 
-Category::Category ():next (0), name (0), key (0), packages (0)
+Category::Category ():next (0), name (), key (), packages (0)
 {
 }
 
-Category::Category (const char *categoryname):
+Category::Category (String const &categoryname):
 next (0),
+name (categoryname), key(categoryname),
 packages (0)
 {
-  /* FIXME: search the global category list for name, and reuse that pointer */
-  char *t = new char [strlen(categoryname) + 1];
-  strcpy (t, categoryname);
-  name = t;
-  key = name;
 }
 
 int
 Categorycmp (Category const & a, Category const & b)
 {
-  return strcasecmp (a.name, b.name);
+  return a.name.casecompare (b.name);
 }
 
 int
 Categorycmp (Category & a, Category & b)
 {
-    return strcasecmp (a.name, b.name);
+    return a.name.casecompare (b.name);
 }
