@@ -43,7 +43,8 @@ void
 PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
 {
   int r = y + row * theView.row_height;
-  int by = r + theView.tm.tmHeight - 11;
+  int rb = r + theView.tm.tmHeight;
+  int by = rb - 11; // top of box images
   int oldDC = SaveDC (hdc);
   if (!oldDC)
     return;
@@ -78,9 +79,9 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
   if (pkg.installed)
     {
       IntersectClipRect (hdc, x + theView.headers[theView.current_col].x,
-			 by,
+			 r,
 			 x + theView.headers[theView.current_col].x +
-			 theView.headers[theView.current_col].width, by + 11);
+			 theView.headers[theView.current_col].width, rb);
       TextOut (hdc,
 	       x + theView.headers[theView.current_col].x + HMARGIN / 2, r,
 	       pkg.installed->Canonical_version ().cstr_oneuse(),
@@ -93,9 +94,9 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
 
   String s = pkg.action_caption ();
   IntersectClipRect (hdc, x + theView.headers[theView.new_col].x,
-		     by,
+		     r,
 		     x + theView.headers[theView.new_col].x +
-		     theView.headers[theView.new_col].width, by + 11);
+		     theView.headers[theView.new_col].width, rb);
   TextOut (hdc,
 	   x + theView.headers[theView.new_col].x + HMARGIN / 2 +
 	   NEW_COL_SIZE_SLOP, r, s.cstr_oneuse(), s.size());
@@ -138,9 +139,9 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
       int index = 1;
       if (!pkg.Categories[1]->key.name.casecompare( "All"))
 	index = 2;
-      IntersectClipRect (hdc, x + theView.headers[theView.cat_col].x, by,
+      IntersectClipRect (hdc, x + theView.headers[theView.cat_col].x, r,
 			 x + theView.headers[theView.cat_col].x +
-			 theView.headers[theView.cat_col].x, by + 11);
+			 theView.headers[theView.cat_col].x, rb);
       TextOut (hdc, x + theView.headers[theView.cat_col].x + HMARGIN / 2, r,
 	       pkg.Categories[index]->key.name.cstr_oneuse(),
 	       pkg.Categories[index]->key.name.size());
@@ -150,9 +151,9 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
   s = pkg.name;
   if (pkg.SDesc ().size())
     s += String(": ") + pkg.SDesc ();
-  IntersectClipRect (hdc, x + theView.headers[theView.pkg_col].x, by,
+  IntersectClipRect (hdc, x + theView.headers[theView.pkg_col].x, r,
 		     x + theView.headers[theView.pkg_col].x +
-		     theView.headers[theView.pkg_col].width, by + 11);
+		     theView.headers[theView.pkg_col].width, rb);
   TextOut (hdc, x + theView.headers[theView.pkg_col].x + HMARGIN / 2, r, s.cstr_oneuse(),
 	   s.size());
   DeleteObject (oldClip);

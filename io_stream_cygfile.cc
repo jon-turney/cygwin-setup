@@ -38,6 +38,48 @@ static const char *cvsid =
 #define FACTOR (0x19db1ded53ea710LL)
 #define NSPERSEC 10000000LL
 
+String io_stream_cygfile::cwd("/");
+  
+// Normalise a unix style path relative to 
+// cwd.
+String
+io_stream_cygfile::normalise (String const &unixpath)
+{
+  char *path,*tempout;
+  
+  if (unixpath.cstr_oneuse()[0]=='/')
+    {
+      // rooted path
+      path = unixpath.cstr();
+      tempout = unixpath.cstr(); // paths only shrink.
+    }
+  else
+    {
+      path = (cwd + unixpath).cstr();
+      tempout = (cwd + unixpath).cstr(); //paths only shrink.
+    }
+  
+  // FIXME: handle .. depth tests to prevent / + ../foo/ stepping out
+  // of the cygwin tree
+  // FIXME: handle /./ sequences
+  bool sawslash = false;
+  char *outptr = tempout;
+  for (char *ptr=path; *ptr; ++ptr)
+    {
+      if (*ptr == '/' && sawslash)
+	--outptr;
+      else if (*ptr == '/')
+	sawslash=true;
+      else
+	sawslash=false;
+      *outptr++ = *ptr;
+    }
+  String rv = tempout;
+  delete[] path;
+  delete[] tempout;
+  return rv;
+}
+
 static void
 get_root_dir_now ()
 {
@@ -60,7 +102,7 @@ io_stream_cygfile::io_stream_cygfile (String const &name, String const &mode) : 
     /* TODO: assign a errno for "no mount table :} " */
     return;
 
-  fname = cygpath (name);
+  fname = cygpath (normalise(name));
   lmode = mode;
   fp = fopen (fname.cstr_oneuse(), mode.cstr_oneuse());
   if (!fp)
@@ -79,7 +121,7 @@ int
 io_stream_cygfile::exists (String const &path)
 {
   get_root_dir_now ();
-  if (get_root_dir ().size() && _access (cygpath (path).cstr_oneuse(), 0) == 0)
+  if (get_root_dir ().size() && _access (cygpath (normalise(path)).cstr_oneuse(), 0) == 0)
     return 1;
   return 0;
 }
@@ -94,34 +136,38 @@ io_stream_cygfile::remove (String const &path)
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
 
-  unsigned long w = GetFileAttributes (cygpath (path).cstr_oneuse());
+  unsigned long w = GetFileAttributes (cygpath (normalise(path)).cstr_oneuse());
   if (w != 0xffffffff && w & FILE_ATTRIBUTE_DIRECTORY)
     {
-      char tmp[cygpath (path).size() + 10];
+      char tmp[cygpath (normalise(path)).size() + 10];
       int i = 0;
       do
 	{
 	  ++i;
-	  sprintf (tmp, "%s.old-%d", cygpath (path).cstr_oneuse(), i);
+	  sprintf (tmp, "%s.old-%d", cygpath (normalise(path)).cstr_oneuse(), i);
 	}
       while (GetFileAttributes (tmp) != 0xffffffff);
       fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-	       path.cstr_oneuse());
-      MoveFile (cygpath (path).cstr_oneuse(), tmp);
+	       normalise(path).cstr_oneuse());
+      MoveFile (cygpath (normalise(path)).cstr_oneuse(), tmp);
     }
-  return !DeleteFileA (cygpath (path).cstr_oneuse());
+  return !DeleteFileA (cygpath (normalise(path)).cstr_oneuse());
 }
 
 int
-io_stream_cygfile::mklink (String const &from, String const &to,
+io_stream_cygfile::mklink (String const &_from, String const &_to,
 			   io_stream_link_t linktype)
 {
-  if (!from.size() || !to.size())
+  if (!_from.size() || !_to.size())
     return 1;
+  String from(normalise(_from));
+  String to (normalise(_to));
   switch (linktype)
     {
     case IO_STREAM_SYMLINK:
-      return mkcygsymlink (cygpath (from).cstr_oneuse(), to.cstr_oneuse());
+      // symlinks are arbitrary targets, can be anything, and are
+      // not subject to translation
+      return mkcygsymlink (cygpath (from).cstr_oneuse(), _to.cstr_oneuse());
     case IO_STREAM_HARDLINK:
       {
 	/* For now, just copy */
@@ -220,10 +266,11 @@ io_stream_cygfile::error ()
 }
 
 int
-cygmkdir_p (enum path_type_t isadir, String const &name)
+cygmkdir_p (enum path_type_t isadir, String const &_name)
 {
-  if (!name.size())
+  if (!_name.size())
     return 1;
+  String name(io_stream_cygfile::normalise(_name));
   get_root_dir_now ();
   if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
@@ -269,10 +316,12 @@ io_stream_cygfile::set_mtime (int mtime)
 }
 
 int
-io_stream_cygfile::move (String const &from, String const &to)
+io_stream_cygfile::move (String const &_from, String const &_to)
 {
-  if (!from.size() || !to.size())
+  if (!_from.size() || !_to.size())
     return 1;
+  String from (normalise(_from));
+  String to(normalise(_to));
   get_root_dir_now ();
   if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
