@@ -39,19 +39,29 @@ STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup - Choose Installation Type"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    CONTROL         "&Install from Internet",IDC_SOURCE_NETINST,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,101,69,115,10
-    CONTROL         "&Download from Internet",IDC_SOURCE_DOWNLOAD,"Button",
-                    BS_AUTORADIOBUTTON | WS_TABSTOP,101,84,115,10
+    CONTROL         "&Install from Internet\n(downloaded files will be kept for future re-use)",
+                    IDC_SOURCE_NETINST, "Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP | BS_MULTILINE
+                    | BS_TOP,
+                    71, 60, 200, 20
+
+    CONTROL         "&Download Without Installing",
+                    IDC_SOURCE_DOWNLOAD, "Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,
+                    71, 90, 200, 10
+
     CONTROL         "Install from &Local Directory",IDC_SOURCE_CWD,"Button",
-                    BS_AUTORADIOBUTTON | WS_TABSTOP,101,99,115,10
-    ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
-    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
-                    317,1
-    LTEXT           "Choose A Download Source",IDC_STATIC_HEADER_TITLE,7,0,
-                    258,8,NOT WS_GROUP
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,
+                    71,120,200,10
+
+    ICON            IDI_CYGWIN, IDC_HEADICON, 290, 0, 21, 20
+    CONTROL         "", IDC_HEADSEPARATOR, "Static", SS_BLACKFRAME | SS_SUNKEN,
+                    0, 28, 317, 1
+    LTEXT           "Choose A Download Source", IDC_STATIC_HEADER_TITLE,
+                    7, 0, 258, 8, NOT WS_GROUP
     LTEXT           "Choose whether to install or download from the internet, or install from files in a local directory.",
-                    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+                    IDC_STATIC,
+                    21, 9, 239, 16, NOT WS_GROUP
 END
 
 IDD_VIRUS DIALOG DISCARDABLE  0, 0, 317, 179

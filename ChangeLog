@@ -1,5 +1,10 @@
 2004-11-20  Max Bowsher  <maxb@ukf.net>
 
+	* res.rc (IDD_SOURCE): Clarify the radio-button option descriptions.
+	Re-layout the radio buttons.
+
+2004-11-20  Max Bowsher  <maxb@ukf.net>
+
 	Repair the broken detection of wrongly-sized package files.
 	
 	* download.cc (validateCachedPackage): Make static, since not used
