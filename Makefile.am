@@ -262,6 +262,8 @@ setup_SOURCES = \
 	site.h \
 	source.cc \
 	source.h \
+	SourceSetting.cc \
+	SourceSetting.h \
 	splash.cc \
 	splash.h \
 	state.cc \

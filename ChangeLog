@@ -1,5 +1,12 @@
 2003-07-30  Robert Collins  <rbtcollins@hotmail.com>
 
+	* SourceSetting.cc: New file, persist source selection.
+	* SourceSetting.h: Ditto.
+	* source.cc: Hold a Source setting instance to trigger the logic.
+	* Makefile.am: Add new source files.
+
+2003-07-30  Robert Collins  <rbtcollins@hotmail.com>
+
 	* UserSettings.h (UserSettings::settingFileForLoad): Extracted method
 	from LocalDirSetting::load().
 	* UserSettings.cc (UserSettings::settingFileForLoad): Ditto.

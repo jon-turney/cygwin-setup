@@ -22,6 +22,7 @@
 
 class io_stream;
 class UserSetting;
+class String;
 class UserSettings {
   public:
     static UserSettings &Instance();
