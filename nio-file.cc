@@ -38,7 +38,7 @@ NetIO (Purl)
   fd = fopen (path, "rb");
   if (fd)
     {
-      file_size = get_file_size (path);
+      file_size = get_file_size (String("file://") + path);
     }
   else
     {

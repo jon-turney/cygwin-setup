@@ -28,5 +28,5 @@ fileparse;
 
 int parse_filename (String const & in_fn, fileparse & f);
 String base (String const &);
-unsigned int get_file_size (String const &);
+size_t get_file_size (String const &);
 String backslash (String const &);

@@ -26,8 +26,6 @@ static const char *cvsid =
 #include "port.h"
 #include "mklink2.h"
 
-#include "filemanip.h"
-
 #include "io_stream.h"
 #include "io_stream_file.h"
 
@@ -201,5 +199,16 @@ io_stream_file::get_size ()
 {
   if (!fname.size())
     return 0;
-  return get_file_size (fname);
+  HANDLE h;
+  WIN32_FIND_DATA buf;
+  DWORD ret = 0;
+
+  h = FindFirstFileA (fname.cstr_oneuse(), &buf);
+  if (h != INVALID_HANDLE_VALUE)
+    {
+      if (buf.nFileSizeHigh == 0)
+	ret = buf.nFileSizeLow;
+      FindClose (h);
+    }
+  return ret;
 }

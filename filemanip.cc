@@ -21,29 +21,26 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-#include "win32.h"
-
 #include <stdio.h>
 #include <unistd.h>
 #include <ctype.h>
 
 #include "filemanip.h"
+#include <strings.h>
+#include "io_stream.h"
 
-unsigned int
+/* legacy wrapper.
+ * Clients should use io_stream.get_size() */
+size_t
 get_file_size (String const &name)
 {
-  HANDLE h;
-  WIN32_FIND_DATA buf;
-  DWORD ret = 0;
-
-  h = FindFirstFileA (name.cstr_oneuse(), &buf);
-  if (h != INVALID_HANDLE_VALUE)
-    {
-      if (buf.nFileSizeHigh == 0)
-	ret = buf.nFileSizeLow;
-      FindClose (h);
-    }
-  return ret;
+  io_stream *theFile = io_stream::open (name, "rb");
+  if (!theFile)
+    /* To consider: throw an exception ? */
+    return 0;
+  ssize_t rv = theFile->get_size();
+  delete theFile;
+  return rv;
 }
 
 String 

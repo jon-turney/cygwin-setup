@@ -29,7 +29,6 @@ static const char *cvsid =
 #include "mkdir.h"
 #include "mklink2.h"
 #include <unistd.h>
-#include "filemanip.h"
 
 #include "io_stream.h"
 #include "io_stream_cygfile.h"
@@ -334,5 +333,26 @@ io_stream_cygfile::get_size ()
 {
   if (!fname.size() )
     return 0;
-  return get_file_size (fname);
+#ifdef WIN32
+  HANDLE h;
+  WIN32_FIND_DATA buf;
+  DWORD ret = 0;
+
+  h = FindFirstFileA (fname.cstr_oneuse(), &buf);
+  if (h != INVALID_HANDLE_VALUE)
+    {
+      if (buf.nFileSizeHigh == 0)
+        ret = buf.nFileSizeLow;
+      FindClose (h);
+    }
+  return ret;
+#else
+  struct stat buf;
+  /* Should this be lstat? */
+  if (stat (fname.cstr_oneuse(), &buf))
+    /* failed - should never happen in this version */
+    /* Throw an exception? */
+    return 0;
+  return buf.off_t;
+#endif
 }

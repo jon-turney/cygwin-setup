@@ -1,10 +1,28 @@
-2002-05-022 Robert Collins  <rbtcollins@hotmail.com>
+2002-05-03 Robert Collins  <rbtcollins@hotmail.com>
+
+	* nio-files.cc (NetIO): Use io_stream syntax for get_file_size.
+	* io_stream_file.cc: Don't include filemanip.h.
+	(io_stream_file::get_size): Implement here to remove filemanip
+	dependency.
+	* io_stream_cygfile.cc: Don't include filemanip.h.
+	(io_stream_cygfile::get_size): Implement here to remove filemanip
+	dependency.
+	Implement a stat based version for when win32 is not available.
+	* filemanip.h (get_file_size): Return size_t - it's more appropriate.
+	* filemanip.cc: Don't include win32.h - be platform independent.
+	Include strings.h and io_stream.h as part of that.
+	(get_file_size): Leverage io_streams and remove win32 implementation.
+	* download.cc (check_for_cached): Use io_stream syntax for
+	get_file_size.
+	(download_one): Ditto.
+
+2002-05-02 Robert Collins  <rbtcollins@hotmail.com>
 
 	* configure.in: Correct a typo in last change.
 	* configure: Regenerate.
 	* Makefile.in: Regenerate.
 
-2002-05-022 Robert Collins  <rbtcollins@hotmail.com>
+2002-05-02 Robert Collins  <rbtcollins@hotmail.com>
 
 	* configure.in: Check for string.h and string.
 	* configure: Regenerate.

@@ -72,15 +72,13 @@ check_for_cached (packagesource & pkgsource)
   // Already found one.
   if (pkgsource.Cached())
     return 1;
-
+  
+  String prefix = String ("file://") + local_dir +  "/";
   DWORD size;
-  if ((size =
-       get_file_size (local_dir +  "/" + pkgsource.Canonical ())) >
-      0)
+  if ((size = get_file_size (prefix + pkgsource.Canonical ())) > 0)
     if (size == pkgsource.size)
       {
-	pkgsource.
-	  set_cached (String ("file://") + local_dir +  "/" + pkgsource.Canonical ());
+	pkgsource.set_cached (prefix + pkgsource.Canonical ());
 	return 1;
       }
 
@@ -89,11 +87,10 @@ check_for_cached (packagesource & pkgsource)
    */
   for (size_t n = 1; n <= pkgsource.sites.number (); n++)
     {
-      String fullname = local_dir + "/" +
+      String fullname = prefix +
 	rfc1738_escape_part (pkgsource.sites[n]->key) + "/" +
 	pkgsource.Canonical ();
-    if ((size =
-	 get_file_size (fullname)) > 0)
+    if ((size = get_file_size (fullname)) > 0)
       if (size == pkgsource.size)
 	{
 	  if (pkgsource.md5.isSet())
@@ -173,7 +170,7 @@ download_one (packagesource & pkgsource, HWND owner)
 	}
       else
 	{
-	  size_t size = get_file_size (local + ".tmp");
+	  size_t size = get_file_size (String("file://") + local + ".tmp");
 	  if (size == pkgsource.size)
 	    {
 	      log (LOG_PLAIN, String ("Downloaded ") + local);
