@@ -16,7 +16,9 @@
 /* This file is responsible for implementing all direct FTP protocol
    channels.  It is intentionally simplistic. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid = "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include "winsock.h"
@@ -70,7 +72,6 @@ NetIO_FTP::NetIO_FTP (char *Purl, BOOL allow_ftp_auth)
   if (cmd == 0)
     {
       SimpleSocket *c = new SimpleSocket (host, port);
-      int done = 0;
       code = ftp_line (c);
 
 auth_retry:

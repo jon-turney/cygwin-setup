@@ -23,13 +23,13 @@ class SimpleSocket {
   int fill ();
 
  public:
-  SimpleSocket (char *hostname, int port);
+  SimpleSocket (const char *hostname, int port);
   ~SimpleSocket ();
 
   int ok ();
 
-  int printf (char *fmt, ...);
-  int write (char *buf, int len);
+  int printf (const char *fmt, ...);
+  int write (const char *buf, int len);
 
   char *gets ();
   int	read (char *buf, int len);

@@ -15,7 +15,9 @@
 
 /* Simplified socket access functions */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid = "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <winsock.h>
@@ -28,7 +30,7 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #define SSBUFSZ 1024
 
-SimpleSocket::SimpleSocket (char *hostname, int port)
+SimpleSocket::SimpleSocket (const char *hostname, int port)
 {
   static int initted = 0;
   if (!initted)
@@ -108,7 +110,7 @@ SimpleSocket::ok ()
 }
 
 int
-SimpleSocket::printf (char *fmt, ...)
+SimpleSocket::printf (const char *fmt, ...)
 {
   char buf[SSBUFSZ];
   va_list args;
@@ -118,7 +120,7 @@ SimpleSocket::printf (char *fmt, ...)
 }
 
 int
-SimpleSocket::write (char *buf, int len)
+SimpleSocket::write (const char *buf, int len)
 {
   return send (s, buf, len, 0);
 }

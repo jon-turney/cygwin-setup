@@ -1,3 +1,15 @@
+2001-11-09  Robert Collins  <rbtcollins@hotmail.com>
+
+	* simpsock.cc (cvsid): Avoid compiler warnings (not used, deprecated conversion).
+	(SimpleSocket::SimpleSocket): Avoid compiler warnings (deprecated conversion).
+	(SimpleSocket::printf): Ditto.
+	(SimpleSocket::write): Ditto.
+	* simpsock.h (SimpleSocket): Avoid compiler warnings for constructor,
+	printf and write.
+	* nio-ftp.cc (cvsid): Avoid compiler warnings (not used, deprecated conversion).
+	(NetIO_FTP::NetIO_FTP): Remove unused variable done.
+	* nio-http.cc (cvsid): Avoid compiler warnings (not used, deprecated conversion).
+
 2001-11-07  Charles Wilson  <cwilson@ece.gatech.edu>
 
 	* geturl.cc (get_url_to_string): clean up memory leak
