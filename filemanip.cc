@@ -48,8 +48,7 @@ base (String const &aString)
 {
   if (!aString.size())
     return 0;
-  const char *t = aString.cstr();
-  const char *s = t;
+  const char *s = aString.cstr_oneuse();
   String rv = s;
   while (*s)
     {
@@ -57,7 +56,6 @@ base (String const &aString)
 	rv = s + 1;
       s++;
     }
-  delete[] t;
   return rv;
 }
 

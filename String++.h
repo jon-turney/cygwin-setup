@@ -48,10 +48,7 @@ public:
   // the constructors
   // - means this sorts to the left of the parameter
   int compare (String const &, size_t const = 0) const;
-  static int compare (String const &, String const &, size_t const = 0);
   int casecompare (String const &, size_t const = 0) const;
-  static int casecompare (String const &, String const &, size_t const = 0);
-  static int casecompare (String const, String const);
   String &append (String const &);
   String &operator += (String const &);
   String operator + (String const &) const;

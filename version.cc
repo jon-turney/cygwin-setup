@@ -30,8 +30,7 @@ static const char *cvsid =
 String 
 canonicalize_version (String const &aString)
 {
-  char *v =aString.cstr();
-  char *savev = v;
+  const char *v =aString.cstr_oneuse();
   static char nv[3][100];
   static int idx = 0;
   char *np;
@@ -55,6 +54,5 @@ canonicalize_version (String const &aString)
 	*np++ = *v++;
     }
   *np++ = 0;
-  delete[] savev;
   return nv[idx];
 }

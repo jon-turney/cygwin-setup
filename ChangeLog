@@ -1,3 +1,10 @@
+2004-12-24  Max Bowsher  <maxb@ukf.net>
+
+	* String++.cc, String++.h: Remove unused and incomplete code.
+	* LogFile.cc (LogFile::log_save): Don't leak memory.
+	* filemanip.cc, geturl.cc, root.cc, version.cc:
+	Don't pointlessly create temporary copies strings.
+
 2004-12-23  Max Bowsher  <maxb@ukf.net>
 
 	* choose.cc (ChooserPage::OnNext): Relegate some overly verbose

@@ -108,26 +108,21 @@ static int
 directory_is_absolute ()
 {
   
-  const char *r = get_root_dir ().cstr();
+  const char *r = get_root_dir ().cstr_oneuse();
   if (isalpha (r[0]) && r[1] == ':' && (r[2] == '\\' || r[2] == '/'))
     {
-      delete [] r;
       return 1;
     }
-  delete[]r;
   return 0;
 }
 
 static int
 directory_is_rootdir ()
 {
-  char *t=get_root_dir ().cstr();
-  const char *c;
-  for (c = t; *c; c++)
+  
+  for (const char *c = get_root_dir().cstr_oneuse(); *c; c++)
     if (isslash (c[0]) && c[1] && !isslash (c[1]))
-    {delete[]t;
-      return 0;}
-      delete[]t;
+      return 0;
   return 1;
 }
 

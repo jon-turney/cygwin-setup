@@ -161,7 +161,7 @@ LogFile::log_save (int babble, String const &filename, bool append)
     {
       if (babble || !(l->level == LOG_BABBLE))
         {
-          char *tstr = l->msg.cstr();
+          const char *tstr = l->msg.cstr_oneuse();
           f->write (tstr, strlen (tstr));
           if (tstr[strlen (tstr) - 1] != '\n')
             f->write ("\n", 1);

@@ -258,12 +258,6 @@ String::absorb (unsigned char *aString, size_t aLength)
   return theString;
 }
 
-int
-String::casecompare (String const lhs, String const rhs)
-{
-  return lhs.casecompare (rhs);
-}
-
 /*
  * This supports two wildcard characters, '*' and '?', as well as the
  * '[]'-style character sets ('^' to invert).

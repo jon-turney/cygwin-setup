@@ -66,19 +66,16 @@ init_dialog (String const &url, int length, HWND owner)
   if (is_local_install)
     return;
 
-  char const *temp = url.cstr();
-  char const *sl = temp;
-  char const *cp;
-  for (cp = sl; *cp; cp++)
-    if (*cp == '/' || *cp == '\\' || *cp == ':')
-      sl = cp + 1;
+  char const *last_component = url.cstr_oneuse();
+  for (const char *ch = last_component; *ch; ch++)
+    if (*ch == '/' || *ch == '\\' || *ch == ':')
+      last_component = ch + 1;
   max_bytes = length;
   Progress.SetText1("Downloading...");
-  Progress.SetText2(sl);
+  Progress.SetText2(last_component);
   Progress.SetText3("Connecting...");
   Progress.SetBar1(0);
   start_tics = GetTickCount ();
-  delete[] temp;
 }
 
 
