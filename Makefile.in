@@ -163,10 +163,10 @@ version.c : $(srcdir)/ChangeLog Makefile
 
 %.o: %.rc
 ifdef VERBOSE
-	$(WINDRES) --include-dir $(srcdir) --include-dir $(w32api_include) -o $@ $<
+	$(WINDRES) --include-dir $(srcdir) --include-dir $(w32api_source)/include -o $@ $<
 else
 	@echo $(WINDRES) -o $@ $(<F)
-	@$(WINDRES) --include-dir $(srcdir) --include-dir $(w32api_include) -o $@ $<
+	@$(WINDRES) --include-dir $(srcdir) --include-dir $(w32api_source)/include -o $@ $<
 endif
 
 %.o: %.c
