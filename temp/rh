@@ -1,0 +1,431 @@
+#!/usr/bin/perl -s
+
+use vars qw'$d';
+
+my $p;
+my $n = '';
+%package = ();
+%termcap = ('less'=>'termcap', 'bash'=>'termcap', 'gdb'=>'termcap', 'irc'=>'termcap');
+$skippy = qr/^(rpm|ld-linux\.so|install-info|mktemp|libdl\.so|ldconfig|libbfd|libopcodes|libbz2|libnsl|
+	       krb|libdes|libgssapi|libkrb5|libk5|libkrb4|glibc-common|libm|libexpect|libpthread|
+	       librt|libutil|chkconfig|sysklogd)|post_upgrade|cpp/x;
+my %xlate = ('diffutils'=>'diff', 'glibc'=>'cygwin', 'vixie-cron'=>'cron', 'mt-st'=>'mt', 'ircii'=>'irc',
+	     'libjpeg'=>'jpeg', 'tetex'=>'tetex-beta', 'libtiff'=>'tiff', ($d ? 'FOO' : 'vim')=>'vim-enhanced',
+	     'expect5.24'=>'expect', 'libgdbmg1'=>'gdbm', 'gs'=>'ghostscript', 'libpng2'=>'libpng',
+	     'libz1'=>'zlib', 'libncurses5'=>'ncurses', 'perl-5.005'=>'perl', 'libpopt0'=>'popt',
+	     'python-base'=>'python', 'libreadline4'=>'readline', 'termcap-compat'=>'termcap');
+my %rpackage;
+for my $p (qw'ash bash clear crypt cvs cygrunsrv cygwin diff gcc inetutils irc jbigkit jpeg libpng login man
+              mingw mingw-runtime mt mutt ncftp ncurses newlib-man opengl openssh openssl pcre perl postgresql python readline
+	      regex rxvt sh-utils squid ssmtp tcltk termcap tetex-beta tiff unzip vim w32api wget which xpm-nox zip zlib') {
+    $package{$p}{''} = {};
+    my $pkg = $package{$p}{''};
+    $p eq 'ash' and do {
+	$pkg->{'sdesc'} = '"A Bourne Shell (/bin/sh) workalike"';
+	$pkg->{'category'} = 'base shells';
+    };
+    $p eq 'bash' and do {
+	$pkg->{'category'} = 'base shells';
+    };
+    $p eq 'clear' and do {
+	$pkg->{'requires'} = 'cygwin';
+	$pkg->{'sdesc'} = '"Clears the screen"';
+	$pkg->{'category'} = $d ? 'utils' : 'Applications/Screen';
+    };
+    $p eq 'crypt' and do {
+	$pkg->{'requires'} = 'cygwin';
+	$pkg->{'sdesc'} = '"Encryption/Decryption utility and library"';
+	$pkg->{'category'} = $d ? 'libs' : 'Applications/Text';
+    };
+    $p eq 'cvs' and do {
+	$pkg->{'requires'} = 'ash cygwin gdbm crypt textutils';
+    };
+    $p eq 'cygrunsrv' and do {
+	$pkg->{'requires'} = 'cygwin';
+	$pkg->{'sdesc'} = '"NT/W2K service initiator"';
+	$pkg->{'category'} = $d ? 'admin' : 'System Environment/Base';
+    };
+    $p eq 'cygwin' and do {
+	$pkg->{'requires'} = '';
+	$pkg->{'sdesc'} = '"The UNIX emulation engine"';
+	$pkg->{'category'} = $d ? 'base' : 'System Environment/Base';
+    };
+    $p eq 'diff' and do {
+	$pkg->{'requires'} = 'ash cygwin';
+    };
+    $p eq 'gcc' and do {
+	$pkg->{'requires'} = 'cygwin ash binutils w32api';
+	$pkg->{'sdesc'} = '"C, C++, Fortran compilers"';
+	$d or $pkg->{'category'} = 'Development/Languages';
+    };
+    $p eq 'inetutils' and do {
+	$pkg->{'requires'} = 'cygwin ncurses';
+	$pkg->{'sdesc'} = '"Common networking utilities and servers"';
+	$pkg->{'category'} = $d ? 'net' : '"System Environment/Daemons" "Networking"';
+    };
+    $p eq 'irc' and do {
+	$pkg->{'sdesc'} = "An Internet Relay Chat (IRC) client";
+	$pkg->{'category'} = $d ? 'net' : 'Applications/Internet';
+	$pkg->{'requires'} = 'ash cygwin termcap';
+    };
+
+    $p eq 'jbigkit' and do {
+	$pkg->{'requires'} = 'cygwin zlib';
+	$pkg->{'sdesc'} = '"JBIG-KIT lossless image compression library"';
+	$pkg->{'category'} = $d ? 'graphics libs' : 'Graphics/Libraries';
+    };
+    $p eq 'jpeg' and do {
+	$pkg->{'sdesc'} = '"A library for manipulating JPEG image format files"';
+	$pkg->{'requires'} = 'cygwin';
+	$pkg->{'category'} = $d ? 'graphics libs' : 'Graphics/Libraries';
+    };
+    $p eq 'libpng' and do {
+	$pkg->{'category'} = $d ? 'graphics libs' : 'Graphics/Libraries';
+    };
+    $p eq 'login' and do {
+	$pkg->{'requires'} = 'cygwin ash bash';
+	$pkg->{'sdesc'} = '"Sign on to a system"';
+	$d or $pkg->{'category'} = 'Applications/System Applications/Base';
+    };
+    $p eq 'lynx' and do {
+	$pkg->{'requires'} = 'cygwin gettext ncurses';
+    };
+    $p eq 'man' and do {
+	$pkg->{'sdesc'} = '"A set of documentation tools:  man, apropos and whatis"';
+	$pkg->{'category'} = $d ? 'base' : '"System Environment/Base"';
+	$pkg->{'requires'} = 'ash bash cygwin fileutils groff';
+    };
+    $p eq 'mingw' and do {
+	$pkg->{'requires'} = 'w32api';
+	$pkg->{'sdesc'} = '"MinGW libraries and header files"';
+	$pkg->{'category'} = $d ? 'devel libs' : '"System Environment/Libraries"';
+    };
+    $p eq 'mingw-runtime' and do {
+	$pkg->{'requires'} = 'w32api';
+	$pkg->{'sdesc'} = '"MinGW libraries and header files"';
+	$pkg->{'category'} = $d ? 'devel libs' : '"System Environment/Libraries"';
+    };
+    $p eq 'mt' and do {
+	$pkg->{'requires'} = 'cygwin';
+	$pkg->{'sdesc'} = '"Magnetic Tape manipulation utility"';
+	$pkg->{'category'} = 'utils';
+    };
+    $p eq 'mutt' and do {
+	$pkg->{'requires'} = 'cygwin ash ncurses gettext';
+	$pkg->{'sdesc'} = '"A text mode mail user agent"';
+	$d or $pkg->{'category'} = 'Applications/Internet Applications/Mail';
+    };
+    $p eq 'newlib-man' and do {
+	$pkg->{'requires'} = 'cygwin man';
+	$pkg->{'sdesc'} = '"Man pages for some system functions"';
+	$pkg->{'category'} = $d ? 'doc' : '"Documentation"';
+    };
+    $p eq 'ncftp' and do {
+	$pkg->{'requires'} = 'cygwin ncurses less';
+	$pkg->{'sdesc'} = '"An improved FTP client"';
+	$d or $pkg->{'category'} = '"Applications/Internet"';
+    };
+    $p eq 'ncurses' and do {
+	$pkg->{'category'} = 'base libs';
+    };
+    $p eq 'opengl' and do {
+	$pkg->{'requires'} = '';
+	$pkg->{'sdesc'} = '"OpenGL"';
+	$pkg->{'category'} = $d ? 'graphics libs' : 'Graphics/Libraries"';
+    };
+    $p eq 'openssh' and do {
+	$pkg->{'requires'} = 'cygwin ash zlib';
+	$pkg->{'sdesc'} = '"The OpenSSH server and client programs"';
+	$pkg->{'category'} = $d ? 'net' : '"System Environment/Daemons"';
+	next;
+    };
+    $p eq 'openssl' and do {
+	$pkg->{'sdesc'} = '"The OpenSSL toolkit"';
+	$pkg->{'category'} = '"System Environment/Libraries"';
+	$pkg->{'requires'} ='ash cygwin';
+    };
+    $p eq 'pcre' and do {
+	$pkg->{'sdesc'} = '"Perl Compatible regular expression library"';
+	$pkg->{'category'} = 'libs';
+    };
+    $p eq 'perl' and do {
+	$pkg->{'requires'} = 'cygwin gdbm';
+    };
+    $p eq 'postgresql' and do {
+	$pkg->{'requires'} = 'ash cygwin readline zlib';
+	$pkg->{'sdesc'} = '"PostgreSQL Data Base Management System"';
+	$pkg->{'category'} = $d ? 'database' : '"System Environment/Daemons"';
+    };
+    $p eq 'python' and do {
+	$pkg->{'requires'} = 'ash cygwin readline zlib';
+    };
+    $p eq 'readline' and do {
+	$pkg->{'requires'} = 'ash cygwin ncurses';
+    };
+    $p eq 'regex' and do {
+	$pkg->{'requires'} = '';
+	$pkg->{'sdesc'} = '"POSIX compliant regular expression library"';
+	$pkg->{'category'} = $d ? 'libs' : '"System Environment/Libraries"';
+	next;
+    };
+    $p eq 'rxvt' and do {
+	$pkg->{'category'} = 'shells';
+    };
+    $p eq 'sh-utils' and do {
+	$pkg->{'sdesc'} = '"A set of GNU utilities commonly used in shell scripts"';
+	$pkg->{'category'} = $d ? 'shells' : '"System Environment/Shells"';
+	$pkg->{'requires'} = 'ash cygwin';
+    };
+    $p eq 'squid' and do {
+	$pkg->{'requires'} = 'cygwin cygrunsrv';
+	$pkg->{'category'} = '"System Environment/Daemons" Net';
+    };
+    $p eq 'ssmtp' and do {
+	$pkg->{'requires'} = 'cygwin';
+	$pkg->{'sdesc'} = '"A minimal mail-transfer agent which forwards mail to an SMTP server"';
+	$d or $pkg->{'category'} = '"System Environment/Daemons"';
+	next;
+    };
+    $p eq 'tcsh' and do {
+	$pkg->{'requires'} = 'cygwin ncurses';
+    };
+    $p eq 'tcltk' and do {
+	$pkg->{'requires'} = 'cygwin';
+	$pkg->{'sdesc'} = '"TCL/Tk 8.0 libraries"';
+	$pkg->{'category'} = $d ? 'libs' : '"System Environment/Libraries" "Development/Languages"';
+	next;
+    };
+    $p eq 'termcap' and do {
+	$pkg->{'category'} = 'base libs';
+    };
+    $p eq 'tetex-beta' and do {
+	$pkg->{'sdesc'} = '"The TeX text formatting system"';
+	$pkg->{'category'} = $d ? 'libs text' : 'Applications/Publishing';
+	$pkg->{'requires'} = 'ash bash cygwin libpng perl zlib';
+    };
+    $p eq 'tiff' and do {
+	$pkg->{'sdesc'} = '"A library of functions for manipulating TIFF format image files"';
+	$pkg->{'category'} = $d ? 'libs graphics' : '"System Environment/Libraries"';
+	$pkg->{'requires'} = 'ash cygwin jpeg zlib';
+    };
+    $p eq 'unzip' and do {
+	$pkg->{'sdesc'} = '"A utility for unpacking zip files"';
+	$pkg->{'category'} = $d ? 'archive' : 'Applications/Archiving';
+	$pkg->{'requires'} = 'cygwin';
+    };
+    $p eq 'w32api' and do {
+	$pkg->{'requires'} = '';
+	$pkg->{'sdesc'} = '"Libraries and headers for Win32 API"';
+	$pkg->{'category'} = $d ? 'libs' : '"System Environment/Libraries"';
+    };
+    $p eq 'wget' and do {
+	$pkg->{'requires'} = 'ash cygwin gettext';
+    };
+    $p eq 'which' and do {
+	$pkg->{'sdesc'} = '"A library of functions for manipulating TIFF format image files"';
+	$pkg->{'category'} = $d ? 'base' : '"System Environment/Libraries"';
+	$pkg->{'requires'} = 'ash cygwin jpeg zlib';
+    };
+    $p eq 'xpm-nox' and do {
+	$pkg->{'requires'} = 'cygwin';
+	$pkg->{'sdesc'} = '"X11 pixmap library -- no X required"';
+	$pkg->{'category'} = $d ? 'libs' : "Graphics/Libraries";
+    };
+    $p eq 'zip' and do {
+	$pkg->{'sdesc'} = '"A file compression and packaging utility compatible with PKZIP"';
+	$pkg->{'category'} = $d ? 'archive' : 'Applications/Archiving';
+	$pkg->{'requires'} = 'cygwin';
+    };
+    $p eq 'zlib' and do {
+	$pkg->{'sdesc'} = '"The zlib compression and decompression library"';
+	$pkg->{'category'} = $d ? 'base libs' : '"System Environment/Libraries"';
+	$pkg->{'requires'} = 'cygwin';
+    };
+}
+
+use File::Basename;
+my $rp;
+if (!$d) {
+    open(RPM, 'rpm -q --queryformat "n %{NAME}\\ns %{SUMMARY}\\ng %{GROUP}\\n" -a|');
+    while (<RPM>) {
+	chomp;
+	my ($n, $v) = (/^(.) (.*)$/);
+	$v =~ s/(\S)\s+$/$1/;
+	$n eq 'n' and do {
+	    $rp = $v;
+	    $p = $xlate{$rp} || $rp;
+	    $rpackage{$p}{_rpmname} = $rp;
+	    next;
+	};
+	$n eq 's' and do {
+	    $v =~ s/\.$//;
+	    $v =~ s/ version \d\S+//;
+	    $v =~ /\s/ and $v = '"' . $v . '"';
+	    $rpackage{$p}{'desc'} = $v;
+	    next;
+	};
+	$n eq 'g' and do {
+	    $v =~ /\s/ and $v = '"' . $v . '"';
+	    $rpackage{$p}{'group'} = $v;
+	    next;
+	};
+    }
+    close RPM;
+} else {
+    open(STDIN, 'packages');
+    while (<STDIN>) {
+	chomp;
+	/^Package:\s+(\S.*)$/ and do {
+	    $rp = $1;
+	    $p = $xlate{$rp} || $rp;
+	    $rpackage{$p}{_rpmname} = $rp;
+	    next;
+	};
+	/^Depends:\s+(\S.*)$/ and do {
+	    $_ = $1;
+	    s/\([^\)]+\)//g;
+	    s/\s+//g;
+	    $rpackage{$p}{'requires'} = [split(/,/)];
+	};
+	/^Section:\s+(\S.*)$/ and do {
+	    $rpackage{$p}{'group'} = $1;
+	};
+	/^Description:\s+(\S[^.]*).?/ and do {
+	    ($rpackage{$p}{'desc'} = "\u$1") =~ s/"/'/g;
+	    $rpackage{$p}{'desc'} = '"' . $rpackage{$p}{'desc'} . '"';
+	};
+    }
+}
+
+$p = '__setup';
+while (<>) {
+    s/#.*$//g;
+    s/(\S)\s+$/$1/g;
+    chomp;
+    length($_) or next;
+    /^\s*@\s+(.*)/ and do {
+	$p = $1;
+	my $isdefined = defined($package{$p});
+	$package{$p}{'_rpm'} = $rpackage{$p} or do {
+	    warn "$p --> no corresponding rpm\n"
+		unless $isdefined;
+	};
+	$package{$p}{'_me'} = $p;
+	$n = '';
+	next;
+    };
+    /^\s*\[([^\]]+)\]\s*$/ and do {
+	$n = $1;
+	next;
+    };
+    /^([^:]+):\s+(.*)/ or do {
+	warn "Unknown setup construct at $.\n";
+	next;
+    };
+    $package{$p}{$n}{$1} = $2;
+}
+
+my $pkg = $package{'__setup'};
+print "setup-timestamp: ", $pkg->{''}{'setup-timestamp'}, "\n"
+    if $pkg->{''}{'setup-timestamp'};
+print "setup-version: ", $pkg->{''}{'setup-version'}, "\n"
+    if $pkg->{''}{'setup-version'};
+
+delete $package{'__setup'};
+
+for my $p (sort keys %package) {
+    $pkg = $package{$p};
+    my $rpm = $pkg->{_rpm};
+    my $pkgbase = $pkg->{''};
+    print "\n@ $p\n";
+    if ($pkgbase->{'sdesc'}) {
+	print "sdesc: ", $pkgbase->{'sdesc'}, "\n";
+	delete $pkgbase->{'sdesc'};
+    } elsif ($rpm && $rpm->{'desc'}) {
+	print "sdesc: ", $rpm->{'desc'}, "\n";
+    }
+    if ($pkgbase->{'category'}) {
+	print "category:", map(" \u$_", (split(' ', $pkgbase->{'category'}))), "\n";
+	delete $pkgbase->{'category'};
+    } elsif ($rpm && $rpm->{'group'}) {
+	print "category:", map(" \u$_", (split(' ', $rpm->{'group'}))), "\n";
+    } else {
+	print "category: ", 'Misc', "\n";
+    }
+    if ($pkgbase->{'requires'}) {
+	print "requires: ", $pkgbase->{'requires'}, "\n";
+	delete $pkgbase->{'requires'};
+    } elsif ($rpm) {
+	my $requires = getrequires($pkg, $rpackage{$p}{'requires'});
+	print "requires: $requires\n" if $requires;
+    };
+    for my $g ('', 'prev', 'test') {
+	my $ver = $pkg->{$g} or next;
+	print "[$g]\n" if length($g);
+	for my $n ('version', 'install', 'source') {
+	    print "$n: $ver->{$n}\n" if $ver->{$n};
+	}
+    }
+}
+
+sub reqxlate {
+    my $f = shift;
+    my $p = shift;
+
+    $f = basename($f);
+    $f =~ s/\([^\)]*\)//g;
+    $f =~ s/[<>=]+.*//g;
+    $f = $xlate{$f} if $xlate{$f};
+    $f = 'cygwin' if $f =~ /(libc|^basesystem)/;
+    $f = 'ash' if $f eq 'sh';
+    $f = 'perl' if $f =~ /^perl/;
+    $f = 'tcsh' if $f eq 'csh';
+    $f = 'tcltk' if $f eq 'tcl';
+    $f = 'tcltk' if $f eq 'tk';
+    $f = 'tcltk' if $f =~ /^lib(tcl|tk)/;
+    $f = 'readline' if $f =~ /libreadline/;
+    $f = 'jpeg' if $f =~ /libjpeg/;
+    $f = 'tiff' if $f =~ /libtiff/;
+    $f = '' if $f =~ /^(pam|debianutils|slang|debconf|base-passwd|xlib6g)/;
+    $f = $termcap{$p} || 'ncurses' if $f =~ 'termcap|ncurses';
+    return $f;
+}
+
+sub getpkg {
+    my $p = reqxlate($_[0]);
+    $p = `rpm -q --queryformat '%{NAME}\\n' --whatprovides $p`;
+    chomp $p;
+    return $p =~ /no package/ ? '' : $p;
+} 
+
+sub getrequires {
+    my $pkg = shift;
+    my @requires;
+    my $rp = $pkg->{'_rpm'}{'_rpmname'};
+    if (@{$_[0]}) {
+	@requires = @{$_[0]};
+    } else {
+	@requires = (`rpm -q --requires $rp`);
+    }
+    my $p = $pkg->{'_me'};
+    my (%requires, %unkrequires);
+    foreach my $f (@requires) {
+	my $fn;
+	$f =~ s/[\s\n]+//g;
+	$f =~ s/^#.*$//;
+	$fn = $f;
+	$f = reqxlate($f, $p);
+	next if !length($f) || $f eq $p || $f =~ $skippy;
+	if ($main::package{$f}) {
+	    $requires{$f} = 1
+	} elsif ($fn !~ m![/.]!) {
+	    $unkrequires{$f} = 1;
+	} else {
+	    $f = getpkg($fn) and redo;
+	}
+    }
+    my $ret = join(' ', sort keys %requires);
+    $ret .= ' # ' . join(' ', sort keys %unkrequires)
+	if %unkrequires;
+    return $ret;
+}
