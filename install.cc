@@ -334,7 +334,6 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 			{
 			  replaceOnRebootSucceeded (fn, rebootneeded);
 			}
-		      break;
 		    }
 		}
 	    }

@@ -1,5 +1,11 @@
 2004-12-25  Max Bowsher  <maxb@ukf.net>
 
+	* install.cc (Installer::installOneSource): Remove a stray "break;"
+	left over from the switch-case -> if-else conversion in the previous
+	change.
+
+2004-12-25  Max Bowsher  <maxb@ukf.net>
+
 	The Big Cleanup: Phase "win32"
 
 	* win32.h: Major overhaul. Document why we use _WIN32_IE. Move out
