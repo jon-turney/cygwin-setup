@@ -17,7 +17,10 @@
    Cygwin's mount table.  If the format or location of the mount table
    changes, this is the file to change to match it. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 
@@ -34,18 +37,18 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "concat.h"
 
 static struct mnt
-  {
-    const char *native;
-    char *posix;
-    int istext;
-  } mount_table[255];
+{
+  const char *native;
+  char *posix;
+  int istext;
+}
+mount_table[255];
 
 struct mnt *root_here = NULL;
 
 static char *
 find2 (HKEY rkey, int *istext, char *what)
 {
-  char buf[1000];
   char *retval = 0;
   DWORD retvallen = 0;
   DWORD flags = 0;
@@ -59,8 +62,9 @@ find2 (HKEY rkey, int *istext, char *what)
       == ERROR_SUCCESS)
     {
       retval = (char *) malloc (MAX_PATH + 1);
-      if (RegQueryValueEx (key, "native", 0, &type, (BYTE *) retval, &retvallen)
-	  != ERROR_SUCCESS)
+      if (RegQueryValueEx
+	  (key, "native", 0, &type, (BYTE *) retval,
+	   &retvallen) != ERROR_SUCCESS)
 	{
 	  free (retval);
 	  retval = 0;
@@ -68,7 +72,7 @@ find2 (HKEY rkey, int *istext, char *what)
     }
 
   retvallen = sizeof (flags);
-  RegQueryValueEx (key, "flags", 0, &type, (BYTE *)&flags, &retvallen);
+  RegQueryValueEx (key, "flags", 0, &type, (BYTE *) & flags, &retvallen);
 
   RegCloseKey (key);
 
@@ -82,9 +86,8 @@ void
 create_mount (const char *posix, const char *win32, int istext, int issystem)
 {
   char buf[1000];
-  char *retval = 0;
   HKEY key;
-  DWORD retvallen = 0, disposition;
+  DWORD disposition;
   DWORD flags;
 
   remove_mount (posix);
@@ -92,23 +95,24 @@ create_mount (const char *posix, const char *win32, int istext, int issystem)
   sprintf (buf, "Software\\%s\\%s\\%s\\%s",
 	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
-	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME,
-	   posix);
+	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix);
 
   HKEY kr = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
-  if (RegCreateKeyEx (kr, buf, 0, "Cygwin", 0, KEY_ALL_ACCESS,
+  if (RegCreateKeyEx (kr, buf, 0, (char *) "Cygwin", 0, KEY_ALL_ACCESS,
 		      0, &key, &disposition) != ERROR_SUCCESS)
     fatal ("mount");
 
-  RegSetValueEx (key, "native", 0, REG_SZ, (BYTE *) win32, strlen (win32) + 1);
+  RegSetValueEx (key, "native", 0, REG_SZ, (BYTE *) win32,
+		 strlen (win32) + 1);
   flags = 0;
   if (!istext)
     flags |= MOUNT_BINARY;
   if (issystem)
     flags |= MOUNT_SYSTEM;
-  RegSetValueEx (key, "flags", 0, REG_DWORD, (BYTE *)&flags, sizeof (flags));
-  
-  RegCloseKey(key);
+  RegSetValueEx (key, "flags", 0, REG_DWORD, (BYTE *) & flags,
+		 sizeof (flags));
+
+  RegCloseKey (key);
   read_mounts ();
 }
 
@@ -120,8 +124,7 @@ remove1 (HKEY rkey, const char *posix)
   sprintf (buf, "Software\\%s\\%s\\%s\\%s",
 	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
-	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME,
-	   posix);
+	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix);
 
   RegDeleteKey (rkey, buf);
 }
@@ -144,28 +147,28 @@ set_cygdrive_flags (HKEY key, int istext, DWORD cygdrive_flags)
       else
 	cygdrive_flags &= ~MOUNT_BINARY;
       RegSetValueEx (key, CYGWIN_INFO_CYGDRIVE_FLAGS, 0, REG_DWORD,
-		     (BYTE *)&cygdrive_flags, sizeof (cygdrive_flags));
+		     (BYTE *) & cygdrive_flags, sizeof (cygdrive_flags));
     }
 }
 
 static LONG
-get_cygdrive_flags (HKEY key, DWORD *cygdrive_flags)
+get_cygdrive_flags (HKEY key, DWORD * cygdrive_flags)
 {
-  DWORD retvallen = sizeof(*cygdrive_flags);
+  DWORD retvallen = sizeof (*cygdrive_flags);
   LONG status = RegQueryValueEx (key, CYGWIN_INFO_CYGDRIVE_FLAGS, 0, 0,
-				 (BYTE *)cygdrive_flags, &retvallen);
+				 (BYTE *) cygdrive_flags, &retvallen);
   return status;
 }
 
 static DWORD
-default_cygdrive(HKEY key)
+default_cygdrive (HKEY key)
 {
   RegSetValueEx (key, CYGWIN_INFO_CYGDRIVE_PREFIX, 0, REG_SZ,
-		 (BYTE *)CYGWIN_INFO_CYGDRIVE_DEFAULT_PREFIX,
+		 (BYTE *) CYGWIN_INFO_CYGDRIVE_DEFAULT_PREFIX,
 		 strlen (CYGWIN_INFO_CYGDRIVE_DEFAULT_PREFIX) + 1);
   DWORD cygdrive_flags = MOUNT_AUTO;
   RegSetValueEx (key, CYGWIN_INFO_CYGDRIVE_FLAGS, 0, REG_DWORD,
-		 (BYTE *)&cygdrive_flags, sizeof (cygdrive_flags));
+		 (BYTE *) & cygdrive_flags, sizeof (cygdrive_flags));
   return cygdrive_flags;
 }
 
@@ -185,7 +188,7 @@ set_cygdrive_flags (int istext, int issystem)
       HKEY key;
       DWORD disposition;
       LONG status = RegCreateKeyEx (HKEY_LOCAL_MACHINE, buf, 0, 0, 0,
-      				    KEY_ALL_ACCESS, 0, &key, &disposition);
+				    KEY_ALL_ACCESS, 0, &key, &disposition);
       if (status == ERROR_SUCCESS)
 	{
 	  DWORD cygdrive_flags = 0;
@@ -195,14 +198,15 @@ set_cygdrive_flags (int istext, int issystem)
 	      set_cygdrive_flags (key, istext, cygdrive_flags);
 	      found_system = 1;
 	    }
-	  RegCloseKey(key);
+	  RegCloseKey (key);
 	}
     }
 
   HKEY key;
   DWORD disposition;
-  LONG status = RegCreateKeyEx (HKEY_CURRENT_USER, buf, 0, 0, 0, KEY_ALL_ACCESS,
-				0, &key, &disposition);
+  LONG status =
+    RegCreateKeyEx (HKEY_CURRENT_USER, buf, 0, 0, 0, KEY_ALL_ACCESS,
+		    0, &key, &disposition);
   if (status != ERROR_SUCCESS)
     fatal ("set_cygdrive_flags");
 
@@ -210,20 +214,20 @@ set_cygdrive_flags (int istext, int issystem)
   status = get_cygdrive_flags (key, &cygdrive_flags);
   if (status == ERROR_FILE_NOT_FOUND && !found_system)
     {
-      cygdrive_flags = default_cygdrive(key);
+      cygdrive_flags = default_cygdrive (key);
       status = ERROR_SUCCESS;
     }
 
   if (status == ERROR_SUCCESS)
     set_cygdrive_flags (key, istext, cygdrive_flags);
 
-  RegCloseKey(key);
+  RegCloseKey (key);
 }
 
 static int
 in_table (struct mnt *m)
 {
-  for (struct mnt *m1 = mount_table; m1 < m; m1++)
+  for (struct mnt * m1 = mount_table; m1 < m; m1++)
     if (strcasecmp (m1->posix, m->posix) == 0)
       return 1;
   return 0;
@@ -247,7 +251,7 @@ is_admin ()
 
   // Get the process token for the current process
   HANDLE token;
-  BOOL status = OpenProcessToken (GetCurrentProcess(), TOKEN_QUERY, &token);
+  BOOL status = OpenProcessToken (GetCurrentProcess (), TOKEN_QUERY, &token);
   if (!status)
     return 0;
 
@@ -255,26 +259,33 @@ is_admin ()
   UCHAR token_info[1024];
   PTOKEN_GROUPS groups = (PTOKEN_GROUPS) token_info;
   DWORD token_info_len = sizeof (token_info);
-  status = GetTokenInformation (token, TokenGroups, token_info, token_info_len, &token_info_len);
-  CloseHandle(token);
+  status =
+    GetTokenInformation (token, TokenGroups, token_info, token_info_len,
+			 &token_info_len);
+  CloseHandle (token);
   if (!status)
     return 0;
 
   // Create the Administrators group SID
   PSID admin_sid;
-  SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
-  status = AllocateAndInitializeSid (&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &admin_sid);
+  SID_IDENTIFIER_AUTHORITY authority = { SECURITY_NT_AUTHORITY };
+  status =
+    AllocateAndInitializeSid (&authority, 2, SECURITY_BUILTIN_DOMAIN_RID,
+			      DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
+			      &admin_sid);
   if (!status)
     return 0;
 
   // Check to see if the user is a member of the Administrators group
   status = 0;
-  for (UINT i=0; i<groups->GroupCount; i++) {
-    if (EqualSid(groups->Groups[i].Sid, admin_sid)) {
-      status = 1;
-      break;
+  for (UINT i = 0; i < groups->GroupCount; i++)
+    {
+      if (EqualSid (groups->Groups[i].Sid, admin_sid))
+	{
+	  status = 1;
+	  break;
+	}
     }
-  }
 
   // Destroy the Administrators group SID
   FreeSid (admin_sid);
@@ -293,7 +304,7 @@ read_mounts ()
   char buf[10000];
 
   root_here = NULL;
-  for (mnt *m1 = mount_table; m1->posix; m1++)
+  for (mnt * m1 = mount_table; m1->posix; m1++)
     {
       free (m1->posix);
       if (m1->native)
@@ -313,10 +324,10 @@ read_mounts ()
 	       CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME);
 
       HKEY key = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
-      if (RegCreateKeyEx (key, buf, 0, "Cygwin", 0, KEY_ALL_ACCESS,
+      if (RegCreateKeyEx (key, buf, 0, (char *) "Cygwin", 0, KEY_ALL_ACCESS,
 			  0, &key, &disposition) != ERROR_SUCCESS)
 	break;
-      for (int i = 0; ;i++, m++)
+      for (int i = 0;; i++, m++)
 	{
 	  m->posix = (char *) malloc (MAX_PATH + 1);
 	  posix_path_size = MAX_PATH;
@@ -342,7 +353,7 @@ read_mounts ()
 	      m->native = find2 (key, &m->istext, m->posix);
 	      if (!m->native)
 		goto no_go;
-		  
+
 	      if (strcmp (m->posix, "/") == 0)
 		{
 		  root_here = m;
@@ -371,7 +382,7 @@ read_mounts ()
       m->posix = strdup ("/");
       char windir[_MAX_PATH];
       root_text = IDC_ROOT_BINARY;
-      root_scope = (is_admin()) ? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
+      root_scope = (is_admin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
       GetWindowsDirectory (windir, sizeof (windir));
       windir[2] = 0;
       set_root_dir (concat (windir, "\\cygwin", 0));
@@ -425,8 +436,8 @@ char *
 cygpath (const char *s, ...)
 {
   va_list v;
-  int i, max_len = -1;
-  struct mnt *m, *match;
+  int max_len = -1;
+  struct mnt *m, *match = NULL;
 
   va_start (v, s);
   char *path = vconcat (s, v);
@@ -435,7 +446,7 @@ cygpath (const char *s, ...)
   if (strncmp (path, "/./", 3) == 0)
     memmove (path + 1, path + 3, strlen (path + 3) + 1);
 
-  for (m = mount_table; m->posix ; m++)
+  for (m = mount_table; m->posix; m++)
     {
       int n = strlen (m->posix);
       if (n < max_len || !path_prefix_p (m->posix, path, n))
@@ -444,8 +455,11 @@ cygpath (const char *s, ...)
       match = m;
     }
 
+  if (!match)
+    return NULL;
+
   char *native;
-  if (max_len == strlen (path))
+  if (max_len == (int) strlen (path))
     native = strdup (match->native);
   else
     native = concat (match->native, "/", path + max_len, NULL);

@@ -26,20 +26,20 @@ extern int exit_msg;
 
 /* prototypes for all the do_* functions (most called by main.cc) */
 
-D(do_choose);
-D(do_desktop);
-D(do_download);
-D(do_fromcwd);
-D(do_ini);
-D(do_install);
-D(do_local_dir);
-D(do_net);
-D(do_other);
-D(do_postinstall);
-D(do_root);
-D(do_site);
-D(do_source);
-D(do_splash);
+D (do_choose);
+D (do_desktop);
+D (do_download);
+D (do_fromcwd);
+D (do_ini);
+D (do_install);
+D (do_local_dir);
+D (do_net);
+D (do_other);
+D (do_postinstall);
+D (do_root);
+D (do_site);
+D (do_source);
+D (do_splash);
 
 #undef D
 
@@ -48,25 +48,25 @@ D(do_splash);
 
 /* Get the value of an EditText control.  Pass the previously stored
    value and it will free the memory if needed. */
- 
+
 char *eget (HWND h, int id, char *var);
 
 /* Same, but convert the value to an integer */
 
-int   eget (HWND h, int id);
+int eget (HWND h, int id);
 
 /* Set the EditText control to the given string or integer */
 
-void  eset (HWND h, int id, const char *var);
-void  eset (HWND h, int id, int var);
+void eset (HWND h, int id, const char *var);
+void eset (HWND h, int id, int var);
 
 /* RadioButtons.  ids is a null-terminated list of IDs.  Get
    returns the selected ID (or zero), pass an ID to set */
 
-int   rbget (HWND h, int *ids);
-void  rbset (HWND h, int *ids, int id);
+int rbget (HWND h, int *ids);
+void rbset (HWND h, int *ids, int id);
 
 /* *This* version of fatal (compare with msg.h) uses GetLastError() to
    format a suitable error message.  Similar to perror() */
 
-void fatal (char *msg);
+void fatal (const char *msg) __attribute__ ((noreturn));

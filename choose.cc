@@ -45,7 +45,7 @@ static const char *cvsid =
 #include "log.h"
 #include "find.h"
 #include "filemanip.h"
-#include "mount.h"
+#include "io_stream.h"
 #include "choose.h"
 
 #include "port.h"
@@ -140,10 +140,9 @@ set_action (Package * pkg, bool preinc)
 	    return;
 	  }
 	/* the passed in trust level is missing... */
-	if (!preinc /* auto set */
-	    && pkg->installed 
-	    && pkg->action > ACTION_CURR) /* There is no current version */
-	    (int)pkg->action = ACTION_SAME_CURR;
+	if (!preinc		/* auto set */
+	    && pkg->installed && pkg->action > ACTION_CURR)	/* There is no current version */
+	  (int) pkg->action = ACTION_SAME_CURR;
 	break;
 	/* ACTION_SAME_* are used when the installed version is the same
 	   as the given action. */
@@ -1032,9 +1031,10 @@ _view::click (int row, int x)
 		{
 		  if (lines[n].get_category () || (lines[n].get_pkg ()
 						   && strcasecmp (pkg->name,
-								  lines[n].
-								  get_pkg ()->
-								  name) < 0))
+								  lines
+								  [n].get_pkg
+								  ()->name) <
+						   0))
 		    {
 		      insert_at (n, line);
 		      n = nlines;
@@ -1158,7 +1158,8 @@ create_listview (HWND dlg, RECT * r)
   default_trust (lv, TRUST_CURR);
   set_view_mode (lv, VIEW_CATEGORY);
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-    log (LOG_BABBLE, "Failed to set View button caption %ld", GetLastError ());
+    log (LOG_BABBLE, "Failed to set View button caption %ld",
+	 GetLastError ());
   for (Package * foo = package; foo->name; foo++)
     add_required (foo);
   static int ta[] = { IDC_CHOOSE_CURR, 0 };
@@ -1284,18 +1285,14 @@ base (const char *s)
 int
 find_tar_ext (const char *path)
 {
-  char *p = strchr (path, '\0') - 7;
-  if (p <= path)
-    return 0;
-  if (*p == '.')
-    {
-      if (strcmp (p, ".tar.gz") != 0)
-	return 0;
-    }
-  else if (--p <= path || strcmp (p, ".tar.bz2") != 0)
-    return 0;
-
-  return p - path;
+  /* check in longest first order */
+  char *ext = strstr (path, ".tar.bz2");
+  if (ext)
+    return ext - path;
+  if ((ext = strstr (path, ".tar.gz")));
+  return ext - path;
+  if ((ext = strstr (path, ".tar")));
+  return ext - path;
 }
 
 /* Parse a filename into package, version, and extension components. */
@@ -1520,17 +1517,16 @@ _Info::_Info (const char *_install, const char *_version, int _install_size,
 static void
 read_installed_db ()
 {
-  if (!get_root_dir ())
-    return;
-
   char line[1000], pkgname[1000], inst[1000], src[1000];
   int instsz, srcsz;
 
-  FILE *db = fopen (cygpath ("/etc/setup/installed.db", 0), "rt");
+  io_stream *db =
+    io_stream::open (concat ("cygfile://", "/etc/setup/installed.db", 0),
+		     "rt");
   if (!db)
     return;
 
-  while (fgets (line, 1000, db))
+  while (db->gets (line, 1000))
     {
       int parseable;
       src[0] = 0;
@@ -1570,7 +1566,7 @@ read_installed_db ()
 	      break;
 	    }
     }
-  fclose (db);
+  delete db;
 }
 
 int

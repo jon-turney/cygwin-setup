@@ -22,8 +22,9 @@ typedef struct
   char ver[MAX_PATH + 1];
   char tail[MAX_PATH + 1];
   char what[16];
-} fileparse;
+}
+fileparse;
 
-int parse_filename (const char *in_fn, fileparse& f);
+int parse_filename (const char *in_fn, fileparse & f);
 char *base (const char *name);
 DWORD get_file_size (const char *name);

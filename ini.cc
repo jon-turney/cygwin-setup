@@ -18,7 +18,10 @@
    flex parsers are provided also.  We check to see if this setup.ini
    is older than the one we used last time, and if so, warn the user. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 
@@ -33,10 +36,11 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "geturl.h"
 #include "dialog.h"
 #include "msg.h"
-#include "mkdir.h"
 #include "log.h"
 #include "version.h"
 #include "mount.h"
+
+#include "io_stream.h"
 
 unsigned int setup_timestamp = 0;
 char *setup_version = 0;
@@ -68,7 +72,7 @@ do_ini (HINSTANCE h)
   ini_init (ini_file);
 
   setup_timestamp = 0;
-  /*yydebug = 1;*/
+  /*yydebug = 1; */
 
   if (yyparse () || error_count > 0)
     {
@@ -80,24 +84,28 @@ do_ini (HINSTANCE h)
   else
     {
       /* save known-good setup.ini locally */
-      FILE *inif = fopen ("setup.ini", "wb");
-      if (inif)
+      io_stream *inistream = io_stream::open ("file://setup.ini", "wb");
+      if (inistream)
 	{
-	  fwrite (ini_file, 1, strlen (ini_file), inif);
-	  fclose (inif);
+	  inistream->write (ini_file, strlen (ini_file));
+	  delete inistream;
 	}
     }
 
   if (get_root_dir ())
     {
-      mkdir_p (1, cygpath ("/etc/setup", 0));
+      io_stream::mkpath_p (PATH_TO_DIR, "cygfile:///etc/setup");
 
       unsigned int old_timestamp = 0;
-      FILE *ots = fopen (cygpath ("/etc/setup/timestamp", 0), "rt");
+      io_stream *ots =
+	io_stream::open ("cygfile:///etc/setup/timestamp", "rt");
       if (ots)
 	{
-	  fscanf (ots, "%u", &old_timestamp);
-	  fclose (ots);
+	  char temp[20];
+	  memset (temp, '\0', 20);
+	  if (ots->read (temp, 19))
+	    sscanf (temp, "%u", &old_timestamp);
+	  delete ots;
 	  if (old_timestamp && setup_timestamp
 	      && (old_timestamp > setup_timestamp))
 	    {
@@ -108,16 +116,20 @@ do_ini (HINSTANCE h)
 	}
       if (setup_timestamp)
 	{
-	  FILE *nts = fopen (cygpath ("/etc/setup/timestamp", 0), "wt");
+	  io_stream *nts =
+	    io_stream::open ("cygfile:///etc/setup/timestamp", "wt");
 	  if (nts)
 	    {
-	      fprintf (nts, "%u", setup_timestamp);
-	      fclose (nts);
+	      char temp[20];
+	      sprintf (temp, "%u", setup_timestamp);
+	      nts->write (temp, strlen (temp));
+	      delete nts;
 	    }
 	}
     }
 
-  msg ("setup_version is %s, our_version is %s", setup_version?:"(null)", version);
+  msg ("setup_version is %s, our_version is %s", setup_version ? : "(null)",
+       version);
   if (setup_version)
     {
       char *ini_version = canonicalize_version (setup_version);
@@ -131,7 +143,8 @@ do_ini (HINSTANCE h)
 
 extern int yylineno;
 
-extern "C" int yyerror (char *s, ...)
+extern "C" int
+yyerror (char *s, ...)
 {
   char buf[1000];
   int len;
@@ -154,14 +167,16 @@ extern "C" int yyerror (char *s, ...)
       strcpy (error_buf, buf);
     }
   error_count++;
+  /* TODO: is return 0 correct? */
+  return 0;
 }
 
-extern "C" int fprintf (FILE *f, const char *s, ...);
+extern "C" int fprintf (FILE * f, const char *s, ...);
 
 static char stderrbuf[1000];
 
 int
-fprintf (FILE *f, const char *fmt, ...)
+fprintf (FILE * f, const char *fmt, ...)
 {
   char buf[1000];
   int rv;
@@ -174,7 +189,7 @@ fprintf (FILE *f, const char *fmt, ...)
       if (char *nl = strchr (stderrbuf, '\n'))
 	{
 	  *nl = 0;
-	  /*OutputDebugString (stderrbuf);*/
+	  /*OutputDebugString (stderrbuf); */
 	  MessageBox (0, buf, "Cygwin Setup", 0);
 	  stderrbuf[0] = 0;
 	}

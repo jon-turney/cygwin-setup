@@ -15,14 +15,18 @@
 
 /* Simple hash class for install.cc */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include <stdlib.h>
 #include <string.h>
 
 #include "hash.h"
 
-class hash_internals {
+class hash_internals
+{
 public:
   char **keys;
   int numkeys;
@@ -50,7 +54,7 @@ void
 hash::add (char *string)
 {
   int i;
-  for (i=0; i<h->numkeys; i++)
+  for (i = 0; i < h->numkeys; i++)
     if (strcmp (h->keys[i], string) == 0)
       return;
   if (h->numkeys >= h->maxkeys)
@@ -60,7 +64,7 @@ hash::add (char *string)
     }
 
   h->keys[h->numkeys] = _strdup (string);
-  h->numkeys ++;
+  h->numkeys++;
 }
 
 
@@ -68,7 +72,7 @@ int
 hash::has (char *string)
 {
   int i;
-  for (i=0; i<h->numkeys; i++)
+  for (i = 0; i < h->numkeys; i++)
     if (strcmp (h->keys[i], string) == 0)
       return 1;
   return 0;
@@ -79,7 +83,7 @@ hash::enumerate (char *prev)
 {
   if (prev == 0)
     h->prev_index = -1;
-  h->prev_index ++;
+  h->prev_index++;
   if (h->prev_index >= h->numkeys)
     return 0;
   return h->keys[h->prev_index];
@@ -88,8 +92,8 @@ hash::enumerate (char *prev)
 static int
 rev_len (const void *va, const void *vb)
 {
-  char *a = *(char **)va;
-  char *b = *(char **)vb;
+  char *a = *(char **) va;
+  char *b = *(char **) vb;
   return strcmp (b, a);
 }
 

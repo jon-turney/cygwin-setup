@@ -15,7 +15,10 @@
 
 /* All we do here is instantiate the extern'd variables from state.h */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #define extern
 #include "state.h"

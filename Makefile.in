@@ -35,7 +35,9 @@ CC		:= @CC@
 CC_FOR_TARGET	:= $(CC)
 CXX		:= @CXX@
 
-CFLAGS		:= @CFLAGS@
+CFLAGS		:= @CFLAGS@ -Werror -Winline -Wall -Wpointer-arith -Wcast-align\
+	-Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
+	-Wmissing-declarations -Wcomments
 CXXFLAGS	:= @CXXFLAGS@ $(CFLAGS) -fno-exceptions -fno-rtti
 CXX		:= @CXX@
 
@@ -48,6 +50,11 @@ MINGW_INCLUDES	:= -I. -I$(srcdir) -I$(mingw_source)/include $(w32api_include) -I
 
 MINGW_CXXFLAGS	:= -MMD $(CXXFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
 MINGW_CFLAGS	:= -MMD $(CFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
+# to avoid false errors that assembly generates
+WARNONLY_CFLAGS := -MMD @CFLAGS@ -Winline -Wall -Wpointer-arith -Wcast-align \
+	-Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
+	-Wmissing-declarations -Wcomments \
+	 -mno-cygwin $(MINGW_INCLUDES) -mwindows
 
 ZLIB		:= zlib/libzcygw.a
 BZ2LIB		:= $(bupdir)/bz2lib/libbz2.a
@@ -73,8 +80,14 @@ ALL_LDFLAGS	:= ${filter-out -I%, \
 PROGS	:= setup$(EXEEXT)
 
 OBJS = \
+	archive.o \
+	archive_tar.o \
+	archive_tar_file.o \
 	autoload.o \
 	choose.o \
+	compress.o \
+	compress_bz.o \
+	compress_gz.o \
 	concat.o \
 	desktop.o \
 	dialog.o \
@@ -88,6 +101,9 @@ OBJS = \
 	inilex.o \
 	iniparse.o \
 	install.o \
+	io_stream.o \
+	io_stream_cygfile.o \
+	io_stream_file.o \
 	localdir.o \
 	log.o \
 	main.o \
@@ -111,7 +127,6 @@ OBJS = \
 	source.o \
 	splash.o \
 	state.o \
-	tar.o \
 	version.o \
 	$E
 
@@ -166,8 +181,7 @@ version.c : $(srcdir)/ChangeLog Makefile
 	V=`grep '^\$$Revision.*' $(srcdir)/ChangeLog \
 	| sed -e 's/\$$Revision:* *//' \
 	  -e 's/ *$$.*//'` ;\
-	echo "char *version = \"$$V\";" > version.tmp ;\
-	echo "static char *id = \"\\n%%% setup-version $$V\\n\";" >> version.tmp
+	echo "const char *version = \"$$V\";" > version.tmp ;\
 	mv version.tmp version.c
 
 %.o: %.rc
@@ -196,11 +210,29 @@ endif
 
 autoload.o: autoload.c
 ifdef VERBOSE
-	$(CC) $(MINGW_CFLAGS) -c -o $@ $< -fno-inline-functions
+	$(CC) $(WARNONLY_CFLAGS) -c -o $@ $< -fno-inline-functions
 else
-	@echo $(CC) -c $(CFLAGS) ... $(<F) -fno-inline-functions
-	@$(CC) $(MINGW_CFLAGS) -c -o $@ $< -fno-inline-functions
+	@echo $(CC) -c $(WARNONLY_CFLAGS) ... $(<F) -fno-inline-functions
+	@$(CC) $(WARNONLY_CFLAGS) -c -o $@ $< -fno-inline-functions
 endif
+
+inilex.o: inilex.c
+ifdef VERBOSE
+	$(CC) $(WARNONLY_CFLAGS) -c -o $@ $<
+else
+	@echo $(CC) -c $(WARNONLY_CFLAGS) ... $(<F)
+	@$(CC) $(WARNONLY_CFLAGS) -c -o $@ $< 
+endif
+
+iniparse.o: iniparse.cc
+ifdef VERBOSE
+	$(CXX) @CXXFLAGS@ $(WARNONLY_CFLAGS) -fno-exceptions -fno-rtti -c -o $@ $< 
+else
+	@echo $(CXX) -c @CXXFLAGS@ $(WARNONLY_CFLAGS) ... $(<F) -fno-exceptions -fno-rtti
+	@$(CXX) @CXXFLAGS@ $(WARNONLY_CFLAGS) -c -o $@ $< -fno-exceptions -fno-rtti
+endif
+
+
 
 iniparse.cc iniparse.h : iniparse.y
 	bison -d -o iniparse.cc $(srcdir)/iniparse.y

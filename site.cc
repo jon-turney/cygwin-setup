@@ -16,7 +16,10 @@
 /* The purpose of this file is to get the list of mirror sites and ask
    the user which mirror site they want to download from. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <stdio.h>
@@ -29,19 +32,21 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "geturl.h"
 #include "msg.h"
 #include "concat.h"
-#include "mount.h"
 #include "log.h"
+#include "io_stream.h"
 
 #include "port.h"
 
 #define NO_IDX (-1)
 #define OTHER_IDX (-2)
 
-typedef struct {
+typedef struct
+{
   char *url;
   char *displayed_url;
   char *sort_key;
-} site_list_type;
+}
+site_list_type;
 
 static site_list_type *site_list = 0;
 static int list_idx = NO_IDX;
@@ -82,31 +87,21 @@ save_dialog (HWND h)
     }
 }
 
-static void
-get_root_dir_now ()
-{
-  int istext;
-  int issystem;
-  if (get_root_dir ())
-    return;
-  read_mounts ();
-}
-
 void
 save_site_url ()
 {
-  if (! MIRROR_SITE)
+  if (!MIRROR_SITE)
     return;
 
-  get_root_dir_now ();
-  if (!get_root_dir ())
-    return;
-
-  FILE *f = fopen (cygpath ("/etc/setup/last-mirror", 0), "wb");
-  if (!f)
-    return;
-  fprintf (f, "%s\n", MIRROR_SITE);
-  fclose (f);
+  io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "wb");
+  if (f)
+    {
+      char temp[_MAX_PATH];
+      /* TODO: potential buffer overflow. we need snprintf asap. */
+      sprintf (temp, "%s\n", MIRROR_SITE);
+      f->write (temp, strlen (temp));
+      delete f;
+    }
 }
 
 static BOOL
@@ -141,6 +136,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       NEXT (0);
       break;
     }
+  return 0;
 }
 
 static BOOL CALLBACK
@@ -152,12 +148,14 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_INITDIALOG:
       listbox = GetDlgItem (h, IDC_URL_LIST);
-      for (i=0; site_list[i].url; i++)
+      for (i = 0; site_list[i].url; i++)
 	{
-	  j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM)site_list[i].displayed_url);
+	  j =
+	    SendMessage (listbox, LB_ADDSTRING, 0,
+			 (LPARAM) site_list[i].displayed_url);
 	  SendMessage (listbox, LB_SETITEMDATA, j, i);
 	}
-      j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM)"Other URL");
+      j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM) "Other URL");
       SendMessage (listbox, LB_SETITEMDATA, j, OTHER_IDX);
       load_dialog (h);
       return FALSE;
@@ -170,8 +168,8 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 static int
 site_sort (const void *va, const void *vb)
 {
-  site_list_type *a = (site_list_type *)va;
-  site_list_type *b = (site_list_type *)vb;
+  site_list_type *a = (site_list_type *) va;
+  site_list_type *b = (site_list_type *) vb;
   return strcmp (a->sort_key, b->sort_key);
 }
 
@@ -190,10 +188,10 @@ get_site_list (HINSTANCE h)
 
 
   /* null plus account for possibly missing NL plus account for "Other
-    URL" from previous run. */
+     URL" from previous run. */
   int nmirrors = 3;
 
-  for (bol=mirrors; *bol; bol++)
+  for (bol = mirrors; *bol; bol++)
     if (*bol == '\n')
       nmirrors++;
 
@@ -204,9 +202,9 @@ get_site_list (HINSTANCE h)
   while (*nl)
     {
       bol = nl;
-      for (eol = bol; *eol && *eol != '\n'; eol++) ;
+      for (eol = bol; *eol && *eol != '\n'; eol++);
       if (*eol)
-	nl = eol+1;
+	nl = eol + 1;
       else
 	nl = eol;
       while (eol > bol && eol[-1] == '\r')
@@ -226,7 +224,8 @@ get_site_list (HINSTANCE h)
 	      if (dot)
 		*dot = 0;
 	    }
-	  site_list[nmirrors].sort_key = (char *) malloc (2*strlen (bol) + 3);
+	  site_list[nmirrors].sort_key =
+	    (char *) malloc (2 * strlen (bol) + 3);
 
 	  dot = site_list[nmirrors].displayed_url;
 	  dot += strlen (dot);
@@ -237,8 +236,8 @@ get_site_list (HINSTANCE h)
 		{
 		  char *sp;
 		  if (dot[3] == 0)
-		    *dp++ = '~'; /* sort .com/.edu/.org together */
-		  for (sp=dot+1; *sp && *sp != '.' && *sp != '/';)
+		    *dp++ = '~';	/* sort .com/.edu/.org together */
+		  for (sp = dot + 1; *sp && *sp != '.' && *sp != '/';)
 		    *dp++ = *sp++;
 		  *dp++ = ' ';
 		}
@@ -269,19 +268,14 @@ get_site_list (HINSTANCE h)
 static void
 get_initial_list_idx ()
 {
-  get_root_dir_now ();
-  if (!get_root_dir ())
-    return;
-
-  FILE *f = fopen (cygpath ("/etc/setup/last-mirror", 0), "rt");
+  io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "rt");
   if (!f)
     return;
 
   char site[1000];
-  site[0]='\0';
-  char * fg_ret = fgets (site, 1000, f);
-  fclose (f);
-  if (! fg_ret)
+  char *fg_ret = f->gets (site, 1000);
+  delete f;
+  if (!fg_ret)
     return;
 
   char *eos = site + strlen (site) - 1;
@@ -296,17 +290,16 @@ get_initial_list_idx ()
     if (strcmp (site_list[i].url, site) == 0)
       break;
 
-  if (! site_list[i].url)
+  if (!site_list[i].url)
     {
       /* Don't default to certain machines ever since they suffer
-	 from bandwidth limitations. */
+         from bandwidth limitations. */
       if (strnicmp (site, NOSAVE1, NOSAVE1_LEN) == 0
 	  || strnicmp (site, NOSAVE2, NOSAVE2_LEN) == 0
 	  || strnicmp (site, NOSAVE3, NOSAVE3_LEN) == 0)
 	return;
-      site_list[i].displayed_url =
-      site_list[i].url = _strdup (site);
-      site_list[i+1].url = 0;
+      site_list[i].displayed_url = site_list[i].url = _strdup (site);
+      site_list[i + 1].url = 0;
     }
 
   mirror_idx = list_idx = i;
@@ -333,4 +326,3 @@ do_site (HINSTANCE h)
   if (mirror_idx != OTHER_IDX)
     log (0, "site: %s", mirror_site);
 }
-

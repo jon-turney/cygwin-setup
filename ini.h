@@ -41,14 +41,16 @@ typedef enum
   TRUST_CURR,
   TRUST_TEST,
   NTRUST
-} trusts;
+}
+trusts;
 
 typedef enum
 {
   EXCLUDE_NONE = 0,
   EXCLUDE_BY_SETUP,
   EXCLUDE_NOT_FOUND
-} excludes;
+}
+excludes;
 
 #define is_download_action(pkg) \
   ((pkg)->action == ACTION_PREV || \
@@ -75,55 +77,58 @@ typedef enum
 #define SRCACTION_YES		1
 typedef struct _Info
 {
-  char *version;	/* version part of filename */
-  char *install;	/* file name to install */
+  char *version;		/* version part of filename */
+  char *install;		/* file name to install */
   unsigned int install_size;	/* in bytes */
-  int install_exists;	/* install file exists on disk */
-  int derived;		/* True if we "figured out" that this version should
-			   go here but it was not in setup.ini */
-  char *source;		/* sources for installed binaries */
+  int install_exists;		/* install file exists on disk */
+  int derived;			/* True if we "figured out" that this version should
+				   go here but it was not in setup.ini */
+  char *source;			/* sources for installed binaries */
   unsigned int source_size;	/* in bytes */
-  int source_exists;	/* source file exists on disk */
+  int source_exists;		/* source file exists on disk */
 #ifdef __cplusplus
-  _Info (const char *_install, const char *_version,
-	 int _install_size, const char *_source = NULL,
-	 int _source_size = 0);
+    _Info (const char *_install, const char *_version,
+	   int _install_size, const char *_source = NULL,
+	   int _source_size = 0);
 #endif
-} Info;			/* +1 for TRUST_UNKNOWN */
+}
+Info;				/* +1 for TRUST_UNKNOWN */
 
 typedef struct _CategoryPackage
 {
-  struct _CategoryPackage *next;  /* The next package pointer in the list */
-  char *pkgname;		  /* This should be Package *, but the packages can move*/
-} CategoryPackage;
+  struct _CategoryPackage *next;	/* The next package pointer in the list */
+  char *pkgname;		/* This should be Package *, but the packages can move */
+}
+CategoryPackage;
 
 struct _Category
 {
-  struct _Category *next; /* the next category in the list */
-  char *name;		  /* the category */
-  CategoryPackage *packages; /* the packages in this category */
+  struct _Category *next;	/* the next category in the list */
+  char *name;			/* the category */
+  CategoryPackage *packages;	/* the packages in this category */
 };
 
 typedef struct _Dependency
 {
-  struct _Dependency *next; /* the next package in this dependency list */
-  char *package;	/* the name of the package that is depended on */
-} Dependency; 		/* Dependencies can be used for
-			   recommended/required/related... */
+  struct _Dependency *next;	/* the next package in this dependency list */
+  char *package;		/* the name of the package that is depended on */
+}
+Dependency;			/* Dependencies can be used for
+				   recommended/required/related... */
 struct _Package
 {
-  char *name;		/* package name, like "cygwin" */
-  char *sdesc;		/* short description (replaces "name" if provided) */
-  char *ldesc;		/* long description (multi-line) */
-  Category *category;   /* the categories the package belongs to */ 
-  Dependency *required; /* the packages required for this package to work */
-  actions action;	/* A range of states applicable to this package */
-  trusts trust;		/* Selects among info[] below, a subset of action */
-  int srcpicked;	/* True if source is required */
+  char *name;			/* package name, like "cygwin" */
+  char *sdesc;			/* short description (replaces "name" if provided) */
+  char *ldesc;			/* long description (multi-line) */
+  Category *category;		/* the categories the package belongs to */
+  Dependency *required;		/* the packages required for this package to work */
+  actions action;		/* A range of states applicable to this package */
+  trusts trust;			/* Selects among info[] below, a subset of action */
+  int srcpicked;		/* True if source is required */
 
-  Info *installed;	/* Info on installed package */
-  trusts installed_ix;	/* Index into info array for currently installed package */
-  excludes exclude;	/* true if this package should be excluded */
+  Info *installed;		/* Info on installed package */
+  trusts installed_ix;		/* Index into info array for currently installed package */
+  excludes exclude;		/* true if this package should be excluded */
 
   /* The reason for this weird layout is to allow for loops that scan either
      the info array, based on trust value or the infoscan array based on a pointer,
@@ -140,20 +145,22 @@ extern Category *category;
 extern int ncategories;
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-Package *new_package (char *name);
-void	ini_init (char *string);
-Package *getpkgbyname (const char *pkgname);
-void    new_requirement (Package *package, char *dependson);
-Category *getcategorybyname (const char *categoryname);
-Category *getpackagecategorybyname (Package *pkg, const char *categoryname); 
-Category *register_category (const char *name);
-void    add_category (Package *package, Category *cat);
+  Package *new_package (char *name);
+  void ini_init (char *string);
+  Package *getpkgbyname (const char *pkgname);
+  void new_requirement (Package * package, char *dependson);
+  Category *getcategorybyname (const char *categoryname);
+  Category *getpackagecategorybyname (Package * pkg,
+				      const char *categoryname);
+  Category *register_category (const char *name);
+  void add_category (Package * package, Category * cat);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _INI_H_ */
+#endif				/* _INI_H_ */

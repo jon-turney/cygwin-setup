@@ -16,7 +16,10 @@
 /* The purpose of this file is to provide common functionality for
    all the dialogs in the program. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <stdio.h>
@@ -60,14 +63,14 @@ eset (HWND h, int id, const char *val)
 void
 eset (HWND h, int id, int val)
 {
-  SetDlgItemInt (h, id, (UINT)val, TRUE);
+  SetDlgItemInt (h, id, (UINT) val, TRUE);
 }
 
 int
 rbget (HWND h, int *ids)
 {
   int i;
-  for (i=0; ids[i]; i++)
+  for (i = 0; ids[i]; i++)
     if (IsDlgButtonChecked (h, ids[i]) == BST_CHECKED)
       return ids[i];
   return 0;
@@ -77,22 +80,17 @@ void
 rbset (HWND h, int *ids, int id)
 {
   int i;
-  for (i=0; ids[i]; i++)
-    CheckDlgButton (h, ids[i], id==ids[i] ? BST_CHECKED : BST_UNCHECKED);
+  for (i = 0; ids[i]; i++)
+    CheckDlgButton (h, ids[i], id == ids[i] ? BST_CHECKED : BST_UNCHECKED);
 }
 
 void
-fatal (char *msg)
+fatal (const char *msg)
 {
   DWORD e = GetLastError ();
   char *buf;
   FormatMessage (FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-		 0,
-		 e,
-		 0,
-		 (CHAR *)&buf,
-		 0,
-		 0);
+		 0, e, 0, (CHAR *) & buf, 0, 0);
   MessageBox (0, buf, msg, 0);
   exit_setup (1);
 }

@@ -20,12 +20,12 @@
    name or URL, and will canonicalize the result accordingly
    (i.e. replace \ with /, collapse multiple /// to a single /, etc.)  */
 
-char * concat (const char *s, ...);
-char * vconcat (const char *, va_list);
+char *concat (const char *s, ...);
+char *vconcat (const char *, va_list);
 
 /* convert slashes to backslashes */
 
-char * backslash (char *s);
+char *backslash (char *s);
 
 /* Used when treating / and \ as equivalent. */
 #define SLASH_P(ch) \

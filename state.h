@@ -18,29 +18,29 @@
    information that the user has provided so far.  These are set by
    the various dialogs and used by the various actions. */
 
-extern int	source;
+extern int source;
 
-extern char *	local_dir;
+extern char *local_dir;
 
-extern int	root_text;
-extern int	root_scope;
-extern int   root_menu;
-extern int   root_desktop;
+extern int root_text;
+extern int root_scope;
+extern int root_menu;
+extern int root_desktop;
 
-extern int	net_method;
-extern char *	net_proxy_host;
-extern int	net_proxy_port;
+extern int net_method;
+extern char *net_proxy_host;
+extern int net_proxy_port;
 
-extern char *	net_user;
-extern char *	net_passwd;
-extern char *	net_proxy_user;
-extern char *	net_proxy_passwd;
-extern char *	net_ftp_user;
-extern char *	net_ftp_passwd;
+extern char *net_user;
+extern char *net_passwd;
+extern char *net_proxy_user;
+extern char *net_proxy_passwd;
+extern char *net_ftp_user;
+extern char *net_ftp_passwd;
 
-extern char *	mirror_site;
-extern char *	other_url;
+extern char *mirror_site;
+extern char *other_url;
 
-extern int	trust_level;
+extern int trust_level;
 
 #define MIRROR_SITE (mirror_site ? mirror_site : other_url)

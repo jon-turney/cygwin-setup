@@ -15,11 +15,13 @@
  */
 
 /* The purpose of this file is to ask the user where they want the
-   root of the installation to be, and to ask whether the user prefers
-   text or binary mounts. */
+ * locally downloaded package files to be cached
+ */
 
-static char *cvsid =
+#if 0
+static const char *cvsid =
   "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <shlobj.h>
@@ -35,33 +37,22 @@ static char *cvsid =
 #include "concat.h"
 #include "log.h"
 #include "mkdir.h"
-
-static void
-get_root_dir_now ()
-{
-  int istext;
-  int issystem;
-  if (get_root_dir ())
-    return;
-  read_mounts ();
-}
+#include "io_stream.h"
 
 void
 save_local_dir ()
 {
-  get_root_dir_now ();
-  if (!get_root_dir ())
-    return;
-
   mkdir_p (1, local_dir);
 
-  FILE *f = fopen (cygpath ("/etc/setup/last-cache", 0), "wb");
-  if (!f)
-    return;
-  fprintf (f, "%s", local_dir);
-  fclose (f);
+  io_stream *f = io_stream::open ("cygfile:///etc/setup/last-cache", "wb");
+  if (f)
+    {
+      char temp[1000];
+      sprintf (temp, "%s", local_dir);
+      f->write (temp, strlen (temp));
+      delete f;
+    }
 }
-
 
 static void
 check_if_enable_next (HWND h)
@@ -115,7 +106,6 @@ browse (HWND h)
 	eset (h, IDC_LOCAL_DIR, name);
     }
 }
-
 
 static BOOL
 dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
@@ -176,6 +166,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       NEXT (0);
       break;
     }
+  return 0;
 }
 
 static BOOL CALLBACK
@@ -200,13 +191,13 @@ do_local_dir (HINSTANCE h)
   static int inited = 0;
   if (!inited)
     {
-      FILE *f = fopen (cygpath ("/etc/setup/last-cache", 0), "rt");
+      io_stream *f =
+	io_stream::open ("cygfile:///etc/setup/last-cache", "rt");
       if (f)
 	{
 	  char localdir[1000];
-	  localdir[0] = '\0';
-	  char *fg_ret = fgets (localdir, 1000, f);
-	  fclose (f);
+	  char *fg_ret = f->gets (localdir, 1000);
+	  delete f;
 	  if (fg_ret)
 	    {
 	      free (local_dir);

@@ -23,7 +23,10 @@
    those don't count, although they could).  Replace the IDD_S_* with
    IDD_* if you create a real dialog for those steps. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 
@@ -33,15 +36,12 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "dialog.h"
 #include "state.h"
 #include "msg.h"
-#include "netio.h"
 #include "find.h"
 #include "mount.h"
 #include "log.h"
 #include "version.h"
 
 #include "port.h"
-
-void netio_test (char *);
 
 int next_dialog;
 int exit_msg = 0;
@@ -62,10 +62,10 @@ void
 set_default_dacl ()
 {
   /* To assure that the created files have a useful ACL, the 
-  default DACL in the process token is set to full access to
-  everyone. This applies to files and subdirectories created
-  in directories which don't propagate permissions to child
-  objects. */
+     default DACL in the process token is set to full access to
+     everyone. This applies to files and subdirectories created
+     in directories which don't propagate permissions to child
+     objects. */
 
   /* Create a buffer which has enough room to contain the TOKEN_DEFAULT_DACL
      structure plus an ACL with one ACE. */
@@ -84,8 +84,8 @@ set_default_dacl ()
 
   /* Get the SID for "Everyone". */
   PSID sid;
-  SID_IDENTIFIER_AUTHORITY sid_auth = SECURITY_WORLD_SID_AUTHORITY;
-  if (!AllocateAndInitializeSid(&sid_auth, 1, 0, 0, 0, 0, 0, 0, 0, 0, &sid))
+  SID_IDENTIFIER_AUTHORITY sid_auth = { SECURITY_WORLD_SID_AUTHORITY };
+  if (!AllocateAndInitializeSid (&sid_auth, 1, 0, 0, 0, 0, 0, 0, 0, 0, &sid))
     {
       log (LOG_TIMESTAMP, "AllocateAndInitializeSid() failed: %lu",
 	   GetLastError ());
@@ -94,16 +94,18 @@ set_default_dacl ()
 
   /* Create the ACE which grants full access to "Everyone" and store it
      in dacl->DefaultDacl. */
-  if (!AddAccessAllowedAce (dacl->DefaultDacl, ACL_REVISION, GENERIC_ALL, sid))
+  if (!AddAccessAllowedAce
+      (dacl->DefaultDacl, ACL_REVISION, GENERIC_ALL, sid))
     {
-      log (LOG_TIMESTAMP, "AddAccessAllowedAce() failed: %lu", GetLastError ());
+      log (LOG_TIMESTAMP, "AddAccessAllowedAce() failed: %lu",
+	   GetLastError ());
       goto out;
     }
 
   /* Get the processes access token. */
   HANDLE token;
   if (!OpenProcessToken (GetCurrentProcess (),
-  			 TOKEN_READ | TOKEN_ADJUST_DEFAULT, &token))
+			 TOKEN_READ | TOKEN_ADJUST_DEFAULT, &token))
     {
       log (LOG_TIMESTAMP, "OpenProcessToken() failed: %lu", GetLastError ());
       goto out;
@@ -123,9 +125,7 @@ out:
 
 int WINAPI
 WinMain (HINSTANCE h,
-	 HINSTANCE hPrevInstance,
-	 LPSTR command_line,
-	 int cmd_show)
+	 HINSTANCE hPrevInstance, LPSTR command_line, int cmd_show)
 {
   hinstance = h;
 
@@ -144,7 +144,7 @@ WinMain (HINSTANCE h,
   for (argc = 0, argv = __argv; *argv; argv++)
     log (LOG_TIMESTAMP, "%d - '%s'\n", argc++, *argv);
   log (LOG_TIMESTAMP, "%d parameters passed\n", argc);
-  
+
   /* Set the default DACL only on NT/W2K. 9x/ME has no idea of access
      control lists and security at all. */
   if (iswinnt)
@@ -154,20 +154,48 @@ WinMain (HINSTANCE h,
     {
       switch (next_dialog)
 	{
-	case IDD_SPLASH:	do_splash (h);	break;
-	case IDD_SOURCE:	do_source (h);	break;
-	case IDD_LOCAL_DIR:	do_local_dir (h); break;
-	case IDD_ROOT:		do_root (h);	break;
-	case IDD_NET:		do_net (h);	break;
-	case IDD_SITE:		do_site (h);	break;
-	case IDD_OTHER_URL:	do_other (h);	break;
-	case IDD_S_LOAD_INI:	do_ini (h);	break;
-	case IDD_S_FROM_CWD:	do_fromcwd (h);	break;
-	case IDD_CHOOSE:	do_choose (h);	break;
-	case IDD_S_DOWNLOAD:	do_download (h); break;
-	case IDD_S_INSTALL:	do_install (h);	break;
-	case IDD_DESKTOP:	do_desktop (h); break;
-	case IDD_S_POSTINSTALL:	do_postinstall (h); break;
+	case IDD_SPLASH:
+	  do_splash (h);
+	  break;
+	case IDD_SOURCE:
+	  do_source (h);
+	  break;
+	case IDD_LOCAL_DIR:
+	  do_local_dir (h);
+	  break;
+	case IDD_ROOT:
+	  do_root (h);
+	  break;
+	case IDD_NET:
+	  do_net (h);
+	  break;
+	case IDD_SITE:
+	  do_site (h);
+	  break;
+	case IDD_OTHER_URL:
+	  do_other (h);
+	  break;
+	case IDD_S_LOAD_INI:
+	  do_ini (h);
+	  break;
+	case IDD_S_FROM_CWD:
+	  do_fromcwd (h);
+	  break;
+	case IDD_CHOOSE:
+	  do_choose (h);
+	  break;
+	case IDD_S_DOWNLOAD:
+	  do_download (h);
+	  break;
+	case IDD_S_INSTALL:
+	  do_install (h);
+	  break;
+	case IDD_DESKTOP:
+	  do_desktop (h);
+	  break;
+	case IDD_S_POSTINSTALL:
+	  do_postinstall (h);
+	  break;
 
 	default:
 	  next_dialog = 0;
@@ -176,4 +204,6 @@ WinMain (HINSTANCE h,
     }
 
   exit_setup (0);
+  /* Keep gcc happy :} */
+  return 0;
 }

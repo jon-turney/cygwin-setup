@@ -15,7 +15,10 @@
 
 /* see mkdir.h */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 
@@ -45,7 +48,8 @@ mkdir_p (int isadir, const char *in_path)
 	{
 	  if (gse == ERROR_ALREADY_EXISTS)
 	    {
-	      fprintf (stderr, "warning: deleting \"%s\" so I can make a directory there\n",
+	      fprintf (stderr,
+		       "warning: deleting \"%s\" so I can make a directory there\n",
 		       path);
 	      if (DeleteFileA (path))
 		return mkdir_p (isadir, path);

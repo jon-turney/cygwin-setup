@@ -18,7 +18,10 @@
    must already have installed and configured IE5.  This module is
    called from netio.cc, which is called from geturl.cc */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 
@@ -31,8 +34,8 @@ static char *cvsid = "\n%%% $Id$\n";
 
 static HINTERNET internet = 0;
 
-NetIO_IE5::NetIO_IE5 (char *_url)
-  : NetIO (_url)
+NetIO_IE5::NetIO_IE5 (char *_url):
+NetIO (_url)
 {
   int resend = 0;
 
@@ -55,12 +58,11 @@ NetIO_IE5::NetIO_IE5 (char *_url)
     INTERNET_FLAG_KEEP_CONNECTION |
     INTERNET_FLAG_PRAGMA_NOCACHE |
     INTERNET_FLAG_RELOAD |
-    INTERNET_FLAG_EXISTING_CONNECT |
-    INTERNET_FLAG_PASSIVE;
+    INTERNET_FLAG_EXISTING_CONNECT | INTERNET_FLAG_PASSIVE;
 
   connection = InternetOpenUrl (internet, url, NULL, 0, flags, 0);
 
- try_again:
+try_again:
 
   if (net_user && net_passwd)
     {
@@ -87,7 +89,7 @@ NetIO_IE5::NetIO_IE5 (char *_url)
       if (GetLastError () == ERROR_INTERNET_EXTENDED_ERROR)
 	{
 	  char buf[2000];
-	  DWORD e, l=sizeof (buf);
+	  DWORD e, l = sizeof (buf);
 	  InternetGetLastResponseInfo (&e, buf, &l);
 	  MessageBox (0, buf, "Internet Error", 0);
 	}
@@ -107,16 +109,16 @@ NetIO_IE5::NetIO_IE5 (char *_url)
 			 HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
 			 &type, &type_s, NULL))
 	{
-	  if (type == 401) /* authorization required */
+	  if (type == 401)	/* authorization required */
 	    {
-	      flush_io();
+	      flush_io ();
 	      get_auth ();
 	      resend = 1;
 	      goto try_again;
 	    }
-	  else if (type == 407) /* proxy authorization required */
+	  else if (type == 407)	/* proxy authorization required */
 	    {
-	      flush_io();
+	      flush_io ();
 	      get_proxy_auth ();
 	      resend = 1;
 	      goto try_again;
@@ -135,9 +137,11 @@ NetIO_IE5::flush_io ()
 {
   DWORD actual = 0;
   char buf[1024];
-  do {
-    InternetReadFile (connection, buf, 1024, &actual);
-  } while (actual > 0);
+  do
+    {
+      InternetReadFile (connection, buf, 1024, &actual);
+    }
+  while (actual > 0);
 }
 
 NetIO_IE5::~NetIO_IE5 ()

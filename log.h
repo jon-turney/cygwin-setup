@@ -20,13 +20,14 @@
 #define LOG_BABBLE	1
 #define LOG_TIMESTAMP	2
 
-void log (int flags, char *fmt, ...);
+void log (int flags, const char *fmt, ...)
+  __attribute__ ((format (printf, 2, 3)));
 
 /* Here, "babble" means to write out the babble also.  If "append" is
    nonzero, the log is appended to any existing file. */
 
-void log_save (int babble, char *filename, int append);
+void log_save (int babble, const char *filename, int append);
 
 /* This is the only legal way to exit.  It writes out all the logs and things */
 
-void exit_setup (int exit_code);
+void exit_setup (int exit_code) __attribute__ ((noreturn));

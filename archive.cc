@@ -1,0 +1,224 @@
+/*
+ * Copyright (c) 2001, Robert Collins.
+ *
+ *     This program is free software; you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation; either version 2 of the License, or
+ *     (at your option) any later version.
+ *
+ *     A copy of the GNU General Public License can be found at
+ *     http://www.gnu.org/
+ *
+ * Written by Robert Collins  <rbtcollins@hotmail.com>
+ *
+ */
+
+/* Archive IO operations
+ */
+
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
+
+#include "win32.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "log.h"
+#include "port.h"
+#include "concat.h"
+
+#include "io_stream.h"
+#include "archive.h"
+#include "archive_tar.h"
+
+/* In case you are wondering why the file magic is not in one place:
+ * It could be. But there is little (any?) benefit.
+ * What is important is that the file magic required for any _task_ is centralised.
+ * One such task is identifying archives
+ *
+ * to federate into each class one might add a magic parameter to the constructor, which
+ * the class could test itself. 
+ */
+
+/* GNU TAR:
+ * offset 257     string  ustar\040\040\0
+ */
+
+
+#define longest_magic 265
+
+archive *
+archive::extract (io_stream * original)
+{
+  if (!original)
+    return NULL;
+  char magic[longest_magic];
+  if (original->peek (magic, longest_magic) > 0)
+    {
+      if (memcmp (&magic[257], "ustar\040\040\0", 8) == 0)
+	{
+	  /* tar */
+	  archive_tar *rv = new archive_tar (original);
+	  if (!rv->error ())
+	    return rv;
+	  return NULL;
+	}
+#if 0
+      else if (memcmp (magic, "BZh", 3) == 0)
+	{
+	  archive_bz *rv = new archive_bz (original);
+	  if (!rv->error ())
+	    return rv;
+	  return NULL;
+	}
+#endif
+    }
+  return NULL;
+}
+
+int
+archive::extract_file (archive * source, const char *prefix)
+{
+  if (!source)
+    return 1;
+  const char *destfilename = concat (prefix, source->next_file_name (), 0);
+  switch (source->next_file_type ())
+    {
+    case ARCHIVE_FILE_REGULAR:
+      {
+
+	/* TODO: remove in-the-way directories via mkpath_p */
+	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
+	{
+	  log (LOG_TIMESTAMP, "Failed to make the path for %s", destfilename);
+	  return 1;}
+	io_stream::remove (destfilename);
+	io_stream *tmp = io_stream::open (destfilename, "wb");
+	if (!tmp)
+	{
+	  log (LOG_TIMESTAMP, "Failed to open %s for writing", destfilename);
+	  return 1;
+	}
+	io_stream *in = source->extract_file ();
+	if (!in)
+	  {
+	    delete tmp;
+	    log (LOG_TIMESTAMP, "Failed to extract the file %s from the archive",destfilename);
+	    return 1;
+	  }
+	char buffer[16384];
+	ssize_t countin, countout;
+	while ((countin = in->read (buffer, 16384)) > 0)
+	  {
+	    countout = tmp->write (buffer, countin);
+	    if (countout != countin)
+	      {
+		log (LOG_TIMESTAMP, "Failed to write %ld bytes to %s",
+		     countin, destfilename);
+		io_stream::remove (destfilename);
+		delete tmp;
+		delete in;
+		return 1;
+	      }
+	  }
+	tmp->set_mtime (in->get_mtime ());
+	delete in;
+	delete tmp;
+	if (countin < 0)
+	  {
+	    log (LOG_TIMESTAMP, "File IO error reading from archive");
+	    io_stream::remove (destfilename);
+	  }
+      }
+      break;
+    case ARCHIVE_FILE_SYMLINK:
+      {
+	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
+	{log (LOG_TIMESTAMP, "Failed to make the path for %s", destfilename);
+	  return 1;}
+	io_stream::remove (destfilename);
+	int ok =
+	  io_stream::mklink (destfilename,
+			     concat (prefix, source->linktarget (), 0),
+			     IO_STREAM_SYMLINK);
+	/* FIXME: check what tar's filelength is set to for symlinks */
+	source->skip_file ();
+	return ok;
+      }
+    case ARCHIVE_FILE_HARDLINK:
+      {
+	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
+	{log (LOG_TIMESTAMP, "Failed to make the path for %s", destfilename);
+	  return 1;}
+	io_stream::remove (destfilename);
+	int ok =
+	  io_stream::mklink (destfilename,
+			     concat (prefix, source->linktarget (), 0),
+			     IO_STREAM_HARDLINK);
+	/* FIXME: check what tar's filelength is set to for hardlinks */
+	source->skip_file ();
+	return ok;
+      }
+    case ARCHIVE_FILE_DIRECTORY:
+      {
+	char *path = (char *) alloca (strlen (destfilename));
+	strcpy (path, destfilename);
+	while (path[0] && path[strlen (path) - 1] == '/')
+	  path[strlen (path) - 1] = 0;
+	source->skip_file ();
+	return io_stream::mkpath_p (PATH_TO_DIR, path);
+      }
+    case ARCHIVE_FILE_INVALID:
+      source->skip_file ();
+      break;
+    }
+  return 0;
+}
+
+#if 0
+ssize_t archive::read (void *buffer, size_t len)
+{
+  log (LOG_TIMESTAMP, "archive::read called");
+  return 0;
+}
+
+ssize_t archive::write (void *buffer, size_t len)
+{
+  log (LOG_TIMESTAMP, "archive::write called");
+  return 0;
+}
+
+ssize_t archive::peek (void *buffer, size_t len)
+{
+  log (LOG_TIMESTAMP, "archive::peek called");
+  return 0;
+}
+
+long
+archive::tell ()
+{
+  log (LOG_TIMESTAMP, "bz::tell called");
+  return 0;
+}
+
+int
+archive::error ()
+{
+  log (LOG_TIMESTAMP, "archive::error called");
+  return 0;
+}
+
+const char *
+archive::next_file_name ()
+{
+  log (LOG_TIMESTAMP, "archive::next_file_name called");
+  return NULL;
+}
+
+archive::~archive ()
+{
+  log (LOG_TIMESTAMP, "archive::~archive called");
+  return;
+}
+#endif

@@ -1,3 +1,187 @@
+2001-11-13  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in (CFLAGS): Add warnings and -Werr.
+	(WARNONLY_FLAGS): For sources that produce (harmless) errors no matter what.
+	(OBJS): Add io_stream class' objects.
+	(autoload.o): Use WARNONLY_FLAGS.
+	(inilex.o): Ditto.
+	(iniparse.o): Ditto.
+	* archive.cc: New file.
+	* archive.h: New file.
+	* archive_tar.cc: New file.
+	* archive_tar.h: New file.
+	* archive_tar_file.cc: New file.
+	* autoload.c: Fix compiler warnings (unused, deprecated conversion).
+	* choose.cc: Use io_stream.h, not mount.h.
+	Run indent.
+	(find_tar_ext): Rewritten to use strstr, and to accept .tar as an extension.
+	(read_installed_db): Use io_streams.
+	* choose.h: Run indent.
+	* compress.cc: New file.
+	* compress.h: New file.
+	* compress_bz.cc: New file.
+	* compress_bz.h: New file.
+	* compress_gz.cc: New file.
+	* compress_gz.h: New file.
+	* concat.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	* concat.h: Run indent.
+	* desktop.cc: Run indent.
+	Include mklink2.h rather than redefining by hand.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(etc_profile): Fix compiler warning (deprecated conversion).
+	(make_link): Fix compiler warning (deprecated conversion).
+	Tidy up use of args variable - consolidate into argbuf.
+	(start_menu): Fix compiler warning (deprecated conversion).
+	(desktop_icon): Fix compiler warning (deprecated conversion).
+	(make_etc_profile): Fix compiler warning (deprecated conversion).
+	(uexists): Fix compiler warning (deprecated conversion).
+	(check_desktop): Fix compiler warning (deprecated conversion).
+	(check_startmenu): Fix compiler warning (deprecated conversion).
+	* dialog.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(fatal): Fix compiler warning (deprecated conversion).
+	* dialog.h: Run indent.
+	* diskfull.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	* download.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(download_one): Fix compiler warning (signed vs unsigned comparison).
+	* filemanip.h: Run indent.
+	* find.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(find): Fix compiler warning (deprecated conversion).
+	* find.h: Run indent.
+	* fromcwd.cc: Run indent.
+	* geturl.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(dialog_cmd): Return a value.
+	(dialog_proc): Remove unused variables.
+	Return a value.
+	(get_url_to_file): Fix compiler warning (deprecated conversion).
+	* geturl.h: Run indent.
+	* hash.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	* hash.h: Run indent.
+	* ini.cc: Run indent.
+	Use io_streams.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(do_ini): Use io_streams for local io.
+	* ini.h: Run indent.
+	* inilex.l (ignore_line): Fix compiler warning (is not a prototype).
+	Fix compiler warning (brackets for truth assignment).
+	* install.cc: Run indent.
+	Fix compiler warning (/* in comment).
+	Use io_streams.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(dialog_cmd): Return a value.
+	(dialog_proc): Return a value.
+	(start_tics): Deleted - was unused.
+	(badrename): Fix compiler warnings (unused, deprecated conversion).
+	(standard_dirs): Fix compiler warning (deprecated conversion).
+	(exists): Remove.
+	(uninstall_one): Convert to io_streams.
+	(install_one): Convert to io_streams.
+	(do_install): Convert to io_streans.
+	Fix compiler warning (deprecated conversion).
+	* io_stream.cc: New file.
+	* io_stream.h: New file.
+	* io_stream_cygfile.cc: New file.
+	* io_stream_cygfile.h: New file.
+	* io_stream_file.cc: New file.
+	* io_stream_file.h: New file.
+	* localdir.cc: Run indent.
+	Use io_streams.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(get_root_dir_now): Remove.
+	(save_local_dir): Convert to io_streams.
+	(dialog_cmd): Return a value.
+	(do_local_dir): Convert to io_streams.
+	(log.cc): Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(log): Fix compiler warning (deprecated conversion).
+	(log_save): Fix compiler warning (deprecated conversion).
+	* log.h: Run indent.
+	(log): Fix compiler warning (deprecated conversion).
+	(log_save): Fix compiler warning (deprecated conversion).
+	* main.cc: Run indent.
+	Don't include "netio.h".
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(netio_test): Remove.
+	(sid_auth): Fix compiler warning (partially bracketed initialiser).
+	(WinMain): Return a value.
+	* mkdir.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	* mklink2.c: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(mkcygsymlink): New function.
+	* mklink2.h: New file.
+	* mount.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(create_mount): Remove unused variables.
+	(cygpath): Fix compiler warning (signed vs unsigned comparison).
+	* mount.h: Run indent.
+	* msg.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(msg): Fix compiler warning (deprecated conversion).
+	(mbox): Fix compiler warning (deprecated conversion).
+	* msg.h: Run indent.
+	(msg): Fix compiler warning (deprecated conversion).
+	* net.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(dialog_cmd): Return a value.
+	* netio.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(auth_cmd): Return a value.
+	* netio.h: Run indent.
+	* nio-file.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(NetIO_File::NetIO_File): Fix compiler warning (deprecated conversion).
+	* nio-file.h: Run indent.
+	* nio-ftp.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	* nio-ftp.h: Run indent.
+	* nio-http.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	* nio-http.h: Run indent.
+	* nio-ie5.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	* nio-ie5.h: Run indent.
+	* other.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(dialog_cmd): Return a value.
+	* port.h: Run indent.
+	* postinstall.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(cmd): Fix compiler warning (deprecated conversion).
+	(eun): Fix compiler warning (deprecated conversion).
+	* root.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	* simpsock.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	* simpsock.h: Run indent.
+	* site.cc: Run indent.
+	Use io_streams.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(get_root_dir_now): Remove.
+	(save_site_url): Convert to io_streams.
+	(dialog_cmd): Return 0.
+	(get_initial_list_idx): Convert to io_streans.
+	* source.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(check_if_enable_next): Remove.
+	(load_dialog): Remove unused variables.
+	(save_dialog): Ditto.
+	(dialog_cmd): Return a value.
+	* splash.cc: Return a value.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(dialog_cmd): Return a value.
+	* state.cc: Run indent.
+	(cvsid): Fix compiler warnings (unused, deprecated conversion).
+	* state.h: Run indent.
+	* tar.h: Remove.
+	* tar.cc: Remove.
+
 2001-11-12  Christopher Faylor  <cgf@redhat.com>
 
 	* desktop.cc (start_menu): Change start menu name to "Cygwin".

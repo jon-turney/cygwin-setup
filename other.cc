@@ -16,7 +16,10 @@
 /* This handles the "other URL" option from the mirror site
    selection. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <shlobj.h>
@@ -76,6 +79,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       NEXT (0);
       break;
     }
+  return 0;
 }
 
 static BOOL CALLBACK
@@ -102,4 +106,3 @@ do_other (HINSTANCE h)
 
   log (0, "site: %s", other_url);
 }
-

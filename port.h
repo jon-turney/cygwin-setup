@@ -24,5 +24,4 @@
 
 #define _access access
 #define _strdup strdup
-
 #endif

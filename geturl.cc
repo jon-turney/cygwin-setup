@@ -17,7 +17,10 @@
    netio.cc.  We add a progress dialog and some convenience functions
    (like collect to string or file */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include "commctrl.h"
@@ -60,13 +63,12 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDCANCEL:
       exit_setup (0);
     }
+  return 0;
 }
 
 static BOOL CALLBACK
 dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  int i, j;
-  HWND listbox;
   switch (message)
     {
     case WM_INITDIALOG:
@@ -90,16 +92,18 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 static WINAPI DWORD
 dialog (void *)
 {
-  int rv = 0;
   MSG m;
-  HWND local_gw_dialog = CreateDialog (hinstance, MAKEINTRESOURCE (IDD_DLSTATUS),
-				   0, dialog_proc);
+  HWND local_gw_dialog =
+    CreateDialog (hinstance, MAKEINTRESOURCE (IDD_DLSTATUS),
+		  0, dialog_proc);
   ShowWindow (local_gw_dialog, SW_SHOWNORMAL);
   UpdateWindow (local_gw_dialog);
-  while (GetMessage (&m, 0, 0, 0) > 0) {
-    TranslateMessage (&m);
-    DispatchMessage (&m);
-  }
+  while (GetMessage (&m, 0, 0, 0) > 0)
+    {
+      TranslateMessage (&m);
+      DispatchMessage (&m);
+    }
+  return 0;
 }
 
 static DWORD start_tics;
@@ -121,16 +125,16 @@ init_dialog (char *url, int length)
       SendMessage (gw_pprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
       SendMessage (gw_iprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
     }
-  char *sl=url, *cp;
-  for (cp=url; *cp; cp++)
+  char *sl = url, *cp;
+  for (cp = url; *cp; cp++)
     if (*cp == '/' || *cp == '\\' || *cp == ':')
-      sl = cp+1;
+      sl = cp + 1;
   max_bytes = length;
   SetWindowText (gw_url, sl);
   SetWindowText (gw_rate, "Connecting...");
   SendMessage (gw_progress, PBM_SETPOS, (WPARAM) 0, 0);
   ShowWindow (gw_progress, (length > 0) ? SW_SHOW : SW_HIDE);
-  if (length > 0 )
+  if (length > 0)
     SetWindowText (gw_progress_text, "Package");
   else
     SetWindowText (gw_progress_text, "       ");
@@ -160,9 +164,9 @@ progress (int bytes)
   int kbps;
   static unsigned int last_tics = 0;
   DWORD tics = GetTickCount ();
-  if (tics == start_tics) // to prevent division by zero
+  if (tics == start_tics)	// to prevent division by zero
     return;
-  if (tics < last_tics + 200) // to prevent flickering updates
+  if (tics < last_tics + 200)	// to prevent flickering updates
     return;
   last_tics = tics;
 
@@ -175,13 +179,14 @@ progress (int bytes)
       int perc = bytes / (max_bytes / 100);
       SendMessage (gw_progress, PBM_SETPOS, (WPARAM) perc, 0);
       sprintf (buf, "%3d %%  (%dk/%dk)  %d kb/s\n",
-	       perc, bytes/1000, max_bytes/1000, kbps);
+	       perc, bytes / 1000, max_bytes / 1000, kbps);
       if (total_download_bytes > 0)
-        {
-          int totalperc = (total_download_bytes_sofar + bytes) / (
-                    total_download_bytes / 100);
-          SendMessage (gw_pprogress, PBM_SETPOS, (WPARAM) totalperc, 0);
-        }
+	{
+	  int totalperc =
+	    (total_download_bytes_sofar +
+	     bytes) / (total_download_bytes / 100);
+	  SendMessage (gw_pprogress, PBM_SETPOS, (WPARAM) totalperc, 0);
+	}
     }
   else
     sprintf (buf, "%d  %d kb/s\n", bytes, kbps);
@@ -189,7 +194,8 @@ progress (int bytes)
   SetWindowText (gw_rate, buf);
 }
 
-struct GUBuf {
+struct GUBuf
+{
   GUBuf *next;
   int count;
   char buf[2000];
@@ -214,7 +220,7 @@ get_url_to_string (char *_url)
 
   GUBuf *bufs = 0;
   GUBuf **nextp = &bufs;
-  int total_bytes = 1; /* for the NUL */
+  int total_bytes = 1;		/* for the NUL */
   progress (0);
   while (1)
     {
@@ -265,7 +271,7 @@ get_url_to_file (char *_url, char *_filename, int expected_length,
     }
   init_dialog (_url, expected_length);
 
-  remove (_filename); /* but ignore errors */
+  remove (_filename);		/* but ignore errors */
 
   NetIO *n = NetIO::open (_url, allow_ftp_auth);
   if (!n || !n->ok ())
@@ -278,7 +284,7 @@ get_url_to_file (char *_url, char *_filename, int expected_length,
   FILE *f = fopen (_filename, "wb");
   if (!f)
     {
-      char *err = strerror (errno);
+      const char *err = strerror (errno);
       if (!err)
 	err = "(unknown error)";
       fatal (IDS_ERR_OPEN_WRITE, _filename, err);

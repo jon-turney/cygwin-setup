@@ -19,4 +19,5 @@
    (bytes).  find() returns the number of files found.  Directories
    are scanned but not included in the "found" files. */
 
-extern int find (char *starting_dir, void (*for_each)(char *, unsigned int));
+extern int find (const char *starting_dir,
+		 void (*for_each) (char *, unsigned int));

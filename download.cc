@@ -16,7 +16,10 @@
 /* The purpose of this file is to download all the files we need to
    do the installation. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 
@@ -34,8 +37,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "log.h"
 #include "port.h"
 
-DWORD
-get_file_size (const char *name)
+DWORD get_file_size (const char *name)
 {
   HANDLE h;
   WIN32_FIND_DATA buf;
@@ -52,22 +54,20 @@ get_file_size (const char *name)
 }
 
 static int
-download_one (char *name, int expected_size, int action)
+download_one (char *name, unsigned int expected_size, int action)
 {
   char *local = name;
-  int errors = 0;
 
   DWORD size;
   if ((size = get_file_size (local)) > 0)
     if (size == expected_size && action != ACTION_SRC_ONLY
-  && action != ACTION_REDO )
+	&& action != ACTION_REDO)
       return 0;
 
   mkdir_p (0, local);
 
   if (get_url_to_file (concat (MIRROR_SITE, "/", name, 0),
-		       concat (local, ".tmp", 0),
-		       expected_size))
+		       concat (local, ".tmp", 0), expected_size))
     {
       note (IDS_DOWNLOAD_FAILED, name);
       return 1;
@@ -78,13 +78,13 @@ download_one (char *name, int expected_size, int action)
       if (size == expected_size)
 	{
 	  log (0, "Downloaded %s", local);
-    if ( _access (local , 0) == 0)
-       remove ( local );
+	  if (_access (local, 0) == 0)
+	    remove (local);
 	  rename (concat (local, ".tmp", 0), local);
 	}
       else
 	{
-	  log (0, "Download %s wrong size (%d actual vs %d expected)",
+	  log (0, "Download %s wrong size (%ld actual vs %d expected)",
 	       local, size, expected_size);
 	  note (IDS_DOWNLOAD_SHORT, local, size, expected_size);
 	  return 1;
@@ -97,30 +97,27 @@ download_one (char *name, int expected_size, int action)
 void
 do_download (HINSTANCE h)
 {
-  int i;
   int errors = 0;
   total_download_bytes = 0;
   total_download_bytes_sofar = 0;
 
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     if (is_download_action (pkg))
       {
 	Info *pi = pkg->info + pkg->trust;
 	DWORD size = get_file_size (pi->install);
 	char *local = pi->install;
 	if (pkg->action != ACTION_SRC_ONLY &&
-	    (pkg->action == ACTION_REDO ||
-	     size != pi->install_size))
+	    (pkg->action == ACTION_REDO || size != pi->install_size))
 	  total_download_bytes += pi->install_size;
 	local = pi->source;
 	size = get_file_size (pi->source);
 	if (pkg->srcpicked &&
-	    (pkg->action == ACTION_SRC_ONLY ||
-	     size != pi->source_size))
+	    (pkg->action == ACTION_SRC_ONLY || size != pi->source_size))
 	  total_download_bytes += pi->source_size;
       }
 
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     if (is_download_action (pkg))
       {
 	int e = 0;

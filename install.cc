@@ -17,9 +17,12 @@
    the install list (in ini.h).  Note that we use a separate thread to
    maintain the progress dialog, so we avoid the complexity of
    handling two tasks in one thread.  We also create or update all the
-   files in /etc/setup/* and create the mount points. */
+   files in /etc/setup/\* and create the mount points. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include "commctrl.h"
@@ -39,7 +42,6 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "geturl.h"
 #include "mkdir.h"
 #include "state.h"
-#include "tar.h"
 #include "diskfull.h"
 #include "msg.h"
 #include "mount.h"
@@ -47,6 +49,11 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "hash.h"
 #include "mount.h"
 #include "filemanip.h"
+#include "io_stream.h"
+#include "compress.h"
+#include "compress_gz.h"
+#include "archive.h"
+#include "archive_tar.h"
 
 #include "port.h"
 
@@ -71,13 +78,12 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDCANCEL:
       exit_setup (1);
     }
+  return 0;
 }
 
 static BOOL CALLBACK
 dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  int i, j;
-  HWND listbox;
   switch (message)
     {
     case WM_INITDIALOG:
@@ -102,18 +108,18 @@ dialog (void *)
   int rv = 0;
   MSG m;
   HWND ins_dialog = CreateDialog (hinstance, MAKEINTRESOURCE (IDD_INSTATUS),
-				   0, dialog_proc);
+				  0, dialog_proc);
   if (ins_dialog == 0)
     fatal ("create dialog");
   ShowWindow (ins_dialog, SW_SHOWNORMAL);
   UpdateWindow (ins_dialog);
-  while (GetMessage (&m, 0, 0, 0) > 0) {
-    TranslateMessage (&m);
-    DispatchMessage (&m);
-  }
+  while (GetMessage (&m, 0, 0, 0) > 0)
+    {
+      TranslateMessage (&m);
+      DispatchMessage (&m);
+    }
+  return rv;
 }
-
-static DWORD start_tics;
 
 static void
 init_dialog ()
@@ -160,14 +166,13 @@ progress (int bytes)
 static void
 badrename (char *o, char *n)
 {
-  char buf[1000];
-  char *err = strerror (errno);
+  const char *err = strerror (errno);
   if (!err)
     err = "(unknown error)";
   note (IDS_ERR_RENAME, o, n, err);
 }
 
-static char *standard_dirs[] = {
+static const char *standard_dirs[] = {
   "/bin",
   "/etc",
   "/lib",
@@ -191,14 +196,14 @@ hash::add_subdirs (char *path)
 {
   char *nonp, *pp;
   for (nonp = path; *nonp == '\\' || *nonp == '/'; nonp++);
-  for (pp = path + strlen(path) - 1; pp>nonp; pp--)
+  for (pp = path + strlen (path) - 1; pp > nonp; pp--)
     if (*pp == '/' || *pp == '\\')
       {
-	int i, s=0;
+	int i, s = 0;
 	char c = *pp;
 	*pp = 0;
-	for (i=0; standard_dirs[i]; i++)
-	  if (strcmp (standard_dirs[i]+1, path) == 0)
+	for (i = 0; standard_dirs[i]; i++)
+	  if (strcmp (standard_dirs[i] + 1, path) == 0)
 	    {
 	      s = 1;
 	      break;
@@ -209,24 +214,18 @@ hash::add_subdirs (char *path)
       }
 }
 
-static int
-exists (const char *file)
-{
-  if (_access (file, 0) == 0)
-    return 1;
-  return 0;
-}
-
 static int num_installs, num_uninstalls;
 
 static void
-uninstall_one (Package *pkg, bool src)
+uninstall_one (Package * pkg, bool src)
 {
   hash dirs;
   char line[_MAX_PATH];
 
-  gzFile lst = gzopen (cygpath ("/etc/setup/", pkg->name,
-				(src ? "-src.lst.gz" : ".lst.gz"), 0), "rb");
+  io_stream *tmp =
+    io_stream::open (concat ("cygfile:///etc/setup/", pkg->name,
+			     (src ? "-src.lst.gz" : ".lst.gz"), 0), "rb");
+  io_stream *lst = compress::decompress (tmp);
   if (lst)
     {
       SetWindowText (ins_pkgname, pkg->name);
@@ -236,10 +235,10 @@ uninstall_one (Package *pkg, bool src)
       else
 	log (0, "Uninstalling old %s", pkg->name);
 
-      while (gzgets (lst, line, sizeof (line)))
+      while (lst->gets (line, sizeof (line)))
 	{
-	  if (line[strlen(line)-1] == '\n')
-	    line[strlen(line)-1] = 0;
+	  if (line[strlen (line) - 1] == '\n')
+	    line[strlen (line) - 1] = 0;
 
 	  dirs.add_subdirs (line);
 
@@ -251,7 +250,7 @@ uninstall_one (Package *pkg, bool src)
 	      DeleteFile (d);
 	    }
 	}
-      gzclose (lst);
+      delete lst;
 
       remove (cygpath ("/etc/setup/", pkg->name, ".lst.gz", 0));
 
@@ -275,45 +274,54 @@ uninstall_one (Package *pkg, bool src)
 
 
 static int
-install_one (Package *pkg, bool isSrc)
+install_one (Package * pkg, bool isSrc)
 {
   int errors = 0;
-  char *extra;
+  const char *extra;
   const char *file;
   int file_size;
+  archive *thefile = NULL;
   Info *pi = pkg->info + pkg->trust;
 
   if (!isSrc)
     {
       extra = "";
       file_size = pi->install_size;
-      file = pi->install;
+      file = concat ("file://", pi->install, 0);
     }
   else if (pi->source)
     {
       extra = "-src";
       file_size = pi->source_size;
-      file = pi->source;
+      file = concat ("file://", pi->source, 0);
     }
   else
     return 0;
 
   char name[strlen (pkg->name) + strlen (extra) + 1];
   strcat (strcpy (name, pkg->name), extra);
-  
+
+  /* FIXME: this may file now */
   char *basef = base (file);
   SetWindowText (ins_pkgname, basef);
 
-  if (!exists (file))
+  if (!io_stream::exists (file))
     file = basef;
-  if (!exists (file))
+  if (!io_stream::exists (file))
     {
       note (IDS_ERR_OPEN_READ, file, "No such file");
       return 1;
     }
 
-  gzFile lst = gzopen (cygpath ("/etc/setup/", name, ".lst.gz", 0),
-		       "wb9");
+  io_stream *tmp =
+    io_stream::open (concat ("cygfile:///etc/setup/", name, ".lst.gz", 0),
+		     "wb");
+  io_stream *lst = new compress_gz (tmp, "w9");
+  if (lst->error ())
+    {
+      delete lst;
+      lst = NULL;
+    }
 
   package_bytes = file_size;
 
@@ -342,44 +350,60 @@ install_one (Package *pkg, bool isSrc)
     case ACTION_TEST:
       strcat (msg, " test version...");
       break;
+    default:
+      /* FIXME: log this somehow */
+      break;
     }
 
   SetWindowText (ins_action, msg);
   log (0, "%s%s", msg, file);
-  tar_open (file);
-
-  char *fn;
-  while (fn = tar_next_file ())
+  tmp = io_stream::open (file, "rb");
+  if (tmp)
     {
-      char *dest_file;
-
-      if (lst)
-	gzprintf (lst, "%s\n", fn);
-
-      dest_file = cygpath (isSrc ? "/usr/src/" : "/", fn, NULL);
-
-      SetWindowText (ins_filename, dest_file);
-      log (LOG_BABBLE, "Installing file %s", dest_file);
-      if (tar_read_file (dest_file) != 0)
+      io_stream *tmp2 = compress::decompress (tmp);
+      if (tmp2)
+	thefile = archive::extract (tmp2);
+      else
+	thefile = archive::extract (tmp);
+      /* FIXME: potential leak of either *tmp or *tmp2 */
+      if (thefile)
 	{
-	  log (0, "Unable to install file %s", dest_file);
-	  errors++;
+	  const char *fn;
+	  while ((fn = thefile->next_file_name ()))
+	    {
+	      char *dest_file;
+
+	      if (lst)
+		lst->write (concat (fn, "\n", 0), strlen (fn) + 1);
+
+	      dest_file =
+		concat ("cygfile://", isSrc ? "/usr/src/" : "/", NULL);
+
+	      /* FIXME: concat leaks memory */
+	      SetWindowText (ins_filename, concat (dest_file, fn, 0));
+	      log (LOG_BABBLE, "Installing file %s%s", dest_file, fn);
+	      if (archive::extract_file (thefile, dest_file) != 0)
+		{
+		  log (0, "Unable to install file %s%s", dest_file, fn);
+		  errors++;
+		}
+
+	      progress (tmp->tell ());
+	      free (dest_file);
+	      num_installs++;
+	    }
+	  delete thefile;
+
+	  total_bytes_sofar += file_size;
 	}
-
-      progress (tar_ftell ());
-      free (dest_file); 
-      num_installs++;
     }
-  tar_close ();
-
-  total_bytes_sofar += file_size;
   progress (0);
 
   int df = diskfull (get_root_dir ());
   SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
 
   if (lst)
-    gzclose (lst);
+    delete lst;
 
   if (!errors)
     {
@@ -387,7 +411,9 @@ install_one (Package *pkg, bool isSrc)
       pkg->installed_ix = pkg->trust;
       if (pkg->installed)
 	free (pkg->installed);
-      pkg->installed = new Info (inf->install, inf->version, inf->install_size, inf->source, inf->source_size);
+      pkg->installed =
+	new Info (inf->install, inf->version, inf->install_size, inf->source,
+		  inf->source_size);
     }
 
   return errors;
@@ -404,22 +430,26 @@ check_for_old_cygwin ()
     return;
 
   char msg[sizeof (buf) + 132];
-  sprintf (msg, "An old version of cygwin1.dll was found here:\r\n%s\r\nDelete?", buf);
-  switch (MessageBox (NULL, msg,
-		      "What's that doing there?", MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL))
+  sprintf (msg,
+	   "An old version of cygwin1.dll was found here:\r\n%s\r\nDelete?",
+	   buf);
+  switch (MessageBox
+	  (NULL, msg, "What's that doing there?",
+	   MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL))
     {
     case IDYES:
       if (!DeleteFile (buf))
 	{
 	  sprintf (msg, "Couldn't delete file %s.\r\n"
-			"Is the DLL in use by another application?\r\n"
-			"You should delete the old version of cygwin1.dll\r\nat your earliest convenience.",
-			buf);
-	  MessageBox (NULL, buf, "Couldn't delete file", MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
+		   "Is the DLL in use by another application?\r\n"
+		   "You should delete the old version of cygwin1.dll\r\nat your earliest convenience.",
+		   buf);
+	  MessageBox (NULL, buf, "Couldn't delete file",
+		      MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
 	}
       break;
     default:
-	break;
+      break;
     }
 
   return;
@@ -437,7 +467,7 @@ do_install (HINSTANCE h)
 
   mkdir_p (1, get_root_dir ());
 
-  for (i=0; standard_dirs[i]; i++)
+  for (i = 0; standard_dirs[i]; i++)
     {
       char *p = cygpath (standard_dirs[i], 0);
       mkdir_p (1, p);
@@ -445,11 +475,8 @@ do_install (HINSTANCE h)
     }
 
   /* Create /var/run/utmp */
-  char *utmp = cygpath ("/var/run/utmp", 0);
-  FILE *ufp = fopen (utmp, "wb");
-  if (ufp)
-    fclose (ufp);
-  free (utmp);
+  io_stream *utmp = io_stream::open ("cygfile:///var/run/utmp", "wb");
+  delete utmp;
 
   dismiss_url_status_dialog ();
 
@@ -469,7 +496,7 @@ do_install (HINSTANCE h)
   create_mount ("/usr/lib", cygpath ("/lib", 0), istext, issystem);
   set_cygdrive_flags (istext, issystem);
 
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     {
       Info *pi = pkg->info + pkg->trust;
       if (pkg->action != ACTION_SRC_ONLY)
@@ -478,7 +505,7 @@ do_install (HINSTANCE h)
 	total_bytes += pi->source_size;
     }
 
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     {
       if (is_uninstall_action (pkg))
 	{
@@ -499,7 +526,7 @@ do_install (HINSTANCE h)
 	      errors++;
 	    }
 	}
-    } // end of big package loop
+    }				// end of big package loop
 
   ShowWindow (ins_dialog, SW_HIDE);
 
@@ -514,7 +541,7 @@ do_install (HINSTANCE h)
 
   if (!ndb)
     {
-      char *err = strerror (errno);
+      const char *err = strerror (errno);
       if (!err)
 	err = "(unknown error)";
       fatal (IDS_ERR_OPEN_WRITE, ndb, err);
@@ -523,18 +550,19 @@ do_install (HINSTANCE h)
   if (odb)
     {
       char line[1000], pkgname[1000];
-      int printit;
       while (fgets (line, 1000, odb))
 	{
 	  sscanf (line, "%s", pkgname);
 	  Package *pkg = getpkgbyname (pkgname);
-	  if (!pkg || (!is_download_action (pkg) && pkg->action != ACTION_UNINSTALL))
+	  if (!pkg
+	      || (!is_download_action (pkg)
+		  && pkg->action != ACTION_UNINSTALL))
 	    fputs (line, ndb);
 	}
 
     }
 
-  for (Package *pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg->name; pkg++)
     if (is_download_action (pkg))
       {
 	Info *pi = pkg->info + pkg->installed_ix;

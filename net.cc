@@ -16,7 +16,10 @@
 /* The purpose of this file is to get the network configuration
    information from the user. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <stdio.h>
@@ -108,6 +111,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       NEXT (0);
       break;
     }
+  return 0;
 }
 
 static BOOL CALLBACK
@@ -119,11 +123,14 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
       load_dialog (h);
 
       // Check to see if any radio buttons are selected. If not, select a default.
-      if ((!SendMessage(GetDlgItem (h, IDC_NET_IE5), BM_GETCHECK, 0, 0) == BST_CHECKED)
-        && (!SendMessage(GetDlgItem (h, IDC_NET_PROXY), BM_GETCHECK, 0, 0) == BST_CHECKED))
-        {
-          SendMessage(GetDlgItem (h, IDC_NET_DIRECT), BM_CLICK, 0, 0);
-        }
+      if (
+	  (!SendMessage (GetDlgItem (h, IDC_NET_IE5), BM_GETCHECK, 0, 0) ==
+	   BST_CHECKED)
+	  && (!SendMessage (GetDlgItem (h, IDC_NET_PROXY), BM_GETCHECK, 0, 0)
+	      == BST_CHECKED))
+	{
+	  SendMessage (GetDlgItem (h, IDC_NET_DIRECT), BM_CLICK, 0, 0);
+	}
       return FALSE;
     case WM_COMMAND:
       return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
@@ -145,4 +152,3 @@ do_net (HINSTANCE h)
        (net_method == IDC_NET_IE5) ? "IE5" :
        (net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy");
 }
-

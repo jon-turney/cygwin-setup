@@ -15,7 +15,10 @@
 
 /* The purpose of this file is to centralize all the logging functions. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <stdio.h>
@@ -32,7 +35,8 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "mkdir.h"
 #include "mount.h"
 
-struct LogEnt {
+struct LogEnt
+{
   LogEnt *next;
   int flags;
   time_t when;
@@ -43,7 +47,7 @@ static LogEnt *first_logent = 0;
 static LogEnt **next_logent = &first_logent;
 
 void
-log (int flags, char *fmt, ...)
+log (int flags, const char *fmt, ...)
 {
   char buf[1000];
   va_list args;
@@ -70,7 +74,7 @@ log (int flags, char *fmt, ...)
 }
 
 void
-log_save (int babble, char *filename, int append)
+log_save (int babble, const char *filename, int append)
 {
   static int been_here = 0;
   if (been_here)
@@ -88,12 +92,12 @@ log_save (int babble, char *filename, int append)
 
   LogEnt *l;
 
-  for (l=first_logent; l; l=l->next)
+  for (l = first_logent; l; l = l->next)
     {
       if (babble || !(l->flags & LOG_BABBLE))
 	{
 	  fputs (l->msg, f);
-	  if (l->msg[strlen(l->msg)-1] != '\n')
+	  if (l->msg[strlen (l->msg) - 1] != '\n')
 	    fputc ('\n', f);
 	}
     }

@@ -16,7 +16,10 @@
 /* The purpose of this file is to centralize all the message
    functions. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <stdio.h>
@@ -25,7 +28,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "log.h"
 
 void
-msg (char *fmt, ...)
+msg (const char *fmt, ...)
 {
   char buf[1000];
   va_list args;
@@ -35,7 +38,7 @@ msg (char *fmt, ...)
 }
 
 static int
-mbox (char *name, int type, int id, va_list args)
+mbox (const char *name, int type, int id, va_list args)
 {
   char buf[1000], fmt[1000];
 

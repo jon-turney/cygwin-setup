@@ -17,7 +17,7 @@
    OutputDebugString, which can be seen while debugging under GDB or
    via a debug message monitor. */
 
-void msg(char *fmt, ...);
+void msg (const char *fmt, ...);
 
 /* This pops up a dialog with text from the string table ("id"), which
    is interpreted like printf.  The program exits when the user

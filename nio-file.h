@@ -15,11 +15,12 @@
 
 /* see nio-file.cc */
 
-class NetIO_File : public NetIO {
+class NetIO_File:public NetIO
+{
 public:
   NetIO_File (char *url);
   void *fd;
-  ~NetIO_File ();
+   ~NetIO_File ();
   virtual int ok ();
   virtual int read (char *buf, int nbytes);
 };

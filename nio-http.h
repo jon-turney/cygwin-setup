@@ -17,12 +17,13 @@
 
 class SimpleSocket;
 
-class NetIO_HTTP : public NetIO {
+class NetIO_HTTP:public NetIO
+{
   SimpleSocket *s;
 
 public:
-  NetIO_HTTP (char *url, BOOL allow_ftp_auth = FALSE);
-  virtual ~NetIO_HTTP ();
+    NetIO_HTTP (char *url, BOOL allow_ftp_auth = FALSE);
+    virtual ~ NetIO_HTTP ();
 
   /* If !ok() that means the transfer isn't happening. */
   virtual int ok ();

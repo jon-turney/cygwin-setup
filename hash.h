@@ -17,11 +17,12 @@
 
 class hash_internals;
 
-class hash {
+class hash
+{
   hash_internals *h;
- public:
-  hash ();
-  ~hash ();
+public:
+    hash ();
+   ~hash ();
 
   void add (char *string);
   int has (char *string);
@@ -30,5 +31,5 @@ class hash {
   void add_subdirs (char *path);
   void reverse_sort ();
 
-  char *enumerate (char *prev=0);
+  char *enumerate (char *prev = 0);
 };

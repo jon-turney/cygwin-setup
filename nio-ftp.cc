@@ -17,7 +17,8 @@
    channels.  It is intentionally simplistic. */
 
 #if 0
-static const char *cvsid = "\n%%% $Id$\n";
+static const char *cvsid =
+  "\n%%% $Id$\n";
 #endif
 
 #include "win32.h"
@@ -41,20 +42,22 @@ static int cmd_port = 0;
 static char *last_line;
 
 static int
-ftp_line (SimpleSocket *s)
+ftp_line (SimpleSocket * s)
 {
-  do {
-    last_line = s->gets ();
-    log (LOG_BABBLE, "ftp > %s", last_line ? last_line : "error");
-  } while (last_line && (!isdigit (last_line[0]) || last_line[3] != ' '));
-  return atoi (last_line ?: "0");
+  do
+    {
+      last_line = s->gets ();
+      log (LOG_BABBLE, "ftp > %s", last_line ? last_line : "error");
+    }
+  while (last_line && (!isdigit (last_line[0]) || last_line[3] != ' '));
+  return atoi (last_line ? : "0");
 }
 
-NetIO_FTP::NetIO_FTP (char *Purl, BOOL allow_ftp_auth)
-  : NetIO (Purl, allow_ftp_auth)
+NetIO_FTP::NetIO_FTP (char *Purl, BOOL allow_ftp_auth):NetIO (Purl, allow_ftp_auth)
 {
   s = 0;
-  int code;
+  int
+    code;
 
   if (port == 0)
     port = 21;
@@ -63,7 +66,8 @@ NetIO_FTP::NetIO_FTP (char *Purl, BOOL allow_ftp_auth)
     {
       if (cmd)
 	cmd->printf ("QUIT\r\n");
-      delete cmd;
+      delete
+	cmd;
       free (cmd_host);
       cmd = 0;
       cmd_host = 0;
@@ -71,14 +75,15 @@ NetIO_FTP::NetIO_FTP (char *Purl, BOOL allow_ftp_auth)
 
   if (cmd == 0)
     {
-      SimpleSocket *c = new SimpleSocket (host, port);
+      SimpleSocket *
+	c = new SimpleSocket (host, port);
       code = ftp_line (c);
 
-auth_retry:
+    auth_retry:
       if (net_ftp_user)
-        c->printf ("USER %s\r\n", net_ftp_user);
+	c->printf ("USER %s\r\n", net_ftp_user);
       else
-        c->printf ("USER anonymous\r\n");
+	c->printf ("USER anonymous\r\n");
       code = ftp_line (c);
       if (code == 331)
 	{
@@ -88,8 +93,8 @@ auth_retry:
 	    c->printf ("PASS cygwin-setup@\r\n");
 	  code = ftp_line (c);
 	}
-      if (code == 530) /* Authentication failed, retry */
-        {
+      if (code == 530)		/* Authentication failed, retry */
+	{
 	  get_ftp_auth ();
 	  if (net_ftp_user && net_ftp_passwd)
 	    goto auth_retry;
@@ -97,7 +102,8 @@ auth_retry:
 
       if (code < 200 || code >= 300)
 	{
-	  delete c;
+	  delete
+	    c;
 	  return;
 	}
 
@@ -110,27 +116,33 @@ auth_retry:
     }
 
   cmd->printf ("PASV\r\n");
-  do {
-    code = ftp_line (cmd);
-  } while (code == 226); /* previous RETR */
+  do
+    {
+      code = ftp_line (cmd);
+    }
+  while (code == 226);		/* previous RETR */
   if (code != 227)
     return;
 
-  char *paren = strchr (last_line, '(');
+  char *
+    paren = strchr (last_line, '(');
   if (!paren)
     return;
 
-  int i1, i2, i3, i4, p1, p2;
-  sscanf (paren+1, "%d,%d,%d,%d,%d,%d", &i1, &i2, &i3, &i4, &p1, &p2);
-  char tmp[20];
+  int
+    i1, i2, i3, i4, p1, p2;
+  sscanf (paren + 1, "%d,%d,%d,%d,%d,%d", &i1, &i2, &i3, &i4, &p1, &p2);
+  char
+    tmp[20];
   sprintf (tmp, "%d.%d.%d.%d", i1, i2, i3, i4);
-  s = new SimpleSocket (tmp, p1*256 + p2);
+  s = new SimpleSocket (tmp, p1 * 256 + p2);
 
   cmd->printf ("RETR %s\r\n", path);
   code = ftp_line (cmd);
   if (code != 150 && code != 125)
     {
-      delete s;
+      delete
+	s;
       s = 0;
       return;
     }

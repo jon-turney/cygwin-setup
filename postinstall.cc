@@ -16,7 +16,10 @@
 /* The purpose of this file is to run all the post-install scripts
    in their various forms. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 
@@ -32,14 +35,14 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "port.h"
 
 static char *sh = 0;
-static char *cmd = 0;
+static const char *cmd = 0;
 static OSVERSIONINFO verinfo;
 
 static void
-run (char *sh, char *args, char *file)
+run (const char *sh, const char *args, const char *file)
 {
   BOOL b;
-  char cmdline [_MAX_PATH];
+  char cmdline[_MAX_PATH];
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
 
@@ -47,7 +50,7 @@ run (char *sh, char *args, char *file)
   memset (&pi, 0, sizeof (pi));
   memset (&si, 0, sizeof (si));
   si.cb = sizeof (si);
-  si.lpTitle = "Cygwin Setup Post-Install Script";
+  si.lpTitle = (char *) "Cygwin Setup Post-Install Script";
   si.dwFlags = STARTF_USEPOSITION;
 
   b = CreateProcess (0, cmdline, 0, 0, 0,
@@ -86,7 +89,7 @@ each (char *fname, unsigned int size)
 	  cygpath ("/etc/postinstall/", fname, ".done", 0));
 }
 
-static char *shells [] = {
+static const char *shells[] = {
   "/bin/sh.exe",
   "/usr/bin/sh.exe",
   "/bin/bash.exe",
@@ -99,7 +102,7 @@ do_postinstall (HINSTANCE h)
 {
   next_dialog = 0;
   int i;
-  for (i=0; shells[i]; i++)
+  for (i = 0; shells[i]; i++)
     {
       sh = backslash (cygpath (shells[i], 0));
       if (_access (sh, 0) == 0)
@@ -112,8 +115,8 @@ do_postinstall (HINSTANCE h)
   GetEnvironmentVariable ("PATH", old_path, sizeof (old_path));
   SetEnvironmentVariable ("PATH",
 			  backslash (cygpath ("/bin;",
-					     get_root_dir (), "/usr/bin;",
-					     old_path, 0)));
+					      get_root_dir (), "/usr/bin;",
+					      old_path, 0)));
 
   SetEnvironmentVariable ("CYGWINROOT", get_root_dir ());
   SetCurrentDirectory (get_root_dir ());

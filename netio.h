@@ -16,7 +16,8 @@
 /* This is the parent class for all the access methods known to setup
    (i.e. ways to download files from the internet or other sources */
 
-class NetIO {
+class NetIO
+{
 protected:
   NetIO (char *url, BOOL allow_ftp_auth = FALSE);
   void set_url (char *url);
@@ -31,13 +32,13 @@ public:
   char *host;
   int port;
   char *path;
-  virtual ~NetIO ();
+    virtual ~ NetIO ();
 
   /* The user calls this function to create a suitable accessor for
      the given URL.  It uses the network setup state in state.h.  If
      anything fails, either the return values is NULL or the returned
      object is !ok() */
-  static NetIO * open (char *url, BOOL allow_ftp_auth = FALSE);
+  static NetIO *open (char *url, BOOL allow_ftp_auth = FALSE);
 
   /* If !ok() that means the transfer isn't happening. */
   virtual int ok ();

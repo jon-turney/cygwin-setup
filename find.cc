@@ -16,7 +16,10 @@
 /* The purpose of this file is to doa recursive find on a given
    directory, calling a given function for each file found. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <stdio.h>
@@ -24,7 +27,7 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #include "port.h"
 
-static void (*for_each)(char *, unsigned int);
+static void (*for_each) (char *, unsigned int);
 static char dir[_MAX_PATH], *found_part;
 
 static int
@@ -43,29 +46,31 @@ find_sub ()
   if (h == INVALID_HANDLE_VALUE)
     return 0;
 
-  do {
-    if (strcmp (wfd.cFileName, ".") == 0
-	|| strcmp (wfd.cFileName, "..") == 0)
-      continue;
+  do
+    {
+      if (strcmp (wfd.cFileName, ".") == 0
+	  || strcmp (wfd.cFileName, "..") == 0)
+	continue;
 
-    strcpy (end, wfd.cFileName);
+      strcpy (end, wfd.cFileName);
 
-    if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-      find_sub ();
-    else
-      {
-	for_each (found_part, wfd.nFileSizeLow);
-	rv++;
-      }
+      if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+	find_sub ();
+      else
+	{
+	  for_each (found_part, wfd.nFileSizeLow);
+	  rv++;
+	}
 
-  } while (FindNextFile (h, &wfd));
+    }
+  while (FindNextFile (h, &wfd));
 
   FindClose (h);
   return rv;
 }
 
 int
-find (char *starting_dir, void (*_for_each)(char *, unsigned int))
+find (const char *starting_dir, void (*_for_each) (char *, unsigned int))
 {
   strcpy (dir, starting_dir);
   for_each = _for_each;

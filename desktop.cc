@@ -18,7 +18,10 @@
    that unlike other do_* functions, this one is called directly from
    install.cc */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <shlobj.h>
@@ -39,9 +42,7 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #include "port.h"
 
-extern "C" {
-  void make_link_2 (char *exepath, char *args, char *icon, char *lname);
-};
+#include "mklink2.h"
 
 static OSVERSIONINFO verinfo;
 
@@ -53,7 +54,7 @@ static OSVERSIONINFO verinfo;
 	@*
    */
 
-static char *etc_profile[] = {
+static const char *etc_profile[] = {
   "PATH=\"/usr/local/bin:/usr/bin:/bin:$PATH\"",
   "",
   "USER=\"`id -un`\"",
@@ -93,79 +94,83 @@ static char *batname;
 static char *iconname;
 
 static void
-make_link (char *linkpath, char *title, char *target)
+make_link (const char *linkpath, const char *title, const char *target)
 {
   char argbuf[_MAX_PATH];
   char *fname = concat (linkpath, "/", title, ".lnk", 0);
 
   if (_access (fname, 0) == 0)
-    return; /* already exists */
+    return;			/* already exists */
 
   msg ("make_link %s, %s, %s\n", fname, title, target);
 
   mkdir_p (0, fname);
 
-  char *exepath, *args;
+  char *exepath;
 
   /* If we are running Win9x, build a command line. */
   if (verinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
-      exepath = target;
-      args = "";
+      exepath = concat (target, 0);
+      sprintf (argbuf, " ");
     }
   else
     {
-      char *pccmd;
       char windir[MAX_PATH];
 
       GetWindowsDirectory (windir, sizeof (windir));
       exepath = concat (windir, COMMAND9XEXE, 0);
       sprintf (argbuf, "%s %s", COMMAND9XARGS, target);
-      args = argbuf;
     }
 
-  msg ("make_link_2 (%s, %s, %s, %s)", exepath, args, iconname, fname);
-  make_link_2 (exepath, args, iconname, fname);
+  msg ("make_link_2 (%s, %s, %s, %s)", exepath, argbuf, iconname, fname);
+  make_link_2 (exepath, argbuf, iconname, fname);
 }
 
 static void
-start_menu (char *title, char *target)
+start_menu (const char *title, const char *target)
 {
   char path[_MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
-  SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_COMMON_PROGRAMS : CSIDL_PROGRAMS, &id);
+  SHGetSpecialFolderLocation (NULL,
+			      issystem ? CSIDL_COMMON_PROGRAMS :
+			      CSIDL_PROGRAMS, &id);
   SHGetPathFromIDList (id, path);
 // following lines added because it appears Win95 does not use common programs
 // unless it comes into play when multiple users for Win95 is enabled
-  msg("Program directory for program link: %s",path);
-  if ( strlen(path) == 0) {
-     SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
-     SHGetPathFromIDList (id, path);
-     msg("Program directory for program link changed to: %s",path);
-  }
+  msg ("Program directory for program link: %s", path);
+  if (strlen (path) == 0)
+    {
+      SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
+      SHGetPathFromIDList (id, path);
+      msg ("Program directory for program link changed to: %s", path);
+    }
 // end of Win95 addition
   strcat (path, "/Cygwin");
   make_link (path, title, target);
 }
 
 static void
-desktop_icon (char *title, char *target)
+desktop_icon (const char *title, const char *target)
 {
   char path[_MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
   //SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_DESKTOP : CSIDL_COMMON_DESKTOPDIRECTORY, &id);
-  SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_COMMON_DESKTOPDIRECTORY : CSIDL_DESKTOPDIRECTORY, &id);
+  SHGetSpecialFolderLocation (NULL,
+			      issystem ? CSIDL_COMMON_DESKTOPDIRECTORY :
+			      CSIDL_DESKTOPDIRECTORY, &id);
   SHGetPathFromIDList (id, path);
 // following lines added because it appears Win95 does not use common programs
 // unless it comes into play when multiple users for Win95 is enabled
-  msg("Desktop directory for desktop link: %s",path);
-  if ( strlen(path) == 0) {
-     SHGetSpecialFolderLocation (NULL, CSIDL_DESKTOPDIRECTORY, &id);
-     SHGetPathFromIDList (id, path);
-     msg("Desktop directory for deskop link changed to: %s",path);
-  }
+  msg ("Desktop directory for desktop link: %s", path);
+  if (strlen (path) == 0)
+    {
+      SHGetSpecialFolderLocation (NULL, CSIDL_DESKTOPDIRECTORY, &id);
+      SHGetPathFromIDList (id, path);
+      msg ("Desktop directory for deskop link changed to: %s", path);
+    }
 // end of Win95 addition
   make_link (path, title, target);
 }
@@ -186,7 +191,8 @@ make_cygwin_bat ()
   fprintf (bat, "@echo off\n\n");
 
   fprintf (bat, "%.2s\n", get_root_dir ());
-  fprintf (bat, "chdir %s\n\n", backslash (concat (get_root_dir () + 2, "/bin", 0)));
+  fprintf (bat, "chdir %s\n\n",
+	   backslash (concat (get_root_dir () + 2, "/bin", 0)));
 
   fprintf (bat, "bash --login -i\n");
 
@@ -205,18 +211,18 @@ make_etc_profile ()
   char os;
   switch (verinfo.dwPlatformId)
     {
-      case VER_PLATFORM_WIN32_NT:
-	os = 'N';
-	break;
-      case VER_PLATFORM_WIN32_WINDOWS:
-	if (verinfo.dwMinorVersion == 0)
-	  os = '5';
-	else
-	  os = '8';
-	break;
-      default:
-	os = '?';
-	break;
+    case VER_PLATFORM_WIN32_NT:
+      os = 'N';
+      break;
+    case VER_PLATFORM_WIN32_WINDOWS:
+      if (verinfo.dwMinorVersion == 0)
+	os = '5';
+      else
+	os = '8';
+      break;
+    default:
+      os = '?';
+      break;
     }
   msg ("os is %c", os);
 
@@ -224,14 +230,14 @@ make_etc_profile ()
   if (!p)
     return;
 
-  int i, allow=1;
-  for (i=0; etc_profile[i]; i++)
+  int i, allow = 1;
+  for (i = 0; etc_profile[i]; i++)
     {
       if (etc_profile[i][0] == '@')
 	{
 	  allow = 0;
 	  msg ("profile: %s", etc_profile[i]);
-	  for (char *cp = etc_profile[i]+1; *cp; cp++)
+	  for (const char *cp = etc_profile[i] + 1; *cp; cp++)
 	    if (*cp == os || *cp == '*')
 	      allow = 1;
 	  msg ("allow is %d\n", allow);
@@ -244,7 +250,7 @@ make_etc_profile ()
 }
 
 static int
-uexists (char *path)
+uexists (const char *path)
 {
   char *f = cygpath (path, 0);
   int a = _access (f, 0);
@@ -266,12 +272,12 @@ make_passwd_group ()
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
     {
       Package *pkg = getpkgbyname ("cygwin");
-      if (pkg && is_download_action (pkg) &&
-	  pkg->action != ACTION_SRC_ONLY)
+      if (pkg && is_download_action (pkg) && pkg->action != ACTION_SRC_ONLY)
 	{
 	  /* mkpasswd and mkgroup are not working on 9x/ME up to 1.1.5-4 */
 	  char *border_version = canonicalize_version ("1.1.5-4");
-	  char *inst_version = canonicalize_version (pkg->info[pkg->trust].version);
+	  char *inst_version =
+	    canonicalize_version (pkg->info[pkg->trust].version);
 	  if (strcmp (inst_version, border_version) <= 0)
 	    goto out;
 	}
@@ -285,7 +291,7 @@ make_passwd_group ()
   if (!uexists ("/etc/group"))
     fprintf (p, "bin\\mkgroup -l > etc\\group\n");
 
- out:
+out:
   fclose (p);
 }
 
@@ -312,7 +318,7 @@ save_icon ()
 }
 
 static void
-do_desktop_setup()
+do_desktop_setup ()
 {
   save_icon ();
 
@@ -320,13 +326,15 @@ do_desktop_setup()
   make_etc_profile ();
   make_passwd_group ();
 
-  if (root_menu) {
-    start_menu ("Cygwin Bash Shell", batname);
-  }
+  if (root_menu)
+    {
+      start_menu ("Cygwin Bash Shell", batname);
+    }
 
-  if (root_desktop) {
-    desktop_icon ("Cygwin", batname);
-  }
+  if (root_desktop)
+    {
+      desktop_icon ("Cygwin", batname);
+    }
 }
 
 static int da[] = { IDC_ROOT_DESKTOP, 0 };
@@ -346,61 +354,69 @@ load_dialog (HWND h)
   check_if_enable_next (h);
 }
 
-static int check_desktop (char *title, char *target)
+static int
+check_desktop (const char *title, const char *target)
 {
   char path[_MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
-  SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_COMMON_DESKTOPDIRECTORY : CSIDL_DESKTOPDIRECTORY, &id);
+  SHGetSpecialFolderLocation (NULL,
+			      issystem ? CSIDL_COMMON_DESKTOPDIRECTORY :
+			      CSIDL_DESKTOPDIRECTORY, &id);
   SHGetPathFromIDList (id, path);
   // following lines added because it appears Win95 does not use common programs
   // unless it comes into play when multiple users for Win95 is enabled
-  msg ("Desktop directory for desktop link: %s",path);
-  if (strlen (path) == 0) {
-     SHGetSpecialFolderLocation (NULL, CSIDL_DESKTOPDIRECTORY, &id);
-     SHGetPathFromIDList (id, path);
-     msg ("Desktop directory for deskop link changed to: %s",path);
-  }
+  msg ("Desktop directory for desktop link: %s", path);
+  if (strlen (path) == 0)
+    {
+      SHGetSpecialFolderLocation (NULL, CSIDL_DESKTOPDIRECTORY, &id);
+      SHGetPathFromIDList (id, path);
+      msg ("Desktop directory for deskop link changed to: %s", path);
+    }
   // end of Win95 addition
   char *fname = concat (path, "/", title, ".lnk", 0);
 
   if (_access (fname, 0) == 0)
-    return 0; /* already exists */
+    return 0;			/* already exists */
 
-  fname = concat (path, "/", title, ".pif", 0); /* check for a pif as well */
+  fname = concat (path, "/", title, ".pif", 0);	/* check for a pif as well */
 
   if (_access (fname, 0) == 0)
-    return 0; /* already exists */
+    return 0;			/* already exists */
 
   return IDC_ROOT_DESKTOP;
 }
 
-static int check_startmenu (char *title, char *target)
+static int
+check_startmenu (const char *title, const char *target)
 {
   char path[_MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
-  SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_COMMON_PROGRAMS : CSIDL_PROGRAMS, &id);
+  SHGetSpecialFolderLocation (NULL,
+			      issystem ? CSIDL_COMMON_PROGRAMS :
+			      CSIDL_PROGRAMS, &id);
   SHGetPathFromIDList (id, path);
   // following lines added because it appears Win95 does not use common programs
   // unless it comes into play when multiple users for Win95 is enabled
-  msg ("Program directory for program link: %s",path);
-  if (strlen (path) == 0) {
-     SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
-     SHGetPathFromIDList (id, path);
-     msg ("Program directory for program link changed to: %s",path);
-  }
+  msg ("Program directory for program link: %s", path);
+  if (strlen (path) == 0)
+    {
+      SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
+      SHGetPathFromIDList (id, path);
+      msg ("Program directory for program link changed to: %s", path);
+    }
   // end of Win95 addition
   strcat (path, "/Cygwin");
   char *fname = concat (path, "/", title, ".lnk", 0);
 
   if (_access (fname, 0) == 0)
-    return 0; /* already exists */
+    return 0;			/* already exists */
 
-  fname = concat (path, "/", title, ".pif", 0); /* check for a pif as well */
+  fname = concat (path, "/", title, ".pif", 0);	/* check for a pif as well */
 
   if (_access (fname, 0) == 0)
-    return 0; /* already exists */
+    return 0;			/* already exists */
 
   return IDC_ROOT_MENU;
 }
@@ -408,7 +424,7 @@ static int check_startmenu (char *title, char *target)
 static void
 save_dialog (HWND h)
 {
-  root_desktop= rbget (h, da);
+  root_desktop = rbget (h, da);
   root_menu = rbget (h, ma);
 }
 
@@ -426,7 +442,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDOK:
       save_dialog (h);
-      do_desktop_setup();
+      do_desktop_setup ();
       NEXT (IDD_S_POSTINSTALL);
       break;
 
@@ -439,6 +455,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       NEXT (0);
       break;
     }
+  return 0;
 }
 
 static BOOL CALLBACK
@@ -463,8 +480,11 @@ do_desktop (HINSTANCE h)
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
   GetVersionEx (&verinfo);
 
-  root_desktop = check_desktop("Cygwin",backslash (cygpath ("/cygwin.bat", 0)));
-  root_menu = check_startmenu("Cygwin Bash Shell",backslash (cygpath ("/cygwin.bat", 0)));
+  root_desktop =
+    check_desktop ("Cygwin", backslash (cygpath ("/cygwin.bat", 0)));
+  root_menu =
+    check_startmenu ("Cygwin Bash Shell",
+		     backslash (cygpath ("/cygwin.bat", 0)));
 
   int rv = 0;
 

@@ -16,7 +16,10 @@
 /* The purpose of this file is to manage access to files stored on the
    local disk (i.e. "downloading" setup.ini).  Called from netio.cc */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <stdio.h>
@@ -29,18 +32,17 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "msg.h"
 #include "filemanip.h"
 
-NetIO_File::NetIO_File (char *Purl)
-  : NetIO (Purl)
+NetIO_File::NetIO_File (char *Purl):
+NetIO (Purl)
 {
-  struct stat s;
   fd = fopen (path, "rb");
   if (fd)
     {
-      file_size = get_file_size(path);
+      file_size = get_file_size (path);
     }
   else
     {
-      char *err = strerror (errno);
+      const char *err = strerror (errno);
       if (!err)
 	err = "(unknown error)";
       note (IDS_ERR_OPEN_READ, path, err);
@@ -50,7 +52,7 @@ NetIO_File::NetIO_File (char *Purl)
 NetIO_File::~NetIO_File ()
 {
   if (fd)
-    fclose ((FILE *)fd);
+    fclose ((FILE *) fd);
 }
 
 int
@@ -62,5 +64,5 @@ NetIO_File::ok ()
 int
 NetIO_File::read (char *buf, int nbytes)
 {
-  return fread (buf, 1, nbytes, (FILE *)fd);
+  return fread (buf, 1, nbytes, (FILE *) fd);
 }

@@ -17,7 +17,8 @@
    channels.  It is intentionally simplistic. */
 
 #if 0
-static const char *cvsid = "\n%%% $Id$\n";
+static const char *cvsid =
+  "\n%%% $Id$\n";
 #endif
 
 #include "win32.h"
@@ -35,11 +36,11 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "nio-http.h"
 
 static char six2pr[64] = {
-    'A','B','C','D','E','F','G','H','I','J','K','L','M',
-    'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-    'a','b','c','d','e','f','g','h','i','j','k','l','m',
-    'n','o','p','q','r','s','t','u','v','w','x','y','z',
-    '0','1','2','3','4','5','6','7','8','9','+','/'
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+  'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+  'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
 };
 
 static char *
@@ -56,7 +57,7 @@ base64_encode (char *username, char *password)
   strcpy (up, username);
   strcat (up, ":");
   strcat (up, password);
-  ep = (unsigned char *)up + strlen (up);
+  ep = (unsigned char *) up + strlen (up);
   *ep++ = 0;
   *ep++ = 0;
   *ep++ = 0;
@@ -65,7 +66,7 @@ base64_encode (char *username, char *password)
 
   rp = rv;
 
-  for (ep = (unsigned char *)up; *ep; ep += 3)
+  for (ep = (unsigned char *) up; *ep; ep += 3)
     {
       block[0] = six2pr[ep[0] >> 2];
       block[1] = six2pr[((ep[0] << 4) & 0x30) | ((ep[1] >> 4) & 0x0f)];
@@ -86,10 +87,9 @@ base64_encode (char *username, char *password)
   return rv;
 }
 
-NetIO_HTTP::NetIO_HTTP (char *Purl, BOOL allow_ftp_auth)
-  : NetIO (Purl, allow_ftp_auth)
+NetIO_HTTP::NetIO_HTTP (char *Purl, BOOL allow_ftp_auth):NetIO (Purl, allow_ftp_auth)
 {
- retry_get:
+retry_get:
   if (port == 0)
     port = 80;
 
@@ -98,9 +98,10 @@ NetIO_HTTP::NetIO_HTTP (char *Purl, BOOL allow_ftp_auth)
   else
     s = new SimpleSocket (host, port);
 
-  if (!s->ok())
+  if (!s->ok ())
     {
-      delete s;
+      delete
+	s;
       s = NULL;
       return;
     }
@@ -121,61 +122,69 @@ NetIO_HTTP::NetIO_HTTP (char *Purl, BOOL allow_ftp_auth)
 
   s->printf ("\r\n");
 
-  char *l = s->gets ();
-  int code;
+  char *
+    l = s->gets ();
+  int
+    code;
   if (!l)
     return;
   sscanf (l, "%*s %d", &code);
   if (code >= 300 && code < 400)
     {
-      while ((l = s->gets ()) != 0) {
-	if (_strnicmp (l, "Location:", 9) == 0)
-	  {
-	    char *u = l + 9;
-	    while (*u == ' ' || *u == '\t')
-	      u++;
-	    set_url (u);
-	    delete s;
-	    goto retry_get;
-	  }
-      }
+      while ((l = s->gets ()) != 0)
+	{
+	  if (_strnicmp (l, "Location:", 9) == 0)
+	    {
+	      char *
+		u = l + 9;
+	      while (*u == ' ' || *u == '\t')
+		u++;
+	      set_url (u);
+	      delete
+		s;
+	      goto retry_get;
+	    }
+	}
     }
-  if (code == 401) /* authorization required */
+  if (code == 401)		/* authorization required */
     {
       get_auth ();
-      delete s;
+      delete
+	s;
       goto retry_get;
     }
-  if (code == 407) /* proxy authorization required */
+  if (code == 407)		/* proxy authorization required */
     {
       get_proxy_auth ();
-      delete s;
+      delete
+	s;
       goto retry_get;
     }
-  if (code == 500 /* ftp authentication through proxy required */
-      && net_method == IDC_NET_PROXY
-      && !strncmp (url, "ftp://", 6))
+  if (code == 500		/* ftp authentication through proxy required */
+      && net_method == IDC_NET_PROXY && !strncmp (url, "ftp://", 6))
     {
       get_ftp_auth ();
       if (net_ftp_user && net_ftp_passwd)
-        {
-	  delete s;
+	{
+	  delete
+	    s;
 	  url = concat ("ftp://", net_ftp_user,
-	  		":", net_ftp_passwd,
-			"@", url + 6, 0);
-          goto retry_get;
+			":", net_ftp_passwd, "@", url + 6, 0);
+	  goto retry_get;
 	}
     }
   if (code >= 300)
     {
-      delete s;
+      delete
+	s;
       s = 0;
       return;
     }
-  while ((l = s->gets ()) != 0) {
-    if (_strnicmp (l, "Content-Length:", 15) == 0)
-      sscanf (l, "%*s %d", &file_size);
-  }
+  while ((l = s->gets ()) != 0)
+    {
+      if (_strnicmp (l, "Content-Length:", 15) == 0)
+	sscanf (l, "%*s %d", &file_size);
+    }
 }
 
 NetIO_HTTP::~NetIO_HTTP ()

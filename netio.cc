@@ -17,7 +17,10 @@
    methods known to setup.  To add a new method, create a pair of
    nio-*.[ch] files and add the logic to NetIO::open here */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <stdio.h>
@@ -78,7 +81,7 @@ NetIO::set_url (char *Purl)
   *ep = 0;
   proto = _strdup (bp);
   *ep = ':';
-  bp = ep+3;
+  bp = ep + 3;
 
   ep = bp + strcspn (bp, ":/");
   c = *ep;
@@ -88,7 +91,7 @@ NetIO::set_url (char *Purl)
 
   if (*ep == ':')
     {
-      port = atoi (ep+1);
+      port = atoi (ep + 1);
       ep = strchr (ep, '/');
     }
 
@@ -112,7 +115,9 @@ NetIO *
 NetIO::open (char *url, BOOL allow_ftp_auth)
 {
   NetIO *rv = 0;
-  enum {http, ftp, file} proto;
+  enum
+  { http, ftp, file }
+  proto;
   if (strncmp (url, "http://", 7) == 0)
     proto = http;
   else if (strncmp (url, "ftp://", 6) == 0)
@@ -135,6 +140,9 @@ NetIO::open (char *url, BOOL allow_ftp_auth)
 	  break;
 	case ftp:
 	  rv = new NetIO_FTP (url, allow_ftp_auth);
+	  break;
+	case file:
+	  rv = new NetIO_File (url);
 	  break;
 	}
     }
@@ -203,6 +211,7 @@ auth_cmd (HWND h, int id, HWND hwndctl, UINT code)
       exit_setup (1);
       break;
     }
+  return 0;
 }
 
 static BOOL CALLBACK

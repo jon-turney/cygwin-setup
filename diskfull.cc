@@ -18,14 +18,17 @@
    handle disks bigger than 2G, and a new API that isn't always
    available. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 
 #include "diskfull.h"
 
-typedef   BOOL WINAPI (*GDFS)(LPCTSTR, PULARGE_INTEGER, PULARGE_INTEGER,
-			      PULARGE_INTEGER);
+typedef BOOL WINAPI (*GDFS) (LPCTSTR, PULARGE_INTEGER, PULARGE_INTEGER,
+			     PULARGE_INTEGER);
 
 int
 diskfull (const char *path)
@@ -43,7 +46,7 @@ diskfull (const char *path)
 	  if (gdfs (path, &avail, &total, &free))
 	    {
 	      int perc = avail.QuadPart * 100 / total.QuadPart;
-	      return 100-perc;
+	      return 100 - perc;
 	    }
 	}
     }
@@ -62,7 +65,7 @@ diskfull (const char *path)
   if (GetDiskFreeSpace (root, &junk, &junk, &free_clusters, &total_clusters))
     {
       int perc = free_clusters * 100 / total_clusters;
-      return 100-perc;
+      return 100 - perc;
     }
 
   return 0;

@@ -17,13 +17,14 @@
    nonzero if the existing mount is a text mount, else zero for
    binary. */
 
-char *	find_mount (int *istext, int *issystem, char *path);
+char *find_mount (int *istext, int *issystem, char *path);
 
 /* Similar to the mount and umount functions, but simplified */
 
-void	create_mount (const char *posix, const char *win32, int istext, int issystem);
-void	remove_mount (const char *posix);
-void	read_mounts ();
+void create_mount (const char *posix, const char *win32, int istext,
+		   int issystem);
+void remove_mount (const char *posix);
+void read_mounts ();
 
 /* Sets the cygdrive flags.  Used to make the automounted drives' binary/text
 mode consistent with the standard Cygwin mounts. */

@@ -16,7 +16,10 @@
 /* The purpose of this file is to display the program name, version,
    copyright notice, and project URL. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <stdio.h>
@@ -49,6 +52,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       NEXT (0);
       break;
     }
+  return 0;
 }
 
 static BOOL CALLBACK
@@ -73,4 +77,3 @@ do_splash (HINSTANCE h)
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
 }
-

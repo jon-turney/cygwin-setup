@@ -45,7 +45,8 @@ typedef enum
   ACTION_SAME_TEST = ACTION_TEST + ACTION_SAME,
   /* Last action. */
   ACTION_SAME_LAST
-} actions;
+}
+actions;
 
 typedef enum
 {
@@ -54,7 +55,8 @@ typedef enum
   VIEW_PACKAGE,
   VIEW_CATEGORY,
   NVIEW
-} views;
+}
+views;
 
 struct _header
 {
@@ -70,46 +72,55 @@ typedef class _view view;
 
 class pick_line
 {
-  public:
-    void set_line (Package *_pkg);
-    void set_line (Category *_cat);
-    void paint (HDC hdc, int x, int y, int row, int show_cat);
-    Package *get_pkg (void) { return pkg; };
-    Category *get_category (void) { return cat; };
-    int click (int x);
-  private:
-    Package *pkg;
-    Category *cat;
+public:
+  void set_line (Package * _pkg);
+  void set_line (Category * _cat);
+  void paint (HDC hdc, int x, int y, int row, int show_cat);
+  Package *get_pkg (void)
+  {
+    return pkg;
+  };
+  Category *get_category (void)
+  {
+    return cat;
+  };
+  int click (int x);
+private:
+    Package * pkg;
+  Category *cat;
 };
 
 class _view
 {
-  public:
-    int num_columns;
-    views get_view_mode () { return view_mode; };
-    void set_view_mode(views _mode);
-    struct _header *headers;
+public:
+  int num_columns;
+  views get_view_mode ()
+  {
+    return view_mode;
+  };
+  void set_view_mode (views _mode);
+  struct _header *headers;
     _view (views mode, HDC dc);
-    const char *mode_caption ();
-    void insert_pkg (Package *);
-    void insert_category (Category *, int);
-    void clear_view (void);
-    int click (int row, int x);
-    int current_col;
-    int new_col;
-    int src_col;
-    int cat_col;
-    int pkg_col;
-    int last_col;
-    pick_line * lines;
-    int nlines;
+  const char *mode_caption ();
+  void insert_pkg (Package *);
+  void insert_category (Category *, int);
+  void clear_view (void);
+  int click (int row, int x);
+  int current_col;
+  int new_col;
+  int src_col;
+  int cat_col;
+  int pkg_col;
+  int last_col;
+  pick_line *lines;
+  int nlines;
 
-  private:
+private:
     views view_mode;
-    void set_headers (void);
-    void init_headers (HDC dc);
-    void insert_at (int, pick_line);
-    void insert_under (int linen, pick_line line); 
+  void set_headers (void);
+  void init_headers (HDC dc);
+  void insert_at (int, pick_line);
+  void insert_under (int linen, pick_line line);
 
 };
 #endif /* __cplusplus */

@@ -16,7 +16,8 @@
 /* Simplified socket access functions */
 
 #if 0
-static const char *cvsid = "\n%%% $Id$\n";
+static const char *cvsid =
+  "\n%%% $Id$\n";
 #endif
 
 #include "win32.h"
@@ -37,7 +38,7 @@ SimpleSocket::SimpleSocket (const char *hostname, int port)
     {
       initted = 1;
       WSADATA d;
-      WSAStartup (MAKEWORD (1,1), &d);
+      WSAStartup (MAKEWORD (1, 1), &d);
     }
 
   s = INVALID_SOCKET;
@@ -80,7 +81,7 @@ SimpleSocket::SimpleSocket (const char *hostname, int port)
   name.sin_port = htons (port);
   memcpy (&name.sin_addr, ip, 4);
 
-  if (connect (s, (sockaddr *)&name, sizeof(name)))
+  if (connect (s, (sockaddr *) & name, sizeof (name)))
     {
       msg ("Can't connect to %s:%d", hostname, port);
       closesocket (s);
@@ -146,7 +147,7 @@ SimpleSocket::fill ()
     }
   else if (r < 0 && putp == getp)
     {
-      invalidate();
+      invalidate ();
     }
   return r;
 }
@@ -156,7 +157,7 @@ SimpleSocket::gets ()
 {
   if (getp > 0 && putp > getp)
     {
-      memmove (buf, buf+getp, putp-getp);
+      memmove (buf, buf + getp, putp - getp);
       putp -= getp;
       getp = 0;
     }
@@ -166,7 +167,7 @@ SimpleSocket::gets ()
 
   // getp is zero, always, here, and putp is the count
   char *nl;
-  while ((nl = (char *)memchr (buf, '\n', putp)) == NULL && putp < SSBUFSZ)
+  while ((nl = (char *) memchr (buf, '\n', putp)) == NULL && putp < SSBUFSZ)
     if (fill () <= 0)
       break;
 
@@ -196,11 +197,11 @@ SimpleSocket::read (char *ubuf, int ulen)
   if (!ok ())
     return -1;
 
-  int n, rv=0;
+  int n, rv = 0;
   if (putp > getp)
     {
-      n = MIN (ulen, putp-getp);
-      memmove (ubuf, buf+getp, n);
+      n = MIN (ulen, putp - getp);
+      memmove (ubuf, buf + getp, n);
       getp += n;
       ubuf += n;
       ulen -= n;
@@ -210,9 +211,9 @@ SimpleSocket::read (char *ubuf, int ulen)
     {
       n = recv (s, ubuf, ulen, 0);
       if (n < 0)
-        invalidate();
+	invalidate ();
       if (n <= 0)
-        return rv > 0 ? rv : n;
+	return rv > 0 ? rv : n;
       ubuf += n;
       ulen -= n;
       rv += n;

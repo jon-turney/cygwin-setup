@@ -15,7 +15,8 @@
 
 /* Simplified socket access functions */
 
-class SimpleSocket {
+class SimpleSocket
+{
 
   SOCKET s;
   char *buf;
@@ -23,9 +24,9 @@ class SimpleSocket {
   int fill ();
   void invalidate (void);
 
- public:
-  SimpleSocket (const char *hostname, int port);
-  ~SimpleSocket ();
+public:
+    SimpleSocket (const char *hostname, int port);
+   ~SimpleSocket ();
 
   int ok ();
 
@@ -33,5 +34,5 @@ class SimpleSocket {
   int write (const char *buf, int len);
 
   char *gets ();
-  int	read (char *buf, int len);
+  int read (char *buf, int len);
 };

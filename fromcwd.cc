@@ -26,7 +26,8 @@
    that we search recursively. */
 
 #if 0
-static const char *cvsid = "\n%%% $Id$\n";
+static const char *cvsid =
+  "\n%%% $Id$\n";
 #endif
 
 #include "win32.h"
@@ -53,7 +54,7 @@ static int
 is_test_version (char *v)
 {
   int i;
-  for (i=0; v[i] && isdigit (v[i]); i++) ;
+  for (i = 0; v[i] && isdigit (v[i]); i++);
   return (i >= 6) ? 1 : 0;
 }
 
@@ -62,19 +63,19 @@ canonicalize_version (const char *v)
 {
   static char nv[3][100];
   static int idx = 0;
-  char *np ;
+  char *np;
   const char *dp;
   int i;
 
-  idx = (idx+1) % 3;
+  idx = (idx + 1) % 3;
   np = nv[idx];
 
   while (*v)
     {
       if (isdigit (*v))
 	{
-	  for (dp=v; *dp && isdigit (*dp); dp++) ;
-	  for (i=dp-v; i<12; i++)
+	  for (dp = v; *dp && isdigit (*dp); dp++);
+	  for (i = dp - v; i < 12; i++)
 	    *np++ = '0';
 	  while (v < dp)
 	    *np++ = *v++;
@@ -106,7 +107,7 @@ found_file (char *path, unsigned int fsize)
       }
 
   if (p == NULL)
-      p = new_package (f.pkg);
+    p = new_package (f.pkg);
 
   int trust = is_test_version (f.ver) ? TRUST_TEST : TRUST_CURR;
 
@@ -120,11 +121,11 @@ found_file (char *path, unsigned int fsize)
     }
 
   if (p->info[trust].version)
-    free(p->info[trust].version);
+    free (p->info[trust].version);
   p->info[trust].version = _strdup (f.ver);
 
   if (p->info[trust].install)
-    free(p->info[trust].install);
+    free (p->info[trust].install);
   p->info[trust].install = _strdup (path);
 
   p->info[trust].install_size = fsize;
@@ -150,7 +151,7 @@ do_fromcwd (HINSTANCE h)
   char srcpath[_MAX_PATH];
   for (i = 0; i < npackages; i++)
     {
-      p = package+i;
+      p = package + i;
       for (t = TRUST_PREV; t <= TRUST_TEST; t++)
 	if (p->info[t].install)
 	  {
@@ -168,7 +169,7 @@ do_fromcwd (HINSTANCE h)
 	      }
 	    if (h != INVALID_HANDLE_VALUE)
 	      {
-		msg("-- got it");
+		msg ("-- got it");
 		FindClose (h);
 		p->info[t].source = _strdup (srcpath);
 		p->info[t].source_size = wfd.nFileSizeLow;

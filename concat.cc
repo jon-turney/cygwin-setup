@@ -16,7 +16,11 @@
 /* See concat.h.  Note that we canonicalize the result, this avoids
    multiple slashes being interpreted as UNCs. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
+
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -61,12 +65,12 @@ vconcat (const char *s, va_list v)
   strcpy (rv, s);
   v = save_v;
   while (1)
-  {
-    arg = va_arg (v, char *);
-    if (arg == 0)
-      break;
-    strcat (rv, arg);
-  }
+    {
+      arg = va_arg (v, char *);
+      if (arg == 0)
+	break;
+      strcat (rv, arg);
+    }
   va_end (v);
 
   char *d, *p;

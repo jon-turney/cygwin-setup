@@ -17,7 +17,10 @@
    user choose the source of the install - from the net, from the
    current directory, or to just download files. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <stdio.h>
@@ -27,25 +30,18 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "msg.h"
 #include "log.h"
 
-static int rb[] = { IDC_SOURCE_NETINST, IDC_SOURCE_DOWNLOAD, IDC_SOURCE_CWD, 0 };
-
-static void
-check_if_enable_next (HWND h)
-{
-  EnableWindow (GetDlgItem (h, IDOK), source ? 1 : 0);
-}
+static int rb[] =
+  { IDC_SOURCE_NETINST, IDC_SOURCE_DOWNLOAD, IDC_SOURCE_CWD, 0 };
 
 static void
 load_dialog (HWND h)
 {
-  int i;
   rbset (h, rb, source);
 }
 
 static void
 save_dialog (HWND h)
 {
-  int i;
   source = rbget (h, rb);
 }
 
@@ -78,6 +74,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     default:
       break;
     }
+  return 0;
 }
 
 static BOOL CALLBACK
@@ -88,11 +85,16 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_INITDIALOG:
       load_dialog (h);
       // Check to see if any radio buttons are selected. If not, select a default.
-      if ((!SendMessage(GetDlgItem (h, IDC_SOURCE_DOWNLOAD), BM_GETCHECK, 0, 0) == BST_CHECKED)
-        && (!SendMessage(GetDlgItem (h, IDC_SOURCE_CWD), BM_GETCHECK, 0, 0) == BST_CHECKED))
-        {
-          SendMessage(GetDlgItem (h, IDC_SOURCE_NETINST), BM_SETCHECK, BST_CHECKED, 0);
-        }
+      if (
+	  (!SendMessage
+	   (GetDlgItem (h, IDC_SOURCE_DOWNLOAD), BM_GETCHECK, 0,
+	    0) == BST_CHECKED)
+	  && (!SendMessage (GetDlgItem (h, IDC_SOURCE_CWD), BM_GETCHECK, 0, 0)
+	      == BST_CHECKED))
+	{
+	  SendMessage (GetDlgItem (h, IDC_SOURCE_NETINST), BM_SETCHECK,
+		       BST_CHECKED, 0);
+	}
       return FALSE;
     case WM_COMMAND:
       return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
@@ -104,7 +106,7 @@ void
 do_source (HINSTANCE h)
 {
   int rv = 0;
-  /* source = IDC_SOURCE_CWD;*/
+  /* source = IDC_SOURCE_CWD; */
   source = IDC_SOURCE_NETINST;
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_SOURCE), 0, dialog_proc);
   if (rv == -1)
@@ -114,4 +116,3 @@ do_source (HINSTANCE h)
        (source == IDC_SOURCE_DOWNLOAD) ? "download" :
        (source == IDC_SOURCE_NETINST) ? "network install" : "from cwd");
 }
-

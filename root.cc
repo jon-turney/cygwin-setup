@@ -17,7 +17,10 @@
    root of the installation to be, and to ask whether the user prefers
    text or binary mounts. */
 
-static char *cvsid = "\n%%% $Id$\n";
+#if 0
+static const char *cvsid =
+  "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <shlobj.h>
@@ -39,7 +42,8 @@ static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
 static void
 check_if_enable_next (HWND h)
 {
-  EnableWindow (GetDlgItem (h, IDOK), root_text && get_root_dir () && root_scope);
+  EnableWindow (GetDlgItem (h, IDOK), root_text && get_root_dir ()
+		&& root_scope);
 }
 
 static void
@@ -143,7 +147,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDOK:
       save_dialog (h);
 
-      if (! directory_is_absolute ())
+      if (!directory_is_absolute ())
 	{
 	  note (IDS_ROOT_ABSOLUTE);
 	  break;
@@ -169,6 +173,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       NEXT (0);
       break;
     }
+  return 0;
 }
 
 static BOOL CALLBACK
@@ -199,4 +204,3 @@ do_root (HINSTANCE h)
        (root_text == IDC_ROOT_TEXT) ? "text" : "binary",
        (root_scope == IDC_ROOT_USER) ? "user" : "system");
 }
-
