@@ -1,5 +1,13 @@
 2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
 
+	* main.cc (NTSecurity::setDefaultDACL): Sanity check memory allocation.
+	
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (NTSecurity::setDefaultDACL): Adjust commented code for auto_ptr use.
+	
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
 	* main.cc (NTSecurity::NoteFailedAPI): Helper function.
 	Use throughout NTSecurity routines.
 	(NTSecurity::setDefaultDACL): Use dynamic memory for ACL storage.
