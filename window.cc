@@ -21,6 +21,8 @@
 #include "window.h"
 #include "String++.h"
 #include "RECTWrapper.h"
+#include "msg.h"
+#include "resource.h"
 
 ATOM Window::WindowClassAtom = 0;
 HINSTANCE Window::AppInstance = NULL;
@@ -73,9 +75,9 @@ Window::FirstWindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
       wnd->WindowHandle = hwnd;
     }
   else
-  {
-  	// Should never get here.
-  	abort();
+    {
+      // Should never get here.
+      fatal(NULL, IDS_WINDOW_INIT_BADMSG, uMsg);
     }
 
   return wnd->WindowProc (uMsg, wParam, lParam);

@@ -496,6 +496,7 @@ BEGIN
     IDS_CORRUPT_PACKAGE     "Package file %s has a corrupt local copy, please remove and retry."
     IDS_MISSING_LOG         "<no log was in use>"
     IDS_SKIP_PACKAGE	    "%s\nDo you want to skip this package ?"
+    IDS_WINDOW_INIT_BADMSG  "Fatal Error: Unexpected windows message %u received too early in window initialization."
 END
 
 #endif    // English (U.S.) resources
