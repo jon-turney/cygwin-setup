@@ -394,6 +394,38 @@ install_one (Package *pkg, bool isSrc)
   return errors;
 }
 
+static void
+check_for_old_cygwin ()
+{
+  char buf[_MAX_PATH + sizeof ("\\cygwin1.dll")];
+  if (!GetSystemDirectory (buf, sizeof (buf)))
+    return;
+  strcat (buf, "\\cygwin1.dll");
+  if (_access (buf, 0) != 0)
+    return;
+
+  char msg[sizeof (buf) + 132];
+  sprintf (msg, "An old version of cygwin1.dll was found here:\r\n%s\r\nDelete?", buf);
+  switch (MessageBox (NULL, msg,
+		      "What's that doing there?", MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL))
+    {
+    case IDYES:
+      if (!DeleteFile (buf))
+	{
+	  sprintf (msg, "Couldn't delete file %s.\r\n"
+			"Is the DLL in use by another application?\r\n"
+			"You should delete the old version of cygwin1.dll\r\nat your earliest convenience.",
+			buf);
+	  MessageBox (NULL, buf, "Couldn't delete file", MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
+	}
+      break;
+    default:
+	break;
+    }
+
+  return;
+}
+
 void
 do_install (HINSTANCE h)
 {
@@ -528,6 +560,8 @@ do_install (HINSTANCE h)
   if (rename (ndbn, odbn))
     badrename (ndbn, odbn);
 
+  if (!errors)
+    check_for_old_cygwin ();
   if (num_installs == 0 && num_uninstalls == 0)
     {
       exit_msg = IDS_NOTHING_INSTALLED;
