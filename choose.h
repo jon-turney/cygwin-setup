@@ -21,6 +21,40 @@
 #define CATEGORY_EXPANDED  0
 #define CATEGORY_COLLAPSED 1
 
+typedef enum
+{
+  /* Note that the next four items must be in the same order as the
+     TRUST items in ini.h. */
+  ACTION_UNKNOWN,
+  ACTION_PREV,
+  ACTION_CURR,
+  ACTION_TEST,
+  ACTION_SKIP,
+  ACTION_UNINSTALL,
+  ACTION_REDO,
+  ACTION_SRC_ONLY,
+  ACTION_LAST,
+  ACTION_ERROR,
+  /* Use ACTION_SAME when you want to leve the current version unaltered
+   * even if it that version is not in setup.ini
+   */
+  ACTION_SAME = 100,
+  /* Actions taken when installed version matches the selected version. */
+  ACTION_SAME_PREV = ACTION_PREV + ACTION_SAME,
+  ACTION_SAME_CURR = ACTION_CURR + ACTION_SAME,
+  ACTION_SAME_TEST = ACTION_TEST + ACTION_SAME,
+  /* Last action. */
+  ACTION_SAME_LAST
+} actions;
+
+typedef enum
+{
+  VIEW_UNKNOWN,
+  VIEW_PACKAGE_FULL,
+  VIEW_PACKAGE,
+  VIEW_CATEGORY,
+  NVIEW
+} views;
 
 struct _header
 {
@@ -29,6 +63,8 @@ struct _header
   int width;
   int x;
 };
+
+#ifdef __cplusplus
 
 typedef class _view view;
 
@@ -76,5 +112,5 @@ class _view
     void insert_under (int linen, pick_line line); 
 
 };
-
+#endif /* __cplusplus */
 #endif /* _CHOOSE_H_ */

@@ -20,9 +20,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "win32.h"
 #include "ini.h"
 #include "iniparse.h"
-#include "win32.h"
 #include "filemanip.h"
 
 extern "C" int yyerror (char *s, ...);

@@ -147,6 +147,11 @@ set_action (Package * pkg, bool preinc)
 	break;
 	/* ACTION_SAME_* are used when the installed version is the same
 	   as the given action. */
+      case ACTION_SAME:
+	if (pkg->installed && !pkg->installed_ix)
+	  /* the package is installed, but we don't have 
+	   * that version it in our version list */
+	  return;
       case ACTION_SAME_CURR:
       case ACTION_SAME_TEST:
 	if (!preinc)		/* Previously set to this value */
@@ -269,6 +274,7 @@ choose_caption (Package * pkg)
     case ACTION_TEST:
       pkg->trust = (trusts) pkg->action;
       return pkg->info[pkg->trust].version;
+    case ACTION_SAME:
     case ACTION_SAME_PREV:
     case ACTION_SAME_CURR:
     case ACTION_SAME_TEST:

@@ -23,6 +23,14 @@
    packages (the chosen "install" field).  install.cc installs
    selected packages. */
 
+/* the classes here store installation info *shrug* */
+/* forward typedefs */
+
+typedef struct _Category Category;
+typedef struct _Package Package;
+
+#include "choose.h"
+
 #define YYSTYPE char *
 
 /* lowest number must be most trusted, highest least trusted */
@@ -37,42 +45,10 @@ typedef enum
 
 typedef enum
 {
-  /* Note that the next four items must be in the same order as the
-     TRUST items above. */
-  ACTION_UNKNOWN,
-  ACTION_PREV,
-  ACTION_CURR,
-  ACTION_TEST,
-  ACTION_SKIP,
-  ACTION_UNINSTALL,
-  ACTION_REDO,
-  ACTION_SRC_ONLY,
-  ACTION_LAST,
-  ACTION_ERROR,
-  ACTION_SAME = 100,
-  /* Actions taken when installed version matches the selected version. */
-  ACTION_SAME_PREV = ACTION_PREV + ACTION_SAME,
-  ACTION_SAME_CURR = ACTION_CURR + ACTION_SAME,
-  ACTION_SAME_TEST = ACTION_TEST + ACTION_SAME,
-  /* Last action. */
-  ACTION_SAME_LAST
-} actions;
-
-typedef enum
-{
   EXCLUDE_NONE = 0,
   EXCLUDE_BY_SETUP,
   EXCLUDE_NOT_FOUND
 } excludes;
-
-typedef enum 
-{
-  VIEW_UNKNOWN,
-  VIEW_PACKAGE_FULL,
-  VIEW_PACKAGE,
-  VIEW_CATEGORY,
-  NVIEW
-} views;
 
 #define is_download_action(pkg) \
   ((pkg)->action == ACTION_PREV || \
@@ -121,12 +97,12 @@ typedef struct _CategoryPackage
   char *pkgname;		  /* This should be Package *, but the packages can move*/
 } CategoryPackage;
 
-typedef struct _Category
+struct _Category
 {
   struct _Category *next; /* the next category in the list */
   char *name;		  /* the category */
   CategoryPackage *packages; /* the packages in this category */
-} Category;
+};
 
 typedef struct _Dependency
 {
@@ -134,7 +110,7 @@ typedef struct _Dependency
   char *package;	/* the name of the package that is depended on */
 } Dependency; 		/* Dependencies can be used for
 			   recommended/required/related... */
-typedef struct
+struct _Package
 {
   char *name;		/* package name, like "cygwin" */
   char *sdesc;		/* short description (replaces "name" if provided) */
@@ -156,7 +132,7 @@ typedef struct
 				   to infoscan */
   Info infoscan[NTRUST - 1];	/* +1 for TRUST_UNKNOWN */
   Info infoend[0];		/* end marker */
-} Package;
+};
 
 extern Package *package;
 extern int npackages;

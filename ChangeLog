@@ -1,3 +1,38 @@
+2001-11-10  Robert Collins  <rbtcollins@hotmail.com>
+
+	* ini.h (actions): Remove - transferred to choose.h.
+	(views): Ditto.
+	* choose.h: Protect class's from "C" compilers.
+	 (actions): New enum, from ini.h. This may not be the 'right' place
+	but that place doesn't exist yet.
+	(_views): New enum, from ini.h.
+	* choose.cc (set_action): Handle installed packages with a version not in 
+	setup.ini.
+	(choose_caption): Ditto.
+	* iniparse.y: Rearrange header order to handle new ini.h.
+
+2001-11-10  Robert Collins  <rbtcollins@hotmail.com>
+
+	* ini.h (_Info): Fix compiler warnings (signed vs unsigned comparison).
+	(registry_category): Fix compiler warning (deprecated conversion).
+	* iniparse.y (registry_category): Ditto.
+	* choose.cc (cvsid): Fix compiler warnings (unused, deprecated conversion).
+	(add_requried): Remove unused variable.
+	(choose_caption): Handle all enumeration values via a default.
+	(paint): Fix compiler warnings (unused, deprecated conversion).
+	(scroll_common): Fix compiler warnings (unused, signed vs unsigned comparison).
+	(list_clicK): Fix compiler warnings (signed vs unsigned comparison).
+	(note_width): Fix compiler warnings (deprecated conversion).
+	(keep_or_skip): Fix compiler warnings (unused).
+	(_view::mode_caption): Fix compiler warnings (deprecated conversion).
+	(set_view_mode): Fix compiler warnings (unused).
+	(create_listview): Fix compiler warnings (unused, incorrect format, reaches
+	end of function).
+	(dialog_proc): Fix compiler warnings (unused).
+	(read_installed_db): Fix compiler warnings (unused, deprecated conversion).
+	* choose.h (_header): Fix compiler warnings (deprecated conversion).
+	(_view): Ditto.
+
 2001-11-08  Pavel Tsekov  <ptsekov@syntrex.com>
  
 	* simpsock.h (SimpleSocket::invalidate): Declare new method.
