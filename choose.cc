@@ -246,7 +246,8 @@ paint (HWND hwnd)
 	  TextOut (hdc, x + headers[CURRENT_COL].x, r,
 		   pkg->installed->version, strlen (pkg->installed->version));
 	  SelectObject (bitmap_dc, bm_rtarrow);
-	  BitBlt (hdc, x + headers[CURRENT_COL].x + headers[0].width + ICON_MARGIN/2 + HMARGIN/2, by,
+	  BitBlt (hdc, x + headers[CURRENT_COL].x + headers[0].width +
+		  ICON_MARGIN/2 + HMARGIN/2, by,
 		  11, 11, bitmap_dc, 0, 0, SRCCOPY);
 	}
 
@@ -376,11 +377,13 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 
   Package *pkg = package + package_indexes[r];
 
-  if (x >= headers[NEW_COL].x - (HMARGIN / 2) && x <= headers[NEW_COL + 1].x - HMARGIN/2)
+  if (x >= headers[NEW_COL].x - (HMARGIN / 2)
+      && x <= headers[NEW_COL + 1].x - (HMARGIN / 2))
     set_action (pkg, 1);
 
-  if (pkg->info[pkg->trust].source_exists &&
-      x >= headers[SRC_COL].x - HMARGIN/2 && x <= headers[SRC_COL + 1].x - HMARGIN/2)
+  if (pkg->info[pkg->trust].source_exists
+      && x >= headers[SRC_COL].x - HMARGIN / 2
+      && x <= headers[SRC_COL + 1].x - (HMARGIN / 2))
     pkg->srcpicked ^= 1;
 
   RECT rect;
@@ -591,9 +594,11 @@ create_listview (HWND dlg, RECT *r)
   note_width (dc, "uninstall", NEW_COL_SIZE_SLOP, NEW_COL);
 
   headers[CURRENT_COL].x = HMARGIN/2;
-  headers[NEW_COL].x = headers[CURRENT_COL].x + headers[CURRENT_COL].width + NEW_COL_SIZE_SLOP + HMARGIN;
+  headers[NEW_COL].x = headers[CURRENT_COL].x + headers[CURRENT_COL].width +
+    NEW_COL_SIZE_SLOP + HMARGIN;
   headers[SRC_COL].x = headers[NEW_COL].x + headers[NEW_COL].width + HMARGIN;
-  headers[PACKAGE_COL].x = headers[SRC_COL].x + headers[SRC_COL].width + HMARGIN;
+  headers[PACKAGE_COL].x = headers[SRC_COL].x + headers[SRC_COL].width +
+    HMARGIN;
 
   default_trust (lv, TRUST_CURR);
   set_full_list (lv, full_list);
@@ -941,11 +946,15 @@ do_choose (HINSTANCE h)
 
   nextbutton = 0;
   bm_spin = LoadImage (h, MAKEINTRESOURCE (IDB_SPIN), IMAGE_BITMAP, 0, 0, 0);
-  bm_rtarrow = LoadImage (h, MAKEINTRESOURCE (IDB_RTARROW), IMAGE_BITMAP, 0, 0, 0);
+  bm_rtarrow = LoadImage (h, MAKEINTRESOURCE (IDB_RTARROW), IMAGE_BITMAP,
+			  0, 0, 0);
 
-  bm_checkyes = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_YES), IMAGE_BITMAP, 0, 0, 0);
-  bm_checkno = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NO), IMAGE_BITMAP, 0, 0, 0);
-  bm_checkna = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NA), IMAGE_BITMAP, 0, 0, 0);
+  bm_checkyes = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_YES), IMAGE_BITMAP,
+			   0, 0, 0);
+  bm_checkno = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NO), IMAGE_BITMAP,
+			  0, 0, 0);
+  bm_checkna = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NA), IMAGE_BITMAP,
+			  0, 0, 0);
 
   register_windows (h);
 
@@ -977,23 +986,24 @@ do_choose (HINSTANCE h)
 			       : "unknown");
       const char *excluded = (pkg->exclude ? "yes" : "no");
 
-      log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s excluded=%s src?=%s",
+      log (LOG_BABBLE,
+	   "[%s] action=%s trust=%s installed=%s excluded=%s src?=%s",
 	   pkg->name, action, trust, installed,
 	   excluded, pkg->srcpicked ? "yes" : "no");
       for (int t = 1; t < NTRUST; t++)
 	{
 	  if (pkg->info[t].install)
-	    log (LOG_BABBLE, "     [%s] ver=%s\r\n"
-			     "          inst=%s %d exists=%s\r\n"
-			     "		src=%s %d exists=%s",
+	    log (LOG_BABBLE, "     [%s] ver=%s\n"
+			     "          inst=%s %d exists=%s\n"
+			     "          src=%s %d exists=%s",
 		 infos[t],
 		 pkg->info[t].version ?: "(none)",
 		 pkg->info[t].install ?: "(none)",
 		 pkg->info[t].install_size,
-		 (pkg->info[t].install_exists) ? "yes":"no",
+		 (pkg->info[t].install_exists) ? "yes" : "no",
 		 pkg->info[t].source ?: "(none)",
 		 pkg->info[t].source_size,
-		 (pkg->info[t].source_exists == 1) ? "yes" : "no");
+		 (pkg->info[t].source_exists) ? "yes" : "no");
 	}
     }
 }
