@@ -84,18 +84,18 @@ int
 parse_filename (String const &in_fn, fileparse & f)
 {
   char *p, *ver;
-  char fn[in_fn.size() + 1];
-  strcpy (fn, in_fn.cstr_oneuse());
-  
-  int n = find_tar_ext (fn);
+  char *fn;
+  int n;
 
-  if (!n)
+  fn = in_fn.cstr ();
+  if (fn == 0 || !(n = find_tar_ext (fn)))
     return 0;
 
   f.tail = fn + n;
   fn[n] = '\0';
   f.pkg = f.what = String();
   p = base (fn).cstr();
+  delete[] fn;
   char const *ext;
   /* TODO: make const and non-const trail variant. */
   if ((ext = trail (p, "-src")))
