@@ -66,6 +66,7 @@ static int row_height;
 static HANDLE bm_spin, bm_rtarrow, bm_checkyes, bm_checkno, bm_checkna;
 static HDC bitmap_dc;
 static view *chooser = NULL;
+static trusts deftrust = TRUST_UNKNOWN;
 
 static struct _header pkg_headers[] = {
   { "Current", 7, 0, 0 },
@@ -152,19 +153,18 @@ set_action (Package *pkg, bool preinc)
 	break;
       case ACTION_REDO:
 	{
-	  trusts t = (source == IDC_SOURCE_DOWNLOAD) ? TRUST_CURR : pkg->installed_ix;
-	  if (isinstalled (pkg, t))
+	  if (isinstalled (pkg, deftrust))
 	    {
-	      pkg->trust = t;
+	      pkg->trust = deftrust;
 	      return;
 	    }
 	}
 	break;
       case ACTION_SRC_ONLY:
 	{
-	  trusts t = (source == IDC_SOURCE_DOWNLOAD) ? TRUST_CURR : pkg->installed_ix;
-	  if (pkg->info[t].source_exists)
+	  if (pkg->info[deftrust].source_exists)
 	    {
+	      pkg->trust = deftrust;
 	      pkg->srcpicked = 1;
 	      return;
 	    }
@@ -557,6 +557,7 @@ default_trust (HWND h, trusts trust)
 {
   int i, t, c;
 
+  deftrust = trust;
   for (Package *pkg = package; pkg->name; pkg++)
     {
       pkg->action = (actions) trust;
@@ -612,7 +613,8 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 	      bitmap_dc, 0, 0, SRCCOPY);
 
       HANDLE check_bm;
-      if (!pkg->info[pkg->trust].source_exists || pkg->action != (actions) pkg->trust)
+      if (!pkg->info[pkg->trust].source_exists
+	  || (pkg->action != ACTION_REDO && pkg->action != (actions) pkg->trust))
 	check_bm = bm_checkna;
       else if (pkg->srcpicked)
 	check_bm = bm_checkyes;
@@ -647,7 +649,7 @@ pick_line::click (int x)
       if (pkg->info[pkg->trust].source_exists
 	  && x >= chooser->headers[chooser->src_col].x - HMARGIN/2
 	  && x <= chooser->headers[chooser->src_col + 1].x - HMARGIN/2)
-      pkg->srcpicked ^= 1;
+	pkg->srcpicked ^= 1;
 
       if (x >= chooser->headers[chooser->new_col].x - (HMARGIN / 2)
 	  && x <= chooser->headers[chooser->new_col + 1].x - HMARGIN/2)
