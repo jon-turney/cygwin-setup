@@ -1,3 +1,7 @@
+2004-10-27  Max Bowsher  <maxb@ukf.net>
+
+	* Makefile.am (setup_SOURCES): Add "RECTWrapper.h". It was missing.
+
 2004-10-25  Bas van Gompel  <cygsup-patch.buzz@bavag.tmfweb.nl>
 
 	* package_source.cc (packagesource::set_canonical):

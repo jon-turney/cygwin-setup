@@ -242,6 +242,7 @@ setup_SOURCES = \
 	proppage.h \
 	propsheet.cc \
 	propsheet.h \
+	RECTWrapper.h \
 	res.rc \
 	resource.h \
 	rfc1738.cc \
