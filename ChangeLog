@@ -1,3 +1,8 @@
+2002-06-15  Robert Collins  <rbtcollins@hotmail.com>
+
+	* package_meta.cc (packagemeta::set_action): When installing packages
+	with no binaries, choose the source package.
+
 2002-06-10  Robert Collins  <rbtcollins@hotmail.com>
 
         * IniParseFindVisitor (IniParseFindVisitor::visitFile): Apply Max
