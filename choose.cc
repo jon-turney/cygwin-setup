@@ -1061,7 +1061,7 @@ create_listview (HWND dlg, RECT *r)
   chooser = new (view) (VIEW_CATEGORY, dc);
 
   default_trust (lv, TRUST_CURR);
-  set_view_mode (lv, VIEW_PACKAGE);
+  set_view_mode (lv, VIEW_CATEGORY);
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption()))
     log (LOG_BABBLE, "Failed to set View button caption %d", GetLastError() );
   for (Package *foo = package; foo->name; foo++)
@@ -1483,7 +1483,7 @@ do_choose (HINSTANCE h)
 
       log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s excluded=%s src?=%s"
 	   " category=%s", pkg->name, action, trust, installed,
-	   excluded, pkg->srcpicked ? "yes" : "no", pkg->category);
+	   excluded, pkg->srcpicked ? "yes" : "no", pkg->category->name);
       for (int t = 1; t < NTRUST; t++)
 	{
 	  if (pkg->info[t].install)

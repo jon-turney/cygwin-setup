@@ -1,3 +1,8 @@
+Sat Jun 30 13:39:00 2001 Robert Collins <rbtcollins@hotmail.com>
+
+	* choose.cc (create_listview): Call set_view_mode with VIEW_CATEGORY.
+	(do_choose): Log the first category name.
+
 Fri Jun 29 23:07:44 2001  Christopher Faylor <cgf@cygnus.com>
 
 	*ini.h: Reapply 2001-06-25 changes.
