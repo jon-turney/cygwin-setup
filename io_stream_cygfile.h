@@ -61,10 +61,13 @@ private:
   io_stream_cygfile ()
   {
   };
+  friend int cygmkdir_p (enum path_type_t isadir, String const &_name);
+  static String normalise (String const &unixpath);
   FILE *fp;
   int lasterr;
   String fname;
   String lmode;
+  static String cwd;
 };
 
 #endif /* _IO_STREAM_CYGFILE_H_ */

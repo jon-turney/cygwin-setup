@@ -1,5 +1,18 @@
 2003-03-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	* io_stream_cygfile.cc (cwd): New static for cwd storage.
+	(io_stream_cygfile::normalise): New method.
+	(io_stream_cygfile::io_stream_cygfile): Use it.
+	(io_stream_cygfile::exists): Ditto.
+	(io_stream_cygfile::remove): Ditto.
+	(io_stream_cygfile::mklink): And again.
+	(cygmkdir_p): Yes, again.
+	(io_stream_cygfile::move): And once more.
+	* io_stream_cygfile.h (io_stream_cygfile::normalise): Declare.
+	(io_stream_cygfile::cwd): Ditto.
+
+2003-03-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* mklink2.cc: Moved from mklink2.c to avoid 'not a prototype error'.
 	Make g++ compatible.
 	* mklink2.c: Remove.
