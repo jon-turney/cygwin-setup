@@ -1,5 +1,12 @@
 2002-11-10  Robert Collins <rbtcollins@hotmail.com>
 
+	* main.cc (main): Use the factory for LogFile.
+	* String++.cc: Update to use sstream.
+       	(String::String): Use a ostringstream for libC++ 3.2.
+	* LogFile.h (LogFile): Make createLogFile static.
+
+2002-11-10  Robert Collins <rbtcollins@hotmail.com>
+
 	* main.cc (main): Oops, pass LogSingleton a reference, not a pointer.
 
 2002-11-04  Max Bowsher  <maxb@ukf.net>

@@ -19,7 +19,7 @@
 // Logging class. Default logging level is PLAIN.
 class LogFile : public LogSingleton {
 public:
-  LogFile *createLogFile();
+  static LogFile *createLogFile();
   LogFile();
   void clearFiles(); // delete all target filenames
   void setFile (int minlevel, String const &path, bool append);

@@ -21,7 +21,7 @@
 #include "concat.h"
 #include "io_stream.h"
 #include <iostream>
-#include <strstream>
+#include <sstream>
 #include <string>
 
 using namespace std;
@@ -57,10 +57,10 @@ String::~String ()
 
 String::String (int const anInt)
 {
-  ostrstream os;
+  ostringstream os;
   os << anInt;
-  theData = new _data(os.pcount());
-  memcpy (theData->theString, os.str(), os.pcount());
+  theData = new _data(os.str().size());
+  memcpy (theData->theString, os.str().c_str(), os.str().size());
 }
 
 String::String (string const &aString) : theData (new _data (aString.c_str() ? strlen (aString.c_str()) : 0))
