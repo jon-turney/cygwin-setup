@@ -1,3 +1,13 @@
+2002-07-05  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.cc (default_trust): Check package accessibility before
+	triggering an install. (Suggested by Pavel).
+		
+2002-07-03  Pavel Tsekov  <ptsekov@gmx.net>
+
+	* compress_gz.cc (compress_gz::construct): Always initialize key members
+	to ensure the destructor does the right thing.
+
 2002-07-03  Pavel Tsekov  <ptsekov@gmx.net>
 
         * filemanip.cc (parse_filename): Do not try to parse empty

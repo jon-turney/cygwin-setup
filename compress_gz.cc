@@ -62,12 +62,6 @@ compress_gz::compress_gz (io_stream * parent, const char *openmode)
 void
 compress_gz::construct (io_stream * parent, const char *openmode)
 {
-  if (!parent)
-    {
-      z_err = Z_STREAM_ERROR;
-      return;
-    }
-
   original = parent;
   peeklen = 0;
   int err;
@@ -90,6 +84,13 @@ compress_gz::construct (io_stream * parent, const char *openmode)
   transparent = 0;
 
   mode = '\0';
+
+  if (!parent)
+    {
+      z_err = Z_STREAM_ERROR;
+      return;
+    }
+
   do
     {
       if (*p == 'r')
