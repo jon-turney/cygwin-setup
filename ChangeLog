@@ -1,3 +1,10 @@
+Thu Apr  6 19:15:27 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* Makefile.in: Add "-nostdinc" to regular CFLAGS.
+	Add target to grab cygwin1.dll from ../cygwin subdirectory.
+	* gzip.exe.gz: Update.
+	* tar.exe.gz: Update.
+
 Wed Apr  5 10:52:08 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* Makefile.in: Use ZLIB variable as a target.

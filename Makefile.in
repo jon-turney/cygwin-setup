@@ -28,7 +28,7 @@ EXEEXT_FOR_BUILD:=@EXEEXT_FOR_BUILD@
 CC:=@CC@
 CC_FOR_TARGET:=$(CC)
 
-CFLAGS:=@CFLAGS@
+CFLAGS:=@CFLAGS@ -nostdinc
 CXXFLAGS:=@CXXFLAGS@ -fno-exceptions -nostdinc++ -fno-rtti
 
 WINDRES:=@WINDRES@
@@ -62,7 +62,7 @@ ALL_LDFLAGS:=${filter-out -I%, \
 
 PROGS:=setup$(EXEEXT)
 
-BUNDLED_FILES:=$(srcdir)/tar.exe.gz $(srcdir)/gzip.exe.gz \
+BUNDLED_FILES:=cygwin1.dll.gz $(srcdir)/tar.exe.gz $(srcdir)/gzip.exe.gz \
 	       mount.exe.gz cygpath.exe.gz
 .SUFFIXES:
 .NOEXPORT:
@@ -110,6 +110,15 @@ $(ZLIB): zlib/Makefile
 	
 $(utils_build)/%.exe: $(utils_build)/Makefile
 	@$(MAKE) -C $(utils_build) $(@F)
+
+%.dll.gz: %.dll
+	gzip -9nf $?
+
+%.dll: $(cygwin_build)/new-%.dll
+	$(OBJCOPY) --strip-unneeded $? $@
+
+$(cygwin_build)/%.dll: $(cygwin_build)/Makefile
+	@$(MAKE) -C $(cygwin_build) $(@F)
 
 cinstall.rc: $(BUNDLED_FILES)
 	for f in $^; do \
