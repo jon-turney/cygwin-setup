@@ -77,7 +77,7 @@ enum
 #ifdef MAINTAINER_FEATURES
 #include "getopt++/GetOption.h"
 #include "getopt++/StringOption.h"
-static StringOption CygwinRegistryNameOption (CYGWIN_INFO_CYGWIN_REGISTRY_NAME, '#', "override-registry-name", "Override registry name to allow parallel installs for testing purposes");
+static StringOption CygwinRegistryNameOption (CYGWIN_INFO_CYGWIN_REGISTRY_NAME, '#', "override-registry-name", "Override registry name to allow parallel installs for testing purposes", false);
 #undef CYGWIN_INFO_CYGWIN_REGISTRY_NAME
 #define CYGWIN_INFO_CYGWIN_REGISTRY_NAME (((std::string)CygwinRegistryNameOption).c_str())
 #endif

@@ -52,7 +52,7 @@ using namespace std;
 SiteList site_list;
 SiteList all_site_list;
 
-StringOption SiteOption("", 's', "site", "Download site");
+StringOption SiteOption("", 's', "site", "Download site", false);
 
 /* XXX make into a singleton? */
 static SiteSetting ChosenSites;

@@ -1,3 +1,8 @@
+2003-07-10  Jeremy White  <jwhite@codeweavers.com>
+
+	* mount.cc, root.cc, site.cc:  Make StringOptions required,
+	thereby making --longopt <parm> behave as a newbie would expect.
+
 2003-07-08  Max Bowsher  <maxb@ukf.net>
 
 	* LogFile.h, cistring.h, dialog.h, diskfull.h, filemanip.h, geturl.h,

@@ -40,7 +40,7 @@ static const char *cvsid =
 
 using namespace std;
 
-StringOption RootOption ("", 'R', "root", "Root installation directory");
+StringOption RootOption ("", 'R', "root", "Root installation directory", false);
 
 static int rb[] = { IDC_ROOT_TEXT, IDC_ROOT_BINARY, 0 };
 static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
