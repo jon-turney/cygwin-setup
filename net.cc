@@ -21,6 +21,10 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "net.h"
+
+#include "LogSingleton.h"
+
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,9 +32,7 @@ static const char *cvsid =
 #include "resource.h"
 #include "state.h"
 #include "msg.h"
-#include "log.h"
 
-#include "net.h"
 #include "propsheet.h"
 #include "threebar.h"
 #include "ConnectionSetting.h"
@@ -116,9 +118,9 @@ NetPage::OnNext ()
 {
   save_dialog (GetHWND ());
 
-  log (LOG_PLAIN, String ("net: ") +
-       ((net_method == IDC_NET_IE5) ? "IE5" :
-	(net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy"));
+  log (LOG_PLAIN) << "net: "
+    << ((net_method == IDC_NET_IE5) ? "IE5" :
+        (net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy") << endLog;
 
   Progress.SetActivateTask (WM_APP_START_SITE_INFO_DOWNLOAD);
   return IDD_INSTATUS;

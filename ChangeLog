@@ -1,5 +1,19 @@
 2004-12-27  Max Bowsher  <maxb@ukf.net>
 
+	The Big Cleanup: Phase "log"
+
+	* log.cc, log.h: Delete old C-style compatibility wrapper around the
+	logging subsystem.
+	* Makefile.am (setup_SOURCES): Sync with deleted files.
+
+	* AntiVirus.cc, archive_tar_file.cc, ini.cc, install.cc,
+	* io_stream_cygfile.cc, localdir.cc, msg.cc, net.cc, netio.cc,
+	* netio.h, nio-ftp.cc, nio-ftp.h, root.cc, source.cc:
+	Throughout, refine includes, and update code using the old
+	compatibility wrapper to C++ streams style code.
+
+2004-12-27  Max Bowsher  <maxb@ukf.net>
+
 	* compress.cc: Refine includes. Remove placeholder function
 	definitions. Make destructor an empty function.
 	* compress.h: Refine includes. Make placeholder functions pure

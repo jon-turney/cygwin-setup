@@ -28,8 +28,8 @@ static const char *cvsid =
 #include "csu_util/version_compare.h"
 
 #include "setup_version.h"
-
 #include "win32.h"
+#include "LogSingleton.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,14 +42,12 @@ static const char *cvsid =
 #include "geturl.h"
 #include "dialog.h"
 #include "msg.h"
-#include "log.h"
 #include "mount.h"
 #include "site.h"
 #include "rfc1738.h"
 #include "find.h"
 #include "IniParseFindVisitor.h"
 #include "IniParseFeedback.h"
-//#include "filemanip.h"
 
 #include "io_stream.h"
 
@@ -94,7 +92,8 @@ public:
       if (pos * 100 / max > lastpct)
 	{
 	  lastpct = pos * 100 / max;
-	  log (LOG_BABBLE, String (lastpct) + "% (" + String (pos) + " of " + String (max) + " bytes of ini file read");
+	  log (LOG_BABBLE) << lastpct << "% (" << pos << " of " << max
+            << " bytes of ini file read)" << endLog;
 	}
       Progress.SetBar1(pos, max);
     }
@@ -104,7 +103,7 @@ public:
     }
   virtual void babble(String const &message)const
     {
-      log (LOG_BABBLE, message);
+      log (LOG_BABBLE) << message << endLog;
     }
   virtual void warning (String const &message)const
     {

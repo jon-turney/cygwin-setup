@@ -22,7 +22,10 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-#include "win32.h"
+#include "netio.h"
+
+#include "LogSingleton.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,13 +33,11 @@ static const char *cvsid =
 #include "resource.h"
 #include "state.h"
 #include "msg.h"
-#include "netio.h"
 #include "nio-file.h"
 #include "nio-ie5.h"
 #include "nio-http.h"
 #include "nio-ftp.h"
 #include "dialog.h"
-#include "log.h"
 
 NetIO::NetIO (char const *Purl)
 {

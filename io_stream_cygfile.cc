@@ -19,18 +19,19 @@ static const char *cvsid =
 #endif
 
 
+#include "io_stream_cygfile.h"
+
+#include "LogSingleton.h"
+
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "log.h"
 #include "mount.h"
 #include "mkdir.h"
 #include "mklink2.h"
 #include <unistd.h>
 
-#include "io_stream.h"
-#include "io_stream_cygfile.h"
 #include "IOStreamProvider.h"
 
 /* completely private iostream registration class */
@@ -122,7 +123,7 @@ io_stream_cygfile::io_stream_cygfile (String const &name, String const &mode) : 
   errno = 0;
   if (!name.size() || !mode.size())
   {
-    log(LOG_TIMESTAMP, "io_stream_cygfile: Bad parameters");
+    log(LOG_TIMESTAMP) << "io_stream_cygfile: Bad parameters" << endLog;
     return;
   }
 
@@ -133,7 +134,7 @@ io_stream_cygfile::io_stream_cygfile (String const &name, String const &mode) : 
   if (!get_root_dir ().size())
   {
     /* TODO: assign a errno for "no mount table :} " */
-    log(LOG_TIMESTAMP, "io_stream_cygfile: Error reading mounts");
+    log(LOG_TIMESTAMP) << "io_stream_cygfile: Error reading mounts" << endLog;
     return;
   }
 
@@ -143,7 +144,8 @@ io_stream_cygfile::io_stream_cygfile (String const &name, String const &mode) : 
   if (!fp)
   {
     lasterr = errno;
-    log(LOG_TIMESTAMP, String("io_stream_cygfile: fopen failed") + String(errno) + " " + strerror(errno));
+    log(LOG_TIMESTAMP) << "io_stream_cygfile: fopen failed " << errno << " "
+      << strerror(errno) << endLog;
   }
 }
 
@@ -214,21 +216,23 @@ io_stream_cygfile::mklink (String const &_from, String const &_to,
 	io_stream *in = io_stream::open (String ("cygfile://") + to, "rb");
 	if (!in)
 	  {
-	    log (LOG_TIMESTAMP, String("could not open ") + to +" for reading in mklink");
+	    log (LOG_TIMESTAMP) << "could not open " << to
+              << " for reading in mklink" << endLog;
 	    return 1;
 	  }
 	io_stream *out = io_stream::open (String ("cygfile://") + from, "wb");
 	if (!out)
 	  {
-	    log (LOG_TIMESTAMP, String("could not open ") + from + " for writing in mklink");
+	    log (LOG_TIMESTAMP) << "could not open " << from
+              << " for writing in mklink" << endLog;
 	    delete in;
 	    return 1;
 	  }
 
 	if (io_stream::copy (in, out))
 	  {
-	    log (LOG_TIMESTAMP, String ("Failed to hardlink ")+ from + "->"  +to +
-		" during file copy.");
+	    log (LOG_TIMESTAMP) << "Failed to hardlink " << from << "->"
+              << to << " during file copy." << endLog;
 	    delete in;
 	    delete out;
 	    return 1;

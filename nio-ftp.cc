@@ -21,6 +21,10 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "nio-ftp.h"
+
+#include "LogSingleton.h"
+
 #include "win32.h"
 #include "winsock.h"
 #include <stdio.h>
@@ -30,10 +34,6 @@ static const char *cvsid =
 #include "resource.h"
 #include "state.h"
 #include "simpsock.h"
-#include "log.h"
-
-#include "netio.h"
-#include "nio-ftp.h"
 
 static SimpleSocket *cmd = 0;
 static char *cmd_host = 0;
@@ -47,7 +47,8 @@ ftp_line (SimpleSocket * s)
   do
     {
       last_line = s->gets ();
-      log (LOG_BABBLE, String ("ftp > ") + (last_line ? last_line : "error"));
+      log (LOG_BABBLE) << "ftp > " << (last_line ? last_line : "error")
+        << endLog;
     }
   while (last_line && (!isdigit (last_line[0]) || last_line[3] != ' '));
   return atoi (last_line ? : "0");

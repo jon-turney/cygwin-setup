@@ -183,8 +183,6 @@ setup_SOURCES = \
 	IOStreamProvider.h \
 	localdir.cc \
 	localdir.h \
-	log.cc \
-	log.h \
 	LogFile.cc \
 	LogFile.h \
 	LogSingleton.cc \

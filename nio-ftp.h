@@ -16,6 +16,8 @@
 #ifndef SETUP_NIO_FTP_H
 #define SETUP_NIO_FTP_H
 
+#include "netio.h"
+
 /* Direct FTP (without proxy) */
 
 class SimpleSocket;

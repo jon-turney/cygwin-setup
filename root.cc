@@ -22,6 +22,10 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "root.h"
+
+#include "LogSingleton.h"
+
 #include "win32.h"
 #include <shlobj.h>
 #include <stdio.h>
@@ -33,8 +37,6 @@ static const char *cvsid =
 #include "state.h"
 #include "msg.h"
 #include "mount.h"
-#include "log.h"
-#include "root.h"
 
 #include "getopt++/StringOption.h"
 
@@ -195,9 +197,9 @@ RootPage::OnNext ()
   else if (directory_has_spaces () && (IDNO == yesno (h, IDS_ROOT_SPACE)))
     return -1;
 
-  log (LOG_PLAIN, String ("root: ") + get_root_dir () + 
-       (root_text == IDC_ROOT_TEXT ? " text" : " binary")  +
-       (root_scope == IDC_ROOT_USER ? " user" : " system"));
+  log (LOG_PLAIN) << "root: " << get_root_dir ()
+    << (root_text == IDC_ROOT_TEXT ? " text" : " binary")
+    << (root_scope == IDC_ROOT_USER ? " user" : " system") << endLog;
 
   return 0;
 }

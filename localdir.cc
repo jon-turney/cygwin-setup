@@ -23,7 +23,12 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "localdir.h"
+
+#include "LogSingleton.h"
+#include "LogFile.h"
 #include "win32.h"
+
 #include <shlobj.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,11 +39,8 @@ static const char *cvsid =
 #include "state.h"
 #include "msg.h"
 #include "mount.h"
-#include "LogFile.h"
-#include "log.h"
 #include "io_stream.h"
 
-#include "localdir.h"
 #include "UserSettings.h"
 
 #include "getopt++/StringOption.h"
@@ -183,7 +185,7 @@ LocalDirPage::OnNext ()
 
   save_dialog (h);
   localDir.save ();
-  log (LOG_PLAIN, String ("Selected local directory: ") + local_dir);
+  log (LOG_PLAIN) << "Selected local directory: " << local_dir << endLog;
   
   bool trySetCurDir = true;
   while (trySetCurDir)
@@ -218,7 +220,7 @@ LocalDirPage::OnNext ()
 	    else
 	      snprintf (msg, sizeof (msg), msgText, local_dir.cstr_oneuse(), 
 	        "(unknown error)", err);
-	  log (LOG_PLAIN, msg);
+	  log (LOG_PLAIN) << msg << endLog;
 	  int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | 
 	    MB_ABORTRETRYIGNORE);
 	  

@@ -16,6 +16,8 @@
 #ifndef SETUP_NETIO_H
 #define SETUP_NETIO_H
 
+#include "win32.h"
+
 /* This is the parent class for all the access methods known to setup
    (i.e. ways to download files from the internet or other sources */
 

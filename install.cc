@@ -24,6 +24,10 @@
 static const char *cvsid = "\n%%% $Id$\n";
 #endif
 
+#include "getopt++/BoolOption.h"
+#include "csu_util/MD5Sum.h"
+#include "LogSingleton.h"
+
 #include "win32.h"
 #include "commctrl.h"
 
@@ -44,7 +48,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "diskfull.h"
 #include "msg.h"
 #include "mount.h"
-#include "log.h"
 #include "mount.h"
 #include "filemanip.h"
 #include "io_stream.h"
@@ -60,11 +63,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "package_source.h"
 
 #include "threebar.h"
-
-#include "csu_util/MD5Sum.h"
-
 #include "Exception.h"
-#include "getopt++/BoolOption.h"
 
 using namespace std;
 
@@ -143,7 +142,7 @@ Installer::uninstallOne (packagemeta & pkgm)
 {
   Progress.SetText1 ("Uninstalling...");
   Progress.SetText2 (pkgm.name.cstr_oneuse());
-  log (LOG_PLAIN, String("Uninstalling ") + pkgm.name);
+  log (LOG_PLAIN) << "Uninstalling " << pkgm.name << endLog;
   pkgm.uninstall ();
   num_uninstalls++;
 }
@@ -161,7 +160,7 @@ Installer::replaceOne (packagemeta &pkg)
   Progress.SetText1 ("Replacing...");
   Progress.SetText2 (pkg.name.cstr_oneuse());
   Progress.SetText3 ("");
-  log (LOG_PLAIN, String( "Replacing ")  + pkg.name);
+  log (LOG_PLAIN) << "Replacing " << pkg.name << endLog;
   pkg.uninstall ();
 
   errors +=
@@ -177,11 +176,10 @@ Installer::replaceOne (packagemeta &pkg)
 void
 Installer::replaceOnRebootFailed (String const &fn)
 {
-  log (LOG_TIMESTAMP,
-       "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-       cygpath (String ("/") + fn).cstr_oneuse(),
-       cygpath (String ("/") + fn + ".new").cstr_oneuse(),
-       GetLastError ());
+  log (LOG_TIMESTAMP) << "Unable to schedule reboot replacement of file "
+    << cygpath (String ("/") + fn).cstr_oneuse() << " with "
+    << cygpath (String ("/") + fn + ".new").cstr_oneuse()
+    << " (Win32 Error " << GetLastError() << ")" << endLog;
   ++errors;
 }
 
@@ -190,10 +188,9 @@ Installer::replaceOnRebootFailed (String const &fn)
 void
 Installer::replaceOnRebootSucceeded (String const &fn, bool &rebootneeded)
 {
-  log (LOG_TIMESTAMP,
-       "Scheduled reboot replacement of file %s with %s",
-       cygpath (String ("/") + fn).cstr_oneuse(),
-       cygpath (String ("/") + fn + ".new").cstr_oneuse());
+  log (LOG_TIMESTAMP) << "Scheduled reboot replacement of file "
+    << cygpath (String ("/") + fn).cstr_oneuse() << " with "
+    << cygpath (String ("/") + fn + ".new").cstr_oneuse() << endLog;
   rebootneeded = true;
 }
 
@@ -215,7 +212,7 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
   char msg[64];
   strcpy (msg, "Installing");
   Progress.SetText1 (msg);
-  log (LOG_PLAIN, String (msg) + " " + source.Cached ());
+  log (LOG_PLAIN) << msg << " " << source.Cached () << endLog;
   
   io_stream *tmp = io_stream::open (source.Cached (), "rb");
   io_stream *tmp2 = 0;
@@ -265,22 +262,22 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 	    pkgm.desired.addScript (Script (canonicalfn));
 
 	  Progress.SetText3 (canonicalfn.cstr_oneuse());
-	  log (LOG_BABBLE, String("Installing file ") + prefixURL + prefixPath + fn);
+	  log (LOG_BABBLE) << "Installing file " << prefixURL << prefixPath 
+            << fn << endLog;
 	  if (archive::extract_file (thefile, prefixURL, prefixPath) != 0)
 	    {
 	      if (NoReplaceOnReboot)
 		{
 		  ++errors;
-		  log (LOG_PLAIN, String("Not replacing in-use file ") +
-		       prefixURL + prefixPath + fn);
+		  log (LOG_PLAIN) << "Not replacing in-use file "
+                    << prefixURL << prefixPath << fn << endLog;
 		}
 	      else
 	      //extract to temp location
 	      if (archive::extract_file (thefile, prefixURL, prefixPath, ".new") != 0)
 		{
-		  log (LOG_PLAIN,
-		       String("Unable to install file ") +
-		       prefixURL + prefixPath + fn);
+		  log (LOG_PLAIN) << "Unable to install file "
+                    << prefixURL << prefixPath << fn << endLog;
 		  ++errors;
 		}
 	      else
@@ -562,7 +559,8 @@ do_install_thread (HINSTANCE h, HWND owner)
 	    {
 	      if (yesno (owner, IDS_INSTALL_ERROR, e->what()) != IDYES)
 		{
-		  log (LOG_TIMESTAMP, String ("User cancelled setup after install error"));
+		  log (LOG_TIMESTAMP)
+                    << "User cancelled setup after install error" << endLog;
 		  LogSingleton::GetInstance().exit (1);
 		  return;
 		}
@@ -588,7 +586,8 @@ do_install_thread (HINSTANCE h, HWND owner)
 	    {
 	      if (yesno (owner, IDS_INSTALL_ERROR, e->what()) != IDYES)
 		{
-		  log (LOG_TIMESTAMP, String ("User cancelled setup after install error"));
+		  log (LOG_TIMESTAMP)
+                    << "User cancelled setup after install error" << endLog;
 		  LogSingleton::GetInstance().exit (1);
 		  return;
 		}
@@ -679,9 +678,9 @@ void md5_one (const packagesource& source)
       
       tempMD5.finish();
 
-      log (LOG_BABBLE, std::string("For file ") + source.Cached()
-           + " ini digest is " + source.md5.str()
-           + " file digest is " + tempMD5.str());
+      log (LOG_BABBLE) << "For file " << source.Cached()
+        << " ini digest is " << source.md5.str()
+        << " file digest is " << tempMD5.str() << endLog;
       
       if (source.md5 != tempMD5)
 	  throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("Checksum failure for ") + source.Cached(), APPERR_CORRUPT_PACKAGE);

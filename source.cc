@@ -22,16 +22,18 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "source.h"
+
+#include "LogSingleton.h"
+
 #include "win32.h"
 #include <stdio.h>
 #include "dialog.h"
 #include "resource.h"
 #include "state.h"
 #include "msg.h"
-#include "log.h"
 #include "package_db.h"
 
-#include "source.h"
 #include "SourceSetting.h"
 static SourceSetting theSetting;
 
@@ -127,9 +129,10 @@ SourcePage::OnBack ()
 void
 SourcePage::OnDeactivate ()
 {
-  log (LOG_PLAIN, String ("source: ") +
-       ((source == IDC_SOURCE_DOWNLOAD) ? "download" :
-	(source == IDC_SOURCE_NETINST) ? "network install" : "from cwd"));
+  log (LOG_PLAIN) << "source: "
+    << ((source == IDC_SOURCE_DOWNLOAD) ? "download" :
+        (source == IDC_SOURCE_NETINST) ? "network install" : "from cwd")
+    << endLog;
 }
 
 long

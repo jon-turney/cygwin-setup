@@ -21,11 +21,14 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "msg.h"
+
+#include "LogSingleton.h"
 #include "win32.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 #include "dialog.h"
-#include "log.h"
 
 void
 msg (const char *fmt, ...)
@@ -46,7 +49,7 @@ mbox (HWND owner, const char *name, int type, int id, va_list args)
     ExitProcess (0);
 
   vsnprintf (buf, 1000, fmt, args);
-  log (LOG_PLAIN, String ("mbox ") + name + ": " + buf);
+  log (LOG_PLAIN) << "mbox " << name << ": " << buf << endLog;
   return MessageBox (owner, buf, "Cygwin Setup", type);
 }
 
