@@ -295,7 +295,11 @@ inilex.cc : inilex.l iniparse.h
 	mv lex.yy.c inilex.cc
 
 # Make a distribution package and tarball
-release: setup$(EXEEXT) dist-all
-	$(STRIP) setup.exe
-	upx --best setup.exe
-	mv setup-0.tar.bz2 setup-src.tar.bz2
+release: setup$(EXEEXT) dist-all $(srcdir)/ChangeLog Makefile
+	$(STRIP) setup.exe && \
+	upx --best setup.exe && \
+	V=`grep '^\$$Revision.*' $(srcdir)/ChangeLog \
+	| sed -e 's/\$$Revision:* *//' \
+	  -e 's/ *$$.*//'` ;\
+	mv setup-0.tar.bz2 setup-${V}.tar.bz2 && \
+	tar cjf setup-${V}-1-src.tar.bz2 setup-${V}.tar.bz2

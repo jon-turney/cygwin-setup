@@ -1,5 +1,10 @@
 2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
 
+	* Makefile.am (release): Tweak to be more helpful.
+	* Makefile.in: Regenerate.
+
+2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc (scan_downloaded_files): When a non-installed version 
 	has neither bin nor src cached files for local installs,
 	remove the version from availability.
