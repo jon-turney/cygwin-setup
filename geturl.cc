@@ -233,6 +233,8 @@ get_url_to_string (char *_url)
   char *rv = (char *) malloc (total_bytes);
   if (NULL == rv)
     {
+      if (n)
+	delete n;
       log (LOG_BABBLE, "get_url_to_string(): malloc failed for rv!");
       return 0;
     }
@@ -246,6 +248,8 @@ get_url_to_string (char *_url)
       bufs = tmp;
     }
   *rvp = 0;
+  if (n)
+    delete n;
   return rv;
 }
 
@@ -300,6 +304,8 @@ get_url_to_file (char *_url, char *_filename, int expected_length,
   total_download_bytes_sofar += total_bytes;
 
   fclose (f);
+  if (n)
+    delete n;
 
   if (total_download_bytes > 0)
     {
