@@ -285,6 +285,12 @@ packageversion::source ()
   return &data->sources[0];
 }
 
+vector<packagesource> *
+packageversion::sources ()
+{
+  return &data->sources;
+}
+
 bool
 packageversion::accessible() const
 {

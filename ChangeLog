@@ -1,5 +1,10 @@
 2002-07-15  Robert Collins  <rbtcollins@hotmail.com>
 
+	* package_version.cc (packageversion::sources): Implement this.
+	* download.cc (do_download_thread): Support multiple files per package.
+
+2002-07-15  Robert Collins  <rbtcollins@hotmail.com>
+
 	* package_version.h (packageversion::sources): Support multiple files in
 	a single package version.
 	* package_version.cc (_packageversion::accessible): Ditto.
