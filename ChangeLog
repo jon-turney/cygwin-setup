@@ -1,3 +1,14 @@
+Tue May  2 00:56:41 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (cleanup): Inverse order of deletion stands a better chance
+	of deleting cygpath.exe.  Still seems to suffer from occasional races,
+	though.
+	(cleanup_on_signal): Perform convoluted dance to accomodate win95 and
+	w2k.
+	(output_file): Defend against an unlikely handle leak.
+	(main): Don't set up signal handling until we have something special to
+	do.
+
 Mon May  1 17:56:32 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* path.c (kill_cygpath): Delete function.

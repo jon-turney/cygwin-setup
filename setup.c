@@ -71,8 +71,8 @@ cleanup (void)
   int i, j;
   extern void exit_cygpath (void);
   exit_cygpath ();
-  for (i = 0; i < deleteme.count; i++)
-    for (j = 0; _unlink (deleteme.array[i]) && j < 20; j++)
+  for (i = deleteme.count; --i >= 0; )
+    for (j = 0; !DeleteFile (deleteme.array[i]) && j < 20; j++)
       Sleep (100);
   sa_cleanup (&deleteme);
 }
@@ -80,11 +80,13 @@ cleanup (void)
 static void
 cleanup_on_signal (int sig)
 {
-  /* I have no idea why this is necessary but without this code
-     seems to continue executing in the main thread even after
-     the ExitProcess. */
+  fprintf (stderr, "\n*Exit*\r\n");
   SuspendThread (hMainThread);
-  _cexit ();
+  cleanup ();
+  /* I have no idea why this is necessary but, without this, code
+     seems to continue executing in the main thread even after
+     the ExitProcess??? */
+  TerminateThread (hMainThread, 1);
   ExitProcess (1);
 }
 
@@ -175,7 +177,7 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
   HRSRC rsrc;
   HGLOBAL res;
   char *data;
-  FILE *out;
+  FILE *out = NULL;
   BOOL retval = FALSE;
 
   size_t bytes_needed;
@@ -187,8 +189,6 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
       char *buffer;
       size_t bytes = SizeofResource (NULL, rsrc);
 
-      sa_add (&deleteme, name);
-
       if (bytes != fwrite (data, 1, bytes, out))
 	warning ("Unable to write %s: %s", name, _strerror (""));
 
@@ -199,7 +199,6 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
       gzf = gzdopen (_dup (fileno (out)), "rb");
       if (gzf && (size_t) gzread (gzf, buffer, bytes_needed) == bytes_needed)
 	{
-	  gzclose (gzf);
 	  if (fseek (out, 0, SEEK_SET)
 	      || fwrite (buffer, 1, bytes_needed, out) != bytes_needed)
 	    {
@@ -218,7 +217,10 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
 		  errnum, msg);
 	}
       xfree (buffer);
+      if (gzf)
+	gzclose (gzf);
       fclose (out);
+      sa_add (&deleteme, name);
     }
   else
     {
@@ -1429,11 +1431,6 @@ those as the basis for your installation.\n\n"
 
   start = clock ();
   sa_init (&deleteme);
-  DuplicateHandle (GetCurrentProcess (), GetCurrentThread (),
-  		   GetCurrentProcess (), &hMainThread, 0, 0,
-		   DUPLICATE_SAME_ACCESS);
-  atexit (cleanup);
-  signal (SIGINT, cleanup_on_signal);
 
   if (!EnumResourceNames (NULL, "FILE", output_file, 0))
     {
@@ -1485,6 +1482,12 @@ those as the basis for your installation.\n\n"
       else
 	defroot = xstrdup (DEF_ROOT);
 
+      DuplicateHandle (GetCurrentProcess (), GetCurrentThread (),
+		       GetCurrentProcess (), &hMainThread, 0, 0,
+		       DUPLICATE_SAME_ACCESS);
+      atexit (cleanup);
+      signal (SIGINT, cleanup_on_signal);
+
       /* Get the root directory and warn the user if there are any spaces in
 	 the path. */
       for (done = 0; !done;)
@@ -1511,6 +1514,8 @@ those as the basis for your installation.\n\n"
 	    done = 1;
 	}
       xfree (defroot);
+
+      Sleep (0);
 
       /* Create the root directory. */
       mkdirp (root);		/* Ignore any return value since it may
