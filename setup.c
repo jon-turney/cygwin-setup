@@ -619,7 +619,7 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 		  char *answer;
 
 		  sprintf (text, "Replace %s from the net (ynAN)", filename);
-		  answer = prompt (text, "yes");
+		  answer = prompt (text, "y");
 
 		  if (answer)
 		    {
@@ -628,10 +628,11 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 			case 'a':
 			case 'A':
 			  download_when = ALWAYS;
-			  /* purposely fall through */;
+			  /* purposely fall through */
 			case 'y':
 			case 'Y':
 			  download = 1;
+			  break;
 			case 'N':
 			  download_when = NEVER;
 			case 'n':
