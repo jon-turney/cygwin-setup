@@ -43,6 +43,7 @@ static const char *cvsid =
 #include "site.h"
 #include "rfc1738.h"
 #include "find.h"
+#include "filemanip.h"
 
 #include "io_stream.h"
 
@@ -62,27 +63,28 @@ static int error_count = 0;
 
 static int local_ini;
 
+static const char *ini_filename;
+
 static void
 find_routine (char *path, unsigned int fsize)
 {
-  /* See if the path ends in a trailing setup.ini component.
-     Just return if it doesn't. */
-  unsigned pathlen = strlen (path);
-  unsigned pathprefix_len = pathlen - 10;
-  if (pathlen < strlen ("setup.ini")
-      || strcasecmp (path + pathprefix_len, "\\setup.ini") != 0)
+  const char *setup_ini = trail (path, "\\setup.ini");
+
+  if (setup_ini == NULL)
     return;
 
-  io_stream *ini_file = io_stream::open (String ("file://") + local_dir + "/" +
+  unsigned pathprefix_len = setup_ini - path;
+
+  io_stream *ini_file = io_stream::open (String ("file://") +
 					 path, "rb");
   if (!ini_file)
     {
-    note (NULL, IDS_SETUPINI_MISSING, (String ("file://") + local_dir + "/" +
+    note (NULL, IDS_SETUPINI_MISSING, (String ("file://") +
 				       path).cstr_oneuse());
     return;
     }
   else
-    log (LOG_BABBLE, String ("Found ini file - file://") + local_dir + "/" + path);
+    log (LOG_BABBLE, String ("Found ini file - file://") + path);
 
   /* FIXME: only use most recent copy */
   setup_timestamp = 0;
@@ -96,12 +98,15 @@ find_routine (char *path, unsigned int fsize)
   String mirror = rfc1738_unescape_part (path_prefix);
   ini_init (ini_file, mirror);
 
-  /*yydebug = 1; */
+  /*yydebug = 1;*/
 
+  ini_filename = path;
   if (yyparse () || error_count > 0)
     MessageBox (0, error_buf, error_count == 1 ? "Parse Error" : "Parse Errors", 0);
   else
     local_ini++;
+  *error_buf = '\0';
+  error_count = 0;
 }
 
 static int
@@ -251,15 +256,15 @@ do_ini (HINSTANCE h, HWND owner)
   CreateThread (NULL, 0, do_ini_thread_reflector, context, 0, &threadID);
 }
 
-
 extern int yylineno;
+extern int yybol ();
 
 extern "C" int
 yyerror (char *s, ...)
 {
-  char buf[1000];
+  char buf[MAX_PATH + 1000];
   int len;
-  sprintf (buf, "setup.ini line %d: ", yylineno);
+  sprintf (buf, "%s line %d: ", ini_filename, yylineno - yybol ());
   va_list args;
   va_start (args, s);
   vsprintf (buf + strlen (buf), s, args);

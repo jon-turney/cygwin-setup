@@ -37,6 +37,7 @@ int yylex ();
 #include "cygpackage.h"
 
 #define YYERROR_VERBOSE 1
+#define YYINITDEPTH 1000
 /*#define YYDEBUG 1*/
 
 static packagemeta *cp = 0;
@@ -108,9 +109,8 @@ simple_line
  | T_TEST			{ trust = TRUST_TEST; cpv = new cygpackage (cp->name); }
  | T_UNKNOWN			{ trust = TRUST_UNKNOWN; }
  | /* empty */
- | error '\n' { yylineno --;
-		yyerror ("unrecognized line in package %s (do you have the latest setup?)", cp->name.cstr_oneuse());
-		yylineno ++;
+ | error  {	yyerror ("unrecognized line in package %s (do you have the latest setup?)", cp->name.cstr_oneuse());
+		yyerrok;
 	      }
  ;
 

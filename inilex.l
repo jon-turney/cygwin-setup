@@ -113,6 +113,8 @@ ini_init(io_stream *stream, String const &mirror)
   if (parse_mirror)
     delete[] parse_mirror;
   parse_mirror = mirror.cstr();
+  YY_FLUSH_BUFFER;
+  yylineno = 1;
 }
 
 static int
@@ -142,4 +144,16 @@ ignore_line ()
       if (c == '\n')
 	return;
     }
+}
+
+void
+pushnl ()
+{
+  unput ('\n');
+}
+
+int
+yybol ()
+{
+  return !!YY_AT_BOL ();
 }

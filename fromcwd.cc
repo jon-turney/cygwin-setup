@@ -141,7 +141,7 @@ static bool found_ini;
 static void
 check_ini (char *path, unsigned int fsize)
 {
-  if (fsize && strstr (path, "setup.ini"))
+  if (fsize && trail (path, "setup.ini"))
     found_ini = true;
 }
 
