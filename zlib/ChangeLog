@@ -1,3 +1,10 @@
+2002-04-26  Robert Collins  <rbtcollins@hotmail.com>
+
+	* acinclude.m4: Remove.
+	* configure: Regenerate.
+	* aclocal.m4: Regenerate.
+	* configure.in: Update to be autoconf 2.53 conformant.
+
 2002-01-21  Robert Collins  <rbtcollins@hotmail.com>
 
 	* zutil.c (z_error): Const correctness change.
