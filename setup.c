@@ -67,6 +67,7 @@ static pkg *pkgstuff;
 static int updating = 0;
 static SA installme = {NULL, 0, 0};
 static HANDLE hMainThread;
+static char *root;
 
 static void
 cleanup (void)
@@ -81,7 +82,7 @@ cleanup (void)
 }
 
 static void
-cleanup_on_signal (int sig)
+cleanup_on_signal (int sig __attribute__ ((unused)))
 {
   fprintf (stderr, "\n*Exit*\r\n");
   SuspendThread (hMainThread);
@@ -93,16 +94,26 @@ cleanup_on_signal (int sig)
   ExitProcess (1);
 }
 
-static int
+#define TARGZ_SIZE (sizeof ("tar.gz") - 1)
+static char *
 istargz (char *fn)
 {
-  int len = strlen (fn);
+  size_t len = strlen (fn);
+  static char stem[16384];
 
   if (len > sizeof (".tar.gz") &&
-      stricmp (fn + len - (sizeof ("tar.gz") - 1), "tar.gz") == 0)
-    return 1;
+      stricmp (fn + (len -= TARGZ_SIZE), "tar.gz") == 0)
+    {
+      char *p;
+      memcpy (stem, fn, len);
+      p = stem + len;
+      if (strchr ("._-", p[-1]))
+	p--;
+      *p = '\0';
+      return stem;
+    }
 
-  return 0;
+  return NULL;
 }
 
 void
@@ -175,7 +186,9 @@ create_shortcut (const char *target, const char *shortcut)
 }
 
 BOOL CALLBACK
-output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
+output_file (HMODULE h __attribute__ ((unused)),
+	     LPCTSTR type __attribute__ ((unused)),
+	     LPTSTR name, LONG lparam __attribute__ ((unused)))
 {
   HRSRC rsrc;
   HGLOBAL res;
@@ -254,15 +267,18 @@ tarx (const char *dir, const char *fn)
   HANDLE hin;
   HANDLE hproc;
   FILE *fp;
-  int filehere;
+  unsigned filehere;
   char *pkgname, *pkgversion;
   pkg *pkg;
 
-  normalize_version (fn, &pkgname, &pkgversion);
+  if (strnicmp (fn, "cygwin-20000301", sizeof ("cygwin-20000301") - 1) == 0)
+    normalize_version ("cygwin-1.1.0.tar.gz", &pkgname, &pkgversion);
+  else
+    normalize_version (fn, &pkgname, &pkgversion);
   pkg = find_pkg (pkgstuff, pkgname);
   if (!newer_pkg (pkg, pkgversion))
     {
-      warning ("Skipped  extraction of package '%s'\n", pkgname);
+      warning ("Skipped extraction of %s since newer version is installed\n", fn);
       return 1;
     }
 
@@ -331,11 +347,6 @@ tarx (const char *dir, const char *fn)
       warning ("Unable to reset protection on '%s' - %s\n",
 	       files.array[filehere], _strerror (""));
 
-  /* Use the version of the cygwin that was just installed rather than the
-     tar file name.  (kludge) */
-  if (stricmp (pkgname, "cygwin") == 0)
-    (void) check_for_installed (".", pkgstuff);
-
   warning ("%s package '%s'\n", write_pkg (pkg, pkgname, pkgversion) ?
 			      "Updated" : "Refreshed", pkgname);
 
@@ -345,7 +356,7 @@ tarx (const char *dir, const char *fn)
 static int
 refmatches (SA *installme, char *ref, char *refend)
 {
-  int i;
+  unsigned i;
   char *p, *q;
   char filebuf[4096];
   if (!installme->count)
@@ -366,7 +377,7 @@ refmatches (SA *installme, char *ref, char *refend)
 static int
 filematches (SA *installme, char *fn)
 {
-  int i;
+  unsigned i;
 
   if (!installme->count)
     return 1;
@@ -435,11 +446,12 @@ recurse_dirs (SA *installme, const char *dir)
 
 		  do
 		    {
+		      char *bat;
 		      /* Skip source archives and meta-directories */
 		      if (strstr (find_data.cFileName, "-src") != 0
 			  || strcmp (find_data.cFileName, ".") == 0
 			  || strcmp (find_data.cFileName, "..") == 0
-			  || !istargz (find_data.cFileName)
+			  || !(bat = istargz (find_data.cFileName))
 			  || !filematches (installme, find_data.cFileName))
 			{
 			  continue;
@@ -450,6 +462,14 @@ recurse_dirs (SA *installme, const char *dir)
 			  err = 1;
 			  break;
 			}
+#ifdef USE_BATFILE
+		      strcat (bat, ".bat");
+		      if (access (bat, 00))
+			{
+			  sprintf (strchr (bat, '\0'), " \"%s\"", root);
+			  (void) xcreate_process (1, NULL, NULL, NULL, bat);
+			}
+#endif
 		    }
 		  while (FindNextFile (handle, &find_data));
 		  FindClose (handle);
@@ -495,10 +515,10 @@ prompt (const char *text, const char *def)
 static int
 optionprompt (const char *text, SA * options)
 {
-  size_t n, c, response = -1;
+  size_t n, c, ncols, response = -1;
   char buf[5];
   size_t base;
-  int maxwidth=0, ncols, skip, percol;
+  int maxwidth=0, skip, percol;
 
   for (n=0; n<options->count; n++)
     {
@@ -520,15 +540,15 @@ optionprompt (const char *text, SA * options)
     {
       char *repeat, *enter;
 
-      for (n=0; n < SCREEN_LINES; n++)
+      for (n = 0; n < SCREEN_LINES; n++)
 	{
 	  if (n + base >= options->count)
 	    break;
-	  for (c=0; c<ncols; c++)
+	  for (c = 0; c < ncols; c++)
 	    {
-	      int i = n + base + c * SCREEN_LINES;
+	      unsigned i = n + base + c * SCREEN_LINES;
 	      if (i < options->count)
-		printf("%2d. %-*s", i+1, percol-5, options->array[i]);
+		printf("%2d. %-*s", i + 1, percol - 5, options->array[i]);
 	    }
 	  printf("\n");
 	}
@@ -538,7 +558,7 @@ optionprompt (const char *text, SA * options)
 	{
 	  if (base)
 	    repeat = " or `R' to repeat the list";
-	  if (base + SCREEN_LINES*ncols < options->count)
+	  if (base + SCREEN_LINES * ncols < options->count)
 	    enter = " or [Enter] for more options";
 	}
 
@@ -767,7 +787,8 @@ geturl (const char *url, const char *file, int verbose)
 }
 
 static char *
-findhref (char *buffer, char *date, size_t *filesize)
+findhref (char *buffer, char *date __attribute__ ((unused)),
+	  size_t *filesize)
 {
   char *ref = NULL;
   char *anchor = NULL;
@@ -843,13 +864,14 @@ out:
 }
 
 static int
-needfile (const char *filename, char *date, size_t filesize)
+needfile (const char *filename, char *date __attribute__ ((unused)),
+	  size_t filesize)
 {
   struct _stat st;
 
   if (!filesize || _stat (filename, &st))
     return 1;	/* file doesn't exist or is somehow not accessible */
-  return st.st_size != filesize;
+  return (size_t) st.st_size != filesize;
 }
 
 static int
@@ -1064,7 +1086,7 @@ reverse_sort (const void *arg1, const void *arg2)
 }
 
 static int
-create_uninstall (const char *wd, const char *folder, const char *shellscut,
+create_uninstall (const char *folder, const char *shellscut,
 		  const char *shortcut)
 {
   int retval = 0;
@@ -1131,7 +1153,7 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 
 /* Writes the startup batch file. */
 static int
-do_start_menu (const char *root)
+do_start_menu (void)
 {
   FILE *batch;
   char *batch_name = pathcat (root, "bin\\cygwin.bat");
@@ -1199,8 +1221,7 @@ do_start_menu (const char *root)
 			pathcat (folder, "Uninstall Cygwin 1.1.0.lnk");
 		      if (uninstscut)
 			{
-			  if (create_uninstall
-			      (wd, folder, shortcut, uninstscut))
+			  if (create_uninstall (folder, shortcut, uninstscut))
 			    retval = 1;
 			  xfree (uninstscut);
 			}
@@ -1279,7 +1300,7 @@ getdownloadsource ()
 			  else
 			    name = url;
 			  *strchr (name, '/') = '\0';
-			  sa_add (&names, url);
+			  sa_add (&names, name);
 
 			  xfree (url);
 			}
@@ -1329,13 +1350,13 @@ mkdirp (const char *dir)
 
 /* This routine assumes that the cwd is the root directory. */
 static int
-mkmount (const char *mountexedir, const char *root, const char *dospath,
+mkmount (const char *mountexedir, const char *dospath,
 	 const char *unixpath, int force)
 {
   char *mount, *fulldospath;
   char buffer[1024];
 
-  if (*root == '\0')
+  if (root == NULL)
     fulldospath = xstrdup (dospath);
   else
     {
@@ -1361,27 +1382,31 @@ mkmount (const char *mountexedir, const char *root, const char *dospath,
 }
 
 static pkg *
-get_pkg_stuff (const char *root, int updating)
+get_pkg_stuff (int updating)
 {
   const char *ver, *ans;
   pkg *pkgstuff = init_pkgs (root, 0);
-  static pkg dummy = {NULL, NULL};
 
   if (!updating || !pkgstuff)
-    return &dummy;
+    {
+      extern pkg global_pkgstuff[];
+      (void) check_for_installed (root, global_pkgstuff);
+      return global_pkgstuff;
+    }
+
+  ver = check_for_installed (root, pkgstuff);
 
   if (pkgstuff->name != NULL)
     return pkgstuff;
 
-  ver = check_for_installed (root, pkgstuff);
   if (!ver || stricmp (ver, "1.1.0") != 0)
-    return &dummy;
+    return pkgstuff;
 
-  puts ("\nHmm.  You seem to have a previous cygwin version installed but there is no\n"
+  ans = prompt (
+	"\nHmm.  You seem to have a previous cygwin version installed but there is no\n"
 	"package version information in the registry.  This is probably due to the fact\n"
-	"that previous versions of setup.exe did not update this information.");
-
-  ans = prompt ("Should I update the registry with default information now", "y");
+	"that previous versions of setup.exe did not update this information.\n"
+	"Should I update the registry with default information now", "y");
   puts ("");
   if (toupper (*ans) != 'Y')
     {
@@ -1398,7 +1423,7 @@ get_pkg_stuff (const char *root, int updating)
 static char rev[] = "$Revision$ ";
 
 int
-main (int argc, char **argv)
+main (int argc __attribute__ ((unused)), char **argv)
 {
   int retval = 1;		/* Default to error code */
   clock_t start;
@@ -1456,7 +1481,6 @@ those as the basis for your installation.\n\n"
   else
     {
       char *defroot, *update;
-      char *root;
       char *tmp;
       int done;
       HKEY cu = NULL, lm = NULL;
@@ -1534,7 +1558,7 @@ those as the basis for your installation.\n\n"
 
       Sleep (0);
 
-      pkgstuff = get_pkg_stuff (root, updating);
+      pkgstuff = get_pkg_stuff (updating);
 
       update =
 	prompt ("Install from the current directory (d) or from the Internet (i)", "i");
@@ -1566,7 +1590,7 @@ those as the basis for your installation.\n\n"
       /* Create the root directory. */
       mkdirp (root);		/* Ignore any return value since it may
 				   already exist. */
-      mkmount (wd, "", root, "/", 1);
+      mkmount (wd, "", "/", 1);
 
       /* Make the root directory the current directory so that recurse_dirs
 	 will * extract the packages into the correct path. */
@@ -1588,8 +1612,8 @@ those as the basis for your installation.\n\n"
 	  xumount (wd, "/etc");
 
 	  /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
-	  mkmount (wd, root, "bin", "/usr/bin", 1);
-	  mkmount (wd, root, "lib", "/usr/lib", 1);
+	  mkmount (wd, "bin", "/usr/bin", 1);
+	  mkmount (wd, "lib", "/usr/lib", 1);
 
 	  mkdirp ("var\\run");
 	  /* Create /var/run/utmp */
@@ -1619,7 +1643,7 @@ those as the basis for your installation.\n\n"
 	      mkdir (files.array[files.index - 1]);
 	      mkdir (files.array[files.index - 2]);
 
-	      if (do_start_menu (root))
+	      if (do_start_menu ())
 		retval = 0;	/* Everything worked return
 				   successful code */
 	    }

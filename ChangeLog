@@ -1,3 +1,23 @@
+Fri May 19 23:44:37 2000  Christopher Faylor <cgf@cygnus.com>
+
+	Fix compiler warnings throughout.
+	* pkg.c (init_pkgs): Make static 'stuff' global_pkgstuff for use in
+	get_pkg_stuff.
+	* setup.c: Make 'root' global.
+	(istargz): Return pointer to "stem" of matched .tar.gz file.
+	(tarx): Special case cygwin-20000301 to == cygwin-1.1.0.tar.gz.  Remove
+	bogus check_for_installed check.
+	(recurse_dirs): Add preliminary support for .bat file execution.
+	(create_uninstall): Eliminate unneeded parameter.
+	(do_start_menu): Ditto.
+	(mkmount): Ditto.
+	(get_pkg_stuff): Ditto.  Check for currently installed cygwin by
+	scanning for the version number.  Eliminate unneeded argument to
+	create_uninstall.
+	(getdownloadsource): Add 'name' to list of names rather than url.
+	(main): Eliminate unneeded argument in get_pkg_stuff.  Eliminate
+	unneeded argument in mkmount and do_start_menu.
+
 2000-05-18  DJ Delorie  <dj@cygnus.com>
 
 	* setup.c (optionprompt): allow multi-column, clean up message
