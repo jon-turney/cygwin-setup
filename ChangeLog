@@ -1,5 +1,9 @@
 2004-04-25  Robert Collins  <rbtcollins@hotmail.com>
 
+	* package_meta.cc (packagemeta::set_requirements): fix problem with libpcre0 not being pulled in automatically.
+
+2004-04-25  Robert Collins  <rbtcollins@hotmail.com>
+
 	* IniDBBuilderPackage.cc (dumpAndList): Move out to packageversion for reuse.
 	* package_meta.cc (packagemeta::logAllVersions): log dependencies.
 	* package_version.cc (packageversion::depends): provide a const accessor.

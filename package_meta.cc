@@ -451,7 +451,9 @@ packagemeta::set_requirements (trusts deftrust, size_t depth)
 {
   if (visited())
     return 0;
-  visited(true);
+  /* Only prevent further checks once we have been required by something else */
+  if (depth)
+    visited(true);
   int changed = 0;
   /* handle build-depends */
   if (depth == 0 && desired.sourcePackage ().picked())
