@@ -198,7 +198,7 @@ public:
   virtual void uninstall () = 0;
   std::vector<packagesource> sources; /* where can we source the files from */
 
-  bool accessible () const;
+  virtual bool accessible () const;
 
   /* TODO: Implement me:
      static package_meta * scan_package (io_stream *);
