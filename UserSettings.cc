@@ -66,3 +66,15 @@ UserSettings::deRegisterSetting(UserSetting &aSetting)
     throw new Exception ("__LINE__ __FILE__", String ("Attempt to deregister non registered setting!"), APPERR_LOGIC_ERROR);
   settings.erase(i);
 }
+
+void
+UserSettings::loadAllSettings()
+{
+  for_each(settings.begin(), settings.end(), mem_fun(&UserSetting::load)); 
+}
+
+void
+UserSettings::saveAllSettings()
+{
+  for_each(settings.begin(), settings.end(), mem_fun(&UserSetting::save)); 
+}

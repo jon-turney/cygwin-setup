@@ -1,3 +1,20 @@
+2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
+
+	* tests/Makefile.am: Driver for test suite.
+	* tests/UserSettingTest.cc: Test UserSetting interface.
+	* tests/UserSettingsTest.cc: Test UserSettings interface.
+	* Makefile.am: Add the tests dir to recurse into.
+	* configure.in: Ditto.
+	* UserSetting.h: Add load and save methods to allow global serialisation.
+	Add explicit copy and assignment operators to prevent synthetics.
+	Make the constructor protected to prevent direct instantiation.
+	* UserSettings.h (UserSettings::loadAllSettings): New method.
+	(UserSettings::savedAllSettings): New method.
+	* UserSettings.cc: Implement new methods.
+	* site.cc: Implement stubs for new required UserSetting methods.
+	* site.h (ChosenSite): Ditto.
+	* Ran automake.
+	
 2003-07-23  Max Bowsher  <maxb@ukf.net>
 
 	* desktop.cc (DesktopSetupPage::OnBack): Remove obsolete use of NEXT().
