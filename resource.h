@@ -27,7 +27,7 @@
 #define IDD_DLSTATUS                    106
 #define IDD_S_LOAD_INI                  107
 #define IDD_S_FROM_CWD                  108
-#define IDD_S_CHOOSE                    109
+#define IDD_CHOOSE                      109
 #define IDD_S_DOWNLOAD                  110
 #define IDD_S_INSTALL                   111
 #define IDD_INSTATUS                    112
@@ -36,7 +36,10 @@
 #define IDD_S_POSTINSTALL               114
 #define IDD_NET_AUTH                    114
 #define IDD_SPLASH                      115
-#define IDI_CYGWIN                      200
+#define IDB_SPIN                        115
+#define IDB_RTARROW                     116
+#define IDI_SPIN                        117
+#define IDI_CYGWIN                      118
 #define IDC_SOURCE_DOWNLOAD             1000
 #define IDC_SOURCE_NETINST              1001
 #define IDC_SOURCE_CWD                  1002
@@ -67,6 +70,12 @@
 #define IDC_NET_USER                    1030
 #define IDC_NET_PASSWD                  1031
 #define IDC_VERSION                     1033
+#define IDC_LISTVIEW_POS                1034
+#define IDC_CHOOSE_FULLPART             1035
+#define IDC_CHOOSE_EXP                  1036
+#define IDC_CHOOSE_CURR                 1037
+#define IDC_CHOOSE_PREV                 1038
+#define IDC_CHOOSE_LIST                 1039
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -75,9 +84,9 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        115
+#define _APS_NEXT_RESOURCE_VALUE        119
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1034
+#define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -26,8 +26,8 @@
 #define TRUST_PREV	0
 #define TRUST_CURR	1
 #define TRUST_TEST	2
-#define TRUST_UNKNOWN	3 /* intentionally not in NTRUST */
 #define NTRUST 3
+#define TRUST_UNKNOWN	3 /* intentionally not in NTRUST */
 
 #define ACTION_UNKNOWN	0
 #define ACTION_SAME	1
@@ -41,8 +41,9 @@ typedef struct {
   char *ldesc;	/* long description (multi-line) */
   int action;	/* ACTION_* - only NEW and UPGRADE get installed */
   int trust;	/* TRUST_* (selects among info[] below) */
+
   struct {
-    char *version;	/* holds canonical version for fromcwd.cc */
+    char *version;	/* version part of filename */
     char *install;	/* file name to install */
     int install_size;	/* in bytes */
     char *source;	/* sources for installed binaries */

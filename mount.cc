@@ -105,7 +105,6 @@ create_mount (char *posix, char *win32, int istext, int issystem)
 	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME,
 	   posix);
 
-  msg ("mount: istext=%d issystem=%d\n", istext, issystem);
   HKEY kr = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
   if (RegCreateKeyEx (kr, buf, 0, "Cygwin", 0, KEY_ALL_ACCESS,
 		      0, &key, &disposition) != ERROR_SUCCESS)

@@ -65,7 +65,7 @@ WinMain (HINSTANCE h,
 	case IDD_OTHER_URL:	do_other (h);	break;
 	case IDD_S_LOAD_INI:	do_ini (h);	break;
 	case IDD_S_FROM_CWD:	do_fromcwd (h);	break;
-	case IDD_S_CHOOSE:	do_choose (h);	break;
+	case IDD_CHOOSE:	do_choose (h);	break;
 	case IDD_S_DOWNLOAD:	do_download (h); break;
 	case IDD_S_INSTALL:	do_install (h);	break;
 	case IDD_S_DESKTOP:	do_desktop (h); break;

@@ -141,7 +141,7 @@ do_fromcwd (HINSTANCE h)
       return;
     }
 
-  next_dialog = IDD_S_CHOOSE;
+  next_dialog = IDD_CHOOSE;
 
   find (".", found_file);
 

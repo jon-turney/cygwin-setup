@@ -1,3 +1,17 @@
+2000-08-11  DJ Delorie  <dj@redhat.com>
+
+	* choose.cc: add new chooser dialog
+	* fromcwd.cc: use IDD_CHOOSE
+	* ini.cc: use IDD_CHOOSE
+	* main.cc: use IDD_CHOOSE
+	* ini.h: cosmetic changes
+	* res.rc: add choose dialog, bitmaps
+	* choose-spin.bmp: new
+	* choose-rtarrow.bmp: new
+	* resource.h: add choose dialog controls
+
+	* mount.cc: remove debug statement
+	
 2000-08-08  DJ Delorie  <dj@redhat.com>
 
 	* Makefile.in (version.c): make version checking more robust

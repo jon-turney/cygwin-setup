@@ -206,6 +206,27 @@ BEGIN
                     10
 END
 
+IDD_CHOOSE DIALOG DISCARDABLE  0, 0, 292, 206
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Next -->",IDOK,175,185,45,15
+    PUSHBUTTON      "Cancel",IDCANCEL,240,185,45,15
+    LTEXT           "Select packages to install",IDC_STATIC,55,5,85,8
+    PUSHBUTTON      "<-- Back",IDC_BACK,130,185,45,15
+    ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
+    CONTROL         "",IDC_LISTVIEW_POS,"Static",SS_BLACKFRAME | NOT 
+                    WS_VISIBLE,55,15,230,155
+    CONTROL         "SPIN",IDC_STATIC,"Static",SS_BITMAP,55,170,15,13
+    LTEXT           "= click to choose action, (p) = previous version, (x) = experimental",
+                    IDC_STATIC,65,170,220,8
+    PUSHBUTTON      "Full/Part",IDC_CHOOSE_FULLPART,250,5,35,10
+    PUSHBUTTON      "Exp",IDC_CHOOSE_EXP,215,5,25,10
+    PUSHBUTTON      "Curr",IDC_CHOOSE_CURR,190,5,25,10
+    PUSHBUTTON      "Prev",IDC_CHOOSE_PREV,165,5,25,10
+END
+
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -276,6 +297,15 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+SPIN                    BITMAP  DISCARDABLE     "choose-spin.bmp"
+IDB_SPIN                BITMAP  DISCARDABLE     "choose-spin.bmp"
+IDB_RTARROW             BITMAP  DISCARDABLE     "choose-rtarrow.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //

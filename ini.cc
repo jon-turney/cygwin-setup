@@ -98,7 +98,7 @@ do_ini (HINSTANCE h)
 	}
     }
 
-  next_dialog = IDD_S_CHOOSE;
+  next_dialog = IDD_CHOOSE;
 }
 
 extern int yylineno;
