@@ -1,5 +1,11 @@
 2002-07-05  Robert Collins  <rbtcollins@hotmail.com>
 
+	* io_stream.cc: Use STL containers rather than custom ones.
+	(io_stream::registerProvider): Ditto.
+	(findProvider): Ditto.
+
+2002-07-05  Robert Collins  <rbtcollins@hotmail.com>
+
 	* IniDBBuilderPackage.cc (IniDBBuilderPackage::buildPackageSource):
 	Use STL collections for download site collections.
 	(IniDBBuilderPackage::add_correct_version): Ditto.

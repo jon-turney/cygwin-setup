@@ -28,11 +28,20 @@ static const char *cvsid =
 
 #include "io_stream.h"
 #include "String++.h"
-#include "list.h"
 #include <stdexcept>
 #include "IOStreamProvider.h"
+#include <map>
 
-static list <IOStreamProvider const, String const, String::casecompare> *providers;
+struct ltstr
+{
+  bool operator()(String const &s1, String const &s2) const
+    {
+      return s1.casecompare (s2) < 0;
+    }
+};
+
+typedef map <String, IOStreamProvider * ,ltstr> providersType;
+static providersType *providers;
 static size_t longestPrefix = 0;
 static int inited = 0;
   
@@ -42,14 +51,13 @@ io_stream::registerProvider (IOStreamProvider &theProvider,
 {
   if (!inited)
     {
-      providers = new list <IOStreamProvider const, String const, 
-        String::casecompare>;
+      providers = new providersType;
       inited = true;
     }
   theProvider.key = urlPrefix;
-  IOStreamProvider const &testProvider = providers->registerbyobject (theProvider);
-  if (&testProvider != &theProvider)
+  if (providers->find (urlPrefix) != providers->end())
     throw new invalid_argument ("urlPrefix already registered!");
+  (*providers)[urlPrefix] = &theProvider;
   if (urlPrefix.size() > longestPrefix)
     longestPrefix = urlPrefix.size();
 }
@@ -59,11 +67,11 @@ findProvider (String const &path)
 {
   if (path.size() < longestPrefix)
     return NULL;
-  for (unsigned int i = 1; i <= providers->number(); ++i)
+  for (providersType::const_iterator i = providers->begin();
+       i != providers->end(); ++i)
     {
-      IOStreamProvider const *p = (*providers)[i];
-      if (!path.casecompare (p->key, p->key.size()))
-       	return p;
+      if (!path.casecompare (i->first, i->first.size()))
+       	return i->second;
     }
   return NULL;
 }
