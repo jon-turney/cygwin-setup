@@ -116,17 +116,20 @@ found_file (char *path, unsigned int fsize)
   if (p == 0)
       p = new_package (strdup (base));
 
-  char *nv = canonicalize_version (ver);
   int trust = is_test_version (ver) ? TRUST_TEST : TRUST_CURR;
   if (!*ver)
     trust = TRUST_PREV;
 
   /* See if this version is older than what we have */
   if (p->info[trust].version)
-    if (strcmp (p->info[trust].version, nv) > 0)
-      return;
+    {
+      char *ov = canonicalize_version (p->info[trust].version);
+      char *nv = canonicalize_version (ver);
+      if (strcmp (ov, nv) > 0)
+	return;
+    }
 
-  p->info[trust].version = _strdup (nv);
+  p->info[trust].version = _strdup (ver);
   p->info[trust].install = _strdup (path);
   p->info[trust].install_size = fsize;
 }

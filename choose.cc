@@ -151,6 +151,12 @@ paint (HWND hwnd)
       if (package[i].name)
 	TextOut (hdc, x+headers[2].x, r, package[i].name, strlen(package[i].name));
     }
+
+  if (nindexes == 0)
+    {
+      static char *msg = "Nothing to Install/Update";
+      TextOut (hdc, HMARGIN, header_height, msg, strlen (msg));
+    }
   
   EndPaint (hwnd, &ps);
 }
@@ -408,6 +414,8 @@ build_labels ()
 	  if (t != extra[i].which_is_installed)
 	    {
 	      C.caption = package[i].info[t].version;
+	      if (C.caption == 0 || C.caption[0] == 0)
+		C.caption = "0.0";
 	      C.trust = t;
 	      c++;
 	      extra[i].in_partial_list = 1;
@@ -483,7 +491,12 @@ create_listview (HWND dlg, RECT *r)
   headers[1].x = headers[0].x + headers[0].width + HMARGIN + 11 + ICON_MARGIN;
   headers[2].x = headers[1].x + headers[1].width + HMARGIN;
 
-  set_full_list(lv, full_list);
+  set_full_list (lv, full_list);
+  if (!full_list && nindexes == 0)
+    {
+      full_list = !full_list;
+      set_full_list (lv, full_list);
+    }
   default_trust (lv, TRUST_CURR);
 }
 
@@ -569,6 +582,21 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
   return FALSE;
 }
 
+static char *
+base (char *s)
+{
+  if (!s)
+    return 0;
+  char *rv = s;
+  while (*s)
+    {
+      if ((*s == '/' || *s == ':' || *s == '\\') && s[1])
+	rv = s+1;
+      s++;
+    }
+  return s;
+}
+
 static void
 read_installed_db ()
 {
@@ -598,7 +626,7 @@ read_installed_db ()
 
 	    for (t=0; t<NTRUST; t++)
 	      if (package[i].info[t].install
-		  && strcmp (package[i].info[t].install, inst) == 0)
+		  && strcmp (base (package[i].info[t].install), base (inst)) == 0)
 		{
 		  extra[i].which_is_installed = t;
 		  extra[i].installed_ver = package[i].info[t].version;

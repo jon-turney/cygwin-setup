@@ -10,23 +10,13 @@ files in the old install that aren't also in the new install.
 
 add netio subclasses for direct HTTP, FTP and proxy connections
 
-choose.cc: add a dialog to let user choose what to install and
-which versions to install
-
 ini.cc: add field in setup.ini to specify whether package is installed
 by default, or not.
 
 install.cc: scan newly installed files for README files, show list to
 user, let them read them if they want.
 
-main.cc: add splash screen and copyright notice
-
 Add uninstall capability
-
-Delay the user/password prompts (web proxy) until we get a "proxy
-password required" error.
-
-Add support for http passwords as well as proxy passwords.
 
 Make the site listbox bigger.
 

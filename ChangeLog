@@ -1,3 +1,15 @@
+2000-08-21  DJ Delorie  <dj@redhat.com>
+
+	* README: Update
+
+	* fromcwd.cc (found_file): don't remember the canonicalized version
+
+	* choose.cc (paint): print "nothing to do" message when list is empty.
+	(build_labels): Use version "0.0" if no version is available.
+	(create_listview): default to full list if nothing to install/update.
+	(base): new, returns basename of file
+	(read_installed_db): compare base names, not full paths
+
 2000-08-11  DJ Delorie  <dj@redhat.com>
 
 	* choose.cc: add new chooser dialog
