@@ -27,7 +27,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 
 #include "filemanip.h"
 #include "hash.h"
-#include "log.h"
+#include "LogSingleton.h"
 /* io_stream needs a bit of tweaking to get rid of this. TODO */
 #include "mount.h"
 /* this goes at the same time */
@@ -188,7 +188,7 @@ packagemeta::uninstall ()
 	  if (dw != INVALID_FILE_ATTRIBUTES
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
-	      log (LOG_BABBLE, String("unlink ")+ d);
+	      log (LOG_BABBLE) << "unlink " << d << endLog;
 	      SetFileAttributes (d.cstr_oneuse(), dw & ~FILE_ATTRIBUTE_READONLY);
 	      DeleteFile (d.cstr_oneuse());
 	    }
@@ -198,7 +198,7 @@ packagemeta::uninstall ()
 	  if (dw != INVALID_FILE_ATTRIBUTES
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
-	      log (LOG_BABBLE, String("unlink ") + d);
+	      log (LOG_BABBLE) << "unlink " << d << endLog;
 	      SetFileAttributes (d.cstr_oneuse(),
 				 dw & ~FILE_ATTRIBUTE_READONLY);
 	      DeleteFile (d.cstr_oneuse());
@@ -213,7 +213,7 @@ packagemeta::uninstall ()
 	{
 	  String d = cygpath (String ("/") + subdir);
 	  if (RemoveDirectory (d.cstr_oneuse()))
-	    log (LOG_BABBLE, String("rmdir ") + d);
+	    log (LOG_BABBLE) << "rmdir " << d << endLog;
 	}
       try_run_script ("/etc/postremove/", name);
     }
@@ -413,7 +413,7 @@ packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
     return 0;
   while (dp)
     {
-      if ((required = db.packages.getbykey (dp->package)) == NULL)
+      if ((required = db.packages.getbykey (dp->package.packageName())) == NULL)
 	{
 	  dp = dp->next;
 	  changed++;

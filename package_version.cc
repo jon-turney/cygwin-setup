@@ -25,3 +25,15 @@ static const char *cvsid =
 packageversion::packageversion ():required (0), srcpicked (0), binpicked (0)
 {
 };
+
+PackageSpecification &
+packageversion::sourcePackage ()
+{
+  return _sourcePackage;
+}
+
+void
+packageversion::setSourcePackage (PackageSpecification const &spec)
+{
+  _sourcePackage = spec;
+}

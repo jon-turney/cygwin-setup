@@ -22,10 +22,29 @@ void IniDBBuilder::buildPackage (String const &){}
 void IniDBBuilder::buildPackageVersion (String const &){}
 void IniDBBuilder::buildPackageSDesc (String const &){}
 void IniDBBuilder::buildPackageLDesc (String const &){}
-void IniDBBuilder::buildPackageInstall (String const &, 
-					String const &, unsigned char const[16]){}
-void IniDBBuilder::buildPackageSource (String const &, 
-				       String const &,unsigned char const[16]){}
+void IniDBBuilder::buildPackageInstall (String const &){}
+void IniDBBuilder::buildPackageSource (String const &, String const &){}
 void IniDBBuilder::buildPackageTrust (int){}
 void IniDBBuilder::buildPackageRequirement (String const &){}
 void IniDBBuilder::buildPackageCategory (String const &){}
+void IniDBBuilder::buildBeginDepends (){}
+void IniDBBuilder::buildBeginPreDepends (){}
+void IniDBBuilder::buildPriority (String const &){}
+void IniDBBuilder::buildInstalledSize (String const &){}
+void IniDBBuilder::buildMaintainer (String const &){}
+void IniDBBuilder::buildArchitecture (String const &){}
+void IniDBBuilder::buildInstallSize (String const &){}
+void IniDBBuilder::buildInstallMD5 (unsigned char const[16]){}
+void IniDBBuilder::buildSourceMD5 (unsigned char const[16]){}
+void IniDBBuilder::buildBeginRecommends (){}
+void IniDBBuilder::buildBeginSuggests (){}
+void IniDBBuilder::buildBeginReplaces (){}
+void IniDBBuilder::buildBeginConflicts (){}
+void IniDBBuilder::buildBeginProvides (){}
+void IniDBBuilder::buildDescription (String const &){}
+void IniDBBuilder::buildSourceName (String const &){}
+void IniDBBuilder::buildSourceNameVersion (String const &){}
+void IniDBBuilder::buildPackageListAndNode (){}
+void IniDBBuilder::buildPackageListOrNode (String const &){}
+void IniDBBuilder::buildPackageListOperator (PackageSpecification::_operators const &){}
+void IniDBBuilder::buildPackageListOperatorVersion (String const &){}

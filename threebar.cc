@@ -68,6 +68,12 @@ ThreeBarProgressPage::SetText3 (const TCHAR * t)
 }
 
 void
+ThreeBarProgressPage::SetText4 (const TCHAR * t)
+{
+  ::SetWindowText (ins_bl_package, t);
+}
+
+void
 ThreeBarProgressPage::SetBar1 (long progress, long max)
 {
   int percent = (int) (100.0 * ((double) progress) / (double) max);

@@ -1,3 +1,127 @@
+2002-06-27  Robert Collins  <rbtcollins@hotmail.com>
+
+	* PackageSpecification.h: New file. Abstracts the ability to refer
+	to another package, by name, or name and version.
+	* PackageSpecification.cc: Ditto.
+	* IniDBBuilder.cc (IniDBBuilder::buildPackageInstall): Simplify.
+	(IniDBBuilder::buildPackageSource): Ditto.
+	(IniDBBuilder::buildBeginDepends): New method for versioned
+	dependencies.
+	(IniDBBuilder::buildBeginPreDepends): Likewise, for dependencies to be
+	satisfied before pre-install.
+	(IniDBBuilder::buildPriority): New method, for getting the package
+	Priority.
+	(IniDBBuilder::buildInstalledSize): How much disk space does it need?
+	(IniDBBuilder::buildMaintainer): Who maintains the package?
+	(IniDBBuilder::buildArchitecture): What platform is it for?
+	(IniDBBuilder::buildInstallSize): How big is the binary download?
+	(IniDBBuilder::buildInstallMD5): Whats the MD5 on the binary?
+	(IniDBBuilder::buildSourceMD5): Whats the MD5 on the source package?
+	(IniDBBuilder::buildBeginRecommends): What other packages are
+	recommended with this one?
+	(IniDBBuilder::buildBeginSuggests): And suggested?
+	(IniDBBuilder::buildBeginReplaces): What packages does this replace?
+	(IniDBBuilder::buildBeginConflicts): And collide with?
+	(IniDBBuilder::buildBeginProvides): What virtual packages (or obsolete
+	package names) does this provide?
+	(IniDBBuilder::buildDescription): Grab a multi line description one
+	line at a time.
+	(IniDBBuilder::buildSourceName): What source package should be used to
+	install the source for this binary package?
+	(IniDBBuilder::buildSourceNameVersion): Is a specific version needed?
+	(IniDBBuilder::buildPackageListAndNode): Add another AND clause to a 
+	list of package specifications.
+	(IniDBBuilder::buildPackageListOrNode): Add another OR clause.
+	(IniDBBuilder::buildPackageListOperator): Add a versioning operator
+	to the current specification.
+	(IniDBBuilder::buildPackageListOperatorVersion): What version does the
+	operator act on?
+	* IniDBBuilder.h: Declare all the IniDBBuilder.cc changes.
+	* IniDBBuilderPackage.cc: As for IniDBBuilder.cc.
+	(IniDBBuilderPackage::IniDBBuilderPackage): Iniitialize new members.
+	(IniDBBuilderPackage::process_src): Streamline and split out 
+	functionality.
+	(IniDBBuilderPackage::setSourceSize): From process_src.
+	* IniDBBuilderPackage.h: Declare the IniDBBuilderPackage.cc changes.
+	(IniDBBuilderPackage::currentSpec): Track the in-progress specifiation.
+	(IniDBBuilderPackage::currentOrList): Track the current Or list.
+	(IniDBBuilderPackage::currentAndList): Track the current And list.
+	* IniParseFeedback.cc (IniParseFeedback::progress): Provide completion
+       	progress on parsing.
+	(IniParseFeedback::iniName): Tell what ini filename we are currently
+	processing.
+	* IniParseFeedback.h: Declare IniParseFeedback.cc changes.
+	* IniParseFindVisitor.cc (IniParseFindVisitor::IniParseFindVisitor): 
+	Make the feedback object non-const to allow mutating methods which are
+	needed when the object has state.
+	(IniParseFindVisitor::visitFile): Tell the caller the name of each
+	.ini found.
+	Initialise the parser with the feedback object to allow it to tell of
+	progress.
+	* IniParseFindVisitor.h: Declare IniParseFindVisitor.cc changes.
+	* Makefile.am (inilinst_SOURCES): Add more requisite classes.
+	(setup_SOURCES): Add the new PackageSpecification sources.
+	* ScanFindVisitor.cc (ScanFindVisitor::visitFile): Use the new
+	builder syntax to setup binary package details.
+	* choose.cc: Use the LogSingleton calls throughout.
+	* configure.in: Create the INILINT substitution correctly for recent
+	autotool configurations.
+	* cygpackage.cc (cygpackage::getfirstfile): Return an empty String
+	rather than a string built from an int. Thanks to Pavel Tsekov for
+	identifying the bug.
+	(cygpackage::getnextfile): Ditto.
+	* download.cc: Use LogSIngletion calls throughout.
+       	(validateCachedPackage): A refactoring of the 
+	check_for_cached code to eliminate duplciation.
+	(check_for_cached): Use validateCachedPackage to check packages.
+	* ini.cc (GuiParseFeedback): Provide gui feedback on ini name and 
+	parsing progress.
+	(do_remote_ini): Ditto.
+	* ini.h (ini_init): Pass a IniParseFeedback to the parser, to allow
+	progress reporting.
+	* inilex.l: Identify new symbols - operators, and multi line plain text.
+	Releases files.
+	* inilintmain.cc (show_help): Provide basic infomation on inilint.
+	* iniparse.y: Adjust for the new builder syntax, and process debian
+	Release files.
+	* io_stream_file.cc: Always include mkdir.h.
+	* list.h: Factor index location into a private routine.
+	(list::findindex): Implement this.
+	* mkdir.cc (mkdir_p): Make the use of WIN32 code conditional on mingw 
+	builds. NB: This breaks cygwin build functionality still.
+	* package_meta.cc: Use the LogSingleton calls throughout.
+	(packagemeta::set_requirements): Adjust for object changes in
+	dependencies.
+	* package_meta.h (packagemeta::packagemeta): Initialise new members.
+	(packagemeta::architecture): What platform does this package run on? 
+	This may need to move in the future to a per packagefile object.
+       	(packagemeta::priority): What priority does this package have?
+	* package_source.h (packagesource::packagesource): Initialise new
+	members.
+	(packagesource::installedSize): How much space does the package need?
+	(packagesource::setInstalledSize): Tell the amount.
+	(packagesource::_installedSize): And store it.
+	* package_version.cc (packageversion::sourcePackage): return the 
+	source package.
+	(packageversion::setSourcePackage): And set it.
+	* package_version.h: Declare the package_version.cc changes.
+	(packageversion::depends): New package specification AND list.
+	(packageversion::predepends): Ditto.
+	(packageversion::recommends): Ditto.
+	(packageversion::suggests): Ditto.
+	(packageversion::replaces): Ditto.
+	(packageversion::conflicts): Ditto.
+	(packageversion::provides): Ditto.
+	(packageversion::sourcePackage): What source package is needed?
+	* threebar.cc (ThreeBarProgressPage::SetText4): Set the label beside
+	the bottom bar.
+	* threebar.h: Declare the threebar.cc change.
+
+2002-06-27  John Marshall  <johnm@falch.net>
+
+	* res.rc (SETUPINI_MISSING): Make trailing spaces visible.
+	* site.cc (SitePage::OnMessageCmd): Ditto
+
 2002-06-15  Robert Collins  <rbtcollins@hotmail.com>
 
 	* nio-ie5.cc (NetIO_IE5::NetIO_IE): Allow cached data.

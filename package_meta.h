@@ -51,7 +51,7 @@ public:
     //versions (0),
 //    versioncount (0), versionspace (0), 
   installed (0), prev (0), prevtimestamp (0), curr (0), currtimestamp (0),
-    exp (0), exptimestamp (0), desired (0)
+    exp (0), exptimestamp (0), desired (0), architecture (), priority()
   {
   }
 
@@ -61,7 +61,7 @@ public:
     //versions (0),    versioncount (0), versionspace (0), 
    
     installed (0), prev (0), prevtimestamp (0), curr (0), currtimestamp (0),
-    exp (0), exptimestamp (0), desired (0)
+    exp (0), exptimestamp (0), desired (0), architecture (), priority()
   {
   };
 
@@ -132,6 +132,17 @@ public:
   /* Now for the user stuff :] */
   /* What version does the user want ? */
   packageversion *desired;
+
+  /* What platform is this for ? 
+   * i386 - linux i386
+   * cygwin - cygwin for 32 bit MS Windows 
+   * All - no binary code, or a version for every platform
+   */
+  String architecture;
+  /* What priority does this package have?
+   * TODO: this should be linked into a list of priorities.
+   */
+  String priority;
 
 protected:
   packagemeta (packagemeta const &);

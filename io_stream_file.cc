@@ -21,10 +21,12 @@ static const char *cvsid =
 #if defined(WIN32) && !defined (_CYGWIN_)
 #include "win32.h"
 #include "port.h"
-#include "mkdir.h"
 #include "mklink2.h"
 #endif
 
+#include "mkdir.h"
+  
+  
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>

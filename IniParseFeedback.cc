@@ -22,6 +22,8 @@ static const char *cvsid =
 
 IniParseFeedback::~IniParseFeedback(){}
 
+void IniParseFeedback::progress(unsigned long const, unsigned long const) {}
+void IniParseFeedback::iniName (String const &) {}
 void IniParseFeedback::babble(String const &) const {}
 void IniParseFeedback::warning (String const &) const {}
 void IniParseFeedback::error(String const &) const {}

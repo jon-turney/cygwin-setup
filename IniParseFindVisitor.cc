@@ -28,7 +28,7 @@ static const char *cvsid =
 
 extern int yyparse ();
 
-IniParseFindVisitor::IniParseFindVisitor(IniDBBuilder &aBuilder, String const &localroot, IniParseFeedback const &feedback) : _Builder (aBuilder), _feedback (feedback), baseLength (localroot.size()), local_ini(0),
+IniParseFindVisitor::IniParseFindVisitor(IniDBBuilder &aBuilder, String const &localroot, IniParseFeedback &feedback) : _Builder (aBuilder), _feedback (feedback), baseLength (localroot.size()), local_ini(0),
 error_buf(0), error_count (0),
 setup_timestamp (0), setup_version() {}
 IniParseFindVisitor::~IniParseFindVisitor(){}
@@ -58,6 +58,7 @@ IniParseFindVisitor::visitFile(String const &basePath, const WIN32_FIND_DATA *th
     }
   
   _feedback.babble (String ("Found ini file - ") + path);
+  _feedback.iniName (path);
   
   /* Copy leading part of path to temporary buffer and unescape it */
   
@@ -68,7 +69,7 @@ IniParseFindVisitor::visitFile(String const &basePath, const WIN32_FIND_DATA *th
   else
     mirror = ".";
   _Builder.parse_mirror = mirror;
-  ini_init (ini_file, &_Builder);
+  ini_init (ini_file, &_Builder, _feedback);
   
   /*yydebug = 1; */
 

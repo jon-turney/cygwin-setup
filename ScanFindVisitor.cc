@@ -48,8 +48,11 @@ ScanFindVisitor::visitFile(String const &basePath, const WIN32_FIND_DATA *theFil
 
   // Add the file as a installable package
   if (!f.what.size())
-    //assume binary
-    _Builder.buildPackageInstall (basePath + theFile->cFileName, theFile->nFileSizeLow);
+    {
+      //assume binary
+      _Builder.buildPackageInstall (basePath + theFile->cFileName);
+      _Builder.buildInstallSize(theFile->nFileSizeLow);
+    }
   else
     // patch or src, assume src until someone complains
     _Builder.buildPackageSource (basePath + theFile->cFileName, theFile->nFileSizeLow);

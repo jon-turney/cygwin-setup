@@ -42,12 +42,17 @@ extern int yylineno;
 void add_correct_version();
 %}
 
-%token STRING
+%token STRING 
 %token SETUP_TIMESTAMP SETUP_VERSION PACKAGEVERSION INSTALL SOURCE SDESC LDESC
-%token CATEGORY REQUIRES
+%token CATEGORY REQUIRES DEPENDS
 %token APATH PPATH INCLUDE_SETUP EXCLUDE_PACKAGE DOWNLOAD_URL
 %token T_PREV T_CURR T_TEST T_UNKNOWN
-%token MD5
+%token MD5 INSTALLEDSIZE MAINTAINER PRIORITY
+%token DESCTAG DESCRIPTION FILESIZE ARCHITECTURE SOURCEPACKAGE MD5LINE 
+%token RECOMMENDS PREDEPENDS
+%token SUGGESTS CONFLICTS REPLACES PROVIDES PACKAGENAME STRTOEOL PARAGRAPH LEX_EOF
+%token EMAIL COMMA OR NL AT
+%token OPENBRACE CLOSEBRACE EQUAL GT LT GTEQUAL LTEQUAL 
 
 %%
 
@@ -55,60 +60,139 @@ whole_file
  : setup_headers packages
  ;
 
-setup_headers
- : setup_header setup_headers
- | /* empty */
+setup_headers: /* empty */
+ | setup_headers header
+ ;
+ 
+header /* non-empty */
+ : SETUP_TIMESTAMP STRING { iniBuilder->buildTimestamp ($2); } NL
+ | SETUP_VERSION STRING { iniBuilder->buildVersion ($2); } NL
  ;
 
-setup_header
- : SETUP_TIMESTAMP STRING '\n' { iniBuilder->buildTimestamp ($2); }
- | SETUP_VERSION STRING '\n' { iniBuilder->buildVersion ($2); }
- | '\n'
- | error { yyerror ("unrecognized line in setup.ini headers (do you have the latest setup?)"); } '\n'
+packages: /* empty */
+ | packages packageseparator package
  ;
 
-packages
- : package packages
- | /* empty */
+packageseparator: /* empty */
+ | packageseparator NL
+ ;
+ 
+package /* non-empty */
+ : packagename NL packagedata 
  ;
 
-package
- : '@' STRING '\n'		{ iniBuilder->buildPackage ($2);}
-   lines
+packagename /* non-empty */
+ : AT STRING		{ iniBuilder->buildPackage ($2); }
+ | PACKAGENAME STRING	{ iniBuilder->buildPackage ($2); }
  ;
 
-lines
- : lines '\n' simple_line
- | simple_line
+packagedata: /* empty */
+ | packagedata singleitem
  ;
 
-simple_line
- : PACKAGEVERSION STRING	{ iniBuilder->buildPackageVersion ($2); }
- | SDESC STRING			{ iniBuilder->buildPackageSDesc($2); }
- | LDESC STRING			{ iniBuilder->buildPackageLDesc($2); }
- | CATEGORY categories
- | REQUIRES requires
- | INSTALL STRING STRING MD5    { iniBuilder->buildPackageInstall ($2, $3, (unsigned char *)$4); }
- | INSTALL STRING STRING	{ iniBuilder->buildPackageInstall ($2, $3); }
- | SOURCE STRING STRING MD5	{ iniBuilder->buildPackageSource ($2, $3, (unsigned char *)$4); }
- | SOURCE STRING STRING		{ iniBuilder->buildPackageSource ($2, $3); }
- | T_PREV			{ iniBuilder->buildPackageTrust (TRUST_PREV); }
- | T_CURR			{ iniBuilder->buildPackageTrust (TRUST_CURR); }
- | T_TEST			{ iniBuilder->buildPackageTrust (TRUST_TEST); }
- | T_UNKNOWN			{ iniBuilder->buildPackageTrust (TRUST_UNKNOWN); }
- | /* empty */
- | error { yyerror (String("unrecognized line ") + yylineno + " (do you have the latest setup?)");
-	}
+singleitem /* non-empty */
+ : PACKAGEVERSION STRING NL	{ iniBuilder->buildPackageVersion ($2); }
+ | SDESC STRING NL		{ iniBuilder->buildPackageSDesc($2); }
+ | LDESC STRING NL		{ iniBuilder->buildPackageLDesc($2); }
+ | T_PREV NL 			{ iniBuilder->buildPackageTrust (TRUST_PREV); }
+ | T_CURR NL			{ iniBuilder->buildPackageTrust (TRUST_CURR); }
+ | T_TEST NL			{ iniBuilder->buildPackageTrust (TRUST_TEST); }
+ | T_UNKNOWN NL		      { iniBuilder->buildPackageTrust (TRUST_UNKNOWN);}
+ | PRIORITY STRING NL		{ iniBuilder->buildPriority ($2); }
+ | INSTALLEDSIZE STRING NL	{ iniBuilder->buildInstalledSize ($2); }
+ | MAINTAINER STRING NL		{ iniBuilder->buildMaintainer ($2); }
+ | ARCHITECTURE STRING NL 	{ iniBuilder->buildArchitecture ($2); }
+ | FILESIZE STRING NL		{ iniBuilder->buildInstallSize($2); }
+ | MD5LINE MD5 NL	{ iniBuilder->buildInstallMD5 ((unsigned char *)$2); }
+ | SOURCEPACKAGE source NL
+ | CATEGORY categories NL
+ | REQUIRES requires NL
+ | INSTALL STRING { iniBuilder->buildPackageInstall ($2); } installmeta NL
+ | SOURCE STRING STRING sourceMD5 NL {iniBuilder->buildPackageSource ($2, $3);}
+ | PROVIDES 		{ iniBuilder->buildBeginProvides(); } packagelist NL
+ | CONFLICTS	{ iniBuilder->buildBeginConflicts(); } versionedpackagelist NL
+ | DEPENDS { iniBuilder->buildBeginDepends(); } versionedpackagelist NL
+ | PREDEPENDS { iniBuilder->buildBeginPreDepends(); } versionedpackagelist NL
+ | RECOMMENDS { iniBuilder->buildBeginRecommends(); }   versionedpackagelist NL
+ | SUGGESTS { iniBuilder->buildBeginSuggests(); } versionedpackagelist NL
+ | REPLACES { iniBuilder->buildBeginReplaces(); }       versionedpackagelist NL
+ | DESCTAG mlinedesc
+ | LEX_EOF			{ YYACCEPT; }
+ | error 			{ yyerror (String("unrecognized line ") 
+					  + yylineno 
+					  + " (do you have the latest setup?)");
+				}
  ;
 
-requires
- : STRING			{ iniBuilder->buildPackageRequirement($1); } requires
- | STRING			{ iniBuilder->buildPackageRequirement($1); }
+categories: /* empty */
+ | categories STRING		{ iniBuilder->buildPackageCategory ($2); }
  ;
 
-categories
- : STRING			{ iniBuilder->buildPackageCategory ($1); } categories
- | STRING			{ iniBuilder->buildPackageCategory ($1); }
+requires: /* empty */
+ | requires STRING		{ iniBuilder->buildPackageRequirement($1); }
  ;
 
+installmeta: /* empty */
+ | STRING installMD5		{ iniBuilder->buildInstallSize($1); }
+ ;
+
+installMD5: /* empty */
+ | MD5 			{ iniBuilder->buildInstallMD5 ((unsigned char *)$1);}
+ ;
+
+sourceMD5: /* empty */
+ | MD5 			{ iniBuilder->buildSourceMD5 ((unsigned char *)$1); }
+ ;
+
+source /* non-empty */
+ : STRING { iniBuilder->buildSourceName ($1); } versioninfo
+ ;
+
+versioninfo: /* empty */
+ | OPENBRACE STRING CLOSEBRACE { iniBuilder->buildSourceNameVersion ($2); }
+ ;
+
+mlinedesc: /* empty */
+ | mlinedesc STRTOEOL NL	{ iniBuilder->buildDescription ($2); }
+ | mlinedesc STRTOEOL PARAGRAPH { iniBuilder->buildDescription ($2); }
+ ;
+
+packagelist /* non-empty */
+ : packagelist COMMA { iniBuilder->buildPackageListAndNode(); } packageentry
+ | { iniBuilder->buildPackageListAndNode(); } packageentry
+ ;
+
+packageentry /* empty not allowed */
+ : STRING 		{ iniBuilder->buildPackageListOrNode($1); }
+ | packageentry OR STRING { iniBuilder->buildPackageListOrNode($3); }
+ ;
+
+versionedpackagelist /* non-empty */
+ : { iniBuilder->buildPackageListAndNode(); } versionedpackageentry
+ | versionedpackagelist listseparator { iniBuilder->buildPackageListAndNode(); } versionedpackageentry
+ ;
+
+
+listseparator /* non-empty */
+ : COMMA
+ | COMMA NL
+ ;
+ 
+versionedpackageentry /* empty not allowed */
+ : STRING { iniBuilder->buildPackageListOrNode($1); } versioncriteria
+ | versionedpackageentry OR STRING { iniBuilder->buildPackageListOrNode($3); } versioncriteria
+ ;
+
+versioncriteria: /* empty */
+ | OPENBRACE operator STRING CLOSEBRACE { iniBuilder->buildPackageListOperatorVersion ($3); }
+ ;
+ 
+operator /* non-empty */
+ : EQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::Equals); }
+ | LT { iniBuilder->buildPackageListOperator (PackageSpecification::LessThan); }
+ | GT { iniBuilder->buildPackageListOperator (PackageSpecification::MoreThan); }
+ | LTEQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::LessThanEquals); }
+ | GTEQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::MoreThanEquals); }
+ ;
+ 
 %%

@@ -19,6 +19,8 @@
 #include "stdlib.h"
 #include "sys/types.h"
 
+#include "LogSingleton.h"
+
 /* Creates a list/array of type T (must have a field key of type U),
  * with index type U and U comparison Ucmp. 
  */
@@ -58,15 +60,23 @@ private:
   void checksize (void);
   // perform an insertion.
   void insert (size_t, T *);
+  // find the index for a given element. 
+  // if the element is not present, return the index of an element beside
+  // where it should be inserted. This may be above or below the actual 
+  // insertion point
+  size_t findindex (const U) const;
 };
 
 template < class T, class U, int
 Ucmp (U, U) >
 T * list < T, U, Ucmp >::getbykey (const U key)
 {
-  for (size_t n = 0; n < _number; n++)
-    if (Ucmp (pointerblock[n]->key, key) == 0)
-      return pointerblock[n];
+  /* trivial corner case */
+  if (_number == 0)
+    return 0;
+  size_t index = findindex (key);
+  if (index < _number && Ucmp (pointerblock[index]->key, key) == 0)
+    return pointerblock[index];
   return 0;
 }
 
@@ -79,10 +89,9 @@ T & list < T, U, Ucmp >::registerbykey (U key)
   if (!tempT)
     {
       tempT = new T (key);
-      size_t n;
-      for (n = 0;
-	   n < _number && Ucmp (pointerblock[n]->key, tempT->key) < 0; n++);
-      insert (n, tempT);
+
+      size_t index = _number ? findindex (tempT->key) : 0;
+      insert (index, tempT);
     }
   return *tempT;
 }
@@ -96,10 +105,8 @@ T & list < T, U, Ucmp >::registerbyobject (T & newobj)
   if (!tempT)
     {
       tempT = &newobj;
-      size_t n;
-      for (n = 0;
-	   n < _number && Ucmp (pointerblock[n]->key, tempT->key) < 0; n++);
-      insert (n, tempT);
+      size_t index = _number ? findindex (tempT->key) : 0;
+      insert (index, tempT);
     }
   return *tempT;
 }
@@ -153,5 +160,21 @@ template < class T, class U, int
   ++_number;
 }
 
+
+/* Precondition: _number != 0 */
+template < class T, class U, int
+Ucmp (U, U) >
+size_t list < T, U, Ucmp >::findindex (const U key) const
+{
+  for (size_t n = _number - 1; n < _number; --n)
+    {
+      int direction = Ucmp (key, pointerblock[n]->key);
+      if (!direction)
+        return n;
+      else if (direction > 0)
+        return n+1;
+    }
+  return 0;
+}
 
 #endif /* _LIST_H_ */

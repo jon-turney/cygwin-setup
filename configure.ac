@@ -33,7 +33,7 @@ AC_ARG_ENABLE(inilint,
 	    ac_cv_enable_inilint=$enableval, ac_cv_enable_inilint=no)
 AC_MSG_RESULT([$ac_cv_enable_inilint])
 if test $ac_cv_enable_inilint = yes; then
-  INILINT="inilint"
+  INILINT="inilint\$(EXEEXT)"
 else
   INILINT=
 fi

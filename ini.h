@@ -20,7 +20,8 @@ class io_stream;
 class String;
 class IniState;
 class IniDBBuilder;
-void ini_init (io_stream *, IniDBBuilder *);
+class IniParseFeedback;
+void ini_init (io_stream *, IniDBBuilder *, IniParseFeedback &);
 #define YYSTYPE char *
 
 #ifdef __cplusplus

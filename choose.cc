@@ -41,7 +41,7 @@ static const char *cvsid =
 #include "resource.h"
 #include "state.h"
 #include "msg.h"
-#include "log.h"
+#include "LogSingleton.h"
 #include "filemanip.h"
 #include "io_stream.h"
 #include "propsheet.h"
@@ -422,8 +422,8 @@ create_listview (HWND dlg, RECT * r)
   default_trust (lv, TRUST_CURR);
   set_view_mode (lv, PickView::views::Category);
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-    log (LOG_BABBLE, "Failed to set View button caption %ld",
-	 GetLastError ());
+    log (LOG_BABBLE) << "Failed to set View button caption %ld" << 
+	 GetLastError () << endLog;
   for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
@@ -545,7 +545,7 @@ ChooserPage::OnNext ()
       Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
     }
 
-  log (LOG_BABBLE, "Chooser results...");
+  log (LOG_BABBLE) << "Chooser results..." << endLog;
   packagedb db;
   for (size_t n = 1; n <= db.packages.number (); n++)
     {
@@ -558,11 +558,7 @@ ChooserPage::OnNext ()
       String const installed =
 	pkg.installed ? pkg.installed->Canonical_version () : "none";
 
-      log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s"
-	   " src?=%s",
-	   pkg.name.cstr_oneuse (), action.cstr_oneuse (), trust,
-	   installed.cstr_oneuse (), pkg.desired
-	   && pkg.desired->srcpicked ? "yes" : "no");
+      log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && pkg.desired->srcpicked ? "yes" : "no") << endLog;
       if (pkg.Categories.number ())
 	{
 	  /* List categories the package belongs to */
@@ -570,18 +566,17 @@ ChooserPage::OnNext ()
 	  for (size_t n = 2; n <= pkg.Categories.number (); n++)
 	    all_categories += String (", ") + pkg.Categories[n]->key.name;
 
-	  log (LOG_BABBLE, String ("     categories=") + all_categories);
+	  log (LOG_BABBLE) << "     categories=" << all_categories << endLog;
 	}
       if (pkg.desired && pkg.desired->required)
 	{
 	  /* List other packages this package depends on */
 	  Dependency *dp = pkg.desired->required;
-	  String requires = dp->package;
+	  String requires = dp->package.serialise ();
 	  for (dp = dp->next; dp; dp = dp->next)
-	    if (dp->package.size ())
-	      requires += String (", ") + dp->package;
+	    requires += String (", ") + dp->package.serialise ();
 
-	  log (LOG_BABBLE, String ("     requires=") + requires);
+	  log (LOG_BABBLE) << "     requires=" << requires;
 	}
 #if 0
 
@@ -590,7 +585,7 @@ ChooserPage::OnNext ()
       for (int t = 1; t < NTRUST; t++)
 	{
 	  if (pkg->info[t].install)
-	    log (LOG_BABBLE, "     [%s] ver=%s\n"
+	    log (LOG_BABBLE) << "     [%s] ver=%s\n"
 		 "          inst=%s %d exists=%s\n"
 		 "          src=%s %d exists=%s",
 		 infos[t],
@@ -675,8 +670,8 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       set_view_mode (lv, ++chooser->get_view_mode ());
       if (!SetDlgItemText
         (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-      log (LOG_BABBLE, "Failed to set View button caption %ld",
-           GetLastError ());
+      log (LOG_BABBLE) << "Failed to set View button caption " << 
+           GetLastError () << endLog;
       break;
 
 

@@ -11,6 +11,7 @@
  *     http://www.gnu.org/
  *
  * Written by DJ Delorie <dj@cygnus.com>
+ * Maintained by Robert Collins <rbtcollins@hotmail.com>
  *
  */
 
@@ -24,6 +25,7 @@
 #include "ini.h"
 #include "iniparse.h"
 #include "String++.h"
+#include "IniParseFeedback.h"
 
 #define YY_INPUT(buf,result,max_size) { result = ini_getchar(buf, max_size); }
 
@@ -37,7 +39,10 @@ static void ignore_line (void);
 %option yylineno
 %option never-interactive
 
-STR	[a-zA-Z0-9_./+-]+
+%x descriptionstate
+%x eolstate
+
+STR	[a-zA-Z0-9_./:\+-]+
 
 %%
 
@@ -64,14 +69,30 @@ STR	[a-zA-Z0-9_./+-]+
 
 "setup-timestamp:"	return SETUP_TIMESTAMP;
 "setup-version:"	return SETUP_VERSION;
-"version:"		return PACKAGEVERSION;
-"install:"		return INSTALL;
+"Package:"		return PACKAGENAME;
+[vV]"ersion:"		return PACKAGEVERSION;
+"install:"|"Filename:"	return INSTALL;
 "source:"		return SOURCE;
 "sdesc:"		return SDESC;
 "ldesc:"		return LDESC;
+"Description:"		BEGIN (descriptionstate); return DESCTAG;
+"Size:"			return FILESIZE;
+"MD5sum:"		return MD5LINE;
+"Installed-Size:"	return INSTALLEDSIZE;
+"Maintainer:"		BEGIN (eolstate); return MAINTAINER;
+"Architecture:"		return ARCHITECTURE;
+"Source:"		return SOURCEPACKAGE;
 
-"category:"		return CATEGORY;
+"category:"|"Section:"	return CATEGORY;
+"Priority:"		return PRIORITY;
 "requires:"		return REQUIRES;
+"Depends:"		return DEPENDS;
+"Pre-Depends:"		return PREDEPENDS;
+"Recommends:"		return RECOMMENDS;
+"Suggests:"		return SUGGESTS;
+"Conflicts:"		return CONFLICTS;
+"Replaces:"		return REPLACES;
+"Provides:"		return PROVIDES;
 
 "apath:"		return APATH;
 "ppath:"		return PPATH;
@@ -88,16 +109,38 @@ STR	[a-zA-Z0-9_./+-]+
 "[prev]"		return T_PREV;
 "["{STR}"]"		return T_UNKNOWN;
 
+"("			return OPENBRACE;
+")"			return CLOSEBRACE;
+"<<"			return LT;
+">>"			return GT;
+">="			return GTEQUAL;
+"<="			return LTEQUAL;
+"="                     return EQUAL;
+\,			return COMMA;
+"|"			return OR;
+"@"			return AT;
+
+{STR}"@"{STR}		{ yylval = new char [strlen(yytext) + 1];
+    			  strcpy (yylval, yytext);
+			  return EMAIL; }
 {STR}			{ yylval = new char [strlen(yytext) + 1];
   			  strcpy (yylval, yytext);
 			  return STRING; }
 
 [ \t\r]+		/* do nothing */;
 
-"#".*\n			{ return '\n'; }
+^"#".*\n		/* do nothing */;
+<descriptionstate>[^\n]+	{ yylval = new char [strlen(yytext) + 1];
+    				  strcpy (yylval, yytext);
+				  return STRTOEOL; }
+<descriptionstate>\n	{ return NL; }
+<descriptionstate>"\n"+	{BEGIN(INITIAL); return PARAGRAPH;}
+<eolstate>[^\n]+	{return STRING; }
+<eolstate>\n		{BEGIN(INITIAL); return NL; }
 
-\n			{ return *yytext; }
-.			{ return *yytext; }
+\n			{ return NL; }
+.			{ return *yytext;}
+<<EOF>>			{ return LEX_EOF; }
 
 %%
 
@@ -105,12 +148,14 @@ STR	[a-zA-Z0-9_./+-]+
 
 static io_stream *input_stream = 0;
 extern IniDBBuilder *iniBuilder;
+static IniParseFeedback *iniFeedback;
 
 void
-ini_init(io_stream *stream, IniDBBuilder *aBuilder)
+ini_init(io_stream *stream, IniDBBuilder *aBuilder, IniParseFeedback &aFeedback)
 {
   input_stream = stream;
   iniBuilder = aBuilder;
+  iniFeedback = &aFeedback;
   YY_FLUSH_BUFFER;
   yylineno = 1;
 }
@@ -126,6 +171,8 @@ ini_getchar(char *buf, int max_size)
 	  len = 0;
 	  input_stream = 0;
 	}
+      else
+        iniFeedback->progress (input_stream->tell(), input_stream->get_size());
       return len;
     }
   return 0;

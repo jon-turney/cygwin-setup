@@ -21,6 +21,8 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "download.h"
+  
 #include "win32.h"
 
 #include <stdio.h>
@@ -33,10 +35,8 @@ static const char *cvsid =
 #include "String++.h"
 #include "geturl.h"
 #include "state.h"
-#include "mkdir.h"
-#include "log.h"
+#include "LogSingleton.h"
 #include "filemanip.h"
-#include "port.h"
 
 #include "io_stream.h"
 
@@ -53,9 +53,52 @@ static const char *cvsid =
 
 #include "Exception.h"
 
-#include "download.h"
-  
 extern ThreeBarProgressPage Progress;
+
+
+bool
+validateCachedPackage (String const &fullname, packagesource & pkgsource)
+{
+  if (pkgsource.md5.isSet())
+    {
+      // check the MD5 sum of the cached file here
+      io_stream *thefile = io_stream::open (fullname, "rb");
+      if (!thefile)
+	return 0;
+      md5_state_t pns;
+      md5_init (&pns);
+
+      log (LOG_BABBLE) << "Checking MD5 for " << fullname << endLog;
+
+      Progress.SetText1 ((String ("Checking MD5 for ") + pkgsource.Base()).cstr_oneuse());
+      Progress.SetText4 ("Progress:");
+      Progress.SetBar1 (0);
+      
+      unsigned char buffer[16384];
+      ssize_t count;
+      while ((count = thefile->read (buffer, 16384)) > 0)
+	{
+	  md5_append (&pns, buffer, count);
+	  Progress.SetBar1 (thefile->tell(), thefile->get_size());
+	}
+      delete thefile;
+      if (count < 0)
+	throw new Exception ("__LINE__ __FILE__", (String ("IO Error reading ") + pkgsource.Cached()).cstr_oneuse(), APPERR_IO_ERROR);
+      
+      md5_byte_t tempdigest[16];
+      md5_finish(&pns, tempdigest);
+      md5 tempMD5;
+      tempMD5.set (tempdigest);
+      
+      log (LOG_BABBLE) << "For file '" << fullname << 
+	   " ini digest is " << pkgsource.md5.print() <<
+	   " file digest is " << tempMD5.print() << endLog;
+      
+      if (pkgsource.md5 != tempMD5)
+	return false;
+    }
+  return true;
+}
 
 /* 0 on failure
  */
@@ -77,7 +120,10 @@ check_for_cached (packagesource & pkgsource)
   if ((size = get_file_size (prefix + pkgsource.Canonical ())) > 0)
     if (size == pkgsource.size)
       {
-	pkgsource.set_cached (prefix + pkgsource.Canonical ());
+	if (validateCachedPackage (prefix + pkgsource.Canonical (), pkgsource))
+	  pkgsource.set_cached (prefix + pkgsource.Canonical ());
+	else
+	  throw new Exception ("__LINE__ __FILE__", (String ("Package validation failure for ") + prefix + pkgsource.Canonical ()).cstr_oneuse(), APPERR_CORRUPT_PACKAGE);
 	return 1;
       }
 
@@ -92,40 +138,13 @@ check_for_cached (packagesource & pkgsource)
     if ((size = get_file_size (fullname)) > 0)
       if (size == pkgsource.size)
 	{
-	  if (pkgsource.md5.isSet())
-	    {
-	      // check the MD5 sum of the cached file here
-	      io_stream *thefile = io_stream::open (fullname, "rb");
-	      if (!thefile)
-		return 0;
-	      md5_state_t pns;
-	      md5_init (&pns);
-
-	      unsigned char buffer[16384];
-	      ssize_t count;
-	      while ((count = thefile->read (buffer, 16384)) > 0)
-		md5_append (&pns, buffer, count);
-	      delete thefile;
-	      if (count < 0)
-		throw new Exception ("__LINE__ __FILE__", (String ("IO Error reading ") + pkgsource.Cached()).cstr_oneuse(), APPERR_IO_ERROR);
-
-	      md5_byte_t tempdigest[16];
-	      md5_finish(&pns, tempdigest);
-	      md5 tempMD5;
-	      tempMD5.set (tempdigest);
-	      
-	      log (LOG_BABBLE, String ("For file '") + fullname + 
-		   " ini digest is " + pkgsource.md5.print() + 
-		   " file digest is " + tempMD5.print());
-	      
-	      if (pkgsource.md5 != tempMD5)
-		throw new Exception ("__LINE__ __FILE__", (String ("MD5 Checksum failure for ") + pkgsource.Cached()).cstr_oneuse(), APPERR_CORRUPT_PACKAGE);
-	    }
-	  pkgsource.
-	    set_cached (fullname );
+	  if (validateCachedPackage (fullname, pkgsource))
+	    pkgsource.set_cached (fullname );
+	  else
+	    throw new Exception ("__LINE__ __FILE__", (String ("Package validation failure for ") + fullname).cstr_oneuse(), APPERR_CORRUPT_PACKAGE);
 	  return 1;
 	}
-	}
+    }
   return 0;
 }
 
@@ -172,7 +191,7 @@ download_one (packagesource & pkgsource, HWND owner)
 	  size_t size = get_file_size (String("file://") + local + ".tmp");
 	  if (size == pkgsource.size)
 	    {
-	      log (LOG_PLAIN, String ("Downloaded ") + local);
+	      log (LOG_PLAIN) << "Downloaded " << local << endLog;
 	      if (_access (local.cstr_oneuse(), 0) == 0)
 		remove (local.cstr_oneuse());
 	      rename ((local + ".tmp").cstr_oneuse(), local.cstr_oneuse());
@@ -184,9 +203,9 @@ download_one (packagesource & pkgsource, HWND owner)
 	    }
 	  else
 	    {
-	      log (LOG_PLAIN,
-		   "Download %s wrong size (%u actual vs %d expected)",
-		   local.cstr_oneuse(), size, pkgsource.size);
+	      log (LOG_PLAIN) << "Download " << local << " wrong size (" <<
+		size << " actual vs " << pkgsource.size << " expected)" << 
+		endLog;
 	      remove ((local + ".tmp").cstr_oneuse());
 	      continue;
 	    }

@@ -20,8 +20,10 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#if defined(WIN32) && !defined (_CYGWIN_)
 #include "win32.h"
-
+#endif
+  
 #include <stdio.h>
 
 #include "mkdir.h"
@@ -31,8 +33,9 @@ mkdir_p (int isadir, const char *in_path)
 {
   char saved_char, *slash = 0;
   char *c;
-  DWORD d, gse;
   char path[strlen (in_path) + 1];
+#if defined(WIN32) && !defined (_CYGWIN_)
+  DWORD d, gse;
   strcpy (path, in_path);
 
   d = GetFileAttributes (path);
@@ -57,7 +60,20 @@ mkdir_p (int isadir, const char *in_path)
 	  return 1;
 	}
     }
+#else
+  strcpy (path, in_path);
 
+  /* stat */
+  /* if file exists and is a dir return */
+  /* if we want a dir at this point
+     call makedir
+       if ok return 0
+     if fails due to present file,
+       rmove the file and return 1
+     else if fails due to missing fail/path
+     end block */
+#endif
+  
   for (c = path; *c; c++)
     {
       if (*c == ':')

@@ -66,6 +66,7 @@ public:
   void SetText1 (const TCHAR * t);
   void SetText2 (const TCHAR * t);
   void SetText3 (const TCHAR * t);
+  void SetText4 (const TCHAR * t);
 
   void SetBar1 (long progress, long max = 100);
   void SetBar2 (long progress, long max = 100);

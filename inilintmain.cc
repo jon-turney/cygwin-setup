@@ -41,8 +41,20 @@ yyerror (String const &s)
   return 0;
 }
 
+void
+show_help()
+{
+  cout << "inilint checks cygwin setup.ini files and reports any errors with" << endl;
+  cout << "diagnostics" << endl;
+}
+
 int
 main (int argc, char **argv)
 {
+  if (!GetOption::GetInstance().Process (argc,argv))
+    {
+      show_help();
+      return 1;
+    }
   return 0;
 }

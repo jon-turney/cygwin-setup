@@ -26,9 +26,11 @@ class String;
 class IniParseFeedback
 {
 public:
-  virtual void babble(String const &) const;
+  virtual void progress (unsigned long const, unsigned long const);
+  virtual void iniName (String const &);
+  virtual void babble (String const &) const;
   virtual void warning (String const &) const;
-  virtual void error(String const &) const;
+  virtual void error (String const &) const;
   virtual ~ IniParseFeedback ();
 };
 

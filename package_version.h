@@ -43,6 +43,8 @@ class Dependency;
 /* Required for parsing */
 #include "package_source.h"
 #include "String++.h"
+#include "PackageSpecification.h"
+#include <vector>
 
 class Dependency
 {
@@ -50,7 +52,7 @@ public:
   Dependency (String const &aPackage) : package (aPackage) {}
   Dependency (Dependency const &);
   Dependency * next;		/* the next package in this dependency list */
-  String const package;		/* the name of the package that is depended on */
+  PackageSpecification package; /* the package that is depended on */
 }
  ;				/* Dependencies can be used for
 				   recommended/required/related... */
@@ -101,6 +103,10 @@ public:
   virtual void set_sdesc (String const &) = 0;
   virtual String const LDesc () = 0;
   virtual void set_ldesc (String const &) = 0;
+  /* only semantically meaningful for binary packages */
+  virtual PackageSpecification & sourcePackage ();
+  virtual void setSourcePackage (PackageSpecification const &);
+  
   /* FIXME: review this - these are UI variables, should be consistent across all
    * children package types
    */
@@ -113,6 +119,9 @@ public:
       required = dp;
   }
   Dependency *required;
+  vector <vector <PackageSpecification *> *> depends, predepends, recommends,
+  suggests, replaces, conflicts, provides;
+  
   int srcpicked;		/* non zero if the source for this is required */
   int binpicked;		/* non zero if the binary is required  - 
 				   This will also trigger reinstalled if it is set */
@@ -130,6 +139,9 @@ public:
   /* TODO: Implement me:
      static package_meta * scan_package (io_stream *);
    */
+protected:
+  PackageSpecification _sourcePackage;
+  
 
 };
 

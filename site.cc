@@ -32,7 +32,7 @@ static const char *cvsid =
 #include "state.h"
 #include "geturl.h"
 #include "msg.h"
-#include "log.h"
+#include "LogSingleton.h"
 #include "io_stream.h"
 #include "site.h"
 
@@ -298,7 +298,7 @@ SitePage::OnNext ()
 
   // Log all the selected URLs from the list.    
   for (size_t n = 1; n <= site_list.number (); n++)
-    log (LOG_PLAIN, String ("site: ") + site_list[n]->url);
+    log (LOG_PLAIN) << "site: " << site_list[n]->url << endLog;
 
   Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
   return IDD_INSTATUS;
@@ -415,7 +415,7 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 	    else
 	      {
 		// Log the adding of this new URL.
-		log (LOG_BABBLE, String ("Adding site: ") + other_url);
+		log (LOG_BABBLE) << "Adding site: " << other_url << endLog;
 	      }
 
 	    // Assume the user wants to use it and select it for him.

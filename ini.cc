@@ -72,6 +72,31 @@ static const char *ini_filename;
 class GuiParseFeedback : public IniParseFeedback
 {
 public:
+  GuiParseFeedback () : lastpct (0) 
+    {
+      Progress.SetText2 ("");
+      Progress.SetText3 ("");
+      Progress.SetText4 ("Progress:");
+    }
+  virtual void progress(unsigned long const pos, unsigned long const max)
+    {
+      if (!max)
+	/* length not known or eof */
+	return;
+      if (lastpct == 100)
+	/* rounding down should mean this only ever fires once */
+	lastpct = 0;
+      if (pos * 100 / max > lastpct)
+	{
+	  lastpct = pos * 100 / max;
+	  log (LOG_BABBLE, String (lastpct) + "% (" + String (pos) + " of " + String (max) + " bytes of ini file read");
+	}
+      Progress.SetBar1(pos, max);
+    }
+  virtual void iniName (String const &name)
+    {
+      Progress.SetText1 ((String ("Parsing ini file \"") + name + "\"").cstr_oneuse());
+    }
   virtual void babble(String const &message)const
     {
       log (LOG_BABBLE, message);
@@ -86,7 +111,10 @@ public:
     }
   virtual ~ GuiParseFeedback ()
     {
+      Progress.SetText4("Package:");
     }
+private:
+  unsigned char lastpct;
 };
 
 static int
@@ -107,7 +135,7 @@ do_remote_ini (HWND owner)
   size_t ini_count = 0;
   GuiParseFeedback myFeedback;
   IniDBBuilderPackage aBuilder(myFeedback);
-  
+
   for (size_t n = 1; n <= site_list.number (); n++)
     {
       io_stream *compressed_ini_file =
@@ -125,9 +153,14 @@ do_remote_ini (HWND owner)
 	  note (owner, IDS_SETUPINI_MISSING, site_list[n]->url.cstr_oneuse());
 	  continue;
 	}
+ 
+      if (compressed_ini_file)
+        myFeedback.iniName (site_list[n]->url + "/setup.bz2");
+      else
+        myFeedback.iniName (site_list[n]->url + "/setup.ini");
 
       aBuilder.parse_mirror = site_list[n]->url;
-      ini_init (ini_file, &aBuilder);
+      ini_init (ini_file, &aBuilder, myFeedback);
 
       /*yydebug = 1; */
 
