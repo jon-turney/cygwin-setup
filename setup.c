@@ -28,6 +28,10 @@
 #define NFILE_LIST 10000
 #endif
 
+#ifndef NFILE_SLOP
+#define NFILE_SLOP 20
+#endif
+
 char *wd;
 
 int downloaddir (HINTERNET session, const char *url);
@@ -197,7 +201,7 @@ tarx (const char *dir, const char *fn, FILE *logfp)
 	{
 	  if (++files.index >= files.count)
 	    files.array = realloc (files.array,
-				       files.count += NFILE_LIST);
+				   NFILE_SLOP + (files.count += NFILE_LIST));
 	  s = buffer;
 	  if (*s != '/')
 	    *--s = '/';
@@ -739,19 +743,22 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
     {
       size_t n;
       FILE *uninst;
+      char cwd[MAX_PATH];
+      char *uninstfile;
 
-      files.count = files.index + 1;
-      qsort (files.array, files.count, sizeof (char *), reverse_sort);
-
-      uninst = fopen ("bin\\uninst.bat", "wt");
+      getcwd (cwd, sizeof (cwd));
+      uninstfile = pathcat (cwd, "uninst.bat");
+      uninst = fopen (uninstfile, "wt");
 
       if (uninst)
 	{
-	  char cwd[MAX_PATH];
-	  char *uninstfile;
 	  unsigned percent = 0;
+	  struct _stat st;
 
-	  getcwd (cwd, sizeof (cwd));
+	  files.array[++files.index] = pathcat (cwd, "bin\\cygwin.bat");
+	  files.count = files.index + 1;
+	  qsort (files.array, files.count, sizeof (char *), reverse_sort);
+
 	  fprintf (uninst,
 		   "@echo off\n" "%c:\n" "cd \"%s\"\n", *cwd, cwd);
 	  for (n = 0; n < files.count; ++n)
@@ -763,7 +770,7 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 
 	      dpath = files.array[n];
 
-	      if (files.array[n][strlen (files.array[n]) - 1] == '\\')
+	      if (_stat (dpath, &st) == 0 && st.st_mode & _S_IFDIR)
 		fprintf (uninst, "rmdir \"%s\"\n", dpath);
 	      else
 		{
@@ -776,15 +783,11 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 		   "del \"%s\"\n"
 		   "del \"%s\"\n"
 		   "rmdir \"%s\"\n"
-		   "del bin\\uninst.bat\n", shortcut, shellscut,
-		   folder);
+		   "del %s\n", shortcut, shellscut,
+		   folder, uninstfile);
 	  fclose (uninst);
 
-	  uninstfile = pathcat (cwd, "bin\\uninst.bat");
-	  if (uninstfile)
-	    {
-	      create_shortcut (uninstfile, shortcut);
-	    }
+	  create_shortcut (uninstfile, shortcut);
 	}
       sa_cleanup (&files);
       retval = 1;
@@ -819,7 +822,7 @@ do_start_menu (const char *root)
 	  fprintf (batch,
 		   "@echo off\n"
 		   "SET MAKE_MODE=unix\n"
-		   "SET PATH=%s\\bin;%%PATH%%\n"
+		   "SET PATH=%s\\bin;%s\\usr\\local\\bin;%%PATH%%\n"
 		   "bash\n", root, root);
 	  fclose (batch);
 
@@ -1138,7 +1141,7 @@ main ()
 	      mkmount (wd, root, "lib", "/usr/lib", 1);
 
 	      files.count = NFILE_LIST;
-	      files.array = calloc (sizeof (char *), NFILE_LIST);
+	      files.array = calloc (sizeof (char *), NFILE_LIST + NFILE_SLOP);
 	      files.index = -1;
 
 	      /* Extract all of the packages that are stored with setup or in
@@ -1160,15 +1163,22 @@ main ()
 		    }
 		  else
 		    {
+		      char **a;
 		      /* bash expects a /tmp */
 		      char *tmpdir = pathcat (root, "tmp");
 
 		      if (tmpdir)
 			{
+			  files.array[++files.index] = tmpdir;
 			  mkdir (tmpdir);	/* Ignore the result, it may
 						   exist. */
-			  xfree (tmpdir);
 			}
+
+		      files.array[++files.index] = pathcat (root, "usr\\local");
+		      files.array[++files.index] = pathcat (root, "usr\\local\\bin");
+		      files.array[++files.index] = pathcat (root, "usr\\local\\lib");
+		      mkdirp (files.array[files.index]);
+		      mkdir (files.array[files.index - 1]);
 
 		      if (do_start_menu (root))
 			retval = 0;	/* Everything worked return

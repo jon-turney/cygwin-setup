@@ -1,3 +1,16 @@
+Thu Apr 13 12:51:19 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* Makefile.in: Eliminate duplicate -nostdinc from CFLAGS.
+	* setup.c (create_uninstall): Create the uninstall .bat file in the
+	"root" so that we can remove the /bin directory.  Add bin\cygwin.bat to
+	list of files to be deleted.  Fix directory detection for determining
+	when to use 'rmdir'.
+	(do_start_menu): Add /usr/local/bin to the path.
+	(main): Add slop to files.array allocation so that we don't have to
+	worry about reallocating the array when it grows too large when doing
+	some trivial "pushes".  Add /tmp and /usr/local/{bin,lib} to list of
+	files.
+
 Thu Apr 13 01:59:44 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (processdirlisting): Fix handling of "A" for "A"lways
