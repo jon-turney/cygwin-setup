@@ -120,7 +120,7 @@ cygpackage::getfirstfile ()
     io_stream::open (String ("cygfile:///etc/setup/") + name + ".lst.gz", "rb");
   listdata = compress::decompress (listfile);
   if (!listdata)
-    return 0;
+    return String();
   return listdata->gets (getfilenamebuffer, sizeof (getfilenamebuffer));
 }
 
@@ -129,7 +129,7 @@ cygpackage::getnextfile ()
 {
   if (listdata)
     return listdata->gets (getfilenamebuffer, sizeof (getfilenamebuffer));
-  return 0;
+  return String();
 }
 
 void

@@ -1,3 +1,10 @@
+2002-06-18  Robert Collins  <rbtcollins@hotmail.com>
+
+	* cygpackage.cc (cygpackage::getfirstfile): Return an empty String
+	rather than a string built from an int. Thanks to Pavel Tsekov for
+	identifying the bug.
+	(cygpackage::getnextfile): Ditto.
+
 2002-06-15  Robert Collins  <rbtcollins@hotmail.com>
 
 	* package_meta.cc (packagemeta::set_action): When installing packages
