@@ -90,7 +90,7 @@ PickView::set_headers ()
       srctick_col = bintick_col + 1;
       cat_col = srctick_col + 1;
       pkg_col = cat_col + 1;
-      last_col = pkg_col + 1;
+      last_col = pkg_col;
     }
   else if (view_mode == views::Category)
     {

@@ -1,3 +1,18 @@
+2002-04-12  Robert Collins  <rbtcollins@hotmail.com>
+
+	* mklink2.cc (make_link_2): Tweak to work with current w32api
+	headers.
+		
+2002-04-10  Pavel Tsekov  <ptsekov@gmx.net>
+
+	* version.cc (canonicalize_version): Fix a call delete[]
+	to delete the allocated address.
+
+2002-03-29  Robert Collins  <rbtcollins@hotmail.com>
+
+	* PickView.cc (PickView::set_headers): Set last_col correctly. Thanks
+	to Ton van Overbeek for locating the bug area.
+
 2003-03-27  Robert Collins  <rbtcollins@hotmail.com>
 
 	* PickView.cc (PickView::insert_pkg): Be more generic with
