@@ -211,10 +211,5 @@ long
 LocalDirPage::OnBack ()
 {
   save_dialog (GetHWND ());
-  if (source == IDC_SOURCE_DOWNLOAD)
-    {
-      // Downloading only, skip the unix root page
-      return IDD_SOURCE;
-    }
   return 0;
 }

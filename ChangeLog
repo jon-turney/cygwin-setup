@@ -1,3 +1,25 @@
+2003-07-29  Max Bowsher  <maxb@ukf.net>
+
+	Based on a patch by Gary R. Van Sickle <g.r.vansickle@worldnet.att.net>.
+	* AntiVirus.cc (AntiVirusPage::wantsActivation): Define.
+	* AntiVirus.h (AntiVirusPage::wantsActivation): Declare.
+	* localdir.cc (LocalDirPage::OnBack): Remove logic subsumed by
+	RootPage::wantsActivation.
+	* proppage.cc (PropertyPage::DialogProc): Call wantsActivation(),
+	and skip to next page in sequence if activation is refused.
+	* proppage.h (PropertyPage::wantsActivation): Default implementation.
+	* root.cc (RootPage::wantsActivation): Define.
+	* root.h (RootPage::wantsActivation): Declare.
+	* source.cc: Don't include "AntiVirus.h".
+	(SourcePage::OnNext): Remove logic subsumed by
+	RootPage::wantsActivation.
+	(SourcePage::OnBack): Remove logic subsumed by
+	AntiVirusPage::wantsActivation.
+	* splash.cc: Don't include "AntiVirus.h" or "dialog.h".
+	(SplashPage::OnNext): Remove - subsumed by
+	AntiVirusPage::wantsActivation.
+	* splash.h (SplashPage::OnNext): Remove declaration.
+
 2003-07-29  Robert Collins  <rbtcollins@hotmail.com>
 
 	* PickView.h (PickView::refresh): New method.

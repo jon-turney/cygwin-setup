@@ -101,7 +101,19 @@ AntiVirusPage::OnActivate ()
       SendMessage (GetDlgItem (IDC_LEAVE_AV), BM_SETCHECK,
 		   BST_CHECKED, 0);
     }
+}
 
+bool
+AntiVirusPage::wantsActivation() const
+{
+  // Check if there's an antivirus scanner to be disabled.
+  if(!KnownAVIsPresent)
+  {
+    // Nope, skip this page by "not accepting" activation.
+    return false;
+  }
+
+  return true;
 }
 
 long

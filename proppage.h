@@ -92,6 +92,10 @@ public:
   virtual void OnActivate ()
   {
   };
+  virtual bool wantsActivation ()
+  {
+    return true;
+  };
   virtual void OnDeactivate ()
   {
   };

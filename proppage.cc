@@ -159,6 +159,12 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 		GetOwner ()->SetButtons (PSWIZB_BACK | PSWIZB_NEXT);
 	      }
 
+	    if(!wantsActivation())
+	    {
+	      ::SetWindowLong (GetHWND (), DWL_MSGRESULT, -1);
+	      return TRUE;
+	    }
+
 	    OnActivate ();
 
 	    if (unattended_mode) 

@@ -177,6 +177,12 @@ RootPage::OnInit ()
   load_dialog (GetHWND ());
 }
 
+bool
+RootPage::wantsActivation() const
+{
+  return (source != IDC_SOURCE_DOWNLOAD);
+}
+
 long
 RootPage::OnNext ()
 {

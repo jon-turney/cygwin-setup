@@ -21,8 +21,6 @@
 #include "resource.h"
 #include "cistring.h"
 #include "splash.h"
-#include "AntiVirus.h"
-#include "dialog.h"
 
 bool
 SplashPage::Create ()
@@ -42,12 +40,3 @@ SplashPage::OnInit ()
   // Set the font for the IDC_STATIC_WELCOME_TITLE
   SetDlgItemFont(IDC_STATIC_WELCOME_TITLE, "Ariel", 12, FW_BOLD);
 }
-
-long
-SplashPage::OnNext()
-{
-  if (!AntiVirus::Show())
-    return IDD_SOURCE;
-  return 0;
-}
-

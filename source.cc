@@ -33,8 +33,6 @@ static const char *cvsid =
 
 #include "source.h"
 
-#include "AntiVirus.h"
-
 #include "getopt++/BoolOption.h"
 
 static BoolOption DownloadOption (false, 'D', "download", "Download from internet");
@@ -114,12 +112,6 @@ SourcePage::OnNext ()
   HWND h = GetHWND ();
 
   save_dialog (h);
-  if (source == IDC_SOURCE_DOWNLOAD)
-    {
-      // If all we're doing is downloading,skip the root directory page
-      return IDD_LOCAL_DIR;
-    }
-
   return 0;
 }
 
@@ -127,8 +119,6 @@ long
 SourcePage::OnBack ()
 {
   save_dialog (GetHWND ());
-  if (!AntiVirus::Show())
-      return IDD_SPLASH;
   return 0;
 }
 

@@ -16,6 +16,7 @@ public:
   bool Create ();
 
   virtual void OnInit ();
+  virtual bool wantsActivation() const;
   virtual long OnNext ();
   virtual long OnBack ();
   virtual long OnUnattended ();

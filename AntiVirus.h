@@ -41,6 +41,7 @@ public:
   bool Create ();
 
   virtual void OnActivate ();
+  virtual bool wantsActivation() const;
   virtual void OnDeactivate ();
   virtual long OnNext ();
   virtual long OnBack ();
