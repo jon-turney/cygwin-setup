@@ -258,8 +258,10 @@ uexists (char *path)
 static void
 make_passwd_group ()
 {
+#if 0 /* mkpasswd and mkgroup are now working on 9x/ME as well. */
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
     return;
+#endif
 
   if (uexists ("/etc/passwd") && uexists ("/etc/group"))
     return;
