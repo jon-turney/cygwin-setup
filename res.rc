@@ -1,19 +1,5 @@
 //Microsoft Developer Studio generated resource script.
 //
-/*
- * Copyright (c) 2000, Red Hat, Inc.
- *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
- *
- *     A copy of the GNU General Public License can be found at
- *     http://www.gnu.org/
- *
- * Written by DJ Delorie <dj@cygnus.com>
- *
- */
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -111,34 +97,27 @@ BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
 END
 
-IDD_NET DIALOG DISCARDABLE  0, 0, 215, 141
+IDD_NET DIALOG 0, 0, 215, 95
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "Next -->",IDOK,100,120,45,15,WS_DISABLED
-    PUSHBUTTON      "Cancel",IDCANCEL,165,120,45,15
+    DEFPUSHBUTTON   "Next -->",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
     CONTROL         "Use IE5 Settings",IDC_NET_IE5,"Button",
-                    BS_AUTORADIOBUTTON,55,15,69,10
+                    BS_AUTORADIOBUTTON,55,10,69,10
     CONTROL         "Direct Connection",IDC_NET_DIRECT,"Button",
-                    BS_AUTORADIOBUTTON | WS_DISABLED,55,30,73,10
+                    BS_AUTORADIOBUTTON | WS_DISABLED,55,25,73,10
     CONTROL         "Use HTTP/FTP Proxy:",IDC_NET_PROXY,"Button",
-                    BS_AUTORADIOBUTTON | WS_DISABLED,55,45,88,10
-    EDITTEXT        IDC_PROXY_HOST,65,60,80,12,ES_AUTOHSCROLL | WS_DISABLED
-    LTEXT           "Proxy",IDC_STATIC,10,60,50,15,SS_CENTERIMAGE,
+                    BS_AUTORADIOBUTTON | WS_DISABLED,55,40,88,10
+    EDITTEXT        IDC_PROXY_HOST,65,55,80,12,ES_AUTOHSCROLL | WS_DISABLED
+    LTEXT           "Proxy",IDC_STATIC,10,55,50,15,SS_CENTERIMAGE,
                     WS_EX_RIGHT
-    LTEXT           "Port",IDC_STATIC,155,60,20,15,SS_CENTERIMAGE,
+    LTEXT           "Port",IDC_STATIC,155,55,20,15,SS_CENTERIMAGE,
                     WS_EX_RIGHT
-    EDITTEXT        IDC_PROXY_PORT,180,60,30,12,ES_AUTOHSCROLL | WS_DISABLED
-    EDITTEXT        IDC_PROXY_USER,65,80,145,12,ES_AUTOHSCROLL | WS_DISABLED
-    LTEXT           "Optional User ID",IDC_STATIC,5,80,55,15,SS_CENTERIMAGE,
-                    WS_EX_RIGHT
-    EDITTEXT        IDC_PROXY_PASSWD,65,95,145,12,ES_AUTOHSCROLL | 
-                    WS_DISABLED
-    LTEXT           "Password",IDC_STATIC,10,95,50,15,SS_CENTERIMAGE,
-                    WS_EX_RIGHT
-    PUSHBUTTON      "<-- Back",IDC_BACK,55,120,45,15
+    EDITTEXT        IDC_PROXY_PORT,180,55,30,12,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "<-- Back",IDC_BACK,55,75,45,15
 END
 
 IDD_DLSTATUS DIALOG DISCARDABLE  0, 0, 215, 95
@@ -176,6 +155,40 @@ BEGIN
     RTEXT           "Package",IDC_STATIC,5,40,45,8
     RTEXT           "Total",IDC_STATIC,10,50,40,8
     RTEXT           "Disk",IDC_STATIC,5,60,45,8
+END
+
+IDD_PROXY_AUTH DIALOG 0, 0, 215, 95
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "Proxy User ID",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,
+                    WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_AUTOHSCROLL
+    LTEXT           "Password",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,
+                    WS_EX_RIGHT
+    LTEXT           "Proxy Authorization Required",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "OK",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+END
+
+IDD_NET_AUTH DIALOG 0, 0, 215, 95
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "User ID",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,
+                    WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_AUTOHSCROLL
+    LTEXT           "Password",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,
+                    WS_EX_RIGHT
+    LTEXT           "Server Authorization Required",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "OK",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
 END
 
 
@@ -233,7 +246,17 @@ GUIDELINES DESIGNINFO DISCARDABLE
 BEGIN
     IDD_NET, DIALOG
     BEGIN
-        BOTTOMMARGIN, 95
+        BOTTOMMARGIN, 49
+    END
+
+    IDD_PROXY_AUTH, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 49
+    END
+
+    IDD_NET_AUTH, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 49
     END
 END
 #endif    // APSTUDIO_INVOKED

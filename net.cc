@@ -40,14 +40,9 @@ check_if_enable_next (HWND h)
       if (net_proxy_host && net_proxy_port)
 	e = 1;
     }
-  if (pu && (net_proxy_user && !net_proxy_passwd
-	     || !net_proxy_user && net_proxy_passwd))
-    e = 0;
   EnableWindow (GetDlgItem (h, IDOK), e);
   EnableWindow (GetDlgItem (h, IDC_PROXY_HOST), p);
   EnableWindow (GetDlgItem (h, IDC_PROXY_PORT), p);
-  EnableWindow (GetDlgItem (h, IDC_PROXY_USER), pu);
-  EnableWindow (GetDlgItem (h, IDC_PROXY_PASSWD), pu);
 }
 
 static void
@@ -58,8 +53,6 @@ load_dialog (HWND h)
   if (net_proxy_port == 0)
     net_proxy_port = 80;
   eset (h, IDC_PROXY_PORT, net_proxy_port);
-  eset (h, IDC_PROXY_USER, net_proxy_user);
-  eset (h, IDC_PROXY_PASSWD, net_proxy_passwd);
   check_if_enable_next (h);
 }
 
@@ -69,8 +62,6 @@ save_dialog (HWND h)
   net_method = rbget (h, rb);
   net_proxy_host = eget (h, IDC_PROXY_HOST, net_proxy_host);
   net_proxy_port = eget (h, IDC_PROXY_PORT);
-  net_proxy_user = eget (h, IDC_PROXY_USER, net_proxy_user);
-  net_proxy_passwd = eget (h, IDC_PROXY_PASSWD, net_proxy_passwd);
 }
 
 static BOOL
@@ -84,8 +75,6 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDC_NET_PROXY:
     case IDC_PROXY_HOST:
     case IDC_PROXY_PORT:
-    case IDC_PROXY_USER:
-    case IDC_PROXY_PASSWD:
       save_dialog (h);
       check_if_enable_next (h);
       break;

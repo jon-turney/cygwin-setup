@@ -27,6 +27,9 @@ extern int	root_scope;
 extern int	net_method;
 extern char *	net_proxy_host;
 extern int	net_proxy_port;
+
+extern char *	net_user;
+extern char *	net_passwd;
 extern char *	net_proxy_user;
 extern char *	net_proxy_passwd;
 

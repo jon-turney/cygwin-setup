@@ -1,5 +1,11 @@
 2000-08-02  DJ Delorie  <dj@redhat.com>
 
+	* net.cc: remove proxy password code
+	* res.rc: remove proxy user/pass from net, add auth dialogs
+	* netio.cc,h: add sys/proxy auth methods
+	* nio-ie5: use them, check for http status codes
+	* state.h: add system authorization
+
 	* concat.cc (concat): canonicalize x:// to x:/ (exception to ://
 	meaning an url)
 

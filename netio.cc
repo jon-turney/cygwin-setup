@@ -28,6 +28,7 @@
 #include "netio.h"
 #include "nio-file.h"
 #include "nio-ie5.h"
+#include "dialog.h"
 
 #include "port.h"
 
@@ -125,4 +126,91 @@ NetIO::open (char *url)
     }
 
   return rv;
+}
+
+
+static char **user, **passwd;
+
+static void
+check_if_enable_ok (HWND h)
+{
+  int e = 0;
+  msg ("u = %p p = %p", *user, *passwd);
+  if (*user && *passwd)
+    e = 1;
+  EnableWindow (GetDlgItem (h, IDOK), e);
+}
+
+static void
+load_dialog (HWND h)
+{
+  eset (h, IDC_NET_USER, *user);
+  eset (h, IDC_NET_PASSWD, *passwd);
+  check_if_enable_ok (h);
+}
+
+static void
+save_dialog (HWND h)
+{
+  *user = eget (h, IDC_NET_USER, *user);
+  *passwd = eget (h, IDC_NET_PASSWD, *passwd);
+}
+
+static BOOL
+auth_cmd (HWND h, int id, HWND hwndctl, UINT code)
+{
+  switch (id)
+    {
+
+    case IDC_NET_USER:
+    case IDC_NET_PASSWD:
+      save_dialog (h);
+      check_if_enable_ok (h);
+      break;
+
+    case IDOK:
+      save_dialog (h);
+      EndDialog (h, 0);
+      break;
+
+    case IDCANCEL:
+      EndDialog (h, 1);
+      break;
+    }
+}
+
+static BOOL CALLBACK
+auth_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+{
+  switch (message)
+    {
+    case WM_INITDIALOG:
+      load_dialog (h);
+      return FALSE;
+    case WM_COMMAND:
+      return HANDLE_WM_COMMAND (h, wParam, lParam, auth_cmd);
+    }
+  return FALSE;
+}
+
+static int
+auth_common (HINSTANCE h, int id)
+{
+  return DialogBox (h, MAKEINTRESOURCE (id), 0, auth_proc);
+}
+
+int
+NetIO::get_auth ()
+{
+  user = &net_user;
+  passwd = &net_passwd;
+  return auth_common (hinstance, IDD_NET_AUTH);
+}
+
+int
+NetIO::get_proxy_auth ()
+{
+  user = &net_proxy_user;
+  passwd = &net_proxy_passwd;
+  return auth_common (hinstance, IDD_PROXY_AUTH);
 }

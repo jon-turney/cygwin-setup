@@ -44,6 +44,16 @@ NetIO_IE5::NetIO_IE5 (char *_url)
     INTERNET_FLAG_EXISTING_CONNECT |
     INTERNET_FLAG_PASSIVE;
 
+ try_again:
+
+  if (net_user && net_passwd)
+    {
+      InternetSetOption (internet, INTERNET_OPTION_USERNAME,
+			 net_user, strlen (net_user));
+      InternetSetOption (internet, INTERNET_OPTION_PASSWORD,
+			 net_passwd, strlen (net_passwd));
+    }
+
   if (net_proxy_user && net_proxy_passwd)
     {
       InternetSetOption (internet, INTERNET_OPTION_PROXY_USERNAME,
@@ -62,6 +72,38 @@ NetIO_IE5::NetIO_IE5 (char *_url)
 	  DWORD e, l=sizeof (buf);
 	  InternetGetLastResponseInfo (&e, buf, &l);
 	  MessageBox (0, buf, "Internet Error", 0);
+	}
+    }
+
+  DWORD type, type_s;
+  type_s = sizeof (type);
+  InternetQueryOption (connection, INTERNET_OPTION_HANDLE_TYPE,
+		       &type, &type_s);
+
+  switch (type)
+    {
+    case INTERNET_HANDLE_TYPE_HTTP_REQUEST:
+    case INTERNET_HANDLE_TYPE_CONNECT_HTTP:
+      type_s = sizeof (DWORD);
+      if (HttpQueryInfo (connection,
+			 HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
+			 &type, &type_s, NULL))
+	{
+	  if (type == 401) /* authorization required */
+	    {
+	      get_auth ();
+	      goto try_again;
+	    }
+	  else if (type == 407) /* proxy authorization required */
+	    {
+	      get_proxy_auth ();
+	      goto try_again;
+	    }
+	  else if (type >= 300)
+	    {
+	      connection = 0;
+	      return;
+	    }
 	}
     }
 }
