@@ -1,5 +1,12 @@
 2003-06-22  Max Bowsher  <maxb@ukf.net>
 
+	* Makefile.am: Clarify comment.
+	Derive AM_CFLAGS from AM_CXXFLAGS, rather than the other way around.
+	(AM_CXXFLAGS): Remove -Wmissing-declarations - it is a C-only warning.
+	(AM_CFLAGS): Add -Winline, and -Wmissing-declarations.
+
+2003-06-22  Max Bowsher  <maxb@ukf.net>
+
 	* rfc1738.cc (rfc1738_do_escape): Eliminate redundant conditional.
 
 2003-06-05  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>

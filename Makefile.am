@@ -24,11 +24,11 @@ SUBDIRS = bz2lib zlib libgetopt++ @RSYNC@
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
-##AM_CFLAGS	= -Werror -Wall -Winline -Wpointer-arith 
-AM_CFLAGS	= -Werror -Wall -Wpointer-arith \
-  -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
-  -Wmissing-declarations -Wcomments
-AM_CXXFLAGS	= $(AM_CFLAGS) 
+# We would like to use -Winline for C++ as well, but some STL code triggers
+# this warning. (Bug verified present in gcc-3.3)
+AM_CXXFLAGS	= -Werror -Wall -Wpointer-arith -Wcomments \
+  -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes
+AM_CFLAGS	= $(AM_CXXFLAGS) -Wmissing-declarations -Winline
 
 WINDRES		:= @WINDRES@
 
