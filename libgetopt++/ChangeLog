@@ -1,3 +1,8 @@
+2002-04-23  Robert Collins  <rbtcollins@hotmail.com>
+
+	* src/OptionSet.cc (OptionSet::ParameterUsage): Line-break long 
+	help text.
+
 2002-04-20  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.am (libgetopt___la_SOURCES): Add OptionSet.cc and 

@@ -123,7 +123,17 @@ OptionSet::ParameterUsage (ostream &aStream)
       output += " --" ;
       output += anOption->longOption ().name;
       output += String (40 - output.size(), ' ');
-      output += anOption->shortHelp();
+      String helpmsg = anOption->shortHelp();
+      while (helpmsg.size() > 40)
+	{
+	  // TODO: consider using a line breaking class here.
+	  int pos = helpmsg.substr(0,40).find_last_of(" ");
+	  output += helpmsg.substr(0,pos);
+	  helpmsg.erase (0,pos+1);
+	  aStream << output << endl;
+	  output = String (40, ' ');
+	}
+      output += helpmsg;
       aStream << output << endl;
     }
 }
