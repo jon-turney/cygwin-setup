@@ -45,6 +45,7 @@ public:
   packagemeta * findSource (PackageSpecification const &) const;
   PackageDBConnectedIterator connectedBegin();
   PackageDBConnectedIterator connectedEnd();
+  void fillMissingCategory();
   void markUnVisited();
   void setExistence();
   /* all seen binary packages */

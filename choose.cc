@@ -61,15 +61,6 @@ using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
-
-void
-ChooserPage::fillMissingCategory ()
-{
-  packagedb db;
-  for_each(db.packages.begin(), db.packages.end(), visit_if(mem_fun(&packagemeta::setDefaultCategories), mem_fun(&packagemeta::hasNoCategories)));
-  for_each(db.packages.begin(), db.packages.end(), mem_fun(&packagemeta::addToCategoryAll));
-}
-
 void
 ChooserPage::createListview (HWND dlg, RECT * r)
 {
@@ -130,7 +121,7 @@ ChooserPage::OnInit ()
 
   packagedb db;
   db.setExistence ();
-  fillMissingCategory ();
+  db.fillMissingCategory ();
 
   if (source == IDC_SOURCE_DOWNLOAD)
     setPrompt("Select packages to download ");

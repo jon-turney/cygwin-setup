@@ -8,6 +8,14 @@
 
 2003-07-29  Robert Collins  <rbtcollins@hotmail.com>
 
+	* package_db.h (packagedb::fillMissingCategory): Move from ChooserPage.
+	* choose.h (ChooserPage::fillMissingCategory): Delete.
+	* package_db.cc (packagedb::fillMissingCategory): Move from ChooserPage.
+	* choose.cc (ChooserPage::fillMissingCategory): Delete and adjust 
+	callers.
+
+2003-07-29  Robert Collins  <rbtcollins@hotmail.com>
+
 	* PickView.h (CATEGORY_EXPANDED): Move from choose.h
 	(CATEGORY_COLLAPSED): Move from choose.cc.
 	(PickView::setViewMode): Move from ChooserPage.

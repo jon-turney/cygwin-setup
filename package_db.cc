@@ -40,6 +40,7 @@ static const char *cvsid =
 #include "package_db.h"
 #include "package_meta.h"
 #include "Exception.h"
+#include "Generic.h"
 
 using namespace std;
 
@@ -397,3 +398,11 @@ packagedb::setExistence ()
     }
 #endif
 }
+
+void
+packagedb::fillMissingCategory ()
+{
+  for_each(packages.begin(), packages.end(), visit_if(mem_fun(&packagemeta::setDefaultCategories), mem_fun(&packagemeta::hasNoCategories)));
+  for_each(packages.begin(), packages.end(), mem_fun(&packagemeta::addToCategoryAll));
+}
+

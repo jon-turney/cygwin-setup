@@ -45,7 +45,6 @@ public:
   }; 
   private:
   void createListview (HWND dlg, RECT * r);
-  void fillMissingCategory();
   void getParentRect (HWND parent, HWND child, RECT * r);
   void keepClicked();
   void logOnePackageResult(packagemeta const *aPkg);
