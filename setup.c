@@ -21,7 +21,7 @@
 
 #include "setup.h"
 #include "strarry.h"
-#include "zlib-1.1.3/zlib.h"
+#include "zlib/zlib.h"
 
 #define CYGNUS_KEY "Software\\Cygnus Solutions"
 #define DEF_ROOT "C:\\cygwin"
