@@ -140,7 +140,7 @@ public:
 
   /* ensure that the depends clause is satisfied */
   int set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0);
-  
+
 private:
   _packageversion *data; /* Invariant: * data is always valid */
 };

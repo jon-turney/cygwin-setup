@@ -1,11 +1,18 @@
-2002-11-10  Robert Collins <rbtcollins@hotmail.com>
+2002-11-25  Robert Collins  <rbtcollins@hotmail.com>
+
+	* package_version.cc (DependencyProcessor): Create convenience class.
+	(select): Extract version selection method.
+	(processOneDependency): Check for a satisfactory trusted version
+	first.
+
+2002-11-10  Robert Collins  <rbtcollins@hotmail.com>
 
 	* main.cc (main): Use the factory for LogFile.
 	* String++.cc: Update to use sstream.
        	(String::String): Use a ostringstream for libC++ 3.2.
 	* LogFile.h (LogFile): Make createLogFile static.
 
-2002-11-10  Robert Collins <rbtcollins@hotmail.com>
+2002-11-10  Robert Collins  <rbtcollins@hotmail.com>
 
 	* main.cc (main): Oops, pass LogSingleton a reference, not a pointer.
 

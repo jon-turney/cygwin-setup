@@ -342,6 +342,27 @@ checkForSatisfiable (PackageSpecification *spec)
   return false;
 }
 
+/* Convenience class for now */
+class DependencyProcessor {
+public:
+  DependencyProcessor (trusts const &aTrust, int aDepth=0) : deftrust (aTrust), depth (aDepth) {}
+  trusts const deftrust;
+  size_t depth;
+};
+
+static int
+select (DependencyProcessor &processor, packagemeta *required, packageversion const &aVersion)
+{
+  /* preserve source */
+  bool sourceticked = required->desired.sourcePackage().picked();
+  /* install this version */
+  required->desired = aVersion;
+  required->desired.pick (required->installed != required->desired);
+  required->desired.sourcePackage().pick (sourceticked);
+  /* does this requirement have requirements? */
+  return required->set_requirements (processor.deftrust, processor.depth + 1);
+}
+
 static int
 processOneDependency(trusts deftrust, size_t depth, PackageSpecification *spec)
 {
@@ -351,22 +372,21 @@ processOneDependency(trusts deftrust, size_t depth, PackageSpecification *spec)
      desired */
   packagedb db;
   packagemeta *required = db.findBinary (*spec);
+  DependencyProcessor processor (deftrust, depth);
+
+  packageversion trusted = required->trustp(deftrust);
+  if (spec->satisfies (trusted))
+      select (processor,required,trusted);
+  
   set <packageversion>::iterator v;
   for (v = required->versions.begin();
     v != required->versions.end() && !spec->satisfies (*v); ++v);
-  if (v != required->versions.end())
-    {
-      /* preserve source */
-      bool sourceticked = required->desired.sourcePackage().picked();
-      /* install this version */
-      required->desired = *v;
-      required->desired.pick (required->installed != required->desired);
-      required->desired.sourcePackage().pick (sourceticked);
-      /* does this requirement have requirements? */
-      return required->set_requirements (deftrust, depth + 1);
-    }
-  /* else assert !! */
-  return 0;
+
+  if (v == required->versions.end())
+      /* assert ?! */
+      return 0;
+  
+  return select (processor, required, *v);
 }
 
 int
