@@ -26,6 +26,7 @@ static const char *cvsid =
 #include "mount.h"
 #include "script.h"
 #include "FindVisitor.h"
+#include "FilterVisitor.h"
 #include "package_db.h"
 #include "package_meta.h"
 
@@ -60,7 +61,8 @@ do_postinstall (HINSTANCE h, HWND owner)
       ++i;
     }
   RunFindVisitor myVisitor;
+  ExcludeNameFilter notDone("*.done");
+  FilterVisitor excludeDoneVisitor(&myVisitor, &notDone);
   String postinst = cygpath ("/etc/postinstall");
-  Find (postinst).accept (myVisitor);
-  
+  Find (postinst).accept (excludeDoneVisitor);
 }

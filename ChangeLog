@@ -1,3 +1,16 @@
+2003-03-18  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
+	* postinstall.cc (do_postinstall): Filter out '*.done'.
+	* FilterVisitor.h: New header file.  Declare the
+	FilterVisitor, Filter, and ExcludeNameFilter classes.
+	* FilterVisitor.cc: New file.  Implement FilterVisitor,
+	Filter, and ExcludeNameFilter.
+	* String++.h (String::matches): New instance function.
+	* String++.cc (String::matches): Implement.
+	(strmatch) Import and adapt for <buf,len> strings.
+	* Makefile.am (setup_SOURCES): Add FilterVisitor.cc and
+	FilterVisitor.h to value.
+
 2002-03-18  Max Bowsher  <maxb@ukf.net>
 
 	* LogFile.cc (LogFile::exit): Use CRT exit() instead of ExitProcess().

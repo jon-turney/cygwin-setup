@@ -153,6 +153,8 @@ setup_SOURCES = \
 	find.h \
 	FindVisitor.cc \
 	FindVisitor.h \
+	FilterVisitor.cc \
+	FilterVisitor.h \
 	filemanip.cc \
 	filemanip.h \
 	fromcwd.cc \

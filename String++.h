@@ -62,6 +62,7 @@ public:
 	{
 	  return s1.casecompare (s2) < 0;
 	}};
+  bool matches (String const &pattern) const;
     
 private:
   class _data {
