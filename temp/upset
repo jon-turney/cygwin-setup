@@ -1,0 +1,193 @@
+#!/usr/bin/perl -s
+
+use Version;
+use vars qw'$d';
+use strict;
+
+sub dir_update(\%);
+sub setup_hint($$);
+
+my $p;
+my $n = '';
+my %package = ();
+
+$p = '__setup';
+open (S, "setup.exe");
+while (<S>) {
+    if (/%%% setup-version (\S+)/) {
+        $package{'__setup'}{''}{'setup-version'} = $1;
+        last;
+    }
+}
+close S;
+
+while (<>) {
+    s/#.*$//g;
+    s/(\S)\s+$/$1/g;
+    chomp;
+    length($_) or next;
+    /^\s*@\s+(.*)/ and do {
+	$p = $1;
+	$package{$p}{'_me'} = $p;
+	$n = '';
+	next;
+    };
+    /^\s*\[([^\]]+)\]\s*$/ and do {
+	$n = $1;
+	next;
+    };
+    my ($key, $text) = /^([^:]+):\s+(.*)/ or do {
+	warn "Unknown setup construct at $.\n";
+	next;
+    };
+    if ($text =~ /^"[^"]*$/) {
+	$text .= "\n";
+	do {
+	    $_ = <>;
+	    $text .= $_;
+	} while (!/"/);
+	chomp $text;
+    };
+    next if $p eq '__setup' || $key eq 'install' || $key eq 'source' || $key eq 'version';
+    $package{$p}{$n}{"$key"} = $text;
+}
+
+dir_update(%package);
+
+my $pkg = $package{'__setup'}{''};
+print "setup-timestamp: ", time, "\n";
+print "setup-version: ", $pkg->{'setup-version'}, "\n"
+    if $pkg->{'setup-version'};
+
+delete $package{'__setup'};
+
+for my $p (sort keys %package) {
+    $pkg = $package{$p};
+    my $rpm = $pkg->{_rpm};
+    my $pkgbase = $pkg->{''};
+    print "\n@ $p\n";
+    if ($pkgbase->{'sdesc'}) {
+	print "sdesc: ", $pkgbase->{'sdesc'}, "\n";
+	delete $pkgbase->{'sdesc'};
+    } elsif ($rpm && $rpm->{'desc'}) {
+	print "sdesc: ", $rpm->{'desc'}, "\n";
+    }
+    if ($pkgbase->{'ldesc'}) {
+	print "ldesc: ", $pkgbase->{'ldesc'}, "\n";
+	delete $pkgbase->{'ldesc'};
+    }
+    if ($pkgbase->{'category'}) {
+	print "category:", map(" \u$_", (split(' ', $pkgbase->{'category'}))), "\n";
+	delete $pkgbase->{'category'};
+    } elsif ($rpm && $rpm->{'group'}) {
+	print "category:", map(" \u$_", (split(' ', $rpm->{'group'}))), "\n";
+    } else {
+	print "category: ", 'Misc', "\n";
+    }
+    if ($pkgbase->{'requires'}) {
+	print "requires: ", $pkgbase->{'requires'}, "\n";
+	delete $pkgbase->{'requires'};
+    };
+    for my $g ('', 'prev', 'test') {
+	my $ver = $pkg->{$g} or next;
+	print "[$g]\n" if length($g);
+	for my $n ('version', 'install', 'source') {
+	    print "$n: $ver->{$n}\n" if $ver->{$n};
+	}
+    }
+}
+
+sub setup_hint($$) {
+    my $pkgbase = shift;
+    my $f = shift;
+    open(F, $f) or do {
+	warn "update-setup: couldn't open $f - $!\n";
+	return;
+    };
+    $. = 0;
+    while (<F>) {
+	my ($key, $text) = /^([^:\s]+):?\s+(.*)/ or do {
+	    warn "Unknown setup construct at $f:$.\n";
+	    next;
+	};
+	if ($text =~ /^"[^"]*$/) {
+	    $text .= "\n";
+	    do {
+		$_ = <F>;
+		$text .= $_;
+	    } while (!/"/);
+	    chomp $text;
+	};
+	if ($key =~ $main::replacekeys) {
+	    $pkgbase->{''}{$key} = $text;
+	} else {
+	    $key = '' if $key eq 'curr';
+	    $text = '0' if $text eq '-';
+	    my ($norver, $ver) = (Version::Normalize(($text =~ /[a-z]/ ? '' : 'dummy') . $text))[1,2];
+	    push(@{$pkgbase->{'override'}}, {'n'=>$key, 'ver'=>$ver, 'norver'=>$norver});
+	}
+    };
+    close F;
+}
+
+sub versort {
+    my $namepat = shift;
+    $namepat =~ s/^((?:\\.|[^[\[\].*])*)(.*?)((?:\\.|[^[\[\].*])*)$/$1\($2\)$3/;
+    my ($key, %vals, %fns, @ret, $matched, $rawver);
+    local $_;
+    foreach my $f (@_) {
+	my ($key, $ver, $rawver) = Version::Normalize($f);
+        push(@{$vals{$key}}, $ver);
+        ${$fns{$key . '\\' . $ver}}[0] = $f;
+        ${$fns{$key . '\\' . $ver}}[1] = $rawver;
+    }
+    foreach my $f (sort keys %vals) {
+        foreach (reverse Version::Sort($vals{$f})) {
+            push(@ret, ${$fns{$f . '\\' . $_}}[0] . "\0" . ${$fns{$f . '\\' . $_}}[1] . "\0" . $_);
+        }
+    }
+    return @ret;
+}
+
+sub dir_update(\%) {
+    my $package = shift;
+    my @files;
+    foreach my $f (<latest/*/setup.hint>, versort(<latest/*/*.tar.?z*>),
+		      <contrib/*/setup.hint>, versort(<contrib/*/*.tar.?z*>)) {
+	my ($p, $file) = $f =~ m!/([^/]+)/([^/]+)$!;
+	my $pkgbase = $package->{$p};
+	if ($file eq 'setup.hint') {
+	    setup_hint($pkgbase, $f);
+	    next;
+	}
+	next if $pkgbase->{''}{'skip'};
+	my ($n, $ver, $filever, $filever_normal);
+	($f, $filever, $filever_normal) = split(/\0/o, $f);
+	my $key = $f =~ /-src\.tar/ ? 'source' : 'install';
+	for my $s (@{$pkgbase->{'override'}}) {
+	    if ($s->{'norver'} eq $filever_normal) {
+		$n = $s->{'n'};
+		$ver = $s->{'ver'};
+		last;
+	    }
+	}
+	if (!defined($n)) {
+	    next if @{$pkgbase->{'override'}};
+	    for my $m ('', 'prev') {
+   		if (!defined($pkgbase->{$m}{'version'}) ||
+		    $pkgbase->{$m}{'version'} eq $filever) {
+		    $n = $m;
+		    $ver = $filever;
+		    last;
+		}
+	    }
+	}
+	next unless defined($n);
+	$pkgbase->{$n}{'version'} = $ver;
+	$pkgbase->{$n}{$key} = $f;
+    }
+}
+
+BEGIN {
+    $main::replacekeys = qr!^(?:sdesc|ldesc|category|requires|skip)$!;
+}
