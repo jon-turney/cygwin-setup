@@ -37,6 +37,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "find.h"
 #include "mount.h"
 #include "log.h"
+#include "version.h"
 
 #include "port.h"
 
@@ -57,7 +58,7 @@ WinMain (HINSTANCE h,
 
   next_dialog = IDD_SPLASH;
 
-  log (LOG_TIMESTAMP, "Starting cygwin install");
+  log (LOG_TIMESTAMP, "Starting cygwin install, version %s", version);
 
   char cwd[_MAX_PATH];
   GetCurrentDirectory (sizeof (cwd), cwd);
