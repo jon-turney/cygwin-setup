@@ -63,8 +63,6 @@ using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
-static int initialized = 0;
-
 static HWND lv, choose_inst_text;
 static PickView *chooser = NULL;
 
@@ -629,7 +627,6 @@ ChooserPage::OnNext ()
 long
 ChooserPage::OnBack ()
 {
-  initialized = 0;
   if (source == IDC_SOURCE_CWD)
     return IDD_LOCAL_DIR;
   else

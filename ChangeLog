@@ -1,3 +1,7 @@
+2003-07-23  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* choose.cc (initialized): Remove obsolete file scope variable.
+
 2003-07-18  Max Bowsher  <maxb@ukf.net>
 
 	* res.rc: Make caption of every dialog page begin with "Cygwin Setup".
