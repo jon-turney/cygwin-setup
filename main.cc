@@ -310,8 +310,6 @@ NTSecurity::setDefaultDACL ()
       return;
     }
 
-#if 0
-
   /* Create the ACE which grants full access to "Everyone" and store it
      in dacl. */
   if (!AddAccessAllowedAce
@@ -337,7 +335,6 @@ NTSecurity::setDefaultDACL ()
       NoteFailedAPI ("SetTokenInformation");
       failed(true);
     }
-#endif
 }
 
 void
@@ -357,7 +354,7 @@ NTSecurity::setDefaultSecurity ()
   setDefaultDACL();
   if (failed())
     return;
-#if 0
+
   primaryGroupInfo.get(token);
   if (primaryGroupInfo.failed())
     return;
@@ -436,7 +433,6 @@ NTSecurity::setDefaultSecurity ()
     }
   if (nsid && !SetTokenInformation (token.theHANDLE(), TokenPrimaryGroup, &nsid, sizeof nsid))
     NoteFailedAPI ("SetTokenInformation");
-#endif
 }
 
 // Other threads talk to this page, so we need to have it externable.
