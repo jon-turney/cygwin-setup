@@ -54,6 +54,7 @@ while (<>) {
 	chomp $text;
     };
     next if $p eq '__setup' || $key eq 'install' || $key eq 'source' || $key eq 'version';
+    $text = "\"$text\"" if $text =~ /\s/o && $text !~ /^"/o;
     $package{$p}{$n}{"$key"} = $text;
 }
 
@@ -68,14 +69,13 @@ delete $package{'__setup'};
 
 for my $p (sort keys %package) {
     $pkg = $package{$p};
-    my $rpm = $pkg->{_rpm};
     my $pkgbase = $pkg->{''};
     print "\n@ $p\n";
     if ($pkgbase->{'sdesc'}) {
+	$pkgbase->{'sdesc'} =~ s/^("?)[^:]+:\s*/$1/o;
+	$pkgbase->{'sdesc'} =~ s/^("?)([a-z])/$1\u$2/o;
 	print "sdesc: ", $pkgbase->{'sdesc'}, "\n";
 	delete $pkgbase->{'sdesc'};
-    } elsif ($rpm && $rpm->{'desc'}) {
-	print "sdesc: ", $rpm->{'desc'}, "\n";
     }
     if ($pkgbase->{'ldesc'}) {
 	print "ldesc: ", $pkgbase->{'ldesc'}, "\n";
@@ -84,8 +84,6 @@ for my $p (sort keys %package) {
     if ($pkgbase->{'category'}) {
 	print "category:", map(" \u$_", (split(' ', $pkgbase->{'category'}))), "\n";
 	delete $pkgbase->{'category'};
-    } elsif ($rpm && $rpm->{'group'}) {
-	print "category:", map(" \u$_", (split(' ', $rpm->{'group'}))), "\n";
     } else {
 	print "category: ", 'Misc', "\n";
     }
@@ -158,8 +156,10 @@ sub versort {
 sub dir_update(\%) {
     my $package = shift;
     my @files;
-    foreach my $f (<latest/*/setup.hint>, versort(<latest/*/*.tar.?z*>),
-		      <contrib/*/setup.hint>, versort(<contrib/*/*.tar.?z*>)) {
+    foreach my $f (<latest/*/setup.hint>, <latest/*/*/setup.hint>,
+    		   <contrib/*/setup.hint>, <contrib/*/*/setup.hint>,
+		   versort(<latest/*/*.tar.?z*>), versort(<latest/*/*/*.tar.?z*>),
+		   versort(<contrib/*/*.tar.?z*>), versort(<contrib/*/*/*.tar.?z*>)) {
 	my ($p, $file) = $f =~ m!/([^/]+)/([^/]+)$!;
 	my $pkgbase = $package->{$p};
 	if ($file eq 'setup.hint') {
