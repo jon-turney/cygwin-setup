@@ -22,7 +22,7 @@
 class NetIO
 {
 protected:
-  NetIO (char const *url, BOOL allow_ftp_auth = FALSE);
+  NetIO (char const *url);
   void set_url (char const *url);
   BOOL ftp_auth;
 
@@ -41,7 +41,7 @@ public:
      the given URL.  It uses the network setup state in state.h.  If
      anything fails, either the return values is NULL or the returned
      object is !ok() */
-  static NetIO *open (char const *url, BOOL allow_ftp_auth = FALSE);
+  static NetIO *open (char const *url);
 
   /* If !ok() that means the transfer isn't happening. */
   virtual int ok ();

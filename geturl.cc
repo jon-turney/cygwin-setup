@@ -114,7 +114,7 @@ progress (int bytes)
   Progress.SetText3(buf);
 }
 
-void
+static void
 getUrlToStream (String const &_url, HWND owner, io_stream *output)
 {
   log (LOG_BABBLE) << "getUrlToStream " << _url << endLog;
@@ -207,8 +207,10 @@ get_url_to_string (String const &_url, HWND owner)
 }
 
 int
-get_url_to_file (String const &_url, String const &_filename, int expected_length,
-		 HWND owner, BOOL allow_ftp_auth)
+get_url_to_file (String const &_url,
+                 String const &_filename,
+                 int expected_length,
+		 HWND owner)
 {
   log (LOG_BABBLE) << "get_url_to_file " << _url << " " << _filename << endLog;
   if (total_download_bytes > 0)
@@ -220,7 +222,7 @@ get_url_to_file (String const &_url, String const &_filename, int expected_lengt
 
   remove (_filename.cstr_oneuse());		/* but ignore errors */
 
-  NetIO *n = NetIO::open (_url.cstr_oneuse(), allow_ftp_auth);
+  NetIO *n = NetIO::open (_url.cstr_oneuse());
   if (!n || !n->ok ())
     {
       delete n;

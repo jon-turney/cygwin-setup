@@ -1,3 +1,14 @@
+2004-11-13  Max Bowsher  <maxb@ukf.net>
+
+	Miscellaneous cleanup.
+
+	* geturl.cc (getUrlToStream): Make static.
+	* geturl.h (getUrlToStream): Remove declaration.
+
+	* geturl.cc, geturl.h, netio.cc, netio.h, nio-ftp.cc, nio-ftp.h,
+	nio-http.cc, nio-http.h:
+	Remove unused "allow_ftp_auth" flag throughout.
+
 2004-11-11  Max Bowsher  <maxb@ukf.net>
 
 	* libmd5-rfc: New directory, to hold code imported from the libmd5-rfc

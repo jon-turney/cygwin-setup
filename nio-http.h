@@ -25,7 +25,7 @@ class NetIO_HTTP:public NetIO
   SimpleSocket *s;
 
 public:
-    NetIO_HTTP (char const *url, BOOL allow_ftp_auth = FALSE);
+    NetIO_HTTP (char const *url);
     virtual ~ NetIO_HTTP ();
 
   /* If !ok() that means the transfer isn't happening. */

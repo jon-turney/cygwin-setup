@@ -26,10 +26,9 @@ class io_stream;
 class String;
 
 io_stream *get_url_to_membuf (String const &, HWND owner);
-void getUrlToStream (String const &, HWND owner, io_stream *);
 String get_url_to_string (String const&, HWND owner);
-int get_url_to_file (String const &_url, String const &_filename, int expected_size,
-		     HWND owner, BOOL allow_ftp_auth = FALSE);
+int get_url_to_file (String const &_url, String const &_filename,
+                     int expected_size, HWND owner);
 void dismiss_url_status_dialog ();
 
 #endif /* SETUP_GETURL_H */

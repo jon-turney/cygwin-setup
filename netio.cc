@@ -38,10 +38,9 @@ static const char *cvsid =
 #include "dialog.h"
 #include "log.h"
 
-NetIO::NetIO (char const *Purl, BOOL allow_ftp_auth)
+NetIO::NetIO (char const *Purl)
 {
   set_url (Purl);
-  ftp_auth = allow_ftp_auth;
 }
 
 NetIO::~NetIO ()
@@ -116,7 +115,7 @@ NetIO::read (char *buf, int nbytes)
 }
 
 NetIO *
-NetIO::open (char const *url, BOOL allow_ftp_auth)
+NetIO::open (char const *url)
 {
   NetIO *rv = 0;
   enum
@@ -134,7 +133,7 @@ NetIO::open (char const *url, BOOL allow_ftp_auth)
   else if (net_method == IDC_NET_IE5)
     rv = new NetIO_IE5 (url);
   else if (net_method == IDC_NET_PROXY)
-    rv = new NetIO_HTTP (url, allow_ftp_auth);
+    rv = new NetIO_HTTP (url);
   else if (net_method == IDC_NET_DIRECT)
     {
       switch (proto)
@@ -143,7 +142,7 @@ NetIO::open (char const *url, BOOL allow_ftp_auth)
 	  rv = new NetIO_HTTP (url);
 	  break;
 	case ftp:
-	  rv = new NetIO_FTP (url, allow_ftp_auth);
+	  rv = new NetIO_FTP (url);
 	  break;
 	case file:
 	  rv = new NetIO_File (url);
