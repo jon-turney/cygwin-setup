@@ -178,7 +178,7 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
     {
       inheritHandles = TRUE;
       si.dwFlags |= STARTF_USESTDHANDLES;
-      si.hStdInput = GetStdHandle (STD_INPUT_HANDLE);
+      si.hStdInput = INVALID_HANDLE_VALUE;
       si.hStdOutput = file_out.handle ();
       si.hStdError = file_out.handle ();
       si.dwFlags |= STARTF_USESHOWWINDOW;

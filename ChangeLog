@@ -1,3 +1,7 @@
+2004-09-13  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
+	* script.cc (run): Kill stdin when running scripts.
+
 2004-09-01  Max Bowsher  <maxb@ukf.net>
 
 	* Makefile.am: Oops. Unwanted keyword expansion ate the code of the
