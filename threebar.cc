@@ -135,7 +135,7 @@ ThreeBarProgressPage::OnActivate ()
 }
 
 bool
-  ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
+ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   switch (uMsg)
     {
