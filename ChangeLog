@@ -1,3 +1,25 @@
+2002-11-25  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* window.h (Window::GetWindowRect): New method declaration.
+	(Window::GetClientRect): Ditto.
+	(Window::MoveWindow): Ditto.
+	(Window::ScreenToClient): Ditto.
+	* window.cc (REFLECTION_INFO): Remove.
+	(ReflectionInfo): Remove.
+	(Window::FirstWindowProcReflector): Use the WM_NCCREATE message instead
+	of the horrid REFLECTION_INFO hack to hook the Window instance to the
+	HWND instance.
+	(Window::WindowProcReflector): Use GetWindowLongPtr() now that it's
+	available.
+	(Window::Create): Change to use new WM_NCCREATE reflection procedure
+	above.
+	(Window::GetWindowRect): New method.
+	(Window::GetClientRect): New method.
+	(Window::MoveWindow): New method.
+	(Window::CenterWindow): Use new methods, also specify "::" for some non-
+	member functions with the same names.
+	(Window::ScreenToClient): New method.
+
 2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
 
 	* AntiVirus.cc: Change the short option again! It's now 'A'.

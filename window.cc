@@ -24,17 +24,6 @@
 ATOM Window::WindowClassAtom = 0;
 HINSTANCE Window::AppInstance = NULL;
 
-// FIXME: I know, this is brutal.  Mutexing should at least make window creation threadsafe,
-// but if somebody has any ideas as to how to get rid of it entirely, please tell me / do so.
-struct REFLECTION_INFO
-{
-  Window *
-    This;
-  bool
-    FirstCall;
-};
-REFLECTION_INFO ReflectionInfo;
-
 Window::Window ()
 {
   WindowHandle = NULL;
@@ -62,27 +51,31 @@ LRESULT CALLBACK
 Window::FirstWindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
 				  LPARAM lParam)
 {
-  // Get our this pointer
-  REFLECTION_INFO *rip = &ReflectionInfo;
+  Window *wnd = NULL;
 
-  if (rip->FirstCall)
+  if(uMsg == WM_NCCREATE)
     {
-      rip->FirstCall = false;
-
-      // Set the Window handle so the real WindowProc has one to work with.
-      rip->This->WindowHandle = hwnd;
+      // This is the first message a window gets (so MSDN says anyway).
+      // Take this opportunity to "link" the HWND to the 'this' ptr, steering
+      // messages to the class instance's WindowProc().
+      wnd = reinterpret_cast<Window *>(((LPCREATESTRUCT)lParam)->lpCreateParams);
 
       // Set a backreference to this class instance in the HWND.
-      // FIXME: Should really be SetWindowLongPtr(), but it appears to
-      // not be defined yet.
-      SetWindowLong (hwnd, GWL_USERDATA, (LONG) rip->This);
+      SetWindowLongPtr (hwnd, GWL_USERDATA, (LONG_PTR) wnd);
 
       // Set a new WindowProc now that we have the peliminaries done.
-      // Like subclassing, only not.
-      SetWindowLong (hwnd, GWL_WNDPROC, (LONG) & Window::WindowProcReflector);
+      // We could instead simply do the contents of Window::WindowProcReflector
+      // in the 'else' clause below, but this way we eliminate an unnecessary 'if/else' on
+      // every message.  Yeah, it's probably not worth the trouble.
+      SetWindowLongPtr (hwnd, GWL_WNDPROC, (LONG_PTR) & Window::WindowProcReflector);
+    }
+  else
+  {
+  	// Should never get here.
+  	abort();
     }
 
-  return rip->This->WindowProc (uMsg, wParam, lParam);
+  return wnd->WindowProc (uMsg, wParam, lParam);
 }
 
 LRESULT CALLBACK
@@ -92,9 +85,7 @@ Window::WindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
   Window *This;
 
   // Get our this pointer
-  // FIXME: Should really be GetWindowLongPtr(), but it appears to
-  // not be defined yet.
-  This = (Window *) GetWindowLong (hwnd, GWL_USERDATA);
+  This = (Window *) GetWindowLongPtr (hwnd, GWL_USERDATA);
 
   return This->WindowProc (uMsg, wParam, lParam);
 }
@@ -108,14 +99,13 @@ bool Window::Create (Window * parent, DWORD Style)
       return false;
     }
 
-  // Set up the reflection info, so that the Windows window can find us.
-  ReflectionInfo.This = this;
-  ReflectionInfo.FirstCall = true;
-
   Parent = parent;
 
   // Create the window instance
-  WindowHandle = CreateWindow ("MainWindowClass",	//MAKEINTATOM(WindowClassAtom),     // window class atom (name)
+  WindowHandle = CreateWindowEx (
+                   // Extended Style
+                   0,
+                   "MainWindowClass",	//MAKEINTATOM(WindowClassAtom),     // window class atom (name)
 			       "Hello",	// no title-bar string yet
 			       // Style bits
 			       Style,
@@ -128,7 +118,9 @@ bool Window::Create (Window * parent, DWORD Style)
 			       // use class menu 
 			       (HMENU) NULL,
 			       // The application instance 
-			       GetInstance (), (LPVOID) NULL);
+			       GetInstance (),
+			       // The this ptr, which we'll use to set up the WindowProc reflection.
+			       (LPVOID) this);
 
   if (WindowHandle == NULL)
     {
@@ -190,6 +182,28 @@ Window::Show (int State)
   ::ShowWindow (WindowHandle, State);
 }
 
+RECT
+Window::GetWindowRect() const
+{
+  RECT retval;
+  ::GetWindowRect(WindowHandle, &retval);
+  return retval;
+}
+
+RECT
+Window::GetClientRect() const
+{
+  RECT retval;
+  ::GetClientRect(WindowHandle, &retval);
+  return retval;
+}
+
+bool
+Window::MoveWindow(long x, long y, long w, long h, bool Repaint)
+{
+  return ::MoveWindow (WindowHandle, x, y, w, h, Repaint);
+}
+
 void
 Window::CenterWindow ()
 {
@@ -198,17 +212,17 @@ Window::CenterWindow ()
   POINT p;
 
   // Get the window rectangle
-  GetWindowRect (GetHWND (), &WindowRect);
+  WindowRect = GetWindowRect ();
 
   if (GetParent () == NULL)
     {
       // Center on desktop window
-      GetWindowRect (GetDesktopWindow (), &ParentRect);
+      ::GetWindowRect (GetDesktopWindow (), &ParentRect);
     }
   else
     {
       // Center on client area of parent
-      GetClientRect (GetParent ()->GetHWND (), &ParentRect);
+      ::GetClientRect (GetParent ()->GetHWND (), &ParentRect);
     }
 
   WindowWidth = WindowRect.right - WindowRect.left;
@@ -233,7 +247,7 @@ Window::CenterWindow ()
   p.y -= WindowHeight / 2;
 
   // And finally move the window
-  MoveWindow (GetHWND (), p.x, p.y, WindowWidth, WindowHeight, TRUE);
+  MoveWindow (p.x, p.y, WindowWidth, WindowHeight);
 }
 
 LRESULT Window::WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -282,6 +296,7 @@ bool
 			  bool Strikeout)
 {
   HWND ctrl;
+
   ctrl = GetDlgItem (id);
   if (ctrl == NULL)
     {
@@ -322,3 +337,27 @@ Window::SetWindowText (const String & s)
 {
   ::SetWindowText (WindowHandle, s.cstr_oneuse ());
 }
+
+RECT
+Window::ScreenToClient(const RECT &r) const
+{
+  POINT tl;
+  POINT br;
+  
+  tl.y = r.top;
+  tl.x = r.left;
+  ::ScreenToClient(GetHWND(), &tl);
+  br.y = r.bottom;
+  br.x = r.right;
+  ::ScreenToClient(GetHWND(), &br);
+  
+  RECT ret;
+  
+  ret.top = tl.y;
+  ret.left = tl.x;
+  ret.bottom = br.y;
+  ret.right = br.x;
+  
+  return ret;
+}
+

@@ -29,7 +29,6 @@ class Window
   static ATOM WindowClassAtom;
   static HINSTANCE AppInstance;
 
-
   bool RegisterWindowClass ();
   static LRESULT CALLBACK FirstWindowProcReflector (HWND hwnd, UINT uMsg,
 						    WPARAM wParam,
@@ -105,12 +104,20 @@ public:
     return false;
   };
 
+  RECT GetWindowRect() const;
+  RECT GetClientRect() const;
+
   // Center the window on the parent, or on screen if no parent.
   void CenterWindow ();
+
+  // Reposition the window
+  bool MoveWindow(long x, long y, long w, long h, bool Repaint = true);
 
   // Set the title of the window.
   void SetWindowText (const String & s);
 
+  RECT ScreenToClient(const RECT &r) const;
+ 
 };
 
 #endif // CINSTALL_WINDOW_H
