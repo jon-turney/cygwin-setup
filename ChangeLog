@@ -1,3 +1,7 @@
+2002-09-21  Robert Collins  <rbtcollins@hotmail.com>
+
+	* res.rc: Commit Harry Johnston's dialog caption patch. From July.
+
 2002-07-15  Robert Collins  <rbtcollins@hotmail.com>
 
 	* package_version.cc (packageversion::sources): Implement this.
