@@ -115,7 +115,7 @@ public:
       Progress.SetText4("Package:");
     }
 private:
-  unsigned char lastpct;
+  unsigned int lastpct;
 };
 
 static int

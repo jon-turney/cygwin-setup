@@ -1,3 +1,20 @@
+2005-01-27  Max Bowsher  <maxb@ukf.net>
+
+	Set CYGWIN=nontsec, for postinstall scripts.
+
+	* main.cc (main): putenv("CYGWIN=nontsec").
+
+2005-01-27  Bas van Gompel  <patch-cygsup.buzz@bavag.tmfweb.nl>
+
+	Fix corrupt display of ini parse percentage in log file.
+
+	* ini.cc (GuiParseFeedback): Use a sensible data type for lastpct.
+
+2004-12-29  Max Bowsher  <maxb@ukf.net>
+
+	* site.cc (get_site_list): Filter the incoming mirrors list to contain
+	only URL schemes that we can read.
+
 2004-11-28  Max Bowsher  <maxb@ukf.net>
 	
 	* download.cc (check_for_cached): Re-introduce the silent skipping of
