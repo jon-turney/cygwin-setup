@@ -1,5 +1,40 @@
 2001-11-30  Robert Collins  <rbtcollins@hotmail.com>
 
+	* Makefile.in (OBJS): Remove category_list - it's not needed.
+	* README: More wishlist updates.
+	* category.cc (Category::Category): Initialise new members.
+	(Categorycmp): New function.
+	* category.h (Category): New member key for template use.
+	* category_list.cc: Remove.
+	* category_list.h: Remove.
+	(Categorycmp): New function prototype.
+	* choose.cc: Remove category_list - not needed.
+	(set_action): Only show the 'source' option when the source is actually 
+	available.
+	(add_required): Fix recursion limiter to 5.
+	(fill_missing_category): Use list access.
+	(default_trust): Ditto.
+	(pick_line::paint): Ditto.
+	(_view::init_headers): Ditto.
+	(_view::insert_pkg): Ditto.
+	(_view::insert_category): Ditto.
+	(_view::click): Ditto.
+	(set_view_mode): Ditto.
+	(do_choose): Ditto.
+	* cygpackage.h: Remove category_list - not needed.
+	* geturl.cc (get_url_to_string): Fix null byte insertion.
+	* inipatse.y: Remove category_list - not needed.
+	(categories): Use list access.
+	* package_db.cc: Ditto.
+	* package_db.h: Remove category_list - not needed.
+	(packagedb): Use the list template for categories.
+	* package_meta.cc (add_category): Ditto.
+	* package_meta.h (CategoryPackage): Link to the category as well.
+	(packagemeta): Use a list of CategoryPackages instead of Categories 
+	for more memory efficient cross-referencing.
+
+2001-11-30  Robert Collins  <rbtcollins@hotmail.com>
+
 	* package_db.cc (packagedb::flush): Write a canonical version for all packages
 	irrespective of the media they were installed from.
 

@@ -245,15 +245,11 @@ packagemeta & packagedb::registerpackage (char const *pkgname)
 packagemeta **
   packagedb::packages =
   0;
-size_t
-  packagedb::packagecount =
-  0;
-size_t
-  packagedb::packagespace =
-  0;
+size_t packagedb::packagecount = 0;
+size_t packagedb::packagespace = 0;
 int
   packagedb::installeddbread =
   0;
-CategoryList
-  packagedb::categories =
-  CategoryList ();
+list < Category, char const *,
+  strcasecmp >
+  packagedb::categories;

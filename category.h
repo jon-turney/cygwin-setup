@@ -28,8 +28,10 @@ public:
 
   Category *next;		/* the next category in the list */
   const char *name;		/* the category */
+  const char *key;		/* always == name */
   CategoryPackage *packages;	/* the packages in this category */
 };
 
+int Categorycmp (Category &, Category &);
 
 #endif /* _CATEGORY_H_ */

@@ -215,24 +215,24 @@ get_url_to_string (char *_url)
   if (n->file_size)
     max_bytes = n->file_size;
 
-  io_stream_memory * membuf = new io_stream_memory ();
-  
+  io_stream_memory *membuf = new io_stream_memory ();
+
   int total_bytes = 1;		/* for the NUL terminator */
   progress (0);
   while (1)
     {
       char buf[2048];
-      ssize_t rlen,wlen;
+      ssize_t rlen, wlen;
       rlen = n->read (buf, 2048);
       if (rlen > 0)
-      {
-      wlen = membuf->write (buf, rlen);
-      if (wlen != rlen)
-	/* FIXME: Show an error message */
-	break;
-      total_bytes += rlen;
-      progress (total_bytes);
-      }
+	{
+	  wlen = membuf->write (buf, rlen);
+	  if (wlen != rlen)
+	    /* FIXME: Show an error message */
+	    break;
+	  total_bytes += rlen;
+	  progress (total_bytes);
+	}
       else
 	break;
     }
@@ -247,10 +247,10 @@ get_url_to_string (char *_url)
       log (LOG_BABBLE, "get_url_to_string(): malloc failed for rv!");
       return 0;
     }
-      
+
   ssize_t rlen;
-  rlen = membuf->read (rv, total_bytes);
-  rv [total_bytes] = '\0';
+  rlen = membuf->read (rv, total_bytes - 1);
+  rv[total_bytes - 1] = '\0';
   if (n)
     delete n;
   if (membuf)

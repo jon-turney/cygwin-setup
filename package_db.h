@@ -16,7 +16,10 @@
 #ifndef _PACKAGE_DB_H_
 #define _PACKAGE_DB_H_
 
-class CategoryList;
+/* required to parse this file */
+#include "list.h"
+//class CategoryList;
+class Category;
 class packagemeta;
 class io_stream;
 
@@ -39,7 +42,7 @@ public:
     return packagecount;
   };
   /* all seen categories */
-  static CategoryList categories;
+  static list < Category, char const *, strcasecmp > categories;
 private:
   /* this gets sorted */
   static packagemeta **packages;

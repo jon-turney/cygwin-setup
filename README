@@ -3,7 +3,7 @@ net releases.
 
 TODO:
 * Src tickbox /source only can be confusing.
-* file magic detection.
+* file magic detection. - partially complete. 
 * support rpm/deb files for reading the package from. (To allow the maintainers the use of rpm/deb tools to create packages.)
   * make a librar(y|ies) for setup and cygcheck to use containing 
   1) Something to translate POSIX -> native.  Currently called "cygpath"
@@ -14,15 +14,15 @@ TODO:
   4) Something to parse a tar file name into package/version or altenatively,
      return that information from 2)
   5) Something to return a list of files associated with a package.
-* Make skip only ever appear for non-installed packages.
-	   
-	   
+* When installing and enough packages default to visible, te RH scrollbar is 
+  sometimes hidden.
+
+ 	   
 WISHLIST:
   *  rsync:// support
   *  Some way to download *all* the source
   *  When clicking on a category that is showing a partial list (auto added items due to dependencies) show the full list rather than minising.
   *  continue downloading past errors, present log of failures at end
-  *   skip sould be followed by the <prec/curr/exp> from the radio buttons, not by prev.
   *   incremental/recoverable download capability.
   *   build-depends
   *   FTP control connections should be closed when we are awaiting user input.
@@ -59,3 +59,5 @@ recently completed
    * View mdoe caption on the right hand of the screen
    * Downloading from the internet should allow redownloading already present files. (This
         happens via the reinstall/redo already - perhaps this is "done".)
+   * Make skip only ever appear for non-installed packages.
+   *   skip sould be followed by the <prec/curr/exp> from the radio buttons, not by prev.

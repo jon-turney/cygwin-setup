@@ -23,7 +23,6 @@
 #include "win32.h"
 #include "package_db.h"
 #include "category.h"
-#include "category_list.h"
 #include "ini.h"
 #include "iniparse.h"
 #include "filemanip.h"
@@ -139,9 +138,9 @@ requires
  ;
 
 categories
- : STRING			{ cp->add_category (db.categories.register_category ($1));
+ : STRING			{ cp->add_category (db.categories.registerbykey ($1));
  				} categories
- | STRING			{ cp->add_category (db.categories.register_category ($1)); }
+ | STRING			{ cp->add_category (db.categories.registerbykey ($1)); }
  ;
 
 %%

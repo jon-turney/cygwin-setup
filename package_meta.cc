@@ -144,13 +144,8 @@ void
 packagemeta::add_category (Category & cat)
 {
   /* add a new record for the package list */
-  /* TODO: alpabetical inserts ? */
-  categories.register_category (cat.name);
-
-  CategoryPackage *templink = new CategoryPackage (*this);
-  /* tell the category we are linking from we exist */
-  templink->next = cat.packages;
-  cat.packages = templink;
+  CategoryPackage & catpack = Categories.registerbykey (cat);
+  catpack.pkg = this;
 }
 
 char const *

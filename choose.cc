@@ -48,7 +48,6 @@ static const char *cvsid =
 #include "io_stream.h"
 #include "choose.h"
 #include "category.h"
-#include "category_list.h"
 
 #include "package_db.h"
 #include "package_meta.h"
@@ -97,7 +96,7 @@ static struct _header cat_headers[] = {
   {0, 0, 0, 0}
 };
 
-static int add_required (packagemeta & pkg, size_t depth=0);
+static int add_required (packagemeta & pkg, size_t depth = 0);
 static void set_view_mode (HWND h, views mode);
 
 #define pkgtrustp(pkg,t) (packageversion *)(t==TRUST_PREV ? pkg->prev : t == TRUST_CURR ? pkg->curr : pkg->exp)
@@ -176,9 +175,9 @@ set_action (packagemeta * pkg)
     }
   /* are we currently on the radio button selection and installed */
   if (pkg->desired == pkgtrustp (pkg, deftrust) && pkg->installed &&
-      (!pkg->desired || pkg->desired->binpicked))
+      (!pkg->desired || pkg->desired->binpicked)
+      && (pkg->desired->src.Cached () || pkg->desired->src.sites.number ()))
     {
-      /* FIXME: is source available */
       /* source only this file */
       pkg->desired = pkg->installed;
       pkg->desired->binpicked = 0;
@@ -243,7 +242,7 @@ add_required (packagemeta & pkg, size_t depth = 0)
   dp = pkg.desired->required;
   packagedb db;
   /* cheap test for too much recursion */
-  if (depth > db.npackages ())
+  if (depth > 5)
     return 0;
   while (dp)
     {
@@ -539,8 +538,8 @@ fill_missing_category ()
   packagedb db;
   for (packagemeta * pkg = db.getfirstpackage (); pkg;
        pkg = db.getnextpackage ())
-    if (!pkg->Categories ().categories ())
-      pkg->add_category (db.categories.register_category ("Misc"));
+    if (!pkg->Categories.number ())
+      pkg->add_category (db.categories.registerbykey ("Misc"));
 }
 
 static void
@@ -551,8 +550,9 @@ default_trust (HWND h, trusts trust)
   for (packagemeta * pkg = db.getfirstpackage (); pkg;
        pkg = db.getnextpackage ())
     {
-      if (pkg->installed || pkg->Categories ().getcategorybyname ("Base")
-	  || pkg->Categories ().getcategorybyname ("Misc"))
+      if (pkg->installed
+	  || pkg->Categories.getbykey (db.categories.registerbykey ("Base"))
+	  || pkg->Categories.getbykey (db.categories.registerbykey ("Misc")))
 	{
 	  pkg->desired = pkgtrustp (pkg, trust);
 	  if (pkg->desired)
@@ -628,10 +628,10 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 	      bitmap_dc, 0, 0, SRCCOPY);
 
       /* shows "first" category - do we want to show any? */
-      if (pkg->Categories ().getfirstcategory () && show_cat)
+      if (pkg->Categories.number () && show_cat)
 	TextOut (hdc, x + chooser->headers[chooser->cat_col].x, r,
-		 pkg->Categories ().getfirstcategory ()->name,
-		 strlen (pkg->Categories ().getfirstcategory ()->name));
+		 pkg->Categories.getnth (1)->key.name,
+		 strlen (pkg->Categories.getnth (1)->key.name));
 
       if (!pkg->SDesc ())
 	s = pkg->name;
@@ -775,9 +775,8 @@ _view::init_headers (HDC dc)
 	note_width (headers, dc,
 		    pkg->versions.getnth (n)->Canonical_version (),
 		    NEW_COL_SIZE_SLOP, new_col);
-      for (Category * cat = db.categories.getfirstcategory (); cat;
-	   cat = cat->next)
-	note_width (headers, dc, cat->name, 0, cat_col);
+      for (size_t n = 1; n <= db.categories.number (); n++)
+	note_width (headers, dc, db.categories.getnth (n)->name, 0, cat_col);
       if (!pkg->SDesc ())
 	note_width (headers, dc, pkg->name, 0, pkg_col);
       else
@@ -811,7 +810,7 @@ _view::insert_pkg (packagemeta & pkg)
 	{
 	  lines =
 	    (pick_line *) calloc (db.npackages () +
-				  db.categories.categories (),
+				  db.categories.number (),
 				  sizeof (pick_line));
 	  nlines = 0;
 	  insert_at (0, line);
@@ -822,9 +821,9 @@ _view::insert_pkg (packagemeta & pkg)
   else
     {
 //      assert (lines); /* protect against a coding change in future */
-      for (Category * cat = pkg.Categories ().getfirstcategory (); cat;
-	   cat = cat->next)
+      for (size_t x = 1; x <= pkg.Categories.number (); x++)
 	{
+	  Category & cat = pkg.Categories.getnth (x)->key;
 	  /* insert the package under this category in the list. If this category is not
 	     visible, add it */
 	  int n = 0;
@@ -832,7 +831,7 @@ _view::insert_pkg (packagemeta & pkg)
 	    {
 	      /* this should be a generic call to list_sort_cmp */
 	      if (lines[n].get_category ()
-		  && cat->name == lines[n].get_category ()->name)
+		  && !strcasecmp (cat.name, lines[n].get_category ()->name))
 		{
 		  insert_under (n, line);
 		  n = nlines;
@@ -842,7 +841,7 @@ _view::insert_pkg (packagemeta & pkg)
 	  if (n == nlines)
 	    {
 	      /* the category wasn't visible - insert at the end */
-	      insert_category (cat, CATEGORY_COLLAPSED);
+	      insert_category (&cat, CATEGORY_COLLAPSED);
 	      insert_pkg (pkg);
 	    }
 	}
@@ -858,17 +857,17 @@ _view::insert_category (Category * cat, int collapsed)
     {
       packagedb db;
       lines =
-	(pick_line *) malloc ((db.npackages () + db.categories.categories ())
+	(pick_line *) malloc ((db.npackages () + db.categories.number ())
 			      * sizeof (pick_line));
       memset (lines, '\0',
 	      (db.npackages () +
-	       db.categories.categories ()) * sizeof (pick_line));
+	       db.categories.number ()) * sizeof (pick_line));
       nlines = 0;
       insert_at (0, line);
       if (!collapsed)
 	for (CategoryPackage * catpkg = cat->packages; catpkg;
 	     catpkg = catpkg->next)
-	  insert_pkg (catpkg->pkg);
+	  insert_pkg (*catpkg->pkg);
     }
   else
     {
@@ -883,7 +882,7 @@ _view::insert_category (Category * cat, int collapsed)
 	      if (!collapsed)
 		for (CategoryPackage * catpkg = cat->packages; catpkg;
 		     catpkg = catpkg->next)
-		  insert_pkg (catpkg->pkg);
+		  insert_pkg (*catpkg->pkg);
 	      n = nlines;
 	    }
 	  else if (lines[n].get_category () == cat)
@@ -898,7 +897,7 @@ _view::insert_category (Category * cat, int collapsed)
 	  if (!collapsed)
 	    for (CategoryPackage * catpkg = cat->packages; catpkg;
 		 catpkg = catpkg->next)
-	      insert_pkg (catpkg->pkg);
+	      insert_pkg (*catpkg->pkg);
 	}
     }
 }
@@ -1013,7 +1012,7 @@ _view::click (int row, int x)
 	       lines[row].get_category ()->packages; catpkg;
 	       catpkg = catpkg->next)
 	    {
-	      packagemeta & pkg = catpkg->pkg;
+	      packagemeta & pkg = *catpkg->pkg;
 	      int n = row + 1;
 	      pick_line line;
 	      line.set_line (&pkg);
@@ -1074,8 +1073,9 @@ set_view_mode (HWND h, views mode)
     case VIEW_PACKAGE:
       for (packagemeta * pkg = db.getfirstpackage (); pkg;
 	   pkg = db.getnextpackage ())
-	if ((!pkg->desired && pkg->installed) || (pkg->desired && (pkg->desired->srcpicked
-	    || pkg->desired->binpicked)))
+	if ((!pkg->desired && pkg->installed)
+	    || (pkg->desired
+		&& (pkg->desired->srcpicked || pkg->desired->binpicked)))
 	  chooser->insert_pkg (*pkg);
       break;
     case VIEW_PACKAGE_FULL:
@@ -1085,9 +1085,9 @@ set_view_mode (HWND h, views mode)
       break;
     case VIEW_CATEGORY:
       /* start collapsed. TODO: make this a chooser flag */
-      for (Category * cat = db.categories.getfirstcategory (); cat;
-	   cat = cat->next)
-	chooser->insert_category (cat, CATEGORY_COLLAPSED);
+      for (size_t n = 1; n <= db.categories.number (); n++)
+	chooser->insert_category (db.categories.getnth (n),
+				  CATEGORY_COLLAPSED);
       break;
     default:
       break;
@@ -1519,27 +1519,23 @@ do_choose (HINSTANCE h)
 	   " src?=%s",
 	   pkg->name, action, trust, installed,
 	   pkg->desired && pkg->desired->srcpicked ? "yes" : "no");
-      if (pkg->Categories ().categories ())
+      if (pkg->Categories.number ())
 	{
 	  /* List categories the package belongs to */
 	  int categories_len = 0;
-	  Category *cp;
-	  for (cp = pkg->Categories ().getfirstcategory (); cp; cp = cp->next)
-	    if (cp->name)
-	      categories_len += strlen (cp->name) + 2;
+	  for (size_t n = 1; n <= pkg->Categories.number (); n++)
+	    categories_len +=
+	      strlen (pkg->Categories.getnth (n)->key.name) + 2;
 
 	  if (categories_len > 0)
 	    {
 	      char *categories = (char *) malloc (categories_len);
-	      strcpy (categories,
-		      pkg->Categories ().getfirstcategory ()->name);
-	      for (cp = pkg->Categories ().getfirstcategory ()->next; cp;
-		   cp = cp->next)
-		if (cp->name)
-		  {
-		    strcat (categories, ", ");
-		    strcat (categories, cp->name);
-		  }
+	      strcpy (categories, pkg->Categories.getnth (1)->key.name);
+	      for (size_t n = 2; n <= pkg->Categories.number (); n++)
+		{
+		  strcat (categories, ", ");
+		  strcat (categories, pkg->Categories.getnth (n)->key.name);
+		}
 	      log (LOG_BABBLE, "     categories=%s", categories);
 	      free (categories);
 	    }

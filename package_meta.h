@@ -18,22 +18,26 @@
 
 class packageversion;
 class packagemeta;
+class category;
 
 /* Required to parse this completely */
-#include "category_list.h"
 #include "list.h"
 #include "strings.h"
+#include "category.h"
 
 /* 
    For cleanliness this may need to be put in its own file later. */
 class CategoryPackage
 {
 public:
-  CategoryPackage (packagemeta & package):next (0), pkg (package)
+  CategoryPackage (Category & cat):key (cat), pkg (0)
   {
+    next = cat.packages;
+    cat.packages = this;
   };
+  Category & key;
   CategoryPackage *next;	/* The next package pointer in the list */
-  packagemeta & pkg;
+  packagemeta *pkg;
 };
 
 
@@ -85,13 +89,8 @@ public:
   /* what categories does this package belong in. Note that if multiple versions
    * of a package disagree.... the first one read in will take precedence.
    */
-  CategoryList & Categories ()
-  {
-    return categories;
-  };
-  /* Add a known category to this objects category list.
-   */
   void add_category (Category &);
+  list < CategoryPackage, Category &, Categorycmp > Categories;
 
   list < packageversion, char const *, strcasecmp > versions;
   /* which one is installed. */
@@ -109,8 +108,6 @@ public:
   /* Now for the user stuff :] */
   /* What version does the user want ? */
   packageversion *desired;
-private:
-  CategoryList categories;
 };
 
 #endif /* _PACKAGE_META_H_ */

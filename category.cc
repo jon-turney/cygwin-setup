@@ -22,7 +22,7 @@
 
 /* normal members */
 
-Category::Category ():next (0), name (0), packages (0)
+Category::Category ():next (0), name (0), key (0), packages (0)
 {
 }
 
@@ -32,4 +32,11 @@ packages (0)
 {
   /* FIXME: search the global category list for name, and reuse that pointer */
   name = strdup (categoryname);
+  key = name;
+}
+
+int
+Categorycmp (Category & a, Category & b)
+{
+  return strcasecmp (a.name, b.name);
 }

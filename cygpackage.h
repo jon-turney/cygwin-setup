@@ -20,8 +20,6 @@
 #ifndef _CYGPACKAGE_H_
 #define _CYGPACKAGE_H_
 
-#include "category_list.h"
-
 class cygpackage:public packageversion
 {
 public:

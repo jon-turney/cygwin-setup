@@ -85,7 +85,6 @@ OBJS = \
 	archive_tar_file.o \
 	autoload.o \
 	category.o \
-	category_list.o \
 	choose.o \
 	compress.o \
 	compress_bz.o \
