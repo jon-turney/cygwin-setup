@@ -1,3 +1,11 @@
+Version 2.457.2.2
+
+ - Set CYGWIN=nontsec, for postinstall scripts.
+
+ - Fix corrupt display of ini parse percentage in log file.
+
+ - Filter the mirrors list to only URL schemes that setup can use.
+
 Version 2.457.2.1
 
  - Fix setup keeping open handles to every tarball it installs during a run.
