@@ -26,6 +26,9 @@ static const char *cvsid =
 #include <stdlib.h>
 #include <unistd.h>
 #include <strings.h>
+#if HAVE_ERRNO_H
+#include <errno.h>
+#endif
 
 #include "io_stream.h"
 #include "compress.h"

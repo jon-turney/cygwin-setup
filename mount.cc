@@ -238,6 +238,11 @@ set_cygdrive_flags (int istext, int issystem)
 	{
 	  DWORD cygdrive_flags = 0;
 	  status = get_cygdrive_flags (key, &cygdrive_flags);
+	  if (status == ERROR_FILE_NOT_FOUND)
+	    {
+	      status = ERROR_SUCCESS;
+	      cygdrive_flags = default_cygdrive (key);
+	    }
 	  if (status == ERROR_SUCCESS)
 	    {
 	      set_cygdrive_flags (key, istext, cygdrive_flags);

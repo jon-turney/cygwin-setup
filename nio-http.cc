@@ -34,6 +34,10 @@ static const char *cvsid =
 #include "netio.h"
 #include "nio-http.h"
 
+#ifndef _strnicmp
+#define _strnicmp strncasecmp
+#endif
+
 static char six2pr[64] = {
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
   'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',

@@ -21,6 +21,8 @@
 #define _CYGPACKAGE_H_
 
 #include "String++.h"
+/* for _MAX_PATH */
+#include "win32.h" 
 
 class cygpackage:public packageversion
 {

@@ -543,7 +543,7 @@ do_install_thread (HINSTANCE h, HWND owner)
     exit_msg = IDS_INSTALL_COMPLETE;
 }
 
-static void
+static DWORD WINAPI
 do_install_reflector (void *p)
 {
   HANDLE *context;
@@ -554,7 +554,7 @@ do_install_reflector (void *p)
   // Tell the progress page that we're done downloading
   Progress.PostMessage (WM_APP_INSTALL_THREAD_COMPLETE);
 
-  _endthread ();
+  ExitThread (0);
 }
 
 static HANDLE context[2];
@@ -565,5 +565,6 @@ do_install (HINSTANCE h, HWND owner)
   context[0] = h;
   context[1] = owner;
 
-  _beginthread (do_install_reflector, 0, context);
+  DWORD threadID;
+  CreateThread (NULL, 0, do_install_reflector, context, 0, &threadID);
 }

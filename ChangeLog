@@ -1,3 +1,41 @@
+2002-04-29  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.am: Remove dependecy rules that automake emits.
+	Correct badly copied dependency info for manually compiled files.
+       	(setup_SOURCES): Add all used headers.
+	(EXTRA_DIST): Include non compilate but required sources.
+	(setup_LDADD): Remove mingw32, it is autodetected.
+	* Makefile.in: Regenerate.
+	* String++.h: sys/types is a system header.
+	* choose.cc (do_choose_thread): Make into a Win32 thread routine.
+	Use ExitThread.
+	(ChooserPage::OnMessageApp): Use Win32 threads. (_beginthread is not
+	portable).
+	* configure: Regenerate.
+	* configure.in: Check for mingw32/cygwin specific headers and libraries.
+	* cygpackage.h: Include the win32.h header to get correct macro 
+	definitions in all situations.
+	* download.cc (do_download_reflector): Make into a Win32 thread routine.
+	Use ExitThread.
+	(do_download): Use Win32 threads.
+	* ini.cc: Ditto.
+	* install.cc: Ditto.
+	* (WinMain): Adjust to build valid command line using application 
+	under both mingw32 and cygwin.
+	* mount.cc (set)cygdrive_flags): Create new system flags if the 
+	user requests system and the value does not exist.
+	* nio-http.cc: Define a _strnicmp for cygwin.
+	* package_db.cc: Include <errno.h> if it exists.
+	* site.cc (do_download_site_info_thread): Make into a Win32 thread 
+	routine.
+	Use ExitThread.
+	(do_download_site-Info): Use Win32 threads.
+	* state.cc: Explicity declare variables to avoid header conflicts 
+	caused by '#define extern" on cygwin.
+	* win32.h: Include <alloca.h> if it exists.
+	(_MAX_PATH): Define as MAX_PATH when not defined by windows.h.
+	(_access): Define as access if not defined by windows.h.
+
 2002-04-27  Robert Collins  <rbtcollins@hotmail.com>
 
 	* compress_gz.cc (compress_gz::error): EOF is not an error condition.

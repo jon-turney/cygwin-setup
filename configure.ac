@@ -50,6 +50,11 @@ AC_SUBST(WINDRES)
 dnl AC_CHECK_TOOL(OBJCOPY, objcopy, objcopy)
 dnl AC_SUBST(OBJCOPY)
 
+AC_CHECK_LIB(mingw32,main)
+
+AC_CHECK_HEADERS(alloca.h, \
+		 errno.h)
+
 AC_CONFIG_SUBDIRS(zlib)
 AC_CONFIG_SUBDIRS(bz2lib)
 AC_CONFIG_SUBDIRS(libgetopt++)

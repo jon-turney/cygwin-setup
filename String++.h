@@ -19,7 +19,7 @@
 #define CINSTALL_STRING_H
 
 #include <stdarg.h>
-#include "sys/types.h"
+#include <sys/types.h>
 
 class io_stream;
 class String {

@@ -20,5 +20,24 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-#define extern
 #include "state.h"
+
+int source;
+
+String local_dir;
+
+int root_text;
+int root_scope;
+int root_menu;
+int root_desktop;
+
+int net_method;
+char *net_proxy_host;
+int net_proxy_port;
+
+char *net_user;
+char *net_passwd;
+char *net_proxy_user;
+char *net_proxy_passwd;
+char *net_ftp_user;
+char *net_ftp_passwd;

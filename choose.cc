@@ -751,7 +751,7 @@ do_choose (HINSTANCE h, HWND owner)
 
 extern void do_choose (HINSTANCE h, HWND owner);
 
-void
+DWORD WINAPI
 do_choose_thread (void *p)
 {
   ChooserPage *cp;
@@ -762,7 +762,7 @@ do_choose_thread (void *p)
 
   cp->PostMessage (WM_APP_CHOOSE_IS_FINISHED);
 
-  _endthread ();
+  ExitThread (0);
 }
 
 bool ChooserPage::Create ()
@@ -784,7 +784,8 @@ bool ChooserPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_APP_START_CHOOSE:
       {
 	// Start the chooser thread.
-	_beginthread (do_choose_thread, 0, this);
+	DWORD threadID;
+	CreateThread(NULL, 0, do_choose_thread, this, 0, &threadID);
 	break;
       }
     case WM_APP_CHOOSE_IS_FINISHED:

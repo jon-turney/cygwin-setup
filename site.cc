@@ -233,7 +233,7 @@ get_saved_sites ()
 
 }
 
-static void
+static DWORD WINAPI
 do_download_site_info_thread (void *p)
 {
   HANDLE *context;
@@ -261,7 +261,7 @@ Make sure your network settings are corect and try again."), NULL, MB_OK);
   // Tell the progress page that we're done downloading
   Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_SITE);
 
-  _endthread ();
+  ExitThread(0);
 }
 
 static HANDLE context[2];
@@ -273,8 +273,8 @@ do_download_site_info (HINSTANCE hinst, HWND owner)
   context[0] = hinst;
   context[1] = owner;
 
-  _beginthread (do_download_site_info_thread, 0, context);
-
+  DWORD threadID;
+  CreateThread (NULL, 0, do_download_site_info_thread, context, 0, &threadID);
 }
 
 bool SitePage::Create ()

@@ -142,12 +142,19 @@ out:
 // Other threads talk to this page, so we need to have it externable.
 ThreeBarProgressPage Progress;
 
+#ifndef __CYGWIN__
 int WINAPI
 WinMain (HINSTANCE h,
 	 HINSTANCE hPrevInstance, LPSTR command_line, int cmd_show)
 {
 
   hinstance = h;
+#else
+int
+main (int argc, char **argv)
+{
+  hinstance = GetModuleHandle (NULL);
+#endif
 
   next_dialog = IDD_SPLASH;
 
@@ -168,13 +175,25 @@ WinMain (HINSTANCE h,
   local_dir = String (cwd);
   log (LOG_TIMESTAMP, String ("Current Directory: ") + local_dir);
 
-  char **argv;
+  // TODO: make an equivalent for __argv under cygwin.
+  char **_argv;
+#ifndef __CYGWIN__
   int argc;
-  for (argc = 0, argv = __argv; *argv; argv++)++argc;
+//  char **_argv;
+#ifndef __CYGWIN__
+  for (argc = 0, _argv = __argv; *_argv; _argv++)++argc;
+  _argv = __argv;
+#else
+//  for (argc = 0, _argv = argv; *_argv; _argv++)++argc;
+  _argv = argv;
+#endif
+#else
+  _argv = argv;
+#endif
 
-  if (!GetOption::GetInstance().Process (argc, __argv))
+  if (!GetOption::GetInstance().Process (argc,_argv))
     exit_setup(1);
-  
+// #endif
 
   /* Set the default DACL only on NT/W2K. 9x/ME has no idea of access
      control lists and security at all. */
@@ -185,7 +204,7 @@ WinMain (HINSTANCE h,
   InitCommonControls ();
 
   // Init window class lib
-  Window::SetAppInstance (h);
+  Window::SetAppInstance (hinstance);
 
   // Create pages
   Splash.Create ();
