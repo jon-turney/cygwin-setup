@@ -793,7 +793,7 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
   if (lib)
     FreeLibrary (lib);
 
-  printf ("done.\n");
+  printf ("Done.\n");
   return retval;
 }
 
