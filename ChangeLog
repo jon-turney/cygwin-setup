@@ -1,3 +1,10 @@
+2001-11-01  Robert Collins  <rbtcollins@hotmail.com>
+
+	* argv.cc: Remove.
+	* argv.h: Remove.
+	* main.cc(WinMain): Use __argv to retrieve command line parameters.
+	* Makefile,in: Remove argv.o.
+
 2001-11-01  Matt Hargett  <matt@use.net>
 
         * geturl.cc (progress): Change int to unsigned int to eliminate
