@@ -38,7 +38,6 @@ using namespace std;
 UserSettings &
 UserSettings::Instance()
 {
-  return Instance_;
   if (Instance_.inited != 42)
       Instance_.init ();
   return Instance_;

@@ -1,3 +1,7 @@
+2003-03-16  Max Bowsher  <maxb@ukf.net>
+
+	* UserSettings.cc (UserSettings::Instance): Remove premature return.
+
 2003-03-15  Robert Collins  <rbtcollins@hotmail.com>
 
 	* script.cc (run): Rename variable b to createSucceeded.
