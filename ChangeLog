@@ -1,3 +1,7 @@
+2000-07-31  DJ Delorie  <dj@redhat.com>
+
+	* desktop.cc: reverse PATH so /usr/bin precedes /bin
+
 2000-07-18  DJ Delorie  <dj@redhat.com>
 
 	* autoload.c: new, autoload dlls that might not be available.

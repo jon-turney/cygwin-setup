@@ -49,7 +49,7 @@ static OSVERSIONINFO verinfo;
    */
 
 static char *etc_profile[] = {
-  "PATH=\"/bin:/usr/bin:/usr/local/bin:$PATH\"",
+  "PATH=\"/usr/local/bin:/usr/bin:/bin:$PATH\"",
   "unset DOSDRIVE",
   "unset DOSDIR",
   "unset TMPDIR",
