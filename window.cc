@@ -93,7 +93,8 @@ Window::WindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
   return This->WindowProc (uMsg, wParam, lParam);
 }
 
-bool Window::Create (Window * parent, DWORD Style)
+bool
+Window::Create (Window * parent, DWORD Style)
 {
   // First register the window class, if we haven't already
   if (registerWindowClass () == false)
@@ -135,7 +136,8 @@ bool Window::Create (Window * parent, DWORD Style)
   return true;
 }
 
-bool Window::registerWindowClass ()
+bool
+Window::registerWindowClass ()
 {
   if (WindowClassAtom == 0)
     {
@@ -260,12 +262,14 @@ Window::CenterWindow ()
   MoveWindow (p.x, p.y, WindowWidth, WindowHeight);
 }
 
-LRESULT Window::WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT
+Window::WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   return DefWindowProc (WindowHandle, uMsg, wParam, lParam);
 }
 
-bool Window::MessageLoop ()
+bool
+Window::MessageLoop ()
 {
   MSG
     msg;
@@ -289,13 +293,14 @@ Window::PostMessage (UINT uMsg, WPARAM wParam, LPARAM lParam)
   ::PostMessage (GetHWND (), uMsg, wParam, lParam);
 }
 
-UINT Window::IsButtonChecked (int nIDButton) const
+UINT
+Window::IsButtonChecked (int nIDButton) const
 {
   return ::IsDlgButtonChecked (GetHWND (), nIDButton);
 }
 
 bool
-  Window::SetDlgItemFont (int id, const TCHAR * fontname, int Pointsize,
+Window::SetDlgItemFont (int id, const TCHAR * fontname, int Pointsize,
 			  int Weight, bool Italic, bool Underline,
 			  bool Strikeout)
 {

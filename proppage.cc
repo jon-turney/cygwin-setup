@@ -49,7 +49,7 @@ bool PropertyPage::Create (DLGPROC dlgproc, int TemplateID)
 }
 
 bool
-  PropertyPage::Create (DLGPROC dlgproc,
+PropertyPage::Create (DLGPROC dlgproc,
 			BOOL (*cproc) (HWND h, int id, HWND hwndctl,
 				       UINT code), int TemplateID)
 {
