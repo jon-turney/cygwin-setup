@@ -1,3 +1,9 @@
+2003-07-28  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* AntiVirus.cc (AntiVirusPage::OnNext): Do not explicitly specify the
+	page to display next, since it follows in the default page ordering
+	anyway.
+
 2003-07-28  Max Bowsher  <maxb@ukf.net>
 
 	* dialog.h: (NEXT): Remove obsolete macro.

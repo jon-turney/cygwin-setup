@@ -111,7 +111,7 @@ AntiVirusPage::OnNext ()
 
   save_dialog (h);
   /* if disable, do so now */
-  return IDD_SOURCE;
+  return 0;
 }
 
 long
