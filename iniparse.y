@@ -148,8 +148,8 @@ categories
 void
 add_correct_version()
 {
-	int merged = 0;
-    for (size_t n = 1; !merged && n <= cp->versions.number (); n++)
+  int merged = 0;
+  for (size_t n = 1; !merged && n <= cp->versions.number (); n++)
       if (!strcasecmp(cp->versions[n]->Canonical_version(), cpv->Canonical_version()))
       {
 	/* ASSUMPTIONS:
@@ -162,6 +162,11 @@ add_correct_version()
 	/* Ditto for src */
 	if (cpv->src.sites.number ())
 	  cp->versions[n]->src.sites.registerbykey (cpv->src.sites[1]->key);
+	/* Copy the descriptions across */
+	if (cpv->SDesc () && !cp->versions[n]->SDesc ())
+	  cp->versions[n]->set_sdesc (cpv->SDesc ());
+	if (cpv->LDesc () && !cp->versions[n]->LDesc ())
+	  cp->versions[n]->set_ldesc (cpv->LDesc ());
 	cpv = (cygpackage *)cp->versions[n];
 	merged = 1;
       }

@@ -156,7 +156,10 @@ packagemeta::add_category (Category & cat)
 char const *
 packagemeta::SDesc () const
 {
-  return versions[1]->SDesc ();
+  for (size_t n = 1; n <= versions.number(); ++n)
+    if (versions[n]->SDesc ())
+      return versions[n]->SDesc ();
+  return NULL;
 };
 
 /* Return an appropriate caption given the current action. */

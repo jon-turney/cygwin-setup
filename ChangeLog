@@ -1,3 +1,11 @@
+2001-01-06  Robert Collins  <rbtcollins@hotmail.com>
+
+	* cygpackage.h (cygpackage): Make set_[s|l]desc virtual.
+	* iniparse.y (add_correct_version): Copy descriptions across.
+	* package_meta.cc (SDesc): Iterate through versions, return the first with a 
+	description.
+	* package_version.h (packageversion): Add new virtuals set_[l|s]desc.
+
 2001-01-04  Robert Collins  <rbtcollins@hotmail.com>
 
 	* script.cc (run_script): Change cygpath:// to cygfile://.

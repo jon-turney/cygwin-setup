@@ -35,8 +35,8 @@ public:
   {
     return type;
   };
-  void set_sdesc (char const *);
-  void set_ldesc (char const *);
+  virtual void set_sdesc (char const *);
+  virtual void set_ldesc (char const *);
   virtual char const *SDesc ()
   {
     return sdesc;

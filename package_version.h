@@ -95,7 +95,9 @@ public:
   virtual const char *getfirstfile () = 0;
   virtual const char *getnextfile () = 0;
   virtual char const *SDesc () = 0;
+  virtual void set_sdesc (char const *) = 0;
   virtual char const *LDesc () = 0;
+  virtual void set_ldesc (char const *) = 0;
   /* FIXME: review this - these are UI variables, should be consistent across all
    * children package types
    */
