@@ -58,10 +58,13 @@ static const char *cvsid =
 #include "desktop.h"
 
 #include "getopt++/GetOption.h"
+#include "getopt++/BoolOption.h"
 
 int next_dialog;
 
 HINSTANCE hinstance;
+
+static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
 
 /* Maximum size of a SID on NT/W2K. */
 #define MAX_SID_LEN	40
@@ -207,6 +210,8 @@ main (int argc, char **argv)
   if (!GetOption::GetInstance().Process (argc,_argv))
     theLog.exit(1);
 // #endif
+
+  unattended_mode = UnattendedOption;
 
   /* Set the default DACL only on NT/W2K. 9x/ME has no idea of access
      control lists and security at all. */

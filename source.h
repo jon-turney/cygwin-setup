@@ -38,6 +38,7 @@ public:
   virtual void OnDeactivate ();
   virtual long OnNext ();
   virtual long OnBack ();
+  virtual long OnUnattended ();
 };
 
 #endif

@@ -33,6 +33,11 @@ static const char *cvsid =
 
 #include "source.h"
 
+#include "getopt++/BoolOption.h"
+
+static BoolOption DownloadOption (false, 'D', "download", "Download from internet");
+static BoolOption LocalOption (false, 'L', "local-install", "Install from local directory");
+
 static int rb[] =
   { IDC_SOURCE_NETINST, IDC_SOURCE_DOWNLOAD, IDC_SOURCE_CWD, 0 };
 
@@ -79,7 +84,15 @@ void
 SourcePage::OnActivate ()
 {
   if (!source)
-    source = IDC_SOURCE_NETINST;
+    {
+      if (DownloadOption) 
+	source = IDC_SOURCE_DOWNLOAD;
+      else if (LocalOption)
+	source = IDC_SOURCE_CWD;
+      else
+	source = IDC_SOURCE_NETINST;
+    }
+
   load_dialog (GetHWND ());
   // Check to see if any radio buttons are selected. If not, select a default.
   if ((!SendMessage
@@ -121,4 +134,10 @@ SourcePage::OnDeactivate ()
   log (LOG_PLAIN, String ("source: ") +
        ((source == IDC_SOURCE_DOWNLOAD) ? "download" :
 	(source == IDC_SOURCE_NETINST) ? "network install" : "from cwd"));
+}
+
+long
+SourcePage::OnUnattended ()
+{
+  return OnNext();
 }

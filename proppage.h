@@ -107,6 +107,10 @@ public:
   {
     return true;
   };
+  virtual long OnUnattended ()
+  {
+    return -2;
+  };
 
   PropSheet *GetOwner () const
   {

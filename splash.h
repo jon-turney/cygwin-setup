@@ -33,6 +33,10 @@ public:
 
   bool Create ();
   virtual void OnInit ();
+  long OnUnattended ()
+  {
+    return 0;
+  };
 };
 
 #endif // CINSTALL_SPLASH_H

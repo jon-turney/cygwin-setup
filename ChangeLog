@@ -1,5 +1,38 @@
 2002-09-21  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.h: Add OnUnattended method.
+	* desktop.cc (DesktopSetupPage::OnInit): Allow fine grained
+	control via command line options.
+	(DesktopSetupPage::OnUnattended): Implement.
+	(DesktopSetupPage::OnMessageApp): Implement.
+	* desktop.h (DesktopSetupPage::OnUnattended): declare.
+	(DesktopSetupPage::OnMessageApp): Ditto.
+	* download.cc (do_download_thread): Support unattended mode.
+	* install.cc (do_install_thread): Ditto.
+	* localdir.h: Ditto.
+	* main.cc (main): Ditto.
+	* net.cc (NetPage::OnUnattended): Ditto.
+	* net.h (NetPage::OnUnattended): Declare.
+	* proppage.cc (PropertyPage::DialogProc): Support unattended mode.
+	* proppage.h (PropertyPage::OnUnattended): Declare.
+	* root.cc (RootPage::OnInit): Support unattended mode.
+	(RootPage::OnUnattended): Implement.
+	* root.h (RootPage::OnUnattended): Declare.
+	* site.cc (register_saved_site): Extract Method from get_saved_sites.
+	(get_saved_sites): Remove common code for adding a site.
+	(SitePage::OnInit): Support unattended mode.
+	(SitePage::OnUnattended): Implement.
+	* site.h (SitePage::OnUnattended): Declare.
+	* source.cc (SourcePage::OnActivate): Support unattended mode.
+	(SourcePage::OnUnattended): Implement.
+	* source.h (SourcePage::OnUnattended): Declare.
+	* splash.h (SplashPage::OnUnattended): Declare.
+	* state.cc (unattended_mode): Declare.
+	* state.h (unattended_mode): Declare.
+	* threebar.h (ThreeBarProgressPage::OnUnattended): New method.
+
+2002-09-21  Robert Collins  <rbtcollins@hotmail.com>
+
 	* res.rc: Commit Harry Johnston's dialog caption patch. From July.
 
 2002-07-15  Robert Collins  <rbtcollins@hotmail.com>

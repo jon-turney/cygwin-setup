@@ -26,6 +26,7 @@ static const char *cvsid =
 #include "win32.h"
 #include <shlobj.h>
 #include "desktop.h"
+#include "propsheet.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,6 +56,8 @@ static const char *cvsid =
 #include "PackageSpecification.h"
 
 static BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", "Disable creation of desktop and start menu shortcuts");
+static BoolOption NoStartMenuOption (false, 'N', "no-startmenu", "Disable creation of start menu shortcut");
+static BoolOption NoDesktopOption (false, 'd', "no-desktop", "Disable creation of desktop shortcut");
 
 static OSVERSIONINFO verinfo;
 
@@ -473,19 +476,38 @@ DesktopSetupPage::OnInit ()
   CoInitialize (NULL);
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
   GetVersionEx (&verinfo);
-  root_desktop =
-    check_desktop ("Cygwin", backslash (cygpath ("/cygwin.bat")));
-  root_menu =
-    check_startmenu ("Cygwin Bash Shell",
-		     backslash (cygpath ("/cygwin.bat")));
-  if (NoShortcutsOption)
+
+  if (NoShortcutsOption) 
     {
-      root_desktop=false;
-      root_menu=false;
-      OnFinish();
+      root_desktop = root_menu = 0;
     }
   else
-    load_dialog (GetHWND ());
+    {
+      if (NoStartMenuOption) 
+	{
+	  root_menu = 0;
+	  MessageBox(NULL, "NoStartMenuOption", "NoStartMenuOption", MB_OK);
+	}
+      else
+	{
+	  root_menu =
+	    check_startmenu ("Cygwin Bash Shell",
+			     backslash (cygpath ("/cygwin.bat")));
+	}
+
+      if (NoDesktopOption) 
+	{
+	  root_desktop = 0;
+	}
+      else
+	{
+	  root_desktop =
+	    check_desktop ("Cygwin", backslash (cygpath ("/cygwin.bat")));
+	}
+    }
+
+  load_dialog (GetHWND ());
+
 }
 
 long
@@ -505,6 +527,34 @@ DesktopSetupPage::OnFinish ()
   do_desktop_setup ();
   NEXT (IDD_S_POSTINSTALL);
   do_postinstall (GetInstance (), h);
+
+  return true;
+}
+
+long 
+DesktopSetupPage::OnUnattended ()
+{
+  Window::PostMessage (WM_APP_UNATTENDED_FINISH);
+  // GetOwner ()->PressButton(PSBTN_FINISH);
+  return -1;
+}
+
+bool
+DesktopSetupPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+  switch (uMsg)
+    {
+    case WM_APP_UNATTENDED_FINISH:
+      {
+	GetOwner ()->PressButton(PSBTN_FINISH);
+	break;
+      }
+    default:
+      {
+	// Not handled
+	return false;
+      }
+    }
 
   return true;
 }

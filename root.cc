@@ -36,6 +36,10 @@ static const char *cvsid =
 #include "log.h"
 #include "root.h"
 
+#include "getopt++/StringOption.h"
+
+StringOption RootOption ("", 'R', "root", "Root installation directory");
+
 static int rb[] = { IDC_ROOT_TEXT, IDC_ROOT_BINARY, 0 };
 static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
 
@@ -164,6 +168,8 @@ RootPage::Create ()
 void
 RootPage::OnInit ()
 {
+  if (((string)RootOption).size()) 
+    set_root_dir((string)RootOption);
   if (!get_root_dir ().size())
     read_mounts ();
   load_dialog (GetHWND ());
@@ -203,4 +209,10 @@ RootPage::OnBack ()
   save_dialog (h);
   NEXT (IDD_SOURCE);
   return 0;
+}
+
+long
+RootPage::OnUnattended ()
+{
+  return OnNext();
 }

@@ -31,6 +31,7 @@
 #define WM_APP_SITE_INFO_DOWNLOAD_COMPLETE WM_APP+5
 #define WM_APP_START_SETUP_INI_DOWNLOAD    WM_APP+6
 #define WM_APP_SETUP_INI_DOWNLOAD_COMPLETE WM_APP+7
+// desktop.h: WM_APP_UNATTENDED_FINISH WM_APP+8
 
 class ThreeBarProgressPage:public PropertyPage
 {
@@ -62,6 +63,10 @@ public:
   virtual void OnInit ();
   virtual void OnActivate ();
   virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam);
+  virtual long OnUnattended ()
+  {
+    return -1;
+  };
 
   void SetText1 (const TCHAR * t);
   void SetText2 (const TCHAR * t);

@@ -45,8 +45,12 @@ static const char *cvsid =
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
 
+#include "getopt++/StringOption.h"
+
 SiteList site_list;
 SiteList all_site_list;
+
+StringOption SiteOption("", 's', "site", "Download site");
 
 void
 site_list_type::init (String const &newurl)
@@ -221,6 +225,31 @@ get_site_list (HINSTANCE h, HWND owner)
 #define NOSAVE3_LEN (sizeof ("ftp://gcc.gnu.org/") - 1)
 
 static void
+register_saved_site (const char * site)
+{
+  site_list_type tempSite(site);
+  SiteList::iterator i = find (all_site_list.begin(),
+			       all_site_list.end(), tempSite);
+  if (i == all_site_list.end())
+    {
+      /* Don't default to certain machines ever since they suffer
+	 from bandwidth limitations. */
+      if (strnicmp (site, NOSAVE1, NOSAVE1_LEN) == 0
+	  || strnicmp (site, NOSAVE2, NOSAVE2_LEN) == 0
+	  || strnicmp (site, NOSAVE3, NOSAVE3_LEN) == 0)
+	return;
+      SiteList result;
+      merge (all_site_list.begin(), all_site_list.end(),
+	     &tempSite, &tempSite + 1,
+	     inserter (result, result.begin()));
+      all_site_list = result;
+      site_list.push_back (tempSite);
+    }
+  else
+    site_list.push_back (tempSite);
+}
+
+static void
 get_saved_sites ()
 {
   io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "rt");
@@ -239,26 +268,8 @@ get_saved_sites ()
       if (eos < site)
 	continue;
 
-      site_list_type tempSite(site);
-      SiteList::iterator i = find (all_site_list.begin(),
-				   all_site_list.end(), tempSite);
-      if (i == all_site_list.end())
-	{
-	  /* Don't default to certain machines ever since they suffer
-	     from bandwidth limitations. */
-	  if (strnicmp (site, NOSAVE1, NOSAVE1_LEN) == 0
-	      || strnicmp (site, NOSAVE2, NOSAVE2_LEN) == 0
-	      || strnicmp (site, NOSAVE3, NOSAVE3_LEN) == 0)
-	    return;
-	  SiteList result;
-	  merge (all_site_list.begin(), all_site_list.end(),
-		 &tempSite, &tempSite + 1,
-		 inserter (result, result.begin()));
-	  all_site_list = result;
-	  site_list.push_back (tempSite);
-	}
-      else
-	site_list.push_back (tempSite);
+      register_saved_site (site);
+
     }
   delete f;
 
@@ -316,7 +327,11 @@ bool SitePage::Create ()
 void
 SitePage::OnInit ()
 {
-  get_saved_sites ();
+  string SiteOptionString = SiteOption;
+  if (SiteOptionString.size()) 
+    register_saved_site (SiteOptionString.c_str());
+  else
+    get_saved_sites ();
 }
 
 long
@@ -360,6 +375,15 @@ SitePage::OnActivate ()
 
   // Get the enabled/disabled states of the controls set accordingly.
   CheckControlsAndDisableAccordingly ();
+}
+
+long
+SitePage::OnUnattended ()
+{
+  if (SendMessage (GetDlgItem (IDC_URL_LIST), LB_GETSELCOUNT, 0, 0) > 0)
+    return OnNext ();
+  else
+    return -2;
 }
 
 void

@@ -22,6 +22,8 @@ static const char *cvsid =
 
 #include "state.h"
 
+bool unattended_mode;
+
 int source;
 
 String local_dir;

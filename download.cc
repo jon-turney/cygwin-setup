@@ -310,7 +310,7 @@ do_download_thread (HINSTANCE h, HWND owner)
     {
       if (errors)
 	exit_msg = IDS_DOWNLOAD_INCOMPLETE;
-      else
+      else if (!unattended_mode)
 	exit_msg = IDS_DOWNLOAD_COMPLETE;
       next_dialog = 0;
     }

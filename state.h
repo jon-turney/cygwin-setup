@@ -28,6 +28,8 @@
 
 #include "String++.h"
 
+extern bool unattended_mode;
+
 extern int source;
 
 extern String local_dir;

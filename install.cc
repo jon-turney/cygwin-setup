@@ -597,18 +597,18 @@ do_install_thread (HINSTANCE h, HWND owner)
     check_for_old_cygwin ();
   if (num_installs == 0 && num_uninstalls == 0)
     {
-      exit_msg = IDS_NOTHING_INSTALLED;
+      if (!unattended_mode) exit_msg = IDS_NOTHING_INSTALLED;
       return;
     }
   if (num_installs == 0)
     {
-      exit_msg = IDS_UNINSTALL_COMPLETE;
+      if (!unattended_mode) exit_msg = IDS_UNINSTALL_COMPLETE;
       return;
     }
 
   if (errors)
     exit_msg = IDS_INSTALL_INCOMPLETE;
-  else
+  else if (!unattended_mode)
     exit_msg = IDS_INSTALL_COMPLETE;
 }
 

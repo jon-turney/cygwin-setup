@@ -21,6 +21,9 @@
 
 #include "proppage.h"
 
+// WM_APP through WM_APP+7: see threebar.h
+#define WM_APP_UNATTENDED_FINISH WM_APP+8
+
 class DesktopSetupPage:public PropertyPage
 {
 public:
@@ -36,6 +39,8 @@ public:
   virtual void OnInit ();
   virtual bool OnFinish ();
   virtual long OnBack ();
+  virtual long OnUnattended ();
+  virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 
 #endif // CINSTALL_DESKTOP_H

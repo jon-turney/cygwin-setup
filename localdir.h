@@ -38,6 +38,10 @@ public:
   virtual void OnInit ();
   virtual long OnNext ();
   virtual long OnBack ();
+  virtual long OnUnattended ()
+  {
+    return OnNext ();
+  };
 };
 
 

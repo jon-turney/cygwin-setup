@@ -122,6 +122,12 @@ NetPage::OnNext ()
 }
 
 long
+NetPage::OnUnattended()
+{
+  return OnNext ();
+}
+
+long
 NetPage::OnBack ()
 {
   save_dialog (GetHWND ());

@@ -20,6 +20,9 @@
 #include "propsheet.h"
 #include "win32.h"
 #include "resource.h"
+#include "state.h"
+
+#include "getopt++/BoolOption.h"
 
 bool PropertyPage::DoOnceForSheet = true;
 
@@ -158,9 +161,42 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 
 	    OnActivate ();
 
-	    // 0 == Accept activation, -1 = Don't accept
-	    ::SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
-	    return TRUE;
+	    if (unattended_mode) 
+	      {
+		// -2 == disable unattended mode, display page
+		// -1 == display page but stay in unattended mode (progress bars)
+		// 0 == skip to next page
+		// IDD_* == skip to specified page
+		long nextwindow = OnUnattended();
+		if (nextwindow == -2)
+		  {
+		    unattended_mode = false;
+		    SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+		    return TRUE;
+		  }
+		else if (nextwindow == -1)
+		  {
+		    SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+		    return TRUE;
+		  }
+		else if (nextwindow == 0)
+		  {
+		    SetWindowLong (GetHWND (), DWL_MSGRESULT, -1);
+		    return TRUE;
+		  }
+		else
+		  {
+		    SetWindowLong (GetHWND (), DWL_MSGRESULT, nextwindow);
+		    return TRUE;
+		  }
+	      } 
+	    else 
+	      {
+		// 0 == Accept activation, -1 = Don't accept
+		::SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+		return TRUE;
+	      }
+
 	  }
 	  break;
 	case PSN_KILLACTIVE:
