@@ -32,6 +32,7 @@ String
 canonicalize_version (String const &aString)
 {
   char *v =aString.cstr();
+  char *vsave = v;
   static char nv[3][100];
   static int idx = 0;
   char *np;
@@ -55,6 +56,6 @@ canonicalize_version (String const &aString)
 	*np++ = *v++;
     }
   *np++ = 0;
-  delete[] v;
+  delete[] vsave;
   return nv[idx];
 }
