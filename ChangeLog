@@ -1,3 +1,21 @@
+Thu Apr 13 01:11:45 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* path.c (kill_cygpath): New cleanup function.
+	(exit_cygpath): New cleanup function.
+	(cygpath_pipe): New function.  Sets up cygpath in the background for
+	translating filenames.
+	(pathcvt): Use background cygpath for file translation.
+	* setup.c (tarx): New function.  Called to extract tar files, capture
+	logging output, and translate it to Windows format.
+	(recurse_dirs): Use 'tarx' function to extract files.
+	(create_uninstall): Use file list built up by tarx rather than reading
+	the log file.
+	(mkmount): Add ability to mount root.
+	(main): Track elapsed install time.  Mount root.
+	* starry.h: Add index field to strarry for tracking of tarx's usage of
+	this structure.
+	* xsystem.c (xcreate_process): Return proces handle when not waiting.
+
 Mon Apr 10 22:44:56 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* path.c: New file.

@@ -1,5 +1,6 @@
 #include <malloc.h>
 #include <string.h>
+#include <windows.h>
 #include "setup.h"
 
 void *

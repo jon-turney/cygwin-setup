@@ -1,5 +1,6 @@
 /* strarry.c: implementation of the strarry struct routines. */
 #include <malloc.h>
+#include <windows.h>
 #include "setup.h"
 #include "strarry.h"
 

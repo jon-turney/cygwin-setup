@@ -19,7 +19,7 @@
 
 extern char *pathcat (const char *, const char *);
 
-int
+DWORD
 xcreate_process (int wait, HANDLE in, HANDLE out, HANDLE err, const char *cmd)
 {
   int retval;
@@ -46,8 +46,13 @@ xcreate_process (int wait, HANDLE in, HANDLE out, HANDLE err, const char *cmd)
 			  NULL, NULL, &si, &pi);
 
   xfree (command);
-  if (retval && wait)
+  if (!retval)
+    return 0;
+
+  if (wait)
     WaitForSingleObject (pi.hProcess, INFINITE);
+  else
+    retval = (DWORD) pi.hProcess;
 
   return retval;
 }

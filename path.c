@@ -13,68 +13,80 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <signal.h>
 
 #include "setup.h"
 #include "strarry.h"
 #include "zlib/zlib.h"
 
-char *pathcat (const char *, const char *);
-char *pathcvt (char target, const char *path);
-char *dtoupath (const char *path);
-char *utodpath (const char *path);
+static FILE *cygin, *cygout;
+static HANDLE hcygpath;
 
-char *
-pathfp (char *command, int closeit)
+static void
+kill_cygpath (int sig)
 {
-  int hpipe[2];
-  static FILE *in = NULL;
-  char *retval;
-  char buffer[1024];
-
-  if (in == NULL)
-    {
-      /* If there is an error try using the original style path anyway. */
-      if (_pipe (hpipe, 256, O_BINARY) == -1)
-	retval = NULL;
-      else
-	{
-	  HANDLE hpipe1 = (HANDLE) _get_osfhandle (hpipe[1]);
-	  in = fdopen (hpipe[0], "r");
-
-	  if (!in || !xcreate_process (1, NULL, hpipe1, NULL, command))
-	    return NULL;
-	  close (hpipe[1]);
-	}
-    }
-
-  retval = fgets (buffer, sizeof (buffer), in);
-
-  if (retval == NULL)
-    closeit = 1;
-  else
-    {
-      buffer[strcspn (buffer, "\r\n")] = '\0';
-      retval = xstrdup (buffer);
-    }
-
-  if (closeit)
-    {
-      fclose (in);
-      in = NULL;
-    }
-
-  return retval;
+  TerminateProcess (hcygpath, 0);
+  exit (1);
 }
+
+static void
+exit_cygpath (void)
+{
+  fclose (cygin);
+  fclose (cygout);
+  Sleep (0);
+  TerminateProcess (hcygpath, 0);
+}
+
+static int
+cygpath_pipe ()
+{
+  int hpipein[2] = {-1, -1};
+  int hpipeout[2] = {-1, -1};
+  char buffer[256];
   
+  HANDLE hin, hout;
+  if (_pipe (hpipein, 256, O_TEXT) == -1)
+    return 0;
+  if (_pipe (hpipeout, 256, O_TEXT) == -1)
+    return 0;
+
+  hin = (HANDLE) _get_osfhandle (hpipein[1]);
+  hout = (HANDLE) _get_osfhandle (hpipeout[0]);
+  sprintf (buffer, "cygpath -a -o -f - -c %x", _get_osfhandle (hpipeout[1]));
+  hcygpath = (HANDLE) xcreate_process (0, hout, hin, hin, buffer);
+  if (!hcygpath)
+    return 0;
+  atexit (exit_cygpath);
+  signal (SIGINT, kill_cygpath);
+  _close (hpipein[1]);
+  _close (hpipeout[0]);
+  cygin = fdopen (hpipein[0], "rt");
+  cygout = fdopen (hpipeout[1], "wt");
+  setbuf (cygout, NULL);
+  return 1;
+}
+
 char *
 pathcvt (char target, const char *path)
 {
   char buffer[1024];
   char *retval;
 
-  /* Get the Windows version of the root path from cygpath. */
-  sprintf (buffer, "cygpath -%c \"%s\"", target, path);
-  retval = pathfp (buffer, 1);
+  if (!cygin && !cygpath_pipe ())
+    return NULL;	/* FIXME - error */
+
+  fprintf (cygout, "-%c %s\n", target, path);
+  retval = fgets (buffer, sizeof (buffer), cygin);
+  if (retval)
+    {
+      char *p = strchr (buffer, '\n');
+      if (p != NULL)
+	*p = '\0';
+      retval = xstrdup (buffer);
+    }
+
+  /* If there is an error try using the original style path anyway. */
   return retval ? retval : xstrdup (path);
 }
 
@@ -100,14 +112,6 @@ utodpath (const char *path)
     retval[len - 1] = '\0';
 
   return retval;
-}
-
-char *
-futodpath (const char *path)
-{
-  char buffer[1024];
-  sprintf (buffer, "cygpath -d -f %s", path);
-  return pathfp (buffer, 0);
 }
 
 char *

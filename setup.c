@@ -24,15 +24,15 @@
 #define SCREEN_LINES 25
 #define COMMAND9X "command.com /E:4096 /c "
 
+#ifndef NFILE_LIST
+#define NFILE_LIST 10000
+#endif
+
 char *wd;
 
 int downloaddir (HINTERNET session, const char *url);
-char *pathcat (const char *arg1, const char *arg2);
-char *pathcvt (char target, const char *path);
-char *dtoupath (const char *path);
-char *utodpath (const char *path);
 
-int xsystem (const char *cmd);
+static SA files = {NULL, 0, 0};
 
 int
 create_shortcut (const char *target, const char *shortcut)
@@ -106,7 +106,7 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
   size_t bytes_needed;
   if ((rsrc = FindResource (NULL, name, "FILE"))
       && (res = LoadResource (NULL, rsrc))
-      && (data = (char *) LockResource (res)) && (out = fopen (name, "w+b")))
+      && (data = (char *) LockResource (res)) && (out = fopen (strlwr (name), "w+b")))
     {
       gzFile gzf;
       char *buffer;
@@ -151,8 +151,68 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
   return retval;
 }
 
+static int
+tarx (const char *dir, const char *fn, FILE *logfp)
+{
+  char *path, *dpath;
+  char buffer0[2049];
+  char *buffer = buffer0 + 1;
+  int hpipe[2];
+  HANDLE hin;
+  FILE *fp;
+
+  dpath = pathcat (dir, fn);
+  path = dtoupath (dpath);
+  sprintf (buffer, "tar xvfUz \"%s\"", path);
+  xfree (path);
+  xfree (dpath);
+
+  printf ("Installing %s\n", fn);
+
+  if (_pipe (hpipe, 256, O_TEXT) == -1)
+    return 0;
+
+  hin = (HANDLE) _get_osfhandle (hpipe[1]);
+  if (xcreate_process (0, NULL, hin, hin, buffer) == 0)
+    {
+      printf ("Unable to extract \"%s\": %s", fn, _strerror (""));
+      return 0;
+    }
+  _close (hpipe[1]);
+  fp = fdopen (hpipe[0], "rt");
+
+  while (fgets (buffer, sizeof (buffer0), fp))
+    {
+      char *s = strchr (buffer, '\n');
+
+      if (s)
+	*s = '\0';
+
+      if (strchr (buffer, ':') != NULL)
+	{
+	  s = buffer;
+	  fprintf (stderr, "%s\n", buffer);
+	}
+      else
+	{
+	  if (++files.index >= files.count)
+	    files.array = realloc (files.array,
+				       files.count += NFILE_LIST);
+	  s = buffer;
+	  if (*s != '/')
+	    *--s = '/';
+	  s = files.array[files.index] = utodpath (s);
+	  (void) chmod (s, 0777);
+	}
+
+      fprintf (logfp, "%s\n", s);
+    }
+  fclose (fp);
+  return 1;
+}
+
 int
-recurse_dirs (const char *dir, HANDLE Hlog)
+recurse_dirs (const char *dir, FILE *logfp)
 {
   int err = 0;
   int retval = 0;
@@ -179,7 +239,7 @@ recurse_dirs (const char *dir, HANDLE Hlog)
 		  char *subdir = pathcat (dir, find_data.cFileName);
 		  if (subdir)
 		    {
-		      if (!recurse_dirs (subdir, Hlog))
+		      if (!recurse_dirs (subdir, logfp))
 			{
 			  xfree (subdir);
 			  err = 1;
@@ -207,9 +267,6 @@ recurse_dirs (const char *dir, HANDLE Hlog)
 
 		  do
 		    {
-		      char *path, *dpath;
-		      char command[256];
-
 		      /* Skip source archives and meta-directories */
 		      if (strstr (find_data.cFileName, "-src.tar.gz")
 			  || strstr (find_data.cFileName, "-src-")
@@ -219,17 +276,8 @@ recurse_dirs (const char *dir, HANDLE Hlog)
 			  continue;
 			}
 
-		      dpath = pathcat (dir, find_data.cFileName);
-		      path = dtoupath (dpath);
-		      sprintf (command, "tar xvfUz \"%s\"", path);
-		      xfree (path);
-		      xfree (dpath);
-
-		      printf ("Installing %s\n", find_data.cFileName);
-		      if (xcreate_process (1, NULL, Hlog, NULL, command) == 0)
+		      if (!tarx (dir, find_data.cFileName, logfp))
 			{
-			  printf ("Unable to extract \"%s\": %s",
-				  find_data.cFileName, _strerror (""));
 			  err = 1;
 			  break;
 			}
@@ -677,102 +725,70 @@ reverse_sort (const void *arg1, const void *arg2)
 
 int
 create_uninstall (const char *wd, const char *folder, const char *shellscut,
-		  const char *shortcut, FILE *logfile)
+		  const char *shortcut)
 {
   int retval = 0;
   char buffer[MAX_PATH];
-  char *cygwin1_dll;
   clock_t start;
   HINSTANCE lib;
   
-  /* I am not completely sure how safe it is to "preload" cygwin1.dll, but it 
-     greatly speeds up the execution of cygpath which is eventually called by 
-     utodpath in a loop that can be executed thousands of times. */
-  cygwin1_dll = pathcat (wd, "cygwin1.dll");
-  lib = LoadLibrary (cygwin1_dll);
-  xfree (cygwin1_dll);
-
-  printf ("Creating the uninstall file... 0%%");
+  printf ("Creating the uninstall file...");
   fflush (stdout);
-  start = clock ();
-  if (logfile)
+  if (files.array)
     {
-      if (fgets (buffer, sizeof (buffer), logfile))
+      size_t n;
+      FILE *uninst;
+
+      files.count = files.index + 1;
+      qsort (files.array, files.count, sizeof (char *), reverse_sort);
+
+      uninst = fopen ("bin\\uninst.bat", "wt");
+
+      if (uninst)
 	{
-	  SA lines;
-	  size_t n;
-	  FILE *uninst;
+	  char cwd[MAX_PATH];
+	  char *uninstfile;
+	  unsigned percent = 0;
 
-	  sa_init (&lines);
-
-	  do
+	  getcwd (cwd, sizeof (cwd));
+	  fprintf (uninst,
+		   "@echo off\n" "%c:\n" "cd \"%s\"\n", *cwd, cwd);
+	  for (n = 0; n < files.count; ++n)
 	    {
-	      *strchr (buffer, '\n') = '\0';
-	      sa_add (&lines, buffer);
-	    }
-	  while (fgets (buffer, sizeof (buffer), logfile));
+	      char *dpath;
 
-	  qsort (lines.array, lines.count, sizeof (char *), reverse_sort);
+	      if (n && !strcmp (files.array[n], files.array[n - 1]))
+		continue;
 
-	  uninst = fopen ("bin\\uninst.bat", "wt");
+	      dpath = files.array[n];
 
-	  if (uninst)
-	    {
-	      char cwd[MAX_PATH];
-	      char *uninstfile;
-	      unsigned percent = 0;
-
-	      getcwd (cwd, sizeof (cwd));
-	      fprintf (uninst,
-		       "@echo off\n" "%c:\n" "cd \"%s\"\n", *cwd, cwd);
-	      for (n = 0; n < lines.count; ++n)
+	      if (files.array[n][strlen (files.array[n]) - 1] == '\\')
+		fprintf (uninst, "rmdir \"%s\"\n", dpath);
+	      else
 		{
-		  char *dpath;
-
-		  if ((n * 100) / lines.count >= percent)
-		    {
-		      printf ("\b\b\b%2d%%", ++percent);
-		      fflush (stdout);
-		    }
-
-		  if (n && !strcmp (lines.array[n], lines.array[n - 1]))
-		    continue;
-
-		  dpath = utodpath (lines.array[n]);
-
-		  if (lines.array[n][strlen (lines.array[n]) - 1] == '/')
-		    fprintf (uninst, "rmdir \"%s\"\n", dpath);
-		  else
-		    {
-		      if (access (dpath, 6) != 0)
-			fprintf (uninst, "attrib -r \"%s\"\n", dpath);
-		      fprintf (uninst, "del \"%s\"\n", dpath);
-		    }
-		}
-	      fprintf (uninst,
-		       "del \"%s\"\n"
-		       "del \"%s\"\n"
-		       "rmdir \"%s\"\n"
-		       "del bin\\uninst.bat\n", shortcut, shellscut,
-		       folder);
-	      fclose (uninst);
-
-	      uninstfile = pathcat (cwd, "bin\\uninst.bat");
-	      if (uninstfile)
-		{
-		  create_shortcut (uninstfile, shortcut);
+		  if (access (dpath, 6) != 0)
+		    fprintf (uninst, "attrib -r \"%s\"\n", dpath);
+		  fprintf (uninst, "del \"%s\"\n", dpath);
 		}
 	    }
-	  sa_cleanup (&lines);
-	  retval = 1;
+	  fprintf (uninst,
+		   "del \"%s\"\n"
+		   "del \"%s\"\n"
+		   "rmdir \"%s\"\n"
+		   "del bin\\uninst.bat\n", shortcut, shellscut,
+		   folder);
+	  fclose (uninst);
+
+	  uninstfile = pathcat (cwd, "bin\\uninst.bat");
+	  if (uninstfile)
+	    {
+	      create_shortcut (uninstfile, shortcut);
+	    }
 	}
+      sa_cleanup (&files);
+      retval = 1;
     }
 
-#ifndef NDEBUG
-  printf ("\nUninstall script creation took %.0f seconds.\n",
-	  (double) (clock () - start) / CLK_TCK);
-#endif /* 
-        */
   if (lib)
     FreeLibrary (lib);
 
@@ -783,14 +799,12 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 
 /* Writes the startup batch file. */
 int
-do_start_menu (const char *root, FILE *logfp)
+do_start_menu (const char *root)
 {
   FILE *batch;
   char *batch_name = pathcat (root, "bin\\cygwin.bat");
   int retval = 0;
 
-  fflush (logfp);
-  fseek (logfp, 0, SEEK_SET);
   /* Create the batch file for the start menu. */
   if (batch_name)
     {
@@ -849,7 +863,7 @@ do_start_menu (const char *root, FILE *logfp)
 		      if (uninstscut)
 			{
 			  if (create_uninstall
-			      (wd, folder, shortcut, uninstscut, logfp))
+			      (wd, folder, shortcut, uninstscut))
 			    retval = 1;
 			  xfree (uninstscut);
 			}
@@ -982,17 +996,18 @@ mkmount (const char *mountexedir, const char *root, const char *dospath,
   char *mount, *bslashed, *fulldospath, *p;
   char buffer[1024];
 
-  /* Make sure the mount point exists. */
-  bslashed = strdup (unixpath);
-  for (p = strchr (bslashed, '/'); p; p = strchr (bslashed, '/'))
-    *p = '\\';
-  mount = pathcat (root, bslashed);
-  mkdirp (mount);
-  xfree (mount);
-  xfree (bslashed);
+  if (*root == '\0')
+    fulldospath = xstrdup (dospath);
+  else
+    {
+      /* Make sure the mount point exists. */
+      mount = utodpath (unixpath);
+      mkdirp (mount);
+      xfree (mount);
+      fulldospath = pathcat (root, dospath);
+    }
 
   /* Make sure the target path exists. */
-  fulldospath = pathcat (root, dospath);
   mkdirp (fulldospath);
 
   /* Mount the directory. */
@@ -1009,6 +1024,8 @@ int
 main ()
 {
   int retval = 1;		/* Default to error code */
+  clock_t start;
+
   puts ( "\n\n\n\n"
 "This is the Cygwin setup utility.\n\n"
 "Use this program to install the latest version of the Cygwin Utilities\n"
@@ -1017,6 +1034,7 @@ main ()
 "to the current directory, this program can use those as the basis for your\n"
 "installation.\n");
 
+  start = clock ();
   if (!EnumResourceNames (NULL, "FILE", output_file, 0))
     {
       winerror ();
@@ -1074,6 +1092,7 @@ main ()
       /* Create the root directory. */
       mkdir (root);		/* Ignore any return value since it may
 				   already exist. */
+      mkmount (wd, "", root, "/", 1);
 
       update =
 	prompt ("Install from the current directory (d) or from the Internet (i)", "i");
@@ -1103,7 +1122,6 @@ main ()
 	  if (logpath)
 	    {
 	      FILE *logfp = fopen (logpath, "w+t");
-	      HANDLE Hlog;
 
 	      if (logfp == NULL)
 		{
@@ -1112,16 +1130,19 @@ main ()
 		  exit (1);
 		}
 
-	      Hlog = (HANDLE) _get_osfhandle (fileno (logfp));
 	      _chdrive (toupper (*root) - 'A' + 1);
 
 	      /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
 	      mkmount (wd, root, "bin", "/usr/bin", 1);
 	      mkmount (wd, root, "lib", "/usr/lib", 1);
 
+	      files.count = NFILE_LIST;
+	      files.array = calloc (sizeof (char *), NFILE_LIST);
+	      files.index = -1;
+
 	      /* Extract all of the packages that are stored with setup or in
 	         subdirectories of its location */
-	      if (recurse_dirs (wd, Hlog))
+	      if (recurse_dirs (wd, logfp))
 		{
 		  char *mount;
 		  char buffer[1024];
@@ -1148,14 +1169,13 @@ main ()
 			  xfree (tmpdir);
 			}
 
-		      if (do_start_menu (root, logfp))
+		      if (do_start_menu (root))
 			retval = 0;	/* Everything worked return
 					   successful code */
 		    }
 		}
 
 	      fclose (logfp);
-	      /* unlink (logpath);*/
 	      xfree (logpath);
 	    }
 	}
@@ -1166,5 +1186,9 @@ main ()
       _chdrive (toupper (*wd) - 'A' + 1);
       xfree (wd);
     }
+
+  printf ("\nInstall took %.0f seconds.\n",
+          (double) (clock () - start) / CLK_TCK);
+
   return retval;
 }
