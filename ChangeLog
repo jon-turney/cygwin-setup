@@ -1,3 +1,10 @@
+2004-08-24  Max Bowsher  <maxb@ukf.net>
+
+	The Doug Lee replacement malloc was no longer hooked up with the
+	buildsystem in any way. Pruning the remaining unused file.
+
+	* dlmalloc.c: Removed.
+
 2004-08-18  Max Bowsher  <maxb@ukf.net>
 
 	"librsync is not wire-compatible with rsync 2.x, and is not likely 
