@@ -1,3 +1,8 @@
+2002-07-08  Max Bowsher  <maxb@ukf.net>
+
+	* PickView.cc (PickView::PickView): Set font of package list header to
+	the same as used in the rest of the package list.
+		
 2002-07-08  Robert Collins  <rbtcollins@hotmail.com>
 
 	* install.cc (NoReplaceOnReboot): New command line option to prevent

@@ -412,6 +412,10 @@ contents (*this, cat, 0, false, true), listview (lv)
     // FIXME: throw an exception
     exit (11);
 
+  // Set the font of the listheader, but don't redraw, because its not shown
+  // yet.This message does not return a value, so we are not checking it as we
+  // do above.
+  SendMessage (listheader, WM_SETFONT, (WPARAM) sysfont, FALSE);
 
   // Set the size, position, and visibility of the header control.
   SetWindowPos (listheader, wp.hwndInsertAfter, wp.x, wp.y,
