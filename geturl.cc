@@ -92,10 +92,10 @@ dialog (void *)
 {
   int rv = 0;
   MSG m;
-  HWND gw_dialog = CreateDialog (hinstance, MAKEINTRESOURCE (IDD_DLSTATUS),
+  HWND local_gw_dialog = CreateDialog (hinstance, MAKEINTRESOURCE (IDD_DLSTATUS),
 				   0, dialog_proc);
-  ShowWindow (gw_dialog, SW_SHOWNORMAL);
-  UpdateWindow (gw_dialog);
+  ShowWindow (local_gw_dialog, SW_SHOWNORMAL);
+  UpdateWindow (local_gw_dialog);
   while (GetMessage (&m, 0, 0, 0) > 0) {
     TranslateMessage (&m);
     DispatchMessage (&m);

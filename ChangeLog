@@ -1,5 +1,14 @@
 2001-10-31  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.cc(_view::insert_under): Handle linen > nlines and lines[linen] with neither
+	a package nor a category. The lines[linen] bug was reported by Matt (matt@usa.net).
+	(read_installed_db): Bugfix for testing whether a package has a source tarball.
+	Reported by Matt (matt@usa.net).
+	* geturl.cc(dialog): Rename gw_dialog to local_gw_dialog to avoid programmer 
+	confusion and lint errors. Reported by Matt (matt@usa.net).
+
+2001-10-31  Robert Collins  <rbtcollins@hotmail.com>
+
 	* argv.cc: New file, converts arguments for -mwindows programs. (Simplified derivation 
 	from dcrt0.cc.)
 	* argv.h: New file.

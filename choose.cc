@@ -895,6 +895,12 @@ _view::insert_under (int linen, pick_line line)
       insert_at (0, line);
       return;
     }
+  /* perhaps these two are equivalent. FIXME: check for potential insert_under (0,.. calls */
+  else if (linen > nlines)
+    {
+      insert_at (nlines, line);
+      return;
+    }
   /* part 1 - find the appropriate bucket beginning */
   if (lines[linen].get_category ())
     {
@@ -906,6 +912,11 @@ _view::insert_under (int linen, pick_line line)
       /* walk up to the beginning of the bucket */
       while (n > 0 && lines[n - 1].get_pkg ())
 	n--;
+    }
+  else
+    {
+      /* nlines != 0 and lines[linen] is not a category or a package! */
+      return;
     }
   /* part 2 - insert in sorted order in the bucket */
   while (n < nlines)
@@ -1485,7 +1496,7 @@ read_installed_db ()
 	  pkg->info[TRUST_CURR].version = strdup (f.ver);
 	  pkg->info[TRUST_CURR].install = strdup (inst);
 	  pkg->info[TRUST_CURR].install_size = instsz;
-	  if (src && srcsz)
+	  if (src[0] && srcsz)
 	    {
 	      pkg->info[TRUST_CURR].source = strdup (src);
 	      pkg->info[TRUST_CURR].source_size = srcsz;
