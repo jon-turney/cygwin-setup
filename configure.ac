@@ -14,77 +14,16 @@ dnl Autoconf configure script for Cygwin utilities.
 dnl
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.12)
+AC_INIT
+AC_PREREQ(2.53)
+AC_CONFIG_AUX_DIR(cfgaux)
+AC_CONFIG_SRCDIR([Makefile.in])
+AC_REVISION($Revision$)dnl
 
-AC_INIT(Makefile.in)
-
-dnl FIXME: We temporarily define our own version of AC_PROG_CC.  This is
-dnl copied from autoconf 2.12, but does not call AC_PROG_CC_WORKS.  We
-dnl are probably using a cross compiler, which will not be able to fully
-dnl link an executable.  This should really be fixed in autoconf
-dnl itself.
-
-AC_DEFUN(LIB_AC_PROG_CC,
-[AC_BEFORE([$0], [AC_PROG_CPP])dnl
-AC_CHECK_PROG(CC, gcc, gcc)
-if test -z "$CC"; then
-  AC_CHECK_PROG(CC, cc, cc, , , /usr/ucb/cc)
-  test -z "$CC" && AC_MSG_ERROR([no acceptable cc found in \$PATH])
-fi
-
-AC_PROG_CC_GNU
-
-if test $ac_cv_prog_gcc = yes; then
-  GCC=yes
-dnl Check whether -g works, even if CFLAGS is set, in case the package
-dnl plays around with CFLAGS (such as to build both debugging and
-dnl normal versions of a library), tasteless as that idea is.
-  ac_test_CFLAGS="${CFLAGS+set}"
-  ac_save_CFLAGS="$CFLAGS"
-  CFLAGS=
-  AC_PROG_CC_G
-  if test "$ac_test_CFLAGS" = set; then
-    CFLAGS="$ac_save_CFLAGS"
-  elif test $ac_cv_prog_cc_g = yes; then
-    CFLAGS="-g -O2"
-  else
-    CFLAGS="-O2"
-  fi
-else
-  GCC=
-  test "${CFLAGS+set}" = set || CFLAGS="-g"
-fi
-])
-
-AC_DEFUN(LIB_AC_PROG_CXX,
-[AC_BEFORE([$0], [AC_PROG_CPP])dnl
-AC_CHECK_TOOL(CXX, g++, g++)
-if test -z "$CXX"; then
-  AC_CHECK_PROG(CXX, c++, c++, , , )
-  test -z "$CC" && AC_MSG_ERROR([no acceptable cc found in \$PATH])
-fi
-
-CXXFLAGS="$CFLAGS"
-])
-
-AC_CANONICAL_SYSTEM
-
-LIB_AC_PROG_CC
-LIB_AC_PROG_CXX
-
-AC_ARG_PROGRAM
-
-if test "x$cross_compiling" = "xyes"; then
-  if test "x$program_transform_name" = "xs,x,x,"; then
-    program_transform_name=""
-  fi
-  if test "x$program_transform_name" = "x"; then
-    program_transform_name="s,^,$host-,"
-  else
-    program_transform_name="$program_transform_name -e s,^,$host-,"
-  fi
-fi
-
+AC_PROG_CXX
+AC_PROG_CC_C_O
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
 AC_PROG_INSTALL
 
 AC_EXEEXT
@@ -104,7 +43,8 @@ AC_SUBST(WINDRES)
 AC_CHECK_TOOL(OBJCOPY, objcopy, objcopy)
 AC_SUBST(OBJCOPY)
 
-SUBDIRS="zlib"
-AC_CONFIG_SUBDIRS($SUBDIRS)
+AC_CONFIG_SUBDIRS(zlib)
+AC_CONFIG_SUBDIRS(bz2lib)
 
-AC_OUTPUT(Makefile)
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT

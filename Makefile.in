@@ -51,35 +51,37 @@ CXX		:= @CXX@
 WINDRES		:= @WINDRES@
 OBJCOPY		:= @OBJCOPY@
 
-include $(srcdir)/../Makefile.common
+MINGW_INCLUDES	:= -I. -I$(srcdir) -I$(mingw_source)/include $(w32api_include) -I$(srcdir)/bz2lib 
 
-MINGW_INCLUDES	:= -I. -I$(srcdir) -I$(mingw_source)/include $(w32api_include) -I$(updir)/bz2lib
-
-MINGW_CXXFLAGS	:= -MMD $(CXXFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
-MINGW_CFLAGS	:= -MMD $(CFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
+MINGW_CXXFLAGS	:= -MMD $(CXXFLAGS) $(MINGW_INCLUDES) -mwindows
+MINGW_CFLAGS	:= -MMD $(CFLAGS) $(MINGW_INCLUDES) -mwindows
 # to avoid false errors that assembly generates
 WARNONLY_CFLAGS := -MMD @CFLAGS@ -Winline -Wall -Wpointer-arith -Wcast-align \
 	-Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
 	-Wmissing-declarations -Wcomments \
-	 -mno-cygwin $(MINGW_INCLUDES) -mwindows
+	$(MINGW_INCLUDES) -mwindows
 
 ZLIB		:= zlib/libzcygw.a
-BZ2LIB		:= $(bupdir)/bz2lib/libbz2.a
-libmingw32.a	:= $(mingw_build)/libmingw32.a
-libuser32	:= $(w32api_lib)/libuser32.a
-libkernel32	:= $(w32api_lib)/libkernel32.a
-libcomctl32	:= $(w32api_lib)/libcomctl32.a
+BZ2LIB		:= bz2lib/libbz2.a
+libmingw32.a	:= -lmingw32
+libuser32	:= -luser32
+libkernel32	:= -lkernel32
+libcomctl32	:= -lcomctl32
 
-ALL_DEP_LDLIBS	:= $(ZLIB) $(BZ2LIB) $(w32api_lib)/libole32.a $(w32api_lib)/libwsock32.a \
-		$(w32api_lib)/libnetapi32.a $(w32api_lib)/libadvapi32.a \
-		$(w32api_lib)/libuuid.a $(libkernel32) $(libuser32) \
+ALL_DEP_LDLIBS	:= $(ZLIB) $(BZ2LIB) 
+  
+ALL_SYS_LIBS := -lole32 -lwsock32 \
+		-lnetapi32 -ladvapi32 \
+		-luuid $(libkernel32) $(libuser32) \
 		$(libcomctl32) $(libmingw32)
 
 ALL_LDLIBS	:= ${patsubst $(mingw_build)/lib%.a,-l%,\
 	      ${patsubst $(w32api_lib)/lib%.a,-l%,\
 		${filter-out $(libmingw32),\
 		  ${filter-out $(libuser32),\
-		    ${filter-out $(libkernel32), $(ALL_DEP_LDLIBS)}}}}}
+		    ${filter-out $(libkernel32), $(ALL_DEP_LDLIBS)}}}}} \
+		    $(ALL_SYS_LIBS)
+		    
 
 ALL_LDFLAGS	:= ${filter-out -I%, \
 	       ${filter-out -W%, \
@@ -178,17 +180,18 @@ else
 endif
 	@chmod a-x $@
 
-mingw_getopt.o: $(cygwin_source)/lib/getopt.c
+mingw_getopt.o: getopt.c
 ifdef VERBOSE
-	${filter-out -I$(newlib_source)/%,$(COMPILE_CC)} $c -o $(@D)/$(basename $@)$o $(MINGW_CFLAGS) $<
+	$(CC) $(MINGW_CFLAGS) -c -o $@ $<
 else
-	@echo $(CC) $c -o $(@D)/$(basename $@)$o $(MINGW_CFLAGS) ... $^;\
-	${filter-out -I$(newlib_source)/%,$(COMPILE_CC)} $c -o $(@D)/$(basename $@)$o $(MINGW_CFLAGS) $<
+	@echo $(CC) -c $(CFLAGS) ... $(<F)
+	@$(CC) $(MINGW_CFLAGS) -c -o $@ $<
 endif
 
 clean:
 	rm -f *.o $(PROGS) iniparse.c* iniparse.h* inilex.c* *.d
 	$(MAKE) -C zlib clean
+	$(MAKE) -C bz2lib clean
 
 realclean: clean
 	rm -f Makefile
@@ -207,8 +210,8 @@ $(libmingw32): $(mingw_build)/Makefile
 $(ZLIB): zlib/Makefile
 	$(MAKE) -C $(@D) $(@F) CC="$(CC)" CFLAGS='$(MINGW_CFLAGS)'
 
-$(BZ2LIB): $(bupdir)/bz2lib/Makefile
-	$(MAKE) -C $(@D) $(@F) CC="$(CC)" CFLAGS='$(MINGW_CFLAGS)'
+$(BZ2LIB): bz2lib/Makefile
+	$(MAKE) -C $(@D) $(@F)
 
 setup_version.c : $(srcdir)/ChangeLog Makefile
 	V=`grep '^\$$Revision.*' $(srcdir)/ChangeLog \

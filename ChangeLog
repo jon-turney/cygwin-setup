@@ -1,3 +1,20 @@
+2002-04-26  Robert Collins  <rbtcollins@hotmail.com>
+
+	* cdefs.h: New file, imported to allow getopt.c to build without
+	cygwin headers.
+	* getopt.h: New file, imported to allow building without cygwin headers.
+	* getopt.c: Ditto.
+	* bz2lib: New directory, contains copy of bz2lib.
+	* cfgaux: New directory, contains autotool helper scripts.
+	* Makefile,in: Adjust library and target definitions for building 
+	outside the sourceware tree.
+	* compress_bz.h: Use new bz2lib header location.
+	* mount.cc: Import key defines and enums to be independent of cygwin
+	headers.
+	* configure.in: Update to autoconf 2.53, and to be sourceware 
+	independent.
+	* configure: Regenerate.
+
 2002-04-12  Robert Collins  <rbtcollins@hotmail.com>
 
 	* mklink2.cc (make_link_2): Tweak to work with current w32api

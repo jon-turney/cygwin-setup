@@ -21,10 +21,10 @@
 
 #ifdef _WIN32
 #undef _WIN32
-#include "bzlib.h"
+#include <bzlib.h>
 #define _WIN32
 #else
-#include "bzlib.h"
+#include <bzlib.h>
 #endif
 
 class compress_bz:public compress
