@@ -21,10 +21,12 @@ class packagemeta;
 class category;
 
 /* Required to parse this completely */
+#include <set>
 #include "list.h"
 #include "String++.h"
 #include "category.h"
 #include "PackageTrust.h"
+#include "package_version.h"
 
 /* 
    For cleanliness this may need to be put in its own file later. */
@@ -47,11 +49,12 @@ public:
 class packagemeta
 {
 public:
+  packagemeta (packagemeta const &);
   packagemeta (String const &pkgname):name (pkgname), key(pkgname), installed_from (),
     //versions (0),
 //    versioncount (0), versionspace (0), 
-  installed (0), prev (0), prevtimestamp (0), curr (0), currtimestamp (0),
-    exp (0), exptimestamp (0), desired (0), architecture (), priority()
+  prevtimestamp (0), currtimestamp (0),
+    exptimestamp (0), architecture (), priority()
   {
   }
 
@@ -60,8 +63,8 @@ public:
 	       installed_from (installedfrom),
     //versions (0),    versioncount (0), versionspace (0), 
    
-    installed (0), prev (0), prevtimestamp (0), curr (0), currtimestamp (0),
-    exp (0), exptimestamp (0), desired (0), architecture (), priority()
+    prevtimestamp (0), currtimestamp (0),
+    exptimestamp (0), architecture (), priority()
   {
   };
 
@@ -90,13 +93,13 @@ public:
   static const _actions Install_action;
   static const _actions Reinstall_action;
   static const _actions Uninstall_action;
-  void set_action (packageversion *default_version);
-  void set_action (_actions, packageversion * default_version);
+  void set_action (packageversion const &default_version);
+  void set_action (_actions, packageversion const & default_version);
   void uninstall ();
   int set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0);
 
   String action_caption ();
-  packageversion * trustp (trusts const t) const
+  packageversion trustp (trusts const t) const
   {
     return t == TRUST_PREV ? (prev ? prev : (curr ? curr : installed))
          : t == TRUST_CURR ? (curr ? curr : installed)
@@ -115,23 +118,23 @@ public:
    */
   void add_category (Category &);
   list < CategoryPackage, Category &, Categorycmp > Categories;
+  set <packageversion> versions;
 
-  list < packageversion, String, String::casecompare > versions;
   /* which one is installed. */
-  packageversion *installed;
+  packageversion installed;
   /* which one is listed as "prev" in our available packages db */
-  packageversion *prev;
+  packageversion prev;
   /* And what was the timestamp of the ini it was found from */
   unsigned int prevtimestamp;
   /* ditto for current - stable */
-  packageversion *curr;
+  packageversion curr;
   unsigned int currtimestamp;
   /* and finally the experimental version */
-  packageversion *exp;
+  packageversion exp;
   unsigned int exptimestamp;
   /* Now for the user stuff :] */
   /* What version does the user want ? */
-  packageversion *desired;
+  packageversion desired;
 
   /* What platform is this for ? 
    * i386 - linux i386
@@ -144,8 +147,11 @@ public:
    */
   String priority;
 
+  /* can one or more versions be installed? */
+  bool accessible () const;
+  bool sourceAccessible() const;
+
 protected:
-  packagemeta (packagemeta const &);
   packagemeta &operator= (packagemeta const &);
 };
 

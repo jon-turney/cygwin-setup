@@ -51,7 +51,6 @@ static const char *cvsid =
 #include "package_db.h"
 #include "package_meta.h"
 #include "package_version.h"
-#include "cygpackage.h"
 
 #include "PickView.h"
 
@@ -269,24 +268,15 @@ static void
 set_existence ()
 {
   packagedb db;
+  /* binary packages */
   /* Remove packages that are in the db, not installed, and have no 
-     mirror info. */
+     mirror info and are not cached for both binary and source packages. */
   size_t n = 1;
   while (n <= db.packages.number ())
     {
       packagemeta & pkg = *db.packages[n];
-      bool mirrors = false;
-      size_t o = 1;
-      while (o <= pkg.versions.number () && !mirrors)
-	{
-	  packageversion & ver = *pkg.versions[o];
-	  if (((source != IDC_SOURCE_CWD) && (ver.bin.sites.number ()
-					      || ver.src.sites.number ()))
-	      || ver.bin.Cached () || ver.src.Cached ())
-	    mirrors = true;
-	  ++o;
-	}
-      if (!pkg.installed && !mirrors)
+      if (!pkg.installed && !pkg.accessible() && 
+	  !pkg.sourceAccessible() )
 	{
 	  packagemeta *pkgm = db.packages.removebyindex (n);
 	  delete pkgm;
@@ -294,6 +284,22 @@ set_existence ()
       else
 	++n;
     }
+#if 0
+  /* remove any source packages which are not accessible */
+  vector <packagemeta *>::iterator i = db.sourcePackages.begin();
+  while (i != db.sourcePackages.end())
+    {
+      packagemeta & pkg = **i;
+      if (!packageAccessible (pkg))
+	{
+	  packagemeta *pkgm = *i;
+	  delete pkgm;
+	  i = db.sourcePackages.erase (i);
+	}
+      else
+	++i;
+    }
+#endif
 }
 
 static void
@@ -323,13 +329,10 @@ default_trust (HWND h, trusts trust)
 	{
 	  pkg.desired = pkg.trustp (trust);
 	  if (pkg.desired)
-	    {
-	      pkg.desired->binpicked = pkg.desired == pkg.installed ? 0 : 1;
-	      pkg.desired->srcpicked = 0;
-	    }
+	    pkg.desired.pick (pkg.desired != pkg.installed);
 	}
       else
-	pkg.desired = 0;
+	pkg.desired = packageversion ();
     }
   RECT r;
   GetClientRect (h, &r);
@@ -361,8 +364,8 @@ set_view_mode (HWND h, PickView::views mode)
 	{
 	  packagemeta & pkg = *db.packages[n];
 	  if ((!pkg.desired && pkg.installed)
-	      || (pkg.desired
-		  && (pkg.desired->srcpicked || pkg.desired->binpicked)))
+	      || (pkg.desired && (pkg.desired.picked () 
+				  || pkg.desired.sourcePackage().picked())))
 	    chooser->insert_pkg (pkg);
 	}
     }
@@ -452,6 +455,23 @@ GetParentRect (HWND parent, HWND child, RECT * r)
 }
 
 static void
+scanAVersion (packageversion version)
+{
+  if (!version)
+    return;
+  /* Remove mirror sites.
+   * FIXME: This is a bit of a hack. a better way is to abstract
+   * the availability logic to the package
+   */
+  if (!check_for_cached (*(version.source())) && source == IDC_SOURCE_CWD)
+    while (version.source()->sites.number())
+      {
+	site *asite = version.source()->sites.removebyindex(1);
+	delete asite;
+      }
+}
+
+static void
 scan_downloaded_files ()
 {
   /* Look at every known package, in all the known mirror dirs,
@@ -461,42 +481,33 @@ scan_downloaded_files ()
   for (size_t n = 1; n <= db.packages.number (); ++n)
     {
       packagemeta & pkg = *db.packages[n];
-      for (size_t m = 1; m <= pkg.versions.number (); ++m)
+      for (set<packageversion>::iterator i = pkg.versions.begin (); 
+	   i != pkg.versions.end (); ++i)
 	{
-	  packageversion *version = pkg.versions[m];
-	  /* Remove mirror sites.
-	   * FIXME: This is a bit of a hack. a better way is to abstract
-	   * the availability logic to the package
-	   */
-	  if (!check_for_cached (version->bin) && source == IDC_SOURCE_CWD)
-	    while (version->bin.sites.number())
-	      {
-		site *asite = version->bin.sites.removebyindex(1);
-		delete asite;
-	      }
-	  if (!check_for_cached (version->src) && source == IDC_SOURCE_CWD)
-	    while (version->src.sites.number())
-	      {
-		site *asite = version->src.sites.removebyindex(1);
-		delete asite;
-	      }
+	  scanAVersion (*i);
+	  packageversion foo = *i;
+	  packageversion pkgsrcver = foo.sourcePackage();
+	  scanAVersion (pkgsrcver);
 	  /* For local installs, if there is no src and no bin, the version
 	   * is unavailable
 	   */
-	  if (!version->src.Cached() && !version->bin.Cached() 
-	      && source == IDC_SOURCE_CWD && version != pkg.installed)
+	  if (!i->accessible() && !pkgsrcver.accessible()
+	      && *i != pkg.installed)
 	    {
-	      pkg.versions.removebyindex(m--);
-	      if (pkg.prev == version)
-		pkg.prev = NULL;
-	      if (pkg.curr == version)
-		pkg.curr = NULL;
-	      if (pkg.exp == version)
-		pkg.exp = NULL;
-	      delete version;
+	      if (pkg.prev == *i)
+		pkg.prev = packageversion();
+	      if (pkg.curr == *i)
+		pkg.curr = packageversion();
+	      if (pkg.exp == *i)
+		pkg.exp = packageversion();
+	      pkg.versions.erase(i);
+	      /* For now, leave the source version alone */
 	    }
 	}
     }
+  /* Don't explicity iterate through sources - any sources that aren't 
+     referenced are unselectable anyway 
+     */
 }
 
 bool
@@ -556,9 +567,9 @@ ChooserPage::OnNext ()
 			   : (pkg.desired == pkg.exp) ? "test" : "unknown");
       String action = pkg.action_caption ();
       String const installed =
-	pkg.installed ? pkg.installed->Canonical_version () : "none";
+	pkg.installed ? pkg.installed.Canonical_version () : "none";
 
-      log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && pkg.desired->srcpicked ? "yes" : "no") << endLog;
+      log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && pkg.desired.sourcePackage().picked() ? "yes" : "no") << endLog;
       if (pkg.Categories.number ())
 	{
 	  /* List categories the package belongs to */
@@ -568,7 +579,8 @@ ChooserPage::OnNext ()
 
 	  log (LOG_BABBLE) << "     categories=" << all_categories << endLog;
 	}
-      if (pkg.desired && pkg.desired->required)
+#if 0
+      if (pkg.desired.required())
 	{
 	  /* List other packages this package depends on */
 	  Dependency *dp = pkg.desired->required;
@@ -578,6 +590,7 @@ ChooserPage::OnNext ()
 
 	  log (LOG_BABBLE) << "     requires=" << requires;
 	}
+#endif
 #if 0
 
       /* FIXME: Reinstate this code, but spit out all mirror sites */

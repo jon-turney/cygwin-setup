@@ -1,3 +1,173 @@
+2002-07-01  Robert Collins  <rbtcollins@hotmail.com>
+
+	* IniDBBuilder.cc (IniDBBuilder::buildPackageRequirement): Remove.
+	* IniDBBuilder.h (IniDBBuilder::buildPackageRequirement): Ditto.
+	* IniDBBuilderPackage.cc: Use the STL algorithms.
+	Change cpv to cbpv throughout. Adjust -> to ., and use the new accessor
+	functions for the same variable throughout.
+	(IniDBBuilderPackage::IniDBBuilderPackage): Initialise new members.
+	(IniDBBuilderPackage::buildPackage): Use new cygpackage syntax,
+	and set an empty source package.
+	(IniDBBuilderPackage::buildPackageInstall): Use the new source member
+	to record an install package.
+	(IniDBBuilderPackage::buildPackageSource): Move source package logic
+	out from process_src, as it now occurs at separate times.
+	(IniDBBuilderPackage::buildPackageRequirement): Remove.
+	(IniDBBuilderPackage::buildSourceName): Use renamed package 
+	specifiation accessor for clarity.
+	(IniDBBuilderPackage::buildSourceNameVersion): Ditto.
+	(IniDBBuilderPackage::add_correct_version): Use STL iterators rather
+	than custom code.
+	Remove source package references.
+	(IniDBBuilderPackage::process_src): Remove source package code as it's
+	now handled separately.
+	Set Path information before merging versions, to prevent dangling
+	pointers.
+	* IniDBBuilderPackage.h (IniDBBuilderPackage::buildPackageRequirement):
+	Remove.
+	(IniDBBuilderPackage::cpv): Remove.
+	(IniDBBuilderPackage::cbpv): New generic binary working variable.
+	(IniDBBuilderPackage::cspv): Ditto, but for source packages.
+	(IniDBBuilderPackage::csp): Source package variable for disjoint
+	source packages.
+	* Makefile.am (AM_CFLAGS): Remove -Winline to allow stl set code
+	to compile. If it compiles cleanly in gcc 3.1, then reinstate.
+	* PickPackageLine.cc: Adjust packageversion accessors to the new
+	reference calls. (i.e. -> to .) throughout.
+	(PickPackageLine::paint): Use accessible() for clarity.
+	Use new split out source package logic.
+	(PickPackageLine::click): Ditto.
+	* PickView.cc (PickView::init_headers): Adjust packageversion accessors
+	to the new reference calls. (i.e. -> to .) throughout.
+	Use new split out source package logic.
+	* choose.cc: Don't depend on a specific package type.
+	Adjust packageversion accessors to the new reference calls. (i.e. -> to 
+	.) throughout.
+	(set_existence): Use accessible () for clarity.
+	(default_trust): Simplify a little.
+	(scanAVersion): Factored out code from scan_downloaded_files for 
+	clarity.
+	(scan_downloaded_files): Factor out inner loop for clarity.
+	(ChooserPage::OnNext): Don't dump the dependency list,
+	it's parsing is robust now!. 
+	* cygpackage.cc (createInstance): Use a factory method to create new
+	objects.
+	(cygpackage::cygpackage): Make this private for use by the factory.
+	(cygpackage::setCanonicalVersion): Renamed from set_canonical_version.
+	Remove key usage as it's obsolete.
+	* cygpackage.h (cygpackage): Inherit from _packageversion, not
+	packageversion.
+	(cygpackage::createInstance): New factory.
+	(cygpackage::cygpackage): Make private.
+	* desktop.cc (make_passwd_group): Use new packageversion reference.
+	* download.cc (do_download_thread): Use changeRequested() for clarity.
+	Use new packageversion reference calls.
+	* iniparse.y (REQUIRES): Reuse the packageList code and dump the one-off
+	requires code.
+	* install.cc: Adjust -> to ., and use the new accessor functions for
+	packageversion throughout.
+	* package_db.cc: Adjust -> to ., and use the new accessor functions for
+	packageversion throughout.
+	(packagedb::packagedb): Use the new cygpackage factory.
+	(packagedb::flush): Leverage String to remove buffer overflow chance in
+	sprintf.
+	(packagedb::findBinary): Find a binary meta package that has a version
+	matching a given specification.
+	(packagedb::findSource): Ditto, but for source.
+	* package_db.h (packagedb::findBinary): Declare.
+	(packagedb::findSource): Ditto.
+	* package_meta.cc: Adjust packageversion accessors to the new
+	reference calls. (i.e. -> to .) throughout.
+	Include the package_meta header first to ensure it parses standalone.
+	Use the STL algorithms.
+	(packagemeta::packagemeta): Create a copy constructor to allowing
+	cloning binary package metadata to source package metadata.
+	(packagemeta::~packagemeta): Use the STL coleltion code rather than 
+	custom	collection code.
+	(packagemeta::add_version): Ditto.
+	(packagemeta::set_installed): Ditto.
+	(packagemeta::SDesc): Ditto.
+	(hasSDesc): Helper function for find_if.
+	(checkForInstalled): Ditto.
+	(checkForUpgradeable): Ditto.
+	(checkForSatisfiable): Ditto.
+	(packagemeta::action_caption): Update for split out source packages.
+	(packagemeta::set_action): Ditto.
+	(packagemeta::set_requirements): Support multi-valued dependency
+	lists - a|b & c|d - with versioned package specifications.
+	(packagemeta::accessible): Helper member to improve abstraction.
+	(packagemeta::sourceAccessible): Ditto.
+	* package_meta.h: Adjust packageversion accessors to the new
+	reference calls. (i.e. "->" to "." and"*" to "" ) throughout.
+       	(packagemeta::packagemeta): Declare copy constructor.
+	Remove self initialising members.
+	(packagemeta::set_action): Update parameters for new packageversion.
+	(packagemeta::trustp): Ditto.
+	(packagemeta::versions): Becomes an STL set.
+	* package_source.h (packagesource::Cached): Const correctness change.
+	* package_version.cc: Rewrite the packageversion interface to remove
+	the cygpackage nonvirtual members, and provide a copy by value,
+	pointer semantics reference counting wrapper class to ease use and
+	comparison of packageversions.
+	Change existing packageversion class to _packageversion throughout.
+	(_defaultversion): A trivial concrete class to prevent specialcasing
+	the default constructor for packageversion;
+	(packageversion::packageversion): Implement.
+	(packageversion::~packageversion): Ditto.
+	(packageversion::operator=): Ditto.
+	(packageversion::operator !): Ditto.
+	(packageversion::operator bool): Ditto.
+	(packageversion::operator ==): Ditto.
+	(packageversion::operator !=): Ditto.
+	(packageversion::operator <): Ditto.
+	(packageversion::Name): Ditto.
+	(packageversion::Canonical_version): Ditto.
+	(packageversion::setCanonicalVersion): Ditto.
+	(packageversion::getfirstfile): Ditto.
+	(packageversion::getnextfile): Ditto.
+	(packageversion::SDesc): Ditto.
+	(packageversion::set_sdesc): Ditto.
+	(packageversion::LDesc): Ditto.
+	(packageversion::set_ldesc): Ditto.
+	(packageversion::sourcePackage): Ditto.
+	(packageversion::sourcePackageSpecification): Ditto.
+	(packageversion::setSourcePackageSpecification): Ditto.
+	(packageversion::depends): Ditto.
+	(packageversion::predepends): Ditto.
+	(packageversion::recommends): Ditto.
+	(packageversion::suggests): Ditto.
+	(packageversion::replaces): Ditto.
+	(packageversion::conflicts): Ditto.
+	(packageversion::provides): Ditto.
+	(packageversion::picked): Ditto.
+	(packageversion::pick): Ditto.
+	(packageversion::changeRequested): Ditto.
+	(packageversion::uninstall): Ditto.
+	(packageversion::source): Ditto.
+	(packageversion::accessible): Ditto.
+	(_packageversion::sourcePackage): Ditto.
+	(_packageversion::accessible): Ditto.
+	(_packageversion::changeRequested): Ditto.
+	* package_version.h: Rewrite the packageversion interface to remove
+	the cygpackage nonvirtual members, and provide a copy by value,
+	pointer semantics reference counting wrapper class to ease use and
+	comparison of packageversions.
+	Change existing packageversion class to _packageversion throughout.
+	(Dependency): Remove.
+	(packageversion): New wrapper class.
+	(_packageversion): Renamed from packageversion.
+	(_packageversion::setCanonicalVersion): New method.
+	(_packageversion::sourcePackage): Ditto.
+	(_packageversion::sourcePackageSpecification): Ditto.
+	(_packageversion::setSourcePackageSpecification): Ditto.
+	(_packageversion::changeRequested): Ditto.
+	(_packageversion::bin): Rename to source.
+	(_packageversion::src): Remove.
+	(_packageversion::accessible): New method.
+	(_packageversion::references): Allow reference counting.
+	(_packageversion::sourceVersion): Cached the best-match source 
+	package version.
+
 2002-06-27  Robert Collins  <rbtcollins@hotmail.com>
 
 	* compress_bz.h (compress_bz::position): Track how much has been read.

@@ -17,6 +17,7 @@
 static const char *cvsid = "\n%%% $Id$\n";
 #endif
 
+#include "package_meta.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -39,8 +40,9 @@ static const char *cvsid = "\n%%% $Id$\n";
 
 #include "package_version.h"
 #include "cygpackage.h"
-#include "package_meta.h"
 #include "package_db.h"
+
+#include <algorithm>
 
 static const char *standard_dirs[] = {
   "bin",
@@ -128,6 +130,18 @@ packagemeta::_actions::caption ()
   return 0;
 }
 
+packagemeta::packagemeta (packagemeta const &rhs) :
+  name (rhs.name), key (rhs.name), installed_from (), 
+  Categories(rhs.Categories), versions (rhs.versions),
+  installed (rhs.installed), prev (rhs.prev), 
+  prevtimestamp (rhs.prevtimestamp), curr (rhs.curr),
+  currtimestamp (rhs.currtimestamp), exp (rhs.exp),
+  exptimestamp (rhs.exptimestamp), desired (rhs.desired),
+  architecture (rhs.architecture), priority (rhs.priority)
+{
+  
+}
+
 packagemeta::_actions & packagemeta::_actions::operator++ ()
 {
   ++_value;
@@ -143,26 +157,23 @@ packagemeta::~packagemeta()
       CategoryPackage *catpkg = Categories.removebyindex (1);
       delete catpkg;
     }
-  while (versions.number ())
-    {
-      packageversion *pv = versions.removebyindex(1);
-      delete pv;
-    }
+  versions.clear();
 }
 
 void
 packagemeta::add_version (packageversion & thepkg)
 {
-  versions.registerbyobject (thepkg);
+  /* todo: check return value */
+  versions.insert (thepkg);
 }
 
 /* assumption: package thepkg is already in the metadata list. */
 void
 packagemeta::set_installed (packageversion & thepkg)
 {
-  packageversion *temp = versions.getbykey (thepkg.key);
-  if (temp == &thepkg)
-    installed = &thepkg;
+  set<packageversion>::const_iterator temp = versions.find (thepkg);
+  if (temp != versions.end())
+    installed = thepkg;
 }
 
 /* uninstall a package if it's installed */
@@ -176,7 +187,7 @@ packagemeta::uninstall ()
        * but for now: here is ok
        */
       hash dirs;
-      String line = installed->getfirstfile ();
+      String line = installed.getfirstfile ();
 
       try_run_script ("/etc/preremove/", name);
       while (line.size())
@@ -203,9 +214,9 @@ packagemeta::uninstall ()
 				 dw & ~FILE_ATTRIBUTE_READONLY);
 	      DeleteFile (d.cstr_oneuse());
 	    }
-	  line = installed->getnextfile ();
+	  line = installed.getnextfile ();
 	}
-      installed->uninstall ();
+      installed.uninstall ();
 
       dirs.reverse_sort ();
       char *subdir = 0;
@@ -217,7 +228,7 @@ packagemeta::uninstall ()
 	}
       try_run_script ("/etc/postremove/", name);
     }
-  installed = 0;
+  installed = packageversion();
 }
 
 
@@ -229,13 +240,19 @@ packagemeta::add_category (Category & cat)
   catpack.pkg = this;
 }
 
+static bool
+hasSDesc(packageversion const &pkg)
+{
+  return pkg.SDesc().size();
+}
+
 String const
 packagemeta::SDesc () const
 {
-  for (size_t n = 1; n <= versions.number (); ++n)
-    if (versions[n]->SDesc ().size())
-      return versions[n]->SDesc ();
-  return String();
+  set<packageversion>::iterator i = find_if (versions.begin(), versions.end(), hasSDesc);
+  if (i == versions.end())
+    return String();
+  return i->SDesc ();
 };
 
 /* Return an appropriate caption given the current action. */
@@ -246,23 +263,23 @@ packagemeta::action_caption ()
     return "Uninstall";
   else if (!desired)
     return "Skip";
-  else if (desired == installed && desired->binpicked)
+  else if (desired == installed && desired.picked())
     {
       packagedb db;
       return db.task == PackageDB_Install ? "Reinstall" : "Retrieve";
     }
-  else if (desired == installed && desired->srcpicked)
+  else if (desired == installed && desired.sourcePackage() && desired.sourcePackage().picked())
     /* FIXME: Redo source should come up if the tarball is already present locally */
     return "Source";
   else if (desired == installed)	/* and neither src nor bin */
     return "Keep";
   else
-    return desired->Canonical_version ();
+    return desired.Canonical_version ();
 }
 
 /* Set the next action given a current action.  */
 void
-packagemeta::set_action (packageversion * default_version)
+packagemeta::set_action (packageversion const &default_version)
 {
   /* actions are the following:
 
@@ -313,126 +330,205 @@ packagemeta::set_action (packageversion * default_version)
       desired = installed;
       if (desired)
 	{
-	  desired->binpicked = 0;
-	  desired->srcpicked = 0;
+	  desired.pick (false);
+	  desired.sourcePackage().pick (false);
 	}
       return;
     }
   else if (desired == installed &&
 	   (!installed || 
 	    // neither bin nor source are being installed
-	    (!(installed->binpicked || installed->srcpicked) &&
+	    (!(installed.picked() || installed.sourcePackage().picked()) &&
 	     // bin or source are available
-	     ((installed->bin.sites.number() || desired->bin.Cached()) ||
- 	      (installed->src.sites.number() || desired->src.Cached()))))
+	     (installed.accessible() || installed.sourcePackage().accessible()) ))
 	   )
     /* Install the default trust version - this is a 'reinstall' for installed
        * packages */
     {
-      desired = NULL;
       /* No-op */
       desired = default_version;
       if (desired)
 	{
-	  if (desired->bin.sites.number() || desired->bin.Cached())
-	    desired->binpicked = 1;
+	  if (desired.accessible())
+	    desired.pick (true);
 	  else
-	    desired->srcpicked = 1;
+	    desired.sourcePackage().pick (true);
 	  return;
 	}
     }
   /* are we currently on the radio button selection and installed */
   if (desired == default_version && installed &&
-      (!desired || desired->binpicked)
-      && (desired &&
-	  (desired->src.Cached () || desired->src.sites.number ())))
+      (!desired || desired.picked())
+      && (desired && desired.sourcePackage().accessible())
+      )
     {
       /* source only this file */
       desired = installed;
-      desired->binpicked = 0;
-      desired->srcpicked = 1;
+      desired.pick (false);
+      desired.sourcePackage().pick (true);
       return;
     }
   /* are we currently on source only or on the radio button but not installed */
-  else if ((desired == installed && installed
-	    && installed->srcpicked) || desired == default_version)
+  else if ((desired == installed 
+	    && installed.sourcePackage().picked ()) || desired == default_version)
     {
       /* move onto the loop through versions */
-      desired = versions[1];
-      if (desired == default_version)
-	desired = versions.number () > 1 ? versions[2] : NULL;
-      if (desired)
+      set<packageversion>::iterator i = versions.begin();
+      if (*i == default_version)
+	++i;
+      if (i != versions.end())
 	{
-	  desired->binpicked = 1;
-	  desired->srcpicked = 0;
+	  desired = *i;
+	  desired.pick (true);
+	  desired.sourcePackage ().pick (false);
 	}
+      else
+	desired = packageversion ();
       return;
     }
   else
     {
       /* preserve the src tick box */
-      int source = desired->srcpicked;
+      bool sourceticked = desired.sourcePackage().picked();
       /* bump the version selected, skipping the radio button trust along the way */
-      size_t n;
-      for (n = 1; n <= versions.number () && desired != versions[n]; n++);
-      /* n points at pkg->desired */
-      n++;
-      if (n <= versions.number ())
+      set<packageversion>::iterator i;
+      for (i=versions.begin(); i != versions.end() && *i != desired; ++i);
+      /* i points at desired in the versions set */
+      ++i;
+      if (i != versions.end ())
 	{
-	  if (default_version == versions[n])
-	    n++;
-	  if (n <= versions.number ())
+	  if (default_version == *i)
+	    ++i;
+	  if (i != versions.end ())
 	    {
-	      desired = versions[n];
-	      if (desired->src.sites.number() || desired->src.Cached())
-		desired->srcpicked = source;
+	      desired = *i;
+	      if (desired.sourcePackage().accessible ())
+		desired.sourcePackage ().pick (sourceticked);
 	      else
-		desired->srcpicked = 0;
+		desired.sourcePackage ().pick (false);
 	      return;
 	    }
 	}
       /* went past the end - uninstall the package */
-      desired = NULL;
+      desired = packageversion ();
     }
+}
+
+static bool
+checkForInstalled (PackageSpecification *spec)
+{
+  packagedb db;
+  packagemeta *required = db.findBinary (*spec);
+  if (!required)
+    return false;
+  if (spec->satisfies (required->installed))
+    /* done, found a satisfactory installed version */
+    return true;
+  return false;
+}
+
+static bool
+checkForUpgradeable (PackageSpecification *spec)
+{
+  packagedb db;
+  packagemeta *required = db.findBinary (*spec);
+  if (!required || !required->installed)
+    return false;
+  for (set <packageversion>::iterator i = required->versions.begin();
+       i != required->versions.end(); ++i)
+    if (spec->satisfies (*i))
+      return true;
+  return false;
+}
+
+static bool
+checkForSatisfiable (PackageSpecification *spec)
+{
+  packagedb db;
+  packagemeta *required = db.findBinary (*spec);
+  if (!required)
+    return false;
+  for (set <packageversion>::iterator i = required->versions.begin();
+       i != required->versions.end(); ++i)
+    if (spec->satisfies (*i))
+      return true;
+  return false;
 }
 
 int
 packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
 {
-  Dependency *dp;
-  packagemeta *required;
   int changed = 0;
-  if (!desired || (desired != installed && !desired->binpicked))
+  if (!desired || (desired != installed && !desired.picked ()))
     /* uninstall || source only */
     return 0;
 
-  dp = desired->required;
-  packagedb db;
+  vector <vector <PackageSpecification *> *>::iterator dp = desired.depends ()->begin();
+  // packagedb db;
   /* cheap test for too much recursion */
   if (depth > 5)
     return 0;
-  while (dp)
+  /* walk through each and clause */
+  while (dp != desired.depends ()->end())
     {
-      if ((required = db.packages.getbykey (dp->package.packageName())) == NULL)
+      /* three step:
+	 1) is a satisfactory or clause installed?
+	 2) is an unsatisfactory version of an or clause which has
+	 a satisfactory version available installed?
+	 3) is a satisfactory package available?
+	 */
+      /* check each or clause for an installed match */
+      vector <PackageSpecification *>::iterator i = 
+	find_if ((*dp)->begin(), (*dp)->end(), checkForInstalled);
+      if (i != (*dp)->end())
 	{
-	  dp = dp->next;
-	  changed++;
+	  /* we found an installed ok package */
+	  /* todo: ensure that it will remain installed */
+	  /* next and clause */
+	  ++dp;
 	  continue;
 	}
+      /* check each or clause for an upgradeable version */
+      i = find_if ((*dp)->begin(), (*dp)->end(), checkForUpgradeable);
+      if (i != (*dp)->end())
+	{
+	  /* we found a package that can be up/downgraded to meet the 
+	     requirement
+	     */
+	  /* TODO: set an appropriate desired version */
+	  ++dp;
+	  ++changed;
+	  continue;
+	}
+      /* check each or clause for an installable version */
+      i = find_if ((*dp)->begin(), (*dp)->end(), checkForSatisfiable);
+      if (i != (*dp)->end())
+	{
+	  /* we found a package that can be installed to meet the
+	     requirement
+	     */
+	  /* TODO: set an appropriate desired version */
+	  ++dp;
+	  ++changed;
+	  continue;
+	}
+#if 0      
+//      version updating and installing code, once the package is selected
       if (!required->desired)
 	{
 	  /* it's set to uninstall */
 	  required->set_action (required->trustp (deftrust));
 	}
       else if (required->desired != required->installed
-	       && !required->desired->binpicked)
+	       && !required->desired.picked())
 	{
 	  /* it's set to change to a different version source only */
-	  required->desired->binpicked = 1;
+	  required->desired.pick (true);
 	}
       /* does this requirement have requirements? */
       changed += required->set_requirements (deftrust, depth + 1);
-      dp = dp->next;
+#endif
+      ++dp;
     }
   return changed;
 }
@@ -440,7 +536,7 @@ packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
 
 // Set a particular type of action.
 void
-packagemeta::set_action (_actions action, packageversion * default_version)
+packagemeta::set_action (_actions action, packageversion const &default_version)
 {
   packagedb db;
   if (action == Default_action)
@@ -454,12 +550,12 @@ packagemeta::set_action (_actions action, packageversion * default_version)
 	  desired = default_version;
 	  if (desired)
 	    {
-	      desired->binpicked = desired == installed ? 0 : 1;
-	      desired->srcpicked = 0;
+	      desired.pick (desired == installed);
+	      desired.sourcePackage ().pick (false);
 	    }
 	}
       else
-	desired = 0;
+	desired = packageversion ();
       return;
     }
   else if (action == Install_action)
@@ -468,20 +564,20 @@ packagemeta::set_action (_actions action, packageversion * default_version)
       if (desired)
 	{
 	  if (desired != installed)
-	    if (desired->bin.sites.number())
+	    if (desired.source()->sites.number())
 	      {
-		desired->binpicked = 1;
-		desired->srcpicked = 0;
+		desired.pick (true);
+		desired.sourcePackage ().pick (false);
 	      }
 	    else
 	      {
-		desired->binpicked = 0;
-		desired->srcpicked = 1;
+		desired.pick (false);
+		desired.sourcePackage ().pick (true);
 	      }
 	  else
 	    {
-	      desired->binpicked = 0;
-	      desired->srcpicked = 0;
+	      desired.pick (false);
+	      desired.sourcePackage ().pick (false);
 	    }
 	}
       return;
@@ -491,12 +587,35 @@ packagemeta::set_action (_actions action, packageversion * default_version)
       desired = installed;
       if (desired)
 	{
-	  desired->binpicked = 1;
-	  desired->srcpicked = 0;
+	  desired.pick (true);
+	  desired.sourcePackage ().pick (false);
 	}
     }
   else if (action == Uninstall_action)
     {
-      desired = 0;
+      desired = packageversion ();
     }
+}
+
+bool
+packagemeta::accessible () const
+{
+  for (set<packageversion>::iterator i=versions.begin();
+       i != versions.end(); ++i)
+    if (i->accessible())
+      return true;
+  return false;
+}
+
+bool
+packagemeta::sourceAccessible () const
+{
+  for (set<packageversion>::iterator i=versions.begin();
+       i != versions.end(); ++i)
+    {
+      packageversion bin=*i;
+      if (bin.sourcePackage().accessible())
+        return true;
+    }
+  return false;
 }

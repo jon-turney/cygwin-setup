@@ -21,6 +21,7 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "cygpackage.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -33,8 +34,8 @@ static const char *cvsid =
 #include "cygpackage.h"
 
 /* this constructor creates an invalid package - further details MUST be provided */
-cygpackage::cygpackage (String const &pkgname):
-name (pkgname),
+cygpackage::cygpackage ():
+name (),
 vendor (),
 packagev (),
 canonical (),
@@ -53,28 +54,33 @@ listfile ()
    */
 }
 
-/* create a package given explicit details - perhaps should be modified to take the
-   filename and do it's own parsing? */
-cygpackage::cygpackage (String const &pkgname, String const &filename, size_t const fs,
-			String const &version, package_status_t const newstatus,
-			package_type_t const newtype):
-name (pkgname),
-fn (filename),
-sdesc (),
-ldesc (),
-status (newstatus),
-type (newtype),
-listdata (),
-listfile (),
-filesize (fs)
+packageversion
+cygpackage::createInstance (String const &pkgname)
 {
-  memset( getfilenamebuffer, '\0', _MAX_PATH);
-  set_canonical_version (version);
+  cygpackage *temp = new cygpackage;
+  temp->name = pkgname;
+  return packageversion(temp);
+}
+
+packageversion
+cygpackage::createInstance (String const &pkgname, String const &filename,
+			    size_t const fs, String const &version,
+			    package_status_t const newstatus,
+			    package_type_t const newtype)
+{
+  cygpackage *temp = new cygpackage;
+  temp->name = pkgname;
+  temp->fn = filename;
+  temp->status = newstatus;
+  temp->type = newtype;
+  temp->filesize = fs;
+  temp->setCanonicalVersion (version);
+  return packageversion(temp);
 }
 
 /* tell the version */
 void
-cygpackage::set_canonical_version (String const &version)
+cygpackage::setCanonicalVersion (String const &version)
 {
   canonical = version;
   char *start = strchr (canonical.cstr_oneuse(), '-');
@@ -96,7 +102,6 @@ cygpackage::set_canonical_version (String const &version)
       packagev = 0;
       vendor = version;
     }
-  key = canonical;
 }
 
 cygpackage::~cygpackage ()

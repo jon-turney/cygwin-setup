@@ -32,7 +32,6 @@ public:
   virtual void buildPackageInstall (String const &);
   virtual void buildPackageSource (String const &, String const &);
   virtual void buildPackageTrust (int);
-  virtual void buildPackageRequirement (String const &);
   virtual void buildPackageCategory (String const &);
   virtual void buildBeginDepends ();
   virtual void buildBeginPreDepends ();

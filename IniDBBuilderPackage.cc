@@ -25,9 +25,10 @@
 #include <string.h>
 #include "LogSingleton.h"
 #include "PackageSpecification.h"
+#include <algorithm>
 
 IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
-cp (0), cpv (0), currentSpec (0), currentOrList (0), currentAndList (0), trust (0), _feedback (aFeedback){}
+cp (0), cbpv (), cspv (), currentSpec (0), currentOrList (0), currentAndList (0), trust (0), _feedback (aFeedback){}
 
 void
 IniDBBuilderPackage::buildTimestamp (String const &time)
@@ -54,28 +55,32 @@ IniDBBuilderPackage::buildPackage (String const &name)
 {
   packagedb db;
   cp = &db.packages.registerbykey(name);
-  cpv = new cygpackage (name);
+  cbpv = cygpackage::createInstance (name);
+  cspv = packageversion ();
   currentSpec = NULL;
   trust = TRUST_CURR;
+#if DEBUG
+  log (LOG_BABBLE) << "Created package " << name << endLog;
+#endif
 }
 
 void
 IniDBBuilderPackage::buildPackageVersion (String const &version)
 {
-  cpv->set_canonical_version (version);
+  cbpv.setCanonicalVersion (version);
   add_correct_version();
 }
 
 void
 IniDBBuilderPackage::buildPackageSDesc (String const &theDesc)
 {
-  cpv->set_sdesc(theDesc);
+  cbpv.set_sdesc(theDesc);
 }
 
 void
 IniDBBuilderPackage::buildPackageLDesc (String const &theDesc)
 {
-  cpv->set_ldesc(theDesc);
+  cbpv.set_ldesc(theDesc);
 #if DEBUG
   _feedback.warning(theDesc.cstr_oneuse());
 #endif
@@ -84,13 +89,42 @@ IniDBBuilderPackage::buildPackageLDesc (String const &theDesc)
 void
 IniDBBuilderPackage::buildPackageInstall (String const &path)
 {
-  process_src (cpv->bin, path);
+  process_src (*cbpv.source(), path);
 }
+
 void
 IniDBBuilderPackage::buildPackageSource (String const &path, String const &size)
 {
-  process_src (cpv->src, path);
-  setSourceSize (cpv->src, size);
+  packagedb db;
+  /* get an appropriate metadata */
+  csp = db.findSource (PackageSpecification (cbpv.Name()));
+  if (!csp)
+    {
+      /* Copy the existing meta data to a new source package */
+      csp = new packagemeta (*cp);
+      /* delete versions information */
+      csp->versions.clear();
+    }
+  /* create a source packageversion */
+  cspv = cygpackage::createInstance (cbpv.Name());
+  cspv.setCanonicalVersion (cbpv.Canonical_version());
+  set<packageversion>::iterator i=find (csp->versions.begin(),
+    csp->versions.end(), cspv);
+  if (i == csp->versions.end())
+    {
+      csp->add_version (cspv);
+    }
+  else
+    cspv = *i;
+
+  if (!cspv.source()->Canonical())
+    cspv.source()->set_canonical (path.cstr_oneuse());
+  cspv.source()->sites.registerbykey (parse_mirror);
+
+  cbpv.setSourcePackageSpecification (PackageSpecification (cspv.Name()));
+
+  // process_src (*cspv.source(), path);
+  setSourceSize (*cspv.source(), size);
 }
 
 void
@@ -98,13 +132,10 @@ IniDBBuilderPackage::buildPackageTrust (int newtrust)
 {
   trust = newtrust;
   if (newtrust != TRUST_UNKNOWN)
-    cpv = new cygpackage (cp->name);
-}
-
-void
-IniDBBuilderPackage::buildPackageRequirement (String const &name)
-{
-  cpv->new_requirement(name);
+    {
+      cbpv = cygpackage::createInstance (cp->name);
+      cspv = packageversion ();
+    }
 }
 
 void
@@ -140,7 +171,7 @@ IniDBBuilderPackage::buildBeginDepends ()
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = &cpv->depends;
+  currentAndList = cbpv.depends();
 }
 
 void
@@ -152,7 +183,7 @@ IniDBBuilderPackage::buildBeginPreDepends ()
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = &cpv->predepends;
+  currentAndList = cbpv.predepends();
 }
 
 void
@@ -167,7 +198,7 @@ IniDBBuilderPackage::buildPriority (String const &priority)
 void
 IniDBBuilderPackage::buildInstalledSize (String const &size)
 {
-  cpv->bin.setInstalledSize (atoi(size.cstr_oneuse()));
+  cbpv.source()->setInstalledSize (atoi(size.cstr_oneuse()));
 #if DEBUG
   log (LOG_BABBLE) << "Installed size for " << cp->name << " is " << cpv->bin.installedSize() << endLog;
 #endif
@@ -188,21 +219,21 @@ IniDBBuilderPackage::buildArchitecture (String const &arch)
 void
 IniDBBuilderPackage::buildInstallSize (String const &size)
 {
-  setSourceSize (cpv->bin, size);
+  setSourceSize (*cbpv.source(), size);
 }
 
 void
 IniDBBuilderPackage::buildInstallMD5 (unsigned char const * md5)
 {
-  if (md5 && !cpv->bin.md5.isSet())
-    cpv->bin.md5.set(md5);
+  if (md5 && !cbpv.source()->md5.isSet())
+    cbpv.source()->md5.set(md5);
 }
 
 void
 IniDBBuilderPackage::buildSourceMD5 (unsigned char const * md5)
 {
-  if (md5 && !cpv->src.md5.isSet())
-    cpv->src.md5.set(md5);
+  if (md5 && !cspv.source()->md5.isSet())
+    cspv.source()->md5.set(md5);
 }
 
 void
@@ -214,7 +245,7 @@ IniDBBuilderPackage::buildBeginRecommends ()
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = &cpv->recommends;
+  currentAndList = cbpv.recommends();
 }
 
 void
@@ -226,7 +257,7 @@ IniDBBuilderPackage::buildBeginSuggests ()
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = &cpv->suggests;
+  currentAndList = cbpv.suggests();
 }
 
 void
@@ -238,7 +269,7 @@ IniDBBuilderPackage::buildBeginReplaces ()
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = &cpv->replaces;
+  currentAndList = cbpv.replaces();
 }
 
 void
@@ -250,7 +281,7 @@ IniDBBuilderPackage::buildBeginConflicts ()
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = &cpv->conflicts;
+  currentAndList = cbpv.conflicts();
 }
 
 void
@@ -262,15 +293,15 @@ IniDBBuilderPackage::buildBeginProvides ()
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = &cpv->provides;
+  currentAndList = cbpv.provides();
 }
 
 void
 IniDBBuilderPackage::buildDescription (String const &descline)
 {
-  if (cpv)
+  if (cbpv)
     {
-      cpv->set_ldesc(cpv->LDesc() + descline + "\n");
+      cbpv.set_ldesc(cbpv.LDesc() + descline + "\n");
 #if DEBUG
       log (LOG_BABBLE) << "Description for " << cp->name << ": \"" << 
 	descline << "\"." << endLog;
@@ -285,11 +316,11 @@ IniDBBuilderPackage::buildDescription (String const &descline)
 void 
 IniDBBuilderPackage::buildSourceName (String const &name)
 {
-  if (cpv)
+  if (cbpv)
     {
-      cpv->setSourcePackage (PackageSpecification (name));
+      cbpv.setSourcePackageSpecification (PackageSpecification (name));
 #if DEBUG
-      log (LOG_BABBLE) << "\"" << cpv->sourcePackage() << 
+      log (LOG_BABBLE) << "\"" << cpv->sourcePackageSpecification() << 
 	"\" is the source package for " << cp->name << "." << endLog;
 #endif
     }
@@ -302,10 +333,10 @@ IniDBBuilderPackage::buildSourceName (String const &name)
 void
 IniDBBuilderPackage::buildSourceNameVersion (String const &version)
 {
-  if (cpv)
+  if (cbpv)
     {
-      cpv->sourcePackage().setOperator (PackageSpecification::Equals);
-      cpv->sourcePackage().setVersion (version);
+      cbpv.sourcePackageSpecification().setOperator (PackageSpecification::Equals);
+      cbpv.sourcePackageSpecification().setVersion (version);
 #if DEBUG
       log (LOG_BABBLE) << "The source version needed for " << cp->name << 
 	" is " << version << "." << endLog;
@@ -403,29 +434,28 @@ void
 IniDBBuilderPackage::add_correct_version()
 {
   int merged = 0;
-  for (size_t n = 1; !merged && n <= cp->versions.number (); n++)
-      if (!cp->versions[n]->Canonical_version().casecompare(cpv->Canonical_version()))
+  for (set<packageversion>::iterator n = cp->versions.begin();
+       !merged && n != cp->versions.end(); ++n)
+    if (*n == cbpv )
       {
+	packageversion ver = *n;
         /* ASSUMPTIONS:
            categories and requires are consistent for the same version across
            all mirrors
            */
         /* Copy the binary mirror across if this site claims to have an install */
-        if (cpv->bin.sites.number ())
-          cp->versions[n]->bin.sites.registerbykey (cpv->bin.sites[1]->key);
-        /* Ditto for src */
-        if (cpv->src.sites.number ())
-          cp->versions[n]->src.sites.registerbykey (cpv->src.sites[1]->key);
+        if (cbpv.source()->sites.number ())
+          ver.source()->sites.registerbykey (cbpv.source()->sites[1]->key);
         /* Copy the descriptions across */
-        if (cpv->SDesc ().size() && !cp->versions[n]->SDesc ().size())
-          cp->versions[n]->set_sdesc (cpv->SDesc ());
-        if (cpv->LDesc ().size() && !cp->versions[n]->LDesc ().size())
-          cp->versions[n]->set_ldesc (cpv->LDesc ());
-        cpv = (cygpackage *)cp->versions[n];
+        if (cbpv.SDesc ().size() && !n->SDesc ().size())
+          ver.set_sdesc (cbpv.SDesc ());
+        if (cbpv.LDesc ().size() && !n->LDesc ().size())
+          ver.set_ldesc (cbpv.LDesc ());
+        cbpv = *n;
         merged = 1;
       }
     if (!merged)
-    cp->add_version (*cpv);
+    cp->add_version (cbpv);
   /* trust setting */
   switch (trust)
   {
@@ -433,21 +463,21 @@ IniDBBuilderPackage::add_correct_version()
       if (cp->currtimestamp < timestamp)
       {
         cp->currtimestamp = timestamp;
-        cp->curr = cpv;
+        cp->curr = cbpv;
       }
     break;
     case TRUST_PREV:
     if (cp->prevtimestamp < timestamp)
     {
         cp->prevtimestamp = timestamp;
-        cp->prev = cpv;
+        cp->prev = cbpv;
     }
     break;
     case TRUST_TEST:
     if (cp->exptimestamp < timestamp)
     {
         cp->exptimestamp = timestamp;
-        cp->exp = cpv;
+        cp->exp = cbpv;
     }
     break;
   }
@@ -456,19 +486,19 @@ IniDBBuilderPackage::add_correct_version()
 void
 IniDBBuilderPackage::process_src (packagesource &src, String const &path)
 {
-  if (!cpv->Canonical_version ().size())
+  if (!src.Canonical())
+    src.set_canonical (path.cstr_oneuse());
+  src.sites.registerbykey (parse_mirror);
+  
+  if (!cbpv.Canonical_version ().size())
     {
       fileparse f;
       if (parse_filename (path, f))
 	{
-	  cpv->set_canonical_version (f.ver);
+	  cbpv.setCanonicalVersion (f.ver);
 	  add_correct_version ();
 	}
     }
-
-  if (!src.Canonical())
-    src.set_canonical (path.cstr_oneuse());
-  src.sites.registerbykey (parse_mirror);
 }
 
 void

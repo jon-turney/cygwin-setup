@@ -321,12 +321,13 @@ PickView::init_headers (HDC dc)
     {
       packagemeta & pkg = *db.packages[n];
       if (pkg.installed)
-        note_width (headers, dc, pkg.installed->Canonical_version (),
+        note_width (headers, dc, pkg.installed.Canonical_version (),
                     HMARGIN, current_col);
-      for (size_t n = 1; n <= pkg.versions.number (); n++)
-        if (pkg.versions[n] != pkg.installed)
+      for (set<packageversion>::iterator i=pkg.versions.begin();
+	   i != pkg.versions.end(); ++i)
+        if (*i != pkg.installed)
           note_width (headers, dc,
-                      pkg.versions[n]->Canonical_version (),
+                      i->Canonical_version (),
                       NEW_COL_SIZE_SLOP + HMARGIN, new_col);
       String s = pkg.name;
       if (pkg.SDesc ().size())

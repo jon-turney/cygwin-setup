@@ -294,7 +294,7 @@ make_passwd_group ()
 	  /* mkpasswd and mkgroup are not working on 9x/ME up to 1.1.5-4 */
 	  String border_version = canonicalize_version ("1.1.5-4");
 	  String inst_version =
-	    canonicalize_version (pkg->installed->Canonical_version ());
+	    canonicalize_version (pkg->installed.Canonical_version ());
 	  if (inst_version.compare(border_version) <= 0)
 	    return;
 	}

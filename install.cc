@@ -146,7 +146,7 @@ replace_one (packagemeta & pkg)
   pkg.uninstall ();
 
   errors +=
-    install_one_source (pkg, pkg.desired->bin, "cygfile://","/", package_binary);
+    install_one_source (pkg, *pkg.desired.source(), "cygfile://","/", package_binary);
   if (!errors)
     pkg.installed = pkg.desired;
   num_replacements++;
@@ -360,17 +360,17 @@ install_one (packagemeta & pkg)
 {
   int errors = 0;
 
-  if (pkg.installed != pkg.desired && pkg.desired->binpicked)
+  if (pkg.installed != pkg.desired && pkg.desired.picked())
     {
       errors +=
-	install_one_source (pkg, pkg.desired->bin, "cygfile://","/",
+	install_one_source (pkg, *pkg.desired.source(), "cygfile://","/",
 			    package_binary);
       if (!errors)
 	pkg.installed = pkg.desired;
     }
-  if (pkg.desired->srcpicked)
+  if (pkg.desired.sourcePackage().picked())
     errors +=
-      install_one_source (pkg, pkg.desired->src, "cygfile://","/usr/src/",
+      install_one_source (pkg, *pkg.desired.sourcePackage().source(), "cygfile://","/usr/src/",
 			  package_source);
 
   /* FIXME: make a upgrade method and reinstate this */
@@ -495,12 +495,12 @@ do_install_thread (HINSTANCE h, HWND owner)
     {
       packagemeta & pkg = *db.packages[n];
 
-      if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
+      if (pkg.desired.changeRequested())
 	{
-	  if (pkg.desired->srcpicked)
-	    total_bytes += pkg.desired->src.size;
-	  if (pkg.desired->binpicked)
-	    total_bytes += pkg.desired->bin.size;
+	  if (pkg.desired.picked())
+	    total_bytes += pkg.desired.source()->size;
+	  if (pkg.desired.sourcePackage ().picked())
+	    total_bytes += pkg.desired.sourcePackage ().source()->size;
 	}
     }
 
@@ -519,7 +519,7 @@ do_install_thread (HINSTANCE h, HWND owner)
   for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
-      if (pkg.installed && pkg.desired && pkg.desired->binpicked)
+      if (pkg.installed && pkg.desired.picked())
 	{
 	  try {
 	      int e = 0;
@@ -543,7 +543,7 @@ do_install_thread (HINSTANCE h, HWND owner)
     {
       packagemeta & pkg = *db.packages[n];
 
-      if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
+      if (pkg.desired && pkg.desired.changeRequested())
 	{
 	  try
 	    {

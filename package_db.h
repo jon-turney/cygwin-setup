@@ -23,6 +23,7 @@
 class Category;
 class packagemeta;
 class io_stream;
+class PackageSpecification;
 
 typedef enum {
   PackageDB_Install,
@@ -36,6 +37,8 @@ public:
   packagedb ();
   /* 0 on success */
   int flush ();
+  packagemeta * findBinary (PackageSpecification const &) const;
+  packagemeta * findSource (PackageSpecification const &) const;
   /* all seen binary packages */
   static list < packagemeta, String, String::casecompare > packages;
   /* all seen source packages */

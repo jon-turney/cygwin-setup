@@ -38,24 +38,12 @@
  */
 
 class CategoryList;
-class Dependency;
-
-/* Required for parsing */
+ 
+/*Required for parsing */
 #include "package_source.h"
 #include "String++.h"
 #include "PackageSpecification.h"
 #include <vector>
-
-class Dependency
-{
-public:
-  Dependency (String const &aPackage) : package (aPackage) {}
-  Dependency (Dependency const &);
-  Dependency * next;		/* the next package in this dependency list */
-  PackageSpecification package; /* the package that is depended on */
-}
- ;				/* Dependencies can be used for
-				   recommended/required/related... */
 
 typedef enum
 {
@@ -80,9 +68,78 @@ typedef enum
 }
 package_type_t;
 
+/* A wrapper class to be copied by value that
+   references the same package.
+   Nothing is virtual, because the wrapper cannot be inherited.
+   However, as all the methods are implemented in the referenced
+   _packageversion, that class allows virtual overriding.
+   */
+
+class _packageversion;
+
+/* This class has pointer semantics 
+   Specifically: a=b does not alter the value of *a.
+   */
 class packageversion
 {
 public:
+  packageversion (); /* creates an empty packageversion */
+  packageversion (_packageversion *); /* used when creating an instance */
+  packageversion (packageversion const &);
+  ~packageversion (); 
+  packageversion &operator= (packageversion const &);
+  bool operator ! () const; /* true if the package is invalid. (i.e.
+			       uninitialised */
+  operator bool () const; /* returns ! !() */
+  bool operator == (packageversion const &) const; /* equality */
+  bool operator != (packageversion const &) const;
+  bool operator < (packageversion const &) const;
+  bool operator <= (packageversion const &) const;
+  bool operator > (packageversion const &) const;
+  bool operator >= (packageversion const &) const;
+
+  String const Name () const; 
+  String const Vendor_version () const;
+  String const Package_version () const;
+  String const Canonical_version () const;
+  void setCanonicalVersion (String const &);
+  package_status_t Status () const;
+  package_type_t Type () const;
+  String const getfirstfile ();
+  String const getnextfile ();
+  String const SDesc () const;
+  void set_sdesc (String const &);
+  String const LDesc () const;
+  void set_ldesc (String const &);
+  packageversion sourcePackage ();
+  PackageSpecification & sourcePackageSpecification ();
+  void setSourcePackageSpecification (PackageSpecification const &);
+
+  /* invariant: these never return NULL */
+  vector <vector <PackageSpecification *> *> *depends(), *predepends(), 
+  *recommends(), *suggests(), *replaces(), *conflicts(), *provides();
+
+  bool picked() const;   /* true if this version is to be installed */
+  void pick(bool); /* trigger an install/reinsall */
+  /* a change - install/uninstall/reinstall/source install
+        has been requested */
+  bool changeRequested () const;
+
+  void uninstall ();
+  /* invariant: never null */
+  packagesource *source(); /* where can we source the files from */
+
+  bool accessible () const;
+  
+private:
+  _packageversion *data; /* Invariant: * data is always valid */
+};
+
+class _packageversion
+{
+public:
+  _packageversion();
+  virtual ~_packageversion();
   /* for list inserts/mgmt. */
   String key;
   /* name is needed here, because if we are querying a file, the data may be embedded in
@@ -91,6 +148,7 @@ public:
   virtual String const Vendor_version () = 0;
   virtual String const Package_version () = 0;
   virtual String const Canonical_version () = 0;
+  virtual void setCanonicalVersion (String const &) = 0;
   virtual package_status_t Status () = 0;
 //  virtual package_stability_t Stability () = 0;
   virtual package_type_t Type () = 0;
@@ -104,45 +162,37 @@ public:
   virtual String const LDesc () = 0;
   virtual void set_ldesc (String const &) = 0;
   /* only semantically meaningful for binary packages */
-  virtual PackageSpecification & sourcePackage ();
-  virtual void setSourcePackage (PackageSpecification const &);
+  /* direct link to the source package for this binary */
+  /* if multiple versions exist and the source doesn't discriminate
+     then the most recent is used 
+     */
+  virtual packageversion sourcePackage ();
+  virtual PackageSpecification & sourcePackageSpecification ();
+  virtual void setSourcePackageSpecification (PackageSpecification const &);
   
-  /* FIXME: review this - these are UI variables, should be consistent across all
-   * children package types
-   */
-  void new_requirement (String const &dependson)
-  {
-    if (!dependson.size())
-        return;
-    Dependency *dp = new Dependency (dependson);
-      dp->next = required;
-      required = dp;
-  }
-  Dependency *required;
   vector <vector <PackageSpecification *> *> depends, predepends, recommends,
   suggests, replaces, conflicts, provides;
   
-  int srcpicked;		/* non zero if the source for this is required */
-  int binpicked;		/* non zero if the binary is required  - 
-				   This will also trigger reinstalled if it is set */
+  bool picked;	/* non zero if this version is to be installed */
+		/* This will also trigger reinstalled if it is set */
+  /* a change - install/uninstall/reinstall/source install
+     has been requested */
+  bool changeRequested ();
 
 
   virtual void uninstall () = 0;
-  packagesource bin;
-  packagesource src;
+  packagesource source; /* where can we source the files from */
 
-  packageversion ();
-  virtual ~ packageversion ()
-  {
-  };
+  bool accessible () const;
 
   /* TODO: Implement me:
      static package_meta * scan_package (io_stream *);
    */
+  size_t references;
 protected:
+  /* only meaningful for binary packages */
   PackageSpecification _sourcePackage;
-  
-
+  packageversion sourceVersion;
 };
 
 #endif /* _PACKAGE_VERSION_H_ */

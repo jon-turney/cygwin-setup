@@ -94,13 +94,13 @@ packagedb::packagedb ()
 		      //die badly
 		    }
 
-		  cygpackage *binary =
-		    new cygpackage (pkgname, inst, instsz, f.ver,
-				    package_installed,
-				    package_binary);
+		  packageversion binary = 
+		    cygpackage::createInstance (pkgname, inst, instsz, f.ver,
+	    					package_installed,
+	    					package_binary);
 
-		  pkg->add_version (*binary);
-		  pkg->set_installed (*binary);
+		  pkg->add_version (binary);
+		  pkg->set_installed (binary);
 		  pkg->desired = pkg->installed;
 		  packages.registerbyobject (*pkg);
 
@@ -137,17 +137,15 @@ packagedb::flush ()
       packagemeta & pkgm = *packages[n];
       if (pkgm.installed)
 	{
-	  char line[2048];
-
 	  /* size here is irrelevant - as we can assume that this install source
 	   * no longer exists, and it does not correlate to used disk space
 	   * also note that we are writing a fictional install source 
 	   * to keep cygcheck happy.               
 	   */
-	  sprintf (line, "%s %s %d\n", pkgm.name.cstr_oneuse(),
-		   (pkgm.name + "-" + pkgm.installed->Canonical_version () +
-		    ".tar.bz2").cstr_oneuse(), 0);
-	  ndb->write (line, strlen (line));
+	  String line;
+	  line = pkgm.name + " " + pkgm.name + "-" + 
+	    pkgm.installed.Canonical_version () + ".tar.bz2 0\n";
+	  ndb->write (line.cstr_oneuse(), line.size());
 	}
     }
 
@@ -158,6 +156,34 @@ packagedb::flush ()
   if (io_stream::move (ndbn, odbn))
     return errno ? errno : 1;
   return 0;
+}
+
+packagemeta *
+packagedb::findBinary (PackageSpecification const &spec) const
+{
+  for (size_t n = 1; n <= packages.number (); ++n)
+    {
+      packagemeta & pkgm = *packages[n];
+      for (set<packageversion>::iterator i=pkgm.versions.begin();
+	  i != pkgm.versions.end(); ++i)
+	if (spec.satisfies (*i))
+	  return &pkgm;
+    }
+  return NULL;
+}
+
+packagemeta *
+packagedb::findSource (PackageSpecification const &spec) const
+{
+  for (vector <packagemeta *>::iterator n=sourcePackages.begin();
+       n != sourcePackages.end(); ++n)
+    {
+      for (set<packageversion>::iterator i = (*n)->versions.begin();
+	   i != (*n)->versions.end(); ++i)
+	if (spec.satisfies (*i))
+	  return *n;
+    }
+  return NULL;
 }
 
 int

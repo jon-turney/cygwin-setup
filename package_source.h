@@ -92,7 +92,7 @@ public:
     return filename;
   };
   /* what is the cached filename, to prevent directory scanning during install */
-  virtual char const *Cached ()
+  virtual char const *Cached () const
   {
     return cached.cstr_oneuse();
   };

@@ -44,7 +44,7 @@ void add_correct_version();
 
 %token STRING 
 %token SETUP_TIMESTAMP SETUP_VERSION PACKAGEVERSION INSTALL SOURCE SDESC LDESC
-%token CATEGORY REQUIRES DEPENDS
+%token CATEGORY DEPENDS REQUIRES
 %token APATH PPATH INCLUDE_SETUP EXCLUDE_PACKAGE DOWNLOAD_URL
 %token T_PREV T_CURR T_TEST T_UNKNOWN
 %token MD5 INSTALLEDSIZE MAINTAINER PRIORITY
@@ -106,12 +106,12 @@ singleitem /* non-empty */
  | MD5LINE MD5 NL	{ iniBuilder->buildInstallMD5 ((unsigned char *)$2); }
  | SOURCEPACKAGE source NL
  | CATEGORY categories NL
- | REQUIRES requires NL
  | INSTALL STRING { iniBuilder->buildPackageInstall ($2); } installmeta NL
  | SOURCE STRING STRING sourceMD5 NL {iniBuilder->buildPackageSource ($2, $3);}
  | PROVIDES 		{ iniBuilder->buildBeginProvides(); } packagelist NL
  | CONFLICTS	{ iniBuilder->buildBeginConflicts(); } versionedpackagelist NL
  | DEPENDS { iniBuilder->buildBeginDepends(); } versionedpackagelist NL
+ | REQUIRES { iniBuilder->buildBeginDepends(); }versionedpackagelistsp NL
  | PREDEPENDS { iniBuilder->buildBeginPreDepends(); } versionedpackagelist NL
  | RECOMMENDS { iniBuilder->buildBeginRecommends(); }   versionedpackagelist NL
  | SUGGESTS { iniBuilder->buildBeginSuggests(); } versionedpackagelist NL
@@ -126,10 +126,6 @@ singleitem /* non-empty */
 
 categories: /* empty */
  | categories STRING		{ iniBuilder->buildPackageCategory ($2); }
- ;
-
-requires: /* empty */
- | requires STRING		{ iniBuilder->buildPackageRequirement($1); }
  ;
 
 installmeta: /* empty */
@@ -170,6 +166,11 @@ packageentry /* empty not allowed */
 versionedpackagelist /* non-empty */
  : { iniBuilder->buildPackageListAndNode(); } versionedpackageentry
  | versionedpackagelist listseparator { iniBuilder->buildPackageListAndNode(); } versionedpackageentry
+ ;
+
+versionedpackagelistsp /* non-empty */
+ : { iniBuilder->buildPackageListAndNode(); } versionedpackageentry
+ | versionedpackagelistsp { iniBuilder->buildPackageListAndNode(); } versionedpackageentry
  ;
 
 

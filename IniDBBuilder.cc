@@ -25,7 +25,6 @@ void IniDBBuilder::buildPackageLDesc (String const &){}
 void IniDBBuilder::buildPackageInstall (String const &){}
 void IniDBBuilder::buildPackageSource (String const &, String const &){}
 void IniDBBuilder::buildPackageTrust (int){}
-void IniDBBuilder::buildPackageRequirement (String const &){}
 void IniDBBuilder::buildPackageCategory (String const &){}
 void IniDBBuilder::buildBeginDepends (){}
 void IniDBBuilder::buildBeginPreDepends (){}

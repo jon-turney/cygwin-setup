@@ -24,7 +24,9 @@
 /* for _MAX_PATH */
 #include "win32.h" 
 
-class cygpackage:public packageversion
+#include "package_version.h"
+
+class cygpackage:public _packageversion
 {
 public:
   virtual String const Name ();
@@ -53,10 +55,7 @@ public:
 
 
   /* pass the name of the package when constructing */
-  cygpackage (String const &);
-  cygpackage (String const &, String const &, size_t const, String const &,
-	      package_status_t const, package_type_t const);
-  void set_canonical_version (String const &);
+  void setCanonicalVersion (String const &);
 
 
   virtual ~ cygpackage ();
@@ -65,7 +64,15 @@ public:
    */
   virtual String const getfirstfile ();
   virtual String const getnextfile ();
+
+  /* pass the name of the package when constructing */
+  static packageversion createInstance (String const &);
+  static packageversion createInstance (String const &, String const &, 
+					size_t const, String const &,
+					package_status_t const, 
+					package_type_t const);
 private:
+  cygpackage ();
   void destroy ();
   String name;
   String vendor;

@@ -229,15 +229,17 @@ do_download_thread (HINSTANCE h, HWND owner)
   for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
-      if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
+      if (pkg.desired.changeRequested())
 	{
-	  packageversion *version = pkg.desired;
+	  packageversion version = pkg.desired;
+	  packageversion sourceversion = version.sourcePackage();
 	  try 
 	    {
-    	      if (!check_for_cached (version->bin) && pkg.desired->binpicked)
-      		  total_download_bytes += version->bin.size;
-    	      if (!check_for_cached (version->src) && pkg.desired->srcpicked)
-      		  total_download_bytes += version->src.size;
+    	      if (version.picked() && !check_for_cached (*version.source()))
+      		  total_download_bytes += version.source()->size;
+    	      if (sourceversion.picked ()
+		  && !check_for_cached (*sourceversion.source()))
+      		  total_download_bytes += sourceversion.source()->size;
 	    }
 	  catch (Exception * e)
 	    {
@@ -256,14 +258,15 @@ do_download_thread (HINSTANCE h, HWND owner)
   for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
-      if (pkg.desired && (pkg.desired->srcpicked || pkg.desired->binpicked))
+      if (pkg.desired.changeRequested())
 	{
 	  int e = 0;
-	  packageversion *version = pkg.desired;
-	  if (version->binpicked)
-	    e += download_one (version->bin, owner);
-	  if (version->srcpicked)
-	    e += download_one (version->src, owner);
+	  packageversion version = pkg.desired;
+	  packageversion sourceversion = version.sourcePackage();
+	  if (version.picked())
+	    e += download_one (*version.source(), owner);
+	  if (sourceversion && sourceversion.picked())
+	    e += download_one (*version.source(), owner);
 	  errors += e;
 #if 0
 	  if (e)

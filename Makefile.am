@@ -24,7 +24,7 @@ SUBDIRS = bz2lib zlib libgetopt++ @RSYNC@
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
-AM_CFLAGS	= -Werror -Winline -Wall -Wpointer-arith \
+AM_CFLAGS	= -Werror -Wall -Winline -Wpointer-arith \
   -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
   -Wmissing-declarations -Wcomments
 AM_CXXFLAGS	= $(AM_CFLAGS) 

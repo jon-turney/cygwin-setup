@@ -18,10 +18,10 @@
 
 #include "IniDBBuilder.h"
 #include <vector>
+#include "package_version.h"
 class IniParseFeedback;
 class packagesource;
 class packagemeta;
-class cygpackage;
 
 class IniDBBuilderPackage:public IniDBBuilder
 {
@@ -36,7 +36,6 @@ public:
   virtual void buildPackageInstall (String const &);
   virtual void buildPackageSource (String const &, String const &);
   virtual void buildPackageTrust (int);
-  virtual void buildPackageRequirement (String const &);
   virtual void buildPackageCategory (String const &);
 
   virtual void buildBeginDepends ();
@@ -66,7 +65,9 @@ private:
   void process_src (packagesource &src, String const &);
   void setSourceSize (packagesource &src, String const &);
   packagemeta *cp;
-  cygpackage *cpv;
+  packageversion cbpv;
+  packagemeta *csp;
+  packageversion cspv;
   PackageSpecification *currentSpec;
   vector<PackageSpecification *> *currentOrList;
   vector<vector<PackageSpecification *> *> *currentAndList;

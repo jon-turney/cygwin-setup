@@ -84,8 +84,8 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
 			 theView.headers[theView.current_col].width, rb);
       TextOut (hdc,
 	       x + theView.headers[theView.current_col].x + HMARGIN / 2, r,
-	       pkg.installed->Canonical_version ().cstr_oneuse(),
-	       pkg.installed->Canonical_version ().size());
+	       pkg.installed.Canonical_version ().cstr_oneuse(),
+	       pkg.installed.Canonical_version ().size());
       SelectObject (theView.bitmap_dc, theView.bm_rtarrow);
       BitBlt (hdc, x + theView.headers[theView.new_col].x + HMARGIN / 2,
 	      by, 11, 11, theView.bitmap_dc, 0, 0, SRCCOPY);
@@ -111,9 +111,9 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
 
   if (/* uninstall or skip */ !pkg.desired ||
       /* current version */ pkg.desired == pkg.installed ||
-      /* no source */ !pkg.desired->bin.sites.number ())
+      /* no source */ !pkg.desired.accessible())
     checked = 0;
-  else if (pkg.desired->binpicked)
+  else if (pkg.desired.picked())
     checked = 1;
   else
     checked = 2;
@@ -121,12 +121,12 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
   DrawCheck (checked, hdc, theView.bintick_col, oldClip2, x, by);
   
   if ( /* uninstall */ !pkg.desired ||
-      /* source only */ (!pkg.desired->binpicked
-			 && pkg.desired->srcpicked && pkg.desired == pkg.installed) ||
+      /* source only */ (!pkg.desired.picked()
+			 && pkg.desired.sourcePackage().picked() && pkg.desired == pkg.installed) ||
       /* when no source mirror available */
-      !pkg.desired->src.sites.number ())
+      !pkg.desired.sourcePackage().accessible())
     checked = 0;
-  else if (pkg.desired->srcpicked)
+  else if (pkg.desired.sourcePackage().picked())
     checked = 1;
   else
     checked = 2;
@@ -165,14 +165,14 @@ int
 PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
 {
   // assert (myrow == ClickedRow);
-  if (pkg.desired && pkg.desired->bin.sites.number ()
+  if (pkg.desired.source()->sites.number ()
       && x >= theView.headers[theView.bintick_col].x - HMARGIN / 2
       && x <= theView.headers[theView.bintick_col + 1].x - HMARGIN / 2)
-    pkg.desired->binpicked ^= 1;
-  if (pkg.desired && pkg.desired->src.sites.number ()
+    pkg.desired.pick(!pkg.desired.picked());
+  if (pkg.desired.sourcePackage().source()->sites.number ()
       && x >= theView.headers[theView.srctick_col].x - HMARGIN / 2
       && x <= theView.headers[theView.srctick_col + 1].x - HMARGIN / 2)
-    pkg.desired->srcpicked ^= 1;
+    pkg.desired.sourcePackage().pick(!pkg.desired.sourcePackage().picked());
 
   if (x >= theView.headers[theView.new_col].x - HMARGIN / 2
       && x <= theView.headers[theView.new_col + 1].x - HMARGIN / 2)
