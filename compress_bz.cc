@@ -129,7 +129,7 @@ ssize_t compress_bz::read (void *buffer, size_t len)
   return 0;
 }
 
-ssize_t compress_bz::write (void *buffer, size_t len)
+ssize_t compress_bz::write (const void *buffer, size_t len)
 {
   log (LOG_TIMESTAMP, "compress_bz::write called");
   return 0;
@@ -173,6 +173,13 @@ compress_bz::tell ()
 {
   log (LOG_TIMESTAMP, "compress_bz::tell called");
   return 0;
+}
+
+int
+compress_bz::seek (long where, io_stream_seek_t whence)
+{
+    log (LOG_TIMESTAMP, "compress_bz::seek called");
+      return -1;
 }
 
 int

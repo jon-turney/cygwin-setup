@@ -79,7 +79,7 @@ ssize_t archive_tar_file::read (void *buffer, size_t len)
 }
 
 /* provide data to (double duh!) */
-ssize_t archive_tar_file::write (void *buffer, size_t len)
+ssize_t archive_tar_file::write (const void *buffer, size_t len)
 {
   /* write not supported */
   return EBADF;
@@ -113,6 +113,14 @@ long
 archive_tar_file::tell ()
 {
   return state.file_offset;
+}
+
+int
+archive_tar_file::seek (long where, io_stream_seek_t whence)
+{
+  /* nothing needs seeking here yet. Implement when needed 
+   */
+  return -1;
 }
 
 /* try guessing this one */

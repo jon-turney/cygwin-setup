@@ -58,6 +58,13 @@ typedef enum
 }
 io_stream_link_t;
 
+typedef enum
+{
+  IO_SEEK_SET = SEEK_SET,
+  IO_SEEK_END = SEEK_END,
+  IO_SEEK_CUR = SEEK_CUR
+} io_stream_seek_t;
+
 class io_stream
 {
 public:
@@ -107,11 +114,12 @@ public:
   /* read data (duh!) */
   virtual ssize_t read (void *buffer, size_t len) = 0;
   /* provide data to (double duh!) */
-  virtual ssize_t write (void *buffer, size_t len) = 0;
+  virtual ssize_t write (const void *buffer, size_t len) = 0;
   /* read data without removing it from the class's internal buffer */
   virtual ssize_t peek (void *buffer, size_t len) = 0;
   /* ever read the f* functions from libc ? */
   virtual long tell () = 0;
+  virtual int seek (long, io_stream_seek_t) = 0;
   /* try guessing this one */
   virtual int error () = 0;
   /* hmm, yet another for the guessing books */

@@ -104,6 +104,7 @@ OBJS = \
 	io_stream.o \
 	io_stream_cygfile.o \
 	io_stream_file.o \
+	io_stream_memory.o \
 	localdir.o \
 	log.o \
 	main.o \

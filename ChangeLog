@@ -1,3 +1,30 @@
+2001-11-14  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in (OBJS): Include io_stream_memory in setup.exe.
+	* archive_tar.cc (archive_tar::write): New prototype.
+	(archive_tar::seek): New method.
+	* archive.h (archive_tar_file): Update write() and add seek().
+	(archive_tar): Ditto.
+	* archive_tar_file.cc (archive_tar_file::write): New prototype.
+	(archive_tar_file::seek): New method.
+	* compress_bz.cc (compress_bz::write): New prototype.
+	(compress_bz::seek): New function.
+	* compress_bz.h (compress_bz): Update write() and add seek().
+	* compress_gz.cc (compress_gz::write): New prototype.
+	(compress_gz::seek): New function.
+	* compress_gz.h (compress_gz): Update write() and add seek().
+	* geturl.cc: Include io_stream headers.
+	(GUBuf): Remove.
+	(get_url_to_string): Use a io_stream_memory buffer instead of GUBuf.
+	* io_stream.h (io_stream_seek_t): New enum.
+	(io_stream): Update write() and add seek().
+	* io_stream_cygfile.cc (io_stream_cygfile::write): New prototype.
+	(io_stream_cygfile::seek): New function.
+	* io_stream_cygfile.h (io_stream_cygfile): Update write() and add seek().
+	* io_stream_file.cc (io_stream_file::write): New prototype.
+	(io_stream_file::seek): New function.
+	* io_stream_file.h (io_stream_file): Update write() and add seek().
+
 2001-11-13  Brian Keener  <bkeener@thesoftwaresource.com>
 
 	* localdir.cc: Add headers unistd.h and port.h.

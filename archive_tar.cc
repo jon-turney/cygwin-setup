@@ -90,7 +90,7 @@ archive_tar::read (void *buffer, size_t len)
 }
 
 ssize_t
-archive_tar::write (void *buffer, size_t len)
+archive_tar::write (const void *buffer, size_t len)
 {
   return 0;
 }
@@ -111,6 +111,16 @@ long
 archive_tar::tell ()
 {
   return state.file_offset;
+}
+
+int
+archive_tar::seek (long where, io_stream_seek_t whence)
+{
+  /* seeking in the parent archive doesn't make sense. although we could
+     map to files ? 
+     Also, seeking might make sense for rewing..?? 
+     */
+  return -1; 
 }
 
 int

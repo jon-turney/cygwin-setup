@@ -22,6 +22,7 @@ static const char *cvsid =
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 #include "log.h"
 #include "port.h"
 #include "mount.h"
@@ -186,7 +187,7 @@ ssize_t io_stream_cygfile::read (void *buffer, size_t len)
   return 0;
 }
 
-ssize_t io_stream_cygfile::write (void *buffer, size_t len)
+ssize_t io_stream_cygfile::write (const void *buffer, size_t len)
 {
   if (fp)
     return fwrite (buffer, 1, len, fp);
@@ -216,6 +217,17 @@ io_stream_cygfile::tell ()
       return ftell (fp);
     }
   return 0;
+}
+
+int
+io_stream_cygfile::seek (long where, io_stream_seek_t whence)
+{
+  if (fp)
+  {
+    return fseek (fp, where, (int) whence);
+  }
+  lasterr = EBADF;
+  return -1;
 }
 
 int

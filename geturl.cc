@@ -1,4 +1,6 @@
 /*
+	   
+	   
  * Copyright (c) 2000, 2001, Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
@@ -35,6 +37,8 @@ static const char *cvsid =
 #include "netio.h"
 #include "msg.h"
 #include "log.h"
+#include "io_stream.h"
+#include "io_stream_memory.h"
 #include "state.h"
 #include "diskfull.h"
 #include "mount.h"
@@ -194,13 +198,6 @@ progress (int bytes)
   SetWindowText (gw_rate, buf);
 }
 
-struct GUBuf
-{
-  GUBuf *next;
-  int count;
-  char buf[2000];
-};
-
 char *
 get_url_to_string (char *_url)
 {
@@ -218,44 +215,46 @@ get_url_to_string (char *_url)
   if (n->file_size)
     max_bytes = n->file_size;
 
-  GUBuf *bufs = 0;
-  GUBuf **nextp = &bufs;
-  int total_bytes = 1;		/* for the NUL */
+  io_stream_memory * membuf = new io_stream_memory ();
+  
+  int total_bytes = 1;		/* for the NUL terminator */
   progress (0);
   while (1)
     {
-      GUBuf *b = new GUBuf;
-      *nextp = b;
-      b->next = 0;
-      nextp = &(b->next);
-
-      b->count = n->read (b->buf, sizeof (b->buf));
-      if (b->count <= 0)
+      char buf[2048];
+      ssize_t rlen,wlen;
+      rlen = n->read (buf, 2048);
+      if (rlen > 0)
+      {
+      wlen = membuf->write (buf, rlen);
+      if (wlen != rlen)
+	/* FIXME: Show an error message */
 	break;
-      total_bytes += b->count;
+      total_bytes += rlen;
       progress (total_bytes);
+      }
+      else
+	break;
     }
 
   char *rv = (char *) malloc (total_bytes);
-  if (NULL == rv)
+  if (NULL == rv || membuf->seek (0, IO_SEEK_SET))
     {
       if (n)
 	delete n;
+      if (membuf)
+	delete membuf;
       log (LOG_BABBLE, "get_url_to_string(): malloc failed for rv!");
       return 0;
     }
-  char *rvp = rv;
-  while (bufs && bufs->count > 0)
-    {
-      GUBuf *tmp = bufs->next;
-      memcpy (rvp, bufs->buf, bufs->count);
-      rvp += bufs->count;
-      delete bufs;
-      bufs = tmp;
-    }
-  *rvp = 0;
+      
+  ssize_t rlen;
+  rlen = membuf->read (rv, total_bytes);
+  rv [total_bytes] = '\0';
   if (n)
     delete n;
+  if (membuf)
+    delete membuf;
   return rv;
 }
 

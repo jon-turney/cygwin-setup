@@ -340,7 +340,7 @@ compress_gz::read (void *buffer, size_t len)
    gzwrite returns the number of bytes actually written (0 in case of error).
 */
 ssize_t
-compress_gz::write (void *buffer, size_t len)
+compress_gz::write (const void *buffer, size_t len)
 {
   if (mode != 'w')
     return Z_STREAM_ERROR;
@@ -406,6 +406,13 @@ compress_gz::tell ()
 {
   log (LOG_TIMESTAMP, "compress_gz::tell called");
   return 0;
+}
+
+int
+compress_gz::seek (long where, io_stream_seek_t whence)
+{
+  log (LOG_TIMESTAMP, "compress_gz::seek called");
+  return -1;
 }
 
 int
