@@ -1,3 +1,7 @@
+2003-07-31  Robert Collins  <rbtcollins@hotmail.com>
+
+	* README: Mark completed items complete.
+
 2003-07-31  Pierre Humblet  <pierre.humblet@ieee.org>
 
 	* main.cc (set_default_sec): Set token owner from token user.
