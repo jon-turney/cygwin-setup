@@ -464,26 +464,36 @@ scan_downloaded_files ()
       for (size_t m = 1; m <= pkg.versions.number (); ++m)
 	{
 	  packageversion *version = pkg.versions[m];
-	  check_for_cached (version->bin);
-	  check_for_cached (version->src);
-	  if (source == IDC_SOURCE_CWD)
+	  /* Remove mirror sites.
+	   * FIXME: This is a bit of a hack. a better way is to abstract
+	   * the availability logic to the package
+	   */
+	  if (!check_for_cached (version->bin) && source == IDC_SOURCE_CWD)
+	    while (version->bin.sites.number())
+	      {
+		site *asite = version->bin.sites.removebyindex(1);
+		delete asite;
+	      }
+	  if (!check_for_cached (version->src) && source == IDC_SOURCE_CWD)
+	    while (version->src.sites.number())
+	      {
+		site *asite = version->src.sites.removebyindex(1);
+		delete asite;
+	      }
+	  /* For local installs, if there is no src and no bin, the version
+	   * is unavailable
+	   */
+	  if (!version->src.Cached() && !version->bin.Cached() 
+	      && source == IDC_SOURCE_CWD && version != pkg.installed)
 	    {
-	      /* Remove mirror sites.
-	       * FIXME: This is a bit of a hack. a better way is to abstract
-	       * the availability logic to the package
-	       */
-	      if (!version->bin.Cached())
-		while (version->bin.sites.number())
-		  {
-		    site *asite = version->bin.sites.removebyindex(1);
-		    delete asite;
-		  }
-	      if (!version->src.Cached())
-		while (version->src.sites.number())
-		  {
-		    site *asite = version->src.sites.removebyindex(1);
-		    delete asite;
-		  }
+	      pkg.versions.removebyindex(m--);
+	      if (pkg.prev == version)
+		pkg.prev = NULL;
+	      if (pkg.curr == version)
+		pkg.curr = NULL;
+	      if (pkg.exp == version)
+		pkg.exp = NULL;
+	      delete version;
 	    }
 	}
     }
