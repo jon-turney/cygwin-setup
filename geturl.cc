@@ -91,7 +91,7 @@ dialog (void *)
 {
   int rv = 0;
   MSG m;
-  HANDLE gw_dialog = CreateDialog (hinstance, MAKEINTRESOURCE (IDD_DLSTATUS),
+  HWND gw_dialog = CreateDialog (hinstance, MAKEINTRESOURCE (IDD_DLSTATUS),
 				   0, dialog_proc);
   ShowWindow (gw_dialog, SW_SHOWNORMAL);
   UpdateWindow (gw_dialog);

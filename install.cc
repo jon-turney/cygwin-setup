@@ -99,7 +99,7 @@ dialog (void *)
 {
   int rv = 0;
   MSG m;
-  HANDLE ins_dialog = CreateDialog (hinstance, MAKEINTRESOURCE (IDD_INSTATUS),
+  HWND ins_dialog = CreateDialog (hinstance, MAKEINTRESOURCE (IDD_INSTATUS),
 				   0, dialog_proc);
   if (ins_dialog == 0)
     fatal ("create dialog");

@@ -18,16 +18,12 @@
    so there's no point in parsing them all (even lean-n-mean).  Doing
    this cuts compile time in half. */
 
-#define _UNION_NAME(x)
-#define _STRUCT_NAME(x)
 #define NOCOMATTRIBUTE
 
 #include <stdarg.h>
-#include <windef.h>
-#include <basetyps.h>
-#include <winbase.h>
-#include <wingdi.h>
-#include <winuser.h>
-#include <wininet.h>
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+#include <wininet.h>
 #include <windowsx.h>

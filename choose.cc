@@ -571,7 +571,7 @@ create_listview (HWND dlg, RECT *r)
 		       r->left, r->top,
 		       r->right-r->left+1, r->bottom-r->top+1,
 		       dlg,
-		       MAKEINTRESOURCE(IDC_CHOOSE_LIST),
+		       (HMENU) MAKEINTRESOURCE(IDC_CHOOSE_LIST),
 		       hinstance,
 		       0);
   ShowWindow (lv, SW_SHOW);

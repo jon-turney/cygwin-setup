@@ -44,7 +44,7 @@ D(do_splash);
 #undef D
 
 /* end this dialog and select the next.  Pass 0 to exit the program */
-#define NEXT(id) EndDialog(h, 0), next_dialog = id
+#define NEXT(id) EndDialog((HWND)h, 0), next_dialog = id
 
 /* Get the value of an EditText control.  Pass the previously stored
    value and it will free the memory if needed. */

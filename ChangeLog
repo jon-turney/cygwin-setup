@@ -1,3 +1,13 @@
+2001-04-18  Earnie Boyd  <earnie@users.sourceforge.net>
+
+	* win32.h: Remove the definitions for _UNION_NAME and _STRUCT_NAME.
+	Must now include <windows.h> and not the pieces.
+	* choose.cc (create_listview): Clean up type mismatch problems.
+	* dialog.h (NEXT(id)): Ditto.
+	* geturl.cc (dialog): Ditto.
+	* install.cc (dialog): Ditto.
+	* splash.cc (load_dialog): Ditto.
+
 Wed Apr 18 18:59:21 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* tar.cc (class gzbz): Define dummy virtual functions.
