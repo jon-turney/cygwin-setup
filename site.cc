@@ -168,8 +168,11 @@ get_site_list (HINSTANCE h, HWND owner)
 	  site_list_type & listobj =
 	    all_site_list.registerbyobject (*newsite);
 	  if (&listobj != newsite)
-	    /* That site was already registered */
-	    delete newsite;
+	    {
+	      /* That site was already registered */
+	      listobj = *newsite;
+	      delete newsite;
+	    }
 	}
     }
   delete[] theString;

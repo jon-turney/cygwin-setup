@@ -63,7 +63,6 @@ BUILT_SOURCES = setup_version.c \
 if MINGWTARGET
   inilint_extras = \
   	autoload.c \
-  	mklink2.cc\
   	mklink2.cc
 else
   inilint_extras =
@@ -102,6 +101,8 @@ inilint_SOURCES = \
   IOStreamProvider.h \
   mkdir.cc \
   mkdir.h \
+  PackageSpecification.cc \
+  PackageSpecification.h \
   PackageTrust.h \
   rfc1738.cc \
   rfc1738.h \

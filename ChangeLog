@@ -1,5 +1,13 @@
 2002-07-02  Robert Collins  <rbtcollins@hotmail.com>
 
+	* Makefile.am (inilint_SOURCES): Add PackageSpecification sources.
+	nb: inilint is still incomplete, as the packageversion code is not
+	ready for database-less linking.
+	* site.cc (get_site_list): When the same site is reentered by the user
+	replace the old one. (Suggested by John Marshall).
+
+2002-07-02  Robert Collins  <rbtcollins@hotmail.com>
+
 	* IniDBBuilderPackage.cc (IniDBBuilderPackage::buildPackageSource):
 	Clear out package selections when generating implicit source packages.
 	* PackageSpecification.cc (PackageSpecification::satisfies): Implement.

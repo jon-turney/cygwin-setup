@@ -160,7 +160,6 @@ BUILT_SOURCES = setup_version.c \
 
 @MINGWTARGET_TRUE@inilint_extras = \
 @MINGWTARGET_TRUE@  	autoload.c \
-@MINGWTARGET_TRUE@  	mklink2.cc\
 @MINGWTARGET_TRUE@  	mklink2.cc
 
 @MINGWTARGET_FALSE@inilint_extras = 
@@ -196,6 +195,8 @@ inilint_SOURCES = \
   IOStreamProvider.h \
   mkdir.cc \
   mkdir.h \
+  PackageSpecification.cc \
+  PackageSpecification.h \
   PackageTrust.h \
   rfc1738.cc \
   rfc1738.h \
@@ -378,15 +379,15 @@ EXTRA_PROGRAMS = inilint$(EXEEXT)
 noinst_PROGRAMS = setup$(EXEEXT) @INILINT@
 PROGRAMS = $(noinst_PROGRAMS)
 
-@MINGWTARGET_TRUE@am__objects_1 = autoload.$(OBJEXT) mklink2.$(OBJEXT) \
-@MINGWTARGET_TRUE@	mklink2.$(OBJEXT)
+@MINGWTARGET_TRUE@am__objects_1 = autoload.$(OBJEXT) mklink2.$(OBJEXT)
 @MINGWTARGET_FALSE@am__objects_1 =
 am_inilint_OBJECTS = filemanip.$(OBJEXT) find.$(OBJEXT) \
 	FindVisitor.$(OBJEXT) LogSingleton.$(OBJEXT) \
 	IniDBBuilder.$(OBJEXT) inilex.$(OBJEXT) inilintmain.$(OBJEXT) \
 	iniparse.$(OBJEXT) IniParseFeedback.$(OBJEXT) \
 	io_stream.$(OBJEXT) io_stream_file.$(OBJEXT) mkdir.$(OBJEXT) \
-	rfc1738.$(OBJEXT) String++.$(OBJEXT) $(am__objects_1)
+	PackageSpecification.$(OBJEXT) rfc1738.$(OBJEXT) \
+	String++.$(OBJEXT) $(am__objects_1)
 inilint_OBJECTS = $(am_inilint_OBJECTS)
 inilint_DEPENDENCIES = libgetopt++/libgetopt++.la
 inilint_LDFLAGS =
