@@ -181,6 +181,14 @@ else
 	@$(CXX) $(MINGW_CXXFLAGS) -c -o $@ $<
 endif
 
+autoload.o: autoload.c
+ifdef VERBOSE
+	$(CC) $(MINGW_CFLAGS) -c -o $@ $< -fno-inline-functions
+else
+	@echo $(CC) -c $(CFLAGS) ... $(<F) -fno-inline-functions
+	@$(CC) $(MINGW_CFLAGS) -c -o $@ $< -fno-inline-functions
+endif
+
 iniparse.c iniparse.h : iniparse.y
 	bison -d -o iniparse.c $(srcdir)/iniparse.y
 
