@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include "String++.h"
+class IOStreamProvider;
 
 /* Some things don't fit cleanly just - TODO
  * make mkdir_p fit in the hierarchy
@@ -72,6 +73,8 @@ io_stream_seek_t;
 class io_stream
 {
 public:
+  /* Register a new io_stream provider */
+  static void registerProvider (IOStreamProvider &, String const &urlscheme);
   /* create a new stream from an existing one - used to get
    * decompressed data
    * or open archives.

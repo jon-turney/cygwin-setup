@@ -33,10 +33,11 @@ WINDRES		:= @WINDRES@
 INCLUDES	= -I$(srcdir)/bz2lib -I$(srcdir)/libgetopt++/include
 
 noinst_PROGRAMS = \
-  setup
+  setup \
+  @INILINT@
 
 EXTRA_PROGRAMS = inilint
-##noinst_PROGRAMS +=inilint
+## noinst_PROGRAMS +=inilint
 
 # to avoid false errors that assembly generates
 WARNONLY_CFLAGS	= -Winline -Wall -Wpointer-arith -Wcast-align \
@@ -71,6 +72,7 @@ inilint_SOURCES = \
   iniparse.h \
   io_stream.h \
   io_stream.cc \
+  IOStreamProvider.h \
   PackageTrust.h \
   rfc1738.cc \
   rfc1738.h \
@@ -141,6 +143,7 @@ setup_SOURCES = \
 	io_stream_file.h \
 	io_stream_memory.cc \
 	io_stream_memory.h \
+	IOStreamProvider.h \
 	list.h \
 	localdir.cc \
 	localdir.h \

@@ -33,7 +33,6 @@ static const char *cvsid =
 #include "win32.h"
 #include <commctrl.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <io.h>
 #include <ctype.h>
 #include <process.h>

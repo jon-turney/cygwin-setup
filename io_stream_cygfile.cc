@@ -32,6 +32,37 @@ static const char *cvsid =
 
 #include "io_stream.h"
 #include "io_stream_cygfile.h"
+#include "IOStreamProvider.h"
+
+/* completely private iostream registration class */
+class CygFileProvider : public IOStreamProvider
+{
+public:
+  int exists (String const &path) const
+    {return io_stream_cygfile::exists(path);}
+  int remove (String const &path) const
+    {return io_stream_cygfile::remove(path);}
+  int mklink (String const &a , String const &b, io_stream_link_t c) const
+    {return io_stream_cygfile::mklink(a,b,c);}
+  io_stream *open (String const &a,String const &b) const
+    {return new io_stream_cygfile (a, b);}
+  ~CygFileProvider (){}
+  int move (String const &a,String const &b) const
+    {return io_stream_cygfile::move (a, b);}
+  int mkdir_p (enum path_type_t isadir, String const &path) const
+    {return cygmkdir_p (isadir, path);}
+protected:
+  CygFileProvider() // no creating this
+    {
+      io_stream::registerProvider (theInstance, "cygfile://");
+    }
+  CygFileProvider(CygFileProvider const &); // no copying
+  CygFileProvider &operator=(CygFileProvider const &); // no assignment
+private:
+  static CygFileProvider theInstance;
+};
+CygFileProvider CygFileProvider::theInstance = CygFileProvider();
+
 
 /* For set mtime */
 #define FACTOR (0x19db1ded53ea710LL)

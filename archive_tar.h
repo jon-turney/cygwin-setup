@@ -21,6 +21,7 @@
 #include "io_stream.h"
 #include "archive.h"
 #include "String++.h"
+#include "win32.h"
 
 typedef struct
 {

@@ -94,6 +94,7 @@ DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 GCJ = @GCJ@
 GCJFLAGS = @GCJFLAGS@
+INILINT = @INILINT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LEX = @LEX@
 LEXLIB = @LEXLIB@
@@ -126,7 +127,8 @@ AM_CXXFLAGS = $(AM_CFLAGS)
 INCLUDES = -I$(srcdir)/bz2lib -I$(srcdir)/libgetopt++/include
 
 noinst_PROGRAMS = \
-  setup
+  setup \
+  @INILINT@
 
 
 EXTRA_PROGRAMS = inilint
@@ -167,6 +169,7 @@ inilint_SOURCES = \
   iniparse.h \
   io_stream.h \
   io_stream.cc \
+  IOStreamProvider.h \
   PackageTrust.h \
   rfc1738.cc \
   rfc1738.h \
@@ -239,6 +242,7 @@ setup_SOURCES = \
 	io_stream_file.h \
 	io_stream_memory.cc \
 	io_stream_memory.h \
+	IOStreamProvider.h \
 	list.h \
 	localdir.cc \
 	localdir.h \
@@ -331,7 +335,7 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/cfgaux/mkinstalldirs
 CONFIG_CLEAN_FILES =
 EXTRA_PROGRAMS = inilint$(EXEEXT)
-noinst_PROGRAMS = setup$(EXEEXT)
+noinst_PROGRAMS = setup$(EXEEXT) @INILINT@
 PROGRAMS = $(noinst_PROGRAMS)
 
 am_inilint_OBJECTS = filemanip.$(OBJEXT) LogSingleton.$(OBJEXT) \

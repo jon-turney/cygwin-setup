@@ -1,3 +1,27 @@
+2002-05-05 Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.am (noinst_PROGRAMS): Make inilint configurable.
+	* configure.in: Ditto.
+	Fix incorrect header checking syntax.
+	* aclocal.m4: Regenerate.
+	* configure: Regenerate.
+	* Makefile.in: Regenerate.
+	* io_stream.cc: Remove platform specific and provider specific code.
+	(io_stream::registerProvider): New method, registers a Url provider with
+	the io_stream code.
+	Make all methods consistently throw invalid_argument exceptions when
+	a provider that is requested is not present.
+	(findProvider): New private function, finds a provider.
+	* io_stream.h: Declare io_stream::registerProvider.
+	* io_stream_cygfile.cc: Create a Provider class to register with
+	io_stream.cc.
+	* io_stream_file.cc: Ditto.
+	* archive.cc: Remove unneeded includes.
+	* archive_tar.cc: Remove unneeded includes.
+	* archive_tar.h: Add required include.
+	* archive_tar_file.cc: Remove unneded includes.
+	* choose.cc: Remove unneeded includes:
+
 2002-05-04 Robert Collins  <rbtcollins@hotmail.com>
 
 	* io_stream.cc: Use the new log interface thruout.

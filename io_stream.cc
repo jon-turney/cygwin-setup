@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Robert Collins.
+ * Copyright (c) 2001, 2002, Robert Collins.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -24,16 +24,49 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-#include "win32.h"
-#include <stdio.h>
 #include "LogSingleton.h"
-#include "port.h"
 
 #include "io_stream.h"
-#include "io_stream_file.h"
-#include "io_stream_cygfile.h"
-#include "mkdir.h"
 #include "String++.h"
+#include "list.h"
+#include <stdexcept>
+#include "IOStreamProvider.h"
+
+static list <IOStreamProvider const, String const, String::casecompare> *providers;
+static size_t longestPrefix = 0;
+static int inited = 0;
+  
+void
+io_stream::registerProvider (IOStreamProvider &theProvider,
+			     String const &urlPrefix)
+{
+  if (!inited)
+    {
+      providers = new list <IOStreamProvider const, String const, 
+        String::casecompare>;
+      inited = true;
+    }
+  theProvider.key = urlPrefix;
+  IOStreamProvider const &testProvider = providers->registerbyobject (theProvider);
+  if (&testProvider != &theProvider)
+    throw new invalid_argument ("urlPrefix already registered!");
+  if (urlPrefix.size() > longestPrefix)
+    longestPrefix = urlPrefix.size();
+}
+
+static IOStreamProvider const *
+findProvider (String const &path)
+{
+  if (path.size() < longestPrefix)
+    return NULL;
+  for (unsigned int i = 1; i <= providers->number(); ++i)
+    {
+      IOStreamProvider const *p = (*providers)[i];
+      if (!path.casecompare (p->key, p->key.size()))
+       	return p;
+    }
+  return NULL;
+}
 
 /* Static members */
 io_stream *
@@ -54,58 +87,33 @@ io_stream::factory (io_stream * parent)
 io_stream *
 io_stream::open (String const &name, String const &mode)
 {
-  if (name.size() < 7 ||
-      mode.size() == 0)
-    return NULL;
-  /* iterate through the known url prefix's */
-  if (!name.casecompare ("file://", 7))
-    {
-      io_stream_file *rv = new io_stream_file (&name.cstr_oneuse()[7], mode.cstr_oneuse());
-      if (!rv->error ())
-	return rv;
-      delete rv;
-      return NULL;
-    }
-  if (!name.casecompare ("cygfile://", 10))
-    {
-      io_stream_cygfile *rv = new io_stream_cygfile (&name.cstr_oneuse()[10], mode.cstr_oneuse());
-      if (!rv->error ())
-	return rv;
-      delete rv;
-      return NULL;
-    }
+  IOStreamProvider const *p = findProvider (name);
+  if (!p)
+    throw new invalid_argument ("URL Scheme not registered!");
+  io_stream *rv = p->open (&name.cstr_oneuse()[p->key.size()], mode);
+  if (!rv->error ())
+    return rv;
+  delete rv;
   return NULL;
 }
 
 int
 io_stream::mkpath_p (path_type_t isadir, String const &name)
 {
-  if (name.size() < 7)
-    return 1;
-  /* iterate through the known url prefix's */
-  if (!name.casecompare ("file://", 7))
-    {
-      return mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, &name.cstr_oneuse()[7]);
-    }
-  if (!name.casecompare ("cygfile://", 10))
-    {
-      return cygmkdir_p (isadir, &name.cstr_oneuse()[10]);
-    }
-  return 1;
+  IOStreamProvider const *p = findProvider (name);
+  if (!p)
+    throw new invalid_argument ("URL Scheme not registered!");
+  return p->mkdir_p (isadir, &name.cstr_oneuse()[p->key.size()]);
 }
 
 /* remove a file or directory. */
 int
 io_stream::remove (String const &name)
 {
-  if (!name.size())
-    return 1;
-  /* iterate through the known url prefix's */
-  if (!name.casecompare ("file://", 7))
-    return io_stream_file::remove (&name.cstr_oneuse()[7]);
-  if (!name.casecompare ("cygfile://", 10))
-    return io_stream_cygfile::remove (&name.cstr_oneuse()[10]);
-  return 1;
+  IOStreamProvider const *p = findProvider (name);
+  if (!p)
+    throw new invalid_argument ("URL Scheme not registered!");
+  return p->remove (&name.cstr_oneuse()[p->key.size()]);
 }
 
 int
@@ -114,39 +122,14 @@ io_stream::mklink (String const &from, String const &to,
 {
   log (LOG_BABBLE) << "io_stream::mklink (" << from << "->" << to << ")"
     << endLog;
-  if (!from.size() || !to.size())
-    {
-      log (LOG_TIMESTAMP) << "invalid string in from or to parameters to mklink"
-	<< endLog;
-      return 1;
-    }
-  /* iterate through the known url prefixes */
-  if (!from.casecompare ("file://", 7))
-    {
-      /* file urls can symlink or hardlink to file url's. */
-      /* TODO: allow linking to cygfile url's */
-      if (!to.casecompare ("file://", 7))
-	return io_stream_file::mklink (&from.cstr_oneuse()[7], &to.cstr_oneuse()[7], linktype);
-      log (LOG_TIMESTAMP) << "Attempt to link across url providers" << endLog;
-      return 1;
-    }
-  if (!from.casecompare ("cygfile://", 10))
-    {
-      /* cygfile urls can symlink or hardlink to cygfile urls's. */
-      /* TODO: allow -> file urls */
-      if (!to.casecompare ("cygfile://", 10))
-	return io_stream_cygfile::mklink (&from.cstr_oneuse()[10], &to.cstr_oneuse()[10], linktype);
-      log (LOG_TIMESTAMP) << "Attempt to link across url providers" << endLog;
-      return 1;
-    }
-#if 0
-  if (!strmcasecmp ("http://", from, 7))
-    {
-      /* http urls can symlink to http or ftp url's */
-    }
-#endif
-  log (LOG_TIMESTAMP) << "Unsupported url providers for " << from << endLog;
-  return 1;
+  IOStreamProvider const *fromp = findProvider (from);
+  IOStreamProvider const *top = findProvider (to);
+  if (!fromp || !top)
+    throw new invalid_argument ("URL Scheme not registered!");
+  if (fromp != top)
+    throw new invalid_argument ("Attempt to link across url providers.");
+  return fromp->mklink (&from.cstr_oneuse()[fromp->key.size()], 
+    			&to.cstr_oneuse()[top->key.size()], linktype);
 }
 
 int
@@ -203,35 +186,14 @@ ssize_t io_stream::copy (io_stream * in, io_stream * out)
 int
 io_stream::move (String const &from, String const &to)
 {
-  if (!from.size() || !to.size())
-    {
-      log (LOG_TIMESTAMP) << "invalid string in from or to parameters to move"
-	<< endLog;
-      return 1;
-    }
-  /* iterate through the known url prefixes */
-  if (!from.casecompare ("file://", 7))
-    {
-      /* TODO: allow 'move' to cygfile url's */
-      if (to.casecompare ("file://", 7))
-	return io_stream::move_copy (from, to);
-      return io_stream_file::move (&from.cstr_oneuse()[7], &to.cstr_oneuse()[7]);
-    }
-  if (!from.casecompare ("cygfile://", 10))
-    {
-      /* TODO: allow -> file urls */
-      if (to.casecompare ("cygfile://", 10))
-	return io_stream::move_copy (from, to);
-      return io_stream_cygfile::move (&from.cstr_oneuse()[10], &to.cstr_oneuse()[10]);
-    }
-#if 0
-  if (!strmcasecmp ("http://", from, 7))
-    {
-      /* http urls can symlink to http or ftp url's */
-    }
-#endif
-  log (LOG_TIMESTAMP) << "Unsupported url providers for " << from << endLog;
-  return 1;
+  IOStreamProvider const *fromp = findProvider (from);
+  IOStreamProvider const *top = findProvider (to);
+  if (!fromp || !top)
+    throw new invalid_argument ("URL Scheme not registered!");
+  if (fromp != top)
+    return io_stream::move_copy (from, to);
+  return fromp->move (&from.cstr_oneuse()[fromp->key.size()],
+  		      &to.cstr_oneuse()[top->key.size()]);
 }
 
 char *
@@ -261,14 +223,10 @@ io_stream::gets (char *buffer, size_t length)
 int
 io_stream::exists (String const &name)
 {
-  if (!name.size())
-    return 1;
-  /* iterate through the known url prefix's */
-  if (!name.casecompare ("file://", 7))
-    return io_stream_file::exists (&name.cstr_oneuse()[7]);
-  if (!name.casecompare ("cygfile://", 10))
-    return io_stream_cygfile::exists (&name.cstr_oneuse()[10]);
-  return 1;
+  IOStreamProvider const *p = findProvider (name);
+  if (!p)
+    throw new invalid_argument ("URL Scheme not registered!");
+  return p->exists (&name.cstr_oneuse()[p->key.size()]);
 }
 
 /* virtual members */

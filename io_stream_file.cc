@@ -24,10 +24,42 @@ static const char *cvsid =
 #include <errno.h>
 #include <unistd.h>
 #include "port.h"
+#include "mkdir.h"
 #include "mklink2.h"
 
 #include "io_stream.h"
 #include "io_stream_file.h"
+#include "IOStreamProvider.h"
+
+/* completely private iostream registration class */
+class FileProvider : public IOStreamProvider
+{
+public:
+  int exists (String const &path) const
+    {return io_stream_file::exists(path);}
+  int remove (String const &path) const
+    {return io_stream_file::remove(path);}
+  int mklink (String const &a , String const &b, io_stream_link_t c) const
+    {return io_stream_file::mklink(a,b,c);}
+  io_stream *open (String const &a,String const &b) const
+    {return new io_stream_file (a, b);}
+  ~FileProvider (){}
+  int move (String const &a,String const &b) const
+    {return io_stream_file::move (a, b);}
+  int mkdir_p (enum path_type_t isadir, String const &path) const
+    {return ::mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, path.cstr_oneuse());}
+protected:
+  FileProvider() // no creating this
+    {
+      io_stream::registerProvider (theInstance, "file://");
+    }
+  FileProvider(FileProvider const &); // no copying
+  FileProvider &operator=(FileProvider const &); // no assignment
+private:
+  static FileProvider theInstance;
+};
+FileProvider FileProvider::theInstance = FileProvider();
+  
 
 /* for set_mtime */
 #define FACTOR (0x19db1ded53ea710LL)

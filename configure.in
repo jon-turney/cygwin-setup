@@ -26,6 +26,19 @@ AM_MAINTAINER_MODE
 AC_CONFIG_SRCDIR([Makefile.in])
 AC_REVISION($Revision$)dnl
 
+AC_MSG_CHECKING([Whether to build inilint])
+AC_ARG_ENABLE(inilint,
+	    AC_HELP_STRING([--enable-inilint],
+			   [Build the inilint tool]),
+	    ac_cv_enable_inilint=$enableval, ac_cv_enable_inilint=no)
+AC_MSG_RESULT([$ac_cv_enable_inilint])
+if test $ac_cv_enable_inilint = yes; then
+  INILINT="inilint"
+else
+  INILINT=
+fi
+AC_SUBST(INILINT)
+
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AM_PROG_CC_C_O
@@ -52,10 +65,10 @@ dnl AC_SUBST(OBJCOPY)
 
 AC_CHECK_LIB(mingw32,main)
 
-AC_CHECK_HEADERS(alloca.h, \
-		 errno.h, \
-		 string, \
-		 string.h)
+AC_CHECK_HEADERS(alloca.h \
+		 errno.h \
+		 string \
+		 string.h )
 
 AC_CONFIG_SUBDIRS(zlib)
 AC_CONFIG_SUBDIRS(bz2lib)

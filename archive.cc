@@ -21,11 +21,11 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-#include "win32.h"
-#include <stdio.h>
-#include <stdlib.h>
+//#include "win32.h"
+//#include <stdio.h>
+//#include <stdlib.h>
 #include "LogSingleton.h"
-#include "port.h"
+//#include "port.h"
 #include "String++.h"
 
 #include "io_stream.h"
