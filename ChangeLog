@@ -1,5 +1,10 @@
 2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
 
+	* install.cc (do_install): Write a version 2 installed.db file.
+	* package_db.cc (packagedb::packagedb): Read version 1 and 2 installed.db files.
+
+2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.in (OBJS): Add package abstraction objects.
 	* choose.cc: Include package abstraction headers.
 	(read_installed_db): Use packagedb class and ignore installed sources.

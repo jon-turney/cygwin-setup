@@ -562,17 +562,12 @@ do_install (HINSTANCE h)
 
     }
 
+  fprintf (ndb, "INSTALLED.DB 2\n");
   for (Package * pkg = package; pkg->name; pkg++)
     if (is_download_action (pkg))
       {
 	Info *pi = pkg->info + pkg->installed_ix;
-	if (pkg->srcpicked)
-	  fprintf (ndb, "%s %s %d %s %d\n", pkg->name,
-		   pi->install, pi->install_size,
-		   pi->source, pi->source_size);
-	else
-	  fprintf (ndb, "%s %s %d\n", pkg->name,
-		   pi->install, pi->install_size);
+	fprintf (ndb, "%s %s %d\n", pkg->name, pi->install, pi->install_size);
       }
 
   if (odb)

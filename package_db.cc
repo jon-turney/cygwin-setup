@@ -66,74 +66,61 @@ packagedb::packagedb ()
       /* flush_local_db_package_data */
       char line[1000], pkgname[1000], inst[1000], src[1000];
       int instsz, srcsz;
-      while (db->gets (line, 1000))
+
+      if (db->gets (line, 1000))
 	{
-	  int parseable;
-	  src[0] = 0;
-	  srcsz = 0;
-	  sscanf (line, "%s %s %d %s %d", pkgname, inst, &instsz, src,
-		  &srcsz);
-	  fileparse f;
-	  parseable = parse_filename (inst, f);
-	  if (!parseable)
-	    continue;
-
-	  packagemeta *pkg = getpackagebyname (pkgname);
-	  if (!pkg)
+	  int dbver;
+	  sscanf (line, "%s %d", pkgname, &instsz);
+	  if (!strcasecmp (pkgname, "INSTALLED.DB") && instsz == 2)
+	    dbver = 2;
+	  else
+	    dbver = 1;
+	  delete db;
+	  /* Later versions may not use installed.db other than to record the version. */
+	  if (dbver == 1 || dbver == 2)
 	    {
-	      pkg = new packagemeta (pkgname);
-	      /* we should install a new handler then not check this...
-	       */
-	      //if (!pkg)
-	      //die badly
-	    }
-
-	  cygpackage *binary =
-	    new cygpackage (pkgname, inst, instsz, f.ver, package_installed,
-			    package_binary);
-
-	  pkg->add_version (*binary);
-	  pkg->set_installed (*binary);
-	  addpackage (*pkg);
-
-#if 0
-	  if (src[0] && srcsz)
-	    {
-	      cygpackage *source =
-		new cygpackage (pkgname, src, srcsz, f.ver, package_installed,
-				package_source);
-	    }
-#endif
-
-#if 0
-	  if (pkg == NULL)
-	    {
-	      pkg = new_package (pkgname);
-	      pkg->info[TRUST_CURR].version = strdup (f.ver);
-	      pkg->info[TRUST_CURR].install = strdup (inst);
-	      pkg->info[TRUST_CURR].install_size = instsz;
-	      if (src[0] && srcsz)
+	      db =
+		io_stream::open ("cygfile:///etc/setup/installed.db", "rt");
+	      if (dbver == 2)
+		db->gets (line, 1000);
+	      while (db->gets (line, 1000))
 		{
-		  pkg->info[TRUST_CURR].source = strdup (src);
-		  pkg->info[TRUST_CURR].source_size = srcsz;
-		}
-	      pkg->installed_ix = TRUST_CURR;
-	      /* Exists on local system but not on download system */
-	      pkg->exclude = EXCLUDE_NOT_FOUND;
-	    }
-	  pkg->installed = new Info (inst, f.ver, instsz);
+		  int parseable;
+		  src[0] = 0;
+		  srcsz = 0;
+		  sscanf (line, "%s %s %d %s %d", pkgname, inst, &instsz, src,
+			  &srcsz);
+		  fileparse f;
+		  parseable = parse_filename (inst, f);
+		  if (!parseable)
+		    continue;
 
-	  if (!pkg->installed_ix)
-	    for (trusts t = TRUST_PREV; t < NTRUST; ((int) t)++)
-	      if (pkg->info[t].install
-		  && strcmp (f.ver, pkg->info[t].version) == 0)
-		{
-		  pkg->installed_ix = t;
-		  break;
+		  packagemeta *pkg = getpackagebyname (pkgname);
+		  if (!pkg)
+		    {
+		      pkg = new packagemeta (pkgname);
+		      /* we should install a new handler then not check this...
+		       */
+		      //if (!pkg)
+		      //die badly
+		    }
+
+		  cygpackage *binary =
+		    new cygpackage (pkgname, inst, instsz, f.ver,
+				    package_installed,
+				    package_binary);
+
+		  pkg->add_version (*binary);
+		  pkg->set_installed (*binary);
+		  addpackage (*pkg);
+
 		}
-#endif
+	      delete db;
+	    }
+	  else
+	    // unknown dbversion
+	    exit (1);
 	}
-      delete db;
     }
   db = 0;
   curr_package = 0;
@@ -165,10 +152,11 @@ packagedb::addpackage (packagemeta & newpackage)
   /* lock the mutex */
   if (packagecount == packagespace)
     {
-      packagemeta **newpackages =
-	(packagemeta **) realloc (packages,
-				  sizeof (packagemeta *) * (packagespace +
-							    100));
+      packagemeta **newpackages = (packagemeta **) realloc (packages,
+							    sizeof
+							    (packagemeta *) *
+							    (packagespace +
+							     100));
       if (!newpackages)
 	{
 	  //die
@@ -185,12 +173,8 @@ packagedb::addpackage (packagemeta & newpackage)
 packagemeta **
   packagedb::packages =
   0;
-size_t
-  packagedb::packagecount =
-  0;
-size_t
-  packagedb::packagespace =
-  0;
+size_t packagedb::packagecount = 0;
+size_t packagedb::packagespace = 0;
 int
   packagedb::installeddbread =
   0;
