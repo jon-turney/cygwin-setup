@@ -23,22 +23,22 @@
 class StringOption : public Option
 {
 public:
-  StringOption(String const defaultvalue, char shortopt, char const *longopt = 0,
-	     String const &shorthelp = String(), bool const optional = true,
+  StringOption(string const defaultvalue, char shortopt, char const *longopt = 0,
+	     string const &shorthelp = string(), bool const optional = true,
 	     OptionSet &owner=GetOption::GetInstance());
   virtual ~ StringOption ();
-  virtual String const shortOption () const;
+  virtual string const shortOption () const;
   virtual struct option longOption () const;
-  virtual String const shortHelp () const;
+  virtual string const shortHelp () const;
   virtual bool Process (char const *);
-  operator String () const;
+  operator string () const;
 
 private:
   int _optional;
-  String _value;
+  string _value;
   char _shortopt;
   char const *_longopt;
-  String _shorthelp;
+  string _shorthelp;
 };
 
 #endif // _STRINGOPTION_H_

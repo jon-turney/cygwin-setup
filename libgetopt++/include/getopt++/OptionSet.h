@@ -25,7 +25,7 @@ class OptionSet
 {
 public:
   OptionSet();
-  ~OptionSet();
+  virtual ~OptionSet();
   virtual void Register (Option *);
   virtual bool Process (int argc, char **argv, OptionSet *defaultOptionSet=0);
   virtual void ParameterUsage (ostream &);

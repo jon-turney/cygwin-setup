@@ -9,7 +9,7 @@ AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects VERSION=1.5
 
 DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
-AM_CXXFLAGS = -I$(top_srcdir)/include
+INCLUDES = -I$(top_srcdir)/include
 
 getoptincludedir = $(includedir)/getopt++
 
@@ -18,7 +18,11 @@ check_PROGRAMS = testoption
 
 libgetopt___la_SOURCES = src/GetOption.cc src/Option.cc src/BoolOption.cc \
 	src/OptionSet.cc \
-	src/StringOption.cc
+	src/StringOption.cc \
+	src/getopt.c \
+	include/getopt.h \
+	include/cdefs.h
+
 libgetopt___la_LDFLAGS = -lstdc++ -version-info 0:0:0
 
 getoptinclude_HEADERS = include/getopt++/Option.h \

@@ -16,7 +16,7 @@
 #include <getopt++/BoolOption.h>
 
 BoolOption::BoolOption(bool const defaultvalue, char shortopt, 
-		       char const *longopt, String const &shorthelp, 
+		       char const *longopt, string const &shorthelp, 
 		       OptionSet &owner) : _value (defaultvalue) , 
 		       _ovalue (defaultvalue), _shortopt(shortopt), 
 		       _longopt (longopt), _shorthelp (shorthelp)
@@ -26,10 +26,10 @@ BoolOption::BoolOption(bool const defaultvalue, char shortopt,
 
 BoolOption::~ BoolOption () {};
 
-String const 
+string const 
 BoolOption::shortOption () const
 {
-  return String() + _shortopt;
+  return string() + _shortopt;
 }
 
 struct option 
@@ -39,7 +39,7 @@ BoolOption::longOption () const
   return foo;
 }
 
-String const 
+string const 
 BoolOption::shortHelp () const
 {
   return _shorthelp;

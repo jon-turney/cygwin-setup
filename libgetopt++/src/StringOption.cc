@@ -15,8 +15,8 @@
 
 #include <getopt++/StringOption.h>
 
-StringOption::StringOption(String const defaultvalue, char shortopt, 
-		       char const *longopt, String const &shorthelp, 
+StringOption::StringOption(string const defaultvalue, char shortopt, 
+		       char const *longopt, string const &shorthelp, 
 		       bool const optional, OptionSet &owner) : 
 		       _value (defaultvalue) , _shortopt(shortopt),
 		       _longopt (longopt), _shorthelp (shorthelp)
@@ -30,10 +30,10 @@ StringOption::StringOption(String const defaultvalue, char shortopt,
 
 StringOption::~ StringOption () {};
 
-String const 
+string const 
 StringOption::shortOption () const
 {
-  return String() + _shortopt + ":";
+  return string() + _shortopt + ":";
 }
 
 struct option 
@@ -43,7 +43,7 @@ StringOption::longOption () const
   return foo;
 }
 
-String const 
+string const 
 StringOption::shortHelp () const
 {
   return _shorthelp;
@@ -56,7 +56,7 @@ StringOption::Process (char const *optarg)
     _value = optarg;
 }
 
-StringOption::operator String () const
+StringOption::operator string () const
 {
   return _value;
 }

@@ -1,5 +1,24 @@
 2002-04-23  Robert Collins  <rbtcollins@hotmail.com>
 
+	* include/cdefs.h: New file, support for getopt.h.
+	* include/getopt.h: New file, for platforms without getopt.h.
+	* src/getopt.c: New file, implementation of getopt.
+	* COPYING: New file, GPL v2 text.
+	* Makefile.am: Change AM_CXXFLAGS to INCLUDES.
+	Add getopt.c to the library source.
+	Add new headers to the source list.
+	* configure.in: Remove unneeded macro calls.
+	* include/getopt++/StringOption.h: Change String to string throughout.
+	* src/StringOption.cc: Ditto.
+	* include/getopt++/BoolOption.h: Ditto.
+	* src/BoolOption.cc: Ditto.
+	* src/OptionSet.cc: Ditto.
+	* include/getopt++/Option.h: Ditto. 
+	Remove String++ includes, it's not needed anymore.
+	* include/getopt++/OptionSet.h: Make the destructor virtual.
+
+2002-04-23  Robert Collins  <rbtcollins@hotmail.com>
+
 	* src/OptionSet.cc (OptionSet::ParameterUsage): Line-break long 
 	help text.
 

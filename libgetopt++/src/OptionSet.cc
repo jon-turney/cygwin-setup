@@ -50,7 +50,7 @@ bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
     }
 //  log (LOG_TIMESTAMP, "Process command line options\n");
   struct option longopts[optCount + 1];
-  String
+  string
     shortopts;
   for (int i = 0; i < optCount; ++i)
     {
@@ -119,11 +119,11 @@ OptionSet::ParameterUsage (ostream &aStream)
   for (int i = 0; i < optCount; ++i)
     {
       Option *anOption = options[i];
-      String output = String() + " -" + anOption->shortOption ()[0];
+      string output = string() + " -" + anOption->shortOption ()[0];
       output += " --" ;
       output += anOption->longOption ().name;
-      output += String (40 - output.size(), ' ');
-      String helpmsg = anOption->shortHelp();
+      output += string (40 - output.size(), ' ');
+      string helpmsg = anOption->shortHelp();
       while (helpmsg.size() > 40)
 	{
 	  // TODO: consider using a line breaking class here.
@@ -131,7 +131,7 @@ OptionSet::ParameterUsage (ostream &aStream)
 	  output += helpmsg.substr(0,pos);
 	  helpmsg.erase (0,pos+1);
 	  aStream << output << endl;
-	  output = String (40, ' ');
+	  output = string (40, ' ');
 	}
       output += helpmsg;
       aStream << output << endl;

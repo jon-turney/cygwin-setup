@@ -19,15 +19,10 @@
 #if HAVE_CONFIG_H
 #include "autoconf.h"
 #endif
-#if HAVE_STRING___H
-#include "String++.h"
-// this is bogus, because autoconf doesn't understand
-// <string> vs <string.h>
-#elif HAVE_STRING_H
+#if HAVE_STRING_H
 #include <string>
-typedef string String;
 #else 
-#error ""String++.h" or <string> required"
+#error "<string> required"
 #endif
 
 // Each registered option must implement this class.
@@ -35,9 +30,9 @@ class Option
 {
 public:
   virtual ~ Option ();
-  virtual String const shortOption () const = 0;
+  virtual string const shortOption () const = 0;
   virtual struct option longOption () const = 0;
-  virtual String const shortHelp () const = 0;
+  virtual string const shortHelp () const = 0;
   virtual bool Process (char const *) = 0;
 
 protected:
