@@ -818,6 +818,9 @@ scan2 (char *path, unsigned int size)
 	return;
       }
 
+  /* FIXME: This is really not the right way to do this.  We should check
+     the version number of the "found" tar file and put it in the test slot
+     if it is newer than curr, the curr slot if it is newer than prev, etc. */
   if (hole)
     {
       hole->version = strdup (f.ver);
