@@ -30,7 +30,7 @@
 #define NOMINMAX
 #endif
 
-/* In w32api 3.1, __declspec(dllinport) decoration is added to
+/* In w32api 3.1, __declspec(dllimport) decoration is added to
  * certain symbols. This breaks our autoload mechanism - the symptom is
  * multiple declaration errors at link time. This define turns that off again.
  * It will default to off again in later w32api versions, but we need to work
