@@ -29,7 +29,7 @@
 
 class PropertyPage;
 
-class PropSheet:public Window
+class PropSheet : public Window
 {
   PropertyPage *PropertyPages[MAXPROPPAGES];
   int NumPropPages;
