@@ -39,7 +39,7 @@ extern "C" {
 };
 
 char *etc_profile[] = {
-  "PATH=/bin:/usr/bin:/usr/local/bin:$PATH",
+  "PATH=\"/bin:/usr/bin:/usr/local/bin:$PATH\"",
   "unset DOSDRIVE",
   "unset DOSDIR",
   "unset TMPDIR",
