@@ -45,6 +45,7 @@ public:
     return OnNext ();
   }; 
   private:
+  void createListview (HWND dlg, RECT * r);
   void getParentRect (HWND parent, HWND child, RECT * r);
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();

@@ -78,7 +78,10 @@ public:
   void set_action (packageversion const &default_version);
   void set_action (_actions, packageversion const & default_version);
   void uninstall ();
-  int set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0);
+  int set_requirements (trusts deftrust, size_t depth);
+  // explicit separation for generic programming.
+  int set_requirements (trusts deftrust = TRUST_CURR) 
+    { return set_requirements (deftrust, 0); }
 
   String action_caption () const;
   packageversion trustp (trusts const t) const

@@ -1,4 +1,12 @@
-2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
+2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.cc (create_listview): Use for_each instead of explicit 
+	iteration.
+	(create_listview): Rename to ChooserPage::createListview.
+	* package_meta.h (packagemeta::set_requirements): Explicitly separate
+	the 1 and 2 parameter versions.
+	
+2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
 
 	* String++.h (String::operator !=): Declare for char * and String.
 	* String++.cc (String::operator !=): Implement.

@@ -425,8 +425,8 @@ set_view_mode (HWND h, PickView::views mode)
   InvalidateRect (h, &r, TRUE);
 }
 
-static void
-create_listview (HWND dlg, RECT * r)
+void
+ChooserPage::createListview (HWND dlg, RECT * r)
 {
   lv = CreateWindowEx (WS_EX_CLIENTEDGE,
 		       "listview",
@@ -448,12 +448,7 @@ create_listview (HWND dlg, RECT * r)
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE) << "Failed to set View button caption %ld" << 
 	 GetLastError () << endLog;
-  for (vector <packagemeta *>::iterator i = db.packages.begin ();
-       i != db.packages.end (); ++i)
-    {
-      packagemeta & pkg = **i;
-      pkg.set_requirements (chooser->deftrust);
-    }
+  for_each (db.packages.begin(), db.packages.end(), bind2nd(mem_fun(&packagemeta::set_requirements), chooser->deftrust));
   /* FIXME: do we need to init the desired fields ? */
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_PREV, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
   rbset (dlg, ta, IDC_CHOOSE_CURR);
@@ -508,7 +503,7 @@ ChooserPage::OnInit ()
   getParentRect (GetHWND (), GetDlgItem (IDC_LISTVIEW_POS), &r);
   r.top += 2;
   r.bottom -= 2;
-  create_listview (GetHWND (), &r);
+  createListview (GetHWND (), &r);
 }
 
 void
