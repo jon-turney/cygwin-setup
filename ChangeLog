@@ -1,3 +1,10 @@
+2000-09-13  DJ Delorie  <dj@redhat.com>
+
+	* install.cc (do_install): update disk fullness once per package
+	to improve performance
+
+	* choose.cc (create_listview): call ReleaseDC
+
 Mon Sep 11 22:40 2000  Harold L Hunt II <harold@compasstechnologies.com>
 
 	* mkdir.cc: Create directories when ERROR_FILE_NOT_FOUND is

@@ -154,9 +154,6 @@ progress (int bytes)
       perc = (total_bytes_sofar + bytes) / (total_bytes / 100);
       SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) perc, 0);
     }
-
-  int df = diskfull (root_dir);
-  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
 }
 
 static void
@@ -262,6 +259,9 @@ do_install (HINSTANCE h)
   total_bytes = 0;
   total_bytes_sofar = 0;
 
+  int df = diskfull (root_dir);
+  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
+
   LOOP_PACKAGES
     {
       total_bytes += pi.install_size;
@@ -363,6 +363,9 @@ do_install (HINSTANCE h)
 
 	  total_bytes_sofar += pi.install_size;
 	  progress (0);
+
+	  df = diskfull (root_dir);
+	  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
 
 	  if (lst)
 	    gzclose (lst);

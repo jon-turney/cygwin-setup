@@ -496,6 +496,8 @@ create_listview (HWND dlg, RECT *r)
 
   set_full_list (lv, full_list);
   default_trust (lv, TRUST_CURR);
+
+  ReleaseDC (lv, dc);
 }
 
 static BOOL
