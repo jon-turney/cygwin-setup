@@ -19,7 +19,7 @@
 # Makefile for Cygwin installer
 
 AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6
-SUBDIRS = bz2lib zlib
+SUBDIRS = bz2lib zlib libgetopt++
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
@@ -30,7 +30,7 @@ AM_CXXFLAGS	= $(AM_CFLAGS) -fno-rtti
 
 WINDRES		:= @WINDRES@
 
-INCLUDES	= -I$(srcdir)/bz2lib
+INCLUDES	= -I$(srcdir)/bz2lib -I$(srcdir)/libgetopt++/include
 
 noinst_PROGRAMS = setup
 
@@ -43,7 +43,8 @@ BUILT_SOURCES = setup_version.c \
   	inilex.cc \
 	iniparse.cc
 
-setup_LDADD = zlib/libzcygw.a bz2lib/libbz2.a -lmingw32 -luser32 -lkernel32 \
+setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a libgetopt++/libgetopt++.la \
+  -lstdc++ -lmingw32 -luser32 -lkernel32 \
   -lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid
 setup_SOURCES = \
 	archive.cc \
@@ -65,7 +66,6 @@ setup_SOURCES = \
 	find.cc \
 	filemanip.cc \
 	fromcwd.cc \
-	GetOption.cc \
 	geturl.cc \
 	hash.cc \
 	ini.cc \
@@ -80,7 +80,6 @@ setup_SOURCES = \
 	localdir.cc \
 	log.cc \
 	main.cc \
-	getopt.c \
 	mkdir.cc \
 	mklink2.cc \
 	mount.cc \
@@ -91,7 +90,6 @@ setup_SOURCES = \
 	nio-file.cc \
 	nio-ftp.cc \
 	nio-http.cc \
-	Option.cc \
 	package_db.cc \
 	package_meta.cc \
 	package_source.cc \

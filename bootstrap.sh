@@ -22,6 +22,7 @@ mkdir -p cfgaux
 # Bootstrap the autotool subsystems
 bootstrap aclocal
 # bootstrap autoheader
+bootstrap libtoolize --automake
 bootstrap autoconf
 bootstrap automake --foreign --add-missing
 

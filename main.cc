@@ -57,7 +57,7 @@ static const char *cvsid =
 #include "threebar.h"
 #include "desktop.h"
 
-#include "GetOption.h"
+#include "getopt++/GetOption.h"
 
 int next_dialog;
 int exit_msg = 0;
@@ -171,8 +171,7 @@ WinMain (HINSTANCE h,
   int argc;
   for (argc = 0, argv = __argv; *argv; argv++)++argc;
 
-  GetOption options = GetOption::GetInstance();
-  if (!options.Process (argc, __argv))
+  if (!GetOption::GetInstance().Process (argc, __argv))
     exit_setup(1);
   
 

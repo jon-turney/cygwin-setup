@@ -84,16 +84,27 @@ EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 AMTAR = @AMTAR@
+AS = @AS@
 AWK = @AWK@
 CC = @CC@
 CXX = @CXX@
+CXXCPP = @CXXCPP@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LEX = @LEX@
 LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
 MAINT = @MAINT@
+OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
@@ -104,7 +115,7 @@ am__quote = @am__quote@
 install_sh = @install_sh@
 
 AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6
-SUBDIRS = bz2lib zlib
+SUBDIRS = bz2lib zlib libgetopt++
 
 AM_CFLAGS = -Werror -Winline -Wall -Wpointer-arith \
   -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
@@ -112,7 +123,7 @@ AM_CFLAGS = -Werror -Winline -Wall -Wpointer-arith \
 
 AM_CXXFLAGS = $(AM_CFLAGS) -fno-rtti
 
-INCLUDES = -I$(srcdir)/bz2lib
+INCLUDES = -I$(srcdir)/bz2lib -I$(srcdir)/libgetopt++/include
 
 noinst_PROGRAMS = setup
 
@@ -127,7 +138,8 @@ BUILT_SOURCES = setup_version.c \
 	iniparse.cc
 
 
-setup_LDADD = zlib/libzcygw.a bz2lib/libbz2.a -lmingw32 -luser32 -lkernel32 \
+setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a libgetopt++/libgetopt++.la \
+  -lstdc++ -lmingw32 -luser32 -lkernel32 \
   -lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid
 
 setup_SOURCES = \
@@ -150,7 +162,6 @@ setup_SOURCES = \
 	find.cc \
 	filemanip.cc \
 	fromcwd.cc \
-	GetOption.cc \
 	geturl.cc \
 	hash.cc \
 	ini.cc \
@@ -165,7 +176,6 @@ setup_SOURCES = \
 	localdir.cc \
 	log.cc \
 	main.cc \
-	getopt.c \
 	mkdir.cc \
 	mklink2.cc \
 	mount.cc \
@@ -218,19 +228,17 @@ am_setup_OBJECTS = archive.$(OBJEXT) archive_tar.$(OBJEXT) \
 	concat.$(OBJEXT) cygpackage.$(OBJEXT) desktop.$(OBJEXT) \
 	dialog.$(OBJEXT) diskfull.$(OBJEXT) download.$(OBJEXT) \
 	find.$(OBJEXT) filemanip.$(OBJEXT) fromcwd.$(OBJEXT) \
-	GetOption.$(OBJEXT) geturl.$(OBJEXT) hash.$(OBJEXT) \
-	ini.$(OBJEXT) inilex.$(OBJEXT) iniparse.$(OBJEXT) \
-	install.$(OBJEXT) io_stream.$(OBJEXT) \
+	geturl.$(OBJEXT) hash.$(OBJEXT) ini.$(OBJEXT) inilex.$(OBJEXT) \
+	iniparse.$(OBJEXT) install.$(OBJEXT) io_stream.$(OBJEXT) \
 	io_stream_cygfile.$(OBJEXT) io_stream_file.$(OBJEXT) \
 	io_stream_memory.$(OBJEXT) localdir.$(OBJEXT) log.$(OBJEXT) \
-	main.$(OBJEXT) getopt.$(OBJEXT) mkdir.$(OBJEXT) \
-	mklink2.$(OBJEXT) mount.$(OBJEXT) msg.$(OBJEXT) net.$(OBJEXT) \
-	netio.$(OBJEXT) nio-ie5.$(OBJEXT) nio-file.$(OBJEXT) \
-	nio-ftp.$(OBJEXT) nio-http.$(OBJEXT) Option.$(OBJEXT) \
-	package_db.$(OBJEXT) package_meta.$(OBJEXT) \
-	package_source.$(OBJEXT) package_version.$(OBJEXT) \
-	PickCategoryLine.$(OBJEXT) PickLine.$(OBJEXT) \
-	PickPackageLine.$(OBJEXT) PickView.$(OBJEXT) \
+	main.$(OBJEXT) mkdir.$(OBJEXT) mklink2.$(OBJEXT) \
+	mount.$(OBJEXT) msg.$(OBJEXT) net.$(OBJEXT) netio.$(OBJEXT) \
+	nio-ie5.$(OBJEXT) nio-file.$(OBJEXT) nio-ftp.$(OBJEXT) \
+	nio-http.$(OBJEXT) Option.$(OBJEXT) package_db.$(OBJEXT) \
+	package_meta.$(OBJEXT) package_source.$(OBJEXT) \
+	package_version.$(OBJEXT) PickCategoryLine.$(OBJEXT) \
+	PickLine.$(OBJEXT) PickPackageLine.$(OBJEXT) PickView.$(OBJEXT) \
 	postinstall.$(OBJEXT) proppage.$(OBJEXT) propsheet.$(OBJEXT) \
 	rfc1738.$(OBJEXT) root.$(OBJEXT) script.$(OBJEXT) \
 	setup_version.$(OBJEXT) simpsock.$(OBJEXT) site.$(OBJEXT) \
@@ -238,7 +246,8 @@ am_setup_OBJECTS = archive.$(OBJEXT) archive_tar.$(OBJEXT) \
 	String++.$(OBJEXT) threebar.$(OBJEXT) version.$(OBJEXT) \
 	win32.$(OBJEXT) window.$(OBJEXT)
 setup_OBJECTS = $(am_setup_OBJECTS)
-setup_DEPENDENCIES = zlib/libzcygw.a bz2lib/libbz2.a
+setup_DEPENDENCIES = res.o zlib/libzcygw.a bz2lib/libbz2.a \
+	libgetopt++/libgetopt++.la
 setup_LDFLAGS =
 
 DEFS = @DEFS@
@@ -248,7 +257,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/cfgaux/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/GetOption.Po ./$(DEPDIR)/Option.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Option.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickCategoryLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickPackageLine.Po \
@@ -263,10 +272,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/dialog.Po ./$(DEPDIR)/diskfull.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/download.Po ./$(DEPDIR)/filemanip.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/find.Po ./$(DEPDIR)/fromcwd.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/getopt.Po ./$(DEPDIR)/geturl.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/hash.Po ./$(DEPDIR)/ini.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/inilex.Po ./$(DEPDIR)/iniparse.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/install.Po ./$(DEPDIR)/io_stream.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/geturl.Po ./$(DEPDIR)/hash.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ini.Po ./$(DEPDIR)/inilex.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/iniparse.Po ./$(DEPDIR)/install.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/io_stream.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/io_stream_cygfile.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/io_stream_file.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/io_stream_memory.Po \
@@ -291,14 +300,20 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/window.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
-	-o $@
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXFLAGS = @CXXFLAGS@
 DIST_SOURCES = $(setup_SOURCES)
 
@@ -308,8 +323,8 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
 DIST_COMMON = README ChangeLog Makefile.am Makefile.in aclocal.m4 \
 	cfgaux/compile cfgaux/config.guess cfgaux/config.sub \
-	cfgaux/depcomp cfgaux/install-sh cfgaux/missing \
-	cfgaux/mkinstalldirs configure configure.in
+	cfgaux/depcomp cfgaux/install-sh cfgaux/ltmain.sh \
+	cfgaux/missing cfgaux/mkinstalldirs configure configure.in
 DIST_SUBDIRS = $(SUBDIRS)
 SOURCES = $(setup_SOURCES)
 
@@ -317,7 +332,16 @@ all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
-.SUFFIXES: .c .cc .o .obj
+.SUFFIXES: .c .cc .lo .o .obj
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+	-rm -f libtool
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
 	  $(AUTOMAKE) --foreign  Makefile
@@ -344,7 +368,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GetOption.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickCategoryLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickLine.Po@am__quote@
@@ -370,7 +393,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/filemanip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/find.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fromcwd.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getopt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/geturl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ini.Po@am__quote@
@@ -429,6 +451,12 @@ distclean-depend:
 @AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(COMPILE) -c -o $@ `cygpath -w $<`
+
+.c.lo:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
 CCDEPMODE = @CCDEPMODE@
 
 .cc.o:
@@ -442,6 +470,12 @@ CCDEPMODE = @CCDEPMODE@
 @AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXXCOMPILE) -c -o $@ `cygpath -w $<`
+
+.cc.lo:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
 CXXDEPMODE = @CXXDEPMODE@
 uninstall-info-am:
 
@@ -678,12 +712,13 @@ maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-recursive
 
-clean-am: clean-generic clean-noinstPROGRAMS mostlyclean-am
+clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
+	mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f config.status config.cache config.log
 distclean-am: clean-am distclean-compile distclean-depend \
-	distclean-generic distclean-tags
+	distclean-generic distclean-libtool distclean-tags
 
 dvi: dvi-recursive
 
@@ -709,28 +744,30 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-recursive
 
-mostlyclean-am: mostlyclean-compile mostlyclean-generic
+mostlyclean-am: mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool
 
 uninstall-am: uninstall-info-am
 
 uninstall-info: uninstall-info-recursive
 
 .PHONY: $(RECURSIVE_TARGETS) GTAGS all all-am check check-am clean \
-	clean-generic clean-noinstPROGRAMS clean-recursive dist \
-	dist-all dist-bzip2 dist-gzip distcheck distclean \
-	distclean-compile distclean-depend distclean-generic \
-	distclean-recursive distclean-tags distcleancheck distdir dvi \
-	dvi-am dvi-recursive info info-am info-recursive install \
-	install-am install-data install-data-am install-data-recursive \
-	install-exec install-exec-am install-exec-recursive \
-	install-info install-info-am install-info-recursive install-man \
-	install-recursive install-strip installcheck installcheck-am \
-	installdirs installdirs-am installdirs-recursive \
-	maintainer-clean maintainer-clean-generic \
-	maintainer-clean-recursive mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-recursive tags tags-recursive \
-	uninstall uninstall-am uninstall-info-am \
-	uninstall-info-recursive uninstall-recursive
+	clean-generic clean-libtool clean-noinstPROGRAMS \
+	clean-recursive dist dist-all dist-bzip2 dist-gzip distcheck \
+	distclean distclean-compile distclean-depend distclean-generic \
+	distclean-libtool distclean-recursive distclean-tags \
+	distcleancheck distdir dvi dvi-am dvi-recursive info info-am \
+	info-recursive install install-am install-data install-data-am \
+	install-data-recursive install-exec install-exec-am \
+	install-exec-recursive install-info install-info-am \
+	install-info-recursive install-man install-recursive \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am installdirs-recursive maintainer-clean \
+	maintainer-clean-generic maintainer-clean-recursive mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	mostlyclean-recursive tags tags-recursive uninstall \
+	uninstall-am uninstall-info-am uninstall-info-recursive \
+	uninstall-recursive
 
 
 setup_version.c : $(srcdir)/ChangeLog Makefile

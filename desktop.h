@@ -38,24 +38,4 @@ public:
   virtual long OnBack ();
 };
 
-#include "Option.h"
-
-class NoShortcutsOption : public Option {
-public:
-  NoShortcutsOption();
-  virtual ~NoShortcutsOption();
-  virtual String const shortOption();
-  virtual struct option longOption();
-  virtual String const shortHelp();
-  virtual bool Process(char const *);
-
-  static NoShortcutsOption &GetInstance();
-  
-  operator bool();
-private:
-  bool allowshortcuts;
-  static NoShortcutsOption Instance;
-};
-
-
 #endif // CINSTALL_DESKTOP_H

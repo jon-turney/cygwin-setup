@@ -51,47 +51,9 @@ static const char *cvsid =
 #include "io_stream.h"
   
 #include "desktop.h"
-#include "GetOption.h"
+#include "getopt++/BoolOption.h"
 
-NoShortcutsOption NoShortcutsOption::Instance;
-NoShortcutsOption::NoShortcutsOption() : allowshortcuts(true)
-{
-  GetOption &options = GetOption::GetInstance();
-  options.Register (this);
-}
-NoShortcutsOption::~NoShortcutsOption()
-{
-}
-String const
-NoShortcutsOption::shortOption()
-{
-  return "n";
-}
-struct option
-NoShortcutsOption::longOption()
-{
-  struct option foo = {"no-shortcuts", no_argument, NULL, 'n'};
-  return foo;
-}
-String const NoShortcutsOption::shortHelp()
-{
-  return "Disable creation of desktop and start menu shortcuts";
-}
-bool NoShortcutsOption::Process(char const *)
-{
-  allowshortcuts=false;
-  return true;
-}
-NoShortcutsOption &
-NoShortcutsOption::GetInstance()
-{
-  return Instance;
-}
-NoShortcutsOption::operator bool()
-{
-  return allowshortcuts;
-}
-
+static BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", "Disable creation of desktop and start menu shortcuts");
 
 static OSVERSIONINFO verinfo;
 
@@ -515,7 +477,7 @@ DesktopSetupPage::OnInit ()
   root_menu =
     check_startmenu ("Cygwin Bash Shell",
 		     backslash (cygpath ("/cygwin.bat")));
-  if (NoShortcutsOption::GetInstance())
+  if (NoShortcutsOption)
     {
       root_desktop=false;
       root_menu=false;

@@ -1,3 +1,29 @@
+2002-04-27  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.am: Add libgetopt++ to the subdirs list.
+	Search the libgetopt++ header directory.
+	Link against libgetopt++.la.
+	(setup_SOURCES): Remove GetOption.cc and getopt.c and Option.cc.
+	(setup_LDADD): Explicitly include res.o.
+	* Makefile.in: Regenerate.
+	* aclocal.m4: Regenerate.
+	* bootstrap.sh: Call libtoolize.
+	* configure: Regenerate.
+	* configure.in: Add libtool support and configure libgetopt++.
+	* desktop.cc (NoShortcutsOption): Turn into a BoolOption.
+	(DesktopSetupPage::OnInit): Use the simpler syntax.
+	* desktop.h: Remove dependency on Option.h, and remove NoShortcustOption
+	declaration.
+	* main.cc: Include getopt++/GetOption.h.
+	(main): Use simpler syntax.
+	* cdefs.h: Remove.
+	* getopt.h: Remove.
+	* getopt.c: Remove.
+	* GetOption.h: Remove.
+	* GetOption.cc: Remove.
+	* Option.h: Remove.
+	* Option.cc: Remove.
+
 2002-04-26  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.am: Add zlib and bz2lib to SUBDIRS.
