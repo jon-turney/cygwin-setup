@@ -35,6 +35,7 @@
 #include "setup.h"
 #include "strarry.h"
 #include "zlib/zlib.h"
+#include "cygcalls.h"
 
 #define MIRRORFILE "http://sourceware.cygnus.com/cygwin/mirrors.html"
 
@@ -67,25 +68,32 @@ static HINTERNET session = NULL;
 static SA deleteme = {NULL, 0, 0};
 static pkg *pkgstuff;
 static int updating = 0;
+static int download_only = 0;
 static SA installme = {NULL, 0, 0};
 static HANDLE hMainThread;
 static char *root;
+static int mount_text = 0;
 
 static void
 cleanup (void)
 {
   int i, j;
+#if 0
   extern void exit_cygpath (void);
   exit_cygpath ();
+#endif
+  cygcall_unload_dll ();
   for (i = deleteme.count; --i >= 0; )
     for (j = 0; !DeleteFile (deleteme.array[i]) && j < 20; j++)
-      Sleep (100);
+      Sleep (1);
   sa_cleanup (&deleteme);
 }
 
 static void
 cleanup_on_signal (int sig __attribute__ ((unused)))
 {
+  chdir (wd);
+  _chdrive (toupper (*wd) - 'A' + 1);
   fprintf (stderr, "\n*Exit*\r\n");
   SuspendThread (hMainThread);
   cleanup ();
@@ -248,15 +256,121 @@ output_file (HMODULE h __attribute__ ((unused)),
   return retval;
 }
 
+/* copied from zlib/gzio.c */
+static int gz_magic[2] = {0x1f, 0x8b}; /* gzip magic header */
+
+/* gzip flag byte */
+#define ASCII_FLAG   0x01 /* bit 0 set: file probably ascii text */
+#define HEAD_CRC     0x02 /* bit 1 set: header CRC present */
+#define EXTRA_FIELD  0x04 /* bit 2 set: extra field present */
+#define ORIG_NAME    0x08 /* bit 3 set: original file name present */
+#define COMMENT      0x10 /* bit 4 set: file comment present */
+#define RESERVED     0xE0 /* bits 5..7: reserved */
+
+static char *
+skip_gzip_header(char *data)
+{
+  int method; /* method byte */
+  int flags;  /* flags byte */
+  uInt len;
+  int c;
+
+  c = *data++; /* magic */
+  c = *data++;
+  method = *data++;
+  flags = *data++;
+
+  /* Discard time, xflags and OS code: */
+  data += 6;
+
+  if ((flags & EXTRA_FIELD) != 0) { /* skip the extra field */
+    len  =  (uInt)*data++;
+    len += ((uInt)*data++)<<8;
+    data += len;
+  }
+  if ((flags & ORIG_NAME) != 0) { /* skip the original file name */
+    while (*data++ != 0) ;
+  }
+  if ((flags & COMMENT) != 0) {   /* skip the .gz file comment */
+    while (*data++ != 0) ;
+  }
+  if ((flags & HEAD_CRC) != 0) {  /* skip the header crc */
+    data += 2;
+  }
+  return data;
+}
+
+static void
+save_resource_as_file (char *resource_name, char *file_name)
+{
+  z_stream z;
+  size_t size;
+  HRSRC rsrc;
+  HGLOBAL res;
+  char *data;
+  char buffer[65536];
+  int zr, i, j;
+  FILE *out;
+
+  rsrc = FindResource (NULL, resource_name, "FILE");
+  if (!rsrc)
+    {
+      fprintf (stderr, "error: cannot find file %s in resources\n", resource_name);
+      exit (1);
+    }
+  res = LoadResource (NULL, rsrc);
+
+  out = fopen (file_name, "wb");
+  if (!out)
+    {
+      fprintf (stderr, "error: unable to write to %s\n", file_name);
+      perror ("the error was");
+      exit (1);
+    }
+
+  memset (&z, 0, sizeof(z));
+  data = (char *) LockResource (res);
+  z.next_in = skip_gzip_header (data);
+  z.avail_in = SizeofResource (NULL, rsrc) - ((char *)z.next_in-data);
+  z.zalloc = Z_NULL;
+  z.zfree = Z_NULL;
+  z.data_type = Z_BINARY;
+  
+  inflateInit2 (&z, -MAX_WBITS);
+
+  zr = Z_OK;
+  while (zr == Z_OK)
+    {
+      z.next_out = buffer;
+      z.avail_out = sizeof (buffer);
+
+      switch (zr = inflate (&z, 0))
+	{
+	case Z_OK:
+	case Z_STREAM_END:
+	  i = sizeof (buffer) - z.avail_out;
+	  j = fwrite (buffer, 1, i, out);
+	  if (j < i)
+	    {
+	      fprintf (stderr, "error: out of disk space writing to %s\n", file_name);
+	      exit (1);
+	    }
+	  break;
+
+	default:
+	  fprintf (stderr, "error decompressing %s: %s\n", resource_name, z.msg);
+	  exit (1);
+	}
+    }
+
+  inflateEnd (&z);
+  fclose (out);
+}
+
 static void
 xumount (const char *mountexedir, const char *unixpath)
 {
-  char *umount = pathcat (mountexedir, "umount");
-  char buffer[1024];
-
-  sprintf (buffer, "%s %s", umount, unixpath);
-  (void) xcreate_process (1, NULL, devnull, devnull, buffer);
-  xfree (umount);
+  umount (unixpath);
 }
 
 extern FILE * _tar_vfile;
@@ -461,6 +575,7 @@ optionprompt (const char *text, SA * options)
   char buf[5];
   size_t base;
   int maxwidth=0, skip, percol;
+  int screen_lines = SCREEN_LINES;
 
   for (n=0; n<options->count; n++)
     {
@@ -468,11 +583,13 @@ optionprompt (const char *text, SA * options)
       if (maxwidth < sl)
 	maxwidth = sl;
     }
+
   ncols = SCREEN_COLS / (maxwidth + 5);
   skip = (options->count + ncols - 1) / ncols;
-  printf("count = %d   ncols = %d   skip = %d\n",
-	 options->count, ncols, skip);
   percol = SCREEN_COLS / ncols;
+
+  if (options->count < ncols * screen_lines)
+    screen_lines = (options->count+ncols-1)/ncols;
 
   base = 0;
 
@@ -482,25 +599,25 @@ optionprompt (const char *text, SA * options)
     {
       char *repeat, *enter;
 
-      for (n = 0; n < SCREEN_LINES; n++)
+      for (n = 0; n < screen_lines; n++)
 	{
 	  if (n + base >= options->count)
 	    break;
 	  for (c = 0; c < ncols; c++)
 	    {
-	      unsigned i = n + base + c * SCREEN_LINES;
+	      unsigned i = n + base + c * screen_lines;
 	      if (i < options->count)
-		printf("%2d. %-*s", i + 1, percol - 5, options->array[i]);
+		printf ("%2d. %-*s", i + 1, percol - 5, options->array[i]);
 	    }
-	  printf("\n");
+	  printf ("\n");
 	}
 
       repeat = enter = "";
-      if (skip > SCREEN_LINES)
+      if (skip > screen_lines)
 	{
 	  if (base)
 	    repeat = " or `R' to repeat the list";
-	  if (base + SCREEN_LINES * ncols < options->count)
+	  if (base + screen_lines * ncols < options->count)
 	    enter = " or [Enter] for more options";
 	}
 
@@ -517,8 +634,8 @@ optionprompt (const char *text, SA * options)
 
       if (buf[0] == 'c' || buf[0] == 'C' || buf[0] == '\r' || buf[0] == '\n')
 	{
-	  if (base + SCREEN_LINES * ncols < options->count)
-	    base += SCREEN_LINES * ncols;
+	  if (base + screen_lines * ncols < options->count)
+	    base += screen_lines * ncols;
 	}
       if (buf[0] == 'r' || buf[0] == 'R')
 	base = 0;
@@ -594,7 +711,7 @@ geturl (const char *url, const char *file, int verbose)
       if (verbose)
 	{
 	  if (tries > 1)
-	    printf ("\r%s        \b\b\b\b\b\b\b\b", connect_buffer);
+	    printf ("\r%s        \r", connect_buffer);
 	  printf ("Done.\n"); fflush (stdout);
 	}
       while (!authenticated)
@@ -689,14 +806,28 @@ geturl (const char *url, const char *file, int verbose)
 	    winerror ();
 	  else
 	    {
-	      char *buffer = xmalloc (size);
+	      char status[50];
+	      static char *bs[50] = {0};
+	      int total = 0;
+	      char *buffer;
+	      FILE *out;
+	      DWORD start_time, cur_time, delta_time;
 
-	      FILE *out = fopen (file, "wb");
+	      if (bs[0] == 0)
+		memset(bs, '\b', sizeof(bs));
+
+	      if (size < 1024) /* optimize */
+		size = 1024;
+	      buffer = xmalloc (size);
+
+	      out = fopen (file, "wb");
 	      if (!out)
 		warning ("Unable to open \"%s\" for output: %s\n", file,
 			_strerror (""));
 	      else
 		{
+		  status[0] = 0;
+		  start_time = GetTickCount ();
 		  for (;;)
 		    {
 		      DWORD readbytes;
@@ -714,7 +845,18 @@ geturl (const char *url, const char *file, int verbose)
 				  _strerror (""));
 			  break;
 			}
+		      total += readbytes;
+		      delta_time = GetTickCount () - start_time;
+
+		      if (delta_time > 5000)
+			{
+			  int kbps = (total+500) / delta_time;
+			  sprintf(status, "  %dk %dk/s", total / 1024, kbps);
+			  printf("%s%.*s", status, strlen(status), bs);
+			}
 		    }
+		  if (status[0])
+		    printf("%*c%.*s", strlen(status), ' ', strlen(status), bs);
 		  fclose (out);
 		}
 	      xfree (buffer);
@@ -867,16 +1009,19 @@ processdirlisting (SA *installme, const char *urlbase, const char *file)
 
 	  retval++;
 
-	  if (strnicmp (filename, "cygwin-20000301", sizeof ("cygwin-20000301") - 1) == 0)
-	    normalize_version ("cygwin-1.1.0.tar.gz", &pkgname, &pkgversion);
-	  else
-	    normalize_version (filename, &pkgname, &pkgversion);
-	  pkg = find_pkg (pkgstuff, pkgname);
-
-	  if (!newer_pkg (pkg, pkgversion))
+	  if (!download_only)
 	    {
-	      warning ("Skipped download of %s\n", filename);
-	      continue;
+	      if (strnicmp (filename, "cygwin-20000301", sizeof ("cygwin-20000301") - 1) == 0)
+		normalize_version ("cygwin-1.1.0.tar.gz", &pkgname, &pkgversion);
+	      else
+		normalize_version (filename, &pkgname, &pkgversion);
+	      pkg = find_pkg (pkgstuff, pkgname);
+
+	      if (!newer_pkg (pkg, pkgversion))
+		{
+		  warning ("Skipped download of %s\n", filename);
+		  continue;
+		}
 	    }
 
 	  if (download_when == ALWAYS || needfile (filename, filedate, filesize))
@@ -978,7 +1123,9 @@ processdirlisting (SA *installme, const char *urlbase, const char *file)
 static char *
 tmpfilename ()
 {
-  return _tempnam (NULL, "su");
+  char *rv = _tempnam (NULL, "su");
+  sa_add (&deleteme, rv);
+  return rv;
 }
 
 static int
@@ -988,10 +1135,8 @@ downloaddir (SA *installme, const char *url)
   char *file = tmpfilename ();
 
   if (geturl (url, file, 1))
-  {
     retval = processdirlisting (installme, url, file);
-    _unlink (file);
-  }
+  _unlink (file);
   xfree (file);
 
   return retval;
@@ -1011,10 +1156,8 @@ downloadfrom (SA *installme, const char *url)
   char *file = tmpfilename ();
 
   if (geturl (url, file, 1))
-    {
-      retval = processdirlisting (installme, url, file);
-      _unlink (file);
-    }
+    retval = processdirlisting (installme, url, file);
+  _unlink (file);
 
   xfree (file);
 
@@ -1292,35 +1435,32 @@ mkdirp (const char *dir)
 
 /* This routine assumes that the cwd is the root directory. */
 static int
-mkmount (const char *mountexedir, const char *dospath,
-	 const char *unixpath, int force)
+mkmount (const char *dospath, const char *unixpath)
 {
-  char *mount, *fulldospath;
-  char buffer[1024];
+  char *mountd, *fulldospath;
 
-  if (root == NULL)
-    fulldospath = xstrdup (dospath);
+  assert (root != NULL);
+
+  if (dospath[0])
+    {
+      /* Make sure the mount point exists. */
+      mountd = pathcat (root, unixpath);
+      mkdirp (mountd);
+      xfree (mountd);
+      fulldospath = pathcat (root, dospath);
+    }
   else
     {
-      xumount (mountexedir, unixpath);
-      /* Make sure the mount point exists. */
-      mount = utodpath (unixpath);
-      mkdirp (mount);
-      xfree (mount);
-      fulldospath = pathcat (root, dospath);
+      fulldospath = xstrdup (root);
     }
 
   /* Make sure the target path exists. */
   mkdirp (fulldospath);
 
-  /* Mount the directory. */
-  mount = pathcat (mountexedir, "mount");
-  sprintf (buffer, "%s %s -b \"%s\" %s", mount, force ? "-f" : "",
-	   fulldospath, unixpath);
-  xfree (mount);
-  xfree (fulldospath);
+  umount (unixpath);
+  mount (fulldospath, unixpath, mount_text ? 0 : MOUNT_BINARY);
 
-  return xcreate_process (1, NULL, NULL, NULL, buffer) != 0;
+  xfree (fulldospath);
 }
 
 static pkg *
@@ -1385,38 +1525,72 @@ current_directory_not_empty ()
   if (h != INVALID_HANDLE_VALUE)
     do
       {
-	if (strcmp (find_data.cFileName, ".")
-	    && strcmp (find_data.cFileName, ".."))
+	DWORD fa = GetFileAttributes (find_data.cFileName);
+	int len = strlen (find_data.cFileName);
+	if (strcmp (find_data.cFileName, ".") == 0
+	    || strcmp (find_data.cFileName, "..") == 0)
+	  continue;
+	if (fa & FILE_ATTRIBUTE_DIRECTORY)
+	  count ++;
+	if (strcmp (find_data.cFileName+len-7, ".tar.gz") == 0)
 	  count ++;
       } while (FindNextFile (h, &find_data));
   FindClose (h);
   return count;
 }
 
+static void
+usage ()
+{
+  printf ("\n");
+  printf ("Usage: setup [-f] [-u] [-d] [package ...]\n");
+  printf ("-f\tforce re-install\n");
+  printf ("-u\tupdate old packages\n");
+  printf ("-d\tdownload to current directory only - no install\n");
+  printf ("`package' lists packages to install/update\n");
+  printf ("\n");
+  exit (1);
+}
+
+
 static char rev[] = "$Revision$ ";
 
 int
-main (int argc __attribute__ ((unused)), char **argv)
+main (int argc, char **argv)
 {
   int retval = 1;		/* Default to error code */
   clock_t start;
   char *logpath = NULL;
   char *revn, *p;
   int fd = _open ("nul", _O_WRONLY | _O_BINARY);
+  struct mntent *m;
+  char *defroot;
+  char *update;
+  char *tmp;
+  int done;
+  HKEY cu = NULL, lm = NULL;
 
-  while (*++argv)
-    if (stricmp (*argv, "-f") == 0)
-      updating = 0;
-    else if (stricmp (*argv, "-u") == 0)
-      updating = 1;
-    else
-      break;
+  while (argc > 1 && argv[1][0] == '-')
+    {
+      if (stricmp (argv[1], "-f") == 0)
+	updating = 0;
+      else if (stricmp (argv[1], "-u") == 0)
+	updating = 1;
+      else if (stricmp (argv[1], "-d") == 0)
+	download_only = 1;
+      else
+	usage ();
+      argc--;
+      argv++;
+    }
 
   sa_init (&installme);
-  if (*argv)
-    do
-      sa_add (&installme, *argv);
-    while (*++argv);
+  while (argc > 1)
+    {
+      sa_add (&installme, argv[1]);
+      argc--;
+      argv++;
+    }
 
   devnull = (HANDLE) _get_osfhandle (fd);
 
@@ -1433,75 +1607,82 @@ main (int argc __attribute__ ((unused)), char **argv)
       p[1] = '\0';
     }
 
-  printf ( "\n\n\n\n"
-"This is the Cygwin setup utility%s,\n"
-"built on " __DATE__ " " __TIME__ ".\n\n"
+  printf ( "\n\n"
+	   "This is the Cygwin setup utility%s,\n"
+	   "built on " __DATE__ " " __TIME__ ".  Run \"setup -h\" for command-line help.\n\n", revn);
+  
+  if (!download_only) printf (
 "Use this program to install the latest version of the Cygwin Utilities\n"
 "from the Internet.\n\n"
 "Alternatively, if you already have already downloaded the appropriate files\n"
-"to the current directory (and subdirectories below it), this program can use
-those as the basis for your installation.\n\n"
+"to the current directory (and subdirectories below it), this program can use\n"
+"those as the basis for your installation.\n\n"
 "If you are installing from the Internet, please run this program in an empty\n"
-"temporary directory.\n\n", revn);
+"temporary directory.\n\n");
 
   start = clock ();
   sa_init (&deleteme);
 
-  if (!EnumResourceNames (NULL, "FILE", output_file, 0))
+  wd = _getcwd (NULL, 0);
+
+  save_resource_as_file ("cygwin1.dll", "setup-cygwin1.dll");
+  cygcall_load_dll ("setup-cygwin1.dll");
+  sa_add (&deleteme, "setup-cygwin1.dll");
+
+  setmntent (0,0);
+  defroot = 0;
+  while (m = getmntent (0))
     {
-      winerror ();
+#if 0
+      printf ("mnt fs=%s dir=%s type=%s opts=%s freq=%d pass=%d\n",
+	      m->mnt_fsname, m->mnt_dir, m->mnt_type, m->mnt_opts, m->mnt_freq, m->mnt_passno);
+#endif
+      if (strcmp (m->mnt_dir, "/") == 0)
+	{
+	  defroot = xstrdup (m->mnt_fsname);
+	  if (strstr (m->mnt_opts, "text"))
+	    mount_text = 1;
+	}
     }
-  else
+  if (!defroot)
+    defroot = xstrdup (DEF_ROOT);
+
+
+  setpath (wd);
+  tmp = xmalloc (sizeof ("TMP=") + strlen (wd));
+  sprintf (tmp, "TMP=%s", wd);
+  _putenv (tmp);
+
+  logpath = pathcat (wd, "setup.log");
+  tarpgm = pathcat (wd, "tar.exe");
+
+  if (logpath)
+    logfp = fopen (logpath, "wt");
+
+  if (logfp == NULL)
     {
-      char *defroot, *update;
-      char *tmp;
-      int done;
-      HKEY cu = NULL, lm = NULL;
+      fprintf (stderr, "Unable to open log file '%s' for writing - %s\n",
+	       logpath, _strerror (""));
+      exit (1);
+    }
 
-      wd = _getcwd (NULL, 0);
-      setpath (wd);
-      tmp = xmalloc (sizeof ("TMP=") + strlen (wd));
-      sprintf (tmp, "TMP=%s", wd);
-      _putenv (tmp);
+  /* Begin prompting user for setup requirements. */
+  printf ("Press <enter> to accept the default values.\n");
 
-      logpath = pathcat (wd, "setup.log");
-      tarpgm = pathcat (wd, "tar.exe");
+  if (updating)
+    {
+      printf("\nNote: You have chosen to update an existing installation.\n");
+      printf("You should accept the defaults for the root mount and mode.\n");
+    }
 
-      if (logpath)
-	logfp = fopen (logpath, "wt");
+  DuplicateHandle (GetCurrentProcess (), GetCurrentThread (),
+		   GetCurrentProcess (), &hMainThread, 0, 0,
+		   DUPLICATE_SAME_ACCESS);
+  atexit (cleanup);
+  signal (SIGINT, cleanup_on_signal);
 
-      if (logfp == NULL)
-	{
-	  fprintf (stderr, "Unable to open log file '%s' for writing - %s\n",
-		   logpath, _strerror (""));
-	  exit (1);
-	}
-
-      /* Begin prompting user for setup requirements. */
-      printf ("Press <enter> to accept the default value.\n");
-
-      /* If some Cygnus software has been installed, assume there is a root
-	 mount in the registry. Otherwise use C:\cygwin for the default root
-	 directory. */
-      if (RegOpenKey (HKEY_CURRENT_USER, CYGNUS_KEY, &cu) == ERROR_SUCCESS
-	  || RegOpenKey (HKEY_LOCAL_MACHINE, CYGNUS_KEY,
-			 &lm) == ERROR_SUCCESS)
-	{
-	  defroot = utodpath ("/");
-	  if (cu)
-	    RegCloseKey (cu);
-	  if (lm)
-	    RegCloseKey (lm);
-	}
-      else
-	defroot = xstrdup (DEF_ROOT);
-
-      DuplicateHandle (GetCurrentProcess (), GetCurrentThread (),
-		       GetCurrentProcess (), &hMainThread, 0, 0,
-		       DUPLICATE_SAME_ACCESS);
-      atexit (cleanup);
-      signal (SIGINT, cleanup_on_signal);
-
+  if (!download_only)
+    {
       /* Get the root directory and warn the user if there are any spaces in
 	 the path. */
       for (done = 0; !done;)
@@ -1545,51 +1726,98 @@ those as the basis for your installation.\n\n"
 	      y = yesno[0];
 	      free (yesno);
 	      if (y != 'y' && y != 'Y')
-		  continue;
+		continue;
 	    }
 	  done = 1;
 	}
       xfree (defroot);
 
-      Sleep (0);
+      done = 0;
+      while (!done)
+	{
+	  char *resp = prompt ("Mount mode (T)ext, (B)inary, or (H)elp",
+			       mount_text ? "Text" : "Binary");
+	  switch (resp[0])
+	    {
+	    case 't':
+	    case 'T':
+	      mount_text = 1;
+	      done = 1;
+	      break;
+	    case 'b':
+	    case 'B':
+	      mount_text = 0;
+	      done = 1;
+	      break;
+	    case 'h':
+	    case 'H':
+	    case '?':
+	      printf ("\n");
+	      printf ("With text mounts, files are converted to/from DOS text format\n");
+	      printf ("This is more compatible with MS programs, but some unix programs\n");
+	      printf ("may break when they see text files as input.\n");
+	      printf ("With binary mounts, files are saved without carriage returns, which\n");
+	      printf ("is best for other cygwin programs but may break MS programs\n");
+	      printf ("\n");
+	      break;
+	    }
+	}
+    }
 
+  Sleep (0);
+
+  if (download_only)
+    update = "i";
+  else
+    {
       pkgstuff = get_pkg_stuff (updating);
 
       update =
 	prompt ("Install from the current directory (d) or from the Internet (i)", "i");
+    }
 
-      if (toupper (*update) == 'I')
+  if (toupper (*update) == 'I')
+    {
+      char *dir;
+
+      if (!download_only && current_directory_not_empty ())
 	{
-	  char *dir;
-
-	  if (current_directory_not_empty ())
-	    {
-	      fprintf (stderr, "\nThe current directory is not empty.  Please run setup in an\n");
-	      fprintf (stderr, "empty temporary directory when installing from the Internet.\n\n");
-	      exit (1);
-	    }
-
-	  dir = getdownloadsource ();
-
-	  if (!dir)
-	    {
-	      fprintf (stderr, "Couldn't connect to download site.\n");
-	      exit (1);
-	    }
-
-	  if (!downloadfrom (&installme, dir))
-	    {
-	      warning ("Error: No files found to download.");
-	      if (!installme.count)
-		warning("  Choose another mirror site?\n");
-	      else
-		warning ("\n");
-	      goto out;
-	    }
-	  InternetCloseHandle (session);
-	  xfree (dir);
+	  char *yns, yn;
+	  printf ("\nThe current directory is not empty.  You should run setup in\n");
+	  printf ("an empty temporary directory when installing from the\n");
+	  printf ("Internet.  *Any* tar.gz file found in this directory *or* any\n");
+	  printf ("subdirectory will be installed, not just files setup downloads.\n\n");
+	  yns = prompt ("Use this directory anyway? [yn]", "n");
+	  yn = yns[0];
+	  xfree (yns);
+	  if (yn != 'y' && yn != 'Y')
+	    exit (1);
 	}
-      xfree (update);
+
+      dir = getdownloadsource ();
+
+      if (!dir)
+	{
+	  fprintf (stderr, "Couldn't connect to download site.\n");
+	  exit (1);
+	}
+
+      if (!downloadfrom (&installme, dir))
+	{
+	  warning ("Error: No files found to download.");
+	  if (!installme.count)
+	    warning("  Choose another mirror site?\n");
+	  else
+	    warning ("\n");
+	  goto out;
+	}
+      InternetCloseHandle (session);
+      xfree (dir);
+    }
+  xfree (update);
+
+  if (! download_only)
+    {
 
       /* Create the root directory. */
       mkdirp (root);		/* Ignore any return value since it may
@@ -1647,32 +1875,30 @@ those as the basis for your installation.\n\n"
 				   successful code */
 
 	      warning ("Creating mount points...");
-	      xumount (wd, "/usr");
-	      xumount (wd, "/var");
-	      xumount (wd, "/lib");
-	      xumount (wd, "/bin");
-	      xumount (wd, "/etc");
+	      umount ("/usr");
+	      umount ("/var");
+	      umount ("/lib");
+	      umount ("/bin");
+	      umount ("/etc");
 	      
 	      /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
-	      mkmount (wd, "", "/", 1);
-	      mkmount (wd, "bin", "/usr/bin", 1);
-	      mkmount (wd, "lib", "/usr/lib", 1);
+	      mkmount ("", "/");
+	      mkmount ("bin", "/usr/bin");
+	      mkmount ("lib", "/usr/lib");
 
 	    }
 	}
-
-      xfree (root);
-
-      chdir (wd);
-      _chdrive (toupper (*wd) - 'A' + 1);
-      xfree (wd);
-
     }
+
+  xfree (root);
+
+  chdir (wd);
+  _chdrive (toupper (*wd) - 'A' + 1);
 
 out:
   puts ("");
   warning ("Installation took %.0f seconds.\n",
-	  (double) (clock () - start) / CLK_TCK);
+	   (double) (clock () - start) / CLK_TCK);
 
   if (logpath)
     {

@@ -33,6 +33,8 @@
 #include "strarry.h"
 #include "zlib/zlib.h"
 
+#if 0
+
 static FILE *cygin = NULL, *cygout = NULL;
 static HANDLE hcygpath = NULL;
 
@@ -128,6 +130,8 @@ utodpath (const char *path)
 
   return retval;
 }
+
+#endif /* 0 */
 
 char *
 pathcat (const char *arg1, const char *arg2)

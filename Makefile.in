@@ -67,10 +67,10 @@ ALL_LDFLAGS:=${filter-out -I%, \
 
 PROGS:=setup$(EXEEXT)
 
-OBJS:=error.o memory.o setup.o strarry.o cinstall.o path.o pkg.o tar.o xsystem.o
+OBJS:=cygcalls.o error.o memory.o setup.o strarry.o cinstall.o path.o pkg.o tar.o xsystem.o
 
-BUNDLED_FILES:=cygwin1.dll.gz \
-	       mount.exe.gz cygpath.exe.gz umount.exe.gz
+BUNDLED_FILES:=cygwin1.dll.gz
+#	       mount.exe.gz cygpath.exe.gz umount.exe.gz
 .SUFFIXES:
 .NOEXPORT:
 
@@ -83,8 +83,8 @@ setup$(EXEEXT): $(OBJS) $(ALL_DEP_LDLIBS)
 ifdef VERBOSE
 	$(CC) -o $@ ${filter-out $(ALL_DEP_LIBS),$^}
 else
-	@echo $(CC) -o $@ ${filter-out $(ALL_DEP_LIBS),$^} ${filter-out -B%, $(ALL_LDFLAGS) $(ALL_LDLIBS)};\
-	$(CC) -o $@ ${filter-out $(ALL_DEP_LIBS),$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
+	@echo $(CC) ... -o $@ $(OBJS)
+	@$(CC) -o $@ ${filter-out $(ALL_DEP_LIBS),$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
 endif
 	@chmod a-x $@
 
@@ -131,8 +131,8 @@ $(utils_build)/%.exe: $(utils_build)/Makefile
 $(cygwin_build)/%.dll: $(cygwin_build)/Makefile
 	@$(MAKE) -C $(@D) $(@F)
 
-cinstall.rc: $(BUNDLED_FILES)
-	for f in $^; do \
+cinstall.rc: $(BUNDLED_FILES) $(srcdir)/Makefile.in
+	for f in $(BUNDLED_FILES); do \
 	    echo `basename $$f .gz` FILE DISCARDABLE '"'$$f'"'; \
 	done > $@
 
@@ -143,6 +143,6 @@ cinstall.rc: $(BUNDLED_FILES)
 ifdef VERBOSE
 	$(CC) $(MINGW_CFLAGS) -c -o $@ $?
 else
-	@echo $(CC) -c -o $@ $? ${filter-out -B%, $(MINGW_CFLAGS)};\
-	$(CC) $(MINGW_CFLAGS) -c -o $@ $?
+	@echo $(CC) -c $(CFLAGS) ... $(?F)
+	@$(CC) $(MINGW_CFLAGS) -c -o $@ $?
 endif

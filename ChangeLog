@@ -1,3 +1,22 @@
+2000-06-07  DJ Delorie  <dj@cygnus.com>
+
+	* cygcalls.c: new, call cygwin1.dll functions directly
+	* cygcalls.h: header for same
+	* Makefile.in: add cygcalls.[ch], remove mount/cygpath/umount
+	exes, fix cinstall.rc dependencies.
+	* path.c: remove unneeded code
+	* setup.c: use cygcalls instead of xcreate_process.
+	uncompress embedded files with zlib
+	add "-d" for "download only"
+	add "-h" for help
+	postpone mount changes until very end
+	add download progress indicators
+	pack multi-column listings more
+	auto-delete temp files
+	customize banner message according to options
+	prompt user for text/binary mounts
+	add warnings about empty setup directory, root installs, etc
+
 2000-05-24  DJ Delorie  <dj@cygnus.com>
 
 	* tar.c: New file; built-in tar using zlib.
