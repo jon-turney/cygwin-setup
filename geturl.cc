@@ -32,14 +32,24 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "netio.h"
 #include "msg.h"
 #include "log.h"
+#include "state.h"
+#include "diskfull.h"
 
 static int is_showing = 0;
 static HWND gw_dialog = 0;
 static HWND gw_url = 0;
 static HWND gw_rate = 0;
 static HWND gw_progress = 0;
+static HWND gw_pprogress = 0;
+static HWND gw_iprogress = 0;
+static HWND gw_progress_text = 0;
+static HWND gw_pprogress_text = 0;
+static HWND gw_iprogress_text = 0;
 static HANDLE init_event;
 static int max_bytes = 0;
+
+int total_download_bytes = 0;
+int total_download_bytes_sofar = 0;
 
 static BOOL
 dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
@@ -63,6 +73,11 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
       gw_url = GetDlgItem (h, IDC_DLS_URL);
       gw_rate = GetDlgItem (h, IDC_DLS_RATE);
       gw_progress = GetDlgItem (h, IDC_DLS_PROGRESS);
+      gw_pprogress = GetDlgItem (h, IDC_DLS_PPROGRESS);
+      gw_iprogress = GetDlgItem (h, IDC_DLS_IPROGRESS);
+      gw_progress_text = GetDlgItem (h, IDC_DLS_PROGRESS_TEXT);
+      gw_pprogress_text = GetDlgItem (h, IDC_DLS_PPROGRESS_TEXT);
+      gw_iprogress_text = GetDlgItem (h, IDC_DLS_IPROGRESS_TEXT);
       SetEvent (init_event);
       return FALSE;
     case WM_COMMAND:
@@ -100,6 +115,8 @@ init_dialog (char *url, int length)
       WaitForSingleObject (init_event, 1000);
       CloseHandle (init_event);
       SendMessage (gw_progress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
+      SendMessage (gw_pprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
+      SendMessage (gw_iprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
       is_showing = 0;
     }
   char *sl=url, *cp;
@@ -111,6 +128,22 @@ init_dialog (char *url, int length)
   SetWindowText (gw_rate, "Connecting...");
   SendMessage (gw_progress, PBM_SETPOS, (WPARAM) 0, 0);
   ShowWindow (gw_progress, (length > 0) ? SW_SHOW : SW_HIDE);
+  if (length > 0 )
+    SetWindowText (gw_progress_text, "Package");
+  else
+    SetWindowText (gw_progress_text, "       ");
+  ShowWindow (gw_pprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
+  if (total_download_bytes > 0)
+    {
+      SetWindowText (gw_pprogress_text, "Total");
+      SetWindowText (gw_iprogress_text, "Disk");
+    }
+  else 
+    {
+      SetWindowText (gw_pprogress_text, "     ");
+      SetWindowText (gw_iprogress_text, "    ");
+    }
+  ShowWindow (gw_iprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
   ShowWindow (gw_dialog, SW_SHOWNORMAL);
   if (!is_showing)
     {
@@ -136,12 +169,20 @@ progress (int bytes)
 
   kbps = bytes / (tics - start_tics);
   ShowWindow (gw_progress, (max_bytes > 0) ? SW_SHOW : SW_HIDE);
+  ShowWindow (gw_pprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
+  ShowWindow (gw_iprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
   if (max_bytes > 100)
     {
       int perc = bytes / (max_bytes / 100);
       SendMessage (gw_progress, PBM_SETPOS, (WPARAM) perc, 0);
       sprintf (buf, "%3d %%  (%dk/%dk)  %d kb/s\n",
 	       perc, bytes/1000, max_bytes/1000, kbps);
+      if (total_download_bytes > 0)
+        {
+          int totalperc = (total_download_bytes_sofar + bytes) / (
+                    total_download_bytes / 100);
+          SendMessage (gw_pprogress, PBM_SETPOS, (WPARAM) totalperc, 0);
+        }
     }
   else
     sprintf (buf, "%d  %d kb/s\n", bytes, kbps);
@@ -207,6 +248,11 @@ int
 get_url_to_file (char *_url, char *_filename, int expected_length)
 {
   log (LOG_BABBLE, "get_url_to_file %s %s", _url, _filename);
+  if (total_download_bytes > 0)
+    {
+      int df = diskfull (root_dir);
+      SendMessage (gw_iprogress, PBM_SETPOS, (WPARAM) df, 0);
+    }
   init_dialog (_url, expected_length);
 
   remove (_filename); /* but ignore errors */
@@ -245,7 +291,15 @@ get_url_to_file (char *_url, char *_filename, int expected_length)
       progress (total_bytes);
     }
 
+  total_download_bytes_sofar += total_bytes;
+
   fclose (f);
+
+  if (total_download_bytes > 0)
+    {
+      int df = diskfull (root_dir);
+      SendMessage (gw_iprogress, PBM_SETPOS, (WPARAM) df, 0);
+    }
 
   return 0;
 }

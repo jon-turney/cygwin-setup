@@ -96,6 +96,14 @@ do_download (HINSTANCE h)
 {
   int i;
   int errors = 0;
+  total_download_bytes = 0;
+  total_download_bytes_sofar = 0;
+
+  for (i=0; i<npackages; i++)
+    if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE)
+      {
+        total_download_bytes += pi.install_size;
+      }
 
   for (i=0; i<npackages; i++)
     if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE)

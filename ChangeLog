@@ -1,3 +1,30 @@
+2001-02-20  Brian Keener <bkeener@thesoftwaresource.com>
+
+	* download.cc (do_download): Add new variables total_download_bytes and 
+	total_download_bytes_sofar for download progress meter.  Add loop
+	to accumulate the total bytes to download from the selected packages.
+	* geturl.cc: Add state.h and diskfull.h to include list.  Add new
+	variables gw_iprogress, gw_pprogress, gw_progress_text,
+	gw_pprogress_text, and gw_iprogress_text to allow for addition of
+	total packages download progress meter and disk full percent
+	progress meter.  Add variables total_download_bytes and
+	total_download_bytes_sofar for use by progress meters.
+	(dialog_proc): Add new variables gw_iprogress, gw_pprogress, 
+	gw_progress_text, gw_pprogress_text, and gw_iprogress_text to 
+	allow for addition of total packages download progress meter and disk 
+	full percent progress meter.  
+	(init_dialog): Ditto.
+	(progress): Ditto.
+	(get_url_to_file): Ditto.
+	* geturl.h: Add external definition for total_download_bytes and
+	total_download_bytes_sofar.
+	* res.rc: Add two additional progress meters (IDC_DLS_IPROGRESS) 
+	and (IDC_DLS_PPROGRESS) and three text objects (IDC_DLS_PROGRESS_TEXT)
+	and (IDC_DLS_IPROGRESS_TEXT, IDC_DLS_PPROGRESS_TEXT) for use in the
+	download meters.
+	* resource.h: Add new fields for progress meters and text and update 
+	_APS_NEXT_CONTROL_VALUE.
+
 Wed Feb 21 13:05:00 2000  Corinna Vinschen <vinschen@redhat.com>
 
 	* download.cc (get_file_size): Check for INVALID_HANDLE_VALUE instead

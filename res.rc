@@ -140,11 +140,18 @@ FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
-    LTEXT           "Downloading...",IDC_STATIC,55,15,135,8
-    LTEXT           "(URL)",IDC_DLS_URL,55,30,150,8
-    LTEXT           "(RATE)",IDC_DLS_RATE,55,45,155,8
+    LTEXT           "Downloading...",IDC_STATIC,55,5,135,8
+    LTEXT           "(URL)",IDC_DLS_URL,55,15,150,8
+    LTEXT           "(RATE)",IDC_DLS_RATE,55,25,155,8
     CONTROL         "Progress1",IDC_DLS_PROGRESS,"msctls_progress32",
+                    PBS_SMOOTH | WS_BORDER,55,40,155,10
+    CONTROL         "Progress1",IDC_DLS_PPROGRESS,"msctls_progress32",
+                    PBS_SMOOTH | WS_BORDER,55,50,155,10
+    CONTROL         "Progress1",IDC_DLS_IPROGRESS,"msctls_progress32",
                     PBS_SMOOTH | WS_BORDER,55,60,155,10
+    RTEXT           "Package",IDC_DLS_PROGRESS_TEXT,5,40,45,8
+    RTEXT           "Total",IDC_DLS_PPROGRESS_TEXT,10,50,40,8
+    RTEXT           "Disk",IDC_DLS_IPROGRESS_TEXT,5,60,45,8
 END
 
 IDD_INSTATUS DIALOG DISCARDABLE  0, 0, 215, 95

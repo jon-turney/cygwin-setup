@@ -16,6 +16,9 @@
 /* Download files from the Internet.  These pop up a progress dialog;
    don't forget to dismiss it when you're done downloading for a while */
 
+extern int total_download_bytes;
+extern int total_download_bytes_sofar;
+
 char  *get_url_to_string (char *_url);
 int    get_url_to_file (char *_url, char *_filename, int expected_size);
 void   dismiss_url_status_dialog ();
