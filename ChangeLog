@@ -1,3 +1,11 @@
+2000-10-02  DJ Delorie  <dj@redhat.com>
+
+	* ini.cc (do_ini): save setup.ini locally
+
+2000-10-02  Chris Abbey  <cabbey@bresnanlink.net>
+
+	* desktop.cc: quote escapes in prompt
+
 2000-10-02  Jason Tishler  <jt@dothill.com>
 
 	* root.cc (is_admin): New function.

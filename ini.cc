@@ -76,6 +76,16 @@ do_ini (HINSTANCE h)
       else
 	MessageBox (0, error_buf, "Parse Errors", 0);
     }
+  else
+    {
+      /* save known-good setup.ini locally */
+      FILE *inif = fopen ("setup.ini", "wb");
+      if (inif)
+	{
+	  fwrite (ini_file, 1, strlen (ini_file), inif);
+	  fclose (inif);
+	}
+    }
 
   if (root_dir)
     {
