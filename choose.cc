@@ -1340,21 +1340,21 @@ parse_filename (const char *in_fn, fileparse & f)
 
   if (!f.what[0])
     {
+      int n;
       p = strchr (ver, '\0');
       strcpy (f.pkgtar, in_fn);
       if ((p -= 4) >= ver && strcasecmp (p, "-src") == 0)
-	{
-	  strcpy (f.what, "src");
-	  *p = '\0';
-	  p = f.pkgtar + (p - fn) + 4;
-	  memcpy (p - 4, p, strlen (p));
-	}
+	n = 4;
       else if ((p -= 2) >= ver && strcasecmp (p, "-patch") == 0)
+	n = 6;
+      else
+	n = 0;
+      if (n)
 	{
-	  strcpy (f.what, "patch");
+	  strcpy (f.what, p + 1);
 	  *p = '\0';
-	  p = f.pkgtar + (p - fn) + 6;
-	  memcpy (p - 6, p, strlen (p));
+	  p = f.pkgtar + (p - fn) + n;
+	  memmove (p - 4, p, strlen (p));
 	}
     }
 
