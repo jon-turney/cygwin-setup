@@ -23,6 +23,7 @@
 #include "commctrl.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -159,6 +160,15 @@ badrename (char *o, char *n)
   note (IDS_ERR_RENAME, o, n, err);
 }
 
+static char *standard_dirs[] = {
+  "/etc",
+  "/usr",
+  "/tmp",
+  "/usr/tmp",
+  "/var/tmp",
+  0
+};
+
 #define pi (package[i].info[package[i].trust])
 
 #define LOOP_PACKAGES \
@@ -171,6 +181,15 @@ do_install (HINSTANCE h)
 {
   int i, num_installs = 0;
   next_dialog = 0;
+
+  mkdir_p (1, root_dir);
+
+  for (i=0; standard_dirs[i]; i++)
+    {
+      char *p = concat (root_dir, standard_dirs[i], 0);
+      mkdir_p (1, p);
+      free (p);
+    }
 
   dismiss_url_status_dialog ();
 
@@ -237,6 +256,7 @@ do_install (HINSTANCE h)
 
   if (num_installs == 0)
     {
+      do_desktop (h);
       note (IDS_NOTHING_INSTALLED);
       return;
     }
@@ -308,6 +328,8 @@ do_install (HINSTANCE h)
   create_mount ("/", root_dir, istext);
   create_mount ("/usr/bin", concat (root_dir, "/bin", 0), istext);
   create_mount ("/usr/lib", concat (root_dir, "/lib", 0), istext);
+
+  do_desktop(h);
 
   note (IDS_INSTALL_COMPLETE);
 }

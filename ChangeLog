@@ -1,5 +1,14 @@
 2000-07-10  DJ Delorie  <dj@cygnus.com>
 
+	* Makefile.in: add desktop.o and mklink2.o
+	* dialog.h: add do_desktop
+	* install.cc: create standard directories, call do_desktop
+	* res.rc: add cygwin.ico as a file also
+	* desktop.cc: new, do shortcuts, batch files, and icons
+	* mklink2.c: new, for COM
+
+2000-07-10  DJ Delorie  <dj@cygnus.com>
+
 	* ini.cc (do_ini): don't worry about timestamps if we're not
  	actually installing.
 

@@ -72,6 +72,7 @@ PROGS	:= setup$(EXEEXT)
 OBJS = \
 	choose.o \
 	concat.o \
+	desktop.o \
 	dialog.o \
 	diskfull.o \
 	download.o \
@@ -84,6 +85,7 @@ OBJS = \
 	install.o \
 	main.o \
 	mkdir.o \
+	mklink2.o \
 	mount.o \
 	msg.o \
 	net.o \

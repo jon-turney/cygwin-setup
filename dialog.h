@@ -21,17 +21,19 @@ extern int next_dialog;
 
 #define D(x) void x(HINSTANCE _h)
 
-/* prototypes for all the do_* functions called by main.cc */
-D(do_source);
-D(do_root);
-D(do_net);
-D(do_site);
-D(do_other);
+/* prototypes for all the do_* functions (most called by main.cc) */
+
 D(do_choose);
-D(do_ini);
-D(do_fromcwd);
+D(do_desktop); /* called from do_install */
 D(do_download);
+D(do_fromcwd);
+D(do_ini);
 D(do_install);
+D(do_net);
+D(do_other);
+D(do_root);
+D(do_site);
+D(do_source);
 
 #undef D
 
