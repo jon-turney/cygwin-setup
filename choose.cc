@@ -89,7 +89,7 @@ static struct _header cat_headers[] = {
   {0, 0, 0, 0}
 };
 
-static int add_required (Package * pkg);
+static int add_required (Package * pkg, size_t depth = 0);
 static void set_view_mode (HWND h, views mode);
 
 static bool
@@ -192,12 +192,15 @@ set_action (Package * pkg, bool preinc)
 }
 
 static int
-add_required (Package * pkg)
+add_required (Package * pkg, size_t depth = 0)
 {
   Dependency *dp;
   Package *required;
   int c;
   int changed = 0;
+  /* cheap n nasty heuristic against mutual dependent packages */
+  if (depth > 5)
+    return 0;
   dp = pkg->required;
   switch (pkg->action)
     {
@@ -250,7 +253,7 @@ add_required (Package * pkg)
 	default:
 	  log (0, "invalid state %d\n", required->action);
 	}
-      changed += add_required (required);
+      changed += add_required (required, depth + 1);
       dp = dp->next;
     }
   return changed;
