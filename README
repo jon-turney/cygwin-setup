@@ -23,3 +23,5 @@ remember which packages were selected to be skipped, and which prev/curr/exp
 option was last selected, and recall them each time the chooser runs.
 
 Add friendly error reporting to simpsock.cc
+
+Add option to download sources also.
