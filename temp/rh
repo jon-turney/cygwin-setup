@@ -324,11 +324,20 @@ while (<>) {
 	$n = $1;
 	next;
     };
-    /^([^:]+):\s+(.*)/ or do {
+    my ($key, $text) = /^([^:]+):\s+(.*)/ or do {
 	warn "Unknown setup construct at $.\n";
 	next;
     };
-    $package{$p}{$n}{$1} = $2;
+    if ($text =~ /^"[^"]*$/) {
+	$text .= "\n";
+	do {
+	    $_ = <>;
+	    $text .= $_;
+	} while (!/"/);
+	chomp $text;
+    };
+	    
+    $package{$p}{$n}{$key} = $text;
 }
 
 my $pkg = $package{'__setup'};
@@ -349,6 +358,10 @@ for my $p (sort keys %package) {
 	delete $pkgbase->{'sdesc'};
     } elsif ($rpm && $rpm->{'desc'}) {
 	print "sdesc: ", $rpm->{'desc'}, "\n";
+    }
+    if ($pkgbase->{'ldesc'}) {
+	print "ldesc: ", $pkgbase->{'ldesc'}, "\n";
+	delete $pkgbase->{'ldesc'};
     }
     if ($pkgbase->{'category'}) {
 	print "category:", map(" \u$_", (split(' ', $pkgbase->{'category'}))), "\n";
