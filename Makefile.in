@@ -74,6 +74,7 @@ PROGS	:= setup$(EXEEXT)
 
 OBJS = \
 	autoload.o \
+	argv.o \
 	choose.o \
 	concat.o \
 	desktop.o \
@@ -91,6 +92,7 @@ OBJS = \
 	localdir.o \
 	log.o \
 	main.o \
+	mingw_getopt.o \
 	mkdir.o \
 	mklink2.o \
 	mount.o \
@@ -129,6 +131,14 @@ else
 	@$(CXX) $(MINGW_CXXFLAGS) -o $@ ${filter-out $(ALL_DEP_LIBS),$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
 endif
 	@chmod a-x $@
+
+mingw_getopt.o: $(cygwin_source)/lib/getopt.c
+ifdef VERBOSE
+	${filter-out -I$(newlib_source)/%,$(COMPILE_CC)} $c -o $(@D)/$(basename $@)$o $(MINGW_CFLAGS) $<
+else
+	@echo $(CC) $c -o $(@D)/$(basename $@)$o $(MINGW_CFLAGS) ... $^;\
+	${filter-out -I$(newlib_source)/%,$(COMPILE_CC)} $c -o $(@D)/$(basename$@)$o $(MINGW_CFLAGS) $<
+endif
 
 clean:
 	rm -f *.o $(PROGS) iniparse.c* iniparse.h* inilex.c* *.d

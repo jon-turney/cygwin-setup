@@ -41,6 +41,8 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #include "port.h"
 
+#include "argv.h"
+
 void netio_test (char *);
 
 int next_dialog;
@@ -127,6 +129,8 @@ WinMain (HINSTANCE h,
 	 LPSTR command_line,
 	 int cmd_show)
 {
+  int argc;
+  char ** argv;
   hinstance = h;
 
   next_dialog = IDD_SPLASH;
@@ -137,6 +141,13 @@ WinMain (HINSTANCE h,
   GetCurrentDirectory (sizeof (cwd), cwd);
   local_dir = strdup (cwd);
   log (0, "Current Directory: %s", cwd);
+
+  /* Parse the commandline into a argc, argv pair */
+  if (!CommandLineToArgV(argc, argv))
+    {
+      // The command line is parsed properly. Handle the arguments.
+      // ...
+    }
 
   /* Set the default DACL only on NT/W2K. 9x/ME has no idea of access
      control lists and security at all. */

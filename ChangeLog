@@ -1,3 +1,12 @@
+2001-10-31  Robert Collins  <rbtcollins@hotmail.com>
+
+	* argv.cc: New file, converts arguments for -mwindows programs. (Simplified derivation 
+	from dcrt0.cc.)
+	* argv.h: New file.
+	* Makefile,in: Add argv.o and mingw_getopt.o to setup.exe object list.
+	Add mingw_getopt.o build rule.
+	* main.cc(WinMain): Initialise argv and argc for use by getopt.
+
 2001-10-27  Christopher Faylor  <cgf@redhat.com>
 
 	* res.rc: Rearrange info on top line slightly.
