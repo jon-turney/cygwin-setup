@@ -1,3 +1,11 @@
+Sat Jul  7 00:40:28 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (set_action): Use default trust for determining reinstall
+	and source only.
+	(default_trust): Set default trust.
+	(pick_line::paint): Allow source selection when reinstalling or
+	retrieving.
+
 Fri Jul  6 18:08:49 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* choose.cc (isinstalled): Modify to properly accomodate special case
