@@ -195,6 +195,7 @@ endif
 
 iniparse.cc iniparse.h : iniparse.y
 	bison -d -o iniparse.cc $(srcdir)/iniparse.y
+	@mv iniparse.cc.h iniparse.h
 
 inilex.c : inilex.l iniparse.h
 	flex -8 $(srcdir)/inilex.l

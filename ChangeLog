@@ -1,3 +1,7 @@
+Mon May 28 18:24:59 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* Makefile.in: Correctly generate iniparse.h.
+
 Tue Mar  6 19:14:00 2001  Corinna Vinschen <corinna@vinschen.de>
 
 	* geturl.cc (get_url_to_file): Add parameter `allow_ftp_auth'.
