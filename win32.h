@@ -29,15 +29,26 @@
 #include <stdarg.h>
 
 #define WIN32_LEAN_AND_MEAN
+
 /* We want a minimum IE version of 3 */
 #define _WIN32_IE 0x0300
+
 /* libstdc++-v3 _really_ dislikes min & max defined as macros. */
 /* As of gcc 3.3.1, it defines NOMINMAX itself, so test first,
  * to avoid a redefinition error */
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
+
+/* In w32api 3.1, __declspec(dllinport) decoration is added to
+ * certain symbols. This breaks our autoload mechanism - the symptom is
+ * multiple declaration errors at link time. This define turns that off again.
+ * It will default to off again in later w32api versions, but we need to work
+ * with 3.1 for now. */
+#define WINBASEAPI
+
 #include <windows.h>
+
 #if HAVE_ALLOCA_H
 #include <alloca.h>
 #else
@@ -45,9 +56,11 @@
 #define alloca __builtin_alloca
 #endif
 #endif
+
 #ifndef _MAX_PATH 
 #define _MAX_PATH MAX_PATH
 #endif
+
 #ifndef _access
 #define _access access
 #endif

@@ -17,7 +17,7 @@
 #define SETUP_RECTWRAPPER_H
 
 
-#include <windows.h>
+#include "win32.h"
 
 /*
 Thin wrapper around GDI's RECT, mainly to allow what would otherwise have to

@@ -24,7 +24,7 @@
 
 #include <vector>
 
-#include <windows.h>
+#include "win32.h"
 #include <prsht.h>
 
 #include "window.h"

@@ -1,3 +1,11 @@
+2004-10-25  Max Bowsher  <maxb@ukf.net>
+
+	Fix compilation with w32api 3.1 and later.
+
+	* ControlAdjuster.h, RECTWrapper.h, cistring.h, propsheet.h,
+	window.cc, window.h: Include "win32.h" not <windows.h> directly.
+	* win32.h (WINBASEAPI): Define to empty string.
+
 2004-09-13  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
 	* script.cc (run): Kill stdin when running scripts.

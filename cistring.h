@@ -18,7 +18,7 @@
 
 // Yep, another string class
 
-#include <windows.h>
+#include "win32.h"
 
 class cistring
 {

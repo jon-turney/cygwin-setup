@@ -19,7 +19,7 @@
 
 #include <vector>
 
-#include <windows.h>
+#include "win32.h"
 #include "RECTWrapper.h"
 
 /*

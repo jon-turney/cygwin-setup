@@ -20,7 +20,7 @@
 // in its own right and as a base class for other window-like classes (e.g. PropertyPage,
 // PropSheet).
 
-#include <windows.h>
+#include "win32.h"
 
 class String;
 class RECTWrapper;
