@@ -276,7 +276,7 @@ tarx (const char *dir, const char *fn)
   else
     normalize_version (fn, &pkgname, &pkgversion);
   pkg = find_pkg (pkgstuff, pkgname);
-  if (!newer_pkg (pkg, pkgversion))
+  if (!newer_pkg (updating, pkg, pkgversion))
     {
       warning ("Skipped extraction of %s since newer version is installed\n", fn);
       return 1;
@@ -931,7 +931,7 @@ processdirlisting (SA *installme, const char *urlbase, const char *file)
 	    normalize_version (filename, &pkgname, &pkgversion);
 	  pkg = find_pkg (pkgstuff, pkgname);
 
-	  if (!newer_pkg (pkg, pkgversion))
+	  if (!newer_pkg (updating, pkg, pkgversion))
 	    {
 	      warning ("Skipped download of %s\n", filename);
 	      continue;

@@ -1,3 +1,10 @@
+Wed May 31 19:31:16 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* pkg.c (newer_pkg): Make always newer if not updating.
+	* setup.c (tarx); Ditto.
+	(processdirlisting): Ditto.
+	* setup.h: Ditto.
+
 Fri May 19 23:44:37 2000  Christopher Faylor <cgf@cygnus.com>
 
 	Fix compiler warnings throughout.

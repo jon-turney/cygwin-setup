@@ -271,9 +271,9 @@ write_pkg (pkg *pkg, char *name, char *version)
 }
 
 int
-newer_pkg (pkg *pkg, char *version)
+newer_pkg (int updating, pkg *pkg, char *version)
 {
-  if (pkg != NULL && stricmp (pkg->version, version) >= 0)
+  if (updating && pkg != NULL && stricmp (pkg->version, version) >= 0)
     return 0;
   return 1;
 }
