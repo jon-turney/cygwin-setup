@@ -1,5 +1,14 @@
 2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	* AntiVirus.cc: Change the short option again! It's now 'A'.
+	* desktop.cc (etc_profile): Remove.
+	(make_etc_profile): Remove.
+	(uexists): Remove.
+	(make_passwd_group): Remove.
+	(do_desktop_setup): Don't call removed functions.
+
+2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Fix my botched application of
 	Marcel's patch.
 
