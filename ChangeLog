@@ -1,5 +1,10 @@
 2001-11-13  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.cc (find_tar_ext): Only match at the end of the string.
+	(getpkgbyname): Prevent NULL pointer dereference.
+
+2001-11-13  Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.in (CFLAGS): Add warnings and -Werr.
 	(WARNONLY_FLAGS): For sources that produce (harmless) errors no matter what.
 	(OBJS): Add io_stream class' objects.

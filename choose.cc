@@ -962,8 +962,8 @@ _view::insert_under (int linen, pick_line line)
     {
       if (lines[n].get_category () || (lines[n].get_pkg ()
 				       && strcasecmp (line.get_pkg ()->name,
-						      lines[n].get_pkg ()->
-						      name) < 0))
+						      lines[n].
+						      get_pkg ()->name) < 0))
 	{
 	  insert_at (n, line);
 	  n = nlines;
@@ -1285,14 +1285,15 @@ base (const char *s)
 int
 find_tar_ext (const char *path)
 {
+  char *end = strchr (path, '\0');
   /* check in longest first order */
   char *ext = strstr (path, ".tar.bz2");
   if (ext)
-    return ext - path;
+    return (end - ext) == 8 ? ext - path : 0;
   if ((ext = strstr (path, ".tar.gz")));
-  return ext - path;
+  return (end - ext) == 7 ? ext - path : 0;
   if ((ext = strstr (path, ".tar")));
-  return ext - path;
+  return (end - ext) == 4 ? ext - path : 0;
 }
 
 /* Parse a filename into package, version, and extension components. */
@@ -1363,7 +1364,7 @@ parse_filename (const char *in_fn, fileparse & f)
 Package *
 getpkgbyname (const char *pkgname)
 {
-  for (Package * pkg = package; pkg->name; pkg++)
+  for (Package * pkg = package; pkg && pkg->name; pkg++)
     if (strcasecmp (pkg->name, pkgname) == 0)
       return pkg;
 
