@@ -439,7 +439,7 @@ main (int argc, char **argv)
 #endif
 
     if (!GetOption::GetInstance().Process (argc,_argv, NULL))
-      theLog->exit(1);
+      exit(1);
 
     LogSingleton::SetInstance (*(theLog = LogFile::createLogFile()));
     theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
