@@ -18,7 +18,6 @@
 #include "String++.h"
 #include <string.h>
 #include <ctype.h>
-#include "concat.h"
 #include "io_stream.h"
 #include <iostream>
 #include <sstream>

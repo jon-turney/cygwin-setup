@@ -137,8 +137,6 @@ setup_SOURCES = \
 	compress_bz.h \
 	compress_gz.cc \
 	compress_gz.h \
-	concat.cc \
-	concat.h \
 	cygpackage.cc \
 	cygpackage.h \
 	desktop.cc \

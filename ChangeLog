@@ -1,3 +1,10 @@
+2003-02-01  Igor Pechtchanski <pechtcha@cs.nyu.edu>
+
+	* String++.cc: Don't include concat.h.
+	* Makefile.am: Remove concat.cc and concat.h references.
+	* concat.h: Remove.
+	* concat.cc: Remove.
+
 2003-03-09  Max Bowsher  <maxb@ukf.net>
 
 	* bootstrap.sh: Add sanity check of current directory.
