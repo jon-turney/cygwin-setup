@@ -1,4 +1,10 @@
-2002-05-05 Robert Collins  <rbtcollins@hotmail.com>
+2002-05-06  John Marshall  <jmarshall@acm.org>
+
+	* site.cc (SitePage::OnMessageCmd): recalculate navigation
+	button activation when "Add" is pressed.
+	(SitePage::CheckControlsAndDisableAccordingly): tweak comment.
+
+2002-05-07 Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.am (inlint_SOURCES): Add conditional objects to inilint
 	depending on platform.

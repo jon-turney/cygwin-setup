@@ -338,7 +338,7 @@ SitePage::CheckControlsAndDisableAccordingly () const
   // Check that at least one download site is selected.
   if (SendMessage (GetDlgItem (IDC_URL_LIST), LB_GETSELCOUNT, 0, 0) > 0)
     {
-      // At least one official site selected, enable "Next".
+      // At least one site selected, enable "Next".
       ButtonFlags |= PSWIZB_NEXT;
     }
   GetOwner ()->SetButtons (ButtonFlags);
@@ -423,6 +423,8 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 
 	    // Update the list box.
 	    PopulateListBox ();
+	    // And allow the user to continue
+	    CheckControlsAndDisableAccordingly ();
 	    eset (GetHWND (), IDC_EDIT_USER_URL, "");
 	    }
 	  }
