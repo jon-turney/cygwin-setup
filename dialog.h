@@ -32,20 +32,11 @@ extern int exit_msg;
 
 /* prototypes for all the do_* functions (most called by main.cc) */
 
-D (do_choose);
-D (do_desktop);
 D (do_download);
 D (do_fromcwd);
 D (do_ini);
 D (do_install);
-D (do_local_dir);
-D (do_net);
-D (do_other);
 D (do_postinstall);
-D (do_root);
-D (do_site);
-D (do_source);
-D (do_splash);
 
 #undef D
 

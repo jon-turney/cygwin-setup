@@ -1,3 +1,9 @@
+2003-07-23  Max Bowsher  <maxb@ukf.net>
+
+	* dialog.h (do_choose, do_desktop, do_local_dir, do_net, do_other)
+	(do_root, do_site, do_source, do_splash): Remove declarations, since
+	these functions no longer exist.
+
 2003-07-23  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* choose.cc (initialized): Remove obsolete file scope variable.
