@@ -29,7 +29,6 @@ static const char *cvsid =
 
 #include "resource.h"
 #include "msg.h"
-#include "ini.h"
 #include "dialog.h"
 #include "String++.h"
 #include "geturl.h"

@@ -49,10 +49,13 @@ static const char *cvsid =
 #include "threebar.h"
 
 #include "rfc1738.h"
+
+#include "IniState.h"
+  
 extern ThreeBarProgressPage Progress;
 
 unsigned int setup_timestamp = 0;
-char *setup_version = 0;
+String setup_version;
 
 extern int yyparse ();
 /*extern int yydebug;*/
@@ -78,14 +81,11 @@ find_routine (char *path, unsigned int fsize)
   else
     log (LOG_BABBLE, String ("Found ini file - file://") + local_dir + "/" + path);
 
-  /* FIXME: only use most recent copy */
-  setup_timestamp = 0;
-  setup_version = 0;
-
   /* Attempt to unescape the string */
   path[strlen(path) -10] = '\0';
   String mirror = rfc1738_unescape_part (path);
-  ini_init (ini_file, mirror);
+  IniState state;
+  ini_init (ini_file, mirror, &state);
 
   /*yydebug = 1; */
 
@@ -93,6 +93,11 @@ find_routine (char *path, unsigned int fsize)
     MessageBox (0, error_buf, error_count == 1 ? "Parse Error" : "Parse Errors", 0);
   else
     local_ini++;
+  if (state.timestamp > setup_timestamp)
+    {
+      setup_timestamp = state.timestamp;
+      setup_version = state.version;
+    }
 }
 
 static int
@@ -119,11 +124,8 @@ do_remote_ini (HWND owner)
 	  continue;
 	}
 
-      /* FIXME: only use most recent copy */
-      setup_timestamp = 0;
-      setup_version = 0;
-
-      ini_init (ini_file, site_list[n]->url);
+      IniState state;
+      ini_init (ini_file, site_list[n]->url, &state);
 
       /*yydebug = 1; */
 
@@ -146,6 +148,11 @@ do_remote_ini (HWND owner)
 	      delete inistream;
 	    }
 	  ++ini_count;
+	}
+      if (state.timestamp > setup_timestamp)
+	{
+	  setup_timestamp = state.timestamp;
+	  setup_version = state.version;
 	}
     }
   return ini_count;
@@ -202,15 +209,16 @@ do_ini_thread (HINSTANCE h, HWND owner)
 	}
     }
 
-  msg ("setup_version is %s, our_version is %s", setup_version ? : "(null)",
+  msg ("setup_version is %s, our_version is %s", setup_version.size() ? 
+       setup_version.cstr_oneuse() : "(null)",
        version);
-  if (setup_version)
+  if (setup_version.size())
     {
       String ini_version = canonicalize_version (setup_version);
       String our_version = canonicalize_version (version);
       // XXX useversion < operator
       if (our_version.compare (ini_version) < 0)
-	note (owner, IDS_OLD_SETUP_VERSION, version, setup_version);
+	note (owner, IDS_OLD_SETUP_VERSION, version, setup_version.cstr_oneuse());
     }
 
   next_dialog = IDD_CHOOSER;

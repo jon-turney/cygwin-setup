@@ -31,7 +31,6 @@ static const char *cvsid =
 #include <unistd.h>
 
 #include "resource.h"
-#include "ini.h"
 #include "msg.h"
 #include "state.h"
 #include "dialog.h"

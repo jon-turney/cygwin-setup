@@ -18,7 +18,8 @@
 
 class io_stream;
 class String;
-void ini_init (io_stream *, String const &);
+class IniState;
+void ini_init (io_stream *, String const &, IniState *);
 #define YYSTYPE char *
 
 #ifdef __cplusplus

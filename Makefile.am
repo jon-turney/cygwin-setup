@@ -36,6 +36,7 @@ noinst_PROGRAMS = \
   setup
 
 EXTRA_PROGRAMS = inilint
+##noinst_PROGRAMS +=inilint
 
 # to avoid false errors that assembly generates
 WARNONLY_CFLAGS	= -Winline -Wall -Wpointer-arith -Wcast-align \
@@ -50,7 +51,7 @@ EXTRA_DIST = \
   choose-spin.bmp \
   cygwin.ico \
   inilex.l \
-  iniparse.y 
+  iniparse.y
 
 BUILT_SOURCES = setup_version.c \
   	inilex.cc \
@@ -58,10 +59,13 @@ BUILT_SOURCES = setup_version.c \
 
 inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32 
 inilint_SOURCES = \
+  filemanip.cc \
+  filemanip.h \
   inilex.cc \
   inilintmain.cc \
   iniparse.cc \
   iniparse.h \
+  IniState.h \
   rfc1738.cc \
   rfc1738.h \
   String++.cc \
@@ -118,6 +122,7 @@ setup_SOURCES = \
 	inilex.cc \
 	iniparse.cc \
 	iniparse.h \
+	IniState.h \
 	install.cc \
 	io_stream.cc \
 	io_stream.h \

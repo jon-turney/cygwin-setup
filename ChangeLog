@@ -1,5 +1,28 @@
 2002-05-03 Robert Collins  <rbtcollins@hotmail.com>
 
+	* Makefile.am: Add IniState.h.
+	* Makefile.in: Regenerate.
+	* IniState.h: New file.
+	* choose.cc: Don't include ini.h - it's not needed.
+	* configure: Regenerate.
+	* desktop.cc: Don't include ini.h - it's not needed.
+	* download.cc: Ditto.
+	* fromcwd.cc: Ditto.
+	* ini.cc: Use IniState.h to track each parsing calling.
+	(find_routine): Ditto.
+	(do_remote_ini): Ditto.
+	(do_ini_thread): Ditto.
+	* ini.h (ini_init): Adjust parameters to include state object.
+	* inilex.l: Declare parser state variable.
+	(ini_init): Adjust parameters to include state object.
+	* iniparse.y: Remove obsolete setup_timestamp and setup_version 
+	declarations.
+	(setup_header): Use new state variable to track time and version.
+	(add_correct_version): Ditto.
+	* install.cc: Don't include ini.h - it's not needed.
+
+2002-05-03 Robert Collins  <rbtcollins@hotmail.com>
+
 	* nio-files.cc (NetIO): Use io_stream syntax for get_file_size.
 	* io_stream_file.cc: Don't include filemanip.h.
 	(io_stream_file::get_size): Implement here to remove filemanip

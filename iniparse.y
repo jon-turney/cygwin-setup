@@ -35,13 +35,13 @@ int yylex ();
 #include "package_meta.h"
 #include "package_version.h"
 #include "cygpackage.h"
+#include "IniState.h"
 
 #define YYERROR_VERBOSE 1
 /*#define YYDEBUG 1*/
 
 static packagemeta *cp = 0;
-extern unsigned int setup_timestamp;
-extern char *setup_version;
+extern IniState *parseState;
 extern int yylineno;
 
 char * parse_mirror = 0;
@@ -71,8 +71,8 @@ setup_headers
  ;
 
 setup_header
- : SETUP_TIMESTAMP STRING '\n' { setup_timestamp = strtoul ($2, 0, 0); }
- | SETUP_VERSION STRING '\n' { setup_version = new char [strlen($2) + 1];strcpy (setup_version, $2); }
+ : SETUP_TIMESTAMP STRING '\n' { parseState->timestamp = strtoul ($2, 0, 0); }
+ | SETUP_VERSION STRING '\n' { parseState->version = $2; }
  | '\n'
  | error { yyerror ("unrecognized line in setup.ini headers (do you have the latest setup?)"); } '\n'
  ;
@@ -158,23 +158,23 @@ add_correct_version()
   switch (trust)
   {
     case TRUST_CURR:
-      if (cp->currtimestamp < setup_timestamp)
+      if (cp->currtimestamp < parseState->timestamp)
       {
-	cp->currtimestamp = setup_timestamp;
+	cp->currtimestamp = parseState->timestamp;
 	cp->curr = cpv;
       }
     break;
     case TRUST_PREV:
-    if (cp->prevtimestamp < setup_timestamp)
+    if (cp->prevtimestamp < parseState->timestamp)
     {
-        cp->prevtimestamp = setup_timestamp;
+        cp->prevtimestamp = parseState->timestamp;
 	  cp->prev = cpv;
     }
     break;
     case TRUST_TEST:
-    if (cp->exptimestamp < setup_timestamp)
+    if (cp->exptimestamp < parseState->timestamp)
     {
-        cp->exptimestamp = setup_timestamp;
+        cp->exptimestamp = parseState->timestamp;
 	cp->exp = cpv;
     }
     break;

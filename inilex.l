@@ -105,14 +105,16 @@ STR	[a-zA-Z0-9_./+-]+
 
 static io_stream *input_stream = 0;
 extern char *parse_mirror;
+IniState *parseState;
 
 void
-ini_init(io_stream *stream, String const &mirror)
+ini_init(io_stream *stream, String const &mirror, IniState *state)
 {
   input_stream = stream;
   if (parse_mirror)
     delete[] parse_mirror;
   parse_mirror = mirror.cstr();
+  parseState = state;
 }
 
 static int

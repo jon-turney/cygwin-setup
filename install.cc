@@ -37,7 +37,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "zlib/zlib.h"
 
 #include "resource.h"
-#include "ini.h"
 #include "dialog.h"
 #include "geturl.h"
 #include "state.h"

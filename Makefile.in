@@ -145,7 +145,7 @@ EXTRA_DIST = \
   choose-spin.bmp \
   cygwin.ico \
   inilex.l \
-  iniparse.y 
+  iniparse.y
 
 
 BUILT_SOURCES = setup_version.c \
@@ -155,10 +155,13 @@ BUILT_SOURCES = setup_version.c \
 
 inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32 
 inilint_SOURCES = \
+  filemanip.cc \
+  filemanip.h \
   inilex.cc \
   inilintmain.cc \
   iniparse.cc \
   iniparse.h \
+  IniState.h \
   rfc1738.cc \
   rfc1738.h \
   String++.cc \
@@ -217,6 +220,7 @@ setup_SOURCES = \
 	inilex.cc \
 	iniparse.cc \
 	iniparse.h \
+	IniState.h \
 	install.cc \
 	io_stream.cc \
 	io_stream.h \
@@ -316,8 +320,9 @@ EXTRA_PROGRAMS = inilint$(EXEEXT)
 noinst_PROGRAMS = setup$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 
-am_inilint_OBJECTS = inilex.$(OBJEXT) inilintmain.$(OBJEXT) \
-	iniparse.$(OBJEXT) rfc1738.$(OBJEXT) String++.$(OBJEXT)
+am_inilint_OBJECTS = filemanip.$(OBJEXT) inilex.$(OBJEXT) \
+	inilintmain.$(OBJEXT) iniparse.$(OBJEXT) rfc1738.$(OBJEXT) \
+	String++.$(OBJEXT)
 inilint_OBJECTS = $(am_inilint_OBJECTS)
 inilint_DEPENDENCIES = libgetopt++/libgetopt++.la
 inilint_LDFLAGS =
