@@ -61,7 +61,6 @@ WISHLIST:
  * Save all options.
  * Run a different script after finishing setup.
  * Show bin and src download size.
- * Log postinstall scripts to a file.
  * Confirm cancellation of setup if in the middle of doing something.
  * Improve mirror selection UI.
  * Ability to "hold" the version of a package - i.e. never auto-upgrade.
@@ -116,3 +115,5 @@ Recently Completed
  * Audit rfc1738 code for bad memory/string handling. Example: Crash occurs if
    rfc1738 encoded dirname is truncated in the middle of a %xx sequence.
    Crash not reproducible with test cases, and the code does not handle memory badly. 
+ * Log postinstall scripts to a file.
+ 
