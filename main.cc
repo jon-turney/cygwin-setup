@@ -77,8 +77,106 @@ static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup 
 
 #define iswinnt		(GetVersion() < 0x80000000)
 
+namespace Setup {
+  class SIDWrapper {
+    public:
+      SIDWrapper();
+      /* Prevent synthetics. If assignment is needed, this should be refcounting  */
+      SIDWrapper(SIDWrapper const &);
+      SIDWrapper&operator=(SIDWrapper const&);
+      ~SIDWrapper();
+      /* We could look at doing weird typcast overloads here,
+      but manual access is easier for now
+      */
+      PSID &theSID();
+      PSID const &theSID() const;
+    private:
+      PSID value;
+  };
+
+SIDWrapper::SIDWrapper() : value(NULL) {}
+SIDWrapper::~SIDWrapper()
+{
+  if (value)
+    FreeSid (value);
+}
+
+PSID &
+SIDWrapper::theSID()
+{
+  return value;
+}
+
+PSID const &
+SIDWrapper::theSID() const
+{
+  return value;
+}
+
+  class HANDLEWrapper {
+    public:
+      HANDLEWrapper();
+      /* Prevent synthetics. If assignment is needed, we should duphandles, or refcount */
+      HANDLEWrapper(HANDLEWrapper const &);
+      HANDLEWrapper&operator=(HANDLEWrapper const &);
+      ~HANDLEWrapper();
+      HANDLE &theHANDLE();
+      HANDLE const &theHANDLE() const;
+    private:
+      HANDLE value;
+  };
+
+HANDLEWrapper::HANDLEWrapper() : value (NULL) {}
+HANDLEWrapper::~HANDLEWrapper()
+{
+  if (value)
+    CloseHandle(value);
+}
+
+HANDLE &
+HANDLEWrapper::theHANDLE() 
+{
+  return value;
+}
+
+HANDLE const &
+HANDLEWrapper::theHANDLE() const 
+{
+  return value;
+}
+
+};
+
+class NTSecurity
+{
+  public:
+  NTSecurity();
+  ~NTSecurity();
+  /* prevent synthetics */
+  NTSecurity &operator=(NTSecurity const&);
+  NTSecurity(NTSecurity const &);
+
+  void setDefaultSecurity();
+  Setup::SIDWrapper esid, asid, usid;
+  Setup::HANDLEWrapper token;
+};
+
 void
-set_default_sec ()
+set_default_sec()
+{
+  NTSecurity worker;
+  worker.setDefaultSecurity();
+}
+
+NTSecurity::NTSecurity() : esid (), asid(), usid(), token()
+{}
+
+NTSecurity::~NTSecurity()
+{
+}
+
+void
+NTSecurity::setDefaultSecurity ()
 {
   /* To assure that the created files have a useful ACL, the 
      default DACL in the process token is set to full access to
@@ -104,8 +202,6 @@ set_default_sec ()
       return;
     }
 
-  PSID esid = NULL, asid = NULL, usid = NULL;
-  HANDLE token = NULL;
   struct {
     PSID psid;
     char buf[MAX_SID_LEN];
@@ -116,44 +212,44 @@ set_default_sec ()
   DWORD size;
 
   SID_IDENTIFIER_AUTHORITY sid_auth = { SECURITY_WORLD_SID_AUTHORITY };
-  if (!AllocateAndInitializeSid (&sid_auth, 1, 0, 0, 0, 0, 0, 0, 0, 0, &esid))
+  if (!AllocateAndInitializeSid (&sid_auth, 1, 0, 0, 0, 0, 0, 0, 0, 0, &esid.theSID()))
     {
       log (LOG_TIMESTAMP) << "AllocateAndInitializeSid() failed: " <<
 	   GetLastError () << endLog;
-      goto out;
+      return;
     }
 
   /* Create the ACE which grants full access to "Everyone" and store it
      in dacl->DefaultDacl. */
   if (!AddAccessAllowedAce
-      (dacl->DefaultDacl, ACL_REVISION, GENERIC_ALL, esid))
+      (dacl->DefaultDacl, ACL_REVISION, GENERIC_ALL, esid.theSID()))
     {
       log (LOG_TIMESTAMP) << "AddAccessAllowedAce() failed: %lu" << 
 	   GetLastError () << endLog;
-      goto out;
+      return;
     }
 
   /* Get the processes access token. */
   if (!OpenProcessToken (GetCurrentProcess (),
-			 TOKEN_READ | TOKEN_ADJUST_DEFAULT, &token))
+			 TOKEN_READ | TOKEN_ADJUST_DEFAULT, &token.theHANDLE()))
     {
       log (LOG_TIMESTAMP) << "OpenProcessToken() failed: " << 
 	GetLastError () << endLog;
-      goto out;
+      return;
     }
 
   /* Set the default DACL to the above computed ACL. */
-  if (!SetTokenInformation (token, TokenDefaultDacl, dacl, sizeof buf))
+  if (!SetTokenInformation (token.theHANDLE(), TokenDefaultDacl, dacl, sizeof buf))
     log (LOG_TIMESTAMP) << "OpenProcessToken() failed: " << 
       GetLastError () << endLog;
 
 
   /* Get the default group */
-  if (!GetTokenInformation (token, TokenPrimaryGroup, &gsid, sizeof gsid, &size))
+  if (!GetTokenInformation (token.theHANDLE(), TokenPrimaryGroup, &gsid, sizeof gsid, &size))
     {
       log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " << 
 	GetLastError () << endLog;
-      goto out;
+      return;
     }
 
   /* Get the computer name */
@@ -161,7 +257,7 @@ set_default_sec ()
     {
       log (LOG_TIMESTAMP) << "GetComputerName() failed: " << 
 	GetLastError () << endLog;
-      goto out;
+      return;
     }
 
   /* Get the local domain SID */
@@ -172,7 +268,7 @@ set_default_sec ()
     {
       log (LOG_TIMESTAMP) << "LookupAccountName() failed: " << 
 	GetLastError () << endLog;
-      goto out;
+      return;
     }
 
   /* Create the None SID from the domain SID.
@@ -190,75 +286,63 @@ set_default_sec ()
       sid_auth = (SID_IDENTIFIER_AUTHORITY) { SECURITY_NT_AUTHORITY };
       /* Get the SID for "Administrators" S-1-5-32-544 */
       if (!AllocateAndInitializeSid (&sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
-				     DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &asid))
+				     DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &asid.theSID()))
         {
 	  log (LOG_TIMESTAMP) << "AllocateAndInitializeSid() failed: " <<
 	    GetLastError () << endLog;
-	  goto out;
+	  return;
 	}
       /* Get the SID for "Users" S-1-5-32-545 */
       if (!AllocateAndInitializeSid (&sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
-				     DOMAIN_ALIAS_RID_USERS, 0, 0, 0, 0, 0, 0, &usid))
+				     DOMAIN_ALIAS_RID_USERS, 0, 0, 0, 0, 0, 0, &usid.theSID()))
         {
 	  log (LOG_TIMESTAMP) << "AllocateAndInitializeSid() failed: " <<
 	    GetLastError () << endLog;
-	  goto out;
+	  return;
 	}
       /* Get the token groups */
-      if (!GetTokenInformation (token, TokenGroups, NULL, 0, &size)
+      if (!GetTokenInformation (token.theHANDLE(), TokenGroups, NULL, 0, &size)
 	  && GetLastError () != ERROR_INSUFFICIENT_BUFFER)
         {
 	  log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " <<
 	    GetLastError () << endLog;
-	  goto out;
+	  return;
 	}
       else 
         {
 	  char buf[size];
 	  TOKEN_GROUPS *groups = (TOKEN_GROUPS *) buf;
 
-	  if (!GetTokenInformation (token, TokenGroups, buf, size, &size))
+	  if (!GetTokenInformation (token.theHANDLE(), TokenGroups, buf, size, &size))
 	    {
 	      log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " <<
 		GetLastError () << endLog;
-	      goto out;
+	      return;
 	    }
 	  else
 	    /* See if admins or users is present */
 	    for (DWORD pg = 0; pg < groups->GroupCount; ++pg)
 	      {
-		isadmins = isadmins || EqualSid(groups->Groups[pg].Sid, asid);
-		isusers = isusers || EqualSid(groups->Groups[pg].Sid, usid);
+		isadmins = isadmins || EqualSid(groups->Groups[pg].Sid, asid.theSID());
+		isusers = isusers || EqualSid(groups->Groups[pg].Sid, usid.theSID());
 	      }
 	}
       /* Set the default group to one of the above computed SID. */
       PSID nsid = NULL;
       if (isusers)
       {
-	nsid = usid;
+	nsid = usid.theSID();
 	log(LOG_TIMESTAMP) << "Changing gid to Users" << endLog;
       }
       else if (isadmins)
       {
-	nsid = asid;
+	nsid = asid.theSID();
 	log(LOG_TIMESTAMP) << "Changing gid to Administrators" << endLog;
       }
-      if (nsid && !SetTokenInformation (token, TokenPrimaryGroup, &nsid, sizeof nsid))
+      if (nsid && !SetTokenInformation (token.theHANDLE(), TokenPrimaryGroup, &nsid, sizeof nsid))
 	log (LOG_TIMESTAMP) << "SetTokenInformation() failed: " << 
 	  GetLastError () << endLog;
     }
- out:
-  /* Close token handle. */
-  if (token)
-    CloseHandle (token);
-  
-  /* Free memory occupied by the SIDs. */
-  if (esid)
-    FreeSid (esid);
-  if (asid)
-    FreeSid (asid);
-  if (usid)
-    FreeSid (usid);
 }
 
 // Other threads talk to this page, so we need to have it externable.
