@@ -162,7 +162,9 @@ WinMain (HINSTANCE h,
 
   char cwd[_MAX_PATH];
   GetCurrentDirectory (sizeof (cwd), cwd);
-  local_dir = strdup (cwd);
+  local_dir = new char [strlen (cwd) + 1];
+  local_dir [strlen (cwd)] = '\0';
+  strcpy (local_dir, cwd);
   log (0, "Current Directory: %s", cwd);
 
   char **argv;

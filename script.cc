@@ -51,7 +51,7 @@ init_run_script ()
       sh = backslash (cygpath (shells[i], 0));
       if (_access (sh, 0) == 0)
 	break;
-      free (sh);
+      delete[] sh;
       sh = 0;
     }
   
@@ -115,14 +115,14 @@ run_script (char const *dir, char const *fname)
       char *f2 = concat (dir, fname, 0);
       log (0, "running: %s -c %s", sh, f2);
       run (sh, "-c", f2);
-      free (f2);
+      delete[] f2;
     }
   else if (cmd && strcmp (ext, ".bat") == 0)
     {
       char *f2 = backslash (cygpath (dir, fname, 0));
       log (0, "running: %s /c %s", cmd, f2);
       run (cmd, "/c", f2);
-      free (f2);
+      delete[] f2;
     }
   else
     return;

@@ -64,7 +64,8 @@ io_stream_cygfile::io_stream_cygfile (const char *name, const char *mode)
     return;
 
   fname = cygpath (name, 0);
-  lmode = strdup (mode);
+  lmode = new char[strlen(mode) + 1];
+  strcpy (lmode,mode);
   fp = fopen (fname, mode);
   if (!fp)
     lasterr = errno;
@@ -73,9 +74,9 @@ io_stream_cygfile::io_stream_cygfile (const char *name, const char *mode)
 io_stream_cygfile::~io_stream_cygfile ()
 {
   if (lmode)
-    free (lmode);
+    delete[] lmode;
   if (fname)
-    free (fname);
+    delete[] fname;
   if (fp)
     fclose (fp);
 }
@@ -103,7 +104,7 @@ io_stream_cygfile::remove (const char *path)
   unsigned long w = GetFileAttributes (cygpath (path, 0));
   if (w != 0xffffffff && w & FILE_ATTRIBUTE_DIRECTORY)
     {
-      char *tmp = (char *) malloc (strlen (cygpath (path, 0)) + 10);
+      char *tmp = new char [strlen (cygpath (path, 0)) + 10];
       int i = 0;
       do
 	{
@@ -114,7 +115,7 @@ io_stream_cygfile::remove (const char *path)
       fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
 	       path);
       MoveFile (cygpath (path, 0), tmp);
-      free (tmp);
+      delete[] tmp;
     }
   return !DeleteFileA (cygpath (path, 0));
 }

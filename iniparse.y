@@ -45,7 +45,6 @@ extern char *setup_version;
 extern int yylineno;
 
 char * parse_mirror = 0;
-static packagedb db;
 static cygpackage *cpv = 0;
 static int trust;
 
@@ -71,7 +70,7 @@ setup_headers
 
 setup_header
  : SETUP_TIMESTAMP STRING '\n' { setup_timestamp = strtoul ($2, 0, 0); }
- | SETUP_VERSION STRING '\n' { setup_version = _strdup ($2); }
+ | SETUP_VERSION STRING '\n' { setup_version = new char [strlen($2) + 1];strcpy (setup_version, $2); }
  | '\n'
  | error { yyerror ("unrecognized line in setup.ini headers (do you have the latest setup?)"); } '\n'
  ;
@@ -82,7 +81,7 @@ packages
  ;
 
 package
- : '@' STRING '\n'		{ cp = &db.packages.registerbykey($2); cpv = new cygpackage ($2); trust = TRUST_CURR;}
+ : '@' STRING '\n'		{packagedb db; cp = &db.packages.registerbykey($2); cpv = new cygpackage ($2); trust = TRUST_CURR;}
    lines
  ;
 
@@ -138,9 +137,9 @@ requires
  ;
 
 categories
- : STRING			{ cp->add_category (db.categories.registerbykey ($1));
+ : STRING			{ packagedb db; cp->add_category (db.categories.registerbykey ($1));
  				} categories
- | STRING			{ cp->add_category (db.categories.registerbykey ($1)); }
+ | STRING			{ packagedb db; cp->add_category (db.categories.registerbykey ($1)); }
  ;
 
 %%

@@ -46,7 +46,8 @@ type (package_binary),
 listdata (0),
 listfile (0)
 {
-  name = strdup (pkgname);
+  name = new char [strlen (pkgname) +1];
+  strcpy (name, pkgname);
   memset( getfilenamebuffer, '\0', _MAX_PATH);
 
   /* FIXME: query the install database for the currently installed 
@@ -68,8 +69,10 @@ listdata (0),
 listfile (0),
 filesize (fs)
 {
-  name = strdup (pkgname);
-  fn = strdup (fn);
+  name = new char [strlen (pkgname) +1];
+  strcpy (name, pkgname);
+  fn = new char [strlen (filename) +1];
+  strcpy (fn, filename);
   memset( getfilenamebuffer, '\0', _MAX_PATH);
   set_canonical_version (version);
 }
@@ -79,21 +82,25 @@ void
 cygpackage::set_canonical_version (char const *version)
 {
   char *curr = strchr (version, '-');
-  canonical = strdup (version);
+  canonical = new char [strlen (version) +1];
+  strcpy (canonical, version);
   if (curr)
     {
       char *next;
       while ((next = strchr (curr + 1, '-')))
 	curr = next;
       /* curr = last - in the version string */
-      packagev = strdup (curr + 1);
-      vendor = strdup (version);
+      packagev = new char [strlen (curr + 1) +1];
+      strcpy (packagev, curr + 1);
+      vendor = new char [strlen (version) +1];
+      strcpy (vendor, version);
       vendor[curr - version] = '\0';
     }
   else
     {
       packagev = 0;
-      vendor = strdup (version);
+      vendor = new char [strlen (version) +1];
+      strcpy (vendor, version);
     }
   key = canonical;
 }
@@ -110,15 +117,15 @@ cygpackage::destroy ()
 {
 
   if (name)
-    free (name);
+    delete[] name;
   if (vendor)
-    free (vendor);
+    delete[] vendor;
   if (packagev)
-    free (packagev);
+    delete[] packagev;
   if (canonical)
-    free (canonical);
+    delete[] canonical;
   if (fn)
-    free (fn);
+    delete[] fn;
   if (listdata)
     delete listdata;
   if (sdesc)

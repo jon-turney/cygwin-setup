@@ -31,7 +31,9 @@ next (0),
 packages (0)
 {
   /* FIXME: search the global category list for name, and reuse that pointer */
-  name = strdup (categoryname);
+  char *t = new char [strlen(categoryname) + 1];
+  strcpy (t, categoryname);
+  name = t;
   key = name;
 }
 

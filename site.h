@@ -60,11 +60,11 @@ public:
   ~site_list_type ()
   {
     if (url)
-      free (url);
+      delete[] url;
     if (displayed_url)
-      free (displayed_url);
+      delete[] displayed_url;
     if (key)
-      free (key);
+      delete[] key;
   };
   char *url;
   char *displayed_url;

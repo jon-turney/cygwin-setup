@@ -1,3 +1,59 @@
+2002-01-21  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in (CFLAGS): Allow customisable malloc debug flags.
+	(OBJS): Link in malloc objects.
+	* category.cc (category): Use new char, not strdup.
+	* choose.cc (pick_pkg_line::paint): Allow for the regionsize to shrink.
+	(do_choose): Use new char, not malloc.
+	* concat.cc (vconcat): Ditto.
+	* cygpackage.cc (cygpackage): Use new char, not strdup.
+	(set_canonical_version): Ditto.
+	(cygpackage::destroy): Use delete[], not free.
+	* desktop.cc (uexists): Ditto.
+	* dialog.cc (egest): Use new char, not strdup.
+	* dlmalloc.c: New file - Doug Lea's malloc 2.7.0
+	* hash.cc (hash::hash): Use delete instead of free.
+	(hash::add): Use new char, not strdup.
+	* ini.cc (do_remote_ini): Use delete[] not free.
+	* inilex.l: Use new char, not strdup.
+	(ini_init): Ditto.
+	* iniparse.y: Ditto.
+	Use a local package_db rather than a static one.
+	* install.cc (struct mallinfo): Workaround an apparent dlmalloc bug.
+	(do_install_thread): Call mallinfo to force a consistency check. Appears
+	to fix a 'inuse' error in -DDEBUG builds.
+	Use delete[] for strings.
+	* io_stream_cygfile.cc (io_stream_cygfile::io_stream_cygfile): Use new char,
+	not strdup.
+	(io_stream_cygfile::~io_stream_cygfile): Use delete[], not free.
+	(io_stream_cygfile::remove): Use new char, not strdup.
+	* io_stream_file.cc (io_stream_file::io_stream_file): Use new char, not strdup.
+	(io_stream_file::io_stream_file): Use delete[], not free.
+	(io_stream_file::remove): Use new char, not strdup.
+	* io_stream_memory.cc (memblock::~memblock): Use delete[], not free.
+	* io_stream_memory.h (memblock): Use new char, not malloc.
+	* localdir.cc (LocalDirPage::OnInit): Use new char, not strdup.
+	* main.cc (WinMain): Use new char, not strdup.
+	* mount.cc (find2): Use new char, not malloc.
+	(read_mounts): Ditto.
+	(cygpath): Use new char, not strdup.
+	* netio.cc (NetIO::~NetIO): Use delete[], not free.
+	(NetIO::set_url): Use new char, not strdup.
+	(NetIO::get_ftp_auth): Use delete[], not free.
+	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Ditto.
+	Use new char instead of strdup.
+	* nio-http.cc (base64_encode): Use new char, not malloc.
+	* package_meta.cc (hash::add_subdirs): Use new char instead of strdup.
+	* package_source.h (~ packagesource): Use delete[] instead of delete.
+	* port.h (strdup): Deprecate the use of strdup.
+	* rfc1738.cc (rfc1738_do_escape): Use new char, not calloc.
+	* script.cc (init_run_script): Us delete[], not free.
+	(run_script): Ditto.
+	* simpsock.cc (SimpleSocket::fill): Use new char, not malloc.
+	(SimpleSocket::invalidate): Use delete[], not free.
+	* site.cc (site_list_type::init): Use new char instead of strdup.
+	* site.h (~site_list_type): Use delete[], not free.
+
 2002-01-20  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in (OBJS): Add win32.o - win32 support functions.

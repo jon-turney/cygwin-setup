@@ -67,7 +67,8 @@ void
 hash::add_subdirs (char const *tpath)
 {
   char *nonp, *pp;
-  char *path = strdup (tpath);
+  char *path = new char [strlen (tpath) +1];
+  strcpy (path, tpath);
   for (nonp = path; *nonp == '\\' || *nonp == '/'; nonp++);
   for (pp = path + strlen (path) - 1; pp > nonp; pp--)
     if (*pp == '/' || *pp == '\\')

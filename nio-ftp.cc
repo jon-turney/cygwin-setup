@@ -66,9 +66,8 @@ NetIO_FTP::NetIO_FTP (char const *Purl, BOOL allow_ftp_auth):NetIO (Purl, allow_
     {
       if (cmd)
 	cmd->printf ("QUIT\r\n");
-      delete
-	cmd;
-      free (cmd_host);
+      delete cmd;
+      delete [] cmd_host;
       cmd = 0;
       cmd_host = 0;
     }
@@ -108,7 +107,8 @@ NetIO_FTP::NetIO_FTP (char const *Purl, BOOL allow_ftp_auth):NetIO (Purl, allow_
 	}
 
       cmd = c;
-      cmd_host = _strdup (host);
+      cmd_host = new char [strlen (host) + 1];
+      strcpy (cmd_host, host);
       cmd_port = port;
 
       cmd->printf ("TYPE I\r\n");

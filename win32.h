@@ -49,3 +49,4 @@ class Win32 {
 
 #endif //_cplusplus
 #endif // SETUP_WIN32_H
+

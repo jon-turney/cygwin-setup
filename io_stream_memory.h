@@ -29,7 +29,7 @@ class memblock
 {
 public:
   memblock () : next (0), len (0), data (0) {};
-  memblock (size_t size) : next (0), len (size) {data = (unsigned char *) malloc (size); if (!data) len = 0;};
+  memblock (size_t size) : next (0), len (size) {data = new unsigned char[size]; if (!data) len = 0;};
   ~memblock ();
   memblock *next;
   size_t len;

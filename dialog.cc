@@ -35,12 +35,13 @@ eget (HWND h, int id, char *var)
   char tmp[4000];
   if (var && var != get_root_dir ())
     {
-      free (var);
+      delete [] var;
       var = NULL;
     }
   if (GetDlgItemText (h, id, tmp, sizeof (tmp)) > 0)
     {
-      var = (char *) malloc (strlen (tmp) + 1);
+      var = new char [strlen (tmp) + 1];
+      var [strlen (tmp)] = '\0';
       strcpy (var, tmp);
     }
   return var;

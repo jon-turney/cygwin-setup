@@ -258,7 +258,7 @@ uexists (const char *path)
 {
   char *f = cygpath (path, 0);
   int a = _access (f, 0);
-  free (f);
+  delete[] f;
   if (a == 0)
     return 1;
   return 0;

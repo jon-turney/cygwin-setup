@@ -44,8 +44,10 @@ io_stream_file::io_stream_file (const char *name, const char *mode)
   if (!name || IsBadStringPtr (name, MAX_PATH) || !name[0] ||
       !mode || IsBadStringPtr (mode, 5) || !mode[0])
     return;
-  lmode = strdup (mode);
-  fname = strdup (name);
+  lmode = new char[strlen(mode) + 1];
+  strcpy (lmode,mode);
+  fname = new char[strlen(name) + 1];
+  strcpy (fname,name);
   fp = fopen (name, mode);
   if (!fp)
     lasterr = errno;
@@ -54,7 +56,9 @@ io_stream_file::io_stream_file (const char *name, const char *mode)
 io_stream_file::~io_stream_file ()
 {
   if (fname)
-    free (fname);
+    delete[] fname;
+  if (lmode)
+    delete[] lmode;
   if (fp)
     fclose (fp);
 }
@@ -76,7 +80,7 @@ io_stream_file::remove (const char *path)
   unsigned long w = GetFileAttributes (path);
   if (w != 0xffffffff && w & FILE_ATTRIBUTE_DIRECTORY)
     {
-      char *tmp = (char *) malloc (strlen (path) + 10);
+      char *tmp = new char [strlen (path) + 10];
       int i = 0;
       do
 	{
@@ -87,7 +91,7 @@ io_stream_file::remove (const char *path)
       fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
 	       path);
       MoveFile (path, tmp);
-      free (tmp);
+      delete[] tmp;
     }
   return !DeleteFileA (path);
 

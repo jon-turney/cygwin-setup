@@ -544,7 +544,7 @@ pick_pkg_line::paint (HDC hdc, int x, int y, int row, int show_cat)
     }
   unsigned int regionsize = GetRegionData (oldClip, 0, 0);
   LPRGNDATA oldClipData = (LPRGNDATA) malloc (regionsize);
-  if (GetRegionData (oldClip, regionsize, oldClipData) != regionsize)
+  if (GetRegionData (oldClip, regionsize, oldClipData) > regionsize)
     {
       RestoreDC (hdc, oldDC);
       DeleteObject (oldClip);
@@ -1382,7 +1382,7 @@ do_choose (HINSTANCE h, HWND owner)
 
 	  if (categories_len > 0)
 	    {
-	      char *categories = (char *) malloc (categories_len);
+	      char *categories = new char [categories_len];
 	      strcpy (categories, pkg.Categories[1]->key.name);
 	      for (size_t n = 2; n <= pkg.Categories.number (); n++)
 		{
@@ -1390,7 +1390,7 @@ do_choose (HINSTANCE h, HWND owner)
 		  strcat (categories, pkg.Categories[n]->key.name);
 		}
 	      log (LOG_BABBLE, "     categories=%s", categories);
-	      free (categories);
+	      delete[] categories;
 	    }
 	}
       if (pkg.desired && pkg.desired->required)
@@ -1404,7 +1404,7 @@ do_choose (HINSTANCE h, HWND owner)
 
 	  if (requires_len > 0)
 	    {
-	      char *requires = (char *) malloc (requires_len);
+	      char *requires = new char [requires_len];
 	      strcpy (requires, pkg.desired->required->package);
 	      for (dp = pkg.desired->required->next; dp; dp = dp->next)
 		if (dp->package)
@@ -1413,7 +1413,7 @@ do_choose (HINSTANCE h, HWND owner)
 		    strcat (requires, dp->package);
 		  }
 	      log (LOG_BABBLE, "     requires=%s", requires);
-	      free (requires);
+	      delete[] requires;
 	    }
 	}
 #if 0

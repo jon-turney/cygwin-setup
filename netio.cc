@@ -49,13 +49,13 @@ NetIO::NetIO (char const *Purl, BOOL allow_ftp_auth)
 NetIO::~NetIO ()
 {
   if (url)
-    free (url);
+    delete[] url;
   if (proto)
-    free (proto);
+    delete[] proto;
   if (host)
-    free (host);
+    delete[] host;
   if (path)
-    free (path);
+    delete[] path;
 }
 
 void
@@ -64,7 +64,8 @@ NetIO::set_url (char const *Purl)
   char *bp, *ep, c;
 
   file_size = 0;
-  url = _strdup (Purl);
+  url = new char[strlen (Purl) + 1];
+  strcpy (url, Purl);
   proto = 0;
   host = 0;
   port = 0;
@@ -79,14 +80,16 @@ NetIO::set_url (char const *Purl)
     }
 
   *ep = 0;
-  proto = _strdup (bp);
+  proto = new char [strlen (bp)+1];
+  strcpy (proto, bp);
   *ep = ':';
   bp = ep + 3;
 
   ep = bp + strcspn (bp, ":/");
   c = *ep;
   *ep = 0;
-  host = _strdup (bp);
+  host = new char [strlen (bp) + 1];
+  strcpy (host, bp);
   *ep = c;
 
   if (*ep == ':')
@@ -96,7 +99,10 @@ NetIO::set_url (char const *Purl)
     }
 
   if (*ep)
-    path = _strdup (ep);
+    {
+      path = new char [strlen (ep)+1];
+      strcpy (path, ep);
+    }
 }
 
 int
@@ -255,12 +261,12 @@ NetIO::get_ftp_auth (HWND owner)
 {
   if (net_ftp_user)
     {
-      free (net_ftp_user);
+      delete[] net_ftp_user;
       net_ftp_user = NULL;
     }
   if (net_ftp_passwd)
     {
-      free (net_ftp_passwd);
+      delete[] net_ftp_passwd;
       net_ftp_passwd = NULL;
     }
   if (!ftp_auth)

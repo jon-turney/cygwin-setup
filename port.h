@@ -23,5 +23,5 @@
 #define _MAX_PATH MAX_PATH
 
 #define _access access
-#define _strdup strdup
+#define _strdup error dont use strdup
 #endif

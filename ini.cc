@@ -136,8 +136,8 @@ do_remote_ini (HWND owner)
 	      delete ini_file;
 	      delete inistream;
 	    }
-	  free ((void *) fp);
-	  ini_count++;
+	  delete[] fp;
+	  ++ini_count;
 	}
     }
   return ini_count;

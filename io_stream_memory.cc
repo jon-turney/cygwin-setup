@@ -30,7 +30,7 @@ static const char *cvsid =
 memblock::~memblock ()
 {
   if (data)
-    free (data);
+    delete[] data;
   if (next)
     delete next;
 }

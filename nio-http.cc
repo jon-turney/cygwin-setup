@@ -50,10 +50,10 @@ base64_encode (char *username, char *password)
   char *rp;
   static char *rv = 0;
   if (rv)
-    free (rv);
-  rv = (char *) malloc (2 * (strlen (username) + strlen (password)) + 5);
+    delete[] rv;
+  rv = new char[2 * (strlen (username) + strlen (password)) + 5];
 
-  char *up = (char *) malloc (strlen (username) + strlen (password) + 6);
+  char *up = new char[strlen (username) + strlen (password) + 6];
   strcpy (up, username);
   strcat (up, ":");
   strcat (up, password);
@@ -82,7 +82,7 @@ base64_encode (char *username, char *password)
     }
   *rp = 0;
 
-  free (up);
+  delete[] up;
 
   return rv;
 }

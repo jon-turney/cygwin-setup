@@ -405,6 +405,21 @@ check_for_old_cygwin ()
   return;
 }
 
+struct mallinfo {
+  int arena;    /* non-mmapped space allocated from system */
+  int ordblks;  /* number of free chunks */
+  int smblks;   /* number of fastbin blocks */
+  int hblks;    /* number of mmapped regions */
+  int hblkhd;   /* space in mmapped regions */
+  int usmblks;  /* maximum total allocated space */
+  int fsmblks;  /* space available in freed fastbin blocks */
+  int uordblks; /* total allocated space */
+  int fordblks; /* total free space */
+  int keepcost; /* top-most, releasable (via malloc_trim) space */
+};
+
+extern "C" struct mallinfo mallinfo(void);
+
 static void
 do_install_thread (HINSTANCE h, HWND owner)
 {
@@ -418,11 +433,17 @@ do_install_thread (HINSTANCE h, HWND owner)
 
   mkdir_p (1, get_root_dir ());
 
+// malloc check - otherwise the following for loop asserts when
+// -DDEBUG is defined. XXX FIXME
+  mallinfo();
+  
+  
   for (i = 0; standard_dirs[i]; i++)
     {
       char *p = cygpath (standard_dirs[i], 0);
-      mkdir_p (1, p);
-      free (p);
+      if (p)
+	mkdir_p (1, p);
+      delete[] p;
     }
 
   /* Create /var/run/utmp */

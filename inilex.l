@@ -40,7 +40,8 @@ STR	[a-zA-Z0-9_./+-]+
 
 %%
 
-\"[^"]*\"		{ yylval = strdup (yytext+1);
+\"[^"]*\"		{ yylval = new char [strlen (yytext+1) + 1];
+			  strcpy (yylval, yytext+1);
 			  yylval[strlen (yylval)-1] = 0;
 			  return STRING; }
 
@@ -70,7 +71,8 @@ STR	[a-zA-Z0-9_./+-]+
 "[prev]"		return T_PREV;
 "["{STR}"]"		return T_UNKNOWN;
 
-{STR}			{ yylval = strdup (yytext);
+{STR}			{ yylval = new char [strlen(yytext) + 1];
+  			  strcpy (yylval, yytext);
 			  return STRING; }
 
 [ \t\r]+		/* do nothing */;
@@ -92,8 +94,9 @@ ini_init(io_stream *stream, char const *mirror)
 {
   input_stream = stream;
   if (parse_mirror)
-    free (parse_mirror);
-  parse_mirror = strdup (mirror);
+    delete[] parse_mirror;
+  parse_mirror = new char[strlen (mirror) + 1];
+  strcpy (parse_mirror, mirror);
 }
 
 static int

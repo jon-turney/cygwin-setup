@@ -133,7 +133,7 @@ SimpleSocket::fill ()
     return -1;
 
   if (buf == 0)
-    buf = (char *) malloc (SSBUFSZ + 3);
+    buf = new char [SSBUFSZ + 3];
   if (putp == getp)
     putp = getp = 0;
 
@@ -228,7 +228,7 @@ SimpleSocket::invalidate (void)
     closesocket (s);
   s = INVALID_SOCKET;
   if (buf)
-    free (buf);
+    delete[] buf;
   buf = 0;
   getp = putp = 0;
 }

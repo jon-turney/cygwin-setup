@@ -61,7 +61,7 @@ vconcat (const char *s, va_list v)
     }
   va_end (v);
 
-  rv = (char *) malloc (len + 1);
+  rv = new char [len + 1];
   strcpy (rv, s);
   v = save_v;
   while (1)

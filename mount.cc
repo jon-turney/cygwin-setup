@@ -61,12 +61,12 @@ find2 (HKEY rkey, int *istext, char *what)
   if (RegQueryValueEx (key, "native", 0, &type, 0, &retvallen)
       == ERROR_SUCCESS)
     {
-      retval = (char *) malloc (MAX_PATH + 1);
+      retval = new char [MAX_PATH + 1];
       if (RegQueryValueEx
 	  (key, "native", 0, &type, (BYTE *) retval,
 	   &retvallen) != ERROR_SUCCESS)
 	{
-	  free (retval);
+	  delete[] retval;
 	  retval = 0;
 	}
     }
@@ -306,9 +306,9 @@ read_mounts ()
   root_here = NULL;
   for (mnt * m1 = mount_table; m1->posix; m1++)
     {
-      free (m1->posix);
+      delete[] m1->posix;
       if (m1->native)
-	free ((char *) m1->native);
+	delete[] m1->native;
       m1->posix = NULL;
     }
 
@@ -329,7 +329,7 @@ read_mounts ()
 	break;
       for (int i = 0;; i++, m++)
 	{
-	  m->posix = (char *) malloc (MAX_PATH + 1);
+	  m->posix = new char [MAX_PATH + 1];
 	  posix_path_size = MAX_PATH;
 	  /* FIXME: if maximum posix_path_size is 256, we're going to
 	     run into problems if we ever try to store a mount point that's
@@ -339,7 +339,7 @@ read_mounts ()
 
 	  if (res == ERROR_NO_MORE_ITEMS)
 	    {
-	      free (m->posix);
+	      delete[] m->posix;
 	      m->posix = NULL;
 	      break;
 	    }
@@ -369,7 +369,7 @@ read_mounts ()
 	    }
 	  continue;
 	no_go:
-	  free (m->posix);
+	  delete[] m->posix;
 	  m->posix = NULL;
 	  m--;
 	}
@@ -379,7 +379,8 @@ read_mounts ()
   if (!root_here)
     {
       root_here = m;
-      m->posix = strdup ("/");
+      m->posix = new char [2];
+      strcpy (m->posix, "/");
       char windir[_MAX_PATH];
       root_text = IDC_ROOT_BINARY;
       root_scope = (is_admin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
@@ -460,9 +461,12 @@ cygpath (const char *s, ...)
 
   char *native;
   if (max_len == (int) strlen (path))
-    native = strdup (match->native);
+  {
+    native = new char [strlen (match->native) + 1];
+    strcpy (native, match->native);
+  }
   else
     native = concat (match->native, "/", path + max_len, NULL);
-  free (path);
+  delete[] path;
   return native;
 }

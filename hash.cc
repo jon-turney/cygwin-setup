@@ -46,7 +46,7 @@ hash::hash ()
 hash::~hash ()
 {
   free (h->keys);
-  free (h);
+  delete h;
 }
 
 
@@ -63,7 +63,8 @@ hash::add (char const *string)
       h->keys = (char **) realloc (h->keys, h->maxkeys * sizeof (char *));
     }
 
-  h->keys[h->numkeys] = _strdup (string);
+  h->keys[h->numkeys] = new char[strlen(string) + 1];
+  strcpy (h->keys[h->numkeys], string);
   h->numkeys++;
 }
 

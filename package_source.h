@@ -98,13 +98,13 @@ public:
   virtual ~ packagesource ()
   {
     if (canonical)
-      delete canonical;
+      delete []canonical;
     if (base)
-      delete base;
+      delete []base;
     if (filename)
-      delete filename;
+      delete []filename;
     if (cached)
-      delete cached;
+      delete []cached;
   };
 
 private:

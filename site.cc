@@ -53,8 +53,10 @@ static char *other_url = 0;
 void
 site_list_type::init (char const *newurl)
 {
-  url = _strdup (newurl);
-  displayed_url = _strdup (newurl);
+  url = new char [strlen (newurl) +1];
+  strcpy (url, newurl);
+  displayed_url = new char [strlen (newurl) +1];
+  strcpy (displayed_url, newurl);
   char *dot = strchr (displayed_url, '.');
   if (dot)
     {
@@ -62,7 +64,7 @@ site_list_type::init (char const *newurl)
       if (dot)
 	*dot = 0;
     }
-  key = (char *) malloc (2 * strlen (newurl) + 3);
+  key = new char[2 * strlen (newurl) + 3];
 
   dot = displayed_url;
   dot += strlen (dot);
@@ -132,7 +134,7 @@ save_site_url ()
 	  temp = new TCHAR[sizeof (TCHAR) * (strlen (site_list[n]->url) + 2)];
 	  sprintf (temp, "%s\n", site_list[n]->url);
 	  f->write (temp, strlen (temp));
-	  delete[]temp;
+	  delete[] temp;
 	}
     }
   delete f;
@@ -176,7 +178,7 @@ get_site_list (HINSTANCE h, HWND owner)
 	    delete newsite;
 	}
     }
-  delete[]mirrors;
+  delete[] mirrors;
 
   return 0;
 }

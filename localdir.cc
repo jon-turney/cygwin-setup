@@ -160,8 +160,10 @@ LocalDirPage::OnInit ()
 	  delete f;
 	  if (fg_ret)
 	    {
-	      free (local_dir);
-	      local_dir = strdup (localdir);
+	      delete [] local_dir;
+	      local_dir = new char [strlen(localdir) +1];
+	      local_dir[strlen(localdir)] = '\0';
+	      strcpy (local_dir, localdir);
 	    }
 	}
       inited = 1;

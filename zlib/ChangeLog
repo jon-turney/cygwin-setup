@@ -1,3 +1,7 @@
+2002-01-21  Robert Collins  <rbtcollins@hotmail.com>
+
+	* zutil.c (z_error): Const correctness change.
+	* zutil.h (z_error): Ditto.
 
 		ChangeLog file for zlib
 

@@ -12,6 +12,13 @@
 #
 # Makefile for Cygwin installer
 
+# Memory debugging
+MC_OBJS = dlmalloc.o
+#MC_DEFS = -DDEBUG
+# Use the below when building production releases
+#MC_OBJS =
+MC_DEFS =
+
 SHELL := @SHELL@
 
 srcdir		:= @srcdir@
@@ -35,8 +42,8 @@ CC		:= @CC@
 CC_FOR_TARGET	:= $(CC)
 CXX		:= @CXX@
 
-CFLAGS		:= @CFLAGS@ -Werror -Winline -Wall -Wpointer-arith -Wcast-align\
-	-Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
+CFLAGS		:= @CFLAGS@ $(MC_DEFS) -Werror -Winline -Wall -Wpointer-arith \
+	-Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
 	-Wmissing-declarations -Wcomments
 CXXFLAGS	:= @CXXFLAGS@ $(CFLAGS) -fno-rtti
 CXX		:= @CXX@
@@ -145,6 +152,7 @@ OBJS = \
 	version.o \
 	win32.o \
 	window.o \
+	$(MC_OBJS) \
 	$E
 
 .SUFFIXES:

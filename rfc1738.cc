@@ -88,9 +88,9 @@ rfc1738_do_escape (const char *url, int encode_reserved)
 
   if (buf == NULL || strlen (url) * 3 > bufsize)
     {
-      free (buf);
+      delete[] buf;
       bufsize = strlen (url) * 3 + 1;
-      buf = (char *) calloc (bufsize, 1);
+      buf = new char [bufsize];
     }
   for (p = url, q = buf; *p != '\0'; p++, q++)
     {
