@@ -136,6 +136,7 @@ LogFile::exit (int const exit_code)
     {
       log_save (i->level, i->key, i->append);
     }
+  // TODO: remove this when the ::exit issue is tidied up.
   ::exit (exit_code);
 }
 

@@ -61,7 +61,17 @@ void
 SiteSetting::load(){}
 
 void 
-SiteSetting::save(){}
+SiteSetting::save()
+{
+  io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "wb");
+  if (f)
+    {
+      for (SiteList::const_iterator n = site_list.begin ();
+      n != site_list.end (); ++n)
+        f->write ((n->url + "\n").cstr_oneuse(), n->url.size() + 1);
+      delete f;
+    }
+}
 
 void
 site_list_type::init (String const &newurl)
@@ -158,19 +168,6 @@ save_dialog (HWND h)
 	    SendMessage (listbox, LB_GETITEMDATA, sel_buffer[n], 0);
 	  site_list.push_back (all_site_list[mirror]);
 	}
-    }
-}
-
-void
-save_site_url ()
-{
-  io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "wb");
-  if (f)
-    {
-      for (SiteList::const_iterator n = site_list.begin ();
-	   n != site_list.end (); ++n)
-        f->write ((n->url + "\n").cstr_oneuse(), n->url.size() + 1);
-      delete f;
     }
 }
 
@@ -351,7 +348,7 @@ SitePage::OnNext ()
   HWND h = GetHWND ();
 
   save_dialog (h);
-  save_site_url ();
+  ChosenSites.save ();
 
   // Log all the selected URLs from the list.
   for (SiteList::const_iterator n = site_list.begin ();

@@ -80,8 +80,6 @@ extern SiteList site_list;
 /* potential sites */
 extern SiteList all_site_list;
 
-void save_site_url ();
-
 #include "UserSetting.h"
 class SiteSetting : public UserSetting 
 {

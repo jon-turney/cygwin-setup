@@ -1,5 +1,16 @@
 2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	Save used site from initial run of setup, so the user doesn't need to 
+	retype it.
+	* main.cc (main): Load and save all user settings.
+	* site.cc (SiteSetting::save): Migrate logic from save_site_url.
+	(SitePage::OnNext): Use ChosenSites.save() to remove uneeded save_site_url call.
+	(save_site_url): Delete.
+	* site.h (save_site_url): Remove declaration.
+	* .cvsignore: Update autoconf generated files.
+
+2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* tests/Makefile.am: Driver for test suite.
 	* tests/UserSettingTest.cc: Test UserSetting interface.
 	* tests/UserSettingsTest.cc: Test UserSettings interface.

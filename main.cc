@@ -64,6 +64,8 @@ static const char *cvsid =
 #include "getopt++/GetOption.h"
 #include "getopt++/BoolOption.h"
 
+#include "UserSettings.h"
+
 int next_dialog;
 
 HINSTANCE hinstance;
@@ -467,7 +469,9 @@ main (int argc, char **argv)
   theLog->setFile (0, local_dir + "/setup.log", true);
 
   log (LOG_PLAIN) << "Starting cygwin install, version " << version << endLog;
-
+  
+  UserSettings::Instance().loadAllSettings();
+  
   SplashPage Splash;
   AntiVirusPage AntiVirus;
   SourcePage Source;
@@ -540,6 +544,9 @@ main (int argc, char **argv)
 
   // Create the PropSheet main window
   MainWindow.Create ();
+
+  // Clean exit.. save user options.
+  UserSettings::Instance().saveAllSettings();
 
   theLog->exit (0);
   /* Keep gcc happy :} */
