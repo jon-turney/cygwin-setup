@@ -138,13 +138,22 @@ check_for_cached (packagesource & pkgsource)
   String fullname = prefix + pkgsource.Canonical();
   if (io_stream::exists(fullname))
   {
-    if (validateCachedPackage (fullname, pkgsource))
-      pkgsource.set_cached (fullname);
+    if (get_file_size(fullname) != pkgsource.size)
+    {
+      log (LOG_PLAIN) << "Silently skipping wrong-sized package " << fullname
+        << endLog;
+    }
     else
-      throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-          String ("Package validation failure for ") + fullname,
-          APPERR_CORRUPT_PACKAGE);
-    return 1;
+    {
+      if (validateCachedPackage (fullname, pkgsource))
+        pkgsource.set_cached (fullname);
+      else
+        throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+                             String ("Package validation failure for ")
+                             + fullname,
+                             APPERR_CORRUPT_PACKAGE);
+      return 1;
+    }
   }
 
   /*
@@ -157,13 +166,22 @@ check_for_cached (packagesource & pkgsource)
       pkgsource.Canonical ();
     if (io_stream::exists(fullname))
     {
-      if (validateCachedPackage (fullname, pkgsource))
-        pkgsource.set_cached (fullname);
+      if (get_file_size(fullname) != pkgsource.size)
+      {
+        log (LOG_PLAIN) << "Silently skipping wrong-sized package " << fullname
+          << endLog;
+      }
       else
-        throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-            String ("Package validation failure for ") + fullname,
-            APPERR_CORRUPT_PACKAGE);
-      return 1;
+      {
+        if (validateCachedPackage (fullname, pkgsource))
+          pkgsource.set_cached (fullname);
+        else
+          throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+                               String ("Package validation failure for ")
+                               + fullname,
+                               APPERR_CORRUPT_PACKAGE);
+        return 1;
+      }
     }
   }
   return 0;

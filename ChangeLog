@@ -1,3 +1,12 @@
+2004-11-28  Max Bowsher  <maxb@ukf.net>
+	
+	* download.cc (check_for_cached): Re-introduce the silent skipping of
+	wrong-sized package files in local caches, as a "quick fix" that is no
+	worse than the status quo, to be able to make a release, whilst work
+	towards a proper fix continues on trunk.
+
+========================= BRANCHPOINT: setup-200412 =========================
+
 2004-11-22  Max Bowsher  <maxb@ukf.net>
 
 	* main.cc (main): Fix bug in first 2004-11-20 commit. Avoid referring
