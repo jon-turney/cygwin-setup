@@ -1,3 +1,8 @@
+2002-02-19  Robert Collins <rbtcollins@hotmail.com>
+
+	* install.cc (install_one_source): Make NULL cached package names cause
+	errors.
+
 2002-02-18  Michael A Chase <mchase@ix.netcom.com>
 	* desktop.cc (make_passwd_group): Don't create passwd-grp.bat
 	unnecessarily.
