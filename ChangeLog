@@ -1,3 +1,12 @@
+Fri Jul  6 18:08:49 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (isinstalled): Modify to properly accomodate special case
+	of "download only".
+	(set_action): Check downloaded components, not installed components if
+	"download only".
+	(set_existence): Always include full list of files when "download
+	only".
+
 Fri Jul  6 00:37:05 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* choose.cc (pick_line::paint): Properly display "na" field when no

@@ -92,8 +92,11 @@ int *package_indexes, nindexes;
 static bool
 isinstalled (Package *pkg, int trust)
 {
-  return pkg->installed && pkg->info[trust].version &&
-	 strcmp (pkg->installed->version, pkg->info[trust].version) == 0;
+  if (source == IDC_SOURCE_DOWNLOAD)
+    return pkg->info[trust].install_exists < 0;
+  else
+    return pkg->installed && pkg->info[trust].version &&
+	   strcasecmp (pkg->installed->version, pkg->info[trust].version) == 0;
 }
 
 /* Set the next action given a current action.  */
@@ -145,28 +148,35 @@ set_action (Package *pkg, bool preinc)
 	pkg->action = ACTION_UNINSTALL;
       /* Fall through intentionally */
       case ACTION_UNINSTALL:
-	if (pkg->installed)
+	if (source != IDC_SOURCE_DOWNLOAD && pkg->installed)
 	  return;
 	break;
       case ACTION_REDO:
-	if (pkg->installed && pkg->info[pkg->installed_ix].install_exists)
 	  {
-	    pkg->trust = pkg->installed_ix;
+	  trusts t = (source == IDC_SOURCE_DOWNLOAD) ? TRUST_CURR : pkg->installed_ix;
+	  if (isinstalled (pkg, t))
+	    {
+	      pkg->trust = t;
 	    return;
 	  }
+	}
 	break;
       case ACTION_SRC_ONLY:
-	if (pkg->info[pkg->trust].source_exists)
 	  {
+	  trusts t = (source == IDC_SOURCE_DOWNLOAD) ? TRUST_CURR : pkg->installed_ix;
+	  if (pkg->info[t].source_exists)
+	    {
 	    pkg->srcpicked = 1;
 	    return;
 	  }
+	}
 	break;
       case ACTION_SAME_LAST:
 	pkg->action = ACTION_SKIP;
 	/* Fall through intentionally */
       case ACTION_SKIP:
-	if (!pkg->installed || pkg->trust != pkg->installed_ix)
+	if ((source == IDC_SOURCE_DOWNLOAD) || !pkg->installed
+	    || pkg->trust != pkg->installed_ix)
 	  return;
 	break;
       default:
@@ -483,7 +493,7 @@ set_existence ()
 	    else
 	      exists |= inf->source_exists = check_existence (inf, 1);
 	  }
-	if (!exists)
+	if (source != IDC_SOURCE_DOWNLOAD  && !exists)
 	  pkg->exclude = EXCLUDE_NOT_FOUND;
       }
 }
