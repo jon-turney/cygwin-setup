@@ -288,40 +288,34 @@ NTSecurity::setDefaultDACL ()
      To assure that the files group is meaningful, a token primary
      group of None is changed to Users or Administrators. */
 
+  initialiseEveryOneSID();
+  if (failed())
+    return;
+
   /* Create a buffer which has enough room to contain the TOKEN_DEFAULT_DACL
      structure plus an ACL with one ACE. */
-  size_t bufferSize = sizeof (TOKEN_DEFAULT_DACL) + TOKEN_ACL_SIZE (1);
+  size_t bufferSize = sizeof(ACL) + sizeof(ACCESS_ALLOWED_ACE) 
+            + GetLengthSid(everyOneSID.theSID()) - sizeof(DWORD);
+
   std::auto_ptr<char> buf (new char[bufferSize]);
 
   /* First initialize the TOKEN_DEFAULT_DACL structure. */
-  PTOKEN_DEFAULT_DACL dacl = (PTOKEN_DEFAULT_DACL) buf.get();
-  dacl->DefaultDacl = (PACL) (buf.get() + sizeof *dacl);
-
-  int used = (char *)dacl->DefaultDacl - (char *)dacl;
-  if (bufferSize - used < TOKEN_ACL_SIZE(1))
-  {
-    log (LOG_TIMESTAMP) << " Memory allocation too small " << endLog;
-    failed(true);
-    return;
-  }
+  PACL dacl = (PACL)buf.get();
 
   /* Initialize the ACL for containing one ACE. */
-  if (!InitializeAcl (dacl->DefaultDacl, TOKEN_ACL_SIZE (1), ACL_REVISION))
+  if (!InitializeAcl (dacl, bufferSize, ACL_REVISION))
     {
       NoteFailedAPI ("InitializeAcl");
       failed(true);
       return;
     }
+
 #if 0
 
-  initialiseEveryOneSID();
-  if (failed())
-    return;
-
   /* Create the ACE which grants full access to "Everyone" and store it
-     in dacl->DefaultDacl. */
+     in dacl. */
   if (!AddAccessAllowedAce
-      (dacl->DefaultDacl, ACL_REVISION, GENERIC_ALL, everyOneSID.theSID()))
+      (dacl, ACL_REVISION, GENERIC_ALL, everyOneSID.theSID()))
     {
       NoteFailedAPI ("AddAccessAllowedAce");
       failed(true);
@@ -338,7 +332,7 @@ NTSecurity::setDefaultDACL ()
     }
 
   /* Set the default DACL to the above computed ACL. */
-  if (!SetTokenInformation (token.theHANDLE(), TokenDefaultDacl, dacl, bufferSize))
+  if (!SetTokenInformation (token.theHANDLE(), TokenDefaultDacl, &dacl, bufferSize))
     {
       NoteFailedAPI ("SetTokenInformation");
       failed(true);
