@@ -1384,6 +1384,74 @@ fi
 fi
 
 
+# Extract the first word of "${ac_tool_prefix}objcopy", so it can be a program name with args.
+set dummy ${ac_tool_prefix}objcopy; ac_word=$2
+echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+echo "configure:1391: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_prog_OBJCOPY'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  if test -n "$OBJCOPY"; then
+  ac_cv_prog_OBJCOPY="$OBJCOPY" # Let the user override the test.
+else
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=":"
+  ac_dummy="$PATH"
+  for ac_dir in $ac_dummy; do
+    test -z "$ac_dir" && ac_dir=.
+    if test -f $ac_dir/$ac_word; then
+      ac_cv_prog_OBJCOPY="${ac_tool_prefix}objcopy"
+      break
+    fi
+  done
+  IFS="$ac_save_ifs"
+fi
+fi
+OBJCOPY="$ac_cv_prog_OBJCOPY"
+if test -n "$OBJCOPY"; then
+  echo "$ac_t""$OBJCOPY" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+
+if test -z "$ac_cv_prog_OBJCOPY"; then
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "objcopy", so it can be a program name with args.
+set dummy objcopy; ac_word=$2
+echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+echo "configure:1423: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_prog_OBJCOPY'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  if test -n "$OBJCOPY"; then
+  ac_cv_prog_OBJCOPY="$OBJCOPY" # Let the user override the test.
+else
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=":"
+  ac_dummy="$PATH"
+  for ac_dir in $ac_dummy; do
+    test -z "$ac_dir" && ac_dir=.
+    if test -f $ac_dir/$ac_word; then
+      ac_cv_prog_OBJCOPY="objcopy"
+      break
+    fi
+  done
+  IFS="$ac_save_ifs"
+  test -z "$ac_cv_prog_OBJCOPY" && ac_cv_prog_OBJCOPY="objcopy"
+fi
+fi
+OBJCOPY="$ac_cv_prog_OBJCOPY"
+if test -n "$OBJCOPY"; then
+  echo "$ac_t""$OBJCOPY" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+else
+  OBJCOPY="objcopy"
+fi
+fi
+
+
 
 SUBDIRS="zlib"
 subdirs="$SUBDIRS"
@@ -1560,6 +1628,7 @@ s%@RANLIB@%$RANLIB%g
 s%@LD@%$LD%g
 s%@DLLTOOL@%$DLLTOOL%g
 s%@WINDRES@%$WINDRES%g
+s%@OBJCOPY@%$OBJCOPY%g
 s%@subdirs@%$subdirs%g
 
 CEOF

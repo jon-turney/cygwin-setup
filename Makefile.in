@@ -32,36 +32,38 @@ CFLAGS:=@CFLAGS@
 CXXFLAGS:=@CXXFLAGS@ -fno-exceptions -nostdinc++ -fno-rtti
 
 WINDRES:=@WINDRES@
+OBJCOPY:=@OBJCOPY@
 
 include $(srcdir)/../Makefile.common
 
-MINGW_INCLUDES:=-I$(mingw_source)/include -I$(cygwin_source)/include -I$(w32api_include)
+MINGW_INCLUDES:=-I$(mingw_source)/include -I$(w32api_include)
 
 MINGW_CXXFLAGS:=$(CXXFLAGS) -mno-cygwin $(MINGW_INCLUDES)
 MINGW_CFLAGS:=$(CFLAGS) -mno-cygwin $(MINGW_INCLUDES)
 
 ZLIB=zlib/libzcygw.a
+libmingw32.a:=$(mingw_build)/libmingw32.a
 libuser32:=$(w32api_lib)/libuser32.a
 libkernel32:=$(w32api_lib)/libkernel32.a
 ALL_DEP_LDLIBS:=$(ZLIB) $(w32api_lib)/libole32.a $(w32api_lib)/libwininet.a \
 		$(w32api_lib)/libnetapi32.a $(w32api_lib)/libadvapi32.a \
 		$(w32api_lib)/libuuid.a $(libkernel32) $(w32api_lib)/libuser32.a \
-		$(mingw_build)/libmsvcrt.a # $(mingw_build)/libmingw32.a
+		$(libmingw32)
 
 ALL_LDLIBS:=${patsubst $(mingw_build)/lib%.a,-l%,\
 	      ${patsubst $(w32api_lib)/lib%.a,-l%,\
-	        ${filter-out $(libuser32),\
-	         ${filter-out $(libkernel32), $(ALL_DEP_LDLIBS)}}}}
+		${filter-out $(libmingw32),\
+		  ${filter-out $(libuser32),\
+		    ${filter-out $(libkernel32), $(ALL_DEP_LDLIBS)}}}}}
 
 ALL_LDFLAGS:=${filter-out -I%, \
 	       ${filter-out -W%, \
-		-B$(newlib_build)/libc/ -B$(newlib_build)/libm/ \
-		-B$(w32api_lib)/ -B${mingw_build} $(LDFLAGS)}}
+		-B$(w32api_lib)/ -B${mingw_build}/ $(MINGW_CFLAGS) $(LDFLAGS)}}
 
 PROGS:=setup$(EXEEXT)
 
-WINSUP_DEPS:=$(cygwin_source)/winsup.h
-
+BUNDLED_FILES:=$(srcdir)/tar.exe.gz $(srcdir)/gzip.exe.gz \
+	       mount.exe.gz cygpath.exe.gz
 .SUFFIXES:
 .NOEXPORT:
 
@@ -69,12 +71,12 @@ WINSUP_DEPS:=$(cygwin_source)/winsup.h
 
 all: Makefile $(PROGS)
 
-setup$(EXEEXT): error.o memory.o setup.o strarry.o setupres.o $(ALL_DEP_LDLIBS)
+setup$(EXEEXT): error.o memory.o setup.o strarry.o cinstall.o $(ALL_DEP_LDLIBS)
 ifdef VERBOSE
-	$(CC) $(MINGW_CFLAGS) -o $@ ${wordlist 1,5,$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
+	$(CC) -o $@ ${wordlist 1,5,$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
 else
-	@echo $(CC) $(CFLAGS) -o $@ ${wordlist 1,5,$^} ${filter-out -B%, $(ALL_LDFLAGS) $(ALL_LDLIBS)};\
-	$(CC) $(MINGW_CFLAGS) -o $@ ${wordlist 1,5,$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
+	@echo $(CC) -o $@ ${wordlist 1,5,$^} ${filter-out -B%, $(ALL_LDFLAGS) $(ALL_LDLIBS)};\
+	$(CC) -o $@ ${wordlist 1,5,$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
 endif
 	@chmod a-x $@
 
@@ -82,7 +84,7 @@ mingw_getopt.o: $(cygwin_source)/getopt.c
 	$(CC) -c -o $@ $(MINGW_CFLAGS) $^
 
 clean:
-	rm -f *.o $(PROGS)
+	rm -f *.o $(PROGS) zlib/*.o zlib/*.a *.exe *.gz
 
 realclean: clean
 	rm -f  Makefile config.cache
@@ -94,19 +96,33 @@ install: all
 	  $(INSTALL_PROGRAM) $$i $(bindir)/$$n; \
 	done
 
-$(mingw_build)/libmingw32.a: $(mingw_build)/Makefile
+$(libmingw32): $(mingw_build)/Makefile
 	@$(MAKE) -C $(@D) $(@F)
 
-zlib/libzcygw.a: zlib/Makefile
-	@make -C zlib
+zlib/zlibcygw.a: zlib/Makefile
+	@$(MAKE) -C zlib CFLAGS='$(MINGW_CFLAGS)'
+
+%.exe.gz: %.exe
+	gzip -9nf $?
+
+%.exe: $(utils_build)/%.exe
+	$(OBJCOPY) --strip-unneeded $? $@
+	
+$(utils_build)/%.exe: $(utils_build)/Makefile
+	@$(MAKE) -C $(utils_build) $(@F)
+
+cinstall.rc: $(BUNDLED_FILES)
+	for f in $^; do \
+	    echo `basename $$f .gz` FILE DISCARDABLE '"'$$f'"'; \
+	done > $@
 
 %.o: %.rc
 	$(WINDRES) -o $@ $?
 	
 %.o: %.c
 ifdef VERBOSE
-	$(CC) $(MINGW_CFLAGS) -c -o $@ $? -B$(mingw_build)/
+	$(CC) $(MINGW_CFLAGS) -c -o $@ $?
 else
 	@echo $(CC) -c -o $@ $? ${filter-out -B%, $(MINGW_CFLAGS)};\
-	$(CC) $(MINGW_CFLAGS) -c -o $@ $? -B$(mingw_build)/
+	$(CC) $(MINGW_CFLAGS) -c -o $@ $?
 endif
