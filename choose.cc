@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001 Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -100,9 +100,11 @@ isinstalled (Package *pkg, int trust)
 static void
 set_action (Package *pkg, bool preinc)
 {
-  pkg->srcpicked = 0;
   if (!pkg->action || preinc)
-    ((int) pkg->action)++;
+    {
+      ((int) pkg->action)++;
+      pkg->srcpicked = 0;
+    }
 
   /* Exercise the action state machine. */
   for (;; ((int) pkg->action)++)
@@ -145,21 +147,28 @@ set_action (Package *pkg, bool preinc)
       case ACTION_UNINSTALL:
 	if (pkg->installed)
 	  return;
+	break;
       case ACTION_REDO:
-	if (pkg->installed)
+	if (pkg->installed && pkg->info[pkg->installed_ix].install_exists)
 	  {
 	    pkg->trust = pkg->installed_ix;
 	    return;
 	  }
+	break;
       case ACTION_SRC_ONLY:
-	if (pkg->installed && pkg->installed->source_exists)
-	  return;
+	if (pkg->info[pkg->trust].source_exists)
+	  {
+	    pkg->srcpicked = 1;
+	    return;
+	  }
 	break;
       case ACTION_SAME_LAST:
 	pkg->action = ACTION_SKIP;
 	/* Fall through intentionally */
       case ACTION_SKIP:
-	return;
+	if (!pkg->installed || !pkg->info[pkg->installed_ix].install_exists)
+	  return;
+	break;
       default:
 	log (0, "should never get here %d\n", pkg->action);
       }
@@ -207,14 +216,14 @@ add_required (Package *pkg)
 	
 	case ACTION_UNINSTALL:
 	  /* it's already installed - leave it */
-	  required->action = ACTION_SKIP;
+	  required->action = (actions) required->installed_ix;
 	  break;
 	case ACTION_ERROR:
 	case ACTION_UNKNOWN:
 	case ACTION_SRC_ONLY:
 	case ACTION_SKIP:
 	  /* the current install will fail */
-	  required->action = ACTION_PREV; /* this find prev, then curr, then test. */
+	  required->action = ACTION_UNKNOWN; /* this find prev, then curr, then test. */
 	  set_action(required, 0);	  /* we need a find_best that gets installed, */
 	  changed++;			  /* then current, then prev, then test */
 	  chooser->insert_pkg (required);
@@ -523,6 +532,14 @@ fill_missing_category ()
       add_category (pkg, register_category ("Misc"));
 }
 
+static actions
+keep_or_skip (Package *pkg)
+{
+  if (pkg->installed)
+    return (actions) pkg->installed_ix;
+  return ACTION_SKIP;
+}
+
 static void
 default_trust (HWND h, trusts trust)
 {
@@ -533,7 +550,7 @@ default_trust (HWND h, trusts trust)
       pkg->action = (actions) trust;
       if (pkg->category && !(getpackagecategorybyname (pkg, "Required") ||
 			     getpackagecategorybyname (pkg, "Misc")))
-	pkg->action = ACTION_SKIP;
+	pkg->action = keep_or_skip (pkg);
       set_action (pkg, 0);
     }
   RECT r;
@@ -569,8 +586,9 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
           TextOut (hdc, x + chooser->headers[chooser->current_col].x, r,
                    pkg->installed->version, strlen (pkg->installed->version));
           SelectObject (bitmap_dc, bm_rtarrow);
-          BitBlt (hdc, x + chooser->headers[chooser->current_col].x + chooser->headers[0].width + ICON_MARGIN/2 + HMARGIN/2, by,
-                  11, 11, bitmap_dc, 0, 0, SRCCOPY);
+          BitBlt (hdc, x + chooser->headers[chooser->current_col].x +
+		       chooser->headers[0].width + ICON_MARGIN/2 + HMARGIN/2,
+		  by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
         }
 
       const char *s = choose_caption (pkg);
@@ -611,15 +629,18 @@ pick_line::click (int x)
 {
   if (pkg)
     {
-      if (x >= chooser->headers[chooser->src_col].x - HMARGIN/2 && x <= chooser->headers[chooser->src_col + 1].x - HMARGIN/2)
+      if (pkg->info[pkg->trust].source_exists
+	  && x >= chooser->headers[chooser->src_col].x - HMARGIN/2
+	  && x <= chooser->headers[chooser->src_col + 1].x - HMARGIN/2)
       pkg->srcpicked ^= 1;
 
-    if (x >= chooser->headers[chooser->new_col].x - (HMARGIN / 2) && x <= chooser->headers[chooser->new_col + 1].x - HMARGIN/2)
-      {
-        set_action (pkg, 1);
-        /* Add any packages that are needed by this package */
-        return add_required  (pkg);
-      }
+      if (x >= chooser->headers[chooser->new_col].x - (HMARGIN / 2)
+	  && x <= chooser->headers[chooser->new_col + 1].x - HMARGIN/2)
+	{
+	  set_action (pkg, 1);
+	  /* Add any packages that are needed by this package */
+	  return add_required  (pkg);
+	}
     }
   else if (cat)
     {
@@ -712,7 +733,8 @@ _view::init_headers (HDC dc)
       if (pkg->installed)
         {
           note_width (headers, dc, pkg->installed->version, 0, current_col);
-          note_width (headers, dc, pkg->installed->version, NEW_COL_SIZE_SLOP, new_col);
+          note_width (headers, dc, pkg->installed->version, NEW_COL_SIZE_SLOP,
+		      new_col);
         }
       for (Info *inf = pkg->infoscan; inf < pkg->infoend; inf++)
         note_width (headers, dc, inf->version, NEW_COL_SIZE_SLOP, new_col);
@@ -726,8 +748,8 @@ _view::init_headers (HDC dc)
 
   headers[0].x = HMARGIN/2;
   for (i = 1; i <= last_col ; i++)
-    headers[i].x = headers[i-1].x + headers[i-1].width + ((i == new_col) ? NEW_COL_SIZE_SLOP : 0) + HMARGIN;
-;
+    headers[i].x = headers[i-1].x + headers[i-1].width + ((i == new_col) ?
+		   NEW_COL_SIZE_SLOP : 0) + HMARGIN;
 }
 
 void
@@ -739,8 +761,8 @@ _view::insert_pkg (Package *pkg)
     {
       if (lines == NULL)
         {
-          lines = (pick_line *) malloc ((npackages + ncategories) * sizeof (pick_line));
-          memset (lines, '\0', (npackages + ncategories) * sizeof (pick_line) );
+	  lines = (pick_line *) calloc (npackages + ncategories,
+					sizeof (pick_line));
 	  nlines = 0;
 	  insert_at (0, line);
         }
@@ -962,15 +984,13 @@ set_view_mode (HWND h, views mode)
   chooser->clear_view ();
   for (Package *pkg = package; pkg->name; pkg++)
     if (!pkg->exclude)
-      {
-        set_action (pkg, 0);
-      }
+      set_action (pkg, 0);
 
   switch (chooser->get_view_mode ())
     {
     case VIEW_PACKAGE:
       for (Package *pkg = package; pkg->name; pkg++)
-	if (!pkg->exclude && is_download_action (pkg)) 
+	if (!pkg->exclude && !is_full_action (pkg)) 
 	  chooser->insert_pkg (pkg); 
       break;
     case VIEW_PACKAGE_FULL:
@@ -1462,23 +1482,22 @@ do_choose (HINSTANCE h)
       const char *excluded = (pkg->exclude ? "yes" : "no");
 
       log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s excluded=%s src?=%s"
-	   "category=%s",
-	   pkg->name, action, trust, installed,
+	   " category=%s", pkg->name, action, trust, installed,
 	   excluded, pkg->srcpicked ? "yes" : "no", pkg->category);
       for (int t = 1; t < NTRUST; t++)
 	{
 	  if (pkg->info[t].install)
 	    log (LOG_BABBLE, "     [%s] ver=%s\r\n"
 			     "          inst=%s %d exists=%s\r\n"
-			     "		src=%s %d exists=%s",
+			     "          src=%s %d exists=%s",
 		 infos[t],
 		 pkg->info[t].version ?: "(none)",
 		 pkg->info[t].install ?: "(none)",
 		 pkg->info[t].install_size,
-		 (pkg->info[t].install_exists) ? "yes":"no",
+		 (pkg->info[t].install_exists) ? "yes" : "no",
 		 pkg->info[t].source ?: "(none)",
 		 pkg->info[t].source_size,
-		 (pkg->info[t].source_exists == 1) ? "yes":"no");
+		 (pkg->info[t].source_exists == 1) ? "yes" : "no");
 	}
     }
 }
