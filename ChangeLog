@@ -1,3 +1,8 @@
+Fri Jul  6 00:37:05 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (pick_line::paint): Properly display "na" field when no
+	source exists.
+
 Thu Jul  5 00:34:23 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* choose.cc (scan2): Ensure that older versions do not show up in

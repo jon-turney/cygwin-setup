@@ -259,7 +259,9 @@ paint (HWND hwnd)
 	      bitmap_dc, 0, 0, SRCCOPY);
 
       HANDLE check_bm;
-      if (pkg->srcpicked)
+      if (!pkg->info[pkg->trust].source_exists || pkg->action != (actions) pkg->trust)
+	check_bm = bm_checkna;
+      else if (pkg->srcpicked)
 	check_bm = bm_checkyes;
       else
 	check_bm = bm_checkno;
