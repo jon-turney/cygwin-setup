@@ -1,3 +1,14 @@
+2003-03-26  Robert Collins  <rbtcollins@hotmail.com>
+
+	* package_meta.cc (package_meta::~package_meta): Remove duplicate.
+	(CategoryPackage::~CategoryPackage): Ditto. (Thanks to Ton van 
+	Overbeek for the report).
+	* mklink2.cc: Moved from mklink2.c to avoid 'not a prototype error'.
+	Make g++ compatible.
+	* mklink2.c: Remove.
+	* site.cc (site_list_type::init): Delete the correct memory addres.
+	Thanks to Pavel Tsekov for tracking this down.
+
 2002-03-20  Robert Collins  <rbtcollins@hotmail.com>
 
 	* win32.h: Only define alloca if it's not already.

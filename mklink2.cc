@@ -1,3 +1,4 @@
+#define CINTERFACE
 #include <stdlib.h>
 #include "win32.h"
 #include "shlobj.h"
@@ -11,6 +12,7 @@ static const char *cvsid =
 /* This part of the code must be in C because the C++ interface to COM
 doesn't work. */
 
+extern "C"
 void
 make_link_2 (char const *exepath, char const *args, char const *icon, char const *lname)
 {
@@ -18,9 +20,9 @@ make_link_2 (char const *exepath, char const *args, char const *icon, char const
   IPersistFile *pf;
   WCHAR widepath[_MAX_PATH];
 
-  CoCreateInstance (&CLSID_ShellLink, NULL,
-		    CLSCTX_INPROC_SERVER, &IID_IShellLink, (LPVOID *) & sl);
-  sl->lpVtbl->QueryInterface (sl, &IID_IPersistFile, (void **) &pf);
+  CoCreateInstance (CLSID_ShellLink, NULL,
+		    CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID *) & sl);
+  sl->lpVtbl->QueryInterface (sl, IID_IPersistFile, (void **) &pf);
 
   sl->lpVtbl->SetPath (sl, exepath);
   sl->lpVtbl->SetArguments (sl, args);
@@ -38,6 +40,7 @@ make_link_2 (char const *exepath, char const *args, char const *icon, char const
 /* Predicate: file is not currently in existence.
  * A file race can occur otherwise.
  */
+extern "C"
 int
 mkcygsymlink (const char *from, const char *to)
 {
