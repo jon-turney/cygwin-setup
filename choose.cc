@@ -47,6 +47,8 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #include "port.h"
 
+#define alloca __builtin_alloca
+
 #define HMARGIN	10
 #define ROW_MARGIN	5
 #define ICON_MARGIN	4

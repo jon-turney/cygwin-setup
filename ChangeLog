@@ -1,5 +1,9 @@
 2001-10-16  Christopher Faylor  <cgf@redhat.com>
 
+	* res.rc: Oops.  Take 640x480 screen size into account.
+
+2001-10-16  Christopher Faylor  <cgf@redhat.com>
+
 	* res.rc: Enlarge chooser screen.
 
 2001-10-12  Christopher Faylor  <cgf@redhat.com>
