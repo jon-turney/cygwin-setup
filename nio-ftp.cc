@@ -16,6 +16,8 @@
 /* This file is responsible for implementing all direct FTP protocol
    channels.  It is intentionally simplistic. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include "winsock.h"
 #include <stdio.h>

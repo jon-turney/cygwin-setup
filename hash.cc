@@ -15,6 +15,8 @@
 
 /* Simple hash class for install.cc */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include <stdlib.h>
 #include <string.h>
 

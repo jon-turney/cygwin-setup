@@ -15,6 +15,8 @@
 
 /* Simplified socket access functions */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include <winsock.h>
 #include <stdio.h>
