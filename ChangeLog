@@ -1,3 +1,8 @@
+2003-10-23  Jerry D. Hedden <jerry@hedden.us>
+
+	* ConnectionSetting.cc (ConnectionSetting::load): Load proxysettings.
+	(ConnectionSetting::save): Save proxy settings.
+
 2003-10-07  Robert Collins <rbtcollins@hotmail.com>
 
 	* proppage.h (PropertyPage::wantsActivation): const correctness fix.

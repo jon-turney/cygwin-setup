@@ -36,9 +36,15 @@ ConnectionSetting::load()
     {
       char localdir[1000];
       char *fg_ret = f->gets (localdir, 1000);
-      delete f;
       if (fg_ret)
         net_method = typeFromString(fg_ret);
+      fg_ret = f->gets (localdir, 1000);
+      if (fg_ret)
+        net_proxy_host = strdup(fg_ret);
+      fg_ret = f->gets (localdir, 1000);
+      if (fg_ret)
+        net_proxy_port = atoi(fg_ret);
+      delete f;
     }
   inited = 1;
 }
@@ -46,6 +52,7 @@ ConnectionSetting::load()
 void
 ConnectionSetting::save()
 {
+  char port_str[20];
   
   io_stream *f = UserSettings::Instance().settingFileForSave("last-connection");
   if (f)
@@ -59,7 +66,9 @@ ConnectionSetting::save()
             break;
         case IDC_NET_PROXY:
             f->write("Proxy\n",6);
-            // TODO: also write the proxy and port, and then parse them in load.
+            f->write(net_proxy_host,strlen(net_proxy_host));
+            sprintf(port_str, "\n%d\n", net_proxy_port);
+            f->write(port_str,strlen(port_str));
             break;
         default:
             break;
