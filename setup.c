@@ -59,7 +59,7 @@ static HANDLE devnull = NULL;
 static HINTERNET session = NULL;
 static SA deleteme = {NULL, 0, 0};
 static pkg *pkgstuff;
-static int forceinstall;
+static int forceinstall = 1;
 
 static void
 filedel (void)
@@ -227,7 +227,7 @@ tarx (const char *dir, const char *fn)
   pkg = find_pkg (pkgstuff, pkgname);
   if (!newer_pkg (pkg, pkgversion))
     {
-      warning ("Skipping extraction of package '%s'\n", pkgname);
+      warning ("Skipped  extraction of package '%s'\n", pkgname);
       return 1;
     }
 
@@ -421,25 +421,25 @@ optionprompt (const char *text, SA * options)
 {
   size_t n, lbound, response;
   char buf[5];
+  size_t base;
 
   n = 0;
 
   do
     {
       char *or;
-      size_t base = n;
       enum
       { CONTINUE, REPEAT, ALL }
       mode;
 
+      base = n;
       if (!base)
 	puts (text);
 
-      for (n = 0; n < base + SCREEN_LINES - 2 && n < options->count; ++n)
-	printf ("\t%d. %s\n", n + 1, options->array[n]);
+      for (n = 0; n < SCREEN_LINES - 2 && (n + base) < options->count; ++n)
+	printf ("\t%d. %s\n", n + 1, options->array[n + base]);
 
-      lbound = n - (SCREEN_LINES - (base ? 2 : 3));
-      if (n < options->count)
+      if ((n + base) < options->count)
 	{
 	  mode = CONTINUE;
 	  or = " or [continue]";
@@ -454,7 +454,7 @@ optionprompt (const char *text, SA * options)
 	  mode = ALL;
 	  or = "";
 	}
-      printf ("Select an option from %d-%d%s: ", lbound, n, or);
+      printf ("Select an option from 1-%d%s: ", n, or);
       if (!fgets (buf, sizeof (buf), stdin))
 	continue;
 
@@ -468,9 +468,9 @@ optionprompt (const char *text, SA * options)
 
       response = atoi (buf);
     }
-  while (response < lbound || response > n);
+  while (response < 1 || response > n);
 
-  return response - 1;
+  return base + response - 1;
 }
 
 static int
@@ -483,21 +483,26 @@ geturl (const char *url, const char *file, int verbose)
   int tries = 20;
   int is_ftp = strnicmp (url, "ftp", 3) == 0;
   static int saw_first_ftp = 0;
-  char connect_buffer[sizeof ("Connecting to http site...   ")];
+  char connect_buffer[1024];
 
   if (saw_first_ftp)
     verbose = 0;
   else if (verbose)
     {
-      char *p;
+      const char *hosthere, *hostend;
       int n;
       
-      p = strchr (url, ':');
-      if (!p)
-	n = 0;
+      hosthere = strstr (url, "//");
+      if (!hosthere)
+	hosthere = url;	/* huh? */
       else
-	n = p - url;
-      sprintf (connect_buffer, "Connecting to %.*s%ssite...", n, url, n ? " " : "");
+	hosthere += 2;
+
+      hostend = strchr (hosthere + 1, '/');
+      if (!hostend)
+	hostend = strchr (hosthere + 1, '\0');
+      n = hostend - hosthere;
+      sprintf (connect_buffer, "Connecting to %.*s...", n, hosthere);
       fputs (connect_buffer, stdout);
       fflush (stdout);
       if (is_ftp)
@@ -785,13 +790,11 @@ processdirlisting (const char *urlbase, const char *file)
 	  warning ("Unable to download from %s", ref);
 	  winerror ();
 	}
-      else if (strlen (url) == urllen || strnicmp (urlbase, url, urllen) != 0)
+      else if (strlen (url) == urllen || strnicmp (urlbase, url, urllen) != 0
+	       || strstr (url, "/.") || strstr (url, "./"))
 	continue;
       else if (ref[strlen (ref) - 1] == '/')
-	{
-	  if (strcmp (url + strlen (url) - 2, "./") != 0)
-	    retval += downloaddir (url);
-	}
+	retval += downloaddir (url);
       else if (strstr (url, ".tar.gz") && !strstr (url, "-src"))
 	{
 	  int download = 0;
@@ -805,7 +808,7 @@ processdirlisting (const char *urlbase, const char *file)
 	  pkg = find_pkg (pkgstuff, pkgname);
 	  if (!newer_pkg (pkg, pkgversion))
 	    {
-	      warning ("Skipping %s\n", filename);
+	      warning ("Skipped download of %s\n", filename);
 	      continue;
 	    }
 
@@ -838,7 +841,7 @@ processdirlisting (const char *urlbase, const char *file)
 		      break;
 		    case 'N':
 		      download_when = NEVER;
-		      warning ("Skipping %s\n", filename);
+		      warning ("Skipped download of %s\n", filename);
 		    case 'n':
 		    default:
 		      download = 0;
@@ -1049,13 +1052,17 @@ do_start_menu (const char *root)
 	  LPITEMIDLIST progfiles;
 	  char pfilespath[_MAX_PATH];
 	  char *folder;
+	  char *bindir = pathcat (root, "bin");
+	  char *locbindir = pathcat (root, "usr\\local\\bin");
 
 	  fprintf (batch,
 		   "@echo off\n"
 		   "SET MAKE_MODE=unix\n"
 		   "SET PATH=%s\\bin;%s\\usr\\local\\bin;%%PATH%%\n"
-		   "bash\n", root, root);
+		   "bash\n", bindir, locbindir);
 	  fclose (batch);
+	  xfree (bindir);
+	  xfree (locbindir);
 
 	  /* Create a shortcut to the batch file */
 	  SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &progfiles);
@@ -1274,10 +1281,9 @@ main (int argc, char **argv)
 
   while (*++argv)
     if (strstr (*argv, "-f") != NULL)
-      {
-	forceinstall = 1;
-	break;
-      }
+      forceinstall = 1;
+    else if (strstr (*argv, "-u") != NULL)
+      forceinstall = 0;
 
   devnull = (HANDLE) _get_osfhandle (fd);
 

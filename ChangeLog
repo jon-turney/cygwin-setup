@@ -1,3 +1,16 @@
+Sat Apr 29 12:43:08 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (optionprompt): Don't overlap display of already seen options
+	on next page.
+	(geturl): Print name of site which we're connecting to rather than "ftp
+	site".
+	(processdirlisting): Avoid URLs that contain a /.  or ./ .  Is this
+	test too simplistic?
+	(do_start_menu): Use pathcat to build path to <root>\bin to avoid
+	problems when user chooses x:\ as their root.
+	(main): For now, default to "non-update" mode.  Allow -u option to
+	signify an update.
+
 Sat Apr 29 00:26:06 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* pkg.c: New file.
