@@ -229,7 +229,7 @@ init_pkgs (int use_current_user)
   DWORD nc = 0;
   static pkg stuff[1000];
 
-  res = RegCreateKeyEx (use_current_user ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER,
+  res = RegCreateKeyEx (use_current_user ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE,
 			"SOFTWARE\\Cygnus Solutions\\Cygwin\\Installed Components",
 			 0, empty,  REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkpkg, &what);
 
