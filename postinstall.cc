@@ -60,18 +60,22 @@ each (char *fname, unsigned int size)
   char *ext = strrchr (fname, '.');
   if (!ext)
     return;
+
   if (sh && strcmp (ext, ".sh") == 0)
     {
       char *f2 = concat ("/etc/postinstall/", fname, 0);
       run (sh, "-c", f2);
       free (f2);
     }
-  if (cmd && strcmp (ext, ".bat") == 0)
+  else if (cmd && strcmp (ext, ".bat") == 0)
     {
       char *f2 = backslash (concat (root_dir, "/etc/postinstall/", fname, 0));
       run (cmd, "/c", f2);
       free (f2);
     }
+  else
+    return;
+
   rename (concat (root_dir, "/etc/postinstall/", fname, 0),
 	  concat (root_dir, "/etc/postinstall/", fname, ".done", 0));
 }
@@ -105,7 +109,8 @@ do_postinstall (HINSTANCE h)
 					     root_dir, "/usr/bin;",
 					     old_path, 0)));
 
-  GetEnvironmentVariable ("PATH", old_path, sizeof (old_path));
+  SetEnvironmentVariable ("CYGWINROOT", root_dir);
+  SetCurrentDirectory (root_dir);
 
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
   GetVersionEx (&verinfo);

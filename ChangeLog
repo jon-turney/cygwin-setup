@@ -1,5 +1,8 @@
 2000-08-01  DJ Delorie  <dj@redhat.com>
 
+	* postinstall.cc (each): don't rename files we ignore
+	(do_postinstall): set CYGWINROOT to root_dir, chdir there
+
 	* desktop.cc: have /etc/profile call ~/.profile and ~/.bashrc
 
 2000-07-31  DJ Delorie  <dj@redhat.com>
