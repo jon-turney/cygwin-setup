@@ -1,3 +1,8 @@
+2002-03-26 Ton van Overbeek  <tvoverbe@cistron.nl>
+
+	* PickPackageLine.cc (PickPackageline::paint): Adjust clipping rectangle
+	to textheight, so large fonts work.
+
 2003-03-26  Robert Collins  <rbtcollins@hotmail.com>
 
 	* io_stream_cygfile.cc (io_stream_cygfile::mklink): Don't translate
