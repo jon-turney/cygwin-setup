@@ -143,7 +143,7 @@ packagemeta *
 packagedb::getnextpackage ()
 {
   curr_package++;
-  if (packagecount >= curr_package)
+  if (packagecount > curr_package)
     return packages[curr_package];
   return 0;
 }
