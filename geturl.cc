@@ -160,7 +160,7 @@ progress (int bytes)
 {
   static char buf[100];
   int kbps;
-  static int last_tics = 0;
+  static unsigned int last_tics = 0;
   DWORD tics = GetTickCount ();
   if (tics == start_tics) // to prevent division by zero
     return;
@@ -232,6 +232,11 @@ get_url_to_string (char *_url)
     }
 
   char *rv = (char *) malloc (total_bytes);
+  if (NULL == rv)
+    {
+      log (LOG_BABBLE, "get_url_to_string(): malloc failed for rv!");
+      return 0;
+    }
   char *rvp = rv;
   while (bufs && bufs->count > 0)
     {

@@ -62,7 +62,7 @@ find2 (HKEY rkey, int *istext, char *what)
       if (RegQueryValueEx (key, "native", 0, &type, (BYTE *) retval, &retvallen)
 	  != ERROR_SUCCESS)
 	{
-	  delete retval;
+	  free (retval);
 	  retval = 0;
 	}
     }

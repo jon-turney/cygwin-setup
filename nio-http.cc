@@ -98,7 +98,8 @@ NetIO_HTTP::NetIO_HTTP (char *Purl, BOOL allow_ftp_auth)
 
   if (!s->ok())
     {
-      s = 0;
+      delete s;
+      s = NULL;
       return;
     }
 
