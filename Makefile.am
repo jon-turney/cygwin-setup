@@ -20,7 +20,7 @@
 
 AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6 foreign
 DIST_SUBDIRS = bz2lib zlib libgetopt++ tests
-SUBDIRS = bz2lib zlib libgetopt++ @RSYNC@ tests
+SUBDIRS = bz2lib zlib libgetopt++ tests
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
@@ -69,14 +69,6 @@ else
   inilint_extras =
 endif
 
-if ENABLERSYNC
-  rsync_source = \
-	io_stream_rsync.cc \
-	io_stream_rsync.h 
-else
-  rsync_source = 
-endif
-
 inilint_LDADD = libgetopt++/libgetopt++.la -luser32 -lkernel32 
 inilint_SOURCES = \
   filemanip.cc \
@@ -113,7 +105,6 @@ inilint_SOURCES = \
 
 setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a \
 	libgetopt++/libgetopt++.la \
-	@RSYNCLIB@ \
 	-luser32 -lkernel32 \
 	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid 
 setup_LDFLAGS = -mwindows
@@ -285,8 +276,7 @@ setup_SOURCES = \
 	win32.cc \
 	win32.h \
 	window.cc \
-	window.h \
-	$(rsync_source)
+	window.h
 	
 setup_version.c : $(srcdir)/ChangeLog Makefile
 	V=`grep '^\$$Revision.*' $(srcdir)/ChangeLog \

@@ -1,12 +1,31 @@
+2004-08-18  Max Bowsher  <maxb@ukf.net>
+
+	"librsync is not wire-compatible with rsync 2.x, and is not likely 
+	to be in the future." -- librsync.sourceforge.net
+
+	So, it is of no practical use to setup. Therefore, removing all
+	rsync related files and code from setup.
+
+	* rsync: Directory removed.
+	* Makefile.am: Remove rsync support from the buildsystem.
+	* configure.in: Ditto.
+	* README: Since it seems vanishingly unlikely that it will ever happen,
+	    remove rsync support from the wishlist.
+	* io_stream_rsync.cc: Remove.
+	* io_stream_rsync.h: Remove.
+
 2004-04-25  Robert Collins  <rbtcollins@hotmail.com>
 
-	* package_meta.cc (packagemeta::set_requirements): fix problem with libpcre0 not being pulled in automatically.
+	* package_meta.cc (packagemeta::set_requirements): fix problem with
+	libpcre0 not being pulled in automatically.
 
 2004-04-25  Robert Collins  <rbtcollins@hotmail.com>
 
-	* IniDBBuilderPackage.cc (dumpAndList): Move out to packageversion for reuse.
+	* IniDBBuilderPackage.cc (dumpAndList):
+	  Move out to packageversion for reuse.
 	* package_meta.cc (packagemeta::logAllVersions): log dependencies.
-	* package_version.cc (packageversion::depends): provide a const accessor.
+	* package_version.cc (packageversion::depends):
+	    provide a const accessor.
 	(dumpAndList): Moved from INIDBBuilder.cc.
 	* package_version.h: declare new method and function.
 

@@ -30,7 +30,6 @@ TODO:
  * Local package scan stops updating when it stops being the active window.
  	   
 WISHLIST:
- * rsync:// support.
  * Some way to download *all* the source.
  * When clicking on a category that is showing a partial list (auto added items
    due to dependencies) show the full list rather than minimizing.
