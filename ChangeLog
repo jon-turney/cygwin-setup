@@ -1,7 +1,11 @@
+Tue Apr 24 23:42:02 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* res.rc: Resize affected text.
+
 Tue Apr 24 23:35:31 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* net.cc (do_net): Default to direct download.
-	* res.c: Move default selections to the top.
+	* res.rc: Move default selections to the top.
 
 2001-04-18  Earnie Boyd  <earnie@users.sourceforge.net>
 
