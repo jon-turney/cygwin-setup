@@ -1,3 +1,8 @@
+2002-02-23  Robert Collins <rbtcollins@hotmail.com>
+
+	* install.cc (install_one): Fix src package location.
+	(do_install_thread): Fix creating directories.
+
 2002-02-20  Robert Collins <rbtcollins@hotmail.com>
 
 	* package_meta.h (packamgemeta::trustp): Make 'test' choice leave installed
