@@ -82,8 +82,6 @@ private:
 static void
 do_postinstall_thread (HINSTANCE h, HWND owner)
 {
-  next_dialog = IDD_DESKTOP;
-
   Progress.SetText1 ("Running...");
   Progress.SetText2 ("");
   Progress.SetText3 ("");

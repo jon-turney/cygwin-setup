@@ -387,7 +387,6 @@ DesktopSetupPage::OnBack ()
 {
   HWND h = GetHWND ();
   save_dialog (h);
-  NEXT (IDD_CHOOSE);
   return IDD_CHOOSE;
 }
 

@@ -194,8 +194,6 @@ RootPage::OnNext ()
   else if (directory_has_spaces () && (IDNO == yesno (h, IDS_ROOT_SPACE)))
     return -1;
 
-  NEXT (IDD_LOCAL_DIR);
-
   log (LOG_PLAIN, String ("root: ") + get_root_dir () + 
        (root_text == IDC_ROOT_TEXT ? " text" : " binary")  +
        (root_scope == IDC_ROOT_USER ? " user" : " system"));
@@ -209,7 +207,6 @@ RootPage::OnBack ()
   HWND h = GetHWND ();
 
   save_dialog (h);
-  NEXT (IDD_SOURCE);
   return 0;
 }
 

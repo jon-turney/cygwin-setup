@@ -466,8 +466,6 @@ main (int argc, char **argv)
   theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
   theLog->setFile (0, local_dir + "/setup.log", true);
 
-  next_dialog = IDD_SPLASH;
-
   log (LOG_PLAIN) << "Starting cygwin install, version " << version << endLog;
 
   SplashPage Splash;

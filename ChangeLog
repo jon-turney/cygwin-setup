@@ -1,5 +1,14 @@
 2003-07-23  Max Bowsher  <maxb@ukf.net>
 
+	* desktop.cc (DesktopSetupPage::OnBack): Remove obsolete use of NEXT().
+	* root.cc (RootPage::OnNext): Ditto.
+	(RootPage::OnBack): Ditto.
+	* install.cc (do_install_thread): Remove obsolete use of next_dialog.
+	* main.cc (main): Ditto.
+	* postinstall.cc (do_postinstall_thread): Ditto.
+	
+2003-07-23  Max Bowsher  <maxb@ukf.net>
+
 	* dialog.h (do_choose, do_desktop, do_local_dir, do_net, do_other)
 	(do_root, do_site, do_source, do_splash): Remove declarations, since
 	these functions no longer exist.

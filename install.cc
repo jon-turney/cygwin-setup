@@ -455,8 +455,6 @@ do_install_thread (HINSTANCE h, HWND owner)
   num_installs = 0, num_uninstalls = 0, num_replacements = 0;
   rebootneeded = false;
 
-  next_dialog = IDD_S_POSTINSTALL;
-
   io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + get_root_dir ());
 
   for (i = 0; Installer::StandardDirs[i]; i++)
