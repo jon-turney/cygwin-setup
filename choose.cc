@@ -777,9 +777,9 @@ parse_filename (const char *in_fn, fileparse& f)
 Package *
 getpkgbyname (const char *pkgname)
 {
-  for (int i = 0; i < npackages; i++)
-    if (strcasecmp (package[i].name, pkgname) == 0)
-      return package + i;
+  for (Package *pkg = package; pkg->name; pkg++)
+    if (strcasecmp (pkg->name, pkgname) == 0)
+      return pkg;
 
   return NULL;
 }
