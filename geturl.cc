@@ -133,9 +133,9 @@ progress (int bytes)
 
   kbps = bytes / (tics - start_tics);
   ShowWindow (gw_progress, (max_bytes > 0) ? SW_SHOW : SW_HIDE);
-  if (max_bytes)
+  if (max_bytes > 100)
     {
-      int perc = bytes * 100 / max_bytes;
+      int perc = bytes / (max_bytes / 100);
       SendMessage (gw_progress, PBM_SETPOS, (WPARAM) perc, 0);
       sprintf(buf, "%3d %%  (%dk/%dk)  %d kb/s\n",
 	      perc, bytes/1000, max_bytes/1000, kbps);

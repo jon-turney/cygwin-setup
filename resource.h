@@ -31,6 +31,7 @@
 #define IDS_INSTALL_COMPLETE            15
 #define IDS_ERR_OPEN_READ               16
 #define IDS_ROOT_ABSOLUTE               17
+#define IDS_DOWNLOAD_COMPLETE		18
 #define IDD_ROOT                        101
 #define IDD_SOURCE                      102
 #define IDD_OTHER_URL                   103

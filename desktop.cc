@@ -45,9 +45,13 @@ char *etc_profile[] = {
   "unset TMPDIR",
   "unset TMP",
   "",
+  "if [ ! -f /etc/passwd ]; then",
+  "  echo Creating /etc/passwd",
+  "  mkpasswd -l >/etc/passwd 2>/dev/null",
+  "fi",
   "if [ ! -f /etc/group ]; then",
   "  echo Creating /etc/group",
-  "  mkgroup -l >/etc/group",
+  "  mkgroup -l >/etc/group 2>/dev/null",
   "fi",
   "",
   "USER=`id -un`",
@@ -69,6 +73,7 @@ char *etc_profile[] = {
   "  fi",
   "done",
   "",
+  "export MAKE_MODE=unix",
   "export PS1='\033]0;\\w\a",
   "\033[32m\\u@\\h \033[33m\\w\033[0m",
   "$ '",
@@ -169,24 +174,12 @@ make_cygwin_bat ()
 
   fprintf (bat, "@echo off\n\n");
 
-  fprintf (bat, "SET MAKE_MODE=unix\n");
-
-  char *bin = backslash (concat (root_dir, "/bin", 0));
-  char *usrbin = backslash (concat (root_dir, "/usr/bin", 0));
-  char *usrlocalbin = backslash (concat (root_dir, "/usr/local/bin", 0));
-
-  fprintf (bat, "SET PATH=%s;%s;%s;\"%%PATH%%\"\n", usrlocalbin, usrbin, bin);
-
   fprintf (bat, "%.2s\n", root_dir);
-  fprintf (bat, "chdir %s\n\n", backslash (_strdup (root_dir+2)));
+  fprintf (bat, "chdir %s\n\n", backslash (concat (root_dir+2, "/bin", 0)));
 
   fprintf (bat, "bash --login -i\n");
 
   fclose (bat);
-
-  free (bin);
-  free (usrbin);
-  free (usrlocalbin);
 }
 
 static void

@@ -37,10 +37,6 @@ void
 do_download (HINSTANCE h)
 {
   int i;
-  if (source == IDC_SOURCE_DOWNLOAD)
-    next_dialog = 0;
-  else
-    next_dialog = IDD_S_INSTALL;
 
   for (i=0; i<npackages; i++)
     if (package[i].action != ACTION_SAME)
@@ -77,4 +73,12 @@ do_download (HINSTANCE h)
       }
 
   dismiss_url_status_dialog ();
+
+  if (source == IDC_SOURCE_DOWNLOAD)
+    {
+      note (IDS_DOWNLOAD_COMPLETE);
+      next_dialog = 0;
+    }
+  else
+    next_dialog = IDD_S_INSTALL;
 }

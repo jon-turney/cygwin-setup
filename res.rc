@@ -258,6 +258,7 @@ BEGIN
     IDS_ERR_RENAME          "Cab't rename %s to %s: %s"
     IDS_NOTHING_INSTALLED   "Nothing needed to be installed"
     IDS_INSTALL_COMPLETE    "Installation Complete"
+    IDS_DOWNLOAD_COMPLETE   "Download Complete"
 END
 
 STRINGTABLE DISCARDABLE 

@@ -12,6 +12,12 @@
 	* resource.h: ditto
 	* state.h: ditto
 	* desktop.cc: make sure we use backslashes, not slashes.
+	* desktop.cc: don't set PATH in cygwin.bat, create /etc/passwd
+	* geturl.cc: change math for percentage to avoid overflow
+	* install.cc: ditto
+	* download.cc: post "download complete" message.
+	* root.cc: pre-fill in defaults if needed, don't start
+	browse at root_dir unless it's set.
 	
 2000-07-10  DJ Delorie  <dj@cygnus.com>
 

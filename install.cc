@@ -134,15 +134,15 @@ progress (int bytes)
 {
   int perc;
 
-  if (package_bytes > 0)
+  if (package_bytes > 100)
     {
-      perc = bytes * 100 / package_bytes;
+      perc = bytes / (package_bytes / 100);
       SendMessage (ins_pprogress, PBM_SETPOS, (WPARAM) perc, 0);
     }
 
-  if (total_bytes > 0)
+  if (total_bytes > 100)
     {
-      perc = (total_bytes_sofar + bytes) * 100 / total_bytes;
+      perc = (total_bytes_sofar + bytes) / (total_bytes / 100);
       SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) perc, 0);
     }
 

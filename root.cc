@@ -28,6 +28,7 @@
 #include "state.h"
 #include "msg.h"
 #include "mount.h"
+#include "concat.h"
 
 static int rb[] = { IDC_ROOT_TEXT, IDC_ROOT_BINARY, 0 };
 static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
@@ -73,6 +74,15 @@ read_mount_table ()
       else
 	root_scope = IDC_ROOT_USER;
     }
+  else
+    {
+      char windir[_MAX_PATH];
+      GetWindowsDirectory (windir, sizeof (windir));
+      windir[2] = 0;
+      root_dir = concat (windir, "\\cygwin", 0);
+      root_text = IDC_ROOT_BINARY;
+      root_scope = IDC_ROOT_USER;
+    }
 }
 
 static int CALLBACK
@@ -81,7 +91,8 @@ browse_cb (HWND h, UINT msg, LPARAM lp, LPARAM data)
   switch (msg)
     {
     case BFFM_INITIALIZED:
-      SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM)root_dir);
+      if (root_dir)
+	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM)root_dir);
       break;
     }
   return 0;
