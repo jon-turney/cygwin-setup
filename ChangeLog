@@ -1,4 +1,9 @@
-Wed Feb 21 18:59:00 2000  Corinna Vinschen <vinschen@redhat.com>
+Wed Feb 21 13:05:00 2000  Corinna Vinschen <vinschen@redhat.com>
+
+	* download.cc (get_file_size): Check for INVALID_HANDLE_VALUE instead
+	for NULL.
+
+Wed Feb 21 11:21:00 2000  Corinna Vinschen <vinschen@redhat.com>
 
 	* download.cc (download_one): Add missing parenthesis.
 

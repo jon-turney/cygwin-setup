@@ -21,8 +21,6 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "win32.h"
 
 #include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #include "resource.h"
 #include "msg.h"
@@ -44,7 +42,7 @@ get_file_size (char *name)
   DWORD ret = 0;
 
   h = FindFirstFileA (name, &buf);
-  if (h)
+  if (h != INVALID_HANDLE_VALUE)
     {
       if (buf.nFileSizeHigh == 0)
 	ret = buf.nFileSizeLow;
