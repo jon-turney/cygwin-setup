@@ -1,5 +1,9 @@
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
+	* res.rc (IDD_CHOOSE): Tweak for use on a 640x480 screen.
+
+2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc (set_action): Correctly allow skip for any uninstalled package.
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
