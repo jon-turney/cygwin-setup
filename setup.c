@@ -68,6 +68,7 @@ static int updating = 0;
 static SA installme = {NULL, 0, 0};
 static HANDLE hMainThread;
 static char *root;
+static char *usri686;
 
 static void
 cleanup (void)
@@ -271,6 +272,7 @@ xumount (const char *mountexedir, const char *unixpath)
   xfree (umount);
 }
 
+#if 0
 static void
 ask_obsolete (char *dosp, char *cygp)
 {
@@ -306,8 +308,20 @@ ask_obsolete (char *dosp, char *cygp)
 	}
     }
 }
+#endif
 
+static void
+rmi686 (char *fn, char *stem)
+{
+  char *othfn;
+  strlwr (fn);
+  if (strstr (fn, "i686-pc-cygwin"))
+    return;
 
+  othfn = pathcat (usri686, stem + 1);
+  _unlink (othfn);
+  xfree (othfn);
+}
 
 static int
 tarx (const char *dir, const char *fn)
@@ -360,7 +374,7 @@ tarx (const char *dir, const char *fn)
   filehere = files.index;
   while (fgets (buffer, sizeof (buffer0), fp))
     {
-      char *s = strchr (buffer, '\n');
+      char *p, *s = strchr (buffer, '\n');
 
       if (s)
 	*s = '\0';
@@ -386,6 +400,8 @@ tarx (const char *dir, const char *fn)
 	      xumount (wd, s);
 	    }
 #endif
+	  if ((p = strstr (s, "/include")) || (p = strstr (s, "/bin")) || (p = strstr (s, "/lib")))
+	    rmi686 (s, p);
 
 	  s = files.array[files.index] = utodpath (s);
 	}
@@ -402,6 +418,7 @@ tarx (const char *dir, const char *fn)
   warning ("%s package '%s'\n", write_pkg (pkg, pkgname, pkgversion) ?
 			      "Updated" : "Refreshed", pkgname);
 
+#if 0
   if (stricmp (pkg->name, "cygwin") == 0)
     {
       char *pn, *pv;
@@ -425,6 +442,7 @@ tarx (const char *dir, const char *fn)
 	}
       xfree (thisver);
     }
+#endif
 
   return 1;
 }
@@ -1653,6 +1671,7 @@ those as the basis for your installation.\n\n"
       mkdirp (root);		/* Ignore any return value since it may
 				   already exist. */
       mkmount (wd, "", "/", 1);
+      usri686 = utodpath ("/usr/i686-pc-cygwin");
 
       /* Make the root directory the current directory so that recurse_dirs
 	 will * extract the packages into the correct path. */

@@ -1,3 +1,8 @@
+Thu Jun  8 12:00:02 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (tarx): Use different strategy to track i686-pc-cygwin uses.
+	(rmi686): New function.  Remove appropriate file from i686-pc-cygwin directory.
+
 Wed Jun  7 18:31:21 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* path.c (pathcat): Don't add a trailing slash if arg2 is empty.
