@@ -1,5 +1,20 @@
 2002-01-21  Robert Collins  <rbtcollins@hotmail.com>
 
+	* archive_tar.cc (archive_tar::~archive_tar): Mark the stream as destroyed.
+	* archive_tar_file.cc (archive_tar_file::~archive_tar_file): Ditto.
+	* compress.cc (compress::~compress): Be less verbose.
+	* compress_bz.cc (compress_bz::~compress_bz): Ditto.
+	Mark the stream as destroyed.
+	* compress_gz.cc (compress_gz::~compress_gz): Mark the stream as destroyed.
+	* io_stream.cc (io_stream::~io_stream): Only warn when the stream is not marked
+	as destroyed.
+	* io_stream_cygfile.cc (io_stream_cygfile::~io_stream_cygfile): Mark the 
+	stream as destroyed.
+	* io_stream_file.cc (io_stream_file::~io_stream_file): Ditto.
+	* io_stream_memory.cc (io_stream_memory::~io_stream_memory): Ditto.
+	
+2002-01-21  Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.in (CFLAGS): Allow customisable malloc debug flags.
 	(OBJS): Link in malloc objects.
 	* category.cc (category): Use new char, not strdup.

@@ -79,6 +79,7 @@ io_stream_cygfile::~io_stream_cygfile ()
     delete[] fname;
   if (fp)
     fclose (fp);
+  destroyed = 1;
 }
 
 /* Static members */

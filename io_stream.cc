@@ -271,6 +271,7 @@ io_stream::exists (const char *name)
 
 io_stream::~io_stream ()
 {
-  log (LOG_TIMESTAMP, "io_stream::~io_stream called");
+  if (!destroyed)
+    log (LOG_TIMESTAMP, "io_stream::~io_stream: It looks like a class hasn't overriden the destructor!");
   return;
 }

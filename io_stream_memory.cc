@@ -38,6 +38,7 @@ memblock::~memblock ()
 io_stream_memory::~io_stream_memory ()
 {
   /* memblocks are self deleting. Nice of 'em eh what */
+  destroyed = 1;
 }
 
 /* virtuals */

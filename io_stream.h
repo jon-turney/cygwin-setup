@@ -153,10 +153,11 @@ public:
     virtual ~ io_stream () = 0;
 protected:
   void operator= (const io_stream &);
-    io_stream ()
+    io_stream () : destroyed (0)
   {
   };
   io_stream (const io_stream &);
+  unsigned int destroyed;
 private:
   static int move_copy (char const *, char const *);
 };

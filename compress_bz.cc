@@ -207,8 +207,9 @@ compress_bz::get_mtime ()
 
 compress_bz::~compress_bz ()
 {
-  log (LOG_TIMESTAMP, "compress_bz::~bz called");
+  log (LOG_BABBLE, "compress_bz::~bz called");
   if (initialisedOk)
     BZ2_bzDecompressEnd (&strm);
+  destroyed = 1;
   return;
 }

@@ -43,6 +43,7 @@ archive_tar_file::archive_tar_file (tar_state & newstate):state (newstate)
 archive_tar_file::~archive_tar_file ()
 {
   state.header_read = 0;
+  destroyed = 1;
 }
 
 /* Virtual memebrs */

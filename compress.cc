@@ -114,6 +114,6 @@ compress::next_file_name ()
 
 compress::~compress ()
 {
-  log (LOG_TIMESTAMP, "compress::~compress called");
+  log (LOG_BABBLE, "compress::~compress called");
   return;
 }

@@ -61,6 +61,7 @@ io_stream_file::~io_stream_file ()
     delete[] lmode;
   if (fp)
     fclose (fp);
+  destroyed = 1;
 }
 
 int

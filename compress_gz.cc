@@ -480,6 +480,7 @@ compress_gz::~compress_gz ()
       putLong (stream.total_in);
     }
   destroy ();
+  destroyed = 1;
   return;
 }
 
