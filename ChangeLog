@@ -1,5 +1,16 @@
 2002-05-03 Robert Collins  <rbtcollins@hotmail.com>
 
+	* String++.h: Declare a << operator that accepts String objects.
+	* String++.cc: We need iostream for..
+	(operator <<): this. Provide a << operator that accepts String objects.
+	* ini.cc (yyerror): Remove the "C" classifier - it's not needed.
+	Change from vargs to a String parameter.
+	* inilintmail.cc: Remove the gui related headers.
+	(yyerror): Implement this for parsing.
+	* iniparse.y: Use the new yyerror syntax.
+
+2002-05-03 Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.am: Add IniState.h.
 	* Makefile.in: Regenerate.
 	* IniState.h: New file.

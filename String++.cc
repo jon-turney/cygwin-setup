@@ -20,6 +20,7 @@
 #include <ctype.h>
 #include "concat.h"
 #include "io_stream.h"
+#include <iostream>
 
 // _data
 
@@ -226,4 +227,14 @@ int
 String::casecompare (String const lhs, String const rhs)
 {
   return lhs.casecompare (rhs);
+}
+
+/* TODO: research how wide char and unicode interoperate with
+ * C++ streams
+ */
+ostream &
+operator << (ostream &os, String const &theString)
+{
+  os << theString.cstr_oneuse();
+  return os;
 }

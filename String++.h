@@ -20,6 +20,7 @@
 
 #include <stdarg.h>
 #include <sys/types.h>
+#include <iosfwd>
 
 class io_stream;
 class String {
@@ -70,6 +71,9 @@ private:
   } *theData; // Invariant, there is always an 
   static String absorb (unsigned char *, size_t);
 };
+
+ostream &
+operator << (ostream &os, String const &theString);
 
 String::String() : theData (new _data) {}
 String::String(String const &aString) : theData (aString.theData) 

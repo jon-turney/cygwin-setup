@@ -253,15 +253,13 @@ do_ini (HINSTANCE h, HWND owner)
 
 extern int yylineno;
 
-extern "C" int
-yyerror (char *s, ...)
+extern int
+yyerror (String const &s)
 {
   char buf[1000];
   int len;
   sprintf (buf, "setup.ini line %d: ", yylineno);
-  va_list args;
-  va_start (args, s);
-  vsprintf (buf + strlen (buf), s, args);
+  sprintf (buf + strlen (buf), s.cstr_oneuse());
   OutputDebugString (buf);
   if (error_buf)
     {

@@ -18,10 +18,28 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-#include "win32.h"
-#include <commctrl.h>
-
 #include "getopt++/GetOption.h"
+#include "String++.h"
+#include <iostream>
+#include <strstream>
+
+extern int yylineno;
+
+static ostrstream error_buf;
+static int error_count = 0;
+
+extern int
+yyerror (String const &s)
+{
+  ostrstream buf;
+  buf << "setup.ini line " << yylineno << ": ";
+  buf << s << endl;
+  cout << buf;
+  error_buf << buf; 
+  error_count++;
+  /* TODO: is return 0 correct? */
+  return 0;
+}
 
 int
 main (int argc, char **argv)

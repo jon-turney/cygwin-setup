@@ -27,7 +27,7 @@
 #include "iniparse.h"
 #include "filemanip.h"
 
-extern "C" int yyerror (char const *s, ...);
+extern int yyerror (String  const &s);
 int yylex ();
 
 #include "port.h"
@@ -109,7 +109,7 @@ simple_line
  | T_UNKNOWN			{ trust = TRUST_UNKNOWN; }
  | /* empty */
  | error '\n' { yylineno --;
-		yyerror ("unrecognized line in package %s (do you have the latest setup?)", cp->name.cstr_oneuse());
+		yyerror (String("unrecognized line in package ") + cp->name + " (do you have the latest setup?)");
 		yylineno ++;
 	      }
  ;
