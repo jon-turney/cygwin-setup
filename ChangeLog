@@ -1,3 +1,34 @@
+2003-03-25  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
+	* threebar.h (WM_APP_START_POSTINSTALL): New message.
+	(WM_APP_POSTINSTALL_THREAD_COMPLETE): New message.
+	* threebar.cc (ThreeBarProgressPage::OnMessageApp):
+	Add handling for WM_APP_START_POSTINSTALL and
+	WM_APP_POSTINSTALL_THREAD_COMPLETE.
+	* install.cc (do_install_thread): Set next_dialog to
+	IDD_S_POSTINSTALL.
+	* desktop.cc (DesktopSetupPage::OnFinish): Move the
+	do_postinstall call to ThreeBarProgressPage::OnMessageApp.
+	* script.h (Script::fullName): New member function.
+	(Script::run): New member function.
+	(Script::ETCPostinstall): New static member constant.
+	* script.cc (Script::fullName): Implement.
+	(Script::run): Implement.
+	(Script::ETCPostinstall): Define.
+	(Script::isAScript): Use ETCPostinstall instead of a
+	hardcoded string constant.
+	(run): Enable "#if 0"'d code.
+	* postinstall.cc (Progress): New extern variable.
+	(RunFindVisitor::visitFile): Add script to vector
+	instead of running.
+	(RunFindVisitor::_scripts): New member variable.
+	(RunScript): New helper class for use in for_each.
+	(do_postinstall_thread): Rename do_postinstall to.  Add
+	Progress bar and text setting.  Add package count.
+	(do_postinstall_reflector): New static function.
+	(do_postinstall): Rename to do_postinstall_thread.
+	Create a thread instead.
+
 2003-03-18  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
 	* script.cc (run): Add file_out parameter.

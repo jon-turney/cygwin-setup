@@ -30,12 +30,15 @@ void init_run_script ();
 void try_run_script (String const &dir, String const &fname);
 
 class Script {
-  public:
-    static bool isAScript (String const &file);
-    Script (String const &fileName);
-    String baseName()const;
-  private:
-    String scriptName;
+public:
+  static bool isAScript (String const &file);
+  Script (String const &fileName);
+  String baseName() const;
+  String fullName() const;
+  void run(BOOL to_log = FALSE) const;
+private:
+  String scriptName;
+  static char const ETCPostinstall[];
 };
 
 #endif /* SCRIPT_H */

@@ -182,13 +182,8 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
       si.hStdOutput = file_out.handle ();
       si.hStdError = file_out.handle ();
       si.dwFlags |= STARTF_USESHOWWINDOW;
-#if 0
       si.wShowWindow = SW_HIDE;
-      flags = CREATE_NO_WINDOW;  // Note: might not work on Win9x
-#else
-      // TODO: introduce a script progress tracker and use the above
-      si.wShowWindow = SW_MINIMIZE;
-#endif
+      flags = CREATE_NO_WINDOW;  // Note: this is ignored on Win9x
     }
 
   BOOL createSucceeded = CreateProcess (0, cmdline, 0, 0, inheritHandles,
@@ -250,11 +245,14 @@ try_run_script (String const &dir, String const &fname)
     run_script (dir.cstr_oneuse(), (fname + ".bat").cstr_oneuse());
 }
 
+char const Script::ETCPostinstall[] = "/etc/postinstall/";
+
 bool
 Script::isAScript (String const &file)
 {
     /* file may be /etc/postinstall or etc/postinstall */
-    if (file.casecompare ("/etc/postinstall/", 17) && file.casecompare ("etc/postinstall/", 16))
+    if (file.casecompare (ETCPostinstall, sizeof(ETCPostinstall)) &&
+	file.casecompare (ETCPostinstall+1, sizeof(ETCPostinstall)-1))
       return false;
     if (file.cstr_oneuse()[file.size() - 1] == '/')
       return false;
@@ -267,10 +265,23 @@ Script::Script (String const &fileName) : scriptName (fileName)
 }
 
 String
-Script::baseName()const
+Script::baseName() const
 {
   String result = scriptName;
   while (result.find ('/'))
     result = result.substr(result.find ('/'));
   return result;
 }
+
+String
+Script::fullName() const
+{
+  return scriptName;
+}
+
+void
+Script::run(BOOL to_log) const
+{
+  run_script("", scriptName, to_log);
+}
+

@@ -397,8 +397,6 @@ DesktopSetupPage::OnFinish ()
   HWND h = GetHWND ();
   save_dialog (h);
   do_desktop_setup ();
-  NEXT (IDD_S_POSTINSTALL);
-  do_postinstall (GetInstance (), h);
 
   return true;
 }

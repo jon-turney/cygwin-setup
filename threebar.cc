@@ -172,6 +172,18 @@ bool
       }
     case WM_APP_INSTALL_THREAD_COMPLETE:
       {
+	// Install is complete and we want to go on to the postinstall.
+	Window::PostMessage (WM_APP_START_POSTINSTALL);
+	break;
+      }
+    case WM_APP_START_POSTINSTALL:
+      {
+	// Start the postinstall script thread.
+	do_postinstall (GetInstance (), GetHWND ());
+	break;
+      }
+    case WM_APP_POSTINSTALL_THREAD_COMPLETE:
+      {
 	// Re-enable and "Push" the Next button
 	GetOwner ()->SetButtons (PSWIZB_NEXT);
 	GetOwner ()->PressButton (PSBTN_NEXT);
