@@ -804,6 +804,8 @@ getpkgbyname (const char *pkgname)
   return NULL;
 }
 
+/* Find out where to put existing tar file in local directory in
+   known package array. */
 static void
 scan2 (char *path, unsigned int size)
 {
@@ -813,18 +815,36 @@ scan2 (char *path, unsigned int size)
   if (!parse_filename (path, f))
     return;
 
-  if (f.what[0] != '\0' && f.what[0] != 's')
+  if (f.what[0] != '\0')
     return;
 
   pkg = getpkgbyname (f.pkg);
   if (pkg == NULL)
     return;
 
+  /* Scan existing package list looking for a match between a known
+     package from setup.ini and a tar archive on disk.
+     While scanning, keep track of appropriate "holes" in the trust
+     table where a tar file could be put if no known entry
+     exists.
+
+     So, if setup.ini knows that ash-20010425-1.tar.gz is the current
+     version and there is an ash-20010426-1.tar.gz in the current directory,
+     the 20010426 version will be placed in the "test" slot, assuming that
+     there is no test version listed in setup.ini. */
+
   Info *hole = NULL;
+  Info *maybe_hole = NULL;
+  int cmp = 0;
   for (Info *inf = pkg->infoscan; inf < pkg->infoend; inf++)
-    if (!inf->version)
-      hole = inf;
-    else if (strcmp (f.ver, inf->version) == 0)
+    if (!inf->version || inf->derived)
+      {
+	if (cmp > 0)
+	  hole = inf;
+	else
+	  maybe_hole = inf;
+      }
+    else if ((cmp = strcasecmp (f.ver, inf->version)) == 0)
       {
 	if (f.what[0] == 's')
 	  inf->source_exists = -1;
@@ -832,26 +852,57 @@ scan2 (char *path, unsigned int size)
 	  inf->install_exists = -1;
 	return;
       }
+    else if (!hole && maybe_hole && cmp < 0)
+      hole = maybe_hole;
+    else
+      maybe_hole = NULL;
 
-  /* FIXME: This is really not the right way to do this.  We should check
-     the version number of the "found" tar file and put it in the test slot
-     if it is newer than curr, the curr slot if it is newer than prev, etc. */
-  if (hole)
+  /* If maybe_hole != NULL, then we should be sitting at the "test"
+     trust entry.  Use that if there was nothing at all in the
+     known package list. */
+  if (!hole && maybe_hole)
+    hole = maybe_hole;
+
+  /* If !hole, we didn't find this version in the known packages array
+     and there was no place to put it. */
+  if (!hole)
+    return;
+
+  /* The derived flag is set when we place info about a file in a slot
+     iff there was nothing known about the file in the known package
+     array.  We try to put the highest numbered versions in the "empty"
+     slots. */
+  if (hole->derived)
     {
-      hole->version = strdup (f.ver);
-      hole->install = strdup (f.pkgtar);
-      if (!hole->source && f.what[0] == 's')
+      cmp = strcasecmp (f.ver, hole->version) < 0;
+      if (cmp < 0)
+	return;
+
+      if (cmp > 0)
 	{
-	  hole->source = strdup (path);
-	  hole->source_exists = -1;
-	  hole->source_size = size;
+	  free (hole->version);
+	  if (hole->source)
+	    free (hole->source);
+	  else
+	    free (hole->install);
 	}
-      else
-	{
-	  hole->install = strdup (path);
-	  hole->install_exists = -1;
-	  hole->install_size = size;
-	}
+    }
+
+  /* Fill in the "hole", setting a flag that we derived this location
+     from context rather than from setup.ini. */
+  hole->derived = 1;
+  hole->version = strdup (f.ver);
+  if (!hole->source && f.what[0] == 's')
+    {
+      hole->source = strdup (path);
+      hole->source_exists = -1;
+      hole->source_size = size;
+    }
+  else
+    {
+      hole->install = strdup (path);
+      hole->install_exists = -1;
+      hole->install_size = size;
     }
 }
 
