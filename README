@@ -14,7 +14,7 @@ TODO:
   4) Something to parse a tar file name into package/version or altenatively,
      return that information from 2)
   5) Something to return a list of files associated with a package.
-* When installing and enough packages default to visible, te RH scrollbar is 
+* When installing and enough packages default to visible, the RH scrollbar is 
   sometimes hidden.
 
  	   
@@ -22,7 +22,6 @@ WISHLIST:
   *  rsync:// support
   *  Some way to download *all* the source
   *  When clicking on a category that is showing a partial list (auto added items due to dependencies) show the full list rather than minising.
-  *  continue downloading past errors, present log of failures at end
   *   incremental/recoverable download capability.
   *   build-depends
   *   FTP control connections should be closed when we are awaiting user input.
@@ -40,7 +39,6 @@ WISHLIST:
    * Downloading from the internet should be _able_ to list based on what is present in the cache, as opposed to what is installed. (To help building a complete install set for a different machine).
    * new view - show installed packages only. Probably not categorised.
    * new view - show non installed packages only.
-   * multiple mirror support, with setup.ini from each merged automagically.
 
 - Have an option to display any downloaded READMEs (or at least mention that they exist)
 - Don't ask about the start menu or desktop options if they already exist
@@ -51,6 +49,8 @@ WISHLIST:
  * Show bin and src download size
    
 recently completed
+   *  continue downloading past errors, present log of failures at end (partial)
+   * multiple mirror support, with setup.ini from each merged automagically.
    * installed packages aren't automatically upgraded.
    * Dependencies should not trigger alterations to user actions for installed packages that have any action other than uninstall.
    * Wide descriptions can get truncated - ie SSMTP
