@@ -1,5 +1,41 @@
 2004-12-25  Max Bowsher  <maxb@ukf.net>
 
+	The Big Cleanup: Phase "win32"
+
+	* win32.h: Major overhaul. Document why we use _WIN32_IE. Move out
+	fragment dealing with alloca() to the single file in which it is used.
+	Remove fragment dealing with _MAX_PATH, and convert all uses of it
+	elsewhere to MAX_PATH. Remove random include of <stdarg.h>. Remove
+	NOCOMATTRIBUTE, as setup contains no code which it affects. Remove
+	includes of <wininet.h> and <windowsx.h> - see later in this log.
+	(IsWindowsNT): New inline function, a much simpler implementation of
+	Win32::OS().
+
+	* win32.cc: Delete.
+
+	* Makefile.am (setup_SOURCES): Remove "win32.cc".
+
+	* AntiVirus.cc (detect), PickPackageLine.cc (PickPackageLine::paint),
+	* install.c (Installer::installOneSource):
+	Use IsWindowsNT(), not Win32::OS().
+	* main.cc (main): Use IsWindowsNT(), not locally defined iswinnt.
+
+	* PickView.cc (PickView::WindowProc), netio.cc (auth_proc),
+	* proppage.cc (PropertyPage::DialogProc):
+	Avoid using obfuscating macros from <windowsx.h>.
+
+	* archive.cc: Include or #define alloca() in the only file in which
+	it is used.
+
+	* nio-ie5.h: Include <wininet.h> here, where it is actually needed,
+	rather than in "win32.h" which is included almost everywhere.
+
+	* archive_tar.cc, archive_tar.h, cygpackage.cc, cygpackage.h,
+	* desktop.cc, find.cc, install.cc, main.cc, mklink2.c, mount.cc,
+	* script.cc: Use MAX_PATH, not _MAX_PATH.
+
+2004-12-25  Max Bowsher  <maxb@ukf.net>
+
 	Remove some overcomplications.
 
 	* Makefile.am (setup_SOURCES): Remove FilterVisitor.{cc,h}.

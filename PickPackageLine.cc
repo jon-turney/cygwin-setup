@@ -55,7 +55,7 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
       return;
     }
   HRGN oldClip2;
-  if (Win32::OS() == Win32::WinNT) {
+  if (IsWindowsNT()) {
 				  
   unsigned int regionsize = GetRegionData (oldClip, 0, 0);
   LPRGNDATA oldClipData = (LPRGNDATA) malloc (regionsize);

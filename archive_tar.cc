@@ -45,7 +45,7 @@ static const char *cvsid =
 #endif
 static int err;
 
-//static char file_name[_MAX_PATH+512];
+//static char file_name[MAX_PATH+512];
 //static char have_longname = 0;
 //static int  file_length;
 
@@ -182,11 +182,11 @@ archive_tar::next_file_name ()
       /* we read the 'file' into the long filename, then call back into here
        * to find out if the actual file is a real file, or a special file..
        */
-      if (state.file_length > _MAX_PATH)
+      if (state.file_length > MAX_PATH)
 	{
 	  skip_file ();
 	  fprintf (stderr, "error: long file name exceeds %d characters\n",
-		   _MAX_PATH);
+		   MAX_PATH);
 	  err++;
 	  state.parent->read (&state.tar_header, 512);
 	  sscanf (state.tar_header.size, "%o", &state.file_length);

@@ -16,7 +16,7 @@
 #ifndef SETUP_NIO_IE5_H
 #define SETUP_NIO_IE5_H
 
-/* see nio-ie5.cc */
+#include <wininet.h>
 
 class NetIO_IE5:public NetIO
 {

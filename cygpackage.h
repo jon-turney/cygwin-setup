@@ -21,7 +21,7 @@
  */
 
 #include "String++.h"
-/* for _MAX_PATH */
+/* for MAX_PATH */
 #include "win32.h" 
 
 #include "package_version.h"
@@ -80,7 +80,7 @@ private:
   String canonical;
   String fn;
   String sdesc, ldesc;
-  char getfilenamebuffer[_MAX_PATH];
+  char getfilenamebuffer[MAX_PATH];
 
 //  package_stability_t stability;
   package_status_t status;

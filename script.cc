@@ -56,7 +56,7 @@ init_run_script ()
       sh = String();
     }
   
-  char old_path[_MAX_PATH];
+  char old_path[MAX_PATH];
   GetEnvironmentVariable ("PATH", old_path, sizeof (old_path));
   SetEnvironmentVariable ("PATH", backslash (cygpath ("/bin") + ";" +
 					     cygpath ("/usr/bin") + ";" +
@@ -161,7 +161,7 @@ OutputLog::out_to(std::ostream &out)
 static void
 run (const char *sh, const char *args, const char *file, OutputLog &file_out)
 {
-  char cmdline[_MAX_PATH];
+  char cmdline[MAX_PATH];
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
   DWORD flags = CREATE_NEW_CONSOLE;

@@ -121,7 +121,7 @@ start_menu (String const &title, String const &target)
   SHGetSpecialFolderLocation (NULL,
 			      issystem ? CSIDL_COMMON_PROGRAMS :
 			      CSIDL_PROGRAMS, &id);
-  char _path[_MAX_PATH];
+  char _path[MAX_PATH];
   SHGetPathFromIDList (id, _path);
   String path(_path);
   // Win95 does not use common programs unless multiple users for Win95 is enabled
@@ -142,7 +142,7 @@ start_menu (String const &title, String const &target)
 static void
 desktop_icon (String const &title, String const &target)
 {
-  char path[_MAX_PATH];
+  char path[MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
   //SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_DESKTOP : CSIDL_COMMON_DESKTOPDIRECTORY, &id);
@@ -247,7 +247,7 @@ load_dialog (HWND h)
 static int
 check_desktop (String const title, String const target)
 {
-  char path[_MAX_PATH];
+  char path[MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
   SHGetSpecialFolderLocation (NULL,
@@ -280,7 +280,7 @@ check_desktop (String const title, String const target)
 static int
 check_startmenu (String const title, String const target)
 {
-  char path[_MAX_PATH];
+  char path[MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
   SHGetSpecialFolderLocation (NULL,

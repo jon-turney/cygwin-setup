@@ -18,7 +18,7 @@ make_link_2 (char const *exepath, char const *args, char const *icon, char const
 {
   IShellLink *sl;
   IPersistFile *pf;
-  WCHAR widepath[_MAX_PATH];
+  WCHAR widepath[MAX_PATH];
 
   CoCreateInstance (&CLSID_ShellLink, NULL,
 		    CLSCTX_INPROC_SERVER, &IID_IShellLink, (LPVOID *) & sl);
@@ -28,7 +28,7 @@ make_link_2 (char const *exepath, char const *args, char const *icon, char const
   sl->lpVtbl->SetArguments (sl, args);
   sl->lpVtbl->SetIconLocation (sl, icon, 0);
 
-  MultiByteToWideChar (CP_ACP, 0, lname, -1, widepath, _MAX_PATH);
+  MultiByteToWideChar (CP_ACP, 0, lname, -1, widepath, MAX_PATH);
   pf->lpVtbl->Save (pf, widepath, TRUE);
 
   pf->lpVtbl->Release (pf);

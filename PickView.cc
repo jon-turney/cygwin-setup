@@ -660,11 +660,14 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
   switch (message)
     {
     case WM_HSCROLL:
-      return HANDLE_WM_HSCROLL (GetHWND(), wParam, lParam, list_hscroll);
+      list_hscroll (GetHWND(), (HWND)lParam, LOWORD(wParam), HIWORD(wParam));
+      return 0;
     case WM_VSCROLL:
-      return HANDLE_WM_VSCROLL (GetHWND(), wParam, lParam, list_vscroll);
+      list_vscroll (GetHWND(), (HWND)lParam, LOWORD(wParam), HIWORD(wParam));
+      return 0;
     case WM_LBUTTONDOWN:
-      return HANDLE_WM_LBUTTONDOWN (GetHWND(), wParam, lParam, list_click);
+      list_click (GetHWND(), FALSE, LOWORD(lParam), HIWORD(lParam), wParam);
+      return 0;
     case WM_PAINT:
       paint (GetHWND());
       return 0;

@@ -31,6 +31,16 @@ static const char *cvsid =
 #include "archive.h"
 #include "archive_tar.h"
 
+/* This file is the sole user of alloca(), so do this here.
+ * This will go away when this file is useing proper C++ string handling. */
+#if HAVE_ALLOCA_H
+#include <alloca.h>
+#else
+#ifndef alloca
+#define alloca __builtin_alloca
+#endif
+#endif
+
 /* In case you are wondering why the file magic is not in one place:
  * It could be. But there is little (any?) benefit.
  * What is important is that the file magic required for any _task_ is centralised.

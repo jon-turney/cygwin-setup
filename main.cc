@@ -82,8 +82,6 @@ static BoolOption HelpOption (false, 'h', "help", "print help");
 #define TOKEN_ACL_SIZE(cnt) (sizeof(ACL) + \
 			     (cnt) * (sizeof(ACCESS_ALLOWED_ACE) + MAX_SID_LEN))
 
-#define iswinnt		(GetVersion() < 0x80000000)
-
 namespace Setup {
   class SIDWrapper {
     public:
@@ -423,8 +421,8 @@ main (int argc, char **argv)
 #endif
 
   try {
-    char *cwd=new char[_MAX_PATH];
-    GetCurrentDirectory (_MAX_PATH, cwd);
+    char *cwd=new char[MAX_PATH];
+    GetCurrentDirectory (MAX_PATH, cwd);
     local_dir = String (cwd);
     delete cwd;
 
@@ -472,7 +470,7 @@ main (int argc, char **argv)
 
     /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
        no idea of access control lists and security at all. */
-    if (iswinnt)
+    if (IsWindowsNT())
       set_default_sec ();
 
     // Initialize common controls

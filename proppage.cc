@@ -270,7 +270,8 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
           }
           else if (cmdproc != NULL)
           {
-            return HANDLE_WM_COMMAND (GetHWND (), wParam, lParam, cmdproc);
+            cmdproc (GetHWND(), LOWORD(wParam), (HWND)lParam, HIWORD(wParam));
+            return 0;
           }
           break;
         }

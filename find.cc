@@ -46,8 +46,8 @@ void
 Find::accept (FindVisitor &aVisitor)
 {
   WIN32_FIND_DATA wfd;
-  if (_start_dir.size() > _MAX_PATH)
-    throw new length_error ("starting dir longer than _MAX_PATH");
+  if (_start_dir.size() > MAX_PATH)
+    throw new length_error ("starting dir longer than MAX_PATH");
 
   h = FindFirstFile ((_start_dir + "/*").cstr_oneuse(), &wfd);
 

@@ -230,7 +230,8 @@ auth_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
       load_dialog (h);
       return FALSE;
     case WM_COMMAND:
-      return HANDLE_WM_COMMAND (h, wParam, lParam, auth_cmd);
+      auth_cmd (h, LOWORD(wParam), (HWND)lParam, HIWORD(wParam));
+      return 0;
     }
   return FALSE;
 }

@@ -169,7 +169,7 @@ AntiVirusPage::OnUnattended ()
 void
 detect ()
 {
-    if (Win32::OS () == Win32::Win9x)
+    if (!IsWindowsNT())
 	return;
     // TODO: trim the access rights down 
     SCM = OpenSCManager (NULL, NULL, SC_MANAGER_ALL_ACCESS);

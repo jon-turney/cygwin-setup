@@ -437,7 +437,7 @@ read_mounts ()
     {
       root_here = m;
       m->posix = String ("/");
-      char windir[_MAX_PATH];
+      char windir[MAX_PATH];
       root_text = IDC_ROOT_BINARY;
       root_scope = (is_admin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
       GetWindowsDirectory (windir, sizeof (windir));

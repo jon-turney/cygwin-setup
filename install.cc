@@ -284,11 +284,9 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 		  ++errors;
 		}
 	      else
-		//switch Win32::OS
 		{
-		  switch (Win32::OS ())
+                  if (!IsWindowsNT())
 		    {
-		    case Win32::Win9x:{
 		      /* Get the short file names */
 		      char source[MAX_PATH];
 		      unsigned int len =
@@ -317,8 +315,8 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 			      replaceOnRebootSucceeded (fn, rebootneeded);
 			}
 		    }
-		      break;
-		    case Win32::WinNT:
+                  else
+                    {
 		      /* XXX FIXME: prefix may not be / for in use files -
 		       * although it most likely is
 		       * - we need a io method to get win32 paths 
@@ -421,7 +419,7 @@ install_one (packagemeta & pkg)
 static void
 check_for_old_cygwin ()
 {
-  char buf[_MAX_PATH + sizeof ("\\cygwin1.dll")];
+  char buf[MAX_PATH + sizeof ("\\cygwin1.dll")];
   if (!GetSystemDirectory (buf, sizeof (buf)))
     return;
   strcat (buf, "\\cygwin1.dll");
