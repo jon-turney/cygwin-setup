@@ -110,7 +110,7 @@ public:
   {
     return t == TRUST_PREV ? (prev ? prev : (curr ? curr : installed))
          : t == TRUST_CURR ? (curr ? curr : installed)
-	 : exp;
+	 : exp ? exp : installed;
   }
 
   String name;			/* package name, like "cygwin" */
