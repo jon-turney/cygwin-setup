@@ -58,6 +58,8 @@ static FILE *logfp = NULL;
 static HANDLE devnull = NULL;
 static HINTERNET session = NULL;
 static SA deleteme = {NULL, 0, 0};
+static pkg *pkgstuff;
+static int forceinstall;
 
 static void
 filedel (void)
@@ -218,6 +220,16 @@ tarx (const char *dir, const char *fn)
   HANDLE hproc;
   FILE *fp;
   int filehere;
+  char *pkgname, *pkgversion;
+  pkg *pkg;
+
+  normalize_version (fn, &pkgname, &pkgversion);
+  pkg = find_pkg (pkgstuff, pkgname);
+  if (!newer_pkg (pkg, pkgversion))
+    {
+      warning ("Skipping extraction of package '%s'\n", pkgname);
+      return 1;
+    }
 
   dpath = pathcat (dir, fn);
   path = dtoupath (dpath);
@@ -284,6 +296,9 @@ tarx (const char *dir, const char *fn)
     if (chmod (files.array[filehere], 0777))
       warning ("Unable to reset protection on '%s' - %s\n",
 	       files.array[filehere], _strerror (""));
+
+  warning ("%s package '%s'\n", write_pkg (pkg, pkgname, pkgversion) ?
+			      "Updated" : "Refreshed", pkgname);
 
   return 1;
 }
@@ -781,7 +796,18 @@ processdirlisting (const char *urlbase, const char *file)
 	{
 	  int download = 0;
 	  char *filename = strrchr (url, '/') + 1;
+	  char *pkgname, *pkgversion;
+	  pkg *pkg;
+
 	  retval++;
+
+	  normalize_version (filename, &pkgname, &pkgversion);
+	  pkg = find_pkg (pkgstuff, pkgname);
+	  if (!newer_pkg (pkg, pkgversion))
+	    {
+	      warning ("Skipping %s\n", filename);
+	      continue;
+	    }
 
 	  if (download_when == ALWAYS || needfile (filename, filedate, filesize))
 	    download = 1;
@@ -965,6 +991,7 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 
 	  fprintf (uninst,
 		   "@echo off\n" "%c:\n" "cd \"%s\"\n", *cwd, cwd);
+	  fprintf (uninst, "bin\\regtool remove /HKLM/SOFTWARE/'Cygnus Solutions'/cygwin/'Installed Components'\n");
 	  for (n = 0; n < files.count; ++n)
 	    {
 	      char *dpath;
@@ -1237,13 +1264,20 @@ mkmount (const char *mountexedir, const char *root, const char *dospath,
 static char rev[] = "$Revision$ ";
 
 int
-main ()
+main (int argc, char **argv)
 {
   int retval = 1;		/* Default to error code */
   clock_t start;
   char *logpath = NULL;
   char *revn, *p;
   int fd = _open ("nul", _O_WRONLY | _O_BINARY);
+
+  while (*++argv)
+    if (strstr (*argv, "-f") != NULL)
+      {
+	forceinstall = 1;
+	break;
+      }
 
   devnull = (HANDLE) _get_osfhandle (fd);
 
@@ -1359,6 +1393,14 @@ those as the basis for your installation.\n\n"
 
       update =
 	prompt ("Install from the current directory (d) or from the Internet (i)", "i");
+
+      pkgstuff = init_pkgs ();
+      if (forceinstall)
+	{
+	  static pkg dummy = {NULL, NULL};
+	  pkgstuff = &dummy;
+	}
+
       if (toupper (*update) == 'I')
 	{
 	  char *dir = getdownloadsource ();

@@ -15,6 +15,21 @@
 
 #include <stddef.h>
 
+/* Package versioning stuff */
+
+typedef struct
+{
+  char *name;
+  char *version;
+} pkg;
+
+pkg *init_pkgs (void);
+pkg * find_pkg (pkg *stuff, char *name);
+int write_pkg (pkg *pkg, char *name, char *version);
+int newer_pkg (pkg *pkg, char *version);
+void normalize_version (const char *fn, char **prod, char **version);
+void close_pkgs (void);
+
 /* Routines in error.c. */
 void lowmem ();			/* Report low memory and exit the
 				   application. */

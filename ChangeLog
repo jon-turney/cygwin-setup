@@ -1,3 +1,13 @@
+Sat Apr 29 00:26:06 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* pkg.c: New file.
+	* setup.c (tarx): Skip already installed or older packages.  Report
+	when a package has been updated.
+	(processdirlisting): Skip already installed or older packages.
+	(main): Detect -f option for forced installation.  Initialize pkg stuff
+	if appropriate.
+	* setup.h: Add pkg definitions.
+
 Thu Apr 27 14:21:30 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (findhref): Return NULL on empty string.  Eat any trailing

@@ -67,7 +67,7 @@ ALL_LDFLAGS:=${filter-out -I%, \
 
 PROGS:=setup$(EXEEXT)
 
-OBJS:=error.o memory.o setup.o strarry.o cinstall.o path.o xsystem.o
+OBJS:=error.o memory.o setup.o strarry.o cinstall.o path.o pkg.o xsystem.o
 
 BUNDLED_FILES:=cygwin1.dll.gz $(srcdir)/tar.exe.gz $(srcdir)/gzip.exe.gz \
 	       mount.exe.gz cygpath.exe.gz umount.exe.gz
