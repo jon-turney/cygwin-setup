@@ -125,13 +125,13 @@ NetIO_FTP::NetIO_FTP (char const *Purl, BOOL allow_ftp_auth):NetIO (Purl, allow_
     return;
 
   char *
-    paren = strchr (last_line, '(');
-  if (!paren)
+    digit = strpbrk (last_line + 3, "0123456789");
+  if (!digit)
     return;
 
   int
     i1, i2, i3, i4, p1, p2;
-  sscanf (paren + 1, "%d,%d,%d,%d,%d,%d", &i1, &i2, &i3, &i4, &p1, &p2);
+  sscanf (digit + 1, "%d,%d,%d,%d,%d,%d", &i1, &i2, &i3, &i4, &p1, &p2);
   char
     tmp[20];
   sprintf (tmp, "%d.%d.%d.%d", i1, i2, i3, i4);
