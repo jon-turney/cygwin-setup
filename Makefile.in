@@ -155,6 +155,13 @@ BUILT_SOURCES = setup_version.c \
 	iniparse.cc
 
 
+@MINGWTARGET_TRUE@inilint_extras = \
+@MINGWTARGET_TRUE@  	autoload.c \
+@MINGWTARGET_TRUE@  	mklink2.cc\
+@MINGWTARGET_TRUE@  	mklink2.cc
+
+@MINGWTARGET_FALSE@inilint_extras = 
+
 inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32 
 inilint_SOURCES = \
   filemanip.cc \
@@ -169,12 +176,15 @@ inilint_SOURCES = \
   iniparse.h \
   io_stream.h \
   io_stream.cc \
+  io_stream_file.h \
+  io_stream_file.cc \
   IOStreamProvider.h \
   PackageTrust.h \
   rfc1738.cc \
   rfc1738.h \
   String++.cc \
-  String++.h
+  String++.h \
+  $(inilint_extras)
 
 
 setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a libgetopt++/libgetopt++.la \
@@ -338,10 +348,13 @@ EXTRA_PROGRAMS = inilint$(EXEEXT)
 noinst_PROGRAMS = setup$(EXEEXT) @INILINT@
 PROGRAMS = $(noinst_PROGRAMS)
 
+@MINGWTARGET_TRUE@am__objects_1 = autoload.$(OBJEXT) mklink2.$(OBJEXT) \
+@MINGWTARGET_TRUE@	mklink2.$(OBJEXT)
+@MINGWTARGET_FALSE@am__objects_1 =
 am_inilint_OBJECTS = filemanip.$(OBJEXT) LogSingleton.$(OBJEXT) \
 	IniDBBuilder.$(OBJEXT) inilex.$(OBJEXT) inilintmain.$(OBJEXT) \
-	iniparse.$(OBJEXT) io_stream.$(OBJEXT) rfc1738.$(OBJEXT) \
-	String++.$(OBJEXT)
+	iniparse.$(OBJEXT) io_stream.$(OBJEXT) io_stream_file.$(OBJEXT) \
+	rfc1738.$(OBJEXT) String++.$(OBJEXT) $(am__objects_1)
 inilint_OBJECTS = $(am_inilint_OBJECTS)
 inilint_DEPENDENCIES = libgetopt++/libgetopt++.la
 inilint_LDFLAGS =

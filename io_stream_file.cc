@@ -18,16 +18,18 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#if defined(WIN32) && !defined (_CYGWIN_)
 #include "win32.h"
+#include "port.h"
+#include "mkdir.h"
+#include "mklink2.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
-#include "port.h"
-#include "mkdir.h"
-#include "mklink2.h"
 
-#include "io_stream.h"
 #include "io_stream_file.h"
 #include "IOStreamProvider.h"
 
@@ -86,7 +88,11 @@ io_stream_file::~io_stream_file ()
 int
 io_stream_file::exists (String const &path)
 {
+#if defined(WIN32) && !defined (_CYGWIN_)
   if (_access (path.cstr_oneuse(), 0) == 0)
+#else
+  if (access (path.cstr_oneuse(), F_OK) == 0)
+#endif
     return 1;
   return 0;
 }
@@ -96,7 +102,7 @@ io_stream_file::remove (String const &path)
 {
   if (!path.size())
     return 1;
-
+#if defined(WIN32) && !defined (_CYGWIN_)
   unsigned long w = GetFileAttributes (path.cstr_oneuse());
   if (w != 0xffffffff && w & FILE_ATTRIBUTE_DIRECTORY)
     {
@@ -114,7 +120,10 @@ io_stream_file::remove (String const &path)
       delete[] tmp;
     }
   return !DeleteFileA (path.cstr_oneuse());
-
+#else
+  // FIXME: try rmdir if unlink fails - remove the dir
+  return unlink (path.cstr_oneuse());
+#endif
 }
 
 int
@@ -123,6 +132,7 @@ io_stream_file::mklink (String const &from, String const &to,
 {
   if (!from.size() || !to.size())
     return 1;
+#if defined(WIN32) && !defined (_CYGWIN_)
   switch (linktype)
     {
     case IO_STREAM_SYMLINK:
@@ -130,6 +140,15 @@ io_stream_file::mklink (String const &from, String const &to,
     case IO_STREAM_HARDLINK:
       return 1;
     }
+#else
+  switch (linktype)
+    {
+    case IO_STREAM_SYMLINK:
+      return symlink (to.cstr_oneuse(), from.cstr_oneuse());
+    case IO_STREAM_HARDLINK:
+      return link (to.cstr_oneuse(), from.cstr_oneuse());
+    }
+#endif
   return 1;
 }
 
@@ -201,6 +220,7 @@ io_stream_file::set_mtime (int mtime)
     return 1;
   if (fp)
     fclose (fp);
+#if defined(WIN32) && !defined (_CYGWIN_)
   long long ftimev = mtime * NSPERSEC + FACTOR;
   FILETIME ftime;
   ftime.dwHighDateTime = ftimev >> 32;
@@ -215,6 +235,9 @@ io_stream_file::set_mtime (int mtime)
       CloseHandle (h);
       return 0;
     }
+#else
+  throw new runtime_error ("set_mtime not supported on posix yet.");
+#endif
   return 1;
 }
 
@@ -231,6 +254,7 @@ io_stream_file::get_size ()
 {
   if (!fname.size())
     return 0;
+#if defined(WIN32) && !defined (_CYGWIN_)
   HANDLE h;
   WIN32_FIND_DATA buf;
   DWORD ret = 0;
@@ -243,4 +267,10 @@ io_stream_file::get_size ()
       FindClose (h);
     }
   return ret;
+#else
+  struct stat buf;
+  if (stat(fname.cstr_oneuse(), &buf))
+    throw new runtime_error ("Failed to stat file - has it been deleted?");
+  return buf.st_size;
+#endif
 }

@@ -74,5 +74,15 @@ AC_CONFIG_SUBDIRS(zlib)
 AC_CONFIG_SUBDIRS(bz2lib)
 AC_CONFIG_SUBDIRS(libgetopt++)
 
+dnl add portability sources to inilint
+case "$host_os" in
+mingw32)
+  AM_CONDITIONAL(MINGWTARGET, true)
+  ;;
+*)
+  AM_CONDITIONAL(MINGWTARGET, false)
+  ;;
+esac
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

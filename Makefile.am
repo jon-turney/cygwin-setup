@@ -58,6 +58,15 @@ BUILT_SOURCES = setup_version.c \
   	inilex.cc \
 	iniparse.cc
 
+if MINGWTARGET
+  inilint_extras = \
+  	autoload.c \
+  	mklink2.cc\
+  	mklink2.cc
+else
+  inilint_extras =
+endif
+
 inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32 
 inilint_SOURCES = \
   filemanip.cc \
@@ -72,12 +81,15 @@ inilint_SOURCES = \
   iniparse.h \
   io_stream.h \
   io_stream.cc \
+  io_stream_file.h \
+  io_stream_file.cc \
   IOStreamProvider.h \
   PackageTrust.h \
   rfc1738.cc \
   rfc1738.h \
   String++.cc \
-  String++.h
+  String++.h \
+  $(inilint_extras)
 
 setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a libgetopt++/libgetopt++.la \
   -lstdc++ -luser32 -lkernel32 \

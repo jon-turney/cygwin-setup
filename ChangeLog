@@ -1,5 +1,16 @@
 2002-05-05 Robert Collins  <rbtcollins@hotmail.com>
 
+	* Makefile.am (inlint_SOURCES): Add conditional objects to inilint
+	depending on platform.
+	Add file:// support.
+	* configure.in: Set conditional MINGWTARGET if compiling against mingw
+	libraries.
+	* Makefile.in: Regenerate.
+	* configure: Ditto.
+	* io_stream_file.cc: Only use win32 calls when building for mingw.
+
+2002-05-05 Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.am (noinst_PROGRAMS): Make inilint configurable.
 	* configure.in: Ditto.
 	Fix incorrect header checking syntax.
