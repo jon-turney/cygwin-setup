@@ -26,7 +26,7 @@ static const char *cvsid =
 
 #include "win32.h"
 #include <stdio.h>
-#include "log.h"
+#include "LogSingleton.h"
 #include "port.h"
 
 #include "io_stream.h"
@@ -47,7 +47,7 @@ io_stream::factory (io_stream * parent)
    * case io_stream * foo = new bz2
    * return foo
    */
-  log (LOG_TIMESTAMP, "io_stream::factory has been called");
+  log (LOG_TIMESTAMP) <<  "io_stream::factory has been called" << endLog;
   return NULL;
 }
 
@@ -112,10 +112,12 @@ int
 io_stream::mklink (String const &from, String const &to,
 		   io_stream_link_t linktype)
 {
-  log (LOG_BABBLE, String("io_stream::mklink (") + from + "->" + to + ")");
+  log (LOG_BABBLE) << "io_stream::mklink (" << from << "->" << to << ")"
+    << endLog;
   if (!from.size() || !to.size())
     {
-      log (LOG_TIMESTAMP, "invalid string in from or to parameters to mklink");
+      log (LOG_TIMESTAMP) << "invalid string in from or to parameters to mklink"
+	<< endLog;
       return 1;
     }
   /* iterate through the known url prefixes */
@@ -125,7 +127,7 @@ io_stream::mklink (String const &from, String const &to,
       /* TODO: allow linking to cygfile url's */
       if (!to.casecompare ("file://", 7))
 	return io_stream_file::mklink (&from.cstr_oneuse()[7], &to.cstr_oneuse()[7], linktype);
-      log (LOG_TIMESTAMP, "Attempt to link across url providers");
+      log (LOG_TIMESTAMP) << "Attempt to link across url providers" << endLog;
       return 1;
     }
   if (!from.casecompare ("cygfile://", 10))
@@ -134,7 +136,7 @@ io_stream::mklink (String const &from, String const &to,
       /* TODO: allow -> file urls */
       if (!to.casecompare ("cygfile://", 10))
 	return io_stream_cygfile::mklink (&from.cstr_oneuse()[10], &to.cstr_oneuse()[10], linktype);
-      log (LOG_TIMESTAMP, "Attempt to link across url providers");
+      log (LOG_TIMESTAMP) << "Attempt to link across url providers" << endLog;
       return 1;
     }
 #if 0
@@ -143,7 +145,7 @@ io_stream::mklink (String const &from, String const &to,
       /* http urls can symlink to http or ftp url's */
     }
 #endif
-  log (LOG_TIMESTAMP, String ("Unsupported url providers for ") + from);
+  log (LOG_TIMESTAMP) << "Unsupported url providers for " << from << endLog;
   return 1;
 }
 
@@ -155,7 +157,8 @@ io_stream::move_copy (String const &from, String const &to)
   io_stream *out = io_stream::open (from, "rb");
   if (io_stream::copy (in, out))
     {
-      log (LOG_TIMESTAMP, String("Failed copy of ") + from + " to "+ to);
+      log (LOG_TIMESTAMP) << "Failed copy of " << from << " to " << to
+	<< endLog;
       delete out;
       io_stream::remove (to);
       delete in;
@@ -184,8 +187,8 @@ ssize_t io_stream::copy (io_stream * in, io_stream * out)
       countout = out->write (buffer, countin);
       if (countout != countin)
 	{
-	  log (LOG_TIMESTAMP, "io_stream::copy failed to write %ld bytes",
-	       countin);
+	  log (LOG_TIMESTAMP) << "io_stream::copy failed to write "
+	    << countin << " bytes" << endLog;
 	  return countout ? countout : -1;
 	}
     }
@@ -202,7 +205,8 @@ io_stream::move (String const &from, String const &to)
 {
   if (!from.size() || !to.size())
     {
-      log (LOG_TIMESTAMP, "invalid string in from or to parameters to move");
+      log (LOG_TIMESTAMP) << "invalid string in from or to parameters to move"
+	<< endLog;
       return 1;
     }
   /* iterate through the known url prefixes */
@@ -226,7 +230,7 @@ io_stream::move (String const &from, String const &to)
       /* http urls can symlink to http or ftp url's */
     }
 #endif
-  log (LOG_TIMESTAMP, String ("Unsupported url providers for ") + from);
+  log (LOG_TIMESTAMP) << "Unsupported url providers for " << from << endLog;
   return 1;
 }
 
@@ -272,6 +276,7 @@ io_stream::exists (String const &name)
 io_stream::~io_stream ()
 {
   if (!destroyed)
-    log (LOG_TIMESTAMP, "io_stream::~io_stream: It looks like a class hasn't overriden the destructor!");
+    log (LOG_TIMESTAMP) << "io_stream::~io_stream: It looks like a class "
+      << "hasn't overriden the destructor!" << endLog;
   return;
 }
