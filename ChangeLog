@@ -1,3 +1,8 @@
+2002-03-16  Robert Collins <rbtcollins@hotmail.com>
+
+	* install.cc (install_one_source): Write the correct length of a string to the
+	lst file (Thanks to Pavel Tsekov for reporting the bug).
+
 2002-03-15  Robert Collins <rbtcollins@hotmail.com>
 
 	* choose.cc (list_click): Always refresh the entire chooser, as our 

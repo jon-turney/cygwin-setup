@@ -202,7 +202,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 	  if (lst)
 	    {
 	      String tmp=fn + "\n";
-	      lst->write (tmp.cstr_oneuse(), tmp.size() + 1);
+	      lst->write (tmp.cstr_oneuse(), tmp.size());
 	    }
 
 	  String canonicalfn = prefixPath + fn;
