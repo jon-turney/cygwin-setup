@@ -1,12 +1,17 @@
-dnl Autoconf configure script for Cygwin utilities.
-dnl Copyright 1996, 1997 Cygnus Solutions.
+dnl Copyright (c) 2000, Red Hat, Inc.
 dnl
-dnl This file is part of Cygwin.
-dnl 
-dnl This software is a copyrighted work licensed under the terms of the
-dnl Cygwin license.  Please consult the file "CYGWIN_LICENSE" for
-dnl details.
+dnl     This program is free software; you can redistribute it and/or modify
+dnl     it under the terms of the GNU General Public License as published by
+dnl     the Free Software Foundation; either version 2 of the License, or
+dnl     (at your option) any later version.
+dnl
+dnl     A copy of the GNU General Public License can be found at
+dnl     http://www.gnu.org/
+dnl
+dnl Written by Ron Parker <parkerrd@hotmail.com>
 
+dnl Autoconf configure script for Cygwin utilities.
+dnl
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.12)

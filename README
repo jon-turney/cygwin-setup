@@ -1,11 +1,6 @@
 This directory contains the source for the setup program for the cygwin
 net releases.
 
-For the time being Microsoft Visual Studio must be installed in order
-for this to compile.  While there are some GNUish files in the source 
-directory these are experimental.  The cinstall setup.exe does not yet
-work when built with mingw.
-
 If you have any problems the initial version of this program was
 written by Ron Parker.  Currently, March 2000, he may be reached at
 rdparker@butlermfg.com.
