@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Gary R. Van Sickle.
+ * Copyright (c) 2001, 2002, 2003 Gary R. Van Sickle.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -116,9 +116,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
       {
 	OnInit ();
 
-	// Set header title font of each internal page to MS Sans Serif, Bold, 8 Pt.
-	// This will just silently fail on the first and last pages.
-	SetDlgItemFont(IDC_STATIC_HEADER_TITLE, "MS Sans Serif", 8, FW_BOLD);
+	setTitleFont ();
 
 	// TRUE = Set focus to default control (in wParam).
 	return TRUE;
@@ -269,4 +267,15 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 
   // Wasn't handled
   return FALSE;
+}
+
+void
+PropertyPage::setTitleFont ()
+{
+  // These font settings will just silently fail when the resource id
+  // is not present on a page.
+  // Set header title font of each internal page
+  SetDlgItemFont(IDC_STATIC_HEADER_TITLE, "MS Shell Dlg", 8, FW_BOLD);
+  // Set the font for the IDC_STATIC_WELCOME_TITLE
+  SetDlgItemFont(IDC_STATIC_WELCOME_TITLE, "Arial", 12, FW_BOLD);
 }

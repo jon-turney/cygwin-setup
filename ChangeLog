@@ -1,4 +1,19 @@
 2003-08-02  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+	
+	Changes modified by Max Bowsher  <maxb@ukf.net>
+	* splash.cc (Copyright): Update copyright dates.
+	(SplashPage::OnInit): Remove call to SetDlgItemFont().  Now handled in
+	base class.
+	* proppage.h (PropertyPage::setTitleFont): Declare.
+	* proppage.cc (Copyright): Update copyright dates.
+	(PropertyPage::DialogProc WM_INITDIALOG): Move all font setting code,
+	including that from splash.cc into new function...
+	(PropertyPage::setTitleFont): Create, using moved code. Change font
+	"MS Sans Serif" to "MS Shell Dlg" in line with recent res.rc change.
+	Set font for IDC_STATIC_WELCOME_TITLE here, to allow easy re-use of
+	style for future "Finished" page.
+
+2003-08-02  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* propsheet.cc: Include "resource.h".
 	(PropSheet::Create): Add the Cygwin icon in the left of the title bar.

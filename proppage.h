@@ -45,6 +45,7 @@ class PropertyPage:public Window
 						 LPARAM lParam);
   static BOOL CALLBACK DialogProcReflector (HWND hwnd, UINT message,
 					    WPARAM wParam, LPARAM lParam);
+  void setTitleFont ();
 
 protected:
     virtual BOOL CALLBACK DialogProc (UINT message, WPARAM wParam,
