@@ -27,6 +27,8 @@ static const char *cvsid =
 #include "port.h"
 #include "mklink2.h"
 
+#include "filemanip.h"
+
 #include "io_stream.h"
 #include "io_stream_file.h"
 
@@ -201,4 +203,12 @@ io_stream_file::move (char const *from, char const *to)
       !to || IsBadStringPtr (to, MAX_PATH) || !to[0])
     return 1;
   return rename (from, to);
+}
+
+size_t
+io_stream_file::get_size ()
+{
+  if (!fname)
+    return 0;
+  return get_file_size (fname);
 }

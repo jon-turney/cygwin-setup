@@ -34,7 +34,7 @@ static const char *cvsid =
 
 static HINTERNET internet = 0;
 
-NetIO_IE5::NetIO_IE5 (char *_url):
+NetIO_IE5::NetIO_IE5 (char const *_url):
 NetIO (_url)
 {
   int resend = 0;

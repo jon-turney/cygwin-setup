@@ -151,5 +151,5 @@ packagemeta::add_category (Category & cat)
 char const *
 packagemeta::SDesc ()
 {
-  return versions.getnth (1)->SDesc ();
+  return versions[1]->SDesc ();
 };

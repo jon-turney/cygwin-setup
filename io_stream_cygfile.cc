@@ -29,6 +29,7 @@ static const char *cvsid =
 #include "mkdir.h"
 #include "mklink2.h"
 #include <unistd.h>
+#include "filemanip.h"
 
 #include "io_stream.h"
 #include "io_stream_cygfile.h"
@@ -299,4 +300,12 @@ io_stream_cygfile::move (char const *from, char const *to)
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
   return rename (cygpath (from, 0), cygpath (to, 0));
+}
+
+size_t
+io_stream_cygfile::get_size ()
+{
+  if (!fname)
+    return 0;
+  return get_file_size (fname);
 }

@@ -28,7 +28,7 @@
 #include "filemanip.h"
 
 extern "C" int yyerror (char const *s, ...);
-extern "C" int yylex ();
+int yylex ();
 
 #include "port.h"
 
@@ -150,7 +150,7 @@ add_correct_version()
 {
     int merged = 0;
     for (size_t n = 1; !merged && n <= cp->versions.number (); n++)
-      if (!strcasecmp(cp->versions.getnth(n)->Canonical_version(), cpv->Canonical_version()))
+      if (!strcasecmp(cp->versions[n]->Canonical_version(), cpv->Canonical_version()))
       {
 	/* ASSUMPTIONS:
 	   categories and requires are consistent for the same version across
@@ -158,11 +158,11 @@ add_correct_version()
 	   */
 	/* Copy the binary mirror across if this site claims to have an install */
 	if (cpv->bin.sites.number ())
-	  cp->versions.getnth(n)->bin.sites.registerbykey (cpv->bin.sites.getnth(1)->key);
+	  cp->versions[n]->bin.sites.registerbykey (cpv->bin.sites[1]->key);
 	/* Ditto for src */
 	if (cpv->src.sites.number ())
-	  cp->versions.getnth(n)->src.sites.registerbykey (cpv->src.sites.getnth(1)->key);
-	cpv = (cygpackage *)cp->versions.getnth (n);
+	  cp->versions[n]->src.sites.registerbykey (cpv->src.sites[1]->key);
+	cpv = (cygpackage *)cp->versions[n];
 	merged = 1;
       }
     if (!merged)

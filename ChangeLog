@@ -1,3 +1,71 @@
+2001-12-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in: Add filemanip.o to setup.
+	* archive.cc (archive::extract_file): Use new io_stream method 'copy'.
+	* archive_tar.h (archive_tar_file): Implement get_size virtual.
+	(archive_tar): Ditto.
+	* choose.cc (set_action): Use [] operator instead of getnth - its more readable.
+	(paint): Ditto.
+	(_view::init_headers): Ditto.
+	(_view::insert_pkg): Ditto.
+	(set_view_mode): Ditto.
+	(scan2): Ditto.
+	(do_choose): Ditto.
+	(base): Moved to filemanip.cc.
+	(find_tar_ext): Ditto.
+	(parse_filename): Ditto.
+	(_Info::_Info): Remove.
+	* compress_bz.h (compress_bz): Implement get_size virtual.
+	* compress_gz.h (compress_gz): Implement get_size virtual.
+	* cygpackage.cc (cygpackage::destroy): Use array delete for char * objects.
+	* download.cc (get_file_size): Move to filemanip.cc.
+	(check_for_cached): Use [] operator instead of getnth - its more readable.
+	(download_one): Ditto.
+	* filemanip.cc: New file.
+	* geturl.cc (init_dialog): Make url a pointer to const as it is not modified.
+	(get_url_to_membuf): New function - contains get_url_to_string worker code.
+	(get_url_to_string): Becomes a trivial wrapper to get_url_to_membuf.
+	* geturl.h: Declare new prototype.
+	* ini.cc (do_ini): Use get_url_to_membuf and pass ini_init an io_stream.
+	Tidy up the error code a little.
+	* ini.h: Remove __cplusplus protection for ini_init.
+	(_Info): Remove.
+	* inilex.l: Remove old globals.
+	(ini_init): Use an io_stream for getting the characters.
+	(ini_getchar): Ditto.
+	* iniparse.y: Declare yylex as a C++ function.
+	(add_correct_version): Use [] operator instead of getnth - its more readable.
+	* io_stream.cc (io_stream::move_copy): Use the copy method.
+	(io_stream::copy): New method to simply copy from one stream to another.
+	* io_stream.h (io_stream): New static method copy, and virtual method get_size.
+	* io_stream_cygfile.cc (io_stream_cygfile::get_size): Implement this.
+	* io_stream_cygfile.h (io_stream_cygfile::get_size): Declare this.
+	* io_stream_file.cc (io_stream_file::get_size): Implement this.
+	* io_stream_file.h (io_stream_file::get_size): Declare this.
+	* io_stream_memory.h: Include errno as it's neded to parse the header.
+	(io_stream_memory::get_size): Implement this.
+	(io_stream_memory::st_size): Delete this.
+	* list.h: Change getnth into the [] operator.
+	* netio.cc (NetIO::NetIO): Change prototype to reflect Purl not being modified.
+	(NetIO::set_url): Ditto.
+	(NetIO::open): Ditto.
+	* netio.h: As for netio.cc.
+	* nio-file.cc (NetIO_File::NetIO_File): Change prototype to reflect Purl not
+	being modified.
+	* nio-file.h: Ditto.
+	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Ditto.
+	* nio-ftp.h (NetIO_FTP::NetIO_FTP): Ditto.
+	* nio-http.cc (NetIO_HTTP::NetIO_HTTP): Ditto.
+	* nio-http.h (NetIO_HTTP::NetIO_HTTP): Ditto.
+	* nio-i5.cc (NetIO_IE5::NetIO_IE5): Ditto.
+	* nio-i5.h (NetIO_IE5::NetIO_IE5): Ditto.
+	* package_meta.cc (packagemeta::~packagemeta): Bugfix: use array delete.
+	* package_source.cc (packagesource::set_canonical): Ditto.
+	(packagesource::set_cached): Ditto.
+	* package_source.h (site::~site): Ditto.
+	* site.cc: Change site_list_type to a class, and search and replace sort_key to 
+	key globally.
+
 2001-12-01  Robert Collins  <rbtcollins@hotmail.com>
 
 	* package_source.cc (packagesource::set_canonical): Filename was out by one.

@@ -40,13 +40,13 @@ static const char *cvsid =
 #define NO_IDX (-1)
 #define OTHER_IDX (-2)
 
-typedef struct
+class site_list_type
 {
+public:
   char *url;
   char *displayed_url;
-  char *sort_key;
-}
-site_list_type;
+  char *key;
+};
 
 static site_list_type *site_list = 0;
 static int list_idx = NO_IDX;
@@ -170,7 +170,7 @@ site_sort (const void *va, const void *vb)
 {
   site_list_type *a = (site_list_type *) va;
   site_list_type *b = (site_list_type *) vb;
-  return strcmp (a->sort_key, b->sort_key);
+  return strcmp (a->key, b->key);
 }
 
 static int
@@ -224,12 +224,12 @@ get_site_list (HINSTANCE h)
 	      if (dot)
 		*dot = 0;
 	    }
-	  site_list[nmirrors].sort_key =
+	  site_list[nmirrors].key =
 	    (char *) malloc (2 * strlen (bol) + 3);
 
 	  dot = site_list[nmirrors].displayed_url;
 	  dot += strlen (dot);
-	  char *dp = site_list[nmirrors].sort_key;
+	  char *dp = site_list[nmirrors].key;
 	  while (dot != site_list[nmirrors].displayed_url)
 	    {
 	      if (*dot == '.' || *dot == '/')
@@ -250,6 +250,7 @@ get_site_list (HINSTANCE h)
 	}
     }
   site_list[nmirrors].url = 0;
+  delete[] mirrors;
 
   qsort (site_list, nmirrors, sizeof (site_list_type), site_sort);
 

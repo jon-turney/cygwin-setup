@@ -54,7 +54,7 @@ static int error_count = 0;
 void
 do_ini (HINSTANCE h)
 {
-  char *ini_file = get_url_to_string (concat (MIRROR_SITE, "/setup.ini", 0));
+  io_stream *ini_file = get_url_to_membuf (concat (MIRROR_SITE, "/setup.ini", 0));
   dismiss_url_status_dialog ();
 
   if (!ini_file)
@@ -72,19 +72,17 @@ do_ini (HINSTANCE h)
   /*yydebug = 1; */
 
   if (yyparse () || error_count > 0)
-    {
-      if (error_count == 1)
-	MessageBox (0, error_buf, "Parse Error", 0);
-      else
-	MessageBox (0, error_buf, "Parse Errors", 0);
-    }
+    MessageBox (0, error_buf, error_count == 1 ? "Parse Error" : "Parse Errors", 0);
   else
     {
       /* save known-good setup.ini locally */
       io_stream *inistream = io_stream::open ("file://setup.ini", "wb");
-      if (inistream)
-	{
-	  inistream->write (ini_file, strlen (ini_file));
+      if (inistream && 
+	  ! ini_file->seek (0, IO_SEEK_SET))
+        {
+	  if (io_stream::copy (ini_file, inistream))
+	    io_stream::remove ("file://setup.ini");
+	  delete ini_file;
 	  delete inistream;
 	}
     }

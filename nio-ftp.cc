@@ -53,7 +53,7 @@ ftp_line (SimpleSocket * s)
   return atoi (last_line ? : "0");
 }
 
-NetIO_FTP::NetIO_FTP (char *Purl, BOOL allow_ftp_auth):NetIO (Purl, allow_ftp_auth)
+NetIO_FTP::NetIO_FTP (char const *Purl, BOOL allow_ftp_auth):NetIO (Purl, allow_ftp_auth)
 {
   s = 0;
   int

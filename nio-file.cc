@@ -32,7 +32,7 @@ static const char *cvsid =
 #include "msg.h"
 #include "filemanip.h"
 
-NetIO_File::NetIO_File (char *Purl):
+NetIO_File::NetIO_File (char const *Purl):
 NetIO (Purl)
 {
   fd = fopen (path, "rb");

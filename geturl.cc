@@ -113,7 +113,7 @@ dialog (void *)
 static DWORD start_tics;
 
 static void
-init_dialog (char *url, int length)
+init_dialog (char const *url, int length)
 {
   if (is_local_install)
     return;
@@ -129,7 +129,8 @@ init_dialog (char *url, int length)
       SendMessage (gw_pprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
       SendMessage (gw_iprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
     }
-  char *sl = url, *cp;
+  char const *sl = url;
+  char const *cp;
   for (cp = url; *cp; cp++)
     if (*cp == '/' || *cp == '\\' || *cp == ':')
       sl = cp + 1;
@@ -198,17 +199,17 @@ progress (int bytes)
   SetWindowText (gw_rate, buf);
 }
 
-char *
-get_url_to_string (char *_url)
+io_stream *
+get_url_to_membuf (char const *_url)
 {
-  log (LOG_BABBLE, "get_url_to_string %s", _url);
+  log (LOG_BABBLE, "get_url_to_membuf %s", _url);
   is_local_install = (source == IDC_SOURCE_CWD);
   init_dialog (_url, 0);
   NetIO *n = NetIO::open (_url);
   if (!n || !n->ok ())
     {
       delete n;
-      log (LOG_BABBLE, "get_url_to_string failed!");
+      log (LOG_BABBLE, "get_url_to_membuf failed!");
       return 0;
     }
 
@@ -217,7 +218,7 @@ get_url_to_string (char *_url)
 
   io_stream_memory *membuf = new io_stream_memory ();
 
-  int total_bytes = 1;		/* for the NUL terminator */
+  int total_bytes = 0;
   progress (0);
   while (1)
     {
@@ -237,24 +238,46 @@ get_url_to_string (char *_url)
 	break;
     }
 
-  char *rv = (char *) malloc (total_bytes);
-  if (NULL == rv || membuf->seek (0, IO_SEEK_SET))
+  if (membuf->seek (0, IO_SEEK_SET))
     {
       if (n)
 	delete n;
       if (membuf)
 	delete membuf;
-      log (LOG_BABBLE, "get_url_to_string(): malloc failed for rv!");
+      log (LOG_BABBLE, "get_url_to_membuf(): seek (0) failed for membuf!");
       return 0;
     }
 
-  ssize_t rlen;
-  rlen = membuf->read (rv, total_bytes - 1);
-  rv[total_bytes - 1] = '\0';
   if (n)
     delete n;
-  if (membuf)
-    delete membuf;
+  return membuf;
+}
+
+char *
+get_url_to_string (char const *_url)
+{
+  io_stream *stream = get_url_to_membuf (_url);
+  if (!stream)
+    return 0;
+  size_t bytes = stream->get_size ();
+  if (!bytes)
+    {
+      /* zero length, or error retrieving length */
+      delete stream;
+      log (LOG_BABBLE, "get_url_to_string(): couldn't retrieve buffer size, or zero length buffer");
+      return 0;
+    }
+  char *rv = new char [bytes + 1];
+  if (!rv)
+    {
+      delete stream;
+      log (LOG_BABBLE, "get_url_to_string(): new failed for rv!");
+      return 0;
+    }
+  /* membufs are quite safe */
+  stream->read (rv, bytes);
+  rv [bytes] = '\0';
+  delete stream;
   return rv;
 }
 

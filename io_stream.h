@@ -105,6 +105,8 @@ public:
   static int mkpath_p (path_type_t, const char *);
   /* link from, to, type. Returns 1 on failure */
   static int mklink (const char *, const char *, io_stream_link_t);
+  /* copy from stream to stream - 0 on success */
+  static ssize_t copy (io_stream *, io_stream *);
   /* TODO: we may need two versions of each of these:
      1 for external use - when the path is known
      1 for inline use, for example to set the mtime of a file being written
@@ -116,6 +118,10 @@ public:
   virtual int set_mtime (int) = 0;
   /* get the mtime for a file TODO make this a stat(0 style call */
   virtual int get_mtime () = 0;
+  /* How long is the file? 0 means check error(). if error() is 0, the file
+   * is 0 bytes long. Otherwise the file length cannot be determined
+   */
+  virtual size_t get_size () = 0;
   /* read data (duh!) */
   virtual ssize_t read (void *buffer, size_t len) = 0;
   /* provide data to (double duh!) */

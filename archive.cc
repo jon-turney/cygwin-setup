@@ -107,29 +107,16 @@ archive::extract_file (archive * source, const char *prefix)
 	    log (LOG_TIMESTAMP, "Failed to extract the file %s from the archive",destfilename);
 	    return 1;
 	  }
-	char buffer[16384];
-	ssize_t countin, countout;
-	while ((countin = in->read (buffer, 16384)) > 0)
+	if (io_stream::copy (in, tmp))
 	  {
-	    countout = tmp->write (buffer, countin);
-	    if (countout != countin)
-	      {
-		log (LOG_TIMESTAMP, "Failed to write %ld bytes to %s",
-		     countin, destfilename);
-		io_stream::remove (destfilename);
-		delete tmp;
-		delete in;
-		return 1;
-	      }
+	    log (LOG_TIMESTAMP, "Failed to output %s", destfilename);
+	    delete tmp;
+	    io_stream::remove (destfilename);
+	    return 1;
 	  }
 	tmp->set_mtime (in->get_mtime ());
 	delete in;
 	delete tmp;
-	if (countin < 0)
-	  {
-	    log (LOG_TIMESTAMP, "File IO error reading from archive");
-	    io_stream::remove (destfilename);
-	  }
       }
       break;
     case ARCHIVE_FILE_SYMLINK:

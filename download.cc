@@ -35,6 +35,7 @@ static const char *cvsid =
 #include "state.h"
 #include "mkdir.h"
 #include "log.h"
+#include "filemanip.h"
 #include "port.h"
 
 #include "io_stream.h"
@@ -45,23 +46,6 @@ static const char *cvsid =
 #include "package_source.h"
 
 #include "rfc1738.h"
-
-DWORD
-get_file_size (const char *name)
-{
-  HANDLE h;
-  WIN32_FIND_DATA buf;
-  DWORD ret = 0;
-
-  h = FindFirstFileA (name, &buf);
-  if (h != INVALID_HANDLE_VALUE)
-    {
-      if (buf.nFileSizeHigh == 0)
-	ret = buf.nFileSizeLow;
-      FindClose (h);
-    }
-  return ret;
-}
 
 /* 0 on failure
  */
@@ -93,15 +77,14 @@ check_for_cached (packagesource & pkgsource)
     if ((size =
 	 get_file_size (concat
 			(local_dir, "/",
-			 rfc1738_escape_part (pkgsource.sites.getnth (n)->
-					      key), "/",
+			 rfc1738_escape_part (pkgsource.sites[n]->key), "/",
 			 pkgsource.Canonical (), 0))) > 0)
       if (size == pkgsource.size)
 	{
 	  pkgsource.
 	    set_cached (concat
 			("file://", local_dir, "/",
-			 rfc1738_escape_part (pkgsource.sites.getnth (n)->
+			 rfc1738_escape_part (pkgsource.sites[n]->
 					      key), "/",
 			 pkgsource.Canonical (), 0));
 	  return 1;
@@ -123,14 +106,13 @@ download_one (packagesource & pkgsource)
   for (size_t n = 1; n <= pkgsource.sites.number () && !success; n++)
     {
       const char *local = concat (local_dir, "/",
-				  rfc1738_escape_part (pkgsource.sites.
-						       getnth (n)->key), "/",
+				  rfc1738_escape_part (pkgsource.sites[n]->key), "/",
 				  pkgsource.Canonical (), 0);
       io_stream::mkpath_p (PATH_TO_FILE, concat ("file://", local, 0));
 
       if (get_url_to_file
 	  (concat
-	   (pkgsource.sites.getnth (n)->key, "/", pkgsource.Canonical (), 0),
+	   (pkgsource.sites[n]->key, "/", pkgsource.Canonical (), 0),
 	   concat (local, ".tmp", 0), pkgsource.size))
 	{
 	  /* FIXME: note new source ? */

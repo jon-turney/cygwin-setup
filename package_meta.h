@@ -71,9 +71,9 @@ public:
 
   ~packagemeta ()
   {
-    delete name;
+    delete[] name;
     if (installed_from)
-      delete installed_from;
+      delete[] installed_from;
   };
 
   void add_version (packageversion &);

@@ -88,6 +88,7 @@ public:
     return NULL;
   };
   virtual int get_mtime ();
+  virtual size_t get_size () {return state.file_length;};
   virtual int set_mtime (int)
   {
     return 1;
@@ -121,6 +122,8 @@ public:
   virtual archive_file_t next_file_type ();
   /* returns the mtime of the archive file, not of the current file */
   virtual int get_mtime ();
+  /* nonsense for a tarball */
+  virtual size_t get_size () {return 0;};
   /* only of use when we support writing to tar */
   virtual int set_mtime (int)
   {

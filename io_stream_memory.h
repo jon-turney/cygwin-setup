@@ -16,6 +16,9 @@
 #ifndef _IO_STREAM_MEMORY_H_
 #define _IO_STREAM_MEMORY_H_
 
+/* needed to parse */
+#include <errno.h>
+
 /* this is a stream class that simply abstracts the issue of maintaining
  * amemory buffer.
  * It's not as efficient as if can be, but that can be fixed without affecting 
@@ -43,8 +46,9 @@ public:
   virtual int set_mtime (int newmtime) {mtime = newmtime;return 0;};
   /* get the mtime for a file TODO make this a stat(0 style call */
   virtual int get_mtime () {return mtime;};
+  /* returns the _current_ size. */
+  virtual size_t get_size () {return length;};
   /* read data (duh!) */
-  virtual size_t st_size () {return length;};
   virtual ssize_t read (void *buffer, size_t len);
   /* provide data to (double duh!) */
   virtual ssize_t write (const void *buffer, size_t len);

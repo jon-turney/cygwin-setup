@@ -18,7 +18,7 @@
 class NetIO_File:public NetIO
 {
 public:
-  NetIO_File (char *url);
+  NetIO_File (char const *url);
   void *fd;
    ~NetIO_File ();
   virtual int ok ();

@@ -16,17 +16,9 @@
 #ifndef _INI_H_
 #define _INI_H_
 
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-  void ini_init (char *string, char *mirror);
+class io_stream;
+void ini_init (io_stream *, char const *);
 #define YYSTYPE char *
-
-#ifdef __cplusplus
-}
-#endif
 
 #ifdef __cplusplus
 /* For enums */
@@ -83,27 +75,6 @@ excludes;
 
 #define SRCACTION_NO		0
 #define SRCACTION_YES		1
-typedef struct _Info
-{
-  char *version;		/* version part of filename */
-  char *install;		/* file name to install */
-  unsigned int install_size;	/* in bytes */
-  int install_exists;		/* install file exists on disk */
-  int derived;			/* True if we "figured out" that this version should
-				   go here but it was not in setup.ini */
-  char *source;			/* sources for installed binaries */
-  unsigned int source_size;	/* in bytes */
-  int source_exists;		/* source file exists on disk */
-    _Info ():version (0), install (0), install_size (0), install_exists (0),
-    derived (0), source (0), source_size (0)
-  {
-  };
-  _Info (const char *_install, const char *_version,
-	 int _install_size, const char *_source = NULL, int _source_size = 0);
-}
-
-Info;				/* +1 for TRUST_UNKNOWN */
-
 #endif
 
 #endif /* _INI_H_ */

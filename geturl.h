@@ -19,7 +19,10 @@
 extern int total_download_bytes;
 extern int total_download_bytes_sofar;
 
-char *get_url_to_string (char *_url);
+class io_stream;
+
+io_stream *get_url_to_membuf (char const *);
+char *get_url_to_string (char const *);
 int get_url_to_file (char *_url, char *_filename, int expected_size,
 		     BOOL allow_ftp_auth = FALSE);
 void dismiss_url_status_dialog ();

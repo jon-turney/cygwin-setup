@@ -153,20 +153,13 @@ io_stream::move_copy (const char *from, const char *to)
   /* parameters are ok - checked before calling us, and we are private */
   io_stream *in = io_stream::open (to, "wb");
   io_stream *out = io_stream::open (from, "rb");
-  char buffer[16384];
-  ssize_t countin, countout;
-  while ((countin = in->read (buffer, 16384)) > 0)
+  if (io_stream::copy (in, out))
     {
-      countout = out->write (buffer, countin);
-      if (countout != countin)
-	{
-	  log (LOG_TIMESTAMP, "Failed to write %ld bytes to %s", countin, to);
-	  io_stream::remove (to);
-	  delete out;
-	  delete in;
-	  return 1;
-	}
-
+      log (LOG_TIMESTAMP, "Failed copy of %s to %s", from, to);
+      delete out;
+      io_stream::remove (to);
+      delete in;
+      return 1;
     }
   /* TODO:
      out->set_mtime (in->get_mtime ());
@@ -174,6 +167,29 @@ io_stream::move_copy (const char *from, const char *to)
   delete in;
   delete out;
   io_stream::remove (from);
+  return 0;
+}
+
+ssize_t
+io_stream::copy (io_stream *in, io_stream *out)
+{
+  if (!in || !out)
+    return -1;
+  char buffer[16384];
+  ssize_t countin, countout;
+  while ((countin = in->read (buffer, 16384)) > 0)
+    {
+      countout = out->write (buffer, countin);
+      if (countout != countin)
+        {
+          log (LOG_TIMESTAMP, "io_stream::copy failed to write %ld bytes", countin);
+          return countout ? countout : -1;
+        }
+    }
+
+  /* TODO:
+     out->set_mtime (in->get_mtime ());
+   */
   return 0;
 }
 

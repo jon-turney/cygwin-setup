@@ -54,6 +54,9 @@ public:
     return NULL;
   };
   virtual int set_mtime (int);
+  /* Use seek EOF, then tell (). get_size won't do this incase you are sucking dow
+      * over a WAN :} */
+  virtual size_t get_size () {return 0;};
   virtual int get_mtime ();
   /* if you are still needing these hints... give up now! */
     virtual ~ compress_bz ();

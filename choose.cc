@@ -190,10 +190,10 @@ set_action (packagemeta * pkg)
 	   pkg->desired == pkgtrustp (pkg, deftrust))
     {
       /* move onto the loop through versions */
-      pkg->desired = pkg->versions.getnth (1);
+      pkg->desired = pkg->versions[1];
       if (pkg->desired == pkgtrustp (pkg, deftrust))
 	pkg->desired =
-	  pkg->versions.number () > 1 ? pkg->versions.getnth (2) : NULL;
+	  pkg->versions.number () > 1 ? pkg->versions[2] : NULL;
       if (pkg->desired)
 	{
 	  pkg->desired->binpicked = 1;
@@ -209,16 +209,16 @@ set_action (packagemeta * pkg)
       size_t n;
       for (n = 1;
 	   n <= pkg->versions.number ()
-	   && pkg->desired != pkg->versions.getnth (n); n++);
+	   && pkg->desired != pkg->versions[n]; n++);
       /* n points at pkg->desired */
       n++;
       if (n <= pkg->versions.number ())
 	{
-	  if (pkgtrustp (pkg, deftrust) == pkg->versions.getnth (n))
+	  if (pkgtrustp (pkg, deftrust) == pkg->versions[n])
 	    n++;
 	  if (n <= pkg->versions.number ())
 	    {
-	      pkg->desired = pkg->versions.getnth (n);
+	      pkg->desired = pkg->versions[n];
 	      pkg->desired->srcpicked = source;
 	      return;
 	    }
@@ -630,8 +630,8 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
       /* shows "first" category - do we want to show any? */
       if (pkg->Categories.number () && show_cat)
 	TextOut (hdc, x + chooser->headers[chooser->cat_col].x, r,
-		 pkg->Categories.getnth (1)->key.name,
-		 strlen (pkg->Categories.getnth (1)->key.name));
+		 pkg->Categories[1]->key.name,
+		 strlen (pkg->Categories[1]->key.name));
 
       if (!pkg->SDesc ())
 	s = pkg->name;
@@ -773,10 +773,10 @@ _view::init_headers (HDC dc)
 	}
       for (size_t n = 1; n <= pkg->versions.number (); n++)
 	note_width (headers, dc,
-		    pkg->versions.getnth (n)->Canonical_version (),
+		    pkg->versions[n]->Canonical_version (),
 		    NEW_COL_SIZE_SLOP, new_col);
       for (size_t n = 1; n <= db.categories.number (); n++)
-	note_width (headers, dc, db.categories.getnth (n)->name, 0, cat_col);
+	note_width (headers, dc, db.categories[n]->name, 0, cat_col);
       if (!pkg->SDesc ())
 	note_width (headers, dc, pkg->name, 0, pkg_col);
       else
@@ -823,7 +823,7 @@ _view::insert_pkg (packagemeta & pkg)
 //      assert (lines); /* protect against a coding change in future */
       for (size_t x = 1; x <= pkg.Categories.number (); x++)
 	{
-	  Category & cat = pkg.Categories.getnth (x)->key;
+	  Category & cat = pkg.Categories[x]->key;
 	  /* insert the package under this category in the list. If this category is not
 	     visible, add it */
 	  int n = 0;
@@ -1086,7 +1086,7 @@ set_view_mode (HWND h, views mode)
     case VIEW_CATEGORY:
       /* start collapsed. TODO: make this a chooser flag */
       for (size_t n = 1; n <= db.categories.number (); n++)
-	chooser->insert_category (db.categories.getnth (n),
+	chooser->insert_category (db.categories[n],
 				  CATEGORY_COLLAPSED);
       break;
     default:
@@ -1265,99 +1265,6 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
   return FALSE;
 }
 
-char *
-base (const char *s)
-{
-  if (!s)
-    return 0;
-  const char *rv = s;
-  while (*s)
-    {
-      if ((*s == '/' || *s == ':' || *s == '\\') && s[1])
-	rv = s + 1;
-      s++;
-    }
-  return (char *) rv;
-}
-
-int
-find_tar_ext (const char *path)
-{
-  char *end = strchr (path, '\0');
-  /* check in longest first order */
-  char *ext = strstr (path, ".tar.bz2");
-  if (ext)
-    return (end - ext) == 8 ? ext - path : 0;
-  if ((ext = strstr (path, ".tar.gz")));
-  return (end - ext) == 7 ? ext - path : 0;
-  if ((ext = strstr (path, ".tar")));
-  return (end - ext) == 4 ? ext - path : 0;
-}
-
-/* Parse a filename into package, version, and extension components. */
-int
-parse_filename (const char *in_fn, fileparse & f)
-{
-  char *p, *ver;
-  char fn[strlen (in_fn) + 1];
-
-  strcpy (fn, in_fn);
-  int n = find_tar_ext (fn);
-
-  if (!n)
-    return 0;
-
-  strcpy (f.tail, fn + n);
-  fn[n] = '\0';
-  f.pkg[0] = f.what[0] = '\0';
-  p = base (fn);
-  for (ver = p; *ver; ver++)
-    if (*ver == '-' || *ver == '_')
-      if (isdigit (ver[1]))
-	{
-	  *ver++ = 0;
-	  strcpy (f.pkg, p);
-	  break;
-	}
-      else if (strcasecmp (ver, "-src") == 0 ||
-	       strcasecmp (ver, "-patch") == 0)
-	{
-	  *ver++ = 0;
-	  strcpy (f.pkg, p);
-	  strcpy (f.what, strlwr (ver));
-	  strcpy (f.pkgtar, p);
-	  strcat (f.pkgtar, f.tail);
-	  ver = strchr (ver, '\0');
-	  break;
-	}
-
-  if (!f.pkg[0])
-    strcpy (f.pkg, p);
-
-  if (!f.what[0])
-    {
-      int n;
-      p = strchr (ver, '\0');
-      strcpy (f.pkgtar, in_fn);
-      if ((p -= 4) >= ver && strcasecmp (p, "-src") == 0)
-	n = 4;
-      else if ((p -= 2) >= ver && strcasecmp (p, "-patch") == 0)
-	n = 6;
-      else
-	n = 0;
-      if (n)
-	{
-	  strcpy (f.what, p + 1);
-	  *p = '\0';
-	  p = f.pkgtar + (p - fn) + n;
-	  memmove (p - n, p, strlen (p));
-	}
-    }
-
-  strcpy (f.ver, *ver ? ver : "0.0");
-  return 1;
-}
-
 /* Find out where to put existing tar file in local directory in
    known package array. */
 static void
@@ -1417,7 +1324,7 @@ scan2 (char *path, unsigned int size)
   int added = 0;
   for (size_t n = 1; n <= pkg->versions.number (); n++)
     {
-      if (!strcasecmp (f.ver, pkg->versions.getnth (n)->Canonical_version ()))
+      if (!strcasecmp (f.ver, pkg->versions[n]->Canonical_version ()))
 	{
 	  /* FIXME: Add a mirror entry */
 	  added = 1;
@@ -1449,20 +1356,6 @@ static void
 scan_downloaded_files ()
 {
   find (".", scan2);
-}
-
-_Info::_Info (const char *_install, const char *_version, int _install_size,
-	      const char *_source, int _source_size)
-{
-  memset (this, 0, sizeof (*this));
-  install = strdup (_install);
-  version = strdup (_version);
-  install_size = _install_size;
-  if (_source)
-    {
-      source = strdup (_source);
-      source_size = _source_size;
-    }
 }
 
 int
@@ -1525,16 +1418,16 @@ do_choose (HINSTANCE h)
 	  int categories_len = 0;
 	  for (size_t n = 1; n <= pkg->Categories.number (); n++)
 	    categories_len +=
-	      strlen (pkg->Categories.getnth (n)->key.name) + 2;
+	      strlen (pkg->Categories[n]->key.name) + 2;
 
 	  if (categories_len > 0)
 	    {
 	      char *categories = (char *) malloc (categories_len);
-	      strcpy (categories, pkg->Categories.getnth (1)->key.name);
+	      strcpy (categories, pkg->Categories[1]->key.name);
 	      for (size_t n = 2; n <= pkg->Categories.number (); n++)
 		{
 		  strcat (categories, ", ");
-		  strcat (categories, pkg->Categories.getnth (n)->key.name);
+		  strcat (categories, pkg->Categories[n]->key.name);
 		}
 	      log (LOG_BABBLE, "     categories=%s", categories);
 	      free (categories);

@@ -82,14 +82,15 @@ STR	[a-zA-Z0-9_./+-]+
 
 %%
 
-static char *input_string = 0;
-static char *end_input_string;
+#include "io_stream.h"
+
+static io_stream *input_stream = 0;
 extern char *parse_mirror;
+
 void
-ini_init(char *string, char * mirror)
+ini_init(io_stream *stream, char const *mirror)
 {
-  input_string = string;
-  end_input_string = input_string + strlen(input_string);
+  input_stream = stream;
   if (parse_mirror)
     free (parse_mirror);
   parse_mirror = strdup (mirror);
@@ -98,29 +99,24 @@ ini_init(char *string, char * mirror)
 static int
 ini_getchar(char *buf, int max_size)
 {
-  if (input_string)
+  if (input_stream)
     {
-      int avail = end_input_string - input_string;
-      if (avail == 0)
-	{
-	  input_string = end_input_string = 0;
-	  return 0;
+      ssize_t len = input_stream->read (buf, max_size);
+      if (len < 1)
+        {
+	  len = 0;
+	  input_stream = 0;
 	}
-      if (avail > max_size)
-	avail = max_size;
-      memcpy(buf, input_string, avail);
-      input_string += avail;
-      return avail;
+      return len;
     }
-  else
-    return 0;
+  return 0;
 }
 
 static void
 ignore_line ()
 {
   char c;
-  while ((c = input ()))
+  while ((c = yyinput ()))
     {
       if (c == EOF)
 	return;

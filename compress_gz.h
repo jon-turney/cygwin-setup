@@ -48,8 +48,11 @@ public:
   };
   virtual int set_mtime (int);
   virtual int get_mtime ();
+  /* Use seek EOF, then tell (). get_size won't do this incase you are sucking down
+   * over a WAN :} */
+  virtual size_t get_size () {return 0;};
   /* if you are still needing these hints... give up now! */
-    virtual ~ compress_gz ();
+  virtual ~ compress_gz ();
 private:
     compress_gz ()
   {

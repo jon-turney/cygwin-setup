@@ -40,7 +40,7 @@ static const char *cvsid =
 
 #include "port.h"
 
-NetIO::NetIO (char *Purl, BOOL allow_ftp_auth)
+NetIO::NetIO (char const *Purl, BOOL allow_ftp_auth)
 {
   set_url (Purl);
   ftp_auth = allow_ftp_auth;
@@ -59,7 +59,7 @@ NetIO::~NetIO ()
 }
 
 void
-NetIO::set_url (char *Purl)
+NetIO::set_url (char const *Purl)
 {
   char *bp, *ep, c;
 
@@ -112,7 +112,7 @@ NetIO::read (char *buf, int nbytes)
 }
 
 NetIO *
-NetIO::open (char *url, BOOL allow_ftp_auth)
+NetIO::open (char const *url, BOOL allow_ftp_auth)
 {
   NetIO *rv = 0;
   enum

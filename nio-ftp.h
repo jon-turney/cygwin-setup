@@ -22,7 +22,7 @@ class NetIO_FTP:public NetIO
   SimpleSocket *s;
 
 public:
-    NetIO_FTP (char *url, BOOL allow_ftp_auth = FALSE);
+    NetIO_FTP (char const *url, BOOL allow_ftp_auth = FALSE);
     virtual ~ NetIO_FTP ();
 
   /* If !ok() that means the transfer isn't happening. */

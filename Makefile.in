@@ -38,7 +38,7 @@ CXX		:= @CXX@
 CFLAGS		:= @CFLAGS@ -Werror -Winline -Wall -Wpointer-arith -Wcast-align\
 	-Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
 	-Wmissing-declarations -Wcomments
-CXXFLAGS	:= @CXXFLAGS@ $(CFLAGS) -fno-exceptions -fno-rtti
+CXXFLAGS	:= @CXXFLAGS@ $(CFLAGS) -fno-rtti
 CXX		:= @CXX@
 
 WINDRES		:= @WINDRES@
@@ -96,6 +96,7 @@ OBJS = \
 	diskfull.o \
 	download.o \
 	find.o \
+	filemanip.o \
 	fromcwd.o \
 	geturl.o \
 	hash.o \
@@ -224,29 +225,29 @@ else
 	@$(CC) $(WARNONLY_CFLAGS) -c -o $@ $< -fno-inline-functions
 endif
 
-inilex.o: inilex.c
+inilex.o: inilex.cc
 ifdef VERBOSE
-	$(CC) $(WARNONLY_CFLAGS) -c -o $@ $<
+	$(CXX) @CXXFLAGS@ $(WARNONLY_CFLAGS) -fno-rtti -c -o $@ $< 
 else
-	@echo $(CC) -c $(WARNONLY_CFLAGS) ... $(<F)
-	@$(CC) $(WARNONLY_CFLAGS) -c -o $@ $< 
+	@echo $(CXX) -c @CXXFLAGS@ $(WARNONLY_CFLAGS) ... $(<F) -fno-rtti
+	@$(CXX) @CXXFLAGS@ $(WARNONLY_CFLAGS) -c -o $@ $< -fno-rtti
 endif
 
 iniparse.o: iniparse.cc
 ifdef VERBOSE
-	$(CXX) @CXXFLAGS@ $(WARNONLY_CFLAGS) -fno-exceptions -fno-rtti -c -o $@ $< 
+	$(CXX) @CXXFLAGS@ $(WARNONLY_CFLAGS) -fno-rtti -c -o $@ $< 
 else
-	@echo $(CXX) -c @CXXFLAGS@ $(WARNONLY_CFLAGS) ... $(<F) -fno-exceptions -fno-rtti
-	@$(CXX) @CXXFLAGS@ $(WARNONLY_CFLAGS) -c -o $@ $< -fno-exceptions -fno-rtti
+	@echo $(CXX) -c @CXXFLAGS@ $(WARNONLY_CFLAGS) ... $(<F) -fno-rtti
+	@$(CXX) @CXXFLAGS@ $(WARNONLY_CFLAGS) -c -o $@ $< -fno-rtti
 endif
 
 iniparse.cc iniparse.h : iniparse.y
 	bison -d -o iniparse.cc $(srcdir)/iniparse.y
 	@mv iniparse.cc.h iniparse.h
 
-inilex.c : inilex.l iniparse.h
+inilex.cc : inilex.l iniparse.h
 	flex -8 $(srcdir)/inilex.l
-	mv lex.yy.c inilex.c
+	mv lex.yy.c inilex.cc
 
 D:=$(wildcard *.d)
 ifneq ($D,)

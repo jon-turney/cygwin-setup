@@ -51,7 +51,7 @@ public:
   ~site ()
   {
     if (key)
-      delete key;
+      delete[] key;
   };
   char *key;
 };

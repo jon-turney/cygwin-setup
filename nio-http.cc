@@ -87,7 +87,7 @@ base64_encode (char *username, char *password)
   return rv;
 }
 
-NetIO_HTTP::NetIO_HTTP (char *Purl, BOOL allow_ftp_auth):NetIO (Purl, allow_ftp_auth)
+NetIO_HTTP::NetIO_HTTP (char const *Purl, BOOL allow_ftp_auth):NetIO (Purl, allow_ftp_auth)
 {
 retry_get:
   if (port == 0)

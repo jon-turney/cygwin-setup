@@ -122,9 +122,9 @@ cygpackage::destroy ()
   if (listdata)
     delete listdata;
   if (sdesc)
-    delete sdesc;
+    delete[] sdesc;
   if (ldesc)
-    delete ldesc;
+    delete[] ldesc;
 }
 
 const char *

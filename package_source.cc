@@ -30,7 +30,7 @@ void
 packagesource::set_canonical (char const *fn)
 {
   if (canonical)
-    delete canonical;
+    delete[] canonical;
   canonical = new char[strlen (fn) + 1];
   strcpy (canonical, fn);
 
@@ -54,19 +54,19 @@ packagesource::set_canonical (char const *fn)
     bend = strchr (bstart, '\0');
   char const *end = strchr (fn, '\0');
   if (base)
-    delete (base);
+    delete[] base;
   base = new char[bend - bstart];
   memcpy (base, bstart + 1, bend - bstart - 1);
   base[bend - bstart - 1] = '\0';
 
   if (filename)
-    delete filename;
+    delete[] filename;
   filename = new char[end - bstart];
   memcpy (filename, bstart + 1, end - bstart - 1);
   filename[end - bstart - 1] = '\0';
 
   if (cached)
-    delete cached;
+    delete[] cached;
   cached = 0;
 }
 
@@ -74,7 +74,7 @@ void
 packagesource::set_cached (char const *fp)
 {
   if (cached)
-    delete cached;
+    delete[] cached;
   cached = new char[strlen (fp) + 1];
   strcpy (cached, fp);
 }

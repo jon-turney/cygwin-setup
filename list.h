@@ -45,7 +45,7 @@ list ():pointerblock (0), _number (0), _space (0)
     return _number;
   };
   /* get by offset - not thread safe - starts at 1 */
-  T *getnth (size_t n)
+  T *operator [] (size_t n)
   {
     return n && n <= _number ? pointerblock[n - 1] : 0;
   };
