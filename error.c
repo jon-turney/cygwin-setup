@@ -42,7 +42,7 @@ winerror ()
 		     (LPTSTR) & msgbuf, 0, NULL);
       if (msgbuf)
 	{
-	  fprintf (stderr, "%s\n", msgbuf);
+	  fprintf (stderr, "%s\n", (char *) msgbuf);
 	  LocalFree (msgbuf);
 	}
       else

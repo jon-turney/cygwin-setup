@@ -51,7 +51,7 @@
 char *wd = NULL;
 static char *tarpgm;
 
-static int downloaddir (const char *url);
+static int downloaddir (SA *installme, const char *url);
 
 static SA files = {NULL, 0, 0};
 static FILE *logfp = NULL;
@@ -59,7 +59,8 @@ static HANDLE devnull = NULL;
 static HINTERNET session = NULL;
 static SA deleteme = {NULL, 0, 0};
 static pkg *pkgstuff;
-static int forceinstall = 1;
+static int updating = 0;
+static SA installme = {NULL, 0, 0};
 
 static void
 filedel (void)
@@ -67,6 +68,7 @@ filedel (void)
   int i;
   for (i = 0; i < deleteme.count; i++)
     (void) _unlink (deleteme.array[i]);
+  sa_cleanup (&deleteme);
 }
 
 void
@@ -117,7 +119,7 @@ create_shortcut (const char *target, const char *shortcut)
       sl->lpVtbl->SetArguments (sl, args);
       xfree (path);
 
-      hres = sl->lpVtbl->QueryInterface (sl, &IID_IPersistFile, &pf);
+      hres = sl->lpVtbl->QueryInterface (sl, &IID_IPersistFile, (void **) &pf);
 
       if (SUCCEEDED (hres))
 	{
@@ -269,7 +271,6 @@ tarx (const char *dir, const char *fn)
 	}
       else
 	{
-	  char *e;
 	  if (++files.index >= files.count)
 	    files.array = realloc (files.array,
 				   NFILE_SLOP + (files.count += NFILE_LIST));
@@ -284,7 +285,7 @@ tarx (const char *dir, const char *fn)
 	      xumount (wd, s);
 	    }
 #endif
-	
+
 	  s = files.array[files.index] = utodpath (s);
 	}
 
@@ -297,6 +298,11 @@ tarx (const char *dir, const char *fn)
       warning ("Unable to reset protection on '%s' - %s\n",
 	       files.array[filehere], _strerror (""));
 
+  /* Use the version of the cygwin that was just installed rather than the
+     tar file name.  (kludge) */
+  if (stricmp (pkgname, "cygwin") == 0)
+    (void) check_for_installed (".", pkgstuff);
+
   warning ("%s package '%s'\n", write_pkg (pkg, pkgname, pkgversion) ?
 			      "Updated" : "Refreshed", pkgname);
 
@@ -304,7 +310,43 @@ tarx (const char *dir, const char *fn)
 }
 
 static int
-recurse_dirs (const char *dir)
+refmatches (SA *installme, char *ref, char *refend)
+{
+  int i;
+  char *p, *q;
+  char filebuf[4096];
+  if (!installme->count)
+    return 1;
+
+  for (p = ref; (q = strchr (p, '/')) != refend; p = q + 1)
+    continue;
+
+  strcpy (filebuf, p);
+  strchr (filebuf, '\0')[-1] = '\0';
+  for (i = 0; i < installme->count; i++)
+    if (stricmp (installme->array[i], filebuf) == 0)
+      return 1;
+
+  return 0;
+}
+
+static int
+filematches (SA *installme, char *fn)
+{
+  int i;
+
+  if (!installme->count)
+    return 1;
+
+  for (i = 0; i < installme->count; i++)
+    if (strnicmp (installme->array[i], fn, strlen (installme->array[i])) == 0)
+      return 1;
+
+  return 0;
+}
+
+static int
+recurse_dirs (SA *installme, const char *dir)
 {
   int err = 0;
   int retval = 0;
@@ -322,7 +364,8 @@ recurse_dirs (const char *dir)
 	  do
 	    {
 	      if (strcmp (find_data.cFileName, ".") == 0
-		  || strcmp (find_data.cFileName, "..") == 0)
+		  || strcmp (find_data.cFileName, "..") == 0
+		  || !filematches (installme, find_data.cFileName))
 		continue;
 
 	      if (find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY
@@ -331,7 +374,7 @@ recurse_dirs (const char *dir)
 		  char *subdir = pathcat (dir, find_data.cFileName);
 		  if (subdir)
 		    {
-		      if (!recurse_dirs (subdir))
+		      if (!recurse_dirs (installme, subdir))
 			{
 			  xfree (subdir);
 			  err = 1;
@@ -351,7 +394,7 @@ recurse_dirs (const char *dir)
 	  if (!err)
 	    {
 	      xfree (pattern);
-	      pattern = pathcat (dir, "*.tar.gz");
+	      pattern = pathcat (dir, "*tar.gz");
 	      handle = FindFirstFile (pattern, &find_data);
 	      if (handle != INVALID_HANDLE_VALUE)
 		{
@@ -360,10 +403,10 @@ recurse_dirs (const char *dir)
 		  do
 		    {
 		      /* Skip source archives and meta-directories */
-		      if (strstr (find_data.cFileName, "-src.tar.gz")
-			  || strstr (find_data.cFileName, "-src-")
+		      if (strstr (find_data.cFileName, "-src")
 			  || strcmp (find_data.cFileName, ".") == 0
-			  || strcmp (find_data.cFileName, "..") == 0)
+			  || strcmp (find_data.cFileName, "..") == 0
+			  || !filematches (installme, find_data.cFileName))
 			{
 			  continue;
 			}
@@ -409,6 +452,7 @@ prompt (const char *text, const char *def)
 
 
   printf ((def ? "%s? [%s] " : "%s? "), text, def);
+  fflush (stdout);
   fgets (buffer, sizeof (buffer), stdin);
   buffer[strcspn (buffer, "\r\n")] = '\0';
 
@@ -419,7 +463,7 @@ prompt (const char *text, const char *def)
 static int
 optionprompt (const char *text, SA * options)
 {
-  size_t n, lbound, response;
+  size_t n, response = 1;
   char buf[5];
   size_t base;
 
@@ -491,7 +535,7 @@ geturl (const char *url, const char *file, int verbose)
     {
       const char *hosthere, *hostend;
       int n;
-      
+
       hosthere = strstr (url, "//");
       if (!hosthere)
 	hosthere = url;	/* huh? */
@@ -679,7 +723,7 @@ static char *
 findhref (char *buffer, char *date, size_t *filesize)
 {
   char *ref = NULL;
-  char *anchor;
+  char *anchor = NULL;
   char *p;
   int eatspace;
   char *q;
@@ -709,7 +753,7 @@ findhref (char *buffer, char *date, size_t *filesize)
 	  anchor = q;
 	}
     }
-  
+
   if (!ref)
     return NULL;
 
@@ -762,7 +806,7 @@ needfile (const char *filename, char *date, size_t filesize)
 }
 
 static int
-processdirlisting (const char *urlbase, const char *file)
+processdirlisting (SA *installme, const char *urlbase, const char *file)
 {
   int retval = 0;
   char buffer[4096];
@@ -778,7 +822,7 @@ processdirlisting (const char *urlbase, const char *file)
       char *ref = findhref (buffer[0] ? buffer : buffer + 1, filedate, &filesize);
       char url[256];
       DWORD urlspace = sizeof (url);
-      struct _stat st;
+      char *refend;
 
       if (!ref || strnicmp (ref, "http:", 5) == 0)
 	continue;
@@ -793,8 +837,13 @@ processdirlisting (const char *urlbase, const char *file)
       else if (strlen (url) == urllen || strnicmp (urlbase, url, urllen) != 0
 	       || strstr (url, "/.") || strstr (url, "./"))
 	continue;
-      else if (ref[strlen (ref) - 1] == '/')
-	retval += downloaddir (url);
+
+      refend = ref + strlen (ref) - 1;
+      if (*refend == '/')
+	{
+	  if (refmatches (installme, ref, refend))
+	    retval += downloaddir (installme, url);
+	}
       else if (strstr (url, ".tar.gz") && !strstr (url, "-src"))
 	{
 	  int download = 0;
@@ -802,10 +851,17 @@ processdirlisting (const char *urlbase, const char *file)
 	  char *pkgname, *pkgversion;
 	  pkg *pkg;
 
+	  if (!filematches (installme, filename))
+	    continue;
+
 	  retval++;
 
-	  normalize_version (filename, &pkgname, &pkgversion);
+	  if (stricmp (filename, "cygwin-20000301.tar.gz") == 0)
+	    normalize_version ("cygwin-1.1.0.tar.gz", &pkgname, &pkgversion);
+	  else
+	    normalize_version (filename, &pkgname, &pkgversion);
 	  pkg = find_pkg (pkgstuff, pkgname);
+
 	  if (!newer_pkg (pkg, pkgversion))
 	    {
 	      warning ("Skipped download of %s\n", filename);
@@ -870,7 +926,7 @@ processdirlisting (const char *urlbase, const char *file)
 		      if (!res)
 			warning ("Download failed.\n");
 		      else
-			fprintf (logfp, "Downloaded file size does not match (%ld).\n",
+			fprintf (logfp, "Downloaded file size does not match (%d).\n",
 				 filesize);
 		      answer = prompt (res ? "Downloaded file size does not match (Abort, Retry, Fail)" :
 					     "Download failed (Abort, Retry, Fail)", "R");
@@ -884,7 +940,7 @@ processdirlisting (const char *urlbase, const char *file)
 			  exit (1);	/* abort program */
 			case 'F':
 			  warning ("Deleting %s.\n", filename);
-			  _unlink (filename); 
+			  _unlink (filename);
 			  goto noget;	/* Keep trying to download the rest */
 			default:
 			  continue;	/* erroneous response */
@@ -915,14 +971,14 @@ tmpfilename ()
 }
 
 static int
-downloaddir (const char *url)
+downloaddir (SA *installme, const char *url)
 {
   int retval = 0;
   char *file = tmpfilename ();
 
   if (geturl (url, file, 1))
   {
-    retval = processdirlisting (url, file);
+    retval = processdirlisting (installme, url, file);
     _unlink (file);
   }
   xfree (file);
@@ -939,14 +995,14 @@ opensession ()
 }
 
 static int
-downloadfrom (const char *url)
+downloadfrom (SA *installme, const char *url)
 {
   int retval = 0;
   char *file = tmpfilename ();
 
   if (geturl (url, file, 1))
     {
-      retval = processdirlisting (url, file);
+      retval = processdirlisting (installme, url, file);
       _unlink (file);
     }
 
@@ -966,10 +1022,7 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 		  const char *shortcut)
 {
   int retval = 0;
-  char buffer[MAX_PATH];
-  clock_t start;
-  HINSTANCE lib;
-  
+
   warning ("Creating the uninstall file...");
   fflush (stdout);
   if (files.array)
@@ -985,7 +1038,6 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 
       if (uninst)
 	{
-	  unsigned percent = 0;
 	  struct _stat st;
 
 	  files.array[++files.index] = pathcat (cwd, "bin\\cygwin.bat");
@@ -994,7 +1046,7 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
 
 	  fprintf (uninst,
 		   "@echo off\n" "%c:\n" "cd \"%s\"\n", *cwd, cwd);
-	  fprintf (uninst, "bin\\regtool remove /HKLM/SOFTWARE/'Cygnus Solutions'/cygwin/'Installed Components'\n");
+	  fprintf (uninst, "bin\\regtool remove '/HKLM/SOFTWARE/Cygnus Solutions/cygwin/Installed Components'\n");
 	  for (n = 0; n < files.count; ++n)
 	    {
 	      char *dpath;
@@ -1026,9 +1078,6 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
       sa_cleanup (&files);
       retval = 1;
     }
-
-  if (lib)
-    FreeLibrary (lib);
 
   warning ("Done.\n");
   return retval;
@@ -1098,7 +1147,8 @@ do_start_menu (const char *root)
 		      xfree (pccmd);
 		    }
 
-		  if (create_shortcut (cmdline, shortcut))
+		  if (create_shortcut (cmdline, shortcut)
+		      && (!updating || installme.count))
 		    {
 		      char *uninstscut =
 			pathcat (folder, "Uninstall Cygwin 1.1.0.lnk");
@@ -1116,7 +1166,6 @@ do_start_menu (const char *root)
 	      xfree (folder);
 	    }
 	}
-
       xfree (batch_name);
     }
   return retval;
@@ -1240,7 +1289,7 @@ static int
 mkmount (const char *mountexedir, const char *root, const char *dospath,
 	 const char *unixpath, int force)
 {
-  char *mount, *bslashed, *fulldospath, *p;
+  char *mount, *fulldospath;
   char buffer[1024];
 
   if (*root == '\0')
@@ -1268,6 +1317,41 @@ mkmount (const char *mountexedir, const char *root, const char *dospath,
   return xcreate_process (1, NULL, NULL, NULL, buffer) != 0;
 }
 
+static pkg *
+get_pkg_stuff (const char *root, int updating)
+{
+  const char *ver, *ans;
+  pkg *pkgstuff = init_pkgs ();
+  static pkg dummy = {NULL, NULL};
+
+  if (!updating)
+    return &dummy;
+
+  if (pkgstuff->name != NULL)
+    return pkgstuff;
+
+  ver = check_for_installed (root, pkgstuff);
+  if (!ver || stricmp (ver, "1.1.0") != 0)
+    return &dummy;
+
+  puts ("\nHmm.  You seem to have a previous cygwin version installed but there is no\n"
+	"package version information in the registry.  This is probably due to the fact\n"
+	"that previous versions of setup.exe did not update this information.");
+
+  ans = prompt ("Should I update the registry with default information now", "y");
+  puts ("");
+  if (toupper (*ans) != 'Y')
+    {
+      warning ("Not writing default package information to the registry.\n");
+      puts ("");
+      return pkgstuff;
+    }
+
+  warning ("Writing default package information to the registry.\n");
+  puts ("");
+  return use_default_pkgs (pkgstuff);
+}
+
 static char rev[] = "$Revision$ ";
 
 int
@@ -1280,10 +1364,18 @@ main (int argc, char **argv)
   int fd = _open ("nul", _O_WRONLY | _O_BINARY);
 
   while (*++argv)
-    if (strstr (*argv, "-f") != NULL)
-      forceinstall = 1;
-    else if (strstr (*argv, "-u") != NULL)
-      forceinstall = 0;
+    if (stricmp (*argv, "-f") == 0)
+      updating = 0;
+    else if (stricmp (*argv, "-u") == 0)
+      updating = 1;
+    else
+      break;
+
+  sa_init (&installme);
+  if (*argv)
+    do
+      sa_add (&installme, *argv);
+    while (*++argv);
 
   devnull = (HANDLE) _get_osfhandle (fd);
 
@@ -1350,8 +1442,8 @@ those as the basis for your installation.\n\n"
       printf ("Press <enter> to accept the default value.\n");
 
       /* If some Cygnus software has been installed, assume there is a root
-         mount in the registry. Otherwise use C:\cygwin for the default root
-         directory. */
+	 mount in the registry. Otherwise use C:\cygwin for the default root
+	 directory. */
       if (RegOpenKey (HKEY_CURRENT_USER, CYGNUS_KEY, &cu) == ERROR_SUCCESS
 	  || RegOpenKey (HKEY_LOCAL_MACHINE, CYGNUS_KEY,
 			 &lm) == ERROR_SUCCESS)
@@ -1366,7 +1458,7 @@ those as the basis for your installation.\n\n"
 	defroot = xstrdup (DEF_ROOT);
 
       /* Get the root directory and warn the user if there are any spaces in
-         the path. */
+	 the path. */
       for (done = 0; !done;)
 	{
 	  root = prompt ("Root directory", defroot);
@@ -1393,19 +1485,14 @@ those as the basis for your installation.\n\n"
       xfree (defroot);
 
       /* Create the root directory. */
-      mkdir (root);		/* Ignore any return value since it may
+      mkdirp (root);		/* Ignore any return value since it may
 				   already exist. */
       mkmount (wd, "", root, "/", 1);
 
+      pkgstuff = get_pkg_stuff (root, updating);
+
       update =
 	prompt ("Install from the current directory (d) or from the Internet (i)", "i");
-
-      pkgstuff = init_pkgs ();
-      if (forceinstall)
-	{
-	  static pkg dummy = {NULL, NULL};
-	  pkgstuff = &dummy;
-	}
 
       if (toupper (*update) == 'I')
 	{
@@ -1417,9 +1504,13 @@ those as the basis for your installation.\n\n"
 	      exit (1);
 	    }
 
-	  if (!downloadfrom (dir))
+	  if (!downloadfrom (&installme, dir))
 	    {
-	      warning ("Error: No files found to download.  Choose another mirror site?\n");
+	      warning ("Error: No files found to download.");
+	      if (!installme.count)
+		warning("  Choose another mirror site?\n");
+	      else
+		warning ("\n");
 	      goto out;
 	    }
 	  InternetCloseHandle (session);
@@ -1428,7 +1519,7 @@ those as the basis for your installation.\n\n"
       xfree (update);
 
       /* Make the root directory the current directory so that recurse_dirs
-         will * extract the packages into the correct path. */
+	 will * extract the packages into the correct path. */
       if (chdir (root) == -1)
 	{
 	  warning ("Unable to make \"%s\" the current directory: %s\n",
@@ -1444,6 +1535,7 @@ those as the basis for your installation.\n\n"
 	  xumount (wd, "/var");
 	  xumount (wd, "/lib");
 	  xumount (wd, "/bin");
+	  xumount (wd, "/etc");
 
 	  /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
 	  mkmount (wd, root, "bin", "/usr/bin", 1);
@@ -1461,45 +1553,25 @@ those as the basis for your installation.\n\n"
 
 	  /* Extract all of the packages that are stored with setup or in
 	     subdirectories of its location */
-	  if (recurse_dirs (wd))
+	  if (recurse_dirs (&installme, wd))
 	    {
-	      char *mount;
-	      char buffer[1024];
+	      /* bash expects a /tmp */
+	      char *tmpdir = pathcat (root, "tmp");
 
-	      /* Mount the new root directory. */
-	      mount = pathcat (wd, "mount");
-	      sprintf (buffer, "%s -f -b \"%s\" /", mount, root);
-	      xfree (mount);
-	      if (xsystem (buffer))
-		{
-		  printf
-		    ("Unable to mount \"%s\" as the root directory: %s",
-		     root, _strerror (""));
-		}
-	      else
-		{
-		  char **a;
-		  /* bash expects a /tmp */
-		  char *tmpdir = pathcat (root, "tmp");
+	      if (tmpdir && mkdir (tmpdir) == 0)
+		files.array[++files.index] = tmpdir;
 
-		  if (tmpdir)
-		    {
-		      files.array[++files.index] = tmpdir;
-		      mkdir (tmpdir);	/* Ignore the result, it may
-					       exist. */
-		    }
+	      files.array[++files.index] = pathcat (root, "usr\\local");
+	      files.array[++files.index] = pathcat (root, "usr\\local\\bin");
+	      files.array[++files.index] = pathcat (root, "usr\\local\\lib");
+	      files.array[++files.index] = pathcat (root, "usr\\local\\etc");
+	      mkdirp (files.array[files.index]);
+	      mkdir (files.array[files.index - 1]);
+	      mkdir (files.array[files.index - 2]);
 
-		  files.array[++files.index] = pathcat (root, "usr\\local");
-		  files.array[++files.index] = pathcat (root, "usr\\local\\bin");
-		  files.array[++files.index] = pathcat (root, "usr\\local\\lib");
-		  files.array[++files.index] = pathcat (root, "usr\\local\\etc");
-		  mkdirp (files.array[files.index]);
-		  mkdir (files.array[files.index - 1]);
-
-		  if (do_start_menu (root))
-		    retval = 0;	/* Everything worked return
-				       successful code */
-		}
+	      if (do_start_menu (root))
+		retval = 0;	/* Everything worked return
+				   successful code */
 	    }
 	}
 
@@ -1511,8 +1583,9 @@ those as the basis for your installation.\n\n"
     }
 
 out:
-  printf ("\nInstallation took %.0f seconds.\n",
-          (double) (clock () - start) / CLK_TCK);
+  puts ("");
+  warning ("Installation took %.0f seconds.\n",
+	  (double) (clock () - start) / CLK_TCK);
 
   if (logpath)
     {

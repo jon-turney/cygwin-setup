@@ -41,7 +41,6 @@ xcreate_process (int wait, HANDLE in, HANDLE out, HANDLE err, const char *cmd)
   char *command;
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
-  DWORD flags = 0;
   extern char *wd;
 
   if (cmd[1] != ':' && strncmp (cmd, "\\\\", 2) != 0)

@@ -68,7 +68,7 @@ cygpath_pipe ()
 
   hin = (HANDLE) _get_osfhandle (hpipein[1]);
   hout = (HANDLE) _get_osfhandle (hpipeout[0]);
-  sprintf (buffer, "cygpath -a -o -f - -c %x", _get_osfhandle (hpipeout[1]));
+  sprintf (buffer, "cygpath -a -o -f - -c %lx", (unsigned long) _get_osfhandle (hpipeout[1]));
   hcygpath = (HANDLE) xcreate_process (0, hout, hin, hin, buffer);
   if (!hcygpath)
     return 0;

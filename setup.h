@@ -30,6 +30,9 @@ int newer_pkg (pkg *pkg, char *version);
 void normalize_version (const char *fn, char **prod, char **version);
 void close_pkgs (void);
 
+pkg *use_default_pkgs (pkg *stuff);
+const char * check_for_installed (const char *root, pkg *stuff);
+
 /* Routines in error.c. */
 void lowmem ();			/* Report low memory and exit the
 				   application. */
