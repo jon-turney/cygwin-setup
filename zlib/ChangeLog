@@ -21,6 +21,28 @@
 	* zutil.c (z_error): Const correctness change.
 	* zutil.h (z_error): Ditto.
 
+2001-04-18  Christopher Faylor  <cgf@redhat.com>
+
+	* configure.in: Force NM substitution.
+	* configure: Regenerate.
+
+2000-07-07  DJ Delorie  <dj@redhat.com>
+
+	* gzio.c: Add gzctell() for progess displays.
+	Make gzsetparams() a no-op returning Z_OK when NO_DEFLATE is defined.
+	* zlib.h: And declare it.
+
+2000-04-02  Christopher Faylor  <cgf@redhat.com>
+
+	* configure.in: New file.
+	* Makefile.am: New file.
+	* aclocal.m4: New file.
+	* acinclude.m4: New file.
+	* configure: Generate from configure.in, replacing non-autotool
+	version.
+	* Makefile.in: Generate from Makefile.am, replacing non-autotool
+	version.
+
 		ChangeLog file for zlib
 
 Changes in 1.1.4 (11 March 2002)
