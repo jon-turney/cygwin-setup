@@ -1,3 +1,69 @@
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	Merge in setup-200303-troubleshooting fixes.
+
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (NTSecurity::setDefaultDACL): Reinstate commented code.
+	(NTSecurity::setDefaultSecurity): Ditto.
+
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (NTSecurity::setDefaultDACL): Use MS calculations for ACL
+	buffer sizing.
+	
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (NTSecurity::setDefaultDACL): Sanity check memory allocation.
+	
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (NTSecurity::setDefaultDACL): Adjust commented code for auto_ptr use.
+	
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (NTSecurity::NoteFailedAPI): Helper function.
+	Use throughout NTSecurity routines.
+	(NTSecurity::setDefaultDACL): Use dynamic memory for ACL storage.
+	
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (NTSecurity::setDefaultDACL): Disable ~ 50% of remaining active code.
+
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (NTSecurity::GroupInfo): Extract group query code.
+	(NTSecurity::setDefaultDACL): Disable ~ 50% of code.
+	
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (NTSecurity::setDefaultSecurity): Disable ~ 50% of security code.
+
+2003-04-01  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (NTSecurity::setDefaultSecurity): Remove double declaration of sz.
+	User TokenGroupCollection to abstract token searching logic, eliminate isadmin
+	and isuser temporary variables.
+	(TokenGroupCollection): New class for querying token group information.
+	
+2003-04-01  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (NTSecurity::setDefaultSecurity): Extract esid initialisation.
+	Move local variables to just before first use.
+	SetTokenInformationFailures where being handled inconsistently.
+	Remove assignments from if statements.
+	(NTSecurity::esid): Rename to everyOneSID.
+	(NTSecurity::initialiseEveryOneSID): new method.
+	(NTSecurity::setDefaultDACL): Extract method for default DACL logic.
+
+2003-04-01  Robert Collins  <rbtcollins@hotmail.com>
+
+	* main.cc (SIDWrapper): Manage SID memory.
+	(HANDLEWrapper): Likewise for HANDLES.
+	(NTSecurity): Worker class for set_default_sec().
+	(set_default_sec): Move body into NTSecurity::setDefaultSecurity().
+	(NTSecurity::setDefaultSecurity): Eliminate goto out: via memory managing objects.
+
 2003-04-01  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* cygwin.ico:  Added two new resolutions, 64x64 and 72x72.
