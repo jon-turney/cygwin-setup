@@ -1,3 +1,8 @@
+Wed Sep 26 21:39:00  Robert Collins rbtcollins@hotmail.com
+
+	* choose.cc (_view::insert_pkg): Correctly exit loop.
+	* iniparse.y (register_category): Always insert new categories.
+
 Fri Sep 21 13:56:32 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* inilex.l (yylex): For comments, eat all characters up to, but not

@@ -188,6 +188,8 @@ register_category (char *name)
 	}
       else
 	{
+	  tempcat->next = sortcat->next;
+	  sortcat->next = tempcat;
 	  while (sortcat->next && 
 		 strcasecmp(sortcat->next->name, tempcat->name) < 0)
 	    {
