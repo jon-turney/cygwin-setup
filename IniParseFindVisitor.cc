@@ -62,7 +62,11 @@ IniParseFindVisitor::visitFile(String const &basePath, const WIN32_FIND_DATA *th
   /* Copy leading part of path to temporary buffer and unescape it */
   
   String prefix (&basePath.cstr_oneuse()[baseLength + 1]);
-  String mirror = rfc1738_unescape_part (prefix.substr(0,prefix.size() - 1));
+  String mirror;
+  if (prefix.size())
+    mirror = rfc1738_unescape_part (prefix.substr(0,prefix.size() - 1));
+  else
+    mirror = String ();
   _Builder.parse_mirror = mirror;
   ini_init (ini_file, &_Builder);
   

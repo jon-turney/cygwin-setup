@@ -1,3 +1,8 @@
+2002-05-27  Robert Collins  <rbtcollins@hotmail.com>
+
+	* IniParseFindVisitor.cc (IniParseFindVisitor::visitFile): Don't 
+	unescape 0 length strings.
+
 2002-05-20  Robert Collins  <rbtcollins@hotmail.com>
 
 	* package_meta.cc (packagemeta::set_action): Don't allow reinstall
