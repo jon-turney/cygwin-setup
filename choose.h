@@ -52,7 +52,6 @@ public:
   void keepClicked();
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();
-  void setExistence();
   void setPrompt(char const *aPrompt);
   void setViewMode (PickView::views mode);
   template<class C> bool ifChecked(int const &id, void (C::*fn)()) {

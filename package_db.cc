@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Robert Collins.
+ * Copyright (c) 2001, 2003 Robert Collins.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -358,4 +358,42 @@ packagedb::markUnVisited()
       packagemeta & pkgm = **n;
       pkgm.visited(false);
     }
+}
+
+void
+packagedb::setExistence ()
+{
+  /* binary packages */
+  /* Remove packages that are in the db, not installed, and have no 
+     mirror info and are not cached for both binary and source packages. */
+  vector <packagemeta *>::iterator i = packages.begin ();
+  while (i != packages.end ())
+    {
+      packagemeta & pkg = **i;
+      if (!pkg.installed && !pkg.accessible() && 
+     !pkg.sourceAccessible() )
+   {
+   packagemeta *pkgm = *i;
+   delete pkgm;
+      i = packages.erase (i);
+  }
+      else
+ ++i;
+    }
+#if 0
+  /* remove any source packages which are not accessible */
+  vector <packagemeta *>::iterator i = db.sourcePackages.begin();
+  while (i != db.sourcePackages.end())
+    {
+      packagemeta & pkg = **i;
+      if (!packageAccessible (pkg))
+    {
+   packagemeta *pkgm = *i;
+   delete pkgm;
+      i = db.sourcePackages.erase (i);
+    }
+      else
+ ++i;
+    }
+#endif
 }

@@ -43,6 +43,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "package_db.h"
 
 #include <algorithm>
+#include "Generic.h"
 
 using namespace std;
 
@@ -250,9 +251,9 @@ packagemeta::add_category (String const &cat)
   categories.insert (cat);
 }
 
-struct StringConcatenator {
+struct StringConcatenator : public unary_function<String const, void>{
     StringConcatenator(String aString) : gap(aString){}
-    void operator()(String const &aString) 
+    void operator()(String const& aString) 
     {
       if (result.size() != 0)
         result += gap;
@@ -261,25 +262,6 @@ struct StringConcatenator {
     String result;
     String gap;
 };
-
-/* Todo fully paramterise */
-template <class _Visitor, class _Predicate>
-struct _visit_if {
-  _visit_if(_Visitor v, _Predicate p) : visitor(v), predicate (p) {}
-  void operator() (String const &aString) {
-    if (predicate(aString))
-      visitor(aString);
-  }
-  _Visitor visitor;
-  _Predicate predicate;
-};
-
-template <class _Visitor, class _Predicate>
-_visit_if<_Visitor, _Predicate>
-visit_if(_Visitor visitor, _Predicate predicate)
-{
-  return _visit_if<_Visitor, _Predicate>(visitor, predicate);
-}
 
 String const
 packagemeta::getReadableCategoryList () const
@@ -686,4 +668,17 @@ packagemeta::ScanDownloadedFiles ()
   /* Don't explicity iterate through sources - any sources that aren't 
      referenced are unselectable anyway 
      */
+}
+
+bool
+packagemeta::hasNoCategories() const
+{
+  return categories.size() == 0;
+}
+
+void
+packagemeta::setDefaultCategories()
+{
+  add_category ("Misc");
+  add_category ("All");
 }

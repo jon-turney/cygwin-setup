@@ -159,6 +159,7 @@ setup_SOURCES = \
 	filemanip.cc \
 	filemanip.h \
 	fromcwd.cc \
+	Generic.h \
 	geturl.cc \
 	geturl.h \
 	hash.cc \

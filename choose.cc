@@ -55,64 +55,19 @@ static const char *cvsid =
 
 #include "port.h"
 #include "threebar.h"
+#include "Generic.h"
 
 using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
-void
-ChooserPage::setExistence ()
-{
-  packagedb db;
-  /* binary packages */
-  /* Remove packages that are in the db, not installed, and have no 
-     mirror info and are not cached for both binary and source packages. */
-  vector <packagemeta *>::iterator i = db.packages.begin ();
-  while (i != db.packages.end ())
-    {
-      packagemeta & pkg = **i;
-      if (!pkg.installed && !pkg.accessible() && 
-	  !pkg.sourceAccessible() )
-	{
-	  packagemeta *pkgm = *i;
-	  delete pkgm;
-	  i = db.packages.erase (i);
-	}
-      else
-	++i;
-    }
-#if 0
-  /* remove any source packages which are not accessible */
-  vector <packagemeta *>::iterator i = db.sourcePackages.begin();
-  while (i != db.sourcePackages.end())
-    {
-      packagemeta & pkg = **i;
-      if (!packageAccessible (pkg))
-	{
-	  packagemeta *pkgm = *i;
-	  delete pkgm;
-	  i = db.sourcePackages.erase (i);
-	}
-      else
-	++i;
-    }
-#endif
-}
 
 void
 ChooserPage::fillMissingCategory ()
 {
-  packagedb db;
-  for (vector <packagemeta *>::iterator i = db.packages.begin ();
-       i != db.packages.end (); ++i)
-    {
-      packagemeta & pkg = **i;
-      if (!pkg.categories.size ())
-	pkg.add_category ("Misc");
-      pkg.add_category ("All");
-    }
+   packagedb db;
+  for_each(db.packages.begin(), db.packages.end(), visit_if(mem_fun(&packagemeta::setDefaultCategories), mem_fun(&packagemeta::hasNoCategories)));
 }
-
 
 void
 ChooserPage::setViewMode (PickView::views mode)
@@ -247,7 +202,8 @@ ChooserPage::OnInit ()
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_CWD)
     packagemeta::ScanDownloadedFiles ();
 
-  setExistence ();
+  packagedb db;
+  db.setExistence ();
   fillMissingCategory ();
 
   if (source == IDC_SOURCE_DOWNLOAD)

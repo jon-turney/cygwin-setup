@@ -1,5 +1,26 @@
 2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* Generic.h: New file, home for generic programming tools.
+	(visit_if): Move here from package_meta.cc.
+	Adjust to be fully parameterised.
+	* package_meta.h (packagemeta::hasNoCategories): Query for generic 
+	programming.
+	(packagemeta::setDefaultCategories): set categories for packages
+	with none.
+	* package_meta.cc: Move visit_if out. Adjust users for 
+	full paramterised operation.
+	(packagemeta::hasNoCategories): Implement.
+	(packagemeta::setDefaultCategories): Implement.
+	* choose.cc (ChooserPage::fillMissingCategory): Use visit_if to
+	reduce duplicate code.
+	(ChooserPage::setExistence): Delete.
+	* choose.h (ChooserPage::setExistence): Rename to 
+	packagedb::setExistence.
+	* package_db.h (packagedb::setExistence): Declare.
+	* package_db.cc (packagedb::setExistence): Copy from choose.cc
+	
+2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* localdir.h (LocalDirPage::OnInit): Remove.
 	* localdir.cc (LocalDirPage::OnInit): Move to LocalDirSetting
 	::load().

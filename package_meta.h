@@ -54,6 +54,8 @@ public:
   void set_installed (packageversion &);
   void visited(bool const &);
   bool visited() const;
+  bool hasNoCategories() const;
+  void setDefaultCategories();
 
   class _actions
   {

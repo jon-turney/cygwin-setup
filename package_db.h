@@ -46,6 +46,7 @@ public:
   PackageDBConnectedIterator connectedBegin();
   PackageDBConnectedIterator connectedEnd();
   void markUnVisited();
+  void setExistence();
   /* all seen binary packages */
   static std::vector < packagemeta *> packages;
   /* all seen source packages */
