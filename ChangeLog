@@ -1,3 +1,9 @@
+2005-01-27  Max Bowsher  <maxb@ukf.net>
+
+	Set CYGWIN=nontsec, for postinstall scripts.
+
+	* main.cc (main): putenv("CYGWIN=nontsec").
+
 2005-01-27  Bas van Gompel  <patch-cygsup.buzz@bavag.tmfweb.nl>
 
 	Fix corrupt display of ini parse percentage in log file.
