@@ -338,7 +338,7 @@ install_one (packagemeta & pkg)
     }
   if (pkg.desired->srcpicked)
     errors +=
-      install_one_source (pkg, pkg.desired->src, "cygfile://","/usr/src",
+      install_one_source (pkg, pkg.desired->src, "cygfile://","/usr/src/",
 			  package_source);
 
   /* FIXME: make a upgrade method and reinstate this */
@@ -426,13 +426,13 @@ do_install_thread (HINSTANCE h, HWND owner)
 
   next_dialog = IDD_DESKTOP;
 
-  io_stream::mkpath_p (PATH_TO_DIR, get_root_dir ());
+  io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + get_root_dir ());
 
   for (i = 0; standard_dirs[i]; i++)
     {
       String p = cygpath (standard_dirs[i]);
       if (p.size())
-	io_stream::mkpath_p (PATH_TO_DIR, p);
+	io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + p);
     }
 
   /* Create /var/run/utmp */

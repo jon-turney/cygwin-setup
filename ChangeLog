@@ -1,3 +1,9 @@
+2002-02-24  Robert Collins <rbtcollins@hotmail.com>
+
+	* README: Update TODO list.
+	* install.cc (install_one): Fix src package location.
+	(do_install_thread): Fix creating directories.
+		
 2002-02-19  Robert Collins <rbtcollins@hotmail.com>
 
 	* choose.cc: Include cygpackage.h for scan2 use.

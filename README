@@ -19,6 +19,7 @@ TODO:
   5) Something to return a list of files associated with a package.
 * When installing and enough packages default to visible, the RH scrollbar is 
   sometimes hidden.
+* Mark versions as prev/curr/test in the GUI when clicking through them.
 
  	   
 WISHLIST:
