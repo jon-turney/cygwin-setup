@@ -86,6 +86,8 @@ void save_site_url ();
 class SiteSetting : public UserSetting 
 {
   public:
+    virtual void load();
+    virtual void save();
 };
 
 #endif /* SETUP_SITE_H */

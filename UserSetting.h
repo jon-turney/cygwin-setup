@@ -20,8 +20,16 @@
 
 class UserSetting {
   public:
-  UserSetting();
   virtual ~UserSetting();
+  virtual void load() = 0;
+  virtual void save() = 0;
+  protected:
+  UserSetting();
+  private:
+  /* not implemented */
+  UserSetting(UserSetting const &);
+  UserSetting &operator=(UserSetting const &);
+  friend class UserSettingTest;
 };
 
 #endif /* SETUP_USERSETTING_H */

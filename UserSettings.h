@@ -26,6 +26,8 @@ class UserSettings {
     static UserSettings &Instance();
     void registerSetting(UserSetting &);
     void deRegisterSetting(UserSetting &);
+    void loadAllSettings();
+    void saveAllSettings();
   private:
     static UserSettings Instance_;
     typedef std::vector<UserSetting *> Settings;

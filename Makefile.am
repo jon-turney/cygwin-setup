@@ -19,8 +19,8 @@
 # Makefile for Cygwin installer
 
 AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6 foreign
-DIST_SUBDIRS = bz2lib zlib libgetopt++
-SUBDIRS = bz2lib zlib libgetopt++ @RSYNC@
+DIST_SUBDIRS = bz2lib zlib libgetopt++ tests
+SUBDIRS = bz2lib zlib libgetopt++ @RSYNC@ tests
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 

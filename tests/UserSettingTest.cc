@@ -28,52 +28,63 @@ static const char *cvsid =
 
 #include "LogSingleton.h"
 #include "io_stream.h"
+
 #include "port.h"
 #include "Exception.h"
+#include "UserSetting.h"
 #include "UserSettings.h"
 
 using namespace std;
 
-UserSettings &
-UserSettings::Instance()
+class TestSetting : public UserSetting {
+  public:
+  TestSetting();
+  static TestSetting &getInstance();
+  virtual void load();
+  virtual void save();
+  void testPassed();
+  private:
+  static TestSetting Instance;
+  bool loaded;
+  bool saved;
+};
+
+TestSetting &
+TestSetting::getInstance()
 {
-  if (Instance_.inited != 42)
-      Instance_.init ();
-  return Instance_;
+ return Instance;
+}
+
+TestSetting TestSetting::Instance;
+
+TestSetting::TestSetting() : loaded(false), saved(false) {}
+
+void
+TestSetting::load()
+{
+ loaded = true;
 }
 
 void
-UserSettings::init ()
+TestSetting::save()
 {
-  *this = UserSettings();
-  inited = 42;
-}
-
-UserSettings UserSettings::Instance_;
-
-void
-UserSettings::registerSetting(UserSetting &aSetting)
-{
-  settings.push_back(&aSetting);
+ saved = true;
 }
 
 void
-UserSettings::deRegisterSetting(UserSetting &aSetting)
+TestSetting::testPassed()
 {
-  Settings::iterator i = find(settings.begin(), settings.end(), &aSetting);
-  if (i == settings.end())
-    throw new Exception ("__LINE__ __FILE__", String ("Attempt to deregister non registered setting!"), APPERR_LOGIC_ERROR);
-  settings.erase(i);
+ if (saved)
+ exit(1);
+ if(loaded)
+ exit(1);
 }
 
-void
-UserSettings::loadAllSettings()
+#ifdef ASTEST
+int
+main (int argc, char **argv)
 {
-  for_each(settings.begin(), settings.end(), mem_fun(&UserSetting::load)); 
+  TestSetting::getInstance().testPassed();
+  return 0;
 }
-
-void
-UserSettings::saveAllSettings()
-{
-  for_each(settings.begin(), settings.end(), mem_fun(&UserSetting::save)); 
-}
+#endif
