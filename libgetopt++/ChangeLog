@@ -1,3 +1,8 @@
+2003-11-16 Robert Collins  <rbtcollins@hotmail.com>
+
+	* src/OptionSet.cc (OptionSet::Process): Call the default optionset 
+	if one is supplied and no options are in the default.
+
 2003-03-19 Robert Collins  <rbtcollins@hotmail.com>
 
 	* configure.in: Bump version number.

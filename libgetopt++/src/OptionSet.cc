@@ -36,7 +36,8 @@ OptionSet::Init()
   options = std::vector<Option *> ();
 }
 
-bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
+bool
+OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
 {
   if (argc == 1)
     {
@@ -45,6 +46,8 @@ bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
     }
   if (options.size() == 0)
     {
+      if (defaultOptionSet)
+	  return defaultOptionSet->Process (argc, argv);
 //      log (LOG_TIMESTAMP,
 //	   "%d Command line options passed, and no options registered\n",
 //	   argc);
@@ -63,7 +66,7 @@ bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
     struct option foo = {0, 0, 0, 0};
     longopts[options.size()] = foo;
   }
-// where is this correctly defined?  opterr=0;
+  // where is this correctly defined?  opterr=0;
   int lastoption;
   while ((lastoption = getopt_long (argc, argv, opts, longopts, 0)) != -1)
     {
@@ -84,6 +87,7 @@ bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
 	    }
 	}
     }
+    
     if (optind < argc && optind > 0 && defaultOptionSet)
       return defaultOptionSet->Process (argc - optind, &argv[optind]);
 #if HAVE_STRING___H
