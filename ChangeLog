@@ -1,3 +1,7 @@
+Wed Apr  5 10:52:08 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* Makefile.in: Use ZLIB variable as a target.
+
 Sat Apr  1 22:49:09 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* Makefile.in: Eliminate traces of cygwinisms.  Don't link with

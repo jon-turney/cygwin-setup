@@ -99,7 +99,7 @@ install: all
 $(libmingw32): $(mingw_build)/Makefile
 	@$(MAKE) -C $(@D) $(@F)
 
-zlib/zlibcygw.a: zlib/Makefile
+$(ZLIB): zlib/Makefile
 	@$(MAKE) -C zlib CFLAGS='$(MINGW_CFLAGS)'
 
 %.exe.gz: %.exe
