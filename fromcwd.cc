@@ -119,8 +119,14 @@ found_file (char *path, unsigned int fsize)
 	return;
     }
 
+  if (p->info[trust].version)
+    free(p->info[trust].version);
   p->info[trust].version = _strdup (f.ver);
+
+  if (p->info[trust].install)
+    free(p->info[trust].install);
   p->info[trust].install = _strdup (path);
+
   p->info[trust].install_size = fsize;
 }
 

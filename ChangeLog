@@ -1,4 +1,10 @@
-2001-11-03  Robert Collins  <rbtcollins@hotmail.com>
+2001-11-06  Pavel Tsekov  <ptsekov@syntrex.com>
+
+	* fromcwd.cc (found_file): Free() memory containing the version and
+	filepath information for a given package, before replacing the pointers which
+	reference this memory.
+
+2001-11-06  Robert Collins  <rbtcollins@hotmail.com>
 
 	* fromcwd: Fix compiler warnings for cvsid.
 	(canonicalize_version): Fix compilter warnings.
