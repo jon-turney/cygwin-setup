@@ -28,34 +28,31 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <signal.h>
 
 #include "setup.h"
 #include "strarry.h"
 #include "zlib/zlib.h"
 
-static FILE *cygin, *cygout;
-static HANDLE hcygpath;
-
-static void
-kill_cygpath (int sig)
-{
-  TerminateProcess (hcygpath, 0);
-  exit (1);
-}
+static FILE *cygin = NULL, *cygout = NULL;
+static HANDLE hcygpath = NULL;
 
 void
 exit_cygpath (void)
 {
-  fclose (cygin);
-  fclose (cygout);
-  Sleep (0);
-  if (WaitForSingleObject (hcygpath, 5000) != WAIT_OBJECT_0)
+  if (cygin)
+    fclose (cygin);
+  if (cygout)
+    fclose (cygout);
+  if (hcygpath)
     {
-      TerminateProcess (hcygpath, 0);
-      WaitForSingleObject (hcygpath, 5000);
+      Sleep (0);
+      if (WaitForSingleObject (hcygpath, 5000) != WAIT_OBJECT_0)
+	{
+	  TerminateProcess (hcygpath, 0);
+	  WaitForSingleObject (hcygpath, 5000);
+	}
+      CloseHandle (hcygpath);
     }
-  CloseHandle (hcygpath);
 }
 
 static int
@@ -77,7 +74,6 @@ cygpath_pipe (void)
   hcygpath = (HANDLE) xcreate_process (0, hout, hin, hin, buffer);
   if (!hcygpath)
     return 0;
-  signal (SIGINT, kill_cygpath);
   _close (hpipein[1]);
   _close (hpipeout[0]);
   cygin = fdopen (hpipein[0], "rt");

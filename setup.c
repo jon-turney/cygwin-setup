@@ -29,6 +29,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdarg.h>
+#include <signal.h>
+#include <process.h>
 
 #include "setup.h"
 #include "strarry.h"
@@ -61,9 +63,10 @@ static SA deleteme = {NULL, 0, 0};
 static pkg *pkgstuff;
 static int updating = 0;
 static SA installme = {NULL, 0, 0};
+static HANDLE hMainThread;
 
 static void
-filedel (void)
+cleanup (void)
 {
   int i, j;
   extern void exit_cygpath (void);
@@ -72,6 +75,29 @@ filedel (void)
     for (j = 0; _unlink (deleteme.array[i]) && j < 20; j++)
       Sleep (100);
   sa_cleanup (&deleteme);
+}
+
+static void
+cleanup_on_signal (int sig)
+{
+  /* I have no idea why this is necessary but without this code
+     seems to continue executing in the main thread even after
+     the ExitProcess. */
+  SuspendThread (hMainThread);
+  _cexit ();
+  ExitProcess (1);
+}
+
+static int
+istargz (char *fn)
+{
+  int len = strlen (fn);
+
+  if (len > sizeof (".tar.gz") &&
+      stricmp (fn + len - (sizeof ("tar.gz") - 1), "tar.gz") == 0)
+    return 1;
+
+  return 0;
 }
 
 void
@@ -396,7 +422,7 @@ recurse_dirs (SA *installme, const char *dir)
 	  if (!err)
 	    {
 	      xfree (pattern);
-	      pattern = pathcat (dir, "*tar.gz");
+	      pattern = pathcat (dir, "*.gz");
 	      handle = FindFirstFile (pattern, &find_data);
 	      if (handle != INVALID_HANDLE_VALUE)
 		{
@@ -405,9 +431,10 @@ recurse_dirs (SA *installme, const char *dir)
 		  do
 		    {
 		      /* Skip source archives and meta-directories */
-		      if (strstr (find_data.cFileName, "-src")
+		      if (strstr (find_data.cFileName, "-src") != 0
 			  || strcmp (find_data.cFileName, ".") == 0
 			  || strcmp (find_data.cFileName, "..") == 0
+			  || !istargz (find_data.cFileName)
 			  || !filematches (installme, find_data.cFileName))
 			{
 			  continue;
@@ -844,7 +871,7 @@ processdirlisting (SA *installme, const char *urlbase, const char *file)
 	  if (refmatches (installme, ref, refend))
 	    retval += downloaddir (installme, url);
 	}
-      else if (strstr (url, ".tar.gz") && !strstr (url, "-src"))
+      else if (istargz (url) && !strstr (url, "-src"))
 	{
 	  int download = 0;
 	  char *filename = strrchr (url, '/') + 1;
@@ -856,7 +883,7 @@ processdirlisting (SA *installme, const char *urlbase, const char *file)
 
 	  retval++;
 
-	  if (stricmp (filename, "cygwin-20000301.tar.gz") == 0)
+	  if (strnicmp (filename, "cygwin-20000301", sizeof ("cygwin-20000301") - 1) == 0)
 	    normalize_version ("cygwin-1.1.0.tar.gz", &pkgname, &pkgversion);
 	  else
 	    normalize_version (filename, &pkgname, &pkgversion);
@@ -1402,7 +1429,11 @@ those as the basis for your installation.\n\n"
 
   start = clock ();
   sa_init (&deleteme);
-  atexit (filedel);
+  DuplicateHandle (GetCurrentProcess (), GetCurrentThread (),
+  		   GetCurrentProcess (), &hMainThread, 0, 0,
+		   DUPLICATE_SAME_ACCESS);
+  atexit (cleanup);
+  signal (SIGINT, cleanup_on_signal);
 
   if (!EnumResourceNames (NULL, "FILE", output_file, 0))
     {

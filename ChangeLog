@@ -1,3 +1,19 @@
+Mon May  1 17:56:32 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* path.c (kill_cygpath): Delete function.
+	(exit_cygpath): Make more defensive so that it can be called at any
+	time.
+	(cygpath_pipe): Don't set up signal here.  Do it in main().
+	* setup.c (istargz): New function.
+	(recurse_dirs): Look for *.gz pattern rather than *tar.gz since *tar.gz
+	inexplicably fails on samba mounted partitions.  Use istargz to match
+	tar.gz tail.
+	(processdirlisting) Use istargz to match tar.gz tail.
+	(cleanup): Renamed from filedel.
+	(cleanup_on_signal): New function.  Called on CTRL-C.
+	(main): Record handle of main thread so that it can be suspended when
+	CTRL-C occurs.  Set up cleanup_on_signal signal handler.
+
 Mon May  1 11:05:07 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (do_start_menu): Don't concatenate paths to already built
