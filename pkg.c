@@ -25,8 +25,6 @@
 #define CYGMINOR "%%% Cygwin dll minor: "
 #define CYGMINOR_LEN (sizeof (CYGMINOR) - 1)
 
-pkg global_pkgstuff[1000];
-
 void
 normalize_version (const char *fn_in, char **prod, char **version)
 {
@@ -231,6 +229,7 @@ init_pkgs (const char *root, int use_current_user)
   char buf[4096];
   DWORD ty, sz;
   DWORD nc = 0;
+  static pkg stuff[1000];
 
   sprintf (buf, "%s\\%s", REGWHERE, root);
   for (p = buf + sizeof (REGWHERE); (p = strchr (p, '\\')) != NULL; )
@@ -247,17 +246,17 @@ init_pkgs (const char *root, int use_current_user)
        nc++, sz = sizeof (buf))
     {
       DWORD sz = sizeof (buf);
-      global_pkgstuff[nc].name = xstrdup (buf);
+      stuff[nc].name = xstrdup (buf);
 
-      if (RegQueryValueEx (hkpkg, global_pkgstuff[nc].name, NULL,
+      if (RegQueryValueEx (hkpkg, stuff[nc].name, NULL,
 			 &ty, buf, &sz) == ERROR_SUCCESS)
-	global_pkgstuff[nc].version = xstrdup (buf);
+	stuff[nc].version = xstrdup (buf);
       else
-	global_pkgstuff[nc].version = xstrdup ("");
+	stuff[nc].version = xstrdup ("");
     }
 
-  global_pkgstuff[nc].version = global_pkgstuff[nc].name = NULL;
-  return global_pkgstuff;
+  stuff[nc].version = stuff[nc].name = NULL;
+  return stuff;
 }
 
 int

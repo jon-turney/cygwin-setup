@@ -36,13 +36,10 @@
 #include "strarry.h"
 #include "zlib/zlib.h"
 
-#define MIRRORFILE "http://sourceware.cygnus.com/cygwin/mirrors.html"
-
 #define CYGNUS_KEY "Software\\Cygnus Solutions"
 #define DEF_ROOT "C:\\cygwin"
 #define DOWNLOAD_SUBDIR "latest/"
-#define SCREEN_LINES 23
-#define SCREEN_COLS 80
+#define SCREEN_LINES 25
 #define COMMAND9X "command.com /E:4096 /c "
 
 #ifndef NFILE_LIST
@@ -67,7 +64,6 @@ static pkg *pkgstuff;
 static int updating = 0;
 static SA installme = {NULL, 0, 0};
 static HANDLE hMainThread;
-static char *root;
 
 static void
 cleanup (void)
@@ -82,7 +78,7 @@ cleanup (void)
 }
 
 static void
-cleanup_on_signal (int sig __attribute__ ((unused)))
+cleanup_on_signal (int sig)
 {
   fprintf (stderr, "\n*Exit*\r\n");
   SuspendThread (hMainThread);
@@ -94,26 +90,16 @@ cleanup_on_signal (int sig __attribute__ ((unused)))
   ExitProcess (1);
 }
 
-#define TARGZ_SIZE (sizeof ("tar.gz") - 1)
-static char *
+static int
 istargz (char *fn)
 {
-  size_t len = strlen (fn);
-  static char stem[16384];
+  int len = strlen (fn);
 
   if (len > sizeof (".tar.gz") &&
-      stricmp (fn + (len -= TARGZ_SIZE), "tar.gz") == 0)
-    {
-      char *p;
-      memcpy (stem, fn, len);
-      p = stem + len;
-      if (strchr ("._-", p[-1]))
-	p--;
-      *p = '\0';
-      return stem;
-    }
+      stricmp (fn + len - (sizeof ("tar.gz") - 1), "tar.gz") == 0)
+    return 1;
 
-  return NULL;
+  return 0;
 }
 
 void
@@ -186,9 +172,7 @@ create_shortcut (const char *target, const char *shortcut)
 }
 
 BOOL CALLBACK
-output_file (HMODULE h __attribute__ ((unused)),
-	     LPCTSTR type __attribute__ ((unused)),
-	     LPTSTR name, LONG lparam __attribute__ ((unused)))
+output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
 {
   HRSRC rsrc;
   HGLOBAL res;
@@ -267,18 +251,15 @@ tarx (const char *dir, const char *fn)
   HANDLE hin;
   HANDLE hproc;
   FILE *fp;
-  unsigned filehere;
+  int filehere;
   char *pkgname, *pkgversion;
   pkg *pkg;
 
-  if (strnicmp (fn, "cygwin-20000301", sizeof ("cygwin-20000301") - 1) == 0)
-    normalize_version ("cygwin-1.1.0.tar.gz", &pkgname, &pkgversion);
-  else
-    normalize_version (fn, &pkgname, &pkgversion);
+  normalize_version (fn, &pkgname, &pkgversion);
   pkg = find_pkg (pkgstuff, pkgname);
   if (!newer_pkg (pkg, pkgversion))
     {
-      warning ("Skipped extraction of %s since newer version is installed\n", fn);
+      warning ("Skipped  extraction of package '%s'\n", pkgname);
       return 1;
     }
 
@@ -347,6 +328,11 @@ tarx (const char *dir, const char *fn)
       warning ("Unable to reset protection on '%s' - %s\n",
 	       files.array[filehere], _strerror (""));
 
+  /* Use the version of the cygwin that was just installed rather than the
+     tar file name.  (kludge) */
+  if (stricmp (pkgname, "cygwin") == 0)
+    (void) check_for_installed (".", pkgstuff);
+
   warning ("%s package '%s'\n", write_pkg (pkg, pkgname, pkgversion) ?
 			      "Updated" : "Refreshed", pkgname);
 
@@ -356,7 +342,7 @@ tarx (const char *dir, const char *fn)
 static int
 refmatches (SA *installme, char *ref, char *refend)
 {
-  unsigned i;
+  int i;
   char *p, *q;
   char filebuf[4096];
   if (!installme->count)
@@ -377,7 +363,7 @@ refmatches (SA *installme, char *ref, char *refend)
 static int
 filematches (SA *installme, char *fn)
 {
-  unsigned i;
+  int i;
 
   if (!installme->count)
     return 1;
@@ -446,12 +432,11 @@ recurse_dirs (SA *installme, const char *dir)
 
 		  do
 		    {
-		      char *bat;
 		      /* Skip source archives and meta-directories */
 		      if (strstr (find_data.cFileName, "-src") != 0
 			  || strcmp (find_data.cFileName, ".") == 0
 			  || strcmp (find_data.cFileName, "..") == 0
-			  || !(bat = istargz (find_data.cFileName))
+			  || !istargz (find_data.cFileName)
 			  || !filematches (installme, find_data.cFileName))
 			{
 			  continue;
@@ -462,14 +447,6 @@ recurse_dirs (SA *installme, const char *dir)
 			  err = 1;
 			  break;
 			}
-#ifdef USE_BATFILE
-		      strcat (bat, ".bat");
-		      if (access (bat, 00))
-			{
-			  sprintf (strchr (bat, '\0'), " \"%s\"", root);
-			  (void) xcreate_process (1, NULL, NULL, NULL, bat);
-			}
-#endif
 		    }
 		  while (FindNextFile (handle, &find_data));
 		  FindClose (handle);
@@ -515,73 +492,58 @@ prompt (const char *text, const char *def)
 static int
 optionprompt (const char *text, SA * options)
 {
-  size_t n, c, ncols, response = -1;
+  size_t n, response = -1;
   char buf[5];
   size_t base;
-  int maxwidth=0, skip, percol;
 
-  for (n=0; n<options->count; n++)
+  n = 0;
+
+  do
     {
-      int sl = strlen(options->array[n]);
-      if (maxwidth < sl)
-	maxwidth = sl;
-    }
-  ncols = SCREEN_COLS / (maxwidth + 5);
-  skip = (options->count + ncols - 1) / ncols;
-  printf("count = %d   ncols = %d   skip = %d\n",
-	 options->count, ncols, skip);
-  percol = SCREEN_COLS / ncols;
+      char *or;
+      enum
+      { CONTINUE, REPEAT, ALL }
+      mode;
 
-  base = 0;
+      base = n;
+      if (!base)
+	puts (text);
 
-  puts (text);
+      for (n = 0; n < SCREEN_LINES - 2 && (n + base) < options->count; ++n)
+	printf ("\t%d. %s\n", n + 1, options->array[n + base]);
 
-  while (1)
-    {
-      char *repeat, *enter;
-
-      for (n = 0; n < SCREEN_LINES; n++)
+      if ((n + base) < options->count)
 	{
-	  if (n + base >= options->count)
-	    break;
-	  for (c = 0; c < ncols; c++)
-	    {
-	      unsigned i = n + base + c * SCREEN_LINES;
-	      if (i < options->count)
-		printf("%2d. %-*s", i + 1, percol - 5, options->array[i]);
-	    }
-	  printf("\n");
+	  mode = CONTINUE;
+	  or = " or [continue]";
 	}
-
-      repeat = enter = "";
-      if (skip > SCREEN_LINES)
+      else if (options->count > SCREEN_LINES - 2)
 	{
-	  if (base)
-	    repeat = " or `R' to repeat the list";
-	  if (base + SCREEN_LINES * ncols < options->count)
-	    enter = " or [Enter] for more options";
+	  mode = REPEAT;
+	  or = " or [repeat]";
 	}
-
-      printf ("Select an option from 1-%d%s%s: ", options->count, repeat, enter);
+      else
+	{
+	  mode = ALL;
+	  or = "";
+	}
+      printf ("Select an option from 1-%d%s: ", n, or);
       if (!fgets (buf, sizeof (buf), stdin))
+	continue;
+
+      if (mode == CONTINUE && (!isalnum (*buf) || strchr ("cC", *buf)))
+	continue;
+      else if (mode == REPEAT && (!isalnum (*buf) || strchr ("rR", *buf)))
 	{
-	  /* This can only mean end-of-file, user has gone away */
-	  exit(1);
+	  n = 0;
+	  continue;
 	}
 
-      response = atoi(buf);
-      if (response >= 1 && response <= options->count)
-	return response - 1;
-
-      if (buf[0] == 'c' || buf[0] == 'C' || buf[0] == '\r' || buf[0] == '\n')
-	{
-	  if (base + SCREEN_LINES * ncols < options->count)
-	    base += SCREEN_LINES * ncols;
-	}
-      if (buf[0] == 'r' || buf[0] == 'R')
-	base = 0;
-
+      response = atoi (buf);
     }
+  while (response < 1 || response > n);
+
+  return base + response - 1;
 }
 
 static int
@@ -787,8 +749,7 @@ geturl (const char *url, const char *file, int verbose)
 }
 
 static char *
-findhref (char *buffer, char *date __attribute__ ((unused)),
-	  size_t *filesize)
+findhref (char *buffer, char *date, size_t *filesize)
 {
   char *ref = NULL;
   char *anchor = NULL;
@@ -864,14 +825,13 @@ out:
 }
 
 static int
-needfile (const char *filename, char *date __attribute__ ((unused)),
-	  size_t filesize)
+needfile (const char *filename, char *date, size_t filesize)
 {
   struct _stat st;
 
   if (!filesize || _stat (filename, &st))
     return 1;	/* file doesn't exist or is somehow not accessible */
-  return (size_t) st.st_size != filesize;
+  return st.st_size != filesize;
 }
 
 static int
@@ -1086,7 +1046,7 @@ reverse_sort (const void *arg1, const void *arg2)
 }
 
 static int
-create_uninstall (const char *folder, const char *shellscut,
+create_uninstall (const char *wd, const char *folder, const char *shellscut,
 		  const char *shortcut)
 {
   int retval = 0;
@@ -1153,7 +1113,7 @@ create_uninstall (const char *folder, const char *shellscut,
 
 /* Writes the startup batch file. */
 static int
-do_start_menu (void)
+do_start_menu (const char *root)
 {
   FILE *batch;
   char *batch_name = pathcat (root, "bin\\cygwin.bat");
@@ -1221,7 +1181,8 @@ do_start_menu (void)
 			pathcat (folder, "Uninstall Cygwin 1.1.0.lnk");
 		      if (uninstscut)
 			{
-			  if (create_uninstall (folder, shortcut, uninstscut))
+			  if (create_uninstall
+			      (wd, folder, shortcut, uninstscut))
 			    retval = 1;
 			  xfree (uninstscut);
 			}
@@ -1252,7 +1213,8 @@ getdownloadsource ()
       exit (1);
     }
 
-  if (!geturl (MIRRORFILE, filename, 1))
+  if (!geturl ("http://sourceware.cygnus.com/cygwin/mirrors.html",
+	       filename, 1))
     fputs ("Unable to retrieve the list of cygwin mirrors.\n", stderr);
   else
     {
@@ -1300,7 +1262,7 @@ getdownloadsource ()
 			  else
 			    name = url;
 			  *strchr (name, '/') = '\0';
-			  sa_add (&names, name);
+			  sa_add (&names, url);
 
 			  xfree (url);
 			}
@@ -1350,13 +1312,13 @@ mkdirp (const char *dir)
 
 /* This routine assumes that the cwd is the root directory. */
 static int
-mkmount (const char *mountexedir, const char *dospath,
+mkmount (const char *mountexedir, const char *root, const char *dospath,
 	 const char *unixpath, int force)
 {
   char *mount, *fulldospath;
   char buffer[1024];
 
-  if (root == NULL)
+  if (*root == '\0')
     fulldospath = xstrdup (dospath);
   else
     {
@@ -1382,31 +1344,27 @@ mkmount (const char *mountexedir, const char *dospath,
 }
 
 static pkg *
-get_pkg_stuff (int updating)
+get_pkg_stuff (const char *root, int updating)
 {
   const char *ver, *ans;
   pkg *pkgstuff = init_pkgs (root, 0);
+  static pkg dummy = {NULL, NULL};
 
   if (!updating || !pkgstuff)
-    {
-      extern pkg global_pkgstuff[];
-      (void) check_for_installed (root, global_pkgstuff);
-      return global_pkgstuff;
-    }
-
-  ver = check_for_installed (root, pkgstuff);
+    return &dummy;
 
   if (pkgstuff->name != NULL)
     return pkgstuff;
 
+  ver = check_for_installed (root, pkgstuff);
   if (!ver || stricmp (ver, "1.1.0") != 0)
-    return pkgstuff;
+    return &dummy;
 
-  ans = prompt (
-	"\nHmm.  You seem to have a previous cygwin version installed but there is no\n"
+  puts ("\nHmm.  You seem to have a previous cygwin version installed but there is no\n"
 	"package version information in the registry.  This is probably due to the fact\n"
-	"that previous versions of setup.exe did not update this information.\n"
-	"Should I update the registry with default information now", "y");
+	"that previous versions of setup.exe did not update this information.");
+
+  ans = prompt ("Should I update the registry with default information now", "y");
   puts ("");
   if (toupper (*ans) != 'Y')
     {
@@ -1423,7 +1381,7 @@ get_pkg_stuff (int updating)
 static char rev[] = "$Revision$ ";
 
 int
-main (int argc __attribute__ ((unused)), char **argv)
+main (int argc, char **argv)
 {
   int retval = 1;		/* Default to error code */
   clock_t start;
@@ -1481,6 +1439,7 @@ those as the basis for your installation.\n\n"
   else
     {
       char *defroot, *update;
+      char *root;
       char *tmp;
       int done;
       HKEY cu = NULL, lm = NULL;
@@ -1558,7 +1517,12 @@ those as the basis for your installation.\n\n"
 
       Sleep (0);
 
-      pkgstuff = get_pkg_stuff (updating);
+      /* Create the root directory. */
+      mkdirp (root);		/* Ignore any return value since it may
+				   already exist. */
+      mkmount (wd, "", root, "/", 1);
+
+      pkgstuff = get_pkg_stuff (root, updating);
 
       update =
 	prompt ("Install from the current directory (d) or from the Internet (i)", "i");
@@ -1587,11 +1551,6 @@ those as the basis for your installation.\n\n"
 	}
       xfree (update);
 
-      /* Create the root directory. */
-      mkdirp (root);		/* Ignore any return value since it may
-				   already exist. */
-      mkmount (wd, "", "/", 1);
-
       /* Make the root directory the current directory so that recurse_dirs
 	 will * extract the packages into the correct path. */
       if (chdir (root) == -1)
@@ -1612,8 +1571,8 @@ those as the basis for your installation.\n\n"
 	  xumount (wd, "/etc");
 
 	  /* Make /bin point to /usr/bin and /lib point to /usr/lib. */
-	  mkmount (wd, "bin", "/usr/bin", 1);
-	  mkmount (wd, "lib", "/usr/lib", 1);
+	  mkmount (wd, root, "bin", "/usr/bin", 1);
+	  mkmount (wd, root, "lib", "/usr/lib", 1);
 
 	  mkdirp ("var\\run");
 	  /* Create /var/run/utmp */
@@ -1643,7 +1602,7 @@ those as the basis for your installation.\n\n"
 	      mkdir (files.array[files.index - 1]);
 	      mkdir (files.array[files.index - 2]);
 
-	      if (do_start_menu ())
+	      if (do_start_menu (root))
 		retval = 0;	/* Everything worked return
 				   successful code */
 	    }
