@@ -11,6 +11,7 @@
 	* res.rc: ditto
 	* resource.h: ditto
 	* state.h: ditto
+	* desktop.cc: make sure we use backslashes, not slashes.
 	
 2000-07-10  DJ Delorie  <dj@cygnus.com>
 

@@ -77,7 +77,7 @@ char *etc_profile[] = {
   0
 };
 
-#define COMMAND9XARGS "/E:4096 /c "
+#define COMMAND9XARGS "/E:4096 /c"
 #define COMMAND9XEXE  "\\command.com"
 
 static char *batname;
@@ -95,6 +95,7 @@ backslash (char *s)
 static void
 make_link (char *linkpath, char *title, char *target)
 {
+  char argbuf[_MAX_PATH];
   char *fname = concat (linkpath, "/", title, ".lnk", 0);
 
   if (_access (fname, 0) == 0)
@@ -104,7 +105,7 @@ make_link (char *linkpath, char *title, char *target)
 
   mkdir_p (0, fname);
 
-  char *cmdline, *exepath, *args;
+  char *exepath, *args;
   OSVERSIONINFO verinfo;
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
 
@@ -112,7 +113,6 @@ make_link (char *linkpath, char *title, char *target)
   GetVersionEx (&verinfo);
   if (verinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
-      cmdline = target;
       exepath = target;
       args = "";
     }
@@ -122,11 +122,12 @@ make_link (char *linkpath, char *title, char *target)
       char windir[MAX_PATH];
 
       GetWindowsDirectory (windir, sizeof (windir));
-      cmdline = concat (windir, COMMAND9XEXE, " ", COMMAND9XARGS,  target, 0);
       exepath = concat (windir, COMMAND9XEXE, 0);
-      args = concat (COMMAND9XARGS, target, 0);
+      sprintf (argbuf, "%s %s", COMMAND9XARGS, target);
+      args = argbuf;
     }
 
+  msg ("make_link_2 (%s, %s, %s, %s)", exepath, args, iconname, fname);
   make_link_2 (exepath, args, iconname, fname);
 }
 
@@ -156,7 +157,7 @@ desktop_icon (char *title, char *target)
 static void
 make_cygwin_bat ()
 {
-  batname = concat (root_dir, "/cygwin.bat", 0);
+  batname = backslash (concat (root_dir, "/cygwin.bat", 0));
 
   /* if the batch file exists, don't overwrite it */
   if (_access (batname, 0) == 0)
@@ -211,7 +212,7 @@ make_etc_profile ()
 static void
 save_icon ()
 {
-  iconname = concat (root_dir, "/cygwin.ico", 0);
+  iconname = backslash (concat (root_dir, "/cygwin.ico", 0));
 
   HRSRC rsrc = FindResource (NULL, "CYGWIN.ICON", "FILE");
   if (rsrc == NULL)
