@@ -1,3 +1,8 @@
+2002-02-19  Robert Collins <rbtcollins@hotmail.com>
+
+	* mount.cc (create_mount): Avoid a const char*->char* warning.
+	(read_mounts): Ditto.
+
 2002-02-05  Jason Tishler  <jason@tishler.net>
 
         * download.cc (do_download_thread): Fix off-by-one error.
