@@ -97,6 +97,7 @@ simple_line
  | LDESC STRING			{ cpv->set_ldesc ($2); }
  | CATEGORY categories
  | REQUIRES requires
+ | INSTALL STRING STRING STRING
  | INSTALL STRING STRING	{ if (!cpv->Canonical_version ().size())
    				  {
 				    fileparse f;
@@ -114,6 +115,7 @@ simple_line
 				  }
 				  cpv->bin.sites.registerbykey (parse_mirror);
 				}
+ | SOURCE STRING STRING STRING
  | SOURCE STRING STRING		{ if (!cpv->src.size)
    				  {
 				    cpv->src.size = atoi($3);

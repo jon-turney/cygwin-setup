@@ -1,3 +1,8 @@
+2002-05-02  Christopher Faylor  <cgf@redhat.com>
+
+	* iniparse.y: Ignore third argument in source: or install: to augur
+	new functionality in trunk setup.exe.
+
 2002-04-12  Robert Collins  <rbtcollins@hotmail.com>
 
 	* mklink2.cc (make_link_2): Tweak to work with current w32api 
