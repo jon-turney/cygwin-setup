@@ -21,6 +21,8 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "csu_util/rfc1738.h"
+
 #include "download.h"
   
 #include "win32.h"
@@ -44,8 +46,6 @@ static const char *cvsid =
 #include "package_meta.h"
 #include "package_version.h"
 #include "package_source.h"
-
-#include "rfc1738.h"
 
 #include "threebar.h"
 

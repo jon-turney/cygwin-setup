@@ -25,6 +25,7 @@ static const char *cvsid =
 
 #include "ini.h"
 
+#include "csu_util/rfc1738.h"
 #include "csu_util/version_compare.h"
 
 #include "setup_version.h"
@@ -44,7 +45,6 @@ static const char *cvsid =
 #include "msg.h"
 #include "mount.h"
 #include "site.h"
-#include "rfc1738.h"
 #include "find.h"
 #include "IniParseFindVisitor.h"
 #include "IniParseFeedback.h"
@@ -52,8 +52,6 @@ static const char *cvsid =
 #include "io_stream.h"
 
 #include "threebar.h"
-
-#include "rfc1738.h"
 
 #include "IniDBBuilderPackage.h"
 #include "compress.h"

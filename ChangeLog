@@ -1,5 +1,23 @@
 2005-04-05  Max Bowsher  <maxb@ukf.net>
 
+	The Big Cleanup: Phase "rfc1738"
+
+	* rfc1738.cc, rfc1738.h: Delete.
+	* csu_util/rfc1738.cc: Reimport latest version from upstream source.
+	Make thread-safe. Rewrite C++ wrapper in terms of std::string.
+	Document the divergences from the upstream source.
+	* csu_util/rfc1738.h: Recreate for the std::string version of the
+	C++ wrapper.
+
+	* Makefile.am (setup_SOURCES): Sync with added/removed files.
+	* IniParseFindVisitor.cc: Modify #includes.
+	(IniParseFindVisitor::visitFile): Change function name, as the new
+	C++ wrapper does not contain an irregularity that the old one did.
+	* download.cc: Modify #includes.
+	* ini.cc: Modify #includes.
+
+2005-04-05  Max Bowsher  <maxb@ukf.net>
+
 	Remove setup's internal compression libraries, instead relying on the
 	mingw-foo packages which have been part of the Cygwin net distribution
 	for some time now.  At the same time, reorganize the README file to

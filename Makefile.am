@@ -235,8 +235,6 @@ setup_SOURCES = \
 	RECTWrapper.h \
 	res.rc \
 	resource.h \
-	rfc1738.cc \
-	rfc1738.h \
 	root.cc \
 	root.h \
 	ScanFindVisitor.cc \
@@ -270,6 +268,8 @@ setup_SOURCES = \
 	window.h \
 	csu_util/MD5Sum.cc \
 	csu_util/MD5Sum.h \
+	csu_util/rfc1738.cc \
+	csu_util/rfc1738.h \
 	csu_util/version_compare.cc \
 	csu_util/version_compare.h \
 	libmd5-rfc/md5.c \
