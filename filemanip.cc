@@ -69,12 +69,12 @@ find_tar_ext (const char *path)
 {
   char *end = strchr (path, '\0');
   /* check in longest first order */
-  char *ext;
-  if ((ext = strstr (path, ".tar.bz2")) && (end - ext) == 8)
+  const char *ext;
+  if ((ext = trail (path, ".tar.bz2")) && (end - ext) == 8)
     return ext - path;
-  if ((ext = strstr (path, ".tar.gz")) && (end - ext) == 7)
+  if ((ext = trail (path, ".tar.gz")) && (end - ext) == 7)
     return ext - path;
-  if ((ext = strstr (path, ".tar")) && (end - ext) == 4)
+  if ((ext = trail (path, ".tar")) && (end - ext) == 4)
     return ext - path;
   return 0;
 }
@@ -137,6 +137,19 @@ parse_filename (String const &in_fn, fileparse & f)
   f.ver = *ver ? ver : "0.0";
   delete[] p;
   return 1;
+}
+
+const char *
+trail (const char *haystack, const char *needle)
+{
+  /* See if the path ends in a trailing setup.ini component.
+     Just return if it doesn't. */
+  unsigned len = strlen (haystack);
+  int prefix_len = len - strlen (needle);
+  if (prefix_len < 0
+      || strcasecmp (haystack += prefix_len, needle) != 0)
+    return NULL;
+  return haystack;
 }
 
 String

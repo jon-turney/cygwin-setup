@@ -111,6 +111,8 @@ ini_init(io_stream *stream, IniDBBuilder *aBuilder)
 {
   input_stream = stream;
   iniBuilder = aBuilder;
+  YY_FLUSH_BUFFER;
+  yylineno = 1;
 }
 
 static int
@@ -140,4 +142,10 @@ ignore_line ()
       if (c == '\n')
 	return;
     }
+}
+
+int
+yybol ()
+{
+  return !!YY_AT_BOL ();
 }

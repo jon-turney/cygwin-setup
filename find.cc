@@ -30,7 +30,7 @@ static const char *cvsid =
 #include "String++.h"
 #include "find.h"
 
-static char dir[_MAX_PATH], *found_part;
+static char dir[_MAX_PATH];
 
 static int
 find_sub (void (*for_each) (char *, unsigned int))
@@ -40,8 +40,7 @@ find_sub (void (*for_each) (char *, unsigned int))
   char *end = dir + strlen (dir);
   int rv = 0;
 
-  *end++ = '/';
-  strcpy (end, "*");
+  strcpy (end, "\\*");
 
   h = FindFirstFile (dir, &wfd);
 
@@ -54,13 +53,14 @@ find_sub (void (*for_each) (char *, unsigned int))
 	  || strcmp (wfd.cFileName, "..") == 0)
 	continue;
 
-      strcpy (end, wfd.cFileName);
+      *end = '\\';
+      strcpy (end + 1, wfd.cFileName);
 
       if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 	find_sub (for_each);
       else
 	{
-	  for_each (found_part, wfd.nFileSizeLow);
+	  for_each (dir, wfd.nFileSizeLow);
 	  rv++;
 	}
 
@@ -75,7 +75,6 @@ int
 find (String const &starting_dir, void (*_for_each) (char *, unsigned int))
 {
   strcpy (dir, starting_dir.cstr_oneuse());
-  found_part = dir + strlen (dir) + 1;
 
   return find_sub (_for_each);
 }

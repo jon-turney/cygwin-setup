@@ -1,3 +1,39 @@
+2002-05-14  Christopher Faylor  <cgf@redhat.com>
+
+	* ini.cc (find_routine): Don't clear buffer it it's NULL.
+
+2002-05-14  Christopher Faylor  <cgf@redhat.com>
+
+	* filemanip.h (trail): Declare.
+	* filemanip.cc (trail): New function.
+	(find_tar_ext): Use trail() instead of strstr().
+	* fromcwd.cc (check_ini): Ditto.
+	* ini.cc (find_routine): Ditto.  Don't tack local_dir to path since it
+	should now be fully qualified.  Set ini_filename.  Reset error_buf and
+	error_count for any subsequent ini file parsing.
+	(ini_filename): New static variable for parse error reporting.
+	(yyerror): Use full path of setup.ini in error message.  Subtract one
+	from line number if at bol.
+	* find.cc (found_part): Eliminate.
+	(find_sub): Call for_each with full path found rather than just file
+	component.
+	(find): Don't calculate found_part.
+	* inilex.l (ini_init): Flush input buffer and reset line number.
+	(yybol): New function.  Exports YY_AT_BOL.
+	* iniparse.y: Increase stack depth to allow more tokens to be processed.
+	(yyparse): Remove newline from error condition to allow subsequent
+	per-line error processing to proceed normally.
+
+2002-05-14  Christopher Faylor  <cgf@redhat.com>
+
+	* find.cc (find_sub): Be more defensive in preserving trailing parts of
+	components when doing recursive directory searches or calling user
+	supplied for_each().
+	* ini.cc (find_routine): Don't assume that any path name with
+	"setup.ini" in it is actually a setup.ini file.  Only honor trailing
+	components.  Copy path argument to temporary storage when unescaping
+	to prevent nuking of argument.
+
 2002-05-12  Robert Collins  <rbtcollins@hotmail.com>
 
 	* CONTRIBUTORS: New file.

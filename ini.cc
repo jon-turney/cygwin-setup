@@ -43,6 +43,7 @@ static const char *cvsid =
 #include "site.h"
 #include "rfc1738.h"
 #include "find.h"
+#include "filemanip.h"
 
 #include "io_stream.h"
 
@@ -68,34 +69,45 @@ static int local_ini;
 
 static IniDBBuilder *findBuilder;
 
+static const char *ini_filename;
+
 static void
 find_routine (char *path, unsigned int fsize)
 {
-  if (!strstr (path, "setup.ini") )
+  const char *setup_ini = trail (path, "\\setup.ini");
+
+  if (setup_ini == NULL)
     return;
-  io_stream *ini_file = io_stream::open (String ("file://") + local_dir + "/" +
-					 path, "rb");
+
+  io_stream *ini_file = io_stream::open (String ("file://") + path, "rb");
   if (!ini_file)
     {
-    note (NULL, IDS_SETUPINI_MISSING, (String ("file://") + local_dir + "/" +
-				       path).cstr_oneuse());
+    note (NULL, IDS_SETUPINI_MISSING, (String ("file://") + path).cstr_oneuse());
     return;
     }
   else
     log (LOG_BABBLE, String ("Found ini file - file://") + local_dir + "/" + path);
 
-  /* Attempt to unescape the string */
-  path[strlen(path) -10] = '\0';
-  String mirror = rfc1738_unescape_part (path);
-  findBuilder->parse_mirror = mirror;
-  ini_init (ini_file, findBuilder);
+  unsigned pathprefix_len = setup_ini - path;
+    /* Copy leading part of path to temporary buffer and unescape it */
+
+  char path_prefix[pathprefix_len + 1];
+  strncpy (path_prefix, path, pathprefix_len);
+  path_prefix[pathprefix_len] = '\0';
+  String mirror = rfc1738_unescape_part (path_prefix);
 
   /*yydebug = 1; */
 
+  ini_filename = path;
   if (yyparse () || error_count > 0)
     MessageBox (0, error_buf, error_count == 1 ? "Parse Error" : "Parse Errors", 0);
   else
     local_ini++;
+
+  if (error_buf)
+    *error_buf = '\0';
+  error_count = 0;
+
   if (findBuilder->timestamp > setup_timestamp)
     {
       setup_timestamp = findBuilder->timestamp;
@@ -268,13 +280,14 @@ do_ini (HINSTANCE h, HWND owner)
 
 
 extern int yylineno;
+extern int yybol ();
 
 extern int
 yyerror (String const &s)
 {
-  char buf[1000];
+  char buf[MAX_PATH + 1000];
   int len;
-  sprintf (buf, "setup.ini line %d: ", yylineno);
+  sprintf (buf, "%s line %d: ", ini_filename, yylineno - yybol ());
   sprintf (buf + strlen (buf), s.cstr_oneuse());
   OutputDebugString (buf);
   if (error_buf)

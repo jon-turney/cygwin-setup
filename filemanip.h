@@ -30,3 +30,4 @@ int parse_filename (String const & in_fn, fileparse & f);
 String base (String const &);
 size_t get_file_size (String const &);
 String backslash (String const &);
+const char * trail (const char *, const char *);

@@ -33,6 +33,7 @@ int yylex ();
 #include "IniDBBuilder.h"
 
 #define YYERROR_VERBOSE 1
+#define YYINITDEPTH 1000
 /*#define YYDEBUG 1*/
 
 IniDBBuilder *iniBuilder;
@@ -96,10 +97,8 @@ simple_line
  | T_TEST			{ iniBuilder->buildPackageTrust (TRUST_TEST); }
  | T_UNKNOWN			{ iniBuilder->buildPackageTrust (TRUST_UNKNOWN); }
  | /* empty */
- | error '\n' { --yylineno;
-		yyerror (String("unrecognized line ") + yylineno + " (do you have the latest setup?)");
-		++yylineno;
-	      }
+ | error { yyerror (String("unrecognized line ") + yylineno + " (do you have the latest setup?)");
+	}
  ;
 
 requires
