@@ -4,6 +4,7 @@ net releases.
 RELEASE BLOCKERS:
  * Remove *empty* directories on uninstalls. (done?)
  * Correctly overwrite -r--r--r-- files. (done?)
+
 TODO:
  * Don't downgrade if the curr version is <= installed?
  * Support rpm/deb files for reading the package from. (To allow the
@@ -60,6 +61,7 @@ WISHLIST:
  * Log postinstall scripts to a file.
  * Confirm cancellation of setup if in the middle of doing something.
  * Improve mirror selection UI.
+ * Ability to "hold" the version of a package - i.e. never auto-upgrade.
 
 Unconfirmed Bugs
 
