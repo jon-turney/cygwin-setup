@@ -1,3 +1,7 @@
+2000-09-07  Jeffrey Juliano  <juliano@cs.unc.edu>
+
+	* choose.cc (list_click): Check for nindexes==0; if so, return.
+
 2000-09-06  Andrej Borsenkow  <Andrej.Borsenkow@mow.siemens.ru>
 
 	* localdir.cc: new, local package directory selection dialog; cd

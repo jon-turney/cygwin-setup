@@ -239,6 +239,9 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 {
   int r;
 
+  if (nindexes == 0)
+    return 0;
+
   if (y < header_height)
     return 0;
   x += scroll_ulc_x;
