@@ -37,7 +37,3 @@ Make the site listbox bigger.
 Sort site list by site (NOT url, and skip the ftp. or www. prefix).
 
 download.cc: add a "total progress" indicator, like the install one.
-
-Enhance the setup.ini parser's error messages.
-
-If a site fails, return to the site list to pick another one.

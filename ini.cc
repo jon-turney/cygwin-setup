@@ -48,7 +48,11 @@ do_ini (HINSTANCE h)
   dismiss_url_status_dialog ();
 
   if (!ini_file)
-    fatal (IDS_SETUPINI_MISSING, MIRROR_SITE);
+    {
+      note (IDS_SETUPINI_MISSING, MIRROR_SITE);
+      next_dialog = IDD_SITE;
+      return;
+    }
 
   ini_init (ini_file);
 

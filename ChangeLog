@@ -1,9 +1,14 @@
 2000-07-18  DJ Delorie  <dj@redhat.com>
 
+	* site.cc (get_site_list): trim displayed URL, sort by domain
+
+	* net.cc (do_net): make IE5 default to checked, for now
+
 	* choose.cc (do_choose): sort packages correctly
 	* ini.cc (do_ini): handle parse errors more gracefully
 	(yyerror): ditto
 	(fprintf): line buffer output
+	(do_ini): if we can't load setup.ini, go back to the site list.
 	* ini.h: add "unknown" trust level
 	* inilex.l: absorb unknown trust levels and key/value pairs,
 	add line number logic

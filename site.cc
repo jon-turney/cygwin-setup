@@ -33,7 +33,14 @@
 
 #define NO_IDX (-1)
 #define OTHER_IDX (-2)
-static char **site_list = 0;
+
+typedef struct {
+  char *url;
+  char *displayed_url;
+  char *sort_key;
+} site_list_type;
+
+static site_list_type *site_list = 0;
 static int list_idx = NO_IDX;
 static int mirror_idx = NO_IDX;
 
@@ -68,7 +75,7 @@ save_dialog (HWND h)
       if (mirror_idx == OTHER_IDX)
 	mirror_site = 0;
       else
-	mirror_site = site_list[mirror_idx];
+	mirror_site = site_list[mirror_idx].url;
     }
 }
 
@@ -142,9 +149,9 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_INITDIALOG:
       listbox = GetDlgItem (h, IDC_URL_LIST);
-      for (i=0; site_list[i]; i++)
+      for (i=0; site_list[i].url; i++)
 	{
-	  j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM)site_list[i]);
+	  j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM)site_list[i].displayed_url);
 	  SendMessage (listbox, LB_SETITEMDATA, j, i);
 	}
       j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM)"Other URL");
@@ -155,6 +162,14 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
       return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }
   return FALSE;
+}
+
+static int
+site_sort (const void *va, const void *vb)
+{
+  site_list_type *a = (site_list_type *)va;
+  site_list_type *b = (site_list_type *)vb;
+  return strcmp (a->sort_key, b->sort_key);
 }
 
 static int
@@ -179,7 +194,7 @@ get_site_list (HINSTANCE h)
     if (*bol == '\n')
       nmirrors ++;
 
-  site_list = (char **) malloc (nmirrors * sizeof (char *));
+  site_list = (site_list_type *) malloc (nmirrors * sizeof (site_list_type));
   nmirrors = 0;
 
   nl = mirrors;
@@ -196,14 +211,48 @@ get_site_list (HINSTANCE h)
       *eol = 0;
       if (bol[0] != '#' && bol[0] > ' ')
 	{
-	  site_list[nmirrors] = _strdup (bol);
-	  char *semi = strchr (site_list[nmirrors], ';');
+	  char *semi = strchr (bol, ';');
 	  if (semi)
 	    *semi = 0;
+	  site_list[nmirrors].url = _strdup (bol);
+	  site_list[nmirrors].displayed_url = _strdup (bol);
+	  char *dot = strchr (site_list[nmirrors].displayed_url, '.');
+	  if (dot)
+	    {
+	      dot = strchr (dot, '/');
+	      if (dot)
+		*dot = 0;
+	    }
+	  site_list[nmirrors].sort_key = (char *) malloc (2*strlen (bol) + 3);
+
+	  dot = site_list[nmirrors].displayed_url;
+	  dot += strlen (dot);
+	  char *dp = site_list[nmirrors].sort_key;
+	  while (dot != site_list[nmirrors].displayed_url)
+	    {
+	      if (*dot == '.' || *dot == '/')
+		{
+		  char *sp;
+		  if (dot[3] == 0)
+		    *dp++ = '~'; /* sort .com/.edu/.org together */
+		  for (sp=dot+1; *sp && *sp != '.' && *sp != '/';)
+		    *dp++ = *sp++;
+		  *dp++ = ' ';
+		}
+	      dot--;
+	    }
+	  *dp++ = ' ';
+	  strcpy (dp, site_list[nmirrors].displayed_url);
+
 	  nmirrors++;
 	}
     }
-  site_list[nmirrors] = 0;
+  site_list[nmirrors].url = 0;
+
+  qsort (site_list, nmirrors, sizeof (site_list_type), site_sort);
+
+  for (int i=0; i<nmirrors; i++)
+    msg ("site[%d] = \"%s\"", i, site_list[i].sort_key);
 
   return 0;
 }
@@ -234,14 +283,15 @@ get_initial_list_idx ()
     return;
 
   int i;
-  for (i = 0; site_list[i]; i++)
-    if (strcmp (site_list[i], site) == 0)
+  for (i = 0; site_list[i].url; i++)
+    if (strcmp (site_list[i].url, site) == 0)
       break;
 
-  if (! site_list[i])
+  if (! site_list[i].url)
     {
-      site_list[i] = _strdup (site);
-      site_list[i+1] = 0;
+      site_list[i].displayed_url =
+      site_list[i].url = _strdup (site);
+      site_list[i+1].url = 0;
     }
 
   mirror_idx = list_idx = i;

@@ -255,7 +255,7 @@ BEGIN
     IDS_ERR_OPEN_WRITE      "Can't open %s for writing: %s"
     IDS_SETUPINI_MISSING    "Unable to get setup.ini from %s"
     IDS_OLD_SETUPINI        "This setup.ini is older than the one you used last time you installed cygwin.  Proceed anyway?"
-    IDS_ERR_RENAME          "Cab't rename %s to %s: %s"
+    IDS_ERR_RENAME          "Can't rename %s to %s: %s"
     IDS_NOTHING_INSTALLED   "Nothing needed to be installed"
     IDS_INSTALL_COMPLETE    "Installation Complete"
     IDS_DOWNLOAD_COMPLETE   "Download Complete"

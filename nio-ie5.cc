@@ -63,10 +63,6 @@ NetIO_IE5::NetIO_IE5 (char *_url)
 	  InternetGetLastResponseInfo (&e, buf, &l);
 	  MessageBox (0, buf, "Internet Error", 0);
 	}
-      else
-	{
-	  fatal (url);
-	}
     }
 }
 
