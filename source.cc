@@ -63,7 +63,10 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDOK:
       save_dialog (h);
-      NEXT (IDD_ROOT);
+      if (source == IDC_SOURCE_DOWNLOAD)
+	NEXT (IDD_LOCAL_DIR);
+      else
+	NEXT (IDD_ROOT);
       break;
 
     case IDC_BACK:
@@ -105,7 +108,8 @@ do_source (HINSTANCE h)
 {
   int rv = 0;
   /* source = IDC_SOURCE_CWD;*/
-  source = IDC_SOURCE_NETINST;
+  if (!source)
+    source = IDC_SOURCE_NETINST;
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_SOURCE), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);

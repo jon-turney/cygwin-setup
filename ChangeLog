@@ -1,3 +1,17 @@
+2001-11-13  Brian Keener    <bkeener@thesoftwaresource.com>
+
+	* localdir.cc: Add headers unistd.h and port.h.
+	(save_local_dir): Expand search logic to include local directory for     
+	location of file last-cache.
+	(dialog_cmd): Skip IDD_ROOT when downloading and use Back button.
+	(do_local_dir): Expand search logic to include local directory for file  
+	last-cache.
+	* res.rc (IDD_CHOOSE_DIALOG): Add hotkey to View button.
+	* Source.cc (dialog_cmd): Skip IDD_ROOT if select Download from         
+	Internet.
+	(do_source): Default to Install from Internet on first entry or        
+	previous selection if backing up from IDD_ROOT or IDD_LOCAL_DIR.
+
 2001-11-12  Christopher Faylor  <cgf@redhat.com>
 
 	* desktop.cc (start_menu): Change start menu name to "Cygwin".

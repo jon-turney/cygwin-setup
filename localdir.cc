@@ -25,6 +25,7 @@ static char *cvsid =
 #include <shlobj.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <ctype.h>
 
 #include "dialog.h"
@@ -35,6 +36,8 @@ static char *cvsid =
 #include "concat.h"
 #include "log.h"
 #include "mkdir.h"
+
+#include "port.h"
 
 static void
 get_root_dir_now ()
@@ -50,12 +53,18 @@ void
 save_local_dir ()
 {
   get_root_dir_now ();
-  if (!get_root_dir ())
-    return;
 
   mkdir_p (1, local_dir);
 
-  FILE *f = fopen (cygpath ("/etc/setup/last-cache", 0), "wb");
+  FILE *f;
+  if (!get_root_dir ())
+    f = fopen ("last-cache", "wb");
+  else
+    {
+      f = fopen (cygpath ("/etc/setup/last-cache", 0), "wb");
+      if ( _access ( "last-cache" , 0 ) == 0 && get_root_dir() )
+        remove ("last-cache");
+    }
   if (!f)
     return;
   fprintf (f, "%s", local_dir);
@@ -161,10 +170,12 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       save_dialog (h);
       switch (source)
 	{
-	case IDC_SOURCE_DOWNLOAD:
 	case IDC_SOURCE_NETINST:
 	case IDC_SOURCE_CWD:
 	  NEXT (IDD_ROOT);
+	  break;
+	case IDC_SOURCE_DOWNLOAD:
+	  NEXT (IDD_SOURCE);
 	  break;
 	default:
 	  msg ("source is default? %d\n", source);
@@ -200,7 +211,12 @@ do_local_dir (HINSTANCE h)
   static int inited = 0;
   if (!inited)
     {
-      FILE *f = fopen (cygpath ("/etc/setup/last-cache", 0), "rt");
+      FILE *f;
+      get_root_dir_now ();
+      if (_access ( "last-cache" , 0 ) != 0 && get_root_dir() )
+       	f = fopen (cygpath ("/etc/setup/last-cache", 0), "rt");
+      else
+	f = fopen ("last-cache", "rt");
       if (f)
 	{
 	  char localdir[1000];
