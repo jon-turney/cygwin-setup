@@ -50,6 +50,7 @@ WISHLIST:
  * run a different script after finishing setup.
  * Show bin and src download size
  * Set ntsec permissions correctly, and for new installs enable ntsec.
+ * Log postinstall scripts to a file.
    
 recently completed
 

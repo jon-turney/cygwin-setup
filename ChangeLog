@@ -1,3 +1,9 @@
+2002-06-10  Robert Collins  <rbtcollins@hotmail.com>
+
+	* IniParseFindVisitor (IniParseFindVisitor::visitFile): Apply Max
+	Bowshers fix for the crash with a root level setup.ini. 
+	* README: Update todos.
+
 2002-05-26 Ralf Habacker  <ralf.habacker@freenet.de>
 
 	* archive_tar.cc (archive_tar::next_file_name()): fixed broken
