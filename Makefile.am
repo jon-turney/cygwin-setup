@@ -282,7 +282,7 @@ setup_SOURCES = \
 	window.h
 	
 setup_version.c : $(srcdir)/ChangeLog Makefile
-	V=`sed -ne 's/^\$$Revision$$.*/\1/p' \
+	V=`sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
 	  $(srcdir)/ChangeLog` ;\
 	(echo '#define VERSION_PREFIX "%%% setup-version"';\
         echo 'static const char version_store[] = VERSION_PREFIX " '$$V'";';\
@@ -304,7 +304,7 @@ inilex.cc : inilex.l iniparse.h
 release: setup$(EXEEXT) dist-all $(srcdir)/ChangeLog Makefile
 	$(STRIP) setup.exe && \
 	upx --best setup.exe && \
-	V=`sed -ne 's/^\$$Revision$$.*/\1/p' \
+	V=`sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
 	  $(srcdir)/ChangeLog` ;\
 	mv setup.exe setup-$${V}.exe && \
 	mv setup-0.tar.bz2 setup-$${V}.tar.bz2 && \
@@ -312,6 +312,6 @@ release: setup$(EXEEXT) dist-all $(srcdir)/ChangeLog Makefile
 
 # Create a snapshot and upload it (requires write access)
 snapshot: release
-	V=`sed -ne 's/^\$$Revision$$.*/\1/p' \
+	V=`sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
 	  $(srcdir)/ChangeLog` ;\
 	scp -C setup-$${V}.exe setup-$${V}.tar.bz2 $${cygwinsite}:setup-snapshots/

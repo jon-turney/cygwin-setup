@@ -1,5 +1,10 @@
 2004-09-01  Max Bowsher  <maxb@ukf.net>
 
+	* Makefile.am: Oops. Unwanted keyword expansion ate the code of the
+	previous commit. Restore the code, escaped to not look like a keyword.
+
+2004-09-01  Max Bowsher  <maxb@ukf.net>
+
 	* Makefile.am: Simplify the shell incantation for getting the revision
 	of ChangeLog from grep-and-sed to just sed.
 
