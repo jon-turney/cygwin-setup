@@ -15,32 +15,4 @@
 
 /* categories for packages */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "category.h"
-
-/* normal members */
-
-Category::Category ():next (0), name (), key (), packages (0)
-{
-}
-
-Category::Category (String const &categoryname):
-next (0),
-name (categoryname), key(categoryname),
-packages (0)
-{
-}
-
-int
-Categorycmp (Category const & a, Category const & b)
-{
-  return a.name.casecompare (b.name);
-}
-
-int
-Categorycmp (Category & a, Category & b)
-{
-    return a.name.casecompare (b.name);
-}

@@ -17,10 +17,11 @@
 #define _PACKAGE_DB_H_
 
 /* required to parse this file */
-#include "list.h"
 #include <String++.h>
-#include <vector.h>
-class Category;
+#include <vector>
+#include <map>
+#include "list.h"
+#include "category.h"
 class packagemeta;
 class io_stream;
 class PackageSpecification;
@@ -44,7 +45,8 @@ public:
   /* all seen source packages */
   static vector <packagemeta *> sourcePackages;
   /* all seen categories */
-  static list < Category, String, String::casecompare > categories;
+  typedef map <String, vector <packagemeta *>, String::caseless > categoriesType;
+  static categoriesType categories;
   static PackageDBActions task;
 private:
   static int installeddbread;	/* do we have to reread this */

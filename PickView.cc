@@ -21,6 +21,7 @@
 #include "package_version.h"
 #include "dialog.h"
 #include "resource.h"
+#include <algorithm>
 
 
 static PickView::Header pkg_headers[] = {
@@ -178,7 +179,7 @@ PickView::insert_pkg (packagemeta & pkg)
 	    continue;
 
 	  PickCategoryLine & catline = 
-	    *new PickCategoryLine (*this, db.categories.registerbykey (*x), 1);
+	    *new PickCategoryLine (*this,* db.categories.find (*x), 1);
 	  PickLine & line = *new PickPackageLine(*this, pkg);
 	  catline.insert (line);
 	  contents.insert (catline);
@@ -189,11 +190,12 @@ PickView::insert_pkg (packagemeta & pkg)
 void
 PickView::insert_category (Category * cat, bool collapsed)
 {
-  if (*cat == Category ("All"))
+  // Urk, special case
+  if (cat->first.casecompare ("All") == 0)
     return;
   PickCategoryLine & catline = *new PickCategoryLine (*this, *cat, 1, collapsed);
-  for (vector <packagemeta *>::iterator i = cat->packages.begin ();
-       i != cat->packages.end () ; ++i)
+  for (vector <packagemeta *>::iterator i = cat->second.begin ();
+       i != cat->second.end () ; ++i)
     {
       PickLine & line = *new PickPackageLine (*this, **i);
       catline.insert (line);
@@ -317,8 +319,9 @@ PickView::init_headers (HDC dc)
   note_width (headers, dc, 0, HMARGIN + 11, bintick_col);
   note_width (headers, dc, 0, HMARGIN + 11, srctick_col);
   packagedb db;
-  for (size_t n = 1; n <= db.categories.number (); n++)
-      note_width (headers, dc, String ("+ ")+db.categories[n]->name, HMARGIN, cat_col);
+  for (packagedb::categoriesType::iterator n = packagedb::categories.begin();
+       n != packagedb::categories.end(); ++n)
+    note_width (headers, dc, String ("+ ")+n->first, HMARGIN, cat_col);
   for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];

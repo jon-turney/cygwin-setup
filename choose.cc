@@ -310,8 +310,8 @@ fill_missing_category ()
     {
       packagemeta & pkg = *db.packages[n];
       if (!pkg.categories.size ())
-	pkg.add_category (db.categories.registerbykey ("Misc"));
-      pkg.add_category (db.categories.registerbykey ("All"));
+	pkg.add_category ("Misc");
+      pkg.add_category ("All");
     }
 }
 
@@ -339,17 +339,13 @@ default_trust (HWND h, trusts trust)
   GetClientRect (h, &r);
   InvalidateRect (h, &r, TRUE);
   // and then do the same for categories with no packages.
-  size_t n = 1;
-  while (n <= db.categories.number ())
-    {
-      if (!db.categories[n]->packages.size())
-	{
-	  Category *cat = db.categories.removebyindex (n);
-	  delete cat;
-	}
-      else
-	++n;
-    }
+  for (packagedb::categoriesType::iterator n = packagedb::categories.begin();
+       n != packagedb::categories.end(); ++n)
+    if (!n->second.size())
+      {
+	log (LOG_BABBLE) << "Removing empty category " << n->first << endLog;
+        packagedb::categories.erase (n++);
+      }
 }
 
 static void
@@ -381,8 +377,10 @@ set_view_mode (HWND h, PickView::views mode)
   else if (chooser->get_view_mode () == PickView::views::Category)
     {
       /* start collapsed. TODO: make this a chooser flag */
-      for (size_t n = 1; n <= db.categories.number (); n++)
-	chooser->insert_category (db.categories[n], CATEGORY_COLLAPSED);
+      for (packagedb::categoriesType::iterator n 
+	   = packagedb::categories.begin();
+	   n != packagedb::categories.end(); ++n)
+	chooser->insert_category (&*n, CATEGORY_COLLAPSED);
     }
 
   RECT r;
@@ -421,7 +419,7 @@ create_listview (HWND dlg, RECT * r)
   packagedb db;
   chooser =
     new PickView (PickView::views::Category, lv,
-		  db.categories.registerbykey ("All"));
+		  *db.categories.find("All"));
 
   default_trust (lv, TRUST_CURR);
   set_view_mode (lv, PickView::views::Category);

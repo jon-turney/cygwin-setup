@@ -33,8 +33,6 @@ class packagemeta
 public:
   packagemeta (packagemeta const &);
   packagemeta (String const &pkgname):name (pkgname), key(pkgname), installed_from (),
-    //versions (0),
-//    versioncount (0), versionspace (0), 
   prevtimestamp (0), currtimestamp (0),
     exptimestamp (0), architecture (), priority()
   {
@@ -43,8 +41,6 @@ public:
   packagemeta (String const &pkgname,
 	       String const &installedfrom):name (pkgname), key(pkgname),
 	       installed_from (installedfrom),
-    //versions (0),    versioncount (0), versionspace (0), 
-   
     prevtimestamp (0), currtimestamp (0),
     exptimestamp (0), architecture (), priority()
   {
@@ -98,7 +94,7 @@ public:
   /* what categories does this package belong in. Note that if multiple versions
    * of a package disagree.... the first one read in will take precedence.
    */
-  void add_category (Category &);
+  void add_category (String const &);
   set <String, String::caseless> categories;
   set <packageversion> versions;
 

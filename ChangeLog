@@ -1,3 +1,32 @@
+2002-07-08  Robert Collins  <rbtcollins@hotmail.com>
+
+	* PickCategoryLine.cc: Change bucket to use STL container syntax 
+	throughout.
+	(PickCategoryLine::paint): Use new Category type syntax.
+	* PickCategoryLine.h: Use STL vectors rather than custom containers 
+	throughout.
+	* IniDBBuilderPackage.cc (IniDBBuilderPackage::buildPackageCategory):
+	Use new add_category syntax.
+	* PickView.cc (PickView::insert_pkg): Use new Category type syntax.
+	(PickView::insert_category): Ditto.
+	(PickView::init_headers): Ditto.
+	* category.cc: Trim obsolete code.
+	* category.h: Replace interconnecting class with a typedef to 
+	facilitate leveraging STL maps.
+	* choose.cc (fill_missing_category): Use updated pkg.add_category
+	syntax.
+	(default_trust): Use new Category type syntax.
+	(set_view_mode): Ditto.
+	(create_listview): Ditto.
+	* package_db.cc (categories): Ditto.
+	* package_db.h: Update headers list to include needed headers.
+	(packagedb::categories): Replace custom list with STL map.
+	* package_meta.cc: Use new Category type syntax throughout.
+	(packagemeta::add_category): Implement new syntax.
+	* package_meta.h: Remove commented out source.
+	(packagemeta::add_category): Update syntax to decouple interface from
+	packagedb.
+
 2002-07-06  Christopher Faylor  <cgf@redhat.com>
 
 	* site.cc (do_download_site_info_thread): Correct spelling error.

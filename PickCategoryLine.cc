@@ -19,10 +19,11 @@
 void
 PickCategoryLine::empty (void)
 {
-  while (bucket.number ())
+  while (bucket.size ())
     {
-      PickLine *line = bucket.removebyindex (1);
+      PickLine *line = *bucket.begin ();
       delete line;
+      bucket.erase (bucket.begin ());
     }
 }
 
@@ -33,7 +34,7 @@ PickCategoryLine::paint (HDC hdc, int x, int y, int row, int show_cat)
   if (show_label)
     {
       int by = r + theView.tm.tmHeight - 11;
-      String temp=(String("+ ") +cat.name);
+      String temp=(String("+ ") +cat.first);
       TextOut (hdc,
 	       x + theView.headers[theView.cat_col].x + HMARGIN / 2 +
 	       depth * 8, r, temp.cstr_oneuse(), temp.size());
@@ -58,7 +59,7 @@ PickCategoryLine::paint (HDC hdc, int x, int y, int row, int show_cat)
   if (collapsed)
     return;
   int accum_row = row + (show_label ? 1 : 0);
-  for (size_t n = 1; n <= bucket.number (); n++)
+  for (size_t n = 0; n < bucket.size (); ++n)
     {
       bucket[n]->paint (hdc, x, y, accum_row, show_cat);
       accum_row += bucket[n]->itemcount ();
@@ -81,7 +82,7 @@ PickCategoryLine::click (int const myrow, int const ClickedRow, int const x)
 	{
 	  collapsed = !collapsed;
 	  int accum_row = 0;
-	  for (size_t n = 1; n <= bucket.number (); n++)
+	  for (size_t n = 0; n < bucket.size (); ++n)
 	    accum_row += bucket[n]->itemcount ();
 	  return collapsed ? accum_row : -accum_row;
 	}
@@ -89,7 +90,7 @@ PickCategoryLine::click (int const myrow, int const ClickedRow, int const x)
   else
     {
       int accum_row = myrow + (show_label ? 1 : 0);
-      for (size_t n = 1; n <= bucket.number (); n++)
+      for (size_t n = 0; n < bucket.size (); ++n)
 	{
 	  if (accum_row + bucket[n]->itemcount () > ClickedRow)
 	    return bucket[n]->click (accum_row, ClickedRow, x);
@@ -104,7 +105,7 @@ PickCategoryLine::set_action (packagemeta::_actions action)
 {
   current_default = action;
   int accum_diff = 0;
-  for (size_t n = 1; n <= bucket.number (); n++)
+  for (size_t n = 0; n < bucket.size (); n++)
       accum_diff += bucket[n]->set_action (current_default);
   return accum_diff;
 }

@@ -20,27 +20,9 @@
 
 #include "String++.h"
 #include <vector>
+#include <utility>
 
-class Category;
 class packagemeta;
-
-int Categorycmp (Category const &, Category const &);
-// Grrr template problem - couldn't get list to use int Ucmp (U const, U const),
-// and gcc wouldn't cast on the fly.
-int Categorycmp (Category &, Category &);
-
-class Category
-{
-public:
-  Category ();
-  Category (String const &);
-  bool operator== (Category const &rhs) const {return Categorycmp (*this, rhs) ? false : true;}
-  bool operator < (Category const &rhs) const {return Categorycmp (*this, rhs) < 0;}
-
-  Category *next;		/* the next category in the list */
-  String const name;			/* the category */
-  String const key;		/* always == name */
-  vector <packagemeta *> packages; /* the packages in this category */
-};
+typedef pair <String const, vector <packagemeta *> > Category;
 
 #endif /* _CATEGORY_H_ */

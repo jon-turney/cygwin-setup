@@ -18,7 +18,7 @@
 #define   _PICKCATEGORYLINE_H_
 
 class PickView;
-#include "list.h"
+#include <vector>
 #include "PickLine.h"
 #include "package_meta.h"
 
@@ -27,7 +27,7 @@ class PickCategoryLine:public PickLine
 public:
   PickCategoryLine (PickView & aView, Category & _cat, size_t thedepth = 0, bool aBool =
 		      true, bool aBool2 =
-		      true):PickLine (_cat.key),
+		      true):PickLine (_cat.first),
     current_default (packagemeta::Default_action), cat (_cat), labellength (0),
     depth (thedepth), theView (aView)
   {
@@ -59,7 +59,7 @@ public:
     if (collapsed)
       return 1;
     int t = show_label ? 1 : 0;
-    for (size_t n = 1; n <= bucket.number (); n++)
+    for (size_t n = 0; n < bucket.size (); ++n)
         t += bucket[n]->itemcount ();
       return t;
   };
@@ -69,7 +69,7 @@ public:
   }
   virtual void insert (PickLine & aLine)
   {
-    bucket.registerbyobject (aLine);
+    bucket.push_back (&aLine);
   }
   void empty ();
   virtual int set_action (packagemeta::_actions);
@@ -83,7 +83,7 @@ private:
   size_t depth;
   PickCategoryLine (PickCategoryLine const &);
   PickCategoryLine & operator= (PickCategoryLine const &);
-  list < PickLine, String, String::casecompare > bucket;
+  vector < PickLine * > bucket;
   PickView& theView;
 };
 #endif // _PICKCATEGORYLINE_H_

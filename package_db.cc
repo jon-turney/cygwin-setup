@@ -200,8 +200,7 @@ int
 list < packagemeta, String,
   String::casecompare >
   packagedb::packages;
-list < Category, String,
-  String::casecompare >
+packagedb::categoriesType
   packagedb::categories;
 vector <packagemeta *> packagedb::sourcePackages;
 PackageDBActions

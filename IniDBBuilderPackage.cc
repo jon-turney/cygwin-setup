@@ -163,8 +163,7 @@ IniDBBuilderPackage::buildPackageTrust (int newtrust)
 void
 IniDBBuilderPackage::buildPackageCategory (String const &name)
 {
-  packagedb db;
-  cp->add_category (db.categories.registerbykey (name));
+  cp->add_category (name);
 }
 
 void dumpAndList (vector<vector <PackageSpecification *> *> *currentAndList)

@@ -140,8 +140,21 @@ packagemeta::_actions & packagemeta::_actions::operator++ ()
   return *this;
 }
 
+template<class T> struct removeCategory : public unary_function<T, void>
+{
+  removeCategory(packagemeta *pkg) : _pkg (pkg) {}
+  void operator() (T x) 
+    {
+      vector <packagemeta *> &aList = packagedb::categories[x]; 
+      aList.erase (find (aList.begin(), aList.end(), _pkg));
+    }
+  packagemeta *_pkg;
+};
+
+
 packagemeta::~packagemeta()
 {
+  for_each (categories.begin (), categories.end (), removeCategory<String> (this));
   categories.clear ();
   versions.clear ();
 }
@@ -219,11 +232,13 @@ packagemeta::uninstall ()
 
 
 void
-packagemeta::add_category (Category & cat)
+packagemeta::add_category (String const &cat)
 {
+  if (categories.find (cat) != categories.end())
+    return;
   /* add a new record for the package list */
-  cat.packages.push_back (this);
-  categories.insert (cat.key);
+  packagedb::categories[cat].push_back (this);
+  categories.insert (cat);
 }
 
 static bool
