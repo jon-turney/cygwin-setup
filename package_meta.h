@@ -17,30 +17,12 @@
 #define _PACKAGE_META_H_
 
 class packageversion;
-class packagemeta;
 
-/* Required to parse this completely */
-#include "category_list.h"
-
-/* 
-   For cleanliness this may need to be put in its own file later. */
-class CategoryPackage
-{
-public:
-  CategoryPackage (packagemeta &package):next (0), pkg (package)
-  { };
-  CategoryPackage *next;	/* The next package pointer in the list */
-  packagemeta &pkg;		
-};
-
-
-/* NOTE: A packagemeta without 1 packageversion is invalid! */
 class packagemeta
 {
 public:
   packagemeta (char const *pkgname):installed_from (0), versions (0),
-    versioncount (0), versionspace (0), installed (0), prev (0), prevtimestamp(0), curr (0), currtimestamp(0),exp (0),exptimestamp (0),
-    desired (0)
+    versioncount (0), versionspace (0), installed (0), prev (0), exp (0)
   {
     name = new char[strlen (pkgname) + 1];
       strcpy (name, pkgname);
@@ -48,8 +30,7 @@ public:
 
   packagemeta (char const *pkgname,
 	       char const *installedfrom):installed_from (0), versions (0),
-    versioncount (0), versionspace (0), installed (0), prev (0), prevtimestamp(0), curr(0), currtimestamp (0),exp (0),exptimestamp(0),
-    desired (0)
+    versioncount (0), versionspace (0), installed (0), prev (0), exp (0)
   {
     name = new char[strlen (pkgname) + 1];
     strcpy (name, pkgname);
@@ -69,26 +50,12 @@ public:
   void set_installed (packageversion &);
   void uninstall ();
 
-  char *name;			/* package name, like "cygwin" */
+  char *name;
   /* legacy variable used to output data for installed.db versions <= 2 */
   char *installed_from;
-  /* SDesc is global in theory, across all package versions. 
-     LDesc is not: it can be different per version */
-  char const *SDesc ();
-  /* what categories does this package belong in. Note that if multiple versions
-   * of a package disagree.... the first one read in will take precedence.
-   */
-  CategoryList & Categories ()
-  {
-    return categories;
-  };
-  /* Add a known category to this objects category list.
-   */
-  void add_category (Category &);
 
-  /* this array is sorted - by vendor and them cygsuffix. */
+  /* this array is //NOT// sorted - too many pointer to get out of joint. */
   /* we can have member functions to return sorted details if desired */
-  /* A metapackage MUST have one or more versions */
   packageversion **versions;
   size_t versioncount;
   size_t versionspace;
@@ -96,19 +63,10 @@ public:
   packageversion *installed;
   /* which one is listed as "prev" in our available packages db */
   packageversion *prev;
-  /* And what was the timestamp of the ini it was found from */
-  unsigned int prevtimestamp;
   /* ditto for current - stable */
   packageversion *curr;
-  unsigned int currtimestamp;
   /* and finally the experimental version */
   packageversion *exp;
-  unsigned int exptimestamp;
-  /* Now for the user stuff :] */
-  /* What version does the user want ? */
-  packageversion *desired;
-private:
-  CategoryList categories;
 };
 
 #endif /* _PACKAGE_META_H_ */

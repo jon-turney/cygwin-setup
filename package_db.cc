@@ -115,7 +115,6 @@ packagedb::packagedb ()
 
 		  pkg->add_version (*binary);
 		  pkg->set_installed (*binary);
-		  pkg->desired = pkg->installed;
 		  addpackage (*pkg);
 
 		}
@@ -224,17 +223,6 @@ packagedb::flush ()
     return errno ? errno : 1;
   return 0;
 }
-
-packagemeta &
-packagedb::registerpackage (char const *pkgname)
-{
-  packagemeta *tmp = getpackagebyname (pkgname);
-    if (tmp)
-      return *tmp;
-    tmp = new packagemeta (pkgname);
-    return *tmp;
-}
-
 
 packagemeta **
   packagedb::packages =

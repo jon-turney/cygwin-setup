@@ -56,8 +56,6 @@ static const char *cvsid =
 
 #include "package_db.h"
 #include "package_meta.h"
-#include "package_version.h"
-#include "package_source.h"
 
 #include "port.h"
 
@@ -190,114 +188,86 @@ static int num_installs, num_uninstalls;
 
 /* FIXME: upgrades should be a method too */
 static void
-uninstall_one (packagemeta * pkgm)
+uninstall_one (Package * pkg)
 {
+  packagedb db;
+  packagemeta *pkgm = db.getpackagebyname (pkg->name);
+
   if (pkgm)
     {
-      SetWindowText (ins_pkgname, pkgm->name);
+      SetWindowText (ins_pkgname, pkg->name);
       SetWindowText (ins_action, "Uninstalling...");
-      log (0, "Uninstalling %s", pkgm->name);
+      if (pkg->action == ACTION_UNINSTALL)
+	log (0, "Uninstalling %s", pkg->name);
+      else
+	log (0, "Uninstalling old %s", pkg->name);
       pkgm->uninstall ();
+
       num_uninstalls++;
+
+      pkg->installed_ix = TRUST_UNKNOWN;
+
+      if (pkg->installed)
+	{
+	  free (pkg->installed);
+	  pkg->installed = NULL;
+	}
     }
 }
 
 
-
-/* install one source at a given prefix. */
 static int
-install_one_source (packagesource & source, char const *prefix,
-		    package_type_t type)
+install_one (Package * pkg, bool isSrc)
 {
   int errors = 0;
-  SetWindowText (ins_pkgname, source.Base ());
-  if (!io_stream::exists (source.Cached ()))
+  const char *extra;
+  const char *file;
+  int file_size;
+  archive *thefile = NULL;
+  Info *pi = pkg->info + pkg->trust;
+
+  if (!isSrc)
     {
-      note (IDS_ERR_OPEN_READ, source.Cached (), "No such file");
+      extra = "";
+      file_size = pi->install_size;
+      file = concat ("file://", pi->install, 0);
+    }
+  else if (pi->source)
+    {
+      extra = "-src";
+      file_size = pi->source_size;
+      file = concat ("file://", pi->source, 0);
+    }
+  else
+    return 0;
+
+  char name[strlen (pkg->name) + strlen (extra) + 1];
+  strcat (strcpy (name, pkg->name), extra);
+
+  /* FIXME: this may file now */
+  char *basef = base (file);
+  SetWindowText (ins_pkgname, basef);
+
+  if (!io_stream::exists (file))
+    file = basef;
+  if (!io_stream::exists (file))
+    {
+      note (IDS_ERR_OPEN_READ, file, "No such file");
       return 1;
     }
-  io_stream *lst = 0;
-  if (type == package_binary)
+
+  io_stream *tmp =
+    io_stream::open (concat ("cygfile:///etc/setup/", name, ".lst.gz", 0),
+		     "wb");
+  io_stream *lst = new compress_gz (tmp, "w9");
+  if (lst->error ())
     {
-      io_stream *tmp =
-	io_stream::
-	open (concat ("cygfile:///etc/setup/", source.Base (), ".lst.gz", 0),
-	      "wb");
-      lst = new compress_gz (tmp, "w9");
-      if (lst->error ())
-	{
-	  delete lst;
-	  lst = NULL;
-	}
+      delete lst;
+      lst = NULL;
     }
 
-  package_bytes = source.size;
+  package_bytes = file_size;
 
-  char msg[64];
-  strcpy (msg, "Installing");
-  SetWindowText (ins_action, msg);
-  log (0, "%s%s", msg, source.Cached ());
-  io_stream *tmp = io_stream::open (source.Cached (), "rb");
-  archive *thefile = 0;
-  if (tmp)
-  {
-    io_stream *tmp2 = compress::decompress (tmp);
-  if (tmp2)
-    thefile = archive::extract (tmp2);
-  else
-    thefile = archive::extract (tmp);
-  }
-  /* FIXME: potential leak of either *tmp or *tmp2 */
-  if (thefile)
-    {
-      const char *fn;
-      while ((fn = thefile->next_file_name ()))
-	{
-	  if (lst)
-	    lst->write (concat (fn, "\n", 0), strlen (fn) + 1);
-
-	  /* FIXME: concat leaks memory */
-	  SetWindowText (ins_filename, concat (prefix, fn, 0));
-	  log (LOG_BABBLE, "Installing file %s%s", prefix, fn);
-	  if (archive::extract_file (thefile, prefix) != 0)
-	    {
-	      log (0, "Unable to install file %s%s", prefix, fn);
-	      errors++;
-	    }
-
-	  progress (tmp->tell ());
-	  num_installs++;
-	}
-      delete thefile;
-
-      total_bytes_sofar += package_bytes;
-    }
-
-
-  progress (0);
-
-  int df = diskfull (get_root_dir ());
-  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
-
-  if (lst)
-    delete lst;
-
-  return errors;
-}
-
-/* install a package, install both the binary and source aspects if needed */
-static int
-install_one (packagemeta & pkg)
-{
-  int errors = 0;
-
-  if (pkg.desired->srcpicked)
-    errors += install_one_source (pkg.desired->src, "cygfile:///usr/src", package_source);
-  if (pkg.desired->binpicked)
-    errors += install_one_source (pkg.desired->bin, "cygfile:///", package_binary);
-
-  /* FIXME: make a upgrade method and reinstate this */
-#if 0
   char msg[64];
   if (!pkg->installed)
     strcpy (msg, "Installing");
@@ -327,13 +297,67 @@ install_one (packagemeta & pkg)
       /* FIXME: log this somehow */
       break;
     }
+
   SetWindowText (ins_action, msg);
   log (0, "%s%s", msg, file);
-#endif
+  tmp = io_stream::open (file, "rb");
+  if (tmp)
+    {
+      io_stream *tmp2 = compress::decompress (tmp);
+      if (tmp2)
+	thefile = archive::extract (tmp2);
+      else
+	thefile = archive::extract (tmp);
+      /* FIXME: potential leak of either *tmp or *tmp2 */
+      if (thefile)
+	{
+	  const char *fn;
+	  while ((fn = thefile->next_file_name ()))
+	    {
+	      char *dest_file;
+
+	      if (lst)
+		lst->write (concat (fn, "\n", 0), strlen (fn) + 1);
+
+	      dest_file =
+		concat ("cygfile://", isSrc ? "/usr/src/" : "/", NULL);
+
+	      /* FIXME: concat leaks memory */
+	      SetWindowText (ins_filename, concat (dest_file, fn, 0));
+	      log (LOG_BABBLE, "Installing file %s%s", dest_file, fn);
+	      if (archive::extract_file (thefile, dest_file) != 0)
+		{
+		  log (0, "Unable to install file %s%s", dest_file, fn);
+		  errors++;
+		}
+
+	      progress (tmp->tell ());
+	      free (dest_file);
+	      num_installs++;
+	    }
+	  delete thefile;
+
+	  total_bytes_sofar += file_size;
+	}
+    }
+  progress (0);
+
+  int df = diskfull (get_root_dir ());
+  SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
+
+  if (lst)
+    delete lst;
 
   if (!errors)
-    if (pkg.desired->binpicked)
-      pkg.installed = pkg.desired;
+    {
+      Info *inf = pkg->info + pkg->trust;
+      pkg->installed_ix = pkg->trust;
+      if (pkg->installed)
+	free (pkg->installed);
+      pkg->installed =
+	new Info (inf->install, inf->version, inf->install_size, inf->source,
+		  inf->source_size);
+    }
 
   return errors;
 }
@@ -415,32 +439,32 @@ do_install (HINSTANCE h)
   create_mount ("/usr/lib", cygpath ("/lib", 0), istext, issystem);
   set_cygdrive_flags (istext, issystem);
 
-  packagedb db;
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-           pkg = db.getnextpackage ())
-  
-    if (pkg->desired && (pkg->desired->srcpicked || pkg->desired->binpicked))
+  for (Package * pkg = package; pkg->name; pkg++)
     {
-      if (pkg->desired->srcpicked)
-	total_bytes += pkg->desired->src.size;
-      if (pkg->desired->binpicked)
-	total_bytes += pkg->desired->bin.size;
+      Info *pi = pkg->info + pkg->trust;
+      if (pkg->action != ACTION_SRC_ONLY)
+	total_bytes += pi->install_size;
+      if (pkg->srcpicked)
+	total_bytes += pi->source_size;
     }
-    
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-             pkg = db.getnextpackage ())  
+
+  for (Package * pkg = package; pkg->name; pkg++)
     {
-      if (!pkg->desired || pkg->desired != pkg->installed)
+      if (is_uninstall_action (pkg))
 	{
 	  uninstall_one (pkg);
 	}
 
-      if (pkg->desired && (pkg->desired->srcpicked || pkg->desired->binpicked))
+      if (is_download_action (pkg))
 	{
 	  int e = 0;
-	  e += install_one (*pkg);
+	  if (pkg->action != ACTION_SRC_ONLY)
+	    e += install_one (pkg, FALSE);
+	  if (pkg->srcpicked)
+	    e += install_one (pkg, TRUE);
 	  if (e)
 	    {
+	      pkg->action = ACTION_ERROR;
 	      errors++;
 	    }
 	}
@@ -448,6 +472,7 @@ do_install (HINSTANCE h)
 
   ShowWindow (ins_dialog, SW_HIDE);
 
+  packagedb db;
   int temperr;
   if ((temperr = db.flush ()))
     {

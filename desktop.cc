@@ -44,10 +44,6 @@ static const char *cvsid =
 
 #include "mklink2.h"
 
-#include "package_db.h"
-#include "package_meta.h"
-#include "package_version.h"
-
 static OSVERSIONINFO verinfo;
 
 /* Lines starting with '@' are conditionals - include 'N' for NT,
@@ -275,14 +271,13 @@ make_passwd_group ()
     return;
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
     {
-      packagedb db;
-      packagemeta *pkg = db.getpackagebyname ("cygwin");
-      if (pkg && pkg->installed)
+      Package *pkg = getpkgbyname ("cygwin");
+      if (pkg && is_download_action (pkg) && pkg->action != ACTION_SRC_ONLY)
 	{
 	  /* mkpasswd and mkgroup are not working on 9x/ME up to 1.1.5-4 */
 	  char *border_version = canonicalize_version ("1.1.5-4");
 	  char *inst_version =
-	    canonicalize_version (pkg->installed->Canonical_version());
+	    canonicalize_version (pkg->info[pkg->trust].version);
 	  if (strcmp (inst_version, border_version) <= 0)
 	    goto out;
 	}

@@ -60,6 +60,8 @@ STR	[a-zA-Z0-9_./+-]+
 
 "include-setup:"	return INCLUDE_SETUP;
 
+"exclude"		return EXCLUDE_PACKAGE;
+
 "download-url:"		return DOWNLOAD_URL;
 
 ^{STR}":"		ignore_line ();
@@ -84,15 +86,12 @@ STR	[a-zA-Z0-9_./+-]+
 
 static char *input_string = 0;
 static char *end_input_string;
-extern char *parse_mirror;
+
 void
-ini_init(char *string, char * mirror)
+ini_init(char *string)
 {
   input_string = string;
   end_input_string = input_string + strlen(input_string);
-  if (parse_mirror)
-    free (parse_mirror);
-  parse_mirror = strdup (mirror);
 }
 
 static int

@@ -23,7 +23,7 @@ class Category;
 class CategoryList
 {
 public:
-  Category & register_category (const char *name);
+  Category * register_category (const char *name);
   Category *getcategorybyname (const char *name);
   int categories ()
   {

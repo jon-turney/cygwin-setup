@@ -37,17 +37,7 @@ static const char *cvsid =
 #include "log.h"
 #include "port.h"
 
-#include "io_stream.h"
-
-#include "package_db.h"
-#include "package_meta.h"
-#include "package_version.h"
-#include "package_source.h"
-
-#include "rfc1738.h"
-
-DWORD
-get_file_size (const char *name)
+DWORD get_file_size (const char *name)
 {
   HANDLE h;
   WIN32_FIND_DATA buf;
@@ -63,92 +53,45 @@ get_file_size (const char *name)
   return ret;
 }
 
-/* 0 on failure
- */
 static int
-check_for_cached (packagesource & pkgsource)
+download_one (char *name, unsigned int expected_size, int action)
 {
-  /* search algo:
-     1) is there a legacy version in the cache dir available.
-     (Note that the cache dir is represented by a mirror site of
-     file://local_dir
-   */
+  char *local = name;
 
   DWORD size;
-  if ((size =
-       get_file_size (concat (local_dir, "/", pkgsource.Canonical (), 0))) >
-      0)
-    if (size == pkgsource.size)
-      return 1;
+  if ((size = get_file_size (local)) > 0)
+    if (size == expected_size && action != ACTION_SRC_ONLY
+	&& action != ACTION_REDO)
+      return 0;
 
-  /*
-     2) is there a version from one of the selected mirror sites available ?
-   */
-  for (size_t n = 1; n < pkgsource.sites.number (); n++)
-    if ((size =
-	 get_file_size (concat
-			(local_dir, "/",
-			 rfc1738_escape_part (pkgsource.sites.getnth (n)->
-					      key), pkgsource.Canonical (),
-			 0))) > 0)
-      if (size == pkgsource.size)
-	return 1;
+  mkdir_p (0, local);
 
-  return 0;
-}
-
-/* download a file from a mirror site to the local cache. */
-static int
-download_one (packagesource & pkgsource)
-{
-  if (check_for_cached (pkgsource) && source != IDC_SOURCE_DOWNLOAD)
-    return 0;
-
-  /* try the download sites one after another */
-
-  int success = 0;
-  for (size_t n = 1; n < pkgsource.sites.number () && !success; n++)
+  if (get_url_to_file (concat (MIRROR_SITE, "/", name, 0),
+		       concat (local, ".tmp", 0), expected_size))
     {
-      const char *local =
-	concat (local_dir, "/",
-		rfc1738_escape_part (pkgsource.sites.getnth (n)->key),
-		pkgsource.Canonical (), 0);
-      io_stream::mkpath_p (PATH_TO_FILE, concat ("file://", local, 0));
-
-      if (get_url_to_file
-	  (concat
-	   (pkgsource.sites.getnth (n)->key, pkgsource.Canonical (), 0),
-	   concat (local, ".tmp", 0), pkgsource.size))
+      note (IDS_DOWNLOAD_FAILED, name);
+      return 1;
+    }
+  else
+    {
+      size = get_file_size (concat (local, ".tmp", 0));
+      if (size == expected_size)
 	{
-	  /* FIXME: note new source ? */
-	  continue;
+	  log (0, "Downloaded %s", local);
+	  if (_access (local, 0) == 0)
+	    remove (local);
+	  rename (concat (local, ".tmp", 0), local);
 	}
       else
 	{
-	  size_t size = get_file_size (concat (local, ".tmp", 0));
-	  if (size == pkgsource.size)
-	    {
-	      log (0, "Downloaded %s", local);
-	      if (_access (local, 0) == 0)
-		remove (local);
-	      rename (concat (local, ".tmp", 0), local);
-	      success = 1;
-	      /* FIXME: note the downloaded name for installing from */
-	      continue;
-	    }
-	  else
-	    {
-	      log (0, "Download %s wrong size (%u actual vs %d expected)",
-		   local, size, pkgsource.size);
-	      remove (concat (local, ".tmp", 0));
-	      continue;
-	    }
+	  log (0, "Download %s wrong size (%ld actual vs %d expected)",
+	       local, size, expected_size);
+	  note (IDS_DOWNLOAD_SHORT, local, size, expected_size);
+	  return 1;
 	}
     }
-  if (success)
-    return 0;
-  /* FIXME: Do we want to note this? if so how? */
-  return 1;
+
+  return 0;
 }
 
 void
@@ -158,37 +101,34 @@ do_download (HINSTANCE h)
   total_download_bytes = 0;
   total_download_bytes_sofar = 0;
 
-  packagedb db;
-  /* calculate the amount needed */
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-       pkg = db.getnextpackage ())
-    if (pkg->desired && (pkg->desired->srcpicked || pkg->desired->binpicked))
+  for (Package * pkg = package; pkg->name; pkg++)
+    if (is_download_action (pkg))
       {
-	packageversion *version = pkg->desired;
-	if (!(check_for_cached (version->bin) && source != IDC_SOURCE_DOWNLOAD))
-	  total_download_bytes += version->bin.size;
-	if (!(check_for_cached (version->src) && source != IDC_SOURCE_DOWNLOAD))
-	  total_download_bytes += version->src.size;
+	Info *pi = pkg->info + pkg->trust;
+	DWORD size = get_file_size (pi->install);
+	char *local = pi->install;
+	if (pkg->action != ACTION_SRC_ONLY &&
+	    (pkg->action == ACTION_REDO || size != pi->install_size))
+	  total_download_bytes += pi->install_size;
+	local = pi->source;
+	size = get_file_size (pi->source);
+	if (pkg->srcpicked &&
+	    (pkg->action == ACTION_SRC_ONLY || size != pi->source_size))
+	  total_download_bytes += pi->source_size;
       }
 
-  /* and do the download. FIXME: This here we assign a new name for the cached version
-   * and check that above.
-   */
-  for (packagemeta * pkg = db.getfirstpackage (); pkg;
-       pkg = db.getnextpackage ())
-    if (pkg->desired && (pkg->desired->srcpicked || pkg->desired->binpicked))
+  for (Package * pkg = package; pkg->name; pkg++)
+    if (is_download_action (pkg))
       {
 	int e = 0;
-	packageversion *version = pkg->desired;
-	if (version->binpicked)
-	  e += download_one (version->bin);
-	if (version->srcpicked)
-	  e += download_one (version->src);
+	Info *pi = pkg->info + pkg->trust;
+	if (pkg->action != ACTION_SRC_ONLY)
+	  e += download_one (pi->install, pi->install_size, pkg->action);
+	if (pkg->srcpicked && pi->source)
+	  e += download_one (pi->source, pi->source_size, pkg->action);
 	errors += e;
-#if 0	
 	if (e)
 	  pkg->action = ACTION_ERROR;
-#endif
       }
 
   dismiss_url_status_dialog ();

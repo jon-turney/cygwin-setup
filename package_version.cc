@@ -20,8 +20,3 @@
 static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
-
-#include "package_version.h"
-packageversion::packageversion():sources(0),sourcecount(0),sourcespace(0),srcsources(0),srcsourcecount(0),srcsourcespace(0)
-{
-};

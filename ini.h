@@ -21,7 +21,7 @@
 extern "C"
 {
 #endif
-  void ini_init (char *string, char *mirror);
+  void ini_init (char *string);
 #define YYSTYPE char *
 
 #ifdef __cplusplus
@@ -104,7 +104,23 @@ typedef struct _Info
 
 Info;				/* +1 for TRUST_UNKNOWN */
 
-#if 0
+class CategoryPackage
+{
+public:
+  CategoryPackage ():next (0), pkgname (0)
+  {
+  };
+  CategoryPackage *next;	/* The next package pointer in the list */
+  char *pkgname;		/* This should be Package *, but the packages can move */
+};
+
+typedef struct _Dependency
+{
+  struct _Dependency *next;	/* the next package in this dependency list */
+  char *package;		/* the name of the package that is depended on */
+}
+Dependency;			/* Dependencies can be used for
+				   recommended/required/related... */
 class Package
 {
 public:
@@ -137,16 +153,11 @@ public:
 extern Package *package;
 extern int npackages;
 
-
 Package *new_package (char *name);
 Package *getpkgbyname (const char *pkgname);
 void new_requirement (Package * package, char *dependson);
 Category *getpackagecategorybyname (Package * pkg, const char *categoryname);
 void add_category (Package * package, Category * cat);
-#endif
-
-
-
 
 #endif
 

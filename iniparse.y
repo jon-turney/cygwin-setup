@@ -28,29 +28,24 @@
 #include "iniparse.h"
 #include "filemanip.h"
 
-extern "C" int yyerror (char const *s, ...);
+extern "C" int yyerror (char *s, ...);
 extern "C" int yylex ();
 
 #include "port.h"
 
-#include "package_meta.h"
-#include "package_version.h"
-#include "cygpackage.h"
-
 #define YYERROR_VERBOSE 1
 /*#define YYDEBUG 1*/
 
-static packagemeta *cp = 0;
+static Package *cp;
+static int trust;
 extern unsigned int setup_timestamp;
 extern char *setup_version;
 extern int yylineno;
 
-char * parse_mirror = 0;
-static packagedb db;
-static cygpackage *cpv = 0;
-static int trust;
+packagedb db;
 
-void add_correct_version();
+#define cpt (cp->info+trust)
+
 %}
 
 %token STRING
@@ -83,7 +78,7 @@ packages
  ;
 
 package
- : '@' STRING '\n'		{ cp = &db.registerpackage($2); cpv = new cygpackage ($2); trust = TRUST_CURR;}
+ : '@' STRING '\n'		{ new_package($2); }
    lines
  ;
 
@@ -93,38 +88,26 @@ lines
  ;
 
 simple_line
- : VERSION STRING		{ cpv->set_canonical_version ($2); 
-   				  add_correct_version ();}
- | SDESC STRING			{ cpv->set_sdesc ($2); }
- | LDESC STRING			{ cpv->set_ldesc ($2); }
+ : VERSION STRING		{ cpt->version = $2; }
+ | SDESC STRING			{ cp->sdesc = $2; }
+ | LDESC STRING			{ cp->ldesc = $2; }
  | CATEGORY categories
  | REQUIRES requires
- | INSTALL STRING STRING	{ if (!cpv->Canonical_version ())
-   				  {
-				    fileparse f;
-				    if (parse_filename ($2, f))
+ | INSTALL STRING STRING	{ cpt->install = $2;
+				  cpt->install_size = atoi($3);
+				  if (!cpt->version)
 				    {
-				      cpv->set_canonical_version (f.ver);
-				      add_correct_version ();
+				      fileparse f;
+				      if (parse_filename ($2, f))
+					cpt->version = strdup (f.ver);
 				    }
-				  }
-				  
-				  if (!cpv->bin.size)
-				  {
-				    cpv->bin.size = atoi($3);
-				    cpv->bin.set_canonical ($2);
-				  }
-				  cpv->bin.sites.registerbykey (parse_mirror);
 				}
- | SOURCE STRING STRING		{ if (!cpv->src.size)
-   				  {
-				    cpv->src.size = atoi($3);
-				    cpv->src.set_canonical ($2);
-				  }
-				  cpv->src.sites.registerbykey (parse_mirror); }
+ | SOURCE STRING STRING		{ cpt->source = $2;
+				  cpt->source_size = atoi($3); }
  | T_PREV			{ trust = TRUST_PREV; }
  | T_CURR			{ trust = TRUST_CURR; }
  | T_TEST			{ trust = TRUST_TEST; }
+ | EXCLUDE_PACKAGE		{ cp->exclude = EXCLUDE_BY_SETUP; }
  | T_UNKNOWN			{ trust = TRUST_UNKNOWN; }
  | /* empty */
  | error '\n' { yylineno --;
@@ -134,62 +117,72 @@ simple_line
  ;
 
 requires
- : STRING			{ cpv->new_requirement($1); } requires
- | STRING			{ cpv->new_requirement($1); }
+ : STRING			{ new_requirement(cp, $1); } requires
+ | STRING			{ new_requirement(cp, $1); }
  ;
 
 categories
- : STRING			{ cp->add_category (db.categories.register_category ($1));
+ : STRING			{ add_category (cp, db.categories.register_category ($1));
  				} categories
- | STRING			{ cp->add_category (db.categories.register_category ($1)); }
+ | STRING			{ add_category (cp, db.categories.register_category ($1)); }
  ;
 
 %%
 
-void add_correct_version()
+Package *package = NULL;
+int npackages = 0;
+static int maxpackages = 0;
+
+Package *
+new_package (char *name)
 {
-    int merged = 0;
-    for (size_t n = 0; n < cp->versioncount; n++)
-      if (!strcasecmp(cp->versions[n]->Canonical_version(), cpv->Canonical_version()))
-      {
-	/* ASSUMPTIONS:
-	   categories and requires are consistent for the same version across
-	   all mirrors
-	   */
-	/* Copy the binary mirror across if this site claims to have an install */
-	if (cpv->bin.sites.number ())
-	  cp->versions[n]->bin.sites.registerbykey (cpv->bin.sites.getnth(1)->key);
-	/* Ditto for src */
-	if (cpv->src.sites.number ())
-	    cp->versions[n]->src.sites.registerbykey (cpv->src.sites.getnth(1)->key);
-	cpv = (cygpackage *)cp->versions[n];
-	merged = 1;
-      }
-    if (!merged)
-    cp->add_version (*cpv);
-  /* trust setting */
-  switch (trust)
-  {
-    case TRUST_CURR:
-      if (cp->currtimestamp < setup_timestamp)
-      {
-	cp->currtimestamp = setup_timestamp;
-	cp->curr = cpv;
-      }
-    break;
-    case TRUST_PREV:
-    if (cp->prevtimestamp < setup_timestamp)
+  if (package == NULL)
+    maxpackages = npackages = 0;
+  if (npackages >= maxpackages)
     {
-        cp->prevtimestamp = setup_timestamp;
-	  cp->prev = cpv;
+      maxpackages += 100;
+      if (package)
+	package = (Package *) realloc (package, (1 + maxpackages) * sizeof (Package));
+      else
+	package = (Package *) malloc ((1 + maxpackages) * sizeof (Package));
+      memset (package + npackages, 0, (1 + maxpackages - npackages) * sizeof (Package));
     }
-    break;
-    case TRUST_TEST:
-    if (cp->exptimestamp < setup_timestamp)
+  cp = getpkgbyname (name);
+  if (!cp)
     {
-        cp->exptimestamp = setup_timestamp;
-	cp->exp = cpv;
+      cp = package + npackages;
+      npackages++;
+      cp->name = strdup (name);
+      trust = TRUST_CURR;
     }
-    break;
-  }
+
+  return cp;
+}
+
+void
+new_requirement (Package *package, char *dependson)
+{
+  Dependency *dp;
+  if (!dependson)
+    return;
+  dp = (Dependency *) malloc (sizeof (Dependency));
+  dp->next = cp->required;
+  dp->package = dependson;
+  cp->required = dp;
+}
+
+void
+add_category (Package *pkg, Category *cat)
+{
+  /* add a new record for the package list */
+  /* TODO: alpabetical inserts ? */
+  Category *tempcat = new Category;
+  tempcat->next = pkg->category;
+  tempcat->name = cat->name;
+  pkg->category = tempcat;
+
+  CategoryPackage *templink = new CategoryPackage;
+  templink->next = cat->packages;
+  templink->pkgname = pkg->name;
+  cat->packages = templink;
 }

@@ -21,39 +21,3 @@
 static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
-
-#include <stdlib.h>
-#include <strings.h>
-#include "package_source.h"
-
-void
-packagesource::set_canonical (char const *fn)
-{
-canonical = new char[strlen (fn) + 1];
-  strcpy (canonical,fn);
-
-  /* The base is from the last '/' to the first following '.' */
-  char const *bstart = strchr (fn, '/');
-  char const *tmp;
-  while (bstart && (tmp = strchr (bstart, '/')))
-    bstart = tmp;
-  
-  if (!bstart)
-    bstart = fn;
-  char const *bend = strchr (bstart, '.');
-  if (!bend)
-    bend = strchr (bstart, '\0');
-  char const *end = strchr (fn ,'\0');
-  base = new char [bend-bstart+1];
-  memcpy (base,bstart, bend-bstart);
-  base [bend-bstart] = '\0';
-
-  filename = new char [end - bstart+1];
-  memcpy (filename, bstart, end-bstart);
-  filename[end-bstart] = '\0';
- 
- if (cached)
-  delete cached; 
-  cached = 0;
-}
-
