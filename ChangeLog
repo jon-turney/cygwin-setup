@@ -119,9 +119,9 @@ Mon Jun 25 00:56:37 2001  Michael A Chase <mchase@ix.netcom.com>
 
 Mon Jun 25 00:56:37 2001  Christopher Faylor <cgf@cygnus.com>
 
-	* choose.cc (set_action): Only clear srcpicked when moving to next state.
-	Allow source installation if it exists in the current "trust" state.
-	Don't move to skip state when package is installed.
+	* choose.cc (set_action): Only clear srcpicked when moving to next
+	state.  Allow source installation if it exists in the current "trust"
+	state.  Don't move to skip state when package is installed.
 	(list_click): Don't allow source clicking when no source is available.
 	(set_full_list): Display package when not is_full_action.
 	* ini.h (is_full_action): Define.
