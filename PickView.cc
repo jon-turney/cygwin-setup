@@ -717,3 +717,37 @@ PickView::Create (Window * parent, DWORD Style, RECT *r)
 
   return true;
 }
+
+void
+PickView::defaultTrust (trusts trust)
+{
+  this->deftrust = trust;
+  packagedb db;
+  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
+    {
+      packagemeta & pkg = **i;
+      if (pkg.installed
+     || pkg.categories.find ("Base") != pkg.categories.end ()
+   || pkg.categories.find ("Misc") != pkg.categories.end ())
+    {
+    pkg.desired = pkg.trustp (trust);
+      if (pkg.desired)
+     pkg.desired.pick (pkg.desired.accessible() 
+                      && pkg.desired != pkg.installed);
+    }
+      else
+   pkg.desired = packageversion ();
+    }
+  RECT r;
+  ::GetClientRect (this->GetHWND(), &r);
+  InvalidateRect (this->GetHWND(), &r, TRUE);
+  // and then do the same for categories with no packages.
+  for (packagedb::categoriesType::iterator n = packagedb::categories.begin();
+       n != packagedb::categories.end(); ++n)
+    if (!n->second.size())
+      {
+    log (LOG_BABBLE) << "Removing empty category " << n->first << endLog;
+        packagedb::categories.erase (n++);
+      }
+}

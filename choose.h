@@ -47,7 +47,6 @@ public:
   }; 
   private:
   void createListview (HWND dlg, RECT * r);
-  void defaultTrust (HWND h, trusts trust);
   void fillMissingCategory();
   void getParentRect (HWND parent, HWND child, RECT * r);
   void keepClicked();
@@ -55,9 +54,9 @@ public:
   void logResults();
   void setExistence();
   void setPrompt(char const *aPrompt);
-  void setViewMode (HWND h, PickView::views mode);
+  void setViewMode (PickView::views mode);
   template<class C> bool ifChecked(int const &id, void (C::*fn)()) {
-     if (IsDlgButtonChecked (GetHWND (), id)) {
+     if (IsButtonChecked (id)) {
        (this->*fn)();
        return true;
      }

@@ -1,5 +1,21 @@
 2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.h (ChooserPage::setViewMode): Remove HWND from 
+	signature.
+	(ChooserPage::defaultTrust): Ditto.
+	Move to PickView.
+	(ChooserPage::ifChecked): Use Window helper function 
+	IsButtonChecked.
+	* choose.cc (ChooserPage::setViewMode): Use chooser->GetHWND()
+	throughout.
+	Update all callers with new signature.
+	(ChooserPage::defaultTrust): Ditto.
+	Move to PickView.
+	* PickView.h (PickView::defaultTrust): Declare.
+	* PickView.cc (PickView::defaultTrust): Copy from chooser.cc.
+
+2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* PickView.h (PickView::lv): Eliminate.
 	* PickView.cc (PickView::init): Replace use of lv with
 	GetHWND().

@@ -45,6 +45,7 @@ public:
   {
     return view_mode;
   };
+  void defaultTrust (trusts trust);
   void set_view_mode (views _mode);
   void paint (HWND hwnd);
   LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);

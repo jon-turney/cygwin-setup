@@ -113,42 +113,9 @@ ChooserPage::fillMissingCategory ()
     }
 }
 
-void
-ChooserPage::defaultTrust (HWND h, trusts trust)
-{
-  chooser->deftrust = trust;
-  packagedb db;
-  for (vector <packagemeta *>::iterator i = db.packages.begin ();
-       i != db.packages.end (); ++i)
-    {
-      packagemeta & pkg = **i;
-      if (pkg.installed
-	  || pkg.categories.find ("Base") != pkg.categories.end ()
-	  || pkg.categories.find ("Misc") != pkg.categories.end ())
-	{
-	  pkg.desired = pkg.trustp (trust);
-	  if (pkg.desired)
-	    pkg.desired.pick (pkg.desired.accessible() 
-	      		      && pkg.desired != pkg.installed);
-	}
-      else
-	pkg.desired = packageversion ();
-    }
-  RECT r;
-  ::GetClientRect (h, &r);
-  InvalidateRect (h, &r, TRUE);
-  // and then do the same for categories with no packages.
-  for (packagedb::categoriesType::iterator n = packagedb::categories.begin();
-       n != packagedb::categories.end(); ++n)
-    if (!n->second.size())
-      {
-	log (LOG_BABBLE) << "Removing empty category " << n->first << endLog;
-        packagedb::categories.erase (n++);
-      }
-}
 
 void
-ChooserPage::setViewMode (HWND h, PickView::views mode)
+ChooserPage::setViewMode (PickView::views mode)
 {
   chooser->set_view_mode (mode);
 
@@ -203,7 +170,7 @@ ChooserPage::setViewMode (HWND h, PickView::views mode)
     }
 
   RECT r;
-  ::GetClientRect (h, &r);
+  ::GetClientRect (chooser->GetHWND(), &r);
   SCROLLINFO si;
   memset (&si, 0, sizeof (si));
   si.cbSize = sizeof (si);
@@ -211,15 +178,15 @@ ChooserPage::setViewMode (HWND h, PickView::views mode)
   si.nMin = 0;
   si.nMax = chooser->headers[chooser->last_col].x + chooser->headers[chooser->last_col].width;	// + HMARGIN;
   si.nPage = r.right;
-  SetScrollInfo (h, SB_HORZ, &si, TRUE);
+  SetScrollInfo (chooser->GetHWND(), SB_HORZ, &si, TRUE);
 
   si.nMax = chooser->contents.itemcount () * chooser->row_height;
   si.nPage = r.bottom - chooser->header_height;
-  SetScrollInfo (h, SB_VERT, &si, TRUE);
+  SetScrollInfo (chooser->GetHWND(), SB_VERT, &si, TRUE);
 
   chooser->scroll_ulc_x = chooser->scroll_ulc_y = 0;
 
-  InvalidateRect (h, &r, TRUE);
+  InvalidateRect (chooser->GetHWND(), &r, TRUE);
 }
 
 void
@@ -233,8 +200,8 @@ ChooserPage::createListview (HWND dlg, RECT * r)
   chooser->init(PickView::views::Category);
   chooser->Show(SW_SHOW);
 
-  defaultTrust (chooser->GetHWND(), TRUST_CURR);
-  setViewMode (chooser->GetHWND(), PickView::views::Category);
+  chooser->defaultTrust (TRUST_CURR);
+  setViewMode (PickView::views::Category);
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE) << "Failed to set View button caption %ld" << 
 	 GetLastError () << endLog;
@@ -298,7 +265,7 @@ ChooserPage::OnInit ()
 void
 ChooserPage::OnActivate()
 {
-    setViewMode (chooser->GetHWND(), chooser->get_view_mode ());
+    setViewMode (chooser->get_view_mode ());
 }
 
 void
@@ -346,17 +313,17 @@ ChooserPage::keepClicked()
       packagemeta & pkg = **i;
       pkg.desired = pkg.installed;
     }
-  setViewMode (chooser->GetHWND(), chooser->get_view_mode ());
+  setViewMode (chooser->get_view_mode ());
 }
 
 template <trusts aTrust>
 void
 ChooserPage::changeTrust()
 {
-  defaultTrust (chooser->GetHWND(), aTrust);
+  chooser->defaultTrust (aTrust);
   packagedb db;
   for_each(db.packages.begin(), db.packages.end(), SetRequirement(aTrust));
-  setViewMode (chooser->GetHWND(), chooser->get_view_mode ());
+  setViewMode (chooser->get_view_mode ());
 }
 
 bool
@@ -379,7 +346,7 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
     case IDC_CHOOSE_EXP:
        return ifChecked(id, &ChooserPage::changeTrust<TRUST_TEST>);
     case IDC_CHOOSE_VIEW:
-      setViewMode (chooser->GetHWND(), ++chooser->get_view_mode ());
+      setViewMode (++chooser->get_view_mode ());
       if (!SetDlgItemText
         (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
       log (LOG_BABBLE) << "Failed to set View button caption " << 
