@@ -74,13 +74,15 @@ HINSTANCE hinstance;
 #define iswinnt		(GetVersion() < 0x80000000)
 
 void
-set_default_dacl ()
+set_default_sec ()
 {
   /* To assure that the created files have a useful ACL, the 
      default DACL in the process token is set to full access to
      everyone. This applies to files and subdirectories created
      in directories which don't propagate permissions to child
-     objects. */
+     objects.
+     To assure that the files group is meaningful, a token primary
+     group of None is changed to Users or Administrators. */
 
   /* Create a buffer which has enough room to contain the TOKEN_DEFAULT_DACL
      structure plus an ACL with one ACE. */
@@ -98,20 +100,29 @@ set_default_dacl ()
       return;
     }
 
-  /* Get the SID for "Everyone". */
-  PSID sid;
+  PSID esid = NULL, asid = NULL, usid = NULL;
+  HANDLE token = NULL;
+  struct {
+    PSID psid;
+    char buf[MAX_SID_LEN];
+  } gsid;
+  char lsid[MAX_SID_LEN];
+  char compname[MAX_COMPUTERNAME_LENGTH + 1];
+  char domain[MAX_COMPUTERNAME_LENGTH + 1];
+  DWORD size;
+
   SID_IDENTIFIER_AUTHORITY sid_auth = { SECURITY_WORLD_SID_AUTHORITY };
-  if (!AllocateAndInitializeSid (&sid_auth, 1, 0, 0, 0, 0, 0, 0, 0, 0, &sid))
+  if (!AllocateAndInitializeSid (&sid_auth, 1, 0, 0, 0, 0, 0, 0, 0, 0, &esid))
     {
       log (LOG_TIMESTAMP) << "AllocateAndInitializeSid() failed: " <<
 	   GetLastError () << endLog;
-      return;
+      goto out;
     }
 
   /* Create the ACE which grants full access to "Everyone" and store it
      in dacl->DefaultDacl. */
   if (!AddAccessAllowedAce
-      (dacl->DefaultDacl, ACL_REVISION, GENERIC_ALL, sid))
+      (dacl->DefaultDacl, ACL_REVISION, GENERIC_ALL, esid))
     {
       log (LOG_TIMESTAMP) << "AddAccessAllowedAce() failed: %lu" << 
 	   GetLastError () << endLog;
@@ -119,7 +130,6 @@ set_default_dacl ()
     }
 
   /* Get the processes access token. */
-  HANDLE token;
   if (!OpenProcessToken (GetCurrentProcess (),
 			 TOKEN_READ | TOKEN_ADJUST_DEFAULT, &token))
     {
@@ -132,13 +142,111 @@ set_default_dacl ()
   if (!SetTokenInformation (token, TokenDefaultDacl, dacl, sizeof buf))
     log (LOG_TIMESTAMP) << "OpenProcessToken() failed: " << GetLastError ()
       << endLog;
+  /* Get the default group */
+  if (!GetTokenInformation (token, TokenPrimaryGroup, &gsid, sizeof gsid, &size))
+    {
+      log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " <<
+	GetLastError () << endLog;
+      goto out;
+    }
 
+  /* Get the computer name */
+  if (!GetComputerName (compname, (size = sizeof compname, &size)))
+    {
+      log (LOG_TIMESTAMP) << "GetComputerName() failed: " <<
+	GetLastError () << endLog;
+      goto out;
+    }
+
+  /* Get the local domain SID */
+  SID_NAME_USE use;
+  DWORD sz;
+  if (!LookupAccountName (NULL, compname, lsid, (size = sizeof lsid, &size),
+			  domain, (sz = sizeof domain, &sz), &use))
+    {
+      log (LOG_TIMESTAMP) << "LookupAccountName() failed: " <<
+	GetLastError () << endLog;
+      goto out;
+    }
+
+  /* Create the None SID from the domain SID.
+     On NT the last subauthority of a domain is -1 and it is replaced by the RID.
+     On other systems the RID is appended. */
+  sz = *GetSidSubAuthorityCount (lsid);
+  if (*GetSidSubAuthority (lsid, sz -1) != (DWORD) -1)
+    *GetSidSubAuthorityCount (lsid) = ++sz;
+  *GetSidSubAuthority (lsid, sz -1) = DOMAIN_GROUP_RID_USERS;
+
+  /* See if the group is None */
+  if (EqualSid (gsid.psid, lsid))
+    {
+      bool isadmins = false, isusers = false;
+      sid_auth = (SID_IDENTIFIER_AUTHORITY) { SECURITY_NT_AUTHORITY };
+      /* Get the SID for "Administrators" S-1-5-32-544 */
+      if (!AllocateAndInitializeSid (&sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID,
+				     DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &asid))
+        {
+	  log (LOG_TIMESTAMP) << "AllocateAndInitializeSid() failed: " <<
+	    GetLastError () << endLog;
+	  goto out;
+	}
+      /* Get the SID for "Users" S-1-5-32-545 */
+      if (!AllocateAndInitializeSid (&sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID,
+				     DOMAIN_ALIAS_RID_USERS, 0, 0, 0, 0, 0, 0, &usid))
+        {
+	  log (LOG_TIMESTAMP) << "AllocateAndInitializeSid() failed: " <<
+	    GetLastError () << endLog;
+	  goto out;
+	}
+      /* Get the token groups */
+      if (!GetTokenInformation (token, TokenGroups, NULL, 0, &size)
+	  && GetLastError () != ERROR_INSUFFICIENT_BUFFER)
+        {
+	  log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " <<
+	    GetLastError () << endLog;
+	  goto out;
+	}
+      else
+        {
+	  char buf[size];
+	  TOKEN_GROUPS *groups = (TOKEN_GROUPS *) buf;
+
+	  if (!GetTokenInformation (token, TokenGroups, buf, size, &size))
+	    {
+	      log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " <<
+		GetLastError () << endLog;
+	      goto out;
+	    }
+	  else
+	    /* See if admins or users is present */
+	    for (DWORD pg = 0; pg < groups->GroupCount; ++pg)
+	      {
+		isadmins = isadmins || EqualSid(groups->Groups[pg].Sid, asid);
+		isusers = isusers || EqualSid(groups->Groups[pg].Sid, usid);
+	      }
+	}
+      /* Set the default group to one of the above computed SID. */
+      PSID nsid = NULL;
+      if (isusers)
+	nsid = usid;
+      else if (isadmins)
+	nsid = asid;
+      if (nsid && !SetTokenInformation (token, TokenPrimaryGroup, &nsid, sizeof nsid))
+	log (LOG_TIMESTAMP) << "SetTokenInformation() failed: " <<
+	  GetLastError () << endLog;
+    }
+ out:
   /* Close token handle. */
-  CloseHandle (token);
+  if (token)
+    CloseHandle (token);
 
-out:
-  /* Free memory occupied by the "Everyone" SID. */
-  FreeSid (sid);
+  /* Free memory occupied by the SIDs. */
+  if (esid)
+    FreeSid (esid);
+  if (asid)
+    FreeSid (asid);
+  if (usid)
+    FreeSid (usid);
 }
 
 // Other threads talk to this page, so we need to have it externable.
@@ -208,10 +316,10 @@ main (int argc, char **argv)
     theLog.exit(1);
 // #endif
 
-  /* Set the default DACL only on NT/W2K. 9x/ME has no idea of access
-     control lists and security at all. */
+  /* Set the default DACL and Group only on NT/W2K. 9x/ME has
+     no idea of access control lists and security at all. */
   if (iswinnt)
-    set_default_dacl ();
+    set_default_sec ();
 
   // Initialize common controls
   InitCommonControls ();

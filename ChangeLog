@@ -1,3 +1,19 @@
+2003-02-28  Max Bowsher  <maxb@ukf.net>
+
+	Backport from HEAD
+	* Makefile.am (%.o: %.rc): Make windres use $(CC) not hardcoded gcc.
+       	(inilint_LDADD): Remove -lstdc++.
+      	(setup_LDADD): Ditto.
+
+2003-02-28  Pierre Humblet  <pierre.humblet@ieee.org>
+
+	Backported by Pavel Tsekov <ptsekov@gmx.net>
+	* main.cc (set_default_dacl): Replace with set_default_sec.
+	(set_default_sec): Attempt to change the default group to
+	Users or Administrators if it is None, in addition to setting
+	Everyone in the default DACL.
+	(main): Call set_default_sec instead of set_default_dacl.
+
 2002-07-03  Pavel Tsekov  <ptsekov@gmx.net>
 
 	* filemanip.cc (parse_filename): Do not try to parse empty

@@ -76,7 +76,7 @@ else
   rsync_source = 
 endif
 
-inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32 
+inilint_LDADD = libgetopt++/libgetopt++.la -luser32 -lkernel32 
 inilint_SOURCES = \
   filemanip.cc \
   filemanip.h \
@@ -103,7 +103,7 @@ inilint_SOURCES = \
 setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a \
 	libgetopt++/libgetopt++.la \
 	@RSYNCLIB@ \
-	-lstdc++ -luser32 -lkernel32 \
+	-luser32 -lkernel32 \
 	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid 
 setup_LDFLAGS = -mwindows
 setup_SOURCES = \
@@ -273,7 +273,7 @@ setup_version.c : $(srcdir)/ChangeLog Makefile
 	mv version.tmp setup_version.c
 
 %.o: %.rc
-	$(WINDRES) --include-dir $(srcdir) -o $@ $<
+	$(WINDRES) --preprocessor "$(CC) -E -xc-header -DRC_INVOKED" --include-dir $(srcdir) -o $@ $<
 
 autoload.o: autoload.c
 @AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
