@@ -1,3 +1,7 @@
+2001-10-16  Christopher Faylor  <cgf@redhat.com>
+
+	* res.rc: Enlarge chooser screen.
+
 2001-10-12  Christopher Faylor  <cgf@redhat.com>
 
 	* Makefile.in: Accomodate changes to w32api_include macro.
