@@ -632,7 +632,6 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 	TextOut (hdc, x + chooser->headers[chooser->cat_col].x, r,
 		 pkg->category->name, strlen (pkg->category->name));
 
-      char *s;
       if (!pkg->sdesc)
 	s = pkg->name;
       else
@@ -643,7 +642,6 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 	  strcat(buf,pkg->sdesc);
 	  s = buf;
 	}
-      }
       TextOut (hdc, x + chooser->headers[chooser->pkg_col].x, r, s, strlen (s));
     }
   else if (cat)
