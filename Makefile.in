@@ -45,7 +45,7 @@ CXX		:= @CXX@
 CFLAGS		:= @CFLAGS@ $(MC_DEFS) -Werror -Winline -Wall -Wpointer-arith \
 	-Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
 	-Wmissing-declarations -Wcomments
-CXXFLAGS	:= @CXXFLAGS@ $(CFLAGS) -fno-rtti
+CXXFLAGS	:= @CXXFLAGS@ $(CFLAGS) -fno-rtti -fno-exceptions
 CXX		:= @CXX@
 
 WINDRES		:= @WINDRES@
