@@ -1,3 +1,8 @@
+2001-05-07  Brian Keener <bkeener@thesoftwaresource.com>
+
+	* choose.cc (do_choose): Fix incorrect assignment of trust setting to
+	use when Redownload or Sources Only selected.
+
 Thu May 10 22:35:59 2001  Christopher Faylor <cgf@cygnus.com>
 
 	Reformat file after botched patch formatting.
