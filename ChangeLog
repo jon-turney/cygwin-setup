@@ -1,3 +1,7 @@
+Sun Aug 12 14:25:21 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* desktop.cc (make_passwd_group): .bat files need \r\n endings.
+
 Wed Aug  8 13:53:47 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* desktop.cc (etc_profile): Leave environment variables untouched.

@@ -277,7 +277,7 @@ make_passwd_group ()
   char *fname = cygpath ("/etc/postinstall/passwd-grp.bat", 0);
   mkdir_p (0, fname);
 
-  FILE *p = fopen (fname, "wb");
+  FILE *p = fopen (fname, "wt");
   if (!p)
     return;
 
