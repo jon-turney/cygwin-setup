@@ -21,6 +21,9 @@
 #include <string.h>
 
 #include "win32.h"
+#include "package_db.h"
+#include "category.h"
+#include "category_list.h"
 #include "ini.h"
 #include "iniparse.h"
 #include "filemanip.h"
@@ -38,6 +41,8 @@ static int trust;
 extern unsigned int setup_timestamp;
 extern char *setup_version;
 extern int yylineno;
+
+packagedb db;
 
 #define cpt (cp->info+trust)
 
@@ -117,9 +122,9 @@ requires
  ;
 
 categories
- : STRING			{ add_category (cp, register_category ($1));
+ : STRING			{ add_category (cp, db.categories.register_category ($1));
  				} categories
- | STRING			{ add_category (cp, register_category ($1)); }
+ | STRING			{ add_category (cp, db.categories.register_category ($1)); }
  ;
 
 %%
@@ -127,8 +132,6 @@ categories
 Package *package = NULL;
 int npackages = 0;
 static int maxpackages = 0;
-Category *category = NULL;
-int ncategories = 0;
 
 Package *
 new_package (char *name)
@@ -168,58 +171,18 @@ new_requirement (Package *package, char *dependson)
   cp->required = dp;
 }
 
-Category *
-register_category (const char *name)
-{
-  Category *tempcat;
-  if (category == NULL)
-    ncategories = 0;
-  tempcat = getcategorybyname (name);
-  if (!tempcat)
-    {
-      Category *sortcat = category;
-      tempcat = new (Category);
-      memset (tempcat, '\0', sizeof (Category));
-      tempcat->name = strdup (name);
-      if (!sortcat || strcasecmp(sortcat->name, name) > 0)
-	{
-	  tempcat->next = category;
-	  category = tempcat;
-	}
-      else
-	{
-	  tempcat->next = sortcat->next;
-	  sortcat->next = tempcat;
-	  while (sortcat->next && 
-		 strcasecmp(sortcat->next->name, tempcat->name) < 0)
-	    {
-	      tempcat->next = sortcat->next;
-	      sortcat->next = tempcat;
-	    }
-	}
-      ncategories++;
-    }
-  return tempcat;
-}
-
 void
 add_category (Package *pkg, Category *cat)
 {
   /* add a new record for the package list */
   /* TODO: alpabetical inserts ? */
-  Category *tempcat;
-  CategoryPackage *templink;
-  tempcat = new (Category);
-  memset (tempcat, '\0', sizeof (Category));
+  Category *tempcat = new Category;
   tempcat->next = pkg->category;
   tempcat->name = cat->name;
   pkg->category = tempcat;
 
-  templink = new (CategoryPackage);
+  CategoryPackage *templink = new CategoryPackage;
   templink->next = cat->packages;
   templink->pkgname = pkg->name;
   cat->packages = templink;
- 
-  /* hack to ensure we allocate enough space */
-  ncategories++; 
 }

@@ -20,35 +20,51 @@
 #ifndef _CYGPACKAGE_H_
 #define _CYGPACKAGE_H_
 
-class cygpackage : public genericpackage
+#include "category_list.h"
+
+class cygpackage:public genericpackage
 {
 public:
   virtual const char *Name ();
   virtual const char *Vendor_version ();
   virtual const char *Package_version ();
-  virtual package_status_t Status () {return status;};
-  virtual package_type_t Type () {return type;};
+  virtual package_status_t Status ()
+  {
+    return status;
+  };
+  virtual package_type_t Type ()
+  {
+    return type;
+  };
+  virtual CategoryList & Categories ()
+  {
+    return categories;
+  };
 
   /* pass the name of the package when constructing */
-  cygpackage(const char *);
-  cygpackage(const char *, const char *, size_t, const char *, package_status_t, package_type_t);
-  virtual ~cygpackage ();
+  cygpackage (const char *);
+  cygpackage (const char *, const char *, size_t, const char *,
+	      package_status_t, package_type_t);
+
+
+  virtual ~ cygpackage ();
   /* TODO: we should probably return a metaclass - file name & path & size & type
      - ie doc/script/binary
    */
-  virtual const char *getfirstfile();
-  virtual const char *getnextfile();
+  virtual const char *getfirstfile ();
+  virtual const char *getnextfile ();
 private:
   void destroy ();
   char *name;
   char *vendor;
   char *packagev;
   char *fn;
-  
+  CategoryList categories;
+
 //  package_stability_t stability;
   package_status_t status;
   package_type_t type;
-  
+
   io_stream *listdata, *listfile;
   size_t filesize;
 };

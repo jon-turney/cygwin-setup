@@ -121,6 +121,7 @@ packagedb::packagedb ()
 	    // unknown dbversion
 	    exit (1);
 	}
+      installeddbread = 1;
     }
   db = 0;
   curr_package = 0;
@@ -173,8 +174,14 @@ packagedb::addpackage (packagemeta & newpackage)
 packagemeta **
   packagedb::packages =
   0;
-size_t packagedb::packagecount = 0;
-size_t packagedb::packagespace = 0;
+size_t
+  packagedb::packagecount =
+  0;
+size_t
+  packagedb::packagespace =
+  0;
 int
   packagedb::installeddbread =
   0;
+CategoryList
+  packagedb::categories;

@@ -100,19 +100,11 @@ typedef struct _Info
 }
 Info;				/* +1 for TRUST_UNKNOWN */
 
-typedef struct _CategoryPackage
-{
-  struct _CategoryPackage *next;	/* The next package pointer in the list */
-  char *pkgname;		/* This should be Package *, but the packages can move */
-}
-CategoryPackage;
-
-class Category
+class CategoryPackage
 {
 public:
-  Category *next;	/* the next category in the list */
-  char *name;			/* the category */
-  CategoryPackage *packages;	/* the packages in this category */
+  CategoryPackage *next;	/* The next package pointer in the list */
+  char *pkgname;		/* This should be Package *, but the packages can move */
 };
 
 typedef struct _Dependency
@@ -149,16 +141,12 @@ public:
 
 extern Package *package;
 extern int npackages;
-extern Category *category;
-extern int ncategories;
 
   Package *new_package (char *name);
   Package *getpkgbyname (const char *pkgname);
   void new_requirement (Package * package, char *dependson);
-  Category *getcategorybyname (const char *categoryname);
   Category *getpackagecategorybyname (Package * pkg,
 				      const char *categoryname);
-  Category *register_category (const char *name);
   void add_category (Package * package, Category * cat);
 
 #endif

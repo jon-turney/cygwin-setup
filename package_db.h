@@ -16,7 +16,9 @@
 #ifndef _PACKAGE_DB_H_
 #define _PACKAGE_DB_H_
 
+class CategoryList;
 class packagemeta;
+class io_stream;
 
 /*TODO: add mutexs */
 class packagedb
@@ -28,6 +30,8 @@ public:
   packagemeta *getpackagebyname (const char *);
   /* 0 on success */
   int addpackage (packagemeta &);
+  /* all seen categories */
+  static CategoryList categories;
 private:
   /* this gets sorted */
   static packagemeta **packages;

@@ -1,5 +1,34 @@
 2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
 
+	* Makefile.in (OBJS): Add category.o and category_list.o.
+	* category.h: New file.
+	* category.cc: New file.
+	* category_list.h: New file.
+	* category_list.cc: New file.
+	* choose.cc: Include category headers.
+	(fill_missing_category): Use package_db to access global categories.
+	(_view::insert_pkg): Ditto.
+	(_view::insert_category): Ditto.
+	(set_view_mode): Ditto.
+	(getcategorybyname): Remove.
+	* cygpackage.h: Include category_list.h to parse this correctly.
+	(cygpackage): New virtual &Categories.
+	* ini.h (_CategoryPackage): More C to C++ conversion.
+	(Category): Remove.
+	(getcategorybyname): Remove.
+	(register_category): Remove.
+	* iniparse.y: Include package db and category headers.
+	(categories): Use package_db to access global categories.
+	(category): Remove.
+	(ncategories): Remove.
+	(register_category): Remove.
+	* package.h: New virtual &Categories.
+	* package_db.cc (packagedb::packagedb): Don't read the installed db twice.
+	(packagedb::categories): Declare.
+	* package_db.h (packagedb): New member categories for global categories list.
+
+2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.h: Don't include ini.h
 	* ini.h: Allow pure c++ in the header file.
 

@@ -37,6 +37,8 @@
  * now consider it old.
  */
 
+class CategoryList;
+
 typedef enum
 {
   package_invalid,
@@ -76,6 +78,7 @@ public:
    */
   virtual const char *getfirstfile () = 0;
   virtual const char *getnextfile () = 0;
+  virtual CategoryList &Categories () = 0;
 
     virtual ~ genericpackage ()
   {

@@ -47,6 +47,8 @@ static const char *cvsid =
 #include "filemanip.h"
 #include "io_stream.h"
 #include "choose.h"
+#include "category.h"
+#include "category_list.h"
 
 #include "package_db.h"
 #include "package_meta.h"
@@ -567,9 +569,10 @@ set_existence ()
 static void
 fill_missing_category ()
 {
+  packagedb db;
   for (Package * pkg = package; pkg->name; pkg++)
     if (!pkg->exclude && !pkg->category)
-      add_category (pkg, register_category ("Misc"));
+      add_category (pkg, db.categories.register_category ("Misc"));
 }
 
 static actions
@@ -825,12 +828,14 @@ _view::insert_pkg (Package * pkg)
   if (pkg->exclude)
     return;
   line.set_line (pkg);
+  packagedb db;
   if (view_mode != VIEW_CATEGORY)
     {
       if (lines == NULL)
 	{
-	  lines = (pick_line *) calloc (npackages + ncategories,
-					sizeof (pick_line));
+	  lines =
+	    (pick_line *) calloc (npackages + db.categories.categories (),
+				  sizeof (pick_line));
 	  nlines = 0;
 	  insert_at (0, line);
 	}
@@ -873,9 +878,12 @@ _view::insert_category (Category * cat, int collapsed)
   line.set_line (cat);
   if (lines == NULL)
     {
+      packagedb db;
       lines =
-	(pick_line *) malloc ((npackages + ncategories) * sizeof (pick_line));
-      memset (lines, '\0', (npackages + ncategories) * sizeof (pick_line));
+	(pick_line *) malloc ((npackages + db.categories.categories ()) *
+			      sizeof (pick_line));
+      memset (lines, '\0',
+	      (npackages + db.categories.categories ()) * sizeof (pick_line));
       nlines = 0;
       insert_at (0, line);
       if (!collapsed)
@@ -1098,9 +1106,13 @@ set_view_mode (HWND h, views mode)
 	  chooser->insert_pkg (pkg);
       break;
     case VIEW_CATEGORY:
-      /* start collapsed. TODO: make this a chooser flag */
-      for (Category * cat = category; cat; cat = cat->next)
-	chooser->insert_category (cat, CATEGORY_COLLAPSED);
+      {
+	packagedb db;
+	/* start collapsed. TODO: make this a chooser flag */
+	for (Category * cat = db.categories.getfirstcategory (); cat;
+	     cat = cat->next)
+	  chooser->insert_category (cat, CATEGORY_COLLAPSED);
+      }
       break;
     default:
       break;
@@ -1371,17 +1383,6 @@ getpkgbyname (const char *pkgname)
   for (Package * pkg = package; pkg && pkg->name; pkg++)
     if (strcasecmp (pkg->name, pkgname) == 0)
       return pkg;
-
-  return NULL;
-}
-
-/* Return a pointer to a category given the name. */
-Category *
-getcategorybyname (const char *categoryname)
-{
-  for (Category * cat = category; cat; cat = cat->next)
-    if (strcasecmp (cat->name, categoryname) == 0)
-      return cat;
 
   return NULL;
 }

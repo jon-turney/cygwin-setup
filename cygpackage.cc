@@ -26,15 +26,21 @@ static const char *cvsid =
 #include <unistd.h>
 #include <strings.h>
 #include "concat.h"
-  
+
 #include "io_stream.h"
 #include "compress.h"
- 
-#include "package.h" 
+
+#include "package.h"
 #include "cygpackage.h"
 
 /* this constructor creates an installed package */
-cygpackage::cygpackage (const char *pkgname) : vendor (0),packagev (0), status (package_installed), type(package_binary), listdata (0), listfile (0) 
+cygpackage::cygpackage (const char *pkgname):
+vendor (0),
+packagev (0),
+status (package_installed),
+type (package_binary),
+listdata (0),
+listfile (0)
 {
   name = strdup (pkgname);
   /* FIXME: query the install database for the currently installed 
@@ -44,27 +50,34 @@ cygpackage::cygpackage (const char *pkgname) : vendor (0),packagev (0), status (
 
 /* create a package given explicit details - perhaps should be modified to take the
    filename and do it's own parsing? */
-cygpackage::cygpackage (const char *pkgname, const char *filename, size_t fs, const char *version, package_status_t newstatus, package_type_t newtype) : status (newstatus), type (newtype), listdata (0), listfile (0), filesize (fs)
+cygpackage::cygpackage (const char *pkgname, const char *filename, size_t fs,
+			const char *version, package_status_t newstatus,
+			package_type_t newtype):
+status (newstatus),
+type (newtype),
+listdata (0),
+listfile (0),
+filesize (fs)
 {
   name = strdup (pkgname);
   fn = strdup (fn);
 
   char *curr = strchr (version, '-');
   if (curr)
-  {
-    char *next;
-    while ((next = strchr (curr+1, '-')))
-      curr = next;
-    /* curr = last - in the version string */
-    packagev = strdup (curr+1);
-    vendor = strdup (version);
-    vendor [curr - version] = '\0';
-  }
+    {
+      char *next;
+      while ((next = strchr (curr + 1, '-')))
+	curr = next;
+      /* curr = last - in the version string */
+      packagev = strdup (curr + 1);
+      vendor = strdup (version);
+      vendor[curr - version] = '\0';
+    }
   else
-  {
-    packagev = 0;
-    vendor = strdup (version);
-  }
+    {
+      packagev = 0;
+      vendor = strdup (version);
+    }
 }
 
 cygpackage::~cygpackage ()
@@ -80,15 +93,15 @@ cygpackage::~cygpackage ()
 void
 cygpackage::destroy ()
 {
-  
+
   if (name)
     free (name);
-if (vendor)
-  free (vendor);
-if (packagev)
-  free (packagev);
-if (fn)
-  free (fn);
+  if (vendor)
+    free (vendor);
+  if (packagev)
+    free (packagev);
+  if (fn)
+    free (fn);
 
   if (listdata)
     delete listdata;
@@ -99,12 +112,14 @@ cygpackage::getfirstfile ()
 {
   if (listdata)
     delete listdata;
-  listfile = io_stream::open (concat ("cygfile:///etc/setup/", name, ".lst.gz", 0), "rb");
+  listfile =
+    io_stream::open (concat ("cygfile:///etc/setup/", name, ".lst.gz", 0),
+		     "rb");
   listdata = compress::decompress (listfile);
 
   if (!listdata)
     return 0;
-  
+
   return listdata->gets (fn, sizeof (fn));
 }
 
@@ -136,8 +151,7 @@ cygpackage::Package_version ()
 }
 
 #if 0
-package_stability_t
-cygpackage::Stability ()
+package_stability_t cygpackage::Stability ()
 {
   return stability;
 }
