@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Gary R. Van Sickle.
+ * Copyright (c) 2001, 2002, 2003 Gary R. Van Sickle.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -56,7 +56,6 @@ DLGTEMPLATEEX, *LPDLGTEMPLATEEX;
 
 PropSheet::PropSheet ()
 {
-  NumPropPages = 0;
 }
 
 PropSheet::~PropSheet ()
@@ -69,15 +68,15 @@ PropSheet::CreatePages ()
   HPROPSHEETPAGE *retarray;
 
   // Create the return array
-  retarray = new HPROPSHEETPAGE[NumPropPages];
+  retarray = new HPROPSHEETPAGE[PropertyPages.size()];
 
   // Create the pages with CreatePropertySheetPage().
   // We do it here rather than in the PropertyPages themselves
   // because, for reasons known only to Microsoft, these handles will be
   // destroyed by the property sheet before the PropertySheet() call returns,
   // at least if it's modal (don't know about modeless).
-  int i;
-  for (i = 0; i < NumPropPages; i++)
+  unsigned int i;
+  for (i = 0; i < PropertyPages.size(); i++)
     {
       retarray[i] =
 	CreatePropertySheetPage (PropertyPages[i]->GetPROPSHEETPAGEPtr ());
@@ -87,7 +86,7 @@ PropSheet::CreatePages ()
 	{
 	  PropertyPages[i]->YouAreFirst ();
 	}
-      else if (i == NumPropPages - 1)
+      else if (i == PropertyPages.size() - 1)
 	{
 	  PropertyPages[i]->YouAreLast ();
 	}
@@ -184,7 +183,7 @@ PropSheet::Create (const Window * Parent, DWORD Style)
       p.hwndParent = NULL;
     }
   p.hInstance = GetInstance ();
-  p.nPages = NumPropPages;
+  p.nPages = PropertyPages.size();
   p.pszIcon = MAKEINTRESOURCE(IDI_CYGWIN);
   p.nStartPage = 0;
   p.phpage = PageHandles;
@@ -226,8 +225,7 @@ PropSheet::AddPage (PropertyPage * p)
 {
   // Add a page to the property sheet.
   p->YouAreBeingAddedToASheet (this);
-  PropertyPages[NumPropPages] = p;
-  NumPropPages++;
+  PropertyPages.push_back(p);
 }
 
 bool

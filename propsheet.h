@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Gary R. Van Sickle.
+ * Copyright (c) 2001, 2002, 2003 Gary R. Van Sickle.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 // the Windows function of the same name.
 
 
+#include <vector>
+
 #include <windows.h>
 #include <prsht.h>
 
@@ -31,8 +33,8 @@ class PropertyPage;
 
 class PropSheet : public Window
 {
-  PropertyPage *PropertyPages[MAXPROPPAGES];
-  int NumPropPages;
+  typedef std::vector< PropertyPage* > PageContainer;
+  PageContainer PropertyPages;
 
   HPROPSHEETPAGE *PageHandles;
   HPROPSHEETPAGE *CreatePages ();
