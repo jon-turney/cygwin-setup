@@ -1105,7 +1105,7 @@ do_start_menu (const char *root)
 	  fprintf (batch,
 		   "@echo off\n"
 		   "SET MAKE_MODE=unix\n"
-		   "SET PATH=%s\\bin;%s\\usr\\local\\bin;%%PATH%%\n"
+		   "SET PATH=%s;%s;%%PATH%%\n"
 		   "bash\n", bindir, locbindir);
 	  fclose (batch);
 	  xfree (bindir);

@@ -1,3 +1,8 @@
+Mon May  1 11:05:07 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (do_start_menu): Don't concatenate paths to already built
+	paths.
+
 Sun Apr 30 22:37:34 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* path.c (exit_cygpath): Wait for subprocess to exit before returning.
