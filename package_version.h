@@ -43,6 +43,7 @@ class CategoryList;
 #include "package_source.h"
 #include "String++.h"
 #include "PackageSpecification.h"
+#include "PackageTrust.h"
 #include <vector>
 
 typedef enum
@@ -130,6 +131,9 @@ public:
   packagesource *source(); /* where can we source the files from */
 
   bool accessible () const;
+
+  /* ensure that the depends clause is satisfied */
+  int set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0);
   
 private:
   _packageversion *data; /* Invariant: * data is always valid */

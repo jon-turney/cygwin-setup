@@ -178,12 +178,10 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
 
   if (x >= theView.headers[theView.new_col].x - HMARGIN / 2
       && x <= theView.headers[theView.new_col + 1].x - HMARGIN / 2)
-    {
-      pkg.set_action (pkg.trustp(theView.deftrust));
-      /* Add any packages that are needed by this package */
-      return pkg.set_requirements ();
-    }
-  return 0;
+    pkg.set_action (pkg.trustp(theView.deftrust));
+  
+  /* Add any packages that are needed by this package */
+  return pkg.set_requirements ();
 }
 
 int PickPackageLine::set_action (packagemeta::_actions action)

@@ -26,6 +26,7 @@ static const char *cvsid =
 #include "package_meta.h"
 #include "state.h"
 #include "resource.h"
+#include <algorithm>
 
 /* a default class to avoid special casing empty packageversions */
   
@@ -286,6 +287,128 @@ bool
 packageversion::accessible() const
 {
   return data->accessible();
+}
+
+static bool
+checkForInstalled (PackageSpecification *spec)
+{
+  packagedb db;
+  packagemeta *required = db.findBinary (*spec);
+  if (!required)
+    return false;
+  if (spec->satisfies (required->installed)
+      && required->desired == required->installed )
+    /* done, found a satisfactory installed version that will remain
+       installed */
+    return true;
+  return false;
+}
+
+static bool
+checkForUpgradeable (PackageSpecification *spec)
+{
+  packagedb db;
+  packagemeta *required = db.findBinary (*spec);
+  if (!required || !required->installed)
+    return false;
+  for (set <packageversion>::iterator i = required->versions.begin();
+       i != required->versions.end(); ++i)
+    if (spec->satisfies (*i))
+      return true;
+  return false;
+}
+
+static bool
+checkForSatisfiable (PackageSpecification *spec)
+{
+  packagedb db;
+  packagemeta *required = db.findBinary (*spec);
+  if (!required)
+    return false;
+  for (set <packageversion>::iterator i = required->versions.begin();
+       i != required->versions.end(); ++i)
+    if (spec->satisfies (*i))
+      return true;
+  return false;
+}
+
+static int
+processOneDependency(trusts deftrust, size_t depth, PackageSpecification *spec)
+{
+  /* TODO: add this to a set of packages to be offered to meet the
+     requirement. For now, simply set the install to the first
+     satisfactory version. The user can step through the list if
+     desired */
+  packagedb db;
+  packagemeta *required = db.findBinary (*spec);
+  set <packageversion>::iterator v;
+  for (v = required->versions.begin();
+    v != required->versions.end() && !spec->satisfies (*v); ++v);
+  if (v != required->versions.end())
+    {
+      /* preserve source */
+      bool sourceticked = required->desired.sourcePackage().picked();
+      /* install this version */
+      required->desired = *v;
+      required->desired.pick (required->installed != required->desired);
+      required->desired.sourcePackage().pick (sourceticked);
+      /* does this requirement have requirements? */
+      return required->set_requirements (deftrust, depth + 1);
+    }
+  /* else assert !! */
+  return 0;
+}
+
+int
+packageversion::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
+{
+  int changed = 0;
+  vector <vector <PackageSpecification *> *>::iterator dp = depends ()->begin();
+  /* cheap test for too much recursion */
+  if (depth > 5)
+    return changed;
+  /* walk through each and clause */
+  while (dp != depends ()->end())
+    {
+      /* three step:
+	 1) is a satisfactory or clause installed?
+	 2) is an unsatisfactory version of an or clause which has
+	 a satisfactory version available installed?
+	 3) is a satisfactory package available?
+	 */
+      /* check each or clause for an installed match */
+      vector <PackageSpecification *>::iterator i =
+	find_if ((*dp)->begin(), (*dp)->end(), checkForInstalled);
+      if (i != (*dp)->end())
+	{
+	  /* we found an installed ok package */
+	  /* next and clause */
+	  ++dp;
+	  continue;
+	}
+      /* check each or clause for an upgradeable version */
+      i = find_if ((*dp)->begin(), (*dp)->end(), checkForUpgradeable);
+      if (i != (*dp)->end())
+	{
+	  /* we found a package that can be up/downgraded to meet the
+	     requirement. (*i is the packagespec that can be satisfied.)
+	     */
+	  ++dp;
+	  changed += processOneDependency (deftrust, depth, *i) + 1;
+	  continue;
+	}
+      /* check each or clause for an installable version */
+      i = find_if ((*dp)->begin(), (*dp)->end(), checkForSatisfiable);
+      if (i != (*dp)->end())
+	{
+	  /* we found a package that can be installed to meet the requirement */
+	  ++dp;
+	  changed += processOneDependency (deftrust, depth, *i) + 1;
+	  continue;
+	}
+      ++dp;
+    }
+  return changed;
 }
 
 /* the parent data class */

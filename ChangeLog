@@ -1,5 +1,24 @@
 2002-07-13  Robert Collins  <rbtcollins@hotmail.com>
 
+	* PickPackageLine.cc (PickPackageLine::click): Set requirements for 
+	packages under all circumstances - slightly higher overheader, simpler
+	code.
+	* download.cc (do_download_thread): Correctly download source 
+	packages.
+	* package_meta.cc (checkForInstalled): Remove.
+	(checkForUpgradeable): Ditto.
+	(checkForSatisfiable): Ditto.
+	(processOneDependency): Ditto.
+	(packagemeta::set_requirements): Move guts to packageversion.
+	* package_version.cc (checkForInstalled): Copied from package_meta.cc.
+	(checkForUpgradeable): Ditto.
+	(checkForSatisfiable): Ditto.
+	(processOneDependency): Ditto.
+	(packageversion::set_requirements): Ditto.
+	* package_version.h (packageversion::set_requirements): Declare.
+
+2002-07-13  Robert Collins  <rbtcollins@hotmail.com>
+
 	* IniDBBuilder.cc (IniDBBuilder::buildBeginBuildDepends): Implement.
 	(IniDBBuilder::buildBeginBinary): Implement.
 	* IniDBBuilder.h (IniDBBuilder::buildBeginBuildDepends): Declare.

@@ -267,7 +267,7 @@ do_download_thread (HINSTANCE h, HWND owner)
 	  if (version.picked())
 	    e += download_one (*version.source(), owner);
 	  if (sourceversion && sourceversion.picked())
-	    e += download_one (*version.source(), owner);
+	    e += download_one (*sourceversion.source(), owner);
 	  errors += e;
 #if 0
 	  if (e)
