@@ -165,7 +165,9 @@ io_stream_cygfile::mklink (String const &_from, String const &_to,
   switch (linktype)
     {
     case IO_STREAM_SYMLINK:
-      return mkcygsymlink (cygpath (from).cstr_oneuse(), to.cstr_oneuse());
+      // symlinks are arbitrary targets, can be anything, and are
+      // not subject to translation
+      return mkcygsymlink (cygpath (from).cstr_oneuse(), _to.cstr_oneuse());
     case IO_STREAM_HARDLINK:
       {
 	/* For now, just copy */

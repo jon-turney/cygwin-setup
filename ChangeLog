@@ -1,5 +1,10 @@
 2003-03-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	* io_stream_cygfile.cc (io_stream_cygfile::mklink): Don't translate
+	symlinks.
+
+2003-03-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* io_stream_cygfile.cc (cwd): New static for cwd storage.
 	(io_stream_cygfile::normalise): New method.
 	(io_stream_cygfile::io_stream_cygfile): Use it.
