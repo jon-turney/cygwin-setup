@@ -1,3 +1,8 @@
+Tue Dec 26 03:46:00 2000  Matt Hargett  <matt@use.net>
+
+	* winsup/cinstall/res.rc: Added accelerators and improved focus
+	order.
+
 2000-12-10  Egor Duda <deo@logos-m.ru>
 
 	* choose.cc (paint): Use system background color for text output.
