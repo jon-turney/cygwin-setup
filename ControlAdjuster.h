@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2003, Frank Richter <frichter@gmx.li>
+ * Copyrught (c) 2003, Robert Collins <rbtcollins@hotmail.com>
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -37,11 +38,22 @@ enum ControlPosition {
   CP_STRETCH,
 };
 
+/* left and right double as top and bottom. better labels sought. */
+class ControlDimension
+{
+  public:
+    ControlDimension(long &anInt1, long &anInt2) : 
+      left(anInt1), right (anInt2){}
+    long &left;
+    long &right;
+};
+
 class ControlAdjuster
 {
 public:
   struct ControlInfo
   {
+    void adjust(HWND dlg, int widthChange, int heightChange) const;
     // Control ID
     int control;
     /*
@@ -49,6 +61,8 @@ public:
      */
     ControlPosition horizontalPos;
     ControlPosition verticalPos;
+    private:
+      void adjust (ControlPosition const &how, ControlDimension &where, int by) const;
   };
   
   /*

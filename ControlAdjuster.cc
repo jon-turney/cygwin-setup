@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2003, Frank Richter <frichter@gmx.li>
+ * Copyright (c) 2003, Robert Collins <rbtcollins@hotmail.com>
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -24,58 +25,55 @@ void ControlAdjuster::AdjustControls (HWND dlg,
   
   while (ci->control > 0)
   {
-    HWND ctl = GetDlgItem (dlg, ci->control);  
-    if (ctl != 0)
-    {
-      RECTWrapper ctlRect;
-      GetWindowRect (ctl, &ctlRect);
-      // We want client coords.
-      ScreenToClient (dlg, (LPPOINT)&ctlRect.left);
-      ScreenToClient (dlg, (LPPOINT)&ctlRect.right);
-      
-      /*
-        Now adjust the rectangle.
-       */
-      switch (ci->horizontalPos)
-      {
-	case CP_LEFT:
-	  break;
-	case CP_MIDDLE:
-	  ctlRect.left += widthChange/2;
-	  ctlRect.right += widthChange - widthChange/2;
-	  break;
-	case CP_RIGHT:
-	  ctlRect.left += widthChange;
-	  ctlRect.right += widthChange;
-	  break;
-	case CP_STRETCH:
-	  ctlRect.right += widthChange;
-	  break;
-      }
-      switch (ci->verticalPos)
-      {
-	case CP_TOP:
-	  break;
-	case CP_MIDDLE:
-	  ctlRect.top += heightChange/2;
-	  ctlRect.bottom += heightChange - heightChange/2;
-	  break;
-	case CP_BOTTOM:
-	  ctlRect.top += heightChange;
-	  ctlRect.bottom += heightChange;
-	  break;
-	case CP_STRETCH:
-	  ctlRect.bottom += heightChange;
-	  break;
-      }
-
-      SetWindowPos (ctl, 0, ctlRect.left, ctlRect.top, 
-	ctlRect.width (), ctlRect.height (), SWP_NOACTIVATE | SWP_NOZORDER);
-      // If not done, weird visual glitches can occur.
-      InvalidateRect (ctl, 0, false);
-      
-    }
+    ci->adjust(dlg, widthChange,heightChange);
     ci++;
+  }
+}
+
+void
+ControlAdjuster::ControlInfo::adjust(HWND dlg, int widthChange, int heightChange) const
+{    
+  HWND ctl = GetDlgItem (dlg, control);  
+  if (ctl == 0)
+    return;
+  RECTWrapper ctlRect;
+  GetWindowRect (ctl, &ctlRect);
+  // We want client coords.
+  ScreenToClient (dlg, (LPPOINT)&ctlRect.left);
+  ScreenToClient (dlg, (LPPOINT)&ctlRect.right);
+  
+  ControlDimension horizontal(ctlRect.left, ctlRect.right);
+  ControlDimension vertical(ctlRect.top, ctlRect.bottom);
+  /*
+    Now adjust the rectangle coordinates.
+   */
+  adjust(horizontalPos, horizontal, widthChange);
+  adjust(verticalPos, vertical, heightChange);
+  /* update the windows window */
+  SetWindowPos (ctl, 0, ctlRect.left, ctlRect.top, 
+    ctlRect.width (), ctlRect.height (), SWP_NOACTIVATE | SWP_NOZORDER);
+  // If not done, weird visual glitches can occur.
+  InvalidateRect (ctl, 0, false);
+}
+ 
+void
+ControlAdjuster::ControlInfo::adjust (ControlPosition const &how, ControlDimension &where, int by) const
+{
+  switch (how)
+    {
+      case CP_LEFT:
+        break;
+      case CP_MIDDLE:
+        where.left += by/2;
+        where.right += by - by/2;
+        break;
+      case CP_RIGHT:
+        where.left += by;
+        where.right += by;
+        break;
+      case CP_STRETCH:
+        where.right += by;
+        break;
   }
 }
  

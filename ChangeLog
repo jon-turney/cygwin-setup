@@ -1,3 +1,10 @@
+2003-11-1  Robert Collins  <rbtcollins@hotmail.com>
+
+	* ControlAdjuster.h (ControlDimension): Add.
+	(ControlAdjuster): Factor adjust functionality into ControlInfo.
+	* ControlAdjuster.cc (ControlAdjuster::adjust): Ditto.
+	(ControlAdjuster::ControlInfo::adjust): Ditto.
+
 2003-10-31  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
 	* ControlAdjuster.h (ControlPosition): New enum type.
