@@ -46,6 +46,7 @@ static const char *cvsid =
 extern ThreeBarProgressPage Progress;
 
 #include "getopt++/StringOption.h"
+#include "UserSettings.h"
 
 using namespace std;
 
@@ -70,7 +71,7 @@ SiteSetting::load()
 void 
 SiteSetting::save()
 {
-  io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "wb");
+  io_stream *f = UserSettings::Instance().settingFileForSave("last-mirror");
   if (f)
     {
       for (SiteList::const_iterator n = site_list.begin ();
@@ -262,7 +263,7 @@ SiteSetting::registerSavedSite (const char * site)
 void
 SiteSetting::getSavedSites ()
 {
-  io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "rt");
+  io_stream *f = UserSettings::Instance().settingFileForLoad("last-mirror");
   if (!f)
     return;
 

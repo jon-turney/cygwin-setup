@@ -20,6 +20,7 @@
 
 #include <vector>
 
+class io_stream;
 class UserSetting;
 class UserSettings {
   public:
@@ -28,6 +29,8 @@ class UserSettings {
     void deRegisterSetting(UserSetting &);
     void loadAllSettings();
     void saveAllSettings();
+    io_stream * settingFileForLoad(String const &relativeName) const;
+    io_stream * settingFileForSave(String const &relativeName) const;
   private:
     static UserSettings Instance_;
     typedef std::vector<UserSetting *> Settings;

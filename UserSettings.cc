@@ -31,6 +31,12 @@ static const char *cvsid =
 #include "port.h"
 #include "Exception.h"
 #include "UserSettings.h"
+#include "io_stream.h"
+
+/* for local_dir */
+#include "state.h"
+/* for deciding the location of saved files.. */
+#include "mount.h"
 
 using namespace std;
 
@@ -76,4 +82,31 @@ void
 UserSettings::saveAllSettings()
 {
   for_each(settings.begin(), settings.end(), mem_fun(&UserSetting::save)); 
+}
+
+io_stream *
+UserSettings::settingFileForLoad(String const &relativeName) const
+{
+  io_stream *result = io_stream::open (String("cygfile:///etc/setup/") + relativeName, "rt");
+  if (!result)
+    result = io_stream::open (String("file://") + relativeName, "rt");
+  return result;
+}
+
+io_stream *
+UserSettings::settingFileForSave(String const &relativeName) const
+{
+  // TODO: this doesn't belong here.
+  io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + local_dir);
+
+  io_stream *result;
+  // If cygwin's root is known.
+  if (get_root_dir ().size())
+    {
+      result = io_stream::open (String("cygfile:///etc/setup/") + relativeName, "wb");
+      io_stream::remove (String("file://") + relativeName);
+    }
+  else
+    result = io_stream::open (String("file://") + relativeName, "wb");
+  return result;
 }

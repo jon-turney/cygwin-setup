@@ -39,6 +39,7 @@ static const char *cvsid =
 #include "io_stream.h"
 
 #include "localdir.h"
+#include "UserSettings.h"
 
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
@@ -51,10 +52,7 @@ LocalDirSetting::load(){
   static int inited = 0;
   if (inited)
     return;
-  io_stream *f =
-    io_stream::open ("cygfile:///etc/setup/last-cache", "rt");
-  if (!f)
-    f = io_stream::open ("file://last-cache", "rt");
+  io_stream *f = UserSettings::Instance().settingFileForLoad("last-cache");
   if (f)
     {
       char localdir[1000];
@@ -69,16 +67,7 @@ LocalDirSetting::load(){
 void 
 LocalDirSetting::save()
 {
-  io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + local_dir);
-
-  io_stream *f;
-  if (get_root_dir ().size())
-    {
-      f = io_stream::open ("cygfile:///etc/setup/last-cache", "wb");
-      io_stream::remove ("file://last-cache");
-    }
-  else
-    f = io_stream::open ("file://last-cache", "wb");
+  io_stream *f = UserSettings::Instance().settingFileForSave("last-cache");
   if (f)
     {
       f->write (local_dir.cstr_oneuse(), local_dir.size());

@@ -1,5 +1,20 @@
 2003-07-30  Robert Collins  <rbtcollins@hotmail.com>
 
+	* UserSettings.h (UserSettings::settingFileForLoad): Extracted method
+	from LocalDirSetting::load().
+	* UserSettings.cc (UserSettings::settingFileForLoad): Ditto.
+	* UserSettings.h (UserSettings::settingFileForSave): Extracted method
+	from LocalDirSetting::save().
+	* UserSettings.cc (UserSettings::settingFileForSave): Ditto.
+	* localdir.cc (LocalDirSetting::load): Extract location logic to
+	UserSettings.
+	(LocalDirSetting::save): Extract location logic to UserSettings.
+	* site.cc (SiteSetting::getSavedSites): Use
+	UserSettings::settingFileForLoad.
+	(SiteSetting::save): Use UserSettings::settingFileForSave.
+
+2003-07-30  Robert Collins  <rbtcollins@hotmail.com>
+
 	* PickView.cc: Adjust ::GetClientRect(..) to the inherited one 
 	throughout.
 
