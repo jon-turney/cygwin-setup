@@ -1,5 +1,16 @@
 2002-05-01  Robert Collins  <rbtcollins@hotmail.com>
 
+	Oops! forgot to list these in the last checkin.
+	* inilintmain.cc: New file.
+	* md5.h: New file - imported md5 source, BSD style licence.
+	* md5.cc: New file - imported md5 source, BSD style licence.
+	* Exception.cc: New file.
+	* Exception.h: New file.
+	* MD5++.cc: New file.
+	* MD5++.h: New file.
+
+2002-05-01  Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.am (AM_CFLAGS): Remove -mwindows, it's a linker flag. 
 	Remove -fno-rtti, we need it for exceptions.
 	(AM_CXXFLAGS): Ditto.
