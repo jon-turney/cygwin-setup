@@ -34,9 +34,9 @@ CAPTION "Cygwin Setup"
 FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,-1,5,5,20,20
-    CONTROL         "&Download from Internet",IDC_SOURCE_DOWNLOAD,"Button",
-                    BS_AUTORADIOBUTTON,55,15,152,10
     CONTROL         "&Install from Internet",IDC_SOURCE_NETINST,"Button",
+                    BS_AUTORADIOBUTTON,55,15,152,10
+    CONTROL         "&Download from Internet",IDC_SOURCE_DOWNLOAD,"Button",
                     BS_AUTORADIOBUTTON,55,30,75,10
     CONTROL         "Install from &Local Directory",IDC_SOURCE_CWD,"Button",
                     BS_AUTORADIOBUTTON,55,45,104,10
@@ -115,9 +115,9 @@ CAPTION "Cygwin Setup"
 FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
-    CONTROL         "Use &IE5 Settings",IDC_NET_IE5,"Button",
-                    BS_AUTORADIOBUTTON,55,10,69,10
     CONTROL         "&Direct Connection",IDC_NET_DIRECT,"Button",
+                    BS_AUTORADIOBUTTON,55,10,69,10
+    CONTROL         "Use &IE5 Settings",IDC_NET_IE5,"Button",
                     BS_AUTORADIOBUTTON,55,25,73,10
     CONTROL         "Use HTTP/FTP &Proxy:",IDC_NET_PROXY,"Button",
                     BS_AUTORADIOBUTTON,55,40,88,10

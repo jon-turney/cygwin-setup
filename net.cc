@@ -138,6 +138,7 @@ do_net (HINSTANCE h)
 {
   int rv = 0;
 
+  net_method = IDC_NET_DIRECT;
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_NET), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
