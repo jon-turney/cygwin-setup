@@ -32,6 +32,8 @@ static const char *cvsid =
 #include "FindVisitor.h"
 #include <stdexcept>
 
+using namespace std;
+
 Find::Find(String const &starting_dir) : _start_dir (starting_dir), h(INVALID_HANDLE_VALUE)
 {
 }

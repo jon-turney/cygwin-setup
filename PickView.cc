@@ -23,6 +23,7 @@
 #include "resource.h"
 #include <algorithm>
 
+using namespace std;
 
 static PickView::Header pkg_headers[] = {
   {"Current", 7, 0, 0},

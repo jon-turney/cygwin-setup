@@ -31,6 +31,8 @@ static const char *cvsid =
 #include <time.h>
 #include <string>
 
+using namespace std;
+
 /* private helper class */
 class filedef
 {

@@ -24,6 +24,8 @@
 #include <strstream>
 #include <string>
 
+using namespace std;
+
 // _data
 
 String::_data::_data(_data const &aData) : count (1), theString (new unsigned char[aData.length]), cstr(0), length (aData.length) {

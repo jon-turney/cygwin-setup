@@ -67,6 +67,8 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "Exception.h"
 #include "getopt++/BoolOption.h"
 
+using namespace std;
+
 extern ThreeBarProgressPage Progress;
 
 static int total_bytes = 0;

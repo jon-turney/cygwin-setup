@@ -1,5 +1,23 @@
 2002-11-04  Max Bowsher  <maxb@ukf.net>
 
+	* IniDBBuilderPackage.cc: Add 'using namespace std;'.
+	* IniParseFindVisitor.cc: Ditto.
+	* LogFile.cc: Ditto.
+	* LogSingleton.cc: Ditto.
+	* PickView.cc: Ditto.
+	* String++.cc: Ditto.
+	* choose.cc: Ditto.
+	* download.cc: Ditto.
+	* find.cc: Ditto.
+	* install.cc: Ditto.
+	* io_stream.cc: Ditto.
+	* io_stream_file.cc: Ditto.
+	* package_db.cc: Ditto.
+	* root.cc: Ditto.
+	* site.cc: Ditto.
+
+2002-11-04  Max Bowsher  <maxb@ukf.net>
+
 	* LogSingleton.h: Add 'std::' where needed.
 
 2002-11-04  Max Bowsher  <maxb@ukf.net>

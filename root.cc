@@ -38,6 +38,8 @@ static const char *cvsid =
 
 #include "getopt++/StringOption.h"
 
+using namespace std;
+
 StringOption RootOption ("", 'R', "root", "Root installation directory");
 
 static int rb[] = { IDC_ROOT_TEXT, IDC_ROOT_BINARY, 0 };

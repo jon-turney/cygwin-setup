@@ -53,6 +53,8 @@ static const char *cvsid =
 
 #include "Exception.h"
 
+using namespace std;
+
 extern ThreeBarProgressPage Progress;
 
 

@@ -47,6 +47,8 @@ extern ThreeBarProgressPage Progress;
 
 #include "getopt++/StringOption.h"
 
+using namespace std;
+
 SiteList site_list;
 SiteList all_site_list;
 

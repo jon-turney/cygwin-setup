@@ -58,7 +58,9 @@ static const char *cvsid =
 #include "threebar.h"
 
 #include "download.h"
-  
+
+using namespace std;
+
 extern ThreeBarProgressPage Progress;
 
 static int initialized = 0;

@@ -16,6 +16,8 @@
 #include "LogSingleton.h"
 #include <stdexcept>
 
+using namespace std;
+
 /* Helper functions */
 
 /* End of a Log comment */

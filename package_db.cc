@@ -40,6 +40,8 @@ static const char *cvsid =
 #include "package_db.h"
 #include "package_meta.h"
 
+using namespace std;
+
 /* static members */
 
 packagedb::packagedb ()

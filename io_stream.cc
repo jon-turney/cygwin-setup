@@ -32,6 +32,8 @@ static const char *cvsid =
 #include "IOStreamProvider.h"
 #include <map>
 
+using namespace std;
+
 struct ltstr
 {
   bool operator()(String const &s1, String const &s2) const

@@ -39,6 +39,7 @@ static const char *cvsid =
 #include "io_stream_file.h"
 #include "IOStreamProvider.h"
 
+using namespace std;
 
 /* completely private iostream registration class */
 class FileProvider : public IOStreamProvider

@@ -27,6 +27,8 @@
 #include "PackageSpecification.h"
 #include <algorithm>
 
+using namespace std;
+
 IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
 cp (0), cbpv (), cspv (), currentSpec (0), currentOrList (0), currentAndList (0), trust (0), _feedback (aFeedback){}
 

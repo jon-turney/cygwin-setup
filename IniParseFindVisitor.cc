@@ -26,6 +26,8 @@ static const char *cvsid =
 #include "ini.h"
 #include <stdexcept>
 
+using namespace std;
+
 extern int yyparse ();
 
 IniParseFindVisitor::IniParseFindVisitor(IniDBBuilder &aBuilder, String const &localroot, IniParseFeedback &feedback) : _Builder (aBuilder), _feedback (feedback), baseLength (localroot.size()), local_ini(0),
