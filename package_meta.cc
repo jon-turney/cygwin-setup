@@ -321,3 +321,45 @@ packagemeta::set_action (packageversion * default_version)
       desired = NULL;
     }
 }
+
+int
+packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
+{
+  Dependency *dp;
+  packagemeta *required;
+  int changed = 0;
+  if (!desired
+      || (desired != installed && !desired->binpicked))
+    /* uninstall || source only */
+    return 0;
+
+  dp = desired->required;
+  packagedb db;
+  /* cheap test for too much recursion */
+  if (depth > 5)
+    return 0;
+  while (dp)
+    {
+      if ((required = db.packages.getbykey (dp->package)) == NULL)
+        {
+          dp = dp->next;
+          changed++;
+          continue;
+        }
+      if (!required->desired)
+        {
+          /* it's set to uninstall */
+          required->set_action (required->trustp(deftrust));
+        }
+      else if (required->desired != required->installed
+               && !required->desired->binpicked)
+        {
+          /* it's set to change to a different version source only */
+          required->desired->binpicked = 1;
+        }
+      /* does this requirement have requirements? */
+      changed += required->set_requirements (deftrust, depth + 1);
+      dp = dp->next;
+    }
+  return changed;
+}

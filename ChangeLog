@@ -1,3 +1,64 @@
+2002-01-22  Robert Collins  <rbtcollins@hotmail.com>
+
+	* PickPackageLine.cc: New file.
+	* PickPackageLine.h: New file.
+	* PickLine.cc: New file.
+	* PickLine.h: New file.
+	* PickCategoryLine.cc: New file.
+	* PickCategoryLine.h: New file.
+	* PickView.cc: New file.
+	* PickView.h: New file.
+	* Makefile.in: Add new objects to setup.exe.
+	Backout -fno-exceptions option.
+	* choose.cc: Include PickView.h.
+	Remove view related defines and static variables.
+	(_pkg_headers): Moved to PickView.cc.
+	(_cat_headers): Ditto.
+	(view::views::Unknown): Ditto.
+	(view::views::PackageFull):
+	(view::views::Package):
+	(view::views::Category):
+	(pkgtrustp): Moved to package_meta.cc.
+	(add_required): Moved to package_meta.cc.
+	(pick_category_line::empty): Moved to PickCategoryLine.cc
+	(paint): Adjust for moved static variables.
+	(view::scroll): Moved to PickView.cc.
+	(list_vscroll): Adjust for moved static variables.
+	(list_hscroll): Ditto.
+	(list_click): Ditto.
+	(note_width): Moved to PickView.cc.
+	(view::view): Ditto.
+	(view::set_view_mode): Ditto.
+	(view::mode_caption): Ditto.
+	(view::views::caption): Ditto.
+	(view::set_headers): Ditto.
+	(DoInsertItem): Ditto.
+	(view::init_headers): Ditto.
+	(view::insert_pkg): Ditto.
+	(view::insert_category): Ditto.
+	(view::clear_view): Ditto.
+	(view::views::operator++): Ditto.
+	(view::click): Ditto.
+	(default_trust): Adjust for moved statics.
+	(pick_pkg_line::paint): Moved to PickPackageLine.cc.
+	(pick_pkg_line::click): Ditto.
+	(pick_category_line::actiontext): Moved to PickCategoryLine.cc
+	(pick_category_line::paint): Ditto.
+	(pick_category_line::click): Ditto.
+	(set_view_mode): Adjust for moved statics.
+	(create_listview): Ditto.
+	* choose.h: Remove Category and packagemeta forward defines - not needed.
+	Don't include unneeded headers list and package_meta.
+	(_header): Move to PickView.h.
+	(pick_line): Move to PickLine.h.
+	(pick_pkg_line): Move to PickPackageLine.h.
+	(pick_category_line): Move to PickCategoryLine.h.
+	(view): Move to PickView.h.
+	* ini.h (trusts): Move to package_meta.h.
+	* package_meta.h (trusts): New enum.
+	(packagemeta::set_requirements): New helper method.
+	(packagemeta::trustp): Ditto.
+
 2002-01-21  Christopher Faylor  <cgf@redhat.com>
 
 	* choose.h (view): Move forward declaration of views into public area

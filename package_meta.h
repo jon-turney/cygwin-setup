@@ -16,6 +16,17 @@
 #ifndef _PACKAGE_META_H_
 #define _PACKAGE_META_H_
 
+/* Used for selecting a given 'trust' level */
+typedef enum
+{
+  TRUST_UNKNOWN,
+  TRUST_PREV,
+  TRUST_CURR,
+  TRUST_TEST,
+  NTRUST
+}
+trusts;
+
 class packageversion;
 class packagemeta;
 class category;
@@ -81,8 +92,15 @@ public:
   void set_installed (packageversion &);
   void set_action (packageversion *default_version);
   void uninstall ();
+  int set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0);
 
   char const *action_caption ();
+  packageversion * trustp (trusts const t) const
+  {
+    return t == TRUST_PREV ? (prev ? prev : (curr ? curr : installed))
+         : t == TRUST_CURR ? (curr ? curr : installed)
+	 : exp;
+  }
 
   char *name;			/* package name, like "cygwin" */
   char *key;

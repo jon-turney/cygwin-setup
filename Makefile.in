@@ -45,7 +45,7 @@ CXX		:= @CXX@
 CFLAGS		:= @CFLAGS@ $(MC_DEFS) -Werror -Winline -Wall -Wpointer-arith \
 	-Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
 	-Wmissing-declarations -Wcomments
-CXXFLAGS	:= @CXXFLAGS@ $(CFLAGS) -fno-rtti -fno-exceptions
+CXXFLAGS	:= @CXXFLAGS@ $(CFLAGS) -fno-rtti
 CXX		:= @CXX@
 
 WINDRES		:= @WINDRES@
@@ -135,6 +135,10 @@ OBJS = \
 	package_meta.o \
 	package_source.o \
 	package_version.o \
+	PickCategoryLine.o \
+	PickLine.o \
+	PickPackageLine.o \
+	PickView.o \
 	postinstall.o \
 	proppage.o \
 	propsheet.o \

@@ -29,19 +29,6 @@ void ini_init (io_stream *, char const *);
    packages (the chosen "install" field).  install.cc installs
    selected packages. */
 
-/* the classes here store installation info *shrug* */
-
-/* lowest number must be most trusted, highest least trusted */
-typedef enum
-{
-  TRUST_UNKNOWN,
-  TRUST_PREV,
-  TRUST_CURR,
-  TRUST_TEST,
-  NTRUST
-}
-trusts;
-
 typedef enum
 {
   EXCLUDE_NONE = 0,
