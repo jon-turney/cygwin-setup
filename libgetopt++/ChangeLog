@@ -1,3 +1,11 @@
+2002-11-10  Robert Collins  <rbtcollins@hotmail.com>
+
+	* src/getopt.c: Only use our cdefs.h if the OS doesn't have one.
+	* Makefile.am: Only compile our getopt.h if the OS doesn't provide
+	getopt.h.
+	* configure.in: Ditto.
+	* tests/testoption.cc: Update for GCC-3.
+
 2002-11-04  Max Bowsher  <maxb@ukf.net>
 
 	* include/getopt++/BoolOption.h: Add 'std::' where needed.

@@ -36,9 +36,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "cdefs.h"
+#if HAVE_CONFIG_H
+#include "autoconf.h"
+#endif
 
-/*#include "namespace.h"*/
+#if HAVE_SYS_CDEFS_H
+#include <sys/cdefs.h>
+#else
+#include "cdefs.h"
+#endif
+
+/* #include "namespace.h" */
 
 #include <assert.h>
 #include <errno.h>

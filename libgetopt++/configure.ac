@@ -26,10 +26,19 @@ AC_CANONICAL_HOST
 AC_PROG_LIBTOOL
 
 AC_CHECK_HEADERS( \
+	sys/cdefs.h \
 	unistd.h \
 	string   \
 	string.h
 )
+
+AC_CHECK_HEADER(getopt.h,
+[
+AM_CONDITIONAL(INTERNAL_GETOPT, false)
+],[
+AM_CONDITIONAL(INTERNAL_GETOPT, true)
+])
+
 
 AC_C_CONST
 AC_C_BIGENDIAN

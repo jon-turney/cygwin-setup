@@ -16,10 +16,18 @@ getoptincludedir = $(includedir)/getopt++
 lib_LTLIBRARIES = libgetopt++.la
 check_PROGRAMS = testoption
 
+EXTRA_libgetopt___la_SOURCES = src/getopt.c
+
+if INTERNAL_GETOPT
+internal_getopt=src/getopt.c
+else
+internal_getopt=
+endif
+
 libgetopt___la_SOURCES = src/GetOption.cc src/Option.cc src/BoolOption.cc \
 	src/OptionSet.cc \
 	src/StringOption.cc \
-	src/getopt.c \
+	$(internal_getopt) \
 	include/getopt.h \
 	include/cdefs.h
 
