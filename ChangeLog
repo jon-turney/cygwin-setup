@@ -1,7 +1,9 @@
 2000-07-11  DJ Delorie  <dj@cygnus.com>
 
 	* desktop.cc: create /etc/profile
-
+	* desktop.cc: fix include syntax
+	* Makefile.in: add auto-dependencies
+	
 2000-07-10  DJ Delorie  <dj@cygnus.com>
 
 	* Makefile.in: add desktop.o and mklink2.o

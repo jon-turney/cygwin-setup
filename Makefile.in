@@ -44,8 +44,8 @@ include $(srcdir)/../Makefile.common
 
 MINGW_INCLUDES	:= -I. -I$(srcdir) -I$(mingw_source)/include -I$(w32api_include)
 
-MINGW_CXXFLAGS	:= $(CXXFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
-MINGW_CFLAGS	:= $(CFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
+MINGW_CXXFLAGS	:= -MMD $(CXXFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
+MINGW_CFLAGS	:= -MMD $(CFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
 
 ZLIB		:= zlib/libzcygw.a
 libmingw32.a	:= $(mingw_build)/libmingw32.a
@@ -138,22 +138,27 @@ $(ZLIB): zlib/Makefile
 	$(MAKE) -C $(@D) $(@F) CC="$(CC)" CFLAGS='$(MINGW_CFLAGS)'
 
 %.o: %.rc
-	$(WINDRES) --include-dir $(srcdir) -o $@ $?
+ifdef VERBOSE
+	$(WINDRES) --include-dir $(srcdir) -o $@ $<
+else
+	@echo $(WINDRES) -o $@ $(<F)
+	@$(WINDRES) --include-dir $(srcdir) -o $@ $<
+endif
 
 %.o: %.c
 ifdef VERBOSE
-	$(CC) $(MINGW_CFLAGS) -c -o $@ $?
+	$(CC) $(MINGW_CFLAGS) -c -o $@ $<
 else
-	@echo $(CC) -c $(CFLAGS) ... $(?F)
-	@$(CC) $(MINGW_CFLAGS) -c -o $@ $?
+	@echo $(CC) -c $(CFLAGS) ... $(<F)
+	@$(CC) $(MINGW_CFLAGS) -c -o $@ $<
 endif
 
 %.o: %.cc
 ifdef VERBOSE
-	$(CC) $(MINGW_CXXFLAGS) -c -o $@ $?
+	$(CC) $(MINGW_CXXFLAGS) -c -o $@ $*.cc
 else
-	@echo $(CC) -c $(CXXFLAGS) ... $(?F)
-	@$(CC) $(MINGW_CXXFLAGS) -c -o $@ $?
+	@echo $(CC) -c $(CXXFLAGS) ... $(<F)
+	@$(CC) $(MINGW_CXXFLAGS) -c -o $@ $<
 endif
 
 iniparse.c iniparse.h : iniparse.y
@@ -162,3 +167,8 @@ iniparse.c iniparse.h : iniparse.y
 inilex.c : inilex.l iniparse.h
 	flex -8 $(srcdir)/inilex.l
 	mv lex.yy.c inilex.c
+
+D=$(wildcard *.d)
+ifneq ($D,)
+include $D
+endif

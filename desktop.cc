@@ -19,7 +19,7 @@
    install.cc */
 
 #include "win32.h"
-#include "shlobj.h"
+#include <shlobj.h>
 
 #include <stdio.h>
 #include <stdlib.h>
