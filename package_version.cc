@@ -333,7 +333,7 @@ _packageversion::sourcePackage ()
 bool
 _packageversion::accessible() const
 {
-  return ((::source != IDC_SOURCE_CWD) && source.sites.number ()) ||
+  return ((::source != IDC_SOURCE_CWD) && source.sites.size()) ||
     source.Cached ();
 }
 

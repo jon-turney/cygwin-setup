@@ -165,11 +165,11 @@ int
 PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
 {
   // assert (myrow == ClickedRow);
-  if (pkg.desired.source()->sites.number ()
+  if (pkg.desired.accessible ()
       && x >= theView.headers[theView.bintick_col].x - HMARGIN / 2
       && x <= theView.headers[theView.bintick_col + 1].x - HMARGIN / 2)
     pkg.desired.pick(!pkg.desired.picked());
-  if (pkg.desired.sourcePackage().source()->sites.number ()
+  if (pkg.desired.sourcePackage ().accessible ()
       && x >= theView.headers[theView.srctick_col].x - HMARGIN / 2
       && x <= theView.headers[theView.srctick_col + 1].x - HMARGIN / 2)
     pkg.desired.sourcePackage().pick(!pkg.desired.sourcePackage().picked());

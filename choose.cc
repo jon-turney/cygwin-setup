@@ -465,11 +465,7 @@ scanAVersion (packageversion version)
    * the availability logic to the package
    */
   if (!check_for_cached (*(version.source())) && source == IDC_SOURCE_CWD)
-    while (version.source()->sites.number())
-      {
-	site *asite = version.source()->sites.removebyindex(1);
-	delete asite;
-      }
+    version.source()->sites.clear();
 }
 
 static void

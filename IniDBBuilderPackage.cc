@@ -141,7 +141,7 @@ IniDBBuilderPackage::buildPackageSource (String const &path, String const &size)
 
   if (!cspv.source()->Canonical())
     cspv.source()->set_canonical (path.cstr_oneuse());
-  cspv.source()->sites.registerbykey (parse_mirror);
+  cspv.source()->sites.push_back(site(parse_mirror));
 
   cbpv.setSourcePackageSpecification (PackageSpecification (cspv.Name()));
 
@@ -467,8 +467,8 @@ IniDBBuilderPackage::add_correct_version()
            all mirrors
            */
         /* Copy the binary mirror across if this site claims to have an install */
-        if (cbpv.source()->sites.number ())
-          ver.source()->sites.registerbykey (cbpv.source()->sites[1]->key);
+        if (cbpv.source()->sites.size() )
+          ver.source()->sites.push_back(site (cbpv.source()->sites.begin()->key));
         /* Copy the descriptions across */
         if (cbpv.SDesc ().size() && !n->SDesc ().size())
           ver.set_sdesc (cbpv.SDesc ());
@@ -518,7 +518,7 @@ IniDBBuilderPackage::process_src (packagesource &src, String const &path)
 {
   if (!src.Canonical())
     src.set_canonical (path.cstr_oneuse());
-  src.sites.registerbykey (parse_mirror);
+  src.sites.push_back(site(parse_mirror));
   
   if (!cbpv.Canonical_version ().size())
     {

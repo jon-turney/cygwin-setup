@@ -21,10 +21,10 @@
 #define _PACKAGE_SOURCE_H_
 
 /* required to parse this file */
-#include "list.h"
 #include "strings.h"
 #include "String++.h"
 #include "MD5++.h"
+#include <vector>
 
 /* standard binary package metadata:
  * Name (ie mutt
@@ -46,10 +46,12 @@ class site
 {
 public:
   site (String const &newkey);
-  ~site ()
-  {
-  };
+  ~site () {}
   String key;
+  bool operator == (site const &rhs)
+    {
+      return key.casecompare (rhs.key) == 0;
+    }
 };
 
 class packagesource
@@ -100,7 +102,8 @@ public:
   virtual void set_canonical (char const *);
   virtual void set_cached (String const &);
   class md5 md5;
-  list < site, String, String::casecompare > sites;
+  typedef vector <site> sitestype;
+  sitestype sites;
 
   virtual ~ packagesource ()
   {

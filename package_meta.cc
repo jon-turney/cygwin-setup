@@ -574,7 +574,7 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
       if (desired)
 	{
 	  if (desired != installed)
-	    if (desired.source()->sites.number())
+	    if (desired.accessible ())
 	      {
 		desired.pick (true);
 		desired.sourcePackage ().pick (false);

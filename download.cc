@@ -130,10 +130,10 @@ check_for_cached (packagesource & pkgsource)
   /*
      2) is there a version from one of the selected mirror sites available ?
    */
-  for (size_t n = 1; n <= pkgsource.sites.number (); n++)
+  for (packagesource::sitestype::const_iterator n = pkgsource.sites.begin();
+       n != pkgsource.sites.end(); ++n)
     {
-      String fullname = prefix +
-	rfc1738_escape_part (pkgsource.sites[n]->key) + "/" +
+      String fullname = prefix + rfc1738_escape_part (n->key) + "/" +
 	pkgsource.Canonical ();
     if ((size = get_file_size (fullname)) > 0)
       if (size == pkgsource.size)
@@ -171,16 +171,15 @@ download_one (packagesource & pkgsource, HWND owner)
   /* try the download sites one after another */
 
   int success = 0;
-  for (size_t n = 1; n <= pkgsource.sites.number () && !success; n++)
+  for (packagesource::sitestype::const_iterator n = pkgsource.sites.begin();
+       n != pkgsource.sites.end() && !success; ++n)
     {
       String const local = local_dir + "/" +
-				  rfc1738_escape_part (pkgsource.sites[n]->
-						       key) + "/" +
+				  rfc1738_escape_part (n->key) + "/" +
 				  pkgsource.Canonical ();
       io_stream::mkpath_p (PATH_TO_FILE, String ("file://") + local);
 
-      if (get_url_to_file(pkgsource.sites[n]->key +  "/" +
-			  pkgsource.Canonical (),
+      if (get_url_to_file(n->key +  "/" + pkgsource.Canonical (),
 			  local + ".tmp", pkgsource.size, owner))
 	{
 	  /* FIXME: note new source ? */

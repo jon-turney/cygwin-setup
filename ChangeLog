@@ -1,5 +1,26 @@
 2002-07-05  Robert Collins  <rbtcollins@hotmail.com>
 
+	* IniDBBuilderPackage.cc (IniDBBuilderPackage::buildPackageSource):
+	Use STL collections for download site collections.
+	(IniDBBuilderPackage::add_correct_version): Ditto.
+	(IniDBBuilderPackage::process_src): Ditto.
+	* PickPackageLine.cc (PickPackageLine::click): Use the packageversion
+	accessible() call to abstract package availability.
+	* choose.cc (scanAVersion): Use STL collections for download site 
+	collections.
+	* download.cc (check_for_cached): Ditto.
+	(download_one): Ditto.
+	* package_meta.cc (packagemeta::set_action): Use the packageversion
+	accessible() call to abstract package availability.
+	* package_source.h: Use STL containers rather than custom containers.
+	(site): Create a == operator to allow STL container use.
+	(packagesource::sites): Use STL containers rather than custom
+	containers.
+	* package_version.cc (_packageversion::accessible): Use STL containers
+	for download site containers.
+
+2002-07-05  Robert Collins  <rbtcollins@hotmail.com>
+
 	* LogFile.cc: Use STL containers rather than custom containers.
 	(filedef): Create == and < operators for STL use.
 	(files): Convert to an STL set.
