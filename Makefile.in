@@ -131,7 +131,7 @@ endif
 	@chmod a-x $@
 
 clean:
-	rm -f *.o $(PROGS)
+	rm -f *.o $(PROGS) iniparse.c* iniparse.h* inilex.c* *.d
 	$(MAKE) -C zlib clean
 
 realclean: clean

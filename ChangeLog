@@ -1,3 +1,7 @@
+Mon May 28 20:54:50 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* Makefile.in: Remove more stuff in the clean target.
+
 Mon May 28 18:24:59 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* Makefile.in: Correctly generate iniparse.h.
