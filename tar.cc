@@ -91,9 +91,9 @@ class gzbz
   };
   int fd;
 public:
-  virtual int read (void *buf, int len);
-  virtual int close ();
-  virtual off_t tell ();
+  virtual int read (void *buf, int len) {};
+  virtual int close () {};
+  virtual off_t tell () {};
   operator int () {return (int) g;}
 };
 

@@ -1,9 +1,13 @@
+Wed Apr 18 18:59:21 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* tar.cc (class gzbz): Define dummy virtual functions.
+
 Wed Apr 18 16:01:21 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* Makefile.in: Add bz2 include/library support.
 	* filemanip.h: New file.
-	* choose.cc  (find_tar_ext): New function.  Returns TRUE if .tar.gz or .tar.bz2
-	found.
+	* choose.cc (find_tar_ext): New function.  Returns TRUE if .tar.gz or
+	.tar.bz2 found.
 	(scan2): Reorganize to use find_tar_ext, accomodating .bz2 extension.
 	(read_installed_db): Ditto.
 	(do_choose): Ditto.
