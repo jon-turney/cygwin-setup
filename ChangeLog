@@ -1,3 +1,68 @@
+Sat Jun 30 11:01:00 2001 Robert Collins <rbtcollins@hotmail.com>
+
+	* choose.cc: Remove globals full_list, headers, package_indexes and 
+	nindexes.
+	Add globals cat_headers, pkg_headers and chooser.
+	(add_required): New function.
+	(paint): Use the chooser for header details.
+	Call into the chooser to paint each line.
+	(list_click): Use new global variables. 
+	Call into the chooser to handle the click.
+	Repaint the entire view if packages have been added or removed.
+	(note_width): Get passed a headers struct rather than using a global
+	variable.
+	(fill_missing_category): New function.
+	(default_trust): Skip non-"Required" or "Misc" packages.
+	(pick_line::set_line (Package *)): New function.
+	(pick_line::set_line (Category *)): New function.
+	(pick_line::paint): New function.
+	(pick_line::click): New function.
+	(_view::_view): New function.
+	(_view::set_view_mode): New function.
+	(_view::mode_caption): New function.
+	(_view::set_headers): New function.
+	(_view::init_header): New function.
+	(_view::insert_pkg): New function.
+	(_view::insert_category): New function.
+	(_view::insert_at): New function.
+	(_view::insert_under): New function.
+	(_view::clear_view): New function.
+	(viewsplusplus): New function.
+	(_view::client): New function.
+	(set_view_mode): Use new chooser functionality.
+	(set_full_list): Use new global variables.
+	(create_listview): Instantiate chooser.
+	Remove all hardcoded headers[] code.
+	(dialog_cmd): On trust changes, check dependencies.
+	(getcategorybyname): New function.
+	(getpackagecategorybyname): New function.
+	(scan2): Use case-insensitive package comparison.
+	(do_choose): Use fill_missing_category ().
+	Show some category data.
+	* ini.h: Protect against multiple inclusion.
+	(views) New enum.
+	(_CategoryPackage): New struct.
+	(_Category): New struct.
+	(_Package): Change category to Category * from char *.
+	(extern Category category): New global variable.
+	(extern in ncategories): Ditto.
+	(getcategorybyname): New prototype.
+	(catpackagecategorybyname): New prototype.
+	(register_category): New prototype.
+	(add_category): New prototype.
+	* iniparse.y: Parse multiple categories per package.
+	category: New global variable.
+	ncategories: New global variable.
+	(new_package): Compare package against NULL, not 0.
+	(new_requirement): Source formatting fix.
+	(register_category): New function.
+	(add_category): New function.
+	* res.rc: Change IDC_CHOOSE_FULLPART to IDC_CHOOSE_VIEW.
+	IDC_CHOOSE_VIEWCAPTION: New control.
+	* resource.h: Change IDC_CHOOSE_FULLPART to IDC_CHOOSE_VIEW.
+	IDC_CHOOSE_VIEWCAPTION: New control.
+	Increment _APS_NEXT_CONTROL_VALUE.
+
 Mon Jun 25 00:56:37 2001  Michael A Chase <mchase@ix.netcom.com>
 
 	* choose.cc (paint): Wrap excessively long lines.

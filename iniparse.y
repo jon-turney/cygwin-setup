@@ -86,7 +86,7 @@ simple_line
  : VERSION STRING		{ cpt->version = $2; }
  | SDESC STRING			{ cp->sdesc = $2; }
  | LDESC STRING			{ cp->ldesc = $2; }
- | CATEGORY STRING		{ cp->category = $2; }
+ | CATEGORY categories
  | REQUIRES requires
  | INSTALL STRING STRING	{ cpt->install = $2;
 				  cpt->install_size = atoi($3);
@@ -116,16 +116,24 @@ requires
  | STRING			{ new_requirement(cp, $1); }
  ;
 
+categories
+ : STRING			{ add_category (cp, register_category ($1));
+ 				} categories
+ | STRING			{ add_category (cp, register_category ($1)); }
+ ;
+
 %%
 
 Package *package = NULL;
 int npackages = 0;
 static int maxpackages = 0;
+Category *category = NULL;
+int ncategories = 0;
 
 Package *
 new_package (char *name)
 {
-  if (package == 0)
+  if (package == NULL)
     maxpackages = npackages = 0;
   if (npackages >= maxpackages)
     {
@@ -149,7 +157,7 @@ new_package (char *name)
 }
 
 void
-new_requirement(Package *package, char *dependson)
+new_requirement (Package *package, char *dependson)
 {
   Dependency *dp;
   if (!dependson)
@@ -158,4 +166,58 @@ new_requirement(Package *package, char *dependson)
   dp->next = cp->required;
   dp->package = dependson;
   cp->required = dp;
+}
+
+Category *
+register_category (char *name)
+{
+  Category *tempcat;
+  if (category == NULL)
+    ncategories = 0;
+  tempcat = getcategorybyname (name);
+  if (!tempcat)
+    {
+      Category *sortcat = category;
+      tempcat = new (Category);
+      memset (tempcat, '\0', sizeof (Category));
+      tempcat->name = strdup (name);
+      if (!sortcat || strcasecmp(sortcat->name, name) > 0)
+	{
+	  tempcat->next = category;
+	  category = tempcat;
+	}
+      else
+	{
+	  while (sortcat->next && 
+		 strcasecmp(sortcat->next->name, tempcat->name) < 0)
+	    {
+	      tempcat->next = sortcat->next;
+	      sortcat->next = tempcat;
+	    }
+	}
+      ncategories++;
+    }
+  return tempcat;
+}
+
+void
+add_category (Package *package, Category *cat)
+{
+  /* add a new record for the package list */
+  /* TODO: alpabetical inserts ? */
+  Category *tempcat;
+  CategoryPackage *templink;
+  tempcat = new (Category);
+  memset (tempcat, '\0', sizeof (Category));
+  tempcat->next = package->category;
+  tempcat->name = cat->name;
+  package->category = tempcat;
+
+  templink = new (CategoryPackage);
+  templink->next = cat->packages;
+  templink->pkg = package->name;
+  cat->packages = templink;
+ 
+  /* hack to ensure we allocate enough space */
+  ncategories++; 
 }

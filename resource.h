@@ -84,7 +84,7 @@
 #define IDC_NET_PASSWD                  1031
 #define IDC_VERSION                     1033
 #define IDC_LISTVIEW_POS                1034
-#define IDC_CHOOSE_FULLPART             1035
+#define IDC_CHOOSE_VIEW                 1035
 #define IDC_CHOOSE_EXP                  1036
 #define IDC_CHOOSE_CURR                 1037
 #define IDC_CHOOSE_PREV                 1038
@@ -100,6 +100,7 @@
 #define IDC_DLS_PPROGRESS_TEXT          1048
 #define IDC_DLS_IPROGRESS_TEXT          1049
 #define IDC_CHOOSE_INST_TEXT      1050
+#define IDC_CHOOSE_VIEWCAPTION          1051
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -110,7 +111,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        127
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1051
+#define _APS_NEXT_CONTROL_VALUE         1052
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
