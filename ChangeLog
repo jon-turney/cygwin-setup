@@ -1,3 +1,8 @@
+2001-11-30  Robert Collins  <rbtcollins@hotmail.com>
+
+	* package_db.cc (packagedb::flush): Write a canonical version for all packages
+	irrespective of the media they were installed from.
+
 2001-11-29  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in (OBJS): Add package_source and rfc1738.

@@ -206,10 +206,14 @@ packagedb::flush ()
 	      char line[2048];
 
 	      /* size here is irrelevant - as we can assume that this install source
-	         * no longer exists, and it does not correlate to used disk space
+	       * no longer exists, and it does not correlate to used disk space
+	       * also note that we are writing a fictional install source 
+	       * to keep cygcheck happy.               
 	       */
-	      sprintf (line, "%s %s %d\n", pkgm->name, pkgm->installed_from,
-		       0);
+	      sprintf (line, "%s %s %d\n", pkgm->name,
+		       concat (pkgm->name, "-",
+			       pkgm->installed->Canonical_version (),
+			       ".tar.bz2", 0), 0);
 	      ndb->write (line, strlen (line));
 	    }
 	  pkgm = getnextpackage ();
@@ -241,9 +245,15 @@ packagemeta & packagedb::registerpackage (char const *pkgname)
 packagemeta **
   packagedb::packages =
   0;
-size_t packagedb::packagecount = 0;
-size_t packagedb::packagespace = 0;
+size_t
+  packagedb::packagecount =
+  0;
+size_t
+  packagedb::packagespace =
+  0;
 int
   packagedb::installeddbread =
   0;
-CategoryList packagedb::categories = CategoryList ();
+CategoryList
+  packagedb::categories =
+  CategoryList ();
