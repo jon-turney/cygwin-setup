@@ -1,3 +1,19 @@
+Thu Apr 27 11:42:23 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (filedel): New function.
+	(output_file): Keep track of files extracted from setup.exe for
+	subsequent deletion.
+	(tarx): Close process handle of child tar process or suffer handle
+	leak.
+	(getdownloadsource): Close mirror file so that it can be unlinked.
+	(processdirlisting): Return total number of files extracted.
+	(main): Initialize array of files to delete.  Ensure that files are
+	closed on exit.  Make the directory that setup.exe is started from ==
+	the directory where temporary files are placed.  Issue an error if no
+	files were found to download.
+	* xsystem.c (xcreate_process): Close the thread handle.  Close the
+	process handle if we waited for it to exit.
+
 Thu Apr 27 09:54:19 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (main): Change version number output.

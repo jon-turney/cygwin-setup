@@ -64,10 +64,15 @@ xcreate_process (int wait, HANDLE in, HANDLE out, HANDLE err, const char *cmd)
   if (!retval)
     return 0;
 
-  if (wait)
-    WaitForSingleObject (pi.hProcess, INFINITE);
-  else
+  CloseHandle (pi.hThread);
+
+  if (!wait)
     retval = (DWORD) pi.hProcess;
+  else
+    {
+      WaitForSingleObject (pi.hProcess, INFINITE);
+      CloseHandle (pi.hProcess);
+    }
 
   return retval;
 }

@@ -57,6 +57,15 @@ static SA files = {NULL, 0, 0};
 static FILE *logfp = NULL;
 static HANDLE devnull = NULL;
 static HINTERNET session = NULL;
+static SA deleteme = {NULL, 0, 0};
+
+static void
+filedel (void)
+{
+  int i;
+  for (i = 0; i < deleteme.count; i++)
+    (void) _unlink (deleteme.array[i]);
+}
 
 void
 warning (const char *fmt, ...)
@@ -146,6 +155,8 @@ output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
       char *buffer;
       size_t bytes = SizeofResource (NULL, rsrc);
 
+      sa_add (&deleteme, name);
+
       if (bytes != fwrite (data, 1, bytes, out))
 	warning ("Unable to write %s: %s", name, _strerror (""));
 
@@ -204,6 +215,7 @@ tarx (const char *dir, const char *fn)
   char *buffer = buffer0 + 1;
   int hpipe[2];
   HANDLE hin;
+  HANDLE hproc;
   FILE *fp;
   int filehere;
 
@@ -219,11 +231,14 @@ tarx (const char *dir, const char *fn)
     return 0;
 
   hin = (HANDLE) _get_osfhandle (hpipe[1]);
-  if (xcreate_process (0, NULL, hin, hin, buffer) == 0)
+  hproc = (HANDLE) xcreate_process (0, NULL, hin, hin, buffer);
+  if (!hproc)
     {
       warning ("Unable to extract \"%s\": %s", fn, _strerror (""));
       return 0;
     }
+
+  CloseHandle (hproc);
   _close (hpipe[1]);
   fp = fdopen (hpipe[0], "rt");
 
@@ -632,11 +647,8 @@ geturl (const char *url, const char *file, int verbose)
 	      xfree (buffer);
 	    }
 
-	  if (1 || !is_ftp)
-	    {
-	      InternetCloseHandle (connect);
-	      connect = NULL;
-	    }
+	  InternetCloseHandle (connect);
+	  connect = NULL;
 	}
     }
 
@@ -725,7 +737,7 @@ needfile (const char *filename, char *date, size_t filesize)
 static int
 processdirlisting (const char *urlbase, const char *file)
 {
-  int retval;
+  int retval = 0;
   char buffer[256];
   static enum {UNKNOWN, ALWAYS, NEVER} download_when = {UNKNOWN};
 
@@ -753,12 +765,14 @@ processdirlisting (const char *urlbase, const char *file)
       else if (ref[strlen (ref) - 1] == '/')
 	{
 	  if (strcmp (url + strlen (url) - 2, "./") != 0)
-	    downloaddir (url);
+	    retval += downloaddir (url);
 	}
       else if (strstr (url, ".tar.gz") && !strstr (url, "-src"))
 	{
 	  int download = 0;
 	  char *filename = strrchr (url, '/') + 1;
+	  retval++;
+
 	  if (download_when == ALWAYS || needfile (filename, filedate, filesize))
 	    download = 1;
 	  else
@@ -831,7 +845,7 @@ processdirlisting (const char *urlbase, const char *file)
 			  exit (1);	/* abort program */
 			case 'F':
 			  warning ("Deleting %s.\n", filename);
-			  unlink (filename); 
+			  _unlink (filename); 
 			  goto noget;	/* Keep trying to download the rest */
 			default:
 			  continue;	/* erroneous response */
@@ -850,8 +864,6 @@ processdirlisting (const char *urlbase, const char *file)
     }
 
   fflush (stdout);
-  retval = feof (in);
-
   fclose (in);
 
   return retval;
@@ -872,7 +884,7 @@ downloaddir (const char *url)
   if (geturl (url, file, 1))
   {
     retval = processdirlisting (url, file);
-    unlink (file);
+    _unlink (file);
   }
   xfree (file);
 
@@ -896,7 +908,7 @@ downloadfrom (const char *url)
   if (geturl (url, file, 1))
     {
       retval = processdirlisting (url, file);
-      unlink (file);
+      _unlink (file);
     }
 
   xfree (file);
@@ -1138,6 +1150,7 @@ getdownloadsource ()
 		}
 	    }
 
+	  fclose (in);
 	  sa_add (&urls, "Other");
 	  sa_add (&names, "Other");
 	  option =
@@ -1151,7 +1164,7 @@ getdownloadsource ()
 	  sa_cleanup (&names);
 	}
     }
-  unlink (filename);
+  _unlink (filename);
 
   return retval;
 }
@@ -1249,6 +1262,9 @@ those as the basis for your installation.\n\n"
 "temporary directory.\n\n", revn);
 
   start = clock ();
+  sa_init (&deleteme);
+  atexit (filedel);
+
   if (!EnumResourceNames (NULL, "FILE", output_file, 0))
     {
       winerror ();
@@ -1257,11 +1273,15 @@ those as the basis for your installation.\n\n"
     {
       char *defroot, *update;
       char *root;
+      char *tmp;
       int done;
       HKEY cu = NULL, lm = NULL;
 
       wd = _getcwd (NULL, 0);
       setpath (wd);
+      tmp = xmalloc (sizeof ("TMP=") + strlen (wd));
+      sprintf (tmp, "TMP=%s", wd);
+      _putenv (tmp);
 
       logpath = pathcat (wd, "setup.log");
       tarpgm = pathcat (wd, "tar.exe");
@@ -1339,7 +1359,11 @@ those as the basis for your installation.\n\n"
 	      exit (1);
 	    }
 
-	  downloadfrom (dir);
+	  if (!downloadfrom (dir))
+	    {
+	      warning ("Error: No files found to download.  Choose another mirror site?\n");
+	      goto out;
+	    }
 	  InternetCloseHandle (session);
 	  xfree (dir);
 	}
@@ -1428,6 +1452,7 @@ those as the basis for your installation.\n\n"
       xfree (wd);
     }
 
+out:
   printf ("\nInstallation took %.0f seconds.\n",
           (double) (clock () - start) / CLK_TCK);
 
