@@ -1,0 +1,30 @@
+2002-04-14  Robert Collins  <rbtcollins@hotmail.com>
+
+	* include/BoolOption.h: Move to
+	* include/getopt++/BoolOption.h: here.
+	* include/GetOption.h: Implement multiple-sets as per design.
+	Move to ...
+	* include/getopt++/GetOption.h: here.
+	* include/Option.h: Move to
+	* include/getopt++/Option.h: here.
+	* include/getopt++/OptionSet.h: New file.
+	* src/GetOption.cc: Move core functions to OptionSet.cc.
+	Adjust for new header locations.
+	* src/OptionSet.cc: New file.
+	* src/BoolOption.cc: Adjust for new header locations.
+	* src/Option.cc: Adjust for new header locations.
+	* tests/testoption.cc: Adjust for new header locations.
+
+2002-04-14  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.am: New file.
+	* README: New file.
+	* bootstrap.sh: New file.
+	* configure.in: New file.
+	* include/BoolOption.h: New file.
+	* include/GetOption.h: New file.
+	* include/Option.h: New file.
+	* src/BoolOption.cc: New file.
+	* src/GetOption.cc: New file.
+	* src/Option.cc: New file.
+	* tests/testoption.cc: New file.

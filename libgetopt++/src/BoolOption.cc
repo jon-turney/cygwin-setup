@@ -13,11 +13,11 @@
  *
  */
 
-#include <BoolOption.h>
+#include <getopt++/BoolOption.h>
 
 BoolOption::BoolOption(bool const defaultvalue, char shortopt, 
 		       char const *longopt, String const &shorthelp, 
-		       GetOption &owner) : _value (defaultvalue) , 
+		       OptionSet &owner) : _value (defaultvalue) , 
 		       _ovalue (defaultvalue), _shortopt(shortopt), 
 		       _longopt (longopt), _shorthelp (shorthelp)
 {

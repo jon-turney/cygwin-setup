@@ -16,8 +16,8 @@
 #ifndef _BOOLOPTION_H_
 #define _BOOLOPTION_H_
 
-#include <Option.h>
-#include <GetOption.h>
+#include <getopt++/Option.h>
+#include <getopt++/GetOption.h>
 
 // Each registered option must implement this class.
 class BoolOption : public Option
@@ -25,7 +25,7 @@ class BoolOption : public Option
 public:
   BoolOption(bool const defaultvalue, char shortopt, char const *longopt = 0,
 	     String const &shorthelp = String(), 
-	     GetOption &owner=GetOption::GetInstance());
+	     OptionSet &owner=GetOption::GetInstance());
   virtual ~ BoolOption ();
   virtual char const shortOption () const;
   virtual struct option longOption () const;

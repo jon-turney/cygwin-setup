@@ -1,5 +1,5 @@
-#include "GetOption.h"
-#include "BoolOption.h"
+#include "getopt++/GetOption.h"
+#include "getopt++/BoolOption.h"
 
 static BoolOption testoption (false, 't', "testoption", "Tests the use of boolean options");
 int

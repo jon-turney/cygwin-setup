@@ -13,22 +13,27 @@
  *
  */
 
-#ifndef _GETOPTION_H_
-#define _GETOPTION_H_
+#ifndef _OPTIONSET_H_
+#define _OPTIONSET_H_
 
-#include <getopt++/OptionSet.h>
-
+#include <getopt.h>
 class Option;
 
-class GetOption : public OptionSet
+class OptionSet
 {
 public:
-  static GetOption & GetInstance ();
-private:
-  static GetOption Instance;
+  OptionSet();
+  ~OptionSet();
+  void Register (Option *);
+  bool Process (int argc, char **argv);
+protected:
+  OptionSet (OptionSet const &);
+  OptionSet &operator= (OptionSet const &);
+  // force initialisation of variables
   void Init ();
-  int inited;			//we can't use a bool in case it is
-  // non zero on startup.
+private:
+  Option **options;
+  int optCount;
 };
 
-#endif // _GETOPTION_H_
+#endif // _OPTIONSET_H_

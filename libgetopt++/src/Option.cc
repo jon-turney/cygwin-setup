@@ -13,7 +13,7 @@
  *
  */
 
-#include "Option.h"
+#include "getopt++/Option.h"
 
 Option::Option ()
 {
