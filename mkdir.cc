@@ -69,6 +69,10 @@ mkdir_p (int isadir, const char *in_path)
   if (!slash)
     return 0;
 
+  // Trying to create a drive... It's time to give up.
+  if (((slash - path) == 2) && (path[1] == ':'))
+    return 1;
+
   saved_char = *slash;
   *slash = 0;
   if (mkdir_p (1, path))
@@ -76,6 +80,7 @@ mkdir_p (int isadir, const char *in_path)
       *slash = saved_char;
       return 1;
     }
+  
   *slash = saved_char;
 
   if (!isadir)

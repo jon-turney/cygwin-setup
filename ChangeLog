@@ -1,3 +1,7 @@
+2002-03-26  Pavel Tsekov  <ptsekov@gmx.net>
+
+	* mkdir.cc (mkdir_p): Stop processing if the path is exhausted.
+			
 2002-03-26 Ton van Overbeek  <tvoverbe@cistron.nl>
 
 	* PickPackageLine.cc (PickPackageline::paint): Adjust clipping rectangle
