@@ -18,6 +18,7 @@ TODO:
 	   
 	   
 WISHLIST:
+  *  rsync:// support
   *  Some way to download *all* the source
   *  When clicking on a category that is showing a partial list (auto added items due to dependencies) show the full list rather than minising.
   *  continue downloading past errors, present log of failures at end

@@ -38,7 +38,19 @@
  */
 
 class CategoryList;
-class packagesource;
+class Dependency;
+
+/* Required for parsing */
+#include "package_source.h"
+
+class Dependency
+{
+public:
+  Dependency * next;		/* the next package in this dependency list */
+  char const *package;		/* the name of the package that is depended on */
+}
+ ;				/* Dependencies can be used for
+				   recommended/required/related... */
 
 typedef enum
 {
@@ -66,11 +78,14 @@ package_type_t;
 class packageversion
 {
 public:
+  /* for list inserts/mgmt. */
+  const char *key;
   /* name is needed here, because if we are querying a file, the data may be embedded in
      the file */
   virtual const char *Name () = 0;
   virtual const char *Vendor_version () = 0;
   virtual const char *Package_version () = 0;
+  virtual const char *Canonical_version () = 0;
   virtual package_status_t Status () = 0;
 //  virtual package_stability_t Stability () = 0;
   virtual package_type_t Type () = 0;
@@ -79,20 +94,40 @@ public:
    */
   virtual const char *getfirstfile () = 0;
   virtual const char *getnextfile () = 0;
-  virtual CategoryList & Categories () = 0;
+  virtual char const *SDesc () = 0;
+  virtual char const *LDesc () = 0;
+  /* FIXME: review this - these are UI variables, should be consistent across all
+   * children package types
+   */
+  void new_requirement (char const *dependson)
+  {
+    Dependency *dp;
+    if (!dependson)
+        return;
+      dp = new Dependency;
+      dp->next = required;
+      dp->package = dependson;
+      required = dp;
+  }
+  Dependency *required;
+  int srcpicked;		/* non zero if the source for this is required */
+  int binpicked;		/* non zero if the binary is required  - 
+				   This will also trigger reinstalled if it is set */
+
+
   virtual void uninstall () = 0;
-  packagesource *getfirstsource ();
-  packagesource *getnextsource ();
+  packagesource bin;
+  packagesource src;
 
-
-    virtual ~ packageversion ()
+  packageversion ();
+  virtual ~ packageversion ()
   {
   };
 
-protected:
-  packagesource ** sources;
-  size_t sourcecount;
-  size_t sourcespace;
+  /* TODO: Implement me:
+     static package_meta * scan_package (io_stream *);
+   */
+
 };
 
 #endif /* _PACKAGE_VERSION_H_ */

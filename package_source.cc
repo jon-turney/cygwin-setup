@@ -21,3 +21,60 @@
 static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
+
+#include <stdlib.h>
+#include <strings.h>
+#include "package_source.h"
+
+void
+packagesource::set_canonical (char const *fn)
+{
+  if (canonical)
+    delete canonical;
+  canonical = new char[strlen (fn) + 1];
+  strcpy (canonical, fn);
+
+  /* The base is from the last '/' to the first '.' following the last - */
+  char const *bstart = strchr (fn, '/');
+  char const *tmp;
+  while (bstart && (tmp = strchr (bstart + 1, '/')))
+    bstart = tmp;
+
+  if (!bstart)
+    bstart = fn;
+  char const *bend = strchr (bstart, '-');
+  while (bend && (tmp = strchr (bend + 1, '-')))
+    bend = tmp;
+  if (bend)
+    bend = strchr (bend, '.');
+  else
+    bend = strchr (bstart, '.');
+
+  if (!bend)
+    bend = strchr (bstart, '\0');
+  char const *end = strchr (fn, '\0');
+  if (base)
+    delete (base);
+  base = new char[bend - bstart];
+  memcpy (base, bstart + 1, bend - bstart - 1);
+  base[bend - bstart - 1] = '\0';
+
+  if (filename)
+    delete filename;
+  filename = new char[end - bstart + 1];
+  memcpy (filename, bstart, end - bstart);
+  filename[end - bstart] = '\0';
+
+  if (cached)
+    delete cached;
+  cached = 0;
+}
+
+void
+packagesource::set_cached (char const *fp)
+{
+  if (cached)
+    delete cached;
+  cached = new char[strlen (fp) + 1];
+  strcpy (cached, fp);
+}

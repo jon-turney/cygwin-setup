@@ -20,3 +20,8 @@
 static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
+
+#include "package_version.h"
+packageversion::packageversion ():required (0), srcpicked (0), binpicked (0)
+{
+};

@@ -20,6 +20,10 @@
 #ifndef _PACKAGE_SOURCE_H_
 #define _PACKAGE_SOURCE_H_
 
+/* required to parse this file */
+#include "list.h"
+#include "strings.h"
+
 /* standard binary package metadata:
  * Name (ie mutt
  * Vendor Version (ie 2.5.1)
@@ -36,23 +40,78 @@
  * now consider it old.
  */
 
+class site
+{
+public:
+  site (char const *newkey)
+  {
+    key = new char[strlen (newkey + 1)];
+      strcpy (key, newkey);
+  };
+  ~site ()
+  {
+    if (key)
+      delete key;
+  };
+  char *key;
+};
+
 class packagesource
 {
 public:
-  /* The canonical name - the complete path to the source file */
-  virtual const char *Canonical () = 0;
-  /* The basename - without extention */
-  virtual const char *Base () = 0;
-  /* The basename - with extention */
-  virtual const char *Filename () = 0;
-  /* The name from the installation cache - may be the same as Canonical */
-  virtual const char *CachedName () = 0;
-
-    virtual ~ packagesource ()
+  packagesource ():size (0), canonical (0), base (0), filename (0), cached (0)
   {
+  };
+  /* how big is the source file */
+  size_t size;
+  /* The canonical name - the complete path to the source file 
+   * i.e. foo/bar/package-1.tar.bz2
+   */
+  virtual const char *Canonical ()
+  {
+    return canonical;
+  };
+  /* The basename - without extention 
+   * i.e. package-1
+   */
+  virtual const char *Base ()
+  {
+    return base;
+  };
+  /* The basename - with extention 
+   * i.e. package-1.tar.bz2
+   */
+  virtual const char *Filename ()
+  {
+    return filename;
+  };
+  /* what is the cached filename, to prevent directory scanning during install */
+  virtual char const *Cached ()
+  {
+    return cached;
+  };
+  /* sets the canonical path, and parses and creates base and filename */
+  virtual void set_canonical (char const *);
+  virtual void set_cached (char const *);
+  list < site, char const *, strcasecmp > sites;
+
+  virtual ~ packagesource ()
+  {
+    if (canonical)
+      delete canonical;
+    if (base)
+      delete base;
+    if (filename)
+      delete filename;
+    if (cached)
+      delete cached;
   };
 
 private:
+  char *canonical;
+  char *base;
+  char *filename;
+  char *cached;
 };
 
 #endif /* _PACKAGE_SOURCE_H_ */

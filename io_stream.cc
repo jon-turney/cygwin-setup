@@ -190,14 +190,14 @@ io_stream::move (const char *from, const char *to)
   if (!strncasecmp ("file://", from, 7))
     {
       /* TODO: allow 'move' to cygfile url's */
-      if (!strncasecmp ("file://", to, 7))
+      if (strncasecmp ("file://", to, 7))
 	return io_stream::move_copy (from, to);
       return io_stream_file::move (&from[7], &to[7]);
     }
   if (!strncasecmp ("cygfile://", from, 10))
     {
       /* TODO: allow -> file urls */
-      if (!strncasecmp ("cygfile://", to, 10))
+      if (strncasecmp ("cygfile://", to, 10))
 	return io_stream::move_copy (from, to);
       return io_stream_cygfile::move (&from[10], &to[10]);
     }

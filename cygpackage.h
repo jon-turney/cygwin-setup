@@ -28,6 +28,7 @@ public:
   virtual const char *Name ();
   virtual const char *Vendor_version ();
   virtual const char *Package_version ();
+  virtual char const *Canonical_version ();
   virtual package_status_t Status ()
   {
     return status;
@@ -36,9 +37,15 @@ public:
   {
     return type;
   };
-  virtual CategoryList & Categories ()
+  void set_sdesc (char const *);
+  void set_ldesc (char const *);
+  virtual char const *SDesc ()
   {
-    return categories;
+    return sdesc;
+  };
+  virtual char const *LDesc ()
+  {
+    return ldesc;
   };
   virtual void uninstall ();
 
@@ -47,6 +54,7 @@ public:
   cygpackage (const char *);
   cygpackage (const char *, const char *, size_t, const char *,
 	      package_status_t, package_type_t);
+  void set_canonical_version (char const *);
 
 
   virtual ~ cygpackage ();
@@ -60,8 +68,10 @@ private:
   char *name;
   char *vendor;
   char *packagev;
+  char *canonical;
   char *fn;
-  CategoryList categories;
+  char *sdesc, *ldesc;
+  char getfilenamebuffer[_MAX_PATH];
 
 //  package_stability_t stability;
   package_status_t status;

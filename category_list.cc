@@ -26,19 +26,19 @@ categoriesspace (0)
 {
 }
 
-Category *
-CategoryList::register_category (const char *catname)
+Category & CategoryList::register_category (const char *catname)
 {
-  Category *tempcat = getcategorybyname (catname);
+  Category *
+    tempcat =
+    getcategorybyname (catname);
   if (!tempcat)
     {
       if (ncategories == categoriesspace)
 	{
-	  Category **newcategories = (Category **) realloc (_categories,
-							    sizeof (Category
-								    *) *
-							    (categoriesspace +
-							     20));
+	  Category **
+	    newcategories = (Category **)
+	    realloc (_categories,
+		     sizeof (Category *) * (categoriesspace + 20));
 	  if (!newcategories)
 	    {
 	      //die
@@ -64,7 +64,7 @@ CategoryList::register_category (const char *catname)
       _categories[n] = tempcat;
       ncategories++;
     }
-  return tempcat;
+  return *tempcat;
 }
 
 Category *

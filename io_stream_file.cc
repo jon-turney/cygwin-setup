@@ -189,14 +189,8 @@ io_stream_file::set_mtime (int mtime)
     {
       SetFileTime (h, 0, 0, &ftime);
       CloseHandle (h);
-      fp = fopen (fname, lmode);
-      if (!fp)
-	lasterr = errno;
       return 0;
     }
-  fp = fopen (fname, lmode);
-  if (!fp)
-    lasterr = errno;
   return 1;
 }
 

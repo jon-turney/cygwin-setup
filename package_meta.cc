@@ -35,6 +35,9 @@ static const char *cvsid =
 /* this goes at the same time */
 #include "win32.h"
 
+
+#include "category.h"
+
 #include "package_version.h"
 #include "cygpackage.h"
 #include "package_meta.h"
@@ -85,38 +88,16 @@ hash::add_subdirs (char const *tpath)
 void
 packagemeta::add_version (packageversion & thepkg)
 {
-  if (versionspace == versioncount)
-    {
-      packageversion **newversions = (packageversion **) realloc (versions,
-								  sizeof
-								  (packageversion
-								   *) *
-								  (versionspace
-								   + 5));
-      if (!newversions)
-	{
-	  //die badly
-	  exit (101);
-	}
-      versions = newversions;
-      versionspace += 5;
-    }
-  versions[versioncount] = &thepkg;
-  versioncount++;
+  versions.registerbyobject (thepkg);
 }
 
 /* assumption: package thepkg is already in the metadata list. */
 void
 packagemeta::set_installed (packageversion & thepkg)
 {
-  for (size_t n = 0; n < versioncount; n++)
-    {
-      if (versions[n] == &thepkg)
-	{
-	  installed = &thepkg;
-	  return;
-	}
-    }
+  packageversion *temp = versions.getbykey (thepkg.key);
+  if (temp == &thepkg)
+    installed = &thepkg;
 }
 
 /* uninstall a package if it's installed */
@@ -157,3 +138,23 @@ packagemeta::uninstall ()
     }
   installed = 0;
 }
+
+
+void
+packagemeta::add_category (Category & cat)
+{
+  /* add a new record for the package list */
+  /* TODO: alpabetical inserts ? */
+  categories.register_category (cat.name);
+
+  CategoryPackage *templink = new CategoryPackage (*this);
+  /* tell the category we are linking from we exist */
+  templink->next = cat.packages;
+  cat.packages = templink;
+}
+
+char const *
+packagemeta::SDesc ()
+{
+  return versions.getnth (1)->SDesc ();
+};

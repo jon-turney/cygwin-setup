@@ -97,202 +97,197 @@ static struct _header cat_headers[] = {
   {0, 0, 0, 0}
 };
 
-static int add_required (Package * pkg);
+static int add_required (packagemeta & pkg, size_t depth=0);
 static void set_view_mode (HWND h, views mode);
 
-static bool
-isinstalled (Package * pkg, int trust)
-{
-  if (source == IDC_SOURCE_DOWNLOAD)
-    return pkg->info[trust].install_exists < 0;
-  else
-    return pkg->installed && pkg->info[trust].version &&
-      strcasecmp (pkg->installed->version, pkg->info[trust].version) == 0;
-}
+#define pkgtrustp(pkg,t) (packageversion *)(t==TRUST_PREV ? pkg->prev : t == TRUST_CURR ? pkg->curr : pkg->exp)
 
 /* Set the next action given a current action.  */
 static void
-set_action (Package * pkg, bool preinc)
+set_action (packagemeta * pkg)
 {
-  /* preinc is only used by 'click' */
-  if (!pkg->action || preinc)
-    {
-      ((int) pkg->action)++;
-      pkg->srcpicked = 0;
-    }
+/* actions are the following:
 
-  /* Exercise the action state machine. */
-  for (;; ((int) pkg->action)++)
-    switch (pkg->action)
-      {
-      case ACTION_ERROR:
-      case ACTION_UNKNOWN:
-	pkg->action = (actions) (ACTION_CURR - 1);
-	break;
-      case ACTION_LAST:
-	pkg->action = ACTION_PREV;
-	/* fall through intentionally */
-      case ACTION_PREV:
-      case ACTION_CURR:
-      case ACTION_TEST:
-	/* Try to find the next best action.  We may not have all of
-	   prev, curr, or test but we should have at least one of those. */
-	Info * inf;
-	inf = pkg->info + pkg->action;
-	if (inf->version && inf->install_exists)
-	  {
-	    if (isinstalled (pkg, pkg->action))
-	      (int) pkg->action += ACTION_SAME;
-	    return;
-	  }
-	/* the passed in trust level is missing... */
-	if (!preinc		/* auto set */
-	    && pkg->installed && pkg->action > ACTION_CURR)	/* There is no current version */
-	  (int) pkg->action = ACTION_SAME_CURR;
-	break;
-	/* ACTION_SAME_* are used when the installed version is the same
-	   as the given action. */
-      case ACTION_SAME_CURR:
-      case ACTION_SAME_TEST:
-	if (!preinc)		/* Previously set to this value */
-	  return;
-	(int) pkg->action -= ACTION_SAME + 1;	/* revert to ACTION_CURR, etc. */
-	break;
-      case ACTION_SAME_PREV:
-	if (!preinc)		/* Previously set to this value */
-	  return;
-	pkg->action = ACTION_UNINSTALL;
-	/* Fall through intentionally */
-      case ACTION_UNINSTALL:
-	if (source != IDC_SOURCE_DOWNLOAD && pkg->installed)
-	  return;
-	break;
-      case ACTION_REDO:
+   for install modes (from net/local)
+   for each version:
+   install this version
+   install the source for this version
+   and a boolean flag - force install to allow reinstallation, or bypassing requirements
+   globally:
+   install the source for the current version.
+   
+   to uninstall a package, the desired version is set to NULL;
+
+   for mirroring modes (download only)
+   for each version
+   download this version
+   download source for this version
+
+   these are represented by the following:
+   the desired pointer in the packagemetadata indicated which version we are operating on.
+   if we are operating on the installed version, reinstall is a valid option.
+   for the selected version, forceinstall means Do an install no matter what, and
+   srcpicked means download the source.
+
+   The default action for any installed package is to install the 'curr version' 
+   if it is not already installed.
+
+   The default action for any non-installed package is to do nothing. 
+   
+   To achieve a no-op, set desired==installed, and if (installed) set forceinstall=0 and
+   srcpicked = 0;
+
+   Iteration through versions should follow the following rules:
+   selected radio button (prev/curr/test) (show as reinstall if that is the
+   current version) ->source only (only if the package is installed) ->oldest version....skip version of radio button...
+   newest version->uninstall->no-op->selected radio button.
+
+   If any state cannot be set (ie because (say) no prev entry exists for a package
+   simply progress to the next option.
+   
+   */
+
+  /* We were set to uninstall the package */
+  if (!pkg->desired && pkg->installed)
+    {
+      /* No-op - keep whatever we've got */
+      pkg->desired = pkg->installed;
+      if (pkg->desired)
 	{
-	  if (isinstalled (pkg, deftrust))
+	  pkg->desired->binpicked = 0;
+	  pkg->desired->srcpicked = 0;
+	}
+      return;
+    }
+  else if (pkg->desired == pkg->installed
+	   && (!pkg->installed
+	       || !(pkg->installed->binpicked || pkg->installed->srcpicked)))
+    /* Install the default trust version - this is a 'reinstall' for installed
+     * packages */
+    {
+      pkg->desired = NULL;
+      /* No-op */
+      pkg->desired = pkgtrustp (pkg, deftrust);
+      if (pkg->desired)
+	{
+	  pkg->desired->binpicked = 1;
+	  return;
+	}
+    }
+  /* are we currently on the radio button selection and installed */
+  if (pkg->desired == pkgtrustp (pkg, deftrust) && pkg->installed &&
+      (!pkg->desired || pkg->desired->binpicked))
+    {
+      /* FIXME: is source available */
+      /* source only this file */
+      pkg->desired = pkg->installed;
+      pkg->desired->binpicked = 0;
+      pkg->desired->srcpicked = 1;
+      return;
+    }
+  /* are we currently on source only or on the radio button but not installed */
+  else if ((pkg->desired == pkg->installed && pkg->installed
+	    && pkg->installed->srcpicked) ||
+	   pkg->desired == pkgtrustp (pkg, deftrust))
+    {
+      /* move onto the loop through versions */
+      pkg->desired = pkg->versions.getnth (1);
+      if (pkg->desired == pkgtrustp (pkg, deftrust))
+	pkg->desired =
+	  pkg->versions.number () > 1 ? pkg->versions.getnth (2) : NULL;
+      if (pkg->desired)
+	{
+	  pkg->desired->binpicked = 1;
+	  pkg->desired->srcpicked = 0;
+	}
+      return;
+    }
+  else
+    {
+      /* preserve the src tick box */
+      int source = pkg->desired->srcpicked;
+      /* bump the version selected, skipping the radio button trust along the way */
+      size_t n;
+      for (n = 1;
+	   n <= pkg->versions.number ()
+	   && pkg->desired != pkg->versions.getnth (n); n++);
+      /* n points at pkg->desired */
+      n++;
+      if (n <= pkg->versions.number ())
+	{
+	  if (pkgtrustp (pkg, deftrust) == pkg->versions.getnth (n))
+	    n++;
+	  if (n <= pkg->versions.number ())
 	    {
-	      pkg->trust = deftrust;
+	      pkg->desired = pkg->versions.getnth (n);
+	      pkg->desired->srcpicked = source;
 	      return;
 	    }
 	}
-	break;
-      case ACTION_SRC_ONLY:
-	{
-	  if (pkg->info[deftrust].source_exists)
-	    {
-	      pkg->trust = deftrust;
-	      pkg->srcpicked = 1;
-	      return;
-	    }
-	}
-	break;
-      case ACTION_SAME_LAST:
-	pkg->action = ACTION_SKIP;
-	/* Fall through intentionally */
-      case ACTION_SKIP:
-	if (!pkg->installed_ix)
-	  return;
-	break;
-      default:
-	log (0, "should never get here %d\n", pkg->action);
-      }
+      /* went past the end - uninstall the package */
+      pkg->desired = NULL;
+    }
 }
 
 static int
-add_required (Package * pkg)
+add_required (packagemeta & pkg, size_t depth = 0)
 {
   Dependency *dp;
-  Package *required;
+  packagemeta *required;
   int changed = 0;
-  dp = pkg->required;
-  switch (pkg->action)
-    {
-    case ACTION_UNINSTALL:
-    case ACTION_ERROR:
-    case ACTION_UNKNOWN:
-    case ACTION_SRC_ONLY:
-    case ACTION_SKIP:
-      return 0;
-    default:
-      break;
-    }
+  if (!pkg.desired
+      || (pkg.desired != pkg.installed && !pkg.desired->binpicked))
+    /* uninstall || source only */
+    return 0;
+
+  dp = pkg.desired->required;
+  packagedb db;
+  /* cheap test for too much recursion */
+  if (depth > db.npackages ())
+    return 0;
   while (dp)
     {
-      if ((required = getpkgbyname (dp->package)) == NULL)
+      if ((required = db.getpackagebyname (dp->package)) == NULL)
 	{
 	  dp = dp->next;
+	  changed++;
 	  continue;
 	}
-      switch (required->action)
+      if (!required->desired)
 	{
-	case ACTION_PREV:
-	case ACTION_CURR:
-	case ACTION_TEST:
-	case ACTION_LAST:
-	case ACTION_SAME_CURR:
-	case ACTION_SAME_TEST:
-	case ACTION_SAME_PREV:
-	case ACTION_REDO:
-	case ACTION_SAME_LAST:
-	  /* we are installing a user selected version */
-	  break;
-
-	case ACTION_UNINSTALL:
-	  /* it's already installed - leave it */
-	  required->action = (actions) required->installed_ix;
-	  break;
-	case ACTION_SKIP:
-	case ACTION_SRC_ONLY:
-	  if (required->installed)
-	    break;
-	case ACTION_ERROR:
-	case ACTION_UNKNOWN:
-	  /* the current install will fail */
-	  required->action = ACTION_UNKNOWN;	/* this find prev, then curr, then test. */
-	  set_action (required, 0);	/* we need a find_best that gets installed, */
-	  changed++;		/* then current, then prev, then test */
-	  chooser->insert_pkg (required);
-	  break;
-	default:
-	  log (0, "invalid state %d\n", required->action);
+	  /* it's set to uninstall */
+	  set_action (required);
 	}
-      changed += add_required (required);
+      else if (required->desired != required->installed
+	       && !required->desired->binpicked)
+	{
+	  /* it's set to change to a different version source only */
+	  required->desired->binpicked = 1;
+	}
+      /* does this requirement have requirements? */
+      changed += add_required (*required, depth + 1);
       dp = dp->next;
     }
   return changed;
 }
 
 /* Return an appropriate caption given the current action. */
-const char *
-choose_caption (Package * pkg)
+char const *
+choose_caption (packagemeta * pkg)
 {
-  set_action (pkg, 0);
-  switch (pkg->action)
-    {
-    case ACTION_PREV:
-    case ACTION_CURR:
-    case ACTION_TEST:
-      pkg->trust = (trusts) pkg->action;
-      return pkg->info[pkg->trust].version;
-    case ACTION_SAME_PREV:
-    case ACTION_SAME_CURR:
-    case ACTION_SAME_TEST:
-      return "Keep";
-    case ACTION_UNINSTALL:
-      return "Uninstall";
-    case ACTION_REDO:
-      return source == IDC_SOURCE_DOWNLOAD ? "Retrieve" : "Reinstall";
-    case ACTION_SRC_ONLY:
-      if (pkg->installed && pkg->installed->source_exists)
-	return "Redo Source";
-      else
-	return "Source";
-    case ACTION_SKIP:
-      return "Skip";
-    default:
-      return "????";
-    }
-  return "???";
+  if (!pkg->desired && pkg->installed)
+    return "Uninstall";
+  else if (!pkg->desired)
+    return "Skip";
+  else if (pkg->desired == pkg->installed && pkg->desired->binpicked)
+    return source == IDC_SOURCE_DOWNLOAD ? "Retrieve" : "Reinstall";
+  else if (pkg->desired == pkg->installed && pkg->desired->srcpicked)
+    /* FIXME: Redo source should come up if the tarball is already present locally */
+    return "Source";
+  else if (pkg->desired == pkg->installed)	/* and neither src nor bin */
+    return "Keep";
+  else
+    return pkg->desired->Canonical_version ();
 }
 
 static void
@@ -527,76 +522,49 @@ note_width (struct _header *hdrs, HDC dc, const char *string, int addend,
     hdrs[column].width = s.cx + addend;
 }
 
-static int
-check_existence (Info * inf, int check_src)
-{
-  if (source == IDC_SOURCE_NETINST)
-    return 1;
-  if (source == IDC_SOURCE_CWD)
-    return 0;			/* should have already been determined */
-  if (check_src)
-    return (inf->source && _access (inf->source, 0) == 0) ? -1 : 1;
-  else
-    return (inf->install && _access (inf->install, 0) == 0) ? -1 : 1;
-  return 0;
-}
-
-/* Iterate over the package list, setting the "existence" flags
-   for the source or binary. */
 static void
 set_existence ()
 {
-  for (Package * pkg = package; pkg->name; pkg++)
-    if (!pkg->exclude)
-      {
-	int exists = 0;
-	for (Info * inf = pkg->infoscan; inf < pkg->infoend; inf++)
-	  {
-	    if (inf->install_exists)
-	      exists = 1;
-	    else
-	      exists |= inf->install_exists = check_existence (inf, 0);
-	    if (inf->source_exists)
-	      exists = 1;
-	    else
-	      exists |= inf->source_exists = check_existence (inf, 1);
-	  }
-	if (source != IDC_SOURCE_DOWNLOAD && !exists)
-	  pkg->exclude = EXCLUDE_NOT_FOUND;
-      }
+  /* FIXME:
+     iterate through the package list, and delete packages that are
+     * Not installed
+     * have no mirror site
+     and then do the same for categories with no packages.
+   */
 }
 
 static void
 fill_missing_category ()
 {
   packagedb db;
-  for (Package * pkg = package; pkg->name; pkg++)
-    if (!pkg->exclude && !pkg->category)
-      add_category (pkg, db.categories.register_category ("Misc"));
-}
-
-static actions
-keep_or_skip (Package * pkg)
-{
-  if (pkg->installed)
-    return (actions) pkg->installed_ix;
-  return ACTION_SKIP;
+  for (packagemeta * pkg = db.getfirstpackage (); pkg;
+       pkg = db.getnextpackage ())
+    if (!pkg->Categories ().categories ())
+      pkg->add_category (db.categories.register_category ("Misc"));
 }
 
 static void
 default_trust (HWND h, trusts trust)
 {
   deftrust = trust;
-  for (Package * pkg = package; pkg->name; pkg++)
-    if (!pkg->exclude)
-      {
-	pkg->action = (actions) trust;
-	if (!pkg->installed && pkg->category
-	    && !(getpackagecategorybyname (pkg, "Base")
-		 || getpackagecategorybyname (pkg, "Misc")))
-	  pkg->action = keep_or_skip (pkg);
-	set_action (pkg, 0);
-      }
+  packagedb db;
+  for (packagemeta * pkg = db.getfirstpackage (); pkg;
+       pkg = db.getnextpackage ())
+    {
+      if (pkg->installed || pkg->Categories ().getcategorybyname ("Base")
+	  || pkg->Categories ().getcategorybyname ("Misc"))
+	{
+	  pkg->desired = pkgtrustp (pkg, trust);
+	  if (pkg->desired)
+	    {
+	      pkg->desired->binpicked =
+		pkg->desired == pkg->installed ? 0 : 1;
+	      pkg->desired->srcpicked = 0;
+	    }
+	}
+      else
+	pkg->desired = 0;
+    }
   RECT r;
   GetClientRect (h, &r);
   InvalidateRect (h, &r, TRUE);
@@ -605,7 +573,7 @@ default_trust (HWND h, trusts trust)
 }
 
 void
-pick_line::set_line (Package * _pkg)
+pick_line::set_line (packagemeta * _pkg)
 {
   pkg = _pkg;
   cat = NULL;
@@ -628,7 +596,8 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
       if (pkg->installed)
 	{
 	  TextOut (hdc, x + chooser->headers[chooser->current_col].x, r,
-		   pkg->installed->version, strlen (pkg->installed->version));
+		   pkg->installed->Canonical_version (),
+		   strlen (pkg->installed->Canonical_version ()));
 	  SelectObject (bitmap_dc, bm_rtarrow);
 	  BitBlt (hdc, x + chooser->headers[chooser->current_col].x
 		  + chooser->headers[0].width + ICON_MARGIN / 2
@@ -643,11 +612,13 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 	      bitmap_dc, 0, 0, SRCCOPY);
 
       HANDLE check_bm;
-      if (!pkg->info[pkg->trust].source_exists
-	  || (pkg->action != ACTION_REDO
-	      && pkg->action != (actions) pkg->trust))
+      if ( /* uninstall */ !pkg->desired ||
+	  /* source only */ (!pkg->desired->binpicked
+			     && pkg->desired->srcpicked) ||
+	  /* when no source mirror available */
+	  !pkg->desired->src.sites.number ())
 	check_bm = bm_checkna;
-      else if (pkg->srcpicked)
+      else if (pkg->desired->srcpicked)
 	check_bm = bm_checkyes;
       else
 	check_bm = bm_checkno;
@@ -657,18 +628,19 @@ pick_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 	      bitmap_dc, 0, 0, SRCCOPY);
 
       /* shows "first" category - do we want to show any? */
-      if (pkg->category && show_cat)
+      if (pkg->Categories ().getfirstcategory () && show_cat)
 	TextOut (hdc, x + chooser->headers[chooser->cat_col].x, r,
-		 pkg->category->name, strlen (pkg->category->name));
+		 pkg->Categories ().getfirstcategory ()->name,
+		 strlen (pkg->Categories ().getfirstcategory ()->name));
 
-      if (!pkg->sdesc)
+      if (!pkg->SDesc ())
 	s = pkg->name;
       else
 	{
 	  static char buf[512];
 	  strcpy (buf, pkg->name);
 	  strcat (buf, ": ");
-	  strcat (buf, pkg->sdesc);
+	  strcat (buf, pkg->SDesc ());
 	  s = buf;
 	}
       TextOut (hdc, x + chooser->headers[chooser->pkg_col].x, r, s,
@@ -684,17 +656,17 @@ pick_line::click (int x)
 {
   if (pkg)
     {
-      if (pkg->info[pkg->trust].source_exists
+      if (pkg->desired && pkg->desired->src.sites.number ()
 	  && x >= chooser->headers[chooser->src_col].x - HMARGIN / 2
 	  && x <= chooser->headers[chooser->src_col + 1].x - HMARGIN / 2)
-	pkg->srcpicked ^= 1;
+	pkg->desired->srcpicked ^= 1;
 
       if (x >= chooser->headers[chooser->new_col].x - (HMARGIN / 2)
 	  && x <= chooser->headers[chooser->new_col + 1].x - HMARGIN / 2)
 	{
-	  set_action (pkg, 1);
+	  set_action (pkg);
 	  /* Add any packages that are needed by this package */
-	  return add_required (pkg);
+	  return add_required (*pkg);
 	}
     }
   else if (cat)
@@ -788,26 +760,32 @@ _view::init_headers (HDC dc)
 
   for (i = 0; headers[i].text; i++)
     note_width (headers, dc, headers[i].text, 0, i);
-  for (Package * pkg = package; pkg->name; pkg++)
+  packagedb db;
+  for (packagemeta * pkg = db.getfirstpackage (); pkg;
+       pkg = db.getnextpackage ())
     {
       if (pkg->installed)
 	{
-	  note_width (headers, dc, pkg->installed->version, 0, current_col);
-	  note_width (headers, dc, pkg->installed->version, NEW_COL_SIZE_SLOP,
-		      new_col);
+	  note_width (headers, dc, pkg->installed->Canonical_version (), 0,
+		      current_col);
+	  note_width (headers, dc, pkg->installed->Canonical_version (),
+		      NEW_COL_SIZE_SLOP, new_col);
 	}
-      for (Info * inf = pkg->infoscan; inf < pkg->infoend; inf++)
-	note_width (headers, dc, inf->version, NEW_COL_SIZE_SLOP, new_col);
-      for (Category * cat = pkg->category; cat; cat = cat->next)
+      for (size_t n = 1; n <= pkg->versions.number (); n++)
+	note_width (headers, dc,
+		    pkg->versions.getnth (n)->Canonical_version (),
+		    NEW_COL_SIZE_SLOP, new_col);
+      for (Category * cat = db.categories.getfirstcategory (); cat;
+	   cat = cat->next)
 	note_width (headers, dc, cat->name, 0, cat_col);
-      if (!pkg->sdesc)
+      if (!pkg->SDesc ())
 	note_width (headers, dc, pkg->name, 0, pkg_col);
       else
 	{
 	  static char buf[512];
 	  strcpy (buf, pkg->name);
 	  strcat (buf, ": ");
-	  strcat (buf, pkg->sdesc);
+	  strcat (buf, pkg->SDesc ());
 	  note_width (headers, dc, buf, 0, pkg_col);
 	}
     }
@@ -822,19 +800,18 @@ _view::init_headers (HDC dc)
 }
 
 void
-_view::insert_pkg (Package * pkg)
+_view::insert_pkg (packagemeta & pkg)
 {
   pick_line line;
-  if (pkg->exclude)
-    return;
-  line.set_line (pkg);
+  line.set_line (&pkg);
   packagedb db;
   if (view_mode != VIEW_CATEGORY)
     {
       if (lines == NULL)
 	{
 	  lines =
-	    (pick_line *) calloc (npackages + db.categories.categories (),
+	    (pick_line *) calloc (db.npackages () +
+				  db.categories.categories (),
 				  sizeof (pick_line));
 	  nlines = 0;
 	  insert_at (0, line);
@@ -845,7 +822,8 @@ _view::insert_pkg (Package * pkg)
   else
     {
 //      assert (lines); /* protect against a coding change in future */
-      for (Category * cat = pkg->category; cat; cat = cat->next)
+      for (Category * cat = pkg.Categories ().getfirstcategory (); cat;
+	   cat = cat->next)
 	{
 	  /* insert the package under this category in the list. If this category is not
 	     visible, add it */
@@ -880,16 +858,17 @@ _view::insert_category (Category * cat, int collapsed)
     {
       packagedb db;
       lines =
-	(pick_line *) malloc ((npackages + db.categories.categories ()) *
-			      sizeof (pick_line));
+	(pick_line *) malloc ((db.npackages () + db.categories.categories ())
+			      * sizeof (pick_line));
       memset (lines, '\0',
-	      (npackages + db.categories.categories ()) * sizeof (pick_line));
+	      (db.npackages () +
+	       db.categories.categories ()) * sizeof (pick_line));
       nlines = 0;
       insert_at (0, line);
       if (!collapsed)
 	for (CategoryPackage * catpkg = cat->packages; catpkg;
 	     catpkg = catpkg->next)
-	  insert_pkg (getpkgbyname (catpkg->pkgname));
+	  insert_pkg (catpkg->pkg);
     }
   else
     {
@@ -904,7 +883,7 @@ _view::insert_category (Category * cat, int collapsed)
 	      if (!collapsed)
 		for (CategoryPackage * catpkg = cat->packages; catpkg;
 		     catpkg = catpkg->next)
-		  insert_pkg (getpkgbyname (catpkg->pkgname));
+		  insert_pkg (catpkg->pkg);
 	      n = nlines;
 	    }
 	  else if (lines[n].get_category () == cat)
@@ -919,7 +898,7 @@ _view::insert_category (Category * cat, int collapsed)
 	  if (!collapsed)
 	    for (CategoryPackage * catpkg = cat->packages; catpkg;
 		 catpkg = catpkg->next)
-	      insert_pkg (getpkgbyname (catpkg->pkgname));
+	      insert_pkg (catpkg->pkg);
 	}
     }
 }
@@ -1034,15 +1013,15 @@ _view::click (int row, int x)
 	       lines[row].get_category ()->packages; catpkg;
 	       catpkg = catpkg->next)
 	    {
-	      Package *pkg = getpkgbyname (catpkg->pkgname);
+	      packagemeta & pkg = catpkg->pkg;
 	      int n = row + 1;
 	      pick_line line;
-	      line.set_line (pkg);
+	      line.set_line (&pkg);
 	      /* this is a nasty hack. It will go away when the hierarchy is coded */
 	      while (n < nlines)
 		{
 		  if (lines[n].get_category () || (lines[n].get_pkg ()
-						   && strcasecmp (pkg->name,
+						   && strcasecmp (pkg.name,
 								  lines
 								  [n].get_pkg
 								  ()->name) <
@@ -1051,7 +1030,7 @@ _view::click (int row, int x)
 		      insert_at (n, line);
 		      n = nlines;
 		    }
-		  else if (lines[n].get_pkg () == pkg)
+		  else if (lines[n].get_pkg () == &pkg)
 		    {
 		      n = nlines;
 		    }
@@ -1089,30 +1068,26 @@ set_view_mode (HWND h, views mode)
   chooser->set_view_mode (mode);
 
   chooser->clear_view ();
-  for (Package * pkg = package; pkg->name; pkg++)
-    if (!pkg->exclude)
-      set_action (pkg, 0);
-
+  packagedb db;
   switch (chooser->get_view_mode ())
     {
     case VIEW_PACKAGE:
-      for (Package * pkg = package; pkg->name; pkg++)
-	if (!pkg->exclude && !is_full_action (pkg))
-	  chooser->insert_pkg (pkg);
+      for (packagemeta * pkg = db.getfirstpackage (); pkg;
+	   pkg = db.getnextpackage ())
+	if ((!pkg->desired && pkg->installed) || (pkg->desired && (pkg->desired->srcpicked
+	    || pkg->desired->binpicked)))
+	  chooser->insert_pkg (*pkg);
       break;
     case VIEW_PACKAGE_FULL:
-      for (Package * pkg = package; pkg->name; pkg++)
-	if (!pkg->exclude)
-	  chooser->insert_pkg (pkg);
+      for (packagemeta * pkg = db.getfirstpackage (); pkg;
+	   pkg = db.getnextpackage ())
+	chooser->insert_pkg (*pkg);
       break;
     case VIEW_CATEGORY:
-      {
-	packagedb db;
-	/* start collapsed. TODO: make this a chooser flag */
-	for (Category * cat = db.categories.getfirstcategory (); cat;
-	     cat = cat->next)
-	  chooser->insert_category (cat, CATEGORY_COLLAPSED);
-      }
+      /* start collapsed. TODO: make this a chooser flag */
+      for (Category * cat = db.categories.getfirstcategory (); cat;
+	   cat = cat->next)
+	chooser->insert_category (cat, CATEGORY_COLLAPSED);
       break;
     default:
       break;
@@ -1176,8 +1151,11 @@ create_listview (HWND dlg, RECT * r)
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE, "Failed to set View button caption %ld",
 	 GetLastError ());
-  for (Package * foo = package; foo->name; foo++)
-    add_required (foo);
+  packagedb db;
+  for (packagemeta * pkg = db.getfirstpackage (); pkg;
+       pkg = db.getnextpackage ())
+    add_required (*pkg);
+  /* FIXME: do we need to init the desired fields ? */
   static int ta[] = { IDC_CHOOSE_CURR, 0 };
   rbset (dlg, ta, IDC_CHOOSE_CURR);
 
@@ -1187,24 +1165,28 @@ create_listview (HWND dlg, RECT * r)
 static BOOL
 dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 {
+  packagedb db;
   switch (id)
     {
     case IDC_CHOOSE_PREV:
       default_trust (lv, TRUST_PREV);
-      for (Package * foo = package; foo->name; foo++)
-	add_required (foo);
+      for (packagemeta * pkg = db.getfirstpackage (); pkg;
+	   pkg = db.getnextpackage ())
+	add_required (*pkg);
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_CURR:
       default_trust (lv, TRUST_CURR);
-      for (Package * foo = package; foo->name; foo++)
-	add_required (foo);
+      for (packagemeta * pkg = db.getfirstpackage (); pkg;
+	   pkg = db.getnextpackage ())
+	add_required (*pkg);
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_EXP:
       default_trust (lv, TRUST_TEST);
-      for (Package * foo = package; foo->name; foo++)
-	add_required (foo);
+      for (packagemeta * pkg = db.getfirstpackage (); pkg;
+	   pkg = db.getnextpackage ())
+	add_required (*pkg);
       set_view_mode (lv, chooser->get_view_mode ());
       break;
     case IDC_CHOOSE_VIEW:
@@ -1376,34 +1358,12 @@ parse_filename (const char *in_fn, fileparse & f)
   return 1;
 }
 
-/* Return a pointer to a package given the name. */
-Package *
-getpkgbyname (const char *pkgname)
-{
-  for (Package * pkg = package; pkg && pkg->name; pkg++)
-    if (strcasecmp (pkg->name, pkgname) == 0)
-      return pkg;
-
-  return NULL;
-}
-
-/* Return a pointer to a category of a given package given the name. */
-Category *
-getpackagecategorybyname (Package * pkg, const char *categoryname)
-{
-  for (Category * cat = pkg->category; cat; cat = cat->next)
-    if (strcasecmp (cat->name, categoryname) == 0)
-      return cat;
-
-  return NULL;
-}
-
 /* Find out where to put existing tar file in local directory in
    known package array. */
 static void
 scan2 (char *path, unsigned int size)
 {
-  Package *pkg;
+  packagemeta *pkg;
   fileparse f;
 
   if (!parse_filename (path, f))
@@ -1412,92 +1372,77 @@ scan2 (char *path, unsigned int size)
   if (f.what[0] != '\0' && f.what[0] != 's')
     return;
 
-  pkg = getpkgbyname (f.pkg);
+  packagedb db;
+  pkg = db.getpackagebyname (f.pkg);
   if (pkg == NULL)
     return;
 
   /* Scan existing package list looking for a match between a known
-     package from setup.ini and a tar archive on disk.
+     package and a tar archive on disk.
      While scanning, keep track of appropriate "holes" in the trust
      table where a tar file could be put if no known entry
      exists.
+
+     We have 4 specific insertion points and one generic point.
+     The generic point is in versioned order in the package version array.
+     The specific points are
+     *installed
+     *prev
+     *curr
+     *exp.
+
+     if the version number matches a version in the db, 
+     we simply add this as a mirror source to that version.
+     If it matches no version, we add a new version to the db.
+
+     Lastly if the version number does not matche one of installed/prev/current/exp
+     AND we had to create a new version entry
+     we apply the following heuristic:
+     if there is no exp, we link this in exp.
+     If there is an exp and this is higher, we link this in exp, and 
+     if there is no curr, bump what was in exp to curr. If there was a curr, we leave it be.
+     if this is lower than exp, and there is no curr, link as curr. If there is a curr, leave it be.
+     If this is lower than curr, and there is no prev, link as prev, if there is a prev, leave it be.
+
+     Whilst this logic is potentially wrong from time to time, it guarantees that
+     setup.ini defined stability won't be altered unintentially. An alternative is to
+     mark setup.ini defined prev/curr/exp packages as such, when this algorithm, can 
+     get smarter.
 
      So, if setup.ini knows that ash-20010425-1.tar.gz is the current
      version and there is an ash-20010426-1.tar.gz in the current directory,
      the 20010426 version will be placed in the "test" slot, assuming that
      there is no test version listed in setup.ini. */
 
-  Info *hole = NULL;
-  Info *maybe_hole = NULL;
-  int cmp = 0;
-  for (Info * inf = pkg->infoscan; inf < pkg->infoend; inf++)
-    if (!inf->version || inf->derived)
-      {
-	if (cmp > 0)
-	  hole = inf;
-	else if (cmp == 0)
-	  maybe_hole = inf;
-      }
-    else if ((cmp = strcasecmp (f.ver, inf->version)) == 0)
-      {
-	if (f.what[0] == 's')
-	  inf->source_exists = -1;
-	else
-	  inf->install_exists = -1;
-	return;
-      }
-    else if (!hole && maybe_hole && cmp < 0)
-      hole = maybe_hole;
-    else
-      maybe_hole = NULL;
-
-  /* If maybe_hole != NULL, then we should be sitting at the "test"
-     trust entry.  Use that if there was nothing at all in the
-     known package list. */
-  if (!hole && maybe_hole)
-    hole = maybe_hole;
-
-  /* If !hole, we didn't find this version in the known packages array
-     and there was no place to put it. */
-  if (!hole)
-    return;
-
-  /* The derived flag is set when we place info about a file in a slot
-     iff there was nothing known about the file in the known package
-     array.  We try to put the highest numbered versions in the "empty"
-     slots. */
-  if (hole->derived)
+  int added = 0;
+  for (size_t n = 1; n <= pkg->versions.number (); n++)
     {
-      cmp = strcasecmp (f.ver, hole->version) < 0;
-      if (cmp < 0)
-	return;
-
-      if (cmp > 0)
+      if (!strcasecmp (f.ver, pkg->versions.getnth (n)->Canonical_version ()))
 	{
-	  free (hole->version);
-	  if (hole->source)
-	    free (hole->source);
-	  else
-	    free (hole->install);
+	  /* FIXME: Add a mirror entry */
+	  added = 1;
 	}
     }
+  if (!added)
+    {
+      /* FIXME: Add a new version */
 
-  /* Fill in the "hole", setting a flag that we derived this location
-     from context rather than from setup.ini. */
-  hole->derived = 1;
-  hole->version = strdup (f.ver);
-  if (!hole->source && f.what[0] == 's')
-    {
-      hole->source = strdup (path);
-      hole->source_exists = -1;
-      hole->source_size = size;
+      /* And now the hole finder */
+#if 0
+      if (!pkg->exp)
+	pkg->exp = thenewver;
+      else if (strcasecmp (f.ver, pkg->versions[n]->Canonicalversion ()) < 0)
+	/* try curr */
+	if (!pkg->curr)
+	  pkg->curr = thenewver;
+	else if (strcasecmp (f.ver, pkg->versions[n]->Canonicalversion ()) <
+		 0)
+	  /* try prev */
+	  if (!pkg->prev)
+	    pkg->prev = thenewver;
+#endif
     }
-  else
-    {
-      hole->install = strdup (path);
-      hole->install_exists = -1;
-      hole->install_size = size;
-    }
+
 }
 
 static void
@@ -1520,58 +1465,11 @@ _Info::_Info (const char *_install, const char *_version, int _install_size,
     }
 }
 
-static void
-read_installed_db ()
-{
-  packagedb db;
-
-  if (!db.getfirstpackage ())
-    return;
-
-  packagemeta *pkgm = db.getfirstpackage ();
-
-  while (pkgm)
-    {
-      if (pkgm->installed)
-	{
-	  Package *pkg = getpkgbyname (pkgm->name);
-	  if (!pkg)
-	    {
-	      pkg = new_package (pkgm->name);
-	      pkg->info[TRUST_CURR].version =
-		concat (pkgm->installed->Vendor_version (), "-",
-			pkgm->installed->Package_version (), 0);
-	      /* install from is unknown for installed packages */
-	      pkg->info[TRUST_CURR].install = 0;
-	      pkg->info[TRUST_CURR].install_size = 0;
-	      /* likewise for src */
-	      pkg->installed_ix = TRUST_CURR;
-	      /* Exists on local system but not on download system */
-	      pkg->exclude = EXCLUDE_NOT_FOUND;
-	    }
-	  pkg->installed = new Info (0, pkg->info[TRUST_CURR].version, 0);
-	  if (!pkg->installed_ix)
-	    for (trusts t = TRUST_PREV; t < NTRUST; ((int) t)++)
-	      if (pkg->info[t].install
-		  &&
-		  strcmp (concat
-			  (pkgm->installed->Vendor_version (), "-",
-			   pkgm->installed->Package_version (), 0),
-			  pkg->info[t].version) == 0)
-		{
-		  pkg->installed_ix = t;
-		  break;
-		}
-	}
-      pkgm = db.getnextpackage ();
-    }
-}
-
 int
 package_sort (const void *va, const void *vb)
 {
-  Package *a = (Package *) va;
-  Package *b = (Package *) vb;
+  packagemeta *a = (packagemeta *) va;
+  packagemeta *b = (packagemeta *) vb;
   return strcasecmp (a->name, b->name);
 }
 
@@ -1597,49 +1495,46 @@ do_choose (HINSTANCE h)
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_CWD)
     scan_downloaded_files ();
 
-  read_installed_db ();
   set_existence ();
   fill_missing_category ();
-
-  qsort (package, npackages, sizeof (package[0]), package_sort);
 
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_CHOOSE), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
 
   log (LOG_BABBLE, "Chooser results...");
-  for (Package * pkg = package; pkg->name; pkg++)
+  packagedb db;
+  for (packagemeta * pkg = db.getfirstpackage (); pkg;
+       pkg = db.getnextpackage ())
     {
-      static const char *infos[] = { "nada", "prev", "curr", "test" };
-      const char *trust = ((pkg->trust == TRUST_PREV) ? "prev"
-			   : (pkg->trust == TRUST_CURR) ? "curr"
-			   : (pkg->trust == TRUST_TEST) ? "test" : "unknown");
+//      static const char *infos[] = { "nada", "prev", "curr", "test" };
+      const char *trust = ((pkg->desired == pkg->prev) ? "prev"
+			   : (pkg->desired == pkg->curr) ? "curr"
+			   : (pkg->desired == pkg->exp) ? "test" : "unknown");
       const char *action = choose_caption (pkg);
-      const char *installed = ((pkg->installed_ix == -1) ? "none"
-			       : (pkg->installed_ix == TRUST_PREV) ? "prev"
-			       : (pkg->installed_ix == TRUST_CURR) ? "curr"
-			       : (pkg->installed_ix == TRUST_TEST) ? "test"
-			       : "unknown");
-      const char *excluded = (pkg->exclude ? "yes" : "no");
+      const char *installed =
+	pkg->installed ? pkg->installed->Canonical_version () : "none";
 
-      log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s excluded=%s"
+      log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s"
 	   " src?=%s",
-	   pkg->name, action, trust, installed, excluded,
-	   pkg->srcpicked ? "yes" : "no");
-      if (pkg->category)
+	   pkg->name, action, trust, installed,
+	   pkg->desired && pkg->desired->srcpicked ? "yes" : "no");
+      if (pkg->Categories ().categories ())
 	{
 	  /* List categories the package belongs to */
 	  int categories_len = 0;
 	  Category *cp;
-	  for (cp = pkg->category; cp; cp = cp->next)
+	  for (cp = pkg->Categories ().getfirstcategory (); cp; cp = cp->next)
 	    if (cp->name)
 	      categories_len += strlen (cp->name) + 2;
 
 	  if (categories_len > 0)
 	    {
 	      char *categories = (char *) malloc (categories_len);
-	      strcpy (categories, pkg->category->name);
-	      for (cp = pkg->category->next; cp; cp = cp->next)
+	      strcpy (categories,
+		      pkg->Categories ().getfirstcategory ()->name);
+	      for (cp = pkg->Categories ().getfirstcategory ()->next; cp;
+		   cp = cp->next)
 		if (cp->name)
 		  {
 		    strcat (categories, ", ");
@@ -1649,20 +1544,20 @@ do_choose (HINSTANCE h)
 	      free (categories);
 	    }
 	}
-      if (pkg->required)
+      if (pkg->desired && pkg->desired->required)
 	{
 	  /* List other packages this package depends on */
 	  int requires_len = 0;
 	  Dependency *dp;
-	  for (dp = pkg->required; dp; dp = dp->next)
+	  for (dp = pkg->desired->required; dp; dp = dp->next)
 	    if (dp->package)
 	      requires_len += strlen (dp->package) + 2;
 
 	  if (requires_len > 0)
 	    {
 	      char *requires = (char *) malloc (requires_len);
-	      strcpy (requires, pkg->required->package);
-	      for (dp = pkg->required->next; dp; dp = dp->next)
+	      strcpy (requires, pkg->desired->required->package);
+	      for (dp = pkg->desired->required->next; dp; dp = dp->next)
 		if (dp->package)
 		  {
 		    strcat (requires, ", ");
@@ -1672,6 +1567,9 @@ do_choose (HINSTANCE h)
 	      free (requires);
 	    }
 	}
+#if 0
+
+      /* FIXME: Reinstate this code, but spit out all mirror sites */
 
       for (int t = 1; t < NTRUST; t++)
 	{
@@ -1688,5 +1586,6 @@ do_choose (HINSTANCE h)
 		 pkg->info[t].source_size,
 		 (pkg->info[t].source_exists) ? "yes" : "no");
 	}
+#endif
     }
 }

@@ -270,14 +270,21 @@ io_stream_cygfile::set_mtime (int mtime)
     {
       SetFileTime (h, 0, 0, &ftime);
       CloseHandle (h);
+#if 0
       fp = fopen (fname, lmode);
       if (!fp)
 	lasterr = errno;
+#endif
       return 0;
     }
+#if 0
+//  this results in truncated files.
+//  also, semantically, it's nonsense, you cannot write to a file after setting the 
+//  mtime without changing the mtime
   fp = fopen (fname, lmode);
   if (!fp)
     lasterr = errno;
+#endif
   return 1;
 }
 

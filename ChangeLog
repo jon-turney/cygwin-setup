@@ -1,3 +1,107 @@
+2001-11-29  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in (OBJS): Add package_source and rfc1738.
+	* README: Wishlist update.
+	* category_list.cc (register_category): Use references.
+	* category_list.h (CategoryList): Ditto.
+	* choose.cc (isinstalled): Remove.
+	(pkgtrustp): New macro.
+	(set_action): Use packagemeta.
+	(add_required): Ditto.
+	(choose_caption): Example package to choose caption, rather than state flags.
+	(check_existence): Remove.
+	(set_existence): Remove old code.
+	(fill_missing_category): Use packagemeta.
+	(keep_or_skip): Remove.
+	(default_trust): Use packagemeta and set trust values directly.
+	(pick_line::set_line): Use packagemeta.
+	(_view::insert_pkg): Ditto.
+	(_view::insert_category): Ditto.
+	(_view::click): Ditto.
+	(set_view_mode): Ditto. Also remove "exclude" code.
+	(create_listview): Use packagemeta.
+	(dialog_cmd): Ditto.
+	(getpkgbyname): Remove
+	(scan2): Use packagemeta. Temporarily comment out the holefinding code.
+	(read_installed_db): Remove.
+	(package_sort): Use packagemeta.
+	(do_choose): Use packagemeta. Don't sort the packages - the db does that.
+	* choose.h: Use packagemeta.
+	* cygpackage.cc (cygpackage::cygpackage): Initialise all variables.
+	(cygpackage::cygpackage): Ditto.
+	(cygpackage::set_canonical_version): Copy the passed string.
+	(cygpackage::~cygpackage): Move cleanup code to destroy().
+	(cygpackage::destroy): New function.
+	(cygpackage::getfirstfile): Use a separate buffer.
+	(cygpackage::getnextfile): Ditto.
+	(cygpackage::Canonical_version): New function.
+	(cygpackage::set_sdesc): Ditto.
+	(cygpackage::set_ldesc): Ditto.
+	* cygpackage.h (cygpackage::Canonical_version): New method.
+	(cygpackage::set_sdesc): New method.
+	(cygpackage::set_ldesc): New method.
+	(cygpackage::SDesc): New method.
+	(cygpackage::LDesc): New method.
+	(cygpackage::set_canonical_version): New method.
+	* desktop.cc: Include packagedb headers.
+	(make_password_group): Use packagemeta.
+	* download.cc: Include packagedb headers.
+	(check_for_cached): New method to find any cached file and fill out the database
+	info.
+	(download_one): Take a packagesource, support multiple mirrors.
+	(do_download): Use packagemeta.
+	* from cwd.cc: Include packagedb headers.
+	(found_file): Use packagemeta.
+	* ini.cc (do_ini): Beginning of multiple-mirror support.
+	* ini.h (CategoryPackage): Remove.
+	(Dependency): Remove.
+	(Package): Remove.
+	(new_package,getpkgbyname,getpackagecategorybyname,add_category): Remove.
+	* inilex.l: Support multiple mirrors.
+	* iniparse.y: Include packagedb headers.
+	(parser): Use packagemeta.
+	(new_package): Remove.
+	(add_correct_version): New function.
+	(new_requirement): Remove.
+	(add_category): Remove.
+	* install.cc (uninstall_one): Use packagemeta.
+	(install_one_source): New function.
+	(install_one): Use packagemeta.
+	(do_install): Use packagemeta.
+	* io_stream.cc (io_stream::move): Bugfix on move/copy case.
+	* io_stream_cygfile.cc (io-stream_cygfile::set_mtime): Do not reopen the file
+	after setting the mtime, it makes no sense, and results in 0 length files.
+	* io_stream_file.cc (io-stream_file::set_mtime): Ditto.
+	* list.h: New file, template class for a form of list.
+	* package_db.cc (packagedb::registerpackage): New function.
+	* package_db.h (packagedb::npackages ()): New method.
+	* package_meta.cc (packagemeta::add_version): Use list template.
+	(packagemeta::set_installed): Ditto.
+	(packagemeta::add_category): New method.
+	* package_meta.h: Include necessary headers to parse the class.
+	(CategoryPackage): New class.
+	(packagemeta): Initialise all members.
+	(packagemeta::SDesc): New method.
+	(packagemeta::Categories): New method.
+	(packagemeta::add_category): Ditto.
+	(packagemeta::versions): Change to be a list instance.
+	* package_source.cc (packagesource::set_canonical): New method.
+	(packagesource::set_cached): New method.
+	* package_source.h: Include necessary headers to parse the class.
+	(site): New class.
+	(packagesource::packagesource): Initialize all members.
+	(packagesource): Make this class non-abstract.
+	* package_version.cc (packageversion::packageversion): New method.
+	* package_version.h (Dependency): New class.
+	(packageversion::Canonical_vesion): New method.
+	(packageversion::SDesc): New method.
+	(packageversion::LDesc): New method.
+	(packageversion::new_requirement): Ditto.
+	(packageversion::srcpicked, binpicked): What to install.
+	(packageversion::src, bin): Installation source data.
+	* rfc1738.cc: New file. Escapes special characters in URL's.
+	* rfc1738.h: Ditto.
+
 2001-11-26  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* nio-http.cc (NetIO_HTTP::NetIO_HTTP): Stop header parsing when

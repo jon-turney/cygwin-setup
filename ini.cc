@@ -64,14 +64,11 @@ do_ini (HINSTANCE h)
       return;
     }
 
-  package = NULL;
-  npackages = 0;
   setup_timestamp = 0;
   setup_version = 0;
 
-  ini_init (ini_file);
+  ini_init (ini_file, MIRROR_SITE);
 
-  setup_timestamp = 0;
   /*yydebug = 1; */
 
   if (yyparse () || error_count > 0)

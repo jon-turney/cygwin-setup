@@ -21,7 +21,7 @@
 extern "C"
 {
 #endif
-  void ini_init (char *string);
+  void ini_init (char *string, char *mirror);
 #define YYSTYPE char *
 
 #ifdef __cplusplus
@@ -103,61 +103,6 @@ typedef struct _Info
 }
 
 Info;				/* +1 for TRUST_UNKNOWN */
-
-class CategoryPackage
-{
-public:
-  CategoryPackage ():next (0), pkgname (0)
-  {
-  };
-  CategoryPackage *next;	/* The next package pointer in the list */
-  char *pkgname;		/* This should be Package *, but the packages can move */
-};
-
-typedef struct _Dependency
-{
-  struct _Dependency *next;	/* the next package in this dependency list */
-  char *package;		/* the name of the package that is depended on */
-}
-Dependency;			/* Dependencies can be used for
-				   recommended/required/related... */
-class Package
-{
-public:
-  Package ():name (0), sdesc (0), ldesc (0), category (0), required (0),
-    srcpicked (0), installed (0)
-  {
-  };
-  char *name;			/* package name, like "cygwin" */
-  char *sdesc;			/* short description (replaces "name" if provided) */
-  char *ldesc;			/* long description (multi-line) */
-  Category *category;		/* the categories the package belongs to */
-  Dependency *required;		/* the packages required for this package to work */
-  actions action;		/* A range of states applicable to this package */
-  trusts trust;			/* Selects among info[] below, a subset of action */
-  int srcpicked;		/* True if source is required */
-
-  Info *installed;		/* Info on installed package */
-  trusts installed_ix;		/* Index into info array for currently installed package */
-  excludes exclude;		/* true if this package should be excluded */
-
-  /* The reason for this weird layout is to allow for loops that scan either
-     the info array, based on trust value or the infoscan array based on a pointer,
-     looking for a particular version. */
-  Info info[1];			/* First element.  Intentionally allocated prior
-				   to infoscan */
-  Info infoscan[NTRUST - 1];	/* +1 for TRUST_UNKNOWN */
-  Info infoend[0];		/* end marker */
-};
-
-extern Package *package;
-extern int npackages;
-
-Package *new_package (char *name);
-Package *getpkgbyname (const char *pkgname);
-void new_requirement (Package * package, char *dependson);
-Category *getpackagecategorybyname (Package * pkg, const char *categoryname);
-void add_category (Package * package, Category * cat);
 
 #endif
 
