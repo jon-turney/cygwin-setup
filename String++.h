@@ -33,7 +33,7 @@ public:
   // We're notperformance bottlenecked.
   String (const char *); 
   String (int const);
-  String (string const &);
+  String (std::string const &);
   inline String & operator = (String const &);
   ~String();
   // Up to the user to delete[] these.
@@ -80,8 +80,8 @@ private:
   static String absorb (unsigned char *, size_t);
 };
 
-ostream &
-operator << (ostream &os, String const &theString);
+std::ostream &
+operator << (std::ostream &os, String const &theString);
 
 String::String() : theData (new _data) {}
 String::String(String const &aString) : theData (aString.theData) 

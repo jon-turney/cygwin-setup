@@ -1,5 +1,9 @@
 2002-11-04  Max Bowsher  <maxb@ukf.net>
 
+	* String++.h: Add 'std::' where needed.
+
+2002-11-04  Max Bowsher  <maxb@ukf.net>
+
 	* IniDBBuilderPackage.cc: Add 'using namespace std;'.
 	* IniParseFindVisitor.cc: Ditto.
 	* LogFile.cc: Ditto.
