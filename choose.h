@@ -24,7 +24,7 @@
 
 struct _header
 {
-  char *text;
+  const char *text;
   int slen;
   int width;
   int x;
@@ -54,7 +54,7 @@ class _view
     void set_view_mode(views _mode);
     struct _header *headers;
     _view (views mode, HDC dc);
-    char *mode_caption ();
+    const char *mode_caption ();
     void insert_pkg (Package *);
     void insert_category (Category *, int);
     void clear_view (void);

@@ -101,12 +101,12 @@ typedef struct _Info
 {
   char *version;	/* version part of filename */
   char *install;	/* file name to install */
-  int install_size;	/* in bytes */
+  unsigned int install_size;	/* in bytes */
   int install_exists;	/* install file exists on disk */
   int derived;		/* True if we "figured out" that this version should
 			   go here but it was not in setup.ini */
   char *source;		/* sources for installed binaries */
-  int source_size;	/* in bytes */
+  unsigned int source_size;	/* in bytes */
   int source_exists;	/* source file exists on disk */
 #ifdef __cplusplus
   _Info (const char *_install, const char *_version,
@@ -173,7 +173,7 @@ Package *getpkgbyname (const char *pkgname);
 void    new_requirement (Package *package, char *dependson);
 Category *getcategorybyname (const char *categoryname);
 Category *getpackagecategorybyname (Package *pkg, const char *categoryname); 
-Category *register_category (char *name);
+Category *register_category (const char *name);
 void    add_category (Package *package, Category *cat);
 
 #ifdef __cplusplus

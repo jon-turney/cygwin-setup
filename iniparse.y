@@ -169,7 +169,7 @@ new_requirement (Package *package, char *dependson)
 }
 
 Category *
-register_category (char *name)
+register_category (const char *name)
 {
   Category *tempcat;
   if (category == NULL)

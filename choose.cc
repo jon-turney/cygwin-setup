@@ -25,8 +25,10 @@
    install packages, or to install packages that aren't installed by
    default. */
 
-static char *cvsid =
+#if 0
+static const char *cvsid =
   "\n%%% $Id$\n";
+#endif
 
 #include "win32.h"
 #include <stdio.h>
@@ -196,7 +198,6 @@ add_required (Package * pkg)
 {
   Dependency *dp;
   Package *required;
-  int c;
   int changed = 0;
   dp = pkg->required;
   switch (pkg->action)
@@ -283,6 +284,8 @@ choose_caption (Package * pkg)
 	return "Source";
     case ACTION_SKIP:
       return "Skip";
+    default:
+      return "????";
     }
   return "???";
 }
@@ -292,7 +295,7 @@ paint (HWND hwnd)
 {
   HDC hdc;
   PAINTSTRUCT ps;
-  int x, y, i, j, ii;
+  int x, y, i, ii;
 
   hdc = BeginPaint (hwnd, &ps);
 
@@ -328,7 +331,7 @@ paint (HWND hwnd)
 
   if (chooser->nlines == 0)
     {
-      static char *msg = "Nothing to Install/Update";
+      static const char *msg = "Nothing to Install/Update";
       if (source == IDC_SOURCE_DOWNLOAD)
 	msg = "Nothing to Download";
       TextOut (hdc, HMARGIN, header_height, msg, strlen (msg));
@@ -340,8 +343,6 @@ paint (HWND hwnd)
 static void
 scroll_common (HWND hwnd, int which, int *var, int code)
 {
-  int v = *var;
-
   SCROLLINFO si;
   si.cbSize = sizeof (si);
   si.fMask = SIF_ALL;
@@ -376,7 +377,7 @@ scroll_common (HWND hwnd, int which, int *var, int code)
 
   if ((int) si.nPos < 0)
     si.nPos = 0;
-  if (si.nPos + si.nPage > si.nMax)
+  if (si.nPos + si.nPage > (unsigned int) si.nMax)
     si.nPos = si.nMax - si.nPage;
 
   si.fMask = SIF_POS;
@@ -446,7 +447,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
       /* if we are under the minimum display count ,
        * set the offset to 0
        */
-      if (si.nMax <= si.nPage)
+      if ((unsigned int) si.nMax <= si.nPage)
 	scroll_ulc_y = 0;
       si.nPos = scroll_ulc_y;
 
@@ -510,7 +511,7 @@ register_windows (HINSTANCE hinst)
 }
 
 static void
-note_width (struct _header *hdrs, HDC dc, char *string, int addend,
+note_width (struct _header *hdrs, HDC dc, const char *string, int addend,
 	    int column)
 {
   if (!string)
@@ -579,8 +580,6 @@ keep_or_skip (Package * pkg)
 static void
 default_trust (HWND h, trusts trust)
 {
-  int i, t, c;
-
   deftrust = trust;
   for (Package * pkg = package; pkg->name; pkg++)
     if (!pkg->exclude)
@@ -725,7 +724,7 @@ _view::set_view_mode (views _mode)
   set_headers ();
 }
 
-char *
+const char *
 _view::mode_caption ()
 {
   switch (view_mode)
@@ -1075,7 +1074,6 @@ _view::click (int row, int x)
 static void
 set_view_mode (HWND h, views mode)
 {
-  int i;
   chooser->set_view_mode (mode);
 
   chooser->clear_view ();
@@ -1132,7 +1130,6 @@ set_view_mode (HWND h, views mode)
 static void
 create_listview (HWND dlg, RECT * r)
 {
-  int i, t;
   lv = CreateWindowEx (WS_EX_CLIENTEDGE,
 		       "listview",
 		       "listviewwindow",
@@ -1161,7 +1158,7 @@ create_listview (HWND dlg, RECT * r)
   default_trust (lv, TRUST_CURR);
   set_view_mode (lv, VIEW_CATEGORY);
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-    log (LOG_BABBLE, "Failed to set View button caption %d", GetLastError ());
+    log (LOG_BABBLE, "Failed to set View button caption %ld", GetLastError ());
   for (Package * foo = package; foo->name; foo++)
     add_required (foo);
   static int ta[] = { IDC_CHOOSE_CURR, 0 };
@@ -1197,7 +1194,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       set_view_mode (lv, viewsplusplus (chooser->get_view_mode ()));
       if (!SetDlgItemText
 	  (h, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-	log (LOG_BABBLE, "Failed to set View button caption %d",
+	log (LOG_BABBLE, "Failed to set View button caption %ld",
 	     GetLastError ());
       break;
 
@@ -1220,6 +1217,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       NEXT (0);
       break;
     }
+  return 0;
 }
 
 static void
@@ -1242,7 +1240,6 @@ GetParentRect (HWND parent, HWND child, RECT * r)
 static BOOL CALLBACK
 dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  int i, j;
   HWND frame;
   RECT r;
   switch (message)
@@ -1523,7 +1520,6 @@ _Info::_Info (const char *_install, const char *_version, int _install_size,
 static void
 read_installed_db ()
 {
-  int i;
   if (!get_root_dir ())
     return;
 
@@ -1620,7 +1616,7 @@ do_choose (HINSTANCE h)
   log (LOG_BABBLE, "Chooser results...");
   for (Package * pkg = package; pkg->name; pkg++)
     {
-      static char *infos[] = { "nada", "prev", "curr", "test" };
+      static const char *infos[] = { "nada", "prev", "curr", "test" };
       const char *trust = ((pkg->trust == TRUST_PREV) ? "prev"
 			   : (pkg->trust == TRUST_CURR) ? "curr"
 			   : (pkg->trust == TRUST_TEST) ? "test" : "unknown");
@@ -1639,7 +1635,6 @@ do_choose (HINSTANCE h)
       if (pkg->category)
 	{
 	  /* List categories the package belongs to */
-	  char *categories = "";
 	  int categories_len = 0;
 	  Category *cp;
 	  for (cp = pkg->category; cp; cp = cp->next)
@@ -1648,7 +1643,7 @@ do_choose (HINSTANCE h)
 
 	  if (categories_len > 0)
 	    {
-	      categories = (char *) malloc (categories_len);
+	      char *categories = (char *) malloc (categories_len);
 	      strcpy (categories, pkg->category->name);
 	      for (cp = pkg->category->next; cp; cp = cp->next)
 		if (cp->name)
@@ -1663,7 +1658,6 @@ do_choose (HINSTANCE h)
       if (pkg->required)
 	{
 	  /* List other packages this package depends on */
-	  char *requires = "";
 	  int requires_len = 0;
 	  Dependency *dp;
 	  for (dp = pkg->required; dp; dp = dp->next)
@@ -1672,7 +1666,7 @@ do_choose (HINSTANCE h)
 
 	  if (requires_len > 0)
 	    {
-	      requires = (char *) malloc (requires_len);
+	      char *requires = (char *) malloc (requires_len);
 	      strcpy (requires, pkg->required->package);
 	      for (dp = pkg->required->next; dp; dp = dp->next)
 		if (dp->package)
