@@ -1,7 +1,6 @@
-2002-05-26 Ralf Habacker  <ralf.habacker@freenet.de>
+2002-06-05  Robert Collins  <rbtcollins@hotmail.com>
 
-	* archive_tar.cc (archive_tar::next_file_name()): fixed broken
-	GNU long name extension support.
+	* Branch for a new release.
     
 2002-05-27  Robert Collins  <rbtcollins@hotmail.com>
 
