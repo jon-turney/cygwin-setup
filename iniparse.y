@@ -52,7 +52,7 @@ void add_correct_version();
 %}
 
 %token STRING
-%token SETUP_TIMESTAMP SETUP_VERSION VERSION INSTALL SOURCE SDESC LDESC
+%token SETUP_TIMESTAMP SETUP_VERSION PACKAGEVERSION INSTALL SOURCE SDESC LDESC
 %token CATEGORY REQUIRES
 %token APATH PPATH INCLUDE_SETUP EXCLUDE_PACKAGE DOWNLOAD_URL
 %token T_PREV T_CURR T_TEST T_UNKNOWN
@@ -91,7 +91,7 @@ lines
  ;
 
 simple_line
- : VERSION STRING		{ cpv->set_canonical_version ($2); 
+ : PACKAGEVERSION STRING	{ cpv->set_canonical_version ($2); 
    				  add_correct_version ();}
  | SDESC STRING			{ cpv->set_sdesc ($2); }
  | LDESC STRING			{ cpv->set_ldesc ($2); }

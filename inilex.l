@@ -48,7 +48,7 @@ STR	[a-zA-Z0-9_./+-]+
 
 "setup-timestamp:"	return SETUP_TIMESTAMP;
 "setup-version:"	return SETUP_VERSION;
-"version:"		return VERSION;
+"version:"		return PACKAGEVERSION;
 "install:"		return INSTALL;
 "source:"		return SOURCE;
 "sdesc:"		return SDESC;

@@ -1,5 +1,18 @@
 2002-04-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	* aclocal.m4: New file, cached macros.
+	* bootstrap.sh: New file, calls required autotools in appropriate 
+	order.
+	* Makefile.am: New file, input Makefile for automake.
+	* Makefile,in: Now a generated file - regenerate.
+	* configure: Regenerate.
+	* configure.in: Add automake support.
+	* inilex.l: Change VERSION to PACKAGEVERSION to avoid a collision with
+	automake's VERSION define.
+	* iniparse.y: Ditto.
+
+2002-04-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* cdefs.h: New file, imported to allow getopt.c to build without
 	cygwin headers.
 	* getopt.h: New file, imported to allow building without cygwin headers.
