@@ -1,3 +1,9 @@
+2002-05-12  Robert Collins  <rbtcollins@hotmail.com>
+
+	* geturl.h: Declare getUrlToStream.
+	* geturl.cc (getUrlToStream):  New function.
+	(get_url_to_membuf): Refactor to use getUrlToStream.
+
 2002-05-11  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.am: Add a release target to automate some of the routine

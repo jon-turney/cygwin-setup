@@ -47,6 +47,8 @@ static const char *cvsid =
 
 #include "String++.h"  
 
+#include "Exception.h"
+
 extern ThreeBarProgressPage Progress;
 
 static int max_bytes = 0;
@@ -102,9 +104,8 @@ progress (int bytes)
       sprintf (buf, "%d %%  (%dk/%dk)  %03.1f kb/s\n",
 	       perc, bytes / 1000, max_bytes / 1000, kbps);
       if (total_download_bytes > 0)
-	{
-      Progress.SetBar2(total_download_bytes_sofar + bytes, total_download_bytes);
-	}
+     	  Progress.SetBar2(total_download_bytes_sofar + bytes,
+			   total_download_bytes);
     }
   else
     sprintf (buf, "%d  %2.1f kb/s\n", bytes, kbps);
@@ -112,24 +113,22 @@ progress (int bytes)
   Progress.SetText3(buf);
 }
 
-io_stream *
-get_url_to_membuf (String const &_url, HWND owner)
+void
+getUrlToStream (String const &_url, HWND owner, io_stream *output)
 {
-  log (LOG_BABBLE, String ("get_url_to_membuf ") + _url);
+  log (LOG_BABBLE, String ("getUrlToStream ") + _url);
   is_local_install = (source == IDC_SOURCE_CWD);
   init_dialog (_url, 0, owner);
   NetIO *n = NetIO::open (_url.cstr_oneuse());
   if (!n || !n->ok ())
     {
       delete n;
-      log (LOG_BABBLE, "get_url_to_membuf failed!");
-      return 0;
+      log (LOG_BABBLE, "getUrlToStream failed!");
+      throw new Exception ("__LINE__ __FILE__", "Error opening url",  APPERR_IO_ERROR);
     }
 
   if (n->file_size)
     max_bytes = n->file_size;
-
-  io_stream_memory *membuf = new io_stream_memory ();
 
   int total_bytes = 0;
   progress (0);
@@ -140,7 +139,7 @@ get_url_to_membuf (String const &_url, HWND owner)
       rlen = n->read (buf, 2048);
       if (rlen > 0)
 	{
-	  wlen = membuf->write (buf, rlen);
+	  wlen = output->write (buf, rlen);
 	  if (wlen != rlen)
 	    /* FIXME: Show an error message */
 	    break;
@@ -150,20 +149,37 @@ get_url_to_membuf (String const &_url, HWND owner)
       else
 	break;
     }
+  if (n)
+    delete (n);
+  /* reseeking is up to the recipient if desired */
+}
 
-  if (membuf->seek (0, IO_SEEK_SET))
+io_stream *
+get_url_to_membuf (String const &_url, HWND owner)
+{
+  io_stream_memory *membuf = new io_stream_memory ();
+  try 
     {
-      if (n)
-	delete n;
-      if (membuf)
-	delete membuf;
-      log (LOG_BABBLE, "get_url_to_membuf(): seek (0) failed for membuf!");
+      log (LOG_BABBLE, String ("get_url_to_membuf ") + _url);
+      getUrlToStream (_url, owner, membuf);
+      
+      if (membuf->seek (0, IO_SEEK_SET))
+    	{
+    	  if (membuf)
+      	      delete membuf;
+    	  log (LOG_BABBLE, "get_url_to_membuf(): seek (0) failed for membuf!");
+    	  return 0;
+	}
+      return membuf;
+    }
+  catch (Exception *e)
+    {
+      if (e->errNo() != APPERR_IO_ERROR)
+	throw e;
+      log (LOG_BABBLE, "get_url_to_membuf failed!");
+      delete membuf;
       return 0;
     }
-
-  if (n)
-    delete n;
-  return membuf;
 }
 
 // predicate: url has no '\0''s in it.
