@@ -1,4 +1,4 @@
-2000-09-06  Brian Keener  <bkeener@thesoftwaresource.com>
+2000-09-14  Brian Keener  <bkeener@thesoftwaresource.com>
 
 	* res.rc: increased the size of the site dialog (IDD_SITE) & the
 	corresponding list box to provide for more URL's to be listed.
