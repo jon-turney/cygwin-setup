@@ -328,7 +328,7 @@ NTSecurity::setDefaultSecurity ()
   setDefaultDACL();
   if (failed())
     return;
-
+#if 0
   /* Get the default group */
   struct {
     PSID psid;
@@ -423,6 +423,7 @@ NTSecurity::setDefaultSecurity ()
   if (nsid && !SetTokenInformation (token.theHANDLE(), TokenPrimaryGroup, &nsid, sizeof nsid))
     log (LOG_TIMESTAMP) << "SetTokenInformation() failed: " << 
 	  GetLastError () << endLog;
+#endif
 }
 
 // Other threads talk to this page, so we need to have it externable.
