@@ -22,28 +22,10 @@ class category;
 
 /* Required to parse this completely */
 #include <set>
-#include "list.h"
 #include "String++.h"
 #include "category.h"
 #include "PackageTrust.h"
 #include "package_version.h"
-
-/* 
-   For cleanliness this may need to be put in its own file later. */
-class CategoryPackage
-{
-public:
-  CategoryPackage (Category & cat):key (cat), pkg (0)
-  {
-    next = cat.packages;
-    cat.packages = this;
-  };
-  ~CategoryPackage ();
-  Category & key;
-  CategoryPackage *next;	/* The next package pointer in the list */
-  packagemeta *pkg;
-};
-
 
 /* NOTE: A packagemeta without 1 packageversion is invalid! */
 class packagemeta
@@ -117,7 +99,7 @@ public:
    * of a package disagree.... the first one read in will take precedence.
    */
   void add_category (Category &);
-  list < CategoryPackage, Category &, Categorycmp > Categories;
+  set <String, String::caseless> categories;
   set <packageversion> versions;
 
   /* which one is installed. */

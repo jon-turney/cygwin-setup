@@ -309,7 +309,7 @@ fill_missing_category ()
   for (size_t n = 1; n <= db.packages.number (); n++)
     {
       packagemeta & pkg = *db.packages[n];
-      if (!pkg.Categories.number ())
+      if (!pkg.categories.size ())
 	pkg.add_category (db.categories.registerbykey ("Misc"));
       pkg.add_category (db.categories.registerbykey ("All"));
     }
@@ -324,8 +324,8 @@ default_trust (HWND h, trusts trust)
     {
       packagemeta & pkg = *db.packages[n];
       if (pkg.installed
-	  || pkg.Categories.getbykey (db.categories.registerbykey ("Base"))
-	  || pkg.Categories.getbykey (db.categories.registerbykey ("Misc")))
+	  || pkg.categories.find ("Base") != pkg.categories.end ()
+	  || pkg.categories.find ("Misc") != pkg.categories.end ())
 	{
 	  pkg.desired = pkg.trustp (trust);
 	  if (pkg.desired)
@@ -342,7 +342,7 @@ default_trust (HWND h, trusts trust)
   size_t n = 1;
   while (n <= db.categories.number ())
     {
-      if (!db.categories[n]->packages)
+      if (!db.categories[n]->packages.size())
 	{
 	  Category *cat = db.categories.removebyindex (n);
 	  delete cat;
@@ -567,12 +567,14 @@ ChooserPage::OnNext ()
 	pkg.installed ? pkg.installed.Canonical_version () : "none";
 
       log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && pkg.desired.sourcePackage().picked() ? "yes" : "no") << endLog;
-      if (pkg.Categories.number ())
+      if (pkg.categories.size ())
 	{
 	  /* List categories the package belongs to */
-	  String all_categories = pkg.Categories[1]->key.name;
-	  for (size_t n = 2; n <= pkg.Categories.number (); n++)
-	    all_categories += String (", ") + pkg.Categories[n]->key.name;
+	  set <String, String::caseless>::const_iterator i 
+	    = pkg.categories.begin ();
+	  String all_categories = *i;
+	  while (i != pkg.categories.end ())
+	    all_categories += String (", ") + *(i++);
 
 	  log (LOG_BABBLE) << "     categories=" << all_categories << endLog;
 	}

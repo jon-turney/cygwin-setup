@@ -169,16 +169,19 @@ PickView::insert_pkg (packagemeta & pkg)
     }
   else
     {
-      for (size_t x = 1; x <= pkg.Categories.number (); x++)
+      for (set <String, String::caseless>::const_iterator x
+	   = pkg.categories.begin (); x != pkg.categories.end (); ++x)
         {
-          Category & cat = pkg.Categories[x]->key;
-          // Special case - yuck
-          if (cat == Category ("All"))
-            continue;
-          PickCategoryLine & catline = *new PickCategoryLine (*this, cat, 1);
-          PickLine & line = *new PickPackageLine(*this, pkg);
-          catline.insert (line);
-          contents.insert (catline);
+	  packagedb db;
+	  // Special case - yuck
+	  if (x->casecompare ("All") == 0)
+	    continue;
+
+	  PickCategoryLine & catline = 
+	    *new PickCategoryLine (*this, db.categories.registerbykey (*x), 1);
+	  PickLine & line = *new PickPackageLine(*this, pkg);
+	  catline.insert (line);
+	  contents.insert (catline);
         }
     }
 }
@@ -189,11 +192,10 @@ PickView::insert_category (Category * cat, bool collapsed)
   if (*cat == Category ("All"))
     return;
   PickCategoryLine & catline = *new PickCategoryLine (*this, *cat, 1, collapsed);
-  for (CategoryPackage * catpkg = cat->packages; catpkg;
-       catpkg = catpkg->next)
+  for (vector <packagemeta *>::iterator i = cat->packages.begin ();
+       i != cat->packages.end () ; ++i)
     {
-
-      PickLine & line = *new PickPackageLine (*this, *catpkg->pkg);
+      PickLine & line = *new PickPackageLine (*this, **i);
       catline.insert (line);
     }
   contents.insert (catline);

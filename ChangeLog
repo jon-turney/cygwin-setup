@@ -1,3 +1,26 @@
+2002-07-06  Robert Collins  <rbtcollins@hotmail.com>
+
+	* PickCategoryLine.h: Include required header list.h.
+	* PickPackageLine.cc (PickPackageLine::paint): Adjust to use STL
+	containers for listing of packages per category and vice verca.
+	* PickView.cc (PickView::insert_pkg): Ditto.
+	(PickView::insert_category): Ditto.
+	* String++.h (String::caseless): STL helper to allow trivial containers
+	of Strings with case insensitive comparisons.
+	* category.h: Adjust to use STL containers for listing of packages per
+	category and vice verca.
+	* choose.cc (fill_missing_category): Ditto.
+	(default_trust): Ditto.
+	(ChooserPage::OnNext): Ditto.
+	* package_meta.cc (CategoryPackage::~CategoryPackage): Remove.
+	(packagemeta::packagemeta): Adjust for new category list name.
+	(packagemeta::~packagemeta): Adjust to use STL containers for listing
+	of packages per category and vice verca.
+	(packagemeta::set_action): Ditto.
+	* package_meta.h (CategoryPackage): Remove.
+	(packagemeta): Adjust to use STL containers for listing of packages per
+	category and vice verca.
+
 2002-07-05  Robert Collins  <rbtcollins@hotmail.com>
 
 	* io_stream.cc: Use STL containers rather than custom ones.

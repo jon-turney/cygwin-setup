@@ -58,6 +58,10 @@ public:
   String operator + (char const *) const;
   bool operator == (String const &) const;
   bool operator == (char const *) const;
+  struct caseless { bool operator () (String const &s1, String const &s2) const
+	{
+	  return s1.casecompare (s2) < 0;
+	}};
     
 private:
   class _data {

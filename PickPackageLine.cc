@@ -134,17 +134,19 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
   DrawCheck (checked, hdc, theView.srctick_col, oldClip2, x, by);
 
   /* shows "first" category - do we want to show any? */
-  if (pkg.Categories.number () && show_cat)
+  if (pkg.categories.size () && show_cat)
     {
-      int index = 1;
-      if (!pkg.Categories[1]->key.name.casecompare( "All"))
-	index = 2;
+      String catName;
+      if (pkg.categories.find ("All") == pkg.categories.begin () &&
+	  pkg.categories.size () > 1)
+	catName = *(++pkg.categories.begin());
+      else catName = * pkg.categories.begin ();
       IntersectClipRect (hdc, x + theView.headers[theView.cat_col].x, r,
 			 x + theView.headers[theView.cat_col].x +
 			 theView.headers[theView.cat_col].x, rb);
       TextOut (hdc, x + theView.headers[theView.cat_col].x + HMARGIN / 2, r,
-	       pkg.Categories[index]->key.name.cstr_oneuse(),
-	       pkg.Categories[index]->key.name.size());
+	       catName.cstr_oneuse(),
+	       catName.size());
       SelectClipRgn (hdc, oldClip2);
     }
 

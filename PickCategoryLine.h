@@ -18,6 +18,7 @@
 #define   _PICKCATEGORYLINE_H_
 
 class PickView;
+#include "list.h"
 #include "PickLine.h"
 #include "package_meta.h"
 

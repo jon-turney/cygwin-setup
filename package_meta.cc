@@ -89,16 +89,6 @@ hash::add_subdirs (String const &tpath)
 
 /*****************/
 
-CategoryPackage::~CategoryPackage()
-{
-  CategoryPackage **temp = &key.packages;
-  while (*temp != this)
-    temp = &((*temp)->next);
-  *temp = next;
-}
-
-/*****************/
-
 const
   packagemeta::_actions
 packagemeta::Default_action (0);
@@ -132,7 +122,7 @@ packagemeta::_actions::caption ()
 
 packagemeta::packagemeta (packagemeta const &rhs) :
   name (rhs.name), key (rhs.name), installed_from (), 
-  Categories(rhs.Categories), versions (rhs.versions),
+  categories (rhs.categories), versions (rhs.versions),
   installed (rhs.installed), prev (rhs.prev), 
   prevtimestamp (rhs.prevtimestamp), curr (rhs.curr),
   currtimestamp (rhs.currtimestamp), exp (rhs.exp),
@@ -152,12 +142,8 @@ packagemeta::_actions & packagemeta::_actions::operator++ ()
 
 packagemeta::~packagemeta()
 {
-  while (Categories.number ())
-    {
-      CategoryPackage *catpkg = Categories.removebyindex (1);
-      delete catpkg;
-    }
-  versions.clear();
+  categories.clear ();
+  versions.clear ();
 }
 
 void
@@ -236,8 +222,8 @@ void
 packagemeta::add_category (Category & cat)
 {
   /* add a new record for the package list */
-  CategoryPackage & catpack = Categories.registerbykey (cat);
-  catpack.pkg = this;
+  cat.packages.push_back (this);
+  categories.insert (cat.key);
 }
 
 static bool
@@ -493,7 +479,6 @@ packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
     return 0;
 
   vector <vector <PackageSpecification *> *>::iterator dp = desired.depends ()->begin();
-  // packagedb db;
   /* cheap test for too much recursion */
   if (depth > 5)
     return 0;
@@ -548,14 +533,11 @@ packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
 void
 packagemeta::set_action (_actions action, packageversion const &default_version)
 {
-  packagedb db;
   if (action == Default_action)
     {
-      // XXX fix the list use to allow const ref usage.
-      Category tempCategory("Misc");
       if (installed
-	  || Categories.getbykey (db.categories.registerbykey ("Base"))
-	  || Categories.getbykey (tempCategory))
+	  || categories.find ("Base") != categories.end ()
+	  || categories.find ("Misc") != categories.end ())
 	{
 	  desired = default_version;
 	  if (desired)
