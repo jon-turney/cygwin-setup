@@ -390,12 +390,14 @@ static LRESULT CALLBACK
 list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos)
 {
   scroll_common (hwnd, SB_VERT, &scroll_ulc_y, code);
+  return 0;
 }
 
 static LRESULT CALLBACK
 list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos)
 {
   scroll_common (hwnd, SB_HORZ, &scroll_ulc_x, code);
+  return 0;
 }
 
 static LRESULT CALLBACK
@@ -445,6 +447,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
       rect.bottom = rect.top + row_height;
       InvalidateRect (hwnd, &rect, TRUE);
     }
+  return 0;
 }
 
 static LRESULT CALLBACK

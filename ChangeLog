@@ -1,5 +1,11 @@
 2001-11-01  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.cc(list_vscroll): Return 0 as required by win32.
+	(list_hscroll): Ditto.
+	(list_click): Ditto.
+
+2001-11-01  Robert Collins  <rbtcollins@hotmail.com>
+
 	* argv.cc: Remove.
 	* argv.h: Remove.
 	* main.cc(WinMain): Use __argv to retrieve command line parameters.
