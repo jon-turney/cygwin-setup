@@ -2,84 +2,101 @@ This directory contains the source for the setup program for the cygwin
 net releases.
 
 TODO:
- * Mirrors list orer is snafued.
  * Don't downgrade if the curr version is <= installed?
- * support rpm/deb files for reading the package from. (To allow the maintainers the use of rpm/deb tools to create packages.)
- * make a librar(y|ies) for setup and cygcheck to use containing 
+ * Support rpm/deb files for reading the package from. (To allow the
+   maintainers the use of rpm/deb tools to create packages.)
+ * Make a librar(y|ies) for setup and cygcheck to use containing 
    1) Something to translate POSIX -> native.  Currently called "cygpath"
       in setup, although this is probably a bad choice of name.
    2) Something to return the list of installed packages.
    3) Something to return the cygwin mount table.  Currently, I have implemented
       a lightweight setmntent and getmntent using the code in 
-   4) Something to parse a tar file name into package/version or altenatively,
+   4) Something to parse a tar file name into package/version or alternatively,
       return that information from 2)
    5) Something to return a list of files associated with a package.
- * When installing and enough packages default to visible, the RH scrollbar is 
-   sometimes hidden.
  * Mark versions as prev/curr/test in the GUI when clicking through them.
- * Remove *empty* directories on uninstalls
- * Correctly overwrite -r--r--r-- files.
+ * Remove *empty* directories on uninstalls. (done?)
+ * Correctly overwrite -r--r--r-- files. (done?)
  * Make setup.exe available through Add/Remove
- * Going back, changing the local cache dir, and going forward again does not correctly reparse inis in the new dir.
-	Reproduction: Choose an incorrect cache dir, go back, correct it.  Chooser shows all packages in Misc.
- * BSOD switching to install mode after downloading lots of software. Was anyone ever able to come up with a reproduction method for this? 
- * Sometimes packages set to 'Keep' appear in the 'Partial' view. I(Max) have seen this myself from time to time, but can't duplicate it on demand. Can anyone?
- * Chooser scrollbar sometimes lost with odd font sizes. Seperate message sent asking for reproduction method. 
- * Setup not properly realizing that versions are unavailable, leading to "Cannot open (null) for reading".
- * "compress_bz::error called" appears in the log every time a package is installed, even if everything works. Reproducability: 100%.
- * Cancelling during MD5 check just stops the GUI updating until the check completes, and then continues with setup as if Cancel had not been clicked. 
+ * Going back, changing the local cache dir, and going forward again does not
+   correctly reparse inis in the new dir.
+   Reproduction: Choose an incorrect cache dir, go back, correct it.
+   Chooser shows all packages in Misc.
+ * Chooser scrollbar sometimes lost with odd font sizes.
+ * "compress_bz::error called" appears in the log every time a package is
+   installed, even if everything works.
+ * Cancelling during MD5 check just stops the GUI updating until the check
+   completes, and then continues with setup as if Cancel had not been clicked. 
  * Toggling from All Default to All Install takes *way* too long.
  	   
 WISHLIST:
- * rsync:// support
- * Some way to download *all* the source
- * When clicking on a category that is showing a partial list (auto added items due to dependencies) show the full list rather than minising.
- * incremental/recoverable download capability.
- * build-depends
+ * rsync:// support.
+ * Some way to download *all* the source.
+ * When clicking on a category that is showing a partial list (auto added items
+   due to dependencies) show the full list rather than minimizing.
+ * Incremental/recoverable download capability.
+ * Build-depends.
  * FTP control connections should be closed when we are awaiting user input.
- * Show a sdesc for each category
- * Add friendly error reporting to simpsock.cc
- * scan newly installed files for README files, show list to user, let them read them if they want.
+ * Show a sdesc for each category.
+ * Add friendly error reporting to simpsock.cc.
+ * Scan newly installed files for README files, show list to user, let them
+   read them if they want.
  * Mouse wheel support broken/missing for *some* users.
- * When in category view, and changing from prev->normal->exp the categories get collapsed This is non-intuitive.
- * mirrors.lst to be copied to setup.ini and cached locally. Then the master mirrors list is reserved for bootstrapping.
- * clicking on a package that is in multiple categories should update the view of the package in both locations on screen. - Done?
- * remember the view mode - ie if you leave setup in partial, it returns to partial automatically.
- * new view - "action / category / package"
- * Downloading from the internet should be _able_ to list based on what is present in the cache, as opposed to what is installed. (To help building a complete install set for a different machine).
- * new view - show installed packages only. Probably not categorised.
- * new view - show non installed packages only.
-
- * Have an option to display any downloaded READMEs (or at least mention that they exist)
- * Don't ask about the start menu or desktop options if they already exist
+ * When in category view, and changing from prev->normal->exp the categories
+   get collapsed. This is non-intuitive.
+ * mirrors.lst to be copied to setup.ini and cached locally. Then the master
+   mirrors list is reserved for bootstrapping.
+ * Clicking on a package that is in multiple categories should update the view
+   of the package in both locations on screen. - Done?
+ * Remember the view mode - ie if you leave setup in partial, it returns to
+   partial automatically.
+ * Downloading from the internet should be _able_ to list based on what is
+   present in the cache, as opposed to what is installed. (To help building a
+   complete install set for a different machine).
+ * New view - "action / category / package"
+ * New view - show installed packages only. Probably not categorised.
+ * New view - show non installed packages only.
+ * Don't ask about the start menu or desktop options if they already exist.
  * Save the manual proxy settings so they don't need to be retyped.
- * detect files in mulitple packages
- * save all options
- * run a different script after finishing setup.
- * Show bin and src download size
+ * Detect files in multiple packages.
+ * Save all options.
+ * Run a different script after finishing setup.
+ * Show bin and src download size.
  * Log postinstall scripts to a file.
  * Confirm cancellation of setup if in the middle of doing something.
-   
-recently completed
+ * Improve mirror selection UI.
 
- * view button is not clear at first view. (the dotted highlight).
- * continue downloading past errors, present log of failures at end (partial)
- * multiple mirror support, with setup.ini from each merged automagically.
- * installed packages aren't automatically upgraded.
- * Dependencies should not trigger alterations to user actions for installed packages that have any action other than uninstall.
- * Wide descriptions can get truncated - ie SSMTP
+Unconfirmed Bugs
+
+ * When installing and enough packages default to visible, the RH scrollbar is 
+   sometimes hidden.
+ * BSOD switching to install mode after downloading lots of software.
+   
+Recently Completed
+
+ * View button is not clear at first view. (the dotted highlight).
+ * Continue downloading past errors, present log of failures at end. (partial)
+ * Multiple mirror support, with setup.ini from each merged automagically.
+ * Installed packages aren't automatically upgraded.
+ * Dependencies should not trigger alterations to user actions for installed
+   packages that have any action other than uninstall.
+ * Wide descriptions can get truncated - i.e. SSMTP.
  * SKIP and KEEP sometimes appearing for the same package.
- * Set the screen size for 640x480 users
- * View mdoe caption on the right hand of the screen
- * Downloading from the internet should allow redownloading already present files. (This
-   happens via the reinstall/redo already - perhaps this is "done".)
+ * Set the screen size for 640x480 users.
+ * View mdoe caption on the right hand of the screen.
+ * Downloading from the internet should allow redownloading already present
+   files. (This happens via the reinstall/redo already - perhaps this is done.)
  * Make skip only ever appear for non-installed packages.
- *   skip sould be followed by the <prec/curr/exp> from the radio buttons, not by prev.
+ * Skip sould be followed by the <prev/curr/exp> from the radio buttons,
+   not by prev.
  * Src tickbox /source only can be confusing.
- *   ini.cc: add field in setup.ini to specify whether package is installed by default, or not. (base category does this)
- * Remove "/" from symlinks (etags.exe->/ctags.exe is an example
+ * ini.cc: add field in setup.ini to specify whether package is installed by
+   default, or not. (Base category does this)
+ * Remove "/" from symlinks (etags.exe->/ctags.exe) is an example.
  * Src tickbox /source only can be confusing.
  * Handle UNC paths for the localdir correctly.
  * Chooser dialog needs work.
  * A command line option to prevent overwrite-on-reboot functionality.
  * Set ntsec permissions correctly, and for new installs enable ntsec.
+ * Spurious "Cannot open (null) for reading" errors.
+ * Sometimes packages set to 'Keep' appear in the 'Partial' view.
