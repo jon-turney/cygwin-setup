@@ -1,3 +1,13 @@
+Sat Apr 22 15:13:42 2000  Christopher Faylor <cgf@cygnus.com>
+
+	Throughout, use global session handle rather than reinitializing for
+	each connect.  Don't pass session as an argument to setup.c functions.
+	* setup.c (geturl): Only issue "Connecting to.." message when using
+	http or first time for ftp since subsequent connections will be fast.
+	(processdirlisting): Allocate space for "N" when user has specified
+	"N"ever option so that it can be subsequently freed.
+	(main): Abort if we can't get the list of mirrors.
+
 Thu Apr 20 16:41:42 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (main): Umount /bin and /lib.

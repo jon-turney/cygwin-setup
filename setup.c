@@ -48,13 +48,14 @@
 #define NFILE_SLOP 20
 #endif
 
-char *wd;
-HANDLE devnull;
+char *wd = NULL;
 
-int downloaddir (HINTERNET session, const char *url);
+int downloaddir (const char *url);
 
 static SA files = {NULL, 0, 0};
 static FILE *logfp = NULL;
+static HANDLE devnull = NULL;
+static HINTERNET session = NULL;
 
 void
 warning (const char *fmt, ...)
@@ -421,34 +422,55 @@ optionprompt (const char *text, SA * options)
 }
 
 int
-geturl (HINTERNET session, const char *url, const char *file, int verbose)
+geturl (const char *url, const char *file, int verbose)
 {
   DWORD type, size;
   int authenticated = 0;
   int retval = 0;
-  HINTERNET connect;
+  static HINTERNET connect;
   int tries = 20;
+  int is_ftp = strnicmp (url, "ftp", 3) == 0;
+  static int saw_first_ftp = 0;
+  char connect_buffer[sizeof ("Connecting to http site...   ")];
 
-  if (verbose)
+  if (saw_first_ftp)
+    verbose = 0;
+  else if (verbose)
     {
-      printf ("Connecting to ftp site...");
+      char *p;
+      int n;
+      
+      p = strchr (url, ':');
+      if (!p)
+	n = 0;
+      else
+	n = p - url;
+      sprintf (connect_buffer, "Connecting to %.*s%ssite...", n, url, n ? " " : "");
+      fputs (connect_buffer, stdout);
       fflush (stdout);
+      if (is_ftp)
+	saw_first_ftp = 1;
     }
-  for (tries = 1; tries <= 20; tries++)
+
+  for (tries = 1; tries <= 40; tries++)
     {
-      connect =
-	InternetOpenUrl (session, url, NULL, 0,
-			 INTERNET_FLAG_DONT_CACHE |
-			 INTERNET_FLAG_KEEP_CONNECTION |
-			 INTERNET_FLAG_RELOAD, 0);
+      DWORD flags = INTERNET_FLAG_DONT_CACHE |
+		    INTERNET_FLAG_KEEP_CONNECTION |
+		    INTERNET_FLAG_RELOAD;
+
+      if (is_ftp)
+	flags |=    INTERNET_FLAG_EXISTING_CONNECT |
+		    INTERNET_FLAG_PASSIVE;
+
+      connect = InternetOpenUrl (session, url, NULL, 0, flags, 0);
       if (connect)
 	break;
       if (!verbose || tries == 1)
 	/* nothing */;
       else if (tries > 2)
-        printf ("\rConnecting to ftp site...(try %d)  \b\b", tries);
+	printf ("\r%s(try %d)  \b\b", connect_buffer, tries);
       else
-        printf ("\rConnecting to ftp site...(try %d)", tries);
+	printf ("\r%s(try %d)", connect_buffer, tries);
     }
 
   if (!connect)
@@ -461,7 +483,7 @@ geturl (HINTERNET session, const char *url, const char *file, int verbose)
       if (verbose)
 	{
 	  if (tries > 1)
-	    printf ("\rConnecting to ftp site...        \b\b\b\b\b\b\b\b");
+	    printf ("\r%s        \b\b\b\b\b\b\b\b", connect_buffer);
 	  printf ("Done.\n"); fflush (stdout);
 	}
       while (!authenticated)
@@ -586,7 +608,12 @@ geturl (HINTERNET session, const char *url, const char *file, int verbose)
 		}
 	      xfree (buffer);
 	    }
-	  InternetCloseHandle (connect);
+
+	  if (1 || !is_ftp)
+	    {
+	      InternetCloseHandle (connect);
+	      connect = NULL;
+	    }
 	}
     }
 
@@ -624,7 +651,7 @@ findhref (char *buffer)
 }
 
 int
-processdirlisting (HINTERNET session, const char *urlbase, const char *file)
+processdirlisting (const char *urlbase, const char *file)
 {
   int retval;
   char buffer[256];
@@ -651,7 +678,7 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 	  else if (ref[strlen (ref) - 1] == '/')
 	    {
 	      if (strcmp (url + strlen (url) - 2, "./") != 0)
-		downloaddir (session, url);
+		downloaddir (url);
 	    }
 	  else if (strstr (url, ".tar.gz") && !strstr (url, "-src"))
 	    {
@@ -665,7 +692,7 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 		  char *answer;
 
 		  if (download_when == NEVER)
-		    answer = "N";
+		    answer = xstrdup ("N");
 		  else
 		    {
 		      sprintf (text, "Replace %s from the net (ynAN)", filename);
@@ -699,7 +726,7 @@ processdirlisting (HINTERNET session, const char *urlbase, const char *file)
 		{
 		  warning ("Downloading: %s...", filename);
 		  fflush (stdout);
-		  if (geturl (session, url, filename, 0))
+		  if (geturl (url, filename, 0))
 		    {
 		      warning ("Done.\n");
 		    }
@@ -727,14 +754,14 @@ tmpfilename ()
 }
 
 int
-downloaddir (HINTERNET session, const char *url)
+downloaddir (const char *url)
 {
   int retval = 0;
   char *file = tmpfilename ();
 
-  if (geturl (session, url, file, 1))
+  if (geturl (url, file, 1))
   {
-    retval = processdirlisting (session, url, file);
+    retval = processdirlisting (url, file);
     unlink (file);
   }
   xfree (file);
@@ -753,25 +780,15 @@ int
 downloadfrom (const char *url)
 {
   int retval = 0;
+  char *file = tmpfilename ();
 
-  HINTERNET session = opensession ();
-
-  if (!session)
-    winerror ();
-  else
+  if (geturl (url, file, 1))
     {
-      char *file = tmpfilename ();
-
-      if (geturl (session, url, file, 1))
-      {
-        retval = processdirlisting (session, url, file);
-        unlink (file);
-      }
-
-      xfree (file);
-
-      InternetCloseHandle (session);
+      retval = processdirlisting (url, file);
+      unlink (file);
     }
+
+  xfree (file);
 
   return retval;
 }
@@ -942,14 +959,19 @@ char *
 getdownloadsource ()
 {
   char *retval = NULL;
-  HINTERNET session = opensession ();
   char *filename = tmpfilename ();
 
+  /* Initialize session one time and one time only */
+  session = opensession ();
+
   if (!session)
-    winerror ();
-  else if (!geturl
-	   (session, "http://sourceware.cygnus.com/cygwin/mirrors.html",
-	    filename, 1))
+    {
+      winerror ();
+      exit (1);
+    }
+
+  if (!geturl ("http://sourceware.cygnus.com/cygwin/mirrors.html",
+	       filename, 1))
     fputs ("Unable to retrieve the list of cygwin mirrors.\n", stderr);
   else
     {
@@ -1209,11 +1231,15 @@ those as the basis for your installation.\n\n"
 	{
 	  char *dir = getdownloadsource ();
 
-	  if (dir)
+	  if (!dir)
 	    {
-	      downloadfrom (dir);
-	      xfree (dir);
+	      fprintf (stderr, "Couldn't connect to download site.\n");
+	      exit (1);
 	    }
+
+	  downloadfrom (dir);
+	  InternetCloseHandle (session);
+	  xfree (dir);
 	}
       xfree (update);
 
