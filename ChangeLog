@@ -1,3 +1,10 @@
+2003-10-27  Ralf Habacker  <ralf.habacker@freenet.de>
+
+	* main.cc (HelpOption): New instance.
+	(main): Added help command line option handling.
+	* localdir.cc (LocalDirOption): New instance.
+	(LocalDirSetting::load): allow setting localdir from command line.
+
 2003-10-16  Frank Richter  <frichter@gmx.li>
 
 	* ControlAdjuster.cc: New file, helper to move elements of a dialog 

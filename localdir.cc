@@ -41,9 +41,13 @@ static const char *cvsid =
 #include "localdir.h"
 #include "UserSettings.h"
 
+#include "getopt++/StringOption.h"
+
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
 extern LogFile * theLog;
+
+static StringOption LocalDirOption ("", 'l', "local-package-dir", "Local package directory", false);
 
 static LocalDirSetting localDir;
 
@@ -61,6 +65,8 @@ LocalDirSetting::load(){
       if (fg_ret)
         local_dir = String (localdir);
     }
+  if (((std::string)LocalDirOption).size())
+    local_dir = ((std::string)LocalDirOption);
   inited = 1;
 }
 

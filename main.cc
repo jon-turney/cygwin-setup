@@ -71,6 +71,7 @@ int next_dialog;
 HINSTANCE hinstance;
 
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
+static BoolOption HelpOption (false, 'h', "help", "print help");
 
 /* Maximum size of a SID on NT/W2K. */
 #define MAX_SID_LEN	40
@@ -465,6 +466,12 @@ main (int argc, char **argv)
   if (!GetOption::GetInstance().Process (argc,_argv))
     theLog->exit(1);
 // #endif
+
+  if (HelpOption)
+  {
+    GetOption::GetInstance().ParameterUsage(log(LOG_PLAIN)<<"\nCommand Line Options:\n");
+    theLog->exit(0);
+  }
 
   unattended_mode = UnattendedOption;
 
