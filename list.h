@@ -40,6 +40,8 @@ list ():pointerblock (0), _number (0), _space (0)
   T & registerbykey (U);
   /* add an element if one with the same key does not exist */
   T & registerbyobject (T &);
+  /* remove by index */
+  T * removebyindex (size_t);
   size_t number ()
   {
     return _number;
@@ -128,6 +130,20 @@ T & list < T, U, Ucmp >::registerbyobject (T & newobj)
       _number++;
     }
   return *tempT;
+}
+
+template < class T, class U, int Ucmp (U, U) >
+T * list < T, U, Ucmp >::removebyindex (size_t index)
+{
+  if (index && index <= _number)
+    {
+      T * rv = pointerblock[index - 1];
+      /* remove from index - 1 */
+      memmove (&pointerblock[index - 1], &pointerblock[index], (_number - index) * sizeof (T *));
+      _number --;
+      return rv;
+    }
+  return 0;
 }
 
 #endif /* _LIST_H_ */

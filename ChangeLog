@@ -1,3 +1,49 @@
+2001-12-04  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.in (OBJS): Add setup_version.o.
+	(version.c): Rename to setup_version.
+	* choose.cc (set_action): Prevent NULL pointer dereference.
+	(package_sort): Remove.
+	* fromcwd.cc (canonicalize_version): Moved to version.cc.
+	(check_ini): New function for use with find to see if there is a cached setup.ini.
+	(do_fromcwd): Check for a cached setup.ini from any mirror site.
+	* ini.cc (find_routine): New function, for finding cached setup.ini's.
+	(do_local_ini): New function, drives parsing of local ini's.
+	(do_remote_ini): New function, drives parsing and caching of remote ini's.
+	(do_ini): Move guts to do_remote_ini and do_local_ini.
+	* list.h (removebyindex): New method.
+	* other.cc (save_dialog): Use new site_list and all_site_list to add the
+	new site to the site picklist.
+	(dialog_cmd): Only save the dialog when exiting the dialog.
+	* res.rc (IDD_SITE): Make IDC_URL_LIST a multiple-selection control.
+	* site.cc (site_list_type): Move to site.h
+	(site_list): New global, sites chosen by the user.
+	(all_site_list): New global, all potential sites.
+	(site_list_type::init): New method, parses a mirror.lst URL string into a 
+	site_list_type object.
+	(site_list_type::site_list_type): New method.
+	(check_if_enable_next): Examine the control, not a local variable.
+	(load_dialog): Select all the user chosen sites by default.
+	(save_dialog): Adjust for multiple selection semantics. 
+	(save_site_url): Save all user chosen sites.
+	(dialog_cmd): Don't save the dialog when the listbox recieves a message - 
+	thats not needed.
+	Remove obsolete other_url reference.
+	(dialog_proc): Use all_site_list instead of site_list.
+	(site_sort): Remove.
+	(get_site_list): Remove malloc use - use list template instead.
+	Move site_list_type initialisation to site_list_type::init().
+	(get_initial_list_idx): Renamed to ...
+	(get_saved_sites): this. Also read in multiple sites to the site_list.
+	(do_site): Use all_site_list not site_list.
+	Log all chosen sites.
+	* site.h: New file, defines site related class, functions and variables.
+	* state.h: Add comment about use of state.h
+	(mirror_site): Remove.
+	(other_url): Remove.
+	(MIRROR_SITE): Remove.
+	* version.cc: New file, for version-handling and related functions.
+
 2001-12-02  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in: Add filemanip.o to setup.

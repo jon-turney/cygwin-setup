@@ -30,10 +30,10 @@ static const char *cvsid =
 #include "state.h"
 #include "msg.h"
 #include "log.h"
+#include "site.h"
 
-/* private shared function, from site.cc */
-void save_site_url (void);
-
+static char * other_url = 0;
+  
 static void
 check_if_enable_next (HWND h)
 {
@@ -51,6 +51,12 @@ static void
 save_dialog (HWND h)
 {
   other_url = eget (h, IDC_OTHER_URL, other_url);
+  site_list_type *newsite = new site_list_type (other_url);
+  site_list_type &listobj = all_site_list.registerbyobject (*newsite);
+  if (&listobj != newsite)
+    /* That site was already registered */
+    delete newsite;
+  site_list.registerbyobject (listobj);
 }
 
 static BOOL
@@ -60,7 +66,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     {
 
     case IDC_OTHER_URL:
-      save_dialog (h);
+      other_url = eget (h, IDC_OTHER_URL, other_url);
       check_if_enable_next (h);
       break;
 

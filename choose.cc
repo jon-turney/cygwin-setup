@@ -176,7 +176,8 @@ set_action (packagemeta * pkg)
   /* are we currently on the radio button selection and installed */
   if (pkg->desired == pkgtrustp (pkg, deftrust) && pkg->installed &&
       (!pkg->desired || pkg->desired->binpicked)
-      && (pkg->desired->src.Cached () || pkg->desired->src.sites.number ()))
+      && (pkg->desired && 
+	(pkg->desired->src.Cached () || pkg->desired->src.sites.number ())))
     {
       /* source only this file */
       pkg->desired = pkg->installed;
@@ -1356,14 +1357,6 @@ static void
 scan_downloaded_files ()
 {
   find (".", scan2);
-}
-
-int
-package_sort (const void *va, const void *vb)
-{
-  packagemeta *a = (packagemeta *) va;
-  packagemeta *b = (packagemeta *) vb;
-  return strcasecmp (a->name, b->name);
 }
 
 void

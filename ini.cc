@@ -39,6 +39,9 @@ static const char *cvsid =
 #include "log.h"
 #include "version.h"
 #include "mount.h"
+#include "site.h"
+#include "rfc1738.h"
+#include "find.h"
 
 #include "io_stream.h"
 
@@ -51,40 +54,104 @@ extern int yyparse ();
 static char *error_buf = 0;
 static int error_count = 0;
 
-void
-do_ini (HINSTANCE h)
-{
-  io_stream *ini_file = get_url_to_membuf (concat (MIRROR_SITE, "/setup.ini", 0));
-  dismiss_url_status_dialog ();
+static int local_ini;
 
+static void
+find_routine (char *path, unsigned int fsize)
+{
+  if (!strstr (path, "/setup.ini") )
+    return;
+  io_stream *ini_file = io_stream::open (concat ("file://", local_dir,"/", path, 0), "rb");
   if (!ini_file)
     {
-      note (IDS_SETUPINI_MISSING, MIRROR_SITE);
-      next_dialog = IDD_SITE;
-      return;
+    note (IDS_SETUPINI_MISSING, path);
+    return;
     }
 
+  /* FIXME: only use most recent copy */
   setup_timestamp = 0;
   setup_version = 0;
 
-  ini_init (ini_file, MIRROR_SITE);
+  ini_init (ini_file, concat ("file://", local_dir,"/", path, 0));
 
   /*yydebug = 1; */
 
   if (yyparse () || error_count > 0)
     MessageBox (0, error_buf, error_count == 1 ? "Parse Error" : "Parse Errors", 0);
   else
+    local_ini++;
+}
+
+static int
+do_local_ini ()
+{
+  local_ini = 0;
+  find (local_dir, find_routine);
+  return local_ini; 
+}
+
+static int
+do_remote_ini ()
+{
+  size_t ini_count = 0;
+  for (size_t n = 1; n <= site_list.number (); n++)
     {
-      /* save known-good setup.ini locally */
-      io_stream *inistream = io_stream::open ("file://setup.ini", "wb");
-      if (inistream && 
-	  ! ini_file->seek (0, IO_SEEK_SET))
-        {
-	  if (io_stream::copy (ini_file, inistream))
-	    io_stream::remove ("file://setup.ini");
-	  delete ini_file;
-	  delete inistream;
+      io_stream *ini_file =
+	get_url_to_membuf (concat (site_list[n]->url, "/setup.ini", 0));
+      dismiss_url_status_dialog ();
+
+      if (!ini_file)
+	{
+	  note (IDS_SETUPINI_MISSING, site_list[n]->url);
+	  continue;
 	}
+
+      /* FIXME: only use most recent copy */
+      setup_timestamp = 0;
+      setup_version = 0;
+
+      ini_init (ini_file, site_list[n]->url);
+
+      /*yydebug = 1; */
+
+      if (yyparse () || error_count > 0)
+	MessageBox (0, error_buf,
+		    error_count == 1 ? "Parse Error" : "Parse Errors", 0);
+      else
+	{
+	  /* save known-good setup.ini locally */
+	  char const *fp = concat ("file://", local_dir, "/",
+				   rfc1738_escape_part (site_list[n]->url),
+				   "/setup.ini", 0);
+	  io_stream::mkpath_p (PATH_TO_FILE, fp);
+	  io_stream *inistream = io_stream::open (fp, "wb");
+	  if (inistream && !ini_file->seek (0, IO_SEEK_SET))
+	    {
+	      if (io_stream::copy (ini_file, inistream))
+		io_stream::remove (fp);
+	      delete ini_file;
+	      delete inistream;
+	    }
+	  free ((void *) fp);
+	  ini_count++;
+	}
+    }
+  return ini_count;
+}
+
+void
+do_ini (HINSTANCE h)
+{
+  size_t ini_count = 0;
+  if (source == IDC_SOURCE_CWD)
+    ini_count = do_local_ini ();
+  else
+    ini_count = do_remote_ini ();
+
+  if (ini_count == 0)
+    {
+      next_dialog = source == IDC_SOURCE_CWD ? IDD_S_FROM_CWD : IDD_SITE;
+      return;
     }
 
   if (get_root_dir ())

@@ -16,7 +16,15 @@
 /* The purpose of this file is to contain all the global variables
    that define the "state" of the install, that is, all the
    information that the user has provided so far.  These are set by
-   the various dialogs and used by the various actions. */
+   the various dialogs and used by the various actions. 
+ 
+   Note that this is deprecated. Persistent settings should be accessed
+   via a class that stores them cross-installs, and non-persistent settings
+   directly via the appropriate class. One of the reasons for this is that
+   non-trivial types would require this file to include appropriate headers,
+   making all of setup.exe rebuild for potentially minor changes.
+ 
+ */
 
 extern int source;
 
@@ -38,9 +46,4 @@ extern char *net_proxy_passwd;
 extern char *net_ftp_user;
 extern char *net_ftp_passwd;
 
-extern char *mirror_site;
-extern char *other_url;
-
 extern int trust_level;
-
-#define MIRROR_SITE (mirror_site ? mirror_site : other_url)

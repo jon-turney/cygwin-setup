@@ -34,35 +34,75 @@ static const char *cvsid =
 #include "concat.h"
 #include "log.h"
 #include "io_stream.h"
+#include "site.h"
 
 #include "port.h"
 
 #define NO_IDX (-1)
 #define OTHER_IDX (-2)
 
-class site_list_type
-{
-public:
-  char *url;
-  char *displayed_url;
-  char *key;
-};
-
-static site_list_type *site_list = 0;
-static int list_idx = NO_IDX;
+list < site_list_type, const char *, strcasecmp > site_list;
+list < site_list_type, const char *, strcasecmp > all_site_list;
 static int mirror_idx = NO_IDX;
+
+void
+site_list_type::init (char const *newurl)
+{
+  url = _strdup (newurl);
+  displayed_url = _strdup (newurl);
+  char *dot = strchr (displayed_url, '.');
+  if (dot)
+    {
+      dot = strchr (dot, '/');
+      if (dot)
+	*dot = 0;
+    }
+  key = (char *) malloc (2 * strlen (newurl) + 3);
+
+  dot = displayed_url;
+  dot += strlen (dot);
+  char *dp = key;
+  while (dot != displayed_url)
+    {
+      if (*dot == '.' || *dot == '/')
+	{
+	  char *sp;
+	  if (dot[3] == 0)
+	    *dp++ = '~';	/* sort .com/.edu/.org together */
+	  for (sp = dot + 1; *sp && *sp != '.' && *sp != '/';)
+	    *dp++ = *sp++;
+	  *dp++ = ' ';
+	}
+      dot--;
+    }
+  *dp++ = ' ';
+  strcpy (dp, displayed_url);
+}
+
+site_list_type::site_list_type (char const *newurl)
+{
+  init (newurl);
+}
 
 static void
 check_if_enable_next (HWND h)
 {
-  EnableWindow (GetDlgItem (h, IDOK), (mirror_idx != NO_IDX) ? 1 : 0);
+  EnableWindow (GetDlgItem (h, IDOK),
+		SendMessage (GetDlgItem (h, IDC_URL_LIST), LB_GETSELCOUNT, 0,
+			     0) > 0 ? 1 : 0);
 }
 
 static void
 load_dialog (HWND h)
 {
   HWND listbox = GetDlgItem (h, IDC_URL_LIST);
-  SendMessage (listbox, LB_SETCURSEL, list_idx, 0);
+  for (size_t n = 1; n <= site_list.number (); n++)
+    {
+      int index = SendMessage (listbox, LB_FINDSTRING, (WPARAM) - 1,
+			       (LPARAM) site_list[n]->displayed_url);
+      if (index != LB_ERR)
+	SendMessage (listbox, LB_SELITEMRANGE, TRUE, (index << 16) | index);
+    }
   check_if_enable_next (h);
 }
 
@@ -70,38 +110,52 @@ static void
 save_dialog (HWND h)
 {
   HWND listbox = GetDlgItem (h, IDC_URL_LIST);
-  list_idx = SendMessage (listbox, LB_GETCURSEL, 0, 0);
-  if (list_idx == LB_ERR)
+  mirror_idx = 0;
+  while (site_list.number () > 0)
+    /* we don't delete the object because it's stored in the all_site_list. */
+    site_list.removebyindex (1);
+  int sel_count = SendMessage (listbox, LB_GETSELCOUNT, 0, 0);
+  if (sel_count > 0)
     {
-      mirror_site = 0;
-      mirror_idx = NO_IDX;
-      list_idx = NO_IDX;
+      int sel_buffer[sel_count];
+      int sel_count2 = SendMessage (listbox, LB_GETSELITEMS, sel_count,
+				    (LPARAM) sel_buffer);
+      if (sel_count != sel_count2)
+	{
+	  NEXT (IDD_SITE);
+	}
+      for (int n = 0; n < sel_count; n++)
+	{
+	  int mirror =
+	    SendMessage (listbox, LB_GETITEMDATA, sel_buffer[n], 0);
+	  if (mirror == OTHER_IDX)
+	    mirror_idx = OTHER_IDX;
+	  else
+	    site_list.registerbyobject (*all_site_list[mirror]);
+	}
     }
   else
     {
-      mirror_idx = SendMessage (listbox, LB_GETITEMDATA, list_idx, 0);
-      if (mirror_idx == OTHER_IDX)
-	mirror_site = 0;
-      else
-	mirror_site = site_list[mirror_idx].url;
+      NEXT (IDD_SITE);
     }
 }
 
 void
 save_site_url ()
 {
-  if (!MIRROR_SITE)
-    return;
-
   io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "wb");
-  if (f)
+  for (size_t n = 1; n <= site_list.number (); n++)
     {
-      char temp[_MAX_PATH];
-      /* TODO: potential buffer overflow. we need snprintf asap. */
-      sprintf (temp, "%s\n", MIRROR_SITE);
-      f->write (temp, strlen (temp));
-      delete f;
+      if (f)
+	{
+	  char temp[_MAX_PATH];
+	  /* TODO: potential buffer overflow. we need snprintf asap. */
+	  // FIXME: write all selected sites
+	  sprintf (temp, "%s\n", site_list[n]->url);
+	  f->write (temp, strlen (temp));
+	}
     }
+  delete f;
 }
 
 static BOOL
@@ -111,7 +165,6 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     {
 
     case IDC_URL_LIST:
-      save_dialog (h);
       check_if_enable_next (h);
       break;
 
@@ -121,7 +174,6 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 	NEXT (IDD_OTHER_URL);
       else
 	{
-	  other_url = 0;
 	  save_site_url ();
 	  NEXT (IDD_S_LOAD_INI);
 	}
@@ -142,17 +194,17 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 static BOOL CALLBACK
 dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  int i, j;
+  int j;
   HWND listbox;
   switch (message)
     {
     case WM_INITDIALOG:
       listbox = GetDlgItem (h, IDC_URL_LIST);
-      for (i = 0; site_list[i].url; i++)
+      for (size_t i = 1; i <= all_site_list.number (); i++)
 	{
 	  j =
 	    SendMessage (listbox, LB_ADDSTRING, 0,
-			 (LPARAM) site_list[i].displayed_url);
+			 (LPARAM) all_site_list[i]->displayed_url);
 	  SendMessage (listbox, LB_SETITEMDATA, j, i);
 	}
       j = SendMessage (listbox, LB_ADDSTRING, 0, (LPARAM) "Other URL");
@@ -163,14 +215,6 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
       return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }
   return FALSE;
-}
-
-static int
-site_sort (const void *va, const void *vb)
-{
-  site_list_type *a = (site_list_type *) va;
-  site_list_type *b = (site_list_type *) vb;
-  return strcmp (a->key, b->key);
 }
 
 static int
@@ -185,18 +229,6 @@ get_site_list (HINSTANCE h)
     return 1;
 
   char *bol, *eol, *nl;
-
-
-  /* null plus account for possibly missing NL plus account for "Other
-     URL" from previous run. */
-  int nmirrors = 3;
-
-  for (bol = mirrors; *bol; bol++)
-    if (*bol == '\n')
-      nmirrors++;
-
-  site_list = (site_list_type *) malloc (nmirrors * sizeof (site_list_type));
-  nmirrors = 0;
 
   nl = mirrors;
   while (*nl)
@@ -215,44 +247,15 @@ get_site_list (HINSTANCE h)
 	  char *semi = strchr (bol, ';');
 	  if (semi)
 	    *semi = 0;
-	  site_list[nmirrors].url = _strdup (bol);
-	  site_list[nmirrors].displayed_url = _strdup (bol);
-	  char *dot = strchr (site_list[nmirrors].displayed_url, '.');
-	  if (dot)
-	    {
-	      dot = strchr (dot, '/');
-	      if (dot)
-		*dot = 0;
-	    }
-	  site_list[nmirrors].key =
-	    (char *) malloc (2 * strlen (bol) + 3);
-
-	  dot = site_list[nmirrors].displayed_url;
-	  dot += strlen (dot);
-	  char *dp = site_list[nmirrors].key;
-	  while (dot != site_list[nmirrors].displayed_url)
-	    {
-	      if (*dot == '.' || *dot == '/')
-		{
-		  char *sp;
-		  if (dot[3] == 0)
-		    *dp++ = '~';	/* sort .com/.edu/.org together */
-		  for (sp = dot + 1; *sp && *sp != '.' && *sp != '/';)
-		    *dp++ = *sp++;
-		  *dp++ = ' ';
-		}
-	      dot--;
-	    }
-	  *dp++ = ' ';
-	  strcpy (dp, site_list[nmirrors].displayed_url);
-
-	  nmirrors++;
+	  site_list_type *newsite = new site_list_type (bol);
+	  site_list_type & listobj =
+	    all_site_list.registerbyobject (*newsite);
+	  if (&listobj != newsite)
+	    /* That site was already registered */
+	    delete newsite;
 	}
     }
-  site_list[nmirrors].url = 0;
-  delete[] mirrors;
-
-  qsort (site_list, nmirrors, sizeof (site_list_type), site_sort);
+  delete[]mirrors;
 
   return 0;
 }
@@ -267,43 +270,54 @@ get_site_list (HINSTANCE h)
 #define NOSAVE3_LEN (sizeof ("ftp://gcc.gnu.org/") - 1)
 
 static void
-get_initial_list_idx ()
+get_saved_sites ()
 {
   io_stream *f = io_stream::open ("cygfile:///etc/setup/last-mirror", "rt");
   if (!f)
     return;
 
   char site[1000];
-  char *fg_ret = f->gets (site, 1000);
-  delete f;
-  if (!fg_ret)
-    return;
-
-  char *eos = site + strlen (site) - 1;
-  while (eos >= site && (*eos == '\n' || *eos == '\r'))
-    *eos-- = '\0';
-
-  if (eos < site)
-    return;
-
-  int i;
-  for (i = 0; site_list[i].url; i++)
-    if (strcmp (site_list[i].url, site) == 0)
-      break;
-
-  if (!site_list[i].url)
+  char *fg_ret;
+  while ((fg_ret = f->gets (site, 1000)))
     {
-      /* Don't default to certain machines ever since they suffer
-         from bandwidth limitations. */
-      if (strnicmp (site, NOSAVE1, NOSAVE1_LEN) == 0
-	  || strnicmp (site, NOSAVE2, NOSAVE2_LEN) == 0
-	  || strnicmp (site, NOSAVE3, NOSAVE3_LEN) == 0)
-	return;
-      site_list[i].displayed_url = site_list[i].url = _strdup (site);
-      site_list[i + 1].url = 0;
-    }
 
-  mirror_idx = list_idx = i;
+      char *eos = site + strlen (site) - 1;
+      while (eos >= site && (*eos == '\n' || *eos == '\r'))
+	*eos-- = '\0';
+
+      if (eos < site)
+	continue;
+
+      bool found = false;
+      for (size_t i = 1; !found && i <= all_site_list.number (); i++)
+	if (!strcasecmp (site, all_site_list[i]->url))
+	  found = true;
+
+      if (!found)
+	{
+	  /* Don't default to certain machines ever since they suffer
+	     from bandwidth limitations. */
+	  if (strnicmp (site, NOSAVE1, NOSAVE1_LEN) == 0
+	      || strnicmp (site, NOSAVE2, NOSAVE2_LEN) == 0
+	      || strnicmp (site, NOSAVE3, NOSAVE3_LEN) == 0)
+	    return;
+	  site_list_type *newsite = new site_list_type (site);
+	  site_list_type & listobj =
+	    all_site_list.registerbyobject (*newsite);
+	  if (&listobj != newsite)
+	    /* That site was already registered - shouldn't happen, but safety first */
+	    delete newsite;
+	}
+      /* TODO: make a site_type method to create a serach key on-the-fly from a 
+         URL
+       */
+      found = false;
+      for (size_t i = 1; !found && i <= all_site_list.number (); i++)
+	if (!strcasecmp (site, all_site_list[i]->url))
+	  site_list.registerbyobject (*all_site_list[i]);
+    }
+  delete f;
+
 }
 
 void
@@ -311,19 +325,19 @@ do_site (HINSTANCE h)
 {
   int rv = 0;
 
-  if (site_list == 0)
+  if (all_site_list.number () == 0)
     if (get_site_list (h))
       {
 	NEXT (IDD_NET);
 	return;
       }
 
-  get_initial_list_idx ();
+  get_saved_sites ();
 
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_SITE), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
 
-  if (mirror_idx != OTHER_IDX)
-    log (0, "site: %s", mirror_site);
+  for (size_t n = 1; n <= site_list.number (); n++)
+    log (0, "site: %s", site_list[n]->url);
 }

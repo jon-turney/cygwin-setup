@@ -47,6 +47,8 @@ static const char *cvsid =
 #include "find.h"
 #include "filemanip.h"
 #include "version.h"
+#include "site.h"
+#include "rfc1738.h"
 
 #include "port.h"
 
@@ -62,34 +64,6 @@ is_test_version (char *v)
   return (i >= 6) ? 1 : 0;
 }
 #endif
-char *
-canonicalize_version (const char *v)
-{
-  static char nv[3][100];
-  static int idx = 0;
-  char *np;
-  const char *dp;
-  int i;
-
-  idx = (idx + 1) % 3;
-  np = nv[idx];
-
-  while (*v)
-    {
-      if (isdigit (*v))
-	{
-	  for (dp = v; *dp && isdigit (*dp); dp++);
-	  for (i = dp - v; i < 12; i++)
-	    *np++ = '0';
-	  while (v < dp)
-	    *np++ = *v++;
-	}
-      else
-	*np++ = *v++;
-    }
-  *np++ = 0;
-  return nv[idx];
-}
 
 static void
 found_file (char *path, unsigned int fsize)
@@ -134,12 +108,22 @@ found_file (char *path, unsigned int fsize)
 #endif
 }
 
+static bool found_ini;
+
+static void
+check_ini (char *path, unsigned int fsize)
+{
+  if (fsize && strstr (path, "setup.ini"))
+    found_ini = true;
+}
+
 void
 do_fromcwd (HINSTANCE h)
 {
-  if (_access ("./setup.ini", 0) == 0)
-    {
-      mirror_site = (char *) ".";
+  found_ini = true;
+  find (".", check_ini);
+  if (found_ini)
+  {
       next_dialog = IDD_S_LOAD_INI;
       return;
     }

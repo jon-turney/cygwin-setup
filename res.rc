@@ -88,9 +88,9 @@ CAPTION "Cygwin Setup"
 FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
-    LTEXT           "Select Download &Site",IDC_STATIC,55,5,135,11
+    LTEXT           "Select Download &Sites",IDC_STATIC,55,5,135,11
     LISTBOX         IDC_URL_LIST,55,20,160,155,LBS_NOINTEGRALHEIGHT | 
-                    WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    		    LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "&Next -->",IDOK,105,185,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,170,185,45,15
     PUSHBUTTON      "<-- &Back",IDC_BACK,60,185,45,15

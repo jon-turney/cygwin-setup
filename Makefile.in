@@ -131,6 +131,7 @@ OBJS = \
 	res.o \
 	rfc1738.o \
 	root.o \
+	setup_version.o \
 	simpsock.o \
 	site.o \
 	source.o \
@@ -186,12 +187,12 @@ $(ZLIB): zlib/Makefile
 $(BZ2LIB): $(bupdir)/bz2lib/Makefile
 	$(MAKE) -C $(@D) $(@F) CC="$(CC)" CFLAGS='$(MINGW_CFLAGS)'
 
-version.c : $(srcdir)/ChangeLog Makefile
+setup_version.c : $(srcdir)/ChangeLog Makefile
 	V=`grep '^\$$Revision.*' $(srcdir)/ChangeLog \
 	| sed -e 's/\$$Revision:* *//' \
 	  -e 's/ *$$.*//'` ;\
 	echo "const char *version = \"$$V\";" > version.tmp ;\
-	mv version.tmp version.c
+	mv version.tmp setup_version.c
 
 %.o: %.rc
 ifdef VERBOSE
