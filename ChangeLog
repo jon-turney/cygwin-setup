@@ -1,5 +1,9 @@
 2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
 
+	* Merge setup-200303-troubleshooting fixes in.
+
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
 	* main.cc (NTSecurity::setDefaultDACL): Reinstate commented code.
 	(NTSecurity::setDefaultSecurity): Ditto.
 
