@@ -318,8 +318,14 @@ packagemeta::set_action (packageversion * default_version)
 	}
       return;
     }
-  else if (desired == installed
-	   && (!installed || !(installed->binpicked || installed->srcpicked)))
+  else if (desired == installed &&
+	   (!installed || 
+	    // neither bin nor source are being installed
+	    (!(installed->binpicked || installed->srcpicked) &&
+	     // bin or source are available
+	     ((installed->bin.sites.number() || desired->bin.Cached()) ||
+ 	      (installed->src.sites.number() || desired->src.Cached()))))
+	   )
     /* Install the default trust version - this is a 'reinstall' for installed
        * packages */
     {
@@ -328,7 +334,10 @@ packagemeta::set_action (packageversion * default_version)
       desired = default_version;
       if (desired)
 	{
-	  desired->binpicked = 1;
+	  if (desired->bin.sites.number() || desired->bin.Cached())
+	    desired->binpicked = 1;
+	  else
+	    desired->srcpicked = 1;
 	  return;
 	}
     }
@@ -375,7 +384,10 @@ packagemeta::set_action (packageversion * default_version)
 	  if (n <= versions.number ())
 	    {
 	      desired = versions[n];
-	      desired->srcpicked = source;
+	      if (desired->src.sites.number() || desired->src.Cached())
+		desired->srcpicked = source;
+	      else
+		desired->srcpicked = 0;
 	      return;
 	    }
 	}
