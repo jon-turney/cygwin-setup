@@ -1,3 +1,8 @@
+2004-11-17  Max Bowsher  <maxb@ukf.net>
+
+	* mount.cc (create_mount): Fix operator precedence error introduced in
+	first 2004-11-11 commit - warned of by gcc 3.3.3 but not 3.4.1 !
+
 2004-11-13  Max Bowsher  <maxb@ukf.net>
 
 	Miscellaneous cleanup.
