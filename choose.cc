@@ -229,10 +229,12 @@ add_required (Package *pkg)
 	  /* it's already installed - leave it */
 	  required->action = (actions) required->installed_ix;
 	  break;
+	case ACTION_SKIP:
+	case ACTION_SRC_ONLY:
+	  if (required->installed)
+	    break;
 	case ACTION_ERROR:
 	case ACTION_UNKNOWN:
-	case ACTION_SRC_ONLY:
-	case ACTION_SKIP:
 	  /* the current install will fail */
 	  required->action = ACTION_UNKNOWN; /* this find prev, then curr, then test. */
 	  set_action(required, 0);	  /* we need a find_best that gets installed, */
