@@ -1,3 +1,8 @@
+Fri Sep 21 13:56:32 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* inilex.l (yylex): For comments, eat all characters up to, but not
+	including newline.
+
 Sun Aug 26 12:50:01 2001  John Marshall  <jmarshall@acm.org>
 
 	* fromcwd.cc (found_file): Use correct package name when adding an

@@ -75,12 +75,12 @@ STR	[a-zA-Z0-9_./+-]+
 {STR}			{ yylval = strdup (yytext);
 			  return STRING; }
 
-[ \t\r]+		/* do nothing */
+[ \t\r]+		/* do nothing */;
 
-"#".*\n			/* ignore comments */
+"#".*\n			{ return '\n'; }
 
-\n			{ return yytext[0]; }
-.			{ return yytext[0]; }
+\n			{ return *yytext; }
+.			{ return *yytext; }
 
 %%
 
