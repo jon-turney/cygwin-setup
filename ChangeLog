@@ -1,3 +1,8 @@
+2003-07-31  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* proppage.cc (PropertyPage::Create): Use more self-documenting
+	MAKEINTRESOURCE() instead of cast to LPCSTR.
+
 2003-07-31  Robert Collins  <rbtcollins@hotmail.com>
 
 	* README: Mark completed items complete.

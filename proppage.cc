@@ -57,7 +57,7 @@ PropertyPage::Create (DLGPROC dlgproc,
   psp.dwFlags = 0;
   psp.hInstance = GetInstance ();
   psp.pfnDlgProc = FirstDialogProcReflector;
-  psp.pszTemplate = (LPCSTR) TemplateID;
+  psp.pszTemplate = MAKEINTRESOURCE(TemplateID);
   psp.lParam = (LPARAM) this;
   psp.pfnCallback = NULL;
 
