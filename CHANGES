@@ -1,8 +1,8 @@
-Version 2.459
-
- - Repair the broken detection of wrongly-sized package files.
+Version 2.457.2.1
 
  - Fix setup keeping open handles to every tarball it installs during a run.
+   (Which appears to have been indirectly responsible for the weird hangs
+   people have been experiencing.)
 
  - Fix a miscellany of error-reporting deficiencies.
 
