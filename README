@@ -7,8 +7,6 @@ RELEASE BLOCKERS:
    Currently, none!
 
 TODO:
- * Audit rfc1738 code for bad memory/string handling. Example: Crash occurs if
-   rfc1738 encoded dirname is truncated in the middle of a %xx sequence.
  * Don't downgrade if the curr version is <= installed?
  * Support rpm/deb files for reading the package from. (To allow the
    maintainers the use of rpm/deb tools to create packages.)
@@ -115,3 +113,6 @@ Recently Completed
  * New view - show non installed packages only.
  * Remove *empty* directories on uninstalls.
  * Correctly overwrite -r--r--r-- files.
+ * Audit rfc1738 code for bad memory/string handling. Example: Crash occurs if
+   rfc1738 encoded dirname is truncated in the middle of a %xx sequence.
+   Crash not reproducible with test cases, and the code does not handle memory badly. 
