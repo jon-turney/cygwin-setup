@@ -21,8 +21,6 @@
 #include "package_meta.h"
 #include "PickView.h"
 
-#define CATEGORY_EXPANDED  0
-#define CATEGORY_COLLAPSED 1
 
 class ChooserPage:public PropertyPage
 {
@@ -53,7 +51,6 @@ public:
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();
   void setPrompt(char const *aPrompt);
-  void setViewMode (PickView::views mode);
   template<class C> bool ifChecked(int const &id, void (C::*fn)()) {
      if (IsButtonChecked (id)) {
        (this->*fn)();

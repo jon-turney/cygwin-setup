@@ -148,6 +148,81 @@ PickView::set_view_mode (PickView::views _mode)
   set_headers ();
 }
 
+void
+PickView::setViewMode (PickView::views mode)
+{
+  set_view_mode (mode);
+
+  clear_view ();
+  packagedb db;
+  if (get_view_mode () == PickView::views::Package)
+    {
+      for (vector <packagemeta *>::iterator i = db.packages.begin ();
+    i != db.packages.end (); ++i)
+   {
+    packagemeta & pkg = **i;
+   if ((!pkg.desired && pkg.installed)
+        || (pkg.desired && (pkg.desired.picked () 
+         || pkg.desired.sourcePackage().picked())))
+       insert_pkg (pkg);
+  }
+    }
+  else if (get_view_mode () == PickView::views::PackageKeeps)
+    {
+      for (vector <packagemeta *>::iterator i = db.packages.begin ();
+     i != db.packages.end (); ++i)
+   {
+    packagemeta & pkg = **i;
+   if (pkg.installed && pkg.desired && !pkg.desired.picked() 
+         && !pkg.desired.sourcePackage().picked())
+        insert_pkg (pkg);
+  }
+    }
+  else if (get_view_mode () == PickView::views::PackageSkips)
+    {
+      for (vector <packagemeta *>::iterator i = db.packages.begin ();
+     i != db.packages.end (); ++i)
+   {
+    packagemeta & pkg = **i;
+   if (!pkg.desired && !pkg.installed)
+      insert_pkg (pkg);
+  }
+    }
+  else if (get_view_mode () == PickView::views::PackageFull)
+    {
+      for (vector <packagemeta *>::iterator i = db.packages.begin ();
+      i != db.packages.end (); ++i)
+   insert_pkg (**i);
+    }
+  else if (get_view_mode () == PickView::views::Category)
+    {
+      /* start collapsed. TODO: make this a chooser flag */
+      for (packagedb::categoriesType::iterator n 
+     = packagedb::categories.begin();
+       n != packagedb::categories.end(); ++n)
+  insert_category (&*n, CATEGORY_COLLAPSED);
+    }
+
+  RECT r;
+  ::GetClientRect (GetHWND(), &r);
+  SCROLLINFO si;
+  memset (&si, 0, sizeof (si));
+  si.cbSize = sizeof (si);
+  si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
+  si.nMin = 0;
+  si.nMax = headers[last_col].x + headers[last_col].width;    // + HMARGIN;
+  si.nPage = r.right;
+  SetScrollInfo (GetHWND(), SB_HORZ, &si, TRUE);
+
+  si.nMax = contents.itemcount () * row_height;
+  si.nPage = r.bottom - header_height;
+  SetScrollInfo (GetHWND(), SB_VERT, &si, TRUE);
+
+  scroll_ulc_x = scroll_ulc_y = 0;
+
+  InvalidateRect (GetHWND(), &r, TRUE);
+}
+
 const char *
 PickView::mode_caption ()
 {

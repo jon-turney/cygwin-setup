@@ -1,3 +1,15 @@
+2003-07-29  Robert Collins  <rbtcollins@hotmail.com>
+
+	* PickView.h (CATEGORY_EXPANDED): Move from choose.h
+	(CATEGORY_COLLAPSED): Move from choose.cc.
+	(PickView::setViewMode): Move from ChooserPage.
+	* choose.h (CATEGORY_EXPANDED): Delete.
+	(CATEGORY_COLLAPSED): Delete.
+	(ChooserPage::setViewMode): Delete.
+	* PickView.cc (PickView::setViewMode): Move from ChooserPage.
+	* chooser.cc (ChooserPage::setViewMode): Delete, and adjust callers
+	throughout.
+
 2003-07-28  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* AntiVirus.cc (AntiVirusPage::OnNext): Do not explicitly specify the

@@ -26,8 +26,10 @@
 #define RTARROW_WIDTH 11
 #define SPIN_WIDTH 11
 #define NEW_COL_SIZE_SLOP (ICON_MARGIN + SPIN_WIDTH + RTARROW_WIDTH)
-
 #define CHECK_SIZE      11
+
+#define CATEGORY_EXPANDED  0
+#define CATEGORY_COLLAPSED 1
 
 class PickView;
 #include "PickCategoryLine.h"
@@ -47,6 +49,7 @@ public:
   };
   void defaultTrust (trusts trust);
   void set_view_mode (views _mode);
+  void setViewMode (PickView::views mode);
   void paint (HWND hwnd);
   LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
   LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);

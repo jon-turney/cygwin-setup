@@ -71,81 +71,6 @@ ChooserPage::fillMissingCategory ()
 }
 
 void
-ChooserPage::setViewMode (PickView::views mode)
-{
-  chooser->set_view_mode (mode);
-
-  chooser->clear_view ();
-  packagedb db;
-  if (chooser->get_view_mode () == PickView::views::Package)
-    {
-      for (vector <packagemeta *>::iterator i = db.packages.begin ();
-	   i != db.packages.end (); ++i)
-	{
-	  packagemeta & pkg = **i;
-	  if ((!pkg.desired && pkg.installed)
-	      || (pkg.desired && (pkg.desired.picked () 
-		  || pkg.desired.sourcePackage().picked())))
-	    chooser->insert_pkg (pkg);
-	}
-    }
-  else if (chooser->get_view_mode () == PickView::views::PackageKeeps)
-    {
-      for (vector <packagemeta *>::iterator i = db.packages.begin ();
-	   i != db.packages.end (); ++i)
-	{
-	  packagemeta & pkg = **i;
-	  if (pkg.installed && pkg.desired && !pkg.desired.picked() 
-	      && !pkg.desired.sourcePackage().picked())
-	    chooser->insert_pkg (pkg);
-	}
-    }
-  else if (chooser->get_view_mode () == PickView::views::PackageSkips)
-    {
-      for (vector <packagemeta *>::iterator i = db.packages.begin ();
-	   i != db.packages.end (); ++i)
-	{
-	  packagemeta & pkg = **i;
-	  if (!pkg.desired && !pkg.installed)
-	    chooser->insert_pkg (pkg);
-	}
-    }
-  else if (chooser->get_view_mode () == PickView::views::PackageFull)
-    {
-      for (vector <packagemeta *>::iterator i = db.packages.begin ();
-	   i != db.packages.end (); ++i)
-	chooser->insert_pkg (**i);
-    }
-  else if (chooser->get_view_mode () == PickView::views::Category)
-    {
-      /* start collapsed. TODO: make this a chooser flag */
-      for (packagedb::categoriesType::iterator n 
-	   = packagedb::categories.begin();
-	   n != packagedb::categories.end(); ++n)
-	chooser->insert_category (&*n, CATEGORY_COLLAPSED);
-    }
-
-  RECT r;
-  ::GetClientRect (chooser->GetHWND(), &r);
-  SCROLLINFO si;
-  memset (&si, 0, sizeof (si));
-  si.cbSize = sizeof (si);
-  si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
-  si.nMin = 0;
-  si.nMax = chooser->headers[chooser->last_col].x + chooser->headers[chooser->last_col].width;	// + HMARGIN;
-  si.nPage = r.right;
-  SetScrollInfo (chooser->GetHWND(), SB_HORZ, &si, TRUE);
-
-  si.nMax = chooser->contents.itemcount () * chooser->row_height;
-  si.nPage = r.bottom - chooser->header_height;
-  SetScrollInfo (chooser->GetHWND(), SB_VERT, &si, TRUE);
-
-  chooser->scroll_ulc_x = chooser->scroll_ulc_y = 0;
-
-  InvalidateRect (chooser->GetHWND(), &r, TRUE);
-}
-
-void
 ChooserPage::createListview (HWND dlg, RECT * r)
 {
   packagedb db;
@@ -157,7 +82,7 @@ ChooserPage::createListview (HWND dlg, RECT * r)
   chooser->Show(SW_SHOW);
 
   chooser->defaultTrust (TRUST_CURR);
-  setViewMode (PickView::views::Category);
+  chooser->setViewMode (PickView::views::Category);
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE) << "Failed to set View button caption %ld" << 
 	 GetLastError () << endLog;
@@ -222,7 +147,7 @@ ChooserPage::OnInit ()
 void
 ChooserPage::OnActivate()
 {
-    setViewMode (chooser->get_view_mode ());
+    chooser->setViewMode (chooser->get_view_mode ());
 }
 
 void
@@ -270,7 +195,7 @@ ChooserPage::keepClicked()
       packagemeta & pkg = **i;
       pkg.desired = pkg.installed;
     }
-  setViewMode (chooser->get_view_mode ());
+  chooser->setViewMode (chooser->get_view_mode ());
 }
 
 template <trusts aTrust>
@@ -280,7 +205,7 @@ ChooserPage::changeTrust()
   chooser->defaultTrust (aTrust);
   packagedb db;
   for_each(db.packages.begin(), db.packages.end(), SetRequirement(aTrust));
-  setViewMode (chooser->get_view_mode ());
+  chooser->setViewMode (chooser->get_view_mode ());
 }
 
 bool
@@ -303,7 +228,7 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
     case IDC_CHOOSE_EXP:
        return ifChecked(id, &ChooserPage::changeTrust<TRUST_TEST>);
     case IDC_CHOOSE_VIEW:
-      setViewMode (++chooser->get_view_mode ());
+      chooser->setViewMode (++chooser->get_view_mode ());
       if (!SetDlgItemText
         (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
       log (LOG_BABBLE) << "Failed to set View button caption " << 
