@@ -61,7 +61,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 
 #include "threebar.h"
 
-#include "libmd5-rfc/md5.h"
+#include "csu_util/MD5Sum.h"
 
 #include "Exception.h"
 #include "getopt++/BoolOption.h"
@@ -669,23 +669,22 @@ void md5_one (const packagesource& source)
       io_stream *thefile = io_stream::open (source.Cached (), "rb");
       if (!thefile)
 	throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("IO Error opening ") + source.Cached(), APPERR_IO_ERROR);
-      md5_state_t pns;
-      md5_init (&pns);
+      MD5Sum tempMD5;
+      tempMD5.begin();
       
       unsigned char buffer[16384];
       ssize_t count;
       while ((count = thefile->read (buffer, 16384)) > 0)
-	  md5_append (&pns, buffer, count);
+	  tempMD5.append(buffer, count);
       delete thefile;
       if (count < 0)
 	throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("IO Error reading ") + source.Cached(), APPERR_IO_ERROR);
       
-      md5_byte_t tempdigest[16];
-      md5_finish(&pns, tempdigest);
-      md5 tempMD5;
-      tempMD5.set (tempdigest);
+      tempMD5.finish();
 
-      log (LOG_BABBLE, String ("For file ") + source.Cached() + " ini digest is " + source.md5.print() + " file digest is " + tempMD5.print());
+      log (LOG_BABBLE, std::string("For file ") + source.Cached()
+           + " ini digest is " + source.md5.str()
+           + " file digest is " + tempMD5.str());
       
       if (source.md5 != tempMD5)
 	  throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("Checksum failure for ") + source.Cached(), APPERR_CORRUPT_PACKAGE);

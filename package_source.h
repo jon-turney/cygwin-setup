@@ -23,7 +23,7 @@
 /* required to parse this file */
 #include "strings.h"
 #include "String++.h"
-#include "MD5++.h"
+#include "csu_util/MD5Sum.h"
 #include <vector>
 
 /* standard binary package metadata:
@@ -101,7 +101,7 @@ public:
   /* sets the canonical path, and parses and creates base and filename */
   virtual void set_canonical (char const *);
   virtual void set_cached (String const &);
-  class md5 md5;
+  MD5Sum md5;
   typedef std::vector <site> sitestype;
   sitestype sites;
 

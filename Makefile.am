@@ -192,8 +192,6 @@ setup_SOURCES = \
 	LogSingleton.cc \
 	LogSingleton.h \
 	main.cc \
-	MD5++.cc \
-	MD5++.h \
 	mkdir.cc \
 	mkdir.h \
 	mklink2.cc \
@@ -276,6 +274,8 @@ setup_SOURCES = \
 	win32.h \
 	window.cc \
 	window.h \
+	csu_util/MD5Sum.cc \
+	csu_util/MD5Sum.h \
 	libmd5-rfc/md5.c \
 	libmd5-rfc/md5.h
 	

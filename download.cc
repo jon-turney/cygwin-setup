@@ -49,11 +49,10 @@ static const char *cvsid =
 
 #include "threebar.h"
 
-#include "libmd5-rfc/md5.h"
-
 #include "Exception.h"
 
 #include "getopt++/BoolOption.h"
+#include "csu_util/MD5Sum.h"
 
 using namespace std;
 
@@ -78,8 +77,8 @@ validateCachedPackage (String const &fullname, packagesource & pkgsource)
       io_stream *thefile = io_stream::open (fullname, "rb");
       if (!thefile)
 	return 0;
-      md5_state_t pns;
-      md5_init (&pns);
+      MD5Sum tempMD5;
+      tempMD5.begin();
 
       log (LOG_BABBLE) << "Checking MD5 for " << fullname << endLog;
 
@@ -91,7 +90,7 @@ validateCachedPackage (String const &fullname, packagesource & pkgsource)
       ssize_t count;
       while ((count = thefile->read (buffer, 16384)) > 0)
 	{
-	  md5_append (&pns, buffer, count);
+          tempMD5.append(buffer, count);
 	  Progress.SetBar1 (thefile->tell(), thefile->get_size());
 	}
       delete thefile;
@@ -100,21 +99,18 @@ validateCachedPackage (String const &fullname, packagesource & pkgsource)
                              String ("IO Error reading ") + fullname,
                              APPERR_IO_ERROR);
       
-      md5_byte_t tempdigest[16];
-      md5_finish(&pns, tempdigest);
-      md5 tempMD5;
-      tempMD5.set (tempdigest);
+      tempMD5.finish();
       
       if (pkgsource.md5 != tempMD5)
       {
         log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
-          << " - MD5 mismatch: Ini-file: " << pkgsource.md5.print() 
-          << " != On-disk: " << tempMD5.print() << endLog;
+          << " - MD5 mismatch: Ini-file: " << pkgsource.md5.str()
+          << " != On-disk: " << tempMD5.str() << endLog;
         return false;
       }
 
-      log (LOG_BABBLE) << "MD5 verified OK: " << fullname
-        << pkgsource.md5.print() << endLog;
+      log (LOG_BABBLE) << "MD5 verified OK: " << fullname << " "
+        << pkgsource.md5.str() << endLog;
     }
   return true;
 }

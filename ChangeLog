@@ -1,5 +1,15 @@
 2004-11-22  Max Bowsher  <maxb@ukf.net>
 
+	* MD5++.cc, MD5++.h: Remove this class.
+	* csu_util/MD5Sum.cc, csu_util/MD5Sum.h: New more complete MD5 class.
+	* Makefile.am (setup_SOURCES): Adjust to new files.
+	* download.cc (validateCachedPackage): Simplify, using the new class.
+	* install.cc (md5_one): Ditto.
+	* package_source.h (packagesource::md5): Change to be an object of the
+	new class.
+
+2004-11-22  Max Bowsher  <maxb@ukf.net>
+
 	* main.cc (main): Fix bug in first 2004-11-20 commit. Avoid referring
 	to the theLog pointer before it is set.
 
