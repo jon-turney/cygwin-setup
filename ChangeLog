@@ -1,3 +1,8 @@
+2004-10-25  Bas van Gompel  <cygsup-patch.buzz@bavag.tmfweb.nl>
+
+	* package_source.cc (packagesource::set_canonical):
+	Fix one-off in 'base' when ini is in same dir as package.
+
 2004-10-25  Max Bowsher  <maxb@ukf.net>
 
 	* main.cc (next_dialog): Remove this legacy global variable.
