@@ -1,3 +1,7 @@
+2002-07-06  Christopher Faylor  <cgf@redhat.com>
+
+	* site.cc (do_download_site_info_thread): Correct spelling error.
+
 2002-07-06  Robert Collins  <rbtcollins@hotmail.com>
 
 	* PickCategoryLine.h: Include required header list.h.

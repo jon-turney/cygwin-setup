@@ -280,7 +280,7 @@ do_download_site_info_thread (void *p)
 	{
 	  // Error: Couldn't download the site info.  Go back to the Net setup page.
 	  MessageBox (h, TEXT ("Can't get list of download sites.\n\
-Make sure your network settings are corect and try again."), NULL, MB_OK);
+Make sure your network settings are correct and try again."), NULL, MB_OK);
 
 	  // Tell the progress page that we're done downloading
 	  Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0,
