@@ -1,5 +1,12 @@
 2002-06-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* compress_bz.h (compress_bz::position): Track how much has been read.
+	* compress_bz.cc (compress_bz::compress_bz): And initialise it.
+	(compress_bz::read): Track amount read by the client.
+	(compress_bz::tell): And report it when asked.
+
+2002-06-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.am (snapshot): Automate snapshot creation some more.
 
 2002-06-27  Robert Collins  <rbtcollins@hotmail.com>

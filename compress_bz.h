@@ -70,7 +70,7 @@ private:
   int bufN;
   char buf[4096];
   int writing;
-
+  size_t position;
 };
 
 #endif /* _COMPRESS_BZ_H_ */

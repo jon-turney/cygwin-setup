@@ -34,7 +34,7 @@ static const char *cvsid =
 #undef _WIN32
 #include "bzlib.h"
 
-compress_bz::compress_bz (io_stream * parent) : peeklen (0)
+compress_bz::compress_bz (io_stream * parent) : peeklen (0), position (0)
 {
   /* read only via this constructor */
   original = 0;
@@ -63,7 +63,8 @@ compress_bz::compress_bz (io_stream * parent) : peeklen (0)
   initialisedOk = 1;
 }
 
-ssize_t compress_bz::read (void *buffer, size_t len)
+ssize_t
+compress_bz::read (void *buffer, size_t len)
 {
   if (!initialisedOk || writing)
     return EBADF;
@@ -120,9 +121,15 @@ ssize_t compress_bz::read (void *buffer, size_t len)
 	  return -1;
 	}
       if (ret == BZ_STREAM_END)
-	return len - strm.avail_out;
+	{
+	  position += len - strm.avail_out;
+	  return len - strm.avail_out;
+	}
       if (strm.avail_out == 0)
-	return len;
+	{
+	  position += len;
+	  return len;
+	}
     }
 
   /* not reached */
@@ -170,8 +177,12 @@ ssize_t compress_bz::peek (void *buffer, size_t len)
 long
 compress_bz::tell ()
 {
-  log (LOG_TIMESTAMP, "compress_bz::tell called");
-  return 0;
+  if (writing)
+    {
+      log (LOG_TIMESTAMP, "compress_bz::tell called for writing mode");
+      return 0;
+    }
+  return position;
 }
 
 int
