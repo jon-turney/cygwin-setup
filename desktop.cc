@@ -74,14 +74,6 @@ static char *etc_profile[] = {
   "  fi",
   "done",
   "",
-  "for i in /etc/postinstall/*.sh ; do",
-  "  if [ -f $i ]; then",
-  "    echo Running post-install script $i...",
-  "    . $i",
-  "    mv $i $i.done",
-  "  fi",
-  "done",
-  "",
   "export MAKE_MODE=unix",
   "export PS1='\033]0;\\w\a",
   "\033[32m\\u@\\h \033[33m\\w\033[0m",
@@ -91,32 +83,11 @@ static char *etc_profile[] = {
   0
 };
 
-static char *postinstall_script[] = {
-  "if [ ! -f /etc/passwd ]; then",
-  "  echo Creating /etc/passwd",
-  "  mkpasswd -l >/etc/passwd 2>/dev/null",
-  "fi",
-  "if [ ! -f /etc/group ]; then",
-  "  echo Creating /etc/group",
-  "  mkgroup -l >/etc/group 2>/dev/null",
-  "fi",
-  0
-};
-
 #define COMMAND9XARGS "/E:4096 /c"
 #define COMMAND9XEXE  "\\command.com"
 
 static char *batname;
 static char *iconname;
-
-static char *
-backslash (char *s)
-{
-  for (char *t = s; *t; t++)
-    if (*t == '/')
-      *t = '\\';
-  return s;
-}
 
 static void
 make_link (char *linkpath, char *title, char *target)
@@ -250,22 +221,37 @@ make_etc_profile ()
   fclose (p);
 }
 
+static int
+uexists (char *path)
+{
+  char *f = concat (root_dir, path, 0);
+  int a = _access (f, 0);
+  free (f);
+  if (a == 0)
+    return 1;
+  return 0;
+}
+
 static void
-make_postinstall_script ()
+make_passwd_group ()
 {
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
     return;
 
-  char *fname = concat (root_dir, "/etc/postinstall/00-setup.sh", 0);
+  if (uexists ("/etc/passwd") && uexists ("/etc/group"))
+    return;
+
+  char *fname = concat (root_dir, "/etc/postinstall/passwd-grp.bat", 0);
   mkdir_p (0, fname);
 
   FILE *p = fopen (fname, "wb");
   if (!p)
     return;
 
-  int i;
-  for (i=0; postinstall_script[i]; i++)
-    fprintf (p, "%s\n", postinstall_script[i]);
+  if (!uexists ("/etc/passwd"))
+    fprintf (p, "bin\\mkpasswd -l > etc\\passwd\n");
+  if (!uexists ("/etc/group"))
+    fprintf (p, "bin\\mkgroup -l > etc\\group\n");
 
   fclose (p);
 }
@@ -295,6 +281,8 @@ save_icon ()
 void
 do_desktop (HINSTANCE h)
 {
+  next_dialog = IDD_S_POSTINSTALL;
+
   CoInitialize (NULL);
 
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
@@ -304,7 +292,7 @@ do_desktop (HINSTANCE h)
 
   make_cygwin_bat ();
   make_etc_profile ();
-  make_postinstall_script ();
+  make_passwd_group ();
 
   start_menu ("Cygwin 1.1 Bash Shell", batname);
 

@@ -76,7 +76,7 @@ do_download (HINSTANCE h)
 
   if (source == IDC_SOURCE_DOWNLOAD)
     {
-      note (IDS_DOWNLOAD_COMPLETE);
+      exit_msg = IDS_DOWNLOAD_COMPLETE;
       next_dialog = 0;
     }
   else

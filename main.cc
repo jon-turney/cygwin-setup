@@ -37,6 +37,7 @@
 void netio_test (char *);
 
 int next_dialog;
+int exit_msg = 0;
 
 HINSTANCE hinstance;
 
@@ -54,22 +55,27 @@ WinMain(HINSTANCE h,
     {
       switch (next_dialog)
 	{
-	case IDD_SOURCE:	do_source(h);	break;
-	case IDD_ROOT:		do_root(h);	break;
+	case IDD_SOURCE:	do_source (h);	break;
+	case IDD_ROOT:		do_root (h);	break;
 	case IDD_NET:		do_net (h);	break;
-	case IDD_SITE:		do_site(h);	break;
-	case IDD_OTHER_URL:	do_other(h);	break;
-	case IDD_S_LOAD_INI:	do_ini(h);	break;
-	case IDD_S_FROM_CWD:	do_fromcwd(h);	break;
-	case IDD_S_CHOOSE:	do_choose(h);	break;
-	case IDD_S_DOWNLOAD:	do_download(h);	break;
-	case IDD_S_INSTALL:	do_install(h);	break;
+	case IDD_SITE:		do_site (h);	break;
+	case IDD_OTHER_URL:	do_other (h);	break;
+	case IDD_S_LOAD_INI:	do_ini (h);	break;
+	case IDD_S_FROM_CWD:	do_fromcwd (h);	break;
+	case IDD_S_CHOOSE:	do_choose (h);	break;
+	case IDD_S_DOWNLOAD:	do_download (h); break;
+	case IDD_S_INSTALL:	do_install (h);	break;
+	case IDD_S_DESKTOP:	do_desktop (h); break;
+	case IDD_S_POSTINSTALL:	do_postinstall (h); break;
 
 	default:
 	  next_dialog = 0;
 	  break;
 	}
     }
+
+  if (exit_msg)
+    note (exit_msg);
 
   return 0;
 }

@@ -187,7 +187,7 @@ void
 do_install (HINSTANCE h)
 {
   int i, num_installs = 0;
-  next_dialog = 0;
+  next_dialog = IDD_S_DESKTOP;
 
   mkdir_p (1, root_dir);
 
@@ -270,7 +270,7 @@ do_install (HINSTANCE h)
 
   if (num_installs == 0)
     {
-      note (IDS_NOTHING_INSTALLED);
+      exit_msg = IDS_NOTHING_INSTALLED;
       return;
     }
 
@@ -346,7 +346,5 @@ do_install (HINSTANCE h)
   create_mount ("/usr/bin", concat (root_dir, "/bin", 0), istext, issystem);
   create_mount ("/usr/lib", concat (root_dir, "/lib", 0), istext, issystem);
 
-  do_desktop(h);
-
-  note (IDS_INSTALL_COMPLETE);
+  exit_msg = IDS_INSTALL_COMPLETE;
 }

@@ -19,3 +19,7 @@
    (i.e. replace \ with /, collapse multiple /// to a single /, etc.)  */
 
 char * concat (char *s, ...);
+
+/* convert slashes to backslashes */
+
+char * backslash (char *s);

@@ -19,18 +19,22 @@ extern HINSTANCE hinstance;
 /* used by main.cc to select the next do_* function */
 extern int next_dialog;
 
+/* either "nothing to do" or "setup complete" or something like that */
+extern int exit_msg;
+
 #define D(x) void x(HINSTANCE _h)
 
 /* prototypes for all the do_* functions (most called by main.cc) */
 
 D(do_choose);
-D(do_desktop); /* called from do_install */
+D(do_desktop);
 D(do_download);
 D(do_fromcwd);
 D(do_ini);
 D(do_install);
 D(do_net);
 D(do_other);
+D(do_postinstall);
 D(do_root);
 D(do_site);
 D(do_source);

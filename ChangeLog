@@ -1,3 +1,20 @@
+2000-07-13  DJ Delorie  <dj@cygnus.com>
+
+	* postinstall.cc: new
+	* Makefile.in: add postinstall.o
+	* concat.h: add backslash ()
+	* concat.cc: ditto
+	* desktop.cc (etc_profile): don't do postinstall
+	(backslash): moved to concat.cc
+	(uexists): new
+	(make_postinstall_script): run directly
+	(do_desktop): chain to do_postinstall
+	* dialog.h: add exit_msg, do_postinstall
+	* download.cc: use exit_msg
+	* install.cc: ditto
+	* main.cc: add postinstall, exit_msg
+	* resource.h: add postinstall
+
 2000-07-12  DJ Delorie  <dj@cygnus.com>
 
 	* desktop.cc: add /etc/postinstall/ support

@@ -54,7 +54,6 @@ save_dialog (HWND h)
   root_text = rbget (h, rb);
   root_scope = rbget (h, su);
   root_dir = eget (h, IDC_ROOT_DIR, root_dir);
-  msg ("t=%d s=%d d=%s\n", root_text, root_scope, root_dir);
 }
 
 static void

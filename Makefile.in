@@ -93,6 +93,7 @@ OBJS = \
 	nio-ie5.o \
 	nio-file.o \
 	other.o \
+	postinstall.o \
 	res.o \
 	root.o \
 	site.o \

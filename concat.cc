@@ -75,3 +75,12 @@ concat (char *s, ...)
 
   return rv;
 }
+
+char *
+backslash (char *s)
+{
+  for (char *t = s; *t; t++)
+    if (*t == '/')
+      *t = '\\';
+  return s;
+}
