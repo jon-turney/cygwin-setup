@@ -26,8 +26,8 @@ SUBDIRS = bz2lib zlib libgetopt++ tests
 
 # We would like to use -Winline for C++ as well, but some STL code triggers
 # this warning. (Bug verified present in gcc-3.3)
-AM_CXXFLAGS	= -Werror -Wall -Wpointer-arith -Wcomments \
-  -Wcast-align -Wwrite-strings 
+BASECXXFLAGS	= -Wall -Wpointer-arith -Wcomments -Wcast-align -Wwrite-strings
+AM_CXXFLAGS	= -Werror $(BASECXXFLAGS)
 AM_CFLAGS	= $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
 		  -Wstrict-prototypes -Wmissing-prototypes
 
@@ -41,11 +41,6 @@ noinst_PROGRAMS = \
 
 EXTRA_PROGRAMS = inilint
 ## noinst_PROGRAMS +=inilint
-
-# to avoid false errors that assembly generates
-WARNONLY_CFLAGS	= -Winline -Wall -Wpointer-arith -Wcast-align \
-	-Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes \
-	-Wmissing-declarations -Wcomments $(INCLUDES)
 
 EXTRA_DIST = \
   GUIDELINES \
@@ -104,8 +99,16 @@ inilint_SOURCES = \
   String++.h \
   $(inilint_extras)
 
-setup_LDADD = res.o zlib/libzcygw.a bz2lib/libbz2.a \
-	libgetopt++/libgetopt++.la \
+# Obviously we are not really building a program called warnonly
+# However, this dance was the most non-invasive way I could find
+# of varying CFLAGS for a single file
+EXTRA_PROGRAMS += warnonly
+warnonly_CXXFLAGS = $(BASECXXFLAGS)
+warnonly_SOURCES = inilex.cc
+EXTRA_setup_SOURCES = $(warnonly_SOURCES)
+
+setup_LDADD = warnonly-inilex.o res.o \
+	zlib/libzcygw.a bz2lib/libbz2.a libgetopt++/libgetopt++.la \
 	-luser32 -lkernel32 \
 	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid 
 setup_LDFLAGS = -mwindows
@@ -166,7 +169,6 @@ setup_SOURCES = \
 	IniDBBuilder.h \
 	IniDBBuilderPackage.cc \
 	IniDBBuilderPackage.h \
-	inilex.cc \
 	iniparse.cc \
 	iniparse.h \
 	IniParseFeedback.cc \
@@ -290,19 +292,6 @@ setup_version.c : $(srcdir)/ChangeLog Makefile
 
 %.o: %.rc
 	$(WINDRES) --preprocessor "$(CC) -E -xc-header -DRC_INVOKED" --include-dir $(srcdir) -o $@ $<
-
-autoload.o: autoload.c
-@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(WARNONLY_CFLAGS) $(CFLAGS) -c -o $@ $< -fno-inline-functions
-
-inilex.o: inilex.cc
-@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-       $(AM_CPPFLAGS) $(CPPFLAGS) $(WARNONLY_CFLAGS) $(CXXFLAGS) -c -o $@ $< 
 
 iniparse.cc iniparse.h : iniparse.y
 	bison -d -o iniparse.cc $(srcdir)/iniparse.y

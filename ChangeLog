@@ -1,5 +1,22 @@
 2004-08-30  Max Bowsher  <maxb@ukf.net>
 
+	Rework the implementation of not including -Werror for specific files,
+	to a way that does not require hardcoding modified automake output back
+	into its input.
+
+	* Makefile.am (AM_CXXFLAGS, BASECXXFLAGS): Seperate out -Werror.
+	(autoload.o): Drop this rule, -finline-functions is no longer required
+	and -Werror is acceptable here now we have __attribute__ ((used)).
+	(WARNONLY_CFLAGS, inilex.o): Drop these.
+	(EXTRA_PROGRAMS): Add a fake "warnonly" program.
+	(warnonly_CXXFLAGS): Set to the $(BASECXXFLAGS).
+	(warnonly_SOURCES): Set to "inilex.cc".
+	(EXTRA_setup_SOURCES): Set to $(warnonly_SOURCES).
+	(setup_SOURCES): Remove "inilex.cc".
+	(setup_LDADD): Add "warnonly-inilex.o".
+
+2004-08-30  Max Bowsher  <maxb@ukf.net>
+
 	Move closer to GCC 3.4 compatibility.
 
 	* IOStreamProvider.h, io_stream_cygfile.cc, io_stream_cygfile.h,
