@@ -131,7 +131,7 @@ endif
 	@chmod a-x $@
 
 clean:
-	rm -f *.o *.rc $(PROGS)
+	rm -f *.o $(PROGS)
 	$(MAKE) -C zlib clean
 
 realclean: clean
