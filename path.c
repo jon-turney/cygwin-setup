@@ -44,17 +44,22 @@ kill_cygpath (int sig)
   exit (1);
 }
 
-static void
+void
 exit_cygpath (void)
 {
   fclose (cygin);
   fclose (cygout);
   Sleep (0);
-  TerminateProcess (hcygpath, 0);
+  if (WaitForSingleObject (hcygpath, 5000) != WAIT_OBJECT_0)
+    {
+      TerminateProcess (hcygpath, 0);
+      WaitForSingleObject (hcygpath, 5000);
+    }
+  CloseHandle (hcygpath);
 }
 
 static int
-cygpath_pipe ()
+cygpath_pipe (void)
 {
   int hpipein[2] = {-1, -1};
   int hpipeout[2] = {-1, -1};
@@ -72,7 +77,6 @@ cygpath_pipe ()
   hcygpath = (HANDLE) xcreate_process (0, hout, hin, hin, buffer);
   if (!hcygpath)
     return 0;
-  atexit (exit_cygpath);
   signal (SIGINT, kill_cygpath);
   _close (hpipein[1]);
   _close (hpipeout[0]);

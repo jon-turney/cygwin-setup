@@ -23,7 +23,7 @@ typedef struct
   char *version;
 } pkg;
 
-pkg *init_pkgs (int);
+pkg *init_pkgs (const char * root, int);
 pkg * find_pkg (pkg *stuff, char *name);
 int write_pkg (pkg *pkg, char *name, char *version);
 int newer_pkg (pkg *pkg, char *version);

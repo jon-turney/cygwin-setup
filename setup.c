@@ -65,9 +65,12 @@ static SA installme = {NULL, 0, 0};
 static void
 filedel (void)
 {
-  int i;
+  int i, j;
+  extern void exit_cygpath (void);
+  exit_cygpath ();
   for (i = 0; i < deleteme.count; i++)
-    (void) _unlink (deleteme.array[i]);
+    for (j = 0; _unlink (deleteme.array[i]) && j < 20; j++)
+      Sleep (100);
   sa_cleanup (&deleteme);
 }
 
@@ -139,7 +142,6 @@ create_shortcut (const char *target, const char *shortcut)
 
   return SUCCEEDED (hres);
 }
-
 
 BOOL CALLBACK
 output_file (HMODULE h, LPCTSTR type, LPTSTR name, LONG lparam)
@@ -433,7 +435,6 @@ recurse_dirs (SA *installme, const char *dir)
   return retval;
 }
 
-
 static void
 setpath (const char *element)
 {
@@ -450,7 +451,6 @@ prompt (const char *text, const char *def)
 {
   char buffer[_MAX_PATH];
 
-
   printf ((def ? "%s? [%s] " : "%s? "), text, def);
   fflush (stdout);
   fgets (buffer, sizeof (buffer), stdin);
@@ -463,7 +463,7 @@ prompt (const char *text, const char *def)
 static int
 optionprompt (const char *text, SA * options)
 {
-  size_t n, response = 1;
+  size_t n, response = -1;
   char buf[5];
   size_t base;
 
@@ -986,7 +986,6 @@ downloaddir (SA *installme, const char *url)
   return retval;
 }
 
-
 static HINTERNET
 opensession ()
 {
@@ -1082,7 +1081,6 @@ create_uninstall (const char *wd, const char *folder, const char *shellscut,
   warning ("Done.\n");
   return retval;
 }
-
 
 /* Writes the startup batch file. */
 static int
@@ -1262,7 +1260,6 @@ getdownloadsource ()
   return retval;
 }
 
-
 /* Basically a mkdir -p /somedir function. */
 static void
 mkdirp (const char *dir)
@@ -1321,11 +1318,9 @@ static pkg *
 get_pkg_stuff (const char *root, int updating)
 {
   const char *ver, *ans;
-  pkg *pkgstuff = init_pkgs (0);
+  pkg *pkgstuff = init_pkgs (root, 0);
   static pkg dummy = {NULL, NULL};
 
-  if (!pkgstuff)
-    pkgstuff = init_pkgs (1);	/* Use HKCU */
   if (!updating || !pkgstuff)
     return &dummy;
 

@@ -218,20 +218,25 @@ err:
   return NULL;
 }
 
+#define REGWHERE "SOFTWARE\\Cygnus Solutions\\Cygwin\\Installed Components"
+
 pkg *
-init_pkgs (int use_current_user)
+init_pkgs (const char *root, int use_current_user)
 {
   LONG res;
   DWORD what;
-  char empty[] = "";
+  char *p, empty[] = "";
   char buf[4096];
   DWORD ty, sz;
   DWORD nc = 0;
   static pkg stuff[1000];
 
-  res = RegCreateKeyEx (use_current_user ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE,
-			"SOFTWARE\\Cygnus Solutions\\Cygwin\\Installed Components",
-			 0, empty,  REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkpkg, &what);
+  sprintf (buf, "%s\\%s", REGWHERE, root);
+  for (p = buf + sizeof (REGWHERE); (p = strchr (p, '\\')) != NULL; )
+    *p = '/';
+  
+  res = RegCreateKeyEx (use_current_user ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE, buf,
+			0, empty,  REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkpkg, &what);
 
   if (res != ERROR_SUCCESS)
     return NULL;

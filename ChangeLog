@@ -1,3 +1,18 @@
+Sun Apr 30 22:37:34 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* path.c (exit_cygpath): Wait for subprocess to exit before returning.
+	(cygpath_pipe): Don't call exit_cygpath.  Let main atexit routine do
+	that.
+	* pkg.c (init_pkgs): Accept root argument.  Make registry key "cygwin
+	root"-specific.
+	* setup.c (filedel): Call exit_cygpath here so that we can be assured
+	that cygpath subprocess has died.  This allows us to delete cygpath.exe
+	and cygwin1.dll.
+	(optionprompt): Initialize response to -1 so that second screen of
+	mirrors will appear.
+	(get_pkg_stuff): Don't attempt to use HKCLU.  Pass root to init_pkgs.
+	* setup.h: Reflect init_pkgs prototype change.
+
 Sat Apr 29 23:53:30 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* pkg.c (init_pkgs): Accept an argument to control what root registry
