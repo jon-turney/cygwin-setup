@@ -113,7 +113,6 @@ parse_filename (String const &in_fn, fileparse & f)
 	  *ver++ = 0;
 	  f.pkg = p;
 	  f.what = strlwr (ver);
-	  f.pkgtar = String(p) + f.tail;
 	  ver = strchr (ver, '\0');
 	  break;
 	}
@@ -125,7 +124,6 @@ parse_filename (String const &in_fn, fileparse & f)
     {
       int n;
       char *p1 = strchr (ver, '\0');
-      f.pkgtar = in_fn;
       if ((p1 -= 4) >= ver && strcasecmp (p1, "-src") == 0)
 	n = 4;
       else if ((p1 -= 2) >= ver && strcasecmp (p1, "-patch") == 0)
@@ -134,12 +132,8 @@ parse_filename (String const &in_fn, fileparse & f)
 	n = 0;
       if (n)
 	{
-	  // XXX This maybe broken. What does it do?
+	  // get the 'src' or 'patch'.
 	  f.what = p1 + 1;
-	  *p1 = '\0';
-	  p1 = p + (p1 - fn) + n;
-	  memmove (p1 - n, p1, strlen (p1));
-	  f.pkgtar = p;
 	}
     }
 

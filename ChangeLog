@@ -1,5 +1,19 @@
 2002-02-19  Robert Collins <rbtcollins@hotmail.com>
 
+	* choose.cc: Include cygpackage.h for scan2 use.
+	(set_existence): Ignore setup.ini mirrors when installing from cwd.
+	(scan2): Process any valid file.
+	Add cache entries when a file matching a setup.ini listed version is found.
+	* filemanip.cc (parse_filename): Remove pkgtar - not used anywhere else.
+	* filemanip.h (filemanip::pkgtar): Remove.
+	* package_meta.cc (CategoryPackage::~CategoryPackage): New method.
+	(packagemeta::~packagemeta): Move from package_meta.h
+	Remove and delete all version and category information.
+	* package_meta.h (CategoryPackage): Create a destructor.
+	(packagemeta::~packagemeta): Move to .cc file.
+
+2002-02-19  Robert Collins <rbtcollins@hotmail.com>
+
 	* install.cc (install_one_source): Make NULL cached package names cause
 	errors.
 

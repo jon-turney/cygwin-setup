@@ -19,7 +19,6 @@ extern int find_tar_ext (const char *path);
 
 typedef struct
 {
-  String pkgtar;
   String pkg;
   String ver;
   String tail;

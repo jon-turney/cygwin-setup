@@ -54,6 +54,7 @@ static const char *cvsid =
 #include "package_db.h"
 #include "package_meta.h"
 #include "package_version.h"
+#include "cygpackage.h"
 
 #include "PickView.h"
 
@@ -166,9 +167,13 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
   else
     {
       RECT rect;
-      rect.left = chooser->headers[chooser->new_col].x - chooser->scroll_ulc_x;
-      rect.right = chooser->headers[chooser->src_col + 1].x - chooser->scroll_ulc_x;
-      rect.top = chooser->header_height + row * chooser->row_height - chooser->scroll_ulc_y;
+      rect.left =
+	chooser->headers[chooser->new_col].x - chooser->scroll_ulc_x;
+      rect.right =
+	chooser->headers[chooser->src_col + 1].x - chooser->scroll_ulc_x;
+      rect.top =
+	chooser->header_height + row * chooser->row_height -
+	chooser->scroll_ulc_y;
       rect.bottom = rect.top + chooser->row_height;
       InvalidateRect (hwnd, &rect, TRUE);
     }
@@ -270,14 +275,15 @@ set_existence ()
       while (o <= pkg.versions.number () && !mirrors)
 	{
 	  packageversion & ver = *pkg.versions[o];
-	  if (ver.bin.sites.number () || ver.bin.Cached () ||
-	      ver.src.sites.number () || ver.src.Cached ())
+	  if (((source != IDC_SOURCE_CWD) && (ver.bin.sites.number () 
+	      || ver.src.sites.number ()))
+	      || ver.bin.Cached () || ver.src.Cached ())
 	    mirrors = true;
 	  ++o;
 	}
       if (!pkg.installed && !mirrors)
-        {
-	  packagemeta * pkgm = db.packages.removebyindex (n);
+	{
+	  packagemeta *pkgm = db.packages.removebyindex (n);
 	  delete pkgm;
 	}
       else
@@ -330,10 +336,10 @@ default_trust (HWND h, trusts trust)
   while (n <= db.categories.number ())
     {
       if (!db.categories[n]->packages)
-        {
-           Category * cat = db.categories.removebyindex (n);
-           delete cat;
-        }
+	{
+	  Category *cat = db.categories.removebyindex (n);
+	  delete cat;
+	}
       else
 	++n;
     }
@@ -409,7 +415,9 @@ create_listview (HWND dlg, RECT * r)
 		       hinstance, 0);
   ShowWindow (lv, SW_SHOW);
   packagedb db;
-  chooser = new PickView (PickView::views::Category, lv, db.categories.registerbykey("All"));
+  chooser =
+    new PickView (PickView::views::Category, lv,
+		  db.categories.registerbykey ("All"));
 
   default_trust (lv, TRUST_CURR);
   set_view_mode (lv, PickView::views::Category);
@@ -548,8 +556,11 @@ scan2 (char *path, unsigned int size)
   if (!parse_filename (path, f))
     return;
 
-  if (f.what.size() != 0 && f.what.cstr_oneuse()[0] != 's')
+#if 0
+  // only process source package files?
+  if (f.what.size () != 0 && f.what.cstr_oneuse ()[0] != 's')
     return;
+#endif
 
   packagedb db;
   pkg = db.packages.getbykey (f.pkg);
@@ -598,13 +609,33 @@ scan2 (char *path, unsigned int size)
     {
       if (!f.ver.casecompare (pkg->versions[n]->Canonical_version ()))
 	{
-	  /* FIXME: Add a cached entry */
+	  if (f.what == String ())
+	    {
+	      //bin package
+	      pkg->versions[n]->bin.set_cached (String ("file://") + path);
+	    }
+	  else if (f.what == "src")
+	    {
+	      //src package
+	      pkg->versions[n]->src.set_cached (String ("file://") + path);
+	    }
 	  added = 1;
 	}
     }
   if (!added)
     {
-      /* FIXME: Add a new version */
+#if 0
+      // Do we want old versions to show up 
+      packageversion *pv = new cygpackage (f.pkg);
+      ((cygpackage *) pv)->set_canonical_version (f.ver);
+      if (!f.what.size ())
+	pv->bin.set_cached (String ("file://") + path);
+      else
+	// patch or src, assume src until someone complains
+	pv->src.set_cached (String ("file://") + path);
+      pkg->add_version (*pv);
+
+#endif
 
       /* And now the hole finder */
 #if 0
@@ -664,27 +695,28 @@ do_choose (HINSTANCE h, HWND owner)
 
       log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s"
 	   " src?=%s",
-	   pkg.name.cstr_oneuse(), action.cstr_oneuse(), trust, installed.cstr_oneuse(),
-	   pkg.desired && pkg.desired->srcpicked ? "yes" : "no");
+	   pkg.name.cstr_oneuse (), action.cstr_oneuse (), trust,
+	   installed.cstr_oneuse (), pkg.desired
+	   && pkg.desired->srcpicked ? "yes" : "no");
       if (pkg.Categories.number ())
 	{
 	  /* List categories the package belongs to */
 	  String all_categories = pkg.Categories[1]->key.name;
 	  for (size_t n = 2; n <= pkg.Categories.number (); n++)
-	    all_categories += String(", ") + pkg.Categories[n]->key.name;
+	    all_categories += String (", ") + pkg.Categories[n]->key.name;
 
 	  log (LOG_BABBLE, String ("     categories=") + all_categories);
 	}
       if (pkg.desired && pkg.desired->required)
 	{
 	  /* List other packages this package depends on */
-	  Dependency *dp=pkg.desired->required;
+	  Dependency *dp = pkg.desired->required;
 	  String requires = dp->package;
-	  for (dp = dp->next ; dp; dp = dp->next)
-	    if (dp->package.size())
+	  for (dp = dp->next; dp; dp = dp->next)
+	    if (dp->package.size ())
 	      requires += String (", ") + dp->package;
 
-	      log (LOG_BABBLE, String("     requires=")+ requires);
+	  log (LOG_BABBLE, String ("     requires=") + requires);
 	}
 #if 0
 
@@ -728,8 +760,7 @@ do_choose_thread (void *p)
   _endthread ();
 }
 
-bool
-ChooserPage::Create ()
+bool ChooserPage::Create ()
 {
   return PropertyPage::Create (IDD_CHOOSER);
 }
@@ -741,8 +772,7 @@ ChooserPage::OnActivate ()
   PostMessage (WM_APP_START_CHOOSE);
 }
 
-bool
-ChooserPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool ChooserPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   switch (uMsg)
     {
