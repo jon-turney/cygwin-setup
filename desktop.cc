@@ -38,6 +38,45 @@ extern "C" {
   void make_link_2 (char *exepath, char *args, char *icon, char *lname);
 };
 
+char *etc_profile[] = {
+  "PATH=/bin:/usr/bin:/usr/local/bin:$PATH",
+  "unset DOSDRIVE",
+  "unset DOSDIR",
+  "unset TMPDIR",
+  "unset TMP",
+  "",
+  "if [ ! -f /etc/group ]; then",
+  "  echo Creating /etc/group",
+  "  mkgroup -l >/etc/group",
+  "fi",
+  "",
+  "USER=`id -un`",
+  "",
+  "# Set up USER's home directory",
+  "if [ -z \"$HOME\" ]; then",
+  "  HOME=/home/$USER",
+  "fi",
+  "",
+  "if [ ! -d $HOME ]; then",
+  "  mkdir -p $HOME",
+  "fi",
+  "",
+  "export HOME USER",
+  "",
+  "for i in /etc/profile.d/*.sh ; do",
+  "  if [ -f $i ]; then",
+  "    . $i",
+  "  fi",
+  "done",
+  "",
+  "export PS1='\033]0;\\w\a",
+  "\033[32m\\u@\\h \033[33m\\w\033[0m",
+  "$ '",
+  "",
+  "cd $HOME",
+  0
+};
+
 #define COMMAND9XARGS "/E:4096 /c "
 #define COMMAND9XEXE  "\\command.com"
 
@@ -148,6 +187,26 @@ make_cygwin_bat ()
 }
 
 static void
+make_etc_profile ()
+{
+  char *fname = concat (root_dir, "/etc/profile", 0);
+
+  /* if the file exists, don't overwrite it */
+  if (_access (fname, 0) == 0)
+    return;
+
+  FILE *p = fopen (fname, "wb");
+  if (!p)
+    return;
+
+  int i;
+  for (i=0; etc_profile[i]; i++)
+    fprintf (p, "%s\n", etc_profile[i]);
+
+  fclose (p);
+}
+
+static void
 save_icon ()
 {
   iconname = concat (root_dir, "/cygwin.ico", 0);
@@ -177,6 +236,7 @@ do_desktop (HINSTANCE h)
   save_icon ();
 
   make_cygwin_bat ();
+  make_etc_profile ();
 
   start_menu ("Cygwin 1.1 Bash Shell", batname);
 
