@@ -1,10 +1,16 @@
+2002-02-14  Christopher Faylor  <cgf@redhat.com>
+
+	* filemanip.c (parse_filename): Don't treat '_' as a version number
+	introducer.
+
 2002-01-29  Christopher Faylor  <cgf@redhat.com>
 
 	* configure: Regenerate.
 
 2002-01-27  Robert Collins  <rbtcollins@hotmail.com>
 
-	* res.rc (IDD_LOCAL_DIR): Fix typo reported by Rene <Hoeck@extern.lrz-muenchen.de>
+	* res.rc (IDD_LOCAL_DIR): Fix typo reported by Rene
+	<Hoeck@extern.lrz-muenchen.de>
 
 2002-01-27  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -13,18 +19,18 @@
 	(list): New methods checksize and insert to reduce code duplication.
 	(list::registerbykey): Use them.
 	(list::registerbyobject): Ditto.
-	(list::removebyindex): Copy each object individually - safe for non trivial
-	objects.
+	(list::removebyindex): Copy each object individually - safe for non
+	trivial objects.
 	(list::checksize): Implement.
 	(list::insert): Implement.
 
 2002-01-27  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in: Remove the dlmalloc object by default.
-	* install.cc (do_install_thread): Remove the mallinfo call for 'working around'
-	the crashing issue.
+	* install.cc (do_install_thread): Remove the mallinfo call for 'working
+	around' the crashing issue.
 	* package_db.h: Include <string.h> - it's needed to parse this.
-	* package_source.cc (site::site):  Move here from the header file.
+	* package_source.cc (site::site): Move here from the header file.
 	* package_source.h (site): Stop the constructor being inlinable.
 
 2002-01-26  Robert Collins  <rbtcollins@hotmail.com>
@@ -35,19 +41,21 @@
 
 	* filemanip.cc (find_tar_ext): Clean up tests for .tar.gz and .tar.
 	* fromcwd.cc (do_fromcwd): Expand FIXME comment in source file check.
-	* install.cc (install_one_source): Add space between words in log() call.
+	* install.cc (install_one_source): Add space between words in log()
+	call.
 
 2002-01-22  Robert Collins  <rbtcollins@hotmail.com>
 
-	* log.cc (exit_setup): When saving to the download dir, explicity specify
-	the path.
+	* log.cc (exit_setup): When saving to the download dir, explicity
+	specify the path.
 
 2002-01-22  Robert Collins  <rbtcollins@hotmail.com>
 
-	* archive.cc (extract_file): Separate out the prefix and the URL scheme.
+	* archive.cc (extract_file): Separate out the prefix and the URL
+	scheme.
 	* archive.h (archive::extract_file): Ditto.
-	* install.cc (install_one_source): Ditto.
-	Use the new archive::extract_file syntax.
+	* install.cc (install_one_source): Ditto.  Use the new
+	archive::extract_file syntax.
 	(replace_one): Use the new syntax.
 	(io_stream.cc): Add some log info for links.
 
@@ -59,8 +67,8 @@
 	(PickCategoryLine::set_action): New method.
 	* PickCategoryLine.h (PickCategoryLine::-actions): Remove.
 	(PickCategoryLine::current_default): Use packagemeta _actions class.
-	* PickLine.h (PickLine::set_action): New abstract method that requires including
-	package_meta.h.
+	* PickLine.h (PickLine::set_action): New abstract method that requires
+	including package_meta.h.
 	* PickPackageLine.cc (PickPackageLine::set_action): New method.
 	* PickPackageLine.h (PickPackageLine::set_action): Declare this.
 	* list.h (getbykey): A const correctness fix.
