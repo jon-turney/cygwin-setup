@@ -1,3 +1,7 @@
+2001-11-03  Robert Collins  <rbtcollins@hotmail.com>
+
+	* res.rc (IDD_CHOOSE): Move the view caption to the right hand side.
+
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
 	* res.rc (IDD_CHOOSE): Tweak for use on a 640x480 screen.
