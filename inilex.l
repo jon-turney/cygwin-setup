@@ -36,7 +36,7 @@ static void ignore_line ();
 %option yylineno
 %option never-interactive
 
-STR	[a-zA-Z0-9_./-]+
+STR	[a-zA-Z0-9_./+-]+
 
 %%
 
