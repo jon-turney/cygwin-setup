@@ -21,86 +21,10 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include "concat.h"
-
-char *
-concat (const char *s, ...)
-{
-  va_list v;
-
-  va_start (v, s);
-
-  return vconcat (s, v);
-}
-
-char *
-vconcat (const char *s, va_list v)
-{
-  int len;
-  char *rv, *arg;
-  va_list save_v = v;
-  int unc;
-
-  if (!s)
-    return 0;
-
-  len = strlen (s);
-
-  unc = SLASH_P (*s) && SLASH_P (s[1]);
-
-  while (1)
-    {
-      arg = va_arg (v, char *);
-      if (arg == 0)
-	break;
-      len += strlen (arg);
-    }
-  va_end (v);
-
-  rv = new char [len + 1];
-  strcpy (rv, s);
-  v = save_v;
-  while (1)
-    {
-      arg = va_arg (v, char *);
-      if (arg == 0)
-	break;
-      strcat (rv, arg);
-    }
-  va_end (v);
-
-  char *d, *p;
-  for (p = rv; *p; p++)
-    if (*p == '\\')
-      *p = '/';
-
-  /* concat is only used for urls and files, so we can safely
-     canonicalize the results */
-  for (p = d = rv; *p; p++)
-    {
-      *d++ = *p;
-      /* special case for URLs */
-      if (*p == ':' && p[1] == '/' && p[2] == '/' && p > rv + 1)
-	{
-	  *d++ = *++p;
-	  *d++ = *++p;
-	}
-      else if (*p == '/' || *p == '\\')
-	{
-	  if (p == rv && unc)
-	    p++;
-	  while (p[1] == '/')
-	    p++;
-	}
-    }
-  *d = 0;
-
-  return rv;
-}
 
 char *
 backslash (char *s)

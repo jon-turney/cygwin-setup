@@ -160,24 +160,6 @@ String::casecompare (String const &aString, size_t const count) const
   return 0;
 }
 
-String
-String::concat (const char *aString, ...)
-{
-  va_list aList;
-  va_start (aList, aString);
-
-  return vconcat (aString, aList);  
-}
-
-String
-String::vconcat (const char *aString, va_list aList)
-{
-  char *tempString = ::vconcat(aString, aList);
-  String theString = String (tempString);
-  delete[] tempString;
-  return theString;
-}
-
 String &
 String::operator+= (String const &aString)
 {

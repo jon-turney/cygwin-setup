@@ -110,10 +110,11 @@ download_one (packagesource & pkgsource, HWND owner)
 				  rfc1738_escape_part (pkgsource.sites[n]->
 						       key) + "/" +
 				  pkgsource.Canonical ();
-      io_stream::mkpath_p (PATH_TO_FILE, (String ("file://") + local).cstr_oneuse());
+      io_stream::mkpath_p (PATH_TO_FILE, String ("file://") + local);
 
-      if (get_url_to_file(String (pkgsource.sites[n]->key) +  "/" + pkgsource.Canonical (),
-	   local + ".tmp", pkgsource.size, owner))
+      if (get_url_to_file(pkgsource.sites[n]->key +  "/" +
+			  pkgsource.Canonical (),
+			  local + ".tmp", pkgsource.size, owner))
 	{
 	  /* FIXME: note new source ? */
 	  continue;
@@ -123,7 +124,7 @@ download_one (packagesource & pkgsource, HWND owner)
 	  size_t size = get_file_size (local + ".tmp");
 	  if (size == pkgsource.size)
 	    {
-	      log (LOG_TIMESTAMP, "Downloaded %s", local.cstr_oneuse());
+	      log (LOG_PLAIN, String ("Downloaded ") + local);
 	      if (_access (local.cstr_oneuse(), 0) == 0)
 		remove (local.cstr_oneuse());
 	      rename ((local + ".tmp").cstr_oneuse(), local.cstr_oneuse());
@@ -135,7 +136,8 @@ download_one (packagesource & pkgsource, HWND owner)
 	    }
 	  else
 	    {
-	      log (LOG_TIMESTAMP, "Download %s wrong size (%u actual vs %d expected)",
+	      log (LOG_PLAIN,
+		   "Download %s wrong size (%u actual vs %d expected)",
 		   local.cstr_oneuse(), size, pkgsource.size);
 	      remove ((local + ".tmp").cstr_oneuse());
 	      continue;

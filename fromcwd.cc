@@ -40,7 +40,6 @@ static const char *cvsid =
 
 #include "ini.h"
 #include "resource.h"
-#include "concat.h"
 #include "state.h"
 #include "dialog.h"
 #include "msg.h"

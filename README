@@ -3,8 +3,10 @@ net releases.
 
 TODO:
 
+* Chooser dialog needs work.
+* Mirrors list orer is snafued.
 * Handle UNC paths for the localdir correctly.
-* Don't downgrade if the curr version is <= installed.
+* Don't downgrade if the curr version is <= installed?
 * support rpm/deb files for reading the package from. (To allow the maintainers the use of rpm/deb tools to create packages.)
   * make a librar(y|ies) for setup and cygcheck to use containing 
   1) Something to translate POSIX -> native.  Currently called "cygpath"
@@ -32,8 +34,7 @@ WISHLIST:
    * Mouse wheel support broken/missing for *some* users.
    * When in category view, and changing from prev->normal->exp the categories get collapsed This is non-intuitive.
    * mirrors.lst to be copied to setup.ini and cached locally. Then the master mirrors list is reserved for bootstrapping.
-   * clicking on a package that is in multiple categories should update the view of the package in both locations on screen.
-   * view button is not clear at first view. (the dotted highlight).
+   * clicking on a package that is in multiple categories should update the view of the package in both locations on screen. - Done?
    * remember the view mode - ie if you leave setup in partial, it returns to partial automatically.
    * new view - "action / category / package"
    * Downloading from the internet should be _able_ to list based on what is present in the cache, as opposed to what is installed. (To help building a complete install set for a different machine).
@@ -49,6 +50,7 @@ WISHLIST:
  * Show bin and src download size
    
 recently completed
+* view button is not clear at first view. (the dotted highlight).
    *  continue downloading past errors, present log of failures at end (partial)
    * multiple mirror support, with setup.ini from each merged automagically.
    * installed packages aren't automatically upgraded.

@@ -27,7 +27,6 @@ static const char *cvsid =
 #include <unistd.h>
 #include <stdio.h>
 #include "log.h"
-#include "concat.h"
 #include "filemanip.h"
 #include "mount.h"
 #include "io_stream.h"
@@ -49,7 +48,7 @@ init_run_script ()
 {
   for (int i = 0; shells[i]; i++)
     {
-      sh = backslash (cygpath (shells[i],0).cstr_oneuse());
+      sh = backslash (cygpath (shells[i]));
       if (_access (sh.cstr_oneuse(), 0) == 0)
 	break;
       sh = String();
@@ -57,11 +56,9 @@ init_run_script ()
   
   char old_path[_MAX_PATH];
   GetEnvironmentVariable ("PATH", old_path, sizeof (old_path));
-  SetEnvironmentVariable ("PATH",
-			  backslash (cygpath ("/bin;",
-					      get_root_dir ().cstr_oneuse(), "/usr/bin;",
-					      old_path, 0)).cstr_oneuse());
-
+  SetEnvironmentVariable ("PATH", backslash (cygpath ("/bin") + ";" +
+					     cygpath ("/usr/bin") + ";" +
+					     old_path).cstr_oneuse());
   SetEnvironmentVariable ("CYGWINROOT", get_root_dir ().cstr_oneuse());
 
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
@@ -112,34 +109,32 @@ run_script (String const &dir, String const &fname)
 
   if (sh.size() && strcmp (ext, ".sh") == 0)
     {
-      char *f2 = concat (dir.cstr_oneuse(), fname.cstr_oneuse(), 0);
-      log (LOG_TIMESTAMP, "running: %s -c %s", sh.cstr_oneuse(), f2);
-      run (sh.cstr_oneuse(), "-c", f2);
-      delete[] f2;
+      String f2 = dir + fname;
+      log (LOG_PLAIN, String ("running: ") + sh + " -c " + f2);
+      run (sh.cstr_oneuse(), "-c", f2.cstr_oneuse());
     }
   else if (cmd && strcmp (ext, ".bat") == 0)
     {
-      char *f2 = backslash (cygpath (dir.cstr_oneuse(), fname.cstr_oneuse(),0)).cstr();
-      log (LOG_TIMESTAMP, "running: %s /c %s", cmd, f2);
-      run (cmd, "/c", f2);
-      delete[] f2;
+      String f2 = backslash (cygpath (dir + fname));
+      log (LOG_PLAIN, String ("running: ") + cmd + " /c " + f2);
+      run (cmd, "/c", f2.cstr_oneuse());
     }
   else
     return;
 
   /* if file exists then delete it otherwise just ignore no file error */
-  io_stream::remove (String ("cygfile://") + dir+ fname+ ".done");
+  io_stream::remove (String ("cygfile://") + dir + fname + ".done");
 
-  io_stream::move (String ("cygfile://")+ dir+ fname,
-		   String ("cygfile://")+ dir+ fname+ ".done");
+  io_stream::move (String ("cygfile://") + dir + fname,
+                   String ("cygfile://") + dir + fname+ ".done");
 }
 
 void
 try_run_script (String const &dir, String const &fname)
 {
-  if (io_stream::exists (String ("cygfile://")+ dir+ fname+ ".sh"))
-    run_script (dir.cstr_oneuse(), concat (fname.cstr_oneuse(), ".sh", 0));
-  if (io_stream::exists (String ("cygfile://")+ dir+ fname+ ".bat"))
-    run_script (dir.cstr_oneuse(), concat (fname.cstr_oneuse(), ".bat", 0));
+  if (io_stream::exists (String ("cygfile://")+ dir + fname + ".sh"))
+    run_script (dir.cstr_oneuse(), (fname + ".sh").cstr_oneuse());
+  if (io_stream::exists (String ("cygfile://")+ dir + fname + ".bat"))
+    run_script (dir.cstr_oneuse(), (fname + ".bat").cstr_oneuse());
 }
 

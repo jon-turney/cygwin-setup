@@ -47,7 +47,7 @@ ftp_line (SimpleSocket * s)
   do
     {
       last_line = s->gets ();
-      log (LOG_BABBLE, "ftp > %s", last_line ? last_line : "error");
+      log (LOG_BABBLE, String ("ftp > ") + (last_line ? last_line : "error"));
     }
   while (last_line && (!isdigit (last_line[0]) || last_line[3] != ' '));
   return atoi (last_line ? : "0");

@@ -226,7 +226,7 @@ io_stream::move (String const &from, String const &to)
       /* http urls can symlink to http or ftp url's */
     }
 #endif
-  log (LOG_TIMESTAMP, "Unsupported url providers for %s", from.cstr_oneuse());
+  log (LOG_TIMESTAMP, String ("Unsupported url providers for ") + from);
   return 1;
 }
 

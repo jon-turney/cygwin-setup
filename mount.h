@@ -32,6 +32,6 @@ void read_mounts ();
 mode consistent with the standard Cygwin mounts. */
 
 void set_cygdrive_flags (int istext, int issystem);
-String cygpath (const char *s, ...);
+String cygpath (String const &);
 void set_root_dir (String const);
 String const get_root_dir ();

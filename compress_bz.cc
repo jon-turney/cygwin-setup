@@ -137,7 +137,6 @@ ssize_t compress_bz::write (const void *buffer, size_t len)
 
 ssize_t compress_bz::peek (void *buffer, size_t len)
 {
-  log (LOG_TIMESTAMP, "compress_bz::peek called");
   if (writing)
   {
     lasterr = EBADF;
@@ -179,7 +178,7 @@ int
 compress_bz::seek (long where, io_stream_seek_t whence)
 {
     log (LOG_TIMESTAMP, "compress_bz::seek called");
-      return -1;
+    return -1;
 }
 
 int
@@ -207,7 +206,6 @@ compress_bz::get_mtime ()
 
 compress_bz::~compress_bz ()
 {
-  log (LOG_BABBLE, "compress_bz::~bz called");
   if (initialisedOk)
     BZ2_bzDecompressEnd (&strm);
   destroyed = 1;

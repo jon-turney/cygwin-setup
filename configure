@@ -875,7 +875,7 @@ fi
   test -z "$CC" && { echo "configure: error: no acceptable cc found in \$PATH" 1>&2; exit 1; }
 fi
 
-CXXFLAGS='$(CFLAGS)'
+CXXFLAGS="$CFLAGS"
 
 
 if test "$program_transform_name" = s,x,x,; then

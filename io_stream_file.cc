@@ -23,7 +23,6 @@ static const char *cvsid =
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
-#include "log.h"
 #include "port.h"
 #include "mklink2.h"
 
@@ -126,7 +125,6 @@ io_stream_file::write (const void *buffer, size_t len)
 ssize_t
 io_stream_file::peek (void *buffer, size_t len)
 {
-  log (LOG_TIMESTAMP, "io_stream_file::peek called");
   if (fp)
     {
       int pos = ftell (fp);

@@ -188,7 +188,7 @@ RootPage::OnNext ()
 
   NEXT (IDD_LOCAL_DIR);
 
-  log (LOG_TIMESTAMP, String ("root: ") + get_root_dir () + 
+  log (LOG_PLAIN, String ("root: ") + get_root_dir () + 
        (root_text == IDC_ROOT_TEXT ? " text" : " binary")  +
        (root_scope == IDC_ROOT_USER ? " user" : " system"));
 

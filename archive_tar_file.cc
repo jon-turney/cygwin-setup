@@ -32,7 +32,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "archive.h"
 #include "archive_tar.h"
 #include "log.h"
-#include "concat.h"
 
 #include "port.h"
 

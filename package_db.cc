@@ -26,7 +26,6 @@ static const char *cvsid =
 #include <stdlib.h>
 #include <unistd.h>
 #include <strings.h>
-#include "concat.h"
 
 #include "io_stream.h"
 #include "compress.h"
@@ -143,9 +142,8 @@ packagedb::flush ()
 	   * to keep cygcheck happy.               
 	   */
 	  sprintf (line, "%s %s %d\n", pkgm.name.cstr_oneuse(),
-		   concat (pkgm.name.cstr_oneuse(), "-",
-			   pkgm.installed->Canonical_version ().cstr_oneuse(),
-			   ".tar.bz2", 0), 0);
+		   (pkgm.name + "-" + pkgm.installed->Canonical_version () +
+		    ".tar.bz2").cstr_oneuse(), 0);
 	  ndb->write (line, strlen (line));
 	}
     }

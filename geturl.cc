@@ -115,7 +115,7 @@ progress (int bytes)
 io_stream *
 get_url_to_membuf (String const &_url, HWND owner)
 {
-  log (LOG_BABBLE, "get_url_to_membuf %s", _url.cstr_oneuse());
+  log (LOG_BABBLE, String ("get_url_to_membuf ") + _url);
   is_local_install = (source == IDC_SOURCE_CWD);
   init_dialog (_url, 0, owner);
   NetIO *n = NetIO::open (_url.cstr_oneuse());
@@ -193,7 +193,7 @@ int
 get_url_to_file (String const &_url, String const &_filename, int expected_length,
 		 HWND owner, BOOL allow_ftp_auth)
 {
-  log (LOG_BABBLE, "get_url_to_file %s %s", _url.cstr_oneuse(), _filename.cstr_oneuse());
+  log (LOG_BABBLE, String ("get_url_to_file ") + _url + " " + _filename);
   if (total_download_bytes > 0)
     {
       int df = diskfull (get_root_dir ().cstr_oneuse());

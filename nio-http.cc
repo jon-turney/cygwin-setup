@@ -30,7 +30,6 @@ static const char *cvsid =
 #include "state.h"
 #include "simpsock.h"
 #include "msg.h"
-#include "concat.h"
 
 #include "netio.h"
 #include "nio-http.h"
@@ -107,7 +106,7 @@ retry_get:
     }
 
   if (net_method == IDC_NET_PROXY)
-    s->printf ("GET %s HTTP/1.0\r\n", url);
+    s->printf ("GET %s HTTP/1.0\r\n", Purl);
   else
     s->printf ("GET %s HTTP/1.0\r\n", path);
   s->printf ("Host: %s:%d\r\n", host, port);
@@ -161,15 +160,15 @@ retry_get:
       goto retry_get;
     }
   if (code == 500		/* ftp authentication through proxy required */
-      && net_method == IDC_NET_PROXY && !strncmp (url, "ftp://", 6))
+      && net_method == IDC_NET_PROXY && !strncmp (Purl, "ftp://", 6))
     {
       get_ftp_auth (NULL);
       if (net_ftp_user && net_ftp_passwd)
 	{
 	  delete
 	    s;
-	  url = concat ("ftp://", net_ftp_user,
-			":", net_ftp_passwd, "@", url + 6, 0);
+	  Purl = (String ("ftp://") + net_ftp_user +
+			":" + net_ftp_passwd + "@" + (Purl + 6)).cstr_oneuse();
 	  goto retry_get;
 	}
     }

@@ -60,7 +60,7 @@ io_stream_cygfile::io_stream_cygfile (String const &name, String const &mode) : 
     /* TODO: assign a errno for "no mount table :} " */
     return;
 
-  fname = cygpath (name.cstr_oneuse(), 0);
+  fname = cygpath (name);
   lmode = mode;
   fp = fopen (fname.cstr_oneuse(), mode.cstr_oneuse());
   if (!fp)
@@ -79,7 +79,7 @@ int
 io_stream_cygfile::exists (String const &path)
 {
   get_root_dir_now ();
-  if (get_root_dir ().size() && _access (cygpath (path.cstr_oneuse(), 0).cstr_oneuse(), 0) == 0)
+  if (get_root_dir ().size() && _access (cygpath (path).cstr_oneuse(), 0) == 0)
     return 1;
   return 0;
 }
@@ -94,22 +94,22 @@ io_stream_cygfile::remove (String const &path)
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
 
-  unsigned long w = GetFileAttributes (cygpath (path.cstr_oneuse(),0).cstr_oneuse());
+  unsigned long w = GetFileAttributes (cygpath (path).cstr_oneuse());
   if (w != 0xffffffff && w & FILE_ATTRIBUTE_DIRECTORY)
     {
-      char tmp[cygpath (path.cstr_oneuse(),0).size() + 10];
+      char tmp[cygpath (path).size() + 10];
       int i = 0;
       do
 	{
 	  ++i;
-	  sprintf (tmp, "%s.old-%d", cygpath (path.cstr_oneuse(),0).cstr_oneuse(), i);
+	  sprintf (tmp, "%s.old-%d", cygpath (path).cstr_oneuse(), i);
 	}
       while (GetFileAttributes (tmp) != 0xffffffff);
       fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
 	       path.cstr_oneuse());
-      MoveFile (cygpath (path.cstr_oneuse(),0).cstr_oneuse(), tmp);
+      MoveFile (cygpath (path).cstr_oneuse(), tmp);
     }
-  return !DeleteFileA (cygpath (path.cstr_oneuse(),0).cstr_oneuse());
+  return !DeleteFileA (cygpath (path).cstr_oneuse());
 }
 
 int
@@ -121,20 +121,20 @@ io_stream_cygfile::mklink (String const &from, String const &to,
   switch (linktype)
     {
     case IO_STREAM_SYMLINK:
-      return mkcygsymlink (cygpath (from.cstr_oneuse(),0).cstr_oneuse(), to.cstr_oneuse());
+      return mkcygsymlink (cygpath (from).cstr_oneuse(), to.cstr_oneuse());
     case IO_STREAM_HARDLINK:
       {
 	/* For now, just copy */
 	/* textmode alert: should we translate when linking from an binmode to a
 	   text mode mount and vice verca?
 	 */
-	io_stream *in = io_stream::open (cygpath (to.cstr_oneuse(),0), "rb");
+	io_stream *in = io_stream::open (cygpath (to), "rb");
 	if (!in)
 	  {
 	    log (LOG_TIMESTAMP, String("could not open ") + to +" for reading in mklink");
 	    return 1;
 	  }
-	io_stream *out = io_stream::open (cygpath (from.cstr_oneuse(),0), "wb");
+	io_stream *out = io_stream::open (cygpath (from), "wb");
 	if (!out)
 	  {
 	    log (LOG_TIMESTAMP, String("could not open ")+ from + " for writing in mklink");
@@ -180,7 +180,6 @@ io_stream_cygfile::write (const void *buffer, size_t len)
 ssize_t
 io_stream_cygfile::peek (void *buffer, size_t len)
 {
-  log (LOG_TIMESTAMP, "io_stream_cygfile::peek called");
   if (fp)
     {
       int pos = ftell (fp);
@@ -229,7 +228,7 @@ cygmkdir_p (enum path_type_t isadir, String const &name)
   if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
-  return mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, cygpath (name.cstr_oneuse(),0).cstr_oneuse());
+  return mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, cygpath (name).cstr_oneuse());
 }
 
 int
@@ -278,7 +277,7 @@ io_stream_cygfile::move (String const &from, String const &to)
   if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
-  return rename (cygpath (from.cstr_oneuse(),0).cstr_oneuse(), cygpath (to.cstr_oneuse(),0).cstr_oneuse());
+  return rename (cygpath (from).cstr_oneuse(), cygpath (to).cstr_oneuse());
 }
 
 size_t

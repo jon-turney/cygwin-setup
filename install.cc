@@ -39,7 +39,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "resource.h"
 #include "ini.h"
 #include "dialog.h"
-#include "concat.h"
 #include "geturl.h"
 #include "state.h"
 #include "diskfull.h"
@@ -122,7 +121,7 @@ uninstall_one (packagemeta & pkgm)
 {
   Progress.SetText1 ("Uninstalling...");
   Progress.SetText2 (pkgm.name.cstr_oneuse());
-  log (LOG_TIMESTAMP, String("Uninstalling ") + pkgm.name);
+  log (LOG_PLAIN, String("Uninstalling ") + pkgm.name);
   pkgm.uninstall ();
   num_uninstalls++;
 }
@@ -139,7 +138,7 @@ replace_one (packagemeta & pkg)
   int errors = 0;
   Progress.SetText1 ("Replacing...");
   Progress.SetText2 (pkg.name.cstr_oneuse());
-  log (LOG_TIMESTAMP, String( "Replacing ")  + pkg.name);
+  log (LOG_PLAIN, String( "Replacing ")  + pkg.name);
   pkg.uninstall ();
 
   errors +=
@@ -183,7 +182,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
   char msg[64];
   strcpy (msg, "Installing");
   Progress.SetText1 (msg);
-  log (LOG_TIMESTAMP, "%s %s", msg, source.Cached ());
+  log (LOG_PLAIN, String (msg) + " " + source.Cached ());
   io_stream *tmp = io_stream::open (source.Cached (), "rb");
   archive *thefile = 0;
   if (tmp)
@@ -215,7 +214,9 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 	      //extract to temp location
 	      if (archive::extract_file (thefile, prefixURL, prefixPath, ".new") != 0)
 		{
-		  log (LOG_TIMESTAMP, String("Unable to install file ")+ prefixURL+prefixPath+ fn);
+		  log (LOG_PLAIN,
+		       String("Unable to install file ") +
+		       prefixURL + prefixPath + fn);
 		  errors++;
 		}
 	      else
@@ -227,13 +228,16 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 		      /* Get the short file names */
 		      char source[MAX_PATH];
 		      unsigned int len =
-			GetShortPathName (cygpath ("/", fn.cstr_oneuse(), ".new", 0).cstr_oneuse(),
+			GetShortPathName (cygpath (String ("/") + fn +
+						   ".new").cstr_oneuse(),
 					  source, MAX_PATH);
 		      if (!len || len > MAX_PATH)
 			{
 			  log (LOG_TIMESTAMP,
 			       "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-			       cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(), cygpath ("/", fn.cstr_oneuse(), ".new", 0).cstr_oneuse(),
+			       cygpath (String ("/") + fn).cstr_oneuse(),
+			       cygpath (String ("/") + fn +
+						".new").cstr_oneuse(),
 			       GetLastError ());
 			  ++errors;
 			}
@@ -241,14 +245,16 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 			{
 			  char dest[MAX_PATH];
 			  len =
-			    GetShortPathName (cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(), dest,
-					      MAX_PATH);
+			    GetShortPathName (cygpath (String ("/") +
+						       fn).cstr_oneuse(),
+					      dest, MAX_PATH);
 			  if (!len || len > MAX_PATH)
 			    {
 			      log (LOG_TIMESTAMP,
 				   "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-				   cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(), cygpath ("/", fn.cstr_oneuse(),
-								  ".new", 0).cstr_oneuse(),
+				   cygpath (String ("/") + fn).cstr_oneuse(),
+				   cygpath (String ("/") + fn +
+					    ".new").cstr_oneuse(),
 				   GetLastError ());
 			      ++errors;
 
@@ -260,8 +266,9 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 			    {
 			      log (LOG_TIMESTAMP,
 				   "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-				   cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(), cygpath ("/", fn.cstr_oneuse(),
-								  ".new", 0).cstr_oneuse(),
+				   cygpath (String ("/") + fn).cstr_oneuse(),
+				   cygpath (String ("/") + fn +
+					    ".new").cstr_oneuse(),
 				   GetLastError ());
 			      ++errors;
 			    }
@@ -275,14 +282,16 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 		       * - we need a io method to get win32 paths 
 		       * or to wrap this system call
 		       */
-		      if (!MoveFileEx (cygpath ("/", fn.cstr_oneuse(), ".new", 0).cstr_oneuse(),
-				       cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(),
+		      if (!MoveFileEx (cygpath (String ("/") + fn +
+						".new").cstr_oneuse(),
+				       cygpath (String ("/") + fn).cstr_oneuse(),
 				       MOVEFILE_DELAY_UNTIL_REBOOT |
 				       MOVEFILE_REPLACE_EXISTING))
 			{
 			  log (LOG_TIMESTAMP,
 			       "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
-			       cygpath ("/", fn.cstr_oneuse(), 0).cstr_oneuse(), cygpath ("/", fn.cstr_oneuse(), ".new", 0).cstr_oneuse(),
+			       cygpath (String ("/") + fn).cstr_oneuse(),
+			       cygpath (String ("/") + fn + ".new").cstr_oneuse(),
 			       GetLastError ());
 			  ++errors;
 			}
@@ -334,37 +343,37 @@ install_one (packagemeta & pkg)
 
   /* FIXME: make a upgrade method and reinstate this */
 #if 0
-  char msg[64];
+  String msg;
   if (!pkg->installed)
-    strcpy (msg, "Installing");
+    msg = "Installing";
   else
     {
       int n = strcmp (pi->version, pkg->installed->version);
       if (n < 0)
-	strcpy (msg, "Reverting");
+	msg = "Reverting";
       else if (n == 0)
-	strcpy (msg, "Reinstalling");
+	msg = "Reinstalling";
       else
-	strcpy (msg, "Upgrading");
+	msg = "Upgrading";
     }
 
   switch (pkg->action)
     {
     case ACTION_PREV:
-      strcat (msg, " previous version...");
+      msg += " previous version...";
       break;
     case ACTION_CURR:
-      strcat (msg, "...");
+      msg += "...";
       break;
     case ACTION_TEST:
-      strcat (msg, " test version...");
+      msg += " test version...";
       break;
     default:
       /* FIXME: log this somehow */
       break;
     }
-  SetWindowText (ins_action, msg);
-  log (0, "%s%s", msg, file);
+  SetWindowText (ins_action, msg.cstr_oneuse());
+  log (LOG_PLAIN, msg + " " + file);
 #endif
 
   return errors;
@@ -421,7 +430,7 @@ do_install_thread (HINSTANCE h, HWND owner)
 
   for (i = 0; standard_dirs[i]; i++)
     {
-      String p = cygpath (standard_dirs[i], 0);
+      String p = cygpath (standard_dirs[i]);
       if (p.size())
 	io_stream::mkpath_p (PATH_TO_DIR, p);
     }
@@ -441,9 +450,9 @@ do_install_thread (HINSTANCE h, HWND owner)
   int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
 
-  create_mount ("/", get_root_dir ().cstr_oneuse(), istext, issystem);
-  create_mount ("/usr/bin", cygpath ("/bin", 0), istext, issystem);
-  create_mount ("/usr/lib", cygpath ("/lib", 0), istext, issystem);
+  create_mount ("/", get_root_dir (), istext, issystem);
+  create_mount ("/usr/bin", cygpath ("/bin"), istext, issystem);
+  create_mount ("/usr/lib", cygpath ("/lib"), istext, issystem);
   set_cygdrive_flags (istext, issystem);
 
   /* Let's hope people won't uninstall packages before installing [b]ash */

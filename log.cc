@@ -31,7 +31,6 @@ static const char *cvsid =
 #include "log.h"
 #include "dialog.h"
 #include "state.h"
-#include "concat.h"
 #include "mkdir.h"
 #include "mount.h"
 
@@ -135,8 +134,8 @@ exit_setup (int exit_code)
     }
   else
     {
-      log_save (LOG_BABBLE, cygpath ("/var/log/setup.log.full", 0), 0);
-      log_save (0, cygpath ("/var/log/setup.log", 0), 1);
+      log_save (LOG_BABBLE, cygpath ("/var/log/setup.log.full"), 0);
+      log_save (0, cygpath ("/var/log/setup.log"), 1);
     }
 
   ExitProcess (exit_code);

@@ -26,9 +26,6 @@ class String {
   class _data;
 public:
   // Static members first
-  static String concat (const char *s, ...);
-  static String vconcat (const char *, va_list);
-  
   inline String();
   inline String (String const &);
   // We're notperformance bottlenecked.

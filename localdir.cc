@@ -34,7 +34,6 @@ static const char *cvsid =
 #include "state.h"
 #include "msg.h"
 #include "mount.h"
-#include "concat.h"
 #include "log.h"
 #include "io_stream.h"
 
@@ -175,7 +174,7 @@ LocalDirPage::OnNext ()
 
   save_dialog (h);
   save_local_dir ();
-  log (LOG_TIMESTAMP, "Selected local directory: %s", local_dir.cstr_oneuse());
+  log (LOG_PLAIN, String ("Selected local directory: ") + local_dir);
   if (SetCurrentDirectoryA (local_dir.cstr_oneuse()))
     {
       if (source == IDC_SOURCE_CWD)

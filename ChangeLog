@@ -1,5 +1,89 @@
 2002-02-19  Robert Collins  <rbtcollins@hotmail.com>
 
+	* configure.in (CXXFLAGS): Substitute at configure time, not runtime.
+	* configure (CXXFLAGS): Regenerate.
+	* Makefile.in (iniparse.o): Build via default rules - no errors now.
+	* README: TODO list updates.
+
+2002-02-19  Michael A Chase  <mchase@ix.netcom.com>
+
+	* String++.cc (String::concat):: Remove.
+	(String::vconcat):: Ditto.
+	* String++.h (String::concat):: Remove.
+	(String::vconcat):: Ditto.
+	* archive_tar.cc: Don't include concat.h.
+	* archive_tar_file.cc: Don't include concat.h.
+	* compress_bz.cc (compress_bz::peek): Don't log unneeded messages.
+	(compress_bz::seek): Ditto.
+	(compress_bz::~compress_bz): Ditto.
+	* compress_gz.cc (compress_gz::peek): Ditto.
+	(compress_gz::error): Ditto.
+	(compress_gz::~compress_gz): Ditto.
+	* concat.cc (vconcat): Remove.
+	(concat): Ditto.
+	* concat.h (vconcat): Remove.
+	(concat): Ditto.
+	* desktop.cc (desktop_icon): Use new cygpath.
+	(make_etc_profile): Ditto.
+	(uexists): Ditto.
+	(make_passwd_group): Ditto.
+	(save_icon): Ditto.
+	(check_desktop): Remove concat use.
+	(check_start_menu): Ditto.
+	* download.cc (download_one): Use new mkpath_p correctly.
+	Use LOG_PLAIN.
+	* fromcwd.cc: Don't include concat.h.
+	* geturl.cc (get_url_to_membuf): Use String log() call.
+	(get_url_to_file): Ditto.
+	* install.cc: Don't include concat.h.
+	(uninstall_one): Use LOG_PLAIN.
+	(replace_one): Ditto.
+	(install_one_source): Ditto.
+	(install_one): More char to String conversion.
+	(do_install_thread): Use new cygpath.
+	Use new create_mount.
+	* io_stream.cc (io_stream::move): Use new log().
+	* io_stream_cygfile (io_stream_cygfile::io_stream_cygfile): Use new cygpath.
+	(io_stream_cygfile::exists): Ditto.
+	(io_stream_cygfile::remove): Ditto.
+	(io_stream_cygfile::mklink): Ditto.
+	(io_stream_cygfile::write): Ditto.
+	(cygmkdir_p): Ditto.
+	(io_stream_cygfile::move): Ditto.
+	* io_stream_file.cc: Don't include log.h.
+	(io_stream_file::write): Don't log unneeded messages.
+	* localdir.cc: Don't include concat.h.
+	(LocalDirPage::OnNext): Use LOG_PLAIN.
+	* log.cc: Don't include log.h.
+	(exit_setup): Use new cygpath.
+	* log.h (log_level): Add new level LOG_PLAIN.
+	* main.cc (WinMain): Use new log().
+	* mount.cc (SLASH_P): New macro from concat.h.
+	(cygpath): Make String version globally visible.
+	Remove varargs version.
+	* mount,h: Ditto.
+	* msg.cc (mbox): Use LOG_PLAIN.
+	* net.cc (NetPage::OnNext): Ditto.
+	* nio-ftp.cc (ftp_line): Use new log().
+	* nio-http.cc: Don't include log.h.
+	(retry_get): Use alternative url variable.
+	* package_db.cc: Don't include concat.h.
+	(packagedb::flush): Don't use concat.
+	* package_meta.cc: Don't include concat.h.
+	(packagemeta::uninstall): Use new cygpath.
+	* postinstall.cc (do_postinstall): Ditto.
+	* root.cc (RootPage::OnNext): Use LOG_PLAIN.
+	* script.cc: Don't include concat.h.
+	(init_run_script): Use new cygpath.
+	(run_script): More char * to String conversion.
+	(try_run_script): Ditto.
+	* site.cc: Don't include concat.h.
+	(SitePage::OnNext): Use LOG_PLAIN.
+	(SitePage::OnMessageCmd): Use new log().
+	* source.cc (SourcePage::OnDeactivate): Use LOG_PLAIN.
+
+2002-02-19  Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.in (OBJS): Add new object.
 	* PickCategoryLine.cc (PickCategoryLine::paint): Print a "+" before the name.
 	* PickCategoryLine.h (PickCategoryLine::bucket): Use the String class.

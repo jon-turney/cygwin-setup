@@ -148,7 +148,7 @@ WinMain (HINSTANCE h,
 
   next_dialog = IDD_SPLASH;
 
-  log (LOG_TIMESTAMP, "Starting cygwin install, version %s", version);
+  log (LOG_PLAIN, String ("Starting cygwin install, version ") + version);
 
   SplashPage Splash;
   SourcePage Source;
@@ -163,7 +163,7 @@ WinMain (HINSTANCE h,
   char cwd[_MAX_PATH];
   GetCurrentDirectory (sizeof (cwd), cwd);
   local_dir = String (cwd);
-  log (LOG_TIMESTAMP, "Current Directory: %s", cwd);
+  log (LOG_TIMESTAMP, String ("Current Directory: ") + local_dir);
 
   char **argv;
   int argc;

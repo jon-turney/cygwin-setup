@@ -35,7 +35,6 @@ static const char *cvsid =
 #include "mkdir.h"
 #include "log.h"
 #include "filemanip.h"
-#include "concat.h"
 
 #include "port.h"
 #if 0

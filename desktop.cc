@@ -108,7 +108,8 @@ make_link (String const &linkpath, String const &title, String const &target)
   if (_access (fname.cstr_oneuse(), 0) == 0)
     return;			/* already exists */
 
-  msg ("make_link %s, %s, %s\n", fname.cstr_oneuse(), title.cstr_oneuse(), target.cstr_oneuse());
+  msg ("make_link %s, %s, %s\n",
+       fname.cstr_oneuse(), title.cstr_oneuse(), target.cstr_oneuse());
 
   io_stream::mkpath_p (PATH_TO_FILE, fname);
 
@@ -132,8 +133,11 @@ make_link (String const &linkpath, String const &title, String const &target)
 //      sprintf (argbuf, "%s %s", COMMAND9XARGS, target.cstr_oneuse());
     }
 
-  msg ("make_link_2 (%s, %s, %s, %s)", exepath.cstr_oneuse(), argbuf.cstr_oneuse(), iconname.cstr_oneuse(), fname.cstr_oneuse());
-  make_link_2 (exepath.cstr_oneuse(), argbuf.cstr_oneuse(), iconname.cstr_oneuse(), fname.cstr_oneuse());
+  msg ("make_link_2 (%s, %s, %s, %s)",
+       exepath.cstr_oneuse(), argbuf.cstr_oneuse(),
+       iconname.cstr_oneuse(), fname.cstr_oneuse());
+  make_link_2 (exepath.cstr_oneuse(), argbuf.cstr_oneuse(),
+	       iconname.cstr_oneuse(), fname.cstr_oneuse());
 }
 
 static void
@@ -154,7 +158,8 @@ start_menu (String const &title, String const &target)
       SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
       SHGetPathFromIDList (id, _path);
       path = String(_path);
-      msg ("Program directory for program link changed to: %s", path.cstr_oneuse());
+      msg ("Program directory for program link changed to: %s",
+	   path.cstr_oneuse());
     }
 // end of Win95 addition
   path += "/Cygwin";
@@ -188,7 +193,7 @@ desktop_icon (String const &title, String const &target)
 static void
 make_cygwin_bat ()
 {
-  batname = backslash (cygpath ("/cygwin.bat", 0));
+  batname = backslash (cygpath ("/cygwin.bat"));
 
   /* if the batch file exists, don't overwrite it */
   if (_access (batname.cstr_oneuse(), 0) == 0)
@@ -212,7 +217,7 @@ make_cygwin_bat ()
 static void
 make_etc_profile ()
 {
-  String fname = cygpath ("/etc/profile", 0);
+  String fname = cygpath ("/etc/profile");
 
   /* if the file exists, don't overwrite it */
   if (_access (fname.cstr_oneuse(), 0) == 0)
@@ -262,7 +267,7 @@ make_etc_profile ()
 static int
 uexists (const char *path)
 {
-  String f = cygpath (path, 0);
+  String f = cygpath (path);
   int a = _access (f.cstr_oneuse(), 0);
   if (a == 0)
     return 1;
@@ -272,7 +277,7 @@ uexists (const char *path)
 static void
 make_passwd_group ()
 {
-  String fname = cygpath ("/etc/postinstall/passwd-grp.bat", 0);
+  String fname = cygpath ("/etc/postinstall/passwd-grp.bat");
   io_stream::mkpath_p (PATH_TO_FILE, fname);
 
   FILE *p = fopen (fname.cstr_oneuse(), "wt");
@@ -308,7 +313,7 @@ out:
 static void
 save_icon ()
 {
-  iconname = backslash (cygpath ("/cygwin.ico", 0));
+  iconname = backslash (cygpath ("/cygwin.ico"));
 
   HRSRC rsrc = FindResource (NULL, "CYGWIN.ICON", "FILE");
   if (rsrc == NULL)
@@ -384,12 +389,12 @@ check_desktop (String const title, String const target)
       msg ("Desktop directory for deskop link changed to: %s", path);
     }
   // end of Win95 addition
-  String fname = String::concat (path, "/", title.cstr_oneuse(), ".lnk", 0);
+  String fname = String (path) + "/" + title + ".lnk";
 
   if (_access (fname.cstr_oneuse(), 0) == 0)
     return 0;			/* already exists */
 
-  fname = String::concat (path, "/", title.cstr_oneuse(), ".pif", 0);	/* check for a pif as well */
+  fname = String (path) + "/" + title + ".pif";	/* check for a pif as well */
 
   if (_access (fname.cstr_oneuse(), 0) == 0)
     return 0;			/* already exists */
@@ -418,12 +423,12 @@ check_startmenu (String const title, String const target)
     }
   // end of Win95 addition
   strcat (path, "/Cygwin");
-  String fname = String::concat (path, "/", title.cstr_oneuse(), ".lnk", 0);
+  String fname = String (path) + "/" + title + ".lnk";
 
   if (_access (fname.cstr_oneuse(), 0) == 0)
     return 0;			/* already exists */
 
-  fname = String::concat (path, "/", title.cstr_oneuse(), ".pif", 0);	/* check for a pif as well */
+  fname = String (path) + "/" + title + ".pif";	/* check for a pif as well */
 
   if (_access (fname.cstr_oneuse(), 0) == 0)
     return 0;			/* already exists */
@@ -467,10 +472,10 @@ DesktopSetupPage::OnInit ()
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
   GetVersionEx (&verinfo);
   root_desktop =
-    check_desktop ("Cygwin", backslash (cygpath ("/cygwin.bat", 0)));
+    check_desktop ("Cygwin", backslash (cygpath ("/cygwin.bat")));
   root_menu =
     check_startmenu ("Cygwin Bash Shell",
-		     backslash (cygpath ("/cygwin.bat", 0)));
+		     backslash (cygpath ("/cygwin.bat")));
   load_dialog (GetHWND ());
 }
 

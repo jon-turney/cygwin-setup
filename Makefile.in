@@ -255,14 +255,6 @@ else
 	@$(CXX) @CXXFLAGS@ $(WARNONLY_CFLAGS) -c -o $@ $< -fno-rtti
 endif
 
-iniparse.o: iniparse.cc
-ifdef VERBOSE
-	$(CXX) @CXXFLAGS@ $(WARNONLY_CFLAGS) -fno-rtti -c -o $@ $< 
-else
-	@echo $(CXX) -c @CXXFLAGS@ $(WARNONLY_CFLAGS) ... $(<F) -fno-rtti
-	@$(CXX) @CXXFLAGS@ $(WARNONLY_CFLAGS) -c -o $@ $< -fno-rtti
-endif
-
 iniparse.cc iniparse.h : iniparse.y
 	bison -d -o iniparse.cc $(srcdir)/iniparse.y
 	@mv iniparse.cc.h iniparse.h 2>/dev/null || mv iniparse.hh iniparse.h

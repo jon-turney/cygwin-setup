@@ -374,7 +374,6 @@ compress_gz::write (const void *buffer, size_t len)
 ssize_t
 compress_gz::peek (void *buffer, size_t len)
 {
-  log (LOG_TIMESTAMP, "compress_gz::peek called");
   if (mode != 'r')
     return Z_STREAM_ERROR;
   /* can only peek 512 bytes */
@@ -418,7 +417,6 @@ compress_gz::seek (long where, io_stream_seek_t whence)
 int
 compress_gz::error ()
 {
-//  log (LOG_TIMESTAMP, "compress_gz::error called");
   return z_err;
 }
 
@@ -466,7 +464,6 @@ compress_gz::destroy ()
 
 compress_gz::~compress_gz ()
 {
-  log (LOG_TIMESTAMP, "compress_gz::~gz called");
   if (mode == 'w')
     {
       z_err = do_flush (Z_FINISH);

@@ -64,7 +64,7 @@ if test -z "$CXX"; then
   test -z "$CC" && AC_MSG_ERROR([no acceptable cc found in \$PATH])
 fi
 
-CXXFLAGS='$(CFLAGS)'
+CXXFLAGS="$CFLAGS"
 ])
 
 AC_CANONICAL_SYSTEM

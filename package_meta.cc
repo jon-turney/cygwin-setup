@@ -21,7 +21,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include <stdlib.h>
 #include <unistd.h>
 #include <strings.h>
-#include "concat.h"
 
 #include "io_stream.h"
 #include "compress.h"
@@ -158,7 +157,7 @@ packagemeta::uninstall ()
 	{
 	  dirs.add_subdirs (line);
 
-	  String d = cygpath ("/", line.cstr_oneuse(),0);
+	  String d = cygpath (String ("/") + line);
 	  DWORD dw = GetFileAttributes (d.cstr_oneuse());
 	  if (dw != INVALID_FILE_ATTRIBUTES
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
@@ -174,7 +173,8 @@ packagemeta::uninstall ()
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
 	      log (LOG_BABBLE, String("unlink ") + d);
-	      SetFileAttributes (d.cstr_oneuse(), dw & ~FILE_ATTRIBUTE_READONLY);
+	      SetFileAttributes (d.cstr_oneuse(),
+				 dw & ~FILE_ATTRIBUTE_READONLY);
 	      DeleteFile (d.cstr_oneuse());
 	    }
 	  line = installed->getnextfile ();
@@ -185,9 +185,9 @@ packagemeta::uninstall ()
       char *subdir = 0;
       while ((subdir = dirs.enumerate (subdir)) != 0)
 	{
-	  String d = cygpath ("/", subdir,0);
+	  String d = cygpath (String ("/") + subdir);
 	  if (RemoveDirectory (d.cstr_oneuse()))
-	    log (LOG_BABBLE, String("rmdir ")+ d);
+	    log (LOG_BABBLE, String("rmdir ") + d);
 	}
       try_run_script ("/etc/postremove/", name);
     }

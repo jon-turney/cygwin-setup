@@ -33,9 +33,15 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "resource.h"
 #include "dialog.h"
 #include "state.h"
-#include "concat.h"
 
 #include "String++.h"
+
+/* Used when treating / and \ as equivalent. */
+#define SLASH_P(ch) \
+    ({ \
+        char __c = (ch); \
+        ((__c) == '/' || (__c) == '\\'); \
+    })
 
 static struct mnt
 {
@@ -432,7 +438,7 @@ path_prefix_p (String const path1, String const path2)
     || path1.cstr_oneuse ()[len1 - 1] == ':';
 }
 
-static String
+String
 cygpath (String const &thePath)
 {
   size_t max_len = 0;
@@ -455,23 +461,6 @@ cygpath (String const &thePath)
       native = match->native;
     }
   else
-    native = match->native + "/" + String (thePath.cstr_oneuse () + max_len);
+    native = match->native + "/" + String (thePath.cstr_oneuse() + max_len);
   return native;
-}
-
-String
-cygpath (const char *s, ...)
-{
-  va_list v;
-
-  va_start (v, s);
-  char *path = vconcat (s, v);
-  if (strncmp (path, "./", 2) == 0)
-    memmove (path, path + 2, strlen (path + 2) + 1);
-  if (strncmp (path, "/./", 3) == 0)
-    memmove (path + 1, path + 3, strlen (path + 3) + 1);
-
-  String thePath (path);
-  delete[]path;
-  return cygpath (thePath);
 }

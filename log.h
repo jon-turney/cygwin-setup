@@ -20,6 +20,7 @@
 #include "String++.h"
 
 enum log_level {
+  LOG_PLAIN = 2,
   LOG_BABBLE = 1,
   LOG_TIMESTAMP	= 2
 };

@@ -113,9 +113,9 @@ NetPage::OnNext ()
 {
   save_dialog (GetHWND ());
 
-  log (LOG_TIMESTAMP, "net: %s",
-       (net_method == IDC_NET_IE5) ? "IE5" :
-       (net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy");
+  log (LOG_PLAIN, String ("net: ") +
+       ((net_method == IDC_NET_IE5) ? "IE5" :
+	(net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy"));
 
   Progress.SetActivateTask (WM_APP_START_SITE_INFO_DOWNLOAD);
   return IDD_INSTATUS;

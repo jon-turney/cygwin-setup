@@ -65,10 +65,12 @@ find_routine (char *path, unsigned int fsize)
 {
   if (!strstr (path, "setup.ini") )
     return;
-  io_stream *ini_file = io_stream::open (String ("file://") + local_dir + "/" + path, "rb");
+  io_stream *ini_file = io_stream::open (String ("file://") + local_dir + "/" +
+					 path, "rb");
   if (!ini_file)
     {
-    note (NULL, IDS_SETUPINI_MISSING, (String ("file://") + local_dir + "/" + path).cstr_oneuse());
+    note (NULL, IDS_SETUPINI_MISSING, (String ("file://") + local_dir + "/" +
+				       path).cstr_oneuse());
     return;
     }
   else

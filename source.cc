@@ -118,7 +118,7 @@ SourcePage::OnBack ()
 void
 SourcePage::OnDeactivate ()
 {
-  log (LOG_TIMESTAMP, "source: %s",
-       (source == IDC_SOURCE_DOWNLOAD) ? "download" :
-       (source == IDC_SOURCE_NETINST) ? "network install" : "from cwd");
+  log (LOG_PLAIN, String ("source: ") +
+       ((source == IDC_SOURCE_DOWNLOAD) ? "download" :
+	(source == IDC_SOURCE_NETINST) ? "network install" : "from cwd"));
 }
