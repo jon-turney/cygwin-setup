@@ -1,5 +1,11 @@
 2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
 
+	* script.cc (Script::extension): Extract method from Script::run.
+	(Script::run): Extract extension generation to Script::extension.
+	* script.h (Script::extension): Declare.
+
+2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
+
 	* script.cc (run_script): Remove.
 	(try_run_script): Inline method run_script.
 	* script.h (run_script): Remove.

@@ -196,11 +196,16 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
   CloseHandle(pi.hThread);
 }
 
+char const *
+Script::extension() const
+{
+  return strrchr (scriptName.cstr_oneuse(), '.');
+}
+
 void
 Script::run() const
 {
-  char *ext = strrchr (scriptName.cstr_oneuse(), '.');
-  if (!ext)
+  if (!extension())
     return;
 
   BOOL to_log (TRUE);
@@ -212,12 +217,12 @@ Script::run() const
     }
   OutputLog file_out(log_name);
 
-  if (sh.size() && strcmp (ext, ".sh") == 0)
+  if (sh.size() && strcmp (extension(), ".sh") == 0)
     {
       log(LOG_PLAIN) << "running: " << sh << " -c " << scriptName << endLog;
       ::run (sh.cstr_oneuse(), "-c", scriptName.cstr_oneuse(), file_out);
     }
-  else if (cmd && strcmp (ext, ".bat") == 0)
+  else if (cmd && strcmp (extension(), ".bat") == 0)
     {
       String windowsName = backslash (cygpath (scriptName));
       log(LOG_PLAIN) << "running: " << cmd << " /c " << windowsName << endLog;

@@ -36,6 +36,7 @@ public:
 private:
   String scriptName;
   static char const ETCPostinstall[];
+  char const * extension() const;
 };
 
 #endif /* SCRIPT_H */
