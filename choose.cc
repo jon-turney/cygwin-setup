@@ -226,8 +226,7 @@ void
 ChooserPage::createListview (HWND dlg, RECT * r)
 {
   packagedb db;
-  PickView::chooser = new PickView (*db.categories.find("All"));
-  chooser = PickView::chooser;
+  chooser = new PickView (*db.categories.find("All"));
   if (!chooser->Create(this, WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_VISIBLE,r))
     // TODO throw exception
     exit (11);

@@ -47,11 +47,10 @@ public:
   };
   void set_view_mode (views _mode);
   static HWND lv;
-  static PickView *chooser;
-  static void paint (HWND hwnd);
-  static LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
-  static LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);
-  static LRESULT CALLBACK list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos);
+  void paint (HWND hwnd);
+  LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
+  LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);
+  LRESULT CALLBACK list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos);
   virtual LRESULT WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam);
   Header *headers;
   PickView (Category & cat);

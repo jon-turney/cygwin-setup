@@ -1,5 +1,20 @@
 2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* PickView.h (PickView::chooser): Eliminate.
+	(PickView::list_vscroll): Make non-static.
+	(PickView::list_hscroll): Ditto.
+	(PickView::list_click): Ditto.
+	(PickView::paint): Ditto.
+	* PickView.cc (PickView::list_vscroll): Eliminate use
+	of PickView::chooser.
+	(PickView::list_hscroll): Ditto.
+	(PickView::list_click): Ditto.
+	(PickView::paint): Ditto.
+	* choose.cc (Chooser::createListView): Eliminate use
+	of PickView::chooser.
+	
+2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* PickView.h (PickView): Inherit from Window.
 	(PickView::RegisterWindows): Move from ChooserPage.
 	(PickView::listview_proc): Likewise.
