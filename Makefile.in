@@ -143,7 +143,8 @@ $(ZLIB): zlib/Makefile
 
 version.c : $(srcdir)/ChangeLog Makefile
 	grep '^\$$Revision.*' $(srcdir)/ChangeLog \
-	| sed -e 's/\$$Revision$$.*/\";/' \
+	| sed -e 's/\$$Revision: /char *version = \"/' \
+	  -e 's/ *$$.*/\";/' \
 	> version.tmp
 	mv version.tmp version.c
 
