@@ -59,6 +59,60 @@ save_dialog (HWND h)
   root_dir = eget (h, IDC_ROOT_DIR, root_dir);
 }
 
+/*
+ * is_admin () determines whether or not the current user is a member of the
+ * Administrators group.  On Windows 9X, the current user is considered an
+ * Administrator by definition.
+ */
+
+static int
+is_admin ()
+{
+  // Windows 9X users are considered Administrators by definition
+  OSVERSIONINFO verinfo;
+  verinfo.dwOSVersionInfoSize = sizeof (verinfo);
+  GetVersionEx (&verinfo);
+  if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
+    return 1;
+
+  // Get the process token for the current process
+  HANDLE token;
+  BOOL status = OpenProcessToken (GetCurrentProcess(), TOKEN_QUERY, &token);
+  if (!status)
+    return 0;
+
+  // Get the group token information
+  UCHAR token_info[1024];
+  PTOKEN_GROUPS groups = (PTOKEN_GROUPS) token_info;
+  DWORD token_info_len = sizeof (token_info);
+  status = GetTokenInformation (token, TokenGroups, token_info, token_info_len, &token_info_len);
+  CloseHandle(token);
+  if (!status)
+    return 0;
+
+  // Create the Administrators group SID
+  PSID admin_sid;
+  SID_IDENTIFIER_AUTHORITY authority = SECURITY_NT_AUTHORITY;
+  status = AllocateAndInitializeSid (&authority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &admin_sid);
+  if (!status)
+    return 0;
+
+  // Check to see if the user is a member of the Administrators group
+  status = 0;
+  for (UINT i=0; i<groups->GroupCount; i++) {
+    if (EqualSid(groups->Groups[i].Sid, admin_sid)) {
+      status = 1;
+      break;
+    }
+  }
+
+  // Destroy the Administrators group SID
+  FreeSid (admin_sid);
+
+  // Return whether or not the user is a member of the Administrators group
+  return status;
+}
+
 static void
 read_mount_table ()
 {
@@ -83,7 +137,7 @@ read_mount_table ()
       windir[2] = 0;
       root_dir = concat (windir, "\\cygwin", 0);
       root_text = IDC_ROOT_BINARY;
-      root_scope = IDC_ROOT_USER;
+      root_scope = (is_admin()) ? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
     }
 }
 

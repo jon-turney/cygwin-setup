@@ -1,3 +1,9 @@
+2000-10-02  Jason Tishler  <jt@dothill.com>
+
+	* root.cc (is_admin): New function.
+	(read_mount_table): Check for administrative priviledges and set
+	installation scope as appropriate.
+
 2000-09-28  DJ Delorie  <dj@redhat.com>
 
 	* nio-ftp.cc (ftp_line): handle continuations more robustly
