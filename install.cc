@@ -174,6 +174,7 @@ static char *standard_dirs[] = {
   "/usr",
   "/usr/bin",
   "/usr/lib",
+  "/usr/src",
   "/usr/local",
   "/usr/local/bin",
   "/usr/local/etc",
@@ -208,17 +209,18 @@ hash::add_subdirs (char *path)
 }
 
 char *
-map_filename (char *fn)
+map_filename (char *fn, const char *extra = 0)
 {
   char *dest_file;
+  char *root_dir_with_extra = concat (root_dir, extra, 0);
   while (*fn == '/' || *fn == '\\')
     fn++;
   if (strncmp (fn, "usr/bin/", 8) == 0)
-    dest_file = concat (root_dir, "/bin/", fn+8, 0);
+    dest_file = concat (root_dir_with_extra, "/bin/", fn+8, 0);
   else if (strncmp (fn, "usr/lib/", 8) == 0)
-    dest_file = concat (root_dir, "/lib/", fn+8, 0);
+    dest_file = concat (root_dir_with_extra, "/lib/", fn+8, 0);
   else
-    dest_file = concat (root_dir, "/", fn, 0);
+    dest_file = concat (root_dir_with_extra, "/", fn, 0);
   return dest_file;
 }
 
@@ -284,7 +286,7 @@ uninstall_one (char *name, int action)
 
 	  
 static int
-install_one (char *name, char *file, int file_size, int action)
+install_one (char *name, char *file, int file_size, int action, BOOL isSrc)
 {
   int errors = 0;
   char *local = file, *cp, *fn, *base;
@@ -328,7 +330,7 @@ install_one (char *name, char *file, int file_size, int action)
       if (lst)
 	gzprintf (lst, "%s\n", fn);
 
-      dest_file = map_filename (fn);
+      dest_file = map_filename (fn, isSrc?"/usr/src":NULL);
 
       SetWindowText (ins_filename, dest_file);
       log (LOG_BABBLE, "Installing file %s", dest_file);
@@ -394,6 +396,8 @@ do_install (HINSTANCE h)
   LOOP_PACKAGES
     {
       total_bytes += pi.install_size;
+      if (package[i].srcaction == SRCACTION_YES)
+        total_bytes += pi.source_size;
     }
 
   for (i=0; i<npackages; i++)
@@ -409,10 +413,10 @@ do_install (HINSTANCE h)
 	   || package[i].action == ACTION_UPGRADE)
 	  && pi.install)
 	{
-	  int e = install_one (package[i].name, pi.install, pi.install_size, package[i].action);
+	  int e = install_one (package[i].name, pi.install, pi.install_size, package[i].action, FALSE);
 	  if (package[i].srcaction == SRCACTION_YES && pi.source)
 	    e += install_one (concat (package[i].name, "-src", 0), pi.source, pi.source_size,
-			      package[i].action);
+			      package[i].action, TRUE);
 	  if (e)
 	    {
 	      package[i].action = ACTION_ERROR;

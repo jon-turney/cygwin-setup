@@ -1,3 +1,11 @@
+2001-03-10  Chris Abbey  <chris_abbey@yahoo.com>
+
+	* install.cc: install sources into /usr/src instead
+	of /, also include the sizes of source tarballs
+	in total_bytes.
+	* download.cc: include sizes of source tarballs in
+	total_download_bytes.
+
 Tue Mar  6 19:31:00 2000  Corinna Vinschen <corinna@vinschen.com>
 
 	* download.cc (get_file_size): Remove `static'.

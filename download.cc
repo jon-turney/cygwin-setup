@@ -103,6 +103,8 @@ do_download (HINSTANCE h)
     if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE)
       {
         total_download_bytes += pi.install_size;
+        if (package[i].srcaction == SRCACTION_YES)
+          total_download_bytes += pi.source_size;
       }
 
   for (i=0; i<npackages; i++)
