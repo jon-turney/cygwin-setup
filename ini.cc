@@ -119,10 +119,18 @@ do_remote_ini (HWND owner)
 				   "/setup.ini";
 	  io_stream::mkpath_p (PATH_TO_FILE, fp);
 	  io_stream *inistream = io_stream::open (fp, "wb");
-	  if (inistream && !ini_file->seek (0, IO_SEEK_SET))
+	  if (inistream)
 	    {
+	      if (compressed_ini_file)
+		{
+		  delete ini_file;
+		  compressed_ini_file->seek (0, IO_SEEK_SET);
+		  ini_file = compress::decompress (compressed_ini_file);
+		}
+	      else
+   		ini_file->seek (0, IO_SEEK_SET);
 	      if (io_stream::copy (ini_file, inistream))
-		io_stream::remove (fp.cstr_oneuse());
+		io_stream::remove (fp);
 	      delete inistream;
 	    }
 	  ++ini_count;

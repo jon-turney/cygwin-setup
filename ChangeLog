@@ -1,5 +1,9 @@
 2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
 
+	* ini.cc (do_remote_ini): Save uncompressed ini's correctly.
+
+2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
+
 	* rsync: New support library, contains librsync. This is not (yet)
   	rsync interoperable.
 	* configure.in: --with-rsync to enable rsync support. (Not complete).
