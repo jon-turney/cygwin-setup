@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001 Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -78,6 +78,9 @@ each (char *fname, unsigned int size)
     }
   else
     return;
+
+  /* if file exists then delete it otherwise just ignore no file error */
+  remove (cygpath ("/etc/postinstall/", fname, ".done", 0));
 
   rename (cygpath ("/etc/postinstall/", fname, 0),
 	  cygpath ("/etc/postinstall/", fname, ".done", 0));

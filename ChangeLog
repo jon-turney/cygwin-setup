@@ -1,3 +1,12 @@
+2001-10-27  Christopher Faylor  <cgf@redhat.com>
+
+	* desktop.cc (make_passwd_group): Move file creation earlier in the
+	process to ensure that passwd-grp.bat reflects desired operation.
+
+2001-27-10  Trevor Forbes  <t4bs@hotmail.com>
+
+	* postinstall.cc (each): Remove "*.done" file else rename will fail.
+
 2001-10-16  Christopher Faylor  <cgf@redhat.com>
 
 	* res.rc: Oops.  Take 640x480 screen size into account.
