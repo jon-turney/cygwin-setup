@@ -1,5 +1,32 @@
 2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.cc (set_view_mode): Rename to ChooserPage::setViewMode.
+	(default_trust): Rename to ChooserPage::defaultTrust.
+	(fill_missing_category): Rename to ChooserPage::fillMissingCategory.
+	(set_existence): Rename to ChooserPage::setExistence.
+	(register_windows): Rename to ChooserPage::registerWindows.
+	(listview_proc): Rename to ChooserPage::listview_proc.
+	(paint): Rename to ChooserPage::paint.
+	(list_click): Rename to ChooserPage::list_click.
+	(list_hscroll): Rename to ChooserPage::list_hscroll.
+	(list_vscroll): Rename to ChooserPage::list_vscroll.
+	(lv): Rename to ChooserPage::lv.
+	(chooser): Rename to ChooserPage::chooser.
+	* choose.h (ChooserPage::setViewMode): Declare.
+	(ChooserPage::defaultTrust): Declare.
+	(ChooserPage::fillMissingCategory): Declare.
+	(ChooserPage::setExistence): Declare.
+	(ChooserPage::registerWindows): Declare.
+	(ChooserPage::listview_proc): Declare.
+	(ChooserPage::paint): Declare.
+	(ChooserPage::list_click): Declare.
+	(ChooserPage::list_hscroll): Declare.	
+	(ChooserPage::list_vscroll): Declare.
+	(ChooserPage::lv): Declare.
+	(ChooserPage::chooser): Declare.
+	
+2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc (create_listview): Use for_each instead of explicit 
 	iteration.
 	(create_listview): Rename to ChooserPage::createListview.

@@ -53,8 +53,6 @@ static const char *cvsid =
 #include "package_meta.h"
 #include "package_version.h"
 
-#include "PickView.h"
-
 #include "port.h"
 #include "threebar.h"
 
@@ -62,13 +60,11 @@ using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
-static HWND lv;
-static PickView *chooser = NULL;
+HWND ChooserPage::lv;
+PickView *ChooserPage::chooser = NULL;
 
-static void set_view_mode (HWND h, PickView::views mode);
-
-static void
-paint (HWND hwnd)
+void
+ChooserPage::paint (HWND hwnd)
 {
   HDC hdc;
   PAINTSTRUCT ps;
@@ -81,7 +77,7 @@ paint (HWND hwnd)
   SetTextColor (hdc, GetSysColor (COLOR_WINDOWTEXT));
 
   RECT cr;
-  GetClientRect (hwnd, &cr);
+  ::GetClientRect (hwnd, &cr);
 
   x = cr.left - chooser->scroll_ulc_x;
   y = cr.top - chooser->scroll_ulc_y + chooser->header_height;
@@ -103,22 +99,22 @@ paint (HWND hwnd)
   EndPaint (hwnd, &ps);
 }
 
-static LRESULT CALLBACK
-list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos)
+LRESULT CALLBACK
+ChooserPage::list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos)
 {
   chooser->scroll (hwnd, SB_VERT, &chooser->scroll_ulc_y, code);
   return 0;
 }
 
-static LRESULT CALLBACK
-list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos)
+LRESULT CALLBACK
+ChooserPage::list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos)
 {
   chooser->scroll (hwnd, SB_HORZ, &chooser->scroll_ulc_x, code);
   return 0;
 }
 
-static LRESULT CALLBACK
-list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
+LRESULT CALLBACK
+ChooserPage::list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 {
   int row, refresh;
 
@@ -144,7 +140,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
     {
 #endif
       RECT r;
-      GetClientRect (lv, &r);
+      ::GetClientRect (lv, &r);
       SCROLLINFO si;
       memset (&si, 0, sizeof (si));
       si.cbSize = sizeof (si);
@@ -183,8 +179,8 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
   return 0;
 }
 
-static LRESULT CALLBACK
-listview_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK
+ChooserPage::listview_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
   switch (message)
     {
@@ -212,7 +208,7 @@ listview_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		  chooser->headers[i].x =
 		    chooser->headers[i - 1].x + chooser->headers[i - 1].width;
 		RECT r;
-		GetClientRect (hwnd, &r);
+		::GetClientRect (hwnd, &r);
 		SCROLLINFO si;
 		si.cbSize = sizeof (si);
 		si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
@@ -240,8 +236,8 @@ listview_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
 }
 
-static void
-register_windows (HINSTANCE hinst)
+void
+ChooserPage::registerWindows (HINSTANCE hinst)
 {
   WNDCLASSEX wcex;
   static int done = 0;
@@ -263,8 +259,8 @@ register_windows (HINSTANCE hinst)
   RegisterClassEx (&wcex);
 }
 
-static void
-set_existence ()
+void
+ChooserPage::setExistence ()
 {
   packagedb db;
   /* binary packages */
@@ -302,8 +298,8 @@ set_existence ()
 #endif
 }
 
-static void
-fill_missing_category ()
+void
+ChooserPage::fillMissingCategory ()
 {
   packagedb db;
   for (vector <packagemeta *>::iterator i = db.packages.begin ();
@@ -316,8 +312,8 @@ fill_missing_category ()
     }
 }
 
-static void
-default_trust (HWND h, trusts trust)
+void
+ChooserPage::defaultTrust (HWND h, trusts trust)
 {
   chooser->deftrust = trust;
   packagedb db;
@@ -338,7 +334,7 @@ default_trust (HWND h, trusts trust)
 	pkg.desired = packageversion ();
     }
   RECT r;
-  GetClientRect (h, &r);
+  ::GetClientRect (h, &r);
   InvalidateRect (h, &r, TRUE);
   // and then do the same for categories with no packages.
   for (packagedb::categoriesType::iterator n = packagedb::categories.begin();
@@ -350,8 +346,8 @@ default_trust (HWND h, trusts trust)
       }
 }
 
-static void
-set_view_mode (HWND h, PickView::views mode)
+void
+ChooserPage::setViewMode (HWND h, PickView::views mode)
 {
   chooser->set_view_mode (mode);
 
@@ -406,7 +402,7 @@ set_view_mode (HWND h, PickView::views mode)
     }
 
   RECT r;
-  GetClientRect (h, &r);
+  ::GetClientRect (h, &r);
   SCROLLINFO si;
   memset (&si, 0, sizeof (si));
   si.cbSize = sizeof (si);
@@ -443,8 +439,8 @@ ChooserPage::createListview (HWND dlg, RECT * r)
     new PickView (PickView::views::Category, lv,
 		  *db.categories.find("All"));
 
-  default_trust (lv, TRUST_CURR);
-  set_view_mode (lv, PickView::views::Category);
+  defaultTrust (lv, TRUST_CURR);
+  setViewMode (lv, PickView::views::Category);
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE) << "Failed to set View button caption %ld" << 
 	 GetLastError () << endLog;
@@ -487,13 +483,13 @@ ChooserPage::setPrompt(char const *aString)
 void
 ChooserPage::OnInit ()
 {
-  register_windows (GetInstance ());
+  registerWindows (GetInstance ());
 
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_CWD)
     packagemeta::ScanDownloadedFiles ();
 
-  set_existence ();
-  fill_missing_category ();
+  setExistence ();
+  fillMissingCategory ();
 
   if (source == IDC_SOURCE_DOWNLOAD)
     setPrompt("Select packages to download ");
@@ -509,7 +505,7 @@ ChooserPage::OnInit ()
 void
 ChooserPage::OnActivate()
 {
-    set_view_mode (lv, chooser->get_view_mode ());
+    setViewMode (lv, chooser->get_view_mode ());
 }
 
 void
@@ -557,17 +553,17 @@ ChooserPage::keepClicked()
       packagemeta & pkg = **i;
       pkg.desired = pkg.installed;
     }
-  set_view_mode (lv, chooser->get_view_mode ());
+  setViewMode (lv, chooser->get_view_mode ());
 }
 
 template <trusts aTrust>
 void
 ChooserPage::changeTrust()
 {
-  default_trust (lv, aTrust);
+  defaultTrust (lv, aTrust);
   packagedb db;
   for_each(db.packages.begin(), db.packages.end(), SetRequirement(aTrust));
-  set_view_mode (lv, chooser->get_view_mode ());
+  setViewMode (lv, chooser->get_view_mode ());
 }
 
 bool
@@ -590,7 +586,7 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
     case IDC_CHOOSE_EXP:
        return ifChecked(id, &ChooserPage::changeTrust<TRUST_TEST>);
     case IDC_CHOOSE_VIEW:
-      set_view_mode (lv, ++chooser->get_view_mode ());
+      setViewMode (lv, ++chooser->get_view_mode ());
       if (!SetDlgItemText
         (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
       log (LOG_BABBLE) << "Failed to set View button caption " << 

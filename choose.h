@@ -19,6 +19,7 @@
 
 #include "proppage.h"
 #include "package_meta.h"
+#include "PickView.h"
 
 #define CATEGORY_EXPANDED  0
 #define CATEGORY_COLLAPSED 1
@@ -26,6 +27,9 @@
 class ChooserPage:public PropertyPage
 {
 public:
+  static HWND lv;
+  static PickView *chooser;
+
   ChooserPage ()
   {
   };
@@ -46,11 +50,21 @@ public:
   }; 
   private:
   void createListview (HWND dlg, RECT * r);
+  void defaultTrust (HWND h, trusts trust);
+  void fillMissingCategory();
   void getParentRect (HWND parent, HWND child, RECT * r);
+  void keepClicked();
+  static LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
+  static LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);
+  static LRESULT CALLBACK list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos);  
+  static LRESULT CALLBACK listview_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();
-  void keepClicked ();
+  static void paint (HWND hwnd);
+  void registerWindows (HINSTANCE hinst);
+  void setExistence();
   void setPrompt(char const *aPrompt);
+  void setViewMode (HWND h, PickView::views mode);
   template<class C> bool ifChecked(int const &id, void (C::*fn)()) {
      if (IsDlgButtonChecked (GetHWND (), id)) {
        (this->*fn)();
