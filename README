@@ -2,8 +2,7 @@ This directory contains the source for the setup program for the cygwin
 net releases.
 
 RELEASE BLOCKERS:
- * Remove *empty* directories on uninstalls. (done?)
- * Correctly overwrite -r--r--r-- files. (done?)
+   Currently, none!
 
 TODO:
  * Don't downgrade if the curr version is <= installed?
@@ -24,7 +23,8 @@ TODO:
  * Cancelling during MD5 check just stops the GUI updating until the check
    completes, and then continues with setup as if Cancel had not been clicked. 
  * Toggling from All Default to All Install takes *way* too long.
- * Remove installed packages from Misc when other (non-All) categories are found.
+ * Remove installed packages from Misc when other (non-All) categories are
+   found.
  	   
 WISHLIST:
  * rsync:// support.
@@ -97,12 +97,16 @@ Recently Completed
  * Set ntsec permissions correctly, and for new installs enable ntsec.
  * Spurious "Cannot open (null) for reading" errors.
  * Sometimes packages set to 'Keep' appear in the 'Partial' view.
- * For local dir installs, Going back, changing the local cache dir, and going forward again does not
+ * For local dir installs, Going back, changing the local cache dir, and going
+   forward again does not
    correctly reparse inis in the new dir.
    Reproduction: Choose an incorrect cache dir, go back, correct it.
    Chooser shows all packages in Misc.
-   - more details: packages get the correct categories assigned, but have misc added IF they where already installed.
+   - more details: packages get the correct categories assigned, but have misc
+     added IF they where already installed.
      cycling the view adds the previously missing categories correctly.
  * "compress_bz::error called" appears in the log every time a package is
    installed, even if everything works.
  * New view - show non installed packages only.
+ * Remove *empty* directories on uninstalls.
+ * Correctly overwrite -r--r--r-- files.
