@@ -1,5 +1,13 @@
 2003-03-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* PickView.cc (PickView::insert_pkg): Be more generic with
+	object use.
+	(PickView::insert_category): Ditto.
+	(PickView::~PickView): Create.
+	* PickView.h (PickView::~PickView): Declare.
+
+2003-03-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.in (OBJS): Add new commandline objects.
 	* desktop.cc (NoShortCutsOption): New option code.
 	(DesktopSetupPage::OnInit): Check whether to skip shortcuts.

@@ -164,7 +164,7 @@ PickView::insert_pkg (packagemeta & pkg)
 {
   if (view_mode != views::Category)
     {
-      PickPackageLine & line = *new PickPackageLine (*this, pkg);
+      PickLine & line = *new PickPackageLine (*this, pkg);
       contents.insert (line);
     }
   else
@@ -176,7 +176,7 @@ PickView::insert_pkg (packagemeta & pkg)
           if (cat == Category ("All"))
             continue;
           PickCategoryLine & catline = *new PickCategoryLine (*this, cat, 1);
-          PickPackageLine & line = *new PickPackageLine (*this, pkg);
+          PickLine & line = *new PickPackageLine(*this, pkg);
           catline.insert (line);
           contents.insert (catline);
         }
@@ -193,7 +193,7 @@ PickView::insert_category (Category * cat, bool collapsed)
        catpkg = catpkg->next)
     {
 
-      PickPackageLine & line = *new PickPackageLine (*this, *catpkg->pkg);
+      PickLine & line = *new PickPackageLine (*this, *catpkg->pkg);
       catline.insert (line);
     }
   contents.insert (catline);
@@ -424,4 +424,8 @@ contents (*this, cat, 0, false, true), listview (lv)
   set_headers ();
 
   ReleaseDC (lv, dc);
+}
+
+PickView::~PickView()
+{
 }

@@ -45,6 +45,7 @@ public:
   void set_view_mode (views _mode);
   Header *headers;
   PickView (views mode, HWND listview, Category & cat);
+  ~PickView();
   const char *mode_caption ();
   void insert_pkg (packagemeta &);
   void insert_category (Category *, bool);
@@ -71,7 +72,6 @@ public:
   {
     return listheader;
   }
-
 
   class views
   {
@@ -122,7 +122,6 @@ private:
   void init_headers (HDC dc);
   void note_width (Header *hdrs, HDC dc, String const &string, int addend,
       int column);
-
 };
 
 #endif // _PICKVIEW_H_
