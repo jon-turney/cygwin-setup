@@ -1,5 +1,10 @@
 2002-03-15  Robert Collins <rbtcollins@hotmail.com>
 
+	* desktop.cc (make_passwd_group): Check for .lnk suffix on /etc/passwd and 
+	/etc/group.
+
+2002-03-15  Robert Collins <rbtcollins@hotmail.com>
+
 	* PickPackageLine.cc (PickPackageLine::DrawCheck): New method factored out from
 	paint().
 	(PickPackageLine::paint): Use DrawCheck to draw the src tick box, and the new
