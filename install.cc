@@ -161,10 +161,17 @@ badrename (char *o, char *n)
 }
 
 static char *standard_dirs[] = {
+  "/bin",
   "/etc",
-  "/usr",
+  "/lib",
   "/tmp",
+  "/usr/bin",
+  "/usr/lib",
+  "/usr/local/bin",
+  "/usr/local/etc",
+  "/usr/local/lib",
   "/usr/tmp",
+  "/var/run",
   "/var/tmp",
   0
 };
@@ -190,6 +197,13 @@ do_install (HINSTANCE h)
       mkdir_p (1, p);
       free (p);
     }
+
+  /* Create /var/run/utmp */
+  char *utmp = concat (root_dir, "/var/run/utmp", 0);
+  FILE *ufp = fopen (utmp, "wb");
+  if (ufp)
+    fclose (ufp);
+  free (utmp);
 
   dismiss_url_status_dialog ();
 
