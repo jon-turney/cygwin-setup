@@ -19,6 +19,7 @@ static const char *cvsid =
 #endif
 
 #include "IniParseFindVisitor.h"
+#include "IniParseFeedback.h"
 #include "IniDBBuilder.h"
 #include "io_stream.h"
 #include "rfc1738.h"
@@ -27,7 +28,7 @@ static const char *cvsid =
 
 extern int yyparse ();
 
-IniParseFindVisitor::IniParseFindVisitor(IniDBBuilder &aBuilder, String const &localroot) : _Builder (aBuilder), baseLength (localroot.size()), local_ini(0),
+IniParseFindVisitor::IniParseFindVisitor(IniDBBuilder &aBuilder, String const &localroot, IniParseFeedback const &feedback) : _Builder (aBuilder), _feedback (feedback), baseLength (localroot.size()), local_ini(0),
 error_buf(0), error_count (0),
 setup_timestamp (0), setup_version() {}
 IniParseFindVisitor::~IniParseFindVisitor(){}
@@ -56,8 +57,7 @@ IniParseFindVisitor::visitFile(String const &basePath, const WIN32_FIND_DATA *th
       return;
     }
   
-  // FIXME: use a strategy and tell about this as well.
-  // log (LOG_BABBLE, String ("Found ini file - file://") + local_dir + "/" + path);
+  _feedback.babble (String ("Found ini file - ") + path);
   
   /* Copy leading part of path to temporary buffer and unescape it */
   
@@ -69,9 +69,7 @@ IniParseFindVisitor::visitFile(String const &basePath, const WIN32_FIND_DATA *th
   /*yydebug = 1; */
 
   if (yyparse () || error_count > 0)
-    // FIXME: use a stragtegy and tell on this.
-    //MessageBox (0, error_buf, error_count == 1 ? "Parse Error" : "Parse Errors", 0);
-    ;
+    _feedback.error(error_buf);
   else
     local_ini++;
   

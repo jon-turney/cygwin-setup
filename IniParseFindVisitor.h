@@ -21,11 +21,12 @@
 
 /* parse passed in setup.ini files from disk. */
 class IniDBBuilder;
+class IniParseFeedback;
 /* IniParse files and create a package db when no cached .ini exists */
 class IniParseFindVisitor : public FindVisitor
 {
 public:
-  IniParseFindVisitor (IniDBBuilder &aBuilder, String const &localroot);
+  IniParseFindVisitor (IniDBBuilder &aBuilder, String const &localroot, IniParseFeedback const &);
   virtual void visitFile(String const &basePath, const WIN32_FIND_DATA *);
   virtual ~ IniParseFindVisitor ();
 
@@ -37,6 +38,7 @@ protected:
   IniParseFindVisitor & operator= (IniParseFindVisitor const &);
 private:
   IniDBBuilder &_Builder;
+  IniParseFeedback const &_feedback;
   unsigned int baseLength;
   int local_ini;
   char *error_buf;

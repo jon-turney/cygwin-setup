@@ -159,6 +159,8 @@ setup_SOURCES = \
 	inilex.cc \
 	iniparse.cc \
 	iniparse.h \
+	IniParseFeedback.cc \
+	IniParseFeedback.h \
 	IniParseFindVisitor.cc \
 	IniParseFindVisitor.h \
 	install.cc \

@@ -44,7 +44,8 @@ static const char *cvsid =
 #include "rfc1738.h"
 #include "find.h"
 #include "IniParseFindVisitor.h"
-#include "filemanip.h"
+#include "IniParseFeedback.h"
+//#include "filemanip.h"
 
 #include "io_stream.h"
 
@@ -68,11 +69,32 @@ static int error_count = 0;
 
 static const char *ini_filename;
 
+class GuiParseFeedback : public IniParseFeedback
+{
+public:
+  virtual void babble(String const &message)const
+    {
+      log (LOG_BABBLE, message);
+    }
+  virtual void warning (String const &message)const
+    {
+      MessageBox (0, message.cstr_oneuse(), "Warning", 0);
+    }
+  virtual void error(String const &message)const
+    {
+      MessageBox (0, message.cstr_oneuse(), "Error parsing", 0);
+    }
+  virtual ~ GuiParseFeedback ()
+    {
+    }
+};
+
 static int
 do_local_ini (HWND owner)
 {
-  IniDBBuilderPackage findBuilder;
-  IniParseFindVisitor myVisitor (findBuilder, local_dir);
+  GuiParseFeedback myFeedback;
+  IniDBBuilderPackage findBuilder(myFeedback);
+  IniParseFindVisitor myVisitor (findBuilder, local_dir, myFeedback);
   Find (local_dir).accept(myVisitor);
   setup_timestamp = myVisitor.timeStamp();
   setup_version = myVisitor.version();
@@ -83,7 +105,8 @@ static int
 do_remote_ini (HWND owner)
 {
   size_t ini_count = 0;
-  IniDBBuilderPackage *aBuilder = new IniDBBuilderPackage;
+  GuiParseFeedback myFeedback;
+  IniDBBuilderPackage aBuilder(myFeedback);
   
   for (size_t n = 1; n <= site_list.number (); n++)
     {
@@ -103,8 +126,8 @@ do_remote_ini (HWND owner)
 	  continue;
 	}
 
-      aBuilder->parse_mirror = site_list[n]->url;
-      ini_init (ini_file, aBuilder);
+      aBuilder.parse_mirror = site_list[n]->url;
+      ini_init (ini_file, &aBuilder);
 
       /*yydebug = 1; */
 
@@ -135,15 +158,14 @@ do_remote_ini (HWND owner)
 	    }
 	  ++ini_count;
 	}
-      if (aBuilder->timestamp > setup_timestamp)
+      if (aBuilder.timestamp > setup_timestamp)
 	{
-	  setup_timestamp = aBuilder->timestamp;
-	  setup_version = aBuilder->version;
+	  setup_timestamp = aBuilder.timestamp;
+	  setup_version = aBuilder.version;
 	}
       delete ini_file;
       delete compressed_ini_file;
     }
-  delete aBuilder;
   return ini_count;
 }
 

@@ -17,6 +17,7 @@
 #define _INIDBBUILDERPACKAGE_H_
 
 #include "IniDBBuilder.h"
+class IniParseFeedback;
 class packagesource;
 class packagemeta;
 class cygpackage;
@@ -24,6 +25,7 @@ class cygpackage;
 class IniDBBuilderPackage:public IniDBBuilder
 {
 public:
+  IniDBBuilderPackage (IniParseFeedback const &);
   virtual void buildTimestamp (String const &);
   virtual void buildVersion (String const &);
   virtual void buildPackage (String const &);
@@ -45,6 +47,7 @@ private:
   packagemeta *cp;
   cygpackage *cpv;
   int trust;
+  IniParseFeedback const &_feedback;
 };
 
 #endif /* _INIDBBUILDERPACKAGE_H_ */

@@ -1,5 +1,20 @@
 2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
 
+	* IniDBBuilderPackage.cc (IniDBBuilderPackage::IniDBBuilderPackage): New
+       	method.
+	(IniDBBuilderPackage::buildVersion): Provide a warning when a newer 
+	setup version created the ini file.
+	* IniDBBuilderPackage.h (IniDBBuilderPackage::IniDBBuilderPackage): New
+	method.
+	* IniParseFindVisitor.cc (IniParseFindVisitor::visitFile): Use the new
+	feedback strategy.
+	* IniParseFindVisitor.h (IniParseFindVisitor::IniParseFindVisitor):
+	Require a feedback strategy.
+	* Makefile.am (setup_SOURCES): Add IniParseFeedback sources.
+	* Makefile.in: Regenerate.
+
+2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
+
 	* io_stream_file.cc (io_stream_file::remove): Use the SetFileAttributes
 	trick to delete read only files.
 	* io_stream_cygfile.cc (io_stream_cygfile::remove): Use file:// to 

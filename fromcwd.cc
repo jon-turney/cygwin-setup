@@ -48,6 +48,7 @@ static const char *cvsid =
 #include "port.h"
 
 #include "IniDBBuilderPackage.h"
+#include "IniParseFeedback.h"
 
 /* Trivial class for detecting the existence of setup.ini */
 
@@ -85,7 +86,8 @@ do_fromcwd (HINSTANCE h, HWND owner)
 
   next_dialog = IDD_CHOOSE;
 
-  IniDBBuilderPackage myBuilder;
+  IniParseFeedback myFeedback;
+  IniDBBuilderPackage myBuilder(myFeedback);
   ScanFindVisitor myVisitor (myBuilder);
   Find(".").accept(myVisitor);
   return;

@@ -14,13 +14,18 @@
  */
 
 #include "IniDBBuilderPackage.h"
+#include "IniParseFeedback.h"
 #include "package_db.h"
 #include "package_meta.h"
 #include "package_version.h"
 #include "cygpackage.h"
 #include "filemanip.h"
+#include "version.h"
 // for strtoul
 #include <string.h>
+
+IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
+cp (0), cpv (0), trust (0), _feedback (aFeedback){}
 
 void
 IniDBBuilderPackage::buildTimestamp (String const &time)
@@ -32,6 +37,14 @@ void
 IniDBBuilderPackage::buildVersion (String const &aVersion)
 {
   version = aVersion;
+  if (version.size())
+    {
+      String ini_version = canonicalize_version (version);
+      String our_version = canonicalize_version (::version);
+      // XXX useversion < operator
+      if (our_version.compare (ini_version) < 0)
+	_feedback.warning("The current ini file is from a newer version of setup.exe. If you have any trouble installing, please download a fresh version from http://www.cygwin.com/setup.exe");
+    }
 }
 
 void

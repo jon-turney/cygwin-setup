@@ -256,6 +256,8 @@ setup_SOURCES = \
 	inilex.cc \
 	iniparse.cc \
 	iniparse.h \
+	IniParseFeedback.cc \
+	IniParseFeedback.h \
 	IniParseFindVisitor.cc \
 	IniParseFindVisitor.h \
 	install.cc \
@@ -388,12 +390,13 @@ am_setup_OBJECTS = archive.$(OBJEXT) archive_tar.$(OBJEXT) \
 	filemanip.$(OBJEXT) fromcwd.$(OBJEXT) geturl.$(OBJEXT) \
 	hash.$(OBJEXT) ini.$(OBJEXT) IniDBBuilder.$(OBJEXT) \
 	IniDBBuilderPackage.$(OBJEXT) inilex.$(OBJEXT) \
-	iniparse.$(OBJEXT) IniParseFindVisitor.$(OBJEXT) \
-	install.$(OBJEXT) io_stream.$(OBJEXT) \
-	io_stream_cygfile.$(OBJEXT) io_stream_file.$(OBJEXT) \
-	io_stream_memory.$(OBJEXT) localdir.$(OBJEXT) log.$(OBJEXT) \
-	LogFile.$(OBJEXT) LogSingleton.$(OBJEXT) main.$(OBJEXT) \
-	md5.$(OBJEXT) MD5++.$(OBJEXT) mkdir.$(OBJEXT) mklink2.$(OBJEXT) \
+	iniparse.$(OBJEXT) IniParseFeedback.$(OBJEXT) \
+	IniParseFindVisitor.$(OBJEXT) install.$(OBJEXT) \
+	io_stream.$(OBJEXT) io_stream_cygfile.$(OBJEXT) \
+	io_stream_file.$(OBJEXT) io_stream_memory.$(OBJEXT) \
+	localdir.$(OBJEXT) log.$(OBJEXT) LogFile.$(OBJEXT) \
+	LogSingleton.$(OBJEXT) main.$(OBJEXT) md5.$(OBJEXT) \
+	MD5++.$(OBJEXT) mkdir.$(OBJEXT) mklink2.$(OBJEXT) \
 	mount.$(OBJEXT) msg.$(OBJEXT) net.$(OBJEXT) netio.$(OBJEXT) \
 	nio-ie5.$(OBJEXT) nio-file.$(OBJEXT) nio-ftp.$(OBJEXT) \
 	nio-http.$(OBJEXT) package_db.$(OBJEXT) package_meta.$(OBJEXT) \
@@ -422,6 +425,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/FindVisitor.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/IniDBBuilder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/IniDBBuilderPackage.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/IniParseFeedback.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/IniParseFindVisitor.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/LogFile.Po ./$(DEPDIR)/LogSingleton.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MD5++.Po \
@@ -545,6 +549,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FindVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IniDBBuilder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IniDBBuilderPackage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IniParseFeedback.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IniParseFindVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogSingleton.Po@am__quote@
