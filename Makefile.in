@@ -68,6 +68,7 @@ BUNDLED_FILES:=cygwin1.dll.gz $(srcdir)/tar.exe.gz $(srcdir)/gzip.exe.gz \
 .NOEXPORT:
 
 .PHONY: all install clean realclean
+.PRECIOUS: $(utils_build)/cygpath.exe $(utils_build)/mount.exe $(cygwin_build)/new-cygwin1.dll
 
 all: Makefile $(PROGS)
 
@@ -84,7 +85,7 @@ mingw_getopt.o: $(cygwin_source)/getopt.c
 	$(CC) -c -o $@ $(MINGW_CFLAGS) $^
 
 clean:
-	rm -f *.o $(PROGS) zlib/*.o zlib/*.a *.exe *.gz
+	rm -f *.o *.rc $(PROGS) zlib/*.o zlib/*.a *.exe *.gz
 
 realclean: clean
 	rm -f  Makefile config.cache
@@ -100,7 +101,7 @@ $(libmingw32): $(mingw_build)/Makefile
 	@$(MAKE) -C $(@D) $(@F)
 
 $(ZLIB): zlib/Makefile
-	@$(MAKE) -C zlib CFLAGS='$(MINGW_CFLAGS) -DNO_ERRNO_H -Derrno=_errno'
+	$(MAKE) -C $(@D) $(@F) CFLAGS='$(MINGW_CFLAGS)'
 
 %.exe.gz: %.exe
 	gzip -9nf $?
@@ -118,7 +119,7 @@ $(utils_build)/%.exe: $(utils_build)/Makefile
 	$(OBJCOPY) --strip-unneeded $? $@
 
 $(cygwin_build)/%.dll: $(cygwin_build)/Makefile
-	@$(MAKE) -C $(cygwin_build) $(@F)
+	@$(MAKE) -C $(@D) $(@F)
 
 cinstall.rc: $(BUNDLED_FILES)
 	for f in $^; do \
