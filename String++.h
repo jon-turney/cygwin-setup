@@ -43,7 +43,7 @@ public:
   			      // pretends to be const !!
   inline size_t size() const; // number of characters (!= storage size).
   size_t find (char) const;
-  String substr (size_t start = 0, size_t len = -1) const;
+  String substr (size_t start = 0, int len = -1) const;
   // operator == and != can be done if/when we have a 'casesensitive' flag to
   // the constructors
   // - means this sorts to the left of the parameter

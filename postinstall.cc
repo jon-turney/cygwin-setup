@@ -26,6 +26,8 @@ static const char *cvsid =
 #include "mount.h"
 #include "script.h"
 #include "FindVisitor.h"
+#include "package_db.h"
+#include "package_meta.h"
 
 class RunFindVisitor : public FindVisitor
 {
@@ -47,7 +49,18 @@ do_postinstall (HINSTANCE h, HWND owner)
   next_dialog = 0;
   init_run_script ();
   SetCurrentDirectory (get_root_dir ().cstr_oneuse());
+  packagedb db;
+  PackageDBConnectedIterator i = db.connectedBegin ();
+  while (i != db.connectedEnd ())
+    {
+      packagemeta & pkg = **i;
+      if (pkg.installed)
+	for (std::vector<Script>::iterator script=pkg.installed.scripts().begin(); script != pkg.installed.scripts().end(); ++script) 
+	  run_script ("/etc/postinstall/", script->baseName());
+      ++i;
+    }
   RunFindVisitor myVisitor;
   String postinst = cygpath ("/etc/postinstall");
   Find (postinst).accept (myVisitor);
+  
 }

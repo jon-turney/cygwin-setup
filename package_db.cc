@@ -39,6 +39,7 @@ static const char *cvsid =
 #include "cygpackage.h"
 #include "package_db.h"
 #include "package_meta.h"
+#include "Exception.h"
 
 using namespace std;
 
@@ -207,3 +208,143 @@ vector <packagemeta *> packagedb::sourcePackages;
 PackageDBActions
   packagedb::task =
   PackageDB_Install;
+std::vector <packagemeta *> 
+packagedb::dependencyOrderedPackages;
+
+#include "LogSingleton.h"
+#include <stack>
+
+class
+ConnectedLoopFinder
+{
+  public:
+  ConnectedLoopFinder();
+  void doIt();
+  packagedb db;
+  size_t visited;
+  std::vector<size_t> visitOrder;
+  size_t visit (size_t const nodeToVisit);
+  std::stack<size_t> nodesInStronglyConnectedComponent;
+};
+
+ConnectedLoopFinder::ConnectedLoopFinder() : visited(0)
+{
+  for (size_t counter = 0; counter < db.packages.size(); ++counter)
+    visitOrder.push_back(0);
+}
+
+void
+ConnectedLoopFinder::doIt()
+{
+  /* XXX this could be done useing a class to hold both the visitedInIteration and the package
+   * meta reference. Then we could use a range, not an int loop. 
+   */
+  for (size_t i = 0; i < db.packages.size(); ++i)
+    {
+      packagemeta &pkg (*db.packages[i]);
+      if (pkg.installed && ! visitOrder[i])
+	visit (i);
+    }
+  log (LOG_PLAIN) << "Visited: " << visited << " nodes out of " << db.packages.size() << "." << endLog;
+}
+
+static bool
+checkForInstalled (PackageSpecification *spec)
+{
+  packagedb db;
+  packagemeta *required = db.findBinary (*spec);
+  if (!required)
+    return false;
+  if (spec->satisfies (required->installed)
+      && required->desired == required->installed )
+    /* done, found a satisfactory installed version that will remain
+       installed */
+    return true;
+  return false;
+}
+
+size_t
+ConnectedLoopFinder::visit(size_t const nodeToVisit)
+{
+  if (!db.packages[nodeToVisit]->installed)
+    /* Can't visit this node, and it is not less than any visted node */
+    return db.packages.size() + 1;
+  ++visited;
+  visitOrder[nodeToVisit] = visited;
+
+  size_t minimumVisitId = visited;
+  nodesInStronglyConnectedComponent.push(nodeToVisit);
+
+  vector <vector <PackageSpecification *> *>::iterator dp = db.packages[nodeToVisit]->installed.depends ()->begin();
+  /* walk through each and clause (a link in the graph) */
+  while (dp != db.packages[nodeToVisit]->installed.depends ()->end())
+    {
+      /* check each or clause for an installed match */
+      vector <PackageSpecification *>::iterator i =
+	find_if ((*dp)->begin(), (*dp)->end(), checkForInstalled);
+      if (i != (*dp)->end())
+	{
+	  /* we found an installed ok package */
+	  /* visit it if needed */
+	  /* UGLY. Need to refactor. iterators in the outer would help as we could simply
+	   * vist the iterator
+	   */
+	   size_t nodeJustVisited = 0;
+	   while (nodeJustVisited < db.packages.size() && db.packages[nodeJustVisited]->name.casecompare((*i)->packageName())) 
+	     ++nodeJustVisited;
+	   if (nodeJustVisited == db.packages.size())
+	     log (LOG_PLAIN) << "Search for package '" << (*i)->packageName() << "' failed." << endLog;
+	   else
+	   {
+	     if (visitOrder[nodeJustVisited])
+	       minimumVisitId = std::min (minimumVisitId, visitOrder[nodeJustVisited]);
+	     else
+	       minimumVisitId = std::min (minimumVisitId, visit (nodeJustVisited));
+	   }
+	  /* next and clause */
+	  ++dp;
+	  continue;
+	}
+	/* not installed or not available we ignore */
+      ++dp;
+    }
+  
+  if (minimumVisitId == visitOrder[nodeToVisit])
+  {
+    size_t popped;
+    do {
+      popped = nodesInStronglyConnectedComponent.top();
+      nodesInStronglyConnectedComponent.pop();
+      db.dependencyOrderedPackages.push_back(db.packages[popped]);
+      /* mark as displayed in a connected component */
+      visitOrder[popped] = db.packages.size() + 2;
+    } while (popped != nodeToVisit);
+  }
+  
+  return minimumVisitId;
+}  
+
+PackageDBConnectedIterator
+packagedb::connectedBegin()
+{
+  if (!dependencyOrderedPackages.size())
+  {
+  ConnectedLoopFinder doMe;
+  doMe.doIt();
+  log(LOG_PLAIN) << "Dependency ordered install:" << endLog;
+  for (std::vector<packagemeta *>::iterator i = dependencyOrderedPackages.begin();
+    i != dependencyOrderedPackages.end(); ++i)
+    {
+      packagemeta &pkg (**i);
+      log(LOG_PLAIN) << pkg.name << endLog;
+    }
+  }
+    
+  return dependencyOrderedPackages.begin();
+}
+
+PackageDBConnectedIterator
+packagedb::connectedEnd()
+{
+  return dependencyOrderedPackages.end();
+}

@@ -29,4 +29,13 @@ void init_run_script ();
 /* Run the scripts fname.sh and fname.bat, found in dir. */
 void try_run_script (String const &dir, String const &fname);
 
+class Script {
+  public:
+    static bool isAScript (String const &file);
+    Script (String const &fileName);
+    String baseName()const;
+  private:
+    String scriptName;
+};
+
 #endif /* SCRIPT_H */

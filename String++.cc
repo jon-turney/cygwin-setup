@@ -124,7 +124,7 @@ String::find(char aChar) const
 }
 
 String
-String::substr(size_t start, size_t len) const
+String::substr(size_t start, int len) const
 {
   // Adapt the C++ string class
   return string(cstr_oneuse()).substr(start, len);

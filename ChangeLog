@@ -1,3 +1,29 @@
+2003-03-16  Robert Collins  <rbtcollins@hotmail.com>
+
+	* package_db.h (PackageDBConnectedIterator): Typedef for connected loop detection collection iterator.
+	* package_db.cc (ConnectedLoopDetector): An implementation of R.E. Tarjans strongly connected set visitor algorithm.
+	* postinstall.cc (do_postinstall): Use the new iterator for visiting postinstall scripts.
+
+2003-03-16  Robert Collins  <rbtcollins@hotmail.com>
+
+	* install.cc: Introduce Installer class.
+	(init_dialog): Rename to Installer::initDialog.
+	(progress): Rename to Installer::progress.
+	(standard_dirs): Rename to Installer::StandardDirs.
+	(uninstall_one): Rename to Installer::uninstallOne.
+	(replace_one): Rename to Installer::replaceOne.
+	(log_ror_failure): Rename to Installer::replaceOnRebootFailed.
+	(log_ror_success): Rename to Installer::replaceOnRebootSucceeded.
+	(install_one_source): Rename to Installer::installOneSource.
+	Note script files as they are installed.
+	* package_version.cc (packageversion::addScript): Implement.
+	(packageversion::scripts): Implement.
+	* package_version.h (packageversion::addScript): Record the presence of a script.
+	* script.h (Script): New class to track scripts.
+	* postinstall.cc (do_postinstall): Iterate through the package listed scripts before searching for scripts.
+	* String++.cc (String::substr): Second argument needed to be signed.
+	* String++.h (String::substr): Second argument needed to be signed.
+
 2003-03-16  Max Bowsher  <maxb@ukf.net>
 
 	* .cvsignore: Create, to ignore configure, aclocal.m4, Makefile.in and

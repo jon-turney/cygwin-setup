@@ -30,6 +30,7 @@ static const char *cvsid =
 #include "filemanip.h"
 #include "mount.h"
 #include "io_stream.h"
+#include "script.h"
 
 static String sh = String();
 static const char *cmd = 0;
@@ -139,3 +140,27 @@ try_run_script (String const &dir, String const &fname)
     run_script (dir.cstr_oneuse(), (fname + ".bat").cstr_oneuse());
 }
 
+bool
+Script::isAScript (String const &file)
+{
+    /* file may be /etc/postinstall or etc/postinstall */
+    if (file.casecompare ("/etc/postinstall/", 17) && file.casecompare ("etc/postinstall/", 16))
+      return false;
+    if (file.cstr_oneuse()[file.size() - 1] == '/')
+      return false;
+    return true;
+}
+
+Script::Script (String const &fileName) : scriptName (fileName)
+{
+  
+}
+
+String
+Script::baseName()const
+{
+  String result = scriptName;
+  while (result.find ('/'))
+    result = result.substr(result.find ('/'));
+  return result;
+}

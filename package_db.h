@@ -30,6 +30,10 @@ typedef enum {
   PackageDB_Download
 } PackageDBActions;
 
+
+class packagedb;
+typedef std::vector <packagemeta *>::iterator PackageDBConnectedIterator;
+
 /*TODO: add mutexs */
 class packagedb
 {
@@ -39,6 +43,8 @@ public:
   int flush ();
   packagemeta * findBinary (PackageSpecification const &) const;
   packagemeta * findSource (PackageSpecification const &) const;
+  PackageDBConnectedIterator connectedBegin();
+  PackageDBConnectedIterator connectedEnd();
   /* all seen binary packages */
   static std::vector < packagemeta *> packages;
   /* all seen source packages */
@@ -49,6 +55,8 @@ public:
   static PackageDBActions task;
 private:
   static int installeddbread;	/* do we have to reread this */
+  friend class ConnectedLoopFinder;
+  static std::vector <packagemeta *> dependencyOrderedPackages;
 };
 
 #endif /* _PACKAGE_DB_H_ */

@@ -57,6 +57,10 @@ public:
   void set_ldesc (String const &) {}
   void uninstall (){}
   void pick(bool const &newValue){/* Ignore attempts to pick this!. Throw an exception here if you want to detect such attemtps instead */}
+  virtual void addScript(Script const &) {}
+  virtual std::vector <Script> &scripts() { scripts_.clear();  return scripts_;}
+  private:
+    std::vector <Script> scripts_;
 };
 static _defaultversion defaultversion;
 
@@ -448,6 +452,18 @@ packageversion::set_requirements (trusts deftrust, size_t depth)
   return changed;
 }
 
+void
+packageversion::addScript(Script const &aScript)
+{
+  return data->addScript (aScript);
+}
+
+std::vector <Script> &
+packageversion::scripts()
+{
+  return data->scripts();
+}
+
 /* the parent data class */
   
 _packageversion::_packageversion ():picked (false), references (0)
@@ -519,4 +535,16 @@ bool
 _packageversion::changeRequested ()
 {
   return (picked || sourcePackage().picked());
+}
+
+void
+_packageversion::addScript(Script const &aScript)
+{
+  scripts().push_back(aScript);
+}
+
+std::vector <Script> &
+_packageversion::scripts()
+{
+  return scripts_;
 }

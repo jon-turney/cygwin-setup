@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2003, Robert Collins <rbtcollins@hotmail.com>
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -9,7 +10,7 @@
  *     A copy of the GNU General Public License can be found at
  *     http://www.gnu.org/
  *
- * Written by DJ Delorie <dj@cygnus.com>
+ * Originally Written by DJ Delorie <dj@cygnus.com>
  *
  */
 
@@ -79,28 +80,44 @@ static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot",
 				     "Disable replacing in-use files on next "
 				     "reboot.");
 
-static void
-init_dialog ()
+class Installer
+{
+  public:
+  static const char *StandardDirs[];
+  Installer();
+  void initDialog();
+  void progress (int bytes);
+  void uninstallOne (packagemeta &);
+  int replaceOne (packagemeta &);
+  void replaceOnRebootFailed (String const &fn);
+  void replaceOnRebootSucceeded (String const &fn, bool &rebootneeded);
+  int installOneSource (packagemeta &, packagesource &, String const &, String const &, package_type_t);
+  int errors;
+};
+
+Installer::Installer() : errors(0)
+{
+}
+
+void
+Installer::initDialog()
 {
   Progress.SetText2 ("");
   Progress.SetText3 ("");
 }
 
-static void
-progress (int bytes)
+void
+Installer::progress (int bytes)
 {
   if (package_bytes > 0)
-    {
       Progress.SetBar1 (bytes, package_bytes);
-    }
 
   if (total_bytes > 0)
-    {
       Progress.SetBar2 (total_bytes_sofar + bytes, total_bytes);
-    }
 }
 
-static const char *standard_dirs[] = {
+const char *
+Installer::StandardDirs[] = {
   "/bin",
   "/etc",
   "/lib",
@@ -120,16 +137,11 @@ static const char *standard_dirs[] = {
 };
 
 static int num_installs, num_replacements, num_uninstalls;
-static void uninstall_one (packagemeta &);
-static int replace_one (packagemeta &);
-static int install_one_source (packagemeta &, packagesource &, String const &,
-			       String const &, package_type_t);
 static void md5_one (const packagesource& source);
 static bool rebootneeded;
 
-/* FIXME: upgrades should be a method too */
-static void
-uninstall_one (packagemeta & pkgm)
+void
+Installer::uninstallOne (packagemeta & pkgm)
 {
   Progress.SetText1 ("Uninstalling...");
   Progress.SetText2 (pkgm.name.cstr_oneuse());
@@ -144,8 +156,8 @@ uninstall_one (packagemeta & pkgm)
  * ASSUMPTIONS: pkgm is installed.
  *		pkgm has a desired package.
  */
-static int
-replace_one (packagemeta & pkg)
+int
+Installer::replaceOne (packagemeta &pkg)
 {
   int errors = 0;
   Progress.SetText1 ("Replacing...");
@@ -155,7 +167,7 @@ replace_one (packagemeta & pkg)
   pkg.uninstall ();
 
   errors +=
-    install_one_source (pkg, *pkg.desired.source(), "cygfile://","/", package_binary);
+    installOneSource (pkg, *pkg.desired.source(), "cygfile://","/", package_binary);
   if (!errors)
     pkg.installed = pkg.desired;
   num_replacements++;
@@ -164,8 +176,8 @@ replace_one (packagemeta & pkg)
 
 /* log failed scheduling of replace-on-reboot of a given file. */
 /* also increment errors. */
-static void
-log_ror_failure (String const &fn, int &errors)
+void
+Installer::replaceOnRebootFailed (String const &fn)
 {
   log (LOG_TIMESTAMP,
        "Unable to schedule reboot replacement of file %s with %s (Win32 Error %ld)",
@@ -177,8 +189,8 @@ log_ror_failure (String const &fn, int &errors)
 
 /* log successful scheduling of replace-on-reboot of a given file. */
 /* also set rebootneeded. */
-static void
-log_ror_success (String const &fn, bool &rebootneeded)
+void
+Installer::replaceOnRebootSucceeded (String const &fn, bool &rebootneeded)
 {
   log (LOG_TIMESTAMP,
        "Scheduled reboot replacement of file %s with %s",
@@ -188,11 +200,10 @@ log_ror_success (String const &fn, bool &rebootneeded)
 }
 
 /* install one source at a given prefix. */
-static int
-install_one_source (packagemeta & pkgm, packagesource & source,
+int
+Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 		    String const &prefixURL, String const &prefixPath, package_type_t type)
 {
-  int errors = 0;
   Progress.SetText2 (source.Base ());
   if (!source.Cached () || !io_stream::exists (source.Cached ()))
     {
@@ -243,6 +254,8 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 	    }
 
 	  String canonicalfn = prefixPath + fn;
+	  if (Script::isAScript (fn))
+	    pkgm.desired.addScript (Script (canonicalfn));
 
 	  Progress.SetText3 (canonicalfn.cstr_oneuse());
 	  log (LOG_BABBLE, String("Installing file ") + prefixURL + prefixPath + fn);
@@ -261,7 +274,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 		  log (LOG_PLAIN,
 		       String("Unable to install file ") +
 		       prefixURL + prefixPath + fn);
-		  errors++;
+		  ++errors;
 		}
 	      else
 		//switch Win32::OS
@@ -277,7 +290,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 					  source, MAX_PATH);
 		      if (!len || len > MAX_PATH)
 			{
-			  log_ror_failure (fn, errors);
+			  replaceOnRebootFailed(fn);
 			}
 		      else
 			{
@@ -287,20 +300,14 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 						       fn).cstr_oneuse(),
 					      dest, MAX_PATH);
 			  if (!len || len > MAX_PATH)
-			    {
-			      log_ror_failure (fn, errors);
-			    }
+			      replaceOnRebootFailed (fn);
 			  else
 			    /* trigger a replacement on reboot */
 			  if (!WritePrivateProfileString
 				("rename", dest, source, "WININIT.INI"))
-			    {
-			      log_ror_failure (fn, errors);
-			    }
+			      replaceOnRebootFailed (fn);
 			  else
-			    {
-			      log_ror_success (fn, rebootneeded);
-			    }
+			      replaceOnRebootSucceeded (fn, rebootneeded);
 			}
 		    }
 		      break;
@@ -316,17 +323,16 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 				       MOVEFILE_DELAY_UNTIL_REBOOT |
 				       MOVEFILE_REPLACE_EXISTING))
 			{
-			  log_ror_failure (fn, errors);
+			  replaceOnRebootFailed (fn);
 			}
 		      else
 			{
-			  log_ror_success (fn, rebootneeded);
+			  replaceOnRebootSucceeded (fn, rebootneeded);
 			}
 		      break;
 		    }
 		}
 	    }
-
 	  progress (tmp->tell ());
 	  num_installs++;
 	}
@@ -334,7 +340,6 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 
       total_bytes_sofar += package_bytes;
     }
-
 
   progress (0);
 
@@ -353,17 +358,18 @@ install_one (packagemeta & pkg)
 {
   int errors = 0;
 
+  Installer myInstaller;
   if (pkg.installed != pkg.desired && pkg.desired.picked())
     {
       errors +=
-	install_one_source (pkg, *pkg.desired.source(), "cygfile://","/",
+	myInstaller.installOneSource (pkg, *pkg.desired.source(), "cygfile://","/",
 			    package_binary);
       if (!errors)
 	pkg.installed = pkg.desired;
     }
   if (pkg.desired.sourcePackage().picked())
     errors +=
-      install_one_source (pkg, *pkg.desired.sourcePackage().source(), "cygfile://","/usr/src/",
+      myInstaller.installOneSource (pkg, *pkg.desired.sourcePackage().source(), "cygfile://","/usr/src/",
 			  package_source);
 
   /* FIXME: make a upgrade method and reinstate this */
@@ -453,9 +459,9 @@ do_install_thread (HINSTANCE h, HWND owner)
 
   io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + get_root_dir ());
 
-  for (i = 0; standard_dirs[i]; i++)
+  for (i = 0; Installer::StandardDirs[i]; i++)
     {
-      String p = cygpath (standard_dirs[i]);
+      String p = cygpath (Installer::StandardDirs[i]);
       if (p.size())
 	io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + p);
     }
@@ -464,7 +470,8 @@ do_install_thread (HINSTANCE h, HWND owner)
   io_stream *utmp = io_stream::open ("cygfile:///var/run/utmp", "wb");
   delete utmp;
 
-  init_dialog ();
+  Installer myInstaller;
+  myInstaller.initDialog();
 
   total_bytes = 0;
   total_bytes_sofar = 0;
@@ -529,7 +536,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       packagemeta & pkg = **i;
       if (pkg.installed && (!pkg.desired || (pkg.desired != pkg.installed &&
 	  pkg.desired.picked ())))
-	uninstall_one (pkg);
+	myInstaller.uninstallOne (pkg);
     }
 
   /* now in-place binary upgrades/reinstalls, as these may remove fils 
@@ -544,7 +551,7 @@ do_install_thread (HINSTANCE h, HWND owner)
 	{
 	  try {
 	      int e = 0;
-	    e += replace_one (pkg);
+	    e += myInstaller.replaceOne (pkg);
  	    if (e)
 	      errors++;
 	  }
