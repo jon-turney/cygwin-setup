@@ -199,6 +199,14 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
 void
 run_script (String const &dir, String const &fname, BOOL to_log)
 {
+  Script (dir + fname).run (to_log);
+}
+
+void
+Script::run(BOOL to_log) const
+{
+  String const dir ("");
+  String const fname (scriptName);
   char *ext = strrchr (fname.cstr_oneuse(), '.');
   if (!ext)
     return;
@@ -215,13 +223,13 @@ run_script (String const &dir, String const &fname, BOOL to_log)
     {
       String f2 = dir + fname;
       log(LOG_PLAIN) << "running: " << sh << " -c " << f2 << endLog;
-      run (sh.cstr_oneuse(), "-c", f2.cstr_oneuse(), file_out);
+      ::run (sh.cstr_oneuse(), "-c", f2.cstr_oneuse(), file_out);
     }
   else if (cmd && strcmp (ext, ".bat") == 0)
     {
       String f2 = backslash (cygpath (dir + fname));
       log(LOG_PLAIN) << "running: " << cmd << " /c " << f2 << endLog;
-      run (cmd, "/c", f2.cstr_oneuse(), file_out);
+      ::run (cmd, "/c", f2.cstr_oneuse(), file_out);
     }
   else
     return;
@@ -278,10 +286,3 @@ Script::fullName() const
 {
   return scriptName;
 }
-
-void
-Script::run(BOOL to_log) const
-{
-  run_script("", scriptName, to_log);
-}
-

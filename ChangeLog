@@ -1,5 +1,10 @@
 2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
 
+	* script.cc (run_script): Move functionality into Script.
+	(Script::run): Absorb run_script.
+
+2003-04-12  Robert Collins  <rbtcollins@hotmail.com>
+
 	* PickCategoryLine.cc (PickCategoryLine::click): Tell packagemeta we
 	are about to perform a visit.
 	* PickPackageLine.cc (PickPackageLine::click): Tell packagemeta we
