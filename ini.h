@@ -116,7 +116,10 @@ typedef struct
   trusts installed_ix;
   excludes exclude;	/* true if this package should be excluded */
 
-  Info info[NTRUST];	/* +1 for TRUST_UNKNOWN */
+  Info info[1];			/* First element.  Intentionally allocated prior
+				   to infoscan */
+  Info infoscan[NTRUST - 1];	/* +1 for TRUST_UNKNOWN */
+  Info infoend[0];		/* end marker */
 } Package;
 
 extern Package *package;

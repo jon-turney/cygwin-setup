@@ -457,9 +457,8 @@ set_existence ()
     if (!pkg->exclude)
       {
 	int exists = 0;
-	for (int t = 1; t < NTRUST; t++)
+	for (Info *inf = pkg->infoscan; inf < pkg->infoend; inf++)
 	  {
-	    Info *inf = pkg->info + t;
 	    if (inf->install_exists)
 	      exists = 1;
 	    else
@@ -573,8 +572,8 @@ create_listview (HWND dlg, RECT *r)
 	  note_width (dc, pkg->installed->version, 0, CURRENT_COL);
 	  note_width (dc, pkg->installed->version, NEW_COL_SIZE_SLOP, NEW_COL);
 	}
-      for (t = 1; t < NTRUST; t++)
-	note_width (dc, pkg->info[t].version, NEW_COL_SIZE_SLOP, NEW_COL);
+      for (Info *inf = pkg->infoscan; inf < pkg->infoend; inf++)
+	note_width (dc, inf->version, NEW_COL_SIZE_SLOP, NEW_COL);
       note_width (dc, pkg->name, 0, PACKAGE_COL);
       note_width (dc, pkg->sdesc, 0, PACKAGE_COL);
     }
@@ -806,7 +805,7 @@ scan2 (char *path, unsigned int size)
   if (pkg == NULL)
     return;
 
-  for (Info *inf = pkg->info; inf < pkg->info + NTRUST; inf++)
+  for (Info *inf = pkg->infoscan; inf < pkg->infoend; inf++)
     if (inf->version && strcmp (f.ver, inf->version) == 0)
       {
 	if (f.what[0] == 's')
@@ -816,10 +815,10 @@ scan2 (char *path, unsigned int size)
 	return;
       }
 
-  for (int i = TRUST_CURR; i >= TRUST_PREV; i--)
-    if (!pkg->info[i].install)
+  for (int t = TRUST_CURR; t >= TRUST_PREV; t--)
+    if (!pkg->info[t].install)
       {
-	Info *inf = pkg->info + i;
+	Info *inf = pkg->info + t;
 	inf->version = strdup (f.ver);
 	inf->install = strdup (f.pkgtar);
 	if (!inf->source && f.what[0] == 's')

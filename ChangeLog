@@ -1,3 +1,12 @@
+Fri Jun 15 00:20:48 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (set_existence): Use pointer method for indexing in trust
+	array.
+	(create_listview): Ditto.
+	(scan2): Ditto.  Also, use consistent variable name for indexing into
+	trust array.
+	* ini.h (Package): Reorganize info array for easier scanning.
+
 Fri Jun 15 00:01:51 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* choose.cc (isinstalled): Eliminate special download only test.
