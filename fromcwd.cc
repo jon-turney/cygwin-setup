@@ -45,8 +45,6 @@ static const char *cvsid =
 #include "filemanip.h"
 #include "version.h"
 
-#include "port.h"
-
 #include "IniDBBuilderPackage.h"
 #include "IniParseFeedback.h"
 

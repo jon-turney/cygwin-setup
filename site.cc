@@ -38,8 +38,6 @@ static const char *cvsid =
 #include "io_stream.h"
 #include "site.h"
 
-#include "port.h"
-
 #include "propsheet.h"
 
 #include "threebar.h"

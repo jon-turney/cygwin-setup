@@ -39,8 +39,6 @@ static const char *cvsid =
 #include "version.h"
 #include "mount.h"
 
-#include "port.h"
-
 #include "mklink2.h"
 
 #include "package_db.h"

@@ -45,7 +45,6 @@ static const char *cvsid =
 #include "LogFile.h"
 #include "version.h"
 
-#include "port.h"
 #include "proppage.h"
 #include "propsheet.h"
 

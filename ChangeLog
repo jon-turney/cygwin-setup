@@ -1,5 +1,16 @@
 2004-10-25  Max Bowsher  <maxb@ukf.net>
 
+	* port.h: Remove this redundant file - all contained definitions are
+	duplicated in "win32.h".
+	* Makefile.am, UserSetting.cc, UserSettings.cc, archive.cc,
+	archive_tar.cc, archive_tar_file.cc, choose.cc, compress.cc,
+	compress_bz.cc, compress_gz.cc, desktop.cc, find.cc, fromcwd.cc,
+	iniparse.y, install.cc, io_stream_cygfile.cc, io_stream_file.cc,
+	main.cc, netio.cc, site.cc, version.cc:
+	Remove all references to "port.h".
+
+2004-10-25  Max Bowsher  <maxb@ukf.net>
+
 	Fix compilation with w32api 3.1 and later.
 
 	* ControlAdjuster.h, RECTWrapper.h, cistring.h, propsheet.h,

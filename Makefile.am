@@ -237,7 +237,6 @@ setup_SOURCES = \
 	PickPackageLine.h \
 	PickView.cc \
 	PickView.h \
-	port.h \
 	postinstall.cc \
 	proppage.cc \
 	proppage.h \

@@ -53,7 +53,6 @@ static const char *cvsid =
 #include "package_meta.h"
 #include "package_version.h"
 
-#include "port.h"
 #include "threebar.h"
 #include "Generic.h"
 #include "ControlAdjuster.h"

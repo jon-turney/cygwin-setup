@@ -28,8 +28,6 @@
 extern int yyerror (String  const &s);
 int yylex ();
 
-#include "port.h"
-
 #include "IniDBBuilder.h"
 
 #define YYERROR_VERBOSE 1

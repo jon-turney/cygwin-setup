@@ -26,8 +26,6 @@ static const char *cvsid =
 #include "win32.h"
 #include <stdlib.h>
 
-//#include "port.h"
-
 #include "String++.h"
 #include "FindVisitor.h"
 #include <stdexcept>

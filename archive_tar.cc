@@ -35,7 +35,6 @@ static const char *cvsid =
 #include "LogSingleton.h"
 #include "filemanip.h"
 
-#include "port.h"
 #if 0
 #undef _WIN32
 #include "bzlib.h"

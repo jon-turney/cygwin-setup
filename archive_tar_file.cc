@@ -29,8 +29,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "archive_tar.h"
 #include "log.h"
 
-#include "port.h"
-
 archive_tar_file::archive_tar_file (tar_state & newstate):state (newstate)
 {
 }

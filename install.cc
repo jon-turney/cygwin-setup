@@ -59,8 +59,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "package_version.h"
 #include "package_source.h"
 
-#include "port.h"
-
 #include "threebar.h"
 
 #include "md5.h"

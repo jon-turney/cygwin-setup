@@ -29,7 +29,6 @@ static const char *cvsid =
 #include "LogSingleton.h"
 #include "io_stream.h"
 
-#include "port.h"
 #include "Exception.h"
 #include "UserSetting.h"
 #include "UserSettings.h"

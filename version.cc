@@ -25,7 +25,6 @@ static const char *cvsid =
 #include <unistd.h>
 #include <ctype.h>
 
-#include "port.h"
 #include "version.h"
   
 String 

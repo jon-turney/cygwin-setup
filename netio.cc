@@ -38,8 +38,6 @@ static const char *cvsid =
 #include "dialog.h"
 #include "log.h"
 
-#include "port.h"
-
 NetIO::NetIO (char const *Purl, BOOL allow_ftp_auth)
 {
   set_url (Purl);
