@@ -21,3 +21,10 @@ Add uninstall capability
 Make the site listbox bigger.
 
 download.cc: add a "total progress" indicator, like the install one.
+
+add a "category" field to setup.ini, let user choose which categories
+of packages to install, perhaps with a "custom..." button to lead to
+the current chooser.
+
+remember which packages were selected to be skipped, and which prev/curr/exp
+option was last selected, and recall them each time the chooser runs.
