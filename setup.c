@@ -1047,7 +1047,7 @@ mkmount (const char *mountexedir, const char *root, const char *dospath,
   return xsystem (buffer) == 0;
 }
 
-static char rev[] = " $Revision$";
+static char rev[] = " $Revision$ ";
 int
 main ()
 {
@@ -1057,7 +1057,7 @@ main ()
   char *revn, *p;
 
   revn = strchr (rev, ':');
-  if (!revn || (p = strchr (revn, ' ')) == NULL)
+  if (!revn || (p = strchr (revn + 2, ' ')) == NULL)
     revn = "";
   else
     {
@@ -1068,7 +1068,8 @@ main ()
     }
 
   printf ( "\n\n\n\n"
-"This is the Cygwin setup utility%s, built on " __DATE__ " " __TIME__ ".\n\n"
+"This is the Cygwin setup utility%s,\n"
+"built on " __DATE__ " " __TIME__ ".\n\n"
 "Use this program to install the latest version of the Cygwin Utilities\n"
 "from the Internet.\n\n"
 "Alternatively, if you already have already downloaded the appropriate files\n"
@@ -1126,6 +1127,11 @@ main ()
       for (done = 0; !done;)
 	{
 	  root = prompt ("Root directory", defroot);
+	  if (strcmpi (root, wd) == 0)
+	    {
+	      printf ("Please do not use the current directory as the root directory.\nYou should run setup.exe from a temporary directory.\n");
+	      continue;
+	    }
 	  if (strchr (root, ' '))
 	    {
 	      char *temp;
