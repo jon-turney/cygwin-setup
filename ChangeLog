@@ -1,5 +1,10 @@
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.cc (default_trust): Autoset currently installed packages per the user's
+	selection of prev/curr/exp.
+
+2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
+
 	* splash.cc (dialog_proc): Return TRUE as specified in the WIN32 API.
 
 2001-11-02  Pavel Tsekov  <ptsekov@syntrex.com>
