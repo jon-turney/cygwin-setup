@@ -1,5 +1,20 @@
 2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
 
+	Remove package specific code from choose.cc.
+	Update copyrights where appropriate.
+	* choose.cc(ChooserPage::OnNext): Extract logging to
+	packagemeta::logSelectionStatus.
+	* package_meta.cc(packagemeta::logSelectionStatus): Extract from
+	ChooserPage::OnNext.
+	(StringConcatenator): helper for logSelectionStatus.
+	(action_caption): Make const.
+	* package_meta.h(packagemeta): Declare logSelectionStatus.
+	(packagemeta::action_caption): Make const.
+	* package_version.cc(packageversion::sourcePackage): Make const.
+	* package_version.h(packageversion::sourcePackage): Make const.
+	
+2003-07-26  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc: Update copyright.
 	(ChooserPage::keepClicked): Extracted from OnMessageCmd.
 	(ChooserPage::changeTrust): Ditto.

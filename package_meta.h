@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Robert Collins.
+ * Copyright (c) 2001, 2003 Robert Collins.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ public:
   void uninstall ();
   int set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0);
 
-  String action_caption ();
+  String action_caption () const;
   packageversion trustp (trusts const t) const
   {
     return t == TRUST_PREV ? (prev ? prev : (curr ? curr : installed))
@@ -133,6 +133,7 @@ public:
   bool accessible () const;
   bool sourceAccessible() const;
 
+  void logSelectionStatus() const;
   void logAllVersions() const;
 
 protected:

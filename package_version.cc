@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Robert Collins.
+ * Copyright (c) 2001, 2003 Robert Collins.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -197,7 +197,7 @@ packageversion::set_ldesc (String const &ldesc)
 }
 
 packageversion
-packageversion::sourcePackage()
+packageversion::sourcePackage() const
 {
   return data->sourcePackage();
 }

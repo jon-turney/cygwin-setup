@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Robert Collins.
+ * Copyright (c) 2001, 2003 Robert Collins.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -113,7 +113,7 @@ public:
   void set_sdesc (String const &);
   String const LDesc () const;
   void set_ldesc (String const &);
-  packageversion sourcePackage ();
+  packageversion sourcePackage () const;
   PackageSpecification & sourcePackageSpecification ();
   void setSourcePackageSpecification (PackageSpecification const &);
 

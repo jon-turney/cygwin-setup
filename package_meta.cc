@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, Robert Collins.
+ * Copyright (c) 2001, 2003 Robert Collins.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -283,7 +283,7 @@ packagemeta::SDesc () const
 
 /* Return an appropriate caption given the current action. */
 String 
-packagemeta::action_caption ()
+packagemeta::action_caption () const
 {
   if (!desired && installed)
     return "Uninstall";
@@ -592,4 +592,45 @@ bool
 packagemeta::visited() const
 {
   return visited_;
+}
+
+struct StringConcatenator {
+    StringConcatenator(String aString) : gap(aString){}
+    void operator()(String const &aString) 
+    {
+      if (result.size() != 0)
+        result += gap;
+      result += aString;
+    }
+    String result;
+    String gap;
+};
+
+void
+packagemeta::logSelectionStatus() const
+{
+  packagemeta const & pkg = *this;
+  const char *trust = ((pkg.desired == pkg.prev) ? "prev"
+               : (pkg.desired == pkg.curr) ? "curr"
+               : (pkg.desired == pkg.exp) ? "test" : "unknown");
+  String action = pkg.action_caption ();
+  String const installed =
+   pkg.installed ? pkg.installed.Canonical_version () : "none";
+
+  log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && pkg.desired.sourcePackage().picked() ? "yes" : "no") << endLog;
+  if (pkg.categories.size ())
+    log (LOG_BABBLE) << "     categories=" << for_each(pkg.categories.begin(), pkg.categories.end(), StringConcatenator(", ")).result << endLog;
+#if 0
+  if (pkg.desired.required())
+  {
+    /* List other packages this package depends on */
+      Dependency *dp = pkg.desired->required;
+    String requires = dp->package.serialise ();
+    for (dp = dp->next; dp; dp = dp->next)
+       requires += String (", ") + dp->package.serialise ();
+
+   log (LOG_BABBLE) << "     requires=" << requires;
+    }
+#endif
+  pkg.logAllVersions();
 }

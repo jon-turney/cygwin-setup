@@ -569,6 +569,14 @@ ChooserPage::OnActivate()
     set_view_mode (lv, chooser->get_view_mode ());
 }
 
+void
+ChooserPage::logResults()
+{
+  log (LOG_BABBLE) << "Chooser results..." << endLog;
+  packagedb db;
+  for_each (db.packages.begin (), db.packages.end (), mem_fun(&packagemeta::logSelectionStatus));
+}
+
 long
 ChooserPage::OnNext ()
 {
@@ -582,46 +590,8 @@ ChooserPage::OnNext ()
       // Next, start download from internet
       Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
     }
+  logResults();
 
-  log (LOG_BABBLE) << "Chooser results..." << endLog;
-  packagedb db;
-  for (vector <packagemeta *>::iterator i = db.packages.begin ();
-       i != db.packages.end (); ++i)
-    {
-      packagemeta & pkg = **i;
-      const char *trust = ((pkg.desired == pkg.prev) ? "prev"
-			   : (pkg.desired == pkg.curr) ? "curr"
-			   : (pkg.desired == pkg.exp) ? "test" : "unknown");
-      String action = pkg.action_caption ();
-      String const installed =
-	pkg.installed ? pkg.installed.Canonical_version () : "none";
-
-      log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && pkg.desired.sourcePackage().picked() ? "yes" : "no") << endLog;
-      if (pkg.categories.size ())
-	{
-	  /* List categories the package belongs to */
-	  set <String, String::caseless>::const_iterator i 
-	    = pkg.categories.begin ();
-	  String all_categories = *(i++);
-	  while (i != pkg.categories.end ())
-	    all_categories += String (", ") + *(i++);
-
-	  log (LOG_BABBLE) << "     categories=" << all_categories << endLog;
-	}
-#if 0
-      if (pkg.desired.required())
-	{
-	  /* List other packages this package depends on */
-	  Dependency *dp = pkg.desired->required;
-	  String requires = dp->package.serialise ();
-	  for (dp = dp->next; dp; dp = dp->next)
-	    requires += String (", ") + dp->package.serialise ();
-
-	  log (LOG_BABBLE) << "     requires=" << requires;
-	}
-#endif
-      pkg.logAllVersions();
-    }
   return IDD_INSTATUS;
 }
 

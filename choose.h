@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2003 Robert Collins <rbtcollins@hotmail.com>
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -46,6 +47,8 @@ public:
     return OnNext ();
   }; 
   private:
+  void logOnePackageResult(packagemeta const *aPkg);
+  void logResults();
   void keepClicked ();
   template<class C> bool ifChecked(int const &id, void (C::*fn)()) {
      if (IsDlgButtonChecked (GetHWND (), id)) {
