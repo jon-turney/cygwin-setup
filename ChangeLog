@@ -1,3 +1,7 @@
+2003-03-13  Max Bowsher  <maxb@ukf.net>
+
+	* Update included zlib to 1.1.4.
+
 2003-03-13  Robert Collins  <rbtcollins@hotmail.com>
 
 	* install.cc (do_install_thread): Use a query method rather than temp variable do_skip.
