@@ -1,3 +1,7 @@
+2003-03-10  Max Bowsher  <maxb@ukf.net>
+
+	* Makefile.am: Add foreign to AUTOMAKE_OPTIONS.
+
 2003-03-09  Max Bowsher  <maxb@ukf.net>
 
 	* bootstrap.sh: Add sanity check of current directory.

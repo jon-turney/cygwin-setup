@@ -1,3 +1,7 @@
+2003-03-10  Max Bowsher  <maxb@ukf.net>
+
+	* Makefile.am: Add foreign to AUTOMAKE_OPTIONS.
+
 2003-03-10  Robert Collins  <rbtcollins@hotmail.com>
 
 	* UserSettings.cc (UserSettings::init): Really initialize all members.
