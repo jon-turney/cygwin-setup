@@ -257,6 +257,12 @@ uexists (char *path)
 static void
 make_passwd_group ()
 {
+  char *fname = cygpath ("/etc/postinstall/passwd-grp.bat", 0);
+  mkdir_p (0, fname);
+
+  FILE *p = fopen (fname, "wt");
+  if (!p)
+    return;
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
     {
       Package *pkg = getpkgbyname ("cygwin");
@@ -267,25 +273,19 @@ make_passwd_group ()
 	  char *border_version = canonicalize_version ("1.1.5-4");
 	  char *inst_version = canonicalize_version (pkg->info[pkg->trust].version);
 	  if (strcmp (inst_version, border_version) <= 0)
-	    return;
+	    goto out;
 	}
     }
 
   if (uexists ("/etc/passwd") && uexists ("/etc/group"))
-    return;
-
-  char *fname = cygpath ("/etc/postinstall/passwd-grp.bat", 0);
-  mkdir_p (0, fname);
-
-  FILE *p = fopen (fname, "wt");
-  if (!p)
-    return;
+    goto out;
 
   if (!uexists ("/etc/passwd"))
     fprintf (p, "bin\\mkpasswd -l > etc\\passwd\n");
   if (!uexists ("/etc/group"))
     fprintf (p, "bin\\mkgroup -l > etc\\group\n");
 
+ out:
   fclose (p);
 }
 

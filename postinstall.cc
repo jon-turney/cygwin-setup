@@ -79,6 +79,9 @@ each (char *fname, unsigned int size)
   else
     return;
 
+  /* if file exists then delete it otherwise just ignore no file error */
+  remove (cygpath ("/etc/postinstall/", fname, ".done", 0));
+
   rename (cygpath ("/etc/postinstall/", fname, 0),
 	  cygpath ("/etc/postinstall/", fname, ".done", 0));
 }
