@@ -1,3 +1,8 @@
+2003-03-04  Max Bowsher  <maxb@ukf.net>
+
+	* compress_gz.cc (compress_gz::construct):
+	Fix broken checkin dated 2002-07-03.
+
 2003-02-28  Max Bowsher  <maxb@ukf.net>
 
 	* main.cc (set_default_sec): Add logging.
