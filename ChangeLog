@@ -1,7 +1,8 @@
 Sat Apr  1 22:49:09 2000  Christopher Faylor <cgf@cygnus.com>
 
-	* Makefile.in: Eliminate traces of cygwinisms.  Don't link with libmsvcrt.a.
-	It's unneeded.  Build .rc file on the fly from various sources.
+	* Makefile.in: Eliminate traces of cygwinisms.  Don't link with
+	libmsvcrt.a.  It's unneeded.  Build .rc file on the fly from various
+	sources.
 	* configure.in: Locate correct objcopy.
 	* configure: Regenerate.
 
