@@ -858,9 +858,9 @@ scan2 (char *path, unsigned int size)
 		      break;
 		    }
 		}
-      break;
+	      break;
 	    }
-    }
+	}
       if (strcmp (pkginfo, mainpkg) == 0)
 	{
 	  for (t = 0; t < NTRUST; t++)
@@ -904,7 +904,7 @@ scan2 (char *path, unsigned int size)
 		}
 	      else if (!package[i].info[TRUST_PREV].install)
 		{
-		  package[i].info[TRUST_CURR].version = 0;
+		  package[i].info[TRUST_PREV].version = 0;
 		  int tarsrcext = tarext - 4;
 		  if (tarsrcext > 0 && strncmp (path + tarsrcext , "-src", 4) == 0)
 		    {

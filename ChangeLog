@@ -1,3 +1,8 @@
+Tue May  8 23:33:38 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (scan2): Fix incorrect setting of TRUST_CURR rather than
+	TRUST_PREV which produced "0" versions.
+
 2001-05-07  Brian Keener <bkeener@thesoftwaresource.com>
 
 	* resource.h: Add new field IDC_CHOOSE_INST_TEXT.  Modify
