@@ -129,7 +129,7 @@ packagedb::flush ()
     return errno ? errno : 1;
 
   ndb->write ("INSTALLED.DB 2\n", strlen ("INSTALLED.DB 2\n"));
-  for (size_t n = 1; n < packages.number (); n++)
+  for (size_t n = 1; n <= packages.number (); n++)
     {
       packagemeta & pkgm = *packages[n];
       if (pkgm.installed)
