@@ -75,10 +75,18 @@ packagedb::packagedb ()
 	      while (db->gets (line, 1000))
 		{
 		  int parseable;
-		  src[0] = 0;
+		  src[0] = '\0';
+		  pkgname[0] = '\0';
+		  inst[0] = '\0';
 		  srcsz = 0;
+		  instsz = 0;
+
 		  sscanf (line, "%s %s %d %s %d", pkgname, inst, &instsz, src,
 			  &srcsz);
+
+		  if (pkgname[0] == '\0' || inst[0] == '\0')
+			continue;
+
 		  fileparse f;
 		  parseable = parse_filename (inst, f);
 		  if (!parseable)
