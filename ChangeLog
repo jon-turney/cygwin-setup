@@ -1,3 +1,7 @@
+2002-01-29  Christopher Faylor  <cgf@redhat.com>
+
+	* configure: Regenerate.
+
 2002-01-27  Robert Collins  <rbtcollins@hotmail.com>
 
 	* res.rc (IDD_LOCAL_DIR): Fix typo reported by Rene <Hoeck@extern.lrz-muenchen.de>
@@ -32,7 +36,7 @@
 	* filemanip.cc (find_tar_ext): Clean up tests for .tar.gz and .tar.
 	* fromcwd.cc (do_fromcwd): Expand FIXME comment in source file check.
 	* install.cc (install_one_source): Add space between words in log() call.
-  
+
 2002-01-22  Robert Collins  <rbtcollins@hotmail.com>
 
 	* log.cc (exit_setup): When saving to the download dir, explicity specify
@@ -158,11 +162,11 @@
 	* compress_gz.cc (compress_gz::~compress_gz): Mark the stream as destroyed.
 	* io_stream.cc (io_stream::~io_stream): Only warn when the stream is not marked
 	as destroyed.
-	* io_stream_cygfile.cc (io_stream_cygfile::~io_stream_cygfile): Mark the 
+	* io_stream_cygfile.cc (io_stream_cygfile::~io_stream_cygfile): Mark the
 	stream as destroyed.
 	* io_stream_file.cc (io_stream_file::~io_stream_file): Ditto.
 	* io_stream_memory.cc (io_stream_memory::~io_stream_memory): Ditto.
-	
+
 2002-01-21  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in (CFLAGS): Allow customisable malloc debug flags.
@@ -246,7 +250,7 @@
 	(view::views::caption): New method.
 	(view::set_headers): Use the new view::views class.
 	(view::clear_view): Ditto.
-	(viewsplusplus): Replaced by 
+	(viewsplusplus): Replaced by
 	(view::views::operator++): New operator.
 	(set_view_mode): Use the new view::views class.
 	(create_listview): Ditto.
@@ -293,11 +297,11 @@
 
 2002-01-07  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
-        * fromcwd.cc: Run indent.
+	* fromcwd.cc: Run indent.
 	(do_fromcwd): Reverse sense of comment.  Set next_dialog
 	to IDD_CHOOSER instead of IDD_CHOOSE.
 	* ini.cc (find_routine): Remove "/" from "/setup.ini".
-				
+
 2001-01-07  Robert Collins  <rbtcollins@hotmail.com>
 
 	* category.cc (Categorycmp): Add a const safe version.
@@ -321,7 +325,7 @@
 
 	* cygpackage.h (cygpackage): Make set_[s|l]desc virtual.
 	* iniparse.y (add_correct_version): Copy descriptions across.
-	* package_meta.cc (SDesc): Iterate through versions, return the first with a 
+	* package_meta.cc (SDesc): Iterate through versions, return the first with a
 	description.
 	* package_version.h (packageversion): Add new virtuals set_[l|s]desc.
 
@@ -350,7 +354,7 @@
 	* package_meta.cc (uninstall): Run pre- and postremove scripts.
 	* install.cc: Typo fix.
 	(do_install): Run script initialisation.
-											
+
 2001-01-04  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* cistring.cc: Run d2u.
@@ -468,7 +472,7 @@
 	* choose.cc (set_existence): Delete non installed packages with no
 	mirrors.
 	(fill_missing_category): Fix an off-by-one error.
-	(default_trust): Ditto. Also delete any unused categories. 
+	(default_trust): Ditto. Also delete any unused categories.
 	(view::init_headers): Fix an off-by-one error.
 	(set_view_mode): Ditto.
 	(set_view_mode): Ditto.
@@ -505,7 +509,7 @@
 	(SourcePage): Add class implementation to this file.
 	(do_source): Remove, functionality subsumed by SourcePage::Create()
 	and SourcePage::OnDeactivate().
-	(dialog_proc): Remove, functionality subsumed by 
+	(dialog_proc): Remove, functionality subsumed by
 	SourcePage::OnActivate().
 
 	* site.h: Run indent.
@@ -534,7 +538,7 @@
 	(RootPage::OnInit): New member function.  Move get_root_dir() logic to
 	here from do_root().
 	(RootPage::Create): New member function.
-	(RootPage::OnNext): New member function.  Move IDOK logic from 
+	(RootPage::OnNext): New member function.  Move IDOK logic from
 	dialog_cmd() to here.
 	(RootPage::OnBack): New member function.
 
@@ -549,19 +553,19 @@
 	* other.cc (do_other): Add owner parameter.
 
 	* nio-file.cc (NetIO::Purl): Pass NULL parent param to note().
-	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Pass NULL parent param to 
+	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Pass NULL parent param to
 	get_ftp_auth().
-	* nio-http.cc (retry_get): Pass NULL parent param to get_auth(), 
+	* nio-http.cc (retry_get): Pass NULL parent param to get_auth(),
 	get_proxy_auth(),
 	and get_ftp_auth().
-	* nio-ie5.cc (NetIO::_url): Pass NULL parent param to note(), 
+	* nio-ie5.cc (NetIO::_url): Pass NULL parent param to note(),
 	get_auth(), get_proxy_auth().
 
 	* netio.h (get_auth, get_proxy_auth, get_ftp_auth): Add owner param.
-	* netio.cc (auth_common, NetIO::get_auth, NetIO::get_proxy_auth, 
+	* netio.cc (auth_common, NetIO::get_auth, NetIO::get_proxy_auth,
 	NetIO::get_ftp_auth)
 	(auth_common): Add owner param.  Pass owner param to DialogBox.
-	(NetIO::get_auth, NetIO::get_proxy_auth, NetIO::get_ftp_auth): Pass 
+	(NetIO::get_auth, NetIO::get_proxy_auth, NetIO::get_ftp_auth): Pass
 	owner param to auth_common().
 
 	* net.h (NetPage): New file, new class.
@@ -570,7 +574,7 @@
 	(Progress): Add extern.
 	(dialog_cmd): Remove IDOK, IDC_BACK, and IDCANCEL cases, now handled by
 	property sheet logic.  Saved temporarily for reference.
-	(NetPage::Create, NetPage::OnInit, NetPage::OnDeactivate, 
+	(NetPage::Create, NetPage::OnInit, NetPage::OnDeactivate,
 	NetPage::OnNext, NetPage::OnBack):
 	New implementation of NetPage class members.
 	(do_net): Remove.
@@ -582,7 +586,7 @@
 	now that we have a parent.
 
 	* main.cc: Run indent.
-	(commctrl.h, proppage.h, propsheet.h, splash.h, source.h) 
+	(commctrl.h, proppage.h, propsheet.h, splash.h, source.h)
 	(localdir.h, net.h, site.h, choose.h, threebar.h, desktop.h): Include
 	headers.
 	(root_dialog_proc): extern into this file.
@@ -604,7 +608,7 @@
 	(threebar.h): New include.
 	(Progress): extern into this file.
 	(LocalDirPage::Create, LocalDirPage::OnInit, LocalDirPage::OnActivate)
-	(LocalDirPage::OnNext, LocalDirPage::OnBack): Implementation of 
+	(LocalDirPage::OnNext, LocalDirPage::OnBack): Implementation of
 	LocalDirPage.
 	(LocalDirPage::OnNext): Move log() call from do_local_dir() to here.
 	(dialog_cmd): Remove IDOK, ID_BACK, and IDCANCEL handlers.
@@ -618,23 +622,23 @@
 	(ins_dialog, ins_action, ins_pkgname, ins_filename, ins_pprogress)
 	(ins_iprogress, ins_diskfull, init_event): Remove, now handled by
 	ThreeBarProgressPage.
-	(dialog_cmd, dialog_proc, dialog): Removed, handled in 
+	(dialog_cmd, dialog_proc, dialog): Removed, handled in
 	ThreeBarProgressPage.
-	(init_dialog): Remove all mention of the above ins_* handles.  Now 
-	handled in ThreeBarProgressPage.  Altered SetWindowText()s to call 
+	(init_dialog): Remove all mention of the above ins_* handles.  Now
+	handled in ThreeBarProgressPage.  Altered SetWindowText()s to call
 	ThreeBarProgressPage instance Progress directly.
 	(progress): Alter bar update logic to call ThreeBarProgressPage
 	instance Progress directly.
 	(uninstall_one): Alter SetWindowText()s to call ThreeBarProgressPage
 	instance Progress directly.
-	(install_one_source): Alter SetWindowText()s to call 
+	(install_one_source): Alter SetWindowText()s to call
 	ThreeBarProgressPage
 	instance Progress directly. Pass NULL parent to note().
-	(do_install_thread): Rename from do_install(), added owner param.  
+	(do_install_thread): Rename from do_install(), added owner param.
 	Alter SetWindowText()s to call ThreeBarProgressPage instance Progress
 	directly.
 	Remove dismiss_url_status_dialog() call, no longer necessary.  Remove
-	ShowWindow(<hide>) call, also unnecessary now.  Pass owner handle to 
+	ShowWindow(<hide>) call, also unnecessary now.  Pass owner handle to
 	fatal().
 	(do_install_reflector): New function.
 	(do_install): New function.
@@ -643,10 +647,10 @@
 	(Progress): externed into this file.
 	(find_routine): Pass NULL parent to note().
 	(do_local_ini): Add owner param.
-	(do_remote_ini): Add owner param.  Pass owner to get_url_to_membuf() 
+	(do_remote_ini): Add owner param.  Pass owner to get_url_to_membuf()
 	and note().  Remove call to dismiss_url_status_dialog().
 	(do_ini_thread): Rename from do_ini().  Add owner param.  Pass owner to
-	do_local_ini(), do_remote_ini(), yesno(), and note().  Set next_dialog 
+	do_local_ini(), do_remote_ini(), yesno(), and note().  Set next_dialog
 	to IDD_CHOOSER on exit.
 	(do_ini_thread_reflector): New function.
 	(context): New var.  Context for do_ini_thread.
@@ -654,26 +658,26 @@
 
 	* geturl.h (get_url_to_membuf, get_url_to_string, get_url_to_file): Add
 	owner param.
-	* geturl.cc (gw_dialog, gw_url, gw_rate, gw_progress, gw_pprogress, 
+	* geturl.cc (gw_dialog, gw_url, gw_rate, gw_progress, gw_pprogress,
 	gw_iprogress)
-	(gw_progress_text, gw_pprogress_text, gw_iprogress_text, init_event): 
+	(gw_progress_text, gw_pprogress_text, gw_iprogress_text, init_event):
 	Removed.
 	(threebar.h): New include.
 	(Progress): externed into this file.
-	(dialog_cmd, dialog_proc, dialog): Removed, handled by 
+	(dialog_cmd, dialog_proc, dialog): Removed, handled by
 	ThreeBarProgressPage now.
-	(init_dialog): Remove "if (gw_dialog == 0)" clause.  Alter 
+	(init_dialog): Remove "if (gw_dialog == 0)" clause.  Alter
 	SetWindowText()s
-	and bar setting SendMessage()s to call ThreeBarProgressPage instance 
+	and bar setting SendMessage()s to call ThreeBarProgressPage instance
 	Progress directly.  Remove "one bar only" logic, this is now handled
 	explicitly in the ThreeBarProgressPage class.
-	(progress): Altered bar and text update logic to call 
+	(progress): Altered bar and text update logic to call
 	ThreeBarProgressPage instance Progress directly.  Changed kbps
 	calculation to floating point and now print out a single decimal
 	place.
 	(get_url_to_membuf): Add owner param.  Pass it to init_dialog.
 	(get_url_to_string): Add owner param.  Pass it to get_url_to_membuf.
-	(get_url_to_file): Add owner param.  Pass it to init_dialog. Alter bar 
+	(get_url_to_file): Add owner param.  Pass it to init_dialog. Alter bar
 	update logic to call ThreeBarProgressPage instance Progress directly.
 	(dismiss_url_status_dialog):  Remove.
 
@@ -696,7 +700,7 @@
 	* desktop.h (DesktopSetupPage): New file, new class.
 	* desktop.cc: Run indent.
 	(desktop.h): Add include.
-	(dialog_proc, do_desktop): Remove, now handled in 
+	(dialog_proc, do_desktop): Remove, now handled in
 	DesktopSetupPage::OnInit().
 	(dialog_cmd): Remove IDOK, IDC_BACK, and IDCANCEL cases, handled in
 	DesktopSetupPage::OnFinish(), DesktopSetupPage::OnBack(), and PropSheet
@@ -711,7 +715,7 @@
 	* choose.h: Run indent.
 	(Chooser): New class declaration.
 	* choose.cc: Run indent.
-	(do_choose): Add owner param.  Pass it to DialogBox() and 
+	(do_choose): Add owner param.  Pass it to DialogBox() and
 	fatal().
 	(Chooser): New class implementation.
 
@@ -743,7 +747,7 @@
 	(NEW_COL_SIZE_SLOP): Define without magic numbers.
 	(pkgtrustp): Convert to function.
 	(set_action): Remove.
-	(add_required, fill_missing_category,default_trust): Use list syntax for 
+	(add_required, fill_missing_category,default_trust): Use list syntax for
 	package list.
 	Use new set_action.
 	(choose_caption): Remove.
@@ -853,14 +857,14 @@
 	* site.cc (site_list_type): Move to site.h
 	(site_list): New global, sites chosen by the user.
 	(all_site_list): New global, all potential sites.
-	(site_list_type::init): New method, parses a mirror.lst URL string into a 
+	(site_list_type::init): New method, parses a mirror.lst URL string into a
 	site_list_type object.
 	(site_list_type::site_list_type): New method.
 	(check_if_enable_next): Examine the control, not a local variable.
 	(load_dialog): Select all the user chosen sites by default.
-	(save_dialog): Adjust for multiple selection semantics. 
+	(save_dialog): Adjust for multiple selection semantics.
 	(save_site_url): Save all user chosen sites.
-	(dialog_cmd): Don't save the dialog when the listbox recieves a message - 
+	(dialog_cmd): Don't save the dialog when the listbox recieves a message -
 	thats not needed.
 	Remove obsolete other_url reference.
 	(dialog_proc): Use all_site_list instead of site_list.
@@ -943,7 +947,7 @@
 	* package_source.cc (packagesource::set_canonical): Ditto.
 	(packagesource::set_cached): Ditto.
 	* package_source.h (site::~site): Ditto.
-	* site.cc: Change site_list_type to a class, and search and replace sort_key to 
+	* site.cc: Change site_list_type to a class, and search and replace sort_key to
 	key globally.
 
 2001-12-01  Robert Collins  <rbtcollins@hotmail.com>
@@ -961,7 +965,7 @@
 	* category_list.h: Remove.
 	(Categorycmp): New function prototype.
 	* choose.cc: Remove category_list - not needed.
-	(set_action): Only show the 'source' option when the source is actually 
+	(set_action): Only show the 'source' option when the source is actually
 	available.
 	(add_required): Fix recursion limiter to 5.
 	(fill_missing_category): Use list access.
@@ -982,7 +986,7 @@
 	(packagedb): Use the list template for categories.
 	* package_meta.cc (add_category): Ditto.
 	* package_meta.h (CategoryPackage): Link to the category as well.
-	(packagemeta): Use a list of CategoryPackages instead of Categories 
+	(packagemeta): Use a list of CategoryPackages instead of Categories
 	for more memory efficient cross-referencing.
 
 2001-11-30  Robert Collins  <rbtcollins@hotmail.com>
@@ -1135,7 +1139,7 @@
 	(uninstall_one): Use packagemeta->uninstall to perform the uninstallation.
 	Don't uninstall source packages.
 	(do_install): Just can uninstall_one once as we ignore source packages now.
-	Don't copy the installed.old database accross, instead iterate through the 
+	Don't copy the installed.old database accross, instead iterate through the
 	packagedb packages list and write the isntalled packages out.
 	* package_db.cc: Include package_version.h, not package.h.
 	(packagedb::packagedb): Never let db be undefined.
@@ -1159,7 +1163,7 @@
 	* package_version.h: New file.
 	* package.cc: Removed.
 	* package.h: Removed.
-	
+
 2001-11-21  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in (OBJS): Add category.o and category_list.o.
@@ -1252,15 +1256,15 @@
 2001-11-13  Brian Keener  <bkeener@thesoftwaresource.com>
 
 	* localdir.cc: Add headers unistd.h and port.h.
-	(save_local_dir): Expand search logic to include local directory for     
+	(save_local_dir): Expand search logic to include local directory for
 	location of file last-cache.
 	(dialog_cmd): Skip IDD_ROOT when downloading and use Back button.
-	(do_local_dir): Expand search logic to include local directory for file  
+	(do_local_dir): Expand search logic to include local directory for file
 	last-cache.
 	* res.rc (IDD_CHOOSE_DIALOG): Add hotkey to View button.
-	* Source.cc (dialog_cmd): Skip IDD_ROOT if select Download from         
+	* Source.cc (dialog_cmd): Skip IDD_ROOT if select Download from
 	Internet.
-	(do_source): Default to Install from Internet on first entry or        
+	(do_source): Default to Install from Internet on first entry or
 	previous selection if backing up from IDD_ROOT or IDD_LOCAL_DIR.
 
 2001-11-13  Robert Collins  <rbtcollins@hotmail.com>
@@ -1485,7 +1489,7 @@
 	 (actions): New enum, from ini.h. This may not be the 'right' place
 	but that place doesn't exist yet.
 	(_views): New enum, from ini.h.
-	* choose.cc (set_action): Handle installed packages with a version not in 
+	* choose.cc (set_action): Handle installed packages with a version not in
 	setup.ini.
 	(choose_caption): Ditto.
 	* iniparse.y: Rearrange header order to handle new ini.h.
@@ -1513,7 +1517,7 @@
 	(_view): Ditto.
 
 2001-11-08  Pavel Tsekov  <ptsekov@syntrex.com>
- 
+
 	* simpsock.h (SimpleSocket::invalidate): Declare new method.
 	* simpsock.cc (SimpleSocket::invalidate): Implement new method.
 	(SimpleSocket::SimpleSocket): Initialize buf to zero. Do not allocate
@@ -1553,7 +1557,7 @@
 
 	* geturl.cc (get_url_to_string): clean up memory leak
 	(get_url_to_file): ditto
-		
+
 2001-11-06  Robert Collins  <rbtcollins@hotmail.com>
 
 	* localdir.cc (dialog_cmd): Go back to IDD_ROOT in every case.
@@ -1586,7 +1590,7 @@
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc (default_trust): Change the "Required" forced install category to 
+	* choose.cc (default_trust): Change the "Required" forced install category to
 	"Base".
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
@@ -1597,7 +1601,7 @@
 
 2001-11-01  Christopher Faylor  <cgf@redhat.com>
 
-        * Makefile.in (mingw_getopt.o): Fix typo in non-verbose compilation.
+	* Makefile.in (mingw_getopt.o): Fix typo in non-verbose compilation.
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -1605,7 +1609,7 @@
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc (add_required): Allow SKIP and SRC_ONLY for currently installed 
+	* choose.cc (add_required): Allow SKIP and SRC_ONLY for currently installed
 	packages.
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
@@ -1624,14 +1628,14 @@
 	progress dialog and the supporting thread will be created.
 	(dialog_proc): Return TRUE to WM_INITDIALOG as specified by the WIN32 API.
 	(init_dialog): Remove usage of SetForegroundWindow and is_showing.
-	This prevents the progress dialog to gain control over the 
+	This prevents the progress dialog to gain control over the
 	application and fixes the "setup.exe going to background" problem.
 	(progress): Use is_local_install.
 	(get_url_to_string): Set is_local_install.
 	(dismiss_url_status_dialog): Use is_local_install.
 	* install.cc (dialog_proc): Return TRUE as specified in WIN32 API.
 	(init_dialog): Remove usage of SetForegroundWindow.
-	This prevents the progress dialog to gain control over the 
+	This prevents the progress dialog to gain control over the
 	application and fixes the "setup.exe going to background" problem.
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
@@ -1668,12 +1672,12 @@
 
 2001-11-01  Matt Hargett  <matt@use.net>
 
-        * geturl.cc (progress): Change int to unsigned int to eliminate
-        lint warnings.
-        * (get_url_to_string): Check for NULL pointer.
-        * mount.cc (find2): Use free instead of delete for malloc'd
-        memory.
-        * nio-http.cc (NetIO_HTTP::NetIO_HTTP): Fix memory leak.
+	* geturl.cc (progress): Change int to unsigned int to eliminate
+	lint warnings.
+	* (get_url_to_string): Check for NULL pointer.
+	* mount.cc (find2): Use free instead of delete for malloc'd
+	memory.
+	* nio-http.cc (NetIO_HTTP::NetIO_HTTP): Fix memory leak.
 
 2001-10-31  Robert Collins  <rbtcollins@hotmail.com>
 
@@ -1681,12 +1685,12 @@
 	a package nor a category. The lines[linen] bug was reported by Matt (matt@usa.net).
 	(read_installed_db): Bugfix for testing whether a package has a source tarball.
 	Reported by Matt (matt@usa.net).
-	* geturl.cc(dialog): Rename gw_dialog to local_gw_dialog to avoid programmer 
+	* geturl.cc(dialog): Rename gw_dialog to local_gw_dialog to avoid programmer
 	confusion and lint errors. Reported by Matt (matt@usa.net).
 
 2001-10-31  Robert Collins  <rbtcollins@hotmail.com>
 
-	* argv.cc: New file, converts arguments for -mwindows programs. (Simplified derivation 
+	* argv.cc: New file, converts arguments for -mwindows programs. (Simplified derivation
 	from dcrt0.cc.)
 	* argv.h: New file.
 	* Makefile,in: Add argv.o and mingw_getopt.o to setup.exe object list.
