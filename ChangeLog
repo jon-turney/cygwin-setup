@@ -1,3 +1,8 @@
+Mon Jul  2 15:47:59 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc (set_action): Allow "Skip" action if trust != installed.
+	* res.rc: Fix copyright.
+
 Sat Jun 30 23:08:01 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* choose.cc (scan2): Restore source scanning eliminated by previous

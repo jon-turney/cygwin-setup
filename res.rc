@@ -219,7 +219,7 @@ BEGIN
     LTEXT           "Cygwin Net Release Setup Program",IDC_STATIC,55,10,114,
                     8
     LTEXT           "Version (unknown)",IDC_VERSION,55,25,120,10
-    LTEXT           "Copyright (C) 2000,2001 Red Hat Inc.",IDC_STATIC,55,35,
+    LTEXT           "Copyright 2000, 2001 Red Hat Inc.",IDC_STATIC,55,35,
                     120,8
     LTEXT           "http://sources.redhat.com/cygwin/",IDC_STATIC,55,50,112,
                     8

@@ -166,7 +166,7 @@ set_action (Package *pkg, bool preinc)
 	pkg->action = ACTION_SKIP;
 	/* Fall through intentionally */
       case ACTION_SKIP:
-	if (!pkg->installed || !pkg->info[pkg->installed_ix].install_exists)
+	if (!pkg->installed || pkg->trust != pkg->installed_ix)
 	  return;
 	break;
       default:
