@@ -64,7 +64,9 @@ public:
   String replace (char pattern, char replacement) const;
   String replace (String const &pattern, String const &replacement) const;
 
-  operator std::string() const { return std::string(cstr_oneuse()); };
+  operator std::string() const {
+    return std::string( size() ? cstr_oneuse() : "" );
+  };
     
 private:
   class _data {
