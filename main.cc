@@ -171,7 +171,7 @@ main (int argc, char **argv)
   local_dir = String (cwd);
   delete cwd;
 
-  LogSingleton::SetInstance (theLog = new LogFile);
+  LogSingleton::SetInstance (*(theLog = new LogFile));
   theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
   theLog->setFile (0, local_dir + "/setup.log", true);
 
