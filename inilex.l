@@ -52,7 +52,7 @@ STR	[a-zA-Z0-9_./+-]+
 	  val = val - 'a' + 10;
 	else
 	  val = val - '0';
-	((unsigned char *) yylval) [i / 2] += val << ((i % 2) ? 4 : 0);
+	((unsigned char *) yylval) [i / 2] += val << ((i % 2) ? 0 : 4);
       }
     return MD5;
 }
