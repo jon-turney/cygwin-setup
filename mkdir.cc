@@ -22,6 +22,11 @@ static const char *cvsid =
 
 #if defined(WIN32) && !defined (_CYGWIN_)
 #include "win32.h"
+#else
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+#include <sys/stat.h>
 #endif
   
 #include <stdio.h>
@@ -61,17 +66,29 @@ mkdir_p (int isadir, const char *in_path)
 	}
     }
 #else
+  struct stat st;
   strcpy (path, in_path);
 
-  /* stat */
-  /* if file exists and is a dir return */
-  /* if we want a dir at this point
-     call makedir
-       if ok return 0
-     if fails due to present file,
-       rmove the file and return 1
-     else if fails due to missing fail/path
-     end block */
+  if (stat(path,&st) == 0 && S_ISDIR(st.st_mode))
+    return 0;
+
+  if (isadir)
+    {
+      if (mkdir (path, 0777))
+	return 0;
+      if (errno != ENOENT)
+	{
+	  if (errno == EEXIST)
+	    {
+	      fprintf (stderr,
+		       "warning: deleting \"%s\" so I can make a directory there\n",
+		       path);
+	      if (unlink (path))
+		return mkdir_p (isadir, path);
+	    }
+	  return 1;
+	}
+    }
 #endif
   
   for (c = path; *c; c++)

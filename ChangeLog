@@ -1,5 +1,11 @@
 2003-01-15  Max Bowsher  <maxb@ukf.net>
 
+	* mkdir.cc [_CYGWIN_]: Implement what was pseudocode.
+	* io_stream.h [__CYGWIN__]: Don't typedef ssize_t.
+	* proppage.h: Include "win32.h" instead of <windows.h>.
+
+2003-01-15  Max Bowsher  <maxb@ukf.net>
+
 	* mount.cc [MAINTAINER_FEATURES]: Add --override-registry-name option.
 
 2002-12-11  Abraham Backus  <abraham@backus.com>

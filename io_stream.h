@@ -31,7 +31,9 @@ class IOStreamProvider;
  */
 
 //Where is this defined?
+#if defined(_WIN32) && ! defined(__CYGWIN__)
 typedef signed long ssize_t;
+#endif
 
 #if __GNUC__
 #define _ATTR_(foo) __attribute__ foo
