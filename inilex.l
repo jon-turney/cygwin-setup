@@ -18,6 +18,7 @@
    previously downloaded.  The program must call ini_init() to specify
    that string. */
 
+#include "win32.h"
 #include <string.h>
 
 #include "ini.h"
@@ -26,10 +27,16 @@
 #define YY_INPUT(buf,result,max_size) { result = ini_getchar(buf, max_size); }
 
 static int ini_getchar(char *buf, int max_size);
+static void ignore_line ();
 
 %}
 
+/*%option debug */
 %option noyywrap
+%option yylineno
+%option never-interactive
+
+STR	[a-zA-Z0-9_./-]+
 
 %%
 
@@ -44,14 +51,19 @@ static int ini_getchar(char *buf, int max_size);
 "sdesc:"		return SDESC;
 "ldesc:"		return LDESC;
 
+^{STR}":"		ignore_line ();
+
 "[curr]"		return T_CURR;
 "[test]"		return T_TEST;
 "[prev]"		return T_PREV;
+"["{STR}"]"		return T_UNKNOWN;
 
-[a-zA-Z0-9_./-]+	{ yylval = strdup (yytext);
+{STR}			{ yylval = strdup (yytext);
 			  return STRING; }
 
-[ \t\r]+
+[ \t\r]+		/* do nothing */
+
+"#".*\n			/* ignore comments */
 
 \n			{ return yytext[0]; }
 .			{ return yytext[0]; }
@@ -87,4 +99,17 @@ ini_getchar(char *buf, int max_size)
     }
   else
     return 0;
+}
+
+static void
+ignore_line ()
+{
+  char c;
+  while (c = input ())
+    {
+      if (c == EOF)
+	return;
+      if (c == '\n')
+	return;
+    }
 }

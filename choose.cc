@@ -52,11 +52,14 @@ do_choose (HINSTANCE h)
   for (i=0; i<npackages; i++)
     {
       for (t=0; t<NTRUST; t++)
-	if (package[i].info[t].install)
-	  {
-	    package[i].trust = t;
-	    break;
-	  }
+	{
+	  int tp = trust_prefs[t];
+	  if (package[i].info[tp].install)
+	    {
+	      package[i].trust = tp;
+	      break;
+	    }
+	}
     }
 
   if (root_dir)

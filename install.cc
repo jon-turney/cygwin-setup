@@ -180,8 +180,9 @@ static char *standard_dirs[] = {
 
 #define LOOP_PACKAGES \
   for (i=0; i<npackages; i++) \
-    if (package[i].action == ACTION_NEW \
-	|| package[i].action == ACTION_UPGRADE)
+    if ((package[i].action == ACTION_NEW \
+	 || package[i].action == ACTION_UPGRADE) \
+	&& pi.install)
 
 void
 do_install (HINSTANCE h)

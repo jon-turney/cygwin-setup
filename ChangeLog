@@ -1,3 +1,15 @@
+2000-07-18  DJ Delorie  <dj@redhat.com>
+
+	* choose.cc (do_choose): sort packages correctly
+	* ini.cc (do_ini): handle parse errors more gracefully
+	(yyerror): ditto
+	(fprintf): line buffer output
+	* ini.h: add "unknown" trust level
+	* inilex.l: absorb unknown trust levels and key/value pairs,
+	add line number logic
+	* iniparse.y: handle parse errors more gracefully.
+	* install.cc: skip packages with no valid install entry
+
 2000-07-17  DJ Delorie  <dj@cygnus.com>
 
 	* coding standards fixups, many files

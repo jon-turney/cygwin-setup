@@ -26,6 +26,7 @@
 #define TRUST_PREV	0
 #define TRUST_CURR	1
 #define TRUST_TEST	2
+#define TRUST_UNKNOWN	3 /* intentionally not in NTRUST */
 #define NTRUST 3
 
 #define ACTION_UNKNOWN	0
@@ -46,7 +47,7 @@ typedef struct {
     int install_size;	/* in bytes */
     char *source;	/* sources for installed binaries */
     int source_size;	/* in bytes */
-  } info[NTRUST];
+  } info[NTRUST+1];	/* +1 for TRUST_UNKNOWN */
 } Package;
 
 extern Package *package;

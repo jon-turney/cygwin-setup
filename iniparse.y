@@ -16,14 +16,19 @@
 
 /* Parse the setup.ini files.  inilex.l provides the tokens for this. */
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "ini.h"
 #include "iniparse.h"
 
+#define YYERROR_VERBOSE 1
+/*#define YYDEBUG 1*/
+
 static Package *cp;
 static int trust;
 extern unsigned int setup_timestamp;
+extern int yylineno;
 
 #define cpt (cp->info+trust)
 
@@ -31,7 +36,7 @@ extern unsigned int setup_timestamp;
 
 %token STRING
 %token SETUP_TIMESTAMP VERSION INSTALL SOURCE SDESC LDESC
-%token T_PREV T_CURR T_TEST
+%token T_PREV T_CURR T_TEST T_UNKNOWN
 
 %%
 
@@ -46,6 +51,7 @@ setup_headers
 
 setup_header
  : SETUP_TIMESTAMP STRING '\n' { setup_timestamp = strtoul ($2, 0, 0); }
+ | error { yyerror ("unrecognized line in setup.ini headers"); } '\n'
  ;
 
 packages
@@ -75,7 +81,12 @@ simple_line
  | T_PREV			{ trust = TRUST_PREV; }
  | T_CURR			{ trust = TRUST_CURR; }
  | T_TEST			{ trust = TRUST_TEST; }
+ | T_UNKNOWN			{ trust = TRUST_UNKNOWN; }
  | /* empty */
+ | error '\n' { yylineno --;
+		yyerror ("unrecognized line in package %s", cp->name);
+		yylineno ++;
+	      }
  ;
 
 %%

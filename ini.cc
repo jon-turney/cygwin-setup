@@ -21,6 +21,7 @@
 #include "win32.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
 
 #include "ini.h"
@@ -35,12 +36,16 @@
 unsigned int setup_timestamp = 0;
 
 extern "C" int yyparse ();
-/* extern int yydebug; */
+/*extern int yydebug;*/
+
+static char *error_buf = 0;
+static int error_count = 0;
 
 void
 do_ini (HINSTANCE h)
 {
   char *ini_file = get_url_to_string (concat (MIRROR_SITE, "/setup.ini", 0));
+  dismiss_url_status_dialog ();
 
   if (!ini_file)
     fatal (IDS_SETUPINI_MISSING, MIRROR_SITE);
@@ -48,8 +53,15 @@ do_ini (HINSTANCE h)
   ini_init (ini_file);
 
   setup_timestamp = 0;
-  /*  yydebug = 0;*/
-  yyparse ();
+  /*yydebug = 1;*/
+
+  if (yyparse () || error_count > 0)
+    {
+      if (error_count == 1)
+	MessageBox (0, error_buf, "Parse Error", 0);
+      else
+	MessageBox (0, error_buf, "Parse Errors", 0);
+    }
 
   if (root_dir)
     {
@@ -83,13 +95,36 @@ do_ini (HINSTANCE h)
   next_dialog = IDD_S_CHOOSE;
 }
 
-extern "C" int yyerror (char *s)
+extern int yylineno;
+
+extern "C" int yyerror (char *s, ...)
 {
-  MessageBox (0, s, "Parse Error", 0);
-  ExitProcess (0);
+  char buf[1000];
+  int len;
+  sprintf (buf, "setup.ini line %d: ", yylineno);
+  va_list args;
+  va_start (args, s);
+  vsprintf (buf + strlen (buf), s, args);
+  OutputDebugString (buf);
+  if (error_buf)
+    {
+      strcat (error_buf, "\n");
+      len = strlen (error_buf) + strlen (buf) + 5;
+      error_buf = (char *) realloc (error_buf, len);
+      strcat (error_buf, buf);
+    }
+  else
+    {
+      len = strlen (buf) + 5;
+      error_buf = (char *) malloc (len);
+      strcpy (error_buf, buf);
+    }
+  error_count++;
 }
 
 extern "C" int fprintf (FILE *f, const char *s, ...);
+
+static char stderrbuf[1000];
 
 int
 fprintf (FILE *f, const char *fmt, ...)
@@ -101,7 +136,15 @@ fprintf (FILE *f, const char *fmt, ...)
   if (f == stderr)
     {
       rv = vsprintf (buf, fmt, args);
-      MessageBox (0, buf, "Cygwin Setup", 0);
+      strcat (stderrbuf, buf);
+      if (char *nl = strchr (stderrbuf, '\n'))
+	{
+	  *nl = 0;
+	  /*OutputDebugString (stderrbuf);*/
+	  MessageBox (0, buf, "Cygwin Setup", 0);
+	  stderrbuf[0] = 0;
+	}
+      
     }
   else
     {
