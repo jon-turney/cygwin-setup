@@ -20,6 +20,8 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/fcntl.h>
 
 #include "zlib/zlib.h"
 #include "tar.h"
@@ -27,6 +29,8 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "log.h"
 
 #include "port.h"
+#undef _WIN32
+#include "bzlib.h"
 
 #define FACTOR (0x19db1ded53ea710LL)
 #define NSPERSEC 10000000LL
@@ -77,7 +81,66 @@ FILE * _tar_vfile = 0;
 #define vp if (_tar_verbose) fprintf
 #define vp2 if (_tar_verbose>1) fprintf
 
-static gzFile g = 0;
+class gzbz
+{
+ protected:
+  union
+  {
+    gzFile g;
+    BZFILE *b;
+  };
+  int fd;
+public:
+  virtual int read (void *buf, int len);
+  virtual int close ();
+  virtual off_t tell ();
+  operator int () {return (int) g;}
+};
+
+class gz: public gzbz
+{
+ public:
+  gz (const char *pathname)
+  {
+    g = gzopen (pathname, "rb");
+  }
+  int read (void *buf, int len)
+  {
+    return gzread (g, buf, len);
+  }
+  int close ()
+  {
+    return gzclose (g);
+  }
+  off_t tell () {return gzctell (g);}
+  ~gz () {close ();}
+};
+
+class bz: public gzbz
+{
+ public:
+  bz (const char *pathname)
+  {
+    fd = open (pathname, O_RDONLY | O_BINARY);
+    if (fd)
+      b = BZ2_bzdopen (fd, "rb");
+    else
+      b = NULL;
+  }
+  int read (void *buf, int len)
+  {
+    return BZ2_bzread (b, buf, len);
+  }
+  int close ()
+  {
+    BZ2_bzclose (b);
+    return 0;
+  }
+  off_t tell () {return ::tell (fd);}
+  ~bz () {close ();}
+};
+
+gzbz *z = NULL;
 
 static char *
 xstrdup (char *c)
@@ -101,7 +164,10 @@ tar_open (char *pathname)
     return 1;
   _tar_file_size = size;
 
-  g = gzopen (pathname, "rb");
+  if (strstr (pathname, ".bz2"))
+    z = new bz (pathname);
+  else
+    z = new gz (pathname);
   if (sizeof (tar_header) != 512)
     {
       /* drastic, but important */
@@ -110,13 +176,13 @@ tar_open (char *pathname)
       exit_setup (1);
     }
   err = 0;
-  return g ? 0 : 1;
+  return *z ? 0 : 1;
 }
 
 int
 tar_ftell ()
 {
-  return gzctell (g);
+  return z->tell ();
 }
 
 static void
@@ -124,7 +190,7 @@ skip_file ()
 {
   while (file_length > 0)
     {
-      gzread (g, buf, 512);
+      z->read (buf, 512);
       file_length -= 512;
     }
 }
@@ -134,7 +200,7 @@ tar_next_file ()
 {
   int r, n;
   char *c;
-  r = gzread (g, &tar_header, 512);
+  r = z->read (&tar_header, 512);
 
   /* See if we're at end of file */
   if (r != 512)
@@ -165,8 +231,8 @@ tar_next_file ()
 	  skip_file ();
 	  fprintf (stderr, "error: long file name exceeds %d characters\n",
 		   _MAX_PATH);
-	  err ++;
-	  gzread (g, &tar_header, 512);
+	  err++;
+	  z->read (&tar_header, 512);
 	  sscanf (tar_header.size, "%o", &file_length);
 	  skip_file ();
 	  return tar_next_file ();
@@ -175,7 +241,7 @@ tar_next_file ()
       while (file_length > 0)
 	{
 	  int need = file_length > 512 ? 512 : file_length;
-	  if (gzread (g, buf, 512) < 512)
+	  if (z->read (buf, 512) < 512)
 	    return 0;
 	  memcpy (c, buf, need);
 	  c += need;
@@ -190,7 +256,7 @@ tar_next_file ()
     case '6': /* fifo */
       fprintf (stderr, "warning: not extracting special file %s\n",
 	       file_name);
-      err ++;
+      err++;
       return tar_next_file ();
 
     case '0': /* regular file */
@@ -206,7 +272,7 @@ tar_next_file ()
     default:
       fprintf (stderr, "error: unknown (or unsupported) file type `%c'\n",
 	       tar_header.typeflag);
-      err ++;
+      err++;
       skip_file ();
       return tar_next_file ();
     }
@@ -306,7 +372,7 @@ tar_read_file (char *path)
 	{
 	  int put;
 	  int want = file_length > 512 ? 512 : file_length;
-	  got = gzread (g, buf, 512);
+	  got = z->read (buf, 512);
 	  if (got < 512)
 	    {
 	      fprintf (stderr, "tar: unexpected end of file reading %s\n", path);
@@ -426,8 +492,8 @@ tar_close ()
 #endif
   tar_map_result = 0;
 
-  if (gzclose (g))
-    err ++;
+  if (z->close ())
+    err++;
   return err; /* includes errors for skipped files, etc */
 }
 
@@ -490,10 +556,10 @@ tar_auto (char *pathname, char **maplist)
       fwrite (twiddles+t, 1, 2, stderr);
 
       if (tar_read_file (c))
-	err ++;
+	err++;
     }
   if (tar_close ())
-    err ++;
+    err++;
 
   fwrite (" \b", 1, 2, stderr);
 

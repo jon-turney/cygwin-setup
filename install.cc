@@ -280,7 +280,7 @@ uninstall_one (char *name, int action)
 	  if (RemoveDirectory (d))
 	    log (LOG_BABBLE, "rmdir %s", d);
 	}
-      num_uninstalls ++;
+      num_uninstalls++;
     }
 }
 
@@ -337,11 +337,11 @@ install_one (char *name, char *file, int file_size, int action, BOOL isSrc)
       if (tar_read_file (dest_file) != 0)
 	{
 	  log (0, "Unable to install file %s", dest_file);
-	  errors ++;
+	  errors++;
 	}
 
       progress (tar_ftell ());
-      num_installs ++;
+      num_installs++;
     }
   tar_close ();
 

@@ -42,6 +42,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "dialog.h"
 #include "msg.h"
 #include "find.h"
+#include "filemanip.h"
 #include "version.h"
 
 #include "port.h"
@@ -87,10 +88,10 @@ found_file (char *path, unsigned int fsize)
 {
   char base[_MAX_PATH], *ver;
 
-  int l = strlen (path);
-
-  if (strcmp (path + l - 7, ".tar.gz") != 0)
+  int l = find_tar_ext (path);
+  if (!l)
     return;
+
   if (strstr (path, "-src."))
     return;
   if (strstr (path, "-patch."))
@@ -98,11 +99,11 @@ found_file (char *path, unsigned int fsize)
 
   char *sl = strrchr (path, '/');
   if (sl)
-    sl ++;
+    sl++;
   else
     sl = path;
   strcpy (base, sl);
-  base[strlen (base) - 7] = 0; /* remove .tar.gz */
+  base[l] = 0; /* remove .tar.gz */
   for (ver=base; *ver; ver++)
     if ((*ver == '-' || *ver == '_') && isdigit (ver[1]))
       {
@@ -158,18 +159,24 @@ do_fromcwd (HINSTANCE h)
   int i, t;
   Package *p;
   char srcpath[_MAX_PATH];
-  for (i=0; i<npackages; i++)
+  for (i = 0; i < npackages; i++)
     {
       p = package+i;
-      for (t=TRUST_PREV; t<=TRUST_TEST; t++)
+      for (t = TRUST_PREV; t <= TRUST_TEST; t++)
 	if (p->info[t].install)
 	  {
+	    int n = find_tar_ext (p->info[t].install);
 	    strcpy (srcpath, p->info[t].install);
-	    strcpy (srcpath + strlen (srcpath) - 7, "-src.tar.gz");
+	    strcpy (srcpath + n, "-src.tar.gz");
 	    msg ("looking for %s", srcpath);
 
 	    WIN32_FIND_DATA wfd;
 	    HANDLE h = FindFirstFile (srcpath, &wfd);
+	    if (h == INVALID_HANDLE_VALUE)
+	      {
+		strcpy (srcpath + n, "-src.tar.bz2");
+		h = FindFirstFile (srcpath, &wfd);
+	      }
 	    if (h != INVALID_HANDLE_VALUE)
 	      {
 		msg("-- got it");

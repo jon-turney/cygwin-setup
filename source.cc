@@ -97,6 +97,8 @@ void
 do_source (HINSTANCE h)
 {
   int rv = 0;
+  /* source = IDC_SOURCE_CWD;*/
+  source = IDC_SOURCE_NETINST;
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_SOURCE), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);

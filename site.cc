@@ -195,7 +195,7 @@ get_site_list (HINSTANCE h)
 
   for (bol=mirrors; *bol; bol++)
     if (*bol == '\n')
-      nmirrors ++;
+      nmirrors++;
 
   site_list = (site_list_type *) malloc (nmirrors * sizeof (site_list_type));
   nmirrors = 0;

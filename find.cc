@@ -55,7 +55,7 @@ find_sub ()
     else
       {
 	for_each (found_part, wfd.nFileSizeLow);
-	rv ++;
+	rv++;
       }
 
   } while (FindNextFile (h, &wfd));

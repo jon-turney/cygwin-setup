@@ -44,17 +44,18 @@ OBJCOPY		:= @OBJCOPY@
 
 include $(srcdir)/../Makefile.common
 
-MINGW_INCLUDES	:= -I. -I$(srcdir) -I$(mingw_source)/include -I$(w32api_include)
+MINGW_INCLUDES	:= -I. -I$(srcdir) -I$(mingw_source)/include -I$(w32api_include) -I$(updir)/bz2lib
 
 MINGW_CXXFLAGS	:= -MMD $(CXXFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
 MINGW_CFLAGS	:= -MMD $(CFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
 
 ZLIB		:= zlib/libzcygw.a
+BZ2LIB		:= $(bupdir)/bz2lib/libbz2.a
 libmingw32.a	:= $(mingw_build)/libmingw32.a
 libuser32	:= $(w32api_lib)/libuser32.a
 libkernel32	:= $(w32api_lib)/libkernel32.a
 
-ALL_DEP_LDLIBS	:= $(ZLIB) $(w32api_lib)/libole32.a $(w32api_lib)/libwsock32.a \
+ALL_DEP_LDLIBS	:= $(ZLIB) $(BZ2LIB) $(w32api_lib)/libole32.a $(w32api_lib)/libwsock32.a \
 		$(w32api_lib)/libnetapi32.a $(w32api_lib)/libadvapi32.a \
 		$(w32api_lib)/libuuid.a $(libkernel32) $(w32api_lib)/libuser32.a \
 		$(libmingw32)
@@ -147,6 +148,9 @@ $(libmingw32): $(mingw_build)/Makefile
 	@$(MAKE) -C $(@D) $(@F)
 
 $(ZLIB): zlib/Makefile
+	$(MAKE) -C $(@D) $(@F) CC="$(CC)" CFLAGS='$(MINGW_CFLAGS)'
+
+$(BZ2LIB): $(bupdir)/bz2lib/Makefile
 	$(MAKE) -C $(@D) $(@F) CC="$(CC)" CFLAGS='$(MINGW_CFLAGS)'
 
 version.c : $(srcdir)/ChangeLog Makefile
