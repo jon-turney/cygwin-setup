@@ -30,10 +30,12 @@ class Window
   static ATOM WindowClassAtom;
   static HINSTANCE AppInstance;
 
-  bool RegisterWindowClass ();
+  virtual bool registerWindowClass ();
+protected:
   static LRESULT CALLBACK FirstWindowProcReflector (HWND hwnd, UINT uMsg,
 						    WPARAM wParam,
 						    LPARAM lParam);
+private:
   static LRESULT CALLBACK WindowProcReflector (HWND hwnd, UINT uMsg,
 					       WPARAM wParam, LPARAM lParam);
 
@@ -52,6 +54,7 @@ protected:
   {
     WindowHandle = h;
   };
+  void setParent(Window *aParent) {Parent = aParent;}
 
 public:
   Window ();

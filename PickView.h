@@ -18,6 +18,7 @@
 
 #include "win32.h"
 #include "String++.h"
+#include "window.h"
 
 #define HMARGIN 10
 #define ROW_MARGIN      5
@@ -32,9 +33,11 @@ class PickView;
 #include "PickCategoryLine.h"
 #include "package_meta.h"
 
-class PickView
+class PickView : public Window
 {
 public:
+  virtual bool Create (Window * Parent = NULL, DWORD Style = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN, RECT * r = NULL);
+  virtual bool registerWindowClass ();
   class views;
   class Header;
   int num_columns;
@@ -43,8 +46,16 @@ public:
     return view_mode;
   };
   void set_view_mode (views _mode);
+  static HWND lv;
+  static PickView *chooser;
+  static void paint (HWND hwnd);
+  static LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
+  static LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);
+  static LRESULT CALLBACK list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos);
+  virtual LRESULT WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam);
   Header *headers;
-  PickView (views mode, HWND listview, Category & cat);
+  PickView (Category & cat);
+  void init(views _mode);
   ~PickView();
   const char *mode_caption ();
   void insert_pkg (packagemeta &);
@@ -117,7 +128,7 @@ public:
   };
 
 private:
-  HWND listview;
+  static ATOM WindowClassAtom;
   HWND listheader;
   views view_mode;
   void set_headers ();

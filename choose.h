@@ -27,9 +27,6 @@
 class ChooserPage:public PropertyPage
 {
 public:
-  static HWND lv;
-  static PickView *chooser;
-
   ChooserPage ()
   {
   };
@@ -54,14 +51,8 @@ public:
   void fillMissingCategory();
   void getParentRect (HWND parent, HWND child, RECT * r);
   void keepClicked();
-  static LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
-  static LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);
-  static LRESULT CALLBACK list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos);  
-  static LRESULT CALLBACK listview_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();
-  static void paint (HWND hwnd);
-  void registerWindows (HINSTANCE hinst);
   void setExistence();
   void setPrompt(char const *aPrompt);
   void setViewMode (HWND h, PickView::views mode);
@@ -74,6 +65,8 @@ public:
       return false;
   }
   template <trusts aTrust> void changeTrust();
+  PickView *chooser;
+  HWND lv;
 };
 
 #endif /* SETUP_CHOOSE_H */

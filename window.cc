@@ -69,6 +69,8 @@ Window::FirstWindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
       // in the 'else' clause below, but this way we eliminate an unnecessary 'if/else' on
       // every message.  Yeah, it's probably not worth the trouble.
       SetWindowLongPtr (hwnd, GWL_WNDPROC, (LONG_PTR) & Window::WindowProcReflector);
+      // Finally, store the window handle in the class.
+      wnd->WindowHandle = hwnd;
     }
   else
   {
@@ -94,7 +96,7 @@ Window::WindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
 bool Window::Create (Window * parent, DWORD Style)
 {
   // First register the window class, if we haven't already
-  if (RegisterWindowClass () == false)
+  if (registerWindowClass () == false)
     {
       // Registration failed
       return false;
@@ -133,7 +135,7 @@ bool Window::Create (Window * parent, DWORD Style)
   return true;
 }
 
-bool Window::RegisterWindowClass ()
+bool Window::registerWindowClass ()
 {
   if (WindowClassAtom == 0)
     {
@@ -260,13 +262,7 @@ Window::CenterWindow ()
 
 LRESULT Window::WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-  switch (uMsg)
-    {
-    default:
-      return DefWindowProc (WindowHandle, uMsg, wParam, lParam);
-    }
-
-  return 0;
+  return DefWindowProc (WindowHandle, uMsg, wParam, lParam);
 }
 
 bool Window::MessageLoop ()

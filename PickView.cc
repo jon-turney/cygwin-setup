@@ -22,6 +22,9 @@
 #include "dialog.h"
 #include "resource.h"
 #include <algorithm>
+/* For 'source' */
+#include "state.h"
+#include "LogSingleton.h"
 
 using namespace std;
 
@@ -52,6 +55,8 @@ const PickView::views PickView::views::Package (2);
 const PickView::views PickView::views::PackageKeeps (3);
 const PickView::views PickView::views::PackageSkips = PickView::views (4);
 const PickView::views PickView::views::Category (5);
+
+ATOM PickView::WindowClassAtom = 0;
 
 // DoInsertItem - inserts an item into a header control.
 // Returns the index of the new item.
@@ -291,7 +296,7 @@ PickView::scroll (HWND hwnd, int which, int *var, int code)
   *var = si.nPos;
 
   RECT cr, sr;
-  GetClientRect (hwnd, &cr);
+  ::GetClientRect (hwnd, &cr);
   sr = cr;
   sr.top += header_height;
   UpdateWindow (hwnd);
@@ -303,10 +308,10 @@ PickView::scroll (HWND hwnd, int which, int *var, int code)
    */
   if (ox - scroll_ulc_x)
     {
-      GetClientRect (listheader, &cr);
+      ::GetClientRect (listheader, &cr);
       sr = cr;
 //  UpdateWindow (htmp);
-      MoveWindow (listheader, -scroll_ulc_x, 0,
+      ::MoveWindow (listheader, -scroll_ulc_x, 0,
                   headers[last_col].x +
                   headers[last_col].width, header_height, TRUE);
     }
@@ -360,11 +365,15 @@ PickView::init_headers (HDC dc)
 }
 
 
-PickView::PickView (views _mode, HWND lv, Category &cat) : deftrust (TRUST_UNKNOWN),
-contents (*this, cat, 0, false, true), listview (lv)
+PickView::PickView (Category &cat) : deftrust (TRUST_UNKNOWN),
+contents (*this, cat, 0, false, true)
 {
+}
 
-  HDC dc = GetDC (listview);
+void
+PickView::init(views _mode)
+{
+  HDC dc = GetDC (GetHWND());
   sysfont = GetStockObject (DEFAULT_GUI_FONT);
   SelectObject (dc, sysfont);
   GetTextMetrics (dc, &tm);
@@ -407,7 +416,7 @@ contents (*this, cat, 0, false, true), listview (lv)
   if ((listheader = CreateWindowEx (0, WC_HEADER, (LPCTSTR) NULL,
                                     WS_CHILD | WS_BORDER | CCS_NORESIZE |
                                     // | HDS_BUTTONS
-                                    HDS_HORZ, 0, 0, 0, 0, listview,
+                                    HDS_HORZ, 0, 0, 0, 0, GetHWND(),
                                     (HMENU) IDC_CHOOSE_LISTHEADER, hinstance,
                                     (LPVOID) NULL)) == NULL)
     // FIXME: throw an exception
@@ -416,7 +425,7 @@ contents (*this, cat, 0, false, true), listview (lv)
   // Retrieve the bounding rectangle of the parent window's
   // client area, and then request size and position values
   // from the header control.
-  GetClientRect (listview, &rcParent);
+  ::GetClientRect (GetHWND(), &rcParent);
 
   hdl.prc = &rcParent;
   hdl.pwpos = &wp;
@@ -450,4 +459,266 @@ contents (*this, cat, 0, false, true), listview (lv)
 
 PickView::~PickView()
 {
+}
+
+bool PickView::registerWindowClass ()
+{
+  if (WindowClassAtom != 0)
+    return true;
+
+  // We're not registered yet
+  WNDCLASSEX wc;
+
+  wc.cbSize = sizeof (wc);
+  // Some sensible style defaults
+  wc.style = CS_HREDRAW | CS_VREDRAW;
+  // Our default window procedure.  This replaces itself
+  // on the first call with the simpler Window::WindowProcReflector().
+  wc.lpfnWndProc = Window::FirstWindowProcReflector;
+  // No class bytes
+  wc.cbClsExtra = 0;
+  // One pointer to REFLECTION_INFO in the extra window instance bytes
+  wc.cbWndExtra = 4;
+  // The app instance
+  wc.hInstance = hinstance; //GetInstance ();
+  // Use a bunch of system defaults for the GUI elements
+  wc.hIcon = LoadIcon (0, IDI_APPLICATION);
+  wc.hIconSm = NULL;
+  wc.hCursor = LoadCursor (0, IDC_ARROW);
+  wc.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
+  // No menu
+  wc.lpszMenuName = NULL;
+  // We'll get a little crazy here with the class name
+  wc.lpszClassName = "listview";
+
+  // All set, try to register
+  WindowClassAtom = RegisterClassEx (&wc);
+  if (WindowClassAtom == 0)
+    log (LOG_BABBLE) << "Failed to register listview " << GetLastError () << endLog;
+  return WindowClassAtom != 0;
+}
+
+LRESULT CALLBACK
+PickView::list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos)
+{
+  chooser->scroll (hwnd, SB_VERT, &chooser->scroll_ulc_y, code);
+  return 0;
+}
+
+LRESULT CALLBACK
+PickView::list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos)
+{
+  chooser->scroll (hwnd, SB_HORZ, &chooser->scroll_ulc_x, code);
+  return 0;
+}
+
+LRESULT CALLBACK
+PickView::list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
+{
+  int row, refresh;
+
+  if (chooser->contents.itemcount () == 0)
+    return 0;
+
+  if (y < chooser->header_height)
+    return 0;
+  x += chooser->scroll_ulc_x;
+  y += chooser->scroll_ulc_y - chooser->header_height;
+
+  row = (y + ROW_MARGIN / 2) / chooser->row_height;
+
+  if (row < 0 || row >= chooser->contents.itemcount ())
+    return 0;
+
+  refresh = chooser->click (row, x);
+
+  // XXX we need a method to queryt he database to see if more
+  // than just one package has changed! Until then...
+#if 0
+  if (refresh)
+    {
+#endif
+      RECT r;
+      ::GetClientRect (lv, &r);
+      SCROLLINFO si;
+      memset (&si, 0, sizeof (si));
+      si.cbSize = sizeof (si);
+      si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;    /* SIF_RANGE was giving strange behaviour */
+      si.nMin = 0;
+
+      si.nMax = chooser->contents.itemcount () * chooser->row_height;
+      si.nPage = r.bottom - chooser->header_height;
+
+      /* if we are under the minimum display count ,
+       * set the offset to 0
+       */
+      if ((unsigned int) si.nMax <= si.nPage)
+  chooser->scroll_ulc_y = 0;
+      si.nPos = chooser->scroll_ulc_y;
+
+      SetScrollInfo (lv, SB_VERT, &si, TRUE);
+
+      InvalidateRect (lv, &r, TRUE);
+#if 0
+    }
+  else
+    {
+      RECT rect;
+      rect.left =
+ chooser->headers[chooser->new_col].x - chooser->scroll_ulc_x;
+      rect.right =
+   chooser->headers[chooser->src_col + 1].x - chooser->scroll_ulc_x;
+      rect.top =
+ chooser->header_height + row * chooser->row_height -
+   chooser->scroll_ulc_y;
+      rect.bottom = rect.top + chooser->row_height;
+      InvalidateRect (hwnd, &rect, TRUE);
+    }
+#endif
+  return 0;
+}
+
+/*
+ * LRESULT CALLBACK
+ * PickView::listview_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+ */
+LRESULT
+PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
+{
+  switch (message)
+    {
+    case WM_HSCROLL:
+      return HANDLE_WM_HSCROLL (GetHWND(), wParam, lParam, list_hscroll);
+    case WM_VSCROLL:
+      return HANDLE_WM_VSCROLL (GetHWND(), wParam, lParam, list_vscroll);
+    case WM_LBUTTONDOWN:
+      return HANDLE_WM_LBUTTONDOWN (GetHWND(), wParam, lParam, list_click);
+    case WM_PAINT:
+      paint (GetHWND());
+      return 0;
+    case WM_NOTIFY:
+      {
+ // pnmh = (LPNMHDR) lParam
+ LPNMHEADER phdr = (LPNMHEADER) lParam;
+ switch (phdr->hdr.code)
+      {
+      case HDN_ITEMCHANGED:
+        if (phdr->hdr.hwndFrom == chooser->ListHeader ())
+        {
+        if (phdr->pitem && phdr->pitem->mask & HDI_WIDTH)
+        chooser->headers[phdr->iItem].width = phdr->pitem->cxy;
+      for (int i = 1; i <= chooser->last_col; i++)
+         chooser->headers[i].x =
+          chooser->headers[i - 1].x + chooser->headers[i - 1].width;
+     RECT r;
+        ::GetClientRect (GetHWND(), &r);
+        SCROLLINFO si;
+     si.cbSize = sizeof (si);
+       si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
+      GetScrollInfo (GetHWND(), SB_HORZ, &si);
+        int oldMax = si.nMax;
+      si.nMax =
+        chooser->headers[chooser->last_col].x +
+        chooser->headers[chooser->last_col].width;
+       if (si.nTrackPos && oldMax > si.nMax)
+        si.nTrackPos += si.nMax - oldMax;
+        si.nPage = r.right;
+        SetScrollInfo (GetHWND(), SB_HORZ, &si, TRUE);
+      InvalidateRect (GetHWND(), &r, TRUE);
+       if (si.nTrackPos && oldMax > si.nMax)
+        chooser->scroll (GetHWND(), SB_HORZ, &chooser->scroll_ulc_x,
+                 SB_THUMBTRACK);
+       }
+        break;
+   default:
+     break;
+   }
+      }
+    default:
+      return DefWindowProc (GetHWND(), message, wParam, lParam);
+    }
+}
+
+
+HWND PickView::lv;
+PickView *PickView::chooser = NULL;
+
+void
+PickView::paint (HWND hwnd)
+{
+  HDC hdc;
+  PAINTSTRUCT ps;
+  int x, y;
+
+  hdc = BeginPaint (hwnd, &ps);
+
+  SelectObject (hdc, chooser->sysfont);
+  SetBkColor (hdc, GetSysColor (COLOR_WINDOW));
+  SetTextColor (hdc, GetSysColor (COLOR_WINDOWTEXT));
+
+  RECT cr;
+  ::GetClientRect (hwnd, &cr);
+
+  x = cr.left - chooser->scroll_ulc_x;
+  y = cr.top - chooser->scroll_ulc_y + chooser->header_height;
+
+  IntersectClipRect (hdc, cr.left, cr.top + chooser->header_height, cr.right,
+             cr.bottom);
+
+  chooser->contents.paint (hdc, x, y, 0, (chooser->get_view_mode () ==
+                     PickView::views::Category) ? 0 : 1);
+
+  if (chooser->contents.itemcount () == 0)
+    {
+      static const char *msg = "Nothing to Install/Update";
+      if (source == IDC_SOURCE_DOWNLOAD)
+  msg = "Nothing to Download";
+      TextOut (hdc, HMARGIN, chooser->header_height, msg, strlen (msg));
+    }
+
+  EndPaint (hwnd, &ps);
+}
+
+
+bool 
+PickView::Create (Window * parent, DWORD Style, RECT *r)
+{
+
+  // First register the window class, if we haven't already
+  if (!registerWindowClass ())
+    {
+      // Registration failed
+      return false;
+    }
+
+    // Save our parent, we'll probably need it eventually.
+  setParent(parent);
+
+  // Create the window instance
+  CreateWindowEx (
+                   // Extended Style
+                   WS_EX_CLIENTEDGE,
+                   "listview",   //MAKEINTATOM(WindowClassAtom),     // window class atom (name)
+                   "listviewwindow", // no title-bar string yet
+                // Style bits
+                  Style,
+                 r ? r->left : CW_USEDEFAULT, r ? r->top : CW_USEDEFAULT, 
+                 r? r->right - r->left + 1 : CW_USEDEFAULT, 
+                 r? r->bottom - r->top + 1 :CW_USEDEFAULT,
+                   // Parent Window 
+                  parent == NULL ? (HWND) NULL : parent->GetHWND (),
+                   // use class menu 
+                (HMENU) MAKEINTRESOURCE (IDC_CHOOSE_LIST),
+                  // The application instance 
+                   GetInstance (),
+                // The this ptr, which we'll use to set up the WindowProc reflection.
+                  reinterpret_cast<void *>((Window *)this));
+  lv = GetHWND();
+  if (GetHWND() == NULL)
+    {
+      log (LOG_BABBLE) << "Failed to create PickView " << GetLastError () << endLog;
+      return false;
+    }
+
+  return true;
 }

@@ -1,5 +1,57 @@
 2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* PickView.h (PickView): Inherit from Window.
+	(PickView::RegisterWindows): Move from ChooserPage.
+	(PickView::listview_proc): Likewise.
+	(PickView::paint): Ditto.
+	(PickView::list_click): Ditto.
+	(PickView::list_hscroll): Ditto.
+	(PickView::list_vscroll): Ditto.
+	(PickView::lv): Ditto.
+	(PickView::chooser): Ditto.	
+	(PickView::Create): Override Windows::Create as we migrate.
+	(PickView::registerWindowClass): Renamed RegisterWindows.
+	(PickView::WindowClassAtom): Prevent double registration.
+	(PickView::init): Declare.
+	* PickView.cc: Adjust for new inheritance.
+	(PickView::RegisterWindows): Move from ChooserPage.
+	(PickView::listview_proc): Likewise.
+	(PickView::paint): Ditto.
+	(PickView::list_click): Ditto.
+	(PickView::list_hscroll): Ditto.
+	(PickView::list_vscroll): Ditto.
+	(PickView::lv): Ditto.
+	(PickView::chooser): Ditto.	
+	(PickView::Create): Introduce stub.
+	(PickView::RegisterWindows): Rename
+	(PickView::init): Extracted from constructor to allow
+	reordering.
+	* chooser.h (ChooserPage::registerWindows): Rename to 
+	PickView::RegisterWindows.
+	(ChooserPage::listview_proc): Likewise.
+	(ChooserPage::paint): Ditto.
+	(ChooserPage::list_click): Ditto.
+	(ChooserPage::list_hscroll): Ditto.
+	(ChooserPage::list_vscroll): Ditto.
+	(ChooserPage::lv): Duplicate into PickView, observe 
+	as non-static.
+	(ChooserPage::chooser): Ditto.
+	* chooser.cc (ChooserPage::registerWindows): Delete.
+	(ChooserPage::listview_proc): Ditto.
+	(ChooserPage::paint): Ditto.
+	(ChooserPage::list_click): Ditto.
+	(ChooserPage::list_hscroll): Ditto.
+	(ChooserPage::list_vscroll): Ditto.
+	(ChooserPage::createListView): Create() on PickView.
+	* window.h (Window::RegisterWindowClass): Make virtual 
+	to allow Create to become a Template Method, and rename
+	to registerWindowClass as it's not static.
+	* window.cc (Window::registerWindowClass): Ditto.
+	(Window::FirstWindowProcReflector): BUGFIX: Set window
+	handle to prevent races with the window procedure.
+
+2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc (set_view_mode): Rename to ChooserPage::setViewMode.
 	(default_trust): Rename to ChooserPage::defaultTrust.
 	(fill_missing_category): Rename to ChooserPage::fillMissingCategory.
