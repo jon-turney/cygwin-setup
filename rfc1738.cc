@@ -129,8 +129,7 @@ rfc1738_do_escape (const char *url, int encode_reserved)
 	  do_escape = 1;
 	}
       /* RFC 1738 says any non-US-ASCII are encoded */
-      if (((unsigned char) *p >= (unsigned char) 0x80) &&
-	  ((unsigned char) *p <= (unsigned char) 0xFF))
+      if ((unsigned char) *p >= (unsigned char) 0x80)
 	{
 	  do_escape = 1;
 	}

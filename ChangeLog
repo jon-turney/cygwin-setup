@@ -1,3 +1,7 @@
+2003-06-22  Max Bowsher  <maxb@ukf.net>
+
+	* rfc1738.cc (rfc1738_do_escape): Eliminate redundant conditional.
+
 2003-06-05  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* window.h (SETUP_WINDOW_H): Rename multi-include guard.
