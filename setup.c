@@ -1055,7 +1055,7 @@ main ()
   char *logpath = NULL;
 
   puts ( "\n\n\n\n"
-"This is the Cygwin setup utility.\n\n"
+"This is the Cygwin setup utility ($Revision$), built on " __DATE__ " " __TIME__ ".\n\n"
 "Use this program to install the latest version of the Cygwin Utilities\n"
 "from the Internet.\n\n"
 "Alternatively, if you already have already downloaded the appropriate files\n"
