@@ -90,6 +90,13 @@ compress_gz::construct (io_stream * parent, const char *openmode)
   transparent = 0;
 
   mode = '\0';
+
+  if (!parent)
+    {
+      z_err = Z_STREAM_ERROR;
+      return;
+    }
+  
   do
     {
       if (*p == 'r')

@@ -84,10 +84,9 @@ int
 parse_filename (String const &in_fn, fileparse & f)
 {
   char *p, *ver;
-  char *fn;
+  char *fn = in_fn.cstr ();
   int n;
 
-  fn = in_fn.cstr ();
   if (fn == 0 || !(n = find_tar_ext (fn)))
     return 0;
 
