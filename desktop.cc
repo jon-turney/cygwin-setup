@@ -38,21 +38,22 @@ extern "C" {
   void make_link_2 (char *exepath, char *args, char *icon, char *lname);
 };
 
-char *etc_profile[] = {
+static OSVERSIONINFO verinfo;
+
+/* Lines starting with '@' are conditionals - include 'N' for NT,
+   '5' for Win95, '8' for Win98, '*' for all, like this:
+	echo foo
+	@N8
+	echo NT or 98
+	@*
+   */
+
+static char *etc_profile[] = {
   "PATH=\"/bin:/usr/bin:/usr/local/bin:$PATH\"",
   "unset DOSDRIVE",
   "unset DOSDIR",
   "unset TMPDIR",
   "unset TMP",
-  "",
-  "if [ ! -f /etc/passwd ]; then",
-  "  echo Creating /etc/passwd",
-  "  mkpasswd -l >/etc/passwd 2>/dev/null",
-  "fi",
-  "if [ ! -f /etc/group ]; then",
-  "  echo Creating /etc/group",
-  "  mkgroup -l >/etc/group 2>/dev/null",
-  "fi",
   "",
   "USER=`id -un`",
   "",
@@ -73,12 +74,32 @@ char *etc_profile[] = {
   "  fi",
   "done",
   "",
+  "for i in /etc/postinstall/*.sh ; do",
+  "  if [ -f $i ]; then",
+  "    echo Running post-install script $i...",
+  "    . $i",
+  "    mv $i $i.done",
+  "  fi",
+  "done",
+  "",
   "export MAKE_MODE=unix",
   "export PS1='\033]0;\\w\a",
   "\033[32m\\u@\\h \033[33m\\w\033[0m",
   "$ '",
   "",
   "cd $HOME",
+  0
+};
+
+static char *postinstall_script[] = {
+  "if [ ! -f /etc/passwd ]; then",
+  "  echo Creating /etc/passwd",
+  "  mkpasswd -l >/etc/passwd 2>/dev/null",
+  "fi",
+  "if [ ! -f /etc/group ]; then",
+  "  echo Creating /etc/group",
+  "  mkgroup -l >/etc/group 2>/dev/null",
+  "fi",
   0
 };
 
@@ -111,11 +132,8 @@ make_link (char *linkpath, char *title, char *target)
   mkdir_p (0, fname);
 
   char *exepath, *args;
-  OSVERSIONINFO verinfo;
-  verinfo.dwOSVersionInfoSize = sizeof (verinfo);
 
   /* If we are running Win9x, build a command line. */
-  GetVersionEx (&verinfo);
   if (verinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
       exepath = target;
@@ -191,13 +209,63 @@ make_etc_profile ()
   if (_access (fname, 0) == 0)
     return;
 
+  char os;
+  switch (verinfo.dwPlatformId)
+    {
+      case VER_PLATFORM_WIN32_NT:
+	os = 'N';
+	break;
+      case VER_PLATFORM_WIN32_WINDOWS:
+	if (verinfo.dwMinorVersion == 0)
+	  os = '5';
+	else
+	  os = '8';
+	break;
+      default:
+	os = '?';
+	break;
+    }
+  msg ("os is %c", os);
+
+  FILE *p = fopen (fname, "wb");
+  if (!p)
+    return;
+
+  int i, allow=1;
+  for (i=0; etc_profile[i]; i++)
+    {
+      if (etc_profile[i][0] == '@')
+	{
+	  allow = 0;
+	  msg ("profile: %s", etc_profile[i]);
+	  for (char *cp = etc_profile[i]+1; *cp; cp++)
+	    if (*cp == os || *cp == '*')
+	      allow = 1;
+	  msg ("allow is %d\n", allow);
+	}
+      else if (allow)
+	fprintf (p, "%s\n", etc_profile[i]);
+    }
+
+  fclose (p);
+}
+
+static void
+make_postinstall_script ()
+{
+  if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
+    return;
+
+  char *fname = concat (root_dir, "/etc/postinstall/00-setup.sh", 0);
+  mkdir_p (0, fname);
+
   FILE *p = fopen (fname, "wb");
   if (!p)
     return;
 
   int i;
-  for (i=0; etc_profile[i]; i++)
-    fprintf (p, "%s\n", etc_profile[i]);
+  for (i=0; postinstall_script[i]; i++)
+    fprintf (p, "%s\n", postinstall_script[i]);
 
   fclose (p);
 }
@@ -229,10 +297,14 @@ do_desktop (HINSTANCE h)
 {
   CoInitialize (NULL);
 
+  verinfo.dwOSVersionInfoSize = sizeof (verinfo);
+  GetVersionEx (&verinfo);
+
   save_icon ();
 
   make_cygwin_bat ();
   make_etc_profile ();
+  make_postinstall_script ();
 
   start_menu ("Cygwin 1.1 Bash Shell", batname);
 
