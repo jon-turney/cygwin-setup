@@ -67,10 +67,10 @@ ALL_LDFLAGS:=${filter-out -I%, \
 
 PROGS:=setup$(EXEEXT)
 
-OBJS:=error.o memory.o setup.o strarry.o cinstall.o path.o pkg.o xsystem.o
+OBJS:=cygcalls.o error.o memory.o setup.o strarry.o cinstall.o path.o pkg.o tar.o xsystem.o
 
-BUNDLED_FILES:=cygwin1.dll.gz $(srcdir)/tar.exe.gz $(srcdir)/gzip.exe.gz \
-	       mount.exe.gz cygpath.exe.gz umount.exe.gz
+BUNDLED_FILES:=cygwin1.dll.gz
+#	       mount.exe.gz cygpath.exe.gz umount.exe.gz
 .SUFFIXES:
 .NOEXPORT:
 
@@ -83,10 +83,13 @@ setup$(EXEEXT): $(OBJS) $(ALL_DEP_LDLIBS)
 ifdef VERBOSE
 	$(CC) -o $@ ${filter-out $(ALL_DEP_LIBS),$^}
 else
-	@echo $(CC) -o $@ ${filter-out $(ALL_DEP_LIBS),$^} ${filter-out -B%, $(ALL_LDFLAGS) $(ALL_LDLIBS)};\
-	$(CC) -o $@ ${filter-out $(ALL_DEP_LIBS),$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
+	@echo $(CC) ... -o $@ $(OBJS)
+	@$(CC) -o $@ ${filter-out $(ALL_DEP_LIBS),$^} $(ALL_LDFLAGS) $(ALL_LDLIBS)
 endif
 	@chmod a-x $@
+
+ctar.exe : ctar.o tar.o $(ALL_DEP_LDLIBS)
+	$(CC) -o $@ ctar.o tar.o $(ALL_LDFLAGS) $(ALL_LDLIBS)
 
 mingw_getopt.o: $(cygwin_source)/getopt.c
 	$(CC) -c -o $@ $(MINGW_CFLAGS) $^
@@ -115,7 +118,7 @@ $(ZLIB): zlib/Makefile
 
 %.exe: $(utils_build)/%.exe
 	$(OBJCOPY) --strip-unneeded $? $@
-	
+
 $(utils_build)/%.exe: $(utils_build)/Makefile
 	@$(MAKE) -C $(utils_build) $(@F)
 
@@ -128,18 +131,18 @@ $(utils_build)/%.exe: $(utils_build)/Makefile
 $(cygwin_build)/%.dll: $(cygwin_build)/Makefile
 	@$(MAKE) -C $(@D) $(@F)
 
-cinstall.rc: $(BUNDLED_FILES)
-	for f in $^; do \
+cinstall.rc: $(BUNDLED_FILES) $(srcdir)/Makefile.in
+	for f in $(BUNDLED_FILES); do \
 	    echo `basename $$f .gz` FILE DISCARDABLE '"'$$f'"'; \
 	done > $@
 
 %.o: %.rc
 	$(WINDRES) -o $@ $?
-	
+
 %.o: %.c
 ifdef VERBOSE
 	$(CC) $(MINGW_CFLAGS) -c -o $@ $?
 else
-	@echo $(CC) -c -o $@ $? ${filter-out -B%, $(MINGW_CFLAGS)};\
-	$(CC) $(MINGW_CFLAGS) -c -o $@ $?
+	@echo $(CC) -c $(CFLAGS) ... $(?F)
+	@$(CC) $(MINGW_CFLAGS) -c -o $@ $?
 endif
