@@ -1,3 +1,12 @@
+2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
+
+	* package_meta.h (packagemeta::logAllVersions): Declare.
+	(packagemeta::trustLabel): Ditto.
+	* choose.cc (ChooserPage::OnNext): Get each package to log all it's 
+	versions.
+	* package_meta.cc (packagemeta::logAllVersions): Implement.
+	(packagemeta::trustLabel): Ditto.
+
 2002-11-25  Robert Collins  <rbtcollins@hotmail.com>
 
 	* AntiVirus.cc: Change 'd' to 'D' to fix command line conflict.

@@ -129,8 +129,12 @@ public:
   bool accessible () const;
   bool sourceAccessible() const;
 
+  void logAllVersions() const;
+
 protected:
   packagemeta &operator= (packagemeta const &);
+private:
+  String trustLabel(packageversion const &) const;
 };
 
 #endif /* _PACKAGE_META_H_ */

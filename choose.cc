@@ -594,6 +594,7 @@ ChooserPage::OnNext ()
 	  log (LOG_BABBLE) << "     requires=" << requires;
 	}
 #endif
+      pkg.logAllVersions();
 #if 0
 
       /* FIXME: Reinstate this code, but spit out all mirror sites */
