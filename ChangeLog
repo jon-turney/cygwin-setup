@@ -2,6 +2,12 @@
 
 	* Makefile.am (release): Tweak to be more helpful.
 	* Makefile.in: Regenerate.
+		
+		
+2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
+
+	* Makefile.am (release): Tweak to be more helpful.
+	* Makefile.in: Regenerate.
 
 2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
 
