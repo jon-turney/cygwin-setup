@@ -1,0 +1,13 @@
+This directory contains the source for the setup program for the cygwin
+net releases.
+
+For the time being Microsoft Visual Studio must be installed in order
+for this to compile.  The procedure is fairly normal, just type 'make'
+in bash not 'nmake' from a "DOS" command prompt.  However, what the make
+does is somewhat different.  It first creates some compressed files that
+are placed into the resource segment of the setup program.  It then
+calls 'msdev' to actually compile the setup.exe.
+
+If you have any problem's the initial version of this program was
+written by Ron Parker.  Currently, March 2000, he may be reached at
+rdparker@butlermfg.com or rparker1@kc.rr.com.

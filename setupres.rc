@@ -1,0 +1,5 @@
+cygwin1.dll             FILE    DISCARDABLE     "cygwin1.dll.gz"
+tar.exe                 FILE    DISCARDABLE     "tar.exe.gz"
+gzip.exe                FILE    DISCARDABLE     "gzip.exe.gz"
+cygpath.exe		FILE	DISCARDABLE	"cygpath.exe.gz"
+mount.exe		FILE	DISCARDABLE	"mount.exe.gz"
