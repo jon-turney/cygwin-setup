@@ -32,8 +32,6 @@ static const char *cvsid =
 #include "io_stream.h"
 #include "compress.h"
 #include "compress_bz.h"
-#undef _WIN32
-#include "bzlib.h"
 
 compress_bz::compress_bz (io_stream * parent) : peeklen (0), position (0)
 {

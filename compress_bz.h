@@ -21,8 +21,12 @@
 
 #ifdef _WIN32
 #undef _WIN32
+/* If we are going to hide the fact that we are _WIN32 from bzlib,
+ +   then we need to #undef small for it as well (bad windows.h clash). */
+#undef small
 #include <bzlib.h>
 #define _WIN32
+/* What do we redefine small as? - RBC */
 #else
 #include <bzlib.h>
 #endif

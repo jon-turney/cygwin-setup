@@ -1,3 +1,14 @@
+2002-11-10  Robert Collins <rbtcollins@hotmail.com>
+
+	* compress_bz.cc: Don't include bzlib.h directly, the compress_bz.h
+	header includes it.
+
+2002-11-04  Max Bowsher  <maxb@ukf.net>
+
+	* compress_bz.h: #undef small before including bzlib.h - if we are 
+	going to hide the fact that we are _WIN32 from bzlib, then we need 
+	to #undef small for it as well (bad windows.h clash).
+
 2002-11-10  Robert Collins  <rbtcollins@hotmail.com>
 
 	* localdir.cc: Update the extern LogFile to be a pointer.
