@@ -1,7 +1,29 @@
 Changes between 2.249.2.10 and 2.340.2.2              // vim:ft=changelog
 
-Currently, this file contains ChangeLog entries for the relevant period.
-They need to be summarized into release notes.
+This file contains raw ChangeLog entries below the divider.
+They need to be summarized into release notes, above the divider.
+
+CONTRIBUTORS TO THIS RELEASE:
+
+Abraham Backus  <abraham@backus.com>
+Brian Keener  <bkeener@thesoftwaresource.com>
+Christopher Faylor  <cgf@redhat.com>
+Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+John Marshall  <johnm@falch.net>
+Marcel Telka  <marcel@telka.sk>
+Max Bowsher  <maxb@ukf.net>
+Pavel Tsekov  <ptsekov@gmx.net>
+Robert Collins  <rbtcollins@hotmail.com>
+
+USER-VISIBLE CHANGES:
+
+BUGFIXES:
+
+NEW FEATURES:
+
+
+============================ RAW CHANGELOG ENTRIES =============================
 
 2003-03-20  Robert Collins  <rbtcollins@hotmail.com>
 
