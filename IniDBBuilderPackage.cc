@@ -232,7 +232,7 @@ IniDBBuilderPackage::buildInstalledSize (String const &size)
 {
   cbpv.source()->setInstalledSize (atoi(size.cstr_oneuse()));
 #if DEBUG
-  log (LOG_BABBLE) << "Installed size for " << cp->name << " is " << cpv->bin.installedSize() << endLog;
+  log (LOG_BABBLE) << "Installed size for " << cp->name << " is " << cbpv.source()->installedSize() << endLog;
 #endif
 }
 
@@ -382,7 +382,7 @@ IniDBBuilderPackage::buildSourceName (String const &name)
     {
       cbpv.setSourcePackageSpecification (PackageSpecification (name));
 #if DEBUG
-      log (LOG_BABBLE) << "\"" << cpv->sourcePackageSpecification() << 
+      log (LOG_BABBLE) << "\"" << cbpv.sourcePackageSpecification() << 
 	"\" is the source package for " << cp->name << "." << endLog;
 #endif
     }

@@ -1,3 +1,8 @@
+2002-09-22  Max Bowsher  <maxb@ukf.net>
+
+	* IniDBBuilderPackage.cc: Update DEBUG code to current class
+	layout.
+
 2002-09-21  Robert Collins  <rbtcollins@hotmail.com>
 
 	* choose.h: Add OnUnattended method.
