@@ -1,3 +1,10 @@
+2003-03-18  Robert Collins  <rbtcollins@hotmail.com>
+
+	* include/getopt++/OptionSet.h (OptionSet): Convert to use a vector.
+	* src/OptionSet.cc: Convert array to vector use throughout.
+	(OptionSet::optionsInSet): Implement external access to the available
+	options.
+
 2003-03-10  Max Bowsher  <maxb@ukf.net>
 
 	* Makefile.am: Add foreign to AUTOMAKE_OPTIONS.

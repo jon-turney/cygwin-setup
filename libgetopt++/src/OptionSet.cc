@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2002 Robert Collins.
+ * Copyright (c) 2003 Robert Collins.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,17 +24,15 @@
 
 using namespace std;
 
-OptionSet::OptionSet () : options(0), optCount (0) {}
+OptionSet::OptionSet () {}
 OptionSet::~OptionSet ()
 {
-  delete[] options;
 }
 
 void
 OptionSet::Init()
 {
-  options = 0;
-  optCount = 0;
+  options = std::vector<Option *> ();
 }
 
 bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
@@ -43,7 +42,7 @@ bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
 //      log (LOG_TIMESTAMP, "No command line options pass\n");
       return true;
     }
-  if (optCount == 0)
+  if (options.size() == 0)
     {
 //      log (LOG_TIMESTAMP,
 //	   "%d Command line options passed, and no options registered\n",
@@ -51,14 +50,13 @@ bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
       return false;
     }
 //  log (LOG_TIMESTAMP, "Process command line options\n");
-  struct option longopts[optCount + 1];
+  struct option longopts[options.size() + 1];
   string
     shortopts;
-  for (int i = 0; i < optCount; ++i)
+  for (std::vector<Option *>::iterator i = options.begin(); i != options.end(); ++i)
     {
-      Option *anOption = options[i];
-      shortopts += anOption->shortOption ();
-      longopts[i] = anOption->longOption ();
+      shortopts += (*i)->shortOption ();
+      longopts[distance(options.begin(), i)] = (*i)->longOption ();
     }
   char const *
     opts = shortopts.c_str ();
@@ -69,7 +67,7 @@ bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
 	0,
 	0,
     0 };
-    longopts[optCount] = foo;
+    longopts[options.size()] = foo;
   }
 // where is this correctly defined?  opterr=0;
   int lastoption;
@@ -85,10 +83,10 @@ bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
 #endif
 	      return false;
 	    }
-	  for (int i = 0; i < optCount; ++i)
+	  for (std::vector<Option *>::iterator i = options.begin(); i != options.end(); ++i)
 	    {
-	      if (longopts[i].val == lastoption && !longopts[i].flag)
-		options[i]->Process (optarg);
+	      if (longopts[distance(options.begin(), i)].val == lastoption && !longopts[distance(options.begin(), i)].flag)
+		(*i)->Process (optarg);
 	    }
 	}
     }
@@ -104,12 +102,7 @@ bool OptionSet::Process (int argc, char **argv, OptionSet *defaultOptionSet)
 void
 OptionSet::Register (Option * anOption)
 {
-  Option **t = new Option *[optCount + 1];
-  for (int i = 0; i < optCount; ++i)
-    t[i] = options[i];
-  t[optCount++] = anOption;
-  delete[]options;
-  options = t;
+    options.push_back(anOption);
 }
 
 /* Show the options on the left, the short description on the right.
@@ -118,9 +111,9 @@ OptionSet::Register (Option * anOption)
 void
 OptionSet::ParameterUsage (ostream &aStream)
 {
-  for (int i = 0; i < optCount; ++i)
+  for (std::vector<Option *>::iterator i = options.begin(); i != options.end(); ++i)
     {
-      Option *anOption = options[i];
+      Option *anOption = (*i);
       string output = string() + " -" + anOption->shortOption ()[0];
       output += " --" ;
       output += anOption->longOption ().name;
@@ -138,4 +131,10 @@ OptionSet::ParameterUsage (ostream &aStream)
       output += helpmsg;
       aStream << output << endl;
     }
+}
+
+std::vector<Option *> const &
+OptionSet::optionsInSet() const
+{
+    return options;
 }

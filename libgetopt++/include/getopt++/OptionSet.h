@@ -18,6 +18,7 @@
 
 #include <getopt.h>
 #include <iosfwd>
+#include <vector>
 
 class Option;
 
@@ -29,14 +30,14 @@ public:
   virtual void Register (Option *);
   virtual bool Process (int argc, char **argv, OptionSet *defaultOptionSet=0);
   virtual void ParameterUsage (std::ostream &);
+  virtual std::vector<Option *> const &optionsInSet() const;
 protected:
   OptionSet (OptionSet const &);
   OptionSet &operator= (OptionSet const &);
   // force initialisation of variables
   void Init ();
 private:
-  Option **options;
-  int optCount;
+  std::vector<Option *>options;
 };
 
 #endif // _OPTIONSET_H_
