@@ -1,6 +1,8 @@
 This directory contains the source for the setup program for the cygwin
 net releases.
 
+For code guidelines, see GUIDELINES.
+
 RELEASE BLOCKERS:
    Currently, none!
 

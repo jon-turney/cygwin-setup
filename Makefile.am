@@ -47,6 +47,7 @@ WARNONLY_CFLAGS	= -Winline -Wall -Wpointer-arith -Wcast-align \
 	-Wmissing-declarations -Wcomments $(INCLUDES)
 
 EXTRA_DIST = \
+  GUIDELINES \
   check-na.bmp \
   check-no.bmp \
   check-yes.bmp \
@@ -54,7 +55,7 @@ EXTRA_DIST = \
   choose-spin.bmp \
   cygwin.ico \
   inilex.l \
-  iniparse.y
+  iniparse.y 
 
 BUILT_SOURCES = setup_version.c \
   	inilex.cc \

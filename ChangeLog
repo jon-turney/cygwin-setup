@@ -1,3 +1,7 @@
+2003-03-29  Robert Collins  <rbtcollins@hotmail.com>
+
+	* GUIDELINES: New file documenting code guidelines.
+
 2003-03-26  Max Bowsher  <maxb@ukf.net>
 
 	* .cvsignore: Add cfgaux.
