@@ -36,15 +36,32 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #define pi (package[i].info[package[i].trust])
 
+static DWORD
+get_file_size (char *name)
+{
+  HANDLE h;
+  WIN32_FIND_DATA buf;
+  DWORD ret = 0;
+
+  h = FindFirstFileA (name, &buf);
+  if (h)
+    {
+      if (buf.nFileSizeHigh == 0)
+	ret = buf.nFileSizeLow;
+      FindClose (h);
+    }
+  return ret;
+}
+
 static int
 download_one (char *name, int expected_size)
 {
   char *local = name;
   int errors = 0;
 
-  struct stat s;
-  if (stat (local, &s) >= 0)
-    if (s.st_size == expected_size)
+  DWORD size;
+  if (size = get_file_size (local) > 0)
+    if (size == expected_size)
       return 0;
 
   mkdir_p (0, local);
@@ -58,8 +75,8 @@ download_one (char *name, int expected_size)
     }
   else
     {
-      stat (concat (local, ".tmp", 0), &s);
-      if (s.st_size == expected_size)
+      size = get_file_size (concat (local, ".tmp", 0));
+      if (size == expected_size)
 	{
 	  log (0, "Downloaded %s", local);
 	  rename (concat (local, ".tmp", 0), local);
@@ -67,8 +84,8 @@ download_one (char *name, int expected_size)
       else
 	{
 	  log (0, "Download %s wrong size (%d actual vs %d expected)",
-	       local, s.st_size, expected_size);
-	  note (IDS_DOWNLOAD_SHORT, local, s.st_size, expected_size);
+	       local, size, expected_size);
+	  note (IDS_DOWNLOAD_SHORT, local, size, expected_size);
 	  return 1;
 	}
     }

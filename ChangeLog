@@ -1,3 +1,10 @@
+Mon Feb 19 18:59:00 2000  Corinna Vinschen <vinschen@redhat.com>
+
+	* download.cc (get_file_size): New function. Eliminates the need
+	to call `stat'.
+	(download_one): Call `get_file_size' instead of `stat'. This
+	workarounds a problem with mingw's `stat' call.
+
 2001-02-07  Earnie Boyd  <earnie@users.sourceforge.net>
 
 	* Makefile.in: (%.o: %.rc): Specify --include-dir $(w32api_include).
