@@ -99,7 +99,10 @@ compress_bz::read (void *buffer, size_t len)
 	  rlen = original->read (buf, 4096);
 	  if (rlen < 0)
 	    {
-	      lasterr = rlen;
+	      if (original->error())
+    		lasterr = original->error();
+	      else
+		lasterr = rlen;
 	      return -1;
 	    }
 	  bufN = rlen;
@@ -194,8 +197,7 @@ compress_bz::seek (long where, io_stream_seek_t whence)
 int
 compress_bz::error ()
 {
-  log (LOG_TIMESTAMP, "compress_bz::error called");
-  return 0;
+  return lasterr;
 }
 
 int

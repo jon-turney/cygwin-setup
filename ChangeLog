@@ -1,5 +1,10 @@
 2003-03-10  Robert Collins  <rbtcollins@hotmail.com>
 
+	* compress_bz.cc (compress_bz::read): adjust incorrect assignment of lasterr.
+	(compress_bz::error): Return lasterr which will indicate any error.
+
+2003-03-10  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.h (ChooserPage): Override OnActivate.
 	* choose.cc (ChooserPage::OnActivate): Refresh the current view when activating the dialog.
 
