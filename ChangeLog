@@ -1,3 +1,8 @@
+2002-05-26 Ralf Habacker  <ralf.habacker@freenet.de>
+
+	* archive_tar.cc (archive_tar::next_file_name()): fixed broken
+	GNU long name extension support.
+    
 2002-05-27  Robert Collins  <rbtcollins@hotmail.com>
 
 	* IniParseFindVisitor.cc (IniParseFindVisitor::visitFile): Don't 

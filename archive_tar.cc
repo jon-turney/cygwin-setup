@@ -168,6 +168,8 @@ archive_tar::next_file_name ()
       memcpy (state.filename, state.tar_header.name, 100);
       state.filename[100] = 0;
     }
+  else if (state.have_longname)
+    state.have_longname = 0;
 
   sscanf (state.tar_header.size, "%o", &state.file_length);
   state.file_offset = 0;
