@@ -1,3 +1,24 @@
+2003-03-05  Brian Keener  <bkeener@thesoftwaresource.com>
+
+        * PickView.cc (PickView::views): Add two new views for Skipped
+	packages and Installed Packages not requiring update.
+	(PickView::set_headers () ): Ditto.
+	(PickView::clear_view (void) ): Ditto.
+	(PickView::views::caption () ): Add two new captions for the new
+	views added for Skipped and Installed Packages.
+	(PickView::scroll () ): Modify Scroll Bar property to Disable
+       	instead of disappearing when there is nothing to Scroll.
+	* PickView.h: Add two new views for Skipped packages and Installed
+	packages to public class view.
+	* choose.cc (list_click () ): Modify Scroll Bar property to Disable
+       	instead of disappearing when there is nothing to Scroll.
+	(listview_proc () ): Ditto.
+	(set_view_mode): Add two new views for Skipped Packages and Installed
+	Packages not requiring update.  Modify Scroll Bar property to Disable
+	instead of disappearing when there is nothing to scroll.
+	* res.rc (IDD_CHOOSE): Reposition Radio Buttons, View Selection
+	Button and View Button Caption to make room for longer captions.
+
 2003-03-04  Max Bowsher  <maxb@ukf.net>
 
 	* compress_gz.cc (compress_gz::construct):

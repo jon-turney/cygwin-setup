@@ -48,8 +48,10 @@ static PickView::Header cat_headers[] = {
 // PickView:: views
 const PickView::views PickView::views::Unknown (0);
 const PickView::views PickView::views::PackageFull (1);
-const PickView::views PickView::views::Package = PickView::views (2);
-const PickView::views PickView::views::Category (3);
+const PickView::views PickView::views::Package (2);
+const PickView::views PickView::views::PackageKeeps (3);
+const PickView::views PickView::views::PackageSkips = PickView::views (4);
+const PickView::views PickView::views::Category (5);
 
 // DoInsertItem - inserts an item into a header control.
 // Returns the index of the new item.
@@ -83,7 +85,9 @@ PickView::set_headers ()
   if (view_mode == views::Unknown)
     return;
   if (view_mode == views::PackageFull ||
-      view_mode == views::Package)
+      view_mode == views::Package ||
+      view_mode == views::PackageKeeps ||
+      view_mode == views::PackageSkips)
     {
       headers = pkg_headers;
       current_col = 0;
@@ -155,6 +159,10 @@ PickView::views::caption ()
     case 2:
       return "Partial";
     case 3:
+      return "Up To Date";
+    case 4:
+      return "Not Installed";
+    case 5:
       return "Category";
     default:
       return "";
@@ -211,7 +219,9 @@ PickView::clear_view (void)
   if (view_mode == views::Unknown)
     return;
   if (view_mode == views::PackageFull ||
-      view_mode == views::Package)
+      view_mode == views::Package ||
+      view_mode == views::PackageKeeps ||
+      view_mode == views::PackageSkips)
     contents.ShowLabel (false);
   else if (view_mode == views::Category)
     contents.ShowLabel ();
@@ -238,7 +248,7 @@ PickView::scroll (HWND hwnd, int which, int *var, int code)
 {
   SCROLLINFO si;
   si.cbSize = sizeof (si);
-  si.fMask = SIF_ALL;
+  si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
   GetScrollInfo (hwnd, which, &si);
 
   switch (code)

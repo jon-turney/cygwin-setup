@@ -151,7 +151,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
       SCROLLINFO si;
       memset (&si, 0, sizeof (si));
       si.cbSize = sizeof (si);
-      si.fMask = SIF_ALL;	/* SIF_RANGE was giving strange behaviour */
+      si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;	/* SIF_RANGE was giving strange behaviour */
       si.nMin = 0;
 
       si.nMax = chooser->contents.itemcount () * chooser->row_height;
@@ -218,7 +218,7 @@ listview_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		GetClientRect (hwnd, &r);
 		SCROLLINFO si;
 		si.cbSize = sizeof (si);
-		si.fMask = SIF_ALL;
+		si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
 		GetScrollInfo (hwnd, SB_HORZ, &si);
 		int oldMax = si.nMax;
 		si.nMax =
@@ -368,7 +368,28 @@ set_view_mode (HWND h, PickView::views mode)
 	  packagemeta & pkg = **i;
 	  if ((!pkg.desired && pkg.installed)
 	      || (pkg.desired && (pkg.desired.picked () 
-				  || pkg.desired.sourcePackage().picked())))
+		  || pkg.desired.sourcePackage().picked())))
+	    chooser->insert_pkg (pkg);
+	}
+    }
+  else if (chooser->get_view_mode () == PickView::views::PackageKeeps)
+    {
+      for (vector <packagemeta *>::iterator i = db.packages.begin ();
+	   i != db.packages.end (); ++i)
+	{
+	  packagemeta & pkg = **i;
+	  if (pkg.installed && pkg.desired && !pkg.desired.picked() 
+	      && !pkg.desired.sourcePackage().picked())
+	    chooser->insert_pkg (pkg);
+	}
+    }
+  else if (chooser->get_view_mode () == PickView::views::PackageSkips)
+    {
+      for (vector <packagemeta *>::iterator i = db.packages.begin ();
+	   i != db.packages.end (); ++i)
+	{
+	  packagemeta & pkg = **i;
+	  if (!pkg.desired && !pkg.installed)
 	    chooser->insert_pkg (pkg);
 	}
     }
@@ -392,7 +413,7 @@ set_view_mode (HWND h, PickView::views mode)
   SCROLLINFO si;
   memset (&si, 0, sizeof (si));
   si.cbSize = sizeof (si);
-  si.fMask = SIF_ALL;
+  si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
   si.nMin = 0;
   si.nMax = chooser->headers[chooser->last_col].x + chooser->headers[chooser->last_col].width;	// + HMARGIN;
   si.nPage = r.right;

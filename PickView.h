@@ -79,6 +79,8 @@ public:
     static const views Unknown;
     static const views PackageFull;
     static const views Package;
+    static const views PackageKeeps;
+    static const views PackageSkips;
     static const views Category;
     static const views NView;
       views ():_value (0)
@@ -87,7 +89,7 @@ public:
     views (int aInt)
     {
       _value = aInt;
-      if (_value < 0 || _value > 3)
+      if (_value < 0 || _value > 5)
 	_value = 0;
     }
     views & operator++ ();
