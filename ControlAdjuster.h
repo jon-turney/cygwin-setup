@@ -28,6 +28,15 @@
   when the size changes.
  */
 
+enum ControlPosition {
+  CP_LEFT = 0,
+  CP_TOP = CP_LEFT,
+  CP_MIDDLE,
+  CP_RIGHT,
+  CP_BOTTOM = CP_RIGHT,
+  CP_STRETCH,
+};
+
 class ControlAdjuster
 {
 public:
@@ -36,12 +45,10 @@ public:
     // Control ID
     int control;
     /*
-      Anchors. Basically, says which edge should be "sticky".
+     * Position specifiers.
      */
-    bool anchorLeft;
-    bool anchorTop;
-    bool anchorRight;
-    bool anchorBottom;
+    ControlPosition horizontalPos;
+    ControlPosition verticalPos;
   };
   
   /*

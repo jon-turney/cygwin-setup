@@ -28,6 +28,29 @@
 #include "cistring.h"
 #include "state.h"
 
+#include "ControlAdjuster.h"
+
+/*
+  Sizing information.
+ */
+static ControlAdjuster::ControlInfo ThreeBarControlsInfo[] = {
+  {IDC_INS_ACTION, 		CP_LEFT,    CP_TOP},
+  {IDC_INS_PKG, 		CP_LEFT,    CP_TOP},
+  {IDC_INS_FILE, 		CP_LEFT,    CP_TOP},
+  {IDC_INS_DISKFULL, 		CP_STRETCH, CP_TOP},
+  {IDC_INS_IPROGRESS, 		CP_STRETCH, CP_TOP},
+  {IDC_INS_PPROGRESS,		CP_STRETCH, CP_TOP},
+  {IDC_INS_BL_PACKAGE, 		CP_LEFT,    CP_TOP},
+  {IDC_INS_BL_TOTAL,		CP_LEFT,    CP_TOP},
+  {IDC_INS_BL_DISK,		CP_LEFT,    CP_TOP},
+  {0, CP_LEFT, CP_TOP}
+};
+
+ThreeBarProgressPage::ThreeBarProgressPage ()
+{
+  sizeProcessor.AddControlInfo (ThreeBarControlsInfo);
+}
+
 bool ThreeBarProgressPage::Create ()
 {
   return PropertyPage::Create (IDD_INSTATUS);

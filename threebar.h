@@ -53,9 +53,7 @@ class ThreeBarProgressPage:public PropertyPage
   void EnableSingleBar (bool enable = true);
 
 public:
-    ThreeBarProgressPage ()
-  {
-  };
+  ThreeBarProgressPage ();
   virtual ~ ThreeBarProgressPage ()
   {
   };

@@ -30,9 +30,9 @@ bool PropertyPage::DoOnceForSheet = true;
   Sizing information for some controls that are common to all pages.
  */
 static ControlAdjuster::ControlInfo DefaultControlsInfo[] = {
-  {IDC_HEADICON, 	false, true,  true,  false},
-  {IDC_HEADSEPARATOR, 	true,  true,  true,  false},
-  {0, false, false, false, false}
+  {IDC_HEADICON, 	CP_RIGHT,   CP_TOP},
+  {IDC_HEADSEPARATOR, 	CP_STRETCH, CP_TOP},
+  {0, CP_LEFT, CP_TOP}
 };
 
 PropertyPage::PropertyPage ()

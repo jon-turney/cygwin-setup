@@ -126,12 +126,12 @@ struct PropSheetData
 };
 
 static ControlAdjuster::ControlInfo PropSheetControlsInfo[] = {
-  {0x3023, false, false, true,  true },	// Back
-  {0x3024, false, false, true,  true },	// Next
-  {0x3025, false, false, true,  true },	// Finish
-  {0x3026, true,  false, true,  true },	// Line above buttons
-  {	2, false, false, true,  true },	// Cancel
-  {0, false, false, false, false}
+  {0x3023, CP_RIGHT,   CP_BOTTOM},	// Back
+  {0x3024, CP_RIGHT,   CP_BOTTOM},	// Next
+  {0x3025, CP_RIGHT,   CP_BOTTOM},	// Finish
+  {0x3026, CP_STRETCH, CP_BOTTOM},	// Line above buttons
+  {	2, CP_RIGHT,   CP_BOTTOM},	// Cancel
+  {0, CP_LEFT, CP_TOP}
 };
 
 static bool IsDialog (HWND hwnd)

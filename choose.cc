@@ -66,15 +66,15 @@ extern ThreeBarProgressPage Progress;
   Sizing information.
  */
 static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
-  {IDC_CHOOSE_KEEP, 		false, true,  true,  false},
-  {IDC_CHOOSE_PREV, 		false, true,  true,  false},
-  {IDC_CHOOSE_CURR, 		false, true,  true,  false},
-  {IDC_CHOOSE_EXP, 		false, true,  true,  false},
-  {IDC_CHOOSE_VIEW, 		false, true,  true,  false},
-  {IDC_LISTVIEW_POS, 		false, true,  true,  false},
-  {IDC_CHOOSE_VIEWCAPTION,	false, true,  true,  false},
-  {IDC_CHOOSE_LIST,		true,  true,  true,  true },
-  {0, false, false, false, false}
+  {IDC_CHOOSE_KEEP, 		CP_RIGHT,   CP_TOP},
+  {IDC_CHOOSE_PREV, 		CP_RIGHT,   CP_TOP},
+  {IDC_CHOOSE_CURR, 		CP_RIGHT,   CP_TOP},
+  {IDC_CHOOSE_EXP, 		CP_RIGHT,   CP_TOP},
+  {IDC_CHOOSE_VIEW, 		CP_RIGHT,   CP_TOP},
+  {IDC_LISTVIEW_POS, 		CP_RIGHT,   CP_TOP},
+  {IDC_CHOOSE_VIEWCAPTION,	CP_RIGHT,   CP_TOP},
+  {IDC_CHOOSE_LIST,		CP_STRETCH, CP_STRETCH},
+  {0, CP_LEFT, CP_TOP}
 };
 
 ChooserPage::ChooserPage ()

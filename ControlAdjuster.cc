@@ -35,18 +35,40 @@ void ControlAdjuster::AdjustControls (HWND dlg,
       
       /*
         Now adjust the rectangle.
-	If an anchor is set, the resp. edge is 'sticky' with respect to the
-	opposite border.
        */
-      if (!ci->anchorLeft) 
-        ctlRect.left += widthChange;
-      if (!ci->anchorTop) 
-        ctlRect.top += heightChange;
-      if (ci->anchorRight) 
-        ctlRect.right += widthChange;
-      if (ci->anchorBottom) 
-        ctlRect.bottom += heightChange;
-	
+      switch (ci->horizontalPos)
+      {
+	case CP_LEFT:
+	  break;
+	case CP_MIDDLE:
+	  ctlRect.left += widthChange/2;
+	  ctlRect.right += widthChange - widthChange/2;
+	  break;
+	case CP_RIGHT:
+	  ctlRect.left += widthChange;
+	  ctlRect.right += widthChange;
+	  break;
+	case CP_STRETCH:
+	  ctlRect.right += widthChange;
+	  break;
+      }
+      switch (ci->verticalPos)
+      {
+	case CP_TOP:
+	  break;
+	case CP_MIDDLE:
+	  ctlRect.top += heightChange/2;
+	  ctlRect.bottom += heightChange - heightChange/2;
+	  break;
+	case CP_BOTTOM:
+	  ctlRect.top += heightChange;
+	  ctlRect.bottom += heightChange;
+	  break;
+	case CP_STRETCH:
+	  ctlRect.bottom += heightChange;
+	  break;
+      }
+
       SetWindowPos (ctl, 0, ctlRect.left, ctlRect.top, 
 	ctlRect.width (), ctlRect.height (), SWP_NOACTIVATE | SWP_NOZORDER);
       // If not done, weird visual glitches can occur.

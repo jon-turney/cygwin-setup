@@ -27,9 +27,7 @@
 class SitePage:public PropertyPage
 {
 public:
-  SitePage ()
-  {
-  };
+  SitePage ();
   virtual ~ SitePage ()
   {
   };

@@ -43,7 +43,24 @@ static const char *cvsid =
 #include "propsheet.h"
 
 #include "threebar.h"
+#include "ControlAdjuster.h"
+
 extern ThreeBarProgressPage Progress;
+
+/*
+  Sizing information.
+ */
+static ControlAdjuster::ControlInfo SiteControlsInfo[] = {
+  {IDC_URL_LIST, 		CP_STRETCH, CP_STRETCH},
+  {IDC_EDIT_USER_URL,		CP_STRETCH, CP_BOTTOM},
+  {IDC_BUTTON_ADD_URL,		CP_RIGHT,   CP_BOTTOM},
+  {0, CP_LEFT, CP_TOP}
+};
+
+SitePage::SitePage ()
+{
+  sizeProcessor.AddControlInfo (SiteControlsInfo);
+}
 
 #include "getopt++/StringOption.h"
 #include "UserSettings.h"

@@ -1,3 +1,20 @@
+2003-10-31  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
+	* ControlAdjuster.h (ControlPosition): New enum type.
+	(ControlInfo::horizontalPos, ControlInfo::verticalPos): New
+	instance variables.
+	(ControlInfo::anchorLeft, ControlInfo::anchorTop,
+	ControlInfo::anchorRight, ControlInfo::anchorBottom): Remove.
+	* ControlAdjuster.cc (ControlAdjuster::AdjustControls): Switch to
+	using position specifiers instead of anchors.
+	* choose.cc (ChooserControlsInfo): Ditto.
+	* proppage.cc (DefaultControlsInfo): Ditto.
+	* propsheet.cc (PropSheetControlsInfo): Ditto.
+	* site.cc (SiteControlsInfo): Position specifiers for site
+	selection dialog controls.
+	* threebar.cc (ThreeBarControlsInfo): Position specifiers for
+	progress dialog controls.
+
 2003-10-27  Ralf Habacker  <ralf.habacker@freenet.de>
 
 	* main.cc (HelpOption): New instance.
