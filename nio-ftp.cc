@@ -131,7 +131,7 @@ NetIO_FTP::NetIO_FTP (char const *Purl, BOOL allow_ftp_auth):NetIO (Purl, allow_
 
   int
     i1, i2, i3, i4, p1, p2;
-  sscanf (digit + 1, "%d,%d,%d,%d,%d,%d", &i1, &i2, &i3, &i4, &p1, &p2);
+  sscanf (digit, "%d,%d,%d,%d,%d,%d", &i1, &i2, &i3, &i4, &p1, &p2);
   char
     tmp[20];
   sprintf (tmp, "%d.%d.%d.%d", i1, i2, i3, i4);

@@ -1,6 +1,11 @@
+2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
+
+	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Fix my botched application of
+	Marcel's patch.
+
 2002-07-08  Marcel Telka  <marcel@telka.sk>
 
-	* nio_ftp.cc (NetIO_FTP::NetIO_FTP): Fixed decoding of the FTP
+	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Fixed decoding of the FTP
 	reply (code 227) to the PASV command.
 
 2002-11-26  Robert Collins  <rbtcollins@hotmail.com>
