@@ -183,7 +183,7 @@ set_action (Package * pkg, bool preinc)
 	pkg->action = ACTION_SKIP;
 	/* Fall through intentionally */
       case ACTION_SKIP:
-	if (source == IDC_SOURCE_DOWNLOAD && !pkg->installed)
+	if (!pkg->installed)
 	  return;
 	break;
       default:

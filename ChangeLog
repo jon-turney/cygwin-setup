@@ -1,6 +1,11 @@
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
-	* choose.cc (default_trust): Change the "Required" forced install category to "Base".
+	* choose.cc (set_action): Correctly allow skip for any uninstalled package.
+
+2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.cc (default_trust): Change the "Required" forced install category to 
+	"Base".
 
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
