@@ -52,6 +52,15 @@ STR	[a-zA-Z0-9_./+-]+
 "sdesc:"		return SDESC;
 "ldesc:"		return LDESC;
 
+"apath:"		return APATH;
+"ppath:"		return PPATH;
+
+"include-setup:"	return INCLUDE_SETUP;
+
+"exclude"		return EXCLUDE_PACKAGE;
+
+"download-url:"		return DOWNLOAD_URL;
+
 ^{STR}":"		ignore_line ();
 
 "[curr]"		return T_CURR;

@@ -34,10 +34,8 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "log.h"
 #include "port.h"
 
-#define pi (package[i].info[package[i].trust])
-
 DWORD
-get_file_size (char *name)
+get_file_size (const char *name)
 {
   HANDLE h;
   WIN32_FIND_DATA buf;
@@ -104,38 +102,36 @@ do_download (HINSTANCE h)
   total_download_bytes = 0;
   total_download_bytes_sofar = 0;
 
-  for (i=0; i<npackages; i++)
-    if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE
-  || package[i].action == ACTION_REDO
-  || package[i].action == ACTION_SRC_ONLY)
+  for (Package *pkg = package; pkg->name; pkg++)
+    if (is_download_action (pkg))
       {
-	DWORD size = get_file_size (pi.install);
-  char *local = pi.install;
-	if (package[i].action != ACTION_SRC_ONLY &&
-     (package[i].action == ACTION_REDO ||
-     size != pi.install_size))
-    total_download_bytes += pi.install_size;
-  local = pi.source;
-  size = get_file_size (pi.source);
-	if (package[i].srcaction == SRCACTION_YES &&
-     (package[i].action == ACTION_SRC_ONLY ||
-     size != pi.source_size))
-	  total_download_bytes += pi.source_size;
+	Info *pi = pkg->info + pkg->trust;
+	DWORD size = get_file_size (pi->install);
+	char *local = pi->install;
+	if (pkg->action != ACTION_SRC_ONLY &&
+	    (pkg->action == ACTION_REDO ||
+	     size != pi->install_size))
+	  total_download_bytes += pi->install_size;
+	local = pi->source;
+	size = get_file_size (pi->source);
+	if (pkg->srcpicked &&
+	    (pkg->action == ACTION_SRC_ONLY ||
+	     size != pi->source_size))
+	  total_download_bytes += pi->source_size;
       }
 
-  for (i=0; i<npackages; i++)
-    if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE
-  || package[i].action == ACTION_REDO
-  || package[i].action == ACTION_SRC_ONLY)
+  for (Package *pkg = package; pkg->name; pkg++)
+    if (is_download_action (pkg))
       {
-  int e = 0;
-	if (package[i].action != ACTION_SRC_ONLY)
-    e += download_one (pi.install, pi.install_size, package[i].action);
-	if (package[i].srcaction == SRCACTION_YES && pi.source)
-    e += download_one (pi.source, pi.source_size, package[i].action);
+	int e = 0;
+	Info *pi = pkg->info + pkg->trust;
+	if (pkg->action != ACTION_SRC_ONLY)
+	  e += download_one (pi->install, pi->install_size, pkg->action);
+	if (pkg->srcpicked && pi->source)
+	  e += download_one (pi->source, pi->source_size, pkg->action);
 	errors += e;
 	if (e)
-	  package[i].action = ACTION_ERROR;
+	  pkg->action = ACTION_ERROR;
       }
 
   dismiss_url_status_dialog ();

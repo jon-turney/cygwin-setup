@@ -46,6 +46,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "log.h"
 #include "hash.h"
 #include "mount.h"
+#include "filemanip.h"
 
 #include "port.h"
 
@@ -62,7 +63,7 @@ static int total_bytes = 0;
 static int total_bytes_sofar = 0;
 static int package_bytes = 0;
 
-static BOOL
+static bool
 dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 {
   switch (id)
@@ -210,7 +211,7 @@ hash::add_subdirs (char *path)
 }
 
 static int
-exists (char *file)
+exists (const char *file)
 {
   if (_access (file, 0) == 0)
     return 1;
@@ -220,22 +221,21 @@ exists (char *file)
 static int num_installs, num_uninstalls;
 
 static void
-uninstall_one (char *name, int action)
+uninstall_one (Package *pkg, bool src)
 {
   hash dirs;
   char line[_MAX_PATH];
 
-  gzFile lst = gzopen (cygpath ("/etc/setup/",
-			       name, ".lst.gz", 0),
-		       "rb");
+  gzFile lst = gzopen (cygpath ("/etc/setup/", pkg->name,
+				(src ? "-src.lst.gz" : ".lst.gz"), 0), "rb");
   if (lst)
     {
-      SetWindowText (ins_pkgname, name);
+      SetWindowText (ins_pkgname, pkg->name);
       SetWindowText (ins_action, "Uninstalling...");
-      if (action == ACTION_UPGRADE || action == ACTION_REDO)
-	log (0, "Uninstalling old %s", name);
+      if (pkg->action == ACTION_UNINSTALL)
+	log (0, "Uninstalling %s", pkg->name);
       else
-	log (0, "Uninstalling %s", name);
+	log (0, "Uninstalling old %s", pkg->name);
 
       while (gzgets (lst, line, sizeof (line)))
 	{
@@ -254,7 +254,7 @@ uninstall_one (char *name, int action)
 	}
       gzclose (lst);
 
-      remove (cygpath ("/etc/setup/", name, ".lst.gz", 0));
+      remove (cygpath ("/etc/setup/", pkg->name, ".lst.gz", 0));
 
       dirs.reverse_sort ();
       char *subdir = 0;
@@ -270,46 +270,80 @@ uninstall_one (char *name, int action)
 
 
 static int
-install_one (char *name, char *file, int file_size, int action, BOOL isSrc)
+install_one (Package *pkg, bool isSrc)
 {
   int errors = 0;
-  char *local = file, *cp, *fn, *base;
+  char *extra;
+  const char *file;
+  int file_size;
+  Info *pi = pkg->info + pkg->trust;
 
-  base = local;
-  for (cp=local; *cp; cp++)
-    if (*cp == '/' || *cp == '\\' || *cp == ':')
-      base = cp+1;
-  SetWindowText (ins_pkgname, base);
-
-  if (!exists (local) && exists (base))
-    local = base;
-  if (!exists (local))
+  if (!isSrc)
     {
-      note (IDS_ERR_OPEN_READ, local, "No such file");
+      extra = "";
+      file_size = pi->install_size;
+      file = pi->install;
+    }
+  else if (pi->source)
+    {
+      extra = "-src";
+      file_size = pi->source_size;
+      file = pi->source;
+    }
+  else
+    return 0;
+
+  char name[strlen (pkg->name) + strlen (extra) + 1];
+  strcat (strcpy (name, pkg->name), extra);
+  
+  char *basef = base (file);
+  SetWindowText (ins_pkgname, basef);
+
+  if (!exists (file))
+    file = basef;
+  if (!exists (file))
+    {
+      note (IDS_ERR_OPEN_READ, file, "No such file");
       return 1;
     }
 
-  gzFile lst = gzopen (cygpath ("/etc/setup/",
-			       name, ".lst.gz", 0),
+  gzFile lst = gzopen (cygpath ("/etc/setup/", name, ".lst.gz", 0),
 		       "wb9");
 
   package_bytes = file_size;
 
-  switch (action)
+  char msg[64];
+  if (!pkg->installed)
+    strcpy (msg, "Installing");
+  else
     {
-    case ACTION_NEW:
-      SetWindowText (ins_action, "Installing...");
+      int n = strcmp (pi->version, pkg->installed->version);
+      if (n < 0)
+	strcpy (msg, "Reverting");
+      else if (n == 0)
+	strcpy (msg, "Reinstalling");
+      else
+	strcpy (msg, "Upgrading");
+    }
+
+  switch (pkg->action)
+    {
+    case ACTION_PREV:
+      strcat (msg, " previous version...");
       break;
-    case ACTION_UPGRADE:
-      SetWindowText (ins_action, "Upgrading...");
+    case ACTION_CURR:
+      strcat (msg, "...");
       break;
-    case ACTION_REDO:
-      SetWindowText (ins_action, "ReInstalling...");
+    case ACTION_TEST:
+      strcat (msg, " test version...");
       break;
     }
 
-  log (0, "Installing %s", local);
-  tar_open (local);
+  SetWindowText (ins_action, msg);
+  log (0, "%s%s", msg, file);
+  tar_open (file);
+
+  char *fn;
   while (fn = tar_next_file ())
     {
       char *dest_file;
@@ -341,6 +375,9 @@ install_one (char *name, char *file, int file_size, int action, BOOL isSrc)
 
   if (lst)
     gzclose (lst);
+
+  if (!errors)
+    pkg->installed_ix = pkg->trust;
 
   return errors;
 }
@@ -389,39 +426,33 @@ do_install (HINSTANCE h)
   create_mount ("/usr/lib", cygpath ("/lib", 0), istext, issystem);
   set_cygdrive_flags (istext, issystem);
 
-  LOOP_PACKAGES
+  for (Package *pkg = package; pkg->name; pkg++)
     {
-      if (package[i].action != ACTION_SRC_ONLY)
-  total_bytes += pi.install_size;
-      if (package[i].srcaction == SRCACTION_YES)
-	total_bytes += pi.source_size;
+      Info *pi = pkg->info + pkg->trust;
+      if (pkg->action != ACTION_SRC_ONLY)
+	total_bytes += pi->install_size;
+      if (pkg->srcpicked)
+	total_bytes += pi->source_size;
     }
 
-  for (i=0; i<npackages; i++)
+  for (Package *pkg = package; pkg->name; pkg++)
     {
-      if (package[i].action == ACTION_UNINSTALL
-    || ((package[i].action == ACTION_UPGRADE
-    || package[i].action == ACTION_REDO) && pi.install))
+      if (is_uninstall_action (pkg))
 	{
-	  uninstall_one (package[i].name, package[i].action);
-	  uninstall_one (concat (package[i].name, "-src", 0), package[i].action);
+	  uninstall_one (pkg, 0);
+	  uninstall_one (pkg, 1);
 	}
 
-      if ((package[i].action == ACTION_NEW
-     || package[i].action == ACTION_UPGRADE
-     || package[i].action == ACTION_REDO
-     || package[i].action == ACTION_SRC_ONLY)
-	  && pi.install)
+      if (is_download_action (pkg))
 	{
-    int e = 0;
-    if (package[i].action != ACTION_SRC_ONLY)
-      e += install_one (package[i].name, pi.install, pi.install_size, package[i].action, FALSE);
-	  if (package[i].srcaction == SRCACTION_YES && pi.source)
-	    e += install_one (concat (package[i].name, "-src", 0), pi.source, pi.source_size,
-			      package[i].action, TRUE);
+	  int e = 0;
+	  if (pkg->action != ACTION_SRC_ONLY)
+	    e += install_one (pkg, FALSE);
+	  if (pkg->srcpicked)
+	    e += install_one (pkg, TRUE);
 	  if (e)
 	    {
-	      package[i].action = ACTION_ERROR;
+	      pkg->action = ACTION_ERROR;
 	      errors++;
 	    }
 	}
@@ -448,42 +479,30 @@ do_install (HINSTANCE h)
 
   if (odb)
     {
-      char line[1000], pkg[1000];
+      char line[1000], pkgname[1000];
       int printit;
       while (fgets (line, 1000, odb))
 	{
-	  printit = 1;
-	  sscanf (line, "%s", pkg);
-	  for (i=0; i<npackages; i++)
-	    {
-	      if (strcmp (pkg, package[i].name) == 0)
-		switch (package[i].action)
-		  {
-		  case ACTION_NEW:
-		  case ACTION_UPGRADE:
-		  case ACTION_UNINSTALL:
-	case ACTION_REDO:
-	case ACTION_SRC_ONLY:
-		    printit = 0;
-		    break;
-		  }
-	    }
-	  if (printit)
+	  sscanf (line, "%s", pkgname);
+	  Package *pkg = getpkgbyname (pkgname);
+	  if (!is_download_action (pkg))
 	    fputs (line, ndb);
 	}
 
     }
 
-  LOOP_PACKAGES
-    {
-      if (package[i].srcaction == SRCACTION_YES)
-	fprintf (ndb, "%s %s %d %s %d\n", package[i].name,
-		 pi.install, pi.install_size,
-		 pi.source, pi.source_size);
-      else
-	fprintf (ndb, "%s %s %d\n", package[i].name,
-		 pi.install, pi.install_size);
-    }
+  for (Package *pkg = package; pkg->name; pkg++)
+    if (is_download_action (pkg))
+      {
+	Info *pi = pkg->info + pkg->installed_ix;
+	if (pkg->srcpicked)
+	  fprintf (ndb, "%s %s %d %s %d\n", pkg->name,
+		   pi->install, pi->install_size,
+		   pi->source, pi->source_size);
+	else
+	  fprintf (ndb, "%s %s %d\n", pkg->name,
+		   pi->install, pi->install_size);
+      }
 
   if (odb)
     fclose (odb);
@@ -507,15 +526,6 @@ do_install (HINSTANCE h)
       exit_msg = IDS_UNINSTALL_COMPLETE;
       return;
     }
-
-  // remove_mount ("/");
-  // remove_mount ("/usr");
-  // remove_mount ("/usr/bin");
-  // remove_mount ("/usr/lib");
-  // remove_mount ("/var");
-  // remove_mount ("/lib");
-  // remove_mount ("/bin");
-  // remove_mount ("/etc");
 
   if (errors)
     exit_msg = IDS_INSTALL_INCOMPLETE;

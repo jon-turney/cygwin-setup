@@ -263,22 +263,15 @@ make_passwd_group ()
 {
   if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
     {
-      int i;
-
-      LOOP_PACKAGES
+      Package *pkg = getpkgbyname ("cygwin");
+      if (pkg && is_download_action (pkg) &&
+	  pkg->action != ACTION_SRC_ONLY)
 	{
-    if (!strcmp (package[i].name, "cygwin") &&
-       package[i].action != ACTION_SRC_ONLY)
-	    {
-	      /* mkpasswd and mkgroup are not working on 9x/ME up to 1.1.5-4 */
-	      char *border_version = canonicalize_version ("1.1.5-4");
-	      char *inst_version = canonicalize_version (pi.version);
-
-	      if (strcmp (inst_version, border_version) <= 0)
-		return;
-
-	      break;
-	    }
+	  /* mkpasswd and mkgroup are not working on 9x/ME up to 1.1.5-4 */
+	  char *border_version = canonicalize_version ("1.1.5-4");
+	  char *inst_version = canonicalize_version (pkg->info[pkg->trust].version);
+	  if (strcmp (inst_version, border_version) <= 0)
+	    return;
 	}
     }
 

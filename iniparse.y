@@ -22,6 +22,7 @@
 
 #include "ini.h"
 #include "iniparse.h"
+#include "win32.h"
 #include "filemanip.h"
 
 extern "C" int yyerror (char *s, ...);
@@ -44,6 +45,7 @@ extern int yylineno;
 
 %token STRING
 %token SETUP_TIMESTAMP SETUP_VERSION VERSION INSTALL SOURCE SDESC LDESC
+%token APATH PPATH INCLUDE_SETUP EXCLUDE_PACKAGE DOWNLOAD_URL
 %token T_PREV T_CURR T_TEST T_UNKNOWN
 
 %%
@@ -97,6 +99,7 @@ simple_line
  | T_PREV			{ trust = TRUST_PREV; }
  | T_CURR			{ trust = TRUST_CURR; }
  | T_TEST			{ trust = TRUST_TEST; }
+ | EXCLUDE_PACKAGE		{ cp->exclude = EXCLUDE_BY_SETUP; }
  | T_UNKNOWN			{ trust = TRUST_UNKNOWN; }
  | /* empty */
  | error '\n' { yylineno --;
@@ -107,7 +110,7 @@ simple_line
 
 %%
 
-Package *package = 0;
+Package *package = NULL;
 int npackages = 0;
 static int maxpackages = 0;
 
@@ -118,19 +121,21 @@ new_package (char *name)
     maxpackages = npackages = 0;
   if (npackages >= maxpackages)
     {
-      maxpackages += 10;
+      maxpackages += 100;
       if (package)
-	package = (Package *) realloc (package, maxpackages * sizeof (Package));
+	package = (Package *) realloc (package, (1 + maxpackages) * sizeof (Package));
       else
-	package = (Package *) malloc (maxpackages * sizeof (Package));
+	package = (Package *) malloc ((1 + maxpackages) * sizeof (Package));
+      memset (package + npackages, 0, (1 + maxpackages - npackages) * sizeof (Package));
     }
-  cp = package + npackages;
-  npackages++;
-
-  memset (cp, 0, sizeof (Package));
-  cp->name = name;
-
-  trust = TRUST_CURR;
+  cp = getpkgbyname (name);
+  if (!cp)
+    {
+      cp = package + npackages;
+      npackages++;
+      cp->name = name;
+      trust = TRUST_CURR;
+    }
 
   return cp;
 }

@@ -27,6 +27,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "tar.h"
 #include "mkdir.h"
 #include "log.h"
+#include "filemanip.h"
 
 #include "port.h"
 #undef _WIN32
@@ -35,8 +36,6 @@ static char *cvsid = "\n%%% $Id$\n";
 #define FACTOR (0x19db1ded53ea710LL)
 #define NSPERSEC 10000000LL
 #define SYMLINK_COOKIE "!<symlink>"
-
-extern DWORD get_file_size (char *);
 
 typedef struct {
   char name[100];               /*   0 */
@@ -153,7 +152,7 @@ xstrdup (char *c)
 }
 
 int
-tar_open (char *pathname)
+tar_open (const char *pathname)
 {
   if (_tar_vfile == 0)
     _tar_vfile = stderr;

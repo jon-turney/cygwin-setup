@@ -1,3 +1,45 @@
+Wed Jun 13 11:27:22 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc: Eliminate extra array throughout.  Use element in package
+	structure instead.  Use pointers rather than array indexes where
+	appropriate.
+	(set_action): New function to set next action based on current.
+	(choose_caption): New function.  Returns display caption.
+	(check_existence): Change arguments.  Use pointer to 'info' structure.
+	(set_existence): Use pointer rather than array index.
+	(default_trust): Use trusts enum for second argument.
+	(set_full_list): Honor exclude element in package structure.
+	(build_labels): Eliminate.
+	(base): Make global.  Use const char * argument.
+	(get_package_version): Eliminate.
+	(getpkgbyname): New function.
+	(read_installed_db): Use parse_filename to get version info.
+	* desktop.cc (make_passwd_group): Use getpkgbyname function.
+	* download.cc (get_file_size): const argument.
+	(do_download): Use is_download_action to determine when something
+	should be downloaded.
+	* filemanip.h: Add some functions.
+	* ini.cc (do_ini): Use NULL rather than 0 for pointer assignment.
+	* ini.h: Use enums for actions and trusts.
+	(is_download_action): New macro.
+	(is_upgrade_action): Ditto.
+	(is_uninstall_action): Ditto.
+	(struct Package): Add new fields.
+	* inilex.l (yylex): Detect new setup.ini options.
+	* iniparse.y: Declare new tokens.
+	(yyparse): Detect exclude keyword.  Fill out version field even if
+	version == 0.
+	(new_package): Use greater granularity when allocating package array to
+	avoid repeated calls to realloc.
+	* install.cc (exists): const argument.
+	(uninstall_one): Take pkg argument.
+	(install_one): Ditto.  Eliminate unneeded arguments which can be
+	derived from package info.
+	(do_install): Iterate over package array using a pointer.  Use
+	is_download_action to control when package should be downloaded.
+	* tar.cc (tar_open): const argument.
+	* tar.h: Refloect const argument.
+
 2001-05-31  Michael Chase mchase@ix.netcom.com
 
 	* main.cc (WinMain): Add setup version to starting setup.log entry

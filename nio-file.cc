@@ -27,8 +27,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "nio-file.h"
 #include "resource.h"
 #include "msg.h"
-
-extern DWORD get_file_size (char *);
+#include "filemanip.h"
 
 NetIO_File::NetIO_File (char *Purl)
   : NetIO (Purl)

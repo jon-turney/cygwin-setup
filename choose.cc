@@ -53,12 +53,6 @@ static char *cvsid = "\n%%% $Id$\n";
 
 #define CHECK_SIZE	11
 
-#define TRUST_KEEP	101
-#define TRUST_UNINSTALL	102
-#define TRUST_NONE	103
-#define TRUST_REDO    104
-#define TRUST_SRC_ONLY    105
-
 static int initialized = 0;
 
 static int full_list = 0;
@@ -95,27 +89,98 @@ headers[] = {
 
 int *package_indexes, nindexes;
 
-struct ExtraPackageInfo
-  {
-    char *installed_file;	/* filename of previous "install" file */
-    char *installed_ver;	/* version part */
-    int   installed_size; /* ditto, size. */
+static bool
+isinstalled (Package *pkg, int trust)
+{
+  if (source == IDC_SOURCE_DOWNLOAD)
+    return pkg->info[pkg->installed_ix].install_exists < 0;
+  else
+    return pkg->installed && pkg->info[trust].version &&
+	   strcmp (pkg->installed->version, pkg->info[trust].version) == 0;
+}
 
-    int in_partial_list;
-    int pick;
-    int npick;
-    int which_is_installed; /* == TRUST* or -1 */
-
-    struct
+static void
+set_action (Package *pkg, bool preinc)
+{
+  pkg->srcpicked = 0;
+  if (!pkg->action || preinc)
+    ((int) pkg->action)++;
+  for (;; ((int) pkg->action)++)
+    switch (pkg->action)
       {
-	int src_avail;
-	int trust;		/* may be keep or uninstall */
-	char *caption;	/* ==0 at EOL */
+      case ACTION_ERROR:
+      case ACTION_UNKNOWN:
+	pkg->action = (actions) (ACTION_CURR - 1);
+	break;
+      case ACTION_LAST:
+	pkg->action = ACTION_PREV;
+	/* fall through intentionally */
+      case ACTION_PREV:
+      case ACTION_CURR:
+      case ACTION_TEST:
+	Info *inf;
+	inf = pkg->info + pkg->action;
+	if (inf->version && inf->install_exists)
+	  {
+	    if (isinstalled (pkg, pkg->action))
+	      (int) pkg->action += ACTION_SAME;
+	    return;
+	  }
+	break;
+      case ACTION_SAME_CURR:
+      case ACTION_SAME_TEST:
+	(int) pkg->action -= ACTION_SAME + 1;	/* revert to ACTION_CURR, etc. */
+	break;
+      case ACTION_SAME_PREV:
+	pkg->action = ACTION_UNINSTALL;
+      /* Fall through intentionally */
+      case ACTION_UNINSTALL:
+      case ACTION_REDO:
+	if (pkg->installed)
+	  return;
+      case ACTION_SRC_ONLY:
+	if (pkg->installed && pkg->installed->source_exists)
+	  return;
+	break;
+      case ACTION_SAME_LAST:
+	pkg->action = ACTION_SKIP;
+	/* Fall through intentionally */
+      case ACTION_SKIP:
+	return;
+      default:
+	log (0, "should never get here %d\n", pkg->action);
       }
-    chooser[NTRUST + 3];	/* one extra for NULL above */
-  };
+}
 
-static ExtraPackageInfo *extra;
+const char *
+choose_caption (Package *pkg)
+{
+  set_action (pkg, 0);
+  switch (pkg->action)
+    {
+    case ACTION_PREV:
+    case ACTION_CURR:
+    case ACTION_TEST:
+      pkg->trust = (trusts) pkg->action;
+      return pkg->info[pkg->trust].version;
+    case ACTION_SAME_PREV:
+    case ACTION_SAME_CURR:
+    case ACTION_SAME_TEST:
+      return "Keep";
+    case ACTION_UNINSTALL:
+      return "Uninstall";
+    case ACTION_REDO:
+      return "Reinstall";
+    case ACTION_SRC_ONLY:
+      if (pkg->installed && pkg->installed->source_exists)
+	return "Redo Source";
+      else
+	return "Source";
+    case ACTION_SKIP:
+      return "Skip";
+    }
+    return "???";
+}
 
 static void
 paint (HWND hwnd)
@@ -150,46 +215,40 @@ paint (HWND hwnd)
   for (ii = 0; ii < nindexes; ii++)
     {
       i = package_indexes[ii];
+      Package *pkg = package + i;
       int r = y + ii * row_height;
       int by = r + tm.tmHeight - 11;
-      if (extra[i].installed_ver && extra[i].installed_ver[0])
+      if (pkg->installed)
 	{
 	  TextOut (hdc, x + headers[CURRENT_COL].x, r,
-		   extra[i].installed_ver, strlen (extra[i].installed_ver));
+		   pkg->installed->version, strlen (pkg->installed->version));
 	  SelectObject (bitmap_dc, bm_rtarrow);
 	  BitBlt (hdc, x + headers[CURRENT_COL].x + headers[0].width + ICON_MARGIN/2 + HMARGIN/2, by,
 		  11, 11, bitmap_dc, 0, 0, SRCCOPY);
 	}
 
-      char *s = extra[i].chooser[extra[i].pick].caption;
-      if (s)
-	{
-	  TextOut (hdc, x + headers[NEW_COL].x + NEW_COL_SIZE_SLOP, r,
-		   s, strlen (s));
-	  if (extra[i].npick > 1)
-	    {
-	      SelectObject (bitmap_dc, bm_spin);
-	      BitBlt (hdc, x + headers[NEW_COL].x, by, 11, 11,
-		      bitmap_dc, 0, 0, SRCCOPY);
-	    }
-	}
+      const char *s = choose_caption (pkg);
+      TextOut (hdc, x + headers[NEW_COL].x + NEW_COL_SIZE_SLOP, r,
+	       s, strlen (s));
+      SelectObject (bitmap_dc, bm_spin);
+      BitBlt (hdc, x + headers[NEW_COL].x, by, 11, 11,
+	      bitmap_dc, 0, 0, SRCCOPY);
 
-      HANDLE check_bm = bm_checkna;
-      if (extra[i].chooser[extra[i].pick].src_avail)
-	{
-	  if (package[i].srcaction == SRCACTION_NO &&
-	      extra[i].chooser[extra[i].pick].trust != TRUST_SRC_ONLY)
-	    check_bm = bm_checkno;
-	  else if (package[i].srcaction == SRCACTION_YES ||
-		   extra[i].chooser[extra[i].pick].trust == TRUST_SRC_ONLY)
-	    check_bm = bm_checkyes;
-	}
+      HANDLE check_bm;
+      if (pkg->srcpicked)
+	check_bm = bm_checkyes;
+      else
+	check_bm = bm_checkno;
+
       SelectObject (bitmap_dc, check_bm);
       BitBlt (hdc, x + headers[SRC_COL].x, by, 11, 11,
 	      bitmap_dc, 0, 0, SRCCOPY);
 
-      if (package[i].name)
-	TextOut (hdc, x + headers[PACKAGE_COL].x, r, package[i].name, strlen (package[i].name));
+      if (package[i].sdesc)
+	s = package[i].sdesc;
+      else
+	s = package[i].name;
+      TextOut (hdc, x + headers[PACKAGE_COL].x, r, s, strlen (s));
     }
 
   if (nindexes == 0)
@@ -289,29 +348,16 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 
   r = (y + ROW_MARGIN/2) / row_height;
 
-  if (r < 0 || r >= npackages)
+  if (r < 0 || r >= nindexes)
     return 0;
 
-  int p = package_indexes[r];
+  Package *pkg = package + package_indexes[r];
 
-  if (x >= headers[NEW_COL].x - HMARGIN/2 && x <= headers[NEW_COL + 1].x - HMARGIN/2)
-    {
-      extra[p].pick++;
-      while (extra[p].chooser[extra[p].pick].trust < NTRUST &&
-	     (package[p].info[extra[p].chooser[extra[p].pick].trust].install_exists
-	      ==0 && source == IDC_SOURCE_CWD) &&
-	     package[p].info[extra[p].chooser[extra[p].pick].trust].install &&
-	     extra[p].chooser[extra[p].pick].caption != 0)
-	extra[p].pick++;
-      if (extra[p].chooser[extra[p].pick].caption == 0)
-	extra[p].pick = 0;
-    }
+  if (x >= headers[NEW_COL].x - (HMARGIN / 2) && x <= headers[NEW_COL + 1].x - HMARGIN/2)
+    set_action (pkg, 1);
 
   if (x >= headers[SRC_COL].x - HMARGIN/2 && x <= headers[SRC_COL + 1].x - HMARGIN/2)
-    {
-      if (extra[p].chooser[extra[p].pick].src_avail)
-	package[p].srcaction ^= (SRCACTION_NO^SRCACTION_YES);
-    }
+    pkg->srcpicked ^= 1;
 
   RECT rect;
   rect.left = headers[NEW_COL].x - scroll_ulc_x;
@@ -375,90 +421,52 @@ note_width (HDC dc, char *string, int addend, int column)
 }
 
 static int
-check_existence (int p, int trust, int check_src)
+check_existence (Info *inf, int check_src)
 {
   if (source == IDC_SOURCE_NETINST)
     return 1;
-  if (source == IDC_SOURCE_DOWNLOAD)
-    {
-      if (check_src == 0 && _access (package[p].info[trust].install, 0) == 0)
-	return 1;
-      else if (check_src == 1 && _access (package[p].info[trust].source, 0) == 0)
-	return 1;
-      else
-	return 0;
-    }
   if (source == IDC_SOURCE_CWD)
-    {
-      if (check_src == 0  && package[p].info[trust].install &&
-	  _access (package[p].info[trust].install, 0) == 0)
-	return 1;
-      else if (check_src == 1 && package[p].info[trust].source &&
-	       _access (package[p].info[trust].source, 0) == 0)
-	return 1;
-    }
+    return 0;  /* should have already been determined */
+  if (check_src)
+    return (inf->source && _access (inf->source, 0) == 0) ? -1 : 1;
+  else
+    return (inf->install && _access (inf->install, 0) == 0) ? -1 : 1;
   return 0;
 }
 
 static void
 set_existence ()
 {
-  for (int i = 0; i < npackages; i++)
-    {
-      for (int t = 0; t < NTRUST; t++)
-	{
-	  /* 0 = check install file */
-	  package[i].info[t].install_exists = check_existence (i, t, 0);
-	  /* 1 = check source file */
-	  package[i].info[t].source_exists = check_existence (i, t, 1);
-	  if (package[i].info[t].install &&
-	      (extra[i].installed_ver != package[i].info[t].version))
-	    {
-	      if (source == IDC_SOURCE_NETINST)
-		package[i].info[t].partial_list_display = 1;
-	      else if (source == IDC_SOURCE_DOWNLOAD)
-		package[i].info[t].partial_list_display = 1-package[i].info[t].install_exists;
-	      else if (source == IDC_SOURCE_CWD)
-		if (package[i].info[t].install_exists)
-		  package[i].info[t].partial_list_display = 1;
-		else
-		  package[i].info[t].partial_list_display = 0;
-	    }
-	  if (package[i].info[t].partial_list_display)
-	    extra[i].in_partial_list = 1;
-
-	}
-    }
-}
-
-static int
-best_trust (int p, int trust)
-{
-  int t;
-  t = trust;
-  if (package[p].info[t].install &&
-      ((package[p].info[t].install_exists && source == IDC_SOURCE_CWD) ||
-       (package[p].info[t].install_exists == 0 &&
-	source == IDC_SOURCE_DOWNLOAD) || source == IDC_SOURCE_NETINST))
-    return t;
-  if (extra[p].installed_file && extra[p].installed_ver == package[p].info[t].version)
-    return TRUST_KEEP;
-  return TRUST_NONE;
+  for (Package *pkg = package; pkg->name; pkg++)
+    if (!pkg->exclude)
+      {
+	int exists = 0;
+	for (int t = 1; t < NTRUST; t++)
+	  {
+	    Info *inf = pkg->info + t;
+	    if (inf->install_exists)
+	      exists = 1;
+	    else
+	      exists |= inf->install_exists = check_existence (inf, 0);
+	    if (inf->source_exists)
+	      exists = 1;
+	    else
+	      exists |= inf->source_exists = check_existence (inf, 1);
+	  }
+	if (!exists)
+	  pkg->exclude = EXCLUDE_NOT_FOUND;
+      }
 }
 
 static void
-default_trust (HWND h, int trust)
+default_trust (HWND h, trusts trust)
 {
   int i, t, c;
 
-  for (i = 0; i < npackages; i++)
+  for (Package *pkg = package; pkg->name; pkg++)
     {
-      t = best_trust (i, trust);
-      extra[i].pick = 1;
-      package[i].trust = t;
-      for (c = 0; c < extra[i].npick; c++)
-	if (t == extra[i].chooser[c].trust)
-	  extra[i].pick = c;
+      pkg->action = (actions) trust;
+      set_action (pkg, 0);
     }
   RECT r;
   GetClientRect (h, &r);
@@ -470,22 +478,20 @@ default_trust (HWND h, int trust)
 static void
 set_full_list (HWND h, int isfull)
 {
-  int i, j;
+  int i;
   full_list = isfull;
+
   if (package_indexes == 0)
     package_indexes = (int *) malloc (npackages * sizeof (int));
-  for (i = j = 0; i < npackages; i++)
-    {
-      if ((isfull || (extra[i].in_partial_list &&
-		      extra[i].chooser[extra[i].pick].trust != TRUST_KEEP &&
-		      extra[i].chooser[extra[i].pick].trust != TRUST_NONE)) &&
-	  (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_NETINST ||
-	   package[i].info[TRUST_PREV].install_exists ||
-	   package[i].info[TRUST_CURR].install_exists ||
-	   package[i].info[TRUST_TEST].install_exists))
-	package_indexes[j++] = i;
-    }
-  nindexes = j;
+
+  nindexes = 0;
+  for (Package *pkg = package; pkg->name; pkg++)
+    if (!pkg->exclude)
+      {
+	set_action (pkg, 0);
+	if ((isfull || is_download_action (pkg)))
+	  package_indexes[nindexes++] = pkg - package;
+      }
 
   RECT r;
   GetClientRect (h, &r);
@@ -508,95 +514,6 @@ set_full_list (HWND h, int isfull)
 
   if (nextbutton)
     SetFocus (nextbutton);
-}
-
-static void
-build_labels ()
-{
-  int i;
-  for (i = 0; i < npackages; i++)
-    {
-      int c = 0, t;
-
-#define C extra[i].chooser[c]
-      if (extra[i].installed_ver)
-	{
-	  C.caption = "Uninstall";
-	  C.trust = TRUST_UNINSTALL;
-	  c++;
-	  C.caption = "Keep";
-	  C.trust = TRUST_KEEP;
-	  c++;
-	}
-
-      if (extra[i].installed_ver &&
-	  package[i].info[extra[i].which_is_installed].source &&
-	  ((package[i].info[extra[i].which_is_installed].source_exists &&
-	    source==IDC_SOURCE_CWD) ||
-	   source==IDC_SOURCE_DOWNLOAD || source==IDC_SOURCE_NETINST ))
-	{
-	  C.caption = "Sources";
-	  if (package[i].info[extra[i].which_is_installed].source_exists == 1 &&
-	      source == IDC_SOURCE_DOWNLOAD)
-	    C.caption = "Redo Sources";
-	  C.trust = TRUST_SRC_ONLY;
-	  C.src_avail = 1;
-	  c++;
-	}
-
-      for (t = TRUST_PREV; t < NTRUST; t++)
-	if (package[i].info[t].install)
-	  if (t != extra[i].which_is_installed)
-	    {
-	      C.caption = package[i].info[t].version;
-	      if (C.caption == 0 || C.caption[0] == 0)
-		C.caption = "0.0";
-	      C.trust = t;
-	      if (package[i].info[t].source &&
-		  ((package[i].info[t].source_exists &&
-		    source==IDC_SOURCE_CWD) ||
-		   (package[i].info[t].source_exists==0 &&
-		    source==IDC_SOURCE_DOWNLOAD) || source==IDC_SOURCE_NETINST))
-		C.src_avail = 1;
-	      c++;
-	    }
-	  else
-	    {
-	      if (source == IDC_SOURCE_DOWNLOAD)
-		{
-		  C.caption = "ReDownload";
-		}
-	      else
-		{
-		  C.caption = "ReInstall";
-		}
-	      if (package[i].info[t].source &&
-		  ((package[i].info[t].source_exists &&
-		    source==IDC_SOURCE_CWD) ||
-		   source == IDC_SOURCE_DOWNLOAD || source==IDC_SOURCE_NETINST))
-		C.src_avail = 1;
-	      C.trust = TRUST_REDO;
-	      c++;
-	    }
-
-      if (c == 0)
-	{
-	  C.caption = "N/A";
-	  C.trust = TRUST_NONE;
-	  c++;
-	}
-
-      if (! extra[i].installed_file)
-	{
-	  C.caption = "Skip";
-	  C.trust = TRUST_NONE;
-	  c++;
-	}
-
-      C.caption = 0;
-      extra[i].npick = c;
-#undef C
-    }
 }
 
 static void
@@ -633,14 +550,17 @@ create_listview (HWND dlg, RECT *r)
 
   for (i = 0; headers[i].text; i++)
     note_width (dc, headers[i].text, 0, i);
-  for (i = 0; i < npackages; i++)
+  for (Package *pkg = package; pkg->name; pkg++)
     {
-      note_width (dc, extra[i].installed_ver, 0, CURRENT_COL);
-      note_width (dc, extra[i].installed_ver, NEW_COL_SIZE_SLOP, NEW_COL);
-      for (t = 0; t < NTRUST; t++)
-	note_width (dc, package[i].info[t].version, NEW_COL_SIZE_SLOP, NEW_COL);
-      note_width (dc, package[i].name, 0, PACKAGE_COL);
-      note_width (dc, package[i].sdesc, 0, PACKAGE_COL);
+      if (pkg->installed)
+	{
+	  note_width (dc, pkg->installed->version, 0, CURRENT_COL);
+	  note_width (dc, pkg->installed->version, NEW_COL_SIZE_SLOP, NEW_COL);
+	}
+      for (t = 1; t < NTRUST; t++)
+	note_width (dc, pkg->info[t].version, NEW_COL_SIZE_SLOP, NEW_COL);
+      note_width (dc, pkg->name, 0, PACKAGE_COL);
+      note_width (dc, pkg->sdesc, 0, PACKAGE_COL);
     }
   note_width (dc, "keep", NEW_COL_SIZE_SLOP, NEW_COL);
   note_width (dc, "uninstall", NEW_COL_SIZE_SLOP, NEW_COL);
@@ -747,36 +667,19 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
   return FALSE;
 }
 
-static char *
-base (char *s)
+char *
+base (const char *s)
 {
   if (!s)
     return 0;
-  char *rv = s;
+  const char *rv = s;
   while (*s)
     {
       if ((*s == '/' || *s == ':' || *s == '\\') && s[1])
 	rv = s + 1;
       s++;
     }
-  return rv;
-}
-
-static void
-get_package_version (int p , int trust)
-{
-  char *v, *d;
-  char instpkg[_MAX_PATH];
-  fileparse f;
-  instpkg[0]=0;  /* make sure empty to start with */
-  if (trust == -1)
-    parse_filename (extra[p].installed_file, f);
-  else
-    parse_filename (package[p].info[trust].install, f);
-
-  if (trust != -1)
-    package[p].info[trust].version = strdup (f.ver);
-  extra[p].installed_ver = strdup (f.ver);
+  return (char *) rv;
 }
 
 int
@@ -859,6 +762,16 @@ parse_filename (const char *in_fn, fileparse& f)
   return 1;
 }
 
+Package *
+getpkgbyname (const char *pkgname)
+{
+  for (int i = 0; i < npackages; i++)
+    if (strcmp (package[i].name, pkgname) == 0)
+      return package + i;
+
+  return NULL;
+}
+
 static void
 scan2 (char *path, unsigned int size)
 {
@@ -871,32 +784,25 @@ scan2 (char *path, unsigned int size)
   if (f.what[0] != '\0' && f.what[0] != 's')
     return;
 
-  for (pkg = package; pkg < package + npackages; pkg++)
-    {
-      if (strcmp (f.pkg, pkg->name) != 0)
-	continue;
-
-      for (Info *inf = pkg->info; inf < pkg->info + NTRUST + 1; inf++)
-	if (inf->version && strcmp (f.ver, inf->version) == 0)
-	  {
-	    if (f.what[0] == 's')
-	      inf->source_exists = 1;
-	    else
-	      inf->install_exists = 1;
-	    return;
-	  }
-      break;
-    }
-
-  if (pkg >= package + npackages)
+  pkg = getpkgbyname (f.pkg);
+  if (pkg == NULL)
     return;
+
+  for (Info *inf = pkg->info; inf < pkg->info + NTRUST; inf++)
+    if (inf->version && strcmp (f.ver, inf->version) == 0)
+      {
+	if (f.what[0] == 's')
+	  inf->source_exists = -1;
+	else
+	  inf->install_exists = -1;
+	return;
+      }
 
   for (int i = TRUST_CURR; i >= TRUST_PREV; i--)
     if (!pkg->info[i].install)
       {
 	Info *inf = pkg->info + i;
 	inf->version = strdup (f.ver);
-	extra[i].installed_ver = strdup (f.ver);
 	inf->install = strdup (f.pkgtar);
 	if (!inf->source && f.what[0] == 's')
 	  {
@@ -906,7 +812,6 @@ scan2 (char *path, unsigned int size)
 	inf->source_size = size;
 	break;
       }
-
 }
 
 static void
@@ -922,7 +827,7 @@ read_installed_db ()
   if (!get_root_dir ())
     return;
 
-  char line[1000], pkg[1000], inst[1000], src[1000];
+  char line[1000], pkgname[1000], inst[1000], src[1000];
   int instsz, srcsz;
 
   FILE *db = fopen (cygpath ("/etc/setup/installed.db", 0), "rt");
@@ -931,39 +836,45 @@ read_installed_db ()
 
   while (fgets (line, 1000, db))
     {
+      int parseable;
       src[0] = 0;
       srcsz = 0;
-      sscanf (line, "%s %s %d %s %d", pkg, inst, &instsz, src, &srcsz);
+      sscanf (line, "%s %s %d %s %d", pkgname, inst, &instsz, src, &srcsz);
 
-      for (i = 0; i < npackages; i++)
-	if (strcmp (package[i].name, pkg) == 0)
-	  {
-	    int t;
-	    extra[i].installed_file = inst;
-	    extra[i].installed_size = instsz;
-	    get_package_version (i, -1);
+      Package *pkg = getpkgbyname (pkgname);
+      fileparse f;
+      parseable = parse_filename (inst, f);
 
-	    fileparse f;
-	    (void) parse_filename (inst, f);
-	    for (t = 0; t < NTRUST; t++)
-	      if (package[i].info[t].install)
-		{
-		  fileparse f1;
-		  (void) parse_filename (package[i].info[t].install, f1);
-		  if (strcmp (f1.ver, f.ver) == 0)
-		    {
-		      extra[i].which_is_installed = t;
-		      extra[i].installed_ver = package[i].info[t].version;
-		      package[i].info[t].version = strdup (f.ver);
-		      extra[i].installed_ver = strdup (f.ver);
-		      break;
-		    }
-		}
+      if (pkg == NULL)
+	{
+	  if (!parseable)
+	    continue;
+	  pkg = new_package (pkgname);
+	  pkg->info[TRUST_CURR].version = strdup (f.ver);
+	  pkg->info[TRUST_CURR].install = strdup (inst);
+	  pkg->info[TRUST_CURR].install_size = instsz;
+	  if (src && srcsz)
+	    {
+	      pkg->info[TRUST_CURR].source = strdup (src);
+	      pkg->info[TRUST_CURR].source_size = srcsz;
+	    }
+	  pkg->installed_ix = TRUST_CURR;
+	}
 
-	    if (extra[i].installed_ver == 0) /* still */
-	      get_package_version (i, -1);
-	    break;
-	  }
+      int t;
+      pkg->installed = new Info;
+      memset (pkg->installed, 0, sizeof (*pkg->installed));
+      pkg->installed->install = strdup (inst);
+      pkg->installed->version = strdup (f.ver);
+      pkg->installed->install_size = instsz;
+
+      if (!pkg->installed_ix)
+	for (t = 1; t < NTRUST; t++)
+	  if (pkg->info[t].install && strcmp (f.ver, pkg->info[t].version) == 0)
+	    {
+	      pkg->installed_ix = t;
+	      break;
+	    }
     }
   fclose (db);
 }
@@ -979,7 +890,7 @@ package_sort (const void *va, const void *vb)
 void
 do_choose (HINSTANCE h)
 {
-  int rv, i;
+  int rv;
 
   qsort (package, npackages, sizeof (package[0]), package_sort);
 
@@ -991,22 +902,6 @@ do_choose (HINSTANCE h)
   bm_checkno = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NO), IMAGE_BITMAP, 0, 0, 0);
   bm_checkna = LoadImage (h, MAKEINTRESOURCE (IDB_CHECK_NA), IMAGE_BITMAP, 0, 0, 0);
 
-  extra = (ExtraPackageInfo *) malloc (npackages * sizeof (ExtraPackageInfo));
-  memset (extra, 0, npackages * sizeof (ExtraPackageInfo));
-  for (i = 0; i < npackages; i++)
-    {
-      extra[i].which_is_installed = -1;
-      extra[i].in_partial_list = 0;
-      extra[i].pick = 1;
-      extra[i].chooser[extra[i].pick].trust = TRUST_NONE;
-      for (int t = 0; t < NTRUST; t++)
-	{
-	  package[i].info[t].partial_list_display = 0;
-	  package[i].info[t].install_exists = 0;
-	  package[i].info[t].source_exists = 0;
-	}
-    }
-
   register_windows (h);
 
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_CWD)
@@ -1014,104 +909,44 @@ do_choose (HINSTANCE h)
 
   read_installed_db ();
   set_existence ();
-  build_labels ();
 
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_CHOOSE), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
 
-  for (i = 0; i < npackages; i++)
-    {
-      switch (extra[i].chooser[extra[i].pick].trust)
-	{
-	case TRUST_PREV:
-	case TRUST_CURR:
-	case TRUST_TEST:
-	  if (extra[i].installed_file)
-	    package[i].action = ACTION_UPGRADE;
-	  else
-	    package[i].action = ACTION_NEW;
-	  package[i].trust = extra[i].chooser[extra[i].pick].trust;
-	  break;
-
-	case TRUST_REDO:
-	  package[i].action = ACTION_REDO;
-	if ( extra[i].which_is_installed >= 0
-	    && extra[i].which_is_installed <= TRUST_TEST)
-	  package[i].trust = extra[i].which_is_installed;
-	else
-	  package[i].trust = TRUST_CURR;
-	  break;
-
-	case TRUST_UNINSTALL:
-	  package[i].action = ACTION_UNINSTALL;
-	  if (package[i].srcaction == SRCACTION_YES)
-	    package[i].action = ACTION_SRC_ONLY;
-	  break;
-
-	case TRUST_SRC_ONLY:
-	  package[i].action = ACTION_SRC_ONLY;
-	if ( extra[i].which_is_installed >= 0
-	    && extra[i].which_is_installed <= TRUST_TEST)
-	  package[i].trust = extra[i].which_is_installed;
-	else
-	  package[i].trust = TRUST_CURR;
-	  package[i].srcaction = SRCACTION_YES;
-	  break;
-
-	case TRUST_KEEP:
-	case TRUST_NONE:
-	default:
-	  package[i].action = ACTION_SAME;
-	  if (package[i].srcaction == SRCACTION_YES)
-	    package[i].action = ACTION_SRC_ONLY;
-	  break;
-	}
-    }
-
   log (LOG_BABBLE, "Chooser results...");
-  for (i = 0; i < npackages; i++)
+  for (Package *pkg = package; pkg->name; pkg++)
     {
       static char *infos[] = {"prev", "curr", "test"};
-      const char *trust = ((package[i].trust == TRUST_PREV) ? "prev"
-			   : (package[i].trust == TRUST_CURR) ? "curr"
-			   : (package[i].trust == TRUST_TEST) ? "test"
+      const char *trust = ((pkg->trust == TRUST_PREV) ? "prev"
+			   : (pkg->trust == TRUST_CURR) ? "curr"
+			   : (pkg->trust == TRUST_TEST) ? "test"
 			   : "unknown");
-      const char *action = ((package[i].action == ACTION_UNKNOWN) ? "unknown"
-			    : (package[i].action == ACTION_SAME) ? "same"
-			    : (package[i].action == ACTION_NEW) ? "new"
-			    : (package[i].action == ACTION_UPGRADE) ? "upgrade"
-			    : (package[i].action == ACTION_UNINSTALL) ? "uninstall"
-			    : (package[i].action == ACTION_REDO &&
-			       source == IDC_SOURCE_DOWNLOAD) ? "redownload"
-			    : (package[i].action == ACTION_REDO &&
-			       source != IDC_SOURCE_DOWNLOAD) ? "reinstall"
-			    : (package[i].action == ACTION_SRC_ONLY) ? "sources"
-			    : (package[i].action == ACTION_ERROR) ? "error"
-			    : "unknown");
-      const char *installed = ((extra[i].which_is_installed == -1) ? "none"
-			       : (extra[i].which_is_installed == TRUST_PREV) ? "prev"
-			       : (extra[i].which_is_installed == TRUST_CURR) ? "curr"
-			       : (extra[i].which_is_installed == TRUST_TEST) ? "test"
+      const char *action = choose_caption (pkg);
+      const char *installed = ((pkg->installed_ix == -1) ? "none"
+			       : (pkg->installed_ix == TRUST_PREV) ? "prev"
+			       : (pkg->installed_ix == TRUST_CURR) ? "curr"
+			       : (pkg->installed_ix == TRUST_TEST) ? "test"
 			       : "unknown");
-      const char *partial_list = ((extra[i].in_partial_list == 1) ? "yes" : "no");
+      const char *excluded = (pkg->exclude ? "yes" : "no");
 
-      log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s partial_list=%s src?=%s",
-	   package[i].name, action, trust, installed,
-	   partial_list, package[i].srcaction == SRCACTION_NO ? "no" : "yes");
-      for (int t = 0; t < NTRUST; t++)
+      log (LOG_BABBLE, "[%s] action=%s trust=%s installed=%s excluded=%s src?=%s",
+	   pkg->name, action, trust, installed,
+	   excluded, pkg->srcpicked ? "yes" : "no");
+      for (int t = 1; t < NTRUST; t++)
 	{
-	  if (package[i].info[t].install)
-	    log (LOG_BABBLE, "     [%s] ver=%s partial_list=%s \r\n            inst=%s %d exists=%s \r\n            src=%s %d exists=%s",
+	  if (pkg->info[t].install)
+	    log (LOG_BABBLE, "     [%s] ver=%s\r\n"
+			     "          inst=%s %d exists=%s\r\n"
+			     "		src=%s %d exists=%s",
 		 infos[t],
-		 package[i].info[t].version ?: "(none)",
-		 (package[i].info[t].partial_list_display == 1) ? "yes":"no",
-		 package[i].info[t].install ?: "(none)",
-		 package[i].info[t].install_size,
-		 (package[i].info[t].install_exists == 1) ? "yes":"no",
-		 package[i].info[t].source ?: "(none)",
-		 package[i].info[t].source_size,
-		 (package[i].info[t].source_exists == 1) ? "yes":"no");
+		 pkg->info[t].version ?: "(none)",
+		 pkg->info[t].install ?: "(none)",
+		 pkg->info[t].install_size,
+		 (pkg->info[t].install_exists == 1) ? "yes":"no",
+		 pkg->info[t].source ?: "(none)",
+		 pkg->info[t].source_size,
+		 (pkg->info[t].source_exists == 1) ? "yes":"no");
 	}
     }
 }

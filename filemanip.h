@@ -25,3 +25,5 @@ typedef struct
 } fileparse;
 
 int parse_filename (const char *in_fn, fileparse& f);
+char *base (const char *name);
+DWORD get_file_size (const char *name);

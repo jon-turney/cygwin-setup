@@ -20,7 +20,7 @@
    automatically */
 
 /* returns zero on success, nonzero on failure */
-int	tar_open (char *pathname);
+int	tar_open (const char *pathname);
 
 /* returns pointer to static buf containing name of next file */
 char *	tar_next_file ();

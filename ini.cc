@@ -60,7 +60,7 @@ do_ini (HINSTANCE h)
       return;
     }
 
-  package = 0;
+  package = NULL;
   npackages = 0;
   setup_timestamp = 0;
   setup_version = 0;
