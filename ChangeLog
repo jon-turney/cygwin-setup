@@ -1,3 +1,7 @@
+2000-07-09  DJ Delorie  <dj@cygnus.com>
+
+	* Makefile.in: add -I$(srcdir) for ini.h
+
 2000-07-06  DJ Delorie  <dj@cygnus.com>
 
 	* Replace everything with a new GUI version

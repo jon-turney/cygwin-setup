@@ -42,7 +42,7 @@ OBJCOPY		:= @OBJCOPY@
 
 include $(srcdir)/../Makefile.common
 
-MINGW_INCLUDES	:= -I. -I$(mingw_source)/include -I$(w32api_include)
+MINGW_INCLUDES	:= -I. -I$(srcdir) -I$(mingw_source)/include -I$(w32api_include)
 
 MINGW_CXXFLAGS	:= $(CXXFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
 MINGW_CFLAGS	:= $(CFLAGS) -mno-cygwin $(MINGW_INCLUDES) -mwindows
