@@ -1,3 +1,8 @@
+2002-02-24  Robert Collins <rbtcollins@hotmail.com>
+
+	* log.cc (log_save): Fix creating /var/log.
+	* packate_meta.cc (standard_dirs): Remove duplicate '/''s.
+
 2002-02-23  Robert Collins <rbtcollins@hotmail.com>
 
 	* install.cc (install_one): Fix src package location.

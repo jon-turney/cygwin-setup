@@ -43,21 +43,21 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "package_db.h"
 
 static const char *standard_dirs[] = {
-  "/bin",
-  "/etc",
-  "/lib",
-  "/tmp",
-  "/usr",
-  "/usr/bin",
-  "/usr/lib",
-  "/usr/src",
-  "/usr/local",
-  "/usr/local/bin",
-  "/usr/local/etc",
-  "/usr/local/lib",
-  "/usr/tmp",
-  "/var/run",
-  "/var/tmp",
+  "bin",
+  "etc",
+  "lib",
+  "tmp",
+  "usr",
+  "usr/bin",
+  "usr/lib",
+  "usr/src",
+  "usr/local",
+  "usr/local/bin",
+  "usr/local/etc",
+  "usr/local/lib",
+  "usr/tmp",
+  "var/run",
+  "var/tmp",
   0
 };
 

@@ -88,7 +88,7 @@ log_save (int babble, String const &filename, int append)
     return;
   been_here = 1;
 
-  io_stream::mkpath_p (PATH_TO_FILE, filename);
+  io_stream::mkpath_p (PATH_TO_FILE, String("file://")+filename);
 
   io_stream *f = io_stream::open(String("file://")+filename, append ? "at" : "wt");
   if (!f)
