@@ -170,7 +170,7 @@ static void
 check_if_enable_ok (HWND h)
 {
   int e = 0;
-  if (*user && *passwd)
+  if (*user)
     e = 1;
   EnableWindow (GetDlgItem (h, IDOK), e);
 }
@@ -190,6 +190,10 @@ save_dialog (HWND h)
 {
   *user = eget (h, IDC_NET_USER, *user);
   *passwd = eget (h, IDC_NET_PASSWD, *passwd);
+  if (! *passwd) {
+    *passwd = new char[1];
+    passwd[0] = '\0';
+  }
 }
 
 static BOOL
