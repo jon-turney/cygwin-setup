@@ -15058,6 +15058,10 @@ if test `eval echo '${'$as_ac_Header'}'` = yes; then
 _ACEOF
  \
 		 errno.h
+else
+  \
+		 string \
+		 string.h
 fi
 
 done

@@ -53,7 +53,9 @@ dnl AC_SUBST(OBJCOPY)
 AC_CHECK_LIB(mingw32,main)
 
 AC_CHECK_HEADERS(alloca.h, \
-		 errno.h)
+		 errno.h, \
+		 string \
+		 string.h)
 
 AC_CONFIG_SUBDIRS(zlib)
 AC_CONFIG_SUBDIRS(bz2lib)
