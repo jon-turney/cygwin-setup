@@ -1,3 +1,9 @@
+2003-11-2  Robert Collins  <rbtcollins@hotmail.com>
+
+	* ControlAdjuster.h (ControlPosition::CP_MIDDLE): Rename to
+	CP_CENTERED.
+	* ControlAdjuster.cc: Ditto.
+
 2003-10-31  Frank Richter  <frichter@gmx.li>
 
 	* localdir.cc (OnNext): When SelectDirectoryA() fails, display a 

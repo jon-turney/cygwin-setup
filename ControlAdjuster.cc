@@ -63,7 +63,7 @@ ControlAdjuster::ControlInfo::adjust (ControlPosition const &how, ControlDimensi
     {
       case CP_LEFT:
         break;
-      case CP_MIDDLE:
+      case CP_CENTERED:
         where.left += by/2;
         where.right += by - by/2;
         break;

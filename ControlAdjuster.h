@@ -32,7 +32,7 @@
 enum ControlPosition {
   CP_LEFT = 0,
   CP_TOP = CP_LEFT,
-  CP_MIDDLE,
+  CP_CENTERED,
   CP_RIGHT,
   CP_BOTTOM = CP_RIGHT,
   CP_STRETCH,
