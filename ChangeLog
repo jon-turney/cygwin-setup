@@ -1,5 +1,15 @@
 2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
 
+	* PickView.h (PickView::lv): Eliminate.
+	* PickView.cc (PickView::init): Replace use of lv with
+	GetHWND().
+	(PickView::list_click): Ditto. 
+	* choose.h (ChooserPage::lv): Eliminate.
+	* choose.cc: Replace lv with chooser->GetHWND()
+	throughout.
+
+2003-07-27  Robert Collins  <rbtcollins@hotmail.com>
+
 	* PickView.h (PickView::chooser): Eliminate.
 	(PickView::list_vscroll): Make non-static.
 	(PickView::list_hscroll): Ditto.

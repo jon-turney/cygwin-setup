@@ -230,12 +230,11 @@ ChooserPage::createListview (HWND dlg, RECT * r)
   if (!chooser->Create(this, WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_VISIBLE,r))
     // TODO throw exception
     exit (11);
-  lv = chooser->GetHWND();
   chooser->init(PickView::views::Category);
   chooser->Show(SW_SHOW);
 
-  defaultTrust (lv, TRUST_CURR);
-  setViewMode (lv, PickView::views::Category);
+  defaultTrust (chooser->GetHWND(), TRUST_CURR);
+  setViewMode (chooser->GetHWND(), PickView::views::Category);
   if (!SetDlgItemText (dlg, IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE) << "Failed to set View button caption %ld" << 
 	 GetLastError () << endLog;
@@ -299,7 +298,7 @@ ChooserPage::OnInit ()
 void
 ChooserPage::OnActivate()
 {
-    setViewMode (lv, chooser->get_view_mode ());
+    setViewMode (chooser->GetHWND(), chooser->get_view_mode ());
 }
 
 void
@@ -347,17 +346,17 @@ ChooserPage::keepClicked()
       packagemeta & pkg = **i;
       pkg.desired = pkg.installed;
     }
-  setViewMode (lv, chooser->get_view_mode ());
+  setViewMode (chooser->GetHWND(), chooser->get_view_mode ());
 }
 
 template <trusts aTrust>
 void
 ChooserPage::changeTrust()
 {
-  defaultTrust (lv, aTrust);
+  defaultTrust (chooser->GetHWND(), aTrust);
   packagedb db;
   for_each(db.packages.begin(), db.packages.end(), SetRequirement(aTrust));
-  setViewMode (lv, chooser->get_view_mode ());
+  setViewMode (chooser->GetHWND(), chooser->get_view_mode ());
 }
 
 bool
@@ -380,7 +379,7 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
     case IDC_CHOOSE_EXP:
        return ifChecked(id, &ChooserPage::changeTrust<TRUST_TEST>);
     case IDC_CHOOSE_VIEW:
-      setViewMode (lv, ++chooser->get_view_mode ());
+      setViewMode (chooser->GetHWND(), ++chooser->get_view_mode ());
       if (!SetDlgItemText
         (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
       log (LOG_BABBLE) << "Failed to set View button caption " << 

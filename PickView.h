@@ -46,7 +46,6 @@ public:
     return view_mode;
   };
   void set_view_mode (views _mode);
-  static HWND lv;
   void paint (HWND hwnd);
   LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
   LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);

@@ -454,7 +454,7 @@ PickView::init(views _mode)
   view_mode = _mode;
   set_headers ();
 
-  ReleaseDC (lv, dc);
+  ReleaseDC (GetHWND(), dc);
 }
 
 PickView::~PickView()
@@ -539,7 +539,7 @@ PickView::list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
     {
 #endif
       RECT r;
-      ::GetClientRect (lv, &r);
+      ::GetClientRect (GetHWND(), &r);
       SCROLLINFO si;
       memset (&si, 0, sizeof (si));
       si.cbSize = sizeof (si);
@@ -556,9 +556,9 @@ PickView::list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
         scroll_ulc_y = 0;
       si.nPos = scroll_ulc_y;
 
-      SetScrollInfo (lv, SB_VERT, &si, TRUE);
+      SetScrollInfo (GetHWND(), SB_VERT, &si, TRUE);
 
-      InvalidateRect (lv, &r, TRUE);
+      InvalidateRect (GetHWND(), &r, TRUE);
 #if 0
     }
   else
@@ -639,9 +639,6 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
     }
 }
 
-
-HWND PickView::lv;
-
 void
 PickView::paint (HWND hwnd)
 {
@@ -712,7 +709,6 @@ PickView::Create (Window * parent, DWORD Style, RECT *r)
                    GetInstance (),
                 // The this ptr, which we'll use to set up the WindowProc reflection.
                   reinterpret_cast<void *>((Window *)this));
-  lv = GetHWND();
   if (GetHWND() == NULL)
     {
       log (LOG_BABBLE) << "Failed to create PickView " << GetLastError () << endLog;

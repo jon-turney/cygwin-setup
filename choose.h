@@ -66,7 +66,6 @@ public:
   }
   template <trusts aTrust> void changeTrust();
   PickView *chooser;
-  HWND lv;
 };
 
 #endif /* SETUP_CHOOSE_H */
