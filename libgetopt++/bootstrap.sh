@@ -16,6 +16,12 @@ bootstrap() {
   fi
 }
 
+# Make sure we are running in the right directory
+if [ ! -f src/GetOption.cc ]; then
+    echo "You must run this script from the directory containing it"
+    exit 1
+fi
+
 # Make sure cfgaux exists
 mkdir -p cfgaux
 
