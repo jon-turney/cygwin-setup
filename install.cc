@@ -124,6 +124,7 @@ static void uninstall_one (packagemeta &);
 static int replace_one (packagemeta &);
 static int install_one_source (packagemeta &, packagesource &, String const &,
 			       String const &, package_type_t);
+static void md5_one (const packagesource& source);
 static bool rebootneeded;
 
 /* FIXME: upgrades should be a method too */
@@ -174,19 +175,6 @@ install_one_source (packagemeta & pkgm, packagesource & source,
       return 1;
     }
   io_stream *lst = 0;
-  if (type == package_binary)
-    {
-      io_stream *tmp =
-	io_stream::
-	open (String ("cygfile:///etc/setup/") + pkgm.name + ".lst.gz",
-	      "wb");
-      lst = new compress_gz (tmp, "w9");
-      if (lst->error ())
-	{
-	  delete lst;
-	  lst = NULL;
-	}
-    }
 
   package_bytes = source.size;
 
@@ -195,33 +183,6 @@ install_one_source (packagemeta & pkgm, packagesource & source,
   Progress.SetText1 (msg);
   log (LOG_PLAIN, String (msg) + " " + source.Cached ());
   
-  if (source.md5.isSet())
-    {
-      // check the MD5 sum of the cached file here
-      io_stream *thefile = io_stream::open (source.Cached (), "rb");
-      if (!thefile)
-	  return 0;
-      md5_state_t pns;
-      md5_init (&pns);
-      
-      unsigned char buffer[16384];
-      ssize_t count;
-      while ((count = thefile->read (buffer, 16384)) > 0)
-	  md5_append (&pns, buffer, count);
-      delete thefile;
-      if (count < 0)
-	throw new Exception ("__LINE__ __FILE__", String ("IO Error reading ") + source.Cached(), APPERR_IO_ERROR);
-      
-      md5_byte_t tempdigest[16];
-      md5_finish(&pns, tempdigest);
-      md5 tempMD5;
-      tempMD5.set (tempdigest);
-
-      log (LOG_BABBLE, String ("For file ") + source.Cached() + " ini digest is " + source.md5.print() + " file digest is " + tempMD5.print());
-      
-      if (source.md5 != tempMD5)
-	  throw new Exception ("__LINE__ __FILE__", String ("Checksum failure for ") + source.Cached(), APPERR_CORRUPT_PACKAGE);
-    }
   io_stream *tmp = io_stream::open (source.Cached (), "rb");
   archive *thefile = 0;
   if (tmp)
@@ -232,10 +193,22 @@ install_one_source (packagemeta & pkgm, packagesource & source,
       else
 	thefile = archive::extract (tmp);
     }
+    
   /* FIXME: potential leak of either *tmp or *tmp2 */
   if (thefile)
     {
       String fn;
+      if (type == package_binary)
+	{
+	  io_stream *tmp = io_stream::open (String ("cygfile:///etc/setup/") +
+	                                    pkgm.name + ".lst.gz", "wb");
+	  lst = new compress_gz (tmp, "w9");
+	  if (lst->error ())
+	    {
+              delete lst;
+	      lst = NULL;
+	    }
+	}
       while ((fn = thefile->next_file_name ()).size())
 	{
 	  if (lst)
@@ -513,9 +486,41 @@ do_install_thread (HINSTANCE h, HWND owner)
       if (pkg.desired.changeRequested())
 	{
 	  if (pkg.desired.picked())
-	    total_bytes += pkg.desired.source()->size;
+	    {
+	      int do_skip = 0;
+	      try
+		{
+		  md5_one (*pkg.desired.source ());
+		}
+	      catch (Exception *e)
+		{
+		  if (yesno (owner, IDS_SKIP_PACKAGE, e->what()) == IDYES)
+		    {
+		      do_skip = 1;
+		      pkg.desired.pick (false);
+		    }
+		}
+	      if (do_skip != 0)
+		total_bytes += pkg.desired.source()->size;
+	    }
 	  if (pkg.desired.sourcePackage ().picked())
-	    total_bytes += pkg.desired.sourcePackage ().source()->size;
+	    {
+	      int do_skip = 0;
+	      try
+		{
+		  md5_one (*pkg.desired.sourcePackage ().source ());
+		}
+	      catch (Exception *e)
+		{
+		  if (yesno (owner, IDS_CORRUPT_PACKAGE, e->what()) == IDYES)
+		    {
+		      do_skip = 1;
+		      pkg.desired.sourcePackage ().pick (false);
+		    }
+		}
+	      if (do_skip != 0)
+	        total_bytes += pkg.desired.sourcePackage ().source()->size;
+	    }
 	}
     }
 
@@ -524,7 +529,8 @@ do_install_thread (HINSTANCE h, HWND owner)
        i != db.packages.end (); ++i)
     {
       packagemeta & pkg = **i;
-      if (pkg.installed && (!pkg.desired || pkg.desired != pkg.installed))
+      if (pkg.installed && (!pkg.desired || (pkg.desired != pkg.installed &&
+	  pkg.desired.picked ())))
 	uninstall_one (pkg);
     }
 
@@ -638,4 +644,35 @@ do_install (HINSTANCE h, HWND owner)
 
   DWORD threadID;
   CreateThread (NULL, 0, do_install_reflector, context, 0, &threadID);
+}
+
+void md5_one (const packagesource& source)
+{
+  if (source.md5.isSet())
+    {
+      // check the MD5 sum of the cached file here
+      io_stream *thefile = io_stream::open (source.Cached (), "rb");
+      if (!thefile)
+	throw new Exception ("__LINE__ __FILE__", String ("IO Error opening ") + source.Cached(), APPERR_IO_ERROR);
+      md5_state_t pns;
+      md5_init (&pns);
+      
+      unsigned char buffer[16384];
+      ssize_t count;
+      while ((count = thefile->read (buffer, 16384)) > 0)
+	  md5_append (&pns, buffer, count);
+      delete thefile;
+      if (count < 0)
+	throw new Exception ("__LINE__ __FILE__", String ("IO Error reading ") + source.Cached(), APPERR_IO_ERROR);
+      
+      md5_byte_t tempdigest[16];
+      md5_finish(&pns, tempdigest);
+      md5 tempMD5;
+      tempMD5.set (tempdigest);
+
+      log (LOG_BABBLE, String ("For file ") + source.Cached() + " ini digest is " + source.md5.print() + " file digest is " + tempMD5.print());
+      
+      if (source.md5 != tempMD5)
+	  throw new Exception ("__LINE__ __FILE__", String ("Checksum failure for ") + source.Cached(), APPERR_CORRUPT_PACKAGE);
+    }
 }

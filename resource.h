@@ -121,6 +121,7 @@
 #define IDC_LEAVE_AV			1068
 #define IDC_CHOOSE_KEEP			1069
 #define IDS_MISSING_LOG			1070
+#define IDS_SKIP_PACKAGE		1071
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -131,7 +132,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1070
+#define _APS_NEXT_CONTROL_VALUE         1072
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

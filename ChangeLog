@@ -1,5 +1,17 @@
 2003-02-16  Pavel Tsekov  <ptsekov@gmx.net>
 
+	* install.cc (install_one_source): Remove the MD5 verification 
+	code.
+	Delay the creation of the package listing file.
+	(do_install_thread): Check the hashes for packages which need 
+	to be installed before the uninstall step. Allow the user to
+	skip over packages, which fail the hash verification.
+	(md5_one): Define new function.
+	* res.rc (IDS_SKIP_PACKAGE): New string resource.
+	* resource.h (IDS_SKIP_PACKAGE): New macro definition.
+
+2003-02-16  Pavel Tsekov  <ptsekov@gmx.net>
+
 	* Exception.h: Declare new constructor.
 	(Exception::_message): Change the type from 'const char *' to
 	'class String'.
