@@ -19,8 +19,8 @@
 # Makefile for Cygwin installer
 
 AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6 foreign
-DIST_SUBDIRS = bz2lib zlib libgetopt++ tests
-SUBDIRS = bz2lib zlib libgetopt++ tests
+DIST_SUBDIRS = libgetopt++ tests
+SUBDIRS =      libgetopt++ tests
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
@@ -33,7 +33,7 @@ AM_CFLAGS	= $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
 
 WINDRES		:= @WINDRES@
 
-INCLUDES	= -I$(srcdir)/bz2lib -I$(srcdir)/libgetopt++/include
+INCLUDES	= -I$(srcdir)/libgetopt++/include -I/usr/include/mingw
 
 noinst_PROGRAMS = \
   setup \
@@ -108,7 +108,9 @@ warnonly_SOURCES = inilex.cc
 EXTRA_setup_SOURCES = $(warnonly_SOURCES)
 
 setup_LDADD = warnonly-inilex.o res.o \
-	zlib/libzcygw.a bz2lib/libbz2.a libgetopt++/libgetopt++.la \
+	libgetopt++/libgetopt++.la \
+	/usr/lib/mingw/libbz2.a \
+	/usr/lib/mingw/libz.a \
 	-luser32 -lkernel32 \
 	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid 
 setup_LDFLAGS = -mwindows

@@ -70,8 +70,6 @@ AC_CHECK_HEADERS(alloca.h \
 		 string \
 		 string.h )
 
-AC_CONFIG_SUBDIRS(zlib)
-AC_CONFIG_SUBDIRS(bz2lib)
 AC_CONFIG_SUBDIRS(libgetopt++)
 
 dnl add portability sources to inilint

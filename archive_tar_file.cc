@@ -22,7 +22,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include <errno.h>
 #include <algorithm>
 
-#include "zlib/zlib.h"
 #include "io_stream.h"
 #include "compress.h"
 #include "archive.h"

@@ -39,8 +39,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include <errno.h>
 #include <process.h>
 
-#include "zlib/zlib.h"
-
 #include "resource.h"
 #include "dialog.h"
 #include "geturl.h"

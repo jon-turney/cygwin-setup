@@ -1,3 +1,24 @@
+2005-04-05  Max Bowsher  <maxb@ukf.net>
+
+	Remove setup's internal compression libraries, instead relying on the
+	mingw-foo packages which have been part of the Cygwin net distribution
+	for some time now.  At the same time, reorganize the README file to
+	inform about the change, and make some additional tidy-ups there whilst
+	working there.
+
+	* GUIDELINES: Remove, contents transferred to README.
+	* README: Add build instructions. Delete unconfirmed and fixed bugs
+	  sections. Incorporate the former contents of GUIDELINES.
+
+	* bz2lib/: Remove.
+	* zlib/: Remove.
+	* Makefile.am (DIST_SUBDIRS, SUBDIRS): 
+	* configure.in: Remove AC_CONFIG_SUBDIRS for removed subdirs.
+	* compress_bz.h: Remove complex _WIN32 preprocessor conditional.
+	* compress_gz.h: Fix #include file name.
+	* archive_tar_file.cc: Remove unused #include.
+	* install.cc: Remove unused #include.
+
 2005-01-27  Max Bowsher  <maxb@ukf.net>
 
 	Set CYGWIN=nontsec, for postinstall scripts.

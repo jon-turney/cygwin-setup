@@ -21,7 +21,7 @@
  */
 
 #include "compress.h"
-#include "zlib/zlib.h"
+#include <zlib.h>
 
 class compress_gz:public compress
 {
