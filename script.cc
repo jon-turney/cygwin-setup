@@ -81,7 +81,6 @@ init_run_script ()
 static void
 run (const char *sh, const char *args, const char *file)
 {
-  BOOL b;
   char cmdline[_MAX_PATH];
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
@@ -93,11 +92,13 @@ run (const char *sh, const char *args, const char *file)
   si.lpTitle = (char *) "Cygwin Setup Post-Install Script";
   si.dwFlags = STARTF_USEPOSITION;
 
-  b = CreateProcess (0, cmdline, 0, 0, 0,
+  BOOL createSucceeded = CreateProcess (0, cmdline, 0, 0, 0,
 		     CREATE_NEW_CONSOLE, 0, get_root_dir ().cstr_oneuse(), &si, &pi);
 
-  if (b)
+  if (createSucceeded)
     WaitForSingleObject (pi.hProcess, INFINITE);
+  CloseHandle(pi.hProcess);
+  CloseHandle(pi.hThread);
 }
 
 void

@@ -1,5 +1,13 @@
 2003-03-15  Robert Collins  <rbtcollins@hotmail.com>
 
+	* script.cc (run): Rename variable b to createSucceeded.
+
+2003-03-15  Igor Pechtchanski <pechtcha@cs.nyu.edu>
+
+	* script.cc (run): Close unneeded handles.
+	
+2003-03-15  Robert Collins  <rbtcollins@hotmail.com>
+
 	* configure: Remove.
 	* aclocal.m4: Remove.
 	* Makefile.in: Remove.
