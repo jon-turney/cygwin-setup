@@ -1,3 +1,10 @@
+2000-09-06  Brian Keener  <bkeener@thesoftwaresource.com>
+
+	* res.rc: increased the size of the site dialog (IDD_SITE) & the
+	corresponding list box to provide for more URL's to be listed.
+	Modified the position of the Back, Next and Cancel buttons to
+	correspond to the new size of the dialog.
+
 2000-09-13  DJ Delorie  <dj@redhat.com>
 
 	* install.cc (do_install): update disk fullness once per package

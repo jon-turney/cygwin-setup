@@ -11,8 +11,6 @@ by default, or not.
 install.cc: scan newly installed files for README files, show list to
 user, let them read them if they want.
 
-Make the site listbox bigger.
-
 download.cc: add a "total progress" indicator, like the install one.
 
 add a "category" field to setup.ini, let user choose which categories
