@@ -15,6 +15,8 @@
 
 /* Built-in tar functionality.  See tar.h for usage. */
 
+static char *cvsid = "\n%%% $Id$\n";
+
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
