@@ -106,7 +106,7 @@ static pkg default_pkgs[] =
   {"shellutils", "0000"},
   {"tar", "0000"},
   {"tcltk", "0000"},
-  {"termcap", "0002"},
+  {"termcap", "0000"},
   {"texinfo", "0000"},
   {"textutils", "0000"},
   {"time", "0000"},
