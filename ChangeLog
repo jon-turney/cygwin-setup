@@ -1,3 +1,8 @@
+2001-12-21  Robert Collins  <rbtcollins@hotmail.com>
+
+	* choose.cc (listview_proc): Update the scrollbar when the headers are dragged.
+	(pick_pkg_line::paint): Clip columns to prevent overlap.
+
 2001-12-20  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Makefile.in: Add libcomctl32.a for setup.exe.

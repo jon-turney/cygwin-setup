@@ -104,7 +104,7 @@ static void set_view_mode (HWND h, views mode);
 packageversion *
 pkgtrustp (packagemeta const &pkg, trusts const t)
 {
-  return t==TRUST_PREV ? pkg.prev : t == TRUST_CURR ? pkg.curr : pkg.exp;
+  return t == TRUST_PREV ? pkg.prev : t == TRUST_CURR ? pkg.curr : pkg.exp;
 }
 
 static int
@@ -155,7 +155,7 @@ topbucket::paint (HDC hdc, int x, int y, int row, int show_cat)
   int accum_row = row;
   for (size_t n = 1; n <= bucket.number (); n++)
     {
-      bucket[n]->paint(hdc, x, y, accum_row, show_cat);
+      bucket[n]->paint (hdc, x, y, accum_row, show_cat);
       accum_row += bucket[n]->itemcount ();
     }
 }
@@ -184,7 +184,7 @@ topbucket::click (int const myrow, int const ClickedRow, int const x)
       accum_row += bucket[n]->itemcount ();
       if (accum_row > ClickedRow)
 	return bucket[n]->click (accum_row - bucket[n]->itemcount (),
-	  ClickedRow, x);
+				 ClickedRow, x);
     }
   return 0;
 }
@@ -194,7 +194,7 @@ paint (HWND hwnd)
 {
   HDC hdc;
   PAINTSTRUCT ps;
-  int x, y;	
+  int x, y;
 
   hdc = BeginPaint (hwnd, &ps);
 
@@ -211,8 +211,8 @@ paint (HWND hwnd)
   IntersectClipRect (hdc, cr.left, cr.top + header_height, cr.right,
 		     cr.bottom);
 
-  chooser->contents.paint (hdc, x, y, 0,(chooser->get_view_mode () ==
-		VIEW_CATEGORY) ? 0 : 1);
+  chooser->contents.paint (hdc, x, y, 0, (chooser->get_view_mode () ==
+					  VIEW_CATEGORY) ? 0 : 1);
 
   if (chooser->contents.itemcount () == 0)
     {
@@ -279,17 +279,19 @@ view::scroll (HWND hwnd, int which, int *var, int code)
   UpdateWindow (hwnd);
   ScrollWindow (hwnd, ox - scroll_ulc_x, oy - scroll_ulc_y, &sr, &sr);
   /*
-  sr.bottom = sr.top;
-  sr.top = cr.top;
-  ScrollWindow (hwnd, ox - scroll_ulc_x, 0, &sr, &sr);
-  */
+     sr.bottom = sr.top;
+     sr.top = cr.top;
+     ScrollWindow (hwnd, ox - scroll_ulc_x, 0, &sr, &sr);
+   */
   if (ox - scroll_ulc_x)
-  {
-  GetClientRect (listheader, &cr);
-  sr = cr;
+    {
+      GetClientRect (listheader, &cr);
+      sr = cr;
 //  UpdateWindow (htmp);
-  MoveWindow (listheader, -scroll_ulc_x, 0, chooser->headers[last_col].x+chooser->headers[last_col].width, header_height ,TRUE);
-  }
+      MoveWindow (listheader, -scroll_ulc_x, 0,
+		  chooser->headers[last_col].x +
+		  chooser->headers[last_col].width, header_height, TRUE);
+    }
   UpdateWindow (hwnd);
 }
 
@@ -381,26 +383,41 @@ listview_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_NOTIFY:
       {
 	// pnmh = (LPNMHDR) lParam
-      LPNMHEADER phdr = (LPNMHEADER) lParam;
-      switch (phdr->hdr.code)
-      {
-      case HDN_ITEMCHANGED:
-      if (phdr->hdr.hwndFrom == chooser->ListHeader())
-      {
-	if (phdr->pitem && phdr->pitem->mask & HDI_WIDTH)
-	  chooser->headers [phdr->iItem].width = phdr->pitem->cxy;
-	  for (int i = 1; i <= chooser->last_col; i++)
-	    chooser->headers[i].x = chooser->headers[i - 1].x + chooser->headers[i - 1].width;
-	    RECT r;
-	    GetClientRect (hwnd, &r);
-	    InvalidateRect (hwnd, &r, TRUE);
-	
+	LPNMHEADER phdr = (LPNMHEADER) lParam;
+	switch (phdr->hdr.code)
+	  {
+	  case HDN_ITEMCHANGED:
+	    if (phdr->hdr.hwndFrom == chooser->ListHeader ())
+	      {
+		if (phdr->pitem && phdr->pitem->mask & HDI_WIDTH)
+		  chooser->headers[phdr->iItem].width = phdr->pitem->cxy;
+		for (int i = 1; i <= chooser->last_col; i++)
+		  chooser->headers[i].x =
+		    chooser->headers[i - 1].x + chooser->headers[i - 1].width;
+		RECT r;
+		GetClientRect (hwnd, &r);
+		SCROLLINFO si;
+		si.cbSize = sizeof (si);
+		si.fMask = SIF_ALL;
+		GetScrollInfo (hwnd, SB_HORZ, &si);
+		int oldMax = si.nMax;
+		si.nMax =
+		  chooser->headers[chooser->last_col].x +
+		  chooser->headers[chooser->last_col].width;
+		if (si.nTrackPos && oldMax > si.nMax)
+		  si.nTrackPos += si.nMax - oldMax;
+		si.nPage = r.right;
+		SetScrollInfo (hwnd, SB_HORZ, &si, TRUE);
+		InvalidateRect (hwnd, &r, TRUE);
+		if (si.nTrackPos && oldMax > si.nMax)
+		  chooser->scroll (hwnd, SB_HORZ, &scroll_ulc_x,
+				   SB_THUMBTRACK);
+	      }
+	    break;
+	  default:
+	    break;
+	  }
       }
-      break;
-    default:
-      break;
-      }
-    }
     default:
       return DefWindowProc (hwnd, message, wParam, lParam);
     }
@@ -462,9 +479,9 @@ fill_missing_category ()
   packagedb db;
   for (size_t n = 1; n < db.packages.number (); n++)
     {
-      packagemeta &pkg = * db.packages[n];
+      packagemeta & pkg = *db.packages[n];
       if (!pkg.Categories.number ())
-        pkg.add_category (db.categories.registerbykey ("Misc"));
+	pkg.add_category (db.categories.registerbykey ("Misc"));
     }
 }
 
@@ -475,7 +492,7 @@ default_trust (HWND h, trusts trust)
   packagedb db;
   for (size_t n = 1; n < db.packages.number (); n++)
     {
-      packagemeta &pkg = * db.packages[n];
+      packagemeta & pkg = *db.packages[n];
       if (pkg.installed
 	  || pkg.Categories.getbykey (db.categories.registerbykey ("Base"))
 	  || pkg.Categories.getbykey (db.categories.registerbykey ("Misc")))
@@ -483,8 +500,7 @@ default_trust (HWND h, trusts trust)
 	  pkg.desired = pkgtrustp (pkg, trust);
 	  if (pkg.desired)
 	    {
-	      pkg.desired->binpicked =
-		pkg.desired == pkg.installed ? 0 : 1;
+	      pkg.desired->binpicked = pkg.desired == pkg.installed ? 0 : 1;
 	      pkg.desired->srcpicked = 0;
 	    }
 	}
@@ -503,60 +519,111 @@ pick_pkg_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 {
   int r = y + row * row_height;
   int by = r + tm.tmHeight - 11;
+  int oldDC = SaveDC (hdc);
+  if (!oldDC)
+    return;
+  HRGN oldClip = CreateRectRgn (0, 0, 0, 0);
+  if (GetRandomRgn (hdc, oldClip, SYSRGN) == -1)
+    {
+      RestoreDC (hdc, oldDC);
+      return;
+    }
+  unsigned int regionsize = GetRegionData (oldClip, 0, 0);
+  LPRGNDATA oldClipData = (LPRGNDATA) malloc (regionsize);
+  if (GetRegionData (oldClip, regionsize, oldClipData) != regionsize)
+    {
+      RestoreDC (hdc, oldDC);
+      DeleteObject (oldClip);
+      return;
+    }
+  for (unsigned int n = 0; n < oldClipData->rdh.nCount; n++)
+    for (unsigned int t = 0; t < 2; t++)
+      ScreenToClient (WindowFromDC (hdc),
+		      &((POINT *) oldClipData->Buffer)[t + n * 2]);
+
+  HRGN oldClip2 = ExtCreateRegion (NULL, regionsize, oldClipData);
+  SelectClipRgn (hdc, oldClip2);
   if (pkg.installed)
-	{
-	  TextOut (hdc,
-		   x + chooser->headers[chooser->current_col].x + HMARGIN / 2,
-		   r, pkg.installed->Canonical_version (),
-		   strlen (pkg.installed->Canonical_version ()));
-	  SelectObject (bitmap_dc, bm_rtarrow);
-	  BitBlt (hdc, x + chooser->headers[chooser->new_col].x + HMARGIN / 2,
-		  by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
-	}
+    {
+      IntersectClipRect (hdc, x + chooser->headers[chooser->current_col].x,
+			 by,
+			 x + chooser->headers[chooser->current_col].x +
+			 chooser->headers[chooser->current_col].width,
+			 by + 11);
+      TextOut (hdc,
+	       x + chooser->headers[chooser->current_col].x + HMARGIN / 2, r,
+	       pkg.installed->Canonical_version (),
+	       strlen (pkg.installed->Canonical_version ()));
+      SelectObject (bitmap_dc, bm_rtarrow);
+      BitBlt (hdc, x + chooser->headers[chooser->new_col].x + HMARGIN / 2,
+	      by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
+      SelectClipRgn (hdc, oldClip2);
+    }
 
-      const char *s = pkg.action_caption ();
-      TextOut (hdc, x + chooser->headers[chooser->new_col].x + HMARGIN / 2
-	       + NEW_COL_SIZE_SLOP, r, s, strlen (s));
-      SelectObject (bitmap_dc, bm_spin);
-      BitBlt (hdc,
-	      x + chooser->headers[chooser->new_col].x + ICON_MARGIN / 2 +
-	      RTARROW_WIDTH + HMARGIN / 2, by, 11, 11, bitmap_dc, 0, 0,
-	      SRCCOPY);
+  const char *s = pkg.action_caption ();
+  IntersectClipRect (hdc, x + chooser->headers[chooser->new_col].x,
+		     by,
+		     x + chooser->headers[chooser->new_col].x +
+		     chooser->headers[chooser->new_col].width, by + 11);
+  TextOut (hdc,
+	   x + chooser->headers[chooser->new_col].x + HMARGIN / 2 +
+	   NEW_COL_SIZE_SLOP, r, s, strlen (s));
+  SelectObject (bitmap_dc, bm_spin);
+  BitBlt (hdc,
+	  x + chooser->headers[chooser->new_col].x + ICON_MARGIN / 2 +
+	  RTARROW_WIDTH + HMARGIN / 2, by, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
+  SelectClipRgn (hdc, oldClip2);
 
-      HANDLE check_bm;
-      if ( /* uninstall */ !pkg.desired ||
-	  /* source only */ (!pkg.desired->binpicked
-			     && pkg.desired->srcpicked) ||
-	  /* when no source mirror available */
-	  !pkg.desired->src.sites.number ())
-	check_bm = bm_checkna;
-      else if (pkg.desired->srcpicked)
-	check_bm = bm_checkyes;
-      else
-	check_bm = bm_checkno;
+  HANDLE check_bm;
+  if ( /* uninstall */ !pkg.desired ||
+      /* source only */ (!pkg.desired->binpicked
+			 && pkg.desired->srcpicked) ||
+      /* when no source mirror available */
+      !pkg.desired->src.sites.number ())
+    check_bm = bm_checkna;
+  else if (pkg.desired->srcpicked)
+    check_bm = bm_checkyes;
+  else
+    check_bm = bm_checkno;
 
-      SelectObject (bitmap_dc, check_bm);
-      BitBlt (hdc, x + chooser->headers[chooser->src_col].x + HMARGIN / 2, by,
-	      11, 11, bitmap_dc, 0, 0, SRCCOPY);
+  SelectObject (bitmap_dc, check_bm);
+  IntersectClipRect (hdc, x + chooser->headers[chooser->src_col].x, by,
+		     x + chooser->headers[chooser->src_col].x +
+		     chooser->headers[chooser->src_col].width, by + 11);
+  BitBlt (hdc, x + chooser->headers[chooser->src_col].x + HMARGIN / 2, by, 11,
+	  11, bitmap_dc, 0, 0, SRCCOPY);
+  SelectClipRgn (hdc, oldClip2);
 
-      /* shows "first" category - do we want to show any? */
-      if (pkg.Categories.number () && show_cat)
-	TextOut (hdc, x + chooser->headers[chooser->cat_col].x + HMARGIN / 2,
-		 r, pkg.Categories[1]->key.name,
-		 strlen (pkg.Categories[1]->key.name));
+  /* shows "first" category - do we want to show any? */
+  if (pkg.Categories.number () && show_cat)
+    {
+      IntersectClipRect (hdc, x + chooser->headers[chooser->cat_col].x, by,
+			 x + chooser->headers[chooser->cat_col].x +
+			 chooser->headers[chooser->cat_col].x, by + 11);
+      TextOut (hdc, x + chooser->headers[chooser->cat_col].x + HMARGIN / 2, r,
+	       pkg.Categories[1]->key.name,
+	       strlen (pkg.Categories[1]->key.name));
+      SelectClipRgn (hdc, oldClip2);
+    }
 
-      if (!pkg.SDesc ())
-	s = pkg.name;
-      else
-	{
-	  static char buf[512];
-	  strcpy (buf, pkg.name);
-	  strcat (buf, ": ");
-	  strcat (buf, pkg.SDesc ());
-	  s = buf;
-	}
-      TextOut (hdc, x + chooser->headers[chooser->pkg_col].x + HMARGIN / 2, r,
-	       s, strlen (s));
+  if (!pkg.SDesc ())
+    s = pkg.name;
+  else
+    {
+      static char buf[512];
+      strcpy (buf, pkg.name);
+      strcat (buf, ": ");
+      strcat (buf, pkg.SDesc ());
+      s = buf;
+    }
+  IntersectClipRect (hdc, x + chooser->headers[chooser->pkg_col].x, by,
+		     x + chooser->headers[chooser->pkg_col].x +
+		     chooser->headers[chooser->pkg_col].width, by + 11);
+  TextOut (hdc, x + chooser->headers[chooser->pkg_col].x + HMARGIN / 2, r, s,
+	   strlen (s));
+  DeleteObject (oldClip);
+  DeleteObject (oldClip2);
+  RestoreDC (hdc, oldDC);
 }
 
 void
@@ -564,7 +631,7 @@ pick_category_line::paint (HDC hdc, int x, int y, int row, int show_cat)
 {
   int r = y + row * row_height;
   TextOut (hdc, x + chooser->headers[chooser->cat_col].x + HMARGIN / 2, r,
-      cat.name, strlen (cat.name));
+	   cat.name, strlen (cat.name));
   if (collapsed)
     return;
   int accum_row = row + 1;
@@ -580,17 +647,17 @@ pick_pkg_line::click (int const myrow, int const ClickedRow, int const x)
 {
   // assert (myrow == ClickedRow);
   if (pkg.desired && pkg.desired->src.sites.number ()
-	  && x >= chooser->headers[chooser->src_col].x - HMARGIN / 2
-	  && x <= chooser->headers[chooser->src_col + 1].x - HMARGIN / 2)
-	pkg.desired->srcpicked ^= 1;
+      && x >= chooser->headers[chooser->src_col].x - HMARGIN / 2
+      && x <= chooser->headers[chooser->src_col + 1].x - HMARGIN / 2)
+    pkg.desired->srcpicked ^= 1;
 
-      if (x >= chooser->headers[chooser->new_col].x - (HMARGIN / 2)
-	  && x <= chooser->headers[chooser->new_col + 1].x - HMARGIN / 2)
-	{
-	  pkg.set_action (pkgtrustp (pkg, deftrust));
-	  /* Add any packages that are needed by this package */
-	  return add_required (pkg);
-	}
+  if (x >= chooser->headers[chooser->new_col].x - HMARGIN / 2
+      && x <= chooser->headers[chooser->new_col + 1].x - HMARGIN / 2)
+    {
+      pkg.set_action (pkgtrustp (pkg, deftrust));
+      /* Add any packages that are needed by this package */
+      return add_required (pkg);
+    }
   return 0;
 }
 
@@ -606,17 +673,16 @@ pick_category_line::click (int const myrow, int const ClickedRow, int const x)
       return collapsed ? accum_row : -accum_row;
     }
   else
-  {
-    int accum_row = myrow + 1;
-    for (size_t n = 1; n <= bucket.number (); n++)
-      {
-	if (accum_row + bucket[n]->itemcount () > ClickedRow)
-	  return bucket[n]->click (accum_row,
-	      ClickedRow, x);
-	accum_row += bucket[n]->itemcount ();
-      }
-    return 0;
-  }
+    {
+      int accum_row = myrow + 1;
+      for (size_t n = 1; n <= bucket.number (); n++)
+	{
+	  if (accum_row + bucket[n]->itemcount () > ClickedRow)
+	    return bucket[n]->click (accum_row, ClickedRow, x);
+	  accum_row += bucket[n]->itemcount ();
+	}
+      return 0;
+    }
 }
 
 HWND DoCreateHeader (HWND hwndParent);
@@ -634,7 +700,14 @@ view::view (views _mode, HWND lv):listview (lv)
   bitmap_dc = CreateCompatibleDC (dc);
 
   row_height = (tm.tmHeight + tm.tmExternalLeading + ROW_MARGIN);
-  int irh = tm.tmExternalLeading + tm.tmDescent + 11 + ROW_MARGIN;
+  int
+    irh =
+    tm.
+    tmExternalLeading +
+    tm.
+    tmDescent +
+    11 +
+    ROW_MARGIN;
   if (row_height < irh)
     row_height = irh;
 
@@ -648,7 +721,10 @@ view::view (views _mode, HWND lv):listview (lv)
   // Ensure that the common control DLL is loaded, and then create
   // the header control.
   INITCOMMONCONTROLSEX
-    controlinfo = {sizeof (INITCOMMONCONTROLSEX), ICC_LISTVIEW_CLASSES };
+    controlinfo = {
+    sizeof (INITCOMMONCONTROLSEX),
+    ICC_LISTVIEW_CLASSES
+  };
   InitCommonControlsEx (&controlinfo);
 
   if ((listheader = CreateWindowEx (0, WC_HEADER, (LPCTSTR) NULL,
@@ -778,7 +854,7 @@ view::init_headers (HDC dc)
   packagedb db;
   for (size_t n = 1; n < db.packages.number (); n++)
     {
-      packagemeta &pkg = * db.packages[n];
+      packagemeta & pkg = *db.packages[n];
       if (pkg.installed)
 	note_width (headers, dc, pkg.installed->Canonical_version (),
 		    HMARGIN, current_col);
@@ -813,7 +889,7 @@ view::insert_pkg (packagemeta & pkg)
 {
   if (view_mode != VIEW_CATEGORY)
     {
-      pick_pkg_line &line = * new pick_pkg_line(pkg);
+      pick_pkg_line & line = *new pick_pkg_line (pkg);
       contents.insert (line);
     }
   else
@@ -821,8 +897,8 @@ view::insert_pkg (packagemeta & pkg)
       for (size_t x = 1; x <= pkg.Categories.number (); x++)
 	{
 	  Category & cat = pkg.Categories[x]->key;
-	  pick_category_line &catline = * new pick_category_line (cat);
-	  pick_pkg_line &line = * new pick_pkg_line(pkg);
+	  pick_category_line & catline = *new pick_category_line (cat);
+	  pick_pkg_line & line = *new pick_pkg_line (pkg);
 	  catline.insert (line);
 	  contents.insert (catline);
 	}
@@ -832,13 +908,13 @@ view::insert_pkg (packagemeta & pkg)
 void
 view::insert_category (Category * cat, bool collapsed)
 {
-  pick_category_line &catline = * new pick_category_line (*cat, collapsed);
-    for (CategoryPackage * catpkg = cat->packages; catpkg;
-	catpkg = catpkg->next)
-      {
-	pick_pkg_line &line = * new pick_pkg_line(*catpkg->pkg);
-	catline.insert (line);
-      }
+  pick_category_line & catline = *new pick_category_line (*cat, collapsed);
+  for (CategoryPackage * catpkg = cat->packages; catpkg;
+       catpkg = catpkg->next)
+    {
+      pick_pkg_line & line = *new pick_pkg_line (*catpkg->pkg);
+      catline.insert (line);
+    }
   contents.insert (catline);
 }
 
@@ -884,17 +960,17 @@ set_view_mode (HWND h, views mode)
     case VIEW_PACKAGE:
       for (size_t n = 1; n < db.packages.number (); n++)
 	{
-	  packagemeta &pkg = * db.packages[n];
+	  packagemeta & pkg = *db.packages[n];
 	  if ((!pkg.desired && pkg.installed)
 	      || (pkg.desired
-	      && (pkg.desired->srcpicked || pkg.desired->binpicked)))
-	  chooser->insert_pkg (pkg);
+		  && (pkg.desired->srcpicked || pkg.desired->binpicked)))
+	    chooser->insert_pkg (pkg);
 	}
       break;
     case VIEW_PACKAGE_FULL:
       for (size_t n = 1; n < db.packages.number (); n++)
 	{
-	  packagemeta &pkg = * db.packages[n];
+	  packagemeta & pkg = *db.packages[n];
 	  chooser->insert_pkg (pkg);
 	}
       break;
@@ -914,9 +990,7 @@ set_view_mode (HWND h, views mode)
   si.cbSize = sizeof (si);
   si.fMask = SIF_ALL;
   si.nMin = 0;
-  si.nMax =
-    chooser->headers[chooser->last_col].x +
-    chooser->headers[chooser->last_col].width;// + HMARGIN;
+  si.nMax = chooser->headers[chooser->last_col].x + chooser->headers[chooser->last_col].width;	// + HMARGIN;
   si.nPage = r.right;
   SetScrollInfo (h, SB_HORZ, &si, TRUE);
 
@@ -981,7 +1055,7 @@ create_listview (HWND dlg, RECT * r)
   packagedb db;
   for (size_t n = 1; n < db.packages.number (); n++)
     {
-      packagemeta &pkg = * db.packages[n];
+      packagemeta & pkg = *db.packages[n];
       add_required (pkg);
     }
   /* FIXME: do we need to init the desired fields ? */
@@ -1000,7 +1074,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       default_trust (lv, TRUST_PREV);
       for (size_t n = 1; n < db.packages.number (); n++)
 	{
-	  packagemeta &pkg = * db.packages[n];
+	  packagemeta & pkg = *db.packages[n];
 	  add_required (pkg);
 	}
       set_view_mode (lv, chooser->get_view_mode ());
@@ -1009,7 +1083,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       default_trust (lv, TRUST_CURR);
       for (size_t n = 1; n < db.packages.number (); n++)
 	{
-	  packagemeta &pkg = * db.packages[n];
+	  packagemeta & pkg = *db.packages[n];
 	  add_required (pkg);
 	}
       set_view_mode (lv, chooser->get_view_mode ());
@@ -1018,7 +1092,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       default_trust (lv, TRUST_TEST);
       for (size_t n = 1; n < db.packages.number (); n++)
 	{
-	  packagemeta &pkg = * db.packages[n];
+	  packagemeta & pkg = *db.packages[n];
 	  add_required (pkg);
 	}
       set_view_mode (lv, chooser->get_view_mode ());
@@ -1225,7 +1299,7 @@ do_choose (HINSTANCE h)
   packagedb db;
   for (size_t n = 1; n < db.packages.number (); n++)
     {
-      packagemeta &pkg = * db.packages[n];
+      packagemeta & pkg = *db.packages[n];
 //      static const char *infos[] = { "nada", "prev", "curr", "test" };
       const char *trust = ((pkg.desired == pkg.prev) ? "prev"
 			   : (pkg.desired == pkg.curr) ? "curr"
