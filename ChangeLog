@@ -1,5 +1,10 @@
 2002-01-22  Robert Collins  <rbtcollins@hotmail.com>
 
+	* log.cc (exit_setup): When saving to the download dir, explicity specify
+	the path.
+
+2002-01-22  Robert Collins  <rbtcollins@hotmail.com>
+
 	* archive.cc (extract_file): Separate out the prefix and the URL scheme.
 	* archive.h (archive::extract_file): Ditto.
 	* install.cc (install_one_source): Ditto.

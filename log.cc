@@ -121,8 +121,8 @@ exit_setup (int exit_code)
 
   if (source == IDC_SOURCE_DOWNLOAD || !get_root_dir ())
     {
-      log_save (LOG_BABBLE, "setup.log.full", 0);
-      log_save (0, "setup.log", 1);
+      log_save (LOG_BABBLE, concat (local_dir, "/setup.log.full", 0), 0);
+      log_save (0, concat (local_dir, "/setup.log", 0), 1);
     }
   else
     {
