@@ -1,5 +1,9 @@
 2002-05-01  Robert Collins  <rbtcollins@hotmail.com>
 
+	* res.rc (IDD_SPLASH): Remove white box.
+
+2002-05-01  Robert Collins  <rbtcollins@hotmail.com>
+
 	Oops! forgot to list these in the last checkin.
 	* inilintmain.cc: New file.
 	* md5.h: New file - imported md5 source, BSD style licence.
