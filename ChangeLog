@@ -1,3 +1,8 @@
+2000-11-17  DJ Delorie  <dj@redhat.com>
+
+	* splash.cc (load_dialog): Make message more obvious.
+	* res.rc: Ditto.
+
 Fri Nov 17 17:15:21 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* Makefile.in: Use g++ to link so that libstdc++.a gets used.  This is
