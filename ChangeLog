@@ -1,3 +1,13 @@
+2000-12-10  Egor Duda <deo@logos-m.ru>
+
+	* choose.cc (paint): Use system background color for text output.
+
+Sun Dec 10 19:05:25 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* Makefile.in: Use CXX for linking and for compiling .cc files.
+	* configure.in: Find correct c++ compiler.
+	* configure: Regenerate.
+
 2000-11-17  DJ Delorie  <dj@redhat.com>
 
 	* splash.cc (load_dialog): Make message more obvious.

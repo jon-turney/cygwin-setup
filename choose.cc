@@ -114,6 +114,7 @@ paint (HWND hwnd)
   hdc = BeginPaint (hwnd, &ps);
 
   SelectObject (hdc, sysfont);
+  SetBkColor (hdc, GetSysColor (COLOR_WINDOW) );
 
   RECT cr;
   GetClientRect (hwnd, &cr);

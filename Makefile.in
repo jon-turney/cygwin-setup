@@ -33,10 +33,11 @@ EXEEXT_FOR_BUILD := @EXEEXT_FOR_BUILD@
 
 CC		:= @CC@
 CC_FOR_TARGET	:= $(CC)
+CXX		:= @CXX@
 
 CFLAGS		:= @CFLAGS@ -nostdinc
-CXXFLAGS	:= @CXXFLAGS@ -fno-exceptions -nostdinc++ -fno-rtti
-CXX		:=${subst gcc,g++,$(CC)}
+CXXFLAGS	:= @CXXFLAGS@ -fno-exceptions -fno-rtti
+CXX		:= @CXX@
 
 WINDRES		:= @WINDRES@
 OBJCOPY		:= @OBJCOPY@
@@ -174,10 +175,10 @@ endif
 
 %.o: %.cc
 ifdef VERBOSE
-	$(CC) $(MINGW_CXXFLAGS) -c -o $@ $<
+	$(CXX) $(MINGW_CXXFLAGS) -c -o $@ $<
 else
-	@echo $(CC) -c $(CXXFLAGS) ... $(<F)
-	@$(CC) $(MINGW_CXXFLAGS) -c -o $@ $<
+	@echo $(CXX) -c $(CXXFLAGS) ... $(<F)
+	@$(CXX) $(MINGW_CXXFLAGS) -c -o $@ $<
 endif
 
 iniparse.c iniparse.h : iniparse.y
