@@ -660,8 +660,14 @@ findhref (char *buffer, char *date, size_t *filesize)
 {
   char *ref = NULL;
   char *anchor;
-  char *p = buffer;
+  char *p;
+  int eatspace;
+  char *q;
+  char digits[20];
+  char *diglast = digits + sizeof (digits) - 1;
+  int len;
 
+  p = buffer;
   while ((p = strchr (p, '<')) != NULL)
     {
       char *q = p;
@@ -684,44 +690,45 @@ findhref (char *buffer, char *date, size_t *filesize)
 	}
     }
   
-  if (ref)
-    {
-      int eatspace;
-      char *p, *q;
-      char digits[20];
-      char *diglast = digits + sizeof (digits) - 1;
-      int len;
+  if (!ref)
+    return NULL;
 
-      ref += ref[5] == '"' ? 6 : 5;
+  ref += ref[5] == '"' ? 6 : 5;
 
-      len = strcspn (ref, "\" >");
+  len = strcspn (ref, "\" >");
 
-      ref[len] = '\0';
-      if (!filesize)
-	return ref;
+  ref[len] = '\0';
+  if (!filesize)
+    goto out;
 
-      *filesize = 0;
+  *filesize = 0;
 
-      if (anchor == buffer || !isspace (anchor[-1]))
-	return ref;
+  if (anchor == buffer || !isspace (anchor[-1]))
+    goto out;
 
-      eatspace = 1;
-      *diglast = '\0';
-      for (p = anchor, q = diglast; --p >= buffer; )
-	if (!isspace (*p))
-	  {
-	    eatspace = 0;
-	    if (isdigit (*p))
-	      *--q = *p;
-	  }
-	else if (!eatspace)
-	  break;
+  eatspace = 1;
+  *diglast = '\0';
+  for (p = anchor, q = diglast; --p >= buffer; )
+    if (!isspace (*p))
+      {
+	eatspace = 0;
+	if (isdigit (*p))
+	  *--q = *p;
+      }
+    else if (!eatspace)
+      break;
 
-      if (q < diglast)
-	*filesize = atoi (q);
-    }
+  if (q < diglast)
+    *filesize = atoi (q);
 
-  return ref;
+out:
+  if (!*ref)
+    return NULL;
+  /* This effectively disallows using a ';' in a file name.  Hopefully,
+     this will not be an issue. */
+  if ((p = strrchr (ref, ';')) != NULL)
+    *p = '\0';
+  return *ref ? ref : NULL;
 }
 
 static int
@@ -738,8 +745,9 @@ static int
 processdirlisting (const char *urlbase, const char *file)
 {
   int retval = 0;
-  char buffer[256];
+  char buffer[4096];
   static enum {UNKNOWN, ALWAYS, NEVER} download_when = {UNKNOWN};
+  size_t urllen = strlen (urlbase);
 
   FILE *in = fopen (file, "rt");
 
@@ -762,6 +770,8 @@ processdirlisting (const char *urlbase, const char *file)
 	  warning ("Unable to download from %s", ref);
 	  winerror ();
 	}
+      else if (strlen (url) == urllen || strnicmp (urlbase, url, urllen) != 0)
+	continue;
       else if (ref[strlen (ref) - 1] == '/')
 	{
 	  if (strcmp (url + strlen (url) - 2, "./") != 0)
