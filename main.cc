@@ -204,6 +204,7 @@ TokenGroupCollection::find (Setup::SIDWrapper const &aSID) const
 class NTSecurity
 {
 public:
+  static void NoteFailedAPI(String const &);
   NTSecurity();
   ~NTSecurity();
   /* prevent synthetics */
@@ -240,6 +241,12 @@ set_default_sec()
   worker.setDefaultSecurity();
 }
 
+void
+NTSecurity::NoteFailedAPI(String const &api)
+{
+      log (LOG_TIMESTAMP) << api << "() failed: " << GetLastError () << endLog;
+}
+
 NTSecurity::NTSecurity() : everyOneSID (), administratorsSID(), usid(), token(), failed_(false)
 {}
 
@@ -265,8 +272,7 @@ NTSecurity::initialiseEveryOneSID()
   SID_IDENTIFIER_AUTHORITY sid_auth = { SECURITY_WORLD_SID_AUTHORITY };
   if (!AllocateAndInitializeSid (&sid_auth, 1, 0, 0, 0, 0, 0, 0, 0, 0, &everyOneSID.theSID()))
     {
-      log (LOG_TIMESTAMP) << "AllocateAndInitializeSid() failed: " <<
-	   GetLastError () << endLog;
+      NoteFailedAPI ("AllocateAndInitializeSid");
       failed(true);
     }
 }
@@ -284,21 +290,20 @@ NTSecurity::setDefaultDACL ()
 
   /* Create a buffer which has enough room to contain the TOKEN_DEFAULT_DACL
      structure plus an ACL with one ACE. */
-  char buf[sizeof (TOKEN_DEFAULT_DACL) + TOKEN_ACL_SIZE (1)];
+  std::auto_ptr<char> buf (new char[sizeof (TOKEN_DEFAULT_DACL) + TOKEN_ACL_SIZE (1)]);
 
   /* First initialize the TOKEN_DEFAULT_DACL structure. */
-  PTOKEN_DEFAULT_DACL dacl = (PTOKEN_DEFAULT_DACL) buf;
-  dacl->DefaultDacl = (PACL) (buf + sizeof *dacl);
+  PTOKEN_DEFAULT_DACL dacl = (PTOKEN_DEFAULT_DACL) buf.get();
+  dacl->DefaultDacl = (PACL) (buf.get() + sizeof *dacl);
 
-#if 0
   /* Initialize the ACL for containing one ACE. */
   if (!InitializeAcl (dacl->DefaultDacl, TOKEN_ACL_SIZE (1), ACL_REVISION))
     {
-      log (LOG_TIMESTAMP) << "InitializeAcl() failed: " << GetLastError ()
-	<< endLog;
+      NoteFailedAPI ("InitializeAcl");
       failed(true);
       return;
     }
+#if 0
 
   initialiseEveryOneSID();
   if (failed())
@@ -309,8 +314,7 @@ NTSecurity::setDefaultDACL ()
   if (!AddAccessAllowedAce
       (dacl->DefaultDacl, ACL_REVISION, GENERIC_ALL, everyOneSID.theSID()))
     {
-      log (LOG_TIMESTAMP) << "AddAccessAllowedAce() failed: %lu" << 
-	   GetLastError () << endLog;
+      NoteFailedAPI ("AddAccessAllowedAce");
       failed(true);
       return;
     }
@@ -319,8 +323,7 @@ NTSecurity::setDefaultDACL ()
   if (!OpenProcessToken (GetCurrentProcess (),
 			 TOKEN_READ | TOKEN_ADJUST_DEFAULT, &token.theHANDLE()))
     {
-      log (LOG_TIMESTAMP) << "OpenProcessToken() failed: " << 
-	GetLastError () << endLog;
+      NoteFailedAPI ("OpenProcessToken");
       failed(true);
       return;
     }
@@ -328,8 +331,7 @@ NTSecurity::setDefaultDACL ()
   /* Set the default DACL to the above computed ACL. */
   if (!SetTokenInformation (token.theHANDLE(), TokenDefaultDacl, dacl, sizeof buf))
     {
-      log (LOG_TIMESTAMP) << "SetTokenInformation() failed: " << 
-        GetLastError () << endLog;
+      NoteFailedAPI ("SetTokenInformation");
       failed(true);
     }
 #endif
@@ -340,8 +342,7 @@ NTSecurity::GroupInfo::get(Setup::HANDLEWrapper &token)
 {
   if (!GetTokenInformation (token.theHANDLE(), TokenPrimaryGroup, &gsid, sizeof gsid, &size))
     {
-      log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " << 
-	GetLastError () << endLog;
+      NoteFailedAPI ("GetTokenInformation");
       fail();
     }
 }
@@ -363,8 +364,7 @@ NTSecurity::setDefaultSecurity ()
   DWORD size = sizeof (compname);
   if (!GetComputerName (compname, &size))
     {
-      log (LOG_TIMESTAMP) << "GetComputerName() failed: " << 
-	GetLastError () << endLog;
+      NoteFailedAPI("GetComputerName");
       return;
     }
 
@@ -377,8 +377,7 @@ NTSecurity::setDefaultSecurity ()
   if (!LookupAccountName (NULL, compname, lsid, &size, 
 			  domain, &sz, &use)) 
     {
-      log (LOG_TIMESTAMP) << "LookupAccountName() failed: " << 
-	GetLastError () << endLog;
+      NoteFailedAPI("LookupAccountName");
       return;
     }
   /* Create the None SID from the domain SID.
@@ -399,24 +398,21 @@ NTSecurity::setDefaultSecurity ()
   if (!AllocateAndInitializeSid (&sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
 				 DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &administratorsSID.theSID()))
     {
-	log (LOG_TIMESTAMP) << "AllocateAndInitializeSid() failed: " <<
-	GetLastError () << endLog;
+        NoteFailedAPI("AllocateAndInitializeSid");
 	return;
     }
   /* Get the SID for "Users" S-1-5-32-545 */
   if (!AllocateAndInitializeSid (&sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
 			DOMAIN_ALIAS_RID_USERS, 0, 0, 0, 0, 0, 0, &usid.theSID()))
     {
-      log (LOG_TIMESTAMP) << "AllocateAndInitializeSid() failed: " <<
-			GetLastError () << endLog;
+      NoteFailedAPI("AllocateAndInitializeSid");
       return;
     }
   /* Get the token groups */
   if (!GetTokenInformation (token.theHANDLE(), TokenGroups, NULL, 0, &size)
 	  && GetLastError () != ERROR_INSUFFICIENT_BUFFER)
     {
-      log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " <<
-	    GetLastError () << endLog;
+      NoteFailedAPI("GetTokenInformation");
       return;
     }
   TokenGroupCollection ntGroups(size, token);
@@ -436,8 +432,7 @@ NTSecurity::setDefaultSecurity ()
       log(LOG_TIMESTAMP) << "Changing gid to Administrators" << endLog;
     }
   if (nsid && !SetTokenInformation (token.theHANDLE(), TokenPrimaryGroup, &nsid, sizeof nsid))
-    log (LOG_TIMESTAMP) << "SetTokenInformation() failed: " << 
-	  GetLastError () << endLog;
+    NoteFailedAPI ("SetTokenInformation");
 #endif
 }
 

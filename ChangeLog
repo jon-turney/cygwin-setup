@@ -1,5 +1,11 @@
 2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
 
+	* main.cc (NTSecurity::NoteFailedAPI): Helper function.
+	Use throughout NTSecurity routines.
+	(NTSecurity::setDefaultDACL): Use dynamic memory for ACL storage.
+	
+2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
+
 	* main.cc (NTSecurity::setDefaultDACL): Disable ~ 50% of remaining active code.
 
 2003-04-02  Robert Collins  <rbtcollins@hotmail.com>
