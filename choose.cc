@@ -49,6 +49,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #define HMARGIN	10
 #define ROW_MARGIN	5
 #define ICON_MARGIN	4
+#define NEW_COL_SIZE_SLOP (ICON_MARGIN + 11)
 
 #define CHECK_SIZE	11
 
@@ -163,7 +164,7 @@ paint (HWND hwnd)
       char *s = extra[i].chooser[extra[i].pick].caption;
       if (s)
 	{
-	  TextOut (hdc, x + headers[NEW_COL].x + 11 + ICON_MARGIN, r,
+	  TextOut (hdc, x + headers[NEW_COL].x + NEW_COL_SIZE_SLOP, r,
 		   s, strlen (s));
 	  if (extra[i].npick > 1)
 	    {
@@ -638,18 +639,17 @@ create_listview (HWND dlg, RECT *r)
   for (i = 0; i < npackages; i++)
     {
       note_width (dc, extra[i].installed_ver, 0, CURRENT_COL);
-      note_width (dc, extra[i].installed_ver, 11 + ICON_MARGIN, NEW_COL);
+      note_width (dc, extra[i].installed_ver, NEW_COL_SIZE_SLOP, NEW_COL);
       for (t = 0; t < NTRUST; t++)
-	note_width (dc, package[i].info[t].version, 11 + ICON_MARGIN, NEW_COL);
+	note_width (dc, package[i].info[t].version, NEW_COL_SIZE_SLOP, NEW_COL);
       note_width (dc, package[i].name, 0, PACKAGE_COL);
       note_width (dc, package[i].sdesc, 0, PACKAGE_COL);
     }
-  note_width (dc, "keep", 11 + ICON_MARGIN, NEW_COL);
-  note_width (dc, "uninstall", 11 + ICON_MARGIN, NEW_COL);
+  note_width (dc, "keep", NEW_COL_SIZE_SLOP, NEW_COL);
+  note_width (dc, "uninstall", NEW_COL_SIZE_SLOP, NEW_COL);
 
   headers[CURRENT_COL].x = HMARGIN/2;
-  headers[NEW_COL].x = (headers[CURRENT_COL].x + headers[CURRENT_COL].width
-			+ HMARGIN + 11 + ICON_MARGIN);
+  headers[NEW_COL].x = headers[CURRENT_COL].x + headers[CURRENT_COL].width + NEW_COL_SIZE_SLOP + HMARGIN;
   headers[SRC_COL].x = headers[NEW_COL].x + headers[NEW_COL].width + HMARGIN;
   headers[PACKAGE_COL].x = headers[SRC_COL].x + headers[SRC_COL].width + HMARGIN;
 

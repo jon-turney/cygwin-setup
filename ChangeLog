@@ -1,3 +1,9 @@
+Sat May 26 21:23:59 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* choose.cc: Use a constant throughout to deal with chooser icon
+	length.
+	* res.rc (IDD_CHOOSE): Increase size of chooser box.
+
 2001-05-07  Brian Keener <bkeener@thesoftwaresource.com>
 
 	* choose.cc (do_choose): Fix incorrect assignment of trust setting to

@@ -35,11 +35,11 @@ FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,-1,5,5,20,20
     CONTROL         "&Install from Internet",IDC_SOURCE_NETINST,"Button",
-		    BS_AUTORADIOBUTTON,55,15,75,10
+                    BS_AUTORADIOBUTTON,55,15,75,10
     CONTROL         "&Download from Internet",IDC_SOURCE_DOWNLOAD,"Button",
-		    BS_AUTORADIOBUTTON,55,30,89,10
+                    BS_AUTORADIOBUTTON,55,30,89,10
     CONTROL         "Install from &Local Directory",IDC_SOURCE_CWD,"Button",
-		    BS_AUTORADIOBUTTON,55,45,99,10
+                    BS_AUTORADIOBUTTON,55,45,99,10
     DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
 END
@@ -69,14 +69,14 @@ BEGIN
     EDITTEXT        IDC_ROOT_DIR,55,25,127,12,ES_AUTOHSCROLL
     RTEXT           "Default &Text File Type :",IDC_STATIC,20,45,100,8
     CONTROL         "D&OS",IDC_ROOT_TEXT,"Button",BS_AUTORADIOBUTTON,125,45,
-		    31,8
+                    31,8
     CONTROL         "&Unix",IDC_ROOT_BINARY,"Button",BS_AUTORADIOBUTTON,160,
-		    45,30,8
+                    45,30,8
     RTEXT           "&Install For :",IDC_STATIC,55,60,65,8
     CONTROL         "&All",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | 
-		    WS_GROUP,125,60,25,8
+                    WS_GROUP,125,60,25,8
     CONTROL         "Just &Me",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON,160,
-		    60,50,8
+                    60,50,8
     DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
     PUSHBUTTON      "<-- &Back",IDC_BACK,55,75,45,15
@@ -90,7 +90,7 @@ BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
     LTEXT           "Select Download &Site",IDC_STATIC,55,5,135,11
     LISTBOX         IDC_URL_LIST,55,20,160,155,LBS_NOINTEGRALHEIGHT | 
-		    WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+                    WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "&Next -->",IDOK,105,185,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,170,185,45,15
     PUSHBUTTON      "<-- &Back",IDC_BACK,60,185,45,15
@@ -116,16 +116,16 @@ FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
     CONTROL         "&Direct Connection",IDC_NET_DIRECT,"Button",
-		    BS_AUTORADIOBUTTON,55,10,73,10
+                    BS_AUTORADIOBUTTON,55,10,73,10
     CONTROL         "Use &IE5 Settings",IDC_NET_IE5,"Button",
-		    BS_AUTORADIOBUTTON,55,25,69,10
+                    BS_AUTORADIOBUTTON,55,25,69,10
     CONTROL         "Use HTTP/FTP &Proxy:",IDC_NET_PROXY,"Button",
-		    BS_AUTORADIOBUTTON,55,40,88,10
+                    BS_AUTORADIOBUTTON,55,40,88,10
     LTEXT           "Proxy &Host",IDC_STATIC,10,55,50,15,SS_CENTERIMAGE,
-		    WS_EX_RIGHT
+                    WS_EX_RIGHT
     EDITTEXT        IDC_PROXY_HOST,65,55,80,12,ES_AUTOHSCROLL | WS_DISABLED
     LTEXT           "Por&t",IDC_STATIC,155,55,20,15,SS_CENTERIMAGE,
-		    WS_EX_RIGHT
+                    WS_EX_RIGHT
     EDITTEXT        IDC_PROXY_PORT,180,55,30,12,ES_AUTOHSCROLL | WS_DISABLED
     DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
@@ -144,11 +144,11 @@ BEGIN
     LTEXT           "(URL)",IDC_DLS_URL,55,15,150,8
     LTEXT           "(RATE)",IDC_DLS_RATE,55,25,155,8
     CONTROL         "Progress1",IDC_DLS_PROGRESS,"msctls_progress32",
-		    PBS_SMOOTH | WS_BORDER,55,40,155,10
+                    PBS_SMOOTH | WS_BORDER,55,40,155,10
     CONTROL         "Progress1",IDC_DLS_PPROGRESS,"msctls_progress32",
-		    PBS_SMOOTH | WS_BORDER,55,50,155,10
+                    PBS_SMOOTH | WS_BORDER,55,50,155,10
     CONTROL         "Progress1",IDC_DLS_IPROGRESS,"msctls_progress32",
-		    PBS_SMOOTH | WS_BORDER,55,60,155,10
+                    PBS_SMOOTH | WS_BORDER,55,60,155,10
     RTEXT           "Package",IDC_DLS_PROGRESS_TEXT,5,40,45,8
     RTEXT           "Total",IDC_DLS_PPROGRESS_TEXT,10,50,40,8
     RTEXT           "Disk",IDC_DLS_IPROGRESS_TEXT,5,60,45,8
@@ -166,11 +166,11 @@ BEGIN
     LTEXT           "(PKG)",IDC_INS_PKG,55,15,150,8
     LTEXT           "(FILE)",IDC_INS_FILE,55,25,155,8
     CONTROL         "Progress1",IDC_INS_DISKFULL,"msctls_progress32",
-		    PBS_SMOOTH | WS_BORDER,55,60,155,10
+                    PBS_SMOOTH | WS_BORDER,55,60,155,10
     CONTROL         "Progress1",IDC_INS_IPROGRESS,"msctls_progress32",
-		    PBS_SMOOTH | WS_BORDER,55,50,155,10
+                    PBS_SMOOTH | WS_BORDER,55,50,155,10
     CONTROL         "Progress1",IDC_INS_PPROGRESS,"msctls_progress32",
-		    PBS_SMOOTH | WS_BORDER,55,40,155,10
+                    PBS_SMOOTH | WS_BORDER,55,40,155,10
     RTEXT           "Package",IDC_STATIC,5,40,45,8
     RTEXT           "Total",IDC_STATIC,10,50,40,8
     RTEXT           "Disk",IDC_STATIC,5,60,45,8
@@ -183,10 +183,10 @@ FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
     LTEXT           "Proxy &User ID",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,
-		    WS_EX_RIGHT
+                    WS_EX_RIGHT
     EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
     LTEXT           "&Password",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,
-		    WS_EX_RIGHT
+                    WS_EX_RIGHT
     EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
     LTEXT           "Proxy Authorization Required",IDC_STATIC,65,10,145,10
     DEFPUSHBUTTON   "&OK",IDOK,100,75,45,15,WS_DISABLED
@@ -200,10 +200,10 @@ FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
     LTEXT           "&User ID",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,
-		    WS_EX_RIGHT
+                    WS_EX_RIGHT
     EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
     LTEXT           "&Password",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,
-		    WS_EX_RIGHT
+                    WS_EX_RIGHT
     EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
     LTEXT           "Server Authorization Required",IDC_STATIC,65,10,145,10
     DEFPUSHBUTTON   "&OK",IDOK,100,75,45,15,WS_DISABLED
@@ -217,34 +217,38 @@ FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
     LTEXT           "Cygwin Net Release Setup Program",IDC_STATIC,55,10,114,
-		    8
+                    8
     LTEXT           "Version (unknown)",IDC_VERSION,55,25,120,10
     LTEXT           "Copyright (C) 2000 Red Hat Inc",IDC_STATIC,55,35,135,8
     LTEXT           "http://sources.redhat.com/cygwin/",IDC_STATIC,55,50,150,
-		    10
+                    10
     DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
 END
 
-IDD_CHOOSE DIALOG DISCARDABLE  0, 0, 292, 206
+IDD_CHOOSE DIALOG DISCARDABLE  0, 0, 330, 207
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup"
 FONT 8, "MS Sans Serif"
 BEGIN
-    ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
-    LTEXT           "Select packages to install",IDC_CHOOSE_INST_TEXT,55,5,99,8
+    ICON            IDI_CYGWIN,IDC_STATIC,5,5,21,20
+    LTEXT           "Select packages to install",IDC_CHOOSE_INST_TEXT,55,5,
+                    99,8
     CONTROL         "",IDC_LISTVIEW_POS,"Static",SS_BLACKFRAME | NOT 
-		    WS_VISIBLE,55,15,230,155
+                    WS_VISIBLE,55,15,264,155
     CONTROL         "SPIN",IDC_STATIC,"Static",SS_BITMAP,55,170,15,13
     LTEXT           "= click to choose action, (p) = previous version, (x) = experimental",
-		    IDC_STATIC,65,170,220,8
-    PUSHBUTTON      "Full/Part",IDC_CHOOSE_FULLPART,250,5,35,10
-    CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON | WS_GROUP,215,5,25,10
-    CONTROL         "&Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON,189,5,25,10
-    CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON,161,5,27,10
-    DEFPUSHBUTTON   "&Next -->",IDOK,175,185,45,15
-    PUSHBUTTON      "Cancel",IDCANCEL,240,185,45,15
-    PUSHBUTTON      "<-- &Back",IDC_BACK,130,185,45,15
+                    IDC_STATIC,65,170,220,8
+    PUSHBUTTON      "Full/Part",IDC_CHOOSE_FULLPART,283,5,35,10
+    CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,248,5,25,10
+    CONTROL         "&Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON,222,
+                    5,25,10
+    CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON,194,
+                    5,27,10
+    DEFPUSHBUTTON   "&Next -->",IDOK,213,185,45,15
+    PUSHBUTTON      "Cancel",IDCANCEL,278,185,45,15
+    PUSHBUTTON      "<-- &Back",IDC_BACK,168,185,45,15
 END
 
 IDD_DESKTOP DIALOG DISCARDABLE  0, 0, 215, 95
@@ -254,9 +258,9 @@ FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,5,5,20,20
     CONTROL         "Create Desktop &Icon",IDC_ROOT_DESKTOP,"Button",
-		    BS_AUTOCHECKBOX,55,25,100,8
+                    BS_AUTOCHECKBOX,55,25,100,8
     CONTROL         "Add to &Start Menu",IDC_ROOT_MENU,"Button",
-		    BS_AUTOCHECKBOX,55,40,100,8
+                    BS_AUTOCHECKBOX,55,40,100,8
     DEFPUSHBUTTON   "&Next -->",IDOK,100,75,45,15
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
     PUSHBUTTON      "<-- &Back",IDC_BACK,55,75,45,15
@@ -317,17 +321,17 @@ GUIDELINES DESIGNINFO DISCARDABLE
 BEGIN
     IDD_NET, DIALOG
     BEGIN
-	BOTTOMMARGIN, 49
+        BOTTOMMARGIN, 49
     END
 
     IDD_PROXY_AUTH, DIALOG
     BEGIN
-	BOTTOMMARGIN, 49
+        BOTTOMMARGIN, 49
     END
 
     IDD_NET_AUTH, DIALOG
     BEGIN
-	BOTTOMMARGIN, 49
+        BOTTOMMARGIN, 49
     END
 END
 #endif    // APSTUDIO_INVOKED
