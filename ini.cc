@@ -65,8 +65,14 @@ static int local_ini;
 static void
 find_routine (char *path, unsigned int fsize)
 {
-  if (!strstr (path, "setup.ini") )
+  /* See if the path ends in a trailing setup.ini component.
+     Just return if it doesn't. */
+  unsigned pathlen = strlen (path);
+  unsigned pathprefix_len = pathlen - 10;
+  if (pathlen < strlen ("setup.ini")
+      || strcasecmp (path + pathprefix_len, "\\setup.ini") != 0)
     return;
+
   io_stream *ini_file = io_stream::open (String ("file://") + local_dir + "/" +
 					 path, "rb");
   if (!ini_file)
@@ -82,9 +88,12 @@ find_routine (char *path, unsigned int fsize)
   setup_timestamp = 0;
   setup_version = 0;
 
-  /* Attempt to unescape the string */
-  path[strlen(path) -10] = '\0';
-  String mirror = rfc1738_unescape_part (path);
+  /* Copy leading part of path to temporary buffer and unescape it */
+
+  char path_prefix[pathprefix_len + 1];
+  strncpy (path_prefix, path, pathprefix_len);
+  path_prefix[pathprefix_len] = '\0';
+  String mirror = rfc1738_unescape_part (path_prefix);
   ini_init (ini_file, mirror);
 
   /*yydebug = 1; */

@@ -1,3 +1,13 @@
+2002-05-14  Christopher Faylor  <cgf@redhat.com>
+
+	* find.cc (find_sub): Be more defensive in preserving trailing parts of
+	components when doing recursive directory searches or calling user
+	supplied for_each().
+	* ini.cc (find_routine): Don't assume that any path name with
+	"setup.ini" in it is actually a setup.ini file.  Only honor trailing
+	components.  Copy path argument to temporary storage when unescaping
+	to prevent nuking of argument.
+
 2002-05-13  Christopher Faylor  <cgf@redhat.com>
 
 	* configure.in: Fix AC_CHECK_HEADERS typo.
