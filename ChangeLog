@@ -1,5 +1,12 @@
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
+	* choose.cc (list_click): Change r to row for clarity.
+	When we shrink the list below 1 page, scroll to the top of the list.
+	(_view::click): Return the actual change for contractions.
+	(dialog_proc): Return TRUE to WM_INITDIALOG as specified by the Win32 API.
+
+2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
+
 	* choose.cc (dialog_cmd): Swap cygwin root selection and local dir selection order.
 	* localdir.cc: Ran indent.
 	(get_root_dir_now): New function.

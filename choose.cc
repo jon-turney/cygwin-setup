@@ -403,7 +403,7 @@ list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos)
 static LRESULT CALLBACK
 list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 {
-  int r,refresh;
+  int row,refresh;
 
   if (chooser->nlines == 0)
     return 0;
@@ -413,12 +413,12 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
   x += scroll_ulc_x;
   y += scroll_ulc_y - header_height;
 
-  r = (y + ROW_MARGIN/2) / row_height;
+  row = (y + ROW_MARGIN/2) / row_height;
 
-  if (r < 0 || r >= chooser->nlines)
+  if (row < 0 || row >= chooser->nlines)
     return 0;
 
-  refresh = chooser->click (r, x);
+  refresh = chooser->click (row, x);
  
   if (refresh)
     {
@@ -432,7 +432,14 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 
       si.nMax = chooser->nlines * row_height;
       si.nPage = r.bottom - header_height;
+
+      /* if we are under the minimum display count ,
+       * set the offset to 0
+       */
+      if (si.nMax <= si.nPage)
+	scroll_ulc_y = 0;
       si.nPos = scroll_ulc_y;
+
       SetScrollInfo (lv, SB_VERT, &si, TRUE);
 
       InvalidateRect (lv, &r, TRUE);
@@ -443,7 +450,7 @@ list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
       RECT rect;
       rect.left = chooser->headers[chooser->new_col].x - scroll_ulc_x;
       rect.right = chooser->headers[chooser->src_col + 1].x - scroll_ulc_x;
-      rect.top = header_height + r * row_height - scroll_ulc_y;
+      rect.top = header_height + row * row_height - scroll_ulc_y;
       rect.bottom = rect.top + row_height;
       InvalidateRect (hwnd, &rect, TRUE);
     }
@@ -1015,7 +1022,7 @@ _view::click (int row, int x)
 	      nlines--;
 	      count++;
 	    }
-	  return count;
+	  return -count;
 	}
     }
 }
@@ -1208,7 +1215,7 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 #if 0
       load_dialog (h);
 #endif
-      return FALSE;
+      return TRUE;
     case WM_COMMAND:
       return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }
