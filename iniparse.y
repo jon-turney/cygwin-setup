@@ -113,7 +113,7 @@ new_package (char *name)
 	package = (Package *) malloc (maxpackages * sizeof (Package));
     }
   cp = package + npackages;
-  npackages ++;
+  npackages++;
 
   memset (cp, 0, sizeof (Package));
   cp->name = name;

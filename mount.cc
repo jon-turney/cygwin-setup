@@ -35,10 +35,12 @@ static char *cvsid = "\n%%% $Id$\n";
 
 static struct mnt
   {
-    char *native;
+    const char *native;
     char *posix;
     int istext;
   } mount_table[255];
+
+struct mnt *root_here = NULL;
 
 static char *
 find2 (HKEY rkey, int *istext, char *what)
@@ -56,7 +58,7 @@ find2 (HKEY rkey, int *istext, char *what)
   if (RegQueryValueEx (key, "native", 0, &type, 0, &retvallen)
       == ERROR_SUCCESS)
     {
-      retval = new char[retvallen + 1];
+      retval = (char *) malloc (MAX_PATH + 1);
       if (RegQueryValueEx (key, "native", 0, &type, (BYTE *) retval, &retvallen)
 	  != ERROR_SUCCESS)
 	{
@@ -77,7 +79,7 @@ find2 (HKEY rkey, int *istext, char *what)
 }
 
 void
-create_mount (char *posix, char *win32, int istext, int issystem)
+create_mount (const char *posix, const char *win32, int istext, int issystem)
 {
   char buf[1000];
   char *retval = 0;
@@ -108,7 +110,7 @@ create_mount (char *posix, char *win32, int istext, int issystem)
 }
 
 static void
-remove1 (HKEY rkey, char *posix)
+remove1 (HKEY rkey, const char *posix)
 {
   char buf[1000];
 
@@ -122,7 +124,7 @@ remove1 (HKEY rkey, char *posix)
 }
 
 void
-remove_mount (char *posix)
+remove_mount (const char *posix)
 {
   remove1 (HKEY_LOCAL_MACHINE, posix);
   remove1 (HKEY_CURRENT_USER, posix);
@@ -215,7 +217,7 @@ set_cygdrive_flags (int istext, int issystem)
   RegCloseKey(key);
 }
 
-int
+static int
 in_table (struct mnt *m)
 {
   for (struct mnt *m1 = mount_table; m1 < m; m1++)
@@ -304,7 +306,7 @@ read_mounts ()
 	break;
       for (int i = 0; ;i++, m++)
 	{
-	  m->posix = new char [MAX_PATH + 1];
+	  m->posix = (char *) malloc (MAX_PATH + 1);
 	  posix_path_size = MAX_PATH;
 	  /* FIXME: if maximum posix_path_size is 256, we're going to
 	     run into problems if we ever try to store a mount point that's
@@ -324,7 +326,7 @@ read_mounts ()
 	      m->native = find2 (key, &m->istext, m->posix);
 	      if (strcmp (m->posix, "/") == 0)
 		{
-		  root_dir = m->native;
+		  root_here = m;
 		  if (m->istext)
 		    root_text = IDC_ROOT_TEXT;
 		  else
@@ -339,18 +341,30 @@ read_mounts ()
       RegCloseKey (key);
     }
 
-  if (!root_dir)
+  if (!root_here)
     {
+      root_here = m;
+      m->posix = strdup ("/");
       char windir[_MAX_PATH];
-      GetWindowsDirectory (windir, sizeof (windir));
-      windir[2] = 0;
-      root_dir = concat (windir, "\\cygwin", 0);
       root_text = IDC_ROOT_BINARY;
       root_scope = (is_admin()) ? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
-      m->posix = strdup ("/");
-      m->native = root_dir;
+      GetWindowsDirectory (windir, sizeof (windir));
+      windir[2] = 0;
+      set_root_dir (concat (windir, "\\cygwin", 0));
     }
 
+}
+
+void
+set_root_dir (const char *val)
+{
+  root_here->native = val;
+}
+
+const char *
+get_root_dir ()
+{
+  return root_here ? root_here->native : NULL;
 }
 
 /* Return non-zero if PATH1 is a prefix of PATH2.

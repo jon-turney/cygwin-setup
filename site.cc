@@ -83,11 +83,11 @@ save_dialog (HWND h)
 }
 
 static void
-get_root_dir ()
+get_root_dir_now ()
 {
   int istext;
   int issystem;
-  if (root_dir)
+  if (get_root_dir ())
     return;
   read_mounts ();
 }
@@ -98,8 +98,8 @@ save_site_url ()
   if (! MIRROR_SITE)
     return;
 
-  get_root_dir ();
-  if (! root_dir)
+  get_root_dir_now ();
+  if (!get_root_dir ())
     return;
 
   FILE *f = fopen (cygpath ("/etc/setup/last-mirror", 0), "wb");
@@ -269,8 +269,8 @@ get_site_list (HINSTANCE h)
 static void
 get_initial_list_idx ()
 {
-  get_root_dir ();
-  if (! root_dir)
+  get_root_dir_now ();
+  if (!get_root_dir ())
     return;
 
   FILE *f = fopen (cygpath ("/etc/setup/last-mirror", 0), "rt");

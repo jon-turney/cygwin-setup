@@ -14,3 +14,14 @@
  */
 
 extern int find_tar_ext (const char *path);
+
+typedef struct
+{
+  char pkgtar[MAX_PATH + 1];
+  char pkg[MAX_PATH + 1];
+  char ver[MAX_PATH + 1];
+  char tail[MAX_PATH + 1];
+  char what[16];
+} fileparse;
+
+int parse_filename (const char *in_fn, fileparse& f);

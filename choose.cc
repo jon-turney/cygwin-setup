@@ -411,11 +411,9 @@ set_existence ()
 	  package[i].info[t].install_exists = check_existence (i, t, 0);
 	  /* 1 = check source file */
 	  package[i].info[t].source_exists = check_existence (i, t, 1);
-	}
-      for (int t = 0; t < NTRUST; t++)
-	{
 	  if (package[i].info[t].install &&
-	      extra[i].installed_ver != package[i].info[t].version)
+	      (!extra[i].installed_ver
+	       || extra[i].installed_ver != package[i].info[t].version))
 	    {
 	      if (source == IDC_SOURCE_NETINST)
 		package[i].info[t].partial_list_display = 1;
@@ -770,37 +768,16 @@ get_package_version (int p , int trust)
 {
   char *v, *d;
   char instpkg[_MAX_PATH];
+  fileparse f;
   instpkg[0]=0;  /* make sure empty to start with */
   if (trust == -1)
-    strcpy (instpkg, extra[p].installed_file);
+    parse_filename (extra[p].installed_file, f);
   else
-    strcpy (instpkg, package[p].info[trust].install);
-  for (v = base (instpkg); *v; v++)
-    if (*v == '-' && isdigit (v[1]))
-      {
-	v++;
-	break;
-      }
-  if (!v)
-    v = instpkg;
-  for (d = v; *d; d++)
-    if (strncmp (d, ".tar", 4) == 0)
-      {
-	*d = 0;
-	break;
-      }
-  if (v[0])
-    {
-      if (trust != -1)
-	package[p].info[trust].version = strdup (v);
-      extra[p].installed_ver = strdup (v);
-    }
-  else
-    {
-      if (trust != -1)
-	package[p].info[trust].version = "0";
-      extra[p].installed_ver = "0";
-    }
+    parse_filename (package[p].info[trust].install, f);
+
+  if (trust != -1)
+    package[p].info[trust].version = strdup (f.ver);
+  extra[p].installed_ver = strdup (f.ver);
 }
 
 int
@@ -820,120 +797,117 @@ find_tar_ext (const char *path)
   return p - path;
 }
 
+int
+parse_filename (const char *in_fn, fileparse& f)
+{
+  char *p, *ver;
+  char fn[strlen (in_fn) + 1];
+
+  strcpy (fn, in_fn);
+  int n = find_tar_ext (fn);
+
+  if (!n)
+    return 0;
+
+  strcpy (f.tail, fn + n);
+  fn[n] = '\0';
+  f.pkg[0] = f.what[0] = '\0';
+  p = base (fn);
+  for (ver = p; *ver; ver++)
+    if (*ver == '-' || *ver == '_')
+      if (isdigit (ver[1]))
+	{
+	  *ver++ = 0;
+	  strcpy (f.pkg, p);
+	  break;
+	}
+      else if (strcasecmp (ver, "-src") == 0 ||
+	       strcasecmp (ver, "-patch") == 0)
+	{
+	  *ver++ = 0;
+	  strcpy (f.pkg, p);
+	  strcpy (f.what, strlwr (ver));
+	  strcpy (f.pkgtar, p);
+	  strcat (f.pkgtar, f.tail);
+	  ver = strchr (ver, '\0');
+	  break;
+	}
+
+  if (!f.pkg[0])
+    strcpy (f.pkg, p);
+
+  if (!f.what[0])
+    {
+      p = strchr (ver, '\0');
+      strcpy (f.pkgtar, in_fn);
+      if ((p -= 4) >= ver && strcasecmp (p, "-src") == 0)
+	{
+	  strcpy (f.what, "src");
+	  *p = '\0';
+	  p = f.pkgtar + (p - fn) + 4;
+	  memcpy (p - 4, p, strlen (p));
+	}
+      else if ((p -= 2) >= ver && strcasecmp (p, "-patch") == 0)
+	{
+	  strcpy (f.what, "patch");
+	  *p = '\0';
+	  p = f.pkgtar + (p - fn) + 6;
+	  memcpy (p - 6, p, strlen (p));
+	}
+    }
+
+  strcpy (f.ver, *ver ? ver : "0.0");
+  return 1;
+}
+
 static void
 scan2 (char *path, unsigned int size)
 {
-  int i, t, c, tarext;
-  int matched;
+  Package *pkg;
+  fileparse f;
 
-  tarext = find_tar_ext (path);
-  if (!tarext)
+  if (!parse_filename (path, f))
     return;
 
-  char mainpkg[_MAX_PATH], pkginfo[_MAX_PATH], tarpkg[_MAX_PATH],
-  *ver, *verinfo;
+  if (f.what[0] != '\0' && f.what[0] != 's')
+    return;
 
-  strcpy (mainpkg, path);
-  strcpy (tarpkg, path);
-  mainpkg[tarext] = 0; /* strip off the tar.[bg]z2? */
+  for (pkg = package; pkg < package + npackages; pkg++)
+    {
+      if (strcmp (f.pkg, pkg->name) != 0)
+	continue;
 
-  for (ver = mainpkg; *ver; ver++)
-    if ((*ver == '-' || *ver == '_') && isdigit (ver[1]))
+      for (Info *inf = pkg->info; inf < pkg->info + NTRUST + 1; inf++)
+	if (inf->version && strcmp (f.ver, inf->version) == 0)
+	  {
+	    if (f.what[0] == 's')
+	      inf->source_exists = 1;
+	    else
+	      inf->install_exists = 1;
+	    return;
+	  }
+      break;
+    }
+
+  if (pkg >= package + npackages)
+    return;
+
+  for (int i = TRUST_CURR; i >= TRUST_PREV; i--)
+    if (!pkg->info[i].install)
       {
-	*ver++ = 0;
+	Info *inf = pkg->info + i;
+	inf->version = strdup (f.ver);
+	extra[i].installed_ver = strdup (f.ver);
+	inf->install = strdup (f.pkgtar);
+	if (!inf->source && f.what[0] == 's')
+	  {
+	    inf->source = strdup (path);
+	    inf->source_exists = 1;
+	  }
+	inf->source_size = size;
 	break;
       }
 
-  for (i = 0; i < npackages; i++)
-    {
-      pkginfo[0] = 0;
-      for (t = 0; t < NTRUST; t++)
-	{
-	  if (package[i].info[t].install)
-	    {
-	      strcpy (pkginfo, package[i].info[t].install);
-	      pkginfo[find_tar_ext (pkginfo)] = '\0'; /* strip off the tar.gz */
-	      for (verinfo = pkginfo; *verinfo; verinfo++)
-		{
-		  if ((*verinfo == '-' || *verinfo == '_') && isdigit (verinfo[1]))
-		    {
-		      *verinfo++ = 0;
-		      break;
-		    }
-		}
-	      break;
-	    }
-	}
-      if (strcmp (pkginfo, mainpkg) == 0)
-	{
-	  for (t = 0; t < NTRUST; t++)
-	    if ((package[i].info[t].install &&
-		 strcmp (base (package[i].info[t].install), base (path)) == 0) ||
-		(package[i].info[t].source &&
-		 strcmp (base (package[i].info[t].source), base (path)) == 0))
-	      {
-		if (strcmp (base (package[i].info[t].install), base (path)) == 0)
-		  package[i].info[t].install_exists = 1;
-		else
-		  package[i].info[t].source_exists = 1;
-		break;
-	      }
-	    else if (t >= NTRUST - 1)
-	      if (!package[i].info[TRUST_CURR].install)
-		{
-		  package[i].info[TRUST_CURR].version = 0;
-		  int tarsrcext = tarext - 4;
-		  if (tarsrcext > 0 && strncmp (path + tarsrcext , "-src", 4) == 0)
-		    {
-		      int n = find_tar_ext (tarpkg);
-		      memmove (tarpkg + n - 4, tarpkg + n, strlen (tarpkg + n) + 1);
-		      package[i].info[TRUST_CURR].install = strdup (tarpkg);
-		      if (!package[i].info[TRUST_CURR].source)
-			package[i].info[TRUST_CURR].source = strdup (path);
-		      package[i].info[TRUST_CURR].source_size = size;
-		      package[i].info[TRUST_CURR].source_exists = 1;
-		      if (package[i].info[TRUST_CURR].version == 0)
-			get_package_version (i, TRUST_CURR);
-		    }
-		  else
-		    {
-		      package[i].info[TRUST_CURR].install = strdup (path);
-		      package[i].info[TRUST_CURR].install_size = size;
-		      package[i].info[TRUST_CURR].install_exists = 1;
-		      if (package[i].info[TRUST_CURR].version == 0)
-			get_package_version (i, TRUST_CURR);
-		    }
-		  break;
-		}
-	      else if (!package[i].info[TRUST_PREV].install)
-		{
-		  package[i].info[TRUST_PREV].version = 0;
-		  int tarsrcext = tarext - 4;
-		  if (tarsrcext > 0 && strncmp (path + tarsrcext , "-src", 4) == 0)
-		    {
-		      int n = find_tar_ext (tarpkg);
-		      memmove (tarpkg + n - 4, tarpkg + n, strlen (tarpkg + n) + 1);
-		      package[i].info[TRUST_PREV].install = strdup (tarpkg);
-		      if (!package[i].info[TRUST_PREV].source)
-			package[i].info[TRUST_PREV].source = strdup (path);
-		      package[i].info[TRUST_PREV].source_size = size;
-		      package[i].info[TRUST_PREV].source_exists = 1;
-		      if (package[i].info[TRUST_PREV].version == 0)
-			get_package_version (i, TRUST_PREV);
-		    }
-		  else
-		    {
-		      package[i].info[TRUST_PREV].install = strdup (path);
-		      package[i].info[TRUST_PREV].install_size = size;
-		      package[i].info[TRUST_PREV].install_exists = 1;
-		      if (package[i].info[TRUST_PREV].version == 0)
-			get_package_version (i, TRUST_PREV);
-		    }
-		  break;
-		}
-	  break;
-	}
-    }
 }
 
 static void
@@ -946,7 +920,7 @@ static void
 read_installed_db ()
 {
   int i;
-  if (!root_dir)
+  if (!get_root_dir ())
     return;
 
   char line[1000], pkg[1000], inst[1000], src[1000];
@@ -970,17 +944,21 @@ read_installed_db ()
 	    extra[i].installed_size = instsz;
 	    get_package_version (i, -1);
 
-	    char *binst = base (inst);
-	    int n = find_tar_ext (binst) + 4;
+	    fileparse f;
+	    (void) parse_filename (inst, f);
 	    for (t = 0; t < NTRUST; t++)
-	      if (package[i].info[t].install
-		  && strncmp (base (package[i].info[t].install), binst, n) == 0)
+	      if (package[i].info[t].install)
 		{
-		  extra[i].which_is_installed = t;
-		  extra[i].installed_ver = package[i].info[t].version;
-		  if (extra[i].installed_ver == 0) /* still */
-		    get_package_version (i, t);
-		  break;
+		  fileparse f1;
+		  (void) parse_filename (package[i].info[t].install, f1);
+		  if (strcmp (f1.ver, f.ver) == 0)
+		    {
+		      extra[i].which_is_installed = t;
+		      extra[i].installed_ver = package[i].info[t].version;
+		      package[i].info[t].version = strdup (f.ver);
+		      extra[i].installed_ver = strdup (f.ver);
+		      break;
+		    }
 		}
 
 	    if (extra[i].installed_ver == 0) /* still */
@@ -1059,10 +1037,10 @@ do_choose (HINSTANCE h)
 
 	case TRUST_REDO:
 	  package[i].action = ACTION_REDO;
-	if ( extra[i].which_is_installed >= 0 
+	if ( extra[i].which_is_installed >= 0
 	    && extra[i].which_is_installed <= TRUST_TEST)
 	  package[i].trust = extra[i].which_is_installed;
-	else 
+	else
 	  package[i].trust = TRUST_CURR;
 	  break;
 
@@ -1074,10 +1052,10 @@ do_choose (HINSTANCE h)
 
 	case TRUST_SRC_ONLY:
 	  package[i].action = ACTION_SRC_ONLY;
-	if ( extra[i].which_is_installed >= 0 
+	if ( extra[i].which_is_installed >= 0
 	    && extra[i].which_is_installed <= TRUST_TEST)
 	  package[i].trust = extra[i].which_is_installed;
-	else 
+	else
 	  package[i].trust = TRUST_CURR;
 	  package[i].srcaction = SRCACTION_YES;
 	  break;

@@ -1,3 +1,19 @@
+Sun May 27 02:59:07 2001  Christopher Faylor <cgf@cygnus.com>
+
+	Use parse_filename method to parse filenames throughout.
+	Use get_root_dir to retrieve the current root directory throughout.
+	Set const in argument list, where appropriate, throughout.
+	* choose.cc (set_existence): Detect case of uninstalled package with no version.
+	(parse_filename): New function.
+	* filemanip.h (fileparse): New structure.
+	* mount.cc (read_mounts): Remember where we found the root mount.
+	(set_root_dir): New function.
+	(get_root_dir): Ditto.
+	* mount.h: Declare new functions.
+	* site.cc (get_root_dir_now): Renamed from get_root_dir.
+	(save_site_url): Use new function name.
+	(get_initial_list_idx): Ditto.
+
 Sat May 26 21:23:59 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* choose.cc: Use a constant throughout to deal with chooser icon

@@ -51,7 +51,7 @@ run (char *sh, char *args, char *file)
   si.dwFlags = STARTF_USEPOSITION;
 
   b = CreateProcess (0, cmdline, 0, 0, 0,
-		     CREATE_NEW_CONSOLE, 0, root_dir, &si, &pi);
+		     CREATE_NEW_CONSOLE, 0, get_root_dir (), &si, &pi);
 
   if (b)
     WaitForSingleObject (pi.hProcess, INFINITE);
@@ -109,11 +109,11 @@ do_postinstall (HINSTANCE h)
   GetEnvironmentVariable ("PATH", old_path, sizeof (old_path));
   SetEnvironmentVariable ("PATH",
 			  backslash (cygpath ("/bin;",
-					     root_dir, "/usr/bin;",
+					     get_root_dir (), "/usr/bin;",
 					     old_path, 0)));
 
-  SetEnvironmentVariable ("CYGWINROOT", root_dir);
-  SetCurrentDirectory (root_dir);
+  SetEnvironmentVariable ("CYGWINROOT", get_root_dir ());
+  SetCurrentDirectory (get_root_dir ());
 
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
   GetVersionEx (&verinfo);

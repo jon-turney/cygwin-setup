@@ -40,8 +40,20 @@
 
 #define SRCACTION_NO		0
 #define SRCACTION_YES		1
+typedef struct
+{
+  char *version;	/* version part of filename */
+  char *install;	/* file name to install */
+  int install_size;	/* in bytes */
+  int install_exists;	/* install file exists on disk */
+  char *source;		/* sources for installed binaries */
+  int source_size;	/* in bytes */
+  int source_exists;	/* source file exists on disk */
+  int partial_list_display;/* display this version in partial list */
+} Info;			/* +1 for TRUST_UNKNOWN */
 
-typedef struct {
+typedef struct
+{
   char *name;	/* package name, like "cygwin" */
   char *sdesc;	/* short description (replaces "name" if provided) */
   char *ldesc;	/* long description (multi-line) */
@@ -49,16 +61,7 @@ typedef struct {
   int srcaction;/* SRCACTION_ */
   int trust;	/* TRUST_* (selects among info[] below) */
 
-  struct {
-    char *version;	/* version part of filename */
-    char *install;	/* file name to install */
-    int install_size;	/* in bytes */
-    int install_exists; /* install file exists on disk */
-    char *source;	/* sources for installed binaries */
-    int source_size;	/* in bytes */
-    int source_exists;  /* source file exists on disk */
-    int partial_list_display;/* display this version in partial list */
-  } info[NTRUST+1];	/* +1 for TRUST_UNKNOWN */
+  Info info[NTRUST + 1]; /* +1 for TRUST_UNKNOWN */
 } Package;
 
 extern Package *package;

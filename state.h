@@ -22,7 +22,6 @@ extern int	source;
 
 extern char *	local_dir;
 
-extern char *	root_dir;
 extern int	root_text;
 extern int	root_scope;
 extern int   root_menu;

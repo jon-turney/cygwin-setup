@@ -24,19 +24,20 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "dialog.h"
 #include "msg.h"
 #include "log.h"
+#include "mount.h"
 
 char *
 eget (HWND h, int id, char *var)
 {
   char tmp[4000];
-  if (var)
+  if (var && var != get_root_dir ())
     {
       free (var);
-      var = 0;
+      var = NULL;
     }
   if (GetDlgItemText (h, id, tmp, sizeof (tmp)) > 0)
     {
-      var = (char *) malloc (strlen (tmp)+1);
+      var = (char *) malloc (strlen (tmp) + 1);
       strcpy (var, tmp);
     }
   return var;
@@ -51,7 +52,7 @@ eget (HWND h, int id)
 }
 
 void
-eset (HWND h, int id, char *val)
+eset (HWND h, int id, const char *val)
 {
   SetDlgItemText (h, id, val);
 }

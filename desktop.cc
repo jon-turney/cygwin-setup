@@ -189,8 +189,8 @@ make_cygwin_bat ()
 
   fprintf (bat, "@echo off\n\n");
 
-  fprintf (bat, "%.2s\n", root_dir);
-  fprintf (bat, "chdir %s\n\n", backslash (concat (root_dir+2, "/bin", 0)));
+  fprintf (bat, "%.2s\n", get_root_dir ());
+  fprintf (bat, "chdir %s\n\n", backslash (concat (get_root_dir () + 2, "/bin", 0)));
 
   fprintf (bat, "bash --login -i\n");
 

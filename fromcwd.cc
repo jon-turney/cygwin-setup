@@ -86,57 +86,38 @@ canonicalize_version (char *v)
 static void
 found_file (char *path, unsigned int fsize)
 {
-  char base[_MAX_PATH], *ver;
+  fileparse f;
+  char base[_MAX_PATH];
 
-  int l = find_tar_ext (path);
-  if (!l)
+  if (!parse_filename (path, f))
     return;
 
-  if (strstr (path, "-src."))
-    return;
-  if (strstr (path, "-patch."))
+  if (f.what[0] != '\0')
     return;
 
-  char *sl = strrchr (path, '/');
-  if (sl)
-    sl++;
-  else
-    sl = path;
-  strcpy (base, sl);
-  base[l] = 0; /* remove .tar.gz */
-  for (ver=base; *ver; ver++)
-    if ((*ver == '-' || *ver == '_') && isdigit (ver[1]))
-      {
-	*ver++ = 0;
-	break;
-      }
-
-  Package *p = 0;
-  int i;
-
-  for (i=0; i<npackages; i++)
-    if (strcmp (package[i].name, base) == 0)
+  Package *p = NULL;
+  for (int i = 0; i < npackages; i++)
+    if (strcmp (package[i].name, f.pkg) == 0)
       {
 	p = package + i;
 	break;
       }
-  if (p == 0)
+
+  if (p == NULL)
       p = new_package (strdup (base));
 
-  int trust = is_test_version (ver) ? TRUST_TEST : TRUST_CURR;
-  if (!*ver)
-    trust = TRUST_PREV;
+  int trust = is_test_version (f.ver) ? TRUST_TEST : TRUST_CURR;
 
   /* See if this version is older than what we have */
   if (p->info[trust].version)
     {
       char *ov = canonicalize_version (p->info[trust].version);
-      char *nv = canonicalize_version (ver);
+      char *nv = canonicalize_version (f.ver);
       if (strcmp (ov, nv) > 0)
 	return;
     }
 
-  p->info[trust].version = _strdup (ver);
+  p->info[trust].version = _strdup (f.ver);
   p->info[trust].install = _strdup (path);
   p->info[trust].install_size = fsize;
 }

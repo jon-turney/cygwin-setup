@@ -24,11 +24,13 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "mkdir.h"
 
 int
-mkdir_p (int isadir, char *path)
+mkdir_p (int isadir, const char *in_path)
 {
   char saved_char, *slash = 0;
   char *c;
   DWORD d, gse;
+  char path[strlen (in_path) + 1];
+  strcpy (path, in_path);
 
   d = GetFileAttributes (path);
   if (d != 0xffffffff && d & FILE_ATTRIBUTE_DIRECTORY)
@@ -52,7 +54,7 @@ mkdir_p (int isadir, char *path)
 	}
     }
 
-  for (c=path; *c; c++)
+  for (c = path; *c; c++)
     {
       if (*c == ':')
 	slash = 0;

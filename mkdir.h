@@ -18,4 +18,4 @@
    zero, "path" is the name of a *file* that we need a directory
    for. */
 
-extern int mkdir_p (int isadir, char *path);
+extern int mkdir_p (int isadir, const char *path);

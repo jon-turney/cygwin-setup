@@ -57,7 +57,7 @@ int   eget (HWND h, int id);
 
 /* Set the EditText control to the given string or integer */
 
-void  eset (HWND h, int id, char *var);
+void  eset (HWND h, int id, const char *var);
 void  eset (HWND h, int id, int var);
 
 /* RadioButtons.  ids is a null-terminated list of IDs.  Get

@@ -115,7 +115,7 @@ exit_setup (int exit_code)
 
   log (LOG_TIMESTAMP, "Ending cygwin install");
 
-  if (source == IDC_SOURCE_DOWNLOAD || !root_dir)
+  if (source == IDC_SOURCE_DOWNLOAD || !get_root_dir ())
     {
       log_save (LOG_BABBLE, "setup.log.full", 0);
       log_save (0, "setup.log", 1);

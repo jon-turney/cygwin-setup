@@ -39,7 +39,7 @@ static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
 static void
 check_if_enable_next (HWND h)
 {
-  EnableWindow (GetDlgItem (h, IDOK), root_text && root_dir && root_scope);
+  EnableWindow (GetDlgItem (h, IDOK), root_text && get_root_dir () && root_scope);
 }
 
 static void
@@ -47,7 +47,7 @@ load_dialog (HWND h)
 {
   rbset (h, rb, root_text);
   rbset (h, su, root_scope);
-  eset (h, IDC_ROOT_DIR, root_dir);
+  eset (h, IDC_ROOT_DIR, get_root_dir ());
   check_if_enable_next (h);
 }
 
@@ -56,7 +56,7 @@ save_dialog (HWND h)
 {
   root_text = rbget (h, rb);
   root_scope = rbget (h, su);
-  root_dir = eget (h, IDC_ROOT_DIR, root_dir);
+  set_root_dir (eget (h, IDC_ROOT_DIR, (char *) get_root_dir ()));
 }
 
 static int CALLBACK
@@ -65,8 +65,8 @@ browse_cb (HWND h, UINT msg, LPARAM lp, LPARAM data)
   switch (msg)
     {
     case BFFM_INITIALIZED:
-      if (root_dir)
-	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM)root_dir);
+      if (get_root_dir ())
+	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) get_root_dir ());
       break;
     }
   return 0;
@@ -97,9 +97,8 @@ browse (HWND h)
 static int
 directory_is_absolute ()
 {
-  if (isalpha (root_dir[0])
-      && root_dir[1] == ':'
-      && (root_dir[2] == '\\' || root_dir[2] == '/'))
+  const char *r = get_root_dir ();
+  if (isalpha (r[0]) && r[1] == ':' && (r[2] == '\\' || r[2] == '/'))
     return 1;
   return 0;
 }
@@ -107,8 +106,8 @@ directory_is_absolute ()
 static int
 directory_is_rootdir ()
 {
-  char *c;
-  for (c = root_dir; *c; c++)
+  const char *c;
+  for (c = get_root_dir (); *c; c++)
     if (isslash (c[0]) && c[1] && !isslash (c[1]))
       return 0;
   return 1;
@@ -117,7 +116,7 @@ directory_is_rootdir ()
 static int
 directory_has_spaces ()
 {
-  if (strchr (root_dir, ' '))
+  if (strchr (get_root_dir (), ' '))
     return 1;
   return 0;
 }
@@ -201,13 +200,13 @@ void
 do_root (HINSTANCE h)
 {
   int rv = 0;
-  if (!root_dir)
+  if (!get_root_dir ())
     read_mounts ();
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_ROOT), 0, dialog_proc);
   if (rv == -1)
     fatal (IDS_DIALOG_FAILED);
 
-  log (0, "root: %s %s %s", root_dir,
+  log (0, "root: %s %s %s", get_root_dir (),
        (root_text == IDC_ROOT_TEXT) ? "text" : "binary",
        (root_scope == IDC_ROOT_USER) ? "user" : "system");
 }

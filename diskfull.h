@@ -14,4 +14,4 @@
  */
 
 /* returns 0..100 (percent) */
-int diskfull (char *path);
+int diskfull (const char *path);

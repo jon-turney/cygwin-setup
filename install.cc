@@ -336,7 +336,7 @@ install_one (char *name, char *file, int file_size, int action, BOOL isSrc)
   total_bytes_sofar += file_size;
   progress (0);
 
-  int df = diskfull (root_dir);
+  int df = diskfull (get_root_dir ());
   SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
 
   if (lst)
@@ -355,7 +355,7 @@ do_install (HINSTANCE h)
 
   next_dialog = IDD_DESKTOP;
 
-  mkdir_p (1, root_dir);
+  mkdir_p (1, get_root_dir ());
 
   for (i=0; standard_dirs[i]; i++)
     {
@@ -378,7 +378,7 @@ do_install (HINSTANCE h)
   total_bytes = 0;
   total_bytes_sofar = 0;
 
-  int df = diskfull (root_dir);
+  int df = diskfull (get_root_dir ());
   SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) df, 0);
 
   LOOP_PACKAGES
@@ -512,7 +512,7 @@ do_install (HINSTANCE h)
   int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
 
-  create_mount ("/", root_dir, istext, issystem);
+  create_mount ("/", get_root_dir (), istext, issystem);
   create_mount ("/usr/bin", cygpath ("/bin", 0), istext, issystem);
   create_mount ("/usr/lib", cygpath ("/lib", 0), istext, issystem);
   set_cygdrive_flags (istext, issystem);

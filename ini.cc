@@ -88,7 +88,7 @@ do_ini (HINSTANCE h)
 	}
     }
 
-  if (root_dir)
+  if (get_root_dir ())
     {
       mkdir_p (1, cygpath ("/etc/setup", 0));
 

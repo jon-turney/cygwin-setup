@@ -34,6 +34,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "log.h"
 #include "state.h"
 #include "diskfull.h"
+#include "mount.h"
 
 static int is_showing = 0;
 static HWND gw_dialog = 0;
@@ -250,7 +251,7 @@ get_url_to_file (char *_url, char *_filename, int expected_length)
   log (LOG_BABBLE, "get_url_to_file %s %s", _url, _filename);
   if (total_download_bytes > 0)
     {
-      int df = diskfull (root_dir);
+      int df = diskfull (get_root_dir ());
       SendMessage (gw_iprogress, PBM_SETPOS, (WPARAM) df, 0);
     }
   init_dialog (_url, expected_length);
@@ -297,7 +298,7 @@ get_url_to_file (char *_url, char *_filename, int expected_length)
 
   if (total_download_bytes > 0)
     {
-      int df = diskfull (root_dir);
+      int df = diskfull (get_root_dir ());
       SendMessage (gw_iprogress, PBM_SETPOS, (WPARAM) df, 0);
     }
 
