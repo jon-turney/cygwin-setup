@@ -123,11 +123,12 @@ NetIO_HTTP::NetIO_HTTP (char *Purl, BOOL allow_ftp_auth)
 
   char *l = s->gets ();
   int code;
+  if (!l)
+    return;
   sscanf (l, "%*s %d", &code);
   if (code >= 300 && code < 400)
     {
-      do {
-	l = s->gets ();
+      while ((l = s->gets ()) != 0) {
 	if (_strnicmp (l, "Location:", 9) == 0)
 	  {
 	    char *u = l + 9;
@@ -137,7 +138,7 @@ NetIO_HTTP::NetIO_HTTP (char *Purl, BOOL allow_ftp_auth)
 	    delete s;
 	    goto retry_get;
 	  }
-      } while (*l);
+      }
     }
   if (code == 401) /* authorization required */
     {
@@ -171,11 +172,10 @@ NetIO_HTTP::NetIO_HTTP (char *Purl, BOOL allow_ftp_auth)
       s = 0;
       return;
     }
-  do {
-    l = s->gets ();
+  while ((l = s->gets ()) != 0) {
     if (_strnicmp (l, "Content-Length:", 15) == 0)
       sscanf (l, "%*s %d", &file_size);
-  } while (*l);
+  }
 }
 
 NetIO_HTTP::~NetIO_HTTP ()
@@ -187,7 +187,7 @@ NetIO_HTTP::~NetIO_HTTP ()
 int
 NetIO_HTTP::ok ()
 {
-  if (s)
+  if (s && s->ok ())
     return 1;
   return 0;
 }

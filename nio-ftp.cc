@@ -45,7 +45,7 @@ ftp_line (SimpleSocket *s)
 {
   do {
     last_line = s->gets ();
-    log (LOG_BABBLE, "ftp > %s", last_line);
+    log (LOG_BABBLE, "ftp > %s", last_line ? last_line : "error");
   } while (last_line && (!isdigit (last_line[0]) || last_line[3] != ' '));
   return atoi (last_line ?: "0");
 }
@@ -128,7 +128,7 @@ auth_retry:
 
   cmd->printf ("RETR %s\r\n", path);
   code = ftp_line (cmd);
-  if (code != 150)
+  if (code != 150 && code != 125)
     {
       delete s;
       s = 0;
@@ -145,7 +145,7 @@ NetIO_FTP::~NetIO_FTP ()
 int
 NetIO_FTP::ok ()
 {
-  if (s)
+  if (s && s->ok ())
     return 1;
   return 0;
 }
@@ -153,7 +153,7 @@ NetIO_FTP::ok ()
 int
 NetIO_FTP::read (char *buf, int nbytes)
 {
-  if (!s)
+  if (!ok ())
     return 0;
   return s->read (buf, nbytes);
 }

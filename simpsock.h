@@ -21,6 +21,7 @@ class SimpleSocket {
   char *buf;
   int putp, getp;
   int fill ();
+  void invalidate (void);
 
  public:
   SimpleSocket (const char *hostname, int port);

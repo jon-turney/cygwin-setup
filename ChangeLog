@@ -1,3 +1,28 @@
+2001-11-08  Pavel Tsekov  <ptsekov@syntrex.com>
+ 
+	* simpsock.h (SimpleSocket::invalidate): Declare new method.
+	* simpsock.cc (SimpleSocket::invalidate): Implement new method.
+	(SimpleSocket::SimpleSocket): Initialize buf to zero. Do not allocate
+	memory for buf in the constructor.
+	(SimpleSocket::~SimpleSocket): Use SimpleSocket::invalidate().
+	(SimpleSocket::printf): Use SimpleSocket::write() instead of send().
+	(SimpleSocket::write): Check object consistency - return -1 on error.
+	invalidate() the object on socket write error.
+	(SimpleSocket::fill): Check object consistency - return -1 on error.
+	invalidate() the object if socket read error is encountered and there
+	is no more data available in the internal read buffer.
+	Allocate memory for the internal read buffer.
+	(SimpleSocket::gets): Return zero (NULL pointer) if error is encountered
+	during fill() and no more data is available in the internal read buffer.
+	(SimpleSocket::read): Check object consistency - return -1 on error.
+	invalidate() the object if socket read error is encountered.
+	* nio-ftp.cc (NetIO_FTP:NetIO_FTP): Allow 125 as valid response code to
+	the RETR command (fix for MS IIS ftp server 5 - possibly others too).
+	(NetIO_FTP::ok): Check if the SimpleSocket object is ok().
+	(NetIO_FTP::read): Use NetIO_FTP::ok().
+	* nio-http.cc: Check for valid return value of SimpleSocket::gets().
+	(NetIO_HTTP::ok): Check if the SimpleSocket object is ok().
+
 2001-11-09  Robert Collins  <rbtcollins@hotmail.com>
 
 	* simpsock.cc (cvsid): Avoid compiler warnings (not used, deprecated conversion).

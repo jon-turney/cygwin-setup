@@ -41,7 +41,7 @@ SimpleSocket::SimpleSocket (const char *hostname, int port)
     }
 
   s = INVALID_SOCKET;
-  buf = (char *) malloc (SSBUFSZ + 3);
+  buf = 0;
   putp = getp = 0;
 
   int i1, i2, i3, i4;
@@ -93,12 +93,7 @@ SimpleSocket::SimpleSocket (const char *hostname, int port)
 
 SimpleSocket::~SimpleSocket ()
 {
-  if (s != INVALID_SOCKET)
-    closesocket (s);
-  s = INVALID_SOCKET;
-  if (buf)
-    free (buf);
-  buf = 0;
+  invalidate ();
 }
 
 int
@@ -116,18 +111,28 @@ SimpleSocket::printf (const char *fmt, ...)
   va_list args;
   va_start (args, fmt);
   vsprintf (buf, fmt, args);
-  return send (s, buf, strlen (buf), 0);
+  return write (buf, strlen (buf));
 }
 
 int
 SimpleSocket::write (const char *buf, int len)
 {
-  return send (s, buf, len, 0);
+  int rv;
+  if (!ok ())
+    return -1;
+  if ((rv = send (s, buf, len, 0)) == -1)
+    invalidate ();
+  return rv;
 }
 
 int
 SimpleSocket::fill ()
 {
+  if (!ok ())
+    return -1;
+
+  if (buf == 0)
+    buf = (char *) malloc (SSBUFSZ + 3);
   if (putp == getp)
     putp = getp = 0;
 
@@ -138,9 +143,12 @@ SimpleSocket::fill ()
   if (r > 0)
     {
       putp += r;
-      return r;
     }
-  return 0;
+  else if (r < 0 && putp == getp)
+    {
+      invalidate();
+    }
+  return r;
 }
 
 char *
@@ -153,7 +161,8 @@ SimpleSocket::gets ()
       getp = 0;
     }
   if (putp == getp)
-    fill();
+    if (fill () <= 0)
+      return 0;
 
   // getp is zero, always, here, and putp is the count
   char *nl;
@@ -167,12 +176,14 @@ SimpleSocket::gets ()
       while ((*nl == '\n' || *nl == '\r') && nl >= buf)
 	*nl-- = 0;
     }
-  else
+  else if (putp > getp)
     {
       getp = putp;
       nl = buf + putp;
       nl[1] = 0;
     }
+  else
+    return 0;
 
   return buf;
 }
@@ -182,6 +193,9 @@ SimpleSocket::gets ()
 int
 SimpleSocket::read (char *ubuf, int ulen)
 {
+  if (!ok ())
+    return -1;
+
   int n, rv=0;
   if (putp > getp)
     {
@@ -195,11 +209,25 @@ SimpleSocket::read (char *ubuf, int ulen)
   while (ulen > 0)
     {
       n = recv (s, ubuf, ulen, 0);
+      if (n < 0)
+        invalidate();
       if (n <= 0)
-	return rv;
+        return rv > 0 ? rv : n;
       ubuf += n;
       ulen -= n;
       rv += n;
     }
   return rv;
+}
+
+void
+SimpleSocket::invalidate (void)
+{
+  if (s != INVALID_SOCKET)
+    closesocket (s);
+  s = INVALID_SOCKET;
+  if (buf)
+    free (buf);
+  buf = 0;
+  getp = putp = 0;
 }
