@@ -15,7 +15,7 @@ my %xlate = ('diffutils'=>'diff', 'glibc'=>'cygwin', 'vixie-cron'=>'cron', 'mt-s
 	     'libz1'=>'zlib', 'libncurses5'=>'ncurses', 'perl-5.005'=>'perl', 'libpopt0'=>'popt',
 	     'python-base'=>'python', 'libreadline4'=>'readline', 'termcap-compat'=>'termcap');
 my %rpackage;
-for my $p (qw'ash bash clear crypt cvs cygrunsrv cygwin diff gcc inetutils irc jbigkit jpeg libpng login man
+for my $p (qw'ash bash clear crypt ctags cvs cygrunsrv cygwin diff gcc inetutils irc jbigkit jpeg libpng login man
               mingw mingw-runtime mt mutt ncftp ncurses newlib-man opengl openssh openssl pcre perl postgresql python readline
 	      regex rxvt sh-utils squid ssmtp tcltk termcap tetex-beta tiff unzip vim w32api wget which xpm-nox zip zlib') {
     $package{$p}{''} = {};
@@ -26,6 +26,7 @@ for my $p (qw'ash bash clear crypt cvs cygrunsrv cygwin diff gcc inetutils irc j
     };
     $p eq 'bash' and do {
 	$pkg->{'category'} = 'base shells';
+	$pkg->{'requires'} = 'cygwin termcap';
     };
     $p eq 'clear' and do {
 	$pkg->{'requires'} = 'cygwin';
@@ -36,6 +37,11 @@ for my $p (qw'ash bash clear crypt cvs cygrunsrv cygwin diff gcc inetutils irc j
 	$pkg->{'requires'} = 'cygwin';
 	$pkg->{'sdesc'} = '"Encryption/Decryption utility and library"';
 	$pkg->{'category'} = $d ? 'libs' : 'Applications/Text';
+    };
+    $p eq 'ctags' and do {
+	$pkg->{'sdesc'} = '"A C programming language indexing and/or cross-reference tool"';
+	$pkg->{'category'} = $d ? 'devel' : 'Development/Tools';
+	$pkg->{'requires'} = 'cygwin';
     };
     $p eq 'cvs' and do {
 	$pkg->{'requires'} = 'ash cygwin gdbm crypt textutils';
@@ -64,7 +70,7 @@ for my $p (qw'ash bash clear crypt cvs cygrunsrv cygwin diff gcc inetutils irc j
 	$pkg->{'category'} = $d ? 'net' : '"System Environment/Daemons" "Networking"';
     };
     $p eq 'irc' and do {
-	$pkg->{'sdesc'} = "An Internet Relay Chat (IRC) client";
+	$pkg->{'sdesc'} = '"An Internet Relay Chat (IRC) client"';
 	$pkg->{'category'} = $d ? 'net' : 'Applications/Internet';
 	$pkg->{'requires'} = 'ash cygwin termcap';
     };
