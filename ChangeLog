@@ -1,3 +1,15 @@
+2002-11-10  Robert Collins  <rbtcollins@hotmail.com>
+
+	* LogFile.cc: use 'std::' where needed throughout.
+	(LogFile::createLogFile): Implement a factory for LogFile.
+	(LogFile::LogFile): Update for use with the factory, and to
+	handle the latest g++ library changes.
+	(LogFile::operator()): Ditto.
+	(LogFile::endEntry()): Ditto.
+	* LogFile.h: Ditto.
+	* LogSingleton.cc: Ditto.
+	* LogSingleton.h: Ditto.
+
 2002-11-04  Max Bowsher  <maxb@ukf.net>
 
 	* String++.h: Add 'std::' where needed.

@@ -32,7 +32,10 @@ ostream& endLog(ostream& outs)
 
 LogSingleton * LogSingleton::theInstance(0);
 
-LogSingleton::LogSingleton(){}
+LogSingleton::LogSingleton(std::streambuf* aStream) : ios (aStream), ostream (aStream)
+{
+    ios::init (aStream);
+}
 LogSingleton::~LogSingleton(){}
 
 LogSingleton &

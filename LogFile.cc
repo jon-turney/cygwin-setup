@@ -26,7 +26,7 @@ static const char *cvsid =
 #include "msg.h"
 #include "resource.h"
 #include <iostream>
-#include <strstream>
+#include <sstream>
 #include <set>
 #include <time.h>
 #include <string>
@@ -67,12 +67,17 @@ int exit_msg = 0;
 
 typedef set<filedef> FileSet;
 static FileSet files;
-static ostrstream *theStream;
+static stringbuf *theStream;
 
-LogFile::LogFile()
+LogFile *
+LogFile::createLogFile()
 {
-  theStream = new ostrstream;
-  rdbuf (theStream->rdbuf());
+    theStream = new std::stringbuf;
+    return new LogFile(theStream);
+}
+
+LogFile::LogFile(std::stringbuf *aStream) : LogSingleton (aStream) 
+{
 }
 LogFile::~LogFile(){}
 
@@ -164,8 +169,8 @@ LogFile::operator() (log_level theLevel)
   if (theLevel < 1 || theLevel > 2)
     throw "barfoo";
   if (!theStream)
-    theStream = new ostrstream;
-  rdbuf (theStream->rdbuf());
+    theStream = new std::stringbuf;
+  rdbuf (theStream);
   currEnt = new LogEnt;
   currEnt->next = 0;
   currEnt->level = theLevel;
@@ -195,12 +200,14 @@ LogFile::endEntry()
   /* What follows is a hack to get around an (apparent) bug in libg++-3 with
    * non-0 memory on alloc
    */
-  currEnt->msg += string(theStream->str()).substr(0,theStream->pcount()).c_str();
-  msg ("LOG: %d %s", currEnt->level, string(theStream->str()).substr(0,theStream->rdbuf()->pcount()).c_str());
-  theStream->freeze(0);
+  currEnt->msg += theStream->str();
+    // OLD code (libg++3) string(theStream->str()).substr(0,theStream->pcount()).c_str();
+  msg ("LOG: %d %s", currEnt->level, theStream->str().c_str());
+       //string(theStream->str()).substr(0,theStream->rdbuf()->pcount()).c_str());
+  // theStream->freeze(0);
   delete theStream;
   /* reset for next use */
-  theStream = new ostrstream;
-  rdbuf (theStream->rdbuf());
-  init (theStream->rdbuf());
+  theStream = new std::stringbuf;
+  rdbuf (theStream);
+  init (theStream);
 }

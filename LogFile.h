@@ -14,10 +14,12 @@
  */
 
 #include "LogSingleton.h"
+#include <sstream>
 
 // Logging class. Default logging level is PLAIN.
 class LogFile : public LogSingleton {
 public:
+  LogFile *createLogFile();
   LogFile();
   void clearFiles(); // delete all target filenames
   void setFile (int minlevel, String const &path, bool append);
@@ -28,9 +30,10 @@ public:
   virtual void exit (int const exit_code) __attribute__ ((noreturn));
   virtual ~LogFile();
   // get a specific verbosity stream.
-  virtual ostream &operator() (enum log_level level);
+  virtual std::ostream &operator() (enum log_level level);
   
 protected:
+  LogFile(std::stringbuf *aStream);
   LogFile (LogFile const &); // no copy constructor
   LogFile &operator = (LogFile const&); // no assignment operator
   virtual void endEntry(); // the current in-progress entry is complete.
