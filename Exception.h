@@ -21,15 +21,18 @@
 #define _EXCEPTION_H_
 
 #include <exception>
+#include "String++.h"
 
 /* Generic excpetion class for throwing exceptions */
 class Exception : public std::exception {
 public:
   Exception (char const *where, char const *message, int appErrNo = 0);
+  Exception (char const *where, const String &message, int appErrNo = 0);
+  ~Exception () throw () {}
   char const *what() const throw();
   int errNo() const;
 private:
-  char const *_message;
+  String _message;
   int appErrNo;
 };
 

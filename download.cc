@@ -85,7 +85,7 @@ validateCachedPackage (String const &fullname, packagesource & pkgsource)
 	}
       delete thefile;
       if (count < 0)
-	throw new Exception ("__LINE__ __FILE__", (String ("IO Error reading ") + pkgsource.Cached()).cstr_oneuse(), APPERR_IO_ERROR);
+	throw new Exception ("__LINE__ __FILE__", String ("IO Error reading ") + pkgsource.Cached(), APPERR_IO_ERROR);
       
       md5_byte_t tempdigest[16];
       md5_finish(&pns, tempdigest);
@@ -125,7 +125,7 @@ check_for_cached (packagesource & pkgsource)
 	if (validateCachedPackage (prefix + pkgsource.Canonical (), pkgsource))
 	  pkgsource.set_cached (prefix + pkgsource.Canonical ());
 	else
-	  throw new Exception ("__LINE__ __FILE__", (String ("Package validation failure for ") + prefix + pkgsource.Canonical ()).cstr_oneuse(), APPERR_CORRUPT_PACKAGE);
+	  throw new Exception ("__LINE__ __FILE__", String ("Package validation failure for ") + prefix + pkgsource.Canonical (), APPERR_CORRUPT_PACKAGE);
 	return 1;
       }
 
@@ -143,7 +143,7 @@ check_for_cached (packagesource & pkgsource)
 	  if (validateCachedPackage (fullname, pkgsource))
 	    pkgsource.set_cached (fullname );
 	  else
-	    throw new Exception ("__LINE__ __FILE__", (String ("Package validation failure for ") + fullname).cstr_oneuse(), APPERR_CORRUPT_PACKAGE);
+	    throw new Exception ("__LINE__ __FILE__", String ("Package validation failure for ") + fullname, APPERR_CORRUPT_PACKAGE);
 	  return 1;
 	}
     }

@@ -1,3 +1,17 @@
+2003-02-16  Pavel Tsekov  <ptsekov@gmx.net>
+
+	* Exception.h: Declare new constructor.
+	(Exception::_message): Change the type from 'const char *' to
+	'class String'.
+	(Exception::~Exception): Implement destructor (make gcc shut up).
+	* Exception.cc: Implement new constructor.
+	(Exception::what): Use String::cstr_oneuse ().
+	* download.cc (validateCachedPackage): Use the constructor, which
+	takes String& as its second argument, when throwing objects
+	of type Exception.
+	(check_for_cached): Ditto.
+	* install.cc (install_one_source): Ditto.
+
 2003-02-01  Igor Pechtchanski <pechtcha@cs.nyu.edu>
 
 	* res.rc (IDS_INSTALL_INCOMPLETE): Change hard-coded

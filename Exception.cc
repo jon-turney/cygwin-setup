@@ -19,10 +19,16 @@ Exception::Exception (char const *where, char const *message, int _appErrNo) : _
 {
 }
 
+Exception::Exception (char const *where, const String &message, int _appErrNo)
+  : appErrNo (_appErrNo)
+{
+  _message = message;
+}
+
 char const *
 Exception::what() const throw()
 {
-  return _message;
+  return _message.cstr_oneuse ();
 }
 
 int

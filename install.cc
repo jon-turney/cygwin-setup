@@ -210,7 +210,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
 	  md5_append (&pns, buffer, count);
       delete thefile;
       if (count < 0)
-	throw new Exception ("__LINE__ __FILE__", (String ("IO Error reading ") + source.Cached()).cstr_oneuse(), APPERR_IO_ERROR);
+	throw new Exception ("__LINE__ __FILE__", String ("IO Error reading ") + source.Cached(), APPERR_IO_ERROR);
       
       md5_byte_t tempdigest[16];
       md5_finish(&pns, tempdigest);
@@ -220,7 +220,7 @@ install_one_source (packagemeta & pkgm, packagesource & source,
       log (LOG_BABBLE, String ("For file ") + source.Cached() + " ini digest is " + source.md5.print() + " file digest is " + tempMD5.print());
       
       if (source.md5 != tempMD5)
-	  throw new Exception ("__LINE__ __FILE__", (String ("Checksum failure for ") + source.Cached()).cstr_oneuse(), APPERR_CORRUPT_PACKAGE);
+	  throw new Exception ("__LINE__ __FILE__", String ("Checksum failure for ") + source.Cached(), APPERR_CORRUPT_PACKAGE);
     }
   io_stream *tmp = io_stream::open (source.Cached (), "rb");
   archive *thefile = 0;
