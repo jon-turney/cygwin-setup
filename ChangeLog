@@ -1,3 +1,8 @@
+2003-03-20  Max Bowsher  <maxb@ukf.net>
+
+	* ChangeLog: Reinstate ChangeLog entry erroneously removed in revision
+	2.249.2.1 .
+
 2003-03-05  Max Bowsher  <maxb@ukf.net>
 
 	* netio.cc (save_dialog): Allocate an empty string if the password is
@@ -65,7 +70,12 @@
 2002-06-05  Robert Collins  <rbtcollins@hotmail.com>
 
 	* Branch for a new release.
-    
+
+2002-05-26  Ralf Habacker  <ralf.habacker@freenet.de>
+
+	* archive_tar.cc (archive_tar::next_file_name()): fixed broken
+	GNU long name extension support.
+
 2002-05-27  Robert Collins  <rbtcollins@hotmail.com>
 
 	* IniParseFindVisitor.cc (IniParseFindVisitor::visitFile): Don't 
