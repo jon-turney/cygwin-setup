@@ -1,3 +1,10 @@
+2001-08-07  Corinna Vinschen  <corinna@vinschen.de>
+
+	* autoload.c: Add dynamic load statements for NT/W2K
+	advapi32 functions not available in 9x/ME.
+	* main.cc (set_default_dacl): New function.
+	(WinMain): Call `set_default_dacl' if running on NT/W2K.
+
 Sat Aug  4 21:35:53 2001  Christopher Faylor <cgf@cygnus.com>
 
 	* ini.h (_CategoryPackage): Change pkg field to pkgname for
