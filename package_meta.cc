@@ -18,6 +18,11 @@ static const char *cvsid = "\n%%% $Id$\n";
 #endif
 
 #include "package_meta.h"
+
+#include <string>
+#include <set>
+using namespace std;
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -27,7 +32,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "compress.h"
 
 #include "filemanip.h"
-#include "hash.h"
 #include "LogSingleton.h"
 /* io_stream needs a bit of tweaking to get rid of this. TODO */
 #include "mount.h"
@@ -46,49 +50,6 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "Generic.h"
 
 using namespace std;
-
-static const char *standard_dirs[] = {
-  "bin",
-  "etc",
-  "lib",
-  "tmp",
-  "usr",
-  "usr/bin",
-  "usr/lib",
-  "usr/src",
-  "usr/local",
-  "usr/local/bin",
-  "usr/local/etc",
-  "usr/local/lib",
-  "usr/tmp",
-  "var/run",
-  "var/tmp",
-  0
-};
-
-void
-hash::add_subdirs (String const &tpath)
-{
-  char *nonp, *pp;
-  char *path = tpath.cstr();
-  for (nonp = path; *nonp == '\\' || *nonp == '/'; nonp++);
-  for (pp = path + strlen (path) - 1; pp > nonp; pp--)
-    if (*pp == '/' || *pp == '\\')
-      {
-	int i, s = 0;
-	char c = *pp;
-	*pp = 0;
-	for (i = 0; standard_dirs[i]; i++)
-	  if (strcmp (standard_dirs[i] + 1, path) == 0)
-	    {
-	      s = 1;
-	      break;
-	    }
-	if (s == 0)
-	  add (path);
-	*pp = c;
-      }
-}
 
 /*****************/
 
@@ -195,15 +156,25 @@ packagemeta::uninstall ()
        * to allow differences between formats to be seamlessly managed
        * but for now: here is ok
        */
-      hash dirs;
-      String line = installed.getfirstfile ();
+      set<string> dirs;
+      string line = installed.getfirstfile ();
 
       try_run_script ("/etc/preremove/", name);
       while (line.size())
 	{
-	  dirs.add_subdirs (line);
+          /* Insert the paths of all parent directories of line into dirs. */
+          size_t idx = line.length();
+          while ((idx = line.find_last_of('/', idx-1)) != string::npos)
+          {
+            string dir_path = line.substr(0, idx);
+            bool was_new = dirs.insert(dir_path).second;
+            /* If the path was already present in dirs, then all parent paths
+             * must necessarily be present also, so don't do any further work.
+             * */
+            if (!was_new) break;
+          }
 
-	  String d = cygpath (String ("/") + line);
+	  String d = cygpath ("/" + line);
 	  DWORD dw = GetFileAttributes (d.cstr_oneuse());
 	  if (dw != INVALID_FILE_ATTRIBUTES
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
@@ -227,14 +198,16 @@ packagemeta::uninstall ()
 	}
       installed.uninstall ();
 
-      dirs.reverse_sort ();
-      char *subdir = 0;
-      while ((subdir = dirs.enumerate (subdir)) != 0)
-	{
-	  String d = cygpath (String ("/") + subdir);
-	  if (RemoveDirectory (d.cstr_oneuse()))
-	    log (LOG_BABBLE) << "rmdir " << d << endLog;
-	}
+      /* An STL set maintains itself in sorted order. Thus, iterating over it
+       * in reverse order will ensure we process directories depth-first. */
+      set<string>::const_iterator it = dirs.end();
+      while (it != dirs.begin())
+      {
+        it--;
+        String d = cygpath("/" + *it);
+        if (RemoveDirectory (d.cstr_oneuse()))
+          log (LOG_BABBLE) << "rmdir " << d << endLog;
+      }
       try_run_script ("/etc/postremove/", name);
     }
   installed = packageversion();

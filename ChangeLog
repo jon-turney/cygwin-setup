@@ -1,5 +1,18 @@
 2004-12-28  Max Bowsher  <maxb@ukf.net>
 
+	The Big Cleanup: Phase "hash"
+
+	* hash.cc, hash.h: Delete.
+	* Makefile.am (setup_SOURCES): Sync with deleted files.
+
+	* package_mets: Modify includes.
+	(standard_dirs): Remove.
+	(hash::add_subdirs): Remove.
+	(packagemeta::uninstall): Re-implement using STL set instead of
+	homebrew hash.
+
+2004-12-28  Max Bowsher  <maxb@ukf.net>
+
 	* String++.h (operator std::string): Take care to never do
 	std::string((char*)NULL) - it causes a hang!
 

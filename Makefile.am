@@ -157,8 +157,6 @@ setup_SOURCES = \
 	Generic.h \
 	geturl.cc \
 	geturl.h \
-	hash.cc \
-	hash.h \
 	ini.cc \
 	ini.h \
 	IniDBBuilder.cc \
