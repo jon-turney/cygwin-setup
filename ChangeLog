@@ -1,5 +1,11 @@
 2002-05-12  Robert Collins  <rbtcollins@hotmail.com>
 
+	* LogFile.cc (endLog): Work around an apparent libg++-3 bug causing
+	corrupt log file entries.
+	* geturl.cc: Convert to the new LogSingleton logging.
+
+2002-05-12  Robert Collins  <rbtcollins@hotmail.com>
+
 	* ini.cc (do_remote_ini): Use setup.bz2 if it exists in preference to
 	setup.ini.
 

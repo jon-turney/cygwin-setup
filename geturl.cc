@@ -36,7 +36,6 @@ static const char *cvsid =
 #include "resource.h"
 #include "netio.h"
 #include "msg.h"
-#include "log.h"
 #include "io_stream.h"
 #include "io_stream_memory.h"
 #include "state.h"
@@ -48,6 +47,8 @@ static const char *cvsid =
 #include "String++.h"  
 
 #include "Exception.h"
+
+#include "LogSingleton.h"
 
 extern ThreeBarProgressPage Progress;
 
@@ -116,14 +117,14 @@ progress (int bytes)
 void
 getUrlToStream (String const &_url, HWND owner, io_stream *output)
 {
-  log (LOG_BABBLE, String ("getUrlToStream ") + _url);
+  log (LOG_BABBLE) << "getUrlToStream " << _url << endLog;
   is_local_install = (source == IDC_SOURCE_CWD);
   init_dialog (_url, 0, owner);
   NetIO *n = NetIO::open (_url.cstr_oneuse());
   if (!n || !n->ok ())
     {
       delete n;
-      log (LOG_BABBLE, "getUrlToStream failed!");
+      log (LOG_BABBLE) <<  "getUrlToStream failed!" << endLog;
       throw new Exception ("__LINE__ __FILE__", "Error opening url",  APPERR_IO_ERROR);
     }
 
@@ -160,14 +161,14 @@ get_url_to_membuf (String const &_url, HWND owner)
   io_stream_memory *membuf = new io_stream_memory ();
   try 
     {
-      log (LOG_BABBLE, String ("get_url_to_membuf ") + _url);
+      log (LOG_BABBLE) << "get_url_to_membuf " << _url << endLog;
       getUrlToStream (_url, owner, membuf);
       
       if (membuf->seek (0, IO_SEEK_SET))
     	{
     	  if (membuf)
       	      delete membuf;
-    	  log (LOG_BABBLE, "get_url_to_membuf(): seek (0) failed for membuf!");
+    	  log (LOG_BABBLE) << "get_url_to_membuf(): seek (0) failed for membuf!" << endLog;
     	  return 0;
 	}
       return membuf;
@@ -176,7 +177,7 @@ get_url_to_membuf (String const &_url, HWND owner)
     {
       if (e->errNo() != APPERR_IO_ERROR)
 	throw e;
-      log (LOG_BABBLE, "get_url_to_membuf failed!");
+      log (LOG_BABBLE) << "get_url_to_membuf failed!" << endLog;
       delete membuf;
       return 0;
     }
@@ -194,7 +195,7 @@ get_url_to_string (String const &_url, HWND owner)
     {
       /* zero length, or error retrieving length */
       delete stream;
-      log (LOG_BABBLE, "get_url_to_string(): couldn't retrieve buffer size, or zero length buffer");
+      log (LOG_BABBLE) << "get_url_to_string(): couldn't retrieve buffer size, or zero length buffer" << endLog;
       return String();
     }
   char temp [bytes + 1];
@@ -209,7 +210,7 @@ int
 get_url_to_file (String const &_url, String const &_filename, int expected_length,
 		 HWND owner, BOOL allow_ftp_auth)
 {
-  log (LOG_BABBLE, String ("get_url_to_file ") + _url + " " + _filename);
+  log (LOG_BABBLE) << "get_url_to_file " << _url << " " << _filename << endLog;
   if (total_download_bytes > 0)
     {
       int df = diskfull (get_root_dir ().cstr_oneuse());
@@ -223,7 +224,7 @@ get_url_to_file (String const &_url, String const &_filename, int expected_lengt
   if (!n || !n->ok ())
     {
       delete n;
-      log (LOG_BABBLE, "get_url_to_file failed!");
+      log (LOG_BABBLE) <<  "get_url_to_file failed!" << endLog;
       return 1;
     }
 

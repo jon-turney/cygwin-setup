@@ -29,6 +29,7 @@ static const char *cvsid =
 #include <iostream>
 #include <strstream>
 #include <time.h>
+#include <string>
 
 /* private helper class */
 class filedef
@@ -184,11 +185,15 @@ LogFile::endEntry()
       strftime (b, 1000, "%Y/%m/%d %H:%M:%S ", tm);
       currEnt->msg = b;
     }
-  currEnt->msg += theStream->str();
-  msg ("LOG: %d %s", currEnt->level, theStream->str());
+  /* What follows is a hack to get around an (apparent) bug in libg++-3 with
+   * non-0 memory on alloc
+   */
+  currEnt->msg += string(theStream->str()).substr(0,theStream->pcount()).c_str();
+  msg ("LOG: %d %s", currEnt->level, string(theStream->str()).substr(0,theStream->rdbuf()->pcount()).c_str());
   theStream->freeze(0);
   delete theStream;
   /* reset for next use */
   theStream = new ostrstream;
   rdbuf (theStream->rdbuf());
+  init (theStream->rdbuf());
 }
