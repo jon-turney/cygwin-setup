@@ -214,7 +214,7 @@ CAPTION "Cygwin Setup"
 FONT 8, "MS Sans Serif"
 BEGIN
     ICON            IDI_CYGWIN,IDC_STATIC,113,112,21,20,WS_GROUP
-#    CONTROL         "",IDC_STATIC,"Static",SS_WHITERECT,0,0,95,178
+//    CONTROL         "",IDC_STATIC,"Static",SS_WHITERECT,0,0,95,178
     LTEXT           "Version (unknown)",IDC_VERSION,115,137,195,10
     LTEXT           "Cygwin Net Release Setup Program",
                     IDC_STATIC_WELCOME_TITLE,115,1,195,24

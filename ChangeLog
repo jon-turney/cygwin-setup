@@ -1,5 +1,9 @@
 2002-11-04  Max Bowsher  <maxb@ukf.net>
 
+	* res.rc: Change a #-comment (invalid) to a //-comment.
+
+2002-11-04  Max Bowsher  <maxb@ukf.net>
+
 	* Makefile.am (%.o: %.rc): Make windres use $(CC) not hardcoded gcc.
        	(inilint_LDADD): Remove -lstd++.
       	(setup_LDADD): Ditto.
