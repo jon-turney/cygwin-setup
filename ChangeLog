@@ -1,3 +1,10 @@
+2002-07-03  Pavel Tsekov  <ptsekov@gmx.net>
+
+	* filemanip.cc (parse_filename): Do not try to parse empty
+	strings (filenames).
+	* package_db.cc (packagedb::packagedb): For each line check if sscanf()
+	extracted good package name and filename.
+
 2002-07-03  Robert Collins  <rbtcollins@hotmail.com>
 
 	* package_meta.cc (packagemeta::set_requirements): Automatically select
