@@ -541,7 +541,7 @@ static void
 fill_missing_category ()
 {
   for (Package *pkg = package; pkg->name; pkg++)
-    if (!pkg->category)
+    if (!pkg->exclude && !pkg->category)
       add_category (pkg, register_category ("Misc"));
 }
 
@@ -560,13 +560,14 @@ default_trust (HWND h, trusts trust)
 
   deftrust = trust;
   for (Package *pkg = package; pkg->name; pkg++)
-    {
-      pkg->action = (actions) trust;
-      if (pkg->category && !(getpackagecategorybyname (pkg, "Required") ||
-			     getpackagecategorybyname (pkg, "Misc")))
-	pkg->action = keep_or_skip (pkg);
-      set_action (pkg, 0);
-    }
+    if (!pkg->exclude)
+      {
+	pkg->action = (actions) trust;
+	if (pkg->category && !(getpackagecategorybyname (pkg, "Required") ||
+			       getpackagecategorybyname (pkg, "Misc")))
+	  pkg->action = keep_or_skip (pkg);
+	set_action (pkg, 0);
+      }
   RECT r;
   GetClientRect (h, &r);
   InvalidateRect (h, &r, TRUE);
@@ -774,6 +775,8 @@ void
 _view::insert_pkg (Package *pkg)
 {
   pick_line line;
+  if (pkg->exclude)
+    return;
   line.set_line (pkg);
   if (view_mode != VIEW_CATEGORY)
     {
@@ -826,7 +829,7 @@ _view::insert_category (Category *cat, int collapsed)
       insert_at (0, line);
       if (!collapsed)
 	for (CategoryPackage *catpkg = cat->packages; catpkg; catpkg = catpkg->next)
-	  insert_pkg (getpkgbyname (catpkg->pkg));
+	  insert_pkg (getpkgbyname (catpkg->pkgname));
     }
   else
     {
@@ -840,7 +843,7 @@ _view::insert_category (Category *cat, int collapsed)
 	      insert_at (n, line);
 	      if (!collapsed)
 		for (CategoryPackage *catpkg = cat->packages; catpkg; catpkg = catpkg->next)
-		  insert_pkg (getpkgbyname (catpkg->pkg));
+		  insert_pkg (getpkgbyname (catpkg->pkgname));
 	      n = nlines;
 	    }
 	  else if (lines[n].get_category () == cat)
@@ -854,7 +857,7 @@ _view::insert_category (Category *cat, int collapsed)
 	  insert_at (n, line);
 	  if (!collapsed)
 	    for (CategoryPackage *catpkg = cat->packages; catpkg; catpkg = catpkg->next)
-	      insert_pkg (getpkgbyname (catpkg->pkg));
+	      insert_pkg (getpkgbyname (catpkg->pkgname));
 	}
     }
 }
@@ -949,7 +952,7 @@ _view::click (int row, int x)
 	  int count = nlines;
 	  for (CategoryPackage *catpkg = lines[row].get_category ()->packages; catpkg; catpkg = catpkg->next)
 	    {
-	      Package * pkg = getpkgbyname (catpkg->pkg);
+	      Package * pkg = getpkgbyname (catpkg->pkgname);
 	      int n = row + 1;
 	      pick_line line;
 	      line.set_line (pkg);

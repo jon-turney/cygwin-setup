@@ -118,7 +118,7 @@ typedef struct _Info
 typedef struct _CategoryPackage
 {
   struct _CategoryPackage *next;  /* The next package pointer in the list */
-  char *pkg;			  /* This should be Package *, but the packages can move*/
+  char *pkgname;		  /* This should be Package *, but the packages can move*/
 } CategoryPackage;
 
 typedef struct _Category

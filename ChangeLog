@@ -1,3 +1,14 @@
+Sat Aug  4 21:35:53 2001  Christopher Faylor <cgf@cygnus.com>
+
+	* ini.h (_CategoryPackage): Change pkg field to pkgname for
+	consistency.
+	* choose.cc: Use pkgname field when referencing _CategoryPackage
+	throughout.
+	(fill_missing_category): Don't add excluded packages.
+	(default_trust): Ditto.
+	(_view::insert_pkg): Ditto.
+	* iniparse.y (register_category): Use consistent variable name.
+
 2001-07-09  Egor Duda <deo@logos-m.ru>
 
 	* choose.cc: Use system foreground color for text output.

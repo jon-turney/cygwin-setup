@@ -201,7 +201,7 @@ register_category (char *name)
 }
 
 void
-add_category (Package *package, Category *cat)
+add_category (Package *pkg, Category *cat)
 {
   /* add a new record for the package list */
   /* TODO: alpabetical inserts ? */
@@ -209,13 +209,13 @@ add_category (Package *package, Category *cat)
   CategoryPackage *templink;
   tempcat = new (Category);
   memset (tempcat, '\0', sizeof (Category));
-  tempcat->next = package->category;
+  tempcat->next = pkg->category;
   tempcat->name = cat->name;
-  package->category = tempcat;
+  pkg->category = tempcat;
 
   templink = new (CategoryPackage);
   templink->next = cat->packages;
-  templink->pkg = package->name;
+  templink->pkgname = pkg->name;
   cat->packages = templink;
  
   /* hack to ensure we allocate enough space */
