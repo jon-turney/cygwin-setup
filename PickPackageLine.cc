@@ -150,3 +150,9 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
     }
   return 0;
 }
+
+int PickPackageLine::set_action (packagemeta::_actions action)
+{
+  pkg.set_action (action , pkg.trustp(theView.deftrust));
+  return pkg.set_requirements(theView.deftrust) + 1;
+}

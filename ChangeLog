@@ -1,5 +1,29 @@
 2002-01-22  Robert Collins  <rbtcollins@hotmail.com>
 
+	* PickCategoryLine.cc (PickCategoryLine::actiontext): Remove.
+	(PickCategoryLine::paint): Use the new action method.
+	(PickCategoryLine::click): Set the action for all children.
+	(PickCategoryLine::set_action): New method.
+	* PickCategoryLine.h (PickCategoryLine::-actions): Remove.
+	(PickCategoryLine::current_default): Use packagemeta _actions class.
+	* PickLine.h (PickLine::set_action): New abstract method that requires including
+	package_meta.h.
+	* PickPackageLine.cc (PickPackageLine::set_action): New method.
+	* PickPackageLine.h (PickPackageLine::set_action): Declare this.
+	* list.h (getbykey): A const correctness fix.
+	* package_meta.cc: Run indent.
+	(packagemeta::Default_action): New const.
+	(packagemeta::Install_action): Ditto.
+	(packagemeta::Reinstall_action): Ditto.
+	(packagemeta::Uninstall_action): Ditto.
+	(packagemeta::_actions::caption): New method.
+	(packagemeta::_actions::operator++): Ditto.
+	(packagemeta::set_action): New overload.
+	* package_meta.h (packagemeta::_actions): New class.
+	(packagemeta::set_action): Declare this.
+
+2002-01-22  Robert Collins  <rbtcollins@hotmail.com>
+
 	* Makefile.in (OBJS): Remove supp.o - it appears accidental.
 	* choose.cc: Don't define alloca anymore, it's done in win32.h
 

@@ -36,7 +36,7 @@ list ():pointerblock (0), _number (0), _space (0)
   };
   // ~list () ...
   /* get an element if it exists */
-  T *getbykey (U);
+  T *getbykey (const U);
   /* add an element if it does not exist and return a reference */
   T & registerbykey (U);
   /* add an element if one with the same key does not exist */
@@ -57,7 +57,7 @@ list ():pointerblock (0), _number (0), _space (0)
 
 template < class T, class U, int
 Ucmp (U, U) >
-T * list < T, U, Ucmp >::getbykey (U key)
+T * list < T, U, Ucmp >::getbykey (const U key)
 {
   for (size_t n = 0; n < _number; n++)
     if (Ucmp (pointerblock[n]->key, key) == 0)

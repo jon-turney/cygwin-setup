@@ -16,24 +16,6 @@
 #include "PickCategoryLine.h"
 #include "PickView.h"
 
-char const *
-PickCategoryLine::actiontext ()
-{
-  switch (current_default)
-    {
-    case Default_action:
-      return "Default";
-    case Install_action:
-      return "Install";
-    case Reinstall_action:
-      return "Reinstall";
-    case Uninstall_action:
-      return "Uninstall";
-    }
-  // Pacify GCC: (all case options are checked above)
-  return 0;
-}
-
 void
 PickCategoryLine::empty (void)
 {
@@ -70,7 +52,7 @@ PickCategoryLine::paint (HDC hdc, int x, int y, int row, int show_cat)
 	       x + theView.headers[theView.cat_col].x +
 	       labellength + depth * 8 +
 	       ICON_MARGIN + SPIN_WIDTH +
-	       HMARGIN, r, actiontext (), strlen (actiontext ()));
+	       HMARGIN, r, current_default.caption (), strlen (current_default.caption ()));
     }
   if (collapsed)
     return;
@@ -90,9 +72,9 @@ PickCategoryLine::click (int const myrow, int const ClickedRow, int const x)
       if ((size_t) x >= theView.headers[theView.cat_col].x +
 	  labellength + depth * 8 + ICON_MARGIN + HMARGIN / 2)
 	{
-	  for (size_t n = 1; n <= bucket.number (); n++)
-	    ;
-	  return 0;
+	  ++current_default;
+	  
+	  return set_action (current_default);
 	}
       else
 	{
@@ -114,4 +96,14 @@ PickCategoryLine::click (int const myrow, int const ClickedRow, int const x)
 	}
       return 0;
     }
+}
+
+int 
+PickCategoryLine::set_action (packagemeta::_actions action)
+{
+  current_default = action;
+  int accum_diff = 0;
+  for (size_t n = 1; n <= bucket.number (); n++)
+      accum_diff += bucket[n]->set_action (current_default);
+  return accum_diff;
 }

@@ -14,8 +14,7 @@
  */
 
 #if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
+static const char *cvsid = "\n%%% $Id$\n";
 #endif
 
 #include <stdio.h>
@@ -67,7 +66,7 @@ void
 hash::add_subdirs (char const *tpath)
 {
   char *nonp, *pp;
-  char *path = new char [strlen (tpath) +1];
+  char *path = new char[strlen (tpath) + 1];
   strcpy (path, tpath);
   for (nonp = path; *nonp == '\\' || *nonp == '/'; nonp++);
   for (pp = path + strlen (path) - 1; pp > nonp; pp--)
@@ -86,6 +85,45 @@ hash::add_subdirs (char const *tpath)
 	  add (path);
 	*pp = c;
       }
+}
+
+const
+  packagemeta::_actions
+packagemeta::Default_action (0);
+const
+  packagemeta::_actions
+packagemeta::Install_action (1);
+const
+  packagemeta::_actions
+packagemeta::Reinstall_action (2);
+const
+  packagemeta::_actions
+packagemeta::Uninstall_action (3);
+
+char const *
+packagemeta::_actions::caption ()
+{
+  switch (_value)
+    {
+    case 0:
+      return "Default";
+    case 1:
+      return "Install";
+    case 2:
+      return "Reinstall";
+    case 3:
+      return "Uninstall";
+    }
+  // Pacify GCC: (all case options are checked above)
+  return 0;
+}
+
+packagemeta::_actions & packagemeta::_actions::operator++ ()
+{
+  ++_value;
+  if (_value > 3)
+    _value = 0;
+  return *this;
 }
 
 void
@@ -123,7 +161,8 @@ packagemeta::uninstall ()
 
 	  char *d = cygpath ("/", line, NULL);
 	  DWORD dw = GetFileAttributes (d);
-	  if (dw != INVALID_FILE_ATTRIBUTES && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+	  if (dw != INVALID_FILE_ATTRIBUTES
+	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
 	      log (LOG_BABBLE, "unlink %s", d);
 	      SetFileAttributes (d, dw & ~FILE_ATTRIBUTE_READONLY);
@@ -132,7 +171,8 @@ packagemeta::uninstall ()
 	  /* Check for Windows shortcut of same name. */
 	  d = concat (d, ".lnk", NULL);
 	  dw = GetFileAttributes (d);
-	  if (dw != INVALID_FILE_ATTRIBUTES && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+	  if (dw != INVALID_FILE_ATTRIBUTES
+	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
 	      log (LOG_BABBLE, "unlink %s", d);
 	      SetFileAttributes (d, dw & ~FILE_ATTRIBUTE_READONLY);
@@ -167,7 +207,7 @@ packagemeta::add_category (Category & cat)
 char const *
 packagemeta::SDesc () const
 {
-  for (size_t n = 1; n <= versions.number(); ++n)
+  for (size_t n = 1; n <= versions.number (); ++n)
     if (versions[n]->SDesc ())
       return versions[n]->SDesc ();
   return NULL;
@@ -254,8 +294,7 @@ packagemeta::set_action (packageversion * default_version)
       return;
     }
   else if (desired == installed
-	   && (!installed
-	       || !(installed->binpicked || installed->srcpicked)))
+	   && (!installed || !(installed->binpicked || installed->srcpicked)))
     /* Install the default trust version - this is a 'reinstall' for installed
        * packages */
     {
@@ -301,9 +340,7 @@ packagemeta::set_action (packageversion * default_version)
       int source = desired->srcpicked;
       /* bump the version selected, skipping the radio button trust along the way */
       size_t n;
-      for (n = 1;
-	   n <= versions.number ()
-	   && desired != versions[n]; n++);
+      for (n = 1; n <= versions.number () && desired != versions[n]; n++);
       /* n points at pkg->desired */
       n++;
       if (n <= versions.number ())
@@ -328,8 +365,7 @@ packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
   Dependency *dp;
   packagemeta *required;
   int changed = 0;
-  if (!desired
-      || (desired != installed && !desired->binpicked))
+  if (!desired || (desired != installed && !desired->binpicked))
     /* uninstall || source only */
     return 0;
 
@@ -341,25 +377,78 @@ packagemeta::set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0)
   while (dp)
     {
       if ((required = db.packages.getbykey (dp->package)) == NULL)
-        {
-          dp = dp->next;
-          changed++;
-          continue;
-        }
+	{
+	  dp = dp->next;
+	  changed++;
+	  continue;
+	}
       if (!required->desired)
-        {
-          /* it's set to uninstall */
-          required->set_action (required->trustp(deftrust));
-        }
+	{
+	  /* it's set to uninstall */
+	  required->set_action (required->trustp (deftrust));
+	}
       else if (required->desired != required->installed
-               && !required->desired->binpicked)
-        {
-          /* it's set to change to a different version source only */
-          required->desired->binpicked = 1;
-        }
+	       && !required->desired->binpicked)
+	{
+	  /* it's set to change to a different version source only */
+	  required->desired->binpicked = 1;
+	}
       /* does this requirement have requirements? */
       changed += required->set_requirements (deftrust, depth + 1);
       dp = dp->next;
     }
   return changed;
+}
+
+
+// Set a particular type of action.
+void
+packagemeta::set_action (_actions action, packageversion * default_version)
+{
+  packagedb db;
+  if (action == Default_action)
+    {
+      // XXX fix the list use to allow const ref usage.
+      Category tempCategory("Misc");
+      if (installed
+	  || Categories.getbykey (db.categories.registerbykey ("Base"))
+	  || Categories.getbykey (tempCategory))
+	{
+	  desired = default_version;
+	  if (desired)
+	    {
+	      desired->binpicked = desired == installed ? 0 : 1;
+	      desired->srcpicked = 0;
+	    }
+	}
+      else
+	desired = 0;
+      return;
+    }
+  else if (action == Install_action)
+    {
+      desired = default_version;
+      if (desired)
+	{
+	  if (desired != installed)
+	    desired->binpicked = 1;
+	  else
+	    desired->binpicked = 0;
+	  desired->srcpicked = 0;
+	}
+      return;
+    }
+  else if (action == Reinstall_action)
+    {
+      desired = installed;
+      if (desired)
+	{
+	  desired->binpicked = 1;
+	  desired->srcpicked = 0;
+	}
+    }
+  else if (action == Uninstall_action)
+    {
+      desired = 0;
+    }
 }

@@ -17,12 +17,14 @@
 #define _PICKLINE_H_
 
 #include "win32.h"
+#include "package_meta.h"
 
 class PickLine
 {
 public:
   virtual void paint (HDC hdc, int x, int y, int row, int show_cat) = 0;
   virtual int click (int const myrow, int const ClickedRow, int const x) = 0;
+  virtual int set_action (packagemeta::_actions) = 0;
   virtual int itemcount () const = 0;
   // this may indicate bad inheritance model.
   virtual bool IsContainer (void) const = 0;

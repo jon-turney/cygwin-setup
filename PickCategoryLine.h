@@ -27,7 +27,7 @@ public:
   PickCategoryLine (PickView & aView, Category & _cat, size_t thedepth = 0, bool aBool =
 		      true, bool aBool2 =
 		      true):PickLine (_cat.key),
-    current_default (Default_action), cat (_cat), labellength (0),
+    current_default (packagemeta::Default_action), cat (_cat), labellength (0),
     depth (thedepth), theView (aView)
   {
     if (aBool)
@@ -71,16 +71,10 @@ public:
     bucket.registerbyobject (aLine);
   }
   void empty ();
+  virtual int set_action (packagemeta::_actions);
 private:
-  enum _actions
-  {
-    Default_action,
-    Install_action,
-    Reinstall_action,
-    Uninstall_action
-  }
+  packagemeta::_actions
   current_default;
-  char const *actiontext ();
   Category & cat;
   bool collapsed;
   bool show_label;

@@ -90,7 +90,29 @@ public:
 
   void add_version (packageversion &);
   void set_installed (packageversion &);
+
+  class _actions
+  {
+  public:
+    _actions ():_value (0) {};
+    _actions (int aInt) {
+    _value = aInt;
+    if (_value < 0 ||  _value > 3)
+      _value = 0;
+    }
+    _actions & operator ++ ();
+    bool operator == (_actions const &rhs) { return _value == rhs._value; }
+    bool operator != (_actions const &rhs) { return _value != rhs._value; }
+    const char *caption ();
+  private:
+    int _value;
+  };
+  static const _actions Default_action;
+  static const _actions Install_action;
+  static const _actions Reinstall_action;
+  static const _actions Uninstall_action;
   void set_action (packageversion *default_version);
+  void set_action (_actions, packageversion * default_version);
   void uninstall ();
   int set_requirements (trusts deftrust = TRUST_CURR, size_t depth = 0);
 
@@ -131,6 +153,7 @@ public:
   /* Now for the user stuff :] */
   /* What version does the user want ? */
   packageversion *desired;
+
 protected:
   packagemeta (packagemeta const &);
   packagemeta &operator= (packagemeta const &);

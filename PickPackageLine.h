@@ -40,6 +40,7 @@ public:
   virtual void insert (PickLine &)
   {
   };
+  virtual int set_action (packagemeta::_actions);
 private:
   packagemeta & pkg;
   PickView & theView;
