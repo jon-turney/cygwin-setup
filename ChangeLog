@@ -1,3 +1,10 @@
+2000-05-18  DJ Delorie  <dj@cygnus.com>
+
+	* setup.c (optionprompt): allow multi-column, clean up message
+	about more options, be more robust about user input.
+	(getdownloadsource): make the mirror URL a macro.
+	(main): do mounts after done prompting user.
+
 Tue May  2 00:56:41 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (cleanup): Inverse order of deletion stands a better chance
