@@ -138,7 +138,7 @@ init_dialog (char *url, int length)
       SetWindowText (gw_pprogress_text, "Total");
       SetWindowText (gw_iprogress_text, "Disk");
     }
-  else 
+  else
     {
       SetWindowText (gw_pprogress_text, "     ");
       SetWindowText (gw_iprogress_text, "    ");

@@ -101,7 +101,7 @@ save_site_url ()
   get_root_dir ();
   if (! root_dir)
     return;
-  
+
   FILE *f = fopen (concat (root_dir, "/etc/setup/last-mirror", 0), "wb");
   if (!f)
     return;
@@ -188,7 +188,7 @@ get_site_list (HINSTANCE h)
 
   char *bol, *eol, *nl;
 
-  
+
   /* null plus account for possibly missing NL plus account for "Other
     URL" from previous run. */
   int nmirrors = 3;

@@ -177,7 +177,7 @@ fprintf (FILE *f, const char *fmt, ...)
 	  MessageBox (0, buf, "Cygwin Setup", 0);
 	  stderrbuf[0] = 0;
 	}
-      
+
     }
   else
     {

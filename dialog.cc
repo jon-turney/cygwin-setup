@@ -34,7 +34,7 @@ eget (HWND h, int id, char *var)
       free (var);
       var = 0;
     }
-  if (GetDlgItemText (h, id, tmp, sizeof (tmp)) > 0) 
+  if (GetDlgItemText (h, id, tmp, sizeof (tmp)) > 0)
     {
       var = (char *) malloc (strlen (tmp)+1);
       strcpy (var, tmp);

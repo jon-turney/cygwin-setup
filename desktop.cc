@@ -266,7 +266,8 @@ make_passwd_group ()
 
       LOOP_PACKAGES
 	{
-	  if (!strcmp (package[i].name, "cygwin"))
+    if (!strcmp (package[i].name, "cygwin") &&
+       package[i].action != ACTION_SRC_ONLY)
 	    {
 	      /* mkpasswd and mkgroup are not working on 9x/ME up to 1.1.5-4 */
 	      char *border_version = canonicalize_version ("1.1.5-4");
@@ -375,9 +376,9 @@ static int check_desktop (char *title, char *target)
 
   if (_access (fname, 0) == 0)
     return 0; /* already exists */
-  
+
   fname = concat (path, "/", title, ".pif", 0); /* check for a pif as well */
-  
+
   if (_access (fname, 0) == 0)
     return 0; /* already exists */
 
@@ -405,12 +406,12 @@ static int check_startmenu (char *title, char *target)
 
   if (_access (fname, 0) == 0)
     return 0; /* already exists */
-  
+
   fname = concat (path, "/", title, ".pif", 0); /* check for a pif as well */
-  
+
   if (_access (fname, 0) == 0)
     return 0; /* already exists */
-  
+
   return IDC_ROOT_MENU;
 }
 
@@ -474,7 +475,7 @@ do_desktop (HINSTANCE h)
 
   root_desktop = check_desktop("Cygwin",backslash (concat (root_dir, "/cygwin.bat", 0)));
   root_menu = check_startmenu("Cygwin Bash Shell",backslash (concat (root_dir, "/cygwin.bat", 0)));
-  
+
   int rv = 0;
 
   rv = DialogBox (h, MAKEINTRESOURCE (IDD_DESKTOP), 0, dialog_proc);

@@ -54,6 +54,8 @@ static char *cvsid = "\n%%% $Id$\n";
 #define TRUST_KEEP	101
 #define TRUST_UNINSTALL	102
 #define TRUST_NONE	103
+#define TRUST_REDO    104
+#define TRUST_SRC_ONLY    105
 
 static int initialized = 0;
 
@@ -62,7 +64,7 @@ static int which_trust = TRUST_CURR;
 
 static int scroll_ulc_x, scroll_ulc_y;
 
-static HWND lv, nextbutton;
+static HWND lv, nextbutton, choose_inst_text;
 static TEXTMETRIC tm;
 static int header_height;
 static HANDLE sysfont;
@@ -169,9 +171,11 @@ paint (HWND hwnd)
       HANDLE check_bm = bm_checkna;
       if (extra[i].chooser[extra[i].pick].src_avail)
 	{
-	  if (package[i].srcaction == SRCACTION_NO)
+    if (package[i].srcaction == SRCACTION_NO &&
+	extra[i].chooser[extra[i].pick].trust != TRUST_SRC_ONLY)
 	    check_bm = bm_checkno;
-	  else if (package[i].srcaction == SRCACTION_YES)
+    else if (package[i].srcaction == SRCACTION_YES ||
+	     extra[i].chooser[extra[i].pick].trust == TRUST_SRC_ONLY)
 	    check_bm = bm_checkyes;
 	}
       SelectObject (bitmap_dc, check_bm);
@@ -523,6 +527,21 @@ build_labels ()
 	  c++;
 	}
 
+      if (extra[i].installed_ver &&
+    package[i].info[extra[i].which_is_installed].source &&
+    ((package[i].info[extra[i].which_is_installed].source_exists &&
+    source==IDC_SOURCE_CWD) ||
+    source==IDC_SOURCE_DOWNLOAD || source==IDC_SOURCE_NETINST ))
+  {
+    C.caption = "Sources";
+    if (package[i].info[extra[i].which_is_installed].source_exists == 1 &&
+       source == IDC_SOURCE_DOWNLOAD)
+      C.caption = "Redo Sources";
+    C.trust = TRUST_SRC_ONLY;
+    C.src_avail = 1;
+    c++;
+  }
+
       for (t = TRUST_PREV; t < NTRUST; t++)
 	if (package[i].info[t].install)
 	  if (t != extra[i].which_is_installed)
@@ -539,6 +558,25 @@ build_labels ()
 		C.src_avail = 1;
 	      c++;
 	    }
+    else
+      {
+	if (source == IDC_SOURCE_DOWNLOAD)
+      {
+	C.caption = "ReDownload";
+      }
+	else
+      {
+	C.caption = "ReInstall";
+      }
+	if (package[i].info[t].source &&
+	((package[i].info[t].source_exists &&
+	source==IDC_SOURCE_CWD) ||
+	source == IDC_SOURCE_DOWNLOAD || source==IDC_SOURCE_NETINST))
+      C.src_avail = 1;
+	C.trust = TRUST_REDO;
+	c++;
+	    }
+
 
       if (c == 0)
 	{
@@ -690,6 +728,11 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_INITDIALOG:
       nextbutton = GetDlgItem (h, IDOK);
       frame = GetDlgItem (h, IDC_LISTVIEW_POS);
+      choose_inst_text = GetDlgItem(h,IDC_CHOOSE_INST_TEXT);
+      if (source == IDC_SOURCE_DOWNLOAD)
+	SetWindowText (choose_inst_text, "Select packages to download ");
+      else
+	SetWindowText (choose_inst_text, "Select packages to install ");
       GetParentRect (h, frame, &r);
       r.top += 2;
       r.bottom -= 2;
@@ -815,9 +858,9 @@ scan2 (char *path, unsigned int size)
 		      break;
 		    }
 		}
-	      break;
+      break;
 	    }
-	}
+    }
       if (strcmp (pkginfo, mainpkg) == 0)
 	{
 	  for (t = 0; t < NTRUST; t++)
@@ -1011,14 +1054,29 @@ do_choose (HINSTANCE h)
 	  package[i].trust = extra[i].chooser[extra[i].pick].trust;
 	  break;
 
+  case TRUST_REDO:
+    package[i].action = ACTION_REDO;
+    package[i].trust = which_trust;
+    break;
+
 	case TRUST_UNINSTALL:
 	  package[i].action = ACTION_UNINSTALL;
+    if (package[i].srcaction == SRCACTION_YES)
+      package[i].action = ACTION_SRC_ONLY;
+    break;
+
+  case TRUST_SRC_ONLY:
+    package[i].action = ACTION_SRC_ONLY;
+    package[i].trust = which_trust;
+    package[i].srcaction = SRCACTION_YES;
 	  break;
 
 	case TRUST_KEEP:
 	case TRUST_NONE:
 	default:
 	  package[i].action = ACTION_SAME;
+    if (package[i].srcaction == SRCACTION_YES)
+      package[i].action = ACTION_SRC_ONLY;
 	  break;
 	}
     }
@@ -1036,6 +1094,11 @@ do_choose (HINSTANCE h)
 			    : (package[i].action == ACTION_NEW) ? "new"
 			    : (package[i].action == ACTION_UPGRADE) ? "upgrade"
 			    : (package[i].action == ACTION_UNINSTALL) ? "uninstall"
+	      : (package[i].action == ACTION_REDO &&
+		source == IDC_SOURCE_DOWNLOAD) ? "redownload"
+	      : (package[i].action == ACTION_REDO &&
+		source != IDC_SOURCE_DOWNLOAD) ? "reinstall"
+	      : (package[i].action == ACTION_SRC_ONLY) ? "sources"
 			    : (package[i].action == ACTION_ERROR) ? "error"
 			    : "unknown");
       const char *installed = ((extra[i].which_is_installed == -1) ? "none"

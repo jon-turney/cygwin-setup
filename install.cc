@@ -232,7 +232,7 @@ exists (char *file)
   return 0;
 }
 
-	  
+
 static int num_installs, num_uninstalls;
 
 static void
@@ -248,7 +248,7 @@ uninstall_one (char *name, int action)
     {
       SetWindowText (ins_pkgname, name);
       SetWindowText (ins_action, "Uninstalling...");
-      if (action == ACTION_UPGRADE)
+      if (action == ACTION_UPGRADE || action == ACTION_REDO)
 	log (0, "Uninstalling old %s", name);
       else
 	log (0, "Uninstalling %s", name);
@@ -284,7 +284,7 @@ uninstall_one (char *name, int action)
     }
 }
 
-	  
+
 static int
 install_one (char *name, char *file, int file_size, int action, BOOL isSrc)
 {
@@ -318,6 +318,9 @@ install_one (char *name, char *file, int file_size, int action, BOOL isSrc)
       break;
     case ACTION_UPGRADE:
       SetWindowText (ins_action, "Upgrading...");
+      break;
+    case ACTION_REDO:
+      SetWindowText (ins_action, "ReInstalling...");
       break;
     }
 
@@ -395,25 +398,31 @@ do_install (HINSTANCE h)
 
   LOOP_PACKAGES
     {
-      total_bytes += pi.install_size;
+      if (package[i].action != ACTION_SRC_ONLY)
+  total_bytes += pi.install_size;
       if (package[i].srcaction == SRCACTION_YES)
-        total_bytes += pi.source_size;
+	total_bytes += pi.source_size;
     }
 
   for (i=0; i<npackages; i++)
     {
       if (package[i].action == ACTION_UNINSTALL
-	  || (package[i].action == ACTION_UPGRADE && pi.install))
+    || ((package[i].action == ACTION_UPGRADE
+    || package[i].action == ACTION_REDO) && pi.install))
 	{
 	  uninstall_one (package[i].name, package[i].action);
 	  uninstall_one (concat (package[i].name, "-src", 0), package[i].action);
 	}
 
       if ((package[i].action == ACTION_NEW
-	   || package[i].action == ACTION_UPGRADE)
+     || package[i].action == ACTION_UPGRADE
+     || package[i].action == ACTION_REDO
+     || package[i].action == ACTION_SRC_ONLY)
 	  && pi.install)
 	{
-	  int e = install_one (package[i].name, pi.install, pi.install_size, package[i].action, FALSE);
+    int e = 0;
+    if (package[i].action != ACTION_SRC_ONLY)
+      e += install_one (package[i].name, pi.install, pi.install_size, package[i].action, FALSE);
 	  if (package[i].srcaction == SRCACTION_YES && pi.source)
 	    e += install_one (concat (package[i].name, "-src", 0), pi.source, pi.source_size,
 			      package[i].action, TRUE);
@@ -460,6 +469,8 @@ do_install (HINSTANCE h)
 		  case ACTION_NEW:
 		  case ACTION_UPGRADE:
 		  case ACTION_UNINSTALL:
+	case ACTION_REDO:
+	case ACTION_SRC_ONLY:
 		    printit = 0;
 		    break;
 		  }
@@ -467,7 +478,7 @@ do_install (HINSTANCE h)
 	  if (printit)
 	    fputs (line, ndb);
 	}
-      
+
     }
 
   LOOP_PACKAGES

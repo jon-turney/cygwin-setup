@@ -21,6 +21,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "win32.h"
 
 #include <stdio.h>
+#include <unistd.h>
 
 #include "resource.h"
 #include "msg.h"
@@ -31,6 +32,7 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "state.h"
 #include "mkdir.h"
 #include "log.h"
+#include "port.h"
 
 #define pi (package[i].info[package[i].trust])
 
@@ -52,14 +54,15 @@ get_file_size (char *name)
 }
 
 static int
-download_one (char *name, int expected_size)
+download_one (char *name, int expected_size, int action)
 {
   char *local = name;
   int errors = 0;
 
   DWORD size;
   if ((size = get_file_size (local)) > 0)
-    if (size == expected_size)
+    if (size == expected_size && action != ACTION_SRC_ONLY
+  && action != ACTION_REDO )
       return 0;
 
   mkdir_p (0, local);
@@ -77,6 +80,8 @@ download_one (char *name, int expected_size)
       if (size == expected_size)
 	{
 	  log (0, "Downloaded %s", local);
+    if ( _access (local , 0) == 0)
+       remove ( local );
 	  rename (concat (local, ".tmp", 0), local);
 	}
       else
@@ -100,19 +105,34 @@ do_download (HINSTANCE h)
   total_download_bytes_sofar = 0;
 
   for (i=0; i<npackages; i++)
-    if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE)
+    if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE
+  || package[i].action == ACTION_REDO
+  || package[i].action == ACTION_SRC_ONLY)
       {
-        total_download_bytes += pi.install_size;
-        if (package[i].srcaction == SRCACTION_YES)
-          total_download_bytes += pi.source_size;
+	DWORD size = get_file_size (pi.install);
+  char *local = pi.install;
+	if (package[i].action != ACTION_SRC_ONLY &&
+     (package[i].action == ACTION_REDO ||
+     size != pi.install_size))
+    total_download_bytes += pi.install_size;
+  local = pi.source;
+  size = get_file_size (pi.source);
+	if (package[i].srcaction == SRCACTION_YES &&
+     (package[i].action == ACTION_SRC_ONLY ||
+     size != pi.source_size))
+	  total_download_bytes += pi.source_size;
       }
 
   for (i=0; i<npackages; i++)
-    if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE)
+    if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE
+  || package[i].action == ACTION_REDO
+  || package[i].action == ACTION_SRC_ONLY)
       {
-	int e = download_one (pi.install, pi.install_size);
+  int e = 0;
+	if (package[i].action != ACTION_SRC_ONLY)
+    e += download_one (pi.install, pi.install_size, package[i].action);
 	if (package[i].srcaction == SRCACTION_YES && pi.source)
-	  e += download_one (pi.source, pi.source_size);
+    e += download_one (pi.source, pi.source_size, package[i].action);
 	errors += e;
 	if (e)
 	  package[i].action = ACTION_ERROR;

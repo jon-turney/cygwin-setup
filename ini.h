@@ -35,6 +35,8 @@
 #define ACTION_UPGRADE		3
 #define ACTION_UNINSTALL	4
 #define ACTION_ERROR		5
+#define ACTION_REDO       6
+#define ACTION_SRC_ONLY       7
 
 #define SRCACTION_NO		0
 #define SRCACTION_YES		1
@@ -74,7 +76,9 @@ void	ini_init (char *string);
 #define LOOP_PACKAGES \
   for (i=0; i<npackages; i++) \
     if ((package[i].action == ACTION_NEW \
-	 || package[i].action == ACTION_UPGRADE) \
+   || package[i].action == ACTION_UPGRADE \
+   || package[i].action == ACTION_REDO \
+   || package[i].action == ACTION_SRC_ONLY ) \
 	&& pi.install)
 
 #ifdef __cplusplus
