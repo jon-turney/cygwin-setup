@@ -31,6 +31,7 @@ static const char *cvsid =
 #include "package_meta.h"
 #include "resource.h"
 #include "threebar.h"
+#include "Exception.h"
 
 #include <algorithm>
 
@@ -128,10 +129,14 @@ do_postinstall_reflector (void *p)
   HANDLE *context;
   context = (HANDLE *) p;
 
-  do_postinstall_thread ((HINSTANCE) context[0], (HWND) context[1]);
+  try
+  {
+    do_postinstall_thread ((HINSTANCE) context[0], (HWND) context[1]);
 
-  // Tell the progress page that we're done running scripts
-  Progress.PostMessage (WM_APP_POSTINSTALL_THREAD_COMPLETE);
+    // Tell the progress page that we're done running scripts
+    Progress.PostMessage (WM_APP_POSTINSTALL_THREAD_COMPLETE);
+  }
+  TOPLEVEL_CATCH("postinstall");
 
   ExitThread(0);
 }

@@ -30,6 +30,7 @@ static const char *cvsid =
 #include <set>
 #include <time.h>
 #include <string>
+#include <stdexcept>
 #include "AntiVirus.h"
 #include "filemanip.h"
 #include "cistring.h"
@@ -178,7 +179,7 @@ ostream &
 LogFile::operator() (log_level theLevel)
 {
   if (theLevel < 1 || theLevel > 2)
-    throw "barfoo";
+    throw new invalid_argument("Invalid log_level");
   if (!theStream)
     theStream = new std::stringbuf;
   rdbuf (theStream);

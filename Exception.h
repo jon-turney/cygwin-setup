@@ -16,19 +16,16 @@
 #ifndef SETUP_EXCEPTION_H
 #define SETUP_EXCEPTION_H
 
-/* this is the parent class for all package source (not source code - installation
- * source as in http/ftp/disk file) operations.
- */
-
 #include <exception>
+#include <typeinfo>
 #include "String++.h"
+#include "msg.h"
 
-/* Generic excpetion class for throwing exceptions */
 class Exception : public std::exception {
 public:
   Exception (char const *where, char const *message, int appErrNo = 0);
   Exception (char const *where, const String &message, int appErrNo = 0);
-  ~Exception () throw () {}
+  ~Exception () throw() {};
   char const *what() const throw();
   int errNo() const;
 private:
@@ -36,9 +33,21 @@ private:
   int appErrNo;
 };
 
-// Where should these live?
 #define APPERR_CORRUPT_PACKAGE	1
 #define APPERR_IO_ERROR		2
 #define APPERR_LOGIC_ERROR	3
+
+#define TOPLEVEL_CATCH(threadname)                                      \
+  catch (Exception *e)                                                  \
+  {                                                                     \
+    fatal(NULL, IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO, (threadname),        \
+        typeid(*e).name(), e->what(), e->errNo());                      \
+  }                                                                     \
+  catch (std::exception *e)                                             \
+  {                                                                     \
+    fatal(NULL, IDS_UNCAUGHT_EXCEPTION, (threadname),                   \
+        typeid(*e).name(), e->what());                                  \
+  }
+
 
 #endif /* SETUP_EXCEPTION_H */

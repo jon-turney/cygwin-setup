@@ -44,6 +44,7 @@ static const char *cvsid =
 
 #include "threebar.h"
 #include "ControlAdjuster.h"
+#include "Exception.h"
 
 extern ThreeBarProgressPage Progress;
 
@@ -311,27 +312,31 @@ do_download_site_info_thread (void *p)
   HWND h;
   context = (HANDLE *) p;
 
-  hinst = (HINSTANCE) (context[0]);
-  h = (HWND) (context[1]);
-  static bool downloaded = false;
-  if (!downloaded && get_site_list (hinst, h))
-	{
-	  // Error: Couldn't download the site info.  Go back to the Net setup page.
-	  MessageBox (h, TEXT ("Can't get list of download sites.\n\
-Make sure your network settings are correct and try again."), NULL, MB_OK);
+  try
+  {
+    hinst = (HINSTANCE) (context[0]);
+    h = (HWND) (context[1]);
+    static bool downloaded = false;
+    if (!downloaded && get_site_list (hinst, h))
+    {
+      // Error: Couldn't download the site info.
+      // Go back to the Net setup page.
+      MessageBox (h, TEXT ("Can't get list of download sites.\n")
+          TEXT("Make sure your network settings are correct and try again."),
+          NULL, MB_OK);
 
-	  // Tell the progress page that we're done downloading
-	  Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0,
-				IDD_NET);
-
-	}
-  else 
+      // Tell the progress page that we're done downloading
+      Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_NET);
+    }
+    else 
     {
       downloaded = true;
       // Everything worked, go to the site select page
       // Tell the progress page that we're done downloading
       Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_SITE);
     }
+  }
+  TOPLEVEL_CATCH("site");
 
   ExitThread(0);
 }

@@ -497,6 +497,8 @@ BEGIN
     IDS_MISSING_LOG         "<no log was in use>"
     IDS_SKIP_PACKAGE	    "%s\nDo you want to skip this package ?"
     IDS_WINDOW_INIT_BADMSG  "Fatal Error: Unexpected windows message %u received too early in window initialization."
+    IDS_UNCAUGHT_EXCEPTION  "Fatal Error: Uncaught Exception\nThread: %s\nType: %s\nMessage: %s"
+    IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO  "Fatal Error: Uncaught Exception\nThread: %s\nType: %s\nMessage: %s\nAppErrNo: %d"
 END
 
 #endif    // English (U.S.) resources

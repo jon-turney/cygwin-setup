@@ -1,3 +1,28 @@
+2004-08-29  Max Bowsher  <maxb@ukf.net>
+
+	* Exception.h: Reformatting, #include more, remove incorrect and 
+	less-than-useful comments.
+	(TOPLEVEL_CATCH): New preprocessor macro.
+
+	* LogFile.cc (LogFile::operator()): Throw an exception object, not a
+	char* string.
+
+	Wrap the top-level of each thread (including the main thread) in a
+	try...catch block, in order to display a useful error message if an
+	exception is not caught.
+	* download.cc (do_download_reflector): Here ...
+	* ini.cc (do_ini_thread_reflector): ... and here ...
+	* install.cc (do_install_reflector: ... and here ...
+	* main.cc (main): ... and here ...
+	* postinstall.cc (do_postinstall_thread): ... and here ...
+	* site.cc (do_download_site_info_thread): ... and here!
+
+	* msg.h: Include a missing header requirement.
+	* res.rc (IDS_UNCAUGHT_EXCEPTION, IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO):
+	New strings.
+	* resource.h (IDS_UNCAUGHT_EXCEPTION)
+	(IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO): New IDs.
+
 2004-08-28  Max Bowsher  <maxb@ukf.net>
 
 	* res.rc (IDS_WINDOW_INIT_BADMSG): New string.

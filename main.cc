@@ -65,6 +65,10 @@ static const char *cvsid =
 #include "getopt++/BoolOption.h"
 
 #include "UserSettings.h"
+#include "Exception.h"
+#include <stdexcept>
+
+using namespace std;
 
 int next_dialog;
 
@@ -421,102 +425,106 @@ main (int argc, char **argv)
   hinstance = GetModuleHandle (NULL);
 #endif
 
-  char *cwd=new char[_MAX_PATH];
-  GetCurrentDirectory (_MAX_PATH, cwd);
-  local_dir = String (cwd);
-  delete cwd;
+  try {
+    char *cwd=new char[_MAX_PATH];
+    GetCurrentDirectory (_MAX_PATH, cwd);
+    local_dir = String (cwd);
+    delete cwd;
 
-  LogSingleton::SetInstance (*(theLog = LogFile::createLogFile()));
-  theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
-  theLog->setFile (0, local_dir + "/setup.log", true);
+    LogSingleton::SetInstance (*(theLog = LogFile::createLogFile()));
+    theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
+    theLog->setFile (0, local_dir + "/setup.log", true);
 
-  log (LOG_PLAIN) << "Starting cygwin install, version " << version << endLog;
-  
-  UserSettings::Instance().loadAllSettings();
-  
-  SplashPage Splash;
-  AntiVirusPage AntiVirus;
-  SourcePage Source;
-  RootPage Root;
-  LocalDirPage LocalDir;
-  NetPage Net;
-  SitePage Site;
-  ChooserPage Chooser;
-  DesktopSetupPage Desktop;
-  PropSheet MainWindow;
+    log (LOG_PLAIN) << "Starting cygwin install, version " << version << endLog;
 
-  log (LOG_TIMESTAMP) << "Current Directory: " << local_dir << endLog;
+    UserSettings::Instance().loadAllSettings();
 
-  // TODO: make an equivalent for __argv under cygwin.
-  char **_argv;
+    SplashPage Splash;
+    AntiVirusPage AntiVirus;
+    SourcePage Source;
+    RootPage Root;
+    LocalDirPage LocalDir;
+    NetPage Net;
+    SitePage Site;
+    ChooserPage Chooser;
+    DesktopSetupPage Desktop;
+    PropSheet MainWindow;
+
+    log (LOG_TIMESTAMP) << "Current Directory: " << local_dir << endLog;
+
+    // TODO: make an equivalent for __argv under cygwin.
+    char **_argv;
 #ifndef __CYGWIN__
-  int argc;
-//  char **_argv;
+    int argc;
+    //  char **_argv;
 #ifndef __CYGWIN__
-  for (argc = 0, _argv = __argv; *_argv; _argv++)++argc;
-  _argv = __argv;
+    for (argc = 0, _argv = __argv; *_argv; _argv++)++argc;
+    _argv = __argv;
 #else
-//  for (argc = 0, _argv = argv; *_argv; _argv++)++argc;
-  _argv = argv;
+    //  for (argc = 0, _argv = argv; *_argv; _argv++)++argc;
+    _argv = argv;
 #endif
 #else
-  _argv = argv;
+    _argv = argv;
 #endif
 
-  if (!GetOption::GetInstance().Process (argc,_argv, NULL))
-    theLog->exit(1);
-// #endif
+    if (!GetOption::GetInstance().Process (argc,_argv, NULL))
+      theLog->exit(1);
+    // #endif
 
-  if (HelpOption)
-  {
-    GetOption::GetInstance().ParameterUsage(log(LOG_PLAIN)<<"\nCommand Line Options:\n");
-    theLog->exit(0);
+    if (HelpOption)
+    {
+      GetOption::GetInstance().ParameterUsage(log(LOG_PLAIN)<<"\nCommand Line Options:\n");
+      theLog->exit(0);
+    }
+
+    unattended_mode = UnattendedOption;
+
+    /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
+       no idea of access control lists and security at all. */
+    if (iswinnt)
+      set_default_sec ();
+
+    // Initialize common controls
+    InitCommonControls ();
+
+    // Init window class lib
+    Window::SetAppInstance (hinstance);
+
+    // Create pages
+    Splash.Create ();
+    AntiVirus.Create ();
+    Source.Create ();
+    Root.Create ();
+    LocalDir.Create ();
+    Net.Create ();
+    Site.Create ();
+    Chooser.Create ();
+    Progress.Create ();
+    Desktop.Create ();
+
+    // Add pages to sheet
+    MainWindow.AddPage (&Splash);
+    MainWindow.AddPage (&AntiVirus);
+    MainWindow.AddPage (&Source);
+    MainWindow.AddPage (&Root);
+    MainWindow.AddPage (&LocalDir);
+    MainWindow.AddPage (&Net);
+    MainWindow.AddPage (&Site);
+    MainWindow.AddPage (&Chooser);
+    MainWindow.AddPage (&Progress);
+    MainWindow.AddPage (&Desktop);
+
+    // Create the PropSheet main window
+    MainWindow.Create ();
+
+    // Clean exit.. save user options.
+    UserSettings::Instance().saveAllSettings();
+
+    theLog->exit (0);
   }
+  TOPLEVEL_CATCH("main");
 
-  unattended_mode = UnattendedOption;
-
-  /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
-     no idea of access control lists and security at all. */
-  if (iswinnt)
-    set_default_sec ();
-
-  // Initialize common controls
-  InitCommonControls ();
-
-  // Init window class lib
-  Window::SetAppInstance (hinstance);
-
-  // Create pages
-  Splash.Create ();
-  AntiVirus.Create ();
-  Source.Create ();
-  Root.Create ();
-  LocalDir.Create ();
-  Net.Create ();
-  Site.Create ();
-  Chooser.Create ();
-  Progress.Create ();
-  Desktop.Create ();
-
-  // Add pages to sheet
-  MainWindow.AddPage (&Splash);
-  MainWindow.AddPage (&AntiVirus);
-  MainWindow.AddPage (&Source);
-  MainWindow.AddPage (&Root);
-  MainWindow.AddPage (&LocalDir);
-  MainWindow.AddPage (&Net);
-  MainWindow.AddPage (&Site);
-  MainWindow.AddPage (&Chooser);
-  MainWindow.AddPage (&Progress);
-  MainWindow.AddPage (&Desktop);
-
-  // Create the PropSheet main window
-  MainWindow.Create ();
-
-  // Clean exit.. save user options.
-  UserSettings::Instance().saveAllSettings();
-
-  theLog->exit (0);
-  /* Keep gcc happy :} */
+  // Never reached
   return 0;
 }

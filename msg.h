@@ -16,6 +16,8 @@
 #ifndef SETUP_MSG_H
 #define SETUP_MSG_H
 
+#include "win32.h"
+
 /* This is for "printf"-like debugging.  Messages go to
    OutputDebugString, which can be seen while debugging under GDB or
    via a debug message monitor. */

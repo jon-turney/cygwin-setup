@@ -329,10 +329,14 @@ do_download_reflector (void *p)
   HANDLE *context;
   context = (HANDLE *) p;
 
-  do_download_thread ((HINSTANCE) context[0], (HWND) context[1]);
+  try
+  {
+    do_download_thread ((HINSTANCE) context[0], (HWND) context[1]);
 
-  // Tell the progress page that we're done downloading
-  Progress.PostMessage (WM_APP_DOWNLOAD_THREAD_COMPLETE, 0, next_dialog);
+    // Tell the progress page that we're done downloading
+    Progress.PostMessage (WM_APP_DOWNLOAD_THREAD_COMPLETE, 0, next_dialog);
+  }
+  TOPLEVEL_CATCH("download");
 
   ExitThread(0);
 }

@@ -124,7 +124,9 @@
 #define IDS_SKIP_PACKAGE		1071
 #define IDC_HEADICON                    1072
 #define IDC_HEADSEPARATOR               1073
-#define IDS_WINDOW_INIT_BADMSG          1074
+#define IDS_WINDOW_INIT_BADMSG		1074
+#define IDS_UNCAUGHT_EXCEPTION		1075
+#define IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO	1076
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -135,7 +137,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1075
+#define _APS_NEXT_CONTROL_VALUE         1077
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
