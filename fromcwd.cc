@@ -124,13 +124,13 @@ do_fromcwd (HINSTANCE h, HWND owner)
   found_ini = false;
   find (".", check_ini);
   if (found_ini)
-  {
-      // No INI found, we'll have to download one.
-	  next_dialog = IDD_S_LOAD_INI;
+    {
+      // Found INI, load it.
+      next_dialog = IDD_S_LOAD_INI;
       return;
-  }
+    }
 
-  next_dialog = IDD_CHOOSE;
+  next_dialog = IDD_CHOOSER;
 
   find (".", found_file);
 

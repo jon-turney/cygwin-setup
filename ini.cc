@@ -63,7 +63,7 @@ static int local_ini;
 static void
 find_routine (char *path, unsigned int fsize)
 {
-  if (!strstr (path, "/setup.ini") )
+  if (!strstr (path, "setup.ini") )
     return;
   io_stream *ini_file = io_stream::open (concat ("file://", local_dir,"/", path, 0), "rb");
   if (!ini_file)

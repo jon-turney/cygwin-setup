@@ -1,3 +1,10 @@
+2002-01-07  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+        * fromcwd.cc: Run indent.
+	(do_fromcwd): Reverse sense of comment.  Set next_dialog
+	to IDD_CHOOSER instead of IDD_CHOOSE.
+	* ini.cc (find_routine): Remove "/" from "/setup.ini".
+				
 2001-01-07  Robert Collins  <rbtcollins@hotmail.com>
 
 	* category.cc (Categorycmp): Add a const safe version.
