@@ -201,7 +201,7 @@ inilex.c : inilex.l iniparse.h
 	flex -8 $(srcdir)/inilex.l
 	mv lex.yy.c inilex.c
 
-D=$(wildcard *.d)
+D:=$(wildcard *.d)
 ifneq ($D,)
 include $D
 endif
