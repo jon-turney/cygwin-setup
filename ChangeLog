@@ -1,3 +1,7 @@
+Tue Jun 27 00:30:56 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (do_start_menu): Don't refer to Cygwin as 1.1.0.
+
 Thu Jun  8 12:00:02 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* setup.c (tarx): Use different strategy to track i686-pc-cygwin uses.

@@ -1270,7 +1270,7 @@ do_start_menu (void)
 	      char *shortcut;
 	      mkdir (folder);	/* Ignore the result, it may exist. */
 
-	      shortcut = pathcat (folder, "Cygwin 1.1.0.lnk");
+	      shortcut = pathcat (folder, "Cygwin 1.1.x.lnk");
 	      if (shortcut)
 		{
 		  char *cmdline;
