@@ -135,7 +135,8 @@ start_menu (char *title, char *target)
 {
   char path[_MAX_PATH];
   LPITEMIDLIST id;
-  SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
+  int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
+  SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_COMMON_PROGRAMS : CSIDL_PROGRAMS, &id);
   SHGetPathFromIDList (id, path);
   strcat (path, "/Cygnus Solutions");
   make_link (path, title, target);
@@ -146,7 +147,8 @@ desktop_icon (char *title, char *target)
 {
   char path[_MAX_PATH];
   LPITEMIDLIST id;
-  SHGetSpecialFolderLocation (NULL, CSIDL_DESKTOP, &id);
+  int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
+  SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_DESKTOP : CSIDL_COMMON_DESKTOPDIRECTORY, &id);
   SHGetPathFromIDList (id, path);
   make_link (path, title, target);
 }

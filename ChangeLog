@@ -3,6 +3,14 @@
 	* desktop.cc: create /etc/profile
 	* desktop.cc: fix include syntax
 	* Makefile.in: add auto-dependencies
+	* root.cc: support system vs user
+	* desktop.cc: ditto
+	* mount.h: ditto
+	* mount.cc: ditto
+	* install.cc: ditto
+	* res.rc: ditto
+	* resource.h: ditto
+	* state.h: ditto
 	
 2000-07-10  DJ Delorie  <dj@cygnus.com>
 

@@ -30,17 +30,19 @@
 #include "mount.h"
 
 static int rb[] = { IDC_ROOT_TEXT, IDC_ROOT_BINARY, 0 };
+static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
 
 static void
 check_if_enable_next (HWND h)
 {
-  EnableWindow (GetDlgItem (h, IDOK), root_text && root_dir);
+  EnableWindow (GetDlgItem (h, IDOK), root_text && root_dir && root_scope);
 }
 
 static void
 load_dialog (HWND h)
 {
   rbset (h, rb, root_text);
+  rbset (h, su, root_scope);
   eset (h, IDC_ROOT_DIR, root_dir);
   check_if_enable_next (h);
 }
@@ -49,20 +51,27 @@ static void
 save_dialog (HWND h)
 {
   root_text = rbget (h, rb);
+  root_scope = rbget (h, su);
   root_dir = eget (h, IDC_ROOT_DIR, root_dir);
+  msg ("t=%d s=%d d=%s\n", root_text, root_scope, root_dir);
 }
 
 static void
 read_mount_table ()
 {
   int istext;
-  root_dir = find_root_mount (&istext);
+  int issystem;
+  root_dir = find_root_mount (&istext, &issystem);
   if (root_dir)
     {
       if (istext)
 	root_text = IDC_ROOT_TEXT;
       else
 	root_text = IDC_ROOT_BINARY;
+      if (issystem)
+	root_scope = IDC_ROOT_SYSTEM;
+      else
+	root_scope = IDC_ROOT_USER;
     }
 }
 
@@ -137,6 +146,8 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDC_ROOT_DIR:
     case IDC_ROOT_TEXT:
     case IDC_ROOT_BINARY:
+    case IDC_ROOT_SYSTEM:
+    case IDC_ROOT_USER:
       save_dialog (h);
       check_if_enable_next (h);
       break;

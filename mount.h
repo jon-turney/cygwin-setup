@@ -17,9 +17,9 @@
    nonzero if the existing mount is a text mount, else zero for
    binary. */
 
-char *	find_root_mount (int *istext);
+char *	find_root_mount (int *istext, int *issystem);
 
 /* Similar to the mount and umount functions, but simplified */
 
-void	create_mount (char *posix, char *win32, int istext);
+void	create_mount (char *posix, char *win32, int istext, int issystem);
 void	remove_mount (char *posix);

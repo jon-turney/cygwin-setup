@@ -1,3 +1,7 @@
+//{{NO_DEPENDENCIES}}
+// Microsoft Developer Studio generated include file.
+// Used by res.rc
+//
 /*
  * Copyright (c) 2000, Red Hat, Inc.
  *
@@ -12,11 +16,6 @@
  * Written by DJ Delorie <dj@cygnus.com>
  *
  */
-
-//{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by res.rc
-//
 #define IDS_ROOT_SLASH                  1
 #define IDS_ROOT_SPACE                  2
 #define IDS_CWD_NONEMPTY                3
@@ -71,6 +70,8 @@
 #define IDC_INS_DISKFULL                1024
 #define IDC_INS_IPROGRESS               1025
 #define IDC_INS_PPROGRESS               1026
+#define IDC_ROOT_SYSTEM                 1028
+#define IDC_ROOT_USER                   1029
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -81,7 +82,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        113
 #define _APS_NEXT_COMMAND_VALUE         40003
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_CONTROL_VALUE         1030
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

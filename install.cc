@@ -256,7 +256,6 @@ do_install (HINSTANCE h)
 
   if (num_installs == 0)
     {
-      do_desktop (h);
       note (IDS_NOTHING_INSTALLED);
       return;
     }
@@ -317,17 +316,21 @@ do_install (HINSTANCE h)
   if (rename (ndbn, odbn))
     badrename (ndbn, odbn);
 
+  remove_mount ("/");
   remove_mount ("/usr");
+  remove_mount ("/usr/bin");
+  remove_mount ("/usr/lib");
   remove_mount ("/var");
   remove_mount ("/lib");
   remove_mount ("/bin");
   remove_mount ("/etc");
 
   int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;
+  int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
 
-  create_mount ("/", root_dir, istext);
-  create_mount ("/usr/bin", concat (root_dir, "/bin", 0), istext);
-  create_mount ("/usr/lib", concat (root_dir, "/lib", 0), istext);
+  create_mount ("/", root_dir, istext, issystem);
+  create_mount ("/usr/bin", concat (root_dir, "/bin", 0), istext, issystem);
+  create_mount ("/usr/lib", concat (root_dir, "/lib", 0), istext, issystem);
 
   do_desktop(h);
 

@@ -70,16 +70,24 @@ find2 (HKEY rkey, int *istext)
 }
 
 char *
-find_root_mount (int *istext)
+find_root_mount (int *istext, int *issystem)
 {
   char *rv;
   if (rv = find2 (HKEY_CURRENT_USER, istext))
-    return rv;
-  return find2 (HKEY_LOCAL_MACHINE, istext);
+    {
+      *issystem = 0;
+      return rv;
+    }
+  if (rv = find2 (HKEY_LOCAL_MACHINE, istext))
+    {
+      *issystem = 1;
+      return rv;
+    }
+  return 0;
 }
 
 void
-create_mount (char *posix, char *win32, int istext)
+create_mount (char *posix, char *win32, int istext, int issystem)
 {
   char buf[1000];
   char *retval = 0;
@@ -95,15 +103,18 @@ create_mount (char *posix, char *win32, int istext)
 	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME,
 	   posix);
 
-  if (RegCreateKeyEx (HKEY_CURRENT_USER, buf, 0, "Cygwin", 0, KEY_ALL_ACCESS,
+  msg ("mount: istext=%d issystem=%d\n", istext, issystem);
+  HKEY kr = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
+  if (RegCreateKeyEx (kr, buf, 0, "Cygwin", 0, KEY_ALL_ACCESS,
 		      0, &key, &disposition) != ERROR_SUCCESS)
     fatal ("mount");
 
   RegSetValueEx (key, "native", 0, REG_SZ, (BYTE *)win32, strlen (win32)+1);
-  if (istext)
-    flags = 0;
-  else
-    flags = MOUNT_BINARY;
+  flags = 0;
+  if (!istext)
+    flags |= MOUNT_BINARY;
+  if (issystem)
+    flags |= MOUNT_SYSTEM;
   RegSetValueEx (key, "flags", 0, REG_DWORD, (BYTE *)&flags, sizeof (flags));
 }
 

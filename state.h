@@ -22,6 +22,7 @@ extern int	source;
 
 extern char *	root_dir;
 extern int	root_text;
+extern int	root_scope;
 
 extern int	net_method;
 extern char *	net_proxy_host;
