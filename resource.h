@@ -24,6 +24,9 @@
 #define IDS_WININET                     22
 #define IDS_ERR_CHDIR                   23
 #define IDS_OLD_SETUP_VERSION           24
+#define IDS_DOWNLOAD_FAILED		25
+#define IDS_DOWNLOAD_INCOMPLETE		26
+#define IDS_INSTALL_INCOMPLETE		27
 #define IDD_ROOT                        101
 #define IDD_SOURCE                      102
 #define IDD_OTHER_URL                   103

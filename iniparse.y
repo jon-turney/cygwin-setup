@@ -102,6 +102,8 @@ static int maxpackages = 0;
 Package *
 new_package (char *name)
 {
+  if (package == 0)
+    maxpackages = npackages = 0;
   if (npackages >= maxpackages)
     {
       maxpackages += 10;

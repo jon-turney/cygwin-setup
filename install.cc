@@ -242,6 +242,8 @@ void
 do_install (HINSTANCE h)
 {
   int i, num_installs = 0, num_uninstalls = 0;
+  int errors = 0;
+
   next_dialog = IDD_DESKTOP;
 
   mkdir_p (1, root_dir);
@@ -290,7 +292,10 @@ do_install (HINSTANCE h)
 	    {
 	      SetWindowText (ins_pkgname, package[i].name);
 	      SetWindowText (ins_action, "Uninstalling...");
-	      log (0, "Uninstalling %s", package[i].name);
+	      if (package[i].action == ACTION_UPGRADE)
+		log (0, "Uninstalling old %s", package[i].name);
+	      else
+		log (0, "Uninstalling %s", package[i].name);
 
 	      while (gzgets (lst, line, sizeof (line)))
 		{
@@ -339,6 +344,7 @@ do_install (HINSTANCE h)
 	    {
 	      package[i].action = ACTION_ERROR;
 	      note (IDS_ERR_OPEN_READ, local, "No such file");
+	      errors ++;
 	      continue;
 	    }
 
@@ -372,7 +378,11 @@ do_install (HINSTANCE h)
 	      SetWindowText (ins_filename, dest_file);
 	      log (LOG_BABBLE, "Installing file %s", dest_file);
 	      if (tar_read_file (dest_file) != 0)
-		package[i].action = ACTION_ERROR;
+		{
+		  package[i].action = ACTION_ERROR;
+		  log (0, "Unable to install file %s", dest_file);
+		  errors ++;
+		}
 
 	      progress (tar_ftell ());
 	      num_installs ++;
@@ -480,5 +490,8 @@ do_install (HINSTANCE h)
   create_mount ("/usr/bin", concat (root_dir, "/bin", 0), istext, issystem);
   create_mount ("/usr/lib", concat (root_dir, "/lib", 0), istext, issystem);
 
-  exit_msg = IDS_INSTALL_COMPLETE;
+  if (errors)
+    exit_msg = IDS_INSTALL_INCOMPLETE;
+  else
+    exit_msg = IDS_INSTALL_COMPLETE;
 }

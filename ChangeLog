@@ -1,3 +1,12 @@
+2000-10-12  DJ Delorie  <dj@redhat.com>
+
+	* res.rc: Add more error strings.
+	* resource.h: Ditto.
+	* iniparse.y (new_package): re-initialize if needed.
+	* download.cc (do_download): Keep track of errors; notify and
+	allow retry.
+	* install.cc (do_install): Ditto.
+
 2000-10-05  DJ Delorie  <dj@redhat.com>
 
 	* Makefile.in: fix %.cc rule

@@ -40,6 +40,7 @@ void
 do_download (HINSTANCE h)
 {
   int i;
+  int errors = 0;
 
   for (i=0; i<npackages; i++)
     if (package[i].action == ACTION_NEW || package[i].action == ACTION_UPGRADE)
@@ -57,8 +58,9 @@ do_download (HINSTANCE h)
 			     concat (local, ".tmp", 0),
 			     pi.install_size))
 	  {
-	    log (0, "Download %s failed", local);
+	    note (IDS_DOWNLOAD_FAILED, pi.install);
 	    package[i].action = ACTION_ERROR;
+	    errors ++;
 	    continue;
 	  }
 	else
@@ -74,15 +76,28 @@ do_download (HINSTANCE h)
 		log (0, "Download %s wrong size (%d actual vs %d expected)", local, s.st_size, pi.install_size);
 		note (IDS_DOWNLOAD_SHORT, local, s.st_size, pi.install_size);
 		package[i].action = ACTION_ERROR;
+		errors ++;
 	      }
 	  }
       }
 
   dismiss_url_status_dialog ();
 
+  if (errors)
+    {
+      if (yesno (IDS_DOWNLOAD_INCOMPLETE) == IDYES)
+	{
+	  next_dialog = IDD_SITE;
+	  return;
+	}
+    }
+
   if (source == IDC_SOURCE_DOWNLOAD)
     {
-      exit_msg = IDS_DOWNLOAD_COMPLETE;
+      if (errors)
+	exit_msg = IDS_DOWNLOAD_INCOMPLETE;
+      else
+	exit_msg = IDS_DOWNLOAD_COMPLETE;
       next_dialog = 0;
     }
   else
