@@ -24,7 +24,7 @@ static const char *cvsid =
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "log.h"
+#include "LogSingleton.h"
 #include "port.h"
 #include "String++.h"
 
@@ -91,25 +91,31 @@ archive::extract_file (archive * source, String const &prefixURL, String const &
 	/* TODO: remove in-the-way directories via mkpath_p */
 	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
 	{
-	  log (LOG_TIMESTAMP, String ("Failed to make the path for ") + destfilename);
-	  return 1;}
+	  log (LOG_TIMESTAMP) << "Failed to make the path for " << destfilename
+	  		      << endLog;
+	  return 1;
+	}
 	io_stream::remove (destfilename);
 	io_stream *tmp = io_stream::open (destfilename, "wb");
 	if (!tmp)
 	{
-	  log (LOG_TIMESTAMP, String ("Failed to open ") + destfilename + " for writing.");
+	  log (LOG_TIMESTAMP) << "Failed to open " << destfilename;
+	  log (LOG_TIMESTAMP) << " for writing." << endLog;
 	  return 1;
 	}
 	io_stream *in = source->extract_file ();
 	if (!in)
 	  {
 	    delete tmp;
-	    log (LOG_TIMESTAMP, String("Failed to extract the file ") + destfilename + " from the archive");
+	    log (LOG_TIMESTAMP) << "Failed to extract the file "
+	     			<< destfilename << " from the archive" 
+				<< endLog;
 	    return 1;
 	  }
 	if (io_stream::copy (in, tmp))
 	  {
-	    log (LOG_TIMESTAMP, String("Failed to output ") + destfilename);
+	    log (LOG_TIMESTAMP) << "Failed to output " << destfilename
+	      			<< endLog;
 	    delete tmp;
 	    io_stream::remove (destfilename);
 	    return 1;
@@ -122,7 +128,9 @@ archive::extract_file (archive * source, String const &prefixURL, String const &
     case ARCHIVE_FILE_SYMLINK:
       {
 	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
-	{log (LOG_TIMESTAMP, "Failed to make the path for %s", destfilename.cstr_oneuse());
+	{
+	  log (LOG_TIMESTAMP) << "Failed to make the path for %s" 
+	    		      << destfilename << endLog;
 	  return 1;}
 	io_stream::remove (destfilename);
 	int ok =
@@ -136,8 +144,11 @@ archive::extract_file (archive * source, String const &prefixURL, String const &
     case ARCHIVE_FILE_HARDLINK:
       {
 	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
-	{log (LOG_TIMESTAMP, "Failed to make the path for %s", destfilename.cstr_oneuse());
-	  return 1;}
+	{
+	  log (LOG_TIMESTAMP) << "Failed to make the path for %s"
+	    		      << destfilename << endLog;
+	  return 1;
+	}
 	io_stream::remove (destfilename);
 	int ok =
 	  io_stream::mklink (destfilename,

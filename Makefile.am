@@ -61,6 +61,8 @@ inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32
 inilint_SOURCES = \
   filemanip.cc \
   filemanip.h \
+  LogSingleton.cc \
+  LogSingleton.h \
   IniDBBuilder.cc \
   IniDBBuilder.h \
   inilex.cc \
@@ -144,6 +146,10 @@ setup_SOURCES = \
 	localdir.h \
 	log.cc \
 	log.h \
+	LogFile.cc \
+	LogFile.h \
+	LogSingleton.cc \
+	LogSingleton.h \
 	main.cc \
 	md5.c \
 	md5.h \

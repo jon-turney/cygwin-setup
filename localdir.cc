@@ -34,6 +34,7 @@ static const char *cvsid =
 #include "state.h"
 #include "msg.h"
 #include "mount.h"
+#include "LogFile.h"
 #include "log.h"
 #include "io_stream.h"
 
@@ -41,7 +42,7 @@ static const char *cvsid =
 
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
-
+extern LogFile theLog;
 void
 save_local_dir ()
 {
@@ -59,6 +60,18 @@ save_local_dir ()
     {
       f->write (local_dir.cstr_oneuse(), local_dir.size());
       delete f;
+    }
+  if (source == IDC_SOURCE_DOWNLOAD || !get_root_dir ().size())
+    {
+      theLog.clearFiles();
+      theLog.setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
+      theLog.setFile (0, local_dir + "/setup.log", true);
+    }
+  else
+    {
+      theLog.clearFiles();
+      theLog.setFile (LOG_BABBLE, cygpath ("/var/log/setup.log.full"), false);
+      theLog.setFile (0, cygpath ("/var/log/setup.log"), true);
     }
 }
 

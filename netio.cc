@@ -214,7 +214,7 @@ auth_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDCANCEL:
       EndDialog (h, 1);
-      exit_setup (1);
+      LogSingleton::GetInstance().exit (1);
       break;
     }
   return 0;

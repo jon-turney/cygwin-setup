@@ -199,7 +199,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
 	    {
 	      int yn = yesno (owner, IDS_OLD_SETUPINI);
 	      if (yn == IDNO)
-		exit_setup (1);
+		LogSingleton::GetInstance().exit (1);
 	    }
 	}
       if (setup_timestamp)

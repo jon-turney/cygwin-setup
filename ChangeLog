@@ -1,5 +1,31 @@
 2002-05-04 Robert Collins  <rbtcollins@hotmail.com>
 
+	* log.cc (log): Reimplement via LogSingleton.
+	(log_save): Remove.
+	(exit_setup): Remove.
+	* log.h (log_save): Remove.
+	(exit_setup): Remove.
+	* LogSingleton.cc: New file.
+	* LogSingleton.h: New file.
+	* LogFile.cc: New file.
+	* LogFile.h: New file.
+	* Makefile.am (inilint_SOURCES): Add the new log interface.
+	(setup_SOURCES): Add the new log interface and the concrete File
+	implementation.
+	* Makefile.in: Regenerate.
+	* archive.cc: Use the new log interface thruout.
+	* archive_tar.cc: Ditto.
+	* main.cc: Ditto.
+	* dialog.cc (fatal): Use the new log interface.
+	* ini.cc (do_ini_thread): Use the log interface to exit.
+	* isntall.cc (do_install_thread): Ditto.
+	* netio.cc (auth_cmd): Ditto.
+	* msg.cc (fatal): Ditto.
+	* localdir.cc (save_local_dir): Save to different files depending on
+	the mode, and if a root dir exists.
+
+2002-05-04 Robert Collins  <rbtcollins@hotmail.com>
+
 	* IniDBBuilder.cc: New file.
 	* IniDBBuilder.h: New file.
 	* IniDBBuilderPackage.cc: New file.

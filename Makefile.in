@@ -157,6 +157,8 @@ inilint_LDADD = libgetopt++/libgetopt++.la -lstdc++ -luser32 -lkernel32
 inilint_SOURCES = \
   filemanip.cc \
   filemanip.h \
+  LogSingleton.cc \
+  LogSingleton.h \
   IniDBBuilder.cc \
   IniDBBuilder.h \
   inilex.cc \
@@ -242,6 +244,10 @@ setup_SOURCES = \
 	localdir.h \
 	log.cc \
 	log.h \
+	LogFile.cc \
+	LogFile.h \
+	LogSingleton.cc \
+	LogSingleton.h \
 	main.cc \
 	md5.c \
 	md5.h \
@@ -328,9 +334,10 @@ EXTRA_PROGRAMS = inilint$(EXEEXT)
 noinst_PROGRAMS = setup$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 
-am_inilint_OBJECTS = filemanip.$(OBJEXT) IniDBBuilder.$(OBJEXT) \
-	inilex.$(OBJEXT) inilintmain.$(OBJEXT) iniparse.$(OBJEXT) \
-	io_stream.$(OBJEXT) rfc1738.$(OBJEXT) String++.$(OBJEXT)
+am_inilint_OBJECTS = filemanip.$(OBJEXT) LogSingleton.$(OBJEXT) \
+	IniDBBuilder.$(OBJEXT) inilex.$(OBJEXT) inilintmain.$(OBJEXT) \
+	iniparse.$(OBJEXT) io_stream.$(OBJEXT) rfc1738.$(OBJEXT) \
+	String++.$(OBJEXT)
 inilint_OBJECTS = $(am_inilint_OBJECTS)
 inilint_DEPENDENCIES = libgetopt++/libgetopt++.la
 inilint_LDFLAGS =
@@ -346,7 +353,8 @@ am_setup_OBJECTS = archive.$(OBJEXT) archive_tar.$(OBJEXT) \
 	inilex.$(OBJEXT) iniparse.$(OBJEXT) install.$(OBJEXT) \
 	io_stream.$(OBJEXT) io_stream_cygfile.$(OBJEXT) \
 	io_stream_file.$(OBJEXT) io_stream_memory.$(OBJEXT) \
-	localdir.$(OBJEXT) log.$(OBJEXT) main.$(OBJEXT) md5.$(OBJEXT) \
+	localdir.$(OBJEXT) log.$(OBJEXT) LogFile.$(OBJEXT) \
+	LogSingleton.$(OBJEXT) main.$(OBJEXT) md5.$(OBJEXT) \
 	MD5++.$(OBJEXT) mkdir.$(OBJEXT) mklink2.$(OBJEXT) \
 	mount.$(OBJEXT) msg.$(OBJEXT) net.$(OBJEXT) netio.$(OBJEXT) \
 	nio-ie5.$(OBJEXT) nio-file.$(OBJEXT) nio-ftp.$(OBJEXT) \
@@ -374,6 +382,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Exception.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/IniDBBuilder.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/IniDBBuilderPackage.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/LogFile.Po ./$(DEPDIR)/LogSingleton.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/MD5++.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickCategoryLine.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/PickLine.Po \
@@ -492,6 +501,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Exception.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IniDBBuilder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IniDBBuilderPackage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogSingleton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MD5++.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickCategoryLine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PickLine.Po@am__quote@

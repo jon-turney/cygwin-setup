@@ -39,7 +39,7 @@ static const char *cvsid =
 #include "msg.h"
 #include "find.h"
 #include "mount.h"
-#include "log.h"
+#include "LogFile.h"
 #include "version.h"
 
 #include "port.h"
@@ -60,7 +60,6 @@ static const char *cvsid =
 #include "getopt++/GetOption.h"
 
 int next_dialog;
-int exit_msg = 0;
 
 HINSTANCE hinstance;
 
@@ -94,7 +93,8 @@ set_default_dacl ()
   /* Initialize the ACL for containing one ACE. */
   if (!InitializeAcl (dacl->DefaultDacl, TOKEN_ACL_SIZE (1), ACL_REVISION))
     {
-      log (LOG_TIMESTAMP, "InitializeAcl() failed: %lu", GetLastError ());
+      log (LOG_TIMESTAMP) << "InitializeAcl() failed: " << GetLastError ()
+	<< endLog;
       return;
     }
 
@@ -103,8 +103,8 @@ set_default_dacl ()
   SID_IDENTIFIER_AUTHORITY sid_auth = { SECURITY_WORLD_SID_AUTHORITY };
   if (!AllocateAndInitializeSid (&sid_auth, 1, 0, 0, 0, 0, 0, 0, 0, 0, &sid))
     {
-      log (LOG_TIMESTAMP, "AllocateAndInitializeSid() failed: %lu",
-	   GetLastError ());
+      log (LOG_TIMESTAMP) << "AllocateAndInitializeSid() failed: " <<
+	   GetLastError () << endLog;
       return;
     }
 
@@ -113,8 +113,8 @@ set_default_dacl ()
   if (!AddAccessAllowedAce
       (dacl->DefaultDacl, ACL_REVISION, GENERIC_ALL, sid))
     {
-      log (LOG_TIMESTAMP, "AddAccessAllowedAce() failed: %lu",
-	   GetLastError ());
+      log (LOG_TIMESTAMP) << "AddAccessAllowedAce() failed: %lu" << 
+	   GetLastError () << endLog;
       goto out;
     }
 
@@ -123,13 +123,15 @@ set_default_dacl ()
   if (!OpenProcessToken (GetCurrentProcess (),
 			 TOKEN_READ | TOKEN_ADJUST_DEFAULT, &token))
     {
-      log (LOG_TIMESTAMP, "OpenProcessToken() failed: %lu", GetLastError ());
+      log (LOG_TIMESTAMP) << "OpenProcessToken() failed: "
+	<< GetLastError () << endLog;
       goto out;
     }
 
   /* Set the default DACL to the above computed ACL. */
   if (!SetTokenInformation (token, TokenDefaultDacl, dacl, sizeof buf))
-    log (LOG_TIMESTAMP, "OpenProcessToken() failed: %lu", GetLastError ());
+    log (LOG_TIMESTAMP) << "OpenProcessToken() failed: " << GetLastError ()
+      << endLog;
 
   /* Close token handle. */
   CloseHandle (token);
@@ -141,6 +143,11 @@ out:
 
 // Other threads talk to this page, so we need to have it externable.
 ThreeBarProgressPage Progress;
+
+// This is a little ugly, but the decision about where to log occurs
+// after the source is set AND the root mount obtained
+// so we make the actual logger available to the appropriate routine(s).
+LogFile theLog;
 
 #ifndef __CYGWIN__
 int WINAPI
@@ -156,9 +163,18 @@ main (int argc, char **argv)
   hinstance = GetModuleHandle (NULL);
 #endif
 
+  char *cwd=new char[_MAX_PATH];
+  GetCurrentDirectory (_MAX_PATH, cwd);
+  local_dir = String (cwd);
+  delete cwd;
+
+  LogSingleton::SetInstance (theLog);
+  theLog.setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
+  theLog.setFile (0, local_dir + "/setup.log", true);
+
   next_dialog = IDD_SPLASH;
 
-  log (LOG_PLAIN, String ("Starting cygwin install, version ") + version);
+  log (LOG_PLAIN) << "Starting cygwin install, version " << version << endLog;
 
   SplashPage Splash;
   SourcePage Source;
@@ -170,10 +186,7 @@ main (int argc, char **argv)
   DesktopSetupPage Desktop;
   PropSheet MainWindow;
 
-  char cwd[_MAX_PATH];
-  GetCurrentDirectory (sizeof (cwd), cwd);
-  local_dir = String (cwd);
-  log (LOG_TIMESTAMP, String ("Current Directory: ") + local_dir);
+  log (LOG_TIMESTAMP) << "Current Directory: " << local_dir << endLog;
 
   // TODO: make an equivalent for __argv under cygwin.
   char **_argv;
@@ -192,7 +205,7 @@ main (int argc, char **argv)
 #endif
 
   if (!GetOption::GetInstance().Process (argc,_argv))
-    exit_setup(1);
+    theLog.exit(1);
 // #endif
 
   /* Set the default DACL only on NT/W2K. 9x/ME has no idea of access
@@ -231,7 +244,7 @@ main (int argc, char **argv)
   // Create the PropSheet main window
   MainWindow.Create ();
 
-  exit_setup (0);
+  theLog.exit (0);
   /* Keep gcc happy :} */
   return 0;
 }

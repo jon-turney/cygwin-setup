@@ -64,7 +64,7 @@ fatal (HWND owner, int id, ...)
   va_list args;
   va_start (args, id);
   mbox (owner, "fatal", 0, id, args);
-  exit_setup (1);
+  LogSingleton::GetInstance().exit (1);
 }
 
 int

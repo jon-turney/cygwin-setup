@@ -532,7 +532,7 @@ do_install_thread (HINSTANCE h, HWND owner)
 	      if (yesno (owner, IDS_INSTALL_ERROR, e->what()) != IDYES)
 		{
 		  log (LOG_TIMESTAMP, String ("User cancelled setup after install error"));
-		  exit_setup (1);
+		  LogSingleton::GetInstance().exit (1);
 		  return;
 		}
 	    }
@@ -557,7 +557,7 @@ do_install_thread (HINSTANCE h, HWND owner)
 	      if (yesno (owner, IDS_INSTALL_ERROR, e->what()) != IDYES)
 		{
 		  log (LOG_TIMESTAMP, String ("User cancelled setup after install error"));
-		  exit_setup (1);
+		  LogSingleton::GetInstance().exit (1);
 		  return;
 		}
 	    }
