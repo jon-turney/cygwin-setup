@@ -192,7 +192,7 @@ ChooserPage::keepClicked()
       packagemeta & pkg = **i;
       pkg.desired = pkg.installed;
     }
-  chooser->refresh();;
+  chooser->refresh();
 }
 
 template <trusts aTrust>
@@ -202,7 +202,7 @@ ChooserPage::changeTrust()
   chooser->defaultTrust (aTrust);
   packagedb db;
   for_each(db.packages.begin(), db.packages.end(), SetRequirement(aTrust));
-  chooser->refresh();;
+  chooser->refresh();
 }
 
 bool

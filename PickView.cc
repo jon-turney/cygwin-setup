@@ -203,8 +203,7 @@ PickView::setViewMode (PickView::views mode)
   insert_category (&*n, CATEGORY_COLLAPSED);
     }
 
-  RECT r;
-  ::GetClientRect (GetHWND(), &r);
+  RECT r = GetClientRect ();
   SCROLLINFO si;
   memset (&si, 0, sizeof (si));
   si.cbSize = sizeof (si);
@@ -477,7 +476,6 @@ PickView::init(views _mode)
   if (row_height < irh)
     row_height = irh;
 
-  RECT rcParent;
   HDLAYOUT hdl;
   WINDOWPOS wp;
 
@@ -500,7 +498,7 @@ PickView::init(views _mode)
   // Retrieve the bounding rectangle of the parent window's
   // client area, and then request size and position values
   // from the header control.
-  ::GetClientRect (GetHWND(), &rcParent);
+  RECT rcParent = GetClientRect ();
 
   hdl.prc = &rcParent;
   hdl.pwpos = &wp;
@@ -613,8 +611,7 @@ PickView::list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
   if (refresh)
     {
 #endif
-      RECT r;
-      ::GetClientRect (GetHWND(), &r);
+      RECT r = GetClientRect ();
       SCROLLINFO si;
       memset (&si, 0, sizeof (si));
       si.cbSize = sizeof (si);
@@ -685,8 +682,7 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
       for (int i = 1; i <= last_col; i++)
          headers[i].x =
           headers[i - 1].x + headers[i - 1].width;
-     RECT r;
-        ::GetClientRect (GetHWND(), &r);
+     RECT r = GetClientRect ();
         SCROLLINFO si;
      si.cbSize = sizeof (si);
        si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
@@ -814,8 +810,7 @@ PickView::defaultTrust (trusts trust)
       else
    pkg.desired = packageversion ();
     }
-  RECT r;
-  ::GetClientRect (this->GetHWND(), &r);
+  RECT r = GetClientRect ();
   InvalidateRect (this->GetHWND(), &r, TRUE);
   // and then do the same for categories with no packages.
   for (packagedb::categoriesType::iterator n = packagedb::categories.begin();
