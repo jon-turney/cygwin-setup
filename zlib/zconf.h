@@ -1,6 +1,6 @@
 /* zconf.h -- configuration of the zlib compression library
  * Copyright (C) 1995-1998 Jean-loup Gailly.
- * For conditions of distribution and use, see copyright notice in zlib.h
+ * For conditions of distribution and use, see copyright notice in zlib.h 
  */
 
 /* @(#) $Id$ */
@@ -16,7 +16,7 @@
 #  define deflateInit_	z_deflateInit_
 #  define deflate	z_deflate
 #  define deflateEnd	z_deflateEnd
-#  define inflateInit_	z_inflateInit_
+#  define inflateInit_ 	z_inflateInit_
 #  define inflate	z_inflate
 #  define inflateEnd	z_inflateEnd
 #  define deflateInit2_	z_deflateInit2_

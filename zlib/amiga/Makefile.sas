@@ -10,7 +10,7 @@ CFLAGS=OPT
 LDFLAGS=LIB z.lib
 
 SCOPTIONS=OPTSCHED OPTINLINE OPTALIAS OPTTIME OPTINLOCAL STRMERGE \
-       NOICONS PARMS=BOTH NOSTACKCHECK UTILLIB NOVERSION ERRORREXX
+       NOICONS PARMS=BOTH NOSTACKCHECK UTILLIB NOVERSION ERRORREXX 
 
 OBJS = adler32.o compress.o crc32.o gzio.o uncompr.o deflate.o trees.o \
        zutil.o inflate.o infblock.o inftrees.o infcodes.o infutil.o inffast.o
@@ -21,7 +21,7 @@ all: SCOPTIONS example minigzip
 
 test: all
 	`cd`/example
-	echo hello world | minigzip | minigzip -d
+	echo hello world | minigzip | minigzip -d 
 
 install: z.lib
 	copy zlib.h zconf.h INCLUDE: clone

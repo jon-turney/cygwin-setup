@@ -1,15 +1,15 @@
 # Makefile for zlib.  Modified for djgpp v2.0 by F. J. Donahoe, 3/15/96.
 # Copyright (C) 1995-1998 Jean-loup Gailly.
-# For conditions of distribution and use, see copyright notice in zlib.h
+# For conditions of distribution and use, see copyright notice in zlib.h 
 
 # To compile, or to compile and test, type:
-#
+# 
 #   make -fmakefile.dj2;  make test -fmakefile.dj2
-#
+# 
 # To install libz.a, zconf.h and zlib.h in the djgpp directories, type:
-#
+# 
 #    make install -fmakefile.dj2
-#
+# 
 # after first defining LIBRARY_PATH and INCLUDE_PATH in djgpp.env as
 # in the sample below if the pattern of the DJGPP distribution is to
 # be followed.  Remember that, while <sp>'es around <=> are ignored in
@@ -60,7 +60,7 @@ all: example.exe minigzip.exe
 
 test: all
 	./example
-	echo hello world | .\minigzip | .\minigzip -d
+	echo hello world | .\minigzip | .\minigzip -d 
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@

@@ -1,16 +1,16 @@
 # Makefile for zlib.  Modified for mingw32 by C. Spieler, 6/16/98.
 # (This Makefile is directly derived from Makefile.dj2)
 # Copyright (C) 1995-1998 Jean-loup Gailly.
-# For conditions of distribution and use, see copyright notice in zlib.h
+# For conditions of distribution and use, see copyright notice in zlib.h 
 
 # To compile, or to compile and test, type:
-#
+# 
 #   make -fmakefile.gcc;  make test -fmakefile.gcc
-#
+# 
 # To install libz.a, zconf.h and zlib.h in the mingw32 directories, type:
-#
+# 
 #    make install -fmakefile.gcc
-#
+# 
 
 CC=gcc
 
@@ -47,7 +47,7 @@ all: example.exe minigzip.exe
 
 test: all
 	./example
-	echo hello world | .\minigzip | .\minigzip -d
+	echo hello world | .\minigzip | .\minigzip -d 
 
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@

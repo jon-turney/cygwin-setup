@@ -20,8 +20,8 @@ OBJFILES = zlib32.obj adler32.obj compress.obj crc32.obj deflate.obj gzio.obj in
 RESFILES =
 RESDEPEN = $(RESFILES)
 LIBFILES =
-LIBRARIES =
-SPARELIBS =
+LIBRARIES = 
+SPARELIBS = 
 DEFFILE =
 PACKAGES = VCLX35.bpi VCL35.bpi VCLDB35.bpi VCLDBX35.bpi ibsmp35.bpi bcbsmp35.bpi \
   dclocx35.bpi QRPT35.bpi TEEUI35.bpi TEEDB35.bpi TEE35.bpi DSS35.bpi \

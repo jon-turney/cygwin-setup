@@ -38,7 +38,7 @@ CFLAG1 = -O2 -Ve -d -k- -vi
 CFLAG2 = -I$(BCB)\include;$(BCB)\include\vcl -H=$(BCB)\lib\vcl35.csm
 CFLAG3 = -ff -5
 PFLAGS = -U;$(DEBUGLIBPATH) -I$(BCB)\include;$(BCB)\include\vcl -H -W -$I- -v -JPHN -M
-RFLAGS = -i$(BCB)\include;$(BCB)\include\vcl
+RFLAGS = -i$(BCB)\include;$(BCB)\include\vcl 
 AFLAGS = /i$(BCB)\include /i$(BCB)\include\vcl /mx /w2 /zn
 LFLAGS =
 IFLAGS = -g -Gn
