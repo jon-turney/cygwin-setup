@@ -1,3 +1,8 @@
+2003-08-02  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
+
+	* propsheet.cc: Include "resource.h".
+	(PropSheet::Create): Add the Cygwin icon in the left of the title bar.
+
 2003-08-01  Gary R. Van Sickle  <g.r.vansickle@worldnet.att.net>
 
 	* proppage.cc (PropertyPage::FirstDialogProcReflector): Modify comment.

@@ -20,6 +20,7 @@
 
 #include "propsheet.h"
 #include "proppage.h"
+#include "resource.h"
 
 //#include <shlwapi.h>
 // ...but since there is no shlwapi.h in mingw yet:
@@ -172,8 +173,8 @@ PropSheet::Create (const Window * Parent, DWORD Style)
   PageHandles = CreatePages ();
 
   p.dwSize = GetPROPSHEETHEADERSize ();
-  p.dwFlags =
-    PSH_NOAPPLYNOW | PSH_WIZARD | PSH_USECALLBACK /*| PSH_MODELESS */ ;
+  p.dwFlags = PSH_NOAPPLYNOW | PSH_WIZARD | PSH_USECALLBACK
+    /*| PSH_MODELESS */ | PSH_USEICONID;
   if (Parent != NULL)
     {
       p.hwndParent = Parent->GetHWND ();
@@ -184,6 +185,7 @@ PropSheet::Create (const Window * Parent, DWORD Style)
     }
   p.hInstance = GetInstance ();
   p.nPages = NumPropPages;
+  p.pszIcon = MAKEINTRESOURCE(IDI_CYGWIN);
   p.nStartPage = 0;
   p.phpage = PageHandles;
   p.pfnCallback = PropSheetProc;
