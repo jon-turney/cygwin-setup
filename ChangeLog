@@ -1,3 +1,8 @@
+2001-11-07  Charles Wilson  <cwilson@ece.gatech.edu>
+
+	* geturl.cc (get_url_to_string): clean up memory leak
+	(get_url_to_file): ditto
+		
 2001-11-06  Robert Collins  <rbtcollins@hotmail.com>
 
 	* localdir.cc (dialog_cmd): Go back to IDD_ROOT in every case.
