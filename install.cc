@@ -89,7 +89,7 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
       ins_iprogress = GetDlgItem (h, IDC_INS_IPROGRESS);
       ins_diskfull = GetDlgItem (h, IDC_INS_DISKFULL);
       SetEvent (init_event);
-      return FALSE;
+      return TRUE;
     case WM_COMMAND:
       return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }
@@ -137,7 +137,6 @@ init_dialog ()
   SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) 0, 0);
   SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) 0, 0);
   ShowWindow (ins_dialog, SW_SHOWNORMAL);
-  SetForegroundWindow (ins_dialog);
 }
 
 static void

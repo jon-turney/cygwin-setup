@@ -1,3 +1,20 @@
+2001-11-02  Pavel Tsekov  <ptsekov@syntrex.com>
+
+	* geturl.cc (is_showing): Remove.
+	(is_local_install): New static variable. Controls whether the
+	progress dialog and the supporting thread will be created.
+	(dialog_proc): Return TRUE to WM_INITDIALOG as specified by the WIN32 API.
+	(init_dialog): Remove usage of SetForegroundWindow and is_showing.
+	This prevents the progress dialog to gain control over the 
+	application and fixes the "setup.exe going to background" problem.
+	(progress): Use is_local_install.
+	(get_url_to_string): Set is_local_install.
+	(dismiss_url_status_dialog): Use is_local_install.
+	* install.cc (dialog_proc): Return TRUE as specified in WIN32 API.
+	(init_dialog): Remove usage of SetForegroundWindow.
+	This prevents the progress dialog to gain control over the 
+	application and fixes the "setup.exe going to background" problem.
+
 2001-11-02  Robert Collins  <rbtcollins@hotmail.com>
 
 	* choose.cc (list_click): Change r to row for clarity.

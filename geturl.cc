@@ -36,7 +36,6 @@ static char *cvsid = "\n%%% $Id$\n";
 #include "diskfull.h"
 #include "mount.h"
 
-static int is_showing = 0;
 static HWND gw_dialog = 0;
 static HWND gw_url = 0;
 static HWND gw_rate = 0;
@@ -48,6 +47,7 @@ static HWND gw_pprogress_text = 0;
 static HWND gw_iprogress_text = 0;
 static HANDLE init_event;
 static int max_bytes = 0;
+static int is_local_install = 0;
 
 int total_download_bytes = 0;
 int total_download_bytes_sofar = 0;
@@ -80,7 +80,7 @@ dialog_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
       gw_pprogress_text = GetDlgItem (h, IDC_DLS_PPROGRESS_TEXT);
       gw_iprogress_text = GetDlgItem (h, IDC_DLS_IPROGRESS_TEXT);
       SetEvent (init_event);
-      return FALSE;
+      return TRUE;
     case WM_COMMAND:
       return HANDLE_WM_COMMAND (h, wParam, lParam, dialog_cmd);
     }
@@ -107,6 +107,8 @@ static DWORD start_tics;
 static void
 init_dialog (char *url, int length)
 {
+  if (is_local_install)
+    return;
   if (gw_dialog == 0)
     {
       DWORD tid;
@@ -118,7 +120,6 @@ init_dialog (char *url, int length)
       SendMessage (gw_progress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
       SendMessage (gw_pprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
       SendMessage (gw_iprogress, PBM_SETRANGE, 0, MAKELPARAM (0, 100));
-      is_showing = 0;
     }
   char *sl=url, *cp;
   for (cp=url; *cp; cp++)
@@ -146,11 +147,6 @@ init_dialog (char *url, int length)
     }
   ShowWindow (gw_iprogress, (total_download_bytes > 0) ? SW_SHOW : SW_HIDE);
   ShowWindow (gw_dialog, SW_SHOWNORMAL);
-  if (!is_showing)
-    {
-      SetForegroundWindow (gw_dialog);
-      is_showing = 1;
-    }
   start_tics = GetTickCount ();
 }
 
@@ -158,6 +154,8 @@ init_dialog (char *url, int length)
 static void
 progress (int bytes)
 {
+  if (is_local_install)
+    return;
   static char buf[100];
   int kbps;
   static unsigned int last_tics = 0;
@@ -201,6 +199,7 @@ char *
 get_url_to_string (char *_url)
 {
   log (LOG_BABBLE, "get_url_to_string %s", _url);
+  is_local_install = (source == IDC_SOURCE_CWD);
   init_dialog (_url, 0);
   NetIO *n = NetIO::open (_url);
   if (!n || !n->ok ())
@@ -314,6 +313,6 @@ get_url_to_file (char *_url, char *_filename, int expected_length,
 void
 dismiss_url_status_dialog ()
 {
-  ShowWindow (gw_dialog, SW_HIDE);
-  is_showing = 0;
+  if (!is_local_install)
+    ShowWindow (gw_dialog, SW_HIDE);
 }
