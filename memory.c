@@ -2,7 +2,7 @@
 #include <string.h>
 #include "setup.h"
  void *
-xmalloc (size_t size) 
+xmalloc (size_t size)
 {
   void *mem = malloc (size);
   if (!mem)
@@ -10,7 +10,7 @@ xmalloc (size_t size)
   return mem;
 }
 void *
-xrealloc (void *orig, size_t newsize) 
+xrealloc (void *orig, size_t newsize)
 {
   void *mem = realloc (orig, newsize);
   if (!mem)
@@ -18,7 +18,7 @@ xrealloc (void *orig, size_t newsize)
   return mem;
 }
 char *
-xstrdup (const char *arg) 
+xstrdup (const char *arg)
 {
   char *str = strdup (arg);
   if (!str)

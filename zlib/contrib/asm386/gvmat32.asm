@@ -471,14 +471,14 @@ exitloop:
         mov     ebx,match_start
         mov     ebp,str_s
         mov     ecx,best_len
-        mov     dword ptr [ebp+dep_match_start],ebx        
+        mov     dword ptr [ebp+dep_match_start],ebx
         mov     eax,dword ptr [ebp+dep_lookahead]
         cmp     ecx,eax
         ja      minexlo
         mov     eax,ecx
 minexlo:
 ; return min(best_len,s->lookahead)
-        
+
 ; restore stack and register ebx,esi,edi,ebp
         add     esp,NbStackAdd
 
@@ -524,7 +524,7 @@ ENDIF
 	pushfd
 	pushfd
 	pop     ecx
-			
+
 	mov     eax, ecx        ; get original EFLAGS
 	xor     eax, 200000h    ; flip ID bit in EFLAGS
 	push    eax             ; save new EFLAGS value on stack
@@ -536,7 +536,7 @@ ENDIF
 	je		is_old_486		; processor=old
 
 	mov     eax,1
-	db      0fh,0a2h        ;CPUID   
+	db      0fh,0a2h        ;CPUID
 
 exitcpudetect:
 	ret

@@ -2,7 +2,7 @@
 		Frequently Asked Questions about zlib
 
 
-If your question is not there, please check the zlib home page 
+If your question is not there, please check the zlib home page
 http://www.cdrom.com/pub/infozip/zlib/ which may have more recent information.
 
 
@@ -66,7 +66,7 @@ http://www.cdrom.com/pub/infozip/zlib/ which may have more recent information.
 8) I get "undefined reference to gzputc"
 
   If "make test" produces something like
-     example.o(.text+0x174): 
+     example.o(.text+0x174):
   check that you don't have old files libz.* in /usr/lib, /usr/local/lib
   or /usr/X11R6/lib. Remove old versions then do "make install".
 

@@ -1,7 +1,7 @@
-/* strarry.h: strarry struct */  
-  
+/* strarry.h: strarry struct */
+
 #include <stddef.h>
-typedef struct strarry 
+typedef struct strarry
 {
   char **array;
    size_t count;

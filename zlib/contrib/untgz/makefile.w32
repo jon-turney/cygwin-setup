@@ -1,16 +1,16 @@
 # Makefile for zlib.  Modified for mingw32
-# For conditions of distribution and use, see copyright notice in zlib.h 
+# For conditions of distribution and use, see copyright notice in zlib.h
 
-# To compile, 
-# 
+# To compile,
+#
 #   make -fmakefile.w32
-# 
+#
 
 CC=gcc
 
 # Generate dependencies (see end of the file)
 
-CPPFLAGS=-MMD 
+CPPFLAGS=-MMD
 
 #CFLAGS=-MMD -O
 #CFLAGS=-O -DMAX_WBITS=14 -DMAX_MEM_LEVEL=7
@@ -21,7 +21,7 @@ CFLAGS=-O3 $(BUTT) -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
 # If cp.exe is not found, replace with copy /Y .
 CP=cp -f
 
-# The default value of RM is "rm -f."  
+# The default value of RM is "rm -f."
 # If "rm.exe" is not found, uncomment:
 # RM=del
 

@@ -207,7 +207,7 @@ Changes in 1.0.6 (19 Jan 1998)
 - add NEED_DUMMY_RETURN for Borland
 - use variable z_verbose for tracing in debug mode (L. Peter Deutsch).
 - allow compilation with CC
-- defined STDC for OS/2 (David Charlap)	
+- defined STDC for OS/2 (David Charlap)
 - limit external names to 8 chars for MVS (Thomas Lund)
 - in minigzip.c, use static buffers only for 16-bit systems
 - fix suffix check for "minigzip -d foo.gz"
@@ -232,7 +232,7 @@ Changes in 1.0.5 (3 Jan 98)
 - Eliminate memory leaks on error conditions in inflate
 - Removed some vestigial code in inflate
 - Update web address in README
-  
+
 Changes in 1.0.4 (24 Jul 96)
 - In very rare conditions, deflate(s, Z_FINISH) could fail to produce an EOF
   bit, so the decompressor could decompress all the correct data but went

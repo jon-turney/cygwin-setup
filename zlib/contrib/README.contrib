@@ -7,7 +7,7 @@ for help about these, not the zlib authors. Thanks.
 asm386/     by Gilles Vollant <info@winimage.com>
 	386 asm code replacing longest_match(), for Visual C++ 4.2 and ML 6.11c
 
-asm586/ and asm686/    by Brian Raiter <breadbox@muppetlabs.com> 
+asm586/ and asm686/    by Brian Raiter <breadbox@muppetlabs.com>
         asm code for Pentium and Pentium Pro
         See http://www.muppetlabs.com/~breadbox/software/assembly.html
 

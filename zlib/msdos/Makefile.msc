@@ -114,7 +114,7 @@ minigzip.exe: minigzip.obj $(ZLIB_LIB)
 
 test: example.exe minigzip.exe
 	example
-	echo hello world | minigzip | minigzip -d 
+	echo hello world | minigzip | minigzip -d
 
 #clean:
 #	del *.obj

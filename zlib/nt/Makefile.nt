@@ -79,7 +79,7 @@ minigzip.exe: minigzip.obj zlib.lib
 
 test: example.exe minigzip.exe
 	example
-	echo hello world | minigzip | minigzip -d 
+	echo hello world | minigzip | minigzip -d
 
 clean:
 	del *.obj
