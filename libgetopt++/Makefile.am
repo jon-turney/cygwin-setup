@@ -23,7 +23,7 @@ libgetopt___la_SOURCES = src/GetOption.cc src/Option.cc src/BoolOption.cc \
 	include/getopt.h \
 	include/cdefs.h
 
-libgetopt___la_LDFLAGS = -lstdc++ -version-info 0:0:0
+libgetopt___la_LDFLAGS = -version-info 0:0:0
 
 getoptinclude_HEADERS = include/getopt++/Option.h \
   include/getopt++/GetOption.h \

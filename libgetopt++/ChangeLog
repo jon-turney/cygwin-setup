@@ -1,3 +1,9 @@
+2003-02-28  Max Bowsher  <maxb@ukf.net>
+
+	Backport from HEAD
+	* Makefile.am (libgetopt++_la_LDADD): Remove -lstd++, it is only needed
+	for broken g++ specs on some platforms.
+
 2002-06-08  Robert Collins  <rbtcollins@hotmail.com>                            
 
 	* Makefile.am: Correct Version requirement syntax.
