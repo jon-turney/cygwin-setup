@@ -1,5 +1,10 @@
 2004-11-19  Max Bowsher  <maxb@ukf.net>
 
+	* package_version.cc (dumpAndList): Make dependencies much more
+	readable in full log output.
+
+2004-11-19  Max Bowsher  <maxb@ukf.net>
+
 	* proppage.cc (PropertyPage::DialogProc): Wrap in a TOPLEVEL_CATCH
 	block, since allowing exceptions to unwind into the guts of Windows is
 	quite disasterous.

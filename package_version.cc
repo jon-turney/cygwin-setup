@@ -570,20 +570,28 @@ _packageversion::scripts()
   return scripts_;
 }
 
-void dumpAndList (vector<vector <PackageSpecification *> *> const *currentAndList, std::ostream &logger)
+void
+dumpAndList (vector<vector <PackageSpecification *> *> const *currentAndList,
+             std::ostream &logger)
 {
   if (currentAndList)
+  {
+    vector<vector <PackageSpecification *> *>::const_iterator iAnd =
+      currentAndList->begin();
+    while (true)
     {
-      logger << "AND list is:" << std::endl;
-      for (vector<vector <PackageSpecification *> *>::const_iterator iAnd =
-	   currentAndList->begin(); iAnd != currentAndList->end(); ++iAnd)
-	{
-    	  for (vector<PackageSpecification *>::const_iterator i= 
-	       (*iAnd)->begin();
-    	       i != (*iAnd)->end(); ++i)
-   	      logger << **i << " |" << std::endl;
-	  logger << "end of OR list," << std::endl;
-	}
+      if ((*iAnd)->size() > 1) log (LOG_BABBLE) << "( ";
+      vector<PackageSpecification *>::const_iterator i= (*iAnd)->begin();
+      while (true)
+      {
+        log(LOG_BABBLE) << **i;
+        if (++i == (*iAnd)->end()) break;
+        log(LOG_BABBLE) << " | ";
+      }
+      if ((*iAnd)->size() > 1) log (LOG_BABBLE) << " )";
+      if (++iAnd == currentAndList->end()) break;
+      log (LOG_BABBLE) << " & ";
     }
+  }
 }
 
