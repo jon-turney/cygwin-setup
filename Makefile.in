@@ -35,7 +35,7 @@ CC		:= @CC@
 CC_FOR_TARGET	:= $(CC)
 CXX		:= @CXX@
 
-CFLAGS		:= @CFLAGS@ -nostdinc
+CFLAGS		:= @CFLAGS@
 CXXFLAGS	:= @CXXFLAGS@ $(CFLAGS) -fno-exceptions -fno-rtti
 CXX		:= @CXX@
 
