@@ -164,6 +164,7 @@ tarx (const char *dir, const char *fn, FILE *logfp)
   int hpipe[2];
   HANDLE hin;
   FILE *fp;
+  int filehere;
 
   dpath = pathcat (dir, fn);
   path = dtoupath (dpath);
@@ -185,6 +186,7 @@ tarx (const char *dir, const char *fn, FILE *logfp)
   _close (hpipe[1]);
   fp = fdopen (hpipe[0], "rt");
 
+  filehere = files.index;
   while (fgets (buffer, sizeof (buffer0), fp))
     {
       char *s = strchr (buffer, '\n');
@@ -206,12 +208,15 @@ tarx (const char *dir, const char *fn, FILE *logfp)
 	  if (*s != '/')
 	    *--s = '/';
 	  s = files.array[files.index] = utodpath (s);
-	  (void) chmod (s, 0777);
 	}
 
       fprintf (logfp, "%s\n", s);
     }
   fclose (fp);
+
+  while (++filehere <= files.index)
+    (void) chmod (files.array[files.index], 0777);
+
   return 1;
 }
 
@@ -1198,7 +1203,7 @@ main ()
       xfree (wd);
     }
 
-  printf ("\nInstall took %.0f seconds.\n",
+  printf ("\nInstallation took %.0f seconds.\n",
           (double) (clock () - start) / CLK_TCK);
 
   return retval;

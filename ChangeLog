@@ -1,3 +1,8 @@
+Fri Apr 14 11:11:29 2000  Christopher Faylor <cgf@cygnus.com>
+
+	* setup.c (tarx): Wait to after tar has completed to reset protections
+	or suffer races with tar process.
+
 Thu Apr 13 12:51:19 2000  Christopher Faylor <cgf@cygnus.com>
 
 	* Makefile.in: Eliminate duplicate -nostdinc from CFLAGS.
