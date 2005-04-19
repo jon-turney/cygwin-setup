@@ -1,3 +1,9 @@
+2005-04-19  Max Bowsher  <maxb@ukf.net>
+
+	* postinstall.cc (RunFindVisitor::visitFile): Fix crash on
+	encountering a postinstall script with a name of 4 characters or less.
+	Bug introduced on 2004-12-25.
+
 2005-04-05  Max Bowsher  <maxb@ukf.net>
 
 	The Big Cleanup: Phase "rfc1738"

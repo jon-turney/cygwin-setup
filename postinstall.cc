@@ -45,7 +45,8 @@ public:
   virtual void visitFile(String const &basePath, const WIN32_FIND_DATA *theFile)
     {
       String fileName(theFile->cFileName);
-      if (fileName.substr(fileName.size() - 5) == ".done")
+      if (fileName.size() >= 5 &&
+          fileName.substr(fileName.size() - 5) == ".done")
         return;
       String fn = String("/etc/postinstall/")+theFile->cFileName;
       _scripts->push_back(Script (fn));
