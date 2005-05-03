@@ -46,18 +46,10 @@ public:
   RECT getDefaultListViewSize();
   void getParentRect (HWND parent, HWND child, RECT * r);
   void keepClicked();
+  void changeTrust(trusts aTrust);
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();
   void setPrompt(char const *aPrompt);
-  template<class C> bool ifChecked(int const &id, void (C::*fn)()) {
-     if (IsButtonChecked (id)) {
-       (this->*fn)();
-       return true;
-     }
-    else
-      return false;
-  }
-  template <trusts aTrust> void changeTrust();
   PickView *chooser;
 };
 

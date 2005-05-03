@@ -150,12 +150,4 @@ private:
   bool visited_;
 };
 
-// for generic programming
-struct SetRequirement {
-   SetRequirement (trusts aTrust) : theTrust (aTrust){}
-   void operator() (packagemeta *pkg) { pkg->set_requirements(theTrust);}
-   trusts theTrust;
-};
-
-
 #endif /* SETUP_PACKAGE_META_H */

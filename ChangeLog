@@ -1,5 +1,14 @@
 2005-05-03  Max Bowsher  <maxb@ukf.net>
 
+	* choose.h (ChooserPage::ifChecked): Remove.
+	(ChooserPage::changeTrust): Convert from template to ordinary function.
+	* choose.cc (ChooserPage::changeTrust): As above, plus avoid the use
+	of custom class SetRequirement, when bind2nd(mem_fun(...),...) can
+	achieve the same effect.
+	* package_meta.h (SetRequirement): Remove, now unused.
+
+2005-05-03  Max Bowsher  <maxb@ukf.net>
+
 	* package_meta.h (packagemeta::set_requirements):
 	Remove default argument which seems inappropriate.
 	* PickPackageLine.cc (PickPackageLine::click):

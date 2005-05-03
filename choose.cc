@@ -217,13 +217,13 @@ ChooserPage::keepClicked()
   chooser->refresh();
 }
 
-template <trusts aTrust>
 void
-ChooserPage::changeTrust()
+ChooserPage::changeTrust(trusts aTrust)
 {
   chooser->defaultTrust (aTrust);
   packagedb db;
-  for_each(db.packages.begin(), db.packages.end(), SetRequirement(aTrust));
+  for_each (db.packages.begin (), db.packages.end (),
+            bind2nd (mem_fun (&packagemeta::set_requirements), aTrust));
   chooser->refresh();
 }
 
@@ -239,13 +239,25 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
   switch (id)
     {
     case IDC_CHOOSE_KEEP:
-       return ifChecked(id, &ChooserPage::keepClicked);
+      if (IsButtonChecked (id))
+        keepClicked();
+      break;
+      
     case IDC_CHOOSE_PREV:
-       return ifChecked(id, &ChooserPage::changeTrust<TRUST_PREV>);
+      if (IsButtonChecked (id))
+        changeTrust (TRUST_PREV);
+      break;
+      
     case IDC_CHOOSE_CURR:
-       return ifChecked(id, &ChooserPage::changeTrust<TRUST_CURR>);
+      if (IsButtonChecked (id))
+        changeTrust (TRUST_CURR);
+      break;
+      
     case IDC_CHOOSE_EXP:
-       return ifChecked(id, &ChooserPage::changeTrust<TRUST_TEST>);
+      if (IsButtonChecked (id))
+        changeTrust (TRUST_TEST);
+      break;
+
     case IDC_CHOOSE_VIEW:
       chooser->setViewMode (++chooser->get_view_mode ());
       if (!SetDlgItemText
