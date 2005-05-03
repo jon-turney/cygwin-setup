@@ -14,6 +14,7 @@
  */
 
 #include "PickCategoryLine.h"
+#include "package_db.h"
 #include "PickView.h"
 
 void
@@ -75,8 +76,9 @@ PickCategoryLine::click (int const myrow, int const ClickedRow, int const x)
 	  labellength + depth * 8 + ICON_MARGIN + HMARGIN / 2)
 	{
 	  ++current_default;
-	  packagemeta::PrepareForVisit();
 	  
+          packagedb().markUnVisited();
+
 	  return set_action (current_default);
 	}
       else

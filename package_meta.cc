@@ -53,12 +53,6 @@ using namespace std;
 
 /*****************/
 
-void
-packagemeta::PrepareForVisit()
-{
-  packagedb().markUnVisited();
-}
-
 const
   packagemeta::_actions
 packagemeta::Default_action (0);

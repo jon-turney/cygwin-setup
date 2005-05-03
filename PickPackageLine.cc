@@ -15,6 +15,7 @@
 
 #include "PickPackageLine.h"
 #include "PickView.h"
+#include "package_db.h"
 #include "package_version.h"
 
 void
@@ -176,7 +177,7 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
       && x <= theView.headers[theView.new_col + 1].x - HMARGIN / 2)
     pkg.set_action (pkg.trustp(theView.deftrust));
   
-  packagemeta::PrepareForVisit();
+  packagedb().markUnVisited();
   /* Add any packages that are needed by this package */
   /* TODO: This hardcoded TRUST_CURR does not seem right. */
   return pkg.set_requirements (TRUST_CURR);
