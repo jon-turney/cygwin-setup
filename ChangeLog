@@ -1,4 +1,13 @@
 2005-05-03  Max Bowsher  <maxb@ukf.net>
+	
+	* PickCategoryLine.cc (PickCategoryLine::click):
+	* PickPackageLine.cc (PickPackageLine::click):
+	Abandon use of trivial packagemeta::PrepareForVisit() wrapper.
+
+	* package_meta.h (packagemeta::PrepareForVisit): Remove.
+	* package_meta.cc (packagemeta::PrepareForVisit): Remove.
+
+2005-05-03  Max Bowsher  <maxb@ukf.net>
 
 	* choose.h (ChooserPage::ifChecked): Remove.
 	(ChooserPage::changeTrust): Convert from template to ordinary function.
