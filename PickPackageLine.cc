@@ -178,7 +178,8 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
   
   packagemeta::PrepareForVisit();
   /* Add any packages that are needed by this package */
-  return pkg.set_requirements ();
+  /* TODO: This hardcoded TRUST_CURR does not seem right. */
+  return pkg.set_requirements (TRUST_CURR);
 }
 
 int PickPackageLine::set_action (packagemeta::_actions action)

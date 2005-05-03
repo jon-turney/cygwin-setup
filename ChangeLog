@@ -1,3 +1,10 @@
+2005-05-03  Max Bowsher  <maxb@ukf.net>
+
+	* package_meta.h (packagemeta::set_requirements):
+	Remove default argument which seems inappropriate.
+	* PickPackageLine.cc (PickPackageLine::click):
+	Make an argument explicit, and not that it seems like the wrong value.
+
 2005-05-03  Brian Dessent  <brian@dessent.net>
 
 	Fix part of bug #853 - proxy port not remembered.

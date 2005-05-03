@@ -83,7 +83,7 @@ public:
   void uninstall ();
   int set_requirements (trusts deftrust, size_t depth);
   // explicit separation for generic programming.
-  int set_requirements (trusts deftrust = TRUST_CURR) 
+  int set_requirements (trusts deftrust) 
     { return set_requirements (deftrust, 0); }
 
   String action_caption () const;
