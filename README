@@ -36,6 +36,15 @@ Build commands:
    $ upx -9 setup.exe
 
 
+ABOUT BRANCHES:
+---------------
+Main setup development usually occurs on trunk. Releases are made from branches
+named setup-YYYYMM. We do not have a defined stabilization period between the
+creation of the release branch and the first release - instead, we decide on
+a case by case basis, considering how rapid the recent development on trunk has
+been.
+
+
 CODING GUIDELINES:
 ------------------
 setup has a number of different code formats in it. This is ok as long
