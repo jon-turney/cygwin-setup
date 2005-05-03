@@ -1,3 +1,12 @@
+2005-05-03  Brian Dessent  <brian@dessent.net>
+
+	Fix part of bug #853 - proxy port not remembered.
+
+	* net.cc (doing_loading): New static boolean.
+	(load_dialog): Use the boolean to prevent save_dialog() from taking
+	action due to field changes due to initialization.
+	(save_dialog): Check the boolean and respond appropriately.
+
 2005-04-19  Max Bowsher  <maxb@ukf.net>
 
 	* postinstall.cc (RunFindVisitor::visitFile): Fix crash on

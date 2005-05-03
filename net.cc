@@ -40,6 +40,7 @@ extern ThreeBarProgressPage Progress;
 
 static int rb[] = { IDC_NET_IE5, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
 static ConnectionSetting theSetting;
+static bool doing_loading = false;
 
 void
 NetPage::CheckIfEnableNext ()
@@ -72,16 +73,28 @@ NetPage::CheckIfEnableNext ()
 static void
 load_dialog (HWND h)
 {
+  doing_loading = true;
+
   rbset (h, rb, net_method);
   eset (h, IDC_PROXY_HOST, net_proxy_host);
   if (net_proxy_port == 0)
     net_proxy_port = 80;
   eset (h, IDC_PROXY_PORT, net_proxy_port);
+
+  doing_loading = false;
 }
 
 static void
 save_dialog (HWND h)
 {
+  // Without this, save_dialog() is called in the middle of load_dialog()
+  // because the window receives a message when the value changes.  If this
+  // happens, save_dialog() tries to read the values of the fields, resulting
+  // in the net_proxy_port being reset to zero - this is the cause of the
+  // preference not sticking.
+  if (doing_loading)
+    return;
+
   net_method = rbget (h, rb);
   net_proxy_host = eget (h, IDC_PROXY_HOST, net_proxy_host);
   net_proxy_port = eget (h, IDC_PROXY_PORT);
