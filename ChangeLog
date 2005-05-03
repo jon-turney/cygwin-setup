@@ -1,3 +1,11 @@
+2005-05-04  Brian Dessent  <brian@dessent.net>
+
+	Fix bug #820: Clicking Curr, etc., causes some dependencies to not
+	be installed.
+
+	* choose.cc (ChooserPage::changeTrust):
+	Add a missing "packagedb.markUnVisited ()".
+
 2005-05-03  Max Bowsher  <maxb@ukf.net>
 	
 	* PickCategoryLine.cc (PickCategoryLine::click):

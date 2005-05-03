@@ -222,6 +222,7 @@ ChooserPage::changeTrust(trusts aTrust)
 {
   chooser->defaultTrust (aTrust);
   packagedb db;
+  db.markUnVisited ();
   for_each (db.packages.begin (), db.packages.end (),
             bind2nd (mem_fun (&packagemeta::set_requirements), aTrust));
   chooser->refresh();
