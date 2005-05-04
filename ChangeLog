@@ -1,4 +1,9 @@
-2005-05-03  Max Bowsher  <maxb@ukf.net>
+2005-05-04  Max Bowsher  <maxb@ukf.net>
+
+	* package_version.h (packageversion::set_requirements):
+	Remove deftrust argument default value.
+
+2005-05-04  Max Bowsher  <maxb@ukf.net>
 
 	* package_version.cc (DependencyProcessor): Remove trivial class.
 	(select, processOneDependency): Do not use DependencyProcessor, just
