@@ -1,5 +1,10 @@
 2005-05-04  Max Bowsher  <maxb@ukf.net>
 
+	* PickLine.cc: Remove file - redundant.
+	* Makefile.am (setup_SOURCES): Adjust.
+
+2005-05-04  Max Bowsher  <maxb@ukf.net>
+
 	* package_version.h (packageversion::set_requirements):
 	Remove deftrust argument default value.
 

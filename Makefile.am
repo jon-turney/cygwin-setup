@@ -221,7 +221,6 @@ setup_SOURCES = \
 	PackageTrust.h \
 	PickCategoryLine.cc \
 	PickCategoryLine.h \
-	PickLine.cc \
 	PickLine.h \
 	PickPackageLine.cc \
 	PickPackageLine.h \
