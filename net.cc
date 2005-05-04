@@ -30,7 +30,7 @@ static const char *cvsid =
 #include <stdlib.h>
 #include "dialog.h"
 #include "resource.h"
-#include "state.h"
+#include "netio.h"
 #include "msg.h"
 
 #include "propsheet.h"
@@ -48,14 +48,14 @@ NetPage::CheckIfEnableNext ()
   int e = 0, p = 0, pu = 0;
   DWORD ButtonFlags = PSWIZB_BACK;
 
-  if (net_method == IDC_NET_IE5)
+  if (NetIO::net_method == IDC_NET_IE5)
     pu = 1;
-  if (net_method == IDC_NET_IE5 || net_method == IDC_NET_DIRECT)
+  if (NetIO::net_method == IDC_NET_IE5 || NetIO::net_method == IDC_NET_DIRECT)
     e = 1;
-  else if (net_method == IDC_NET_PROXY)
+  else if (NetIO::net_method == IDC_NET_PROXY)
     {
       p = pu = 1;
-      if (net_proxy_host && net_proxy_port)
+      if (NetIO::net_proxy_host && NetIO::net_proxy_port)
 	e = 1;
     }
 	if (e)
@@ -75,11 +75,11 @@ load_dialog (HWND h)
 {
   doing_loading = true;
 
-  rbset (h, rb, net_method);
-  eset (h, IDC_PROXY_HOST, net_proxy_host);
-  if (net_proxy_port == 0)
-    net_proxy_port = 80;
-  eset (h, IDC_PROXY_PORT, net_proxy_port);
+  rbset (h, rb, NetIO::net_method);
+  eset (h, IDC_PROXY_HOST, NetIO::net_proxy_host);
+  if (NetIO::net_proxy_port == 0)
+    NetIO::net_proxy_port = 80;
+  eset (h, IDC_PROXY_PORT, NetIO::net_proxy_port);
 
   doing_loading = false;
 }
@@ -95,9 +95,9 @@ save_dialog (HWND h)
   if (doing_loading)
     return;
 
-  net_method = rbget (h, rb);
-  net_proxy_host = eget (h, IDC_PROXY_HOST, net_proxy_host);
-  net_proxy_port = eget (h, IDC_PROXY_PORT);
+  NetIO::net_method = rbget (h, rb);
+  NetIO::net_proxy_host = eget (h, IDC_PROXY_HOST, NetIO::net_proxy_host);
+  NetIO::net_proxy_port = eget (h, IDC_PROXY_PORT);
 }
 
 bool
@@ -111,8 +111,8 @@ NetPage::OnInit ()
 {
   HWND h = GetHWND ();
 
-  if (!net_method)
-    net_method = IDC_NET_DIRECT;
+  if (!NetIO::net_method)
+    NetIO::net_method = IDC_NET_DIRECT;
   load_dialog (h);
   CheckIfEnableNext();
 
@@ -132,8 +132,8 @@ NetPage::OnNext ()
   save_dialog (GetHWND ());
 
   log (LOG_PLAIN) << "net: "
-    << ((net_method == IDC_NET_IE5) ? "IE5" :
-        (net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy") << endLog;
+    << ((NetIO::net_method == IDC_NET_IE5) ? "IE5" :
+        (NetIO::net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy") << endLog;
 
   Progress.SetActivateTask (WM_APP_START_SITE_INFO_DOWNLOAD);
   return IDD_INSTATUS;

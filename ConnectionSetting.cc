@@ -21,7 +21,7 @@ static const char *cvsid =
 #include "ConnectionSetting.h"
 #include "UserSettings.h"
 #include "io_stream.h"
-#include "state.h"
+#include "netio.h"
 #include "resource.h"
 #include "String++.h"
 
@@ -37,13 +37,13 @@ ConnectionSetting::load()
       char localdir[1000];
       char *fg_ret = f->gets (localdir, 1000);
       if (fg_ret)
-        net_method = typeFromString(fg_ret);
+        NetIO::net_method = typeFromString(fg_ret);
       fg_ret = f->gets (localdir, 1000);
       if (fg_ret)
-        net_proxy_host = strdup(fg_ret);
+        NetIO::net_proxy_host = strdup(fg_ret);
       fg_ret = f->gets (localdir, 1000);
       if (fg_ret)
-        net_proxy_port = atoi(fg_ret);
+        NetIO::net_proxy_port = atoi(fg_ret);
       delete f;
     }
   inited = 1;
@@ -57,7 +57,7 @@ ConnectionSetting::save()
   io_stream *f = UserSettings::Instance().settingFileForSave("last-connection");
   if (f)
     {
-      switch (net_method) {
+      switch (NetIO::net_method) {
         case IDC_NET_DIRECT:
             f->write("Direct\n",7);
             break;
@@ -66,9 +66,9 @@ ConnectionSetting::save()
             break;
         case IDC_NET_PROXY:
             f->write("Proxy\n",6);
-            f->write(net_proxy_host,strlen(net_proxy_host));
-            sprintf(port_str, "\n%d\n", net_proxy_port);
-            f->write(port_str,strlen(port_str));
+            f->write(NetIO::net_proxy_host, strlen(NetIO::net_proxy_host));
+            sprintf(port_str, "\n%d\n", NetIO::net_proxy_port);
+            f->write(port_str, strlen(port_str));
             break;
         default:
             break;

@@ -28,6 +28,14 @@ protected:
   void set_url (char const *url);
   BOOL ftp_auth;
 
+  static char *net_user;
+  static char *net_passwd;
+  static char *net_proxy_user;
+  static char *net_proxy_passwd;
+  static char *net_ftp_user;
+  static char *net_ftp_passwd;
+
+
 public:
   /* if nonzero, this is the estimated total file size */
   int file_size;
@@ -51,6 +59,10 @@ public:
   /* Read `nbytes' bytes from the file.  Returns zero when the file
      is complete. */
   virtual int read (char *buf, int nbytes);
+
+  static int net_method;
+  static char *net_proxy_host;
+  static int net_proxy_port;
 
   /* Helper functions for http/ftp protocols.  Both return nonzero for
      "cancel", zero for "ok".  They set net_proxy_user, etc, in

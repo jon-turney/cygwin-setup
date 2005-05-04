@@ -1,5 +1,20 @@
 2005-05-04  Max Bowsher  <maxb@ukf.net>
 
+	* state.cc, state.h (net_method, net_proxy_host, net_proxy_port,)
+	(net_user, net_passwd, net_proxy_user, net_proxy_passwd,)
+	Inet_ftp_user, net_ftp_passwd):
+	Move these global variables to be static variables of the NetIO class.
+
+	* netio.h, netio.cc (net_method, net_proxy_host, net_proxy_port,)
+	(net_user, net_passwd, net_proxy_user, net_proxy_passwd,)
+	net_ftp_user, net_ftp_passwd):
+	As above.
+
+	* ConnectionSetting.cc, net.cc:
+	Change include, refer to variables in new location.
+
+2005-05-04  Max Bowsher  <maxb@ukf.net>
+
 	* PickLine.cc: Remove file - redundant.
 	* Makefile.am (setup_SOURCES): Adjust.
 

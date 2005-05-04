@@ -39,6 +39,17 @@ static const char *cvsid =
 #include "nio-ftp.h"
 #include "dialog.h"
 
+int NetIO::net_method;
+char *NetIO::net_proxy_host;
+int NetIO::net_proxy_port;
+
+char *NetIO::net_user;
+char *NetIO::net_passwd;
+char *NetIO::net_proxy_user;
+char *NetIO::net_proxy_passwd;
+char *NetIO::net_ftp_user;
+char *NetIO::net_ftp_passwd;
+
 NetIO::NetIO (char const *Purl)
 {
   set_url (Purl);

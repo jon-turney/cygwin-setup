@@ -42,16 +42,4 @@ extern int root_scope;
 extern int root_menu;
 extern int root_desktop;
 
-extern int net_method;
-extern char *net_proxy_host;
-extern int net_proxy_port;
-
-extern char *net_user;
-extern char *net_passwd;
-extern char *net_proxy_user;
-extern char *net_proxy_passwd;
-extern char *net_ftp_user;
-extern char *net_ftp_passwd;
-
-
 #endif /* SETUP_STATE_H */
