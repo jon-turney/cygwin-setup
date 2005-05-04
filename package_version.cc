@@ -369,29 +369,23 @@ checkForSatisfiable (PackageSpecification *spec)
   return false;
 }
 
-/* Convenience class for now */
-class DependencyProcessor {
-public:
-  DependencyProcessor (trusts const &aTrust, int aDepth=0) : deftrust (aTrust), depth (aDepth) {}
-  trusts const deftrust;
-  size_t depth;
-};
-
 static int
-select (DependencyProcessor &processor, packagemeta *required, packageversion const &aVersion)
+select (trusts deftrust, size_t depth, packagemeta *required,
+        const packageversion &aVersion)
 {
   /* preserve source */
-  bool sourceticked = required->desired.sourcePackage().picked();
+  bool sourceticked = required->desired.sourcePackage ().picked();
   /* install this version */
   required->desired = aVersion;
   required->desired.pick (required->installed != required->desired);
-  required->desired.sourcePackage().pick (sourceticked);
+  required->desired.sourcePackage ().pick (sourceticked);
   /* does this requirement have requirements? */
-  return required->set_requirements (processor.deftrust, processor.depth + 1);
+  return required->set_requirements (deftrust, depth + 1);
 }
 
 static int
-processOneDependency(trusts deftrust, size_t depth, PackageSpecification *spec)
+processOneDependency (trusts deftrust, size_t depth,
+                      PackageSpecification *spec)
 {
   /* TODO: add this to a set of packages to be offered to meet the
      requirement. For now, simply set the install to the first
@@ -399,11 +393,10 @@ processOneDependency(trusts deftrust, size_t depth, PackageSpecification *spec)
      desired */
   packagedb db;
   packagemeta *required = db.findBinary (*spec);
-  DependencyProcessor processor (deftrust, depth);
 
   packageversion trusted = required->trustp(deftrust);
   if (spec->satisfies (trusted)) {
-      return select (processor,required,trusted);
+      return select (deftrust, depth, required, trusted);
   }
 
   log (LOG_TIMESTAMP) << "Warning, the default trust level for package "
@@ -418,7 +411,7 @@ processOneDependency(trusts deftrust, size_t depth, PackageSpecification *spec)
       /* assert ?! */
       return 0;
   
-  return select (processor, required, *v);
+  return select (deftrust, depth, required, *v);
 }
 
 int

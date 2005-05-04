@@ -1,3 +1,9 @@
+2005-05-03  Max Bowsher  <maxb@ukf.net>
+
+	* package_version.cc (DependencyProcessor): Remove trivial class.
+	(select, processOneDependency): Do not use DependencyProcessor, just
+	pass parameters normally.
+
 2005-05-04  Brian Dessent  <brian@dessent.net>
 
 	Fix bug #820: Clicking Curr, etc., causes some dependencies to not
