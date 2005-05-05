@@ -1,4 +1,4 @@
-2005-04-05  Max Bowsher  <maxb@ukf.net>
+2005-05-05  Max Bowsher  <maxb@ukf.net>
 
 	* Makefile.am (EXTRA_DIST): Add bootstrap.sh.
 
