@@ -43,7 +43,9 @@ EXTRA_PROGRAMS = inilint
 ## noinst_PROGRAMS +=inilint
 
 EXTRA_DIST = \
-  GUIDELINES \
+  CHANGES \
+  CONTRIBUTORS \
+  bootstrap.sh \
   check-na.bmp \
   check-no.bmp \
   check-yes.bmp \
@@ -51,7 +53,10 @@ EXTRA_DIST = \
   choose-spin.bmp \
   cygwin.ico \
   inilex.l \
-  iniparse.y 
+  iniparse.y \
+  libmd5-rfc/README \
+  libmd5-rfc/md5main.c \
+  setup.exe.manifest
 
 BUILT_SOURCES = setup_version.c \
   	inilex.cc \
@@ -93,8 +98,8 @@ inilint_SOURCES = \
   PackageSpecification.cc \
   PackageSpecification.h \
   PackageTrust.h \
-  rfc1738.cc \
-  rfc1738.h \
+  csu_util/rfc1738.cc \
+  csu_util/rfc1738.h \
   String++.cc \
   String++.h \
   $(inilint_extras)
