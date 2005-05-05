@@ -35,7 +35,7 @@ public:
   String (std::string const &);
   inline String & operator = (String const &);
   ~String();
-  char const * cstr_oneuse() const; // only valid until the next mutator call
+  char const * c_str() const; // only valid until the next mutator call
   			      // pretends to be const !!
   inline size_t size() const; // number of characters (!= storage size).
   size_t find (char) const;
@@ -61,7 +61,7 @@ public:
   String replace (String const &pattern, String const &replacement) const;
 
   operator std::string() const {
-    return std::string( size() ? cstr_oneuse() : "" );
+    return std::string( size() ? c_str() : "" );
   };
     
 private:

@@ -409,7 +409,7 @@ PropertyPage::urlWinProc (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       {
         // they clicked our URL!  yay!
         int rc = (int)ShellExecute (hwnd, "open", 
-            theURL->second.url.cstr_oneuse (), NULL, NULL, SW_SHOWNORMAL);        
+            theURL->second.url.c_str (), NULL, NULL, SW_SHOWNORMAL);        
 
         if (rc <= 32)
           log(LOG_PLAIN) << "Unable to launch browser for URL " <<

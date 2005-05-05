@@ -92,7 +92,7 @@ SiteSetting::save()
     {
       for (SiteList::const_iterator n = site_list.begin ();
       n != site_list.end (); ++n)
-        f->write ((n->url + "\n").cstr_oneuse(), n->url.size() + 1);
+        f->write ((n->url + "\n").c_str(), n->url.size() + 1);
       delete f;
     }
 }
@@ -441,7 +441,7 @@ SitePage::PopulateListBox ()
        i != all_site_list.end (); ++i)
     {
       j = SendMessage (listbox, LB_ADDSTRING, 0,
-		       (LPARAM) i->displayed_url.cstr_oneuse());
+		       (LPARAM) i->displayed_url.c_str());
       SendMessage (listbox, LB_SETITEMDATA, j, j);
     }
 
@@ -450,7 +450,7 @@ SitePage::PopulateListBox ()
        n != site_list.end (); ++n)
     {
       int index = SendMessage (listbox, LB_FINDSTRING, (WPARAM) - 1,
-			       (LPARAM) n->displayed_url.cstr_oneuse());
+			       (LPARAM) n->displayed_url.c_str());
       if (index != LB_ERR)
 	{
 	  // Highlight the selected item

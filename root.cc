@@ -98,7 +98,7 @@ browse_cb (HWND h, UINT msg, LPARAM lp, LPARAM data)
     {
     case BFFM_INITIALIZED:
       if (get_root_dir ().size())
-	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) get_root_dir ().cstr_oneuse());
+	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) get_root_dir ().c_str());
       break;
     }
   return 0;
@@ -130,7 +130,7 @@ static int
 directory_is_absolute ()
 {
   
-  const char *r = get_root_dir ().cstr_oneuse();
+  const char *r = get_root_dir ().c_str();
   if (isalpha (r[0]) && r[1] == ':' && (r[2] == '\\' || r[2] == '/'))
     {
       return 1;
@@ -142,7 +142,7 @@ static int
 directory_is_rootdir ()
 {
   
-  for (const char *c = get_root_dir().cstr_oneuse(); *c; c++)
+  for (const char *c = get_root_dir().c_str(); *c; c++)
     if (isslash (c[0]) && c[1] && !isslash (c[1]))
       return 0;
   return 1;

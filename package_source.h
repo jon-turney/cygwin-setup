@@ -96,7 +96,7 @@ public:
   /* what is the cached filename, to prevent directory scanning during install */
   virtual char const *Cached () const
   {
-    return cached.cstr_oneuse();
+    return cached.c_str();
   };
   /* sets the canonical path, and parses and creates base and filename */
   virtual void set_canonical (char const *);

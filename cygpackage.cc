@@ -83,7 +83,7 @@ void
 cygpackage::setCanonicalVersion (String const &version)
 {
   canonical = version;
-  char *start = strchr (canonical.cstr_oneuse(), '-');
+  char *start = strchr (canonical.c_str(), '-');
   char*curr=start;
   if (curr)
     {
@@ -93,7 +93,7 @@ cygpackage::setCanonicalVersion (String const &version)
       /* curr = last - in the version string */
       packagev = curr + 1;
       char tvendor [version.size() +1];
-      strcpy (tvendor, version.cstr_oneuse());
+      strcpy (tvendor, version.c_str());
       tvendor[curr - start] = '\0';
       vendor=tvendor;
     }

@@ -57,7 +57,7 @@ public:
     {return io_stream_file::move (a, b);}
   int mkdir_p (path_type_t isadir, String const &path) const
     {
-      return ::mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, path.cstr_oneuse());
+      return ::mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, path.c_str());
     }
 protected:
   FileProvider() // no creating this
@@ -82,7 +82,7 @@ fp(), fname(name),lmode (mode)
   errno = 0;
   if (!name.size() || !mode.size())
     return;
-  fp = fopen (name.cstr_oneuse(), mode.cstr_oneuse());
+  fp = fopen (name.c_str(), mode.c_str());
   if (!fp)
     lasterr = errno;
 }
@@ -97,9 +97,9 @@ int
 io_stream_file::exists (String const &path)
 {
 #if defined(WIN32) && !defined (_CYGWIN_)
-  if (_access (path.cstr_oneuse(), 0) == 0)
+  if (_access (path.c_str(), 0) == 0)
 #else
-  if (access (path.cstr_oneuse(), F_OK) == 0)
+  if (access (path.c_str(), F_OK) == 0)
 #endif
     return 1;
   return 0;
@@ -111,7 +111,7 @@ io_stream_file::remove (String const &path)
   if (!path.size())
     return 1;
 #if defined(WIN32) && !defined (_CYGWIN_)
-  unsigned long w = GetFileAttributes (path.cstr_oneuse());
+  unsigned long w = GetFileAttributes (path.c_str());
   if (w != 0xffffffff && w & FILE_ATTRIBUTE_DIRECTORY)
     {
       char *tmp = new char [path.size() + 10];
@@ -119,19 +119,19 @@ io_stream_file::remove (String const &path)
       do
 	{
 	  i++;
-	  sprintf (tmp, "%s.old-%d", path.cstr_oneuse(), i);
+	  sprintf (tmp, "%s.old-%d", path.c_str(), i);
 	}
       while (GetFileAttributes (tmp) != 0xffffffff);
       fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-	       path.cstr_oneuse());
-      MoveFile (path.cstr_oneuse(), tmp);
+	       path.c_str());
+      MoveFile (path.c_str(), tmp);
       delete[] tmp;
     }
-  SetFileAttributes (path.cstr_oneuse(), w & ~FILE_ATTRIBUTE_READONLY);
-  return !DeleteFileA (path.cstr_oneuse());
+  SetFileAttributes (path.c_str(), w & ~FILE_ATTRIBUTE_READONLY);
+  return !DeleteFileA (path.c_str());
 #else
   // FIXME: try rmdir if unlink fails - remove the dir
-  return unlink (path.cstr_oneuse());
+  return unlink (path.c_str());
 #endif
 }
 
@@ -145,7 +145,7 @@ io_stream_file::mklink (String const &from, String const &to,
   switch (linktype)
     {
     case IO_STREAM_SYMLINK:
-      return mkcygsymlink (from.cstr_oneuse(), to.cstr_oneuse());
+      return mkcygsymlink (from.c_str(), to.c_str());
     case IO_STREAM_HARDLINK:
       return 1;
     }
@@ -153,9 +153,9 @@ io_stream_file::mklink (String const &from, String const &to,
   switch (linktype)
     {
     case IO_STREAM_SYMLINK:
-      return symlink (to.cstr_oneuse(), from.cstr_oneuse());
+      return symlink (to.c_str(), from.c_str());
     case IO_STREAM_HARDLINK:
-      return link (to.cstr_oneuse(), from.cstr_oneuse());
+      return link (to.c_str(), from.c_str());
     }
 #endif
   return 1;
@@ -235,7 +235,7 @@ io_stream_file::set_mtime (int mtime)
   ftime.dwHighDateTime = ftimev >> 32;
   ftime.dwLowDateTime = ftimev;
   HANDLE h =
-    CreateFileA (fname.cstr_oneuse(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    CreateFileA (fname.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
 		 0, OPEN_EXISTING,
 		 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
   if (h)
@@ -255,7 +255,7 @@ io_stream_file::move (String const &from, String const &to)
 {
   if (!from.size()|| !to.size())
     return 1;
-  return rename (from.cstr_oneuse(), to.cstr_oneuse());
+  return rename (from.c_str(), to.c_str());
 }
 
 size_t
@@ -268,7 +268,7 @@ io_stream_file::get_size ()
   WIN32_FIND_DATA buf;
   DWORD ret = 0;
 
-  h = FindFirstFileA (fname.cstr_oneuse(), &buf);
+  h = FindFirstFileA (fname.c_str(), &buf);
   if (h != INVALID_HANDLE_VALUE)
     {
       if (buf.nFileSizeHigh == 0)
@@ -278,7 +278,7 @@ io_stream_file::get_size ()
   return ret;
 #else
   struct stat buf;
-  if (stat(fname.cstr_oneuse(), &buf))
+  if (stat(fname.c_str(), &buf))
     throw new runtime_error ("Failed to stat file - has it been deleted?");
   return buf.st_size;
 #endif

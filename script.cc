@@ -51,7 +51,7 @@ init_run_script ()
   for (int i = 0; shells[i]; i++)
     {
       sh = backslash (cygpath (shells[i]));
-      if (_access (sh.cstr_oneuse(), 0) == 0)
+      if (_access (sh.c_str(), 0) == 0)
 	break;
       sh = String();
     }
@@ -60,8 +60,8 @@ init_run_script ()
   GetEnvironmentVariable ("PATH", old_path, sizeof (old_path));
   SetEnvironmentVariable ("PATH", backslash (cygpath ("/bin") + ";" +
 					     cygpath ("/usr/bin") + ";" +
-					     old_path).cstr_oneuse());
-  SetEnvironmentVariable ("CYGWINROOT", get_root_dir ().cstr_oneuse());
+					     old_path).c_str());
+  SetEnvironmentVariable ("CYGWINROOT", get_root_dir ().c_str());
 
   verinfo.dwOSVersionInfoSize = sizeof (verinfo);
   GetVersionEx (&verinfo);
@@ -108,10 +108,10 @@ OutputLog::OutputLog (String const &filename)
   sa.bInheritHandle = TRUE;
   sa.lpSecurityDescriptor = NULL;
 
-  if (mkdir_p (0, backslash (cygpath (_filename)).cstr_oneuse()))
+  if (mkdir_p (0, backslash (cygpath (_filename)).c_str()))
     return;
 
-  _handle = CreateFile (backslash (cygpath (_filename)).cstr_oneuse(),
+  _handle = CreateFile (backslash (cygpath (_filename)).c_str(),
       GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE,
       &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
@@ -127,7 +127,7 @@ OutputLog::~OutputLog ()
   if (_handle != INVALID_HANDLE_VALUE)
     CloseHandle (_handle);
   if (_filename.size() &&
-      !DeleteFile(backslash (cygpath (_filename)).cstr_oneuse()))
+      !DeleteFile(backslash (cygpath (_filename)).c_str()))
     {
       log(LOG_PLAIN) << "error: Unable to remove temporary file '" << _filename
 		     << "'" << endLog;
@@ -187,7 +187,7 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
     }
 
   BOOL createSucceeded = CreateProcess (0, cmdline, 0, 0, inheritHandles,
-					flags, 0, get_root_dir ().cstr_oneuse(),
+					flags, 0, get_root_dir ().c_str(),
 					&si, &pi);
 
   if (createSucceeded)
@@ -199,7 +199,7 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
 char const *
 Script::extension() const
 {
-  return strrchr (scriptName.cstr_oneuse(), '.');
+  return strrchr (scriptName.c_str(), '.');
 }
 
 void
@@ -220,13 +220,13 @@ Script::run() const
   if (sh.size() && strcmp (extension(), ".sh") == 0)
     {
       log(LOG_PLAIN) << "running: " << sh << " -c " << scriptName << endLog;
-      ::run (sh.cstr_oneuse(), "-c", scriptName.cstr_oneuse(), file_out);
+      ::run (sh.c_str(), "-c", scriptName.c_str(), file_out);
     }
   else if (cmd && strcmp (extension(), ".bat") == 0)
     {
       String windowsName = backslash (cygpath (scriptName));
       log(LOG_PLAIN) << "running: " << cmd << " /c " << windowsName << endLog;
-      ::run (cmd, "/c", windowsName.cstr_oneuse(), file_out);
+      ::run (cmd, "/c", windowsName.c_str(), file_out);
     }
   else
     return;
@@ -259,7 +259,7 @@ Script::isAScript (String const &file)
     if (file.casecompare (ETCPostinstall, sizeof(ETCPostinstall)) &&
 	file.casecompare (ETCPostinstall+1, sizeof(ETCPostinstall)-1))
       return false;
-    if (file.cstr_oneuse()[file.size() - 1] == '/')
+    if (file.c_str()[file.size() - 1] == '/')
       return false;
     return true;
 }

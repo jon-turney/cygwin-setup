@@ -85,7 +85,7 @@ LocalDirSetting::save()
   io_stream *f = UserSettings::Instance().settingFileForSave("last-cache");
   if (f)
     {
-      f->write (local_dir.cstr_oneuse(), local_dir.size());
+      f->write (local_dir.c_str(), local_dir.size());
       delete f;
     }
   if (source == IDC_SOURCE_DOWNLOAD || !get_root_dir ().size())
@@ -129,7 +129,7 @@ browse_cb (HWND h, UINT msg, LPARAM lp, LPARAM data)
     {
     case BFFM_INITIALIZED:
       if (local_dir.size())
-	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) local_dir.cstr_oneuse());
+	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) local_dir.c_str());
       break;
     }
   return 0;
@@ -203,7 +203,7 @@ LocalDirPage::OnNext ()
   while (trySetCurDir)
     {
       trySetCurDir = false;
-      if (SetCurrentDirectoryA (local_dir.cstr_oneuse()))
+      if (SetCurrentDirectoryA (local_dir.c_str()))
 	{
 	  if (source == IDC_SOURCE_CWD)
 	    {
@@ -226,11 +226,11 @@ LocalDirPage::OnNext ()
 	    FORMAT_MESSAGE_ALLOCATE_BUFFER, 0, err, LANG_NEUTRAL,
 	    (LPSTR)&buf, 0, 0) != 0)
 	    {
-	      snprintf (msg, sizeof (msg), msgText, local_dir.cstr_oneuse(), 
+	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str(), 
 	        buf, err);
 	    }
 	    else
-	      snprintf (msg, sizeof (msg), msgText, local_dir.cstr_oneuse(), 
+	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str(), 
 	        "(unknown error)", err);
 	  log (LOG_PLAIN) << msg << endLog;
 	  int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | 

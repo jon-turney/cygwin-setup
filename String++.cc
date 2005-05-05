@@ -69,7 +69,7 @@ String::String (string const &aString) : theData (new _data (aString.c_str() ? s
 
 // able to cache the result if needed.
 char const *
-String::cstr_oneuse () const
+String::c_str () const
 {
   if (theData->length == 0)
     return NULL;
@@ -98,7 +98,7 @@ String
 String::substr(size_t start, int len) const
 {
   // Adapt the C++ string class
-  return string(cstr_oneuse()).substr(start, len);
+  return string(c_str()).substr(start, len);
 }
 
 int
@@ -291,7 +291,7 @@ new_cstr_char_array (const String &s)
 {
   size_t len = s.size() + 1;
   char *buf = new char[len];
-  memcpy (buf, s.cstr_oneuse (), len);
+  memcpy (buf, s.c_str (), len);
   return buf;
 }
 
@@ -301,6 +301,6 @@ new_cstr_char_array (const String &s)
 ostream &
 operator << (ostream &os, String const &theString)
 {
-  os << theString.cstr_oneuse();
+  os << theString.c_str();
   return os;
 }

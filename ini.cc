@@ -97,7 +97,7 @@ public:
     }
   virtual void iniName (String const &name)
     {
-      Progress.SetText1 ((String ("Parsing ini file \"") + name + "\"").cstr_oneuse());
+      Progress.SetText1 ((String ("Parsing ini file \"") + name + "\"").c_str());
     }
   virtual void babble(String const &message)const
     {
@@ -105,11 +105,11 @@ public:
     }
   virtual void warning (String const &message)const
     {
-      MessageBox (0, message.cstr_oneuse(), "Warning", 0);
+      MessageBox (0, message.c_str(), "Warning", 0);
     }
   virtual void error(String const &message)const
     {
-      MessageBox (0, message.cstr_oneuse(), "Error parsing", 0);
+      MessageBox (0, message.c_str(), "Error parsing", 0);
     }
   virtual ~ GuiParseFeedback ()
     {
@@ -153,7 +153,7 @@ do_remote_ini (HWND owner)
 
       if (!ini_file)
 	{
-	  note (owner, IDS_SETUPINI_MISSING, n->url.cstr_oneuse());
+	  note (owner, IDS_SETUPINI_MISSING, n->url.c_str());
 	  continue;
 	}
  
@@ -217,7 +217,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
   if (ini_count == 0)
     return false;
 
-  if (get_root_dir ().cstr_oneuse())
+  if (get_root_dir ().c_str())
     {
       io_stream::mkpath_p (PATH_TO_DIR, "cygfile:///etc/setup");
 
@@ -254,13 +254,13 @@ do_ini_thread (HINSTANCE h, HWND owner)
     }
 
   msg (".ini setup_version is %s, our setup_version is %s", ini_setup_version.size() ? 
-       ini_setup_version.cstr_oneuse() : "(null)",
+       ini_setup_version.c_str() : "(null)",
        setup_version);
   if (ini_setup_version.size())
     {
       if (version_compare(setup_version, ini_setup_version) < 0)
 	note (owner, IDS_OLD_SETUP_VERSION, setup_version,
-              ini_setup_version.cstr_oneuse());
+              ini_setup_version.c_str());
     }
 
   return true;
@@ -306,7 +306,7 @@ yyerror (String const &s)
   char buf[MAX_PATH + 1000];
   int len;
   sprintf (buf, "%s line %d: ", ini_filename, yylineno - yybol ());
-  sprintf (buf + strlen (buf), s.cstr_oneuse());
+  sprintf (buf + strlen (buf), s.c_str());
   OutputDebugString (buf);
   if (error_buf)
     {

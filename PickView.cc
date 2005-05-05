@@ -136,7 +136,7 @@ PickView::note_width (PickView::Header *hdrs, HDC dc, String const &string, int 
       return;
     }
   SIZE s;
-  GetTextExtentPoint32 (dc, string.cstr_oneuse(), string.size(), &s);
+  GetTextExtentPoint32 (dc, string.c_str(), string.size(), &s);
   if (hdrs[column].width < s.cx + addend)
     hdrs[column].width = s.cx + addend;
 }

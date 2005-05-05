@@ -111,7 +111,7 @@ ThreeBarProgressPage::SetBar2 (long progress, long max)
   SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) percent, 0);
   String s(percent);
   s += "% - Cygwin Setup";
-  GetOwner ()->SetWindowText (s.cstr_oneuse());
+  GetOwner ()->SetWindowText (s.c_str());
 }
 
 void

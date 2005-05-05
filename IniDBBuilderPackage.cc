@@ -48,7 +48,7 @@ IniDBBuilderPackage::~IniDBBuilderPackage()
 void
 IniDBBuilderPackage::buildTimestamp (String const &time)
 {
-  timestamp = strtoul (time.cstr_oneuse(), 0, 0);
+  timestamp = strtoul (time.c_str(), 0, 0);
 }
 
 void
@@ -113,7 +113,7 @@ IniDBBuilderPackage::buildPackageLDesc (String const &theDesc)
 {
   cbpv.set_ldesc(theDesc);
 #if DEBUG
-  _feedback.warning(theDesc.cstr_oneuse());
+  _feedback.warning(theDesc.c_str());
 #endif
 }
 
@@ -155,7 +155,7 @@ IniDBBuilderPackage::buildPackageSource (String const &path, String const &size)
     cspv = *i;
 
   if (!cspv.source()->Canonical())
-    cspv.source()->set_canonical (path.cstr_oneuse());
+    cspv.source()->set_canonical (path.c_str());
   cspv.source()->sites.push_back(site(parse_mirror));
 
   cbpv.setSourcePackageSpecification (PackageSpecification (cspv.Name()));
@@ -223,7 +223,7 @@ IniDBBuilderPackage::buildPriority (String const &priority)
 void
 IniDBBuilderPackage::buildInstalledSize (String const &size)
 {
-  cbpv.source()->setInstalledSize (atoi(size.cstr_oneuse()));
+  cbpv.source()->setInstalledSize (atoi(size.c_str()));
 #if DEBUG
   log (LOG_BABBLE) << "Installed size for " << cp->name << " is " << cbpv.source()->installedSize() << endLog;
 #endif
@@ -365,7 +365,7 @@ IniDBBuilderPackage::buildDescription (String const &descline)
   else
     _feedback.warning ((String ("Attempt to set description for package")
 		       + cp->name 
-		       + "before creation of a version.").cstr_oneuse());
+		       + "before creation of a version.").c_str());
 }
 
 void 
@@ -382,7 +382,7 @@ IniDBBuilderPackage::buildSourceName (String const &name)
   else
       _feedback.warning ((String ("Attempt to set source for package")
 			  + cp->name
-			  + "before creation of a version.").cstr_oneuse());
+			  + "before creation of a version.").c_str());
 }
 
 void
@@ -400,7 +400,7 @@ IniDBBuilderPackage::buildSourceNameVersion (String const &version)
   else
       _feedback.warning ((String ("Attempt to set source version for package")
 			  + cp->name
-			  + "before creation of a version.").cstr_oneuse());
+			  + "before creation of a version.").c_str());
 }
 
 void
@@ -427,7 +427,7 @@ IniDBBuilderPackage::buildPackageListAndNode ()
   else
     _feedback.warning ((String ("Attempt to add And node when no AndList"
 				" present for package ")
-			+ cp->name).cstr_oneuse());
+			+ cp->name).c_str());
 }
 
 void
@@ -445,7 +445,7 @@ IniDBBuilderPackage::buildPackageListOrNode (String const &packageName)
   else
     _feedback.warning ((String ("Attempt to set specification for package ")
 			+ cp->name
-			+ " before creation of a version.").cstr_oneuse());
+			+ " before creation of a version.").c_str());
 }
 
 void
@@ -462,7 +462,7 @@ IniDBBuilderPackage::buildPackageListOperator (PackageSpecification::_operators 
   else
     _feedback.warning ((String ("Attempt to set an operator for package ")
 		       + cp->name
-		       + " with no current specification.").cstr_oneuse());
+		       + " with no current specification.").c_str());
 }
 
 
@@ -480,7 +480,7 @@ IniDBBuilderPackage::buildPackageListOperatorVersion (String const &aVersion)
   else
       _feedback.warning ((String ("Attempt to set an operator version for package ")
 			  + cp->name
-			  + " with no current specification.").cstr_oneuse());
+			  + " with no current specification.").c_str());
 }
 
 /* privates */
@@ -549,7 +549,7 @@ void
 IniDBBuilderPackage::process_src (packagesource &src, String const &path)
 {
   if (!src.Canonical())
-    src.set_canonical (path.cstr_oneuse());
+    src.set_canonical (path.c_str());
   src.sites.push_back(site(parse_mirror));
   
   if (!cbpv.Canonical_version ().size())
@@ -567,5 +567,5 @@ void
 IniDBBuilderPackage::setSourceSize (packagesource &src, String const &size)
 {
   if (!src.size)
-    src.size = atoi(size.cstr_oneuse());
+    src.size = atoi(size.c_str());
 }

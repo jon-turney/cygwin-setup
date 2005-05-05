@@ -82,7 +82,7 @@ validateCachedPackage (String const &fullname, packagesource & pkgsource)
 
       log (LOG_BABBLE) << "Checking MD5 for " << fullname << endLog;
 
-      Progress.SetText1 ((String ("Checking MD5 for ") + pkgsource.Base()).cstr_oneuse());
+      Progress.SetText1 ((String ("Checking MD5 for ") + pkgsource.Base()).c_str());
       Progress.SetText4 ("Progress:");
       Progress.SetBar1 (0);
       
@@ -208,9 +208,9 @@ download_one (packagesource & pkgsource, HWND owner)
 	  if (size == pkgsource.size)
 	    {
 	      log (LOG_PLAIN) << "Downloaded " << local << endLog;
-	      if (_access (local.cstr_oneuse(), 0) == 0)
-		remove (local.cstr_oneuse());
-	      rename ((local + ".tmp").cstr_oneuse(), local.cstr_oneuse());
+	      if (_access (local.c_str(), 0) == 0)
+		remove (local.c_str());
+	      rename ((local + ".tmp").c_str(), local.c_str());
 	      success = 1;
 	      pkgsource.set_cached (String ("file://") + local);
 	      // FIXME: move the downloaded file to the 
@@ -222,7 +222,7 @@ download_one (packagesource & pkgsource, HWND owner)
 	      log (LOG_PLAIN) << "Download " << local << " wrong size (" <<
 		size << " actual vs " << pkgsource.size << " expected)" << 
 		endLog;
-	      remove ((local + ".tmp").cstr_oneuse());
+	      remove ((local + ".tmp").c_str());
 	      continue;
 	    }
 	}
@@ -273,7 +273,7 @@ do_download_thread (HINSTANCE h, HWND owner)
 	    {
 	      // We know what to do with these..
 	      if (e->errNo() == APPERR_CORRUPT_PACKAGE)
-		fatal (owner, IDS_CORRUPT_PACKAGE, pkg.name.cstr_oneuse());
+		fatal (owner, IDS_CORRUPT_PACKAGE, pkg.name.c_str());
 	      // Unexpected exception.
 	      throw e;
 	    }

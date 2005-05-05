@@ -100,7 +100,7 @@ io_stream::open (String const &name, String const &mode)
   IOStreamProvider const *p = findProvider (name);
   if (!p)
     throw new invalid_argument ("URL Scheme not registered!");
-  io_stream *rv = p->open (&name.cstr_oneuse()[p->key.size()], mode);
+  io_stream *rv = p->open (&name.c_str()[p->key.size()], mode);
   if (!rv->error ())
     return rv;
   delete rv;
@@ -113,7 +113,7 @@ io_stream::mkpath_p (path_type_t isadir, String const &name)
   IOStreamProvider const *p = findProvider (name);
   if (!p)
     throw new invalid_argument ("URL Scheme not registered!");
-  return p->mkdir_p (isadir, &name.cstr_oneuse()[p->key.size()]);
+  return p->mkdir_p (isadir, &name.c_str()[p->key.size()]);
 }
 
 /* remove a file or directory. */
@@ -123,7 +123,7 @@ io_stream::remove (String const &name)
   IOStreamProvider const *p = findProvider (name);
   if (!p)
     throw new invalid_argument ("URL Scheme not registered!");
-  return p->remove (&name.cstr_oneuse()[p->key.size()]);
+  return p->remove (&name.c_str()[p->key.size()]);
 }
 
 int
@@ -138,8 +138,8 @@ io_stream::mklink (String const &from, String const &to,
     throw new invalid_argument ("URL Scheme not registered!");
   if (fromp != top)
     throw new invalid_argument ("Attempt to link across url providers.");
-  return fromp->mklink (&from.cstr_oneuse()[fromp->key.size()], 
-    			&to.cstr_oneuse()[top->key.size()], linktype);
+  return fromp->mklink (&from.c_str()[fromp->key.size()], 
+    			&to.c_str()[top->key.size()], linktype);
 }
 
 int
@@ -202,8 +202,8 @@ io_stream::move (String const &from, String const &to)
     throw new invalid_argument ("URL Scheme not registered!");
   if (fromp != top)
     return io_stream::move_copy (from, to);
-  return fromp->move (&from.cstr_oneuse()[fromp->key.size()],
-  		      &to.cstr_oneuse()[top->key.size()]);
+  return fromp->move (&from.c_str()[fromp->key.size()],
+  		      &to.c_str()[top->key.size()]);
 }
 
 char *
@@ -236,7 +236,7 @@ io_stream::exists (String const &name)
   IOStreamProvider const *p = findProvider (name);
   if (!p)
     throw new invalid_argument ("URL Scheme not registered!");
-  return p->exists (&name.cstr_oneuse()[p->key.size()]);
+  return p->exists (&name.c_str()[p->key.size()]);
 }
 
 /* virtual members */

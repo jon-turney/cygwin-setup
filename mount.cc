@@ -104,7 +104,7 @@ find2 (HKEY rkey, int *istext, String const &what)
 {
   HKEY key;
 
-  if (RegOpenKeyEx (rkey, what.cstr_oneuse (), 0, KEY_READ, &key) !=
+  if (RegOpenKeyEx (rkey, what.c_str (), 0, KEY_READ, &key) !=
       ERROR_SUCCESS)
     return 0;
 
@@ -149,7 +149,7 @@ create_mount (String const posix, String const win32, int istext,
   snprintf (buf, sizeof(buf), "Software\\%s\\%s\\%s\\%s",
 	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
-	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.cstr_oneuse ());
+	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.c_str ());
 
   HKEY kr = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
   rv = RegCreateKeyEx (kr, buf, 0, (char *)"Cygwin", 0, KEY_ALL_ACCESS,
@@ -157,7 +157,7 @@ create_mount (String const posix, String const win32, int istext,
   if (rv != ERROR_SUCCESS)
     fatal ("mount", rv);
 
-  RegSetValueEx (key, "native", 0, REG_SZ, (BYTE *) win32.cstr_oneuse (),
+  RegSetValueEx (key, "native", 0, REG_SZ, (BYTE *) win32.c_str (),
 		 win32.size () + 1);
   flags = 0;
   if (!istext)
@@ -179,7 +179,7 @@ remove1 (HKEY rkey, String const posix)
   snprintf (buf, sizeof(buf), "Software\\%s\\%s\\%s\\%s",
 	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
 	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
-	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.cstr_oneuse ());
+	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.c_str ());
 
   RegDeleteKey (rkey, buf);
 }
@@ -477,18 +477,18 @@ path_prefix_p (String const path1, String const path2)
 {
   size_t len1 = path1.size ();
   /* Handle case where PATH1 has trailing '/' and when it doesn't.  */
-  if (len1 > 0 && SLASH_P (path1.cstr_oneuse ()[len1 - 1]))
+  if (len1 > 0 && SLASH_P (path1.c_str ()[len1 - 1]))
     --len1;
 
   if (len1 == 0)
-    return SLASH_P (path2.cstr_oneuse ()[0])
-      && !SLASH_P (path2.cstr_oneuse ()[1]);
+    return SLASH_P (path2.c_str ()[0])
+      && !SLASH_P (path2.c_str ()[1]);
 
   if (path1.casecompare (path2, len1) != 0)
     return 0;
 
-  return SLASH_P (path2.cstr_oneuse ()[len1]) || path2.size () == len1
-    || path1.cstr_oneuse ()[len1 - 1] == ':';
+  return SLASH_P (path2.c_str ()[len1]) || path2.size () == len1
+    || path1.c_str ()[len1 - 1] == ':';
 }
 
 String
@@ -514,6 +514,6 @@ cygpath (String const &thePath)
       native = match->native;
     }
   else
-    native = match->native + "/" + String (thePath.cstr_oneuse() + max_len);
+    native = match->native + "/" + String (thePath.c_str() + max_len);
   return native;
 }

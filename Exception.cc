@@ -28,7 +28,7 @@ Exception::Exception (char const *where, const String &message, int _appErrNo)
 char const *
 Exception::what() const throw()
 {
-  return _message.cstr_oneuse ();
+  return _message.c_str ();
 }
 
 int

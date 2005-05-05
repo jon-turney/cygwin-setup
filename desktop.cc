@@ -77,11 +77,11 @@ make_link (String const &linkpath, String const &title, String const &target)
 {
   String fname = linkpath + "/" + title + ".lnk";
 
-  if (_access (fname.cstr_oneuse(), 0) == 0)
+  if (_access (fname.c_str(), 0) == 0)
     return;			/* already exists */
 
   msg ("make_link %s, %s, %s\n",
-       fname.cstr_oneuse(), title.cstr_oneuse(), target.cstr_oneuse());
+       fname.c_str(), title.c_str(), target.c_str());
 
   io_stream::mkpath_p (PATH_TO_FILE, String ("file://") + fname);
 
@@ -102,14 +102,14 @@ make_link (String const &linkpath, String const &title, String const &target)
       GetWindowsDirectory (windir, sizeof (windir));
       exepath = String(windir) + COMMAND9XEXE;
       argbuf = COMMAND9XARGS + " " + target;
-//      sprintf (argbuf, "%s %s", COMMAND9XARGS, target.cstr_oneuse());
+//      sprintf (argbuf, "%s %s", COMMAND9XARGS, target.c_str());
     }
 
   msg ("make_link_2 (%s, %s, %s, %s)",
-       exepath.cstr_oneuse(), argbuf.cstr_oneuse(),
-       iconname.cstr_oneuse(), fname.cstr_oneuse());
-  make_link_2 (exepath.cstr_oneuse(), argbuf.cstr_oneuse(),
-	       iconname.cstr_oneuse(), fname.cstr_oneuse());
+       exepath.c_str(), argbuf.c_str(),
+       iconname.c_str(), fname.c_str());
+  make_link_2 (exepath.c_str(), argbuf.c_str(),
+	       iconname.c_str(), fname.c_str());
 }
 
 static void
@@ -124,14 +124,14 @@ start_menu (String const &title, String const &target)
   SHGetPathFromIDList (id, _path);
   String path(_path);
   // Win95 does not use common programs unless multiple users for Win95 is enabled
-  msg ("Program directory for program link: %s", path.cstr_oneuse());
+  msg ("Program directory for program link: %s", path.c_str());
   if (path.size() == 0)
     {
       SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
       SHGetPathFromIDList (id, _path);
       path = String(_path);
       msg ("Program directory for program link changed to: %s",
-	   path.cstr_oneuse());
+	   path.c_str());
     }
 // end of Win95 addition
   path += "/Cygwin";
@@ -168,18 +168,18 @@ make_cygwin_bat ()
   batname = backslash (cygpath ("/cygwin.bat"));
 
   /* if the batch file exists, don't overwrite it */
-  if (_access (batname.cstr_oneuse(), 0) == 0)
+  if (_access (batname.c_str(), 0) == 0)
     return;
 
-  FILE *bat = fopen (batname.cstr_oneuse(), "wt");
+  FILE *bat = fopen (batname.c_str(), "wt");
   if (!bat)
     return;
 
   fprintf (bat, "@echo off\n\n");
 
-  fprintf (bat, "%.2s\n", get_root_dir ().cstr_oneuse());
+  fprintf (bat, "%.2s\n", get_root_dir ().c_str());
   fprintf (bat, "chdir %s\n\n",
-	   backslash (get_root_dir () + "/bin").replace ("%", "%%").cstr_oneuse());
+	   backslash (get_root_dir () + "/bin").replace ("%", "%%").c_str());
 
   fprintf (bat, "bash --login -i\n");
 
@@ -200,7 +200,7 @@ save_icon ()
   char *data = (char *) LockResource (res);
   int len = SizeofResource (NULL, rsrc);
 
-  FILE *f = fopen (iconname.cstr_oneuse(), "wb");
+  FILE *f = fopen (iconname.c_str(), "wb");
   if (f)
     {
       fwrite (data, 1, len, f);
@@ -265,12 +265,12 @@ check_desktop (String const title, String const target)
   // end of Win95 addition
   String fname = String (path) + "/" + title + ".lnk";
 
-  if (_access (fname.cstr_oneuse(), 0) == 0)
+  if (_access (fname.c_str(), 0) == 0)
     return 0;			/* already exists */
 
   fname = String (path) + "/" + title + ".pif";	/* check for a pif as well */
 
-  if (_access (fname.cstr_oneuse(), 0) == 0)
+  if (_access (fname.c_str(), 0) == 0)
     return 0;			/* already exists */
 
   return IDC_ROOT_DESKTOP;
@@ -299,12 +299,12 @@ check_startmenu (String const title, String const target)
   strcat (path, "/Cygwin");
   String fname = String (path) + "/" + title + ".lnk";
 
-  if (_access (fname.cstr_oneuse(), 0) == 0)
+  if (_access (fname.c_str(), 0) == 0)
     return 0;			/* already exists */
 
   fname = String (path) + "/" + title + ".pif";	/* check for a pif as well */
 
-  if (_access (fname.cstr_oneuse(), 0) == 0)
+  if (_access (fname.c_str(), 0) == 0)
     return 0;			/* already exists */
 
   return IDC_ROOT_MENU;

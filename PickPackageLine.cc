@@ -85,7 +85,7 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
 			 theView.headers[theView.current_col].width, rb);
       TextOut (hdc,
 	       x + theView.headers[theView.current_col].x + HMARGIN / 2, r,
-	       pkg.installed.Canonical_version ().cstr_oneuse(),
+	       pkg.installed.Canonical_version ().c_str(),
 	       pkg.installed.Canonical_version ().size());
       SelectObject (theView.bitmap_dc, theView.bm_rtarrow);
       BitBlt (hdc, x + theView.headers[theView.new_col].x + HMARGIN / 2,
@@ -100,7 +100,7 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
 		     theView.headers[theView.new_col].width, rb);
   TextOut (hdc,
 	   x + theView.headers[theView.new_col].x + HMARGIN / 2 +
-	   NEW_COL_SIZE_SLOP, r, s.cstr_oneuse(), s.size());
+	   NEW_COL_SIZE_SLOP, r, s.c_str(), s.size());
   SelectObject (theView.bitmap_dc, theView.bm_spin);
   BitBlt (hdc,
 	  x + theView.headers[theView.new_col].x + ICON_MARGIN / 2 +
@@ -142,7 +142,7 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
 			 x + theView.headers[theView.cat_col].x +
 			 theView.headers[theView.cat_col].width - HMARGIN / 2, rb);
       TextOut (hdc, x + theView.headers[theView.cat_col].x + HMARGIN / 2, r,
-	       catName.cstr_oneuse(),
+	       catName.c_str(),
 	       catName.size());
       SelectClipRgn (hdc, oldClip2);
     }
@@ -153,7 +153,7 @@ PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
   IntersectClipRect (hdc, x + theView.headers[theView.pkg_col].x, r,
 		     x + theView.headers[theView.pkg_col].x +
 		     theView.headers[theView.pkg_col].width, rb);
-  TextOut (hdc, x + theView.headers[theView.pkg_col].x + HMARGIN / 2, r, s.cstr_oneuse(),
+  TextOut (hdc, x + theView.headers[theView.pkg_col].x + HMARGIN / 2, r, s.c_str(),
 	   s.size());
   DeleteObject (oldClip);
   DeleteObject (oldClip2);

@@ -169,24 +169,24 @@ packagemeta::uninstall ()
           }
 
 	  String d = cygpath ("/" + line);
-	  DWORD dw = GetFileAttributes (d.cstr_oneuse());
+	  DWORD dw = GetFileAttributes (d.c_str());
 	  if (dw != INVALID_FILE_ATTRIBUTES
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
 	      log (LOG_BABBLE) << "unlink " << d << endLog;
-	      SetFileAttributes (d.cstr_oneuse(), dw & ~FILE_ATTRIBUTE_READONLY);
-	      DeleteFile (d.cstr_oneuse());
+	      SetFileAttributes (d.c_str(), dw & ~FILE_ATTRIBUTE_READONLY);
+	      DeleteFile (d.c_str());
 	    }
 	  /* Check for Windows shortcut of same name. */
 	  d += ".lnk";
-	  dw = GetFileAttributes (d.cstr_oneuse());
+	  dw = GetFileAttributes (d.c_str());
 	  if (dw != INVALID_FILE_ATTRIBUTES
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
 	      log (LOG_BABBLE) << "unlink " << d << endLog;
-	      SetFileAttributes (d.cstr_oneuse(),
+	      SetFileAttributes (d.c_str(),
 				 dw & ~FILE_ATTRIBUTE_READONLY);
-	      DeleteFile (d.cstr_oneuse());
+	      DeleteFile (d.c_str());
 	    }
 	  line = installed.getnextfile ();
 	}
@@ -199,7 +199,7 @@ packagemeta::uninstall ()
       {
         it--;
         String d = cygpath("/" + *it);
-        if (RemoveDirectory (d.cstr_oneuse()))
+        if (RemoveDirectory (d.c_str()))
           log (LOG_BABBLE) << "rmdir " << d << endLog;
       }
       try_run_script ("/etc/postremove/", name);

@@ -45,7 +45,7 @@ base (String const &aString)
 {
   if (!aString.size())
     return 0;
-  const char *s = aString.cstr_oneuse();
+  const char *s = aString.c_str();
   String rv = s;
   while (*s)
     {

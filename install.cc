@@ -139,7 +139,7 @@ void
 Installer::uninstallOne (packagemeta & pkgm)
 {
   Progress.SetText1 ("Uninstalling...");
-  Progress.SetText2 (pkgm.name.cstr_oneuse());
+  Progress.SetText2 (pkgm.name.c_str());
   log (LOG_PLAIN) << "Uninstalling " << pkgm.name << endLog;
   pkgm.uninstall ();
   num_uninstalls++;
@@ -156,7 +156,7 @@ Installer::replaceOne (packagemeta &pkg)
 {
   int errors = 0;
   Progress.SetText1 ("Replacing...");
-  Progress.SetText2 (pkg.name.cstr_oneuse());
+  Progress.SetText2 (pkg.name.c_str());
   Progress.SetText3 ("");
   log (LOG_PLAIN) << "Replacing " << pkg.name << endLog;
   pkg.uninstall ();
@@ -175,8 +175,8 @@ void
 Installer::replaceOnRebootFailed (String const &fn)
 {
   log (LOG_TIMESTAMP) << "Unable to schedule reboot replacement of file "
-    << cygpath (String ("/") + fn).cstr_oneuse() << " with "
-    << cygpath (String ("/") + fn + ".new").cstr_oneuse()
+    << cygpath (String ("/") + fn).c_str() << " with "
+    << cygpath (String ("/") + fn + ".new").c_str()
     << " (Win32 Error " << GetLastError() << ")" << endLog;
   ++errors;
 }
@@ -187,8 +187,8 @@ void
 Installer::replaceOnRebootSucceeded (String const &fn, bool &rebootneeded)
 {
   log (LOG_TIMESTAMP) << "Scheduled reboot replacement of file "
-    << cygpath (String ("/") + fn).cstr_oneuse() << " with "
-    << cygpath (String ("/") + fn + ".new").cstr_oneuse() << endLog;
+    << cygpath (String ("/") + fn).c_str() << " with "
+    << cygpath (String ("/") + fn + ".new").c_str() << endLog;
   rebootneeded = true;
 }
 
@@ -252,14 +252,14 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 	  if (lst)
 	    {
 	      String tmp=fn + "\n";
-	      lst->write (tmp.cstr_oneuse(), tmp.size());
+	      lst->write (tmp.c_str(), tmp.size());
 	    }
 
 	  String canonicalfn = prefixPath + fn;
 	  if (Script::isAScript (fn))
 	    pkgm.desired.addScript (Script (canonicalfn));
 
-	  Progress.SetText3 (canonicalfn.cstr_oneuse());
+	  Progress.SetText3 (canonicalfn.c_str());
 	  log (LOG_BABBLE) << "Installing file " << prefixURL << prefixPath 
             << fn << endLog;
 	  if (archive::extract_file (thefile, prefixURL, prefixPath) != 0)
@@ -286,7 +286,7 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 		      char source[MAX_PATH];
 		      unsigned int len =
 			GetShortPathName (cygpath (String ("/") + fn +
-						   ".new").cstr_oneuse(),
+						   ".new").c_str(),
 					  source, MAX_PATH);
 		      if (!len || len > MAX_PATH)
 			{
@@ -297,7 +297,7 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 			  char dest[MAX_PATH];
 			  len =
 			    GetShortPathName (cygpath (String ("/") +
-						       fn).cstr_oneuse(),
+						       fn).c_str(),
 					      dest, MAX_PATH);
 			  if (!len || len > MAX_PATH)
 			      replaceOnRebootFailed (fn);
@@ -318,8 +318,8 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 		       * or to wrap this system call
 		       */
 		      if (!MoveFileEx (cygpath (String ("/") + fn +
-						".new").cstr_oneuse(),
-				       cygpath (String ("/") + fn).cstr_oneuse(),
+						".new").c_str(),
+				       cygpath (String ("/") + fn).c_str(),
 				       MOVEFILE_DELAY_UNTIL_REBOOT |
 				       MOVEFILE_REPLACE_EXISTING))
 			{
@@ -342,7 +342,7 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 
   progress (0);
 
-  int df = diskfull (get_root_dir ().cstr_oneuse());
+  int df = diskfull (get_root_dir ().c_str());
   Progress.SetBar3 (df);
 
   if (lst) delete lst;
@@ -403,7 +403,7 @@ install_one (packagemeta & pkg)
       /* FIXME: log this somehow */
       break;
     }
-  SetWindowText (ins_action, msg.cstr_oneuse());
+  SetWindowText (ins_action, msg.c_str());
   log (LOG_PLAIN, msg + " " + file);
 #endif
 
@@ -474,7 +474,7 @@ do_install_thread (HINSTANCE h, HWND owner)
   total_bytes = 0;
   total_bytes_sofar = 0;
 
-  int df = diskfull (get_root_dir ().cstr_oneuse());
+  int df = diskfull (get_root_dir ().c_str());
   Progress.SetBar3 (df);
 
   int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;

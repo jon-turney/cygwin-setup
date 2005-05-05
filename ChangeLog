@@ -1,5 +1,48 @@
 2005-05-05  Max Bowsher  <maxb@ukf.net>
 
+	Bulk rename of String++ member cstr_oneuse () to c_str () for
+	similarity to std::string.
+
+	* Exception.cc
+	* IniDBBuilderPackage.cc
+	* IniParseFindVisitor.cc
+	* LogFile.cc
+	* PickCategoryLine.cc
+	* PickPackageLine.cc
+	* PickView.cc
+	* String++.cc
+	* String++.h
+	* archive.cc
+	* cygpackage.cc
+	* desktop.cc
+	* dialog.cc
+	* diskfull.cc
+	* download.cc
+	* filemanip.cc
+	* find.cc
+	* geturl.cc
+	* ini.cc
+	* install.cc
+	* io_stream.cc
+	* io_stream_cygfile.cc
+	* io_stream_file.cc
+	* localdir.cc
+	* mount.cc
+	* nio-http.cc
+	* package_db.cc
+	* package_meta.cc
+	* package_source.h
+	* postinstall.cc
+	* proppage.cc
+	* root.cc
+	* script.cc
+	* site.cc
+	* splash.cc
+	* threebar.cc
+	* window.cc
+
+2005-05-05  Max Bowsher  <maxb@ukf.net>
+
 	Some String++ refactoring, setting out in the general direction of
 	eventually just using the STL std::string, not our own class.
 

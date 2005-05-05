@@ -170,7 +170,7 @@ archive::extract_file (archive * source, String const &prefixURL, String const &
     case ARCHIVE_FILE_DIRECTORY:
       {
 	char *path = (char *) alloca (destfilename.size());
-	strcpy (path, destfilename.cstr_oneuse());
+	strcpy (path, destfilename.c_str());
 	while (path[0] && path[strlen (path) - 1] == '/')
 	  path[strlen (path) - 1] = 0;
 	source->skip_file ();

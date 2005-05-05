@@ -64,7 +64,7 @@ class RunScript : public unary_function<Script const &, void>
 public:
   RunScript(String const &name, int num) : _num(num), _cnt(0)
     {
-      Progress.SetText2 (name.cstr_oneuse());
+      Progress.SetText2 (name.c_str());
       Progress.SetBar1 (_cnt, _num);
     }
   virtual ~RunScript()
@@ -73,7 +73,7 @@ public:
     }
   void operator() (Script const &aScript) 
     {
-      Progress.SetText3 (aScript.fullName().cstr_oneuse());
+      Progress.SetText3 (aScript.fullName().c_str());
       aScript.run();
       ++_cnt;
       Progress.SetBar1 (_cnt, _num);
@@ -93,7 +93,7 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
   Progress.SetBar2 (0, 1);
 
   init_run_script ();
-  SetCurrentDirectory (get_root_dir ().cstr_oneuse());
+  SetCurrentDirectory (get_root_dir ().c_str());
   packagedb db;
   vector<packagemeta*> packages;
   PackageDBConnectedIterator i = db.connectedBegin ();

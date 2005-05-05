@@ -66,7 +66,7 @@ init_dialog (String const &url, int length, HWND owner)
   if (is_local_install)
     return;
 
-  char const *last_component = url.cstr_oneuse();
+  char const *last_component = url.c_str();
   for (const char *ch = last_component; *ch; ch++)
     if (*ch == '/' || *ch == '\\' || *ch == ':')
       last_component = ch + 1;
@@ -117,7 +117,7 @@ getUrlToStream (String const &_url, HWND owner, io_stream *output)
   log (LOG_BABBLE) << "getUrlToStream " << _url << endLog;
   is_local_install = (source == IDC_SOURCE_CWD);
   init_dialog (_url, 0, owner);
-  NetIO *n = NetIO::open (_url.cstr_oneuse());
+  NetIO *n = NetIO::open (_url.c_str());
   if (!n || !n->ok ())
     {
       delete n;
@@ -212,14 +212,14 @@ get_url_to_file (String const &_url,
   log (LOG_BABBLE) << "get_url_to_file " << _url << " " << _filename << endLog;
   if (total_download_bytes > 0)
     {
-      int df = diskfull (get_root_dir ().cstr_oneuse());
+      int df = diskfull (get_root_dir ().c_str());
       Progress.SetBar3(df);
     }
   init_dialog (_url, expected_length, owner);
 
-  remove (_filename.cstr_oneuse());		/* but ignore errors */
+  remove (_filename.c_str());		/* but ignore errors */
 
-  NetIO *n = NetIO::open (_url.cstr_oneuse());
+  NetIO *n = NetIO::open (_url.c_str());
   if (!n || !n->ok ())
     {
       delete n;
@@ -227,13 +227,13 @@ get_url_to_file (String const &_url,
       return 1;
     }
 
-  FILE *f = fopen (_filename.cstr_oneuse(), "wb");
+  FILE *f = fopen (_filename.c_str(), "wb");
   if (!f)
     {
       const char *err = strerror (errno);
       if (!err)
 	err = "(unknown error)";
-      fatal (owner, IDS_ERR_OPEN_WRITE, _filename.cstr_oneuse(), err);
+      fatal (owner, IDS_ERR_OPEN_WRITE, _filename.c_str(), err);
     }
 
   if (n->file_size)
@@ -261,7 +261,7 @@ get_url_to_file (String const &_url,
 
   if (total_download_bytes > 0)
     {
-      int df = diskfull (get_root_dir ().cstr_oneuse());
+      int df = diskfull (get_root_dir ().c_str());
 	  Progress.SetBar3(df);
     }
 

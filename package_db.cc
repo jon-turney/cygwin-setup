@@ -157,7 +157,7 @@ packagedb::flush ()
 	  String line;
 	  line = pkgm.name + " " + pkgm.name + "-" + 
 	    pkgm.installed.Canonical_version () + ".tar.bz2 0\n";
-	  ndb->write (line.cstr_oneuse(), line.size());
+	  ndb->write (line.c_str(), line.size());
 	}
     }
 

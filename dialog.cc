@@ -33,7 +33,7 @@ char *
 eget (HWND h, int id, char *var)
 {
   char tmp[4000];
-  if (var && var != get_root_dir ().cstr_oneuse())
+  if (var && var != get_root_dir ().c_str())
     {
       delete [] var;
       var = NULL;
@@ -74,7 +74,7 @@ eset (HWND h, int id, const char *val)
 void
 eset (HWND h, int id, String const aString)
 {
-  SetDlgItemText (h, id, aString.cstr_oneuse());
+  SetDlgItemText (h, id, aString.c_str());
 }
 
 void

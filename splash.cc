@@ -46,6 +46,6 @@ SplashPage::OnInit ()
 {
   String ver = "Setup.exe version ";
   ver += (setup_version[0] ? setup_version : "[unknown]");
-  ::SetWindowText (GetDlgItem (IDC_VERSION), ver.cstr_oneuse());
+  ::SetWindowText (GetDlgItem (IDC_VERSION), ver.c_str());
   makeClickable (IDC_SPLASH_URL, "http://www.cygwin.com");
 }

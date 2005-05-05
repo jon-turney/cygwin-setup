@@ -77,7 +77,7 @@ io_stream_cygfile::normalise (String const &unixpath)
 {
   char *path,*tempout;
   
-  if (unixpath.cstr_oneuse()[0]=='/')
+  if (unixpath.c_str()[0]=='/')
     {
       // rooted path
       path = new_cstr_char_array (unixpath);
@@ -140,7 +140,7 @@ io_stream_cygfile::io_stream_cygfile (String const &name, String const &mode) : 
 
   fname = cygpath (normalise(name));
   lmode = mode;
-  fp = fopen (fname.cstr_oneuse(), mode.cstr_oneuse());
+  fp = fopen (fname.c_str(), mode.c_str());
   if (!fp)
   {
     lasterr = errno;
@@ -160,7 +160,7 @@ int
 io_stream_cygfile::exists (String const &path)
 {
   get_root_dir_now ();
-  if (get_root_dir ().size() && _access (cygpath (normalise(path)).cstr_oneuse(), 0) == 0)
+  if (get_root_dir ().size() && _access (cygpath (normalise(path)).c_str(), 0) == 0)
     return 1;
   return 0;
 }
@@ -175,7 +175,7 @@ io_stream_cygfile::remove (String const &path)
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
 
-  unsigned long w = GetFileAttributes (cygpath (normalise(path)).cstr_oneuse());
+  unsigned long w = GetFileAttributes (cygpath (normalise(path)).c_str());
   if (w != 0xffffffff && w & FILE_ATTRIBUTE_DIRECTORY)
     {
       char tmp[cygpath (normalise(path)).size() + 10];
@@ -183,14 +183,14 @@ io_stream_cygfile::remove (String const &path)
       do
 	{
 	  ++i;
-	  sprintf (tmp, "%s.old-%d", cygpath (normalise(path)).cstr_oneuse(), i);
+	  sprintf (tmp, "%s.old-%d", cygpath (normalise(path)).c_str(), i);
 	}
       while (GetFileAttributes (tmp) != 0xffffffff);
       fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-	       normalise(path).cstr_oneuse());
-      MoveFile (cygpath (normalise(path)).cstr_oneuse(), tmp);
+	       normalise(path).c_str());
+      MoveFile (cygpath (normalise(path)).c_str(), tmp);
     }
-  return io_stream::remove (String ("file://") + cygpath (normalise(path)).cstr_oneuse());
+  return io_stream::remove (String ("file://") + cygpath (normalise(path)).c_str());
 }
 
 int
@@ -206,7 +206,7 @@ io_stream_cygfile::mklink (String const &_from, String const &_to,
     case IO_STREAM_SYMLINK:
       // symlinks are arbitrary targets, can be anything, and are
       // not subject to translation
-      return mkcygsymlink (cygpath (from).cstr_oneuse(), _to.cstr_oneuse());
+      return mkcygsymlink (cygpath (from).c_str(), _to.c_str());
     case IO_STREAM_HARDLINK:
       {
 	/* For now, just copy */
@@ -316,7 +316,7 @@ cygmkdir_p (path_type_t isadir, String const &_name)
   if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
-  return mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, cygpath (name).cstr_oneuse());
+  return mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, cygpath (name).c_str());
 }
 
 int
@@ -331,7 +331,7 @@ io_stream_cygfile::set_mtime (int mtime)
   ftime.dwHighDateTime = ftimev >> 32;
   ftime.dwLowDateTime = ftimev;
   HANDLE h =
-    CreateFileA (fname.cstr_oneuse(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    CreateFileA (fname.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
 		 0, OPEN_EXISTING,
 		 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
   if (h)
@@ -367,7 +367,7 @@ io_stream_cygfile::move (String const &_from, String const &_to)
   if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
-  return rename (cygpath (from).cstr_oneuse(), cygpath (to).cstr_oneuse());
+  return rename (cygpath (from).c_str(), cygpath (to).c_str());
 }
 
 size_t
@@ -380,7 +380,7 @@ io_stream_cygfile::get_size ()
   WIN32_FIND_DATA buf;
   DWORD ret = 0;
 
-  h = FindFirstFileA (fname.cstr_oneuse(), &buf);
+  h = FindFirstFileA (fname.c_str(), &buf);
   if (h != INVALID_HANDLE_VALUE)
     {
       if (buf.nFileSizeHigh == 0)
@@ -391,7 +391,7 @@ io_stream_cygfile::get_size ()
 #else
   struct stat buf;
   /* Should this be lstat? */
-  if (stat (fname.cstr_oneuse(), &buf))
+  if (stat (fname.c_str(), &buf))
     /* failed - should never happen in this version */
     /* Throw an exception? */
     return 0;

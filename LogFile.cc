@@ -125,7 +125,7 @@ LogFile::exit (int const exit_code)
   been_here = 1;
   
   if (exit_msg)
-    note (NULL, exit_msg, backslash(getFileName(LOG_BABBLE)).cstr_oneuse());
+    note (NULL, exit_msg, backslash(getFileName(LOG_BABBLE)).c_str());
   
   log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
 
@@ -151,7 +151,7 @@ LogFile::log_save (int babble, String const &filename, bool append)
   io_stream *f = io_stream::open(String("file://") + filename, append ? "at" : "wt");
   if (!f)
     {
-      fatal (NULL, IDS_NOLOGFILE, filename.cstr_oneuse());
+      fatal (NULL, IDS_NOLOGFILE, filename.c_str());
       return;
     }
 
@@ -161,7 +161,7 @@ LogFile::log_save (int babble, String const &filename, bool append)
     {
       if (babble || !(l->level == LOG_BABBLE))
         {
-          const char *tstr = l->msg.cstr_oneuse();
+          const char *tstr = l->msg.c_str();
           f->write (tstr, strlen (tstr));
           if (tstr[strlen (tstr) - 1] != '\n')
             f->write ("\n", 1);

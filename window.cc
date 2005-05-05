@@ -340,7 +340,7 @@ Window::SetDlgItemFont (int id, const TCHAR * fontname, int Pointsize,
 void
 Window::SetWindowText (const String & s)
 {
-  ::SetWindowText (WindowHandle, s.cstr_oneuse ());
+  ::SetWindowText (WindowHandle, s.c_str ());
 }
 
 RECT
