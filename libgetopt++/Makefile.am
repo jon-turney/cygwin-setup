@@ -8,6 +8,9 @@ AM_CXXFLAGS = -Wall -Werror
 ##DIST_SUBDIRS	= src
 ##SUBDIRS		= src
 
+EXTRA_DIST = \
+  bootstrap.sh
+
 DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
 INCLUDES = -I$(top_srcdir)/include

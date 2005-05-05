@@ -1,3 +1,7 @@
+2005-04-05  Max Bowsher  <maxb@ukf.net>
+
+	* Makefile.am (EXTRA_DIST): Add bootstrap.sh.
+
 2003-12-10 20:45:32 GMT	Robert Collins <rbtcollins@hotmail.com>	patch-17
 
     Summary:
