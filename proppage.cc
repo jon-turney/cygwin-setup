@@ -19,11 +19,13 @@
 #include "proppage.h"
 #include "propsheet.h"
 #include "win32.h"
+#include <shellapi.h>
 #include "resource.h"
 #include "state.h"
 
 #include "getopt++/BoolOption.h"
 #include "Exception.h"
+#include "LogSingleton.h"
 
 bool PropertyPage::DoOnceForSheet = true;
 
@@ -280,6 +282,59 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
           sizeProcessor.UpdateSize (GetHWND ());
           break;
         }
+      case WM_CTLCOLORSTATIC:
+        {
+          // check for text controls that we've url-ified that are initializing
+          int id;
+          std::map <int, ClickableURL>::iterator theURL;
+          
+          // get the ID of the control, and look it up in our list
+          if ((id = GetDlgCtrlID ((HWND)lParam)) == 0 ||
+               (theURL = urls.find (id)) == urls.end ())
+            
+            // nope sorry, don't know nothing about this control
+            return FALSE;
+            
+          // set FG = blue, BG = default background for a dialog
+          SetTextColor ((HDC)wParam, RGB (0, 0, 255));
+          SetBkColor ((HDC)wParam, GetSysColor (COLOR_BTNFACE));
+          
+          // get the current font, add underline, and set it back
+          if (theURL->second.font == 0)
+            {
+              TEXTMETRIC tm;
+              
+              GetTextMetrics ((HDC)wParam, &tm);
+              LOGFONT lf;
+              memset ((void *)&lf, 0, sizeof(LOGFONT));
+              lf.lfUnderline = TRUE;              
+              lf.lfHeight = tm.tmHeight;
+              lf.lfWeight = tm.tmWeight;
+              lf.lfItalic = tm.tmItalic;
+              lf.lfStrikeOut = tm.tmStruckOut;
+              lf.lfCharSet = tm.tmCharSet;
+              lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
+              lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
+              lf.lfQuality = DEFAULT_QUALITY;
+              lf.lfPitchAndFamily = tm.tmPitchAndFamily;
+              GetTextFace ((HDC)wParam, LF_FACESIZE, lf.lfFaceName);
+              if ((theURL->second.font = CreateFontIndirect (&lf)) == NULL)
+                log(LOG_PLAIN) << "Warning: unable to set font for url "
+                    << theURL->second.url << endLog;
+            }
+          
+          // apply the font
+          SelectObject ((HDC)wParam, theURL->second.font);
+          
+          // make a brush if we have not yet
+          if (theURL->second.brush == NULL)
+              theURL->second.brush = CreateSolidBrush 
+                                            (GetSysColor (COLOR_BTNFACE));
+
+          // now this is really crazy, but apparently MSDN says we are to
+          // cast this brush as a BOOL and return it (?!)
+          return (BOOL)theURL->second.brush;
+        }
       default:
         break;
     }
@@ -305,4 +360,90 @@ PropertyPage::setTitleFont ()
   SetDlgItemFont(IDC_STATIC_HEADER_TITLE, "MS Shell Dlg", 8, FW_BOLD);
   // Set the font for the IDC_STATIC_WELCOME_TITLE
   SetDlgItemFont(IDC_STATIC_WELCOME_TITLE, "Arial", 12, FW_BOLD);
+}
+
+std::map <int, PropertyPage::ClickableURL> PropertyPage::urls;
+
+void
+PropertyPage::makeClickable (int id, String link)
+// turns a static text control in this dialog into a hyperlink
+{
+  // get the handle of the specified control
+  HWND hctl = ::GetDlgItem (GetHWND (), id);
+  if (hctl == NULL)
+    return;           // invalid ID
+  
+  if (urls.find (id) != urls.end ())
+    return;           // already done this one
+
+  ClickableURL c;
+  c.url = link;
+  c.font = NULL;      // these will be created as needed
+  c.brush = NULL;
+  if ((c.origWinProc = reinterpret_cast<WNDPROC>(SetWindowLongPtr (hctl, 
+          GWLP_WNDPROC, (LONG_PTR) & PropertyPage::urlWinProc))) == 0)
+    return;           // failure
+    
+  // add this to 'urls' so that the dialog and control winprocs know about it
+  urls[id] = c;
+}
+
+LRESULT CALLBACK
+PropertyPage::urlWinProc (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+// a winproc that we use to subclass a static text control to make a URL
+{
+  int id;
+  std::map <int, ClickableURL>::iterator theURL;
+  
+  // get the ID of the control, and look it up in our list
+  if ((id = GetDlgCtrlID (hwnd)) == 0 ||
+       (theURL = urls.find (id)) == urls.end ())
+
+    // we were called for a control that we weren't installed on
+    // punt to default winproc
+    return DefWindowProc (hwnd, uMsg, wParam, lParam);
+
+  switch (uMsg)
+  {
+    case WM_LBUTTONDOWN:
+      {
+        // they clicked our URL!  yay!
+        int rc = (int)ShellExecute (hwnd, "open", 
+            theURL->second.url.cstr_oneuse (), NULL, NULL, SW_SHOWNORMAL);        
+
+        if (rc <= 32)
+          log(LOG_PLAIN) << "Unable to launch browser for URL " <<
+              theURL->second.url << " (rc = " << rc << ")" << endLog;
+        break;
+      }
+    case WM_SETCURSOR:
+      {
+        // show the hand cursor when they hover
+        // note: apparently the hand cursor isn't available
+        // on very old versions of win95?  So, check return of LoadCursor
+        // and don't attempt SetCursor if it failed
+        HCURSOR c = LoadCursor (NULL, reinterpret_cast<LPCSTR>(IDC_HAND));
+        if (c)
+          SetCursor (c);
+        return TRUE;
+      }
+    case WM_NCHITTEST:
+      {
+        // normally, a static control returns HTTRANSPARENT for this
+        // which means that we would never receive the SETCURSOR message
+        return HTCLIENT;
+      }
+    case WM_DESTROY:
+      {
+        // clean up
+        WNDPROC saveWinProc = theURL->second.origWinProc;
+        DeleteObject (theURL->second.font);
+        DeleteObject (theURL->second.brush);
+        urls.erase (id);
+        return CallWindowProc (saveWinProc, hwnd, uMsg, wParam, lParam);
+      }
+  }
+  
+  // pass on control to the previous winproc
+  return CallWindowProc (theURL->second.origWinProc, hwnd, uMsg, wParam, lParam);
 }

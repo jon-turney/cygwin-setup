@@ -20,10 +20,12 @@
 // PropSheet class to implement a single page of the property sheet.
 
 
+#include <map>
 #include "win32.h"
 #include <prsht.h>
 
 #include "window.h"
+#include "String++.h"
 #include "ControlAdjuster.h"
 
 class PropSheet;
@@ -48,6 +50,32 @@ class PropertyPage:public Window
 					    WPARAM wParam, LPARAM lParam);
   void setTitleFont ();
 
+  // this is an internal structure that is used to store information
+  // about static text controls in the dialog that have been turned
+  // into clickable URLs
+  typedef struct
+    {
+      // the URL to load when clicked
+      String url;             
+
+      // location of the control's original winproc that we are subclassing
+      WNDPROC origWinProc;
+
+      // font handle; note: it's our responsibility to DeleteObject() this
+      HFONT font;
+      
+      // handle to the brush we return in response to WM_CTLCOLORSTATIC
+      HBRUSH brush;
+    } ClickableURL;
+    
+  // the list of controls that we have modified to be clickable is
+  // stored in the following which maps the ID to the above data
+  static std::map <int, ClickableURL> urls;
+    
+  // subclass the static control with this winproc
+  static LRESULT CALLBACK urlWinProc (HWND hwnd, UINT uMsg, WPARAM wParam,
+              LPARAM lParam);
+  
 protected:
     SizeProcessor sizeProcessor;
   
@@ -131,6 +159,8 @@ public:
   {
     return OurSheet;
   };
+  
+  void makeClickable (int id, String URL);
 };
 
 #endif /* SETUP_PROPPAGE_H */

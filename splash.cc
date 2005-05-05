@@ -21,6 +21,20 @@
 #include "String++.h"
 #include "splash.h"
 
+static ControlAdjuster::ControlInfo SplashControlsInfo[] = {
+  { IDC_SPLASH_TEXT,        CP_STRETCH,   CP_STRETCH },
+  { IDC_SPLASH_ICON,        CP_LEFT,      CP_BOTTOM },
+  { IDC_VERSION,            CP_LEFT,      CP_BOTTOM },
+  { IDC_SPLASH_COPYR,       CP_LEFT,      CP_BOTTOM },
+  { IDC_SPLASH_URL,         CP_LEFT,      CP_BOTTOM },
+  {0, CP_LEFT, CP_TOP}
+};
+
+SplashPage::SplashPage ()
+{
+  sizeProcessor.AddControlInfo (SplashControlsInfo);
+}
+
 bool
 SplashPage::Create ()
 {
@@ -33,4 +47,5 @@ SplashPage::OnInit ()
   String ver = "Setup.exe version ";
   ver += (setup_version[0] ? setup_version : "[unknown]");
   ::SetWindowText (GetDlgItem (IDC_VERSION), ver.cstr_oneuse());
+  makeClickable (IDC_SPLASH_URL, "http://www.cygwin.com");
 }

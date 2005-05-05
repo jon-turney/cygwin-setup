@@ -25,9 +25,7 @@
 class LocalDirPage:public PropertyPage
 {
 public:
-  LocalDirPage ()
-  {
-  };
+  LocalDirPage ();
   virtual ~ LocalDirPage ()
   {
   };

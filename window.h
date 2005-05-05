@@ -20,6 +20,7 @@
 // in its own right and as a base class for other window-like classes (e.g. PropertyPage,
 // PropSheet).
 
+#include <vector>
 #include "win32.h"
 
 class String;
@@ -44,17 +45,19 @@ private:
 
   Window *Parent;
 
-  // FIXME: replace with <vector> when we get a chance.
-  static const int MAXFONTS = 5;
-  HFONT Fonts[MAXFONTS];
-  int FontCounter;
+  // contains handles to fonts we've created
+  // that are to be deleted in our dtor
+  std::vector<HFONT> Fonts;
 
 protected:
   void SetHWND (HWND h)
   {
     WindowHandle = h;
   };
-  void setParent(Window *aParent) {Parent = aParent;}
+  void setParent(Window *aParent)
+  {
+    Parent = aParent;
+  };
 
 public:
   Window ();

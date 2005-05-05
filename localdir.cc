@@ -53,6 +53,13 @@ static StringOption LocalDirOption ("", 'l', "local-package-dir", "Local package
 
 static LocalDirSetting localDir;
 
+static ControlAdjuster::ControlInfo LocaldirControlsInfo[] = {
+  { IDC_LOCALDIR_GRP,       CP_STRETCH,   CP_TOP },
+  { IDC_LOCAL_DIR,          CP_STRETCH,   CP_TOP },
+  { IDC_LOCAL_DIR_BROWSE,   CP_RIGHT,     CP_TOP },
+  {0, CP_LEFT, CP_TOP}
+};
+
 void 
 LocalDirSetting::load(){
   static int inited = 0;
@@ -164,6 +171,11 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
       break;
     }
   return 0;
+}
+
+LocalDirPage::LocalDirPage ()
+{
+  sizeProcessor.AddControlInfo (LocaldirControlsInfo);
 }
 
 bool

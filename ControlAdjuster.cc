@@ -74,6 +74,13 @@ ControlAdjuster::ControlInfo::adjust (ControlPosition const &how, ControlDimensi
       case CP_STRETCH:
         where.right += by;
         break;
+      case CP_STRETCH_LEFTHALF:
+        where.right += by/2;
+        break;
+      case CP_STRETCH_RIGHTHALF:
+        where.left += by/2;
+        where.right += by;
+        break;
   }
 }
  

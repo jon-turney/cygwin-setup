@@ -44,6 +44,26 @@ using namespace std;
 
 StringOption RootOption ("", 'R', "root", "Root installation directory", false);
 
+static ControlAdjuster::ControlInfo RootControlsInfo[] = {
+  { IDC_ROOTDIR_GRP,              CP_STRETCH,           CP_TOP      },
+  { IDC_ROOT_DIR,                 CP_STRETCH,           CP_TOP      },
+  { IDC_ROOT_BROWSE,              CP_RIGHT,             CP_TOP      },
+
+  { IDC_INSTALLFOR_GRP,           CP_STRETCH_LEFTHALF,  CP_STRETCH  },
+  { IDC_ROOT_SYSTEM,              CP_LEFT,              CP_TOP      },
+  { IDC_ALLUSERS_TEXT,            CP_STRETCH_LEFTHALF,  CP_TOP      },
+  { IDC_ROOT_USER,                CP_LEFT,              CP_BOTTOM   },
+  { IDC_JUSTME_TEXT,              CP_STRETCH_LEFTHALF,  CP_BOTTOM   },
+
+  { IDC_MODE_GRP,                 CP_STRETCH_RIGHTHALF, CP_STRETCH  },
+  { IDC_ROOT_BINARY,              CP_STRETCH_RIGHTHALF, CP_TOP      },
+  { IDC_MODE_BIN,                 CP_STRETCH_RIGHTHALF, CP_TOP      },
+  { IDC_ROOT_TEXT,                CP_STRETCH_RIGHTHALF, CP_BOTTOM   },
+  { IDC_MODE_TEXT,                CP_STRETCH_RIGHTHALF, CP_BOTTOM   },
+  { IDC_FILEMODES_LINK,           CP_RIGHT,             CP_BOTTOM   },
+  {0, CP_LEFT, CP_TOP}
+};
+
 static int rb[] = { IDC_ROOT_TEXT, IDC_ROOT_BINARY, 0 };
 static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
 
@@ -158,6 +178,11 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
   return 0;
 }
 
+RootPage::RootPage ()
+{
+  sizeProcessor.AddControlInfo (RootControlsInfo);
+}
+
 bool
 RootPage::Create ()
 {
@@ -167,6 +192,8 @@ RootPage::Create ()
 void
 RootPage::OnInit ()
 {
+  makeClickable (IDC_FILEMODES_LINK, 
+        "http://cygwin.com/cygwin-ug-net/using-textbinary.html");
   if (((string)RootOption).size()) 
     set_root_dir((string)RootOption);
   if (!get_root_dir ().size())

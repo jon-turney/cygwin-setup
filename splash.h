@@ -24,9 +24,7 @@
 class SplashPage:public PropertyPage
 {
 public:
-  SplashPage ()
-  {
-  };
+  SplashPage ();
   virtual ~ SplashPage ()
   {
   };

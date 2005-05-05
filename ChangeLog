@@ -1,3 +1,74 @@
+2005-05-05  Brian Dessent  <brian@dessent.net>
+
+	* ControlAdjuster.h: (enum ControlPosition): Declare new 
+	resizing methods CP_STRETCH_LEFTHALF and CP_STRETCH_RIGHTHALF, and 
+	their TOP/BOTTOM aliases.
+	
+	* ControlAdjuster.cc: (ControlAdjuster::ControlInfo::adjust): 
+	Implement CP_STRETCH_LEFTHALF and CP_STRETCH_RIGHTHALF, which 
+	are designed to resize elements in a two-column layout.
+	
+	* localdir.h: (class LocalDirPage): Remove constructor 
+	implementation from here...
+	
+	* localdir.cc: (LocalDirPage::LocalDirPage): ...to here, and call 
+	AddControlsInfo on initialization.  
+	(static	LocaldirControlsInfo): Add.  Define sizing rules for dialog 
+	elements.
+	
+	* proppage.h: Add includes.  (PropertyPage::ClickableURL): Declare new 
+	storage type for internal use by class.	(PropertyPage::urls): 
+	Likewise.  (PropertyPage::urlWinProc): Add declaration. 
+	(PropertyPage::makeClickable): Likewise.
+
+	* proppage.cc: Add includes.  (PropertyPage::DialogProc): Implement 
+	handler for WM_CTLCOLORSTATIC message.  Supports static controls that 
+	have been turned into clickable hyperlinks. (static 
+	PropertyPage::urls): Declare. 	(PropertyPage::makeClickable): 
+	Implement new member function that provides user interface for making 
+	text into clickable URLs.  (PropertyPage::urlWinProc): Implement new 
+	private member function used as a windowproc for subclassing a static 
+	control.
+
+	* resource.h: (IDC_SPLASH_URL, IDC_FILEMODES_LINK, IDC_ROOTDIR_GRP, 
+	IDC_INSTALLFOR_GRP, IDC_ALLUSERS_TEXT, IDC_JUSTME_TEXT, IDC_MODE_GRP, 
+	IDC_MODE_TEXT, IDC_MODE_BIN, IDC_LOCALDIR_GRP, IDC_SPLASH_TEXT, 
+	IDC_SPLASH_ICON, IDC_SPLASH_COPYR): Add. Replaces anonymous 	
+	IDC_STATIC ids, so that controls can be referenced by the resizer.
+	
+	* res.rc: (IDD_LOCAL_DIR): Rearrange controls to match top-down order 
+	in the dialog.  Fold long lines.  Replace anonymous IDC_STATIC ids. 
+	(IDD_ROOT): Reorder in same manner.  Replace anonymous IDC_STATIC 
+	ids.  Add descriptive text of each option, and hyperlink for more 
+	information.  Mark suggested choice as "(RECOMMENDED)".  Swap order 
+	of 'unix'/'dos' radio buttons so that recommended choice is first in 
+	both columns.  (IDD_SPLASH): Reorder elements to match top-down 
+	order of dialog, fold long lines. Add descriptive paragraph, remove 
+	anonymous ids.  Update copyright text, replace sources.redhat.com 
+	with cygwin.com.
+	
+	* root.h: (class RootPage): Remove constructor implementation from 
+	here...
+	
+	* root.cc: ...to here, and call AddControlInfo.  (static 
+	RootControlsInfo): Add.  Populate with resizing data. 
+	(RootPage::OnInit): Make text a clickable hyperlink.
+	
+	* splash.h: (class SplashPage): Likewise, move constructor from 
+	here...
+	
+	* splash.cc: ...to here.  Call AddControlInfo.  (static 
+	SplashControlsInfo): Add and populate.  (SplashPage::Create): Make 
+	link on splash page a clickable hyperlink.
+	
+	* window.h: Add include.  (class Window): Store allocated fonts with a 
+	vector instead of fixed array.  Change indentation of setParent to be 
+	consistent.
+	
+	* window.cc: (Window::Window): Remove FontCounter.  
+	(Window::~Window): Likewise.  Iterate over vector of fonts 	
+	instead. (Window::SetDlgItemFont): Use vector.
+
 2005-05-05  Max Bowsher  <maxb@ukf.net>
 
 	* Makefile.am (EXTRA_DIST, inilint_SOURCES):

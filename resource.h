@@ -116,6 +116,19 @@
 #define IDS_WINDOW_INIT_BADMSG		1074
 #define IDS_UNCAUGHT_EXCEPTION		1075
 #define IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO	1076
+#define IDC_SPLASH_URL                  1077
+#define IDC_FILEMODES_LINK              1078
+#define IDC_ROOTDIR_GRP                 1079
+#define IDC_INSTALLFOR_GRP              1080
+#define IDC_ALLUSERS_TEXT               1081
+#define IDC_JUSTME_TEXT                 1082
+#define IDC_MODE_GRP                    1083
+#define IDC_MODE_TEXT                   1084
+#define IDC_MODE_BIN                    1085
+#define IDC_LOCALDIR_GRP                1086
+#define IDC_SPLASH_TEXT                 1087
+#define IDC_SPLASH_ICON                 1088
+#define IDC_SPLASH_COPYR                1089
 #define IDC_STATIC                      -1
 
 // Next default values for new objects

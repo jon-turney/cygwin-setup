@@ -31,18 +31,13 @@ Window::Window ()
 {
   WindowHandle = NULL;
   Parent = NULL;
-  FontCounter = 0;
 }
 
 Window::~Window ()
 {
   // Delete any fonts we created.
-  int i;
-  for (i = 0; i < FontCounter; i++)
-    {
-      DeleteObject (Fonts[i]);
-    }
-  FontCounter = 0;
+  for (unsigned int i = 0; i < Fonts.size (); i++)
+    DeleteObject (Fonts[i]);
 
   // FIXME: Maybe do some reference counting and do this Unregister
   // when there are no more of us left.  Not real critical unless
@@ -336,9 +331,8 @@ Window::SetDlgItemFont (int id, const TCHAR * fontname, int Pointsize,
   // Set the new font, and redraw any text which was already in the item.
   SendMessage (ctrl, WM_SETFONT, (WPARAM) hfnt, TRUE);
 
-  // Save it for later.
-  Fonts[FontCounter] = hfnt;
-  FontCounter++;
+  // Store the handle so that we can DeleteObject() it in dtor
+  Fonts.push_back (hfnt);
 
   return true;
 }

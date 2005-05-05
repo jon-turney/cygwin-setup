@@ -6,9 +6,7 @@
 class RootPage:public PropertyPage
 {
 public:
-  RootPage ()
-  {
-  };
+  RootPage ();
   virtual ~ RootPage ()
   {
   };

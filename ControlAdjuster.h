@@ -36,6 +36,10 @@ enum ControlPosition {
   CP_RIGHT,
   CP_BOTTOM = CP_RIGHT,
   CP_STRETCH,
+  CP_STRETCH_LEFTHALF,
+  CP_STRETCH_TOPHALF = CP_STRETCH_LEFTHALF,
+  CP_STRETCH_RIGHTHALF,
+  CP_STRETCH_BOTTOMHALF = CP_STRETCH_RIGHTHALF
 };
 
 /* left and right double as top and bottom. better labels sought. */
