@@ -305,26 +305,27 @@ CAPTION "Cygwin Setup - Select Packages"
 FONT 8, "MS Shell Dlg"
 BEGIN
     CONTROL         "&Keep",IDC_CHOOSE_KEEP,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP | WS_TABSTOP,105,30,30,10
+                    WS_GROUP | WS_TABSTOP,99,30,30,14
     CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON , 
-                    140,30,27,10
+                    134,30,27,14
     CONTROL         "&Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON , 
-                    175,30,25,10
+                    169,30,25,14
     CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON , 
-                    210,30,25,10
-    PUSHBUTTON      "&View",IDC_CHOOSE_VIEW,245,30,20,10,WS_GROUP
+                    204,30,25,14
+    PUSHBUTTON      "&View",IDC_CHOOSE_VIEW,239,30,26,14,WS_GROUP
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
                     317,1
     CONTROL         "",IDC_LISTVIEW_POS,"Static",SS_BLACKFRAME | NOT 
-                    WS_VISIBLE,7,41,303,134
+                    WS_VISIBLE,7,45,303,134
     ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
     LTEXT           "Select the packages you want setup to install.",
                     IDC_CHOOSE_INST_TEXT,21,9,239,16,NOT WS_GROUP
     LTEXT           "Select Packages",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT 
                     WS_GROUP
-    LTEXT           "",IDC_CHOOSE_VIEWCAPTION,270,30,40,10
+    LTEXT           "",IDC_CHOOSE_VIEWCAPTION,270,33,40,10
 END
 
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "setup.exe.manifest"
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
