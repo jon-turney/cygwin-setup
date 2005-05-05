@@ -1,5 +1,10 @@
 2005-05-05  Brian Dessent  <brian@dessent.net>
 
+	* res.rc: (CREATEPROCESS_MANIFEST_RESOURCE_ID): Include section 
+	comment.
+
+2005-05-05  Brian Dessent  <brian@dessent.net>
+
 	* res.rc: (IDC_CHOOSE): Widen 'view' button by 6px horizontally and
 	4px vertically.  Adjust other controls to accomodate.
 	(CREATEPROCESS_MANIFEST_RESOURCE_ID): Define so that manifest is

@@ -325,6 +325,11 @@ BEGIN
     LTEXT           "",IDC_CHOOSE_VIEWCAPTION,270,33,40,10
 END
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// Manifest
+//
+
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "setup.exe.manifest"
 
 #ifdef APSTUDIO_INVOKED
