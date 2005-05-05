@@ -26,6 +26,8 @@
 
 #include "package_version.h"
 
+class io_stream;
+
 class cygpackage:public _packageversion
 {
 public:

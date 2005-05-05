@@ -23,7 +23,6 @@
 #include <iosfwd>
 #include <string>
 
-class io_stream;
 class String {
   class _data;
 public:
@@ -36,9 +35,6 @@ public:
   String (std::string const &);
   inline String & operator = (String const &);
   ~String();
-  // Up to the user to delete[] these.
-  char * cstr();
-  char * cstr() const; // may be less optimal
   char const * cstr_oneuse() const; // only valid until the next mutator call
   			      // pretends to be const !!
   inline size_t size() const; // number of characters (!= storage size).
@@ -110,6 +106,8 @@ String::size() const
 {
   return theData->length;
 }
+
+char *new_cstr_char_array (const String &s);
 
 #define __TOSTRING__(X) #X
 /* Note the layer of indirection here is needed to allow

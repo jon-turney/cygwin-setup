@@ -1,3 +1,26 @@
+2005-05-05  Max Bowsher  <maxb@ukf.net>
+
+	Some String++ refactoring, setting out in the general direction of
+	eventually just using the STL std::string, not our own class.
+
+	* String++.cc (String::cstr, String::cstr () const): Remove.
+	(new_cstr_char_array): New function.
+	* String++.h: Sync with above.
+	Remove irrelevant "class io_stream;" declaration.
+
+	* cygpackage.h: Add "class io_stream;" declaration, now no longer
+	being supplied by side-effect.
+
+	* filemanip.cc: Remove unneeded includes, add "using namespace std;".
+	(parse_filename): Exchange some awkward pointer manipulation for
+	std::string usage. Use new_cstr_char_array ().
+	* filemanip.h: Sync with above.
+	(fileparse): Improve style of declaration.
+
+	* io_stream_cygfile.cc (io_stream_cygfile::normalise):
+	Use new_cstr_char_array ().
+	* site.cc (site_list_type::init, get_site_list): Ditto.
+
 2005-05-05  Brian Dessent  <brian@dessent.net>
 
 	* ControlAdjuster.h: (enum ControlPosition): Declare new 

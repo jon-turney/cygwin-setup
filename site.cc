@@ -102,7 +102,7 @@ site_list_type::init (String const &newurl)
 {
   url = newurl;
 
-  char *dots = newurl.cstr();
+  char *dots = new_cstr_char_array (newurl);
   char *dot = strchr (dots, '.');
   if (dot)
       {
@@ -203,7 +203,7 @@ get_site_list (HINSTANCE h, HWND owner)
     if (!mirrors.size())
       return 1;
 
-    theString = mirrors.cstr();
+    theString = new_cstr_char_array (mirrors);
     nl = theString;
   }
 

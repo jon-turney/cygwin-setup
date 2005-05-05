@@ -68,35 +68,6 @@ String::String (string const &aString) : theData (new _data (aString.c_str() ? s
 }
 
 // able to cache the result if needed.
-char *
-String::cstr ()
-{
-  if (theData->length == 0)
-    return NULL;
-  char * tempcStr =new char[theData->length + 1];
-  // remove when exceptions are done
-  if (!tempcStr)
-        exit (100);
-  tempcStr[theData->length] = '\0';
-  memcpy (tempcStr, theData->theString, theData->length);
-  return tempcStr;
-}
-
-char *
-String::cstr () const
-{
-  if (theData->length == 0)
-    return NULL;
-  char * tempcStr =new char[theData->length + 1];
-  // remove when exceptions are done
-  if (!tempcStr)
-        exit (100);
-  tempcStr[theData->length] = '\0';
-  memcpy (tempcStr, theData->theString, theData->length);
-  return tempcStr;
-}
-
-// able to cache the result if needed.
 char const *
 String::cstr_oneuse () const
 {
@@ -313,6 +284,15 @@ String::replace (String const &pattern, String const &replacement) const
   delete[] tempcString;
 
   return absorb (newCopy, length);
+}
+
+char *
+new_cstr_char_array (const String &s)
+{
+  size_t len = s.size() + 1;
+  char *buf = new char[len];
+  memcpy (buf, s.cstr_oneuse (), len);
+  return buf;
 }
 
 /* TODO: research how wide char and unicode interoperate with

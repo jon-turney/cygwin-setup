@@ -21,13 +21,10 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-#include <stdio.h>
-#include <unistd.h>
-#include <ctype.h>
-
 #include "filemanip.h"
-#include <strings.h>
 #include "io_stream.h"
+
+using namespace std;
 
 /* legacy wrapper.
  * Clients should use io_stream.get_size() */
@@ -79,20 +76,20 @@ find_tar_ext (const char *path)
 
 /* Parse a filename into package, version, and extension components. */
 int
-parse_filename (String const &in_fn, fileparse & f)
+parse_filename (const string &fn, fileparse & f)
 {
   char *p, *ver;
-  char *fn = in_fn.cstr ();
   int n;
 
-  if (fn == 0 || !(n = find_tar_ext (fn)))
+  if (!(n = find_tar_ext (fn.c_str ())))
     return 0;
 
-  f.tail = fn + n;
-  fn[n] = '\0';
-  f.pkg = f.what = String();
-  p = base (fn).cstr();
-  delete[] fn;
+  f.pkg = "";
+  f.what = "";
+
+  f.tail = fn.substr (n, string::npos);
+
+  p = new_cstr_char_array (base (fn.substr (0, n)));
   char const *ext;
   /* TODO: make const and non-const trail variant. */
   if ((ext = trail (p, "-src")))

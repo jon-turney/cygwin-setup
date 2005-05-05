@@ -80,13 +80,13 @@ io_stream_cygfile::normalise (String const &unixpath)
   if (unixpath.cstr_oneuse()[0]=='/')
     {
       // rooted path
-      path = unixpath.cstr();
-      tempout = unixpath.cstr(); // paths only shrink.
+      path = new_cstr_char_array (unixpath);
+      tempout = new_cstr_char_array (unixpath); // paths only shrink.
     }
   else
     {
-      path = (cwd + unixpath).cstr();
-      tempout = (cwd + unixpath).cstr(); //paths only shrink.
+      path = new_cstr_char_array (cwd + unixpath);
+      tempout = new_cstr_char_array (cwd + unixpath); //paths only shrink.
     }
   
   // FIXME: handle .. depth tests to prevent / + ../foo/ stepping out

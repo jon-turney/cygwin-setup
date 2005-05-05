@@ -16,20 +16,20 @@
 #ifndef SETUP_FILEMANIP_H
 #define SETUP_FILEMANIP_H
 
+#include <string>
 #include "String++.h"
 
 extern int find_tar_ext (const char *path);
 
-typedef struct
+struct fileparse
 {
   String pkg;
   String ver;
   String tail;
   String what;
-}
-fileparse;
+};
 
-int parse_filename (String const & in_fn, fileparse & f);
+int parse_filename (const std::string & fn, fileparse & f);
 String base (String const &);
 size_t get_file_size (String const &);
 String backslash (String const &);
