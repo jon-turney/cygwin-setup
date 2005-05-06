@@ -118,36 +118,35 @@ BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
                     317,1
 
-    GROUPBOX        "Root Directory",IDC_ROOTDIR_GRP,5,35,305,35,WS_TABSTOP
-    EDITTEXT        IDC_ROOT_DIR,15,47,245,14,ES_AUTOHSCROLL | WS_GROUP
-    PUSHBUTTON      "B&rowse...",IDC_ROOT_BROWSE,262,48,44,14
+    GROUPBOX        "Root Directory",IDC_ROOTDIR_GRP,5,35,305,35
+    EDITTEXT        IDC_ROOT_DIR,15,47,245,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "B&rowse...",IDC_ROOT_BROWSE,262,48,44,14,WS_TABSTOP
 
-    GROUPBOX        "Install For",IDC_INSTALLFOR_GRP,5,76,150,101,WS_TABSTOP
-    CONTROL         "&All Users (RECOMMENDED)",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP | WS_TABSTOP,13,89,130,8
-    LTEXT           "Cygwin will be available to all users of the system.  "
-                    "NOTE: This is required if you wish to run services like "
-                    "sshd, etc.",IDC_ALLUSERS_TEXT,25,101,125,28,NOT WS_GROUP
+    GROUPBOX        "Install For",IDC_INSTALLFOR_GRP,5,76,150,101
+    GROUPBOX        "Default Text File Type",IDC_MODE_GRP,160,76,150,101
+    CONTROL         "&All Users (RECOMMENDED)",IDC_ROOT_SYSTEM,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP | WS_GROUP,13,89,130,8
     CONTROL         "Just &Me",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON | 
                     WS_TABSTOP,13,130,130,8
+    CONTROL         "&Unix / binary (RECOMMENDED)",IDC_ROOT_BINARY,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP | WS_GROUP,170,89,130,8
+    CONTROL         "D&OS / text",IDC_ROOT_TEXT,"Button",BS_AUTORADIOBUTTON | 
+                    WS_TABSTOP,170,130,130,8
+    LTEXT           "Cygwin will be available to all users of the system.  "
+                    "NOTE: This is required if you wish to run services like "
+                    "sshd, etc.",IDC_ALLUSERS_TEXT,25,101,125,28
     LTEXT           "Cygwin will only be available to the current user.  "
                     "Only select this if you lack Admin. privileges or you "
-                    "have specific needs.",IDC_JUSTME_TEXT,25,140,125,32,
-                    NOT WS_GROUP
+                    "have specific needs.",IDC_JUSTME_TEXT,25,140,125,32
 
-    GROUPBOX        "Default Text File Type",IDC_MODE_GRP,160,76,150,101
-    CONTROL         "&Unix / binary (RECOMMENDED)",IDC_ROOT_BINARY,"Button",
-                    BS_AUTORADIOBUTTON | WS_TABSTOP,170,89,130,8
     LTEXT           "No line translation done; all files opened in binary mode."
                     "  Files on disk will have LF line endings.", IDC_MODE_BIN,
-                    181,101,125,27,NOT WS_GROUP
-    CONTROL         "D&OS / text",IDC_ROOT_TEXT,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP | WS_TABSTOP,170,130,130,8
+                    181,101,125,27
     LTEXT           "Line endings will be translated from unix (LF) to DOS "
                     "(CR-LF) on write and vice versa on read.",IDC_MODE_TEXT,
-                    181,140,125,26,NOT WS_GROUP
+                    181,140,125,26
     LTEXT           "Read more about file modes...",IDC_FILEMODES_LINK,
-                    200,166,99,8,WS_TABSTOP
+                    200,166,99,8
 END
 
 IDD_SITE DIALOG DISCARDABLE  0, 0, 317, 179

@@ -1,3 +1,14 @@
+2005-05-05  Brian Dessent  <brian@dessent.net>
+
+	* root.cc (dialog_cmd): Remove.  Use OnMessageCmd instead.
+	(RootPage::Create): Accomodate above change.
+	
+	* root.h (class RootPage): Add prototype for OnMessageCmd.
+	
+	* res.rc (IDD_ROOT): Fix broken button groups.  Correct the order of
+	the controls and use of WS_GROUP so that the radio buttons act 
+	correctly.
+
 2005-05-05  Max Bowsher  <maxb@ukf.net>
 
 	Bulk rename of String++ member cstr_oneuse () to c_str () for

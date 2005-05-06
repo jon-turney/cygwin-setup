@@ -156,8 +156,8 @@ directory_has_spaces ()
   return 0;
 }
 
-static BOOL
-dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
+bool
+RootPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
   switch (id)
     {
@@ -167,15 +167,17 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
     case IDC_ROOT_BINARY:
     case IDC_ROOT_SYSTEM:
     case IDC_ROOT_USER:
-      save_dialog (h);
-      check_if_enable_next (h);
+      save_dialog (GetHWND ());
+      check_if_enable_next (GetHWND ());
       break;
 
     case IDC_ROOT_BROWSE:
-      browse (h);
+      browse (GetHWND ());
       break;
+    default:
+      return false;
     }
-  return 0;
+  return true;
 }
 
 RootPage::RootPage ()
@@ -186,7 +188,7 @@ RootPage::RootPage ()
 bool
 RootPage::Create ()
 {
-  return PropertyPage::Create (NULL, dialog_cmd, IDD_ROOT);
+  return PropertyPage::Create (IDD_ROOT);
 }
 
 void
