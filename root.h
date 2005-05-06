@@ -13,7 +13,7 @@ public:
 
   bool Create ();
 
-  bool OnMessageCmd (int id, HWND hwndctl, UINT code);
+  virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code);
   virtual void OnInit ();
   virtual bool wantsActivation() const;
   virtual long OnNext ();
