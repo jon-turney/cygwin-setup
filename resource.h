@@ -1,7 +1,3 @@
-//{{NO_DEPENDENCIES}}
-// Used by res.rc
-//
-
 // Strings
 
 #define IDS_ROOT_SLASH                    100

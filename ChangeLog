@@ -1,3 +1,9 @@
+2005-05-07  Max Bowsher  <maxb@ukf.net>
+
+	* resource.h, res.rc: Followup to recent de-MSVC-ification of
+	resource.h, by removing a lot from res.rc, and the last few bits
+	from resource.h.
+
 2005-05-05  Brian Dessent  <brian@dessent.net>
 
 	* choose.cc (ChooserPage::OnInit): Initialize tooltips for this
@@ -43,7 +49,7 @@
 	TTN_GETDISPINFO notification messages.
 
 2005-05-05  Brian Dessent  <brian@dessent.net>
-        
+
 	* resource.h: Reorganize.  Group by type, and give each its own
 	range of IDs.  Regenerate IDs accordingly.
 	(IDD_CHOOSER): Remove obsolete and unused symbol.

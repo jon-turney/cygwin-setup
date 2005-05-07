@@ -1,27 +1,7 @@
-//Microsoft Developer Studio generated resource script.
-//
 #include "resource.h"
-
-#define APSTUDIO_READONLY_SYMBOLS
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 2 resource.
-//
-#define APSTUDIO_HIDDEN_SYMBOLS
 #include "windows.h"
-#undef APSTUDIO_HIDDEN_SYMBOLS
 
-/////////////////////////////////////////////////////////////////////////////
-#undef APSTUDIO_READONLY_SYMBOLS
-
-/////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -360,34 +340,6 @@ END
 
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "setup.exe.manifest"
 
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE DISCARDABLE 
-BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE DISCARDABLE 
-BEGIN
-    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "#include ""windows.h""\r\n"
-    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "\0"
-END
-
-3 TEXTINCLUDE DISCARDABLE 
-BEGIN
-    "\r\n"
-    "\0"
-END
-
-#endif    // APSTUDIO_INVOKED
-
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // Icon
@@ -403,87 +355,6 @@ IDI_CYGWIN              ICON    DISCARDABLE     "cygwin.ico"
 //
 
 CYGWIN.ICON             FILE    DISCARDABLE     "cygwin.ico"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
-BEGIN
-    IDD_SOURCE, DIALOG
-    BEGIN
-        RIGHTMARGIN, 285
-        BOTTOMMARGIN, 158
-    END
-
-    IDD_LOCAL_DIR, DIALOG
-    BEGIN
-        RIGHTMARGIN, 305
-        BOTTOMMARGIN, 157
-    END
-
-    IDD_ROOT, DIALOG
-    BEGIN
-        RIGHTMARGIN, 285
-        BOTTOMMARGIN, 158
-    END
-
-    IDD_SITE, DIALOG
-    BEGIN
-        BOTTOMMARGIN, 178
-    END
-
-    IDD_NET, DIALOG
-    BEGIN
-        RIGHTMARGIN, 285
-        BOTTOMMARGIN, 133
-    END
-
-    IDD_INSTATUS, DIALOG
-    BEGIN
-        RIGHTMARGIN, 252
-        BOTTOMMARGIN, 157
-    END
-
-    IDD_PROXY_AUTH, DIALOG
-    BEGIN
-        BOTTOMMARGIN, 49
-    END
-
-    IDD_NET_AUTH, DIALOG
-    BEGIN
-        BOTTOMMARGIN, 49
-    END
-
-    IDD_SPLASH, DIALOG
-    BEGIN
-        RIGHTMARGIN, 247
-        BOTTOMMARGIN, 116
-    END
-
-    IDD_DESKTOP, DIALOG
-    BEGIN
-        RIGHTMARGIN, 285
-        BOTTOMMARGIN, 158
-    END
-
-    IDD_FTP_AUTH, DIALOG
-    BEGIN
-        BOTTOMMARGIN, 49
-    END
-
-    IDD_CHOOSE, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 310
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 172
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -560,19 +431,3 @@ BEGIN
        "Not installed: Shows packages that are are not currently installed "
        "and haven't been selected for installation."
 END
-
-#endif    // English (U.S.) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-
-#ifndef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 3 resource.
-//
-
-
-/////////////////////////////////////////////////////////////////////////////
-#endif    // not APSTUDIO_INVOKED
-
