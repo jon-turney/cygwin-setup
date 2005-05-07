@@ -27,7 +27,7 @@
 	functionality.
 	(Window::SetTooltipState): Ditto.
 	(Window::AddTooltip): Ditto.
-	(TooltipNotificationHandler): Ditto.
+	(Window::TooltipNotificationHandler): Ditto.
 	
 	* window.cc (Window::Window): Initialize handle to NULL.
 	(Window::~Window): Call DestroyWindow on tooltip control if it was
