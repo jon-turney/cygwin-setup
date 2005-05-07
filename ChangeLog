@@ -1,5 +1,15 @@
 2005-05-07  Max Bowsher  <maxb@ukf.net>
 
+	* download.cc (validateCachedPackage): Remove all MD5 checking code.
+	It is not acceptable to check MD5 sums as part of simply answering
+	whether a package exists in the local cache or not. It is too slow.
+	MD5 sums always have been - and will continue to be - checked at
+	install time.
+	(NoMD5Option): Remove this option, as the code it controls has been
+	removed.
+
+2005-05-07  Max Bowsher  <maxb@ukf.net>
+
 	* install.cc (md5_one): Make the MD5 checking done at install time
 	display a progess GUI, as the MD5 checking done at other times does.
 
