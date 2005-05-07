@@ -1,5 +1,11 @@
 2005-05-05  Brian Dessent  <brian@dessent.net>
 
+	* resource.h: Reorganize.  Group by type, and give each its own
+	range of IDs.  Regenerate IDs accordingly.
+	(IDD_CHOOSER): Remove obsolete and unused symbol.
+
+2005-05-05  Brian Dessent  <brian@dessent.net>
+
 	* root.h (class RootPage): Add missing virtual to OnMessageCmd.
 
 2005-05-05  Brian Dessent  <brian@dessent.net>
