@@ -139,15 +139,15 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 
           // TRUE = Set focus to default control (in wParam).
           return TRUE;
-          break;
         }
       case WM_NOTIFY:
         switch (((NMHDR FAR *) lParam)->code)
         {
           case PSN_APPLY:
-            SetWindowLong (GetHWND (), DWL_MSGRESULT, PSNRET_NOERROR);
-            return TRUE;
-            break;
+            {
+              SetWindowLong (GetHWND (), DWL_MSGRESULT, PSNRET_NOERROR);
+              return TRUE;
+            }
           case PSN_SETACTIVE:
             {
               if (DoOnceForSheet)
@@ -225,11 +225,12 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
             }
             break;
           case PSN_KILLACTIVE:
-            OnDeactivate ();
-            // FALSE = Allow deactivation
-            SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
-            return TRUE;
-            break;
+            {
+              OnDeactivate ();
+              // FALSE = Allow deactivation
+              SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
+              return TRUE;
+            }
           case PSN_WIZNEXT:
             {
               LONG retval;
@@ -237,7 +238,6 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
               SetWindowLong (GetHWND (), DWL_MSGRESULT, retval);
               return TRUE;
             }
-            break;
           case PSN_WIZBACK:
             {
               LONG retval;
@@ -245,17 +245,22 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
               SetWindowLong (GetHWND (), DWL_MSGRESULT, retval);
               return TRUE;
             }
-            break;
           case PSN_WIZFINISH:
-            retval = OnFinish ();
-            // False = Allow the wizard to finish
-            SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
-            return TRUE;
-            break;
+            {
+              retval = OnFinish ();
+              // False = Allow the wizard to finish
+              SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
+              return TRUE;
+            }
+          case TTN_GETDISPINFO:
+            {
+              return TooltipNotificationHandler (lParam);
+            }
           default:
-            // Unrecognized notification
-            return FALSE;
-            break;
+            {
+              // Unrecognized notification
+              return FALSE;
+            }
         }
         break;
       case WM_COMMAND:
@@ -386,6 +391,9 @@ PropertyPage::makeClickable (int id, String link)
     
   // add this to 'urls' so that the dialog and control winprocs know about it
   urls[id] = c;
+  
+  // set a tooltip for the link
+  AddTooltip (id, link.c_str());
 }
 
 LRESULT CALLBACK

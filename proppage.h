@@ -160,7 +160,7 @@ public:
     return OurSheet;
   };
   
-  void makeClickable (int id, String URL);
+  void makeClickable (int id, String link);
 };
 
 #endif /* SETUP_PROPPAGE_H */

@@ -21,7 +21,10 @@
 // PropSheet).
 
 #include <vector>
+#include <map>
 #include "win32.h"
+#include <commctrl.h>
+#include "LogSingleton.h"
 
 class String;
 class RECTWrapper;
@@ -49,6 +52,12 @@ private:
   // that are to be deleted in our dtor
   std::vector<HFONT> Fonts;
 
+  // if we have activated tool tips this will contain the handle
+  HWND TooltipHandle;
+  
+  // maps a control ID to a string resource ID
+  std::map<int, int> TooltipStrings;
+  
 protected:
   void SetHWND (HWND h)
   {
@@ -133,6 +142,12 @@ public:
   void SetWindowText (const String & s);
 
   RECT ScreenToClient(const RECT &r) const;
+  void ActivateTooltips ();
+  void SetTooltipState (bool b);
+  void AddTooltip (HWND target, HWND win, const char *text);
+  void AddTooltip (int id, const char *text);
+  void AddTooltip (int id, int string_resource);
+  BOOL TooltipNotificationHandler (LPARAM lParam);
 };
 
 #endif /* SETUP_WINDOW_H */

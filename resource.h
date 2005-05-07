@@ -29,6 +29,11 @@
 #define IDS_UNCAUGHT_EXCEPTION            122
 #define IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO 123
 #define IDS_SKIP_PACKAGE                  124
+#define IDS_TRUSTKEEP_TOOLTIP             125
+#define IDS_TRUSTPREV_TOOLTIP             126
+#define IDS_TRUSTCURR_TOOLTIP             127
+#define IDS_TRUSTEXP_TOOLTIP              128
+#define IDS_VIEWBUTTON_TOOLTIP            129
 
 // Dialogs
 

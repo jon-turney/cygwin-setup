@@ -31,6 +31,7 @@ Window::Window ()
 {
   WindowHandle = NULL;
   Parent = NULL;
+  TooltipHandle = NULL;
 }
 
 Window::~Window ()
@@ -38,6 +39,10 @@ Window::~Window ()
   // Delete any fonts we created.
   for (unsigned int i = 0; i < Fonts.size (); i++)
     DeleteObject (Fonts[i]);
+
+  // shut down the tooltip control, if activated
+  if (TooltipHandle)
+    DestroyWindow (TooltipHandle);
 
   // FIXME: Maybe do some reference counting and do this Unregister
   // when there are no more of us left.  Not real critical unless
@@ -364,5 +369,117 @@ Window::ScreenToClient(const RECT &r) const
   ret.right = br.x;
   
   return ret;
+}
+
+void
+Window::ActivateTooltips ()
+// initialization of the tooltip capability
+{
+  if (TooltipHandle != NULL)
+    return;     // already initialized
+    
+  // create a window for the tool tips - will be invisible most of the time
+  if ((TooltipHandle = CreateWindowEx (0, (LPCTSTR)TOOLTIPS_CLASS, NULL, 
+        WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP, CW_USEDEFAULT,
+        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, GetHWND (), 
+        (HMENU)0, GetInstance (), (LPVOID)0)) == (HWND)NULL)
+    {
+      log(LOG_PLAIN) << "Warning: call to CreateWindowEx failed when "
+              "initializing tooltips.  Error = %8.8x" << GetLastError ()
+              << endLog;
+      return;
+    }
+  
+  // must be topmost so that tooltips will display on top
+  SetWindowPos(TooltipHandle, HWND_TOPMOST, 0, 0, 0, 0,
+        SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+}
+
+void
+Window::SetTooltipState (bool b)
+// enable/disable tooltips
+{
+  SendMessage (TooltipHandle, (UINT)TTM_ACTIVATE, (WPARAM)(BOOL)b, 0);
+}
+
+void
+Window::AddTooltip (HWND target, HWND win, const char *text)
+// adds a tooltip to element 'target' in window 'win'
+// note: text is limited to 80 chars (grumble)
+{
+  if (!TooltipHandle)
+    ActivateTooltips ();
+
+  TOOLINFO ti;
+  
+  memset ((void *)&ti, 0, sizeof(ti));
+  ti.cbSize = sizeof(ti);
+   
+  ti.uFlags = TTF_IDISHWND    // add tool based on handle not ID
+            | TTF_SUBCLASS;   // tool is to subclass the window in order
+                              // to automatically get mouse events
+  ti.hwnd = win;
+  ti.uId = reinterpret_cast<UINT_PTR>(target);
+  ti.lpszText = (LPTSTR)text; // pointer to text or string resource
+  
+  SendMessage (TooltipHandle, (UINT)TTM_ADDTOOL, 0, 
+        (LPARAM)(LPTOOLINFO)&ti);
+}
+
+void
+Window::AddTooltip (int id, const char *text)
+// adds a tooltip to a control identified by its ID
+{
+  HWND target, parent;
+  
+  if ((target = GetDlgItem (id)) != NULL && 
+      (parent = ::GetParent (target)) != NULL)
+    AddTooltip (target, parent, text);
+}
+
+void
+Window::AddTooltip (int id, int string_resource)
+// adds a tooltip that's represented by a string resource
+// this also allows for tooltips greater than 80 characters
+// we do this by setting the lpszText to LPSTR_TEXTCALLBACK 
+// and then responding to the TTN_GETDISPINFO notification
+// in order to do this we store a list of (control ID, string ID) pairs
+{
+  AddTooltip (id, (const char *)LPSTR_TEXTCALLBACK);
+  TooltipStrings[id] = string_resource;
+}
+
+BOOL
+Window::TooltipNotificationHandler (LPARAM lParam)
+// this is the handler for TTN_GETDISPINFO notifications
+{
+  NMTTDISPINFO *dispinfo = (NMTTDISPINFO *)lParam;
+  int ctrlID;
+  std::map<int, int>::iterator findID;
+  
+  if ((dispinfo->uFlags & TTF_IDISHWND) &&
+      ((ctrlID = GetDlgCtrlID ((HWND)dispinfo->hdr.idFrom)) != 0) &&
+      ((findID = TooltipStrings.find (ctrlID)) != TooltipStrings.end ())) {
+  
+    // enable multiple lines
+    SendMessage(dispinfo->hdr.hwndFrom, TTM_SETMAXTIPWIDTH, 0, 450);
+    
+    // this is quite ugly.  Apparently even when using string resources
+    // the tooltip length still can't exceed 80 chars.  So, we fetch the
+    // resource into our own buffer and use that
+
+    TCHAR buf[2048];
+    LoadString (GetInstance (), findID->second, (LPTSTR)buf,
+        (sizeof (buf) / sizeof (TCHAR)));
+    
+    dispinfo->lpszText = buf;
+    
+    // set this flag so that the control will not ask for this again
+    dispinfo->uFlags |= TTF_DI_SETITEM;
+    dispinfo->hinst = NULL;
+    return TRUE;
+  }
+
+  return FALSE;
 }
 

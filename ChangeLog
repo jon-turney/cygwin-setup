@@ -1,5 +1,49 @@
 2005-05-05  Brian Dessent  <brian@dessent.net>
 
+	* choose.cc (ChooserPage::OnInit): Initialize tooltips for this
+	dialog.
+
+	* proppage.h (PropertyPage::makeClickable): Update prototype to
+	reflect same argument name as function.
+
+	* proppage.cc (PropertyPage::DialogProc): Remove redundant 'break'
+	statements that follow 'return's.  Add missing braces to case 
+	statements.  Call handler for TTN_GETDISPINFO.
+
+	* res.rc (IDS_TRUSTKEEP_TOOLTIP): Add new STRINGTABLE entry for
+	tooltip	text.
+	(IDS_TRUSTPREV_TOOLTIP): Ditto.
+	(IDS_TRUSTCURR_TOOLTIP): Ditto. 
+	(IDS_TRUSTEXP_TOOLTIP): Ditto.
+	(IDS_TRUSTPREV_TOOLTIP): Ditto.
+	(IDS_VIEWBUTTON_TOOLTIP): Ditto.
+
+	* resource.h: Likewise, add identifiers for tooltip resources.
+
+	* window.h: Add includes.
+	(Window::TooltipHandle): Add new private data structure.
+	(Window::TooltipStrings): Ditto.
+	(Window::ActivateTooltips): Define new function to support tooltip
+	functionality.
+	(Window::SetTooltipState): Ditto.
+	(Window::AddTooltip): Ditto.
+	(TooltipNotificationHandler): Ditto.
+	
+	* window.cc (Window::Window): Initialize handle to NULL.
+	(Window::~Window): Call DestroyWindow on tooltip control if it was
+	activated.
+	(Window::ActivateTooltips): New function to activate the tooltip
+	control.
+	(Window::SetTooltipState): New function to allow toggling of
+	tooltips.
+	(Window::AddTooltip): New function that adds a tooltip to a given
+	control in a given window.  Also implement overloaded versions that
+	provide simpler interface and the ability to use a string resource.
+	(Window::TooltipNotificationHandler): New function to handle
+	TTN_GETDISPINFO notification messages.
+
+2005-05-05  Brian Dessent  <brian@dessent.net>
+        
 	* resource.h: Reorganize.  Group by type, and give each its own
 	range of IDs.  Regenerate IDs accordingly.
 	(IDD_CHOOSER): Remove obsolete and unused symbol.

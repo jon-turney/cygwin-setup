@@ -159,6 +159,12 @@ ChooserPage::OnInit ()
   else
     setPrompt("Select packages to install ");
   createListview ();
+  
+  AddTooltip (IDC_CHOOSE_KEEP, IDS_TRUSTKEEP_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_PREV, IDS_TRUSTPREV_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_CURR, IDS_TRUSTCURR_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_EXP, IDS_TRUSTEXP_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_VIEW, IDS_VIEWBUTTON_TOOLTIP);  
 }
 
 void
