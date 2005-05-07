@@ -1,5 +1,10 @@
 2005-05-07  Max Bowsher  <maxb@ukf.net>
 
+	* install.cc (md5_one): Make the MD5 checking done at install time
+	display a progess GUI, as the MD5 checking done at other times does.
+
+2005-05-07  Max Bowsher  <maxb@ukf.net>
+
 	* resource.h, res.rc: Followup to recent de-MSVC-ification of
 	resource.h, by removing a lot from res.rc, and the last few bits
 	from resource.h.

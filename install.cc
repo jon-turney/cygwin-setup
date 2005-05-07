@@ -655,32 +655,53 @@ do_install (HINSTANCE h, HWND owner)
   CreateThread (NULL, 0, do_install_reflector, context, 0, &threadID);
 }
 
-void md5_one (const packagesource& source)
+void md5_one (const packagesource& pkgsource)
 {
-  if (source.md5.isSet())
-    {
-      // check the MD5 sum of the cached file here
-      io_stream *thefile = io_stream::open (source.Cached (), "rb");
-      if (!thefile)
-	throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("IO Error opening ") + source.Cached(), APPERR_IO_ERROR);
-      MD5Sum tempMD5;
-      tempMD5.begin();
-      
-      unsigned char buffer[16384];
-      ssize_t count;
-      while ((count = thefile->read (buffer, 16384)) > 0)
-	  tempMD5.append(buffer, count);
-      delete thefile;
-      if (count < 0)
-	throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("IO Error reading ") + source.Cached(), APPERR_IO_ERROR);
-      
-      tempMD5.finish();
+  if (pkgsource.md5.isSet())
+  {
+    String fullname (pkgsource.Cached ());
 
-      log (LOG_BABBLE) << "For file " << source.Cached()
-        << " ini digest is " << source.md5.str()
-        << " file digest is " << tempMD5.str() << endLog;
-      
-      if (source.md5 != tempMD5)
-	  throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("Checksum failure for ") + source.Cached(), APPERR_CORRUPT_PACKAGE);
+    io_stream *thefile = io_stream::open (fullname, "rb");
+    if (!thefile)
+      throw new Exception (TOSTRING (__LINE__) " " __FILE__,
+                           String ("IO Error opening ") + fullname,
+                           APPERR_IO_ERROR);
+    MD5Sum tempMD5;
+    tempMD5.begin ();
+
+    log (LOG_BABBLE) << "Checking MD5 for " << fullname << endLog;
+
+    Progress.SetText1 ((String ("Checking MD5 for ")
+                        + pkgsource.Base ()).c_str ());
+    Progress.SetText4 ("Progress:");
+    Progress.SetBar1 (0);
+
+    unsigned char buffer[16384];
+    ssize_t count;
+    while ((count = thefile->read (buffer, sizeof (buffer))) > 0)
+    {
+      tempMD5.append (buffer, count);
+      Progress.SetBar1 (thefile->tell (), thefile->get_size ());
     }
+    delete thefile;
+    if (count < 0)
+      throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+                           String ("IO Error reading ") + fullname,
+                           APPERR_IO_ERROR);
+
+    tempMD5.finish ();
+
+    if (pkgsource.md5 != tempMD5)
+    {
+      log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
+        << " - MD5 mismatch: Ini-file: " << pkgsource.md5.str()
+        << " != On-disk: " << tempMD5.str() << endLog;
+      throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+                           String ("MD5 failure for ") + fullname,
+                           APPERR_CORRUPT_PACKAGE);
+    }
+
+    log (LOG_BABBLE) << "MD5 verified OK: " << fullname << " "
+      << pkgsource.md5.str() << endLog;
+  }
 }
