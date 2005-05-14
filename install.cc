@@ -82,8 +82,8 @@ class Installer
     Installer();
     void initDialog();
     void progress (int bytes);
+    void preremoveOne (packagemeta &);
     void uninstallOne (packagemeta &);
-    void replaceOne (packagemeta &);
     void replaceOnRebootFailed (String const &fn);
     void replaceOnRebootSucceeded (String const &fn, bool &rebootneeded);
     void installOne (packagemeta &pkg, const packageversion &ver,
@@ -133,38 +133,27 @@ Installer::StandardDirs[] = {
   0
 };
 
-static int num_installs, num_replacements, num_uninstalls;
+static int num_installs, num_uninstalls;
 static void md5_one (const packagesource& source);
 static bool rebootneeded;
 
 void
-Installer::uninstallOne (packagemeta & pkgm)
+Installer::preremoveOne (packagemeta & pkg)
 {
-  Progress.SetText1 ("Uninstalling...");
-  Progress.SetText2 (pkgm.name.c_str());
-  log (LOG_PLAIN) << "Uninstalling " << pkgm.name << endLog;
-  pkgm.uninstall ();
-  num_uninstalls++;
+  Progress.SetText1 ("Running preremove script...");
+  Progress.SetText2 (pkg.name.c_str());
+  log (LOG_PLAIN) << "Running preremove script for  " << pkg.name << endLog;
+  try_run_script ("/etc/preremove/", pkg.name);
 }
 
-/* uninstall and install a package, preserving configuration
- * files and the like.
- * This method should also know about replacing in-use file.
- * ASSUMPTIONS: pkgm is installed.
- *		pkgm has a desired package.
- */
 void
-Installer::replaceOne (packagemeta &pkg)
+Installer::uninstallOne (packagemeta & pkg)
 {
-  Progress.SetText1 ("Replacing...");
+  Progress.SetText1 ("Uninstalling...");
   Progress.SetText2 (pkg.name.c_str());
-  Progress.SetText3 ("");
-  log (LOG_PLAIN) << "Replacing " << pkg.name << endLog;
+  log (LOG_PLAIN) << "Uninstalling " << pkg.name << endLog;
   pkg.uninstall ();
-
-  installOne (pkg, pkg.desired, *pkg.desired.source(), "cygfile://", "/");
-
-  num_replacements++;
+  num_uninstalls++;
 }
 
 /* log failed scheduling of replace-on-reboot of a given file. */
@@ -397,17 +386,17 @@ do_install_thread (HINSTANCE h, HWND owner)
 {
   int i;
 
-  num_installs = 0, num_uninstalls = 0, num_replacements = 0;
+  num_installs = 0, num_uninstalls = 0;
   rebootneeded = false;
 
   io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + get_root_dir ());
 
   for (i = 0; Installer::StandardDirs[i]; i++)
-    {
-      String p = cygpath (Installer::StandardDirs[i]);
-      if (p.size())
-	io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + p);
-    }
+  {
+    String p = cygpath (Installer::StandardDirs[i]);
+    if (p.size())
+      io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + p);
+  }
 
   /* Create /var/run/utmp */
   io_stream *utmp = io_stream::open ("cygfile:///var/run/utmp", "wb");
@@ -433,116 +422,97 @@ do_install_thread (HINSTANCE h, HWND owner)
   /* Let's hope people won't uninstall packages before installing [b]ash */
   init_run_script ();
 
+  vector <packagemeta *> install_q, uninstall_q, sourceinstall_q;
+
   packagedb db;
   for (vector <packagemeta *>::iterator i = db.packages.begin ();
        i != db.packages.end (); ++i)
-    {
-      packagemeta & pkg = **i;
+  {
+    packagemeta & pkg = **i;
 
-      if (pkg.desired.picked () || pkg.desired.sourcePackage ().picked ())
-	{
-	  if (pkg.desired.picked())
-	    {
-	      try
-		{
-		  md5_one (*pkg.desired.source ());
-		}
-	      catch (Exception *e)
-		{
-		  if (yesno (owner, IDS_SKIP_PACKAGE, e->what()) == IDYES)
-		      pkg.desired.pick (false);
-		}
-	      if (pkg.desired.picked())
-		total_bytes += pkg.desired.source()->size;
-	    }
-	  if (pkg.desired.sourcePackage ().picked())
-	    {
-	      try
-		{
-		  md5_one (*pkg.desired.sourcePackage ().source ());
-		}
-	      catch (Exception *e)
-		{
-		  if (yesno (owner, IDS_SKIP_PACKAGE, e->what()) == IDYES)
-		      pkg.desired.sourcePackage ().pick (false);
-		}
-	      if (pkg.desired.sourcePackage().picked())
-	        total_bytes += pkg.desired.sourcePackage ().source()->size;
-	    }
-	}
+    if (pkg.desired.picked())
+    {
+      try
+      {
+        md5_one (*pkg.desired.source ());
+      }
+      catch (Exception *e)
+      {
+        if (yesno (owner, IDS_SKIP_PACKAGE, e->what()) == IDYES)
+          pkg.desired.pick (false);
+      }
+      if (pkg.desired.picked())
+      {
+        total_bytes += pkg.desired.source()->size;
+        install_q.push_back (&pkg);
+      }
     }
+
+    if (pkg.desired.sourcePackage ().picked())
+    {
+      try
+      {
+        md5_one (*pkg.desired.sourcePackage ().source ());
+      }
+      catch (Exception *e)
+      {
+        if (yesno (owner, IDS_SKIP_PACKAGE, e->what()) == IDYES)
+          pkg.desired.sourcePackage ().pick (false);
+      }
+      if (pkg.desired.sourcePackage().picked())
+      {
+        total_bytes += pkg.desired.sourcePackage ().source()->size;
+        sourceinstall_q.push_back (&pkg);
+      }
+    }
+
+    if ((pkg.installed && pkg.desired != pkg.installed)
+        || pkg.installed.picked ())
+    {
+      uninstall_q.push_back (&pkg);
+    }
+  }
 
   /* start with uninstalls - remove files that new packages may replace */
-  for (vector <packagemeta *>::iterator i = db.packages.begin ();
-       i != db.packages.end (); ++i)
-    {
-      packagemeta & pkg = **i;
-      if (pkg.installed && (!pkg.desired || (pkg.desired != pkg.installed &&
-	  pkg.desired.picked ())))
-	myInstaller.uninstallOne (pkg);
+  for (vector <packagemeta *>::iterator i = uninstall_q.begin ();
+       i != uninstall_q.end (); ++i)
+  {
+    myInstaller.preremoveOne (**i);
+  }
+  for (vector <packagemeta *>::iterator i = uninstall_q.begin ();
+       i != uninstall_q.end (); ++i)
+  {
+    myInstaller.uninstallOne (**i);
+  }
+
+  for (vector <packagemeta *>::iterator i = install_q.begin ();
+       i != install_q.end (); ++i)
+  {
+    packagemeta & pkg = **i;
+    try {
+      myInstaller.installOne (pkg, pkg.desired, *pkg.desired.source(),
+                              "cygfile://", "/");
     }
-
-  /* now in-place binary upgrades/reinstalls, as these may remove fils 
-   * that have been moved into new packages
-   */
-
-  for (vector <packagemeta *>::iterator i = db.packages.begin ();
-       i != db.packages.end (); ++i)
+    catch (exception *e)
     {
-      packagemeta & pkg = **i;
-      if (pkg.installed && pkg.desired.picked())
-	{
-	  try {
-            myInstaller.replaceOne (pkg);
-	  }
-	  catch (exception *e)
-	    {
-	      if (yesno (owner, IDS_INSTALL_ERROR, e->what()) != IDYES)
-		{
-		  log (LOG_TIMESTAMP)
-                    << "User cancelled setup after install error" << endLog;
-		  LogSingleton::GetInstance().exit (1);
-		  return;
-		}
-	    }
-	}
+      if (yesno (owner, IDS_INSTALL_ERROR, e->what()) != IDYES)
+      {
+        log (LOG_TIMESTAMP)
+          << "User cancelled setup after install error" << endLog;
+        LogSingleton::GetInstance().exit (1);
+        return;
+      }
     }
+  }
 
-  for (vector <packagemeta *>::iterator i = db.packages.begin ();
-       i != db.packages.end (); ++i)
-    {
-      packagemeta & pkg = **i;
-
-      if (pkg.desired.picked () || pkg.desired.sourcePackage ().picked ())
-	{
-	  try
-	    {
-              /* install a package, install both the binary and source aspects
-               * if needed */
-
-              if (pkg.installed != pkg.desired && pkg.desired.picked())
-                myInstaller.installOne (pkg, pkg.desired, 
-                                        *pkg.desired.source(),
-                                        "cygfile://", "/");
-
-              if (pkg.desired.sourcePackage().picked())
-                myInstaller.installOne (pkg, pkg.desired.sourcePackage(),
-                                        *pkg.desired.sourcePackage().source(),
-                                        "cygfile://", "/usr/src/");
-
-	    }
-	  catch (exception *e)
-	    {
-	      if (yesno (owner, IDS_INSTALL_ERROR, e->what()) != IDYES)
-		{
-		  log (LOG_TIMESTAMP)
-                    << "User cancelled setup after install error" << endLog;
-		  LogSingleton::GetInstance().exit (1);
-		  return;
-		}
-	    }
-	}
-    }
+  for (vector <packagemeta *>::iterator i = sourceinstall_q.begin ();
+       i != sourceinstall_q.end (); ++i)
+  {
+    packagemeta & pkg = **i;
+    myInstaller.installOne (pkg, pkg.desired.sourcePackage(),
+                            *pkg.desired.sourcePackage().source(),
+                            "cygfile://", "/usr/src/");
+  }
 
   if (rebootneeded)
     note (owner, IDS_REBOOT_REQUIRED);

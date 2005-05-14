@@ -153,7 +153,6 @@ packagemeta::uninstall ()
       set<string> dirs;
       string line = installed.getfirstfile ();
 
-      try_run_script ("/etc/preremove/", name);
       while (line.size())
 	{
           /* Insert the paths of all parent directories of line into dirs. */

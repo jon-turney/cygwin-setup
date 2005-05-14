@@ -1,4 +1,17 @@
 2005-05-14  Max Bowsher  <maxb@ukf.net>
+	
+	Hopefully, solve the "preremove DLL dependency" bug, by running all
+	preremove scripts before actually removing any files.
+
+	* install.cc 
+	(Installer::preremoveOne): New method. Run preremove scripts here.
+	(Installer::replaceOne): Remove method.
+	(num_replacements): Remove variable.
+	(do_install_thread): Significantly rewrite.
+	* package_meta.cc (packagemeta::uninstall):
+	Do not run preremove script here.
+
+2005-05-14  Max Bowsher  <maxb@ukf.net>
 
 	* download.cc (do_download_thread):
 	Do not use packageversion::changeRequested().
@@ -11,7 +24,7 @@
 	Remove.
 	* install.cc (Installer::replaceOne): Simplify, return void, not int.
 	(installOneSource): Rename to...
-	(installOne): ...this. Change argumentsi and return type. Refactor.
+	(installOne): ...this. Change arguments and return type. Refactor.
 	(install_one): Remove.
 	(do_install_thread): Tidying up.
 
