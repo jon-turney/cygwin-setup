@@ -78,16 +78,18 @@ static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot",
 class Installer
 {
   public:
-  static const char *StandardDirs[];
-  Installer();
-  void initDialog();
-  void progress (int bytes);
-  void uninstallOne (packagemeta &);
-  int replaceOne (packagemeta &);
-  void replaceOnRebootFailed (String const &fn);
-  void replaceOnRebootSucceeded (String const &fn, bool &rebootneeded);
-  int installOneSource (packagemeta &, packagesource &, String const &, String const &, package_type_t);
-  int errors;
+    static const char *StandardDirs[];
+    Installer();
+    void initDialog();
+    void progress (int bytes);
+    void uninstallOne (packagemeta &);
+    void replaceOne (packagemeta &);
+    void replaceOnRebootFailed (String const &fn);
+    void replaceOnRebootSucceeded (String const &fn, bool &rebootneeded);
+    void installOne (packagemeta &pkg, const packageversion &ver,
+                     packagesource &source,
+                     String const &, String const &);
+    int errors;
 };
 
 Installer::Installer() : errors(0)
@@ -151,22 +153,18 @@ Installer::uninstallOne (packagemeta & pkgm)
  * ASSUMPTIONS: pkgm is installed.
  *		pkgm has a desired package.
  */
-int
+void
 Installer::replaceOne (packagemeta &pkg)
 {
-  int errors = 0;
   Progress.SetText1 ("Replacing...");
   Progress.SetText2 (pkg.name.c_str());
   Progress.SetText3 ("");
   log (LOG_PLAIN) << "Replacing " << pkg.name << endLog;
   pkg.uninstall ();
 
-  errors +=
-    installOneSource (pkg, *pkg.desired.source(), "cygfile://","/", package_binary);
-  if (!errors)
-    pkg.installed = pkg.desired;
+  installOne (pkg, pkg.desired, *pkg.desired.source(), "cygfile://", "/");
+
   num_replacements++;
-  return errors;
 }
 
 /* log failed scheduling of replace-on-reboot of a given file. */
@@ -193,16 +191,19 @@ Installer::replaceOnRebootSucceeded (String const &fn, bool &rebootneeded)
 }
 
 /* install one source at a given prefix. */
-int
-Installer::installOneSource (packagemeta & pkgm, packagesource & source,
-		    String const &prefixURL, String const &prefixPath, package_type_t type)
+void
+Installer::installOne (packagemeta &pkgm, const packageversion &ver,
+                       packagesource &source,
+                       String const &prefixURL, String const &prefixPath)
 {
   Progress.SetText2 (source.Base ());
   if (!source.Cached () || !io_stream::exists (source.Cached ()))
     {
       note (NULL, IDS_ERR_OPEN_READ, source.Cached (), "No such file");
-      return 1;
+      ++errors;
+      return;
     }
+  bool error_in_this_package = false;
   io_stream *lst = 0;
 
   package_bytes = source.size;
@@ -236,7 +237,7 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
   if (thefile)
     {
       String fn;
-      if (type == package_binary)
+      if (ver.Type () == package_binary)
 	{
 	  io_stream *tmp = io_stream::open (String ("cygfile:///etc/setup/") +
 	                                    pkgm.name + ".lst.gz", "wb");
@@ -267,6 +268,7 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 	      if (NoReplaceOnReboot)
 		{
 		  ++errors;
+                  error_in_this_package = true;
 		  log (LOG_PLAIN) << "Not replacing in-use file "
                     << prefixURL << prefixPath << fn << endLog;
 		}
@@ -277,6 +279,7 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
 		  log (LOG_PLAIN) << "Unable to install file "
                     << prefixURL << prefixPath << fn << endLog;
 		  ++errors;
+                  error_in_this_package = true;
 		}
 	      else
 		{
@@ -349,65 +352,8 @@ Installer::installOneSource (packagemeta & pkgm, packagesource & source,
   if (tmp2) delete tmp2;
   if (tmp) delete tmp;
 
-  return errors;
-}
-
-/* install a package, install both the binary and source aspects if needed */
-static int
-install_one (packagemeta & pkg)
-{
-  int errors = 0;
-
-  Installer myInstaller;
-  if (pkg.installed != pkg.desired && pkg.desired.picked())
-    {
-      errors +=
-	myInstaller.installOneSource (pkg, *pkg.desired.source(), "cygfile://","/",
-			    package_binary);
-      if (!errors)
-	pkg.installed = pkg.desired;
-    }
-  if (pkg.desired.sourcePackage().picked())
-    errors +=
-      myInstaller.installOneSource (pkg, *pkg.desired.sourcePackage().source(), "cygfile://","/usr/src/",
-			  package_source);
-
-  /* FIXME: make a upgrade method and reinstate this */
-#if 0
-  String msg;
-  if (!pkg->installed)
-    msg = "Installing";
-  else
-    {
-      int n = strcmp (pi->version, pkg->installed->version);
-      if (n < 0)
-	msg = "Reverting";
-      else if (n == 0)
-	msg = "Reinstalling";
-      else
-	msg = "Upgrading";
-    }
-
-  switch (pkg->action)
-    {
-    case ACTION_PREV:
-      msg += " previous version...";
-      break;
-    case ACTION_CURR:
-      msg += "...";
-      break;
-    case ACTION_TEST:
-      msg += " test version...";
-      break;
-    default:
-      /* FIXME: log this somehow */
-      break;
-    }
-  SetWindowText (ins_action, msg.c_str());
-  log (LOG_PLAIN, msg + " " + file);
-#endif
-
-  return errors;
+  if (ver.Type () == package_binary && !error_in_this_package)
+    pkgm.installed = ver;
 }
 
 static void
@@ -450,7 +396,6 @@ static void
 do_install_thread (HINSTANCE h, HWND owner)
 {
   int i;
-  int errors = 0;
 
   num_installs = 0, num_uninstalls = 0, num_replacements = 0;
   rebootneeded = false;
@@ -494,7 +439,7 @@ do_install_thread (HINSTANCE h, HWND owner)
     {
       packagemeta & pkg = **i;
 
-      if (pkg.desired.changeRequested())
+      if (pkg.desired.picked () || pkg.desired.sourcePackage ().picked ())
 	{
 	  if (pkg.desired.picked())
 	    {
@@ -548,10 +493,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       if (pkg.installed && pkg.desired.picked())
 	{
 	  try {
-	      int e = 0;
-	    e += myInstaller.replaceOne (pkg);
- 	    if (e)
-	      errors++;
+            myInstaller.replaceOne (pkg);
 	  }
 	  catch (exception *e)
 	    {
@@ -571,14 +513,23 @@ do_install_thread (HINSTANCE h, HWND owner)
     {
       packagemeta & pkg = **i;
 
-      if (pkg.desired && pkg.desired.changeRequested())
+      if (pkg.desired.picked () || pkg.desired.sourcePackage ().picked ())
 	{
 	  try
 	    {
-    	      int e = 0;
-    	      e += install_one (pkg);
-    	      if (e)
-		  errors++;
+              /* install a package, install both the binary and source aspects
+               * if needed */
+
+              if (pkg.installed != pkg.desired && pkg.desired.picked())
+                myInstaller.installOne (pkg, pkg.desired, 
+                                        *pkg.desired.source(),
+                                        "cygfile://", "/");
+
+              if (pkg.desired.sourcePackage().picked())
+                myInstaller.installOne (pkg, pkg.desired.sourcePackage(),
+                                        *pkg.desired.sourcePackage().source(),
+                                        "cygfile://", "/usr/src/");
+
 	    }
 	  catch (exception *e)
 	    {
@@ -591,7 +542,7 @@ do_install_thread (HINSTANCE h, HWND owner)
 		}
 	    }
 	}
-    }				// end of big package loop
+    }
 
   if (rebootneeded)
     note (owner, IDS_REBOOT_REQUIRED);
@@ -606,7 +557,7 @@ do_install_thread (HINSTANCE h, HWND owner)
 	  err);
     }
 
-  if (!errors)
+  if (!myInstaller.errors)
     check_for_old_cygwin ();
   if (num_installs == 0 && num_uninstalls == 0)
     {
@@ -619,7 +570,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       return;
     }
 
-  if (errors)
+  if (myInstaller.errors)
     exit_msg = IDS_INSTALL_INCOMPLETE;
   else if (!unattended_mode)
     exit_msg = IDS_INSTALL_COMPLETE;

@@ -124,9 +124,6 @@ public:
 
   bool picked() const;   /* true if this version is to be installed */
   void pick(bool); /* trigger an install/reinsall */
-  /* a change - install/uninstall/reinstall/source install
-        has been requested */
-  bool changeRequested () const;
 
   void uninstall ();
   /* invariant: never null */
@@ -193,10 +190,6 @@ public:
   virtual void pick(bool const &newValue) { picked = newValue;}
   bool picked;	/* non zero if this version is to be installed */
 		/* This will also trigger reinstalled if it is set */
-  /* a change - install/uninstall/reinstall/source install
-     has been requested */
-  bool changeRequested ();
-
 
   virtual void uninstall () = 0;
   std::vector<packagesource> sources; /* where can we source the files from */

@@ -203,7 +203,7 @@ do_download_thread (HINSTANCE h, HWND owner)
        i != db.packages.end (); ++i)
     {
       packagemeta & pkg = **i;
-      if (pkg.desired.changeRequested())
+      if (pkg.desired.picked () || pkg.desired.sourcePackage ().picked ())
 	{
 	  packageversion version = pkg.desired;
 	  packageversion sourceversion = version.sourcePackage();
@@ -244,7 +244,7 @@ do_download_thread (HINSTANCE h, HWND owner)
        i != db.packages.end (); ++i)
     {
       packagemeta & pkg = **i;
-      if (pkg.desired.changeRequested())
+      if (pkg.desired.picked () || pkg.desired.sourcePackage ().picked ())
 	{
 	  int e = 0;
 	  packageversion version = pkg.desired;

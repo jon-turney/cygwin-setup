@@ -1,3 +1,20 @@
+2005-05-14  Max Bowsher  <maxb@ukf.net>
+
+	* download.cc (do_download_thread):
+	Do not use packageversion::changeRequested().
+	* package_version.cc (packageversion::Type):
+	Implement declared but previously unimplemented method.
+	(packageversion::changeRequested, _packageversion::changeRequested):
+	Remove.
+	* package_version.h
+	(packageversion::changeRequested, _packageversion::changeRequested):
+	Remove.
+	* install.cc (Installer::replaceOne): Simplify, return void, not int.
+	(installOneSource): Rename to...
+	(installOne): ...this. Change argumentsi and return type. Refactor.
+	(install_one): Remove.
+	(do_install_thread): Tidying up.
+
 2005-05-07  Max Bowsher  <maxb@ukf.net>
 
 	* download.cc (validateCachedPackage): Remove all MD5 checking code.

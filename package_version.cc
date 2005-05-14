@@ -161,6 +161,12 @@ packageversion::setCanonicalVersion (String const &ver)
   data->setCanonicalVersion (ver);
 }
 
+package_type_t
+packageversion::Type () const
+{
+  return data->Type ();
+}
+
 String const
 packageversion::getfirstfile ()
 {
@@ -279,12 +285,6 @@ void
 packageversion::pick (bool aBool)
 {
   data->pick(aBool);
-}
-
-bool
-packageversion::changeRequested () const
-{
-  return data->changeRequested ();
 }
 
 void
@@ -543,12 +543,6 @@ _packageversion::accessible() const
     if (i->sites.size() || i->Cached ())
       retrievable += 1;
   return retrievable > 0;
-}
-
-bool
-_packageversion::changeRequested ()
-{
-  return (picked || sourcePackage().picked());
 }
 
 void
