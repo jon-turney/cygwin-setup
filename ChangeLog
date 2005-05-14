@@ -1,3 +1,10 @@
+2005-05-14  Bas van Gompel  <patch-cygsup.buzz@bavag.tmfweb.nl>
+
+	Fix behaviour of hardlinks in source packages.
+
+	* archive.cc (archive::extract_file):
+	Use prefixPath for link target on hardlinks.
+
 2005-05-14  Max Bowsher  <maxb@ukf.net>
 	
 	Hopefully, solve the "preremove DLL dependency" bug, by running all

@@ -161,8 +161,8 @@ archive::extract_file (archive * source, String const &prefixURL, String const &
 	io_stream::remove (destfilename);
 	int ok =
 	  io_stream::mklink (destfilename,
-	      prefixURL + source->linktarget (),
-			     IO_STREAM_HARDLINK);
+                             prefixURL + prefixPath + source->linktarget (),
+                             IO_STREAM_HARDLINK);
 	/* FIXME: check what tar's filelength is set to for hardlinks */
 	source->skip_file ();
 	return ok;
