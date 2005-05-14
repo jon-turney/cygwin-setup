@@ -84,7 +84,7 @@ IniDBBuilderPackage::buildPackage (String const &name)
       cp = new packagemeta (name);
       db.packages.push_back (cp);
     }
-  cbpv = cygpackage::createInstance (name);
+  cbpv = cygpackage::createInstance (name, package_binary);
   cspv = packageversion ();
   currentSpec = NULL;
   currentOrList = NULL;
@@ -143,7 +143,7 @@ IniDBBuilderPackage::buildPackageSource (String const &path, String const &size)
       db.sourcePackages.push_back (csp);
     }
   /* create a source packageversion */
-  cspv = cygpackage::createInstance (cbpv.Name());
+  cspv = cygpackage::createInstance (cbpv.Name(), package_source);
   cspv.setCanonicalVersion (cbpv.Canonical_version());
   set<packageversion>::iterator i=find (csp->versions.begin(),
     csp->versions.end(), cspv);
@@ -175,7 +175,7 @@ IniDBBuilderPackage::buildPackageTrust (int newtrust)
   trust = newtrust;
   if (newtrust != TRUST_UNKNOWN)
     {
-      cbpv = cygpackage::createInstance (cp->name);
+      cbpv = cygpackage::createInstance (cp->name, package_binary);
       cspv = packageversion ();
     }
 }

@@ -68,11 +68,14 @@ public:
   virtual String const getnextfile ();
 
   /* pass the name of the package when constructing */
-  static packageversion createInstance (String const &);
+  static packageversion createInstance (const String &pkgname,
+                                        const package_type_t type);
+
   static packageversion createInstance (String const &, String const &, 
 					size_t const, String const &,
 					package_status_t const, 
 					package_type_t const);
+
 private:
   cygpackage ();
   void destroy ();

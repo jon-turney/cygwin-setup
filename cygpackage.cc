@@ -55,10 +55,12 @@ listfile ()
 }
 
 packageversion
-cygpackage::createInstance (String const &pkgname)
+cygpackage::createInstance (const String &pkgname,
+                            const package_type_t type)
 {
   cygpackage *temp = new cygpackage;
   temp->name = pkgname;
+  temp->type = type;
   return packageversion(temp);
 }
 
