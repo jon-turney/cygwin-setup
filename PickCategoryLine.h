@@ -52,7 +52,7 @@ public:
     if (!show_label)
       collapsed = false;
   }
-  virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
+  virtual void paint (HDC hdc, HRGN hUpdRgn, int x, int y, int row, int show_cat);
   virtual int click (int const myrow, int const ClickedRow, int const x);
   virtual int itemcount () const
   {
@@ -80,6 +80,7 @@ private:
   bool collapsed;
   bool show_label;
   size_t labellength;
+  size_t spin_x;    // x-coord where the spin button starts
   size_t depth;
   PickCategoryLine (PickCategoryLine const &);
   PickCategoryLine & operator= (PickCategoryLine const &);

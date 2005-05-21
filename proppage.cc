@@ -340,6 +340,14 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
           // cast this brush as a BOOL and return it (?!)
           return (BOOL)theURL->second.brush;
         }
+      case WM_MOUSEWHEEL:
+        // we do this so that derived classes that wish to process this message
+        // do not need to reimplement the entire WinProc, they can just
+        // provice an OnMouseWheel.  (Note that mousewheel events are delivered
+        // to the parent of the window that received the scroll, so it would
+        // not work to just process this message there.)
+        return OnMouseWheel (message, wParam, lParam);
+        break;
       default:
         break;
     }
@@ -354,6 +362,12 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 
   // Wasn't handled
   return FALSE;
+}
+
+BOOL CALLBACK
+PropertyPage::OnMouseWheel (UINT message, WPARAM wParam, LPARAM lParam)
+{
+  return 1; // not handled; define in a derived class to support this
 }
 
 void

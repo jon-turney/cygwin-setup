@@ -1,3 +1,126 @@
+2005-05-21  Brian Dessent  <brian@dessent.net>
+
+	* prereq.cc: New file.
+	* prereq.h: Ditto.
+	* tree-minus.bmp: Ditto.
+	* tree-plus.bmp: Ditto.
+	* Makefile.am: Add prereq.cc and prereq.h to build.
+	* PickCategoryLine.cc (PickCategoryLine::paint): Add new parameter and
+	refactor.  Use bitmap for '+' and '-' indicators.  Draw package lines
+	column-wise for better drawing efficiency.
+	(PickCategoryLine::click): Use previously calculated x value.
+	* PickCategoryLine.h (PickCategoryLine::paint): Update prototype.  Add
+	'spin_x' member.
+	* PickLine.h (PickLine:paint): Update prototype.
+	* PickPackageLine.cc (PickPackageLine::DrawCheck): Remove.
+	(PickPackageLine::DrawIcon): New function.
+	(PickPackageLine::paint): Add parameter.  Refactor completely for more
+	efficient painting.
+	* PickPackageLine.h (PickPackageLine::DrawIcon): Add prototype.
+	(PickPackageLine::paint): Update prototype.
+	(PickPackageLine::DrawCheck): Remove.
+	* PickView.cc (pkg_headers): Remove unused 'slen' field, add new 
+	'needs_clip' field to signify if clipping is necessary for this column.
+	(PickView::note_width): Fold long line.  Refactor slightly for 
+	simplicity.
+	(PickView::set_view_mode): Remove.
+	(PickView::cycleViewMode): New function.
+	(PickView::setViewMode): Refactor completely.  Incorporate functionality
+	of clear_view() here instead.  Simplify package selection into a single
+	'for' loop rather than repeating code for each type.
+	(isObsolete): New function, with second overloaded version.
+	(PickView::setObsolete): New function.
+	(PickView::insert_pkg): Do not show obsolete packages.  Move
+	declaration of 'db' lower.  Fix whitespace.
+	(PickView::insert_category): Do not show obsolete packages.
+	(PickView::clear_view): Remove.  Moved logic into 'setViewMode'. 
+	(PickView::scroll): Add additional parameter 'howmany' with default
+	value of 1.  Scroll by 'howmany' lines for SB_LINEDOWN and SB_LINEUP.
+	(NUM_CATEGORY_COL_WIDTH): Define.
+	(PickView::init_headers): Fix whitespace.  Add comments.  Ignore
+	obsolete packages in width calculations.  Add functionality to size
+	'Category' column so that at least NUM_CATEGORY_COL_WIDTH categories
+	are displayed for every package.  Ensure that 'new_col' takes into
+	account all possible labels.
+	(PickView::PickView): Initialize showObsolete to false.
+	(PickView::init): Remove unused bitmap bm_rtarrow.  Add new bitmaps
+	bm_treeplus and bm_treeminus.  Use a macro for better readability.
+	Fix whitespace formatting.  Remove header computation from here, call
+	refresh() instead.
+	(PickView::registerWindowClass): Remove unnecessary background brush.
+	(PickView::WindowProc): Add support for WM_MOUSEWHEEL message
+	processing.  Fix indentation.  Reformat for readability.
+	(PickView::paint): Get the update region before calling BeginPaint.
+	Fill the update region with the default colors.  Do not do clipping
+	here.  Pass update region to the PickLine paint function instead.
+	Free the update region when finished.
+	(PickView::Create): Fix indentation.
+	(PickView::defaultTrust): Ditto.
+	(PickView::refresh): Add column recalculation logic here.
+	* PickView.h: Fix indentation.
+	(RTARROW_WIDTH): Remove unused define.
+	(NEW_COL_SIZE_SLOP): Ditto.
+	(TREE_INDENT): Define.
+	(PickView::get_view_mode): Remove.
+	(PickView::set_view_mode): Rename to setViewMode for consistency.
+	(PickView::cycleViewMode): Add new function.
+	(PickView::setObsolete): Ditto.
+	(PickView::clear_view): Remove.
+	(PickView::bm_treeplus): Define new member.
+	(PickView::bm_treeminus): Ditto.
+	(PickView::scroll): Add parameter.
+	(PickView::Header::slen): Remove unused member.
+	(PickView::Header::needs_clip): Define new member.
+	(PickView::showObsolete): Ditto.
+	(isObsolete): Add prototype, and for overloaded version as well.
+	* choose.cc: Add include.
+	(ChooserControlsInfo): Allow new checkbox to be resized.
+	(ChooserPage::OnInit): Start dialog with 'Hide obsolete' checked.
+	(ChooserPage::OnNext): Call the dependency checker, act accordingly.
+	(ChooserPage::changeTrust): Notify dependency checker of current trust
+	level when it changes.
+	(ChooserPage::OnMessageCmd): Just call cycleViewMode instead when
+	changing the view.  Update the chooser when the user toggles the
+	'hide obsolete' checkbox.
+	(ChooserPage::OnMouseWheel): New function.  Pass mouse wheel message
+	on to chooser.
+	* choose.h (OnMouseWheel): Add prototype.
+	* main.cc: Add include.
+	(main): Define and initialize the PrereqPage object.  Add it into
+	the property sheet list.
+	* PropPage.cc (PropertyPage::DialogProc): Add support for WM_MOUSEWHEEL
+	message processing in derived classes.
+	(PropertyPage::OnMouseWheel): New function.
+	* PropPage.h (PropertyPage::OnMouseWheel): Add prototype.
+	* res.rc (IDD_LOCAL_DIR): Shorten edit box so that pushbutton is not
+	crowded.
+	(IDD_SITE): Provide static text with an ID so that it can be resized
+	properly.  Move pushbutton slightly to right so that it doesn't crowd
+	edit box.
+	(IDD_SPLASH): Change copyright displayed on spash screen to be generic
+	since the actual list of contributors is long.
+	(IDD_CHOOSE): Add checkbox.  Resize other controls to accomodate.
+	(IDD_PREREQ): New dialog.
+	(SPIN): Delete duplicated bitmap resource.
+	(IDB_RTARROW): Remove unused bitmap resource.
+	(IDB_TREE_PLUS): Add.
+	(IDB_TREE_MINUS): Ditto.
+	(IDS_TRUSTPREV_TOOLTIP): Revise wording to be more concise.
+	(IDS_TRUSTCURR_TOOLTIP): Ditto.
+	(IDS_TRUSTEXP_TOOLTIP): Ditto.
+	(IDS_VIEWBUTTON_TOOLTIP): Ditto.
+	* resource.h (IDD_PREREQ): Define.
+	(IDB_RTARROW): Remove.
+	(IDB_TREE_PLUS): Add, and renumber.
+	(IDB_TREE_MINUS): Ditto.
+	(IDC_SITE_USERURL): Define.
+	(IDC_CHOOSE_HIDE): Ditto.
+	(IDC_PREREQ_TEXT): Ditto.
+	(IDC_PREREQ_EDIT): Ditto.
+	(IDC_PREREQ_CHECK): Ditto.
+	* site.cc (SiteControlsInfo): Ensure that 'User URL' static text is
+	properly resized.
+
 2005-05-14  Max Bowsher  <maxb@ukf.net>
 
 	"Type" field of packageversions was not even being filled in. Fix.

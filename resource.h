@@ -53,14 +53,16 @@
 #define IDD_S_POSTINSTALL                 217
 #define IDD_VIRUS                         218
 #define IDD_DESKTOP                       219
+#define IDD_PREREQ                        220
 
 // Bitmaps
 
 #define IDB_SPIN                          300
-#define IDB_RTARROW                       301
-#define IDB_CHECK_YES                     302
-#define IDB_CHECK_NO                      303
-#define IDB_CHECK_NA                      304
+#define IDB_CHECK_YES                     301
+#define IDB_CHECK_NO                      302
+#define IDB_CHECK_NA                      303
+#define IDB_TREE_PLUS                     304
+#define IDB_TREE_MINUS                    305
 
 // icons
 
@@ -144,3 +146,8 @@
 #define IDC_SPLASH_TEXT                   571
 #define IDC_SPLASH_ICON                   572
 #define IDC_SPLASH_COPYR                  573
+#define IDC_SITE_USERURL                  574
+#define IDC_CHOOSE_HIDE                   575
+#define IDC_PREREQ_TEXT                   576
+#define IDC_PREREQ_EDIT                   577
+#define IDC_PREREQ_CHECK                  578

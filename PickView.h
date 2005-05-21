@@ -21,13 +21,12 @@
 #include "window.h"
 #include "RECTWrapper.h"
 
-#define HMARGIN 10
+#define HMARGIN         10
 #define ROW_MARGIN      5
 #define ICON_MARGIN     4
-#define RTARROW_WIDTH 11
-#define SPIN_WIDTH 11
-#define NEW_COL_SIZE_SLOP (ICON_MARGIN + SPIN_WIDTH + RTARROW_WIDTH)
+#define SPIN_WIDTH      11
 #define CHECK_SIZE      11
+#define TREE_INDENT     12
 
 #define CATEGORY_EXPANDED  0
 #define CATEGORY_COLLAPSED 1
@@ -44,13 +43,9 @@ public:
   class views;
   class Header;
   int num_columns;
-  views get_view_mode ()
-  {
-    return view_mode;
-  };
   void defaultTrust (trusts trust);
-  void set_view_mode (views _mode);
-  void setViewMode (PickView::views mode);
+  void cycleViewMode ();
+  void setViewMode (views mode);
   void paint (HWND hwnd);
   LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
   LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);
@@ -61,9 +56,9 @@ public:
   void init(views _mode);
   ~PickView();
   const char *mode_caption ();
+  void setObsolete (bool doit);
   void insert_pkg (packagemeta &);
   void insert_category (Category *, bool);
-  void clear_view (void);
   int click (int row, int x);
   void refresh();
   int current_col;
@@ -76,13 +71,13 @@ public:
   int row_height;
   TEXTMETRIC tm;
   HDC bitmap_dc;
-  HANDLE bm_spin,bm_rtarrow, bm_checkyes, bm_checkno, bm_checkna;
+  HANDLE bm_spin, bm_checkyes, bm_checkno, bm_checkna, bm_treeplus, bm_treeminus;
   trusts deftrust;
   HANDLE sysfont;
   int scroll_ulc_x, scroll_ulc_y;
   int header_height;
   PickCategoryLine contents;
-  void scroll (HWND hwnd, int which, int *var, int code);
+  void scroll (HWND hwnd, int which, int *var, int code, int howmany);
   HWND ListHeader (void) const
   {
     return listheader;
@@ -126,15 +121,16 @@ public:
   {
   public:
     const char *text;
-    int slen;
     int width;
     int x;
+    bool needs_clip;
   };
 
 private:
   static ATOM WindowClassAtom;
   HWND listheader;
   views view_mode;
+  bool showObsolete;
 
   // Stuff needed to handle resizing
   bool hasClientRect;
@@ -145,5 +141,8 @@ private:
   void note_width (Header *hdrs, HDC dc, String const &string, int addend,
       int column);
 };
+
+bool isObsolete (std::set <String, String::caseless> &categories);
+bool isObsolete (const String &catname);
 
 #endif /* SETUP_PICKVIEW_H */

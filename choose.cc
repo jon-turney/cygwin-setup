@@ -56,6 +56,7 @@ static const char *cvsid =
 #include "threebar.h"
 #include "Generic.h"
 #include "ControlAdjuster.h"
+#include "prereq.h"
 
 using namespace std;
 
@@ -73,6 +74,7 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
   {IDC_LISTVIEW_POS, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_VIEWCAPTION,	CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_LIST,		CP_STRETCH, CP_STRETCH},
+  {IDC_CHOOSE_HIDE,             CP_LEFT,    CP_BOTTOM},
   {0, CP_LEFT, CP_TOP}
 };
 
@@ -147,6 +149,8 @@ ChooserPage::getDefaultListViewSize()
 void
 ChooserPage::OnInit ()
 {
+  CheckDlgButton (GetHWND (), IDC_CHOOSE_HIDE, BST_CHECKED);
+
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_CWD)
     packagemeta::ScanDownloadedFiles ();
 
@@ -188,17 +192,26 @@ ChooserPage::OnNext ()
   logResults();
 #endif
 
-  if (source == IDC_SOURCE_CWD)
+  PrereqChecker p;
+  if (p.isMet ())
     {
-      // Next, install
-      Progress.SetActivateTask (WM_APP_START_INSTALL);
+      if (source == IDC_SOURCE_CWD)
+        {
+          // Next, install
+          Progress.SetActivateTask (WM_APP_START_INSTALL);
+        }
+      else
+        {
+          // Next, start download from internet
+          Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
+        }
+      return IDD_INSTATUS;
     }
   else
     {
-      // Next, start download from internet
-      Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
+      // rut-roh, some required things are not selected
+      return IDD_PREREQ;
     }
-  return IDD_INSTATUS;
 }
 
 long
@@ -232,6 +245,8 @@ ChooserPage::changeTrust(trusts aTrust)
   for_each (db.packages.begin (), db.packages.end (),
             bind2nd (mem_fun (&packagemeta::set_requirements), aTrust));
   chooser->refresh();
+  PrereqChecker p;
+  p.setTrust (aTrust);
 }
 
 bool
@@ -266,13 +281,16 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       break;
 
     case IDC_CHOOSE_VIEW:
-      chooser->setViewMode (++chooser->get_view_mode ());
+      chooser->cycleViewMode ();
       if (!SetDlgItemText
         (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
       log (LOG_BABBLE) << "Failed to set View button caption " << 
            GetLastError () << endLog;
       break;
       
+    case IDC_CHOOSE_HIDE:
+      chooser->setObsolete (!IsButtonChecked (id));
+      break;
     default:
       // Wasn't recognized or handled.
       return false;
@@ -280,4 +298,10 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 
   // Was handled since we never got to default above.
   return true;
+}
+
+BOOL CALLBACK
+ChooserPage::OnMouseWheel (UINT message, WPARAM wParam, LPARAM lParam)
+{
+  return chooser->WindowProc (message, wParam, lParam);
 }

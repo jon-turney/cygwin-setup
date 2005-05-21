@@ -53,6 +53,7 @@ static ControlAdjuster::ControlInfo SiteControlsInfo[] = {
   {IDC_URL_LIST, 		CP_STRETCH, CP_STRETCH},
   {IDC_EDIT_USER_URL,		CP_STRETCH, CP_BOTTOM},
   {IDC_BUTTON_ADD_URL,		CP_RIGHT,   CP_BOTTOM},
+  {IDC_SITE_USERURL,            CP_LEFT,    CP_BOTTOM},
   {0, CP_LEFT, CP_TOP}
 };
 

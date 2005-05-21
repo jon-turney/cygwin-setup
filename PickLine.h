@@ -22,7 +22,7 @@
 class PickLine
 {
 public:
-  virtual void paint (HDC hdc, int x, int y, int row, int show_cat) = 0;
+  virtual void paint (HDC hdc, HRGN hUpdRgn, int x, int y, int col_num, int show_cat) = 0;
   virtual int click (int const myrow, int const ClickedRow, int const x) = 0;
   virtual int set_action (packagemeta::_actions) = 0;
   virtual int itemcount () const = 0;

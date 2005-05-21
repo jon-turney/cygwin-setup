@@ -26,7 +26,8 @@ public:
   PickPackageLine (PickView &aView, packagemeta & apkg):PickLine (apkg.key), pkg (apkg), theView (aView)
   {
   };
-  virtual void paint (HDC hdc, int x, int y, int row, int show_cat);
+  void DrawIcon (HDC hdc, int x, int y, HANDLE hIcon);
+  virtual void paint (HDC hdc, HRGN unused, int x, int y, int col_num, int show_cat);
   virtual int click (int const myrow, int const ClickedRow, int const x);
   virtual int itemcount () const
   {
@@ -43,8 +44,6 @@ public:
 private:
   packagemeta & pkg;
   PickView & theView;
-  // XXX make checked an enum or tri-valued class of its own
-  void DrawCheck (int const checked, HDC hdc, int const column, HRGN const clip, int const x, int const by);
 };
 
 #endif /* SETUP_PICKPACKAGELINE_H */

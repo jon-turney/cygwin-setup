@@ -81,6 +81,8 @@ protected:
   
     virtual BOOL CALLBACK DialogProc (UINT message, WPARAM wParam,
 				      LPARAM lParam);
+    virtual BOOL CALLBACK OnMouseWheel (UINT message, WPARAM wParam,
+				      LPARAM lParam);
 
 public:
     PropertyPage ();

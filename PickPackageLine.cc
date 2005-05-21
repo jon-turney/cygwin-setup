@@ -19,145 +19,82 @@
 #include "package_version.h"
 
 void
-PickPackageLine::DrawCheck (int const checked, HDC hdc, int const column, HRGN const clip, int const x, int const by)
+PickPackageLine::DrawIcon (HDC hdc, int x, int y, HANDLE hIcon)
 {
-  HANDLE check_bm;
-  if (checked == 0)
-    check_bm = theView.bm_checkna;
-  else if (checked == 1)
-    check_bm = theView.bm_checkyes;
-  else if (checked == 2)
-    check_bm = theView.bm_checkno;
-  else
-    return;
-  
-  SelectObject (theView.bitmap_dc, check_bm);
-  IntersectClipRect (hdc, x + theView.headers[column].x, by,
-		    x + theView.headers[column].x +
-		    theView.headers[column].width, by + 11);
-  BitBlt (hdc, x + theView.headers[column].x + HMARGIN / 2, by, 11,
-	  11, theView.bitmap_dc, 0, 0, SRCCOPY);
-  SelectClipRgn (hdc, clip);
+  SelectObject (theView.bitmap_dc, hIcon);
+  BitBlt (hdc, x, y, 11, 11, theView.bitmap_dc, 0, 0, SRCCOPY);
 }
 
 void
-PickPackageLine::paint (HDC hdc, int x, int y, int row, int show_cat)
+PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int show_cat)
 {
-  int r = y + row * theView.row_height;
-  int rb = r + theView.tm.tmHeight;
+  int rb = y + theView.tm.tmHeight;
   int by = rb - 11; // top of box images
-  int oldDC = SaveDC (hdc);
-  if (!oldDC)
-    return;
-  HRGN oldClip = CreateRectRgn (0, 0, 0, 0);
-  if (GetRandomRgn (hdc, oldClip, SYSRGN) == -1)
+  String s;
+
+  if (col_num == theView.current_col && pkg.installed)
     {
-      RestoreDC (hdc, oldDC);
-      return;
-    }
-  HRGN oldClip2;
-  if (IsWindowsNT()) {
-				  
-  unsigned int regionsize = GetRegionData (oldClip, 0, 0);
-  LPRGNDATA oldClipData = (LPRGNDATA) malloc (regionsize);
-  if (GetRegionData (oldClip, regionsize, oldClipData) > regionsize)
+      TextOut (hdc, x + HMARGIN/2, y, pkg.installed.Canonical_version ().c_str(),
+               pkg.installed.Canonical_version ().size());
+    }      
+  else if (col_num == theView.new_col)
     {
-      RestoreDC (hdc, oldDC);
-      DeleteObject (oldClip);
-      return;
+      // TextOut (hdc, x + HMARGIN/2 + NEW_COL_SIZE_SLOP, y, s.c_str(), s.size());
+      // DrawIcon (hdc, x + HMARGIN/2 + ICON_MARGIN/2 + RTARROW_WIDTH, by, theView.bm_spin);
+      TextOut (hdc, x + HMARGIN/2 + ICON_MARGIN/2 + SPIN_WIDTH , y, 
+            pkg.action_caption ().c_str(), pkg.action_caption ().size());
+      DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_spin);
     }
-  for (unsigned int n = 0; n < oldClipData->rdh.nCount; n++)
-    for (unsigned int t = 0; t < 2; t++)
-      ScreenToClient (WindowFromDC (hdc),
-		      &((POINT *) oldClipData->Buffer)[t + n * 2]);
-
-  oldClip2 = ExtCreateRegion (NULL, regionsize, oldClipData);
-			      }
-  else 
-    oldClip2 = oldClip;  
-  
-  SelectClipRgn (hdc, oldClip2);
-  if (pkg.installed)
+  else if (col_num == theView.bintick_col)
     {
-      IntersectClipRect (hdc, x + theView.headers[theView.current_col].x,
-			 r,
-			 x + theView.headers[theView.current_col].x +
-			 theView.headers[theView.current_col].width, rb);
-      TextOut (hdc,
-	       x + theView.headers[theView.current_col].x + HMARGIN / 2, r,
-	       pkg.installed.Canonical_version ().c_str(),
-	       pkg.installed.Canonical_version ().size());
-      SelectObject (theView.bitmap_dc, theView.bm_rtarrow);
-      BitBlt (hdc, x + theView.headers[theView.new_col].x + HMARGIN / 2,
-	      by, 11, 11, theView.bitmap_dc, 0, 0, SRCCOPY);
-      SelectClipRgn (hdc, oldClip2);
+      if (/* uninstall or skip */ !pkg.desired ||
+          /* current version */ pkg.desired == pkg.installed ||
+          /* no source */ !pkg.desired.accessible())
+        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkna);
+      else if (pkg.desired.picked())
+        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkyes);
+      else
+        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkno);
     }
-
-  String s = pkg.action_caption ();
-  IntersectClipRect (hdc, x + theView.headers[theView.new_col].x,
-		     r,
-		     x + theView.headers[theView.new_col].x +
-		     theView.headers[theView.new_col].width, rb);
-  TextOut (hdc,
-	   x + theView.headers[theView.new_col].x + HMARGIN / 2 +
-	   NEW_COL_SIZE_SLOP, r, s.c_str(), s.size());
-  SelectObject (theView.bitmap_dc, theView.bm_spin);
-  BitBlt (hdc,
-	  x + theView.headers[theView.new_col].x + ICON_MARGIN / 2 +
-	  RTARROW_WIDTH + HMARGIN / 2, by, 11, 11, theView.bitmap_dc, 0, 0,
-	  SRCCOPY);
-  SelectClipRgn (hdc, oldClip2);
-
-  int checked;
-
-  if (/* uninstall or skip */ !pkg.desired ||
-      /* current version */ pkg.desired == pkg.installed ||
-      /* no source */ !pkg.desired.accessible())
-    checked = 0;
-  else if (pkg.desired.picked())
-    checked = 1;
-  else
-    checked = 2;
-      
-  DrawCheck (checked, hdc, theView.bintick_col, oldClip2, x, by);
-  
-  if ( /* uninstall */ !pkg.desired ||
-      /* source only */ (!pkg.desired.picked()
-			 && pkg.desired.sourcePackage().picked() && pkg.desired == pkg.installed) ||
-      /* when no source mirror available */
-      !pkg.desired.sourcePackage().accessible())
-    checked = 0;
-  else if (pkg.desired.sourcePackage().picked())
-    checked = 1;
-  else
-    checked = 2;
-
-  DrawCheck (checked, hdc, theView.srctick_col, oldClip2, x, by);
-
-  /* shows "first" category - do we want to show any? */
-  if (pkg.categories.size () && show_cat)
+  else if (col_num == theView.srctick_col)
     {
-      String catName = pkg.getReadableCategoryList();
-      IntersectClipRect (hdc, x + theView.headers[theView.cat_col].x, r,
-			 x + theView.headers[theView.cat_col].x +
-			 theView.headers[theView.cat_col].width - HMARGIN / 2, rb);
-      TextOut (hdc, x + theView.headers[theView.cat_col].x + HMARGIN / 2, r,
-	       catName.c_str(),
-	       catName.size());
-      SelectClipRgn (hdc, oldClip2);
-    }
+      if ( /* uninstall */ !pkg.desired ||
 
-  s = pkg.name;
-  if (pkg.SDesc ().size())
-    s += String(": ") + pkg.SDesc ();
-  IntersectClipRect (hdc, x + theView.headers[theView.pkg_col].x, r,
-		     x + theView.headers[theView.pkg_col].x +
-		     theView.headers[theView.pkg_col].width, rb);
-  TextOut (hdc, x + theView.headers[theView.pkg_col].x + HMARGIN / 2, r, s.c_str(),
-	   s.size());
-  DeleteObject (oldClip);
-  DeleteObject (oldClip2);
-  RestoreDC (hdc, oldDC);
+#if 0
+          /* note: I'm not sure what the logic here is.  With this following
+             check enabled, clicking on the "source" box for a package that
+             is already installed results it in showing "n/a", instead of a
+             cross-box.  That seems very unintuitive, it should show a cross-
+             box to indicate that the source is going to be downloaded and
+             unpacked.  Disabling this, but leaving the code as reference
+             in case there is some reason I'm missing for having it. --b.d.  */
+          /* source only */ (!pkg.desired.picked()
+    			 && pkg.desired.sourcePackage().picked() && pkg.desired == pkg.installed) ||
+#endif
+          /* when no source mirror available */
+          !pkg.desired.sourcePackage().accessible())
+        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkna);
+      else if (pkg.desired.sourcePackage().picked())
+        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkyes);
+      else
+        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkno);   
+    }
+  else if (col_num == theView.cat_col)
+    {
+      /* shows "first" category - do we want to show any? */
+      if (pkg.categories.size () && show_cat)
+        {
+          s = pkg.getReadableCategoryList();
+          TextOut (hdc, x + HMARGIN / 2, y, s.c_str(), s.size());
+        }
+    }
+  else if (col_num == theView.pkg_col)
+    {
+      s = pkg.name;
+      if (pkg.SDesc ().size())
+        s += String(": ") + pkg.SDesc ();
+      TextOut (hdc, x + HMARGIN / 2, y, s.c_str(), s.size());
+    }
 }
 
 int

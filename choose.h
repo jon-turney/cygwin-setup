@@ -31,6 +31,8 @@ public:
   };
 
   virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code);
+  virtual BOOL CALLBACK OnMouseWheel (UINT message, WPARAM wParam,
+				      LPARAM lParam);
 
   bool Create ();
   virtual void OnInit ();

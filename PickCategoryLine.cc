@@ -29,41 +29,80 @@ PickCategoryLine::empty (void)
 }
 
 void
-PickCategoryLine::paint (HDC hdc, int x, int y, int row, int show_cat)
+PickCategoryLine::paint (HDC hdc, HRGN hUpdRgn, int x, int y, int row, int show_cat)
 {
   int r = y + row * theView.row_height;
   if (show_label)
     {
-      int by = r + theView.tm.tmHeight - 11;
-      String temp=(String("+ ") +cat.first);
-      TextOut (hdc,
-	       x + theView.headers[theView.cat_col].x + HMARGIN / 2 +
-	       depth * 8, r, temp.c_str(), temp.size());
+      int x2 = x + theView.headers[theView.cat_col].x + HMARGIN / 2 + depth * TREE_INDENT;
+      int by = r + (theView.tm.tmHeight / 2) - 5;
+
+      // draw the '+' or '-' box
+      SelectObject (theView.bitmap_dc, 
+                      (collapsed ? theView.bm_treeplus : theView.bm_treeminus));
+      BitBlt (hdc, x2, by, 11, 11, theView.bitmap_dc, 0, 0, SRCCOPY);
+
+      // draw the category name
+      TextOut (hdc, x2 + 11 + ICON_MARGIN, r, cat.first.c_str(), cat.first.size());
       if (!labellength)
 	{
 	  SIZE s;
-	  GetTextExtentPoint32 (hdc, temp.c_str(), temp.size(), &s);
+	  GetTextExtentPoint32 (hdc, cat.first.c_str(), cat.first.size(), &s);
 	  labellength = s.cx;
 	}
+      
+      // draw the 'spin' glyph
       SelectObject (theView.bitmap_dc, theView.bm_spin);
-      BitBlt (hdc,
-	      x + theView.headers[theView.cat_col].x +
-	      labellength + depth * 8 +
-	      ICON_MARGIN +
-	      HMARGIN / 2, by, 11, 11, theView.bitmap_dc, 0, 0, SRCCOPY);
-      TextOut (hdc,
-	       x + theView.headers[theView.cat_col].x +
-	       labellength + depth * 8 +
-	       ICON_MARGIN + SPIN_WIDTH +
-	       HMARGIN, r, current_default.caption (), strlen (current_default.caption ()));
+      spin_x = x2 + 11 + ICON_MARGIN + labellength + ICON_MARGIN;
+      BitBlt (hdc, spin_x, by, 11, 11, theView.bitmap_dc, 0, 0, SRCCOPY);
+      
+      // draw the caption ('Default', 'Install', etc)
+      TextOut (hdc, spin_x + SPIN_WIDTH + ICON_MARGIN, r, 
+               current_default.caption (), strlen (current_default.caption ()));
+      row++;
     }
   if (collapsed)
     return;
-  int accum_row = row + (show_label ? 1 : 0);
-  for (size_t n = 0; n < bucket.size (); ++n)
+  
+  // are the siblings containers?
+  if (bucket.size () && bucket[0]->IsContainer ())
     {
-      bucket[n]->paint (hdc, x, y, accum_row, show_cat);
-      accum_row += bucket[n]->itemcount ();
+      for (size_t n = 0; n < bucket.size (); n++)
+        {
+          bucket[n]->paint (hdc, hUpdRgn, x, y, row, show_cat);
+          row += bucket[n]->itemcount ();
+        }
+    }
+  else
+    {
+      // calculate the maximum y value we expect for this group of lines
+      int max_y = y + (row + bucket.size ()) * theView.row_height;
+    
+      // paint all contained rows, columnwise
+      for (int i = 0; theView.headers[i].text; i++)
+        {
+          RECT r;
+          r.left = x + theView.headers[i].x;
+          r.right = r.left + theView.headers[i].width;
+    
+          // set up a clipping mask if necessary
+          if (theView.headers[i].needs_clip)
+            IntersectClipRect (hdc, r.left, y, r.right, max_y);
+    
+          // draw each row in this column
+          for (unsigned int n = 0; n < bucket.size (); n++)
+            {
+              // test for visibility
+              r.top = y + ((row + n) * theView.row_height);
+              r.bottom = r.top + theView.row_height;      
+              if (RectVisible (hdc, &r) != 0)
+                bucket[n]->paint (hdc, hUpdRgn, (int)r.left, (int)r.top, i, show_cat);
+            }
+    
+          // restore original clipping area
+          if (theView.headers[i].needs_clip)
+            SelectClipRgn (hdc, hUpdRgn);
+        }
     }
 }
 
@@ -72,8 +111,7 @@ PickCategoryLine::click (int const myrow, int const ClickedRow, int const x)
 {
   if (myrow == ClickedRow && show_label)
     {
-      if ((size_t) x >= theView.headers[theView.cat_col].x +
-	  labellength + depth * 8 + ICON_MARGIN + HMARGIN / 2)
+      if ((size_t) x >= spin_x)
 	{
 	  ++current_default;
 	  

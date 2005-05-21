@@ -57,6 +57,7 @@ static const char *cvsid =
 #include "net.h"
 #include "site.h"
 #include "choose.h"
+#include "prereq.h"
 #include "threebar.h"
 #include "desktop.h"
 
@@ -461,6 +462,7 @@ main (int argc, char **argv)
     NetPage Net;
     SitePage Site;
     ChooserPage Chooser;
+    PrereqPage Prereq;
     DesktopSetupPage Desktop;
     PropSheet MainWindow;
 
@@ -494,6 +496,7 @@ main (int argc, char **argv)
     Net.Create ();
     Site.Create ();
     Chooser.Create ();
+    Prereq.Create ();
     Progress.Create ();
     Desktop.Create ();
 
@@ -506,6 +509,7 @@ main (int argc, char **argv)
     MainWindow.AddPage (&Net);
     MainWindow.AddPage (&Site);
     MainWindow.AddPage (&Chooser);
+    MainWindow.AddPage (&Prereq);
     MainWindow.AddPage (&Progress);
     MainWindow.AddPage (&Desktop);
 
