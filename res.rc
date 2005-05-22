@@ -324,8 +324,8 @@ BEGIN
                     317,1
     CONTROL         "",IDC_LISTVIEW_POS,"Static",SS_BLACKFRAME | NOT 
                     WS_VISIBLE,7,45,303,122
-    CONTROL         "&Hide obsolete packages",IDC_CHOOSE_HIDE,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,7,167,100,14
+    CONTROL         "&Hide obsolete and administrative packages",IDC_CHOOSE_HIDE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,167,160,14
     ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
     LTEXT           "Select the packages you want setup to install.",
                     IDC_CHOOSE_INST_TEXT,21,9,239,16,NOT WS_GROUP

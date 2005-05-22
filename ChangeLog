@@ -1,3 +1,8 @@
+2005-05-22  Brian Dessent  <brian@dessent.net>
+
+	* res.rc (IDD_CHOOSE): Change description to include administrative
+	packages in addition to obsolete.
+
 2005-05-21  Brian Dessent  <brian@dessent.net>
 
 	* prereq.cc: New file.
