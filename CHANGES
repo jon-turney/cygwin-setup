@@ -1,3 +1,33 @@
+Version 2.5xx
+
+ - Display only valid URL schemes in the mirrors list.
+
+ - Remember proxy port setting.
+
+ - Fix dependency calculation bug.
+
+ - Enable support for XP themes.
+
+ - Significant improvements to many pages.
+
+ - Added explanations of various things, both in-dialog, and as tooltips.
+
+ - Remove the --no-md5 (-5) command line option - the cache is now never 
+   fully MD5-ed, as to do so takes far too long, and packages will be checked
+   before installation anyway.
+
+ - Make the MD5 checks immediately prior to installing packages actually
+   display notification in the GUI.
+
+ - Re-order actions, eliminating most if not all of the "cannot find DLL"
+   errors whilst running preremove scripts.
+
+ - Fix unpacking of hardlinks in source packages.
+
+ - Huge overhaul of dependency handling.
+
+ - Mouse wheel support in the package chooser.
+
 Version 2.457.2.2
 
  - Set CYGWIN=nontsec, for postinstall scripts.
