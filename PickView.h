@@ -66,6 +66,7 @@ public:
   int bintick_col;
   int srctick_col;
   int cat_col;
+  int size_col;
   int pkg_col;
   int last_col;
   int row_height;

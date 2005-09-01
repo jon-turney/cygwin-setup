@@ -88,6 +88,35 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
           TextOut (hdc, x + HMARGIN / 2, y, s.c_str(), s.size());
         }
     }
+  else if (col_num == theView.size_col)
+    {
+      int sz = 0;
+      packageversion picked;
+
+      /* Find the size of the package.  If user has chosen to upgrade/downgrade
+         the package, use that version.  Otherwise use the currently installed
+         version, or if not installed then use the version that would be chosen
+         based on the current trust level (curr/prev/test).  */
+      if (pkg.desired)
+        picked = pkg.desired;
+      else if (pkg.installed)
+        picked = pkg.installed;
+      else
+        picked = pkg.trustp (theView.deftrust);
+
+      /* Include the size of the binary package, and if selected, the source
+         package as well.  */
+      sz += picked.source()->size;
+      if (picked.sourcePackage().picked())
+        sz += picked.sourcePackage().source()->size;
+
+      /* If size still 0, size must be unknown.  */
+      s = (sz == 0) ? "?" : format_1000s((sz+1023)/1024) + "k";
+      SIZE tw;
+      GetTextExtentPoint32 (hdc, s.c_str(), s.size(), &tw);
+      int cw = theView.headers[col_num].width - HMARGIN - tw.cx;
+      TextOut (hdc, x + cw + HMARGIN / 2, y, s.c_str(), s.size());
+    }
   else if (col_num == theView.pkg_col)
     {
       s = pkg.name;

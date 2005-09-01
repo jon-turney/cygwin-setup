@@ -115,4 +115,7 @@ char *new_cstr_char_array (const String &s);
    bar", "TOSTRING(foo)", to yield "bar". */
 #define TOSTRING(X) __TOSTRING__(X)
 
+String
+format_1000s(const int num, char sep = ',');
+
 #endif /* SETUP_STRING___H */

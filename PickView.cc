@@ -34,6 +34,7 @@ static PickView::Header pkg_headers[] = {
   {"Bin?", 0, 0, false},
   {"Src?", 0, 0, false},
   {"Categories", 0, 0, true},
+  {"Size", 0, 0, true},
   {"Package", 0, 0, true},
   {0, 0, 0, false}
 };
@@ -44,6 +45,7 @@ static PickView::Header cat_headers[] = {
   {"New", 0, 0, true},
   {"Bin?", 0, 0, false},
   {"Src?", 0, 0, false},
+  {"Size", 0, 0, true},
   {"Package", 0, 0, true},
   {0, 0, 0, false}
 };
@@ -98,7 +100,8 @@ PickView::set_headers ()
       bintick_col = new_col + 1;
       srctick_col = bintick_col + 1;
       cat_col = srctick_col + 1;
-      pkg_col = cat_col + 1;
+      size_col = cat_col + 1;
+      pkg_col = size_col + 1;
       last_col = pkg_col;
     }
   else if (view_mode == views::Category)
@@ -109,7 +112,8 @@ PickView::set_headers ()
       bintick_col = new_col + 1;
       srctick_col = bintick_col + 1;
       cat_col = 0;
-      pkg_col = srctick_col + 1;
+      size_col = srctick_col + 1;
+      pkg_col = size_col + 1;
       last_col = pkg_col;
     }
   else
@@ -443,9 +447,15 @@ PickView::init_headers (HDC dc)
                     HMARGIN, current_col);
       for (set<packageversion>::iterator i = pkg.versions.begin ();
 	   i != pkg.versions.end (); ++i)
-        if (*i != pkg.installed)
-          note_width (headers, dc, i->Canonical_version (), 
-                      HMARGIN + SPIN_WIDTH, new_col);
+	{
+          if (*i != pkg.installed)
+            note_width (headers, dc, i->Canonical_version (),
+                        HMARGIN + SPIN_WIDTH, new_col);
+	  String z = format_1000s(packageversion(*i).source ()->size);
+	  note_width (headers, dc, z, HMARGIN, size_col);
+	  z = format_1000s(packageversion(i->sourcePackage ()).source ()->size);
+	  note_width (headers, dc, z, HMARGIN, size_col);
+	}
       String s = pkg.name;
       if (pkg.SDesc ().size())
 	s += String (": ") + pkg.SDesc ();

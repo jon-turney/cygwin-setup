@@ -304,3 +304,23 @@ operator << (ostream &os, String const &theString)
   os << theString.c_str();
   return os;
 }
+
+String
+format_1000s(const int num, char sep)
+{
+  int mult = 1;
+  while (mult * 1000 < num)
+    mult *= 1000;
+  ostringstream os;
+  os << ((num / mult) % 1000);
+  for (mult /= 1000; mult > 0; mult /= 1000)
+    {
+      int triplet = (num / mult) % 1000;
+      os << sep;
+      if (triplet < 100) os << '0';
+      if (triplet < 10) os << '0';
+      os << triplet;
+    }
+  return String(os.str());
+}
+
