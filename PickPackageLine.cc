@@ -36,12 +36,12 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
     {
       TextOut (hdc, x + HMARGIN/2, y, pkg.installed.Canonical_version ().c_str(),
                pkg.installed.Canonical_version ().size());
-    }      
+    }
   else if (col_num == theView.new_col)
     {
       // TextOut (hdc, x + HMARGIN/2 + NEW_COL_SIZE_SLOP, y, s.c_str(), s.size());
       // DrawIcon (hdc, x + HMARGIN/2 + ICON_MARGIN/2 + RTARROW_WIDTH, by, theView.bm_spin);
-      TextOut (hdc, x + HMARGIN/2 + ICON_MARGIN/2 + SPIN_WIDTH , y, 
+      TextOut (hdc, x + HMARGIN/2 + ICON_MARGIN/2 + SPIN_WIDTH , y,
             pkg.action_caption ().c_str(), pkg.action_caption ().size());
       DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_spin);
     }
@@ -77,7 +77,7 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
       else if (pkg.desired.sourcePackage().picked())
         DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkyes);
       else
-        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkno);   
+        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkno);
     }
   else if (col_num == theView.cat_col)
     {
@@ -142,7 +142,7 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
   if (x >= theView.headers[theView.new_col].x - HMARGIN / 2
       && x <= theView.headers[theView.new_col + 1].x - HMARGIN / 2)
     pkg.set_action (pkg.trustp(theView.deftrust));
-  
+
   packagedb().markUnVisited();
   /* Add any packages that are needed by this package */
   /* TODO: This hardcoded TRUST_CURR does not seem right. */
