@@ -38,8 +38,8 @@ static const char *cmd = 0;
 static OSVERSIONINFO verinfo;
 
 static const char *shells[] = {
-  "/bin/sh.exe",
-  "/usr/bin/sh.exe",
+  // Bash is guaranteed to exist, /bin/sh is not.  Besides,
+  // upgrading /bin/sh requires that /bin/sh not be used.
   "/bin/bash.exe",
   "/usr/bin/bash.exe",
   0
@@ -158,14 +158,16 @@ OutputLog::out_to(std::ostream &out)
   SetFilePointer(_handle, 0, NULL, FILE_END);
 }
 
-static void
+static int
 run (const char *sh, const char *args, const char *file, OutputLog &file_out)
 {
   char cmdline[MAX_PATH];
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
   DWORD flags = CREATE_NEW_CONSOLE;
+  DWORD exitCode = 0;
   BOOL inheritHandles = FALSE;
+  BOOL exitCodeValid = FALSE;
 
   sprintf (cmdline, "%s %s %s", sh, args, file);
   memset (&pi, 0, sizeof (pi));
@@ -191,9 +193,15 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
 					&si, &pi);
 
   if (createSucceeded)
-    WaitForSingleObject (pi.hProcess, INFINITE);
+    {
+      WaitForSingleObject (pi.hProcess, INFINITE);
+      exitCodeValid = GetExitCodeProcess(pi.hProcess, &exitCode);
+    }
   CloseHandle(pi.hProcess);
   CloseHandle(pi.hThread);
+  if (exitCodeValid)
+    return exitCode;
+  return -GetLastError();
 }
 
 char const *
@@ -202,14 +210,15 @@ Script::extension() const
   return strrchr (scriptName.c_str(), '.');
 }
 
-void
+int
 Script::run() const
 {
   if (!extension())
-    return;
+    return -ERROR_INVALID_DATA;
 
   BOOL to_log (TRUE);
   String log_name = "";
+  int retval = 0;
   if (to_log)
     {
       char tmp_pat[] = "/var/log/setup.log.postinstallXXXXXXX";
@@ -220,34 +229,38 @@ Script::run() const
   if (sh.size() && strcmp (extension(), ".sh") == 0)
     {
       log(LOG_PLAIN) << "running: " << sh << " -c " << scriptName << endLog;
-      ::run (sh.c_str(), "-c", scriptName.c_str(), file_out);
+      retval = ::run (sh.c_str(), "-c", scriptName.c_str(), file_out);
     }
   else if (cmd && strcmp (extension(), ".bat") == 0)
     {
       String windowsName = backslash (cygpath (scriptName));
       log(LOG_PLAIN) << "running: " << cmd << " /c " << windowsName << endLog;
-      ::run (cmd, "/c", windowsName.c_str(), file_out);
+      retval = ::run (cmd, "/c", windowsName.c_str(), file_out);
     }
   else
-    return;
+    return -ERROR_INVALID_DATA;
 
   if (to_log && !file_out.isEmpty ())
     log(LOG_BABBLE) << file_out << endLog;
+
+  if (!retval)
+    log(LOG_PLAIN) << "abnormal exit: exit code=" << retval << endLog;;
 
   /* if file exists then delete it otherwise just ignore no file error */
   io_stream::remove (String ("cygfile://") + scriptName + ".done");
 
   io_stream::move (String ("cygfile://") + scriptName,
                    String ("cygfile://") + scriptName + ".done");
+
+  return retval;
 }
 
-void
-try_run_script (String const &dir, String const &fname)
+int
+try_run_script (String const &dir, String const &fname, String const &ext)
 {
-  if (io_stream::exists (String ("cygfile://")+ dir + fname + ".sh"))
-    Script (dir + fname+ ".sh").run ();
-  if (io_stream::exists (String ("cygfile://")+ dir + fname + ".bat"))
-    Script (dir + fname+ ".bat").run ();
+  if (io_stream::exists (String ("cygfile://") + dir + fname + ext))
+    return Script (dir + fname + ext).run ();
+  return NO_ERROR;
 }
 
 char const Script::ETCPostinstall[] = "/etc/postinstall/";

@@ -201,7 +201,6 @@ packagemeta::uninstall ()
         if (RemoveDirectory (d.c_str()))
           log (LOG_BABBLE) << "rmdir " << d << endLog;
       }
-      try_run_script ("/etc/postremove/", name);
     }
   installed = packageversion();
 }

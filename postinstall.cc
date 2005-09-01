@@ -59,7 +59,7 @@ private:
   vector<Script> *_scripts;
 };
 
-class RunScript : public unary_function<Script const &, void>
+class RunScript : public unary_function<Script const &, int>
 {
 public:
   RunScript(String const &name, int num) : _num(num), _cnt(0)
@@ -71,12 +71,14 @@ public:
     {
       Progress.SetText3 ("");
     }
-  void operator() (Script const &aScript) 
+  int operator() (Script const &aScript) 
     {
+      int retval;
       Progress.SetText3 (aScript.fullName().c_str());
-      aScript.run();
+      retval = aScript.run();
       ++_cnt;
       Progress.SetBar1 (_cnt, _num);
+      return retval;
     }
 private:
   int _num;

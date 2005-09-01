@@ -1,3 +1,26 @@
+2005-09-01  Brian Dessent  <brian@dessent.net>
+
+	* package_meta.cc (packagemeta::uninstall): Remove support for
+	undocumented and dangerous postremove script.
+
+2005-09-01  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
+	* script.cc (run): Change to return the exit code or negative error.
+	(Script::run): Ditto.
+	(try_run_script): Receive both filename and extension and run only
+	one script.  Also return the exit code.
+	* script.h (try_run_script): Change signature.
+	(Script::run): Ditto.
+	* postinstall.cc (RunScript::operator()): Change to return the exit
+	code or negative error.
+	* install.cc (Installer::preremoveOne): Pass extension to
+	try_run_script().
+
+2005-09-01  Eric Blake  <ebb9@byu.net>
+
+	* script.cc (shells): Use /bin/bash, not sh, to allow upgrades to
+	/bin/sh.
+
 2005-09-01  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
 	* PickView.h (PickView::size_col): New instance variable.

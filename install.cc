@@ -143,7 +143,8 @@ Installer::preremoveOne (packagemeta & pkg)
   Progress.SetText1 ("Running preremove script...");
   Progress.SetText2 (pkg.name.c_str());
   log (LOG_PLAIN) << "Running preremove script for  " << pkg.name << endLog;
-  try_run_script ("/etc/preremove/", pkg.name);
+  try_run_script ("/etc/preremove/", pkg.name, ".sh");
+  try_run_script ("/etc/preremove/", pkg.name, ".bat");
 }
 
 void

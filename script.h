@@ -20,8 +20,9 @@
 /* Initialisation stuff for run_script: sh, cmd, CYGWINROOT and PATH */
 void init_run_script ();
 
-/* Run the scripts fname.sh and fname.bat, found in dir. */
-void try_run_script (String const &dir, String const &fname);
+/* Run the script named dir/fname.ext
+   Returns the script exit status or negative error if any.  */
+int try_run_script (String const &dir, String const &fname, String const &ext);
 
 class Script {
 public:
@@ -29,10 +30,11 @@ public:
   Script (String const &fileName);
   String baseName() const;
   String fullName() const;
-/* Run the script.  If it it's suffix is .sh, and
-   we have a Bourne shell, execute it using sh.  Otherwise, if the 
-   suffix is .bat, execute using cmd */
-  void run() const;
+/* Run the script.  If its suffix is .sh, and we have a Bourne shell, execute
+   it using sh.  Otherwise, if the suffix is .bat, execute using cmd.exe (NT)
+   or command.com (9x).  Returns the exit status of the process, or 
+   negative error if any.  */
+  int run() const;
 private:
   String scriptName;
   static char const ETCPostinstall[];
