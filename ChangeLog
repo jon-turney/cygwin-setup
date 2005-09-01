@@ -1,3 +1,8 @@
+2005-09-01  Brian Dessent  <brian@dessent.net>
+
+	* Makefile.am (BASECXXFLAGS): Add -Wno-uninitialized to work around
+	spurious warnings with gcc 3.4.4.
+
 2005-05-22  Brian Dessent  <brian@dessent.net>
 
 	* res.rc (IDD_CHOOSE): Change description to include administrative

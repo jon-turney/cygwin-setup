@@ -1,3 +1,8 @@
+2005-09-01  Brian Dessent  <brian@dessent.net>
+
+	* Makefile.am (AM_CXXFLAGS): Add -Wno-uninitialized to work around
+	spurious warnings with gcc 3.4.4.
+
 2005-05-05  Max Bowsher  <maxb@ukf.net>
 
 	* Makefile.am (EXTRA_DIST): Add bootstrap.sh.
