@@ -1,32 +1,70 @@
+Note: For easier maintenance try to keep items in reverse chronological
+      order of when they were committed.  -- briand
+
+
 Version 2.5xx
 
- - Display only valid URL schemes in the mirrors list.
+ - Retrieve exit status of preremove/postinstall scripts.  Log abnormal exits.
 
- - Remember proxy port setting.
+ - Use /bin/bash rather than /bin/sh when running preremove/postinstall scripts
+   to facilitate upgrading /bin/sh.
 
- - Fix dependency calculation bug.
+ - Remove support for undocumented and dangerous postremove scripts.
 
- - Enable support for XP themes.
+ - Add new "Size" column to package chooser.
 
- - Significant improvements to many pages.
+ - Perform explicit dependency checking when the user finishes with the
+   package selection step, and if any missing dependencies are found prompt
+   to resolve the conflicts.
 
- - Added explanations of various things, both in-dialog, and as tooltips.
+ - Checkbox option to hide packages in category ZZZRemovedPackages or any
+   category that begins with '_'.  (Note: ZZZRemovedPackages has now been
+   renamed to _obsolete on the mirrors.)  Packages in these categories are
+   either empty placeholder packages that have been renamed/removed, or are
+   infrastructure packages like 'update-info-dir' and are not generally useful
+   to the end user.
 
- - Remove the --no-md5 (-5) command line option - the cache is now never 
+ - Support mouse wheel scrolling in the package chooser.
+
+ - Use graphical "+" and "-" symbols in category mode of the package chooser.
+
+ - Improve painting method for the package chooser to improve redraw speed and
+   prevent sluggish scrolling.
+
+ - Fix unpacking of hardlinks in source packages.
+
+ - Change ordering of uninstall actions so that all preremove scripts are
+   executed prior to deleting files.  Fixes problem with "cannot find DLL"
+   popup error messages during preremove scripts when lots of packages are
+   upgraded at once.
+
+ - Remove the --no-md5 (-5) command line option - the cache is now never
    fully MD5-ed, as to do so takes far too long, and packages will be checked
    before installation anyway.
 
  - Make the MD5 checks immediately prior to installing packages actually
    display notification in the GUI.
 
- - Re-order actions, eliminating most if not all of the "cannot find DLL"
-   errors whilst running preremove scripts.
+ - Add support for tooltips that appear when the mouse pointer hovers
+   over controls.
 
- - Fix unpacking of hardlinks in source packages.
+ - Add text to dialogs recommending Binary mode and "All users".  Add clickable
+   hyperlinks to the appropriate sections of the online Users Guide.
 
- - Huge overhaul of dependency handling.
+ - Fix some dialog elements that were not resized properly when the window was
+   resized.
 
- - Mouse wheel support in the package chooser.
+ - Include manifest, resulting in support for XP themes.
+
+ - Remember proxy port setting.
+
+ - Fix dependency calculation bug when switching between Curr/Prev/Exp radio
+   buttons.
+
+ - Fix crash on encountering a postinstall script with a name of 4
+   characters or less.
+
+ - Display only valid URL schemes in the mirrors list.
 
 Version 2.457.2.2
 
