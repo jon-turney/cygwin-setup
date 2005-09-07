@@ -1,3 +1,7 @@
+2005-09-07  Brian Dessent  <brian@dessent.net>
+
+	Create setup-200509 branch in preparation for release.
+
 2005-09-01  Brian Dessent  <brian@dessent.net>
 
 	* package_meta.cc (packagemeta::uninstall): Remove support for
