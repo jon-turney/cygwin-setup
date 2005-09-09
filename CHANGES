@@ -1,8 +1,22 @@
 Note: For easier maintenance try to keep items in reverse chronological
       order of when they were committed.  -- briand
 
+Version 2.5xx (HEAD)
 
-Version 2.5xx
+ - Change checkbox label to "Hide obsolete packages" and add tooltip that
+   explains in more detail what it does.
+
+ - Set tooltip timeout delay to 30 seconds.
+
+ - Fix problem of text and icons using white background instead of user's
+   selected color.
+
+Version 2.510.2.2
+
+ - Recompile with gcc 3.3.3 as workaround until the STL crashes are
+   investigated.
+
+Version 2.510.2.1
 
  - Retrieve exit status of preremove/postinstall scripts.  Log abnormal exits.
 

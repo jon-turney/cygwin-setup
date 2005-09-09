@@ -30,6 +30,7 @@
 #define IDS_TRUSTCURR_TOOLTIP             127
 #define IDS_TRUSTEXP_TOOLTIP              128
 #define IDS_VIEWBUTTON_TOOLTIP            129
+#define IDS_HIDEOBS_TOOLTIP               130
 
 // Dialogs
 

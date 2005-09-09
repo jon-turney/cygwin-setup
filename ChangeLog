@@ -1,3 +1,13 @@
+2005-09-09  Brian Dessent  <brian@dessent.net>
+
+	* CHANGES: Document recent updates.
+	* choose.cc (ChooserPage::OnInit): Add new tooltip.
+	* res.rc (IDD_CHOOSE): Remove 'administrative' from description.
+	(IDS_HIDEOBS_TOOLTIP): Add new string for tooltip.
+	* resource.h (IDS_HIDEOBS_TOOLTIP): Define.
+	* window.cc (Window::ActivateTooltips): Fix whitespace.  Set tooltip
+	delay to 30 seconds.
+
 2005-09-09  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
 	* PickView.cc (PickView::paint): Set background mode to transparent.

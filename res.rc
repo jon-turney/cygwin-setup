@@ -324,7 +324,7 @@ BEGIN
                     317,1
     CONTROL         "",IDC_LISTVIEW_POS,"Static",SS_BLACKFRAME | NOT 
                     WS_VISIBLE,7,45,303,122
-    CONTROL         "&Hide obsolete and administrative packages",IDC_CHOOSE_HIDE,
+    CONTROL         "&Hide obsolete packages",IDC_CHOOSE_HIDE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,167,160,14
     ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
     LTEXT           "Select the packages you want setup to install.",
@@ -449,4 +449,8 @@ BEGIN
        "\r\n"
        "Not installed: Show packages that are are not currently installed "
        "and haven't been selected for installation."
+    IDS_HIDEOBS_TOOLTIP     "If selected, setup will hide packages in categories "
+       "with names that begin with '_'.  Such packages are usually empty "
+       "placeholders for packages that have been removed or renamed, or are "
+       "infrastructure packages that are handled automatically."
 END

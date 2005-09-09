@@ -379,20 +379,25 @@ Window::ActivateTooltips ()
     return;     // already initialized
     
   // create a window for the tool tips - will be invisible most of the time
-  if ((TooltipHandle = CreateWindowEx (0, (LPCTSTR)TOOLTIPS_CLASS, NULL, 
+  if ((TooltipHandle = CreateWindowEx (0, (LPCTSTR) TOOLTIPS_CLASS, NULL, 
         WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP, CW_USEDEFAULT,
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, GetHWND (), 
-        (HMENU)0, GetInstance (), (LPVOID)0)) == (HWND)NULL)
+        (HMENU) 0, GetInstance (), (LPVOID) 0)) == (HWND) NULL)
     {
-      log(LOG_PLAIN) << "Warning: call to CreateWindowEx failed when "
+      log (LOG_PLAIN) << "Warning: call to CreateWindowEx failed when "
               "initializing tooltips.  Error = %8.8x" << GetLastError ()
               << endLog;
       return;
     }
   
   // must be topmost so that tooltips will display on top
-  SetWindowPos(TooltipHandle, HWND_TOPMOST, 0, 0, 0, 0,
-        SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+  SetWindowPos (TooltipHandle, HWND_TOPMOST, 0, 0, 0, 0,
+              SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+
+  // some of our tooltips are lengthy, and will disappear before they can be
+  // read with the default windows delay, so we set a long (30s) delay here.
+  SendMessage (TooltipHandle, TTM_SETDELAYTIME, TTDT_AUTOPOP, 
+              (LPARAM) MAKELONG (30000, 0));
 }
 
 void
