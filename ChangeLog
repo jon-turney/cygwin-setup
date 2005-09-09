@@ -1,3 +1,10 @@
+2005-09-09  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
+	* PickView.cc (PickView::paint): Set background mode to transparent.
+	* PickCategoryLine.cc (PickCategoryLine::paint): Use bitwise AND to
+	blit bitmaps.
+	* PickPackageLine.cc (PickPackageLine::paint): Ditto.
+
 2005-09-01  Brian Dessent  <brian@dessent.net>
 
 	* package_meta.cc (packagemeta::uninstall): Remove support for

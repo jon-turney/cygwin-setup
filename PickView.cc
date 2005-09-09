@@ -817,6 +817,7 @@ PickView::paint (HWND hwnd)
  
   SelectObject (hdc, sysfont);
   SetTextColor (hdc, GetSysColor (COLOR_WINDOWTEXT));
+  SetBkMode (hdc, TRANSPARENT);
   FillRgn (hdc, hUpdRgn, GetSysColorBrush(COLOR_WINDOW));
 
   RECT cr;

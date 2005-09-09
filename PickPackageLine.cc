@@ -22,7 +22,7 @@ void
 PickPackageLine::DrawIcon (HDC hdc, int x, int y, HANDLE hIcon)
 {
   SelectObject (theView.bitmap_dc, hIcon);
-  BitBlt (hdc, x, y, 11, 11, theView.bitmap_dc, 0, 0, SRCCOPY);
+  BitBlt (hdc, x, y, 11, 11, theView.bitmap_dc, 0, 0, SRCAND);
 }
 
 void

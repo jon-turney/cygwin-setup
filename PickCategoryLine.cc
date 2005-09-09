@@ -40,7 +40,7 @@ PickCategoryLine::paint (HDC hdc, HRGN hUpdRgn, int x, int y, int row, int show_
       // draw the '+' or '-' box
       SelectObject (theView.bitmap_dc, 
                       (collapsed ? theView.bm_treeplus : theView.bm_treeminus));
-      BitBlt (hdc, x2, by, 11, 11, theView.bitmap_dc, 0, 0, SRCCOPY);
+      BitBlt (hdc, x2, by, 11, 11, theView.bitmap_dc, 0, 0, SRCAND);
 
       // draw the category name
       TextOut (hdc, x2 + 11 + ICON_MARGIN, r, cat.first.c_str(), cat.first.size());
@@ -54,7 +54,7 @@ PickCategoryLine::paint (HDC hdc, HRGN hUpdRgn, int x, int y, int row, int show_
       // draw the 'spin' glyph
       SelectObject (theView.bitmap_dc, theView.bm_spin);
       spin_x = x2 + 11 + ICON_MARGIN + labellength + ICON_MARGIN;
-      BitBlt (hdc, spin_x, by, 11, 11, theView.bitmap_dc, 0, 0, SRCCOPY);
+      BitBlt (hdc, spin_x, by, 11, 11, theView.bitmap_dc, 0, 0, SRCAND);
       
       // draw the caption ('Default', 'Install', etc)
       TextOut (hdc, spin_x + SPIN_WIDTH + ICON_MARGIN, r, 
