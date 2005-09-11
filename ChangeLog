@@ -1,3 +1,8 @@
+2005-09-11  Masayuki FUJII  <boochang@m4.kcn.ne.jp>
+
+	* package_meta.cc (packagemeta::ScanDownloadedFiles): Don't use an
+	invalid	iterator.  Fix whitespace.
+
 2005-09-09  Brian Dessent  <brian@dessent.net>
 
 	* CHANGES: Document recent updates.

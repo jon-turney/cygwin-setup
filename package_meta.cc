@@ -616,34 +616,36 @@ packagemeta::ScanDownloadedFiles ()
        n != db.packages.end (); ++n)
     {
       packagemeta & pkg = **n;
-      for (set<packageversion>::iterator i = pkg.versions.begin (); 
-    i != pkg.versions.end (); ++i)
-  {
-       /* scan doesn't alter operator == for packageversions */
-      const_cast<packageversion &>(*i).scan();
-     packageversion foo = *i;
-   packageversion pkgsrcver = foo.sourcePackage();
-    pkgsrcver.scan();
-      /* For local installs, if there is no src and no bin, the version
-       * is unavailable
-       */
-    if (!i->accessible() && !pkgsrcver.accessible()
-        && *i != pkg.installed)
-      {
-        if (pkg.prev == *i)
-      pkg.prev = packageversion();
-         if (pkg.curr == *i)
-      pkg.curr = packageversion();
-         if (pkg.exp == *i)
-       pkg.exp = packageversion();
-          pkg.versions.erase(i);
-         /* For now, leave the source version alone */
-        }
-  }
+      set<packageversion>::iterator i = pkg.versions.begin ();
+      while (i != pkg.versions.end ())
+	{
+	  /* scan doesn't alter operator == for packageversions */
+	  const_cast<packageversion &>(*i).scan ();
+	  packageversion foo = *i;
+	  packageversion pkgsrcver = foo.sourcePackage ();
+	  pkgsrcver.scan ();
+
+	  /* For local installs, if there is no src and no bin, the version
+	   * is unavailable
+	   */
+	  if (!i->accessible () && !pkgsrcver.accessible ()
+	      && *i != pkg.installed)
+	    {
+	      if (pkg.prev == *i)
+		pkg.prev = packageversion ();
+	      if (pkg.curr == *i)
+		pkg.curr = packageversion ();
+	      if (pkg.exp == *i)
+		pkg.exp = packageversion ();
+	      pkg.versions.erase (i++);
+	      /* For now, leave the source version alone */
+	    }
+	  else
+	    ++i;
+	}
     }
-  /* Don't explicity iterate through sources - any sources that aren't 
-     referenced are unselectable anyway 
-     */
+    /* Don't explicity iterate through sources - any sources that aren't
+       referenced are unselectable anyway.  */
 }
 
 bool
