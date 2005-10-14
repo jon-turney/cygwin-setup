@@ -53,6 +53,7 @@ packagedb::packagedb ()
     {
       /* no parameters. Read in the local installation database. */
       db = io_stream::open ("cygfile:///etc/setup/installed.db", "rt");
+      installeddbread = 1;
       if (!db)
 	return;
       /* flush_local_db_package_data */
@@ -123,7 +124,6 @@ packagedb::packagedb ()
 	    // unknown dbversion
 	    exit (1);
 	}
-      installeddbread = 1;
     }
 }
 

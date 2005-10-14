@@ -1,5 +1,10 @@
 2005-09-29  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
+	* package_db.cc (packagedb::packagedb): Remember missing package
+	database file.
+
+2005-09-29  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
 	* site.cc (get_site_list): Store mirror list locally.
 	Use local copy if unable to download.
 
