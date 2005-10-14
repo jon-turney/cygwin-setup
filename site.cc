@@ -201,9 +201,29 @@ get_site_list (HINSTANCE h, HWND owner)
   char *bol, *eol, *nl, *theString;
   {
     String mirrors = get_url_to_string (mirror_url, owner);
-    if (!mirrors.size())
-      return 1;
-
+    if (mirrors.size())
+      {
+	io_stream *f = UserSettings::Instance().settingFileForSave("mirrors-lst");
+	if (f)
+	  {
+	    f->write(mirrors.c_str(), mirrors.size() + 1);
+	    delete f;
+	  }
+      }
+    else
+      {
+	io_stream *f = UserSettings::Instance().settingFileForLoad("mirrors-lst");
+	int len;
+	if (!f)
+	  return 1;
+	while (len = f->read (mirror_url, 999))
+	  {
+	    mirror_url[len] = '\0';
+	    mirrors += mirror_url;
+	  }
+	delete f;
+	log (LOG_BABBLE) << "Using cached mirror list" << endLog;
+      }
     theString = new_cstr_char_array (mirrors);
     nl = theString;
   }

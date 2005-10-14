@@ -3,6 +3,8 @@ Note: For easier maintenance try to keep items in reverse chronological
 
 Version 2.5xx (HEAD)
 
+ - Cache mirror list and use local copy if server unavailable.
+
  - Slightly improve logged error messages.
 
  - Run postinstall scripts in dependency order.
