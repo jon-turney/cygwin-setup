@@ -144,7 +144,7 @@ io_stream_cygfile::io_stream_cygfile (String const &name, String const &mode) : 
   if (!fp)
   {
     lasterr = errno;
-    log(LOG_TIMESTAMP) << "io_stream_cygfile: fopen failed " << errno << " "
+    log(LOG_TIMESTAMP) << "io_stream_cygfile: fopen(" << name << ") failed " << errno << " "
       << strerror(errno) << endLog;
   }
 }

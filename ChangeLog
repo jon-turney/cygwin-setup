@@ -1,5 +1,10 @@
 2005-09-27  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
+	* io_stream_cygfile.cc (io_stream_cygfile::io_stream_cygfile):
+	Better log message on error.
+
+2005-09-27  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
 	* script.cc (Script::isAScript): Fix string comparison.
 
 2005-09-27  Igor Pechtchanski  <pechtcha@cs.nyu.edu>

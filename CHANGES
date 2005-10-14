@@ -3,6 +3,8 @@ Note: For easier maintenance try to keep items in reverse chronological
 
 Version 2.5xx (HEAD)
 
+ - Slightly improve logged error messages.
+
  - Run postinstall scripts in dependency order.
 
  - Fix problem of FTP connections timing out and not being retried.
