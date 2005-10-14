@@ -1,3 +1,9 @@
+2005-10-13  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
+	* site.cc (get_site_list): Default to empty mirror list if
+	server unavailable and none cached, to allow using preferred
+	mirrors anyway.
+
 2005-09-29  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
 	* package_db.cc (packagedb::packagedb): Remember missing package
