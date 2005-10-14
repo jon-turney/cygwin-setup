@@ -1,6 +1,6 @@
 2005-09-27  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
-	* script.cc (isAScript): Fix string comparison.
+	* script.cc (Script::isAScript): Fix string comparison.
 
 2005-09-27  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
