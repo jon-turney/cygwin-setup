@@ -1,3 +1,7 @@
+2005-09-27  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
+
+	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Reconnect on FTP timeout.
+
 2005-09-11  Masayuki FUJII  <boochang@m4.kcn.ne.jp>
 
 	* package_meta.cc (packagemeta::ScanDownloadedFiles): Don't use an

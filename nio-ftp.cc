@@ -63,6 +63,7 @@ NetIO_FTP::NetIO_FTP (char const *Purl):NetIO (Purl)
   if (port == 0)
     port = 21;
 
+control_reconnect:
   if (cmd_host && strcmp (host, cmd_host) != 0 || port != cmd_port)
     {
       if (cmd)
@@ -122,6 +123,13 @@ NetIO_FTP::NetIO_FTP (char const *Purl):NetIO (Purl)
       code = ftp_line (cmd);
     }
   while (code == 226);		/* previous RETR */
+  if (code == 421)              /* Timeout, retry */
+    {
+      log (LOG_BABBLE) << "FTP timeout -- reconnecting" << endLog;
+      delete [] cmd_host;
+      cmd_host = new char[1]; cmd_host[0] = '\0';
+      goto control_reconnect;
+    }
   if (code != 227)
     return;
 
