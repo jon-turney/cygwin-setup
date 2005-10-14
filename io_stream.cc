@@ -94,12 +94,16 @@ io_stream::factory (io_stream * parent)
   return NULL;
 }
 
+#define url_scheme_not_registered(name) \
+    throw new invalid_argument ((String("URL Scheme for '")+ \
+				  name+"' not registered!").c_str())
+
 io_stream *
 io_stream::open (String const &name, String const &mode)
 {
   IOStreamProvider const *p = findProvider (name);
   if (!p)
-    throw new invalid_argument ("URL Scheme not registered!");
+    url_scheme_not_registered (name);
   io_stream *rv = p->open (&name.c_str()[p->key.size()], mode);
   if (!rv->error ())
     return rv;
@@ -112,7 +116,7 @@ io_stream::mkpath_p (path_type_t isadir, String const &name)
 {
   IOStreamProvider const *p = findProvider (name);
   if (!p)
-    throw new invalid_argument ("URL Scheme not registered!");
+    url_scheme_not_registered (name);
   return p->mkdir_p (isadir, &name.c_str()[p->key.size()]);
 }
 
@@ -122,7 +126,7 @@ io_stream::remove (String const &name)
 {
   IOStreamProvider const *p = findProvider (name);
   if (!p)
-    throw new invalid_argument ("URL Scheme not registered!");
+    url_scheme_not_registered (name);
   return p->remove (&name.c_str()[p->key.size()]);
 }
 
@@ -134,8 +138,10 @@ io_stream::mklink (String const &from, String const &to,
     << endLog;
   IOStreamProvider const *fromp = findProvider (from);
   IOStreamProvider const *top = findProvider (to);
-  if (!fromp || !top)
-    throw new invalid_argument ("URL Scheme not registered!");
+  if (!fromp)
+    url_scheme_not_registered (from);
+  if (!top)
+    url_scheme_not_registered (to);
   if (fromp != top)
     throw new invalid_argument ("Attempt to link across url providers.");
   return fromp->mklink (&from.c_str()[fromp->key.size()], 
@@ -198,8 +204,10 @@ io_stream::move (String const &from, String const &to)
 {
   IOStreamProvider const *fromp = findProvider (from);
   IOStreamProvider const *top = findProvider (to);
-  if (!fromp || !top)
-    throw new invalid_argument ("URL Scheme not registered!");
+  if (!fromp)
+    url_scheme_not_registered (from);
+  if (!top)
+    url_scheme_not_registered (to);
   if (fromp != top)
     return io_stream::move_copy (from, to);
   return fromp->move (&from.c_str()[fromp->key.size()],
@@ -235,7 +243,7 @@ io_stream::exists (String const &name)
 {
   IOStreamProvider const *p = findProvider (name);
   if (!p)
-    throw new invalid_argument ("URL Scheme not registered!");
+    url_scheme_not_registered (name);
   return p->exists (&name.c_str()[p->key.size()]);
 }
 
