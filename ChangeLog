@@ -1,3 +1,11 @@
+2005-11-30  Max Bowsher  <maxb1@ukf.net>
+
+	* site.h, site.cc: Use std::string in preference to String.
+	(site_list_type::init): Convert some painful raw C string work to
+	STL std::string work.  Stop totally ignoring the result of this
+	calculation, implementing the (somewhat weird) sort order for sites
+	that was apparently indented for ages.
+
 2005-10-14  Igor Pechtchanski  <pechtcha@cs.nyu.edu>
 
 	* io_stream.cc (url_scheme_not_registered): New macro.

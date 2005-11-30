@@ -16,15 +16,13 @@
 #ifndef SETUP_SITE_H
 #define SETUP_SITE_H
 
-/* required to parse this file */
-#include <string.h>
-#include <stdlib.h>
+#include <string>
 #include <vector>
-#include "String++.h"
 
+#include "UserSetting.h"
 #include "proppage.h"
 
-class SitePage:public PropertyPage
+class SitePage : public PropertyPage
 {
 public:
   SitePage ();
@@ -50,24 +48,22 @@ void do_download_site_info (HINSTANCE h, HWND owner);
 class site_list_type
 {
 public:
-  site_list_type ():url (), displayed_url (), key()
-  {
-  };
-  site_list_type (site_list_type const &);
-  site_list_type (String const &);
+  site_list_type () : url (), displayed_url (), key () {};
+  site_list_type (const site_list_type &);
+  site_list_type (const std::string &);
   /* workaround for missing placement new in gcc 2.95 */
-  void init (String const &);
+  void init (const std::string &);
   ~site_list_type () {};
-  site_list_type &operator= (site_list_type const &);
-  String url;
-  String displayed_url;
-  String key;
-  bool operator == (site_list_type const &) const;
-  bool operator != (site_list_type const &) const;
-  bool operator < (site_list_type const &) const;
-  bool operator <= (site_list_type const &) const;
-  bool operator > (site_list_type const &) const;
-  bool operator >= (site_list_type const &) const;
+  site_list_type &operator= (const site_list_type &);
+  std::string url;
+  std::string displayed_url;
+  std::string key;
+  bool operator == (const site_list_type &) const;
+  bool operator != (const site_list_type &) const;
+  bool operator < (const site_list_type &) const;
+  bool operator <= (const site_list_type &) const;
+  bool operator > (const site_list_type &) const;
+  bool operator >= (const site_list_type &) const;
 };
 
 typedef std::vector <site_list_type> SiteList;
@@ -77,7 +73,6 @@ extern SiteList site_list;
 /* potential sites */
 extern SiteList all_site_list;
 
-#include "UserSetting.h"
 class SiteSetting : public UserSetting 
 {
   public:

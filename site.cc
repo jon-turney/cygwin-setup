@@ -21,13 +21,14 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include <string>
+#include <algorithm>
+
 #include "site.h"
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <process.h>
-#include <algorithm>
 
 #include "dialog.h"
 #include "resource.h"
@@ -43,6 +44,8 @@ static const char *cvsid =
 #include "threebar.h"
 #include "ControlAdjuster.h"
 #include "Exception.h"
+
+using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
@@ -99,47 +102,34 @@ SiteSetting::save()
 }
 
 void
-site_list_type::init (String const &newurl)
+site_list_type::init (const string &_url)
 {
-  url = newurl;
+  url = _url;
+  displayed_url = url.substr (0, url.find ("/", url.find (".")));
 
-  char *dots = new_cstr_char_array (newurl);
-  char *dot = strchr (dots, '.');
-  if (dot)
-      {
-         dot = strchr (dot, '/');
-        if (dot)
-	        *dot = 0;
-   }
-  displayed_url = String (dots);
-
-  
-  dot = dots + strlen (dots);
-  char *dpsave, *dp = new char[2 * newurl.size() + 3];
-  dpsave = dp;
-  while (dot != dots)
-    {
-      if (*dot == '.' || *dot == '/')
-	{
-	  char *sp;
-	  if (dot[3] == 0)
-	    *dp++ = '~';	/* sort .com/.edu/.org together */
-	  for (sp = dot + 1; *sp && *sp != '.' && *sp != '/';)
-	    *dp++ = *sp++;
-	  *dp++ = ' ';
-	}
-      --dot;
-    }
-  *dp++ = ' ';
-  strcpy (dp, dots);
-  delete[] dots;
-  key = String (dp);
-  delete[] dpsave;
+  key = string();
+  string::size_type last_idx = displayed_url.length () - 1;
+  string::size_type idx = url.find_last_of("./", last_idx);
+  if (last_idx - idx == 3)
+  {
+    /* Sort non-country TLDs (.com, .net, ...) together. */
+    key += " ";
+  }
+  do
+  {
+    key += url.substr(idx + 1, last_idx - idx);
+    key += " ";
+    last_idx = idx - 1;
+    idx = url.find_last_of("./", last_idx);
+    if (idx == string::npos)
+      idx = 0;
+  } while (idx > 0);
+  key += url;
 }
 
-site_list_type::site_list_type (String const &newurl)
+site_list_type::site_list_type (const string &_url)
 {
-  init (newurl);
+  init (_url);
 }
 
 site_list_type::site_list_type (site_list_type const &rhs)
@@ -161,13 +151,13 @@ site_list_type::operator= (site_list_type const &rhs)
 bool
 site_list_type::operator == (site_list_type const &rhs) const
 {
-  return key.casecompare (rhs.key) == 0; 
+  return stricmp (key.c_str(), rhs.key.c_str()) == 0; 
 }
 
 bool
 site_list_type::operator < (site_list_type const &rhs) const
 {
-  return key.casecompare (rhs.key) < 0;
+  return stricmp (key.c_str(), rhs.key.c_str()) < 0; 
 }
 
 static void
