@@ -1,5 +1,10 @@
 2005-11-30  Max Bowsher  <maxb1@ukf.net>
 
+	* res.rc (IDD_ROOT, IDD_LOCAL_DIR): Rearrange some controls a little,
+	in response to suggestion from Carl Karsten.
+
+2005-11-30  Max Bowsher  <maxb1@ukf.net>
+
 	* site.h, site.cc: Use std::string in preference to String.
 	(site_list_type::init): Convert some painful raw C string work to
 	STL std::string work.  Stop totally ignoring the result of this
