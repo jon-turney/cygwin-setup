@@ -1,3 +1,8 @@
+2006-01-20  Bryan Thrall  <bryan.thrall@flightsafety.com>
+
+	* source.cc (SourcePage::OnActivate): Command line takes precedence
+	over last user selection.
+
 2005-11-30  Max Bowsher  <maxb1@ukf.net>
 
 	* res.rc (IDD_ROOT, IDD_LOCAL_DIR): Rearrange some controls a little,

@@ -87,15 +87,14 @@ SourcePage::Create ()
 void
 SourcePage::OnActivate ()
 {
-  if (!source)
-    {
-      if (DownloadOption) 
-	source = IDC_SOURCE_DOWNLOAD;
-      else if (LocalOption)
-	source = IDC_SOURCE_CWD;
-      else
-	source = IDC_SOURCE_NETINST;
-    }
+  if (DownloadOption)
+    source = IDC_SOURCE_DOWNLOAD;
+  else if (LocalOption)
+    source = IDC_SOURCE_CWD;
+  else if (!source)
+    //only default to IDC_SOURCE_NETINST if
+    //source not already set:
+    source = IDC_SOURCE_NETINST;
 
   load_dialog (GetHWND ());
   // Check to see if any radio buttons are selected. If not, select a default.
