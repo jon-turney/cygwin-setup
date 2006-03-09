@@ -59,7 +59,9 @@ EXTRA_DIST = \
   iniparse.y \
   libmd5-rfc/README \
   libmd5-rfc/md5main.c \
-  setup.exe.manifest
+  setup.exe.manifest \
+  tree-minus.bmp \
+  tree-plus.bmp
 
 BUILT_SOURCES = setup_version.c \
   	inilex.cc \

@@ -1,3 +1,7 @@
+2006-03-09  Max Bowsher  <maxb1@ukf.net>
+	
+	* Makefile.am (EXTRA_DIST): Add tree-minus.bmp and tree-plus.bmp.
+
 2006-01-20  Bryan Thrall  <bryan.thrall@flightsafety.com>
 
 	* source.cc (SourcePage::OnActivate): Command line takes precedence
