@@ -1,7 +1,13 @@
 Note: For easier maintenance try to keep items in reverse chronological
       order of when they were committed.  -- briand
 
-Version 2.5xx (HEAD)
+Version 2.526 (HEAD)
+
+ - Provide indication of site that a file is being downloaded from.
+
+ - Fix command line options to override cached selections.
+
+ - Sort the mirrors list by logical structure of DNS names.
 
  - Do not attempt to reopen a missing package database on initial install.
 
