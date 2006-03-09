@@ -1,3 +1,15 @@
+2006-03-09  Bas van Gompel  <patch-cygsup.buzz@bavag.tmfweb.nl>
+	    Max Bowsher  <maxb1@ukf.net>
+
+	Provide indication of site that a file is being downloaded from.
+	
+	* geturl.cc: Use std::string instead of String throughout.
+	(init_dialog): Put more information into GUI.
+	Remove unused 'owner' parameter and change all callers.
+	(progress): Remove spurious \n characters from GUI.
+	* geturl.h: Use std::string instead of String throughout.
+	* res.rc (IDD_INSTATUS): Use SS_ENDELLIPSIS.
+
 2006-03-09  Max Bowsher  <maxb1@ukf.net>
 	
 	* Makefile.am (EXTRA_DIST): Add tree-minus.bmp and tree-plus.bmp.

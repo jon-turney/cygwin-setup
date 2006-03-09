@@ -44,11 +44,11 @@ static const char *cvsid =
 
 #include "threebar.h"
 
-#include "String++.h"  
-
 #include "Exception.h"
 
 #include "LogSingleton.h"
+
+using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
@@ -61,18 +61,16 @@ int total_download_bytes_sofar = 0;
 static DWORD start_tics;
 
 static void
-init_dialog (String const &url, int length, HWND owner)
+init_dialog (const string &url, int length)
 {
   if (is_local_install)
     return;
 
-  char const *last_component = url.c_str();
-  for (const char *ch = last_component; *ch; ch++)
-    if (*ch == '/' || *ch == '\\' || *ch == ':')
-      last_component = ch + 1;
+  string::size_type divide = url.find_last_of('/');
   max_bytes = length;
   Progress.SetText1("Downloading...");
-  Progress.SetText2(last_component);
+  Progress.SetText2((url.substr(divide + 1) + " from "
+                     + url.substr(0, divide)).c_str());
   Progress.SetText3("Connecting...");
   Progress.SetBar1(0);
   start_tics = GetTickCount ();
@@ -99,24 +97,24 @@ progress (int bytes)
     {
       int perc = (int)(100.0 * ((double)bytes) / (double)max_bytes);
       Progress.SetBar1(bytes, max_bytes);
-      sprintf (buf, "%d %%  (%dk/%dk)  %03.1f kb/s\n",
+      sprintf (buf, "%d %%  (%dk/%dk)  %03.1f kb/s",
 	       perc, bytes / 1000, max_bytes / 1000, kbps);
       if (total_download_bytes > 0)
      	  Progress.SetBar2(total_download_bytes_sofar + bytes,
 			   total_download_bytes);
     }
   else
-    sprintf (buf, "%d  %2.1f kb/s\n", bytes, kbps);
+    sprintf (buf, "%d  %2.1f kb/s", bytes, kbps);
 
   Progress.SetText3(buf);
 }
 
 static void
-getUrlToStream (String const &_url, HWND owner, io_stream *output)
+getUrlToStream (const string &_url, io_stream *output)
 {
   log (LOG_BABBLE) << "getUrlToStream " << _url << endLog;
   is_local_install = (source == IDC_SOURCE_CWD);
-  init_dialog (_url, 0, owner);
+  init_dialog (_url, 0);
   NetIO *n = NetIO::open (_url.c_str());
   if (!n || !n->ok ())
     {
@@ -153,13 +151,13 @@ getUrlToStream (String const &_url, HWND owner, io_stream *output)
 }
 
 io_stream *
-get_url_to_membuf (String const &_url, HWND owner)
+get_url_to_membuf (const string &_url, HWND owner)
 {
   io_stream_memory *membuf = new io_stream_memory ();
   try 
     {
       log (LOG_BABBLE) << "get_url_to_membuf " << _url << endLog;
-      getUrlToStream (_url, owner, membuf);
+      getUrlToStream (_url, membuf);
       
       if (membuf->seek (0, IO_SEEK_SET))
     	{
@@ -181,31 +179,31 @@ get_url_to_membuf (String const &_url, HWND owner)
 }
 
 // predicate: url has no '\0''s in it.
-String
-get_url_to_string (String const &_url, HWND owner)
+string
+get_url_to_string (const string &_url, HWND owner)
 {
   io_stream *stream = get_url_to_membuf (_url, owner);
   if (!stream)
-    return String();
+    return string();
   size_t bytes = stream->get_size ();
   if (!bytes)
     {
       /* zero length, or error retrieving length */
       delete stream;
       log (LOG_BABBLE) << "get_url_to_string(): couldn't retrieve buffer size, or zero length buffer" << endLog;
-      return String();
+      return string();
     }
   char temp [bytes + 1];
   /* membufs are quite safe */
   stream->read (temp, bytes);
   temp [bytes] = '\0';
   delete stream;
-  return String(temp);
+  return string(temp);
 }
 
 int
-get_url_to_file (String const &_url,
-                 String const &_filename,
+get_url_to_file (const string &_url,
+                 const string &_filename,
                  int expected_length,
 		 HWND owner)
 {
@@ -215,7 +213,7 @@ get_url_to_file (String const &_url,
       int df = diskfull (get_root_dir ().c_str());
       Progress.SetBar3(df);
     }
-  init_dialog (_url, expected_length, owner);
+  init_dialog (_url, expected_length);
 
   remove (_filename.c_str());		/* but ignore errors */
 

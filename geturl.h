@@ -19,15 +19,16 @@
 /* Download files from the Internet.  These pop up a progress dialog;
    don't forget to dismiss it when you're done downloading for a while */
 
+#include <string>
+
 extern int total_download_bytes;
 extern int total_download_bytes_sofar;
 
 class io_stream;
-class String;
 
-io_stream *get_url_to_membuf (String const &, HWND owner);
-String get_url_to_string (String const&, HWND owner);
-int get_url_to_file (String const &_url, String const &_filename,
+io_stream *get_url_to_membuf (const std::string &_url, HWND owner);
+std::string get_url_to_string (const std::string &_url, HWND owner);
+int get_url_to_file (const std::string &_url, const std::string &_filename,
                      int expected_size, HWND owner);
 
 #endif /* SETUP_GETURL_H */

@@ -189,9 +189,9 @@ STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_VISIBLE | WS_CAPTION |
 CAPTION "Cygwin Setup"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "Installing...",IDC_INS_ACTION,45,55,205,8,NOT WS_GROUP
-    LTEXT           "(PKG)",IDC_INS_PKG,45,70,205,8,NOT WS_GROUP
-    LTEXT           "(FILE)",IDC_INS_FILE,45,85,205,8,NOT WS_GROUP
+    LTEXT           "Installing...",IDC_INS_ACTION,45,55,205,8,SS_ENDELLIPSIS
+    LTEXT           "(PKG)",IDC_INS_PKG,45,70,205,8,SS_ENDELLIPSIS
+    LTEXT           "(FILE)",IDC_INS_FILE,45,85,205,8,SS_ENDELLIPSIS
     CONTROL         "Progress1",IDC_INS_DISKFULL,"msctls_progress32",
                     PBS_SMOOTH | WS_BORDER,95,130,155,10
     CONTROL         "Progress1",IDC_INS_IPROGRESS,"msctls_progress32",
