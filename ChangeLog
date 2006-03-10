@@ -3,8 +3,8 @@
 	* res.rc: Update copyright.
 	(IDS_MIRROR_LST): Use cygwin.com for mirror list, not
 	sources.redhat.com.
-	(NOSAVE2): sourceware.cygnus.com -> sources.redhat.com
 	* site.cc (NOSAVE1): Use preferred name of sourceware site.
+	(NOSAVE2): sourceware.cygnus.com -> sources.redhat.com.
 	(NOSAVE1_LEN): Use just-defined name to determine length.
 	(NOSAVE2_LEN): Ditto.
 	(NOSAVE3_LEN): Ditto.
