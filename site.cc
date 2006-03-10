@@ -49,6 +49,17 @@ using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
+
+/*
+  What to do if dropped mirrors are selected.
+*/
+enum
+{
+  CACHE_REJECT,		// Go back to re-select mirrors.
+  CACHE_ACCEPT_WARN,	// Go on. Warn again next time.
+  CACHE_ACCEPT_NOWARN	// Go on. Don't warn again.
+};
+
 /*
   Sizing information.
  */
@@ -70,8 +81,21 @@ SitePage::SitePage ()
 
 using namespace std;
 
+bool cache_is_usable;
+bool cache_needs_writing;
+string cache_warn_urls;
+
+/* Selected sites */
 SiteList site_list;
+
+/* Fresh mirrors + selected sites */
 SiteList all_site_list;
+
+/* Previously fresh + cached before */
+SiteList cached_site_list;
+
+/* Stale selected sites to warn about and add to cache */
+SiteList dropped_site_list;
 
 StringOption SiteOption("", 's', "site", "Download site", false);
 
@@ -102,9 +126,13 @@ SiteSetting::save()
 }
 
 void
-site_list_type::init (const string &_url)
+site_list_type::init (const string &_url, const string &_servername,
+		      const string &_area, const string &_location)
 {
   url = _url;
+  servername = _servername;
+  area = _area;
+  location = _location;
   displayed_url = url.substr (0, url.find ("/", url.find (".")));
 
   key = string();
@@ -127,15 +155,21 @@ site_list_type::init (const string &_url)
   key += url;
 }
 
-site_list_type::site_list_type (const string &_url)
+site_list_type::site_list_type (const string &_url,
+				const string &_servername,
+				const string &_area,
+				const string &_location)
 {
-  init (_url);
+  init (_url, _servername, _area, _location);
 }
 
 site_list_type::site_list_type (site_list_type const &rhs)
 {
   key = rhs.key;
   url = rhs.url;
+  servername = rhs.servername;
+  area = rhs.area;
+  location = rhs.location;
   displayed_url = rhs.displayed_url;
 }
 
@@ -144,6 +178,9 @@ site_list_type::operator= (site_list_type const &rhs)
 {
   key = rhs.key;
   url = rhs.url;
+  servername = rhs.servername;
+  area = rhs.area;
+  location = rhs.location;
   displayed_url = rhs.displayed_url;
   return *this;
 }
@@ -181,48 +218,12 @@ save_dialog (HWND h)
     }
 }
 
-static int
-get_site_list (HINSTANCE h, HWND owner)
+void
+load_site_list (SiteList& theSites, char *theString)
 {
-  char mirror_url[1000];
-
-  if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
-    return 1;
-  char *bol, *eol, *nl, *theString;
-  {
-    String mirrors = get_url_to_string (mirror_url, owner);
-    if (mirrors.size())
-      {
-	io_stream *f = UserSettings::Instance().settingFileForSave("mirrors-lst");
-	if (f)
-	  {
-	    f->write(mirrors.c_str(), mirrors.size() + 1);
-	    delete f;
-	  }
-      }
-    else
-      {
-	io_stream *f = UserSettings::Instance().settingFileForLoad("mirrors-lst");
-	if (f)
-	  {
-	    int len;
-	    while (len = f->read (mirror_url, 999))
-	      {
-		mirror_url[len] = '\0';
-		mirrors += mirror_url;
-	      }
-	    delete f;
-	    log (LOG_BABBLE) << "Using cached mirror list" << endLog;
-	  }
-	else
-	  {
-	    log (LOG_BABBLE) << "Defaulting to empty mirror list" << endLog;
-	  }
-      }
-    theString = new_cstr_char_array (mirrors);
-    nl = theString;
-  }
-
+  char *bol, *eol, *nl;
+  
+  nl = theString;
   while (*nl)
     {
       bol = nl;
@@ -241,42 +242,116 @@ get_site_list (HINSTANCE h, HWND owner)
 	  strncmp(bol, "ftp://", 6) == 0)
 	{
 	  char *semi = strchr (bol, ';');
+	  char *semi2 = NULL;
+	  char *semi3 = NULL;
 	  if (semi)
-	    *semi = 0;
-	  site_list_type newsite (bol);
-	  SiteList::iterator i = find (all_site_list.begin(),
-				       all_site_list.end(), newsite);
-	  if (i == all_site_list.end())
+	    {
+	      *semi = 0;
+	      semi++;
+	      semi2 = strchr (semi, ';');
+	      if (semi2)
+	        {
+		  *semi2 = 0;
+		  semi2++;
+		  semi3 = strchr (semi2, ';');
+		  if (semi3)
+		    {
+		      *semi3 = 0;
+		      semi3++;
+		    }
+		}
+	    }
+	  site_list_type newsite (bol, semi, semi2, semi3);
+	  SiteList::iterator i = find (theSites.begin(),
+				       theSites.end(), newsite);
+	  if (i == theSites.end())
 	    {
 	      SiteList result;
-	      merge (all_site_list.begin(), all_site_list.end(),
+	      merge (theSites.begin(), theSites.end(),
 		     &newsite, &newsite + 1,
 		     inserter (result, result.begin()));
-	      all_site_list = result;
+	      theSites = result;
 	    }
 	  else
 	    //TODO: remove and remerge 
 	    *i = newsite;
 	}
     }
-  delete[] theString;
+}
+
+static int
+get_site_list (HINSTANCE h, HWND owner)
+{
+  char mirror_url[1000];
+
+  char *theMirrorString, *theCachedString;
+  {
+    cache_is_usable = false;
+    cache_needs_writing = false;
+    string cached_mirrors = "";
+    io_stream *f = UserSettings::Instance().settingFileForLoad("mirrors-lst");
+    if (f)
+      {
+	int len;
+	while (len = f->read (mirror_url, 999))
+	  {
+	    mirror_url[len] = '\0';
+	    cached_mirrors += mirror_url;
+	  }
+	delete f;
+	log (LOG_BABBLE) << "Loaded cached mirror list" << endLog;
+	cache_is_usable = true;
+      }
+    else
+      {
+	log (LOG_BABBLE) << "Cached mirror list unavailable" << endLog;
+      }
+    if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
+      return 1;
+    string mirrors = get_url_to_string (mirror_url, owner);
+    if (mirrors.size())
+      {
+	cache_needs_writing = true;
+      }
+    else
+      {
+	if (cached_mirrors.size())
+	  {
+	    mirrors = cached_mirrors;
+	    log (LOG_BABBLE) << "Using cached mirror list" << endLog;
+	  }
+	else
+	  {
+	    log (LOG_BABBLE) << "Defaulting to empty mirror list" << endLog;
+	  }
+	cache_is_usable = false;
+      }
+    theMirrorString = new_cstr_char_array (mirrors);
+    theCachedString = new_cstr_char_array (cached_mirrors);
+  }
+
+  load_site_list (all_site_list, theMirrorString);
+  load_site_list (cached_site_list, theCachedString);
+  
+  delete[] theMirrorString;
+  delete[] theCachedString;
 
   return 0;
 }
 
 /* List of machines that should not be used by default when saved
    in "last-mirror". */
-#define NOSAVE1 "ftp://sources.redhat.com/"
-#define NOSAVE1_LEN (sizeof ("ftp://sources.redhat.com/") - 1)
-#define NOSAVE2 "ftp://sourceware.cygnus.com/"
-#define NOSAVE2_LEN (sizeof ("ftp://sourceware.cygnus.com/") - 1)
+#define NOSAVE1 "ftp://sourceware.org/"
+#define NOSAVE1_LEN (sizeof (NOSAVE2) - 1)
+#define NOSAVE2 "ftp://sources.redhat.com/"
+#define NOSAVE2_LEN (sizeof (NOSAVE1) - 1)
 #define NOSAVE3 "ftp://gcc.gnu.org/"
-#define NOSAVE3_LEN (sizeof ("ftp://gcc.gnu.org/") - 1)
+#define NOSAVE3_LEN (sizeof (NOSAVE3) - 1)
 
 void
 SiteSetting::registerSavedSite (const char * site)
 {
-  site_list_type tempSite(site);
+  site_list_type tempSite(site, "", "", "");
   SiteList::iterator i = find (all_site_list.begin(),
 			       all_site_list.end(), tempSite);
   if (i == all_site_list.end())
@@ -374,6 +449,111 @@ do_download_site_info (HINSTANCE hinst, HWND owner)
   CreateThread (NULL, 0, do_download_site_info_thread, context, 0, &threadID);
 }
 
+static BOOL CALLBACK
+drop_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+{
+  switch (message)
+    {
+      case WM_INITDIALOG:
+        eset(h, IDC_DROP_MIRRORS, cache_warn_urls);
+	/* Should this be set by default? */
+	// CheckDlgButton (h, IDC_DROP_NOWARN, BST_CHECKED);
+	SetFocus (GetDlgItem(h, IDC_DROP_NOWARN));
+	return FALSE;
+	break;
+      case WM_COMMAND:
+	switch (LOWORD (wParam))
+	  {
+	    case IDYES:
+	      if (IsDlgButtonChecked (h, IDC_DROP_NOWARN) == BST_CHECKED)
+	        EndDialog (h, CACHE_ACCEPT_NOWARN);
+	      else
+	        EndDialog (h, CACHE_ACCEPT_WARN);
+	      break;
+
+	    case IDNO:
+	      EndDialog (h, CACHE_REJECT);
+	      break;
+
+	    default:
+	      return 0;
+	  }
+	return TRUE;
+	break;
+      default:
+	return FALSE;
+    }
+}
+
+int check_dropped_mirrors (HWND h)
+{
+  cache_warn_urls = "";
+  dropped_site_list.clear ();
+
+  for (SiteList::const_iterator n = site_list.begin ();
+       n != site_list.end (); ++n)
+    {
+      SiteList::iterator i = find (all_site_list.begin(), all_site_list.end(),
+				   *n);
+      if (i == all_site_list.end() || !i->servername.size())
+	{
+	  SiteList::iterator j = find (cached_site_list.begin(),
+				       cached_site_list.end(), *n);
+	  if (j != cached_site_list.end())
+	    {
+	      log (LOG_PLAIN) << "Dropped selected mirror: " << n->url
+		  << endLog;
+	      dropped_site_list.push_back (*j);
+	      if (cache_warn_urls.size())
+		cache_warn_urls += "\r\n";
+	      cache_warn_urls += i->url;
+	    }
+	}
+    }
+  if (cache_warn_urls.size())
+    {
+      if (unattended_mode)
+	return CACHE_ACCEPT_WARN;
+      return DialogBox (hinstance, MAKEINTRESOURCE (IDD_DROPPED), h,
+			drop_proc);
+    }
+  return CACHE_ACCEPT_NOWARN;
+}
+
+void write_cache_list (io_stream *f, const SiteList& theSites)
+{
+  string s;
+  for (SiteList::const_iterator n = theSites.begin ();
+	   n != theSites.end (); ++n)
+	if (n->servername.size())
+	  {
+	    s = n->url + ";" + n->servername + ";" + n->area + ";"
+	        + n->location + "\n";
+            f->write(s.c_str(), s.size());
+	  }
+}
+
+void save_cache_file (int cache_action)
+{
+  string s;
+  io_stream *f = UserSettings::Instance().settingFileForSave("mirrors-lst");
+  if (f)
+    {
+      s = "# Do not edit - see warning in http://cygwin.com/mirrors.html\n";
+      f->write(s.c_str(), s.size());
+      write_cache_list (f, all_site_list);
+      if (cache_action == CACHE_ACCEPT_WARN)
+	{
+	  log (LOG_PLAIN) << "Adding dropped mirrors to cache to warn again."
+	      << endLog;
+	  s = "# Following mirrors re-added by setup.exe to warn again about dropped urls.\n";
+	  f->write(s.c_str(), s.size());
+	  write_cache_list (f, dropped_site_list);
+	}
+      delete f;
+    }
+}
+
 bool SitePage::Create ()
 {
   return PropertyPage::Create (IDD_SITE);
@@ -383,8 +563,16 @@ long
 SitePage::OnNext ()
 {
   HWND h = GetHWND ();
+  int cache_action = CACHE_ACCEPT_NOWARN;
 
   save_dialog (h);
+
+  if (cache_is_usable && !(cache_action = check_dropped_mirrors (h)))
+    return -1;
+
+  if (cache_needs_writing)
+    save_cache_file (cache_action);
+  
   ChosenSites.save ();
 
   // Log all the selected URLs from the list.
@@ -503,7 +691,7 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 	    String other_url = egetString (GetHWND (), IDC_EDIT_USER_URL);
 	    if (other_url.size())
 	    {
-	    site_list_type newsite (other_url);
+	    site_list_type newsite (other_url, "", "", "");
 	    SiteList::iterator i = find (all_site_list.begin(),
 					 all_site_list.end(), newsite);
 	    if (i == all_site_list.end())

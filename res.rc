@@ -265,7 +265,7 @@ BEGIN
                     "necessary.",IDC_SPLASH_TEXT,115,25,195,90
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,114,114,21,20,WS_GROUP
     LTEXT           "Version (unknown)",IDC_VERSION,115,137,195,10
-    LTEXT           "Copyright 2000-2005",IDC_SPLASH_COPYR,115,150,195,8
+    LTEXT           "Copyright 2000-2006",IDC_SPLASH_COPYR,115,150,195,8
     LTEXT           "http://www.cygwin.com/",IDC_SPLASH_URL,115,162,90,8
 END
 
@@ -356,6 +356,32 @@ BEGIN
 
 END
 
+IDD_DROPPED DIALOG DISCARDABLE  0, 0, 317, 142
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup - Use dropped mirrors?"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Warning:",IDC_STATIC,7,8,40,8
+    LTEXT           "One or more mirrors you have selected is/are not on the"
+                    "list of official Cygwin mirrors any more. "
+                    "It/They may be out of date or missing some packages.\n"
+                    "This affects the following mirror(s):",
+                    IDC_STATIC,47,8,263,32
+    EDITTEXT        IDC_DROP_MIRRORS,7,40,303,40,WS_VSCROLL | WS_HSCROLL |
+                    ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL |
+                    ES_AUTOVSCROLL
+    LTEXT           "If you experience installation problems consider trying "
+                    "official mirrors only.\n\n"
+                    "Do you want to continue, using this/these mirror(s)?",
+                    IDC_STATIC,7,88,303,24
+    CONTROL         "&Don't warn me about this/these mirror(s) again",
+                    IDC_DROP_NOWARN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    7,120,213,15
+    PUSHBUTTON      "&Yes",IDYES,220,120,45,15
+    DEFPUSHBUTTON   "&No",IDNO,265,120,45,15
+
+END
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Manifest
@@ -400,7 +426,7 @@ STRINGTABLE DISCARDABLE
 BEGIN
     IDS_ROOT_SLASH          "Warning: we recommend you do NOT use the root of your hard drive as the cygwin root.  Proceed anyway?"
     IDS_ROOT_SPACE          "You should not choose a root path that include spaces in directory names.  Proceed anyway?"
-    IDS_MIRROR_LST          "http://sources.redhat.com/cygwin/mirrors.lst"
+    IDS_MIRROR_LST          "http://cygwin.com/mirrors.lst"
     IDS_ERR_OPEN_WRITE      "Can't open %s for writing: %s"
     IDS_SETUPINI_MISSING    "Unable to get setup.ini from <%s>"
     IDS_OLD_SETUPINI        "This setup.ini is older than the one you used last time you installed cygwin.  Proceed anyway?"

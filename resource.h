@@ -55,6 +55,7 @@
 #define IDD_VIRUS                         218
 #define IDD_DESKTOP                       219
 #define IDD_PREREQ                        220
+#define IDD_DROPPED                       221
 
 // Bitmaps
 
@@ -152,3 +153,5 @@
 #define IDC_PREREQ_TEXT                   576
 #define IDC_PREREQ_EDIT                   577
 #define IDC_PREREQ_CHECK                  578
+#define IDC_DROP_MIRRORS                  579
+#define IDC_DROP_NOWARN                   580

@@ -1,3 +1,43 @@
+2006-03-10  Christopher Faylor  <cgf@timesys.com>
+
+	* res.rc: Update copyright.
+	(IDS_MIRROR_LST): Use cygwin.com for mirror list, not
+	sources.redhat.com.
+	(NOSAVE2): sourceware.cygnus.com -> sources.redhat.com
+	* site.cc (NOSAVE1): Use preferred name of sourceware site.
+	(NOSAVE1_LEN): Use just-defined name to determine length.
+	(NOSAVE2_LEN): Ditto.
+	(NOSAVE3_LEN): Ditto.
+
+2006-03-10  Bas van Gompel  <patch-cygsup.buzz@bavag.tmfweb.nl>
+
+	* res.rc (IDD_DROPPED): New dialog.
+	* resource.h (IDD_DROPPED): New dialog-id.
+	(IDC_DROP_MIRRORS, IDC_DROP_NOWARN): New control-ids.
+	* site.cc: Add enum for response on dropped mirrors.
+	(cache_is_usable, cache_needs_writing): New bools.
+	(cache_warn_urls): New string.
+	(cached_site-list, dropped_site_list): New SiteLists.
+	(site_list_type::init, site_list_type::site_list_type): Change to four
+	parameter form.
+	(site_list_type::site_list_type, site_list_type::operator=) Copy
+	servername, area and location.
+	(load_site_list): New function, broken out of get_site_list.  Support
+	four-parameter site_list_type.
+	(get_site_list): Break out load_site_list.  Move reading cache earlier.
+	Don't write new cache.  Set flags to record cache state.  Load both
+	all_site_list and cached_site_list.
+	(SiteSetting::registerSavedSite): Use four-parameter site_list_type.
+	(drop_proc, check_dropped_mirrors, write_cache_list, save_cache_file):
+	New functions.
+	(SitePage::OnNext): Check for dropped mirrors and save cache as
+	appropriate.
+	(SitePage::OnMessageCmd): Use four-parameter site_list_type.
+	* site.h
+	(site_list_type::init, site_list_type::site_list_type): Change to four
+	parameter form.
+	(site_list_type): Add servername, area and location members.
+
 2006-03-09  Igor Peshansky  <pechtcha@cs.nyu.edu>
 
 	* script.cc (Script::run): Fix inverted test for abnormal exit.
