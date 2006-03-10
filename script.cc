@@ -243,7 +243,7 @@ Script::run() const
   if (to_log && !file_out.isEmpty ())
     log(LOG_BABBLE) << file_out << endLog;
 
-  if (!retval)
+  if (retval)
     log(LOG_PLAIN) << "abnormal exit: exit code=" << retval << endLog;;
 
   /* if file exists then delete it otherwise just ignore no file error */

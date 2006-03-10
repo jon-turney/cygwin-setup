@@ -1,3 +1,7 @@
+2006-03-09  Igor Peshansky  <pechtcha@cs.nyu.edu>
+
+	* script.cc (Script::run): Fix inverted test for abnormal exit.
+
 2006-03-09  Bas van Gompel  <patch-cygsup.buzz@bavag.tmfweb.nl>
 	    Max Bowsher  <maxb1@ukf.net>
 
