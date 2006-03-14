@@ -160,7 +160,8 @@ PickView::setViewMode (views mode)
       for (packagedb::categoriesType::iterator n =
             packagedb::categories.begin(); n != packagedb::categories.end();
             ++n)
-        insert_category (&*n, CATEGORY_COLLAPSED);
+        insert_category (&*n, (*n).first.c_str()[0] == '.'
+				? CATEGORY_EXPANDED : CATEGORY_COLLAPSED);
     }
   else
     {

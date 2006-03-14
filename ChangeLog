@@ -1,3 +1,8 @@
+2006-03-14  Igor Peshansky  <pechtcha@cs.nyu.edu>
+
+	* PickView.cc (PickView::setViewMode): Auto-expand category if
+	its name starts with a dot.
+
 2006-03-14  Dave Korn  <dave.korn@artimi.com>
 
 	* String++.cc (new_cstr_char_array):  Handle null input correctly.
