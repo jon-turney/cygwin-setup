@@ -289,9 +289,11 @@ String::replace (String const &pattern, String const &replacement) const
 char *
 new_cstr_char_array (const String &s)
 {
-  size_t len = s.size() + 1;
-  char *buf = new char[len];
-  memcpy (buf, s.c_str (), len);
+  size_t len = s.size();
+  char *buf = new char[len + 1];
+  if (len)
+    memcpy (buf, s.c_str (), len);
+  buf[len] = 0;
   return buf;
 }
 
