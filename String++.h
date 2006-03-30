@@ -58,8 +58,10 @@ public:
 	{
 	  return s1.casecompare (s2) < 0;
 	}};
+private:
   String replace (char pattern, char replacement) const;
   String replace (String const &pattern, String const &replacement) const;
+public:
 
   operator std::string() const {
     return std::string( size() ? c_str() : "" );
@@ -122,5 +124,8 @@ format_1000s(const int num, char sep = ',');
 std::string stringify(int num);
 
 int casecompare (const std::string& a, const std::string& b, size_t limit = 0);
+
+std::string replace(const std::string& haystack, const std::string& needle,
+		    const std::string& replacement);
 
 #endif /* SETUP_STRING___H */

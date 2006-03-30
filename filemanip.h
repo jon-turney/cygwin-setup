@@ -32,7 +32,7 @@ struct fileparse
 int parse_filename (const std::string & fn, fileparse & f);
 String base (String const &);
 size_t get_file_size (String const &);
-String backslash (String const &);
+std::string backslash (const std::string& s);
 const char * trail (const char *, const char *);
 
 #endif /* SETUP_FILEMANIP_H */

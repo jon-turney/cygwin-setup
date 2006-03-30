@@ -158,8 +158,14 @@ trail (const char *haystack, const char *needle)
   return haystack;
 }
 
-String
-backslash (String const & aString)
+std::string
+backslash(const std::string& s)
 {
-  return aString.replace ('/', '\\');
+  std::string rv(s);
+  
+  for (std::string::iterator it = rv.begin(); it != rv.end(); ++it)
+    if (*it == '/')
+      *it = '\\';
+    
+  return rv;
 }

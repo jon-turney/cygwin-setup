@@ -352,3 +352,21 @@ casecompare (const std::string& a, const std::string& b, size_t limit)
 
   return 0;
 }
+
+std::string
+replace(const std::string& haystack, const std::string& needle,
+	const std::string& replacement)
+{
+  std::string rv(haystack);
+  size_t n_len = needle.length(), r_len = replacement.length(),
+	 search_start = 0;
+  
+  while (true)
+  {
+    size_t pos = rv.find(needle, search_start);
+    if (pos == std::string::npos)
+      return rv;
+    rv.replace(pos, n_len, replacement);
+    search_start = pos + r_len;
+  }
+}

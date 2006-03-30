@@ -1,5 +1,18 @@
 2006-03-30  Max Bowsher  <maxb1@ukf.net>
 
+	* String++.cc (replace): New function to take the place of one form
+	of String::replace method.
+	* String++.h (replace): Declare.
+	(String::replace): Make private.
+
+	* desktop.cc (make_cygwin_bat): Use new function.
+	* filemanip.cc (backslash): Use simple loop in place of
+	String::replace.
+	* filemanip.h (backslash): Change signature to use std::string in
+	place of String.
+
+2006-03-30  Max Bowsher  <maxb1@ukf.net>
+
 	* String++.cc, String++.h (casecompare): New function replacing
 	String.casecompare to increase parity with std::string.
 	(String::casecompare): Make private.
