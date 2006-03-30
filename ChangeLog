@@ -1,3 +1,20 @@
+2006-03-30  Max Bowsher  <maxb1@ukf.net>
+
+	* String++.cc, String++.h: Remove String(int) constructor, which
+	was causing dangerously bizarre implicit conversions, and was a point
+	of disparity between String and std::string.
+	(stringify): New function to replace functionality removed above.
+
+	* PickView.cc (PickView::init_headers),
+	archive_tar.cc (archive_tar::next_file_name),
+	cygpackage.cc (cygpackage::setCanonicalVersion):
+	Make explicit and call out with a FIXME some bizarre behaviour.
+	
+	* ScanFindVisitor.cc (ScanFindVisitor::visitFile),
+	filemanip.cc (base), iniparse.y,
+	threebar.cc (ThreeBarProgressPage::SetBar2):
+	Make simple adaptations to the changed API.
+
 2006-03-14  Igor Peshansky  <pechtcha@cs.nyu.edu>
 
 	* PickView.cc (PickView::setViewMode): Auto-expand category if

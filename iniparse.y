@@ -122,8 +122,8 @@ singleitem /* non-empty */
  | BUILDDEPENDS { iniBuilder->buildBeginBuildDepends(); } versionedpackagelist NL
  | FILES NL SourceFilesList
  | DESCTAG mlinedesc
- | error 			{ yyerror (String("unrecognized line ") 
-					  + yylineno 
+ | error 			{ yyerror (std::string("unrecognized line ") 
+					  + stringify(yylineno)
 					  + " (do you have the latest setup?)");
 				}
  ;

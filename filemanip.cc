@@ -44,7 +44,7 @@ String
 base (String const &aString)
 {
   if (!aString.size())
-    return 0;
+    return "";
   const char *s = aString.c_str();
   String rv = s;
   while (*s)

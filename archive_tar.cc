@@ -202,7 +202,11 @@ archive_tar::next_file_name ()
 	    state.file_length - state.file_offset >
 	    512 ? 512 : state.file_length - state.file_offset;
 	  if (state.parent->read (buf, 512) < 512)
-	    return 0;
+	    // FIXME: What's up with the "0"? It's probably a mistake, and
+	    // should be "". It used to be written as 0, and was subject to a
+	    // bizarre implicit conversion by the unwise String(int)
+	    // constructor.
+	    return "0";
 	  memcpy (c, buf, need);
 	  c += need;
 	  state.file_offset += need;

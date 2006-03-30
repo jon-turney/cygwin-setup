@@ -16,6 +16,7 @@
 // This is the implementation of the ThreeBarProgressPage class.  It is a fairly generic
 // progress indicator property page with three progress bars.
 
+#include <string>
 #include "win32.h"
 #include "commctrl.h"
 #include "resource.h"
@@ -109,7 +110,7 @@ ThreeBarProgressPage::SetBar2 (long progress, long max)
 {
   int percent = (int) (100.0 * ((double) progress) / (double) max);
   SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) percent, 0);
-  String s(percent);
+  std::string s = stringify(percent);
   s += "% - Cygwin Setup";
   GetOwner ()->SetWindowText (s.c_str());
 }

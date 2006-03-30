@@ -54,14 +54,6 @@ String::~String ()
     delete theData;
 }
 
-String::String (int const anInt)
-{
-  ostringstream os;
-  os << anInt;
-  theData = new _data(os.str().size());
-  memcpy (theData->theString, os.str().c_str(), os.str().size());
-}
-
 String::String (string const &aString) : theData (new _data (aString.c_str() ? strlen (aString.c_str()) : 0))
 {
   memcpy (theData->theString, aString.c_str(), theData->length);
@@ -326,3 +318,10 @@ format_1000s(const int num, char sep)
   return String(os.str());
 }
 
+std::string
+stringify(int num)
+{
+  std::ostringstream os;
+  os << num;
+  return os.str();
+}

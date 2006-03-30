@@ -101,7 +101,10 @@ cygpackage::setCanonicalVersion (String const &version)
     }
   else
     {
-      packagev = 0;
+      // FIXME: What's up with the "0"? It's probably a mistake, and should be
+      // "". It used to be written as 0, and was subject to a bizarre implicit
+      // conversion by the unwise String(int) constructor.
+      packagev = "0";
       vendor = version;
     }
 }

@@ -51,11 +51,12 @@ ScanFindVisitor::visitFile(String const &basePath, const WIN32_FIND_DATA *theFil
     {
       //assume binary
       _Builder.buildPackageInstall (basePath + theFile->cFileName);
-      _Builder.buildInstallSize(theFile->nFileSizeLow);
+      _Builder.buildInstallSize(stringify(theFile->nFileSizeLow));
     }
   else
     // patch or src, assume src until someone complains
-    _Builder.buildPackageSource (basePath + theFile->cFileName, theFile->nFileSizeLow);
+    _Builder.buildPackageSource (basePath + theFile->cFileName,
+                                 stringify(theFile->nFileSizeLow));
  
   // TODO: Review the below code. We may wish to reinstate it *somewhere*.  
 

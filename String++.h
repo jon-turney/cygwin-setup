@@ -31,7 +31,6 @@ public:
   inline String (String const &);
   // We're notperformance bottlenecked.
   String (const char *); 
-  String (int const);
   String (std::string const &);
   inline String & operator = (String const &);
   ~String();
@@ -117,5 +116,7 @@ char *new_cstr_char_array (const String &s);
 
 String
 format_1000s(const int num, char sep = ',');
+
+std::string stringify(int num);
 
 #endif /* SETUP_STRING___H */
