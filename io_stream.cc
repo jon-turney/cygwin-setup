@@ -34,15 +34,7 @@ static const char *cvsid =
 
 using namespace std;
 
-struct ltstr
-{
-  bool operator()(String const &s1, String const &s2) const
-    {
-      return s1.casecompare (s2) < 0;
-    }
-};
-
-typedef map <String, IOStreamProvider * ,ltstr> providersType;
+typedef map <String, IOStreamProvider *, String::caseless> providersType;
 static providersType *providers;
 static size_t longestPrefix = 0;
 static int inited = 0;
@@ -72,7 +64,7 @@ findProvider (String const &path)
   for (providersType::const_iterator i = providers->begin();
        i != providers->end(); ++i)
     {
-      if (!path.casecompare (i->first, i->first.size()))
+      if (!casecompare(path, i->first, i->first.size()))
        	return i->second;
     }
   return NULL;

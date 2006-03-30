@@ -50,7 +50,7 @@ public:
   String key;
   bool operator == (site const &rhs)
     {
-      return key.casecompare (rhs.key) == 0;
+      return casecompare(key, rhs.key) == 0;
     }
 };
 

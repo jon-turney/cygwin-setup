@@ -70,11 +70,11 @@ SourceSetting::save()
 int
 SourceSetting::sourceFromString(String const & aSource)
 {
-  if (!aSource.casecompare("Download"))
+  if (!casecompare(aSource, "Download"))
     return IDC_SOURCE_DOWNLOAD;
-  if (!aSource.casecompare("Download,Install"))
+  if (!casecompare(aSource, "Download,Install"))
     return IDC_SOURCE_NETINST;
-  if (!aSource.casecompare("Install"))
+  if (!casecompare(aSource, "Install"))
     return IDC_SOURCE_CWD;
 
   /* A sanish default */

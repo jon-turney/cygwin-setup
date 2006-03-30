@@ -22,6 +22,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -324,4 +325,30 @@ stringify(int num)
   std::ostringstream os;
   os << num;
   return os.str();
+}
+
+int
+casecompare (const std::string& a, const std::string& b, size_t limit)
+{
+  size_t length_to_check = std::min(a.length(), b.length());
+  if (limit && length_to_check > limit)
+    length_to_check = limit;
+
+  size_t i;
+  for (i = 0; i < length_to_check; ++i)
+    if (toupper(a[i]) < toupper(b[i]))
+      return -1;
+    else if (toupper(a[i]) > toupper(b[i]))
+      return 1;
+
+  // Hit the comparison limit without finding a difference
+  if (limit && i == limit) 
+    return 0;
+
+  if (a.length() < b.length())
+    return -1;
+  else if (a.length() > b.length())
+    return 1;
+
+  return 0;
 }

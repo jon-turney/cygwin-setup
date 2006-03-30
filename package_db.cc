@@ -291,7 +291,7 @@ ConnectedLoopFinder::visit(size_t const nodeToVisit)
 	   * vist the iterator
 	   */
 	   size_t nodeJustVisited = 0;
-	   while (nodeJustVisited < db.packages.size() && db.packages[nodeJustVisited]->name.casecompare((*i)->packageName())) 
+	   while (nodeJustVisited < db.packages.size() && casecompare(db.packages[nodeJustVisited]->name, (*i)->packageName())) 
 	     ++nodeJustVisited;
 	   if (nodeJustVisited == db.packages.size())
 	     log (LOG_PLAIN) << "Search for package '" << (*i)->packageName() << "' failed." << endLog;

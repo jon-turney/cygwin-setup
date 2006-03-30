@@ -55,7 +55,7 @@ public:
   SetupFindVisitor (): found(false){}
   virtual void visitFile(String const &basePath, const WIN32_FIND_DATA *theFile)
     {
-      if (!String ("setup.ini").casecompare(theFile->cFileName) && 
+      if (!casecompare("setup.ini", theFile->cFileName) && 
 	  (theFile->nFileSizeLow || theFile->nFileSizeHigh))
 	found = true;
     }

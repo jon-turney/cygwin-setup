@@ -133,12 +133,12 @@ packageversion::operator != (packageversion const &rhs) const
 bool
 packageversion::operator < (packageversion const &rhs) const
 {
-  int t = data->Name ().casecompare (rhs.data->Name());
+  int t = casecompare(data->Name(), rhs.data->Name());
   if (t < 0)
     return true;
   else if (t > 0)
     return false;
-  else if (data->Canonical_version().casecompare (rhs.data->Canonical_version()) < 0)
+  else if (casecompare (data->Canonical_version(), rhs.data->Canonical_version()) < 0)
     return true;
   return false;
 }

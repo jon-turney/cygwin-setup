@@ -255,8 +255,8 @@ isObsolete (set <String, String::caseless> &categories)
 bool
 isObsolete (const String &catname)
 {
-  if (catname.casecompare ("ZZZRemovedPackages") == 0 
-        || catname.casecompare ("_", 1) == 0)
+  if (casecompare(catname, "ZZZRemovedPackages") == 0 
+        || casecompare(catname, "_", 1) == 0)
     return true;
   return false;
 }
@@ -287,7 +287,7 @@ PickView::insert_pkg (packagemeta & pkg)
 	   = pkg.categories.begin (); x != pkg.categories.end (); ++x)
         {
 	  // Special case - yuck
-	  if (x->casecompare ("All") == 0)
+	  if (casecompare(*x, "All") == 0)
 	    continue;
 
 	  packagedb db;
@@ -304,7 +304,7 @@ void
 PickView::insert_category (Category *cat, bool collapsed)
 {
   // Urk, special case
-  if (cat->first.casecompare ("All") == 0 ||
+  if (casecompare(cat->first, "All") == 0 ||
       (!showObsolete && isObsolete (cat->first)))
     return;
   PickCategoryLine & catline = *new PickCategoryLine (*this, *cat, 1, collapsed);
@@ -475,7 +475,7 @@ PickView::init_headers (HDC dc)
                cnt < NUM_CATEGORY_COL_WIDTH && cat != pkg.categories.end ();
                ++cat)
             {
-              if (cat->casecompare ("All") == 0)
+              if (casecompare(*cat, "All") == 0)
                 continue;
               if (compound_cat.size ())
                 compound_cat += ", ";

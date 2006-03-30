@@ -46,7 +46,7 @@ PackageSpecification::setVersion (String const &aVersion)
 bool
 PackageSpecification::satisfies (packageversion const &aPackage) const
 {
-  if (_packageName.casecompare (aPackage.Name()) != 0)
+  if (casecompare(_packageName, aPackage.Name()) != 0)
     return false;
   if (_operator && _version.size() 
       && !_operator->satisfies (aPackage.Canonical_version (), _version))
@@ -108,15 +108,15 @@ PackageSpecification::_operators::satisfies (String const &lhs, String const &rh
   switch (_value)
     {
     case 0:
-      return lhs.casecompare (rhs) == 0;
+      return casecompare(lhs, rhs) == 0;
     case 1:
-      return lhs.casecompare (rhs) < 0;
+      return casecompare(lhs, rhs) < 0;
     case 2:
-      return lhs.casecompare (rhs) > 0;
+      return casecompare(lhs, rhs) > 0;
     case 3:
-      return lhs.casecompare (rhs) <= 0;
+      return casecompare(lhs, rhs) <= 0;
     case 4:
-      return lhs.casecompare (rhs) >= 0;
+      return casecompare(lhs, rhs) >= 0;
     }
   return false;
 }

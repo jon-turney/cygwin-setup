@@ -46,11 +46,11 @@ public:
   filedef (String const &_path) : key (_path) {}
   bool operator == (filedef const &rhs) const
     {
-      return key.casecompare (rhs.key) == 0;
+      return casecompare(key, rhs.key) == 0;
     }
   bool operator < (filedef const &rhs) const
     {
-      return key.casecompare (rhs.key) < 0;
+      return casecompare(key, rhs.key) < 0;
     }
 };
 

@@ -44,7 +44,7 @@ void
 IniParseFindVisitor::visitFile(String const &basePath, const WIN32_FIND_DATA *theFile)
 {
   //TODO: Test for case sensitivity issues
-  if (String("setup.ini").casecompare(theFile->cFileName))
+  if (casecompare("setup.ini", theFile->cFileName))
     return;
 
   String path = basePath + theFile->cFileName;

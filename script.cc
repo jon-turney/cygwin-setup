@@ -269,8 +269,8 @@ bool
 Script::isAScript (String const &file)
 {
     /* file may be /etc/postinstall or etc/postinstall */
-    if (file.casecompare (ETCPostinstall, sizeof(ETCPostinstall)-1) &&
-	file.casecompare (ETCPostinstall+1, sizeof(ETCPostinstall)-2))
+    if (casecompare(file, ETCPostinstall, sizeof(ETCPostinstall)-1) &&
+	casecompare(file, ETCPostinstall+1, sizeof(ETCPostinstall)-2))
       return false;
     if (file.c_str()[file.size() - 1] == '/')
       return false;

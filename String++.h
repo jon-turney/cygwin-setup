@@ -43,7 +43,9 @@ public:
   // the constructors
   // - means this sorts to the left of the parameter
   int compare (String const &, size_t const = 0) const;
+private:
   int casecompare (String const &, size_t const = 0) const;
+public:
   String &append (String const &);
   String &operator += (String const &);
   String operator + (String const &) const;
@@ -118,5 +120,7 @@ String
 format_1000s(const int num, char sep = ',');
 
 std::string stringify(int num);
+
+int casecompare (const std::string& a, const std::string& b, size_t limit = 0);
 
 #endif /* SETUP_STRING___H */

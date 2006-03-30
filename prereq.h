@@ -12,7 +12,7 @@ using namespace std;
 struct packagemeta_ltcomp
 {
   bool operator() ( const packagemeta *m1, const packagemeta *m2 )
-    { return m1->name.casecompare (m2->name) < 0; }
+    { return casecompare(m1->name, m2->name) < 0; }
 };
 
 

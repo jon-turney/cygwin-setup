@@ -288,7 +288,7 @@ static int
 in_table (struct mnt *m)
 {
   for (struct mnt * m1 = mount_table; m1 < m; m1++)
-    if (m1->posix.casecompare (m->posix) == 0)
+    if (casecompare(m1->posix, m->posix) == 0)
       return 1;
   return 0;
 }
@@ -484,7 +484,7 @@ path_prefix_p (String const path1, String const path2)
     return SLASH_P (path2.c_str ()[0])
       && !SLASH_P (path2.c_str ()[1]);
 
-  if (path1.casecompare (path2, len1) != 0)
+  if (casecompare(path1, path2, len1) != 0)
     return 0;
 
   return SLASH_P (path2.c_str ()[len1]) || path2.size () == len1

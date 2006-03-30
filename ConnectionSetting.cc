@@ -80,11 +80,11 @@ ConnectionSetting::save()
 int
 ConnectionSetting::typeFromString(String const & aType)
 {
-  if (!aType.casecompare("Direct"))
+  if (!casecompare(aType, "Direct"))
     return IDC_NET_DIRECT;
-  if (!aType.casecompare("IE"))
+  if (!casecompare(aType, "IE"))
     return IDC_NET_IE5;
-  if (!aType.casecompare("Proxy"))
+  if (!casecompare(aType, "Proxy"))
     return IDC_NET_PROXY;
 
   /* A sanish default */
