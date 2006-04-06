@@ -28,7 +28,7 @@ class Script {
 public:
   static bool isAScript (String const &file);
   Script (String const &fileName);
-  String baseName() const;
+  std::string baseName() const;
   String fullName() const;
 /* Run the script.  If its suffix is .sh, and we have a Bourne shell, execute
    it using sh.  Otherwise, if the suffix is .bat, execute using cmd.exe (NT)

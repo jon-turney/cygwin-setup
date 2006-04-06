@@ -37,7 +37,6 @@ public:
   char const * c_str() const; // only valid until the next mutator call
   			      // pretends to be const !!
   inline size_t size() const; // number of characters (!= storage size).
-  size_t find (char) const;
   String substr (size_t start = 0, int len = -1) const;
   // operator == and != can be done if/when we have a 'casesensitive' flag to
   // the constructors
@@ -58,10 +57,6 @@ public:
 	{
 	  return s1.casecompare (s2) < 0;
 	}};
-private:
-  String replace (char pattern, char replacement) const;
-  String replace (String const &pattern, String const &replacement) const;
-public:
 
   operator std::string() const {
     return std::string( size() ? c_str() : "" );

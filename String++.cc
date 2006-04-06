@@ -74,19 +74,6 @@ String::c_str () const
   return theData->cstr;
 }
 
-// does this character exist in the string?
-// 0 is false, 1 is the first position...
-// XXX FIXME: Introduce npos, and change all
-// if (size) calls to be if (size()==npos)
-size_t
-String::find(char aChar) const
-{
-  for (size_t i=0; i < theData->length; ++i)
-    if (theData->theString[i] == aChar)
-      return i+1;
-  return 0;
-}
-
 String
 String::substr(size_t start, int len) const
 {
@@ -220,63 +207,6 @@ String::absorb (unsigned char *aString, size_t aLength)
   theString.theData->theString = aString;
   theString.theData->length = aLength;
   return theString;
-}
-
-String
-String::replace (char pattern, char replacement) const
-{
-  unsigned char *tempcString = new unsigned char [theData->length];
-  // remove when exceptions are done
-  if (!tempcString)
-      exit (100);
-  unsigned char *s = theData->theString;
-  unsigned char *d = tempcString;
-  unsigned char *end = theData->theString + theData->length;
-  for (s = theData->theString; s < end; ++s)
-  {
-    if (*s == pattern)
-      *d++ = replacement;
-    else
-      *d++ = *s;
-  }
-  return absorb (tempcString, theData->length);
-}
-
-String
-String::replace (String const &pattern, String const &replacement) const
-{
-  int growth = replacement.theData->length - pattern.theData->length + 1;
-  if (growth < 1) growth = 1;
-  unsigned char *tempcString = new unsigned char [theData->length * growth];
-  // remove when exceptions are done
-  if (!tempcString)
-      exit (100);
-  unsigned char *s = theData->theString;
-  unsigned char *d = tempcString;
-  unsigned char *end = theData->theString + theData->length;
-  for (s = theData->theString; s < end - pattern.theData->length; )
-  {
-    if (memcmp(s, pattern.theData->theString, pattern.theData->length) == 0)
-    {
-      s += pattern.theData->length;
-      memcpy(d, replacement.theData->theString, replacement.theData->length);
-      d += replacement.theData->length;
-    }
-    else
-      *d++ = *s++;
-  }
-  for (; s < end; )
-    *d++ = *s++;
-  size_t length = d - tempcString;
-  // Avoid wasting space
-  unsigned char *newCopy = new unsigned char[length];
-  // remove when exceptions are done
-  if (!newCopy)
-      exit (100);
-  memcpy (newCopy, tempcString, length);
-  delete[] tempcString;
-
-  return absorb (newCopy, length);
 }
 
 char *

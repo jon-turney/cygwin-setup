@@ -151,7 +151,7 @@ directory_is_rootdir ()
 static int
 directory_has_spaces ()
 {
-  if (get_root_dir ().find(' '))
+  if (std::string(get_root_dir()).find(' ') != std::string::npos)
     return 1;
   return 0;
 }

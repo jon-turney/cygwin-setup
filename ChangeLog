@@ -1,3 +1,12 @@
+2006-04-06  Max Bowsher  <maxb1@ukf.net>
+
+	* String++.h, String++.cc
+	(String::replace): Remove - usused.
+	(String::find): Remove - semantics do not match std::string.
+
+	* root.cc (directory_is_rootdir): Switch to std::string.find().
+	* script.cc (Script::baseName): Rewrite use of String.find().
+
 2006-03-30  Max Bowsher  <maxb1@ukf.net>
 
 	* String++.cc (replace): New function to take the place of one form

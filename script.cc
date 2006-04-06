@@ -282,12 +282,11 @@ Script::Script (String const &fileName) : scriptName (fileName)
   
 }
 
-String
+std::string
 Script::baseName() const
 {
-  String result = scriptName;
-  while (result.find ('/'))
-    result = result.substr(result.find ('/'));
+  std::string result = scriptName;
+  result = result.substr(result.rfind('/') + 1);
   return result;
 }
 
