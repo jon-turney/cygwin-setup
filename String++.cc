@@ -210,7 +210,7 @@ String::absorb (unsigned char *aString, size_t aLength)
 }
 
 char *
-new_cstr_char_array (const String &s)
+new_cstr_char_array (const std::string &s)
 {
   size_t len = s.size();
   char *buf = new char[len + 1];
@@ -230,8 +230,8 @@ operator << (ostream &os, String const &theString)
   return os;
 }
 
-String
-format_1000s(const int num, char sep)
+std::string
+format_1000s (int num, char sep)
 {
   int mult = 1;
   while (mult * 1000 < num)
@@ -246,7 +246,7 @@ format_1000s(const int num, char sep)
       if (triplet < 10) os << '0';
       os << triplet;
     }
-  return String(os.str());
+  return os.str();
 }
 
 std::string

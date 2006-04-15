@@ -105,7 +105,7 @@ String::size() const
   return theData->length;
 }
 
-char *new_cstr_char_array (const String &s);
+char *new_cstr_char_array (const std::string& s);
 
 #define __TOSTRING__(X) #X
 /* Note the layer of indirection here is needed to allow
@@ -113,8 +113,7 @@ char *new_cstr_char_array (const String &s);
    bar", "TOSTRING(foo)", to yield "bar". */
 #define TOSTRING(X) __TOSTRING__(X)
 
-String
-format_1000s(const int num, char sep = ',');
+std::string format_1000s (int num, char sep = ',');
 
 std::string stringify(int num);
 
@@ -122,5 +121,15 @@ int casecompare (const std::string& a, const std::string& b, size_t limit = 0);
 
 std::string replace(const std::string& haystack, const std::string& needle,
 		    const std::string& replacement);
+
+class casecompare_lt_op
+{
+public:
+  bool operator () (const std::string& a, const std::string& b) const
+  { return casecompare(a, b) < 0; }
+};
+
+inline std::string operator+ (const char *a, const std::string& b)
+{ return std::string(a) + b; }
 
 #endif /* SETUP_STRING___H */
