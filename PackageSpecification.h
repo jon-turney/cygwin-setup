@@ -16,9 +16,8 @@
 #ifndef SETUP_PACKAGESPECIFICATION_H
 #define SETUP_PACKAGESPECIFICATION_H
 
-/* To parse this file */
-#include "String++.h"
 #include <iosfwd>
+#include "String++.h"
 class packageversion;
 
 /* Describe a package - i.e. we need version 5 of apt */
@@ -27,17 +26,17 @@ class PackageSpecification
 {
 public:
   PackageSpecification () : _packageName (), _operator(0) {}
-  PackageSpecification (String const &packageName);
+  PackageSpecification (const std::string& packageName);
   ~PackageSpecification () {}
 
   class _operators;
  
-  String const& packageName() const; 
+  const std::string& packageName() const; 
   void setOperator (_operators const &);
-  void setVersion (String const &);
+  void setVersion (const std::string& );
 
   bool satisfies (packageversion const &) const;
-  String serialise () const;
+  std::string serialise () const;
 
   PackageSpecification &operator= (PackageSpecification const &);
 
@@ -56,7 +55,7 @@ public:
       bool operator == (_operators const &rhs) { return _value == rhs._value; }
       bool operator != (_operators const &rhs) { return _value != rhs._value; }
       const char *caption () const;
-      bool satisfies (String const &lhs, String const &rhs) const;
+      bool satisfies (const std::string& lhs, const std::string& rhs) const;
     private:
       int _value;
     };
@@ -67,9 +66,9 @@ public:
   static const _operators MoreThanEquals;
 
 private:
-  String _packageName; /* foobar */
+  std::string _packageName; /* foobar */
   _operators const * _operator; /* >= */
-  String _version;       /* 1.20 */
+  std::string _version;       /* 1.20 */
 };
 
 std::ostream &

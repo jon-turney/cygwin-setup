@@ -207,7 +207,7 @@ TokenGroupCollection::find (Setup::SIDWrapper const &aSID) const
 class NTSecurity
 {
 public:
-  static void NoteFailedAPI(String const &);
+  static void NoteFailedAPI(const std::string& );
   NTSecurity();
   ~NTSecurity();
   /* prevent synthetics */
@@ -238,7 +238,7 @@ set_default_sec()
 }
 
 void
-NTSecurity::NoteFailedAPI(String const &api)
+NTSecurity::NoteFailedAPI(const std::string& api)
 {
       log (LOG_TIMESTAMP) << api << "() failed: " << GetLastError () << endLog;
 }
@@ -424,7 +424,7 @@ main (int argc, char **argv)
   try {
     char *cwd=new char[MAX_PATH];
     GetCurrentDirectory (MAX_PATH, cwd);
-    local_dir = String (cwd);
+    local_dir = std::string (cwd);
     delete cwd;
 
     // TODO: make an equivalent for __argv under cygwin.

@@ -16,8 +16,9 @@
 #ifndef SETUP_DIALOG_H
 #define SETUP_DIALOG_H
 
+#include <string>
+
 #include "win32.h"
-#include "String++.h"
 
 /* global instance for the application; set in main.cc */
 extern HINSTANCE hinstance;
@@ -47,7 +48,7 @@ char *eget (HWND h, int id, char *var);
 
 /* Get the value of an EditText control. */
 
-String egetString (HWND h, int id);
+std::string egetString (HWND h, int id);
 
 /* Same, but convert the value to an integer */
 
@@ -56,7 +57,7 @@ int eget (HWND h, int id);
 /* Set the EditText control to the given value */
 
 void eset (HWND h, int id, const char *var);
-void eset (HWND h, int id, String const);
+void eset (HWND h, int id, const std::string);
 void eset (HWND h, int id, int var);
 
 /* RadioButtons.  ids is a null-terminated list of IDs.  Get

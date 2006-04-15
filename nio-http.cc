@@ -178,7 +178,7 @@ retry_get:
 	{
 	  delete
 	    s;
-	  Purl = (String ("ftp://") + net_ftp_user +
+	  Purl = (std::string("ftp://") + net_ftp_user +
 			":" + net_ftp_passwd + "@" + (Purl + 6)).c_str();
 	  goto retry_get;
 	}

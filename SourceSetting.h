@@ -19,16 +19,16 @@
 // This is the header for the SourceSetting class, which persists and reads
 // in user settings to decide what setup should be trying to do...
 
+#include <string>
 #include "UserSetting.h"
 
-class String;
 class SourceSetting : public UserSetting 
 {
   public:
     virtual void load();
     virtual void save();
   private:
-    int sourceFromString(String const &aSource);
+    int sourceFromString(const std::string& aSource);
 };
 
 #endif /* SETUP_SOURCESETTING_H */

@@ -67,7 +67,9 @@ UserSettings::deRegisterSetting(UserSetting &aSetting)
 {
   Settings::iterator i = find(settings.begin(), settings.end(), &aSetting);
   if (i == settings.end())
-    throw new Exception (TOSTRING(__LINE__) " " __FILE__, String ("Attempt to deregister non registered setting!"), APPERR_LOGIC_ERROR);
+    throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+                         "Attempt to deregister non registered setting!",
+                         APPERR_LOGIC_ERROR);
   settings.erase(i);
 }
 
@@ -84,28 +86,29 @@ UserSettings::saveAllSettings()
 }
 
 io_stream *
-UserSettings::settingFileForLoad(String const &relativeName) const
+UserSettings::settingFileForLoad(const std::string& relativeName) const
 {
-  io_stream *result = io_stream::open (String("cygfile:///etc/setup/") + relativeName, "rt");
+  io_stream *result =
+    io_stream::open("cygfile:///etc/setup/" + relativeName, "rt");
   if (!result)
-    result = io_stream::open (String("file://") + relativeName, "rt");
+    result = io_stream::open("file://" + relativeName, "rt");
   return result;
 }
 
 io_stream *
-UserSettings::settingFileForSave(String const &relativeName) const
+UserSettings::settingFileForSave(const std::string& relativeName) const
 {
   // TODO: this doesn't belong here.
-  io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + local_dir);
+  io_stream::mkpath_p(PATH_TO_DIR, "file://" + local_dir);
 
   io_stream *result;
   // If cygwin's root is known.
   if (get_root_dir ().size())
     {
-      result = io_stream::open (String("cygfile:///etc/setup/") + relativeName, "wb");
-      io_stream::remove (String("file://") + relativeName);
+      result = io_stream::open("cygfile:///etc/setup/" + relativeName, "wb");
+      io_stream::remove("file://" + relativeName);
     }
   else
-    result = io_stream::open (String("file://") + relativeName, "wb");
+    result = io_stream::open("file://" + relativeName, "wb");
   return result;
 }

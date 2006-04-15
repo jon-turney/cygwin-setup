@@ -72,7 +72,7 @@ LocalDirSetting::load(){
       char *fg_ret = f->gets (localdir, 1000);
       delete f;
       if (fg_ret)
-        local_dir = String (localdir);
+        local_dir = std::string (localdir);
     }
   if (((std::string)LocalDirOption).size())
     local_dir = ((std::string)LocalDirOption);

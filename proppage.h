@@ -25,7 +25,6 @@
 #include <prsht.h>
 
 #include "window.h"
-#include "String++.h"
 #include "ControlAdjuster.h"
 
 class PropSheet;
@@ -56,7 +55,7 @@ class PropertyPage:public Window
   typedef struct
     {
       // the URL to load when clicked
-      String url;             
+      std::string url;             
 
       // location of the control's original winproc that we are subclassing
       WNDPROC origWinProc;
@@ -162,7 +161,7 @@ public:
     return OurSheet;
   };
   
-  void makeClickable (int id, String link);
+  void makeClickable (int id, std::string link);
 };
 
 #endif /* SETUP_PROPPAGE_H */

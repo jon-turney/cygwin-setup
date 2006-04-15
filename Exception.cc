@@ -19,7 +19,8 @@ Exception::Exception (char const *where, char const *message, int _appErrNo) : _
 {
 }
 
-Exception::Exception (char const *where, const String &message, int _appErrNo)
+Exception::Exception (char const *where, const std::string& message,
+                      int _appErrNo)
   : appErrNo (_appErrNo)
 {
   _message = message;

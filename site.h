@@ -50,11 +50,11 @@ class site_list_type
 public:
   site_list_type () : url (), displayed_url (), key () {};
   site_list_type (const site_list_type &);
-  site_list_type (const std::string &, const std::string &, const std::string &,
-		  const std::string &);
+  site_list_type (const std::string& , const std::string& ,
+                  const std::string& , const std::string& );
   /* workaround for missing placement new in gcc 2.95 */
-  void init (const std::string &, const std::string &, const std::string &,
-             const std::string &);
+  void init (const std::string& , const std::string& ,
+             const std::string& , const std::string& );
   ~site_list_type () {};
   site_list_type &operator= (const site_list_type &);
   std::string url;

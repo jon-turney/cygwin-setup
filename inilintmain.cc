@@ -19,7 +19,6 @@ static const char *cvsid =
 #endif
 
 #include "getopt++/GetOption.h"
-#include "String++.h"
 #include <iostream>
 #include <strstream>
 
@@ -29,7 +28,7 @@ static ostrstream error_buf;
 static int error_count = 0;
 
 extern int
-yyerror (String const &s)
+yyerror (const std::string& s)
 {
   ostrstream buf;
   buf << "setup.ini line " << yylineno << ": ";

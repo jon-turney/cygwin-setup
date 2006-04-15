@@ -19,7 +19,6 @@
 
 #include "win32.h"
 #include "window.h"
-#include "String++.h"
 #include "RECTWrapper.h"
 #include "msg.h"
 #include "resource.h"
@@ -343,7 +342,7 @@ Window::SetDlgItemFont (int id, const TCHAR * fontname, int Pointsize,
 }
 
 void
-Window::SetWindowText (const String & s)
+Window::SetWindowText (const std::string& s)
 {
   ::SetWindowText (WindowHandle, s.c_str ());
 }

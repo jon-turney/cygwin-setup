@@ -18,14 +18,15 @@ static const char *cvsid = "\n%%% $Id$\n";
 #endif
 
 #include "PackageSpecification.h"
+#include <iostream>
 #include "package_version.h"
 
-PackageSpecification::PackageSpecification (String const &packageName)
+PackageSpecification::PackageSpecification (const std::string& packageName)
   : _packageName (packageName) , _operator (0), _version ()
 {
 }
 
-String const&
+const std::string&
 PackageSpecification::packageName () const
 {
   return _packageName;
@@ -38,7 +39,7 @@ PackageSpecification::setOperator (_operators const &anOperator)
 }
 
 void
-PackageSpecification::setVersion (String const &aVersion)
+PackageSpecification::setVersion (const std::string& aVersion)
 {
   _version = aVersion;
 }
@@ -54,7 +55,7 @@ PackageSpecification::satisfies (packageversion const &aPackage) const
   return true;
 }
 
-String
+std::string
 PackageSpecification::serialise () const
 {
   return _packageName;
@@ -103,7 +104,8 @@ PackageSpecification::_operators::caption () const
 }
 
 bool
-PackageSpecification::_operators::satisfies (String const &lhs, String const &rhs) const
+PackageSpecification::_operators::satisfies (const std::string& lhs,
+                                             const std::string& rhs) const
 {
   switch (_value)
     {

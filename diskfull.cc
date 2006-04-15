@@ -31,7 +31,7 @@ typedef BOOL WINAPI (*GDFS) (LPCTSTR, PULARGE_INTEGER, PULARGE_INTEGER,
 			     PULARGE_INTEGER);
 
 int
-diskfull (String const &path)
+diskfull (const std::string& path)
 {
   WINAPI GDFS gdfs = 0;
 

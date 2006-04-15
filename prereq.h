@@ -37,7 +37,7 @@ public:
   bool isMet ();
   
   // formats 'unmet' as a string for display
-  void getUnmetString (String &s);
+  void getUnmetString (std::string &s);
   
   // selects/picks the needed packages that were missing
   void selectMissing ();

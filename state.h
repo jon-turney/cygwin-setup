@@ -29,13 +29,13 @@
  
  */
 
-#include "String++.h"
+#include <string>
 
 extern bool unattended_mode;
 
 extern int source;
 
-extern String local_dir;
+extern std::string local_dir;
 
 extern int root_text;
 extern int root_scope;

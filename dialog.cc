@@ -47,13 +47,13 @@ eget (HWND h, int id, char *var)
   return var;
 }
 
-String
+std::string
 egetString (HWND h, int id)
 {
-  String aString;
+  std::string aString;
   char tmp[4000];
   if (GetDlgItemText (h, id, tmp, sizeof (tmp)) > 0)
-    aString = String (tmp);
+    aString = std::string (tmp);
   return aString;
 }
 
@@ -72,7 +72,7 @@ eset (HWND h, int id, const char *val)
 }
 
 void
-eset (HWND h, int id, String const aString)
+eset (HWND h, int id, const std::string aString)
 {
   SetDlgItemText (h, id, aString.c_str());
 }

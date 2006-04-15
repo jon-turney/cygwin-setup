@@ -78,7 +78,7 @@ ConnectionSetting::save()
 }
 
 int
-ConnectionSetting::typeFromString(String const & aType)
+ConnectionSetting::typeFromString(const std::string& aType)
 {
   if (!casecompare(aType, "Direct"))
     return IDC_NET_DIRECT;

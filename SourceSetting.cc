@@ -68,7 +68,7 @@ SourceSetting::save()
 }
 
 int
-SourceSetting::sourceFromString(String const & aSource)
+SourceSetting::sourceFromString(const std::string& aSource)
 {
   if (!casecompare(aSource, "Download"))
     return IDC_SOURCE_DOWNLOAD;

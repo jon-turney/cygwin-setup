@@ -1,5 +1,17 @@
 2006-04-15  Max Bowsher  <maxb1@ukf.net>
 
+	* ConnectionSetting.cc, ConnectionSetting.h, Exception.cc,
+	Exception.h, IniParseFeedback.cc, IniParseFeedback.h, LogFile.cc,
+	LogFile.h, LogSingleton.h, PackageSpecification.cc,
+	PackageSpecification.h, SourceSetting.cc, SourceSetting.h,
+	UserSettings.cc, UserSettings.h, dialog.cc, dialog.h, diskfull.cc,
+	diskfull.h, filemanip.cc, filemanip.h, inilintmain.cc, localdir.cc,
+	main.cc, nio-file.cc, nio-http.cc, prereq.cc, prereq.h, proppage.cc,
+	proppage.h, site.cc, site.h, splash.cc, state.cc, state.h, window.cc,
+	window.h: Do some String to std::string migration.
+
+2006-04-15  Max Bowsher  <maxb1@ukf.net>
+
 	* String++.cc, String++.h
 	(new_cstr_char_array, format_1000s): Migrate String to std::string.
 	(casecompare_lt_op, std::string operator+): New. 

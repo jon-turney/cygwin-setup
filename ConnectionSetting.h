@@ -19,16 +19,16 @@
 // This is the header for the ConnectionSetting class, which persists and reads
 // in user settings to decide how setup should connect...
 
+#include <string>
 #include "UserSetting.h"
 
-class String;
 class ConnectionSetting : public UserSetting 
 {
   public:
     virtual void load();
     virtual void save();
   private:
-    int typeFromString(String const &aType);
+    int typeFromString(const std::string& aType);
 };
 
 #endif /* SETUP_CONNECTIONSETTING_H */

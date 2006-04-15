@@ -33,6 +33,7 @@ static const char *cvsid =
 #include <stdexcept>
 #include "AntiVirus.h"
 #include "filemanip.h"
+#include "String++.h"
 
 using namespace std;
 
@@ -41,9 +42,9 @@ class filedef
 {
 public:
   int level;
-  String key;
+  std::string key;
   bool append;
-  filedef (String const &_path) : key (_path) {}
+  filedef (const std::string& _path) : key (_path) {}
   bool operator == (filedef const &rhs) const
     {
       return casecompare(key, rhs.key) == 0;
@@ -60,7 +61,7 @@ struct LogEnt
   LogEnt *next;
   enum log_level level;
   time_t when;
-  String msg;
+  std::string msg;
 };
 
 static LogEnt *first_logent = 0;
@@ -91,7 +92,7 @@ LogFile::clearFiles ()
 }
 
 void
-LogFile::setFile (int minlevel, String const &path, bool append)
+LogFile::setFile (int minlevel, const std::string& path, bool append)
 {
   FileSet::iterator f = files.find (filedef(path));
   if (f != files.end ())
@@ -103,7 +104,7 @@ LogFile::setFile (int minlevel, String const &path, bool append)
   files.insert (t);
 }
 
-String
+std::string
 LogFile::getFileName (int level) const
 {
   for (FileSet::iterator i = files.begin();
@@ -139,16 +140,16 @@ LogFile::exit (int const exit_code)
 }
 
 void
-LogFile::log_save (int babble, String const &filename, bool append)
+LogFile::log_save (int babble, const std::string& filename, bool append)
 {
   static int been_here = 0;
   if (been_here)
     return;
   been_here = 1;
 
-  io_stream::mkpath_p (PATH_TO_FILE, String("file://") + filename);
+  io_stream::mkpath_p (PATH_TO_FILE, "file://" + filename);
 
-  io_stream *f = io_stream::open(String("file://") + filename, append ? "at" : "wt");
+  io_stream *f = io_stream::open("file://" + filename, append ? "at" : "wt");
   if (!f)
     {
       fatal (NULL, IDS_NOLOGFILE, filename.c_str());

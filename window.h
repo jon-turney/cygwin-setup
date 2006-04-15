@@ -26,7 +26,6 @@
 #include <commctrl.h>
 #include "LogSingleton.h"
 
-class String;
 class RECTWrapper;
 
 class Window
@@ -139,7 +138,7 @@ public:
   bool MoveWindow(const RECTWrapper &r, bool Repaint = true);
 
   // Set the title of the window.
-  void SetWindowText (const String & s);
+  void SetWindowText (const std::string& s);
 
   RECT ScreenToClient(const RECT &r) const;
   void ActivateTooltips ();

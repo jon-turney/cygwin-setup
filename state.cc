@@ -26,7 +26,7 @@ bool unattended_mode;
 
 int source;
 
-String local_dir;
+std::string local_dir;
 
 int root_text;
 int root_scope;

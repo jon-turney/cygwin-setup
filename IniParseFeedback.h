@@ -17,7 +17,7 @@
 #define SETUP_INIPARSEFEEDBACK_H
 
 
-class String;
+#include <string>
 /* Strategy for feedback from IniParsing.
  * Used by the builder or parsing classes to send feedback that users need
  * but that should not interrupt parsing.
@@ -27,10 +27,10 @@ class IniParseFeedback
 {
 public:
   virtual void progress (unsigned long const, unsigned long const);
-  virtual void iniName (String const &);
-  virtual void babble (String const &) const;
-  virtual void warning (String const &) const;
-  virtual void error (String const &) const;
+  virtual void iniName (const std::string& );
+  virtual void babble (const std::string& ) const;
+  virtual void warning (const std::string& ) const;
+  virtual void error (const std::string& ) const;
   virtual ~ IniParseFeedback ();
 };
 

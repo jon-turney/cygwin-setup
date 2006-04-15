@@ -17,19 +17,19 @@
 #define SETUP_EXCEPTION_H
 
 #include <exception>
+#include <string>
 #include <typeinfo>
-#include "String++.h"
 #include "msg.h"
 
 class Exception : public std::exception {
 public:
   Exception (char const *where, char const *message, int appErrNo = 0);
-  Exception (char const *where, const String &message, int appErrNo = 0);
+  Exception (char const *where, const std::string& message, int appErrNo = 0);
   ~Exception () throw() {};
   char const *what() const throw();
   int errNo() const;
 private:
-  String _message;
+  std::string _message;
   int appErrNo;
 };
 

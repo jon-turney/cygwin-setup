@@ -25,8 +25,8 @@ public:
   static LogFile *createLogFile();
   LogFile();
   void clearFiles(); // delete all target filenames
-  void setFile (int minlevel, String const &path, bool append);
-  String getFileName (int level) const;
+  void setFile (int minlevel, const std::string& path, bool append);
+  std::string getFileName (int level) const;
   /* Some platforms don't call destructors. So this call exists
    * which guarantees to flush any log data...
    * but doesn't call generic C++ destructors
@@ -42,7 +42,7 @@ protected:
   LogFile &operator = (LogFile const&); // no assignment operator
   virtual void endEntry(); // the current in-progress entry is complete.
 private:
-  void log_save (int babble, String const &filename, bool append);
+  void log_save (int babble, const std::string& filename, bool append);
 };
 
 #endif /* SETUP_LOGFILE_H */

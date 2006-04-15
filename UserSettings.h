@@ -18,11 +18,11 @@
 
 /* A collection of user-related settings */
 
+#include <string>
 #include <vector>
 
 class io_stream;
 class UserSetting;
-class String;
 class UserSettings {
   public:
     static UserSettings &Instance();
@@ -30,8 +30,8 @@ class UserSettings {
     void deRegisterSetting(UserSetting &);
     void loadAllSettings();
     void saveAllSettings();
-    io_stream * settingFileForLoad(String const &relativeName) const;
-    io_stream * settingFileForSave(String const &relativeName) const;
+    io_stream * settingFileForLoad(const std::string& relativeName) const;
+    io_stream * settingFileForSave(const std::string& relativeName) const;
   private:
     static UserSettings Instance_;
     typedef std::vector<UserSetting *> Settings;

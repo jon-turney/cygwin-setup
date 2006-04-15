@@ -384,7 +384,7 @@ PropertyPage::setTitleFont ()
 std::map <int, PropertyPage::ClickableURL> PropertyPage::urls;
 
 void
-PropertyPage::makeClickable (int id, String link)
+PropertyPage::makeClickable (int id, std::string link)
 // turns a static text control in this dialog into a hyperlink
 {
   // get the handle of the specified control

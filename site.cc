@@ -44,6 +44,7 @@ static const char *cvsid =
 #include "threebar.h"
 #include "ControlAdjuster.h"
 #include "Exception.h"
+#include "String++.h"
 
 using namespace std;
 
@@ -688,7 +689,7 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 	if (code == BN_CLICKED)
 	  {
 	    // User pushed the Add button.
-	    String other_url = egetString (GetHWND (), IDC_EDIT_USER_URL);
+	    std::string other_url = egetString (GetHWND (), IDC_EDIT_USER_URL);
 	    if (other_url.size())
 	    {
 	    site_list_type newsite (other_url, "", "", "");

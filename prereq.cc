@@ -79,7 +79,7 @@ PrereqPage::OnActivate()
   // and found that there were missing packages; so we can just call 
   // getUnmetString to format the results and display it
   
-  String s;
+  std::string s;
   PrereqChecker p;
   p.getUnmetString (s);
   SetDlgItemText (GetHWND (), IDC_PREREQ_EDIT, s.c_str ());
@@ -195,14 +195,14 @@ PrereqChecker::isMet ()
 
 /* Formats 'unmet' as a string for display to the user.  */
 void
-PrereqChecker::getUnmetString (String &s)
+PrereqChecker::getUnmetString (std::string &s)
 {
   s = "";
   
   map <packagemeta *, vector <packagemeta *>, packagemeta_ltcomp>::iterator i;
   for (i = unmet.begin(); i != unmet.end(); i++)
     {
-      s = s + "Package: " + i->first->name + "\r\n\tRequired by: ";
+      s = s + "Package: " + std::string(i->first->name) + "\r\n\tRequired by: ";
       for (unsigned int j = 0; j < i->second.size(); j++)
         {
           s += i->second[j]->name;

@@ -18,7 +18,6 @@
 
 #include "setup_version.h"
 #include "resource.h"
-#include "String++.h"
 #include "splash.h"
 
 static ControlAdjuster::ControlInfo SplashControlsInfo[] = {
@@ -44,7 +43,7 @@ SplashPage::Create ()
 void
 SplashPage::OnInit ()
 {
-  String ver = "Setup.exe version ";
+  std::string ver = "Setup.exe version ";
   ver += (setup_version[0] ? setup_version : "[unknown]");
   ::SetWindowText (GetDlgItem (IDC_VERSION), ver.c_str());
   makeClickable (IDC_SPLASH_URL, "http://www.cygwin.com");

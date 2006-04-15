@@ -23,13 +23,14 @@ static const char *cvsid =
 
 #include "filemanip.h"
 #include "io_stream.h"
+#include "String++.h"
 
 using namespace std;
 
 /* legacy wrapper.
  * Clients should use io_stream.get_size() */
 size_t
-get_file_size (String const &name)
+get_file_size (const std::string& name)
 {
   io_stream *theFile = io_stream::open (name, "rb");
   if (!theFile)
@@ -40,13 +41,13 @@ get_file_size (String const &name)
   return rv;
 }
 
-String 
-base (String const &aString)
+std::string 
+base (const std::string& aString)
 {
   if (!aString.size())
     return "";
   const char *s = aString.c_str();
-  String rv = s;
+  std::string rv = s;
   while (*s)
     {
       if ((*s == '/' || *s == ':' || *s == '\\') && s[1])

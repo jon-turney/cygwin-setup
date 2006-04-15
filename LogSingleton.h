@@ -16,7 +16,6 @@
 #ifndef SETUP_LOGSINGLETON_H
 #define SETUP_LOGSINGLETON_H
 
-#include "String++.h"
 #include <iostream>
 
 enum log_level {

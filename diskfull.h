@@ -16,9 +16,9 @@
 #ifndef SETUP_DISKFULL_H
 #define SETUP_DISKFULL_H
 
-#include "String++.h"
+#include <string>
 
 /* returns 0..100 (percent) */
-int diskfull (String const &path);
+int diskfull (const std::string& path);
 
 #endif /* SETUP_DISKFULL_H */
