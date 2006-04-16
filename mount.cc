@@ -72,8 +72,6 @@ enum
 #include "dialog.h"
 #include "state.h"
 
-#include "String++.h"
-
 #ifdef MAINTAINER_FEATURES
 #include "getopt++/GetOption.h"
 #include "getopt++/StringOption.h"
@@ -91,16 +89,16 @@ static StringOption CygwinRegistryNameOption (CYGWIN_INFO_CYGWIN_REGISTRY_NAME, 
 
 static struct mnt
 {
-  String native;
-  String posix;
+  std::string native;
+  std::string posix;
   int istext;
 }
 mount_table[255];
 
 struct mnt *root_here = NULL;
 
-static String
-find2 (HKEY rkey, int *istext, String const &what)
+static std::string
+find2 (HKEY rkey, int *istext, const std::string& what)
 {
   HKEY key;
 
@@ -111,7 +109,7 @@ find2 (HKEY rkey, int *istext, String const &what)
   DWORD retvallen = 0;
   DWORD type;
 
-  String Sretval;
+  std::string Sretval;
   if (RegQueryValueEx (key, "native", 0, &type, 0, &retvallen)
       == ERROR_SUCCESS)
     {
@@ -119,7 +117,7 @@ find2 (HKEY rkey, int *istext, String const &what)
       if (RegQueryValueEx
 	  (key, "native", 0, &type, (BYTE *) retval,
 	   &retvallen) == ERROR_SUCCESS)
-	Sretval = String (retval);
+	Sretval = std::string (retval);
     }
 
   DWORD flags = 0;
@@ -135,7 +133,7 @@ find2 (HKEY rkey, int *istext, String const &what)
 }
 
 void
-create_mount (String const posix, String const win32, int istext,
+create_mount (const std::string posix, const std::string win32, int istext,
 	      int issystem)
 {
   char buf[1000];
@@ -172,7 +170,7 @@ create_mount (String const posix, String const win32, int istext,
 }
 
 static void
-remove1 (HKEY rkey, String const posix)
+remove1 (HKEY rkey, const std::string posix)
 {
   char buf[1000];
 
@@ -185,7 +183,7 @@ remove1 (HKEY rkey, String const posix)
 }
 
 void
-remove_mount (String const posix)
+remove_mount (const std::string posix)
 {
   remove1 (HKEY_LOCAL_MACHINE, posix);
   remove1 (HKEY_CURRENT_USER, posix);
@@ -366,8 +364,8 @@ read_mounts ()
   root_here = NULL;
   for (mnt * m1 = mount_table; m1->posix.size (); m1++)
     {
-      m1->posix = String ();	//empty string;
-      m1->native = String ();
+      m1->posix.clear();
+      m1->native.clear();
     }
 
   /* Loop through subkeys */
@@ -397,10 +395,10 @@ read_mounts ()
 
 	  if (res == ERROR_NO_MORE_ITEMS)
 	    {
-	      m->posix = String ();
+	      m->posix.clear();
 	      break;
 	    }
-	  m->posix = String (aBuffer);
+	  m->posix = std::string (aBuffer);
 
 	  if (!m->posix.size () || in_table (m))
 	    goto no_go;
@@ -427,7 +425,7 @@ read_mounts ()
 	    }
 	  continue;
 	no_go:
-	  m->posix = String ();
+	  m->posix.clear();
 	  --m;
 	}
       RegCloseKey (key);
@@ -436,27 +434,27 @@ read_mounts ()
   if (!root_here)
     {
       root_here = m;
-      m->posix = String ("/");
+      m->posix = "/";
       char windir[MAX_PATH];
       root_text = IDC_ROOT_BINARY;
       root_scope = (is_admin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
       GetWindowsDirectory (windir, sizeof (windir));
       windir[2] = 0;
-      set_root_dir (String (windir) + "\\cygwin");
+      set_root_dir (std::string (windir) + "\\cygwin");
       m++;
     }
 }
 
 void
-set_root_dir (String const val)
+set_root_dir (const std::string val)
 {
   root_here->native = val;
 }
 
-String const
+const std::string
 get_root_dir ()
 {
-  return root_here ? root_here->native : String ();
+  return root_here ? root_here->native : std::string();
 }
 
 /* Return non-zero if PATH1 is a prefix of PATH2.
@@ -473,7 +471,7 @@ get_root_dir ()
 */
 
 static int
-path_prefix_p (String const path1, String const path2)
+path_prefix_p (const std::string path1, const std::string path2)
 {
   size_t len1 = path1.size ();
   /* Handle case where PATH1 has trailing '/' and when it doesn't.  */
@@ -491,8 +489,8 @@ path_prefix_p (String const path1, String const path2)
     || path1.c_str ()[len1 - 1] == ':';
 }
 
-String
-cygpath (String const &thePath)
+std::string
+cygpath (const std::string& thePath)
 {
   size_t max_len = 0;
   struct mnt *m, *match = NULL;
@@ -506,14 +504,14 @@ cygpath (String const &thePath)
     }
 
   if (!match)
-    return String();
+    return std::string();
 
-  String native;
+  std::string native;
   if (max_len == thePath.size ())
     {
       native = match->native;
     }
   else
-    native = match->native + "/" + String (thePath.c_str() + max_len);
+    native = match->native + "/" + thePath.substr(max_len, std::string::npos);
   return native;
 }

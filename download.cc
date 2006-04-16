@@ -34,7 +34,6 @@ static const char *cvsid =
 #include "resource.h"
 #include "msg.h"
 #include "dialog.h"
-#include "String++.h"
 #include "geturl.h"
 #include "state.h"
 #include "LogSingleton.h"
@@ -59,7 +58,7 @@ using namespace std;
 extern ThreeBarProgressPage Progress;
 
 static bool
-validateCachedPackage (String const &fullname, packagesource & pkgsource)
+validateCachedPackage (const std::string& fullname, packagesource & pkgsource)
 {
   DWORD size = get_file_size(fullname);
   if (size != pkgsource.size)
@@ -87,15 +86,18 @@ check_for_cached (packagesource & pkgsource)
   if (pkgsource.Cached())
     return 1;
   
-  String prefix = String ("file://") + local_dir +  "/";
-  String fullname = prefix + pkgsource.Canonical();
+  std::string prefix = "file://" + local_dir + "/";
+  /* FIXME: Nullness check can go away once packagesource is properly
+   * std::string-ified, and doesn't use overcomplex semantics. */
+  std::string fullname = prefix + 
+    (pkgsource.Canonical() ? pkgsource.Canonical() : "");
   if (io_stream::exists(fullname))
   {
     if (validateCachedPackage (fullname, pkgsource))
       pkgsource.set_cached (fullname);
     else
       throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-          String ("Package validation failure for ") + fullname,
+          "Package validation failure for " + fullname,
           APPERR_CORRUPT_PACKAGE);
     return 1;
   }
@@ -106,7 +108,7 @@ check_for_cached (packagesource & pkgsource)
   for (packagesource::sitestype::const_iterator n = pkgsource.sites.begin();
        n != pkgsource.sites.end(); ++n)
   {
-    String fullname = prefix + rfc1738_escape_part (n->key) + "/" +
+    std::string fullname = prefix + rfc1738_escape_part (n->key) + "/" +
       pkgsource.Canonical ();
     if (io_stream::exists(fullname))
     {
@@ -114,7 +116,7 @@ check_for_cached (packagesource & pkgsource)
         pkgsource.set_cached (fullname);
       else
         throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-            String ("Package validation failure for ") + fullname,
+            "Package validation failure for " + fullname,
             APPERR_CORRUPT_PACKAGE);
       return 1;
     }
@@ -148,10 +150,10 @@ download_one (packagesource & pkgsource, HWND owner)
   for (packagesource::sitestype::const_iterator n = pkgsource.sites.begin();
        n != pkgsource.sites.end() && !success; ++n)
     {
-      String const local = local_dir + "/" +
+      const std::string local = local_dir + "/" +
 				  rfc1738_escape_part (n->key) + "/" +
 				  pkgsource.Canonical ();
-      io_stream::mkpath_p (PATH_TO_FILE, String ("file://") + local);
+      io_stream::mkpath_p (PATH_TO_FILE, "file://" + local);
 
       if (get_url_to_file(n->key +  "/" + pkgsource.Canonical (),
 			  local + ".tmp", pkgsource.size, owner))
@@ -161,7 +163,7 @@ download_one (packagesource & pkgsource, HWND owner)
 	}
       else
 	{
-	  size_t size = get_file_size (String("file://") + local + ".tmp");
+	  size_t size = get_file_size ("file://" + local + ".tmp");
 	  if (size == pkgsource.size)
 	    {
 	      log (LOG_PLAIN) << "Downloaded " << local << endLog;
@@ -169,7 +171,7 @@ download_one (packagesource & pkgsource, HWND owner)
 		remove (local.c_str());
 	      rename ((local + ".tmp").c_str(), local.c_str());
 	      success = 1;
-	      pkgsource.set_cached (String ("file://") + local);
+	      pkgsource.set_cached ("file://" + local);
 	      // FIXME: move the downloaded file to the 
 	      //  original locations - without the mirror site dir in the way
 	      continue;

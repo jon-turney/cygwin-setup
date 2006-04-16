@@ -20,23 +20,24 @@
    nonzero if the existing mount is a text mount, else zero for
    binary. */
 
+#include <string>
 #include "String++.h"
 
 char *find_mount (int *istext, int *issystem, char *path);
 
 /* Similar to the mount and umount functions, but simplified */
 
-void create_mount (String const posix, String const win32, int istext,
-		   int issystem);
-void remove_mount (String const posix);
+void create_mount (const std::string posix, const std::string win32,
+                   int istext, int issystem);
+void remove_mount (const std::string posix);
 void read_mounts ();
 
 /* Sets the cygdrive flags.  Used to make the automounted drives' binary/text
 mode consistent with the standard Cygwin mounts. */
 
 void set_cygdrive_flags (int istext, int issystem);
-String cygpath (String const &);
-void set_root_dir (String const);
-String const get_root_dir ();
+std::string cygpath (const std::string& );
+void set_root_dir (const std::string);
+const std::string get_root_dir ();
 
 #endif /* SETUP_MOUNT_H */

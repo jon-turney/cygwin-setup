@@ -84,11 +84,11 @@ class Installer
     void progress (int bytes);
     void preremoveOne (packagemeta &);
     void uninstallOne (packagemeta &);
-    void replaceOnRebootFailed (String const &fn);
-    void replaceOnRebootSucceeded (String const &fn, bool &rebootneeded);
+    void replaceOnRebootFailed (const std::string& fn);
+    void replaceOnRebootSucceeded (const std::string& fn, bool &rebootneeded);
     void installOne (packagemeta &pkg, const packageversion &ver,
                      packagesource &source,
-                     String const &, String const &);
+                     const std::string& , const std::string& );
     int errors;
 };
 
@@ -160,11 +160,10 @@ Installer::uninstallOne (packagemeta & pkg)
 /* log failed scheduling of replace-on-reboot of a given file. */
 /* also increment errors. */
 void
-Installer::replaceOnRebootFailed (String const &fn)
+Installer::replaceOnRebootFailed (const std::string& fn)
 {
   log (LOG_TIMESTAMP) << "Unable to schedule reboot replacement of file "
-    << cygpath (String ("/") + fn).c_str() << " with "
-    << cygpath (String ("/") + fn + ".new").c_str()
+    << cygpath("/" + fn) << " with " << cygpath("/" + fn + ".new")
     << " (Win32 Error " << GetLastError() << ")" << endLog;
   ++errors;
 }
@@ -172,11 +171,10 @@ Installer::replaceOnRebootFailed (String const &fn)
 /* log successful scheduling of replace-on-reboot of a given file. */
 /* also set rebootneeded. */
 void
-Installer::replaceOnRebootSucceeded (String const &fn, bool &rebootneeded)
+Installer::replaceOnRebootSucceeded (const std::string& fn, bool &rebootneeded)
 {
   log (LOG_TIMESTAMP) << "Scheduled reboot replacement of file "
-    << cygpath (String ("/") + fn).c_str() << " with "
-    << cygpath (String ("/") + fn + ".new").c_str() << endLog;
+    << cygpath("/" + fn) << " with " << cygpath("/" + fn + ".new") << endLog;
   rebootneeded = true;
 }
 
@@ -184,10 +182,11 @@ Installer::replaceOnRebootSucceeded (String const &fn, bool &rebootneeded)
 void
 Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                        packagesource &source,
-                       String const &prefixURL, String const &prefixPath)
+                       const std::string& prefixURL,
+                       const std::string& prefixPath)
 {
   Progress.SetText2 (source.Base ());
-  if (!source.Cached () || !io_stream::exists (source.Cached ()))
+  if (!source.Cached() || !io_stream::exists (source.Cached ()))
     {
       note (NULL, IDS_ERR_OPEN_READ, source.Cached (), "No such file");
       ++errors;
@@ -226,12 +225,13 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
   /* FIXME: potential leak of either *tmp or *tmp2 */
   if (thefile)
     {
-      String fn;
+      std::string fn;
       if (ver.Type () == package_binary)
 	{
-	  io_stream *tmp = io_stream::open (String ("cygfile:///etc/setup/") +
-	                                    pkgm.name + ".lst.gz", "wb");
-	  lst = new compress_gz (tmp, "w9");
+          io_stream *tmp = io_stream::open(std::string("cygfile:///etc/setup/")
+                                           + std::string(pkgm.name) +
+                                           ".lst.gz", "wb");
+          lst = new compress_gz (tmp, "w9");
 	  if (lst->error ())
 	    {
               delete lst;
@@ -242,11 +242,11 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 	{
 	  if (lst)
 	    {
-	      String tmp=fn + "\n";
+	      std::string tmp = fn + "\n";
 	      lst->write (tmp.c_str(), tmp.size());
 	    }
 
-	  String canonicalfn = prefixPath + fn;
+	  std::string canonicalfn = prefixPath + fn;
 	  if (Script::isAScript (fn))
 	    pkgm.desired.addScript (Script (canonicalfn));
 
@@ -278,9 +278,8 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 		      /* Get the short file names */
 		      char source[MAX_PATH];
 		      unsigned int len =
-			GetShortPathName (cygpath (String ("/") + fn +
-						   ".new").c_str(),
-					  source, MAX_PATH);
+                        GetShortPathName(cygpath("/" + fn + ".new").c_str(),
+                                         source, MAX_PATH);
 		      if (!len || len > MAX_PATH)
 			{
 			  replaceOnRebootFailed(fn);
@@ -289,9 +288,8 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 			{
 			  char dest[MAX_PATH];
 			  len =
-			    GetShortPathName (cygpath (String ("/") +
-						       fn).c_str(),
-					      dest, MAX_PATH);
+                            GetShortPathName(cygpath("/" + fn).c_str(),
+                                             dest, MAX_PATH);
 			  if (!len || len > MAX_PATH)
 			      replaceOnRebootFailed (fn);
 			  else
@@ -310,11 +308,10 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 		       * - we need a io method to get win32 paths 
 		       * or to wrap this system call
 		       */
-		      if (!MoveFileEx (cygpath (String ("/") + fn +
-						".new").c_str(),
-				       cygpath (String ("/") + fn).c_str(),
-				       MOVEFILE_DELAY_UNTIL_REBOOT |
-				       MOVEFILE_REPLACE_EXISTING))
+                      if (!MoveFileEx(cygpath("/" + fn + ".new").c_str(),
+                                      cygpath("/" + fn).c_str(),
+                                      MOVEFILE_DELAY_UNTIL_REBOOT |
+                                      MOVEFILE_REPLACE_EXISTING))
 			{
 			  replaceOnRebootFailed (fn);
 			}
@@ -390,13 +387,14 @@ do_install_thread (HINSTANCE h, HWND owner)
   num_installs = 0, num_uninstalls = 0;
   rebootneeded = false;
 
-  io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + get_root_dir ());
+  io_stream::mkpath_p (PATH_TO_DIR,
+                       std::string("file://") + std::string(get_root_dir()));
 
   for (i = 0; Installer::StandardDirs[i]; i++)
   {
-    String p = cygpath (Installer::StandardDirs[i]);
+    std::string p = cygpath (Installer::StandardDirs[i]);
     if (p.size())
-      io_stream::mkpath_p (PATH_TO_DIR, String ("file://") + p);
+      io_stream::mkpath_p (PATH_TO_DIR, "file://" + p);
   }
 
   /* Create /var/run/utmp */
@@ -581,19 +579,19 @@ void md5_one (const packagesource& pkgsource)
 {
   if (pkgsource.md5.isSet())
   {
-    String fullname (pkgsource.Cached ());
+    std::string fullname (pkgsource.Cached ());
 
     io_stream *thefile = io_stream::open (fullname, "rb");
     if (!thefile)
       throw new Exception (TOSTRING (__LINE__) " " __FILE__,
-                           String ("IO Error opening ") + fullname,
+                           std::string ("IO Error opening ") + fullname,
                            APPERR_IO_ERROR);
     MD5Sum tempMD5;
     tempMD5.begin ();
 
     log (LOG_BABBLE) << "Checking MD5 for " << fullname << endLog;
 
-    Progress.SetText1 ((String ("Checking MD5 for ")
+    Progress.SetText1 ((std::string ("Checking MD5 for ")
                         + pkgsource.Base ()).c_str ());
     Progress.SetText4 ("Progress:");
     Progress.SetBar1 (0);
@@ -608,7 +606,7 @@ void md5_one (const packagesource& pkgsource)
     delete thefile;
     if (count < 0)
       throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-                           String ("IO Error reading ") + fullname,
+                           "IO Error reading " + fullname,
                            APPERR_IO_ERROR);
 
     tempMD5.finish ();
@@ -619,7 +617,7 @@ void md5_one (const packagesource& pkgsource)
         << " - MD5 mismatch: Ini-file: " << pkgsource.md5.str()
         << " != On-disk: " << tempMD5.str() << endLog;
       throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-                           String ("MD5 failure for ") + fullname,
+                           "MD5 failure for " + fullname,
                            APPERR_CORRUPT_PACKAGE);
     }
 

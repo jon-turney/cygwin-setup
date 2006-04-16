@@ -33,7 +33,7 @@ static const char *cvsid =
 #include "script.h"
 #include "mkdir.h"
 
-static String sh = String();
+static std::string sh;
 static const char *cmd = 0;
 static OSVERSIONINFO verinfo;
 
@@ -53,7 +53,7 @@ init_run_script ()
       sh = backslash (cygpath (shells[i]));
       if (_access (sh.c_str(), 0) == 0)
 	break;
-      sh = String();
+      sh.clear();
     }
   
   char old_path[MAX_PATH];
@@ -83,7 +83,7 @@ init_run_script ()
 class OutputLog
 {
 public:
-  OutputLog (String const &filename);
+  OutputLog (const std::string& filename);
   ~OutputLog ();
   HANDLE handle () { return _handle; }
   BOOL isValid () { return _handle != INVALID_HANDLE_VALUE; }
@@ -92,11 +92,11 @@ public:
 private:
   enum { BUFLEN = 1000 };
   HANDLE _handle;
-  String _filename;
+  std::string _filename;
   void out_to(std::ostream &);
 };
 
-OutputLog::OutputLog (String const &filename)
+OutputLog::OutputLog (const std::string& filename)
   : _handle(INVALID_HANDLE_VALUE), _filename(filename)
 {
   if (!_filename.size())
@@ -217,12 +217,12 @@ Script::run() const
     return -ERROR_INVALID_DATA;
 
   BOOL to_log (TRUE);
-  String log_name = "";
+  std::string log_name;
   int retval = 0;
   if (to_log)
     {
       char tmp_pat[] = "/var/log/setup.log.postinstallXXXXXXX";
-      log_name = String (mktemp(tmp_pat));
+      log_name = std::string(mktemp(tmp_pat));
     }
   OutputLog file_out(log_name);
 
@@ -233,7 +233,7 @@ Script::run() const
     }
   else if (cmd && strcmp (extension(), ".bat") == 0)
     {
-      String windowsName = backslash (cygpath (scriptName));
+      std::string windowsName = backslash (cygpath (scriptName));
       log(LOG_PLAIN) << "running: " << cmd << " /c " << windowsName << endLog;
       retval = ::run (cmd, "/c", windowsName.c_str(), file_out);
     }
@@ -247,18 +247,20 @@ Script::run() const
     log(LOG_PLAIN) << "abnormal exit: exit code=" << retval << endLog;;
 
   /* if file exists then delete it otherwise just ignore no file error */
-  io_stream::remove (String ("cygfile://") + scriptName + ".done");
+  io_stream::remove ("cygfile://" + scriptName + ".done");
 
-  io_stream::move (String ("cygfile://") + scriptName,
-                   String ("cygfile://") + scriptName + ".done");
+  io_stream::move ("cygfile://" + scriptName,
+                   "cygfile://" + scriptName + ".done");
 
   return retval;
 }
 
 int
-try_run_script (String const &dir, String const &fname, String const &ext)
+try_run_script (const std::string& dir,
+                const std::string& fname,
+                const std::string& ext)
 {
-  if (io_stream::exists (String ("cygfile://") + dir + fname + ext))
+  if (io_stream::exists ("cygfile://" + dir + fname + ext))
     return Script (dir + fname + ext).run ();
   return NO_ERROR;
 }
@@ -266,7 +268,7 @@ try_run_script (String const &dir, String const &fname, String const &ext)
 char const Script::ETCPostinstall[] = "/etc/postinstall/";
 
 bool
-Script::isAScript (String const &file)
+Script::isAScript (const std::string& file)
 {
     /* file may be /etc/postinstall or etc/postinstall */
     if (casecompare(file, ETCPostinstall, sizeof(ETCPostinstall)-1) &&
@@ -277,7 +279,7 @@ Script::isAScript (String const &file)
     return true;
 }
 
-Script::Script (String const &fileName) : scriptName (fileName)
+Script::Script (const std::string& fileName) : scriptName (fileName)
 {
   
 }
@@ -290,7 +292,7 @@ Script::baseName() const
   return result;
 }
 
-String
+std::string
 Script::fullName() const
 {
   return scriptName;

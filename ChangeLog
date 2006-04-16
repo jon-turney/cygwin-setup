@@ -1,5 +1,10 @@
 2006-04-16  Max Bowsher  <maxb1@ukf.net>
 
+	* desktop.cc, download.cc, install.cc, mount.cc, mount.h, script.cc,
+	script.h: Do some String to std::string migration.
+
+2006-04-16  Max Bowsher  <maxb1@ukf.net>
+
 	* category.cc: Remove source file that contained no code!
 	* category.h: Delete, moving the single useful line to...
 	* package_meta.h: ...here. Remove category.h include.

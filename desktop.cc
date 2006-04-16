@@ -37,19 +37,13 @@ static const char *cvsid =
 #include "state.h"
 #include "dialog.h"
 #include "mount.h"
-
 #include "mklink2.h"
-
 #include "package_db.h"
 #include "package_meta.h"
 #include "package_version.h"
-
 #include "filemanip.h"
-#include "String++.h"
 #include "io_stream.h"
-  
 #include "getopt++/BoolOption.h"
-
 #include "PackageSpecification.h"
 
 static BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", "Disable creation of desktop and start menu shortcuts");
@@ -66,16 +60,15 @@ static OSVERSIONINFO verinfo;
 	@*
    */
 
-#define COMMAND9XARGS String("/E:4096 /c")
-#define COMMAND9XEXE  String("\\command.com")
-
-static String batname;
-static String iconname;
+static std::string batname;
+static std::string iconname;
 
 static void
-make_link (String const &linkpath, String const &title, String const &target)
+make_link (const std::string& linkpath,
+           const std::string& title,
+           const std::string& target)
 {
-  String fname = linkpath + "/" + title + ".lnk";
+  std::string fname = linkpath + "/" + title + ".lnk";
 
   if (_access (fname.c_str(), 0) == 0)
     return;			/* already exists */
@@ -83,26 +76,23 @@ make_link (String const &linkpath, String const &title, String const &target)
   msg ("make_link %s, %s, %s\n",
        fname.c_str(), title.c_str(), target.c_str());
 
-  io_stream::mkpath_p (PATH_TO_FILE, String ("file://") + fname);
+  io_stream::mkpath_p (PATH_TO_FILE, std::string ("file://") + fname);
 
-  String exepath;
+  std::string exepath;
+  std::string argbuf;
 
-  String argbuf;
-  /* If we are running Win9x, build a command line. */
   if (verinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
       exepath = target;
       argbuf = " ";
-//      sprintf (argbuf, " ");
     }
   else
     {
       char windir[MAX_PATH];
 
       GetWindowsDirectory (windir, sizeof (windir));
-      exepath = String(windir) + COMMAND9XEXE;
-      argbuf = COMMAND9XARGS + " " + target;
-//      sprintf (argbuf, "%s %s", COMMAND9XARGS, target.c_str());
+      exepath = std::string(windir) + "\\command.com";
+      argbuf = "/E:4096 /c " + target;
     }
 
   msg ("make_link_2 (%s, %s, %s, %s)",
@@ -113,7 +103,7 @@ make_link (String const &linkpath, String const &title, String const &target)
 }
 
 static void
-start_menu (String const &title, String const &target)
+start_menu (const std::string& title, const std::string& target)
 {
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
@@ -122,14 +112,14 @@ start_menu (String const &title, String const &target)
 			      CSIDL_PROGRAMS, &id);
   char _path[MAX_PATH];
   SHGetPathFromIDList (id, _path);
-  String path(_path);
+  std::string path(_path);
   // Win95 does not use common programs unless multiple users for Win95 is enabled
   msg ("Program directory for program link: %s", path.c_str());
-  if (path.size() == 0)
+  if (path.empty())
     {
       SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
       SHGetPathFromIDList (id, _path);
-      path = String(_path);
+      path = _path;
       msg ("Program directory for program link changed to: %s",
 	   path.c_str());
     }
@@ -139,7 +129,7 @@ start_menu (String const &title, String const &target)
 }
 
 static void
-desktop_icon (String const &title, String const &target)
+desktop_icon (const std::string& title, const std::string& target)
 {
   char path[MAX_PATH];
   LPITEMIDLIST id;
@@ -244,7 +234,7 @@ load_dialog (HWND h)
 }
 
 static int
-check_desktop (String const title, String const target)
+check_desktop (const std::string title, const std::string target)
 {
   char path[MAX_PATH];
   LPITEMIDLIST id;
@@ -263,12 +253,12 @@ check_desktop (String const title, String const target)
       msg ("Desktop directory for deskop link changed to: %s", path);
     }
   // end of Win95 addition
-  String fname = String (path) + "/" + title + ".lnk";
+  std::string fname = std::string(path) + "/" + title + ".lnk";
 
   if (_access (fname.c_str(), 0) == 0)
     return 0;			/* already exists */
 
-  fname = String (path) + "/" + title + ".pif";	/* check for a pif as well */
+  fname = std::string(path) + "/" + title + ".pif";	/* check for a pif as well */
 
   if (_access (fname.c_str(), 0) == 0)
     return 0;			/* already exists */
@@ -277,7 +267,7 @@ check_desktop (String const title, String const target)
 }
 
 static int
-check_startmenu (String const title, String const target)
+check_startmenu (const std::string title, const std::string target)
 {
   char path[MAX_PATH];
   LPITEMIDLIST id;
@@ -297,12 +287,12 @@ check_startmenu (String const title, String const target)
     }
   // end of Win95 addition
   strcat (path, "/Cygwin");
-  String fname = String (path) + "/" + title + ".lnk";
+  std::string fname = std::string(path) + "/" + title + ".lnk";
 
   if (_access (fname.c_str(), 0) == 0)
     return 0;			/* already exists */
 
-  fname = String (path) + "/" + title + ".pif";	/* check for a pif as well */
+  fname = std::string(path) + "/" + title + ".pif";	/* check for a pif as well */
 
   if (_access (fname.c_str(), 0) == 0)
     return 0;			/* already exists */
