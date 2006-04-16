@@ -16,16 +16,13 @@
 
 /* Parse the setup.ini files.  inilex.l provides the tokens for this. */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
+#include <string>
 #include "win32.h"
 #include "ini.h"
 #include "iniparse.h"
 #include "PackageTrust.h"
 
-extern int yyerror (String  const &s);
+extern int yyerror (const std::string& s);
 int yylex ();
 
 #include "IniDBBuilder.h"

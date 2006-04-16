@@ -23,16 +23,14 @@ static const char *cvsid =
 #endif
 
 #include "find.h"
-#include "win32.h"
-#include <stdlib.h>
 
-#include "String++.h"
 #include "FindVisitor.h"
 #include <stdexcept>
 
 using namespace std;
 
-Find::Find(String const &starting_dir) : _start_dir (starting_dir), h(INVALID_HANDLE_VALUE)
+Find::Find(const std::string& starting_dir)
+  : _start_dir (starting_dir), h(INVALID_HANDLE_VALUE)
 {
 }
 
@@ -54,7 +52,7 @@ Find::accept (FindVisitor &aVisitor)
   if (h == INVALID_HANDLE_VALUE)
     return;
 
-  String basePath = _start_dir + "/";
+  std::string basePath = _start_dir + "/";
 
   do
     {

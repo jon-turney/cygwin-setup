@@ -24,7 +24,7 @@ class ScanFindVisitor : public FindVisitor
 {
 public:
   ScanFindVisitor (IniDBBuilder &aBuilder);
-  virtual void visitFile(String const &basePath, const WIN32_FIND_DATA *);
+  virtual void visitFile(const std::string& basePath, const WIN32_FIND_DATA *);
   virtual ~ ScanFindVisitor ();
 protected:
   ScanFindVisitor (ScanFindVisitor const &);

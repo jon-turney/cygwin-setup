@@ -42,13 +42,14 @@ class RunFindVisitor : public FindVisitor
 {
 public:
   RunFindVisitor (vector<Script> *scripts) : _scripts(scripts) {}
-  virtual void visitFile(String const &basePath, const WIN32_FIND_DATA *theFile)
+  virtual void visitFile(const std::string& basePath,
+                         const WIN32_FIND_DATA *theFile)
     {
-      String fileName(theFile->cFileName);
+      std::string fileName(theFile->cFileName);
       if (fileName.size() >= 5 &&
           fileName.substr(fileName.size() - 5) == ".done")
         return;
-      String fn = String("/etc/postinstall/")+theFile->cFileName;
+      std::string fn = std::string("/etc/postinstall/") + theFile->cFileName;
       _scripts->push_back(Script (fn));
     }
   virtual ~ RunFindVisitor () {}
@@ -62,7 +63,7 @@ private:
 class RunScript : public unary_function<Script const &, int>
 {
 public:
-  RunScript(String const &name, int num) : _num(num), _cnt(0)
+  RunScript(const std::string& name, int num) : _num(num), _cnt(0)
     {
       Progress.SetText2 (name.c_str());
       Progress.SetBar1 (_cnt, _num);
@@ -116,7 +117,7 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
       ++k;
       Progress.SetBar2 (k, numpkg);
     }
-  String postinst = cygpath ("/etc/postinstall");
+  std::string postinst = cygpath ("/etc/postinstall");
   vector<Script> scripts;
   RunFindVisitor myVisitor (&scripts);
   Progress.SetBar1 (0, 1);

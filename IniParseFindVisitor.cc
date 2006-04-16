@@ -32,24 +32,30 @@ using namespace std;
 
 extern int yyparse ();
 
-IniParseFindVisitor::IniParseFindVisitor(IniDBBuilder &aBuilder, String const &localroot, IniParseFeedback &feedback) : _Builder (aBuilder), _feedback (feedback), baseLength (localroot.size()), local_ini(0),
-error_buf(0), error_count (0),
-setup_timestamp (0), setup_version() {}
+IniParseFindVisitor::IniParseFindVisitor(IniDBBuilder &aBuilder,
+                                         const std::string& localroot,
+                                         IniParseFeedback &feedback)
+  : _Builder (aBuilder), _feedback (feedback), baseLength (localroot.size()),
+    local_ini(0), error_buf(0), error_count (0), setup_timestamp (0),
+    setup_version()
+{}
+
 IniParseFindVisitor::~IniParseFindVisitor(){}
 
 /* look for potential packages we can add to the in-memory package
  * database
  */
 void
-IniParseFindVisitor::visitFile(String const &basePath, const WIN32_FIND_DATA *theFile)
+IniParseFindVisitor::visitFile(const std::string& basePath,
+                               const WIN32_FIND_DATA *theFile)
 {
   //TODO: Test for case sensitivity issues
   if (casecompare("setup.ini", theFile->cFileName))
     return;
 
-  String path = basePath + theFile->cFileName;
+  std::string path = basePath + theFile->cFileName;
   
-  io_stream *ini_file = io_stream::open (String ("file://") + path, "rb");
+  io_stream *ini_file = io_stream::open("file://" + path, "rb");
 
   if (!ini_file)
     // We don't throw an exception, because while this is fatal to parsing, it
@@ -61,13 +67,13 @@ IniParseFindVisitor::visitFile(String const &basePath, const WIN32_FIND_DATA *th
       return;
     }
   
-  _feedback.babble (String ("Found ini file - ") + path);
+  _feedback.babble("Found ini file - " + path);
   _feedback.iniName (path);
   
   /* Copy leading part of path to temporary buffer and unescape it */
   
-  String prefix (&basePath.c_str()[baseLength + 1]);
-  String mirror;
+  std::string prefix (&basePath.c_str()[baseLength + 1]);
+  std::string mirror;
   if (prefix.size())
     mirror = rfc1738_unescape (prefix.substr(0,prefix.size() - 1));
   else
@@ -105,7 +111,7 @@ IniParseFindVisitor::timeStamp () const
   return setup_timestamp;
 }
 
-String
+std::string
 IniParseFindVisitor::version() const
 {
   return setup_version;

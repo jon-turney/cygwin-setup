@@ -19,7 +19,6 @@ static const char *cvsid =
 #endif
 
 #include "FindVisitor.h"
-#include "String++.h"
 #include "find.h"
 
 FindVisitor::FindVisitor(){}
@@ -27,13 +26,14 @@ FindVisitor::~FindVisitor(){}
 
 // Allow non-interested visitors to skip Files.
 void
-FindVisitor::visitFile(String const &basePath, WIN32_FIND_DATA const *)
+FindVisitor::visitFile(const std::string& basePath, WIN32_FIND_DATA const *)
 {
 }
 
 // Default to recursing through directories.
 void
-FindVisitor::visitDirectory(String const &basePath, WIN32_FIND_DATA const *aDir)
+FindVisitor::visitDirectory(const std::string& basePath,
+                            WIN32_FIND_DATA const *aDir)
 {
   Find aFinder (basePath + aDir->cFileName);
   aFinder.accept (*this);

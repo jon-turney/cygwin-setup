@@ -1,5 +1,12 @@
 2006-04-16  Max Bowsher  <maxb1@ukf.net>
 
+	* FindVisitor.cc, FindVisitor.h, IniParseFindVisitor.cc,
+	IniParseFindVisitor.h, ScanFindVisitor.cc, ScanFindVisitor.h, find.cc,
+	find.h, fromcwd.cc, ini.cc, ini.h, iniparse.y, postinstall.cc:
+	Do some String to std::string migration.
+
+2006-04-16  Max Bowsher  <maxb1@ukf.net>
+
 	* IOStreamProvider.h, archive.cc, archive.h, archive_tar.cc,
 	archive_tar.h, io_stream.cc, io_stream.h, io_stream_cygfile.cc,
 	io_stream_cygfile.h, io_stream_file.cc, io_stream_file.h:

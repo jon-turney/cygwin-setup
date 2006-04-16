@@ -17,8 +17,10 @@
 #ifndef SETUP_FIND_H
 #define SETUP_FIND_H
 
+#include <string>
+
 class FindVisitor;
-#include "String++.h"
+
 /* TODO: make h conditional on the target platform */
 #include "win32.h"
 
@@ -26,11 +28,11 @@ class FindVisitor;
 class Find
 {
 public:
-  Find (String const &starting_dir);
+  Find (const std::string& starting_dir);
   ~Find ();
   void accept (FindVisitor &);
 private:
-  String const _start_dir;
+  const std::string _start_dir;
   HANDLE h;
 };
 

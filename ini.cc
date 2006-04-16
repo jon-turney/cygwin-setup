@@ -38,7 +38,6 @@ static const char *cvsid =
 #include <process.h>
 
 #include "resource.h"
-#include "String++.h"
 #include "state.h"
 #include "geturl.h"
 #include "dialog.h"
@@ -60,7 +59,7 @@ static const char *cvsid =
 extern ThreeBarProgressPage Progress;
 
 unsigned int setup_timestamp = 0;
-String ini_setup_version;
+std::string ini_setup_version;
 
 extern int yyparse ();
 /*extern int yydebug;*/
@@ -95,19 +94,19 @@ public:
 	}
       Progress.SetBar1(pos, max);
     }
-  virtual void iniName (String const &name)
+  virtual void iniName (const std::string& name)
     {
-      Progress.SetText1 ((String ("Parsing ini file \"") + name + "\"").c_str());
+      Progress.SetText1 (("Parsing ini file \"" + name + "\"").c_str());
     }
-  virtual void babble(String const &message)const
+  virtual void babble(const std::string& message)const
     {
       log (LOG_BABBLE) << message << endLog;
     }
-  virtual void warning (String const &message)const
+  virtual void warning (const std::string& message)const
     {
       MessageBox (0, message.c_str(), "Warning", 0);
     }
-  virtual void error(String const &message)const
+  virtual void error(const std::string& message)const
     {
       MessageBox (0, message.c_str(), "Error parsing", 0);
     }
@@ -173,7 +172,7 @@ do_remote_ini (HWND owner)
       else
 	{
 	  /* save known-good setup.ini locally */
-	  String const fp = String ("file://") + local_dir + "/" +
+	  const std::string fp = "file://" + local_dir + "/" +
 				   rfc1738_escape_part (n->url) +
 				   "/setup.ini";
 	  io_stream::mkpath_p (PATH_TO_FILE, fp);
@@ -301,7 +300,7 @@ extern int yylineno;
 extern int yybol ();
 
 extern int
-yyerror (String const &s)
+yyerror (const std::string& s)
 {
   char buf[MAX_PATH + 1000];
   int len;

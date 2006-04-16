@@ -53,7 +53,8 @@ class SetupFindVisitor : public FindVisitor
 {
 public:
   SetupFindVisitor (): found(false){}
-  virtual void visitFile(String const &basePath, const WIN32_FIND_DATA *theFile)
+  virtual void visitFile(const std::string& basePath,
+                         const WIN32_FIND_DATA *theFile)
     {
       if (!casecompare("setup.ini", theFile->cFileName) && 
 	  (theFile->nFileSizeLow || theFile->nFileSizeHigh))

@@ -17,7 +17,7 @@
 #define SETUP_INI_H
 
 class io_stream;
-class String;
+#include <string>
 class IniState;
 class IniDBBuilder;
 class IniParseFeedback;

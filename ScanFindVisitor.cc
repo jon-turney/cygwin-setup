@@ -29,7 +29,8 @@ ScanFindVisitor::~ScanFindVisitor(){}
  * database
  */
 void
-ScanFindVisitor::visitFile(String const &basePath, const WIN32_FIND_DATA *theFile)
+ScanFindVisitor::visitFile(const std::string& basePath,
+                           const WIN32_FIND_DATA *theFile)
 {
   // Sanity check: Does the file look like a package ?
   fileparse f;

@@ -17,7 +17,7 @@
 #define SETUP_INIPARSEFINDVISITOR_H
 
 #include "FindVisitor.h"
-#include "String++.h"
+
 
 /* parse passed in setup.ini files from disk. */
 class IniDBBuilder;
@@ -26,12 +26,14 @@ class IniParseFeedback;
 class IniParseFindVisitor : public FindVisitor
 {
 public:
-  IniParseFindVisitor (IniDBBuilder &aBuilder, String const &localroot, IniParseFeedback &);
-  virtual void visitFile(String const &basePath, const WIN32_FIND_DATA *);
+  IniParseFindVisitor (IniDBBuilder &aBuilder,
+                       const std::string& localroot,
+                       IniParseFeedback &);
+  virtual void visitFile(const std::string& basePath, const WIN32_FIND_DATA *);
   virtual ~ IniParseFindVisitor ();
 
   unsigned int timeStamp() const;
-  String version() const;
+  std::string version() const;
   int iniCount() const;
 protected:
   IniParseFindVisitor (IniParseFindVisitor const &);
@@ -44,7 +46,7 @@ private:
   char *error_buf;
   int error_count;
   unsigned int setup_timestamp;
-  String setup_version;
+  std::string setup_version;
 };
 
 #endif /* SETUP_INIPARSEFINDVISITOR_H */
