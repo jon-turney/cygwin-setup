@@ -47,7 +47,6 @@ static const char *cvsid =
 #include "io_stream.h"
 #include "propsheet.h"
 #include "choose.h"
-#include "category.h"
 
 #include "package_db.h"
 #include "package_meta.h"

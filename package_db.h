@@ -20,7 +20,6 @@
 #include <String++.h>
 #include <vector>
 #include <map>
-#include "category.h"
 class packagemeta;
 class io_stream;
 class PackageSpecification;

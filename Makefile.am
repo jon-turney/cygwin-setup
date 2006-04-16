@@ -133,8 +133,6 @@ setup_SOURCES = \
 	archive_tar.h \
 	archive_tar_file.cc \
 	autoload.c \
-	category.cc \
-	category.h \
 	choose.cc \
 	choose.h \
 	compress.cc \

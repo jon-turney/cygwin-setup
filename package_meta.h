@@ -23,9 +23,10 @@ class category;
 /* Required to parse this completely */
 #include <set>
 #include "String++.h"
-#include "category.h"
 #include "PackageTrust.h"
 #include "package_version.h"
+
+typedef std::pair<String const, std::vector<packagemeta *> > Category;
 
 /* NOTE: A packagemeta without 1 packageversion is invalid! */
 class packagemeta

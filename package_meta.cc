@@ -39,7 +39,6 @@ using namespace std;
 #include "win32.h"
 
 
-#include "category.h"
 #include "script.h"
 
 #include "package_version.h"
