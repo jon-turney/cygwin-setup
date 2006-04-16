@@ -16,24 +16,26 @@
 #include "IniDBBuilder.h"
 
 IniDBBuilder::~IniDBBuilder(){}
-void IniDBBuilder::buildTimestamp (String const &){}
-void IniDBBuilder::buildVersion (String const &){}
-void IniDBBuilder::buildPackage (String const &){}
-void IniDBBuilder::buildPackageVersion (String const &){}
-void IniDBBuilder::buildPackageSDesc (String const &){}
-void IniDBBuilder::buildPackageLDesc (String const &){}
-void IniDBBuilder::buildPackageInstall (String const &){}
-void IniDBBuilder::buildPackageSource (String const &, String const &){}
-void IniDBBuilder::buildSourceFile (unsigned char const[16], String const &, String const &){}
+void IniDBBuilder::buildTimestamp (const std::string& ){}
+void IniDBBuilder::buildVersion (const std::string& ){}
+void IniDBBuilder::buildPackage (const std::string& ){}
+void IniDBBuilder::buildPackageVersion (const std::string& ){}
+void IniDBBuilder::buildPackageSDesc (const std::string& ){}
+void IniDBBuilder::buildPackageLDesc (const std::string& ){}
+void IniDBBuilder::buildPackageInstall (const std::string& ){}
+void IniDBBuilder::buildPackageSource (const std::string&,
+                                       const std::string&){}
+void IniDBBuilder::buildSourceFile (unsigned char const[16],
+                                    const std::string&, const std::string& ){}
 void IniDBBuilder::buildPackageTrust (int){}
-void IniDBBuilder::buildPackageCategory (String const &){}
+void IniDBBuilder::buildPackageCategory (const std::string& ){}
 void IniDBBuilder::buildBeginDepends (){}
 void IniDBBuilder::buildBeginPreDepends (){}
-void IniDBBuilder::buildPriority (String const &){}
-void IniDBBuilder::buildInstalledSize (String const &){}
-void IniDBBuilder::buildMaintainer (String const &){}
-void IniDBBuilder::buildArchitecture (String const &){}
-void IniDBBuilder::buildInstallSize (String const &){}
+void IniDBBuilder::buildPriority (const std::string& ){}
+void IniDBBuilder::buildInstalledSize (const std::string& ){}
+void IniDBBuilder::buildMaintainer (const std::string& ){}
+void IniDBBuilder::buildArchitecture (const std::string& ){}
+void IniDBBuilder::buildInstallSize (const std::string& ){}
 void IniDBBuilder::buildInstallMD5 (unsigned char const[16]){}
 void IniDBBuilder::buildSourceMD5 (unsigned char const[16]){}
 void IniDBBuilder::buildBeginRecommends (){}
@@ -43,10 +45,10 @@ void IniDBBuilder::buildBeginConflicts (){}
 void IniDBBuilder::buildBeginProvides (){}
 void IniDBBuilder::buildBeginBuildDepends (){}
 void IniDBBuilder::buildBeginBinary (){}
-void IniDBBuilder::buildDescription (String const &){}
-void IniDBBuilder::buildSourceName (String const &){}
-void IniDBBuilder::buildSourceNameVersion (String const &){}
+void IniDBBuilder::buildDescription (const std::string& ){}
+void IniDBBuilder::buildSourceName (const std::string& ){}
+void IniDBBuilder::buildSourceNameVersion (const std::string& ){}
 void IniDBBuilder::buildPackageListAndNode (){}
-void IniDBBuilder::buildPackageListOrNode (String const &){}
+void IniDBBuilder::buildPackageListOrNode (const std::string& ){}
 void IniDBBuilder::buildPackageListOperator (PackageSpecification::_operators const &){}
-void IniDBBuilder::buildPackageListOperatorVersion (String const &){}
+void IniDBBuilder::buildPackageListOperatorVersion (const std::string& ){}

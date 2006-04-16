@@ -30,7 +30,7 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
 {
   int rb = y + theView.tm.tmHeight;
   int by = rb - 11; // top of box images
-  String s;
+  std::string s;
 
   if (col_num == theView.current_col && pkg.installed)
     {
@@ -121,7 +121,7 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
     {
       s = pkg.name;
       if (pkg.SDesc ().size())
-        s += String(": ") + pkg.SDesc ();
+        s += std::string(": ") + std::string(pkg.SDesc());
       TextOut (hdc, x + HMARGIN / 2, y, s.c_str(), s.size());
     }
 }

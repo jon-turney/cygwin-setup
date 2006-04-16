@@ -1,3 +1,9 @@
+2006-04-17  Max Bowsher  <maxb1@ukf.net>
+
+	* IniDBBuilder.cc, IniDBBuilder.h, IniDBBuilderPackage.cc,
+	IniDBBuilderPackage.h, PickLine.h, PickPackageLine.cc:
+	Do some String to std::string migration.
+
 2006-04-16  Max Bowsher  <maxb1@ukf.net>
 
 	* FindVisitor.cc, FindVisitor.h, IniParseFindVisitor.cc,

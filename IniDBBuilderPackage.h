@@ -28,26 +28,27 @@ class IniDBBuilderPackage:public IniDBBuilder
 public:
   IniDBBuilderPackage (IniParseFeedback const &);
   ~IniDBBuilderPackage ();
-  virtual void buildTimestamp (String const &);
-  virtual void buildVersion (String const &);
-  virtual void buildPackage (String const &);
-  virtual void buildPackageVersion (String const &);
-  virtual void buildPackageSDesc (String const &);
-  virtual void buildPackageLDesc (String const &);
-  virtual void buildPackageInstall (String const &);
-  virtual void buildPackageSource (String const &, String const &);
-  virtual void buildSourceFile (unsigned char const[16], String const &, String
-				const &);
+  virtual void buildTimestamp (const std::string& );
+  virtual void buildVersion (const std::string& );
+  virtual void buildPackage (const std::string& );
+  virtual void buildPackageVersion (const std::string& );
+  virtual void buildPackageSDesc (const std::string& );
+  virtual void buildPackageLDesc (const std::string& );
+  virtual void buildPackageInstall (const std::string& );
+  virtual void buildPackageSource (const std::string&, const std::string&);
+  virtual void buildSourceFile (unsigned char const[16],
+								const std::string&,
+								const std::string&);
   virtual void buildPackageTrust (int);
-  virtual void buildPackageCategory (String const &);
+  virtual void buildPackageCategory (const std::string& );
 
   virtual void buildBeginDepends ();
   virtual void buildBeginPreDepends ();
-  virtual void buildPriority (String const &);
-  virtual void buildInstalledSize (String const &);
-  virtual void buildMaintainer (String const &);
-  virtual void buildArchitecture (String const &);
-  virtual void buildInstallSize (String const &);
+  virtual void buildPriority (const std::string& );
+  virtual void buildInstalledSize (const std::string& );
+  virtual void buildMaintainer (const std::string& );
+  virtual void buildArchitecture (const std::string& );
+  virtual void buildInstallSize (const std::string& );
   virtual void buildInstallMD5 (unsigned char const[16]);
   virtual void buildSourceMD5 (unsigned char const[16]);
   virtual void buildBeginRecommends ();
@@ -57,18 +58,18 @@ public:
   virtual void buildBeginProvides ();
   virtual void buildBeginBuildDepends ();
   virtual void buildBeginBinary ();
-  virtual void buildDescription (String const &);
-  virtual void buildSourceName (String const &);
-  virtual void buildSourceNameVersion (String const &);
+  virtual void buildDescription (const std::string& );
+  virtual void buildSourceName (const std::string& );
+  virtual void buildSourceNameVersion (const std::string& );
   virtual void buildPackageListAndNode ();
-  virtual void buildPackageListOrNode (String const &);
+  virtual void buildPackageListOrNode (const std::string& );
   virtual void buildPackageListOperator (PackageSpecification::_operators const &);
-  virtual void buildPackageListOperatorVersion (String const &);
+  virtual void buildPackageListOperatorVersion (const std::string& );
 
 private:
   void add_correct_version();
-  void process_src (packagesource &src, String const &);
-  void setSourceSize (packagesource &src, String const &);
+  void process_src (packagesource &src, const std::string& );
+  void setSourceSize (packagesource &src, const std::string& );
   packagemeta *cp;
   packageversion cbpv;
   packagemeta *csp;

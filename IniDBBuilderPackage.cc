@@ -46,13 +46,13 @@ IniDBBuilderPackage::~IniDBBuilderPackage()
 }
 
 void
-IniDBBuilderPackage::buildTimestamp (String const &time)
+IniDBBuilderPackage::buildTimestamp (const std::string& time)
 {
   timestamp = strtoul (time.c_str(), 0, 0);
 }
 
 void
-IniDBBuilderPackage::buildVersion (String const &aVersion)
+IniDBBuilderPackage::buildVersion (const std::string& aVersion)
 {
   version = aVersion;
   if (version.size())
@@ -63,7 +63,7 @@ IniDBBuilderPackage::buildVersion (String const &aVersion)
 }
 
 void
-IniDBBuilderPackage::buildPackage (String const &name)
+IniDBBuilderPackage::buildPackage (const std::string& name)
 {
 #if DEBUG
   if (cp)
@@ -96,20 +96,20 @@ IniDBBuilderPackage::buildPackage (String const &name)
 }
 
 void
-IniDBBuilderPackage::buildPackageVersion (String const &version)
+IniDBBuilderPackage::buildPackageVersion (const std::string& version)
 {
   cbpv.setCanonicalVersion (version);
   add_correct_version();
 }
 
 void
-IniDBBuilderPackage::buildPackageSDesc (String const &theDesc)
+IniDBBuilderPackage::buildPackageSDesc (const std::string& theDesc)
 {
   cbpv.set_sdesc(theDesc);
 }
 
 void
-IniDBBuilderPackage::buildPackageLDesc (String const &theDesc)
+IniDBBuilderPackage::buildPackageLDesc (const std::string& theDesc)
 {
   cbpv.set_ldesc(theDesc);
 #if DEBUG
@@ -118,13 +118,14 @@ IniDBBuilderPackage::buildPackageLDesc (String const &theDesc)
 }
 
 void
-IniDBBuilderPackage::buildPackageInstall (String const &path)
+IniDBBuilderPackage::buildPackageInstall (const std::string& path)
 {
   process_src (*cbpv.source(), path);
 }
 
 void
-IniDBBuilderPackage::buildPackageSource (String const &path, String const &size)
+IniDBBuilderPackage::buildPackageSource (const std::string& path,
+                                         const std::string& size)
 {
   packagedb db;
   /* get an appropriate metadata */
@@ -165,7 +166,9 @@ IniDBBuilderPackage::buildPackageSource (String const &path, String const &size)
 }
 
 void
-IniDBBuilderPackage::buildSourceFile (unsigned char const * md5, String const &size, String const &path)
+IniDBBuilderPackage::buildSourceFile (unsigned char const * md5,
+                                      const std::string& size,
+                                      const std::string& path)
 {
 }
 
@@ -181,7 +184,7 @@ IniDBBuilderPackage::buildPackageTrust (int newtrust)
 }
 
 void
-IniDBBuilderPackage::buildPackageCategory (String const &name)
+IniDBBuilderPackage::buildPackageCategory (const std::string& name)
 {
   cp->add_category (name);
 }
@@ -212,7 +215,7 @@ IniDBBuilderPackage::buildBeginPreDepends ()
 }
 
 void
-IniDBBuilderPackage::buildPriority (String const &priority)
+IniDBBuilderPackage::buildPriority (const std::string& priority)
 {
   cp->priority = priority;
 #if DEBUG
@@ -221,7 +224,7 @@ IniDBBuilderPackage::buildPriority (String const &priority)
 }
 
 void
-IniDBBuilderPackage::buildInstalledSize (String const &size)
+IniDBBuilderPackage::buildInstalledSize (const std::string& size)
 {
   cbpv.source()->setInstalledSize (atoi(size.c_str()));
 #if DEBUG
@@ -230,7 +233,7 @@ IniDBBuilderPackage::buildInstalledSize (String const &size)
 }
 
 void
-IniDBBuilderPackage::buildMaintainer (String const &){}
+IniDBBuilderPackage::buildMaintainer (const std::string& ){}
 
 /* TODO: we can multiple arch's for a given package,
    and it may befor either source or binary, so we need to either set both
@@ -238,7 +241,7 @@ IniDBBuilderPackage::buildMaintainer (String const &){}
    or binary at the moment
    */
 void
-IniDBBuilderPackage::buildArchitecture (String const &arch)
+IniDBBuilderPackage::buildArchitecture (const std::string& arch)
 {
   cp->architecture = arch;
 #if DEBUG
@@ -247,7 +250,7 @@ IniDBBuilderPackage::buildArchitecture (String const &arch)
 }
 
 void
-IniDBBuilderPackage::buildInstallSize (String const &size)
+IniDBBuilderPackage::buildInstallSize (const std::string& size)
 {
   setSourceSize (*cbpv.source(), size);
 }
@@ -352,7 +355,7 @@ IniDBBuilderPackage::buildBeginBinary ()
 }
 
 void
-IniDBBuilderPackage::buildDescription (String const &descline)
+IniDBBuilderPackage::buildDescription (const std::string& descline)
 {
   if (cbpv)
     {
@@ -363,13 +366,13 @@ IniDBBuilderPackage::buildDescription (String const &descline)
 #endif
     }
   else
-    _feedback.warning ((String ("Attempt to set description for package")
-		       + cp->name 
+    _feedback.warning ((std::string ("Attempt to set description for package")
+                        + std::string(cp->name) 
 		       + "before creation of a version.").c_str());
 }
 
 void 
-IniDBBuilderPackage::buildSourceName (String const &name)
+IniDBBuilderPackage::buildSourceName (const std::string& name)
 {
   if (cbpv)
     {
@@ -380,13 +383,13 @@ IniDBBuilderPackage::buildSourceName (String const &name)
 #endif
     }
   else
-      _feedback.warning ((String ("Attempt to set source for package")
-			  + cp->name
+      _feedback.warning ((std::string ("Attempt to set source for package")
+                          + std::string(cp->name)
 			  + "before creation of a version.").c_str());
 }
 
 void
-IniDBBuilderPackage::buildSourceNameVersion (String const &version)
+IniDBBuilderPackage::buildSourceNameVersion (const std::string& version)
 {
   if (cbpv)
     {
@@ -398,8 +401,8 @@ IniDBBuilderPackage::buildSourceNameVersion (String const &version)
 #endif
     }
   else
-      _feedback.warning ((String ("Attempt to set source version for package")
-			  + cp->name
+      _feedback.warning ((std::string ("Attempt to set source version for package")
+                          + std::string(cp->name)
 			  + "before creation of a version.").c_str());
 }
 
@@ -425,13 +428,13 @@ IniDBBuilderPackage::buildPackageListAndNode ()
       currentAndList->push_back (currentOrList);
     }
   else
-    _feedback.warning ((String ("Attempt to add And node when no AndList"
+    _feedback.warning ((std::string ("Attempt to add And node when no AndList"
 				" present for package ")
-			+ cp->name).c_str());
+                        + std::string(cp->name)).c_str());
 }
 
 void
-IniDBBuilderPackage::buildPackageListOrNode (String const &packageName)
+IniDBBuilderPackage::buildPackageListOrNode (const std::string& packageName)
 {
   if (currentOrList)
     {
@@ -443,8 +446,8 @@ IniDBBuilderPackage::buildPackageListOrNode (String const &packageName)
 #endif
     }
   else
-    _feedback.warning ((String ("Attempt to set specification for package ")
-			+ cp->name
+    _feedback.warning ((std::string ("Attempt to set specification for package ")
+                        + std::string(cp->name)
 			+ " before creation of a version.").c_str());
 }
 
@@ -460,14 +463,14 @@ IniDBBuilderPackage::buildPackageListOperator (PackageSpecification::_operators 
 #endif
     }
   else
-    _feedback.warning ((String ("Attempt to set an operator for package ")
-		       + cp->name
+    _feedback.warning ((std::string ("Attempt to set an operator for package ")
+                        + std::string(cp->name)
 		       + " with no current specification.").c_str());
 }
 
 
 void
-IniDBBuilderPackage::buildPackageListOperatorVersion (String const &aVersion)
+IniDBBuilderPackage::buildPackageListOperatorVersion (const std::string& aVersion)
 {
   if (currentSpec)
     {
@@ -478,8 +481,8 @@ IniDBBuilderPackage::buildPackageListOperatorVersion (String const &aVersion)
 #endif
     }
   else
-      _feedback.warning ((String ("Attempt to set an operator version for package ")
-			  + cp->name
+      _feedback.warning ((std::string ("Attempt to set an operator version for package ")
+                          + std::string(cp->name)
 			  + " with no current specification.").c_str());
 }
 
@@ -546,7 +549,7 @@ IniDBBuilderPackage::add_correct_version()
 }
 
 void
-IniDBBuilderPackage::process_src (packagesource &src, String const &path)
+IniDBBuilderPackage::process_src (packagesource &src, const std::string& path)
 {
   if (!src.Canonical())
     src.set_canonical (path.c_str());
@@ -564,7 +567,7 @@ IniDBBuilderPackage::process_src (packagesource &src, String const &path)
 }
 
 void
-IniDBBuilderPackage::setSourceSize (packagesource &src, String const &size)
+IniDBBuilderPackage::setSourceSize (packagesource &src, const std::string& size)
 {
   if (!src.size)
     src.size = atoi(size.c_str());

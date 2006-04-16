@@ -29,7 +29,7 @@ public:
   // this may indicate bad inheritance model.
   virtual bool IsContainer (void) const = 0;
   virtual void insert (PickLine &) = 0;
-  String const key;
+  const std::string key;
   virtual ~ PickLine ()
   {
   };
@@ -37,7 +37,7 @@ protected:
   PickLine ()
   {
   };
-  PickLine (String const &aKey):key (aKey)
+  PickLine (const std::string& aKey) : key (aKey)
   {
   };
   PickLine (PickLine const &);
