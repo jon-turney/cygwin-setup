@@ -17,7 +17,7 @@
 #define SETUP_IO_STREAM_FILE_H
 
 #include "io_stream.h"
-#include "String++.h"
+
 
 /* io_stream on disk files
  */
@@ -25,10 +25,10 @@
 class io_stream_file:public io_stream
 {
 public:
-  static int exists (String const &);
-  static int remove (String const &);
-  static int mklink (String const &, String const &, io_stream_link_t);
-    io_stream_file (String const &,String const &);
+  static int exists (const std::string& );
+  static int remove (const std::string& );
+  static int mklink (const std::string& , const std::string& , io_stream_link_t);
+    io_stream_file (const std::string& ,const std::string& );
     virtual ~ io_stream_file ();
   /* read data (duh!) */
   virtual ssize_t read (void *buffer, size_t len);
@@ -47,7 +47,7 @@ public:
     return 0;
   };
   virtual size_t get_size ();
-  static int move (String const &,String const &);
+  static int move (const std::string& ,const std::string& );
 private:
   /* always require parameters */
   io_stream_file ()
@@ -55,8 +55,8 @@ private:
   };
   FILE *fp;
   int lasterr;
-  String fname;
-  String lmode;
+  std::string fname;
+  std::string lmode;
 };
 
 #endif /* SETUP_IO_STREAM_FILE_H */

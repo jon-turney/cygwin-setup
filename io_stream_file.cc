@@ -44,18 +44,18 @@ using namespace std;
 class FileProvider : public IOStreamProvider
 {
 public:
-  int exists (String const &path) const
+  int exists (const std::string& path) const
     {return io_stream_file::exists(path);}
-  int remove (String const &path) const
+  int remove (const std::string& path) const
     {return io_stream_file::remove(path);}
-  int mklink (String const &a , String const &b, io_stream_link_t c) const
+  int mklink (const std::string& a , const std::string& b, io_stream_link_t c) const
     {return io_stream_file::mklink(a,b,c);}
-  io_stream *open (String const &a,String const &b) const
+  io_stream *open (const std::string& a,const std::string& b) const
     {return new io_stream_file (a, b);}
   ~FileProvider (){}
-  int move (String const &a,String const &b) const
+  int move (const std::string& a,const std::string& b) const
     {return io_stream_file::move (a, b);}
-  int mkdir_p (path_type_t isadir, String const &path) const
+  int mkdir_p (path_type_t isadir, const std::string& path) const
     {
       return ::mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, path.c_str());
     }
@@ -76,7 +76,7 @@ FileProvider FileProvider::theInstance = FileProvider();
 #define FACTOR (0x19db1ded53ea710LL)
 #define NSPERSEC 10000000LL
 
-io_stream_file::io_stream_file (String const &name, String const &mode):
+io_stream_file::io_stream_file (const std::string& name, const std::string& mode):
 fp(), fname(name),lmode (mode)
 {
   errno = 0;
@@ -94,7 +94,7 @@ io_stream_file::~io_stream_file ()
 }
 
 int
-io_stream_file::exists (String const &path)
+io_stream_file::exists (const std::string& path)
 {
 #if defined(WIN32) && !defined (_CYGWIN_)
   if (_access (path.c_str(), 0) == 0)
@@ -106,7 +106,7 @@ io_stream_file::exists (String const &path)
 }
 
 int
-io_stream_file::remove (String const &path)
+io_stream_file::remove (const std::string& path)
 {
   if (!path.size())
     return 1;
@@ -136,7 +136,7 @@ io_stream_file::remove (String const &path)
 }
 
 int
-io_stream_file::mklink (String const &from, String const &to,
+io_stream_file::mklink (const std::string& from, const std::string& to,
 			io_stream_link_t linktype)
 {
   if (!from.size() || !to.size())
@@ -251,7 +251,7 @@ io_stream_file::set_mtime (int mtime)
 }
 
 int
-io_stream_file::move (String const &from, String const &to)
+io_stream_file::move (const std::string& from, const std::string& to)
 {
   if (!from.size()|| !to.size())
     return 1;

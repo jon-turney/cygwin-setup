@@ -31,6 +31,7 @@ static const char *cvsid =
 #include "mkdir.h"
 #include "mklink2.h"
 #include <unistd.h>
+#include "String++.h"
 
 #include "IOStreamProvider.h"
 
@@ -38,18 +39,18 @@ static const char *cvsid =
 class CygFileProvider : public IOStreamProvider
 {
 public:
-  int exists (String const &path) const
+  int exists (const std::string& path) const
     {return io_stream_cygfile::exists(path);}
-  int remove (String const &path) const
+  int remove (const std::string& path) const
     {return io_stream_cygfile::remove(path);}
-  int mklink (String const &a , String const &b, io_stream_link_t c) const
+  int mklink (const std::string& a , const std::string& b, io_stream_link_t c) const
     {return io_stream_cygfile::mklink(a,b,c);}
-  io_stream *open (String const &a,String const &b) const
+  io_stream *open (const std::string& a,const std::string& b) const
     {return new io_stream_cygfile (a, b);}
   ~CygFileProvider (){}
-  int move (String const &a,String const &b) const
+  int move (const std::string& a,const std::string& b) const
     {return io_stream_cygfile::move (a, b);}
-  int mkdir_p (path_type_t isadir, String const &path) const
+  int mkdir_p (path_type_t isadir, const std::string& path) const
     {return cygmkdir_p (isadir, path);}
 protected:
   CygFileProvider() // no creating this
@@ -68,12 +69,12 @@ CygFileProvider CygFileProvider::theInstance = CygFileProvider();
 #define FACTOR (0x19db1ded53ea710LL)
 #define NSPERSEC 10000000LL
 
-String io_stream_cygfile::cwd("/");
+std::string io_stream_cygfile::cwd("/");
   
 // Normalise a unix style path relative to 
 // cwd.
-String
-io_stream_cygfile::normalise (String const &unixpath)
+std::string
+io_stream_cygfile::normalise (const std::string& unixpath)
 {
   char *path,*tempout;
   
@@ -104,7 +105,7 @@ io_stream_cygfile::normalise (String const &unixpath)
 	sawslash=false;
       *outptr++ = *ptr;
     }
-  String rv = tempout;
+  std::string rv = tempout;
   delete[] path;
   delete[] tempout;
   return rv;
@@ -118,7 +119,7 @@ get_root_dir_now ()
   read_mounts ();
 }
 
-io_stream_cygfile::io_stream_cygfile (String const &name, String const &mode) : fp(), fname()
+io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string& mode) : fp(), fname()
 {
   errno = 0;
   if (!name.size() || !mode.size())
@@ -157,7 +158,7 @@ io_stream_cygfile::~io_stream_cygfile ()
 
 /* Static members */
 int
-io_stream_cygfile::exists (String const &path)
+io_stream_cygfile::exists (const std::string& path)
 {
   get_root_dir_now ();
   if (get_root_dir ().size() && _access (cygpath (normalise(path)).c_str(), 0) == 0)
@@ -166,7 +167,7 @@ io_stream_cygfile::exists (String const &path)
 }
 
 int
-io_stream_cygfile::remove (String const &path)
+io_stream_cygfile::remove (const std::string& path)
 {
   if (!path.size())
     return 1;
@@ -190,17 +191,17 @@ io_stream_cygfile::remove (String const &path)
 	       normalise(path).c_str());
       MoveFile (cygpath (normalise(path)).c_str(), tmp);
     }
-  return io_stream::remove (String ("file://") + cygpath (normalise(path)).c_str());
+  return io_stream::remove (std::string ("file://") + cygpath (normalise(path)).c_str());
 }
 
 int
-io_stream_cygfile::mklink (String const &_from, String const &_to,
+io_stream_cygfile::mklink (const std::string& _from, const std::string& _to,
 			   io_stream_link_t linktype)
 {
   if (!_from.size() || !_to.size())
     return 1;
-  String from(normalise(_from));
-  String to (normalise(_to));
+  std::string from(normalise(_from));
+  std::string to (normalise(_to));
   switch (linktype)
     {
     case IO_STREAM_SYMLINK:
@@ -213,14 +214,14 @@ io_stream_cygfile::mklink (String const &_from, String const &_to,
 	/* textmode alert: should we translate when linking from an binmode to a
 	   text mode mount and vice verca?
 	 */
-	io_stream *in = io_stream::open (String ("cygfile://") + to, "rb");
+	io_stream *in = io_stream::open (std::string ("cygfile://") + to, "rb");
 	if (!in)
 	  {
 	    log (LOG_TIMESTAMP) << "could not open " << to
               << " for reading in mklink" << endLog;
 	    return 1;
 	  }
-	io_stream *out = io_stream::open (String ("cygfile://") + from, "wb");
+	io_stream *out = io_stream::open (std::string ("cygfile://") + from, "wb");
 	if (!out)
 	  {
 	    log (LOG_TIMESTAMP) << "could not open " << from
@@ -307,11 +308,11 @@ io_stream_cygfile::error ()
 }
 
 int
-cygmkdir_p (path_type_t isadir, String const &_name)
+cygmkdir_p (path_type_t isadir, const std::string& _name)
 {
   if (!_name.size())
     return 1;
-  String name(io_stream_cygfile::normalise(_name));
+  std::string name(io_stream_cygfile::normalise(_name));
   get_root_dir_now ();
   if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
@@ -357,12 +358,12 @@ io_stream_cygfile::set_mtime (int mtime)
 }
 
 int
-io_stream_cygfile::move (String const &_from, String const &_to)
+io_stream_cygfile::move (const std::string& _from, const std::string& _to)
 {
   if (!_from.size() || !_to.size())
     return 1;
-  String from (normalise(_from));
-  String to(normalise(_to));
+  std::string from (normalise(_from));
+  std::string to(normalise(_to));
   get_root_dir_now ();
   if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */

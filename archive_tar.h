@@ -20,7 +20,6 @@
 
 #include "io_stream.h"
 #include "archive.h"
-#include "String++.h"
 #include "win32.h"
 
 typedef struct
@@ -48,8 +47,8 @@ tar_header_type;
 typedef struct tar_map_result_type_s
 {
   struct tar_map_result_type_s *next;
-  String stored_name;
-  String mapped_name;
+  std::string stored_name;
+  std::string mapped_name;
 }
 tar_map_result_type;
 
@@ -120,7 +119,7 @@ public:
    * for foobar that is an compress, next_file_name is the next
    * extractable filename.
    */
-  virtual String const next_file_name ();
+  virtual const std::string next_file_name ();
   virtual archive_file_t next_file_type ();
   /* returns the mtime of the archive file, not of the current file */
   virtual int get_mtime ();
@@ -131,7 +130,7 @@ public:
   {
     return 1;
   };
-  virtual String const linktarget ();
+  virtual const std::string linktarget ();
   virtual int skip_file ();
   /* if you are still needing these hints... give up now! */
   virtual ~ archive_tar ();

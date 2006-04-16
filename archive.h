@@ -16,11 +16,7 @@
 #ifndef SETUP_ARCHIVE_H
 #define SETUP_ARCHIVE_H
 
-/* this is the parent class for all archive IO operations. 
- * It 
- */
-
-#include "String++.h"
+/* this is the parent class for all archive IO operations. */
 
 /* The read/write the archive stream to get the archive data is flawed.
  * The problem is that you then need a *different* gzip etc class to be able
@@ -56,7 +52,8 @@ public:
    * given suffix.
    * returns 1 on failure.
    */
-  static int extract_file (archive *, String const &, String const &, String const = String());
+  static int extract_file (archive *, const std::string&, const std::string&,
+                           const std::string = std::string());
 
   /* 
    * To create a stream that will be compressed, you should open the url, and then get a new stream
@@ -80,9 +77,9 @@ public:
    * The way this works is that when read returns 0, you are at the end of *a* file.
    * next_file_name will allow read to be called again, if it returns !NULL
    */
-  virtual String const next_file_name () = 0;
+  virtual const std::string next_file_name () = 0;
   virtual archive_file_t next_file_type () = 0;
-  virtual String const linktarget () = 0;
+  virtual const std::string linktarget () = 0;
   virtual int skip_file () = 0;
   /* if you are still needing these hints... give up now! */
   virtual ~archive() = 0;

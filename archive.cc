@@ -21,11 +21,7 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-//#include "win32.h"
-//#include <stdio.h>
-//#include <stdlib.h>
 #include "LogSingleton.h"
-#include "String++.h"
 
 #include "io_stream.h"
 #include "archive.h"
@@ -87,11 +83,13 @@ archive::extract (io_stream * original)
 }
 
 int
-archive::extract_file (archive * source, String const &prefixURL, String const &prefixPath, String suffix)
+archive::extract_file (archive * source, const std::string& prefixURL,
+                       const std::string& prefixPath, std::string suffix)
 {
   if (!source)
     return 1;
-  String const destfilename = prefixURL+prefixPath+ source->next_file_name ()+ suffix;
+  const std::string destfilename = prefixURL + prefixPath
+    + source->next_file_name() + suffix;
   switch (source->next_file_type ())
     {
     case ARCHIVE_FILE_REGULAR:

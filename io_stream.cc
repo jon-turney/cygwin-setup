@@ -27,21 +27,22 @@ static const char *cvsid =
 #include "LogSingleton.h"
 
 #include "io_stream.h"
-#include "String++.h"
+
 #include <stdexcept>
 #include "IOStreamProvider.h"
 #include <map>
+#include "String++.h"
 
 using namespace std;
 
-typedef map <String, IOStreamProvider *, String::caseless> providersType;
+typedef map <std::string, IOStreamProvider *, casecompare_lt_op> providersType;
 static providersType *providers;
 static size_t longestPrefix = 0;
 static int inited = 0;
   
 void
 io_stream::registerProvider (IOStreamProvider &theProvider,
-			     String const &urlPrefix)
+			     const std::string& urlPrefix)
 {
   if (!inited)
     {
@@ -57,7 +58,7 @@ io_stream::registerProvider (IOStreamProvider &theProvider,
 }
 
 static IOStreamProvider const *
-findProvider (String const &path)
+findProvider (const std::string& path)
 {
   if (path.size() < longestPrefix)
     return NULL;
@@ -87,11 +88,11 @@ io_stream::factory (io_stream * parent)
 }
 
 #define url_scheme_not_registered(name) \
-    throw new invalid_argument ((String("URL Scheme for '")+ \
+    throw new invalid_argument ((std::string("URL Scheme for '")+ \
 				  name+"' not registered!").c_str())
 
 io_stream *
-io_stream::open (String const &name, String const &mode)
+io_stream::open (const std::string& name, const std::string& mode)
 {
   IOStreamProvider const *p = findProvider (name);
   if (!p)
@@ -104,7 +105,7 @@ io_stream::open (String const &name, String const &mode)
 }
 
 int
-io_stream::mkpath_p (path_type_t isadir, String const &name)
+io_stream::mkpath_p (path_type_t isadir, const std::string& name)
 {
   IOStreamProvider const *p = findProvider (name);
   if (!p)
@@ -114,7 +115,7 @@ io_stream::mkpath_p (path_type_t isadir, String const &name)
 
 /* remove a file or directory. */
 int
-io_stream::remove (String const &name)
+io_stream::remove (const std::string& name)
 {
   IOStreamProvider const *p = findProvider (name);
   if (!p)
@@ -123,7 +124,7 @@ io_stream::remove (String const &name)
 }
 
 int
-io_stream::mklink (String const &from, String const &to,
+io_stream::mklink (const std::string& from, const std::string& to,
 		   io_stream_link_t linktype)
 {
   log (LOG_BABBLE) << "io_stream::mklink (" << from << "->" << to << ")"
@@ -141,7 +142,7 @@ io_stream::mklink (String const &from, String const &to,
 }
 
 int
-io_stream::move_copy (String const &from, String const &to)
+io_stream::move_copy (const std::string& from, const std::string& to)
 {
   /* parameters are ok - checked before calling us, and we are private */
   io_stream *in = io_stream::open (to, "wb");
@@ -192,7 +193,7 @@ ssize_t io_stream::copy (io_stream * in, io_stream * out)
 }
 
 int
-io_stream::move (String const &from, String const &to)
+io_stream::move (const std::string& from, const std::string& to)
 {
   IOStreamProvider const *fromp = findProvider (from);
   IOStreamProvider const *top = findProvider (to);
@@ -231,7 +232,7 @@ io_stream::gets (char *buffer, size_t length)
 }
 
 int
-io_stream::exists (String const &name)
+io_stream::exists (const std::string& name)
 {
   IOStreamProvider const *p = findProvider (name);
   if (!p)

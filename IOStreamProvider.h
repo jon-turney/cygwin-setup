@@ -17,7 +17,6 @@
 #define SETUP_IOSTREAMPROVIDER_H
 
 #include "io_stream.h"
-#include "String++.h"
 
 /* An IOStreamProvider provides the interface for io_stream::open and 
  * related calls to operate.
@@ -26,14 +25,15 @@
 class IOStreamProvider
 {
 public:
-  virtual int exists (String const &) const = 0;
-  virtual int remove (String const &) const = 0;
-  virtual int mklink (String const &, String const &, io_stream_link_t) const = 0;
-  virtual io_stream *open (String const &,String const &) const = 0;
+  virtual int exists (const std::string& ) const = 0;
+  virtual int remove (const std::string& ) const = 0;
+  virtual int mklink (const std::string&, const std::string&,
+                      io_stream_link_t) const = 0;
+  virtual io_stream *open (const std::string&, const std::string&) const = 0;
   virtual ~IOStreamProvider (){}
-  virtual int move (String const &,String const &) const = 0;
-  virtual int mkdir_p (path_type_t isadir, String const &path) const = 0;
-  String key; // Do not set - managed automatically.
+  virtual int move (const std::string&, const std::string&) const = 0;
+  virtual int mkdir_p (path_type_t isadir, const std::string& path) const = 0;
+  std::string key; // Do not set - managed automatically.
 protected:
   IOStreamProvider(){} // no base instances
   IOStreamProvider(IOStreamProvider const &); // no copy cons

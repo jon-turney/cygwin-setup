@@ -17,21 +17,21 @@
 #define SETUP_IO_STREAM_CYGFILE_H
 
 #include "io_stream.h"
-#include "String++.h"
+
 
 /* io_stream on disk files using cygwin paths
  * and potentially understanding links in the future
  */
 
-extern int cygmkdir_p (path_type_t isadir, String const &path);
+extern int cygmkdir_p (path_type_t isadir, const std::string& path);
 
 class io_stream_cygfile:public io_stream
 {
 public:
-  static int exists (String const &);
-  static int remove (String const &);
-  static int mklink (String const &, String const &, io_stream_link_t);
-    io_stream_cygfile (String const &, String const &);
+  static int exists (const std::string& );
+  static int remove (const std::string& );
+  static int mklink (const std::string& , const std::string& , io_stream_link_t);
+    io_stream_cygfile (const std::string& , const std::string& );
     virtual ~ io_stream_cygfile ();
   /* read data (duh!) */
   virtual ssize_t read (void *buffer, size_t len);
@@ -50,19 +50,19 @@ public:
     return 0;
   };
   virtual size_t get_size ();
-  static int move (String const &,String const &);
+  static int move (const std::string& ,const std::string& );
 private:
   /* always require parameters */
   io_stream_cygfile ()
   {
   };
-  friend int cygmkdir_p (path_type_t isadir, String const &_name);
-  static String normalise (String const &unixpath);
+  friend int cygmkdir_p (path_type_t isadir, const std::string& _name);
+  static std::string normalise (const std::string& unixpath);
   FILE *fp;
   int lasterr;
-  String fname;
-  String lmode;
-  static String cwd;
+  std::string fname;
+  std::string lmode;
+  static std::string cwd;
 };
 
 #endif /* SETUP_IO_STREAM_CYGFILE_H */

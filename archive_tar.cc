@@ -137,7 +137,7 @@ archive_tar::skip_file ()
   return 0;
 }
 
-String const
+const std::string
 archive_tar::next_file_name ()
 {
   char *c;
@@ -147,20 +147,20 @@ archive_tar::next_file_name ()
       return state.filename;
     else
       /* End of tar */
-      return String();
+      return std::string();
 
   int r = state.parent->read (&state.tar_header, 512);
 
   /* See if we're at end of file */
   if (r != 512)
-    return String();
+    return std::string();
 
   /* See if the header is all zeros (i.e. last block) */
   int n = 0;
   for (r = 512 / sizeof (int); r; r--)
     n |= ((int *) &state.tar_header)[r - 1];
   if (n == 0)
-    return String();
+    return std::string();
 
   if (!state.have_longname && state.tar_header.typeflag != 'L')
     {
@@ -242,7 +242,7 @@ archive_tar::next_file_name ()
       skip_file ();
       return next_file_name ();
     }
-  return String();
+  return std::string();
 }
 
 archive_tar::~archive_tar ()
@@ -295,14 +295,14 @@ archive_tar::next_file_type ()
     }
 }
 
-String const
+const std::string
 archive_tar::linktarget ()
 {
   /* TODO: consider .. path traversal issues */
   if (next_file_type () == ARCHIVE_FILE_SYMLINK ||
       next_file_type () == ARCHIVE_FILE_HARDLINK)
     return state.tar_header.linkname;
-  return String();
+  return std::string();
 }
 
 io_stream *
