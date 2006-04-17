@@ -1,5 +1,11 @@
 2006-04-17  Max Bowsher  <maxb1@ukf.net>
 
+	* package_meta.cc, package_meta.h, package_source.cc,
+	package_source.h: Do some String to std::string migration.
+	* package_db.cc: Small tweak to assist with the above.
+
+2006-04-17  Max Bowsher  <maxb1@ukf.net>
+
 	* PickView.cc, PickView.h, package_db.cc, package_db.h:
 	Do some String to std::string migration.
 	* package_meta.h: Change a couple of types to assist with the above.

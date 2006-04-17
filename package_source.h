@@ -45,9 +45,9 @@
 class site
 {
 public:
-  site (String const &newkey);
+  site (const std::string& newkey);
   ~site () {}
-  String key;
+  std::string key;
   bool operator == (site const &rhs)
     {
       return casecompare(key, rhs.key) == 0;
@@ -96,11 +96,14 @@ public:
   /* what is the cached filename, to prevent directory scanning during install */
   virtual char const *Cached () const
   {
+    /* Pointer-coerce-to-boolean is used by many callers. */
+    if (cached.empty())
+      return NULL;
     return cached.c_str();
   };
   /* sets the canonical path, and parses and creates base and filename */
   virtual void set_canonical (char const *);
-  virtual void set_cached (String const &);
+  virtual void set_cached (const std::string& );
   MD5Sum md5;
   typedef std::vector <site> sitestype;
   sitestype sites;
@@ -119,7 +122,7 @@ private:
   char *canonical;
   char *base;
   char *filename;
-  String cached;
+  std::string cached;
   unsigned long _installedSize;
 };
 

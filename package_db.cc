@@ -156,7 +156,7 @@ packagedb::flush ()
 	   */
 	  std::string line;
 	  line = pkgm.name + " " + pkgm.name + "-" + 
-	    pkgm.installed.Canonical_version () + ".tar.bz2 0\n";
+	    std::string(pkgm.installed.Canonical_version()) + ".tar.bz2 0\n";
 	  ndb->write (line.c_str(), line.size());
 	}
     }

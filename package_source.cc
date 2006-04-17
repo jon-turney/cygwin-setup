@@ -26,7 +26,7 @@ static const char *cvsid =
 #include <strings.h>
 #include "package_source.h"
 
-site::site (String const &newkey) : key(newkey)
+site::site (const std::string& newkey) : key(newkey)
 {
 };
   
@@ -71,11 +71,11 @@ packagesource::set_canonical (char const *fn)
   memcpy (filename, bstart, end - bstart);
   filename[end - bstart] = '\0';
 
-  cached = String();
+  cached = std::string();
 }
 
 void
-packagesource::set_cached (String const &fp)
+packagesource::set_cached (const std::string& fp)
 {
   cached = fp;
 }

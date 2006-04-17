@@ -22,7 +22,6 @@ class category;
 
 /* Required to parse this completely */
 #include <set>
-#include "String++.h"
 #include "PackageTrust.h"
 #include "package_version.h"
 
@@ -34,14 +33,14 @@ class packagemeta
 public:
   static void ScanDownloadedFiles();
   packagemeta (packagemeta const &);
-  packagemeta (String const &pkgname):name (pkgname), key(pkgname), installed_from (),
+  packagemeta (const std::string& pkgname):name (pkgname), key(pkgname), installed_from (),
   prevtimestamp (0), currtimestamp (0),
     exptimestamp (0), architecture (), priority(), visited_(false)
   {
   }
 
-  packagemeta (String const &pkgname,
-	       String const &installedfrom):name (pkgname), key(pkgname),
+  packagemeta (const std::string& pkgname,
+	       const std::string& installedfrom):name (pkgname), key(pkgname),
 	       installed_from (installedfrom),
     prevtimestamp (0), currtimestamp (0),
     exptimestamp (0), architecture (), priority(), visited_(false)
@@ -86,7 +85,7 @@ public:
   int set_requirements (trusts deftrust) 
     { return set_requirements (deftrust, 0); }
 
-  String action_caption () const;
+  std::string action_caption () const;
   packageversion trustp (trusts const t) const
   {
     return t == TRUST_PREV ? (prev ? prev : (curr ? curr : installed))
@@ -94,19 +93,19 @@ public:
 	 : exp ? exp : installed;
   }
 
-  String name;			/* package name, like "cygwin" */
-  String key;
+  std::string name;			/* package name, like "cygwin" */
+  std::string key;
   /* legacy variable used to output data for installed.db versions <= 2 */
-  String installed_from;
+  std::string installed_from;
   /* SDesc is global in theory, across all package versions. 
      LDesc is not: it can be different per version */
-  String const SDesc () const;
+  const std::string SDesc () const;
   /* what categories does this package belong in. Note that if multiple versions
    * of a package disagree.... the first one read in will take precedence.
    */
-  void add_category (String const &);
+  void add_category (const std::string& );
   std::set <std::string, casecompare_lt_op> categories;
-  String const getReadableCategoryList () const;
+  const std::string getReadableCategoryList () const;
   std::set <packageversion> versions;
 
   /* which one is installed. */
@@ -130,11 +129,11 @@ public:
    * cygwin - cygwin for 32 bit MS Windows 
    * All - no binary code, or a version for every platform
    */
-  String architecture;
+  std::string architecture;
   /* What priority does this package have?
    * TODO: this should be linked into a list of priorities.
    */
-  String priority;
+  std::string priority;
 
   /* can one or more versions be installed? */
   bool accessible () const;
@@ -146,7 +145,7 @@ public:
 protected:
   packagemeta &operator= (packagemeta const &);
 private:
-  String trustLabel(packageversion const &) const;
+  std::string trustLabel(packageversion const &) const;
   bool visited_;
 };
 

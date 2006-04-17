@@ -118,7 +118,7 @@ template<class T> struct removeCategory : public unary_function<T, void>
 
 packagemeta::~packagemeta()
 {
-  for_each (categories.begin (), categories.end (), removeCategory<String> (this));
+  for_each (categories.begin (), categories.end (), removeCategory<std::string> (this));
   categories.clear ();
   versions.clear ();
 }
@@ -166,7 +166,7 @@ packagemeta::uninstall ()
             if (!was_new) break;
           }
 
-	  String d = cygpath ("/" + line);
+	  std::string d = cygpath ("/" + line);
 	  DWORD dw = GetFileAttributes (d.c_str());
 	  if (dw != INVALID_FILE_ATTRIBUTES
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
@@ -196,7 +196,7 @@ packagemeta::uninstall ()
       while (it != dirs.begin())
       {
         it--;
-        String d = cygpath("/" + *it);
+        std::string d = cygpath("/" + *it);
         if (RemoveDirectory (d.c_str()))
           log (LOG_BABBLE) << "rmdir " << d << endLog;
       }
@@ -206,7 +206,7 @@ packagemeta::uninstall ()
 
 
 void
-packagemeta::add_category (String const &cat)
+packagemeta::add_category (const std::string& cat)
 {
   if (categories.find (cat) != categories.end())
     return;
@@ -215,24 +215,24 @@ packagemeta::add_category (String const &cat)
   categories.insert (cat);
 }
 
-struct StringConcatenator : public unary_function<String const, void>{
-    StringConcatenator(String aString) : gap(aString){}
-    void operator()(String const& aString) 
+struct StringConcatenator : public unary_function<const std::string, void>{
+    StringConcatenator(std::string aString) : gap(aString){}
+    void operator()(const std::string& aString) 
     {
       if (result.size() != 0)
         result += gap;
       result += aString;
     }
-    String result;
-    String gap;
+    std::string result;
+    std::string gap;
 };
 
-String const
+const std::string
 packagemeta::getReadableCategoryList () const
 {
   return for_each(categories.begin(), categories.end(), 
     visit_if (
-      StringConcatenator(", "), bind1st(not_equal_to<String>(), "All"))
+      StringConcatenator(", "), bind1st(not_equal_to<std::string>(), "All"))
               ).visitor.result;
 }
 
@@ -242,17 +242,17 @@ hasSDesc(packageversion const &pkg)
   return pkg.SDesc().size();
 }
 
-String const
+const std::string
 packagemeta::SDesc () const
 {
   set<packageversion>::iterator i = find_if (versions.begin(), versions.end(), hasSDesc);
   if (i == versions.end())
-    return String();
+    return std::string();
   return i->SDesc ();
 };
 
 /* Return an appropriate caption given the current action. */
-String 
+std::string 
 packagemeta::action_caption () const
 {
   if (!desired && installed)
@@ -551,7 +551,7 @@ packagemeta::logAllVersions () const
 #endif
 }
 
-String 
+std::string 
 packagemeta::trustLabel(packageversion const &aVersion) const
 {
     if (aVersion == prev)
@@ -582,8 +582,8 @@ packagemeta::logSelectionStatus() const
   const char *trust = ((pkg.desired == pkg.prev) ? "prev"
                : (pkg.desired == pkg.curr) ? "curr"
                : (pkg.desired == pkg.exp) ? "test" : "unknown");
-  String action = pkg.action_caption ();
-  String const installed =
+  std::string action = pkg.action_caption ();
+  const std::string installed =
    pkg.installed ? pkg.installed.Canonical_version () : "none";
 
   log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && pkg.desired.sourcePackage().picked() ? "yes" : "no") << endLog;
@@ -594,9 +594,9 @@ packagemeta::logSelectionStatus() const
   {
     /* List other packages this package depends on */
       Dependency *dp = pkg.desired->required;
-    String requires = dp->package.serialise ();
+    std::string requires = dp->package.serialise ();
     for (dp = dp->next; dp; dp = dp->next)
-       requires += String (", ") + dp->package.serialise ();
+       requires += std::string (", ") + dp->package.serialise ();
 
    log (LOG_BABBLE) << "     requires=" << requires;
     }
