@@ -20,7 +20,6 @@
  * arbitrate acceess to cygwin binary packages amd cygwin source packages
  */
 
-#include "String++.h"
 /* for MAX_PATH */
 #include "win32.h" 
 
@@ -31,10 +30,10 @@ class io_stream;
 class cygpackage:public _packageversion
 {
 public:
-  virtual String const Name ();
-  virtual String const Vendor_version ();
-  virtual String const Package_version ();
-  virtual String const Canonical_version ();
+  virtual const std::string Name ();
+  virtual const std::string Vendor_version ();
+  virtual const std::string Package_version ();
+  virtual const std::string Canonical_version ();
   virtual package_status_t Status ()
   {
     return status;
@@ -43,13 +42,13 @@ public:
   {
     return type;
   };
-  virtual void set_sdesc (String const &);
-  virtual void set_ldesc (String const &);
-  virtual String const SDesc ()
+  virtual void set_sdesc (const std::string& );
+  virtual void set_ldesc (const std::string& );
+  virtual const std::string SDesc ()
   {
     return sdesc;
   };
-  virtual String const LDesc ()
+  virtual const std::string LDesc ()
   {
     return ldesc;
   };
@@ -57,34 +56,35 @@ public:
 
 
   /* pass the name of the package when constructing */
-  void setCanonicalVersion (String const &);
+  void setCanonicalVersion (const std::string& );
 
 
   virtual ~ cygpackage ();
   /* TODO: we should probably return a metaclass - file name & path & size & type
      - ie doc/script/binary
    */
-  virtual String const getfirstfile ();
-  virtual String const getnextfile ();
+  virtual const std::string getfirstfile ();
+  virtual const std::string getnextfile ();
 
   /* pass the name of the package when constructing */
-  static packageversion createInstance (const String &pkgname,
+  static packageversion createInstance (const std::string& pkgname,
                                         const package_type_t type);
 
-  static packageversion createInstance (String const &, String const &, 
-					size_t const, String const &,
+  static packageversion createInstance (const std::string& ,
+                                        const std::string& , 
+                                        size_t const, const std::string& ,
 					package_status_t const, 
 					package_type_t const);
 
 private:
   cygpackage ();
   void destroy ();
-  String name;
-  String vendor;
-  String packagev;
-  String canonical;
-  String fn;
-  String sdesc, ldesc;
+  std::string name;
+  std::string vendor;
+  std::string packagev;
+  std::string canonical;
+  std::string fn;
+  std::string sdesc, ldesc;
   char getfilenamebuffer[MAX_PATH];
 
 //  package_stability_t stability;

@@ -43,19 +43,19 @@ public:
       // never try to free me!
       ++references;
     }
-  String const Name(){return String();}
-  String const Vendor_version() {return String();}
-  String const Package_version() {return String();}
-  String const Canonical_version() {return String();}
-  void setCanonicalVersion (String const &) {}
+  const std::string Name(){return std::string();}
+  const std::string Vendor_version() {return std::string();}
+  const std::string Package_version() {return std::string();}
+  const std::string Canonical_version() {return std::string();}
+  void setCanonicalVersion (const std::string& ) {}
   package_status_t Status (){return package_notinstalled;}
   package_type_t Type () {return package_binary;}
-  String const getfirstfile () {return String();}
-  String const getnextfile () {return String();}
-  String const SDesc () {return String();}
-  void set_sdesc (String const &) {}
-  String const LDesc () {return String();}
-  void set_ldesc (String const &) {}
+  const std::string getfirstfile () {return std::string();}
+  const std::string getnextfile () {return std::string();}
+  const std::string SDesc () {return std::string();}
+  void set_sdesc (const std::string& ) {}
+  const std::string LDesc () {return std::string();}
+  void set_ldesc (const std::string& ) {}
   void uninstall (){}
   void pick(bool const &newValue){/* Ignore attempts to pick this!. Throw an exception here if you want to detect such attemtps instead */}
   virtual void addScript(Script const &) {}
@@ -143,20 +143,20 @@ packageversion::operator < (packageversion const &rhs) const
   return false;
 }
 
-String const 
+const std::string 
 packageversion::Name () const
 {
   return data->Name ();
 }
 
-String const
+const std::string
 packageversion::Canonical_version() const
 {
   return data->Canonical_version();
 }
 
 void
-packageversion::setCanonicalVersion (String const &ver)
+packageversion::setCanonicalVersion (const std::string& ver)
 {
   data->setCanonicalVersion (ver);
 }
@@ -167,38 +167,38 @@ packageversion::Type () const
   return data->Type ();
 }
 
-String const
+const std::string
 packageversion::getfirstfile ()
 {
   return data->getfirstfile ();
 }
 
-String const
+const std::string
 packageversion::getnextfile ()
 {
   return data->getnextfile ();
 }
 
-String const
+const std::string
 packageversion::SDesc () const
 {
   return data->SDesc ();
 }
 
 void
-packageversion::set_sdesc (String const &sdesc)
+packageversion::set_sdesc (const std::string& sdesc)
 {
   data->set_sdesc (sdesc);
 }
 
-String const
+const std::string
 packageversion::LDesc () const
 {
   return data->LDesc ();
 }
 
 void
-packageversion::set_ldesc (String const &ldesc)
+packageversion::set_ldesc (const std::string& ldesc)
 {
   data->set_ldesc (ldesc);
 }

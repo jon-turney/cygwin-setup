@@ -41,7 +41,6 @@ class CategoryList;
  
 /*Required for parsing */
 #include "package_source.h"
-#include "String++.h"
 #include "PackageSpecification.h"
 #include "PackageTrust.h"
 #include "script.h"
@@ -100,19 +99,19 @@ public:
   bool operator > (packageversion const &) const;
   bool operator >= (packageversion const &) const;
 
-  String const Name () const; 
-  String const Vendor_version () const;
-  String const Package_version () const;
-  String const Canonical_version () const;
-  void setCanonicalVersion (String const &);
+  const std::string Name () const; 
+  const std::string Vendor_version () const;
+  const std::string Package_version () const;
+  const std::string Canonical_version () const;
+  void setCanonicalVersion (const std::string& );
   package_status_t Status () const;
   package_type_t Type () const;
-  String const getfirstfile ();
-  String const getnextfile ();
-  String const SDesc () const;
-  void set_sdesc (String const &);
-  String const LDesc () const;
-  void set_ldesc (String const &);
+  const std::string getfirstfile ();
+  const std::string getnextfile ();
+  const std::string SDesc () const;
+  void set_sdesc (const std::string& );
+  const std::string LDesc () const;
+  void set_ldesc (const std::string& );
   packageversion sourcePackage () const;
   PackageSpecification & sourcePackageSpecification ();
   void setSourcePackageSpecification (PackageSpecification const &);
@@ -155,26 +154,26 @@ public:
   _packageversion();
   virtual ~_packageversion();
   /* for list inserts/mgmt. */
-  String key;
+  std::string key;
   /* name is needed here, because if we are querying a file, the data may be embedded in
      the file */
-  virtual String const Name () = 0;
-  virtual String const Vendor_version () = 0;
-  virtual String const Package_version () = 0;
-  virtual String const Canonical_version () = 0;
-  virtual void setCanonicalVersion (String const &) = 0;
+  virtual const std::string Name () = 0;
+  virtual const std::string Vendor_version () = 0;
+  virtual const std::string Package_version () = 0;
+  virtual const std::string Canonical_version () = 0;
+  virtual void setCanonicalVersion (const std::string& ) = 0;
   virtual package_status_t Status () = 0;
 //  virtual package_stability_t Stability () = 0;
   virtual package_type_t Type () = 0;
   /* TODO: we should probably return a metaclass - file name & path & size & type
      - ie doc/script/binary
    */
-  virtual String const getfirstfile () = 0;
-  virtual String const getnextfile () = 0;
-  virtual String const SDesc () = 0;
-  virtual void set_sdesc (String const &) = 0;
-  virtual String const LDesc () = 0;
-  virtual void set_ldesc (String const &) = 0;
+  virtual const std::string getfirstfile () = 0;
+  virtual const std::string getnextfile () = 0;
+  virtual const std::string SDesc () = 0;
+  virtual void set_sdesc (const std::string& ) = 0;
+  virtual const std::string LDesc () = 0;
+  virtual void set_ldesc (const std::string& ) = 0;
   /* only semantically meaningful for binary packages */
   /* direct link to the source package for this binary */
   /* if multiple versions exist and the source doesn't discriminate

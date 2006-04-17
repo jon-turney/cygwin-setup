@@ -25,7 +25,6 @@ static const char *cvsid =
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "String++.h"
 
 #include "io_stream.h"
 #include "compress.h"
@@ -55,7 +54,7 @@ listfile ()
 }
 
 packageversion
-cygpackage::createInstance (const String &pkgname,
+cygpackage::createInstance (const std::string& pkgname,
                             const package_type_t type)
 {
   cygpackage *temp = new cygpackage;
@@ -65,8 +64,9 @@ cygpackage::createInstance (const String &pkgname,
 }
 
 packageversion
-cygpackage::createInstance (String const &pkgname, String const &filename,
-			    size_t const fs, String const &version,
+cygpackage::createInstance (const std::string& pkgname,
+                            const std::string& filename,
+                            size_t const fs, const std::string& version,
 			    package_status_t const newstatus,
 			    package_type_t const newtype)
 {
@@ -82,7 +82,7 @@ cygpackage::createInstance (String const &pkgname, String const &filename,
 
 /* tell the version */
 void
-cygpackage::setCanonicalVersion (String const &version)
+cygpackage::setCanonicalVersion (const std::string& version)
 {
   canonical = version;
   char *start = strchr (canonical.c_str(), '-');
@@ -121,25 +121,31 @@ cygpackage::destroy ()
 {
 }
 
-String const
+const std::string
 cygpackage::getfirstfile ()
 {
   if (listdata)
     delete listdata;
   listfile =
-    io_stream::open (String ("cygfile:///etc/setup/") + name + ".lst.gz", "rb");
+    io_stream::open ("cygfile:///etc/setup/" + name + ".lst.gz", "rb");
   listdata = compress::decompress (listfile);
   if (!listdata)
-    return String();
+    return std::string();
   return listdata->gets (getfilenamebuffer, sizeof (getfilenamebuffer));
 }
 
-String const
+const std::string
 cygpackage::getnextfile ()
 {
   if (listdata)
-    return listdata->gets (getfilenamebuffer, sizeof (getfilenamebuffer));
-  return String();
+  {
+    /* std::string(NULL) will crash, so be careful to test for that. */
+    const char *sz = listdata->gets (getfilenamebuffer,
+                                     sizeof (getfilenamebuffer));
+    if (sz)
+      return std::string(sz);
+  }
+  return std::string();
 }
 
 void
@@ -148,41 +154,41 @@ cygpackage::uninstall ()
   if (listdata)
     delete listdata;
   listdata = 0;
-  io_stream::remove (String("cygfile:///etc/setup/") + name + ".lst.gz");
+  io_stream::remove ("cygfile:///etc/setup/" + name + ".lst.gz");
 }
 
-String const
+const std::string
 cygpackage::Name ()
 {
   return name;
 }
 
-String const
+const std::string
 cygpackage::Vendor_version ()
 {
   return vendor;
 }
 
-String const
+const std::string
 cygpackage::Package_version ()
 {
   return packagev;
 }
 
-String  const
+std::string  const
 cygpackage::Canonical_version ()
 {
   return canonical;
 }
 
 void
-cygpackage::set_sdesc (String const &desc)
+cygpackage::set_sdesc (const std::string& desc)
 {
   sdesc = desc;
 }
 
 void
-cygpackage::set_ldesc (String const &desc)
+cygpackage::set_ldesc (const std::string& desc)
 {
   ldesc = desc;
 }
