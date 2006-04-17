@@ -154,7 +154,7 @@ packagedb::flush ()
 	   * also note that we are writing a fictional install source 
 	   * to keep cygcheck happy.               
 	   */
-	  String line;
+	  std::string line;
 	  line = pkgm.name + " " + pkgm.name + "-" + 
 	    pkgm.installed.Canonical_version () + ".tar.bz2 0\n";
 	  ndb->write (line.c_str(), line.size());

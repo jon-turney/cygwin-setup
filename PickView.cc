@@ -128,8 +128,8 @@ PickView::set_headers ()
 }
 
 void
-PickView::note_width (PickView::Header *hdrs, HDC dc, String const &string, 
-                      int addend, int column)
+PickView::note_width (PickView::Header *hdrs, HDC dc,
+                      const std::string& string, int addend, int column)
 {
   SIZE s = { 0, 0 };
 
@@ -242,9 +242,9 @@ PickView::views::caption ()
 
 /* meant to be called on packagemeta::categories */
 bool
-isObsolete (set <String, String::caseless> &categories)
+isObsolete (set <std::string, casecompare_lt_op> &categories)
 {
-  set <String, String::caseless>::const_iterator i;
+  set <std::string, casecompare_lt_op>::const_iterator i;
   
   for (i = categories.begin (); i != categories.end (); ++i)
     if (isObsolete (*i))
@@ -253,7 +253,7 @@ isObsolete (set <String, String::caseless> &categories)
 }
 
 bool
-isObsolete (const String &catname)
+isObsolete (const std::string& catname)
 {
   if (casecompare(catname, "ZZZRemovedPackages") == 0 
         || casecompare(catname, "_", 1) == 0)
@@ -283,7 +283,7 @@ PickView::insert_pkg (packagemeta & pkg)
     }
   else
     {
-      for (set <String, String::caseless>::const_iterator x
+      for (set <std::string, casecompare_lt_op>::const_iterator x
 	   = pkg.categories.begin (); x != pkg.categories.end (); ++x)
         {
 	  // Special case - yuck
@@ -455,20 +455,20 @@ PickView::init_headers (HDC dc)
           if (*i != pkg.installed)
             note_width (headers, dc, i->Canonical_version (),
                         HMARGIN + SPIN_WIDTH, new_col);
-	  String z = format_1000s(packageversion(*i).source ()->size);
+	  std::string z = format_1000s(packageversion(*i).source ()->size);
 	  note_width (headers, dc, z, HMARGIN, size_col);
 	  z = format_1000s(packageversion(i->sourcePackage ()).source ()->size);
 	  note_width (headers, dc, z, HMARGIN, size_col);
 	}
-      String s = pkg.name;
+      std::string s = pkg.name;
       if (pkg.SDesc ().size())
-	s += String (": ") + pkg.SDesc ();
+	s += std::string (": ") + std::string(pkg.SDesc ());
       note_width (headers, dc, s, HMARGIN, pkg_col);
       
       if (view_mode != PickView::views::Category && pkg.categories.size () > 2)
         {
-          String compound_cat("");          
-          std::set<String, String::caseless>::const_iterator cat;
+          std::string compound_cat("");          
+          std::set<std::string, casecompare_lt_op>::const_iterator cat;
           size_t cnt;
           
           for (cnt = 0, cat = pkg.categories.begin (); 

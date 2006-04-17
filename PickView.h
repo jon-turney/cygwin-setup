@@ -17,7 +17,6 @@
 #define SETUP_PICKVIEW_H
 
 #include "win32.h"
-#include "String++.h"
 #include "window.h"
 #include "RECTWrapper.h"
 
@@ -139,11 +138,11 @@ private:
   
   void set_headers ();
   void init_headers (HDC dc);
-  void note_width (Header *hdrs, HDC dc, String const &string, int addend,
-      int column);
+  void note_width (Header *hdrs, HDC dc, const std::string& string,
+                   int addend, int column);
 };
 
-bool isObsolete (std::set <String, String::caseless> &categories);
-bool isObsolete (const String &catname);
+bool isObsolete (std::set <std::string, casecompare_lt_op> &categories);
+bool isObsolete (const std::string& catname);
 
 #endif /* SETUP_PICKVIEW_H */

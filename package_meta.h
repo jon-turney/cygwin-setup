@@ -26,7 +26,7 @@ class category;
 #include "PackageTrust.h"
 #include "package_version.h"
 
-typedef std::pair<String const, std::vector<packagemeta *> > Category;
+typedef std::pair<const std::string, std::vector<packagemeta *> > Category;
 
 /* NOTE: A packagemeta without 1 packageversion is invalid! */
 class packagemeta
@@ -105,7 +105,7 @@ public:
    * of a package disagree.... the first one read in will take precedence.
    */
   void add_category (String const &);
-  std::set <String, String::caseless> categories;
+  std::set <std::string, casecompare_lt_op> categories;
   String const getReadableCategoryList () const;
   std::set <packageversion> versions;
 

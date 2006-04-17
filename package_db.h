@@ -17,9 +17,9 @@
 #define SETUP_PACKAGE_DB_H
 
 /* required to parse this file */
-#include <String++.h>
 #include <vector>
 #include <map>
+#include "String++.h"
 class packagemeta;
 class io_stream;
 class PackageSpecification;
@@ -52,7 +52,7 @@ public:
   /* all seen source packages */
   static std::vector <packagemeta *> sourcePackages;
   /* all seen categories */
-  typedef std::map <String, std::vector <packagemeta *>, String::caseless > categoriesType;
+  typedef std::map <std::string, std::vector <packagemeta *>, casecompare_lt_op > categoriesType;
   static categoriesType categories;
   static PackageDBActions task;
 private:
