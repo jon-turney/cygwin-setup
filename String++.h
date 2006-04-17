@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002, Robert Collins.
+ * Copyright 2003-2006, Various Contributors.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -8,102 +8,12 @@
  *
  *     A copy of the GNU General Public License can be found at
  *     http://www.gnu.org/
- *
- * Written by Robert Collins.
- *
  */
 
 #ifndef SETUP_STRING___H
 #define SETUP_STRING___H
 
-// A String class to replace all the char * manipulation. 
-
-#include <stdarg.h>
-#include <sys/types.h>
-#include <iosfwd>
 #include <string>
-
-class String {
-  class _data;
-public:
-  // Static members first
-  inline String();
-  inline String (String const &);
-  // We're notperformance bottlenecked.
-  String (const char *); 
-  String (std::string const &);
-  inline String & operator = (String const &);
-  ~String();
-  char const * c_str() const; // only valid until the next mutator call
-  			      // pretends to be const !!
-  inline size_t size() const; // number of characters (!= storage size).
-  String substr (size_t start = 0, int len = -1) const;
-  // operator == and != can be done if/when we have a 'casesensitive' flag to
-  // the constructors
-  // - means this sorts to the left of the parameter
-  int compare (String const &, size_t const = 0) const;
-private:
-  int casecompare (String const &, size_t const = 0) const;
-public:
-  String &append (String const &);
-  String &operator += (String const &);
-  String operator + (String const &) const;
-  String operator + (char const *) const;
-  bool operator == (String const &) const;
-  bool operator == (char const *) const;
-  bool operator != (String const &) const;
-  bool operator != (char const *) const;
-  struct caseless { bool operator () (String const &s1, String const &s2) const
-	{
-	  return s1.casecompare (s2) < 0;
-	}};
-
-  operator std::string() const {
-    return std::string( size() ? c_str() : "" );
-  };
-    
-private:
-  class _data {
-  public:
-    _data ();
-    _data (size_t);
-    _data (_data const &);
-    ~_data ();
-    unsigned count; //Invariant: all constructors set to 1;
-    // For now, char *, but can be TCHAR, or even UNICODE
-    // when time permits.
-    unsigned char *theString;
-    char *cstr; // cached/oneuse Cstr encoded version
-    size_t length;
-  } *theData; // Invariant, there is always an 
-  static String absorb (unsigned char *, size_t);
-};
-
-std::ostream &
-operator << (std::ostream &os, String const &theString);
-
-String::String() : theData (new _data) {}
-String::String(String const &aString) : theData (aString.theData) 
-{
-  ++theData->count;
-}
-
-String &
-String::operator= (String const &aString)
-{
-  // Don't touch the order
-  ++aString.theData->count;
-  if (--theData->count == 0) 
-    delete theData;
-  theData = aString.theData;
-  return *this;
-}
-
-size_t 
-String::size() const
-{
-  return theData->length;
-}
 
 char *new_cstr_char_array (const std::string& s);
 
@@ -115,18 +25,18 @@ char *new_cstr_char_array (const std::string& s);
 
 std::string format_1000s (int num, char sep = ',');
 
-std::string stringify(int num);
+std::string stringify (int num);
 
 int casecompare (const std::string& a, const std::string& b, size_t limit = 0);
 
 std::string replace(const std::string& haystack, const std::string& needle,
-		    const std::string& replacement);
+                    const std::string& replacement);
 
 class casecompare_lt_op
 {
-public:
-  bool operator () (const std::string& a, const std::string& b) const
-  { return casecompare(a, b) < 0; }
+  public:
+    bool operator() (const std::string& a, const std::string& b) const
+    { return casecompare(a, b) < 0; }
 };
 
 inline std::string operator+ (const char *a, const std::string& b)
