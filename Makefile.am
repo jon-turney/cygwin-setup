@@ -48,6 +48,7 @@ EXTRA_PROGRAMS = inilint
 EXTRA_DIST = \
   CHANGES \
   CONTRIBUTORS \
+  COPYING \
   bootstrap.sh \
   check-na.bmp \
   check-no.bmp \

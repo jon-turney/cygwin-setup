@@ -1,3 +1,8 @@
+2006-04-25  Brian Dessent  <brian@dessent.net>
+
+	* COPYING: New file (GPL).
+	* Makfile.am (EXTRA_DIST): Add COPYING.
+
 2006-04-17  Max Bowsher  <maxb1@ukf.net>
 
 	* String++.cc, String++.h: Finally, it's time for the long-awaited
