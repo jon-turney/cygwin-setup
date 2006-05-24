@@ -1,3 +1,20 @@
+2006-05-24  Igor Peshansky  <pechtcha@cs.nyu.edu>
+
+	* PickPackageLine.h (PickPackageLine::DrawIcon): Move to PickView.
+	* PickView.h (PickView::DrawIcon): Move from PickPackageLine.
+	(PickView::icon_dc,PickView::bm_icon): New instance field.
+	(PickView::rect_icon,PickView::bg_fg_brush): Ditto.
+	* PickCategoryLine.cc (PickCategoryLine::paint): Use
+	PickView::DrawIcon() instead of BitBlt().
+	* PickPackageLine.cc (PickPackageLine::DrawIcon): Move to PickView.
+	(PickPackageLine::paint): Use PickView::DrawIcon().
+	* PickView.cc (PickView::~PickView): Delete GDI objects.
+	(PickView::init): Create icon drawing context.
+	(PickView::DrawIcon): New function.  Use system default colors to
+	draw bitmaps.
+	(PickView::paint): Set background color instead of using transparent
+	mode.  Create system-colored brush.
+
 2006-04-25  Brian Dessent  <brian@dessent.net>
 
 	* COPYING: New file (GPL).

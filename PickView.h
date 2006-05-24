@@ -45,6 +45,7 @@ public:
   void defaultTrust (trusts trust);
   void cycleViewMode ();
   void setViewMode (views mode);
+  void DrawIcon (HDC hdc, int x, int y, HANDLE hIcon);
   void paint (HWND hwnd);
   LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
   LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);
@@ -70,7 +71,10 @@ public:
   int last_col;
   int row_height;
   TEXTMETRIC tm;
-  HDC bitmap_dc;
+  HDC bitmap_dc, icon_dc;
+  HBITMAP bm_icon;
+  HRGN rect_icon;
+  HBRUSH bg_fg_brush;
   HANDLE bm_spin, bm_checkyes, bm_checkno, bm_checkna, bm_treeplus, bm_treeminus;
   trusts deftrust;
   HANDLE sysfont;

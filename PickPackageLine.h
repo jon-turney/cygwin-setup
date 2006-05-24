@@ -26,7 +26,6 @@ public:
   PickPackageLine (PickView &aView, packagemeta & apkg):PickLine (apkg.key), pkg (apkg), theView (aView)
   {
   };
-  void DrawIcon (HDC hdc, int x, int y, HANDLE hIcon);
   virtual void paint (HDC hdc, HRGN unused, int x, int y, int col_num, int show_cat);
   virtual int click (int const myrow, int const ClickedRow, int const x);
   virtual int itemcount () const

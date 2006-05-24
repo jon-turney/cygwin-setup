@@ -19,13 +19,6 @@
 #include "package_version.h"
 
 void
-PickPackageLine::DrawIcon (HDC hdc, int x, int y, HANDLE hIcon)
-{
-  SelectObject (theView.bitmap_dc, hIcon);
-  BitBlt (hdc, x, y, 11, 11, theView.bitmap_dc, 0, 0, SRCAND);
-}
-
-void
 PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int show_cat)
 {
   int rb = y + theView.tm.tmHeight;
@@ -40,21 +33,21 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
   else if (col_num == theView.new_col)
     {
       // TextOut (hdc, x + HMARGIN/2 + NEW_COL_SIZE_SLOP, y, s.c_str(), s.size());
-      // DrawIcon (hdc, x + HMARGIN/2 + ICON_MARGIN/2 + RTARROW_WIDTH, by, theView.bm_spin);
+      // theView.DrawIcon (hdc, x + HMARGIN/2 + ICON_MARGIN/2 + RTARROW_WIDTH, by, theView.bm_spin);
       TextOut (hdc, x + HMARGIN/2 + ICON_MARGIN/2 + SPIN_WIDTH , y,
             pkg.action_caption ().c_str(), pkg.action_caption ().size());
-      DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_spin);
+      theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_spin);
     }
   else if (col_num == theView.bintick_col)
     {
       if (/* uninstall or skip */ !pkg.desired ||
           /* current version */ pkg.desired == pkg.installed ||
           /* no source */ !pkg.desired.accessible())
-        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkna);
+        theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkna);
       else if (pkg.desired.picked())
-        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkyes);
+        theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkyes);
       else
-        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkno);
+        theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkno);
     }
   else if (col_num == theView.srctick_col)
     {
@@ -73,11 +66,11 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
 #endif
           /* when no source mirror available */
           !pkg.desired.sourcePackage().accessible())
-        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkna);
+        theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkna);
       else if (pkg.desired.sourcePackage().picked())
-        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkyes);
+        theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkyes);
       else
-        DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkno);
+        theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkno);
     }
   else if (col_num == theView.cat_col)
     {

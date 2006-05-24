@@ -522,6 +522,10 @@ PickView::init(views _mode)
   bm_treeplus = LI (IDB_TREE_PLUS);
   bm_treeminus = LI (IDB_TREE_MINUS);  
 #undef LI  
+  icon_dc = CreateCompatibleDC (dc);
+  bm_icon = CreateCompatibleBitmap (dc, 11, 11);
+  SelectObject (icon_dc, bm_icon);
+  rect_icon = CreateRectRgn (0, 0, 11, 11);
 
   row_height = (tm.tmHeight + tm.tmExternalLeading + ROW_MARGIN);
   int irh = tm.tmExternalLeading + tm.tmDescent + 11 + ROW_MARGIN;
@@ -575,6 +579,16 @@ PickView::init(views _mode)
 
 PickView::~PickView()
 {
+  DeleteDC (bitmap_dc);
+  DeleteObject (bm_spin);
+  DeleteObject (bm_checkyes);
+  DeleteObject (bm_checkno);
+  DeleteObject (bm_checkna);
+  DeleteObject (bm_treeplus);
+  DeleteObject (bm_treeminus);
+  DeleteObject (rect_icon);
+  DeleteObject (bm_icon);
+  DeleteDC (icon_dc);
 }
 
 bool PickView::registerWindowClass ()
@@ -798,6 +812,28 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
   return DefWindowProc (GetHWND(), message, wParam, lParam);
 }
 
+////
+// Turn black into foreground color and white into background color by
+//   1) Filling a square with ~(FG^BG)
+//   2) Blitting the bitmap on it with NOTSRCERASE (white->black; black->FG^BG)
+//   3) Blitting the result on BG with SRCINVERT (white->BG; black->FG)
+void
+PickView::DrawIcon (HDC hdc, int x, int y, HANDLE hIcon)
+{
+  SelectObject (bitmap_dc, hIcon);
+  FillRgn (icon_dc, rect_icon, bg_fg_brush);
+  BitBlt (icon_dc, 0, 0, 11, 11, bitmap_dc, 0, 0, NOTSRCERASE);
+  BitBlt (hdc, x, y, 11, 11, icon_dc, 0, 0, SRCINVERT);
+///////////// On WinNT-based systems, we could've done the below instead
+///////////// See http://support.microsoft.com/default.aspx?scid=kb;en-us;79212
+//      SelectObject (hdc, GetSysColorBrush (COLOR_WINDOWTEXT));
+//      HBITMAP bm_icon = CreateBitmap (11, 11, 1, 1, NULL);
+//      SelectObject (icon_dc, bm_icon);
+//      BitBlt (icon_dc, 0, 0, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
+//      MaskBlt (hdc, x2, by, 11, 11, bitmap_dc, 0, 0, bm_icon, 0, 0, MAKEROP4 (SRCAND, PATCOPY));
+//      DeleteObject (bm_icon);
+}
+
 void
 PickView::paint (HWND hwnd)
 {
@@ -821,8 +857,12 @@ PickView::paint (HWND hwnd)
  
   SelectObject (hdc, sysfont);
   SetTextColor (hdc, GetSysColor (COLOR_WINDOWTEXT));
-  SetBkMode (hdc, TRANSPARENT);
+  SetBkColor (hdc, GetSysColor (COLOR_WINDOW));
   FillRgn (hdc, hUpdRgn, GetSysColorBrush(COLOR_WINDOW));
+
+  COLORREF clr = ~GetSysColor (COLOR_WINDOW) ^ GetSysColor (COLOR_WINDOWTEXT);
+  clr = RGB (GetRValue (clr), GetGValue (clr), GetBValue (clr)); // reconvert
+  bg_fg_brush = CreateSolidBrush (clr);
 
   RECT cr;
   ::GetClientRect (hwnd, &cr);
@@ -842,6 +882,7 @@ PickView::paint (HWND hwnd)
     }
 
   DeleteObject (hUpdRgn);
+  DeleteObject (bg_fg_brush);
   EndPaint (hwnd, &ps);
 }
 
