@@ -1,7 +1,19 @@
 Note: For easier maintenance try to keep items in reverse chronological
       order of when they were committed.  -- briand
 
-Version 2.526 (HEAD)
+Version 2.548 (HEAD)
+ 
+ - Fix unreadable chooser page due to bad background colour problem.
+
+ - Make categories named with an initial "." default to expanded display.
+
+ - Fix a class of crashes due to poor string handling.
+
+ - Update DNS names to preferred forms: cygwin.com and sources.redhat.com.
+
+ - Handle dropped mirrors elegantly.
+
+ - Fix incorrect logging of postinstall script success/failure.
 
  - Provide indication of site that a file is being downloaded from.
 
