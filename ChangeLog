@@ -1,5 +1,10 @@
 2006-08-06  Igor Peshansky  <pechtcha@cs.nyu.edu>
 
+	* package_version.cc (packageversion::scan): Catch and handle
+	validation exception.
+
+2006-08-06  Igor Peshansky  <pechtcha@cs.nyu.edu>
+
 	* cygpackage.h (filesize): Remove unused field.
 	(cygpackage::createInstance): Ditto.
 	* cygpackage.cc (cygpackage::createInstance): Ditto.

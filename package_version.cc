@@ -29,6 +29,7 @@ static const char *cvsid =
 #include "resource.h"
 #include <algorithm>
 #include "download.h"
+#include "Exception.h"
 
 using namespace std;
 
@@ -322,8 +323,22 @@ packageversion::scan()
    * FIXME: This is a bit of a hack. a better way is to abstract
    * the availability logic to the package
    */
-  if (!check_for_cached (*(source())) && ::source == IDC_SOURCE_CWD)
-    source()->sites.clear();
+  try
+    {
+      if (!check_for_cached (*(source())) && ::source == IDC_SOURCE_CWD)
+	source()->sites.clear();
+    }
+  catch (Exception * e)
+    {
+      // We can ignore these, since we're clearing the source list anyway
+      if (e->errNo() == APPERR_CORRUPT_PACKAGE)
+	{
+	  source()->sites.clear();
+	  return;
+	}
+      // Unexpected exception.
+      throw e;
+    }
 }
 
 static bool
