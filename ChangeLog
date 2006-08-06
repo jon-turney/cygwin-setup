@@ -1,5 +1,13 @@
 2006-08-06  Igor Peshansky  <pechtcha@cs.nyu.edu>
 
+	* cygpackage.h (filesize): Remove unused field.
+	(cygpackage::createInstance): Ditto.
+	* cygpackage.cc (cygpackage::createInstance): Ditto.
+	* package_db.cc (packagedb::packagedb): Remove unused variables.
+	Simplify parsing of installed.db.
+
+2006-08-06  Igor Peshansky  <pechtcha@cs.nyu.edu>
+
 	* desktop.cc (DesktopSetupPage::OnInit): Remove stray MessageBox.
 
 2006-05-24  Igor Peshansky  <pechtcha@cs.nyu.edu>

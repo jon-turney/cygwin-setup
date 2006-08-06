@@ -66,7 +66,7 @@ cygpackage::createInstance (const std::string& pkgname,
 packageversion
 cygpackage::createInstance (const std::string& pkgname,
                             const std::string& filename,
-                            size_t const fs, const std::string& version,
+                            const std::string& version,
 			    package_status_t const newstatus,
 			    package_type_t const newtype)
 {
@@ -75,7 +75,6 @@ cygpackage::createInstance (const std::string& pkgname,
   temp->fn = filename;
   temp->status = newstatus;
   temp->type = newtype;
-  temp->filesize = fs;
   temp->setCanonicalVersion (version);
   return packageversion(temp);
 }

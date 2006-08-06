@@ -57,8 +57,8 @@ packagedb::packagedb ()
       if (!db)
 	return;
       /* flush_local_db_package_data */
-      char line[1000], pkgname[1000], inst[1000], src[1000];
-      int instsz, srcsz;
+      char line[1000], pkgname[1000], inst[1000];
+      int instsz;
 
       if (db->gets (line, 1000))
 	{
@@ -80,14 +80,11 @@ packagedb::packagedb ()
 	      while (db->gets (line, 1000))
 		{
 		  int parseable;
-		  src[0] = '\0';
+		  int ign;
 		  pkgname[0] = '\0';
 		  inst[0] = '\0';
-		  srcsz = 0;
-		  instsz = 0;
 
-		  sscanf (line, "%s %s %d %s %d", pkgname, inst, &instsz, src,
-			  &srcsz);
+		  sscanf (line, "%s %s %d", pkgname, inst, &ign);
 
 		  if (pkgname[0] == '\0' || inst[0] == '\0')
 			continue;
@@ -109,7 +106,7 @@ packagedb::packagedb ()
 		    }
 
 		  packageversion binary = 
-		    cygpackage::createInstance (pkgname, inst, instsz, f.ver,
+		    cygpackage::createInstance (pkgname, inst, f.ver,
 	    					package_installed,
 	    					package_binary);
 

@@ -72,7 +72,7 @@ public:
 
   static packageversion createInstance (const std::string& ,
                                         const std::string& , 
-                                        size_t const, const std::string& ,
+                                        const std::string& ,
 					package_status_t const, 
 					package_type_t const);
 
@@ -92,7 +92,6 @@ private:
   package_type_t type;
 
   io_stream *listdata, *listfile;
-  size_t filesize;
 };
 
 #endif /* SETUP_CYGPACKAGE_H */
