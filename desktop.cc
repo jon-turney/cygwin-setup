@@ -345,7 +345,6 @@ DesktopSetupPage::OnInit ()
       if (NoStartMenuOption) 
 	{
 	  root_menu = 0;
-	  MessageBox(NULL, "NoStartMenuOption", "NoStartMenuOption", MB_OK);
 	}
       else
 	{

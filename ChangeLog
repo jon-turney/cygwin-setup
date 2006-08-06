@@ -1,3 +1,7 @@
+2006-08-06  Igor Peshansky  <pechtcha@cs.nyu.edu>
+
+	* desktop.cc (DesktopSetupPage::OnInit): Remove stray MessageBox.
+
 2006-05-24  Igor Peshansky  <pechtcha@cs.nyu.edu>
 
 	* PickPackageLine.h (PickPackageLine::DrawIcon): Move to PickView.
