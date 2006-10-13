@@ -1,3 +1,7 @@
+2006-10-12  Igor Peshansky  <pechtcha@cs.nyu.edu>
+
+	* desktop.cc (make_cygwin_bat,save_icon): Capitalize filename.
+
 2006-08-06  Igor Peshansky  <pechtcha@cs.nyu.edu>
 
 	* package_version.cc (packageversion::scan): Catch and handle

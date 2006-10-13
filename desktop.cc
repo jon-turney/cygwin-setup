@@ -155,7 +155,7 @@ desktop_icon (const std::string& title, const std::string& target)
 static void
 make_cygwin_bat ()
 {
-  batname = backslash (cygpath ("/cygwin.bat"));
+  batname = backslash (cygpath ("/Cygwin.bat"));
 
   /* if the batch file exists, don't overwrite it */
   if (_access (batname.c_str(), 0) == 0)
@@ -179,7 +179,7 @@ make_cygwin_bat ()
 static void
 save_icon ()
 {
-  iconname = backslash (cygpath ("/cygwin.ico"));
+  iconname = backslash (cygpath ("/Cygwin.ico"));
 
   HRSRC rsrc = FindResource (NULL, "CYGWIN.ICON", "FILE");
   if (rsrc == NULL)
