@@ -3,6 +3,8 @@ Note: For easier maintenance try to keep items in reverse chronological
 
 Version 2.548 (HEAD)
  
+ - Allow interactively retrying to replace open files.
+
  - Fix unreadable chooser page due to bad background colour problem.
 
  - Make categories named with an initial "." default to expanded display.

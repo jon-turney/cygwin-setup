@@ -1,3 +1,13 @@
+2006-11-28  Igor Peshansky  <pechtcha@cs.nyu.edu>
+
+	* install.cc (Installer::installOne): If file is in use, ask the user
+	to stop processes and retry.
+	(MB_RETRYCONTINUE, IDCONTINUE): New macros.
+	(hMsgBoxHook): New static field.
+	(CBTProc): New window hook function.
+	(_custom_MessageBox): New function.
+	* CHANGES: Update with the above.
+
 2006-10-12  Igor Peshansky  <pechtcha@cs.nyu.edu>
 
 	* desktop.cc (make_cygwin_bat,save_icon): Capitalize filename.

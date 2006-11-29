@@ -178,6 +178,44 @@ Installer::replaceOnRebootSucceeded (const std::string& fn, bool &rebootneeded)
   rebootneeded = true;
 }
 
+#define MB_RETRYCONTINUE 7
+#if !defined(IDCONTINUE)
+#define IDCONTINUE IDCANCEL
+#endif
+
+static HHOOK hMsgBoxHook;
+LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam) {
+  HWND hWnd;
+  switch (nCode) {
+    case HCBT_ACTIVATE:
+      hWnd = (HWND)wParam;
+      if (GetDlgItem(hWnd, IDCANCEL) != NULL)
+         SetDlgItemText(hWnd, IDCANCEL, "Continue");
+      UnhookWindowsHookEx(hMsgBoxHook);
+  }
+  return CallNextHookEx(hMsgBoxHook, nCode, wParam, lParam);
+}
+
+int _custom_MessageBox(HWND hWnd, LPCTSTR szText, LPCTSTR szCaption, UINT uType) {
+  int retval;
+  bool retry_continue = (uType & MB_TYPEMASK) == MB_RETRYCONTINUE;
+  if (retry_continue) {
+    uType &= ~MB_TYPEMASK; uType |= MB_RETRYCANCEL;
+    // Install a window hook, so we can intercept the message-box
+    // creation, and customize it
+    // Only install for THIS thread!!!
+    hMsgBoxHook = SetWindowsHookEx(WH_CBT, CBTProc, NULL, GetCurrentThreadId());
+  }
+  retval = MessageBox(hWnd, szText, szCaption, uType);
+  // Intercept the return value for less confusing results
+  if (retry_continue && retval == IDCANCEL)
+    return IDCONTINUE;
+  return retval;
+}
+
+#undef MessageBox
+#define MessageBox _custom_MessageBox
+
 /* install one source at a given prefix. */
 void
 Installer::installOne (packagemeta &pkgm, const packageversion &ver,
@@ -205,6 +243,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
   io_stream *tmp = io_stream::open (source.Cached (), "rb");
   io_stream *tmp2 = 0;
   archive *thefile = 0;
+  bool ignoreExtractErrors = unattended_mode;
   if (tmp)
     {
       tmp2 = compress::decompress (tmp);
@@ -253,74 +292,101 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 	  Progress.SetText3 (canonicalfn.c_str());
 	  log (LOG_BABBLE) << "Installing file " << prefixURL << prefixPath 
             << fn << endLog;
-	  if (archive::extract_file (thefile, prefixURL, prefixPath) != 0)
+	  bool firstIteration = true;
+	  while (archive::extract_file (thefile, prefixURL, prefixPath) != 0)
 	    {
+	      if (!ignoreExtractErrors)
+		{
+		  char msg[fn.size() + 300];
+		  sprintf (msg,
+			   "%snable to extract /%s -- the file is in use.\r\n"
+			   "Please stop %s Cygwin processes and select \"Retry\", or\r\n"
+			   "select \"Continue\" to go on anyway (you will need to reboot).\r\n",
+			   firstIteration?"U":"Still u", fn.c_str(), firstIteration?"all":"ALL");
+		  switch (MessageBox
+			  (NULL, msg, "In-use files detected",
+			   MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL))
+		    {
+		    case IDRETRY:
+		      // retry
+		      firstIteration = false;
+		      continue;
+		    case IDCONTINUE:
+		      ignoreExtractErrors = true;
+		      break;
+		    default:
+		      break;
+		    }
+		  // fall through to previous functionality
+		}
 	      if (NoReplaceOnReboot)
 		{
 		  ++errors;
-                  error_in_this_package = true;
+		  error_in_this_package = true;
 		  log (LOG_PLAIN) << "Not replacing in-use file "
-                    << prefixURL << prefixPath << fn << endLog;
+		    << prefixURL << prefixPath << fn << endLog;
 		}
 	      else
-	      //extract to temp location
-	      if (archive::extract_file (thefile, prefixURL, prefixPath, ".new") != 0)
-		{
-		  log (LOG_PLAIN) << "Unable to install file "
-                    << prefixURL << prefixPath << fn << endLog;
-		  ++errors;
-                  error_in_this_package = true;
-		}
-	      else
-		{
-                  if (!IsWindowsNT())
-		    {
-		      /* Get the short file names */
-		      char source[MAX_PATH];
-		      unsigned int len =
-                        GetShortPathName(cygpath("/" + fn + ".new").c_str(),
-                                         source, MAX_PATH);
-		      if (!len || len > MAX_PATH)
-			{
-			  replaceOnRebootFailed(fn);
-			}
-		      else
-			{
-			  char dest[MAX_PATH];
-			  len =
-                            GetShortPathName(cygpath("/" + fn).c_str(),
-                                             dest, MAX_PATH);
-			  if (!len || len > MAX_PATH)
-			      replaceOnRebootFailed (fn);
-			  else
-			    /* trigger a replacement on reboot */
-			  if (!WritePrivateProfileString
-				("rename", dest, source, "WININIT.INI"))
-			      replaceOnRebootFailed (fn);
-			  else
-			      replaceOnRebootSucceeded (fn, rebootneeded);
-			}
-		    }
-                  else
-                    {
-		      /* XXX FIXME: prefix may not be / for in use files -
-		       * although it most likely is
-		       * - we need a io method to get win32 paths 
-		       * or to wrap this system call
-		       */
-                      if (!MoveFileEx(cygpath("/" + fn + ".new").c_str(),
-                                      cygpath("/" + fn).c_str(),
-                                      MOVEFILE_DELAY_UNTIL_REBOOT |
-                                      MOVEFILE_REPLACE_EXISTING))
-			{
-			  replaceOnRebootFailed (fn);
-			}
-		      else
-			{
-			  replaceOnRebootSucceeded (fn, rebootneeded);
-			}
-		    }
-		}
+		//extract to temp location
+		if (archive::extract_file (thefile, prefixURL, prefixPath, ".new") != 0)
+		  {
+		    log (LOG_PLAIN) << "Unable to install file "
+		      << prefixURL << prefixPath << fn << endLog;
+		    ++errors;
+		    error_in_this_package = true;
+		  }
+		else
+		  {
+		    if (!IsWindowsNT())
+		      {
+			/* Get the short file names */
+			char source[MAX_PATH];
+			unsigned int len =
+			  GetShortPathName(cygpath("/" + fn + ".new").c_str(),
+					   source, MAX_PATH);
+			if (!len || len > MAX_PATH)
+			  {
+			    replaceOnRebootFailed(fn);
+			  }
+			else
+			  {
+			    char dest[MAX_PATH];
+			    len =
+			      GetShortPathName(cygpath("/" + fn).c_str(),
+					       dest, MAX_PATH);
+			    if (!len || len > MAX_PATH)
+				replaceOnRebootFailed (fn);
+			    else
+			      /* trigger a replacement on reboot */
+			    if (!WritePrivateProfileString
+				  ("rename", dest, source, "WININIT.INI"))
+				replaceOnRebootFailed (fn);
+			    else
+				replaceOnRebootSucceeded (fn, rebootneeded);
+			  }
+		      }
+		    else
+		      {
+			/* XXX FIXME: prefix may not be / for in use files -
+			 * although it most likely is
+			 * - we need a io method to get win32 paths 
+			 * or to wrap this system call
+			 */
+			if (!MoveFileEx(cygpath("/" + fn + ".new").c_str(),
+					cygpath("/" + fn).c_str(),
+					MOVEFILE_DELAY_UNTIL_REBOOT |
+					MOVEFILE_REPLACE_EXISTING))
+			  {
+			    replaceOnRebootFailed (fn);
+			  }
+			else
+			  {
+			    replaceOnRebootSucceeded (fn, rebootneeded);
+			  }
+		      }
+		  }
+	      // We're done with this file
+	      break;
 	    }
 	  progress (tmp->tell ());
 	  num_installs++;
