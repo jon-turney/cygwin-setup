@@ -1,5 +1,11 @@
 2006-12-26  Max Bowsher  <maxb1@ukf.net>
 
+	* IniDBBuilder.h (IniDBBuilder): Make this class abstract.
+	* IniDBBuilder.cc: Delete file.
+	* Makefile.am (inilint_SOURCES, setup_SOURCES): Remove IniDBBuilder.cc.
+
+2006-12-26  Max Bowsher  <maxb1@ukf.net>
+
 	Add a shell script that documents/centralizes the standard configure
 	command line.
 

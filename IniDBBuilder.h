@@ -16,48 +16,47 @@
 #ifndef SETUP_INIDBBUILDER_H
 #define SETUP_INIDBBUILDER_H
 
-
 #include "PackageSpecification.h"
 
 class IniDBBuilder
 {
 public:
-  virtual ~IniDBBuilder();
-  virtual void buildTimestamp (const std::string& );
-  virtual void buildVersion (const std::string& );
-  virtual void buildPackage (const std::string& );
-  virtual void buildPackageVersion (const std::string& );
-  virtual void buildPackageSDesc (const std::string& );
-  virtual void buildPackageLDesc (const std::string& );
-  virtual void buildPackageInstall (const std::string& );
-  virtual void buildPackageSource (const std::string&, const std::string&);
+  virtual ~IniDBBuilder() {};
+  virtual void buildTimestamp (const std::string& ) = 0;
+  virtual void buildVersion (const std::string& ) = 0;
+  virtual void buildPackage (const std::string& ) = 0;
+  virtual void buildPackageVersion (const std::string& ) = 0;
+  virtual void buildPackageSDesc (const std::string& ) = 0;
+  virtual void buildPackageLDesc (const std::string& ) = 0;
+  virtual void buildPackageInstall (const std::string& ) = 0;
+  virtual void buildPackageSource (const std::string&, const std::string&) = 0;
   virtual void buildSourceFile (unsigned char const[16],
-                                const std::string&, const std::string&);
-  virtual void buildPackageTrust (int);
-  virtual void buildPackageCategory (const std::string& );
-  virtual void buildBeginDepends ();
-  virtual void buildBeginPreDepends ();
-  virtual void buildPriority (const std::string& );
-  virtual void buildInstalledSize (const std::string& );
-  virtual void buildMaintainer (const std::string& );
-  virtual void buildArchitecture (const std::string& );
-  virtual void buildInstallSize (const std::string& );
-  virtual void buildInstallMD5 (unsigned char const[16]);
-  virtual void buildSourceMD5 (unsigned char const[16]);
-  virtual void buildBeginRecommends ();
-  virtual void buildBeginSuggests ();
-  virtual void buildBeginReplaces ();
-  virtual void buildBeginConflicts ();
-  virtual void buildBeginProvides ();
-  virtual void buildBeginBuildDepends ();
-  virtual void buildBeginBinary ();
-  virtual void buildDescription (const std::string& );
-  virtual void buildSourceName (const std::string& );
-  virtual void buildSourceNameVersion (const std::string& );
-  virtual void buildPackageListAndNode ();
-  virtual void buildPackageListOrNode (const std::string& );
-  virtual void buildPackageListOperator (PackageSpecification::_operators const &);
-  virtual void buildPackageListOperatorVersion (const std::string& );
+                                const std::string&, const std::string&) = 0;
+  virtual void buildPackageTrust (int) = 0;
+  virtual void buildPackageCategory (const std::string& ) = 0;
+  virtual void buildBeginDepends () = 0;
+  virtual void buildBeginPreDepends () = 0;
+  virtual void buildPriority (const std::string& ) = 0;
+  virtual void buildInstalledSize (const std::string& ) = 0;
+  virtual void buildMaintainer (const std::string& ) = 0;
+  virtual void buildArchitecture (const std::string& ) = 0;
+  virtual void buildInstallSize (const std::string& ) = 0;
+  virtual void buildInstallMD5 (unsigned char const[16]) = 0;
+  virtual void buildSourceMD5 (unsigned char const[16]) = 0;
+  virtual void buildBeginRecommends () = 0;
+  virtual void buildBeginSuggests () = 0;
+  virtual void buildBeginReplaces () = 0;
+  virtual void buildBeginConflicts () = 0;
+  virtual void buildBeginProvides () = 0;
+  virtual void buildBeginBuildDepends () = 0;
+  virtual void buildBeginBinary () = 0;
+  virtual void buildDescription (const std::string& ) = 0;
+  virtual void buildSourceName (const std::string& ) = 0;
+  virtual void buildSourceNameVersion (const std::string& ) = 0;
+  virtual void buildPackageListAndNode () = 0;
+  virtual void buildPackageListOrNode (const std::string& ) = 0;
+  virtual void buildPackageListOperator (PackageSpecification::_operators const &) = 0;
+  virtual void buildPackageListOperatorVersion (const std::string& ) = 0;
 
   unsigned int timestamp;
   std::string version;

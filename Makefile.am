@@ -87,7 +87,6 @@ inilint_SOURCES = \
   FindVisitor.h \
   LogSingleton.cc \
   LogSingleton.h \
-  IniDBBuilder.cc \
   IniDBBuilder.h \
   inilex.cc \
   inilintmain.cc \
@@ -171,7 +170,6 @@ setup_SOURCES = \
 	geturl.h \
 	ini.cc \
 	ini.h \
-	IniDBBuilder.cc \
 	IniDBBuilder.h \
 	IniDBBuilderPackage.cc \
 	IniDBBuilderPackage.h \
