@@ -3282,7 +3282,7 @@
 	(IniDBBuilderPackage::currentOrList): Track the current Or list.
 	(IniDBBuilderPackage::currentAndList): Track the current And list.
 	* IniParseFeedback.cc (IniParseFeedback::progress): Provide completion
-       	progress on parsing.
+	progress on parsing.
 	(IniParseFeedback::iniName): Tell what ini filename we are currently
 	processing.
 	* IniParseFeedback.h: Declare IniParseFeedback.cc changes.
@@ -3376,7 +3376,7 @@
 
 	* archive_tar.cc (archive_tar::next_file_name()): fixed broken
 	GNU long name extension support.
-    
+
 2002-05-27  Robert Collins  <rbtcollins@hotmail.com>
 
 	* IniParseFindVisitor.cc (IniParseFindVisitor::visitFile): Don't 
@@ -3391,7 +3391,7 @@
 2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
 
 	* IniDBBuilderPackage.cc (IniDBBuilderPackage::IniDBBuilderPackage): New
-       	method.
+	method.
 	(IniDBBuilderPackage::buildVersion): Provide a warning when a newer 
 	setup version created the ini file.
 	* IniDBBuilderPackage.h (IniDBBuilderPackage::IniDBBuilderPackage): New
@@ -3435,7 +3435,7 @@
 2002-05-19  Robert Collins  <rbtcollins@hotmail.com>
 
 	* rsync: New support library, contains librsync. This is not (yet)
-  	rsync interoperable.
+	rsync interoperable.
 	* configure.in: --with-rsync to enable rsync support. (Not complete).
 	* Makefile.am: Enable building with rsync.
 	* Makefile.in: Regenerate.
