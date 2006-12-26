@@ -56,6 +56,7 @@ EXTRA_DIST = \
   choose-rtarrow.bmp \
   choose-spin.bmp \
   cygwin.ico \
+  doconfigure \
   inilex.l \
   iniparse.y \
   libmd5-rfc/README \
