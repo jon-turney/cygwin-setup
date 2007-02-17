@@ -216,35 +216,40 @@ Script::run() const
   if (!extension())
     return -ERROR_INVALID_DATA;
 
-  BOOL to_log (TRUE);
-  std::string log_name;
-  int retval = 0;
-  if (to_log)
+  /* Bail here if the script file does not exist.  This can happen for
+     example in the case of tetex-* where two or more packages contain a
+     postinstall script by the same name.  When we are called the second
+     time the file has already been renamed to .done, and if we don't
+     return here we end up erroniously deleting this .done file.  */
+  std::string windowsName = backslash (cygpath (scriptName));
+  if (_access (windowsName.c_str(), 0) == -1)
     {
-      char tmp_pat[] = "/var/log/setup.log.postinstallXXXXXXX";
-      log_name = std::string(mktemp(tmp_pat));
+      log(LOG_PLAIN) << "can't run " << scriptName << ": No such file"
+                     << endLog;
+      return -ERROR_INVALID_DATA;
     }
-  OutputLog file_out(log_name);
 
-  if (sh.size() && strcmp (extension(), ".sh") == 0)
+  int retval;
+  char tmp_pat[] = "/var/log/setup.log.postinstallXXXXXXX";
+  OutputLog file_out = std::string (mktemp (tmp_pat));
+  if (sh.size() && stricmp (extension(), ".sh") == 0)
     {
       log(LOG_PLAIN) << "running: " << sh << " -c " << scriptName << endLog;
       retval = ::run (sh.c_str(), "-c", scriptName.c_str(), file_out);
     }
-  else if (cmd && strcmp (extension(), ".bat") == 0)
+  else if (cmd && stricmp (extension(), ".bat") == 0)
     {
-      std::string windowsName = backslash (cygpath (scriptName));
       log(LOG_PLAIN) << "running: " << cmd << " /c " << windowsName << endLog;
       retval = ::run (cmd, "/c", windowsName.c_str(), file_out);
     }
   else
     return -ERROR_INVALID_DATA;
 
-  if (to_log && !file_out.isEmpty ())
+  if (!file_out.isEmpty ())
     log(LOG_BABBLE) << file_out << endLog;
 
   if (retval)
-    log(LOG_PLAIN) << "abnormal exit: exit code=" << retval << endLog;;
+    log(LOG_PLAIN) << "abnormal exit: exit code=" << retval << endLog;
 
   /* if file exists then delete it otherwise just ignore no file error */
   io_stream::remove ("cygfile://" + scriptName + ".done");
