@@ -159,7 +159,11 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
     cspv.source()->set_canonical (path.c_str());
   cspv.source()->sites.push_back(site(parse_mirror));
 
+  /* creates the relationship between binary and source packageversions */
   cbpv.setSourcePackageSpecification (PackageSpecification (cspv.Name()));
+  PackageSpecification &spec = cbpv.sourcePackageSpecification();
+  spec.setOperator (PackageSpecification::Equals);
+  spec.setVersion (cbpv.Canonical_version());
 
   // process_src (*cspv.source(), path);
   setSourceSize (*cspv.source(), size);

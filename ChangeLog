@@ -1,3 +1,10 @@
+2007-02-17  Cesar Strauss  <cstrauss@cea.inpe.br>
+
+        * IniDBBuilderPackage.cc (IniDBBuilderPackage::buildPackageSource):
+        Initialize the version and operator fields of the newly created
+        PackageSpecification object, so setup can pick the correct source
+        version later on.
+
 2007-02-17  Brian Dessent  <brian@dessent.net>
 
 	* script.cc (Script::run): Check for existance of script file and
