@@ -1,3 +1,7 @@
+2007-02-20  Brian Dessent  <brian@dessent.net>
+
+	* README: Modernize list of required packages, and mention doconfigure.
+
 2007-02-17  Cesar Strauss  <cstrauss@cea.inpe.br>
 
         * IniDBBuilderPackage.cc (IniDBBuilderPackage::buildPackageSource):

@@ -10,12 +10,17 @@ required packages installed:
   - make
   - mingw-zlib
   - mingw-bzip2
+  - and all packages that are dependencies of the above, i.e. gcc-core,
+    gcc-mingw-core, gcc-g++, mingw-runtime, binutils, w32api, etc.  These
+    should all be automatically added by setup.
 
 The following additional packages are required if building from CVS, not from
 a source tarball, or if you want to make changes to the build system.
-  - autoconf-devel
-  - automake-devel
-  - libtool-devel
+  - autoconf
+  - autoconf2.5
+  - automake
+  - automake1.9
+  - libtool1.5
 
 Build commands:
 1) Skip this step if building from a source tarball.
@@ -35,6 +40,7 @@ Build commands:
    Compress using UPX:
    $ upx -9 setup.exe
 
+As a convenient shortcut to steps 1 and 2 above you can use "./doconfigure".
 
 ABOUT BRANCHES:
 ---------------
