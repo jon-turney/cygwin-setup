@@ -50,8 +50,6 @@ static BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", "Disable creati
 static BoolOption NoStartMenuOption (false, 'N', "no-startmenu", "Disable creation of start menu shortcut");
 static BoolOption NoDesktopOption (false, 'd', "no-desktop", "Disable creation of desktop shortcut");
 
-static OSVERSIONINFO verinfo;
-
 /* Lines starting with '@' are conditionals - include 'N' for NT,
    '5' for Win95, '8' for Win98, '*' for all, like this:
 	echo foo
@@ -81,7 +79,7 @@ make_link (const std::string& linkpath,
   std::string exepath;
   std::string argbuf;
 
-  if (verinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
+  if (IsWindowsNT ())
     {
       exepath = target;
       argbuf = " ";
@@ -333,8 +331,6 @@ DesktopSetupPage::OnInit ()
 {
   // FIXME: This CoInitialize() feels like it could be moved to startup in main.cc.
   CoInitialize (NULL);
-  verinfo.dwOSVersionInfoSize = sizeof (verinfo);
-  GetVersionEx (&verinfo);
 
   if (NoShortcutsOption) 
     {

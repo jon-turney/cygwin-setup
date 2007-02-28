@@ -43,6 +43,7 @@ static const char *cvsid =
 #include "find.h"
 #include "ScanFindVisitor.h"
 #include "filemanip.h"
+#include "ini.h"
 
 #include "IniDBBuilderPackage.h"
 #include "IniParseFeedback.h"
@@ -56,7 +57,7 @@ public:
   virtual void visitFile(const std::string& basePath,
                          const WIN32_FIND_DATA *theFile)
     {
-      if (!casecompare("setup.ini", theFile->cFileName) && 
+      if (!casecompare(SETUP_INI_FILENAME, theFile->cFileName) && 
 	  (theFile->nFileSizeLow || theFile->nFileSizeHigh))
 	found = true;
     }

@@ -428,7 +428,7 @@ BEGIN
     IDS_ROOT_SPACE          "You should not choose a root path that include spaces in directory names.  Proceed anyway?"
     IDS_MIRROR_LST          "http://cygwin.com/mirrors.lst"
     IDS_ERR_OPEN_WRITE      "Can't open %s for writing: %s"
-    IDS_SETUPINI_MISSING    "Unable to get setup.ini from <%s>"
+    IDS_SETUPINI_MISSING    "Unable to get %s from <%s>"
     IDS_OLD_SETUPINI        "This setup.ini is older than the one you used last time you installed cygwin.  Proceed anyway?"
     IDS_NOTHING_INSTALLED   "Nothing needed to be installed"
     IDS_INSTALL_COMPLETE    "Installation Complete"

@@ -141,10 +141,10 @@ do_remote_ini (HWND owner)
        n != site_list.end(); ++n)
     {
       io_stream *compressed_ini_file =
-	get_url_to_membuf (n->url + "/setup.bz2", owner);
+	get_url_to_membuf (n->url + "/" + SETUP_BZ2_FILENAME, owner);
       io_stream *ini_file = 0;
       if (!compressed_ini_file)
-	ini_file = get_url_to_membuf (n->url + "/setup.ini", owner);
+	ini_file = get_url_to_membuf (n->url + "/" + SETUP_INI_FILENAME, owner);
       else
 	{
 	  ini_file = compress::decompress (compressed_ini_file);
@@ -152,14 +152,14 @@ do_remote_ini (HWND owner)
 
       if (!ini_file)
 	{
-	  note (owner, IDS_SETUPINI_MISSING, n->url.c_str());
+	  note (owner, IDS_SETUPINI_MISSING, SETUP_INI_FILENAME, n->url.c_str());
 	  continue;
 	}
  
       if (compressed_ini_file)
-        myFeedback.iniName (n->url + "/setup.bz2");
+        myFeedback.iniName (n->url + "/" + SETUP_BZ2_FILENAME);
       else
-        myFeedback.iniName (n->url + "/setup.ini");
+        myFeedback.iniName (n->url + "/" + SETUP_INI_FILENAME);
 
       aBuilder.parse_mirror = n->url;
       ini_init (ini_file, &aBuilder, myFeedback);
@@ -174,7 +174,7 @@ do_remote_ini (HWND owner)
 	  /* save known-good setup.ini locally */
 	  const std::string fp = "file://" + local_dir + "/" +
 				   rfc1738_escape_part (n->url) +
-				   "/setup.ini";
+				   "/" + SETUP_INI_FILENAME;
 	  io_stream::mkpath_p (PATH_TO_FILE, fp);
 	  io_stream *inistream = io_stream::open (fp, "wb");
 	  if (inistream)

@@ -50,7 +50,7 @@ IniParseFindVisitor::visitFile(const std::string& basePath,
                                const WIN32_FIND_DATA *theFile)
 {
   //TODO: Test for case sensitivity issues
-  if (casecompare("setup.ini", theFile->cFileName))
+  if (casecompare(SETUP_INI_FILENAME, theFile->cFileName))
     return;
 
   std::string path = basePath + theFile->cFileName;

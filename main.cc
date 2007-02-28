@@ -75,330 +75,6 @@ HINSTANCE hinstance;
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
 static BoolOption HelpOption (false, 'h', "help", "print help");
 
-/* Maximum size of a SID on NT/W2K. */
-#define MAX_SID_LEN	40
-
-/* Computes the size of an ACL in relation to the number of ACEs it
-   should contain. */
-#define TOKEN_ACL_SIZE(cnt) (sizeof(ACL) + \
-			     (cnt) * (sizeof(ACCESS_ALLOWED_ACE) + MAX_SID_LEN))
-
-namespace Setup {
-  class SIDWrapper {
-    public:
-      SIDWrapper();
-      /* Prevent synthetics. If assignment is needed, this should be refcounting  */
-      SIDWrapper(SIDWrapper const &);
-      SIDWrapper&operator=(SIDWrapper const&);
-      ~SIDWrapper();
-      /* We could look at doing weird typcast overloads here,
-      but manual access is easier for now
-      */
-      PSID &theSID();
-      PSID const &theSID() const;
-    private:
-      PSID value;
-  };
-
-SIDWrapper::SIDWrapper() : value(NULL) {}
-SIDWrapper::~SIDWrapper()
-{
-  if (value)
-    FreeSid (value);
-}
-
-PSID &
-SIDWrapper::theSID()
-{
-  return value;
-}
-
-PSID const &
-SIDWrapper::theSID() const
-{
-  return value;
-}
-
-  class HANDLEWrapper {
-    public:
-      HANDLEWrapper();
-      /* Prevent synthetics. If assignment is needed, we should duphandles, or refcount */
-      HANDLEWrapper(HANDLEWrapper const &);
-      HANDLEWrapper&operator=(HANDLEWrapper const &);
-      ~HANDLEWrapper();
-      HANDLE &theHANDLE();
-      HANDLE const &theHANDLE() const;
-    private:
-      HANDLE value;
-  };
-
-HANDLEWrapper::HANDLEWrapper() : value (NULL) {}
-HANDLEWrapper::~HANDLEWrapper()
-{
-  if (value)
-    CloseHandle(value);
-}
-
-HANDLE &
-HANDLEWrapper::theHANDLE() 
-{
-  return value;
-}
-
-HANDLE const &
-HANDLEWrapper::theHANDLE() const 
-{
-  return value;
-}
-
-};
-
-class TokenGroupCollection {
-  public:
-  TokenGroupCollection(DWORD, Setup::HANDLEWrapper &);
-  ~TokenGroupCollection();
-  /* prevent synthetics */
-  TokenGroupCollection &operator=(TokenGroupCollection const &);
-  TokenGroupCollection (TokenGroupCollection const &);
-  bool find (Setup::SIDWrapper const &) const;
-  bool populated() const { return populated_;}
-  void populate();
-  private:
-  mutable bool populated_;
-  char *buffer;
-  DWORD bufferSize;
-  Setup::HANDLEWrapper &token;
-};
-
-TokenGroupCollection::TokenGroupCollection(DWORD aSize, Setup::HANDLEWrapper &aHandle) : populated_(false), buffer(new char[aSize]), bufferSize(aSize), token(aHandle)
-{
-}
-
-TokenGroupCollection::~TokenGroupCollection()
-{
-  if (buffer)
-    delete[] buffer;
-}
-
-void
-TokenGroupCollection::populate()
-{
-  if (!GetTokenInformation (token.theHANDLE(), TokenGroups, buffer, bufferSize, &bufferSize))
-    {
-      log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " <<
-	  	GetLastError () << endLog;
-	return;
-    }
-  populated_ = true;
-}
-
-bool
-TokenGroupCollection::find (Setup::SIDWrapper const &aSID) const
-{
-  if (!populated())
-    return false;
-  TOKEN_GROUPS *groups = (TOKEN_GROUPS *) buffer;
-  for (DWORD pg = 0; pg < groups->GroupCount; ++pg)
-    if (EqualSid(groups->Groups[pg].Sid, aSID.theSID()))
-      return true;
-  return false;
-}
-
-class NTSecurity
-{
-public:
-  static void NoteFailedAPI(const std::string& );
-  NTSecurity();
-  ~NTSecurity();
-  /* prevent synthetics */
-  NTSecurity &operator=(NTSecurity const&);
-  NTSecurity(NTSecurity const &);
-
-  void setDefaultSecurity();
-private:
-  void failed(bool const &);
-  bool const &failed() const;
-  void initialiseEveryOneSID();
-  void setDefaultDACL ();
-  Setup::SIDWrapper everyOneSID, administratorsSID, usid;
-  Setup::HANDLEWrapper token;
-  bool failed_;
-  struct {
-    PSID psid;
-    char buf[MAX_SID_LEN];
-  } osid;
-  DWORD size;
-};
-
-void
-set_default_sec()
-{
-  NTSecurity worker;
-  worker.setDefaultSecurity();
-}
-
-void
-NTSecurity::NoteFailedAPI(const std::string& api)
-{
-      log (LOG_TIMESTAMP) << api << "() failed: " << GetLastError () << endLog;
-}
-
-NTSecurity::NTSecurity() : everyOneSID (), administratorsSID(), usid(), token(), failed_(false)
-{}
-
-NTSecurity::~NTSecurity()
-{
-}
-
-void
-NTSecurity::failed(bool const &aBool) 
-{
-  failed_ = aBool;
-}
-
-bool const &
-NTSecurity::failed() const
-{
-  return failed_;
-}
-
-void
-NTSecurity::initialiseEveryOneSID()
-{
-  SID_IDENTIFIER_AUTHORITY sid_auth = { SECURITY_WORLD_SID_AUTHORITY };
-  if (!AllocateAndInitializeSid (&sid_auth, 1, 0, 0, 0, 0, 0, 0, 0, 0, &everyOneSID.theSID()))
-    {
-      NoteFailedAPI ("AllocateAndInitializeSid");
-      failed(true);
-    }
-}
-
-void
-NTSecurity::setDefaultDACL ()
-{
-  /* To assure that the created files have a useful ACL, the 
-     default DACL in the process token is set to full access to
-     everyone. This applies to files and subdirectories created
-     in directories which don't propagate permissions to child
-     objects. 
-     To assure that the files group is meaningful, a token primary
-     group of None is changed to Users or Administrators. */
-
-  initialiseEveryOneSID();
-  if (failed())
-    return;
-
-  /* Create a buffer which has enough room to contain the TOKEN_DEFAULT_DACL
-     structure plus an ACL with one ACE. */
-  size_t bufferSize = sizeof(ACL) + sizeof(ACCESS_ALLOWED_ACE) 
-            + GetLengthSid(everyOneSID.theSID()) - sizeof(DWORD);
-
-  std::auto_ptr<char> buf (new char[bufferSize]);
-
-  /* First initialize the TOKEN_DEFAULT_DACL structure. */
-  PACL dacl = (PACL)buf.get();
-
-  /* Initialize the ACL for containing one ACE. */
-  if (!InitializeAcl (dacl, bufferSize, ACL_REVISION))
-    {
-      NoteFailedAPI ("InitializeAcl");
-      failed(true);
-      return;
-    }
-
-  /* Create the ACE which grants full access to "Everyone" and store it
-     in dacl. */
-  if (!AddAccessAllowedAce
-      (dacl, ACL_REVISION, GENERIC_ALL, everyOneSID.theSID()))
-    {
-      NoteFailedAPI ("AddAccessAllowedAce");
-      failed(true);
-      return;
-    }
-
-  /* Get the processes access token. */
-  if (!OpenProcessToken (GetCurrentProcess (),
-			 TOKEN_READ | TOKEN_ADJUST_DEFAULT, &token.theHANDLE()))
-    {
-      NoteFailedAPI ("OpenProcessToken");
-      failed(true);
-      return;
-    }
-
-  /* Set the default DACL to the above computed ACL. */
-  if (!SetTokenInformation (token.theHANDLE(), TokenDefaultDacl, &dacl, bufferSize))
-    {
-      NoteFailedAPI ("SetTokenInformation");
-      failed(true);
-    }
-}
-
-void
-NTSecurity::setDefaultSecurity ()
-{
-
-  setDefaultDACL();
-  if (failed())
-    return;
-
-  /* Get the user */
-  if (!GetTokenInformation (token.theHANDLE(), TokenUser, &osid, 
-			    sizeof osid, &size))
-    {
-      NoteFailedAPI("GetTokenInformation");
-      return;
-    }
-  /* Make it the owner */
-  if (!SetTokenInformation (token.theHANDLE(), TokenOwner, &osid, 
-			    sizeof osid))
-    {
-      NoteFailedAPI("SetTokenInformation");
-      return;
-    }
-
-  SID_IDENTIFIER_AUTHORITY sid_auth;
-  sid_auth = (SID_IDENTIFIER_AUTHORITY) { SECURITY_NT_AUTHORITY };
-  /* Get the SID for "Administrators" S-1-5-32-544 */
-  if (!AllocateAndInitializeSid (&sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
-				 DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &administratorsSID.theSID()))
-    {
-        NoteFailedAPI("AllocateAndInitializeSid");
-	return;
-    }
-  /* Get the SID for "Users" S-1-5-32-545 */
-  if (!AllocateAndInitializeSid (&sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
-			DOMAIN_ALIAS_RID_USERS, 0, 0, 0, 0, 0, 0, &usid.theSID()))
-    {
-      NoteFailedAPI("AllocateAndInitializeSid");
-      return;
-    }
-  /* Get the token groups */
-  if (!GetTokenInformation (token.theHANDLE(), TokenGroups, NULL, 0, &size)
-	  && GetLastError () != ERROR_INSUFFICIENT_BUFFER)
-    {
-      NoteFailedAPI("GetTokenInformation");
-      return;
-    }
-  TokenGroupCollection ntGroups(size, token);
-  ntGroups.populate();
-  if (!ntGroups.populated())
-    return;
-  /* Set the default group to one of the above computed SID. */
-  PSID nsid = NULL;
-  if (ntGroups.find (usid))
-    {
-      nsid = usid.theSID();
-      log(LOG_TIMESTAMP) << "Changing gid to Users" << endLog;
-    }
-  else if (ntGroups.find (administratorsSID))
-    {
-      nsid = administratorsSID.theSID();
-      log(LOG_TIMESTAMP) << "Changing gid to Administrators" << endLog;
-    }
-  if (nsid && !SetTokenInformation (token.theHANDLE(), TokenPrimaryGroup, &nsid, sizeof nsid))
-    NoteFailedAPI ("SetTokenInformation");
-}
-
 // Other threads talk to this page, so we need to have it externable.
 ThreeBarProgressPage Progress;
 
@@ -422,29 +98,30 @@ main (int argc, char **argv)
 #endif
 
   try {
-    char *cwd=new char[MAX_PATH];
+    char cwd[MAX_PATH];
     GetCurrentDirectory (MAX_PATH, cwd);
     local_dir = std::string (cwd);
-    delete cwd;
 
     // TODO: make an equivalent for __argv under cygwin.
     char **_argv;
 #ifndef __CYGWIN__
     int argc;
-    for (argc = 0, _argv = __argv; *_argv; _argv++)++argc;
+    for (argc = 0, _argv = __argv; *_argv; _argv++)
+      ++argc;
     _argv = __argv;
 #else
     _argv = argv;
 #endif
 
-    if (!GetOption::GetInstance().Process (argc,_argv, NULL))
-      exit(1);
+    if (!GetOption::GetInstance ().Process (argc,_argv, NULL))
+      exit (1);
 
-    LogSingleton::SetInstance (*(theLog = LogFile::createLogFile()));
+    LogSingleton::SetInstance (*(theLog = LogFile::createLogFile ()));
     theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
     theLog->setFile (0, local_dir + "/setup.log", true);
 
-    log (LOG_PLAIN) << "Starting cygwin install, version " << setup_version << endLog;
+    log (LOG_PLAIN) << "Starting cygwin install, version " 
+                    << setup_version << endLog;
 
     // Ensure files created by postinstall and preremove scripts
     // get sane permissions.
@@ -452,7 +129,7 @@ main (int argc, char **argv)
       log (LOG_PLAIN) << "Failed to set CYGWIN=nontsec (errno " << errno 
             << ": " << strerror(errno) << ")" << endLog;
     
-    UserSettings::Instance().loadAllSettings();
+    UserSettings::Instance ().loadAllSettings ();
 
     SplashPage Splash;
     AntiVirusPage AntiVirus;
@@ -470,16 +147,21 @@ main (int argc, char **argv)
 
     if (HelpOption)
     {
-      GetOption::GetInstance().ParameterUsage(log(LOG_PLAIN)<<"\nCommand Line Options:\n");
-      theLog->exit(0);
+      GetOption::GetInstance ().ParameterUsage (log (LOG_PLAIN)
+                                                << "\nCommand Line Options:\n");
+      theLog->exit (0);
     }
 
     unattended_mode = UnattendedOption;
 
     /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
-       no idea of access control lists and security at all. */
-    if (IsWindowsNT())
-      set_default_sec ();
+       no idea of access control lists and security at all.  */
+    if (IsWindowsNT ())
+      {
+          NTSecurity worker;
+          worker.setDefaultSecurity ();
+      }
+
 
     // Initialize common controls
     InitCommonControls ();

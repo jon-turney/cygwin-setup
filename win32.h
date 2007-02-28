@@ -17,6 +17,8 @@
 #ifndef SETUP_WIN32_H
 #define SETUP_WIN32_H
 
+#include <string>
+
 /* Any include of <windows.h> should be through this file, which wraps it in
  * various other handling. */
 
@@ -49,8 +51,104 @@
 #define _access access
 #endif
 
-#ifdef __cplusplus
-inline bool IsWindowsNT() { return GetVersion() < 0x80000000; }
-#endif
+/* Maximum size of a SID on NT/W2K. */
+#define MAX_SID_LEN	40
+
+/* Computes the size of an ACL in relation to the number of ACEs it
+   should contain. */
+#define TOKEN_ACL_SIZE(cnt) (sizeof (ACL) + \
+			     (cnt) * (sizeof (ACCESS_ALLOWED_ACE) + MAX_SID_LEN))
+
+class SIDWrapper {
+  public:
+    SIDWrapper () : value (NULL) {}
+    /* Prevent synthetics. If assignment is needed, this should be
+       refcounting.  */
+    SIDWrapper (SIDWrapper const &);
+    SIDWrapper& operator= (SIDWrapper const &);
+    ~SIDWrapper () { if (value) FreeSid (value); }
+
+    /* We could look at doing weird typcast overloads here,
+       but manual access is easier for now.  */
+    PSID &theSID () { return value; }
+    PSID const &theSID () const { return value; }
+  private:
+    PSID value;
+};
+
+class HANDLEWrapper {
+  public:
+    HANDLEWrapper () : value (NULL) {}
+    /* Prevent synthetics. If assignment is needed, we should duphandles,
+       or refcount.  */
+    HANDLEWrapper (HANDLEWrapper const &);
+    HANDLEWrapper& operator= (HANDLEWrapper const &);
+    ~HANDLEWrapper () { if (value) CloseHandle (value); }
+    HANDLE &theHANDLE () { return value; }
+    HANDLE const &theHANDLE () const { return value; }
+  private:
+    HANDLE value;
+};
+
+class TokenGroupCollection {
+  public:
+    TokenGroupCollection (DWORD aSize, HANDLEWrapper &aHandle) :
+                         populated_(false), buffer(new char[aSize]), 
+                         bufferSize(aSize), token(aHandle) {}
+    ~TokenGroupCollection () { if (buffer) delete[] buffer; }
+
+    /* prevent synthetics */
+    TokenGroupCollection& operator= (TokenGroupCollection const &);
+    TokenGroupCollection (TokenGroupCollection const &);
+    bool find (SIDWrapper const &) const;
+    bool populated() const { return populated_; }
+    void populate();
+  private:
+    mutable bool populated_;
+    char *buffer;
+    DWORD bufferSize;
+    HANDLEWrapper &token;
+};
+
+class NTSecurity
+{
+public:
+  NTSecurity () : everyOneSID (), administratorsSID (), usid (), token (), 
+                  failed_ (false) {}
+  ~NTSecurity() {}
+
+  /* prevent synthetics */
+  NTSecurity& operator= (NTSecurity const &);
+  NTSecurity (NTSecurity const &);
+
+  void NoteFailedAPI (const std::string &);
+  void setDefaultSecurity();
+private:
+  void failed (bool const &aBool) { failed_ = aBool; }
+  bool const &failed () const { return failed_; }
+  void initialiseEveryOneSID ();
+  void setDefaultDACL ();
+  SIDWrapper everyOneSID, administratorsSID, usid;
+  HANDLEWrapper token;
+  bool failed_;
+  struct {
+    PSID psid;
+    char buf[MAX_SID_LEN];
+  } osid;
+  DWORD size;
+};
+
+class VersionInfo
+{
+  public:
+     VersionInfo ();
+     bool isNT () { return (v.dwPlatformId == VER_PLATFORM_WIN32_NT); }
+  private:
+     OSVERSIONINFO v;
+};
+
+VersionInfo& GetVer ();
+
+#define IsWindowsNT() (GetVer ().isNT ())
 
 #endif /* SETUP_WIN32_H */

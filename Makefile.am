@@ -272,6 +272,7 @@ setup_SOURCES = \
 	UserSetting.h \
 	UserSettings.cc \
 	UserSettings.h \
+	win32.cc \
 	win32.h \
 	window.cc \
 	window.h \

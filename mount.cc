@@ -301,10 +301,7 @@ static int
 is_admin ()
 {
   // Windows 9X users are considered Administrators by definition
-  OSVERSIONINFO verinfo;
-  verinfo.dwOSVersionInfoSize = sizeof (verinfo);
-  GetVersionEx (&verinfo);
-  if (verinfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
+  if (!IsWindowsNT ())
     return 1;
 
   // Get the process token for the current process

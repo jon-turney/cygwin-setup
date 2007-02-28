@@ -16,7 +16,8 @@
 static const char *cvsid = "\n%%% $Id$\n";
 #endif
 
-#include "win32.h"
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 typedef struct {
   const char *name;

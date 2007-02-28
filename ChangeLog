@@ -1,3 +1,42 @@
+2007-02-27  Brian Dessent  <brian@dessent.net>
+
+	* ini.h (SETUP_INI_FILENAME): Add define.
+	(SETUP_BZ2_FILENAME): Add define.
+	* IniParseFindVisitor.cc (IniParseFindVisitor::visitFile): Use
+	above macros to parameterize setup.ini filename.
+	* fromcwd.cc (SetupFindVisitor::visitFile): Ditto.
+	* ini.cc (do_remote_ini): Ditto.
+	* Makefile.am (setup_SOURCES): Add win32.cc.
+	* autoload.c: Include windows.h directly instead of win32.h so that
+	win32.h can contain C++.
+	* desktop.cc (verinfo): Delete.
+	(make_link): Use IsWindowsNT to check for NT instead of verinfo.
+	(DesktopSetupPage::OnInit): Likewise.
+	* mount.cc (is_admin): Likewise.
+	* script.cc (init_run_script): Likewise.
+	* main.cc (class SIDWrapper, SIDWrapper::SIDWrapper,
+	SIDWrapper::~SIDWrapper, SIDWrapper::theSID, class HANDLEWrapper,
+	HANDLEWrapper::HANDLEWrapper, HANDLEWrapper::~HANDLEWrapper,
+	HANDLEWrapper::theHANDLE, class TokenGroupCollection,
+	TokenGroupCollection::TokenGroupCollection,
+	TokenGroupCollection::~TokenGroupCollection,
+	TokenGroupCollection::populate, TokenGroupCollection::find,
+	class NTSecurity, set_default_sec, NTSecurity::NoteFailedAPI,
+	NTSecurity::NTSecurity, NTSecurity::failed,
+	NTSecurity::initialiseEveryOneSID, NTSecurity::setDefaultDACL,
+	NTSecurity::setDefaultSecurity): Remove implementation of these
+	classes from this file and into new file win32.cc and existing win32.h.
+	(main): Fix whitespace and formatting per GNU coding standards.
+	* res.rc (IDS_SETUPINI_MISSING): Parameterize filename with %s.
+	* win32.cc: New file containing methods removed from main.cc as well
+	as new class VersionInfo methods.
+	* win32.h: Include <string> for std::string.
+	(class SIDWrapper, class HANDLEWrapper, class TokenGroupCollection,
+	class NTSecurity): Add classes removed from main.cc.
+	(class VersionInfo): Add new class.
+	(GetVer): Declare.
+	(IsWindowsNT): Define.
+
 2007-02-20  Brian Dessent  <brian@dessent.net>
 
 	* README: Modernize list of required packages, and mention doconfigure.

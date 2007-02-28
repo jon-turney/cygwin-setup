@@ -35,7 +35,6 @@ static const char *cvsid =
 
 static std::string sh;
 static const char *cmd = 0;
-static OSVERSIONINFO verinfo;
 
 static const char *shells[] = {
   // Bash is guaranteed to exist, /bin/sh is not.  Besides,
@@ -63,21 +62,10 @@ init_run_script ()
 					     old_path).c_str());
   SetEnvironmentVariable ("CYGWINROOT", get_root_dir ().c_str());
 
-  verinfo.dwOSVersionInfoSize = sizeof (verinfo);
-  GetVersionEx (&verinfo);
-
-  switch (verinfo.dwPlatformId)
-    {
-    case VER_PLATFORM_WIN32_NT:
-      cmd = "cmd.exe";
-      break;
-    case VER_PLATFORM_WIN32_WINDOWS:
-      cmd = "command.com";
-      break;
-    default:
-      cmd = "command.com";
-      break;
-    }
+  if (IsWindowsNT ())
+    cmd = "cmd.exe";
+  else
+    cmd = "command.com";
 }
 
 class OutputLog
