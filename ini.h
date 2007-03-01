@@ -41,8 +41,8 @@ typedef enum
 }
 excludes;
 
-#define SETUP_INI_FILENAME (IsWindowsNT () ? "setup.ini" : "setup_9x.ini")
-#define SETUP_BZ2_FILENAME (IsWindowsNT () ? "setup.bz2" : "setup_9x.bz2")
+#define SETUP_INI_FILENAME (IsWindowsNT () ? "setup.ini" : "setup_legacy.ini")
+#define SETUP_BZ2_FILENAME (IsWindowsNT () ? "setup.bz2" : "setup_legacy.bz2")
 
 #endif
 
