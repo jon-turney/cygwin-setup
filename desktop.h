@@ -27,9 +27,7 @@
 class DesktopSetupPage:public PropertyPage
 {
 public:
-  DesktopSetupPage ()
-  {
-  };
+  DesktopSetupPage ();
   virtual ~ DesktopSetupPage ()
   {
   };

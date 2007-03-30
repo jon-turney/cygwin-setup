@@ -272,7 +272,7 @@ END
 IDD_DESKTOP DIALOG DISCARDABLE  0, 0, 317, 179
 STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
     WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin Setup - Create Icons"
+CAPTION "Cygwin Setup - Installation Status and Create Icons"
 FONT 8, "MS Shell Dlg"
 BEGIN
     CONTROL         "Create icon on &Desktop",IDC_ROOT_DESKTOP,"Button",
@@ -286,6 +286,11 @@ BEGIN
                     IDC_STATIC,21,9,239,16,NOT WS_GROUP
     LTEXT           "Create Icons",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT 
                     WS_GROUP
+    CONTROL         "",IDC_DESKTOP_SEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
+                    0,155,317,1
+    LTEXT           "Installation Status",IDC_STATUS_HEADER,7,160,258,8,NOT WS_GROUP
+    LTEXT           "Cygwin installation completed successfully.",IDC_STATUS,
+                    21,169,239,16,NOT WS_GROUP
 END
 
 IDD_FTP_AUTH DIALOG DISCARDABLE  0, 0, 215, 95

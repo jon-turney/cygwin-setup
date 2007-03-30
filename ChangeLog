@@ -1,3 +1,19 @@
+2007-03-29  Igor Peshansky  <pechtcha@cs.nyu.edu>
+
+	* LogFile.cc (LogFile::exit): Write exit_msg directly to log, without
+	the message box.
+	* resource.h (IDC_DESKTOP_SEPARATOR,IDC_STATUS_HEADER,IDC_STATUS): New
+	control ids.
+	* res.rc (IDD_DESKTOP): Change the caption.  Add status information.
+	* desktop.h (DesktopSetupPage::DesktopSetupPage): Define constructor
+	in the implementation.
+	* desktop.cc (DesktopControlsInfo): Position specifiers for status
+	information items.
+	(DesktopSetupPage::DesktopSetupPage): Register position specifiers.
+	(set_status): New static method.
+	(load_dialog): Set status information, if available.
+	(DesktopSetupPage::OnInit): Set status header font.
+
 2007-03-01  Brian Dessent  <brian@dessent.net>
 
 	* ini.h (SETUP_INI_FILENAME): Rename setup_9x.ini to setup_legacy.ini.

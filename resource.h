@@ -155,3 +155,6 @@
 #define IDC_PREREQ_CHECK                  578
 #define IDC_DROP_MIRRORS                  579
 #define IDC_DROP_NOWARN                   580
+#define IDC_DESKTOP_SEPARATOR             581
+#define IDC_STATUS_HEADER                 582
+#define IDC_STATUS                        583

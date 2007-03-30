@@ -24,6 +24,7 @@ static const char *cvsid =
 #include "io_stream.h"
 #include "win32.h"
 #include "msg.h"
+#include "dialog.h"
 #include "resource.h"
 #include <iostream>
 #include <sstream>
@@ -126,7 +127,14 @@ LogFile::exit (int const exit_code)
   been_here = 1;
   
   if (exit_msg)
-    note (NULL, exit_msg, backslash(getFileName(LOG_BABBLE)).c_str());
+    {
+      char buf[1000], fmt[1000];
+      if (LoadString (hinstance, exit_msg, fmt, sizeof (fmt)) > 0)
+        {
+          snprintf (buf, 1000, fmt, backslash(getFileName(LOG_BABBLE)).c_str());
+          log (LOG_PLAIN) << "note: " << buf << endLog;
+        }
+    }
   
   log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
 

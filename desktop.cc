@@ -45,6 +45,7 @@ static const char *cvsid =
 #include "io_stream.h"
 #include "getopt++/BoolOption.h"
 #include "PackageSpecification.h"
+#include "LogFile.h"
 
 static BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", "Disable creation of desktop and start menu shortcuts");
 static BoolOption NoStartMenuOption (false, 'N', "no-startmenu", "Disable creation of start menu shortcut");
@@ -60,6 +61,18 @@ static BoolOption NoDesktopOption (false, 'd', "no-desktop", "Disable creation o
 
 static std::string batname;
 static std::string iconname;
+
+static ControlAdjuster::ControlInfo DesktopControlsInfo[] = {
+  {IDC_DESKTOP_SEPARATOR, 	CP_STRETCH, CP_BOTTOM},
+  {IDC_STATUS, 			CP_LEFT, CP_BOTTOM},
+  {IDC_STATUS_HEADER, 		CP_LEFT, CP_BOTTOM},
+  {0, CP_LEFT, CP_TOP}
+};
+
+DesktopSetupPage::DesktopSetupPage ()
+{
+  sizeProcessor.AddControlInfo (DesktopControlsInfo);
+}
 
 static void
 make_link (const std::string& linkpath,
@@ -223,12 +236,26 @@ check_if_enable_next (HWND h)
   EnableWindow (GetDlgItem (h, IDOK), 1);
 }
 
+extern LogFile * theLog;
+
+static void
+set_status (HWND h)
+{
+  char buf[1000], fmt[1000];
+  if (LoadString (hinstance, exit_msg, fmt, sizeof (fmt)) > 0)
+    {
+      snprintf (buf, 1000, fmt, backslash(theLog->getFileName(LOG_BABBLE)).c_str());
+      ::SetWindowText (GetDlgItem (h, IDC_STATUS), buf);
+    }
+}
+
 static void
 load_dialog (HWND h)
 {
   rbset (h, da, root_desktop);
   rbset (h, ma, root_menu);
   check_if_enable_next (h);
+  set_status (h);
 }
 
 static int
@@ -362,6 +389,7 @@ DesktopSetupPage::OnInit ()
 
   load_dialog (GetHWND ());
 
+  SetDlgItemFont(IDC_STATUS_HEADER, "MS Shell Dlg", 8, FW_BOLD);
 }
 
 long
