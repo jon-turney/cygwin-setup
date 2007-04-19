@@ -1,6 +1,10 @@
 2007-04-19  Max Bowsher  <maxb1@ukf.net>
 
-	* inilint.cc: Fix multiple compile errors.
+	* configure.in: Make inilint built by default.
+
+2007-04-19  Max Bowsher  <maxb1@ukf.net>
+
+	* inilintmain.cc: Fix multiple compile errors.
 
 2007-04-19  Max Bowsher  <maxb1@ukf.net>
 
