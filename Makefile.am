@@ -77,7 +77,7 @@ else
   inilint_extras =
 endif
 
-inilint_LDADD = libgetopt++/libgetopt++.la -luser32 -lkernel32 
+inilint_LDADD = warnonly-inilex.o libgetopt++/libgetopt++.la -luser32 -lkernel32
 inilint_SOURCES = \
   filemanip.cc \
   filemanip.h \
@@ -88,7 +88,6 @@ inilint_SOURCES = \
   LogSingleton.cc \
   LogSingleton.h \
   IniDBBuilder.h \
-  inilex.cc \
   inilintmain.cc \
   iniparse.cc \
   iniparse.h \
@@ -117,6 +116,7 @@ EXTRA_PROGRAMS += warnonly
 warnonly_CXXFLAGS = $(BASECXXFLAGS)
 warnonly_SOURCES = inilex.cc
 EXTRA_setup_SOURCES = $(warnonly_SOURCES)
+EXTRA_inilint_SOURCES = $(warnonly_SOURCES)
 
 setup_LDADD = warnonly-inilex.o res.o \
 	libgetopt++/libgetopt++.la \

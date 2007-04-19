@@ -1,3 +1,8 @@
+2007-04-19  Max Bowsher  <maxb1@ukf.net>
+
+	* Makefile.am: Make inilint use same warnonly-inilex workaround that
+	setup already does.
+
 2007-03-29  Igor Peshansky  <pechtcha@cs.nyu.edu>
 
 	* LogFile.cc (LogFile::exit): Write exit_msg directly to log, without
