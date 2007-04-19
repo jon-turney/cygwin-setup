@@ -1,5 +1,10 @@
 2007-04-19  Max Bowsher  <maxb1@ukf.net>
 
+	* configure.in: Turn inilint default build off again, since I cannot
+	get it to work.
+
+2007-04-19  Max Bowsher  <maxb1@ukf.net>
+
 	* configure.in: Make inilint built by default.
 
 2007-04-19  Max Bowsher  <maxb1@ukf.net>
