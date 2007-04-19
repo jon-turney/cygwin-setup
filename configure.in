@@ -28,9 +28,9 @@ AC_REVISION($Revision$)dnl
 
 AC_MSG_CHECKING([Whether to build inilint])
 AC_ARG_ENABLE(inilint,
-	    AC_HELP_STRING([--enable-inilint],
-			   [Build the inilint tool]),
-	    ac_cv_enable_inilint=$enableval, ac_cv_enable_inilint=no)
+	    AC_HELP_STRING([--disable-inilint],
+			   [Do not build the inilint tool]),
+	    ac_cv_enable_inilint=$enableval, ac_cv_enable_inilint=yes)
 AC_MSG_RESULT([$ac_cv_enable_inilint])
 if test $ac_cv_enable_inilint = yes; then
   INILINT="inilint\$(EXEEXT)"

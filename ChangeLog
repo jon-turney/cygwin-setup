@@ -1,5 +1,9 @@
 2007-04-19  Max Bowsher  <maxb1@ukf.net>
 
+	* inilint.cc: Fix multiple compile errors.
+
+2007-04-19  Max Bowsher  <maxb1@ukf.net>
+
 	* Makefile.am: Make inilint use same warnonly-inilex workaround that
 	setup already does.
 

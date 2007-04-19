@@ -20,17 +20,18 @@ static const char *cvsid =
 
 #include "getopt++/GetOption.h"
 #include <iostream>
-#include <strstream>
+#include <sstream>
+using namespace std;
 
 extern int yylineno;
 
-static ostrstream error_buf;
+static ostringstream error_buf;
 static int error_count = 0;
 
 extern int
 yyerror (const std::string& s)
 {
-  ostrstream buf;
+  ostringstream buf;
   buf << "setup.ini line " << yylineno << ": ";
   buf << s << endl;
   cout << buf;
@@ -50,7 +51,7 @@ show_help()
 int
 main (int argc, char **argv)
 {
-  if (!GetOption::GetInstance().Process (argc,argv))
+  if (!GetOption::GetInstance().Process (argc,argv,NULL))
     {
       show_help();
       return 1;
