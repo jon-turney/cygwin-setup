@@ -20,7 +20,7 @@
 
 AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6 foreign
 DIST_SUBDIRS = libgetopt++ tests
-SUBDIRS =      libgetopt++ tests
+SUBDIRS = libgetopt++ tests
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
@@ -28,86 +28,85 @@ SUBDIRS =      libgetopt++ tests
 # this warning. (Bug verified present in gcc-3.3)
 # -Wno-uninitialized added to deal with g++ 3.4.4's spurious STL warnings
 # (http://gcc.gnu.org/bugzilla/show_bug.cgi?id=22207)
-BASECXXFLAGS	= -Wall -Wno-uninitialized -Wpointer-arith -Wcomments \
-                  -Wcast-align -Wwrite-strings
-AM_CXXFLAGS	= -Werror $(BASECXXFLAGS)
-AM_CFLAGS	= $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
-		  -Wstrict-prototypes -Wmissing-prototypes
+BASECXXFLAGS = -Wall -Wno-uninitialized -Wpointer-arith -Wcomments \
+               -Wcast-align -Wwrite-strings
+AM_CXXFLAGS = -Werror $(BASECXXFLAGS)
+AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
+            -Wstrict-prototypes -Wmissing-prototypes
+WINDRES := @WINDRES@
+INCLUDES = -I$(srcdir)/libgetopt++/include -I/usr/include/mingw
 
-WINDRES		:= @WINDRES@
-
-INCLUDES	= -I$(srcdir)/libgetopt++/include -I/usr/include/mingw
-
-noinst_PROGRAMS = \
-  setup \
-  @INILINT@
+noinst_PROGRAMS = setup @INILINT@
 
 EXTRA_PROGRAMS = inilint
 ## noinst_PROGRAMS +=inilint
 
 EXTRA_DIST = \
-  CHANGES \
-  CONTRIBUTORS \
-  COPYING \
-  bootstrap.sh \
-  check-na.bmp \
-  check-no.bmp \
-  check-yes.bmp \
-  choose-rtarrow.bmp \
-  choose-spin.bmp \
-  cygwin.ico \
-  doconfigure \
-  inilex.l \
-  iniparse.y \
-  libmd5-rfc/README \
-  libmd5-rfc/md5main.c \
-  setup.exe.manifest \
-  tree-minus.bmp \
-  tree-plus.bmp
+	CHANGES \
+	CONTRIBUTORS \
+	COPYING \
+	bootstrap.sh \
+	check-na.bmp \
+	check-no.bmp \
+	check-yes.bmp \
+	choose-rtarrow.bmp \
+	choose-spin.bmp \
+	cygwin.ico \
+	doconfigure \
+	inilex.l \
+	iniparse.y \
+	libmd5-rfc/README \
+	libmd5-rfc/md5main.c \
+	setup.exe.manifest \
+	tree-minus.bmp \
+	tree-plus.bmp
 
-BUILT_SOURCES = setup_version.c \
-  	inilex.cc \
+BUILT_SOURCES = \
+	setup_version.c \
+	inilex.cc \
 	iniparse.cc
 
 if MINGWTARGET
-  inilint_extras = \
-  	autoload.c \
-  	mklink2.cc
+inilint_extras = \
+	autoload.c \
+	mklink2.cc
 else
-  inilint_extras =
+inilint_extras =
 endif
 
-inilint_LDADD = warnonly-inilex.o libgetopt++/libgetopt++.la -luser32 -lkernel32
+inilint_LDADD = \
+	warnonly-inilex.o libgetopt++/libgetopt++.la \
+	-luser32 -lkernel32
 inilint_SOURCES = \
-  filemanip.cc \
-  filemanip.h \
-  find.cc \
-  find.h \
-  FindVisitor.cc \
-  FindVisitor.h \
-  LogSingleton.cc \
-  LogSingleton.h \
-  IniDBBuilder.h \
-  inilintmain.cc \
-  iniparse.cc \
-  iniparse.h \
-  IniParseFeedback.cc \
-  IniParseFeedback.h \
-  io_stream.h \
-  io_stream.cc \
-  io_stream_file.h \
-  io_stream_file.cc \
-  IOStreamProvider.h \
-  mkdir.cc \
-  mkdir.h \
-  PackageSpecification.cc \
-  PackageSpecification.h \
-  PackageTrust.h \
-  csu_util/rfc1738.cc \
-  csu_util/rfc1738.h \
-  String++.cc \
-  String++.h \
-  $(inilint_extras)
+	filemanip.cc \
+	filemanip.h \
+	find.cc \
+	find.h \
+	FindVisitor.cc \
+	FindVisitor.h \
+	LogSingleton.cc \
+	LogSingleton.h \
+	IniDBBuilder.h \
+	inilintmain.cc \
+	iniparse.cc \
+	iniparse.h \
+	IniParseFeedback.cc \
+	IniParseFeedback.h \
+	io_stream.h \
+	io_stream.cc \
+	io_stream_file.h \
+	io_stream_file.cc \
+	IOStreamProvider.h \
+	mkdir.cc \
+	mkdir.h \
+	PackageSpecification.cc \
+	PackageSpecification.h \
+	PackageTrust.h \
+	csu_util/rfc1738.cc \
+	csu_util/rfc1738.h \
+	String++.cc \
+	String++.h \
+	$(inilint_extras)
 
 # Obviously we are not really building a program called warnonly
 # However, this dance was the most non-invasive way I could find
@@ -118,12 +117,11 @@ warnonly_SOURCES = inilex.cc
 EXTRA_setup_SOURCES = $(warnonly_SOURCES)
 EXTRA_inilint_SOURCES = $(warnonly_SOURCES)
 
-setup_LDADD = warnonly-inilex.o res.o \
-	libgetopt++/libgetopt++.la \
-	/usr/lib/mingw/libbz2.a \
-	/usr/lib/mingw/libz.a \
-	-luser32 -lkernel32 \
-	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid 
+setup_LDADD = \
+	warnonly-inilex.o libgetopt++/libgetopt++.la \
+	res.o \
+	/usr/lib/mingw/libbz2.a /usr/lib/mingw/libz.a \
+	-luser32 -lkernel32 -lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid
 setup_LDFLAGS = -mwindows
 setup_SOURCES = \
 	AntiVirus.cc \
@@ -284,13 +282,13 @@ setup_SOURCES = \
 	csu_util/version_compare.h \
 	libmd5-rfc/md5.c \
 	libmd5-rfc/md5.h
-	
+
 setup_version.c : $(srcdir)/ChangeLog Makefile
 	V=`sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
 	  $(srcdir)/ChangeLog` ;\
 	(echo '#define VERSION_PREFIX "%%% setup-version"';\
-        echo 'static const char version_store[] = VERSION_PREFIX " '$$V'";';\
-        echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp;\
+	echo 'static const char version_store[] = VERSION_PREFIX " '$$V'";';\
+	echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp;\
 	mv version.tmp setup_version.c
 
 %.o: %.rc
