@@ -179,13 +179,12 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  }
 	else if (lParam != 0)
 	  {
-	    // Download failed for some reason, go back to site selection page
+	    // Download either failed or completed in download-only mode.
 	    GetOwner ()->SetActivePageByID (lParam);
 	  }
 	else
 	  {
-	    // Was a download-only, and is complete or failed.
-	    GetOwner ()->PressButton (PSBTN_CANCEL);
+	    fatal("Unexpected fallthrough from the download thread", NO_ERROR);
 	  }
 	break;
       }

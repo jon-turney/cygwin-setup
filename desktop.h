@@ -35,6 +35,7 @@ public:
   bool Create ();
 
   virtual void OnInit ();
+  virtual void OnActivate ();
   virtual bool OnFinish ();
   virtual long OnBack ();
   virtual long OnUnattended ();

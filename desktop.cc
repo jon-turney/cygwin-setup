@@ -245,15 +245,38 @@ set_status (HWND h)
   if (LoadString (hinstance, exit_msg, fmt, sizeof (fmt)) > 0)
     {
       snprintf (buf, 1000, fmt, backslash(theLog->getFileName(LOG_BABBLE)).c_str());
-      ::SetWindowText (GetDlgItem (h, IDC_STATUS), buf);
+      eset(h, IDC_STATUS, buf);
     }
 }
 
+static char *header_string = NULL;
+static char *message_string = NULL;
 static void
 load_dialog (HWND h)
 {
-  rbset (h, da, root_desktop);
-  rbset (h, ma, root_menu);
+  if (source == IDC_SOURCE_DOWNLOAD)
+    {
+      // Don't need the checkboxes
+      EnableWindow (GetDlgItem (h, IDC_ROOT_DESKTOP), FALSE);
+      EnableWindow (GetDlgItem (h, IDC_ROOT_MENU), FALSE);
+      if (header_string == NULL)
+        header_string = eget (h, IDC_STATIC_HEADER_TITLE, header_string);
+      if (message_string == NULL) 
+        message_string = eget (h, IDC_STATIC_HEADER, message_string);
+      eset (h, IDC_STATIC_HEADER_TITLE, "Installation complete");
+      eset (h, IDC_STATIC_HEADER, "Shows installation status in download-only mode.");
+    }
+  else
+    {
+      EnableWindow (GetDlgItem (h, IDC_ROOT_DESKTOP), TRUE);
+      EnableWindow (GetDlgItem (h, IDC_ROOT_MENU), TRUE);
+      if (header_string != NULL)
+        eset (h, IDC_STATIC_HEADER_TITLE, header_string);
+      if (message_string != NULL)
+        eset (h, IDC_STATIC_HEADER, message_string);
+      rbset (h, da, root_desktop);
+      rbset (h, ma, root_menu);
+    }
   check_if_enable_next (h);
   set_status (h);
 }
@@ -359,7 +382,13 @@ DesktopSetupPage::OnInit ()
   // FIXME: This CoInitialize() feels like it could be moved to startup in main.cc.
   CoInitialize (NULL);
 
-  if (NoShortcutsOption) 
+  SetDlgItemFont(IDC_STATUS_HEADER, "MS Shell Dlg", 8, FW_BOLD);
+}
+
+void
+DesktopSetupPage::OnActivate ()
+{
+  if (NoShortcutsOption || source == IDC_SOURCE_DOWNLOAD) 
     {
       root_desktop = root_menu = 0;
     }
@@ -388,8 +417,6 @@ DesktopSetupPage::OnInit ()
     }
 
   load_dialog (GetHWND ());
-
-  SetDlgItemFont(IDC_STATUS_HEADER, "MS Shell Dlg", 8, FW_BOLD);
 }
 
 long
@@ -405,7 +432,8 @@ DesktopSetupPage::OnFinish ()
 {
   HWND h = GetHWND ();
   save_dialog (h);
-  do_desktop_setup ();
+  if (source != IDC_SOURCE_DOWNLOAD)
+    do_desktop_setup ();
 
   return true;
 }

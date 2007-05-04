@@ -287,7 +287,7 @@ do_download_thread (HINSTANCE h, HWND owner)
 	exit_msg = IDS_DOWNLOAD_INCOMPLETE;
       else if (!unattended_mode)
 	exit_msg = IDS_DOWNLOAD_COMPLETE;
-      return 0;
+      return IDD_DESKTOP;
     }
   else
     return IDD_S_INSTALL;

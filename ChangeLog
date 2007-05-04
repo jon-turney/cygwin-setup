@@ -1,3 +1,18 @@
+2007-05-04  Igor Peshansky  <pechtcha@cs.nyu.edu>
+
+	* resource.h (IDC_STATIC_HEADER): New control id.
+	* res.rc (IDD_SPLASH): Adjust the copyright.
+	(IDD_DESKTOP): Make header text accessible as a separate control.
+	* desktop.cc (set_status): Use eset() instead of SetWindowText().
+	(load_dialog): Disable checkboxes and change dialog text in
+	download-only mode.
+	(DesktopSetupPage::OnInit): Disable checkboxes in download-only
+	mode.
+	* threebar.cc (ThreeBarProgressPage::OnMessageApp): Deprecate the
+	default fallthrough.
+	* download.cc (do_download_thread): Explicitly return the next
+	dialog.
+
 2007-04-19  Max Bowsher  <maxb1@ukf.net>
 
 	* configure.in: Turn inilint default build off again, since I cannot

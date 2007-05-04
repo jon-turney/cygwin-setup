@@ -265,7 +265,7 @@ BEGIN
                     "necessary.",IDC_SPLASH_TEXT,115,25,195,90
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,114,114,21,20,WS_GROUP
     LTEXT           "Version (unknown)",IDC_VERSION,115,137,195,10
-    LTEXT           "Copyright 2000-2006",IDC_SPLASH_COPYR,115,150,195,8
+    LTEXT           "Copyright 2000-2007",IDC_SPLASH_COPYR,115,150,195,8
     LTEXT           "http://www.cygwin.com/",IDC_SPLASH_URL,115,162,90,8
 END
 
@@ -283,7 +283,7 @@ BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
                     317,1
     LTEXT           "Tell setup if you want it to create a few icons for convenient access to the Cygwin environment.",
-                    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+                    IDC_STATIC_HEADER,21,9,239,16,NOT WS_GROUP
     LTEXT           "Create Icons",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT 
                     WS_GROUP
     CONTROL         "",IDC_DESKTOP_SEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,

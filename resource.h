@@ -158,3 +158,4 @@
 #define IDC_DESKTOP_SEPARATOR             581
 #define IDC_STATUS_HEADER                 582
 #define IDC_STATUS                        583
+#define IDC_STATIC_HEADER                 584
