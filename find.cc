@@ -30,8 +30,14 @@ static const char *cvsid =
 using namespace std;
 
 Find::Find(const std::string& starting_dir)
-  : _start_dir (starting_dir), h(INVALID_HANDLE_VALUE)
+  : h(INVALID_HANDLE_VALUE)
 {
+  _start_dir = starting_dir;
+  int l = _start_dir.size ();
+  
+  /* Ensure that _start_dir has a trailing slash if it doesn't already.  */
+  if (l < 1 || (starting_dir[l - 1] != '/' && starting_dir[l - 1] != '\\'))
+    _start_dir += '/';
 }
 
 Find::~Find()
@@ -47,12 +53,10 @@ Find::accept (FindVisitor &aVisitor)
   if (_start_dir.size() > MAX_PATH)
     throw new length_error ("starting dir longer than MAX_PATH");
 
-  h = FindFirstFile ((_start_dir + "/*").c_str(), &wfd);
+  h = FindFirstFile ((_start_dir + "*").c_str(), &wfd);
 
   if (h == INVALID_HANDLE_VALUE)
     return;
-
-  std::string basePath = _start_dir + "/";
 
   do
     {
@@ -64,9 +68,9 @@ Find::accept (FindVisitor &aVisitor)
        * visited node 
        */
       if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-	aVisitor.visitDirectory (basePath, &wfd);
+	aVisitor.visitDirectory (_start_dir, &wfd);
       else
-	aVisitor.visitFile (basePath, &wfd);
+	aVisitor.visitFile (_start_dir, &wfd);
     }
   while (FindNextFile (h, &wfd));
 }

@@ -1,3 +1,11 @@
+2007-05-30  Brian Dessent  <brian@dessent.net>
+
+	* find.h (class Find): Make _start_dir non-const.
+	* find.cc (Find::Find): Append a trailing slash to _start_dir only if
+	it does not already contain one.
+	(Find::accept): Use the previously stored value of _start_dir rather
+	than unconditionally appending a slash.
+
 2007-05-29  Brian Dessent  <brian@dessent.net>
 
 	* Makefile.am: No need to specify the default value of --preprocessor

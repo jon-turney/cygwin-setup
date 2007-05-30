@@ -32,7 +32,7 @@ public:
   ~Find ();
   void accept (FindVisitor &);
 private:
-  const std::string _start_dir;
+  std::string _start_dir;
   HANDLE h;
 };
 
