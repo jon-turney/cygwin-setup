@@ -277,29 +277,31 @@ setup_SOURCES = \
 	libmd5-rfc/md5.c \
 	libmd5-rfc/md5.h
 
+VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
+               $(srcdir)/ChangeLog)
+
 setup_version.c : $(srcdir)/ChangeLog Makefile
-	V=`sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
-	  $(srcdir)/ChangeLog` ;\
 	(echo '#define VERSION_PREFIX "%%% setup-version"';\
-	echo 'static const char version_store[] = VERSION_PREFIX " '$$V'";';\
-	echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp;\
+	echo 'static const char version_store[] = VERSION_PREFIX " '${VER}'";';\
+	echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp
 	mv version.tmp setup_version.c
 
 %.o: %.rc
-	$(WINDRES) --preprocessor "$(CC) -E -xc-header -DRC_INVOKED" --include-dir $(srcdir) -o $@ $<
+	$(WINDRES) --include-dir $(srcdir) -o $@ $<
 
-# Make a distribution package and tarball
-release: setup$(EXEEXT) dist-all $(srcdir)/ChangeLog Makefile
-	$(STRIP) setup.exe && \
-	upx --best setup.exe && \
-	V=`sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
-	  $(srcdir)/ChangeLog` ;\
-	mv setup.exe setup-$${V}.exe && \
-	mv setup-0.tar.bz2 setup-$${V}.tar.bz2 && \
-	tar cjf setup-$${V}-1-src.tar.bz2 setup-$${V}.tar.bz2
+# this target creates:
+#   setup-x.yyy.exe             (UPXed stripped exe)
+#   setup-debug-x.yyy.exe.gz    (gzipped unstripped exe)
+#   setup-x.yyy.tar.bz2         (source)
+release: setup$(EXEEXT) $(srcdir)/ChangeLog Makefile
+	$(MAKE) dist-bzip2 distdir=setup-${VER}
+	cp -p setup$(EXEEXT) setup-debug-${VER}$(EXEEXT)
+	gzip -9 setup-debug-${VER}$(EXEEXT)
+	$(STRIP) setup$(EXEEXT)
+	upx --best setup$(EXEEXT)
+	mv setup$(EXEXT) setup-${VER}$(EXEEXT)
 
 # Create a snapshot and upload it (requires write access)
 snapshot: release
-	V=`sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
-	  $(srcdir)/ChangeLog` ;\
-	scp -C setup-$${V}.exe setup-$${V}.tar.bz2 $${cygwinsite}:setup-snapshots/
+	scp -C setup-${VER}.exe setup-debug-${VER}.exe setup-${VER}.tar.bz2 \
+	    $${cygwinsite}:setup-snapshots/

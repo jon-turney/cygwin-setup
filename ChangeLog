@@ -1,5 +1,13 @@
 2007-05-29  Brian Dessent  <brian@dessent.net>
 
+	* Makefile.am: No need to specify the default value of --preprocessor
+	to windres.  Rework the automatic version extraction rules so that the
+	source tarball is generated with the proper name and directory instead
+	of setup-0.  Update snapshot rule to also upload a copy of the binary
+	with debugging symbols still present.
+
+2007-05-29  Brian Dessent  <brian@dessent.net>
+
 	This is a general tidying up/modernization of the build infrastructure.
 	Renaming the lexer and parser to .ll and .yy allows using automake's
 	builtin	support for flex and bison with C++ sources, and libinilex is a
