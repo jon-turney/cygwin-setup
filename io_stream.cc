@@ -184,9 +184,19 @@ ssize_t io_stream::copy (io_stream * in, io_stream * out)
 	  return countout ? countout : -1;
 	}
     }
-  // XXX FIXME: What if countin < 0? return an error
+  
+  /* Here it would be nice to be able to do something like
 
-  /* TODO:
+       if (countin < 0)
+         return -1;
+
+     in order to be able to detect a read error occured and pass it on
+     to the caller, however with the current io_stream class this will fail
+     spectacularly because there is no way to signal an EOF condition, and
+     thus the only way the while loop above ends is the resulting error from
+     trying to read past EOF.
+
+     TODO:
      out->set_mtime (in->get_mtime ());
    */
   return 0;

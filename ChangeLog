@@ -1,3 +1,28 @@
+2007-05-29  Brian Dessent  <brian@dessent.net>
+
+	* IniParseFindVisitor.cc (IniParseFindVisitor::IniParseFindVisitor):
+	Remove error_buf and error_count initializers.
+	(IniParseFindVisitor::visitFile): Store filename in current_ini_name.
+	Use yyerror_count and yyerror_messages in place of removed error_count
+	and error_buf members.
+	* IniParseFindVisitor.h (class IniParseFindVisitor): Remove error_buf
+	and error_count members.
+	* ini.cc: Include io_stream_memory.h.  Remove file static variables
+	error_buf, error_count, and ini_filename.
+	(GuiParseFeedback::progress): Remove some verbose log spam.
+	(do_remote_ini): Recode .ini-fetching logic to properly display parse
+	errors, and to account for corrupt bzip2 files.
+	(yyerror): Moved elsewhere.
+	(fprintf): Delete unused function.
+	* ini.h: Remove useless __cplusplus guard.  Declare extern variables
+	current_ini_name, yyerror_messages, and yyerror_count.
+	* inilex.l: Add current_ini_name, yyerror_messages, and
+	yyerror_count.
+	(ini_init): Initialize new variables.
+	(yybol): Delete.
+	(yyerror): Reimplement using std::string and relocate from ini.cc.
+	* io_stream.cc (io_stream::copy): Add clarifying comment.
+
 2007-05-04  Igor Peshansky  <pechtcha@cs.nyu.edu>
 
 	* resource.h (IDC_STATIC_HEADER): New control id.

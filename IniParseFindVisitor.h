@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002 Robert Collins.
+ * Copyright (c) 2002,2007 Robert Collins.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -43,8 +43,6 @@ private:
   IniParseFeedback &_feedback;
   unsigned int baseLength;
   int local_ini;
-  char *error_buf;
-  int error_count;
   unsigned int setup_timestamp;
   std::string setup_version;
 };

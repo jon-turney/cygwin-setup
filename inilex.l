@@ -158,6 +158,8 @@ STR	[!a-zA-Z0-9_./:\+-]+
 static io_stream *input_stream = 0;
 extern IniDBBuilder *iniBuilder;
 static IniParseFeedback *iniFeedback;
+std::string current_ini_name, yyerror_messages;
+int yyerror_count;
 
 void
 ini_init(io_stream *stream, IniDBBuilder *aBuilder, IniParseFeedback &aFeedback)
@@ -167,6 +169,8 @@ ini_init(io_stream *stream, IniDBBuilder *aBuilder, IniParseFeedback &aFeedback)
   iniFeedback = &aFeedback;
   YY_FLUSH_BUFFER;
   yylineno = 1;
+  yyerror_count = 0;
+  yyerror_messages.clear ();
 }
 
 static int
@@ -201,7 +205,19 @@ ignore_line ()
 }
 
 int
-yybol ()
+yyerror (const std::string& s)
 {
-  return !!YY_AT_BOL ();
+  char tmp[16];
+  sprintf (tmp, "%d", yylineno - (!!YY_AT_BOL ()));
+  
+  std::string e = current_ini_name + " line " + tmp + ": " + s;
+  
+  if (!yyerror_messages.empty ())
+    yyerror_messages += "\n";
+
+  yyerror_messages += e;
+  // OutputDebugString (e.c_str ());
+  yyerror_count++;
+  /* TODO: is return 0 correct? */
+  return 0;
 }

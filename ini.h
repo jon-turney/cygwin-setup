@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000,2007 Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -24,8 +24,6 @@ class IniParseFeedback;
 void ini_init (io_stream *, IniDBBuilder *, IniParseFeedback &);
 #define YYSTYPE char *
 
-#ifdef __cplusplus
-
 /* When setup.ini is parsed, the information is stored according to
    the declarations here.  ini.cc (via inilex and iniparse)
    initializes these structures.  choose.cc sets the action and trust
@@ -44,6 +42,12 @@ excludes;
 #define SETUP_INI_FILENAME (IsWindowsNT () ? "setup.ini" : "setup_legacy.ini")
 #define SETUP_BZ2_FILENAME (IsWindowsNT () ? "setup.bz2" : "setup_legacy.bz2")
 
-#endif
+/* The following three vars are used to facilitate error handling between the
+   parser/lexer and its callers, namely ini.cc:do_remote_ini() and
+   IniParseFindVisitor::visitFile().  */
+
+extern std::string current_ini_name;  /* current filename/URL being parsed */
+extern std::string yyerror_messages;  /* textual parse error messages */
+extern int yyerror_count;             /* number of parse errors */
 
 #endif /* SETUP_INI_H */

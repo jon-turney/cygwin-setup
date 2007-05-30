@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000,2007 Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ static const char *cvsid =
 #include "IniParseFeedback.h"
 
 #include "io_stream.h"
+#include "io_stream_memory.h"
 
 #include "threebar.h"
 
@@ -63,11 +64,6 @@ std::string ini_setup_version;
 
 extern int yyparse ();
 /*extern int yydebug;*/
-
-static char *error_buf = 0;
-static int error_count = 0;
-
-static const char *ini_filename;
 
 class GuiParseFeedback : public IniParseFeedback
 {
@@ -89,8 +85,8 @@ public:
       if (pos * 100 / max > lastpct)
 	{
 	  lastpct = pos * 100 / max;
-	  log (LOG_BABBLE) << lastpct << "% (" << pos << " of " << max
-            << " bytes of ini file read)" << endLog;
+	  /* log (LOG_BABBLE) << lastpct << "% (" << pos << " of " << max
+            << " bytes of ini file read)" << endLog; */
 	}
       Progress.SetBar1(pos, max);
     }
@@ -108,7 +104,7 @@ public:
     }
   virtual void error(const std::string& message)const
     {
-      MessageBox (0, message.c_str(), "Error parsing", 0);
+      MessageBox (0, message.c_str(), "Parse Errors", 0);
     }
   virtual ~ GuiParseFeedback ()
     {
@@ -136,18 +132,70 @@ do_remote_ini (HWND owner)
   size_t ini_count = 0;
   GuiParseFeedback myFeedback;
   IniDBBuilderPackage aBuilder(myFeedback);
+  io_stream *ini_file;
+
+  /* FIXME: Get rid of this io_stream pointer travesty.  The need to
+     explicily delete these things is ridiculous.  */
 
   for (SiteList::const_iterator n = site_list.begin();
        n != site_list.end(); ++n)
     {
-      io_stream *compressed_ini_file =
-	get_url_to_membuf (n->url + "/" + SETUP_BZ2_FILENAME, owner);
-      io_stream *ini_file = 0;
-      if (!compressed_ini_file)
-	ini_file = get_url_to_membuf (n->url + "/" + SETUP_INI_FILENAME, owner);
-      else
+
+      /* First try to fetch the .bz2 compressed ini file.  */
+      current_ini_name = n->url + "/" + SETUP_BZ2_FILENAME;
+      if ((ini_file = get_url_to_membuf (current_ini_name, owner)))
 	{
-	  ini_file = compress::decompress (compressed_ini_file);
+          /* Decompress the entire file in memory right now.  This has the
+             advantage that input_stream->get_size() will work during parsing
+             and we'll have an accurate status bar.  Also, we can't seek 
+             bz2 streams, so when it comes time to write out a local cached
+             copy of the .ini file below, we'd otherwise have to delete this
+             stream and uncompress it again from the start, which is wasteful.
+             The current uncompresed size of the .ini file as of 2007 is less
+             than 600 kB, so this is not a great deal of memory.  */
+	  io_stream *bz2_stream = compress::decompress (ini_file);
+	  if (!bz2_stream)
+	    {
+	      /* This isn't a valid bz2 file.  */
+	      delete ini_file;
+	      ini_file = NULL;
+	    }
+	  else
+            {
+	      io_stream *uncompressed = new io_stream_memory ();
+
+              if (io_stream::copy (bz2_stream, uncompressed) != 0 ||
+                  bz2_stream->error () == EIO)
+                {
+                  /* There was a problem decompressing bz2.  */
+                  delete bz2_stream;
+                  delete uncompressed;
+                  delete ini_file;
+                  ini_file = NULL;
+                  log (LOG_PLAIN) << 
+                    "Warning: Problem encountered while uncompressing " <<
+                    current_ini_name << " - possibly truncated or corrupt bzip2"
+                    " file.  Retrying with uncompressed version." << endLog;
+                }
+              else
+                {
+                  delete bz2_stream;
+                  delete ini_file;
+                  ini_file = uncompressed;
+                  ini_file->seek (0, IO_SEEK_SET);
+                }
+            }
+	}
+      
+      if (!ini_file)
+        {
+          /* Try to look for a plain .ini file because one of the following
+             happened above:
+               - there was no .bz2 file found on the mirror.
+               - the .bz2 file didn't look like a valid bzip2 file.
+               - there was an error during bzip2 decompression.  */
+          current_ini_name = n->url + "/" + SETUP_INI_FILENAME;
+	  ini_file = get_url_to_membuf (current_ini_name, owner);
 	}
 
       if (!ini_file)
@@ -155,20 +203,15 @@ do_remote_ini (HWND owner)
 	  note (owner, IDS_SETUPINI_MISSING, SETUP_INI_FILENAME, n->url.c_str());
 	  continue;
 	}
- 
-      if (compressed_ini_file)
-        myFeedback.iniName (n->url + "/" + SETUP_BZ2_FILENAME);
-      else
-        myFeedback.iniName (n->url + "/" + SETUP_INI_FILENAME);
 
+      myFeedback.iniName (current_ini_name);
       aBuilder.parse_mirror = n->url;
       ini_init (ini_file, &aBuilder, myFeedback);
 
       /*yydebug = 1; */
 
-      if (yyparse () || error_count > 0)
-	MessageBox (0, error_buf,
-		    error_count == 1 ? "Parse Error" : "Parse Errors", 0);
+      if (yyparse () || yyerror_count > 0)
+        myFeedback.error (yyerror_messages);
       else
 	{
 	  /* save known-good setup.ini locally */
@@ -176,20 +219,12 @@ do_remote_ini (HWND owner)
 				   rfc1738_escape_part (n->url) +
 				   "/" + SETUP_INI_FILENAME;
 	  io_stream::mkpath_p (PATH_TO_FILE, fp);
-	  io_stream *inistream = io_stream::open (fp, "wb");
-	  if (inistream)
+	  if (io_stream *out = io_stream::open (fp, "wb"))
 	    {
-	      if (compressed_ini_file)
-		{
-		  delete ini_file;
-		  compressed_ini_file->seek (0, IO_SEEK_SET);
-		  ini_file = compress::decompress (compressed_ini_file);
-		}
-	      else
-   		ini_file->seek (0, IO_SEEK_SET);
-	      if (io_stream::copy (ini_file, inistream))
+              ini_file->seek (0, IO_SEEK_SET);
+	      if (io_stream::copy (ini_file, out) != 0)
 		io_stream::remove (fp);
-	      delete inistream;
+	      delete out;
 	    }
 	  ++ini_count;
 	}
@@ -199,7 +234,6 @@ do_remote_ini (HWND owner)
 	  ini_setup_version = aBuilder.version;
 	}
       delete ini_file;
-      delete compressed_ini_file;
     }
   return ini_count;
 }
@@ -295,64 +329,3 @@ do_ini (HINSTANCE h, HWND owner)
   CreateThread (NULL, 0, do_ini_thread_reflector, context, 0, &threadID);
 }
 
-
-extern int yylineno;
-extern int yybol ();
-
-extern int
-yyerror (const std::string& s)
-{
-  char buf[MAX_PATH + 1000];
-  int len;
-  sprintf (buf, "%s line %d: ", ini_filename, yylineno - yybol ());
-  sprintf (buf + strlen (buf), s.c_str());
-  OutputDebugString (buf);
-  if (error_buf)
-    {
-      strcat (error_buf, "\n");
-      len = strlen (error_buf) + strlen (buf) + 5;
-      error_buf = (char *) realloc (error_buf, len);
-      strcat (error_buf, buf);
-    }
-  else
-    {
-      len = strlen (buf) + 5;
-      error_buf = (char *) malloc (len);
-      strcpy (error_buf, buf);
-    }
-  error_count++;
-  /* TODO: is return 0 correct? */
-  return 0;
-}
-
-extern "C" int fprintf (FILE * f, const char *s, ...);
-
-static char stderrbuf[1000];
-
-int
-fprintf (FILE * f, const char *fmt, ...)
-{
-  char buf[1000];
-  int rv;
-  va_list args;
-  va_start (args, fmt);
-  if (f == stderr)
-    {
-      rv = vsnprintf (buf, 1000, fmt, args);
-      /* todo check here for overflows too */
-      strcat (stderrbuf, buf);
-      if (char *nl = strchr (stderrbuf, '\n'))
-	{
-	  *nl = 0;
-	  /*OutputDebugString (stderrbuf); */
-	  MessageBox (0, buf, "Cygwin Setup", 0);
-	  stderrbuf[0] = 0;
-	}
-
-    }
-  else
-    {
-      rv = vfprintf (f, fmt, args);
-    }
-  return rv;
-}
