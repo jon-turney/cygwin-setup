@@ -18,7 +18,6 @@
 #
 # Makefile for Cygwin installer
 
-AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6 foreign
 DIST_SUBDIRS = libgetopt++ tests
 SUBDIRS = libgetopt++ tests
 
@@ -33,8 +32,10 @@ BASECXXFLAGS = -Wall -Wno-uninitialized -Wpointer-arith -Wcomments \
 AM_CXXFLAGS = -Werror $(BASECXXFLAGS)
 AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
             -Wstrict-prototypes -Wmissing-prototypes
+AM_YFLAGS = -d
+AM_LFLAGS = -8
 WINDRES := @WINDRES@
-INCLUDES = -I$(srcdir)/libgetopt++/include -I/usr/include/mingw
+INCLUDES = -I$(srcdir)/libgetopt++/include
 
 noinst_PROGRAMS = setup @INILINT@
 
@@ -53,18 +54,18 @@ EXTRA_DIST = \
 	choose-spin.bmp \
 	cygwin.ico \
 	doconfigure \
-	inilex.l \
-	iniparse.y \
 	libmd5-rfc/README \
 	libmd5-rfc/md5main.c \
 	setup.exe.manifest \
 	tree-minus.bmp \
 	tree-plus.bmp
 
+# iniparse.h is generated from iniparse.yy via bison -d, so it needs to be
+# included here for proper tracking (but not iniparse.cc, since automake
+# knows about that already)
 BUILT_SOURCES = \
 	setup_version.c \
-	inilex.cc \
-	iniparse.cc
+	iniparse.h
 
 if MINGWTARGET
 inilint_extras = \
@@ -75,8 +76,7 @@ inilint_extras =
 endif
 
 inilint_LDADD = \
-	warnonly-inilex.o libgetopt++/libgetopt++.la \
-	-luser32 -lkernel32
+	libinilex.a libgetopt++/libgetopt++.la
 inilint_SOURCES = \
 	filemanip.cc \
 	filemanip.h \
@@ -88,8 +88,7 @@ inilint_SOURCES = \
 	LogSingleton.h \
 	IniDBBuilder.h \
 	inilintmain.cc \
-	iniparse.cc \
-	iniparse.h \
+	iniparse.yy \
 	IniParseFeedback.cc \
 	IniParseFeedback.h \
 	io_stream.h \
@@ -108,20 +107,16 @@ inilint_SOURCES = \
 	String++.h \
 	$(inilint_extras)
 
-# Obviously we are not really building a program called warnonly
-# However, this dance was the most non-invasive way I could find
-# of varying CFLAGS for a single file
-EXTRA_PROGRAMS += warnonly
-warnonly_CXXFLAGS = $(BASECXXFLAGS)
-warnonly_SOURCES = inilex.cc
-EXTRA_setup_SOURCES = $(warnonly_SOURCES)
-EXTRA_inilint_SOURCES = $(warnonly_SOURCES)
+# workaround to allow omitting -Werror on inilex.cc.
+noinst_LIBRARIES = libinilex.a
+libinilex_a_SOURCES = inilex.ll
+libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
 
 setup_LDADD = \
-	warnonly-inilex.o libgetopt++/libgetopt++.la \
+	libinilex.a libgetopt++/libgetopt++.la \
 	res.o \
 	/usr/lib/mingw/libbz2.a /usr/lib/mingw/libz.a \
-	-luser32 -lkernel32 -lcomctl32 -lole32 -lwsock32 -lnetapi32 -ladvapi32 -luuid
+	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid
 setup_LDFLAGS = -mwindows
 setup_SOURCES = \
 	AntiVirus.cc \
@@ -171,8 +166,7 @@ setup_SOURCES = \
 	IniDBBuilder.h \
 	IniDBBuilderPackage.cc \
 	IniDBBuilderPackage.h \
-	iniparse.cc \
-	iniparse.h \
+	iniparse.yy \
 	IniParseFeedback.cc \
 	IniParseFeedback.h \
 	IniParseFindVisitor.cc \
@@ -293,14 +287,6 @@ setup_version.c : $(srcdir)/ChangeLog Makefile
 
 %.o: %.rc
 	$(WINDRES) --preprocessor "$(CC) -E -xc-header -DRC_INVOKED" --include-dir $(srcdir) -o $@ $<
-
-iniparse.cc iniparse.h : iniparse.y
-	bison -d -o iniparse.cc $(srcdir)/iniparse.y
-	@mv iniparse.cc.h iniparse.h 2>/dev/null || mv iniparse.hh iniparse.h
-
-inilex.cc : inilex.l iniparse.h
-	flex -8 $(srcdir)/inilex.l
-	mv lex.yy.c inilex.cc
 
 # Make a distribution package and tarball
 release: setup$(EXEEXT) dist-all $(srcdir)/ChangeLog Makefile

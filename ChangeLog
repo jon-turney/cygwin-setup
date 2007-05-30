@@ -1,5 +1,31 @@
 2007-05-29  Brian Dessent  <brian@dessent.net>
 
+	This is a general tidying up/modernization of the build infrastructure.
+	Renaming the lexer and parser to .ll and .yy allows using automake's
+	builtin	support for flex and bison with C++ sources, and libinilex is a
+	slightly cleaner way of omitting -Werror.
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Move to AM_INIT_AUTOMAKE.
+	(AM_YFLAGS): Define.
+	(AM_LFLAGS): Define.
+	(INCLUDES): Remove redundant mingw directory.
+	(EXTRA_DIST): Adjust for newly named lexer/parser.
+	(BUILT_SOURCES): Ditto.
+	(inilint_LDADD): Ditto.
+	(inilint_SOURCES): Ditto.
+	(setup_LDADD): Ditto.
+	(setup_SOURCES): Ditto.
+	(iniparse.cc): Remove custom rules.
+	(inilex.cc): Ditto.
+	* configure.in: Update quoting and use modern form of AC_INIT and
+	AM_INIT_AUTOMAKE.
+	* inilex.l: Rename from this ...
+	* inilex.ll: ... to this.
+	* iniparse.y: Rename from this ...
+	* iniparse.yy: ... to this.
+
+2007-05-29  Brian Dessent  <brian@dessent.net>
+
 	* IniParseFindVisitor.cc (IniParseFindVisitor::IniParseFindVisitor):
 	Remove error_buf and error_count initializers.
 	(IniParseFindVisitor::visitFile): Store filename in current_ini_name.
