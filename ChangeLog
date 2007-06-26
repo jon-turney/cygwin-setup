@@ -1,5 +1,10 @@
 2007-06-25  Brian Dessent  <brian@dessent.net>
 
+	* ini.h: Revert setup_legacy.ini functionality on release branch.
+	* CHANGES: Reflect change.
+
+2007-06-25  Brian Dessent  <brian@dessent.net>
+
 	* CHANGES: Make current.
 
 2007-05-30  Brian Dessent  <brian@dessent.net>
