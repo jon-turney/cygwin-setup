@@ -1,15 +1,43 @@
 Note: For easier maintenance try to keep items in reverse chronological
       order of when they were committed.  -- briand
 
-Version 2.548 (HEAD)
- 
+Version HEAD
+
+ - Don't append a trailing slash to local package directory location if it
+   already has one, or it ends in a backslash.
+
+ - Be more robust in falling back to setup.ini if setup.bz2 doesn't exist
+   or appears to be corrupt.
+
+ - Fix crashes and improve specificity of error messages when encountering
+   an .ini file parse error.  Make progress meter active during parsing of a
+   bz2-compressed .ini file.
+
+ - At the last install step, inform the user of success/failure at the bottom
+   of the main panel instead of with an annoying message box popup.
+
+ - If running on 9x/ME versions of Windows, look for setup_legacy.ini/.bz2
+   instead of setup.ini/.bz2, in support for future dropping of non-NT support
+   and forking of the distro.
+
+ - Fix bug that caused a wrong version of a source package to be selected
+   in some cases due to erroniously comparing versions as text instead of
+   numerically.
+
+ - Gracefully handle the case where two packages contain a postinstall script
+   of the same name.
+
  - Allow interactively retrying to replace open files.
+
+ - Create Cygwin.bat with upper-case C to make filename TAB completion of
+   /cygdrive more convenient.
 
  - Fix unreadable chooser page due to bad background colour problem.
 
  - Make categories named with an initial "." default to expanded display.
 
- - Fix a class of crashes due to poor string handling.
+ - Fix a class of crashes due to poor string handling.  Remove use of custom
+   String class in favor of std::string.
 
  - Update DNS names to preferred forms: cygwin.com and sources.redhat.com.
 
