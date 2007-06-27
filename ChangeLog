@@ -1,5 +1,14 @@
 2007-06-26  Brian Dessent  <brian@dessent.net>
 
+	* Makefile.am (release): Drop inconsistent use of $(EXEEXT).  Leave an
+	untouched copy of setup.exe so that later make invocations don't
+	unnecessarily rebuild it.
+	(snapshot): Fix typo.
+	* install.cc (md5_one): Don't try to check packages whose
+	pkgsource.Cached () is NULL, as with those whose download failed.
+
+2007-06-26  Brian Dessent  <brian@dessent.net>
+
 	* CHANGES: Update to reflect release branch.
 
 2007-06-26  Brian Dessent  <brian@dessent.net>
