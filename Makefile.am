@@ -293,15 +293,15 @@ setup_version.c : $(srcdir)/ChangeLog Makefile
 #   setup-x.yyy.exe             (UPXed stripped exe)
 #   setup-debug-x.yyy.exe.gz    (gzipped unstripped exe)
 #   setup-x.yyy.tar.bz2         (source)
-release: setup$(EXEEXT) $(srcdir)/ChangeLog Makefile
+release: setup.exe $(srcdir)/ChangeLog Makefile
 	$(MAKE) dist-bzip2 distdir=setup-${VER}
-	cp -p setup$(EXEEXT) setup-debug-${VER}$(EXEEXT)
-	gzip -9 setup-debug-${VER}$(EXEEXT)
-	$(STRIP) setup$(EXEEXT)
-	upx --best setup$(EXEEXT)
-	mv setup$(EXEXT) setup-${VER}$(EXEEXT)
+	cp -p setup.exe setup-debug-${VER}.exe
+	gzip -9 setup-debug-${VER}.exe
+	cp -p setup.exe setup-${VER}.exe
+	$(STRIP) setup-${VER}.exe
+	upx --best setup-${VER}.exe
 
 # Create a snapshot and upload it (requires write access)
 snapshot: release
-	scp -C setup-${VER}.exe setup-debug-${VER}.exe setup-${VER}.tar.bz2 \
+	scp -C setup-${VER}.exe setup-debug-${VER}.exe.gz setup-${VER}.tar.bz2 \
 	    $${cygwinsite}:setup-snapshots/

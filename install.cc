@@ -643,7 +643,7 @@ do_install (HINSTANCE h, HWND owner)
 
 void md5_one (const packagesource& pkgsource)
 {
-  if (pkgsource.md5.isSet())
+  if (pkgsource.md5.isSet() && pkgsource.Cached ())
   {
     std::string fullname (pkgsource.Cached ());
 
