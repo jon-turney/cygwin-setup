@@ -7,6 +7,11 @@ Version HEAD
    instead of setup.ini/.bz2, in support for future dropping of non-NT support
    and forking of the distro.
 
+Version 2.573.2.2
+
+ - Fix crash when trying to MD5 a non-existant package file that failed to
+   download.
+
 Version 2.573.2.1
 
  - Don't append a trailing slash to local package directory location if it

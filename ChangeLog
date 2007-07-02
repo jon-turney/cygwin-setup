@@ -1,3 +1,7 @@
+2007-07-02  Brian Dessent  <brian@dessent.net>
+
+	* CHANGES: Update.
+
 2007-06-26  Brian Dessent  <brian@dessent.net>
 
 	* Makefile.am (release): Drop inconsistent use of $(EXEEXT).  Leave an
