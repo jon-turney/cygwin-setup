@@ -61,7 +61,8 @@ archive::extract (io_stream * original)
   char magic[longest_magic];
   if (original->peek (magic, longest_magic) > 0)
     {
-      if (memcmp (&magic[257], "ustar\040\040\0", 8) == 0)
+      if (memcmp (&magic[257], "ustar\040\040\0", 8) == 0
+          || memcmp (&magic[257], "ustar\0", 6) == 0)
 	{
 	  /* tar */
 	  archive_tar *rv = new archive_tar (original);

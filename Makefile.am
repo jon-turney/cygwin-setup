@@ -34,8 +34,8 @@ AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
             -Wstrict-prototypes -Wmissing-prototypes
 AM_YFLAGS = -d
 AM_LFLAGS = -8
-WINDRES := @WINDRES@
-INCLUDES = -I$(srcdir)/libgetopt++/include
+WINDRES = @WINDRES@
+AM_CPPFLAGS = -I$(srcdir)/libgetopt++/include
 
 noinst_PROGRAMS = setup @INILINT@
 
@@ -66,6 +66,8 @@ EXTRA_DIST = \
 BUILT_SOURCES = \
 	setup_version.c \
 	iniparse.h
+
+CLEANFILES = setup_version.c
 
 if MINGWTARGET
 inilint_extras = \
@@ -286,7 +288,7 @@ setup_version.c : $(srcdir)/ChangeLog Makefile
 	echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp
 	mv version.tmp setup_version.c
 
-%.o: %.rc
+.rc.o:
 	$(WINDRES) --include-dir $(srcdir) -o $@ $<
 
 # this target creates:

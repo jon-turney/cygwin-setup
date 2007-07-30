@@ -13,9 +13,8 @@
  *
  */
 
-/* Archive IO operations for bz2 files.
-   derived from the fd convenience functions in the libbz2 package.
- */
+/* Archive IO operations for bz2 files.  Derived from the fd convenience
+   functions in the libbz2 package.  */
 
 #include "compress_bz.h"
 
@@ -61,22 +60,21 @@ compress_bz::read (void *buffer, size_t len)
     return 0;
 
   if (peeklen)
-  {
-    ssize_t tmplen = std::min (peeklen, len);
-    peeklen -= tmplen;
-    memcpy (buffer, peekbuf, tmplen);
-    memmove (peekbuf, peekbuf + tmplen, tmplen);
-    ssize_t tmpread = read (&((char *) buffer)[tmplen], len - tmplen);
-    if (tmpread >= 0)
+    {
+      ssize_t tmplen = std::min (peeklen, len);
+      peeklen -= tmplen;
+      memcpy (buffer, peekbuf, tmplen);
+      memmove (peekbuf, peekbuf + tmplen, tmplen);
+      ssize_t tmpread = read (&((char *) buffer)[tmplen], len - tmplen);
+      if (tmpread >= 0)
         return tmpread + tmplen;
-    else
+      else
         return tmpread;
   }
   
   strm.avail_out = len;
   strm.next_out = (char *) buffer;
-  int
-    rlen = 1;
+  int rlen = 1;
   while (1)
     {
       if (original->error ())
@@ -89,8 +87,8 @@ compress_bz::read (void *buffer, size_t len)
 	  rlen = original->read (buf, 4096);
 	  if (rlen < 0)
 	    {
-	      if (original->error())
-    		lasterr = original->error();
+	      if (original->error ())
+    		lasterr = original->error ();
 	      else
 		lasterr = rlen;
 	      return -1;
@@ -130,38 +128,40 @@ compress_bz::read (void *buffer, size_t len)
 
 ssize_t compress_bz::write (const void *buffer, size_t len)
 {
-  throw new logic_error("compress_bz::write is not implemented");
+  throw new logic_error ("compress_bz::write is not implemented");
 }
 
 ssize_t compress_bz::peek (void *buffer, size_t len)
 {
   if (writing)
-  {
-    lasterr = EBADF;
+    {
+      lasterr = EBADF;
       return -1;
-  }
+    }
+  
   /* can only peek 512 bytes */
   if (len > 512)
-      return ENOMEM;
+    return ENOMEM;
 
   if (len > peeklen)
-      {
-	    size_t want = len - peeklen;
-	        ssize_t got = read (&peekbuf[peeklen], want);
-		    if (got >= 0)
-		            peeklen += got;
-		        else
-			        /* error */
-			        return got;
-			    /* we may have read less than requested. */
-			    memcpy (buffer, peekbuf, peeklen);
-			        return peeklen;
-				  }
+    {
+      size_t want = len - peeklen;
+      ssize_t got = read (&peekbuf[peeklen], want);
+      if (got >= 0)
+        peeklen += got;
+      else
+	/* error */
+	return got;
+      
+      /* we may have read less than requested. */
+      memcpy (buffer, peekbuf, peeklen);
+      return peeklen;
+    }
   else
-      {
-	    memcpy (buffer, peekbuf, len);
-	        return len;
-		  }
+    {
+      memcpy (buffer, peekbuf, len);
+      return len;
+    }
   return 0;
 }
 
@@ -169,15 +169,15 @@ long
 compress_bz::tell ()
 {
   if (writing)
-    throw new logic_error("compress_bz::tell is not implemented "
-                          "in writing mode");
+    throw new logic_error ("compress_bz::tell is not implemented "
+                           "in writing mode");
   return position;
 }
 
 int
 compress_bz::seek (long where, io_stream_seek_t whence)
 {
-  throw new logic_error("compress_bz::seek is not implemented");
+  throw new logic_error ("compress_bz::seek is not implemented");
 }
 
 int
@@ -206,4 +206,6 @@ compress_bz::~compress_bz ()
 {
   if (initialisedOk)
     BZ2_bzDecompressEnd (&strm);
+  if (original)
+    delete original;
 }

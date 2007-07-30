@@ -3,6 +3,10 @@ Note: For easier maintenance try to keep items in reverse chronological
 
 Version HEAD
 
+ - Alert user when encountering a .tar file of unsupported format rather than
+   silently failing to extract.  Also be more accepting of non-GNU tar formats,
+   such as those created by libtar/cmake.
+
  - If running on 9x/ME versions of Windows, look for setup_legacy.ini/.bz2
    instead of setup.ini/.bz2, in support for future dropping of non-NT support
    and forking of the distro.

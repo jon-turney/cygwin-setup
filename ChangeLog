@@ -1,3 +1,20 @@
+2007-07-30  Brian Dessent  <brian@dessent.net>
+
+	* CHANGES: Update.
+	* configure.in (AM_INIT_AUTOMAKE): Enable more automake warnings.
+	* Makefile.am (INCLUDES): Use AM_CPPFLAGS instead.
+	(CLEANFILES): Add.  Minor portability tweaks.
+	* tests/Makefile.am (INCLUDES): Use AM_CPPFLAGS instead.
+	* archive.cc (archive::extract): Try to be more compatible when
+	opening tar files.
+	* compress_bz.cc: Fix whitespace throughout.
+	(compress_bz::~compress_bz): Ensure that underlying io_stream's dtor is
+	also run.
+	* install.cc (Installer::installOne): Refactor.
+	* package_db.cc (ConnectedLoopFinder::doIt): Move some log spewage into
+	setup.log.full from setup.log.
+	(packagedb::connectedBegin): Ditto. Consolidate log output to one line.
+
 2007-07-02  Brian Dessent  <brian@dessent.net>
 
 	* CHANGES: Update.

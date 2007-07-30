@@ -243,7 +243,9 @@ ConnectedLoopFinder::doIt()
       if (pkg.installed && ! visitOrder[i])
 	visit (i);
     }
-  log (LOG_PLAIN) << "Visited: " << visited << " nodes out of " << db.packages.size() << "." << endLog;
+  log (LOG_BABBLE) << "Visited: " << visited << " nodes out of "
+                   << db.packages.size() << " while creating dependency order."
+                   << endLog;
 }
 
 static bool
@@ -326,18 +328,17 @@ PackageDBConnectedIterator
 packagedb::connectedBegin()
 {
   if (!dependencyOrderedPackages.size())
-  {
-  ConnectedLoopFinder doMe;
-  doMe.doIt();
-  log(LOG_PLAIN) << "Dependency ordered install:" << endLog;
-  for (std::vector<packagemeta *>::iterator i = dependencyOrderedPackages.begin();
-    i != dependencyOrderedPackages.end(); ++i)
     {
-      packagemeta &pkg (**i);
-      log(LOG_PLAIN) << pkg.name << endLog;
+      ConnectedLoopFinder doMe;
+      doMe.doIt();
+      std::string s = "Dependency order of packages: ";
+      
+      for (std::vector<packagemeta *>::iterator i =
+           dependencyOrderedPackages.begin();
+           i != dependencyOrderedPackages.end(); ++i)
+        s = s + (*i)->name + " ";
+      log (LOG_BABBLE) << s << endLog;
     }
-  }
-    
   return dependencyOrderedPackages.begin();
 }
 

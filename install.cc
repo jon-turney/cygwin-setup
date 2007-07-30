@@ -71,7 +71,7 @@ static int total_bytes = 0;
 static int total_bytes_sofar = 0;
 static int package_bytes = 0;
 
-static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot", 
+static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot",
 				     "Disable replacing in-use files on next "
 				     "reboot.");
 
@@ -223,187 +223,203 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                        const std::string& prefixURL,
                        const std::string& prefixPath)
 {
-  Progress.SetText2 (source.Base ());
-  if (!source.Cached() || !io_stream::exists (source.Cached ()))
+  Progress.SetText1 ("Installing");
+  Progress.SetText2 (source.Base () ? source.Base () : "(unknown)");
+
+  io_stream *pkgfile = NULL;
+
+  if (!source.Cached() || !io_stream::exists (source.Cached ())
+      || !(pkgfile = io_stream::open (source.Cached (), "rb")))
     {
       note (NULL, IDS_ERR_OPEN_READ, source.Cached (), "No such file");
       ++errors;
       return;
     }
-  bool error_in_this_package = false;
-  io_stream *lst = 0;
 
-  package_bytes = source.size;
 
-  char msg[64];
-  strcpy (msg, "Installing");
-  Progress.SetText1 (msg);
-  log (LOG_PLAIN) << msg << " " << source.Cached () << endLog;
-  
-  io_stream *tmp = io_stream::open (source.Cached (), "rb");
-  io_stream *tmp2 = 0;
-  archive *thefile = 0;
-  bool ignoreExtractErrors = unattended_mode;
-  if (tmp)
+  /* At this point pkgfile is an opened io_stream to either a .tar.bz2 file,
+     a .tar.gz file, or just a .tar file.  Try it first as a compressed file
+     and if that fails try opening it as a tar directly.  If both fail, abort.
+
+     Note on io_stream pointer management:
+
+     Both the archive and decompress classes take ownership of the io_stream
+     pointer they were opened with, meaning they delete it in their dtor.  So
+     deleting tarstream should also result in deleting the underlying
+     try_decompress and pkgfile io_streams as well.  */
+
+  archive *tarstream = NULL;
+  io_stream *try_decompress = NULL;
+
+  if ((try_decompress = compress::decompress (pkgfile)) != NULL)
     {
-      tmp2 = compress::decompress (tmp);
-      if (tmp2)
+      if ((tarstream = archive::extract (try_decompress)) == NULL)
         {
-          thefile = archive::extract (tmp2);
-          // tmp2 now owned by archive instance
-          if (thefile) tmp2 = 0;
+          /* Decompression succeeded but we couldn't grok it as a valid tar
+             archive, so notify the user and abort processing this package.  */
+          delete try_decompress;
+          note (NULL, IDS_ERR_OPEN_READ, source.Cached (),
+                "Invalid or unsupported tar format");
+          ++errors;
+          return;
         }
+    }
+  else if ((tarstream = archive::extract (pkgfile)) == NULL)
+    {
+      /* Not a compressed tarball, not a plain tarball, give up.  */
+      delete pkgfile;
+      note (NULL, IDS_ERR_OPEN_READ, source.Cached (),
+            "Unrecognisable file format");
+      ++errors;
+      return;
+    }
+
+  /* For binary packages, create a manifest in /etc/setup/ that lists the
+     filename of each file that was unpacked.  */
+
+  io_stream *lst = NULL;
+  if (ver.Type () == package_binary)
+    {
+      std::string lstfn = "cygfile:///etc/setup/" + pkgm.name + ".lst.gz";
+
+      io_stream *tmp;
+      if ((tmp = io_stream::open (lstfn, "wb")) == NULL)
+        log (LOG_PLAIN) << "Warning: Unable to create lst file " + lstfn +
+          " - uninstall of this package will leave orphaned files." << endLog;
       else
         {
-          thefile = archive::extract (tmp);
-          // tmp now owned by archive instance
-          if (thefile) tmp = 0;
+          lst = new compress_gz (tmp, "w9");
+          if (lst->error ())
+            {
+              delete lst;
+              lst = NULL;
+              log (LOG_PLAIN) << "Warning: gzip unable to write to lst file " +
+                lstfn + " - uninstall of this package will leave orphaned files."
+                << endLog;
+            }
         }
     }
-    
-  /* FIXME: potential leak of either *tmp or *tmp2 */
-  if (thefile)
+
+  bool error_in_this_package = false;
+  bool ignoreExtractErrors = unattended_mode;
+
+  package_bytes = source.size;
+  log (LOG_PLAIN) << "Extracting from " << source.Cached () << endLog;
+
+  std::string fn;
+  while ((fn = tarstream->next_file_name ()).size ())
     {
-      std::string fn;
-      if (ver.Type () == package_binary)
-	{
-          io_stream *tmp = io_stream::open(std::string("cygfile:///etc/setup/")
-                                           + std::string(pkgm.name) +
-                                           ".lst.gz", "wb");
-          lst = new compress_gz (tmp, "w9");
-	  if (lst->error ())
-	    {
-              delete lst;
-	      lst = NULL;
-	    }
-	}
-      while ((fn = thefile->next_file_name ()).size())
-	{
-	  if (lst)
-	    {
-	      std::string tmp = fn + "\n";
-	      lst->write (tmp.c_str(), tmp.size());
-	    }
+      std::string canonicalfn = prefixPath + fn;
+      Progress.SetText3 (canonicalfn.c_str ());
+      log (LOG_BABBLE) << "Installing file " << prefixURL << prefixPath
+          << fn << endLog;
+      if (lst)
+        {
+          std::string tmp = fn + "\n";
+          lst->write (tmp.c_str(), tmp.size());
+        }
+      if (Script::isAScript (fn))
+        pkgm.desired.addScript (Script (canonicalfn));
 
-	  std::string canonicalfn = prefixPath + fn;
-	  if (Script::isAScript (fn))
-	    pkgm.desired.addScript (Script (canonicalfn));
+      bool firstIteration = true;
+      while (archive::extract_file (tarstream, prefixURL, prefixPath) != 0)
+        {
+          if (!ignoreExtractErrors)
+            {
+              char msg[fn.size() + 300];
+              sprintf (msg,
+                       "%snable to extract /%s -- the file is in use.\r\n"
+                       "Please stop %s Cygwin processes and select \"Retry\", or\r\n"
+                       "select \"Continue\" to go on anyway (you will need to reboot).\r\n",
+                       firstIteration?"U":"Still u", fn.c_str(), firstIteration?"all":"ALL");
+              switch (MessageBox (NULL, msg, "In-use files detected",
+                       MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL))
+                {
+                  case IDRETRY:
+                    // retry
+                    firstIteration = false;
+                    continue;
+                  case IDCONTINUE:
+                    ignoreExtractErrors = true;
+                    break;
+                  default:
+                    break;
+                }
+              // fall through to previous functionality
+            }
+          if (NoReplaceOnReboot)
+            {
+              ++errors;
+              error_in_this_package = true;
+              log (LOG_PLAIN) << "Not replacing in-use file " << prefixURL
+                  << prefixPath << fn << endLog;
+            }
+          else
+            {
+              /* Extract a copy of the file with extension .new appended and
+                 indicate it should be replaced on the next reboot.  */
+              if (archive::extract_file (tarstream, prefixURL, prefixPath,
+                                         ".new") != 0)
+                {
+                  log (LOG_PLAIN) << "Unable to install file " << prefixURL
+                      << prefixPath << fn << ".new" << endLog;
+                  ++errors;
+                  error_in_this_package = true;
+                }
+              else
+                {
+                  std::string s = cygpath ("/" + fn + ".new"),
+                              d = cygpath ("/" + fn);
 
-	  Progress.SetText3 (canonicalfn.c_str());
-	  log (LOG_BABBLE) << "Installing file " << prefixURL << prefixPath 
-            << fn << endLog;
-	  bool firstIteration = true;
-	  while (archive::extract_file (thefile, prefixURL, prefixPath) != 0)
-	    {
-	      if (!ignoreExtractErrors)
-		{
-		  char msg[fn.size() + 300];
-		  sprintf (msg,
-			   "%snable to extract /%s -- the file is in use.\r\n"
-			   "Please stop %s Cygwin processes and select \"Retry\", or\r\n"
-			   "select \"Continue\" to go on anyway (you will need to reboot).\r\n",
-			   firstIteration?"U":"Still u", fn.c_str(), firstIteration?"all":"ALL");
-		  switch (MessageBox
-			  (NULL, msg, "In-use files detected",
-			   MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL))
-		    {
-		    case IDRETRY:
-		      // retry
-		      firstIteration = false;
-		      continue;
-		    case IDCONTINUE:
-		      ignoreExtractErrors = true;
-		      break;
-		    default:
-		      break;
-		    }
-		  // fall through to previous functionality
-		}
-	      if (NoReplaceOnReboot)
-		{
-		  ++errors;
-		  error_in_this_package = true;
-		  log (LOG_PLAIN) << "Not replacing in-use file "
-		    << prefixURL << prefixPath << fn << endLog;
-		}
-	      else
-		//extract to temp location
-		if (archive::extract_file (thefile, prefixURL, prefixPath, ".new") != 0)
-		  {
-		    log (LOG_PLAIN) << "Unable to install file "
-		      << prefixURL << prefixPath << fn << endLog;
-		    ++errors;
-		    error_in_this_package = true;
-		  }
-		else
-		  {
-		    if (!IsWindowsNT())
-		      {
-			/* Get the short file names */
-			char source[MAX_PATH];
-			unsigned int len =
-			  GetShortPathName(cygpath("/" + fn + ".new").c_str(),
-					   source, MAX_PATH);
-			if (!len || len > MAX_PATH)
-			  {
-			    replaceOnRebootFailed(fn);
-			  }
-			else
-			  {
-			    char dest[MAX_PATH];
-			    len =
-			      GetShortPathName(cygpath("/" + fn).c_str(),
-					       dest, MAX_PATH);
-			    if (!len || len > MAX_PATH)
-				replaceOnRebootFailed (fn);
-			    else
-			      /* trigger a replacement on reboot */
-			    if (!WritePrivateProfileString
-				  ("rename", dest, source, "WININIT.INI"))
-				replaceOnRebootFailed (fn);
-			    else
-				replaceOnRebootSucceeded (fn, rebootneeded);
-			  }
-		      }
-		    else
-		      {
-			/* XXX FIXME: prefix may not be / for in use files -
-			 * although it most likely is
-			 * - we need a io method to get win32 paths 
-			 * or to wrap this system call
-			 */
-			if (!MoveFileEx(cygpath("/" + fn + ".new").c_str(),
-					cygpath("/" + fn).c_str(),
-					MOVEFILE_DELAY_UNTIL_REBOOT |
-					MOVEFILE_REPLACE_EXISTING))
-			  {
-			    replaceOnRebootFailed (fn);
-			  }
-			else
-			  {
-			    replaceOnRebootSucceeded (fn, rebootneeded);
-			  }
-		      }
-		  }
-	      // We're done with this file
-	      break;
-	    }
-	  progress (tmp->tell ());
-	  num_installs++;
-	}
-      delete thefile;
+                  if (!IsWindowsNT())
+                    {
+                      /* Get the short file names */
+                      char s2[MAX_PATH], d2[MAX_PATH];
+                      unsigned int slen =
+                                GetShortPathName (s.c_str (), s2, MAX_PATH),
+                         dlen = GetShortPathName (d.c_str (), d2, MAX_PATH);
 
-      total_bytes_sofar += package_bytes;
+                      if (!slen || slen > MAX_PATH || !dlen || dlen > MAX_PATH)
+                        replaceOnRebootFailed(fn);
+                      else
+                        if (!WritePrivateProfileString ("rename", d2, s2,
+                                                        "WININIT.INI"))
+                          replaceOnRebootFailed (fn);
+                        else
+                          replaceOnRebootSucceeded (fn, rebootneeded);
+                    }
+                  else
+                    {
+                      /* XXX FIXME: prefix may not be / for in use files -
+                       * although it most likely is
+                       * - we need a io method to get win32 paths
+                       * or to wrap this system call
+                       */
+                      if (!MoveFileEx (s.c_str (), d.c_str (),
+                                       MOVEFILE_DELAY_UNTIL_REBOOT |
+                                       MOVEFILE_REPLACE_EXISTING))
+                        replaceOnRebootFailed (fn);
+                      else
+                        replaceOnRebootSucceeded (fn, rebootneeded);
+                    }
+                }
+            }
+          // We're done with this file
+          break;
+        }
+      progress (tarstream->tell ());
+      num_installs++;
     }
 
+  if (lst)
+    delete lst;
+  delete tarstream;
+
+  total_bytes_sofar += package_bytes;
   progress (0);
 
-  int df = diskfull (get_root_dir ().c_str());
+  int df = diskfull (get_root_dir ().c_str ());
   Progress.SetBar3 (df);
-
-  if (lst) delete lst;
-  if (tmp2) delete tmp2;
-  if (tmp) delete tmp;
 
   if (ver.Type () == package_binary && !error_in_this_package)
     pkgm.installed = ver;

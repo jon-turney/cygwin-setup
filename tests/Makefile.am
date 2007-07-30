@@ -24,7 +24,7 @@ AM_CXXFLAGS	= -Werror -Wall -Wpointer-arith -Wcomments \
   -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes
 AM_CFLAGS	= $(AM_CXXFLAGS) -Wmissing-declarations -Winline
 
-INCLUDES= -I. -I$(srcdir) -I$(top_srcdir)
+AM_CPPFLAGS = -I. -I$(srcdir) -I$(top_srcdir)
 
 check_PROGRAMS = \
 	UserSettingTest \
