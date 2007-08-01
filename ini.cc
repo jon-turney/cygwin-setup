@@ -135,7 +135,7 @@ do_remote_ini (HWND owner)
   io_stream *ini_file;
 
   /* FIXME: Get rid of this io_stream pointer travesty.  The need to
-     explicily delete these things is ridiculous.  Note that the
+     explicitly delete these things is ridiculous.  Note that the
      decompress io_stream "owns" the underlying compressed io_stream
      instance, so it should not be deleted explicitly.  */
 
