@@ -135,7 +135,9 @@ do_remote_ini (HWND owner)
   io_stream *ini_file;
 
   /* FIXME: Get rid of this io_stream pointer travesty.  The need to
-     explicily delete these things is ridiculous.  */
+     explicily delete these things is ridiculous.  Note that the
+     decompress io_stream "owns" the underlying compressed io_stream
+     instance, so it should not be deleted explicitly.  */
 
   for (SiteList::const_iterator n = site_list.begin();
        n != site_list.end(); ++n)
@@ -170,7 +172,6 @@ do_remote_ini (HWND owner)
                   /* There was a problem decompressing bz2.  */
                   delete bz2_stream;
                   delete uncompressed;
-                  delete ini_file;
                   ini_file = NULL;
                   log (LOG_PLAIN) << 
                     "Warning: Problem encountered while uncompressing " <<
@@ -180,7 +181,6 @@ do_remote_ini (HWND owner)
               else
                 {
                   delete bz2_stream;
-                  delete ini_file;
                   ini_file = uncompressed;
                   ini_file->seek (0, IO_SEEK_SET);
                 }

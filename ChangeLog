@@ -1,3 +1,7 @@
+2007-07-31  Brian Dessent  <brian@dessent.net>
+
+	* ini.cc (do_remote_ini): Fix crash due to double free of ini_file.
+
 2007-07-30  Brian Dessent  <brian@dessent.net>
 
 	* CHANGES: Update.
