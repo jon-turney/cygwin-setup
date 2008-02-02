@@ -28,15 +28,19 @@ static const char *cvsid =
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sstream>
 #include "dialog.h"
 #include "resource.h"
 #include "netio.h"
 #include "msg.h"
 
+#include "getopt++/StringOption.h"
 #include "propsheet.h"
 #include "threebar.h"
 #include "ConnectionSetting.h"
 extern ThreeBarProgressPage Progress;
+
+static StringOption ProxyOption ("", 'p', "proxy", "HTTP/FTP proxy (host:port)", false);
 
 static int rb[] = { IDC_NET_IE5, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
 static ConnectionSetting theSetting;
@@ -110,9 +114,24 @@ void
 NetPage::OnInit ()
 {
   HWND h = GetHWND ();
+  std::string proxyString (ProxyOption);
 
   if (!NetIO::net_method)
     NetIO::net_method = IDC_NET_DIRECT;
+
+  if (proxyString.size ())
+  {
+    unsigned int pos = proxyString.find_last_of (':');
+    if ((pos > 0) && (pos < (proxyString.size () - 1)))
+    {
+      NetIO::net_method = IDC_NET_PROXY;
+      NetIO::net_proxy_host = strdup (proxyString.substr (0, pos).c_str ());
+      std::string portString = proxyString.substr (pos + 1, proxyString.size () - (pos + 1));
+      std::istringstream iss (portString, std::istringstream::in);
+      iss >> NetIO::net_proxy_port;
+    }
+  }
+
   load_dialog (h);
   CheckIfEnableNext();
 

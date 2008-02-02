@@ -1,3 +1,9 @@
+2008-02-01  Vincent Privat <vincent.privat@gmail.com>
+
+	* net.cc (OnInit): New StringOption (ProxyOption)
+	This new option (-p) allows to call setup.exe with a proxy
+	in its command-line arguments.
+
 2007-07-31  Brian Dessent  <brian@dessent.net>
 
 	* ini.cc (do_remote_ini): Fix crash due to double free of ini_file.
