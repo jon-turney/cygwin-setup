@@ -1,3 +1,7 @@
+2008-02-21  Dave Korn  <dave.korn@artimi.com>
+
+	* geturl.cc (progress):  Correct SI unit notation.
+
 2008-02-01  Vincent Privat <vincent.privat@gmail.com>
 
 	* net.cc (OnInit): New StringOption (ProxyOption)

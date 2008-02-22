@@ -97,14 +97,14 @@ progress (int bytes)
     {
       int perc = (int)(100.0 * ((double)bytes) / (double)max_bytes);
       Progress.SetBar1(bytes, max_bytes);
-      sprintf (buf, "%d %%  (%dk/%dk)  %03.1f kb/s",
+      sprintf (buf, "%d %%  (%dk/%dk)  %03.1f kB/s",
 	       perc, bytes / 1000, max_bytes / 1000, kbps);
       if (total_download_bytes > 0)
      	  Progress.SetBar2(total_download_bytes_sofar + bytes,
 			   total_download_bytes);
     }
   else
-    sprintf (buf, "%d  %2.1f kb/s", bytes, kbps);
+    sprintf (buf, "%d  %2.1f kB/s", bytes, kbps);
 
   Progress.SetText3(buf);
 }
