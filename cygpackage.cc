@@ -31,6 +31,7 @@ static const char *cvsid =
 
 #include "package_version.h"
 #include "cygpackage.h"
+#include "LogSingleton.h"
 
 /* this constructor creates an invalid package - further details MUST be provided */
 cygpackage::cygpackage ():
@@ -130,7 +131,11 @@ cygpackage::getfirstfile ()
   listdata = compress::decompress (listfile);
   if (!listdata)
     return std::string();
-  return listdata->gets (getfilenamebuffer, sizeof (getfilenamebuffer));
+  /* std::string(NULL) will crash, so be careful to test for that. */
+  const char *result = listdata->gets (getfilenamebuffer, sizeof (getfilenamebuffer));
+  if (result == NULL)
+    log (LOG_PLAIN) << "Corrupt package listing for " << name << ", can't uninstall old files." << endLog;
+  return std::string (result ? result : "");
 }
 
 const std::string
