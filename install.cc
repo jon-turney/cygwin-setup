@@ -88,7 +88,7 @@ class Installer
     void replaceOnRebootSucceeded (const std::string& fn, bool &rebootneeded);
     void installOne (packagemeta &pkg, const packageversion &ver,
                      packagesource &source,
-                     const std::string& , const std::string& );
+                     const std::string& , const std::string&, HWND );
     int errors;
 };
 
@@ -221,7 +221,8 @@ void
 Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                        packagesource &source,
                        const std::string& prefixURL,
-                       const std::string& prefixPath)
+                       const std::string& prefixPath,
+                       HWND owner)
 {
   Progress.SetText1 ("Installing");
   Progress.SetText2 (source.Base () ? source.Base () : "(unknown)");
@@ -332,7 +333,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                        "Please stop %s Cygwin processes and select \"Retry\", or\r\n"
                        "select \"Continue\" to go on anyway (you will need to reboot).\r\n",
                        firstIteration?"U":"Still u", fn.c_str(), firstIteration?"all":"ALL");
-              switch (MessageBox (NULL, msg, "In-use files detected",
+              switch (MessageBox (owner, msg, "In-use files detected",
                        MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL))
                 {
                   case IDRETRY:
@@ -426,7 +427,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 }
 
 static void
-check_for_old_cygwin ()
+check_for_old_cygwin (HWND owner)
 {
   char buf[MAX_PATH + sizeof ("\\cygwin1.dll")];
   if (!GetSystemDirectory (buf, sizeof (buf)))
@@ -440,7 +441,7 @@ check_for_old_cygwin ()
 	   "An old version of cygwin1.dll was found here:\r\n%s\r\nDelete?",
 	   buf);
   switch (MessageBox
-	  (NULL, msg, "What's that doing there?",
+	  (owner, msg, "What's that doing there?",
 	   MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL))
     {
     case IDYES:
@@ -450,7 +451,7 @@ check_for_old_cygwin ()
 		   "Is the DLL in use by another application?\r\n"
 		   "You should delete the old version of cygwin1.dll\r\n"
 		   "at your earliest convenience.", buf);
-	  MessageBox (NULL, buf, "Couldn't delete file",
+	  MessageBox (owner, buf, "Couldn't delete file",
 		      MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
 	}
       break;
@@ -572,7 +573,7 @@ do_install_thread (HINSTANCE h, HWND owner)
     packagemeta & pkg = **i;
     try {
       myInstaller.installOne (pkg, pkg.desired, *pkg.desired.source(),
-                              "cygfile://", "/");
+                              "cygfile://", "/", owner);
     }
     catch (exception *e)
     {
@@ -592,7 +593,7 @@ do_install_thread (HINSTANCE h, HWND owner)
     packagemeta & pkg = **i;
     myInstaller.installOne (pkg, pkg.desired.sourcePackage(),
                             *pkg.desired.sourcePackage().source(),
-                            "cygfile://", "/usr/src/");
+                            "cygfile://", "/usr/src/", owner);
   }
 
   if (rebootneeded)
@@ -609,7 +610,7 @@ do_install_thread (HINSTANCE h, HWND owner)
     }
 
   if (!myInstaller.errors)
-    check_for_old_cygwin ();
+    check_for_old_cygwin (owner);
   if (num_installs == 0 && num_uninstalls == 0)
     {
       if (!unattended_mode) exit_msg = IDS_NOTHING_INSTALLED;
