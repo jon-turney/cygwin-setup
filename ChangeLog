@@ -1,3 +1,12 @@
+2008-02-24  Dave Korn  <dave.korn@artimi.com>
+
+	* cygpackage.cc (Installer::installOne):  Accept new HWND argument
+	from caller and pass it to MessageBox calls so that MB_TASKMODAL
+	can work.
+	(check_for_old_cygwin):  Likewise.
+	(do_install_thread):  Pass owner's HWND (from thread context) when
+	calling them.
+
 2008-02-23  Dave Korn  <dave.korn@artimi.com>
 
 	* cygpackage.cc (cygpackage::getfirstfile):  Guard against trying to
