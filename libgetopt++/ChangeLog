@@ -1,3 +1,7 @@
+2008-04-08  Brian Dessent  <brian@dessent.net>
+
+	* src/OptionSet.cc: Include algorithm.
+
 2005-09-01  Brian Dessent  <brian@dessent.net>
 
 	* Makefile.am (AM_CXXFLAGS): Add -Wno-uninitialized to work around

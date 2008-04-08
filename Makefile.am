@@ -117,8 +117,7 @@ libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
 setup_LDADD = \
 	libinilex.a libgetopt++/libgetopt++.la \
 	res.o \
-	/usr/lib/mingw/libbz2.a /usr/lib/mingw/libz.a \
-	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid
+	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -lbz2 -lz
 setup_LDFLAGS = -mwindows
 setup_SOURCES = \
 	AntiVirus.cc \

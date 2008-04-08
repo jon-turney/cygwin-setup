@@ -143,11 +143,13 @@ archive_tar::next_file_name ()
   char *c;
 
   if (state.header_read)
-    if (strlen (state.filename))
-      return state.filename;
-    else
-      /* End of tar */
-      return std::string();
+    {
+      if (strlen (state.filename))
+        return state.filename;
+      else
+        /* End of tar */
+        return std::string();
+    }
 
   int r = state.parent->read (&state.tar_header, 512);
 

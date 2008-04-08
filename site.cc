@@ -294,7 +294,7 @@ get_site_list (HINSTANCE h, HWND owner)
     if (f)
       {
 	int len;
-	while (len = f->read (mirror_url, 999))
+	while ((len = f->read (mirror_url, 999)))
 	  {
 	    mirror_url[len] = '\0';
 	    cached_mirrors += mirror_url;

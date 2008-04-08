@@ -1,3 +1,29 @@
+2008-04-08  Brian Dessent  <brian@dessent.net>
+
+	* CHANGES: Update.
+
+2008-04-08  Brian Dessent  <brian@dessent.net>
+
+	Various warning/header cleanups necessary for clean gcc 4.3 build.
+	* ConnectionSetting.cc: Include stdlib.h.
+	* LogFile.cc: Ditto.
+	* Makefile.am: Don't hardcode paths to MinGW libz and libbz2.
+	* PickView.cc: Include limits.h.
+	* String++.cc: Include string.h.
+	* archive_tar.cc (archive_tar::next_file_name): Silence nested-if
+	warning.
+	* autoload.c: Switch back to .text section before emiting
+	autoload_common.
+	* choose.cc: Include stdlib.h and algorithm.
+	* compress_gz.cc: Include memory.h and malloc.h.
+	* filemanip.cc: Include string.h.
+	(parse_filename): Silence nested-if warning.
+	* nio-ftp.cc (NetIO_FTP::NetIO_FTP): Silence warning.
+	* package_db.cc: Include algorithm.
+	* site.cc (get_site_list): Silence warning.
+	* win32.cc: Include memory.
+	* csu_util/MD5Sum.cc: Include string.h.
+	
 2008-03-02  Dave Korn  <dave.korn@artimi.com>
 
 	* install.cc (Installer::installOne):  Accept new HWND argument

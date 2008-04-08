@@ -23,6 +23,8 @@
 #include <stdexcept>
 using namespace std;
 #include <errno.h>
+#include <memory.h>
+#include <malloc.h>
 
 #define HEAD_CRC     0x02	/* bit 1 set: header CRC present */
 #define EXTRA_FIELD  0x04	/* bit 2 set: extra field present */

@@ -3,6 +3,14 @@ Note: For easier maintenance try to keep items in reverse chronological
 
 Version HEAD
 
+ - Avoid crashing on invalid/empty .lst.gz file.  Make "files in use"
+   dialog modal to prevent the user from aborting the install and creating
+   a corrupt .lst.gz.
+
+ - Display correct SI units (kB).
+
+ - New command line option -p can be used to specify HTTP/FTP proxy.
+
  - Alert user when encountering a .tar file of unsupported format rather than
    silently failing to extract.  Also be more accepting of non-GNU tar formats,
    such as those created by libtar/cmake.

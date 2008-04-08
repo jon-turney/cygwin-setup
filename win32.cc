@@ -19,6 +19,7 @@ static const char *cvsid =
 #endif
 
 #include "win32.h"
+#include <memory>
 #include "LogFile.h"
 
 

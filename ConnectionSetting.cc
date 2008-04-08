@@ -18,6 +18,7 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include <stdlib.h>
 #include "ConnectionSetting.h"
 #include "UserSettings.h"
 #include "io_stream.h"

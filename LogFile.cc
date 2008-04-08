@@ -20,6 +20,7 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include <stdlib.h>
 #include "LogFile.h"
 #include "io_stream.h"
 #include "win32.h"

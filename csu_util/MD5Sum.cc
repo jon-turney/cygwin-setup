@@ -13,6 +13,7 @@
  */
 
 #include "MD5Sum.h"
+#include <string.h>
 #include <stdexcept>
 
 namespace libmd5_rfc {

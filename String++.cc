@@ -11,6 +11,7 @@
  */
 
 #include "String++.h"
+#include <string.h>
 #include <sstream>
 #include <algorithm>
 

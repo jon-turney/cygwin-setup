@@ -14,6 +14,8 @@
  */
 
 #include "PickView.h"
+#include <algorithm>
+#include <limits.h>
 #include <commctrl.h>
 #include "PickPackageLine.h"
 #include "PickCategoryLine.h"
@@ -21,7 +23,6 @@
 #include "package_version.h"
 #include "dialog.h"
 #include "resource.h"
-#include <algorithm>
 /* For 'source' */
 #include "state.h"
 #include "LogSingleton.h"

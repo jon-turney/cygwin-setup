@@ -21,6 +21,7 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include <string.h>
 #include "filemanip.h"
 #include "io_stream.h"
 #include "String++.h"
@@ -105,21 +106,23 @@ parse_filename (const string &fn, fileparse & f)
     }
   for (ver = p; *ver; ver++)
     if (*ver == '-')
-      if (isdigit (ver[1]))
-	{
-	  *ver++ = 0;
-	  f.pkg = p;
-	  break;
-	}
-      else if (strcasecmp (ver, "-src") == 0 ||
-	       strcasecmp (ver, "-patch") == 0)
-	{
-	  *ver++ = 0;
-	  f.pkg = p;
-	  f.what = strlwr (ver);
-	  ver = strchr (ver, '\0');
-	  break;
-	}
+      {
+        if (isdigit (ver[1]))
+          {
+            *ver++ = 0;
+            f.pkg = p;
+            break;
+          }
+        else if (strcasecmp (ver, "-src") == 0 ||
+  	         strcasecmp (ver, "-patch") == 0)
+  	  {
+            *ver++ = 0;
+            f.pkg = p;
+            f.what = strlwr (ver);
+            ver = strchr (ver, '\0');
+            break;
+  	  }
+      }
 
   if (!f.pkg.size())
     f.pkg = p;

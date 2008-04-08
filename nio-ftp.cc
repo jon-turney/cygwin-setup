@@ -64,7 +64,7 @@ NetIO_FTP::NetIO_FTP (char const *Purl):NetIO (Purl)
     port = 21;
 
 control_reconnect:
-  if (cmd_host && strcmp (host, cmd_host) != 0 || port != cmd_port)
+  if ((cmd_host && strcmp (host, cmd_host) != 0) || port != cmd_port)
     {
       if (cmd)
 	cmd->printf ("QUIT\r\n");

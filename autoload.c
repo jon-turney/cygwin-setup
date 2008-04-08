@@ -67,6 +67,8 @@ typedef struct {
   char name[100];
 } AutoEntry;
 
+__asm__ ("\t.text");
+
 __attribute__ ((used)) static void autoload_common (int x) __asm__ ("autoload_common");
 
 static void
