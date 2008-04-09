@@ -296,9 +296,9 @@ setup_version.c : $(srcdir)/ChangeLog Makefile
 #   setup-x.yyy.tar.bz2         (source)
 release: setup.exe $(srcdir)/ChangeLog Makefile
 	$(MAKE) dist-bzip2 distdir=setup-${VER}
-	cp -p setup.exe setup-debug-${VER}.exe
-	gzip -9 setup-debug-${VER}.exe
-	cp -p setup.exe setup-${VER}.exe
+	cp -pf setup.exe setup-debug-${VER}.exe
+	gzip -f9 setup-debug-${VER}.exe
+	cp -pf setup.exe setup-${VER}.exe
 	$(STRIP) setup-${VER}.exe
 	upx --best setup-${VER}.exe
 

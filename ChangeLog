@@ -1,5 +1,10 @@
 2008-04-08  Brian Dessent  <brian@dessent.net>
 
+	* Makefile.am (release): Use -f so that "make release" works
+	when existing binaries of the same name exist.
+	
+2008-04-08  Brian Dessent  <brian@dessent.net>
+
 	* res.rc (IDD_SPLASH): Update copyright years on splash page.
 
 2008-04-08  Brian Dessent  <brian@dessent.net>
