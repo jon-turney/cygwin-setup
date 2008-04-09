@@ -3,6 +3,9 @@ Note: For easier maintenance try to keep items in reverse chronological
 
 Version HEAD
 
+ - Don't treat dummy packages consisting of compressed 0-byte files as
+   invalid.
+
  - Avoid crashing on invalid/empty .lst.gz file.  Make "files in use"
    dialog modal to prevent the user from aborting the install and creating
    a corrupt .lst.gz.

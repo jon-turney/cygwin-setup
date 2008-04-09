@@ -257,11 +257,21 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
       if ((tarstream = archive::extract (try_decompress)) == NULL)
         {
           /* Decompression succeeded but we couldn't grok it as a valid tar
-             archive, so notify the user and abort processing this package.  */
+             archive.  */
+          char c;
+          if (try_decompress->peek (&c, 1) < 0)
+            /* In some cases, maintainers have uploaded bzipped
+               0-byte files as dummy packages instead of empty tar files.
+               This is common enough that we should not treat this as an
+               error condition.  */
+            ;
+          else
+            {
+              note (NULL, IDS_ERR_OPEN_READ, source.Cached (),
+                    "Invalid or unsupported tar format");
+              ++errors;
+            }
           delete try_decompress;
-          note (NULL, IDS_ERR_OPEN_READ, source.Cached (),
-                "Invalid or unsupported tar format");
-          ++errors;
           return;
         }
     }
@@ -408,7 +418,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
           // We're done with this file
           break;
         }
-      progress (tarstream->tell ());
+      progress (pkgfile->tell ());
       num_installs++;
     }
 
