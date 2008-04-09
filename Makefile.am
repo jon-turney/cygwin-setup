@@ -305,4 +305,4 @@ release: setup.exe $(srcdir)/ChangeLog Makefile
 # Create a snapshot and upload it (requires write access)
 snapshot: release
 	scp -C setup-${VER}.exe setup-debug-${VER}.exe.gz setup-${VER}.tar.bz2 \
-	    $${cygwinsite}:setup-snapshots/
+	    $${cygwinsite:-cygwin.com}:setup-snapshots/

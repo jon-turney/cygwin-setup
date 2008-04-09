@@ -1,5 +1,10 @@
 2008-04-08  Brian Dessent  <brian@dessent.net>
 
+	* Makefile.am (snapshot): Provide default value of ${cygwinsite}
+	if not set.
+
+2008-04-08  Brian Dessent  <brian@dessent.net>
+
 	* Makefile.am (release): Use -f so that "make release" works
 	when existing binaries of the same name exist.
 	
