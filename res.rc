@@ -265,7 +265,7 @@ BEGIN
                     "necessary.",IDC_SPLASH_TEXT,115,25,195,90
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,114,114,21,20,WS_GROUP
     LTEXT           "Version (unknown)",IDC_VERSION,115,137,195,10
-    LTEXT           "Copyright 2000-2007",IDC_SPLASH_COPYR,115,150,195,8
+    LTEXT           "Copyright 2000-2008",IDC_SPLASH_COPYR,115,150,195,8
     LTEXT           "http://www.cygwin.com/",IDC_SPLASH_URL,115,162,90,8
 END
 

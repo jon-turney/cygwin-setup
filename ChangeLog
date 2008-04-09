@@ -1,5 +1,9 @@
 2008-04-08  Brian Dessent  <brian@dessent.net>
 
+	* res.rc (IDD_SPLASH): Update copyright years on splash page.
+
+2008-04-08  Brian Dessent  <brian@dessent.net>
+
 	* CHANGES: Update.
 	* install.cc (Installer::installOne): Cope with compressed
 	0-byte dummy packages.  Fix progress bar update bug introduced
