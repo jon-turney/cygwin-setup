@@ -21,6 +21,8 @@ a source tarball, or if you want to make changes to the build system.
   - automake
   - automake1.9
   - libtool1.5
+  - flex
+  - bison
 
 Build commands:
 1) Skip this step if building from a source tarball.

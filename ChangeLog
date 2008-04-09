@@ -1,3 +1,7 @@
+2008-04-09  Brian Dessent  <brian@dessent.net>
+
+	* README: flex and bison are required when building from CVS.
+
 2008-04-08  Brian Dessent  <brian@dessent.net>
 
 	* Makefile.am (snapshot): Provide default value of ${cygwinsite}
