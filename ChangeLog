@@ -1,3 +1,8 @@
+2008-04-10  Brian Dessent  <brian@dessent.net>
+
+	* Makefile.am (setup_LDFLAGS): Make sure static libbz2 and zlib
+	are used.
+
 2008-04-09  Brian Dessent  <brian@dessent.net>
 
 	* README: flex and bison are required when building from CVS.

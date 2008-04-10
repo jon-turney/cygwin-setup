@@ -115,10 +115,9 @@ libinilex_a_SOURCES = inilex.ll
 libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
 
 setup_LDADD = \
-	libinilex.a libgetopt++/libgetopt++.la \
-	res.o \
-	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -lbz2 -lz
-setup_LDFLAGS = -mwindows
+	libinilex.a libgetopt++/libgetopt++.la res.o \
+	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -lbz2 -lz 
+setup_LDFLAGS = -mwindows -Wl,-static
 setup_SOURCES = \
 	AntiVirus.cc \
 	AntiVirus.h \
