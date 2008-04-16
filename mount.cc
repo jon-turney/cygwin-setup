@@ -306,17 +306,21 @@ is_admin ()
 
   // Get the process token for the current process
   HANDLE token;
-  BOOL status = OpenProcessToken (GetCurrentProcess (), TOKEN_QUERY, &token);
-  if (!status)
+  if (!OpenProcessToken (GetCurrentProcess (), TOKEN_QUERY, &token))
     return 0;
 
   // Get the group token information
-  UCHAR token_info[1024];
-  PTOKEN_GROUPS groups = (PTOKEN_GROUPS) token_info;
-  DWORD token_info_len = sizeof (token_info);
-  status =
-    GetTokenInformation (token, TokenGroups, token_info, token_info_len,
-			 &token_info_len);
+  DWORD size;
+  GetTokenInformation (token, TokenGroups, NULL, 0, &size);
+  if (GetLastError () != ERROR_INSUFFICIENT_BUFFER)
+    {
+      CloseHandle (token);
+      return 0;
+    }
+
+  char buf[size];
+  PTOKEN_GROUPS groups = (PTOKEN_GROUPS) buf;
+  DWORD status = GetTokenInformation (token, TokenGroups, buf, size, &size);
   CloseHandle (token);
   if (!status)
     return 0;
@@ -324,20 +328,18 @@ is_admin ()
   // Create the Administrators group SID
   PSID admin_sid;
   SID_IDENTIFIER_AUTHORITY authority = { SECURITY_NT_AUTHORITY };
-  status =
-    AllocateAndInitializeSid (&authority, 2, SECURITY_BUILTIN_DOMAIN_RID,
-			      DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
-			      &admin_sid);
-  if (!status)
+  if (!AllocateAndInitializeSid (&authority, 2, SECURITY_BUILTIN_DOMAIN_RID,
+                                 DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
+                                 &admin_sid))
     return 0;
 
   // Check to see if the user is a member of the Administrators group
-  status = 0;
+  int ret = 0;
   for (UINT i = 0; i < groups->GroupCount; i++)
     {
       if (EqualSid (groups->Groups[i].Sid, admin_sid))
 	{
-	  status = 1;
+	  ret = 1;
 	  break;
 	}
     }
@@ -346,7 +348,7 @@ is_admin ()
   FreeSid (admin_sid);
 
   // Return whether or not the user is a member of the Administrators group
-  return status;
+  return ret;
 }
 
 void
