@@ -1,3 +1,9 @@
+2008-04-16  Brian Dessent  <brian@dessent.net>
+
+	* mount.cc: Include malloc.h.
+	(is_admin): Use alloca instead of a VLA in case
+	GetTokenInformation is sensitive to alignment.
+
 2008-04-15  Brian Dessent  <brian@dessent.net>
 
 	* mount.cc (is_admin): Get explicit size of required buffer by

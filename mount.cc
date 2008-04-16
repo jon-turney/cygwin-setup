@@ -25,6 +25,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <malloc.h>
 
 // These headers aren't available outside the winsup tree
 // #include "../cygwin/include/cygwin/version.h"
@@ -318,7 +319,7 @@ is_admin ()
       return 0;
     }
 
-  char buf[size];
+  char *buf = (char *) alloca (size);
   PTOKEN_GROUPS groups = (PTOKEN_GROUPS) buf;
   DWORD status = GetTokenInformation (token, TokenGroups, buf, size, &size);
   CloseHandle (token);
