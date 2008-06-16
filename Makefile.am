@@ -141,6 +141,9 @@ setup_SOURCES = \
 	ConnectionSetting.h \
 	ControlAdjuster.cc \
 	ControlAdjuster.h \
+	crypto.cc \
+	crypto.h \
+	cyg-pubkey.h \
 	cygpackage.cc \
 	cygpackage.h \
 	desktop.cc \
@@ -163,6 +166,8 @@ setup_SOURCES = \
 	Generic.h \
 	geturl.cc \
 	geturl.h \
+	gpg-packet.cc \
+	gpg-packet.h \
 	ini.cc \
 	ini.h \
 	IniDBBuilder.h \
@@ -183,6 +188,8 @@ setup_SOURCES = \
 	io_stream_memory.cc \
 	io_stream_memory.h \
 	IOStreamProvider.h \
+	KeysSetting.cc \
+	KeysSetting.h \
 	localdir.cc \
 	localdir.h \
 	LogFile.cc \

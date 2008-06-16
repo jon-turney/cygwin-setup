@@ -1,5 +1,13 @@
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* Makefile.am (setup_SOURCES):  Add new files crypto.cc, crypto.h,
+	cyg-pubkey.h, gpg-packet.cc, gpg-packet.h. KeysSetting.cc and
+	KeysSetting.h to the build.
+	* crypto.cc, crypto.h, gpg-packet.cc, gpg-packet.h, KeysSetting.cc,
+	KeysSetting.h:  New files.  Adds gpg sig verification support.
+
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* Makefile.am (DIST_SUBDIRS, SUBDIRS):  Add libgpg-error and
 	libgcrypt subdirs.
 	(AM_CPPFLAGS):  Add -I paths to generated headers in both and to
