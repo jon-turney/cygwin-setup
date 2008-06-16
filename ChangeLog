@@ -1,5 +1,9 @@
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* crypto.cc (verify_ini_file_sig):  Fix two minor logic errors.
+
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* ini.h (current_ini_sig_name):  Declare extern.
 	* ini.cc (current_ini_sig_name):  New variable.
 	(NoVerifyOption):  New boolean option.

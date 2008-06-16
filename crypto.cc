@@ -633,7 +633,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
       // Well, we're actually there!  Try it against the main key.
       rv = gcry_pk_verify (dsa_sig, dsa_hash, dsa_key);
       // If not that, try any supplied on the commandline.
-      if ((rv != GPG_ERR_NO_ERROR) && keys_to_try.size ())
+      if (rv != GPG_ERR_NO_ERROR)
 	{
 	  std::vector<gcry_sexp_t>::iterator it;
 	  for (it = keys_to_try.begin (); it < keys_to_try.end (); ++it)
@@ -649,8 +649,8 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 	  // We only use the untrusted keys if told to.
 	  it = ((rv != GPG_ERR_NO_ERROR) 
 	    && (KeepUntrustedKeysOption || UntrustedKeysOption))
-		? input_keys.end ()
-		: input_keys.begin ();
+		? input_keys.begin ()
+		: input_keys.end ();
 	  for ( ; it < input_keys.end (); ++it)
 	    {
 	      rv = gcry_pk_verify (dsa_sig, dsa_hash, *it);
