@@ -53,14 +53,19 @@ static const char *cvsid =
 
 #include "threebar.h"
 
+#include "getopt++/BoolOption.h"
 #include "IniDBBuilderPackage.h"
 #include "compress.h"
 #include "Exception.h"
+#include "crypto.h"
   
 extern ThreeBarProgressPage Progress;
 
 unsigned int setup_timestamp = 0;
 std::string ini_setup_version;
+std::string current_ini_sig_name;
+
+static BoolOption NoVerifyOption (false, 'X', "no-verify", "Don't verify setup.ini signatures");
 
 extern int yyparse ();
 /*extern int yydebug;*/
@@ -132,7 +137,7 @@ do_remote_ini (HWND owner)
   size_t ini_count = 0;
   GuiParseFeedback myFeedback;
   IniDBBuilderPackage aBuilder(myFeedback);
-  io_stream *ini_file;
+  io_stream *ini_file, *ini_sig_file;
 
   /* FIXME: Get rid of this io_stream pointer travesty.  The need to
      explicitly delete these things is ridiculous.  Note that the
@@ -142,10 +147,30 @@ do_remote_ini (HWND owner)
   for (SiteList::const_iterator n = site_list.begin();
        n != site_list.end(); ++n)
     {
-
+      bool sig_fail = false;
       /* First try to fetch the .bz2 compressed ini file.  */
-      current_ini_name = n->url + "/" + SETUP_BZ2_FILENAME;
-      if ((ini_file = get_url_to_membuf (current_ini_name, owner)))
+      current_ini_name = n->url + SETUP_BZ2_FILENAME;
+      current_ini_sig_name = n->url + SETUP_BZ2_FILENAME + ".sig";
+      ini_file = get_url_to_membuf (current_ini_name, owner);
+      if (!NoVerifyOption)
+        ini_sig_file = get_url_to_membuf (current_ini_sig_name, owner);
+      if (!NoVerifyOption && ini_file && !ini_sig_file)
+	{
+	  note (owner, IDS_SETUPINI_MISSING, current_ini_sig_name.c_str(), n->url.c_str());
+	  delete ini_file;
+	  ini_file = NULL;
+	  sig_fail = true;
+	}
+      else if (!NoVerifyOption && ini_file && !verify_ini_file_sig (ini_file, ini_sig_file, owner))
+	{
+	  note (owner, IDS_SIG_INVALID, current_ini_sig_name.c_str(), n->url.c_str());
+	  delete ini_file;
+	  ini_file = NULL;
+	  delete ini_sig_file;
+	  ini_sig_file = NULL;
+	  sig_fail = true;
+	}
+      if (ini_file)
 	{
           /* Decompress the entire file in memory right now.  This has the
              advantage that input_stream->get_size() will work during parsing
@@ -194,13 +219,34 @@ do_remote_ini (HWND owner)
                - there was no .bz2 file found on the mirror.
                - the .bz2 file didn't look like a valid bzip2 file.
                - there was an error during bzip2 decompression.  */
-          current_ini_name = n->url + "/" + SETUP_INI_FILENAME;
+          current_ini_name = n->url + SETUP_INI_FILENAME;
+          current_ini_sig_name = n->url + SETUP_INI_FILENAME + ".sig";
 	  ini_file = get_url_to_membuf (current_ini_name, owner);
+	  if (!NoVerifyOption)
+	    ini_sig_file = get_url_to_membuf (current_ini_sig_name, owner);
+
+	  if (!NoVerifyOption && ini_file && !ini_sig_file)
+	    {
+	      note (owner, IDS_SETUPINI_MISSING, current_ini_sig_name.c_str(), n->url.c_str());
+	      delete ini_file;
+	      ini_file = NULL;
+	      sig_fail = true;
+	    }
+	  else if (!NoVerifyOption && ini_file && !verify_ini_file_sig (ini_file, ini_sig_file, owner))
+	    {
+	      note (owner, IDS_SIG_INVALID, current_ini_sig_name.c_str(), n->url.c_str());
+	      delete ini_file;
+	      ini_file = NULL;
+	      delete ini_sig_file;
+	      ini_sig_file = NULL;
+	      sig_fail = true;
+	    }
 	}
 
       if (!ini_file)
 	{
-	  note (owner, IDS_SETUPINI_MISSING, SETUP_INI_FILENAME, n->url.c_str());
+	  if (!sig_fail)
+	    note (owner, IDS_SETUPINI_MISSING, SETUP_INI_FILENAME, n->url.c_str());
 	  continue;
 	}
 

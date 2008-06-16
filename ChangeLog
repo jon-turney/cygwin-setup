@@ -1,5 +1,14 @@
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* ini.h (current_ini_sig_name):  Declare extern.
+	* ini.cc (current_ini_sig_name):  New variable.
+	(NoVerifyOption):  New boolean option.
+	(do_remote_ini):  If sig verification not disabled, attempt to
+	download the matching sig file for any setup.bz2 or setup.ini
+	and use it to verify or discard the download.
+
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* resource.h (IDS_SIG_INVALID, IDS_CRYPTO_ERROR):  Reserve IDs for
 	two new message strings.
 	* res.rc (IDS_SIG_INVALID, IDS_CRYPTO_ERROR):  Define the text.

@@ -47,6 +47,7 @@ excludes;
    IniParseFindVisitor::visitFile().  */
 
 extern std::string current_ini_name;  /* current filename/URL being parsed */
+extern std::string current_ini_sig_name;  /* current filename/URL for sig file */
 extern std::string yyerror_messages;  /* textual parse error messages */
 extern int yyerror_count;             /* number of parse errors */
 
