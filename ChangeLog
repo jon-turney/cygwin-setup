@@ -1,5 +1,11 @@
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* resource.h (IDS_SIG_INVALID, IDS_CRYPTO_ERROR):  Reserve IDs for
+	two new message strings.
+	* res.rc (IDS_SIG_INVALID, IDS_CRYPTO_ERROR):  Define the text.
+
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* Makefile.am (setup_SOURCES):  Add new files crypto.cc, crypto.h,
 	cyg-pubkey.h, gpg-packet.cc, gpg-packet.h. KeysSetting.cc and
 	KeysSetting.h to the build.
