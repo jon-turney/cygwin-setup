@@ -18,8 +18,8 @@
 #
 # Makefile for Cygwin installer
 
-DIST_SUBDIRS = libgetopt++ tests
-SUBDIRS = libgetopt++ tests
+DIST_SUBDIRS = libgetopt++ tests libgpg-error libgcrypt
+SUBDIRS = libgetopt++ tests libgpg-error libgcrypt
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
@@ -35,7 +35,7 @@ AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
 AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES = @WINDRES@
-AM_CPPFLAGS = -I$(srcdir)/libgetopt++/include
+AM_CPPFLAGS = -I$(srcdir)/libgetopt++/include -I$(top_builddir)/libgpg-error/src -I$(top_builddir)/libgcrypt/src -I$(srcdir)/libgcrypt/src
 
 noinst_PROGRAMS = setup @INILINT@
 
@@ -116,6 +116,8 @@ libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
 
 setup_LDADD = \
 	libinilex.a libgetopt++/libgetopt++.la res.o \
+	libgcrypt/src/.libs/libgcrypt.a \
+	libgpg-error/src/.libs/libgpg-error.a \
 	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -lbz2 -lz 
 setup_LDFLAGS = -mwindows -Wl,-static
 setup_SOURCES = \

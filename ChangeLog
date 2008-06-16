@@ -1,5 +1,20 @@
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* Makefile.am (DIST_SUBDIRS, SUBDIRS):  Add libgpg-error and
+	libgcrypt subdirs.
+	(AM_CPPFLAGS):  Add -I paths to generated headers in both and to
+	 shipped headers in libgcrypt.
+	(setup_LDADD):  Add libgpg-error.a and libgcrypt.a to final link.
+
+	* configure.in (ac_cv_path_GPG_ERROR_CONFIG):  Preload into cache
+	to fake out libgcrypt configure process.
+	(AC_CONFIG_SUBDIRS):  Add libgpg-error/ and libgcrypt/
+
+	* gpg-error-config-fake:  New shell script to redirect libgcrypt
+	sub-configure into looking for newly-built libgpg-error.
+
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* setup/libgpg-error/:  Fresh import of upstream sources of
 	libgpg-error-1.6.tar.bz2 from http://www.gnupg.org/
 	* setup/libgcrypt/:  Fresh import of upstream sources of
