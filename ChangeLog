@@ -1,5 +1,9 @@
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* crypto.cc (KeepUntrustedKeysOption):  Fix helpstring punctuation.
+
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* crypto.cc (verify_ini_file_sig):  Fix two minor logic errors.
 
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>

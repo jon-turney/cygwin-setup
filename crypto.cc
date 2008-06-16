@@ -54,7 +54,7 @@ static StringOption SexprExtraKeyOption ("", 'S', "sexpr-pubkey",
 static BoolOption UntrustedKeysOption (false, 'u', "untrusted-keys",
 			"Use untrusted keys from last-extrakeys");
 static BoolOption KeepUntrustedKeysOption (false, 'U', "keep-untrusted-keys",
-			"Use untrusted keys and retain all.");
+			"Use untrusted keys and retain all");
 
 /*  Persists the extra keys in /etc/setup/last-extrakeys.  */
 static ExtraKeysSetting ExtraKeys;
