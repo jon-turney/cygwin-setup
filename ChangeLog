@@ -1,5 +1,12 @@
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* setup/libgpg-error/:  Fresh import of upstream sources of
+	libgpg-error-1.6.tar.bz2 from http://www.gnupg.org/
+	* setup/libgcrypt/:  Fresh import of upstream sources of
+	libgcrypt-1.4.1.tar.bz2 from http://www.gnupg.org/
+
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* netio.cc (NetIO::set_url):  Avoid double-free bug on delete
 	by setting path to a strdup of url rather than using the same
 	pointer value twice.
