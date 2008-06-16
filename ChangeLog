@@ -1,5 +1,11 @@
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* netio.cc (NetIO::set_url):  Avoid double-free bug on delete
+	by setting path to a strdup of url rather than using the same
+	pointer value twice.
+
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* cygwin.pub:  Add reference copy of Cygwin setup signing key.
 	* gpg-key-to-s-expr.sh:  New bash script.  Outputs textual
 	representation of public key in s-expr format.
