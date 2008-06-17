@@ -485,6 +485,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
   if (!input_keys_read)
     {
       // We only want to do this once, first time through:
+      input_keys_read = true;
       // Copy all valid keys from ExtraKeysSetting into a
       // static vector where we can keep them throughout the
       // remainder of the run.
@@ -638,6 +639,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 	  std::vector<gcry_sexp_t>::iterator it;
 	  for (it = keys_to_try.begin (); it < keys_to_try.end (); ++it)
 	    {
+	      MESSAGE ("Testing a key to try\n");
 	      rv = gcry_pk_verify (dsa_sig, dsa_hash, *it);
 	      if (rv != GPG_ERR_NO_ERROR)
 		continue;
@@ -653,6 +655,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 		: input_keys.end ();
 	  for ( ; it < input_keys.end (); ++it)
 	    {
+	      MESSAGE ("Testing an input key\n");
 	      rv = gcry_pk_verify (dsa_sig, dsa_hash, *it);
 	      if (rv != GPG_ERR_NO_ERROR)
 		continue;
