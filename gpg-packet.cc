@@ -266,6 +266,11 @@ walk_packets_1 (struct packet_walker *wlk)
 	  ERRKIND (wlk->owner, IDS_CRYPTO_ERROR, packet_len, "invalid packet");
 	  return;
 	}
+      else if (packet_len > (size_left - (wlk->pfile->tell () - (long)wlk->startpos)))
+	{
+	  ERRKIND (wlk->owner, IDS_CRYPTO_ERROR, packet_len, "malformed packet");
+	  return;
+	}
 
       newstartpos = wlk->pfile->tell () + packet_len;
       rv = wlk->func ? wlk->func (wlk, packet_type, packet_len, wlk->startpos)

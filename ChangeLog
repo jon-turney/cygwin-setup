@@ -1,4 +1,10 @@
-2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* gpg-packet.cc (walk_packets_1):  Check packet length field is
+	valid sane and possible to avoid malicious manipulation.
+	* ChangeLog:  Corrected date on previous commit.
+
+2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* crypto.cc (add_key_from_sexpr):  Use real buffer size, not debug 
 	constant size.
