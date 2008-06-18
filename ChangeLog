@@ -1,5 +1,10 @@
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* crypto.cc (add_key_from_sexpr):  Use real buffer size, not debug 
+	constant size.
+
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* crypto.cc (verify_ini_file_sig):  Actually set init-once flag!
 
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>

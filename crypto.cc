@@ -426,8 +426,7 @@ add_key_from_sexpr (gcry_sexp_t key)
 {
   size_t n = gcry_sexp_sprint (key, GCRYSEXP_FMT_ADVANCED, 0, ~0);
   char *sexprbuf = new char[n];
-  n = gcry_sexp_sprint (key, GCRYSEXP_FMT_ADVANCED,
-			sexprbuf, GPG_KEY_SEXPR_BUF_SIZE);
+  n = gcry_sexp_sprint (key, GCRYSEXP_FMT_ADVANCED, sexprbuf, n);
   // +1 because we want to include the nul-terminator.
   n = fold_lfs_and_spaces (sexprbuf, n + 1);
   ExtraKeys.add_key (sexprbuf);
