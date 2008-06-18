@@ -1,3 +1,10 @@
+2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* setup/libgpg-error/:  Merge imported upstream sources of
+	libgpg-error-1.6.tar.bz2 from http://www.gnupg.org/
+	* setup/libgcrypt/:  Merge imported upstream sources of
+	libgcrypt-1.4.1.tar.bz2 from http://www.gnupg.org/
+
 2007-06-27  Brian Dessent  <brian@dessent.net>
 
 	* Makefile.am (release): Drop inconsistent use of $(EXEEXT).  Leave an
