@@ -21,11 +21,6 @@
 #ifndef SETUP_GPG_PACKET_H
 #define SETUP_GPG_PACKET_H
 
-// Big enough to dump the coefficients of a DSA
-// signing key of any reasonable size in ASCII
-// s-expr representation.
-#define GPG_KEY_SEXPR_BUF_SIZE  (8192)
-
 
 /*
 

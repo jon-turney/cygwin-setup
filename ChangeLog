@@ -1,5 +1,11 @@
 2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* gpg-packet.h (GPG_KEY_SEXPR_BUF_SIZE):  Move from here ...
+	* crypto.h (GPG_KEY_SEXPR_BUF_SIZE):  ... to here.
+	(GPG_KEY_MAX_COEFF_SIZE):  Add related definition.
+
+2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* gpg-packet.cc (walk_packets_1):  Check packet length field is
 	valid sane and possible to avoid malicious manipulation.
 	* ChangeLog:  Corrected date on previous commit.

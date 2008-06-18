@@ -308,4 +308,12 @@ extern bool verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, H
 
 */
 
+// Big enough to dump the coefficients of a DSA
+// signing key of any reasonable size in ASCII
+// s-expr representation.
+#define GPG_KEY_SEXPR_BUF_SIZE  (8192)
+
+// As long as you respect this maximum coefficient size.
+#define GPG_KEY_MAX_COEFF_SIZE  (8192)
+
 #endif /* SETUP_CRYPTO_H */
