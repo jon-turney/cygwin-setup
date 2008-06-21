@@ -1,3 +1,8 @@
+2008-06-21  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* ini.cc (do_remote_ini):  Revert misbegotten removal of 
+	not-always-superfluous-after-all added slash in URLs.
+
 2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* gpg-packet.h (GPG_KEY_SEXPR_BUF_SIZE):  Move from here ...

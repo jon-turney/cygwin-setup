@@ -149,8 +149,8 @@ do_remote_ini (HWND owner)
     {
       bool sig_fail = false;
       /* First try to fetch the .bz2 compressed ini file.  */
-      current_ini_name = n->url + SETUP_BZ2_FILENAME;
-      current_ini_sig_name = n->url + SETUP_BZ2_FILENAME + ".sig";
+      current_ini_name = n->url + "/" + SETUP_BZ2_FILENAME;
+      current_ini_sig_name = n->url + "/" + SETUP_BZ2_FILENAME + ".sig";
       ini_file = get_url_to_membuf (current_ini_name, owner);
       if (!NoVerifyOption)
         ini_sig_file = get_url_to_membuf (current_ini_sig_name, owner);
@@ -219,8 +219,8 @@ do_remote_ini (HWND owner)
                - there was no .bz2 file found on the mirror.
                - the .bz2 file didn't look like a valid bzip2 file.
                - there was an error during bzip2 decompression.  */
-          current_ini_name = n->url + SETUP_INI_FILENAME;
-          current_ini_sig_name = n->url + SETUP_INI_FILENAME + ".sig";
+          current_ini_name = n->url + "/" + SETUP_INI_FILENAME;
+          current_ini_sig_name = n->url + "/" + SETUP_INI_FILENAME + ".sig";
 	  ini_file = get_url_to_membuf (current_ini_name, owner);
 	  if (!NoVerifyOption)
 	    ini_sig_file = get_url_to_membuf (current_ini_sig_name, owner);
