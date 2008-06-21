@@ -1,3 +1,14 @@
+2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+  Merged across diffs between setup_crypto_branch_branchpoint and
+setup_crypto_branch_mergepoint1 from setup_crypto_branch.
+
+  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* libgetopt++/src/OptionSet.cc (OptionSet::doOption):  Move value
+	string to outer scope so it is not destroyed while optionValue
+	still has a dangling reference to its c_str().
+
 2005-09-01  Brian Dessent  <brian@dessent.net>
 
 	* Makefile.am (AM_CXXFLAGS): Add -Wno-uninitialized to work around

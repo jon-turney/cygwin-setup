@@ -18,8 +18,8 @@
 #
 # Makefile for Cygwin installer
 
-DIST_SUBDIRS = libgetopt++ tests
-SUBDIRS = libgetopt++ tests
+DIST_SUBDIRS = libgetopt++ tests libgpg-error libgcrypt
+SUBDIRS = libgetopt++ tests libgpg-error libgcrypt
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
@@ -35,7 +35,7 @@ AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
 AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES := @WINDRES@
-INCLUDES = -I$(srcdir)/libgetopt++/include
+INCLUDES = -I$(srcdir)/libgetopt++/include -I$(top_builddir)/libgpg-error/src -I$(top_builddir)/libgcrypt/src -I$(srcdir)/libgcrypt/src
 
 noinst_PROGRAMS = setup @INILINT@
 
@@ -114,6 +114,8 @@ libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
 
 setup_LDADD = \
 	libinilex.a libgetopt++/libgetopt++.la \
+	libgcrypt/src/.libs/libgcrypt.a \
+	libgpg-error/src/.libs/libgpg-error.a \
 	res.o \
 	/usr/lib/mingw/libbz2.a /usr/lib/mingw/libz.a \
 	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid
@@ -139,6 +141,9 @@ setup_SOURCES = \
 	ConnectionSetting.h \
 	ControlAdjuster.cc \
 	ControlAdjuster.h \
+	crypto.cc \
+	crypto.h \
+	cyg-pubkey.h \
 	cygpackage.cc \
 	cygpackage.h \
 	desktop.cc \
@@ -161,6 +166,8 @@ setup_SOURCES = \
 	Generic.h \
 	geturl.cc \
 	geturl.h \
+	gpg-packet.cc \
+	gpg-packet.h \
 	ini.cc \
 	ini.h \
 	IniDBBuilder.h \
@@ -181,6 +188,8 @@ setup_SOURCES = \
 	io_stream_memory.cc \
 	io_stream_memory.h \
 	IOStreamProvider.h \
+	KeysSetting.cc \
+	KeysSetting.h \
 	localdir.cc \
 	localdir.h \
 	LogFile.cc \

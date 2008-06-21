@@ -101,6 +101,7 @@ OptionSet::doOption(string &option, string::size_type const &pos)
     option.erase(0, pos);
     Option *theOption = findOption(option, pos);
     char const *optionValue = NULL;
+    string value;
 
     if (theOption == NULL)
 	return;
@@ -113,8 +114,6 @@ OptionSet::doOption(string &option, string::size_type const &pos)
 	break;
 
     case Option::Optional: {
-            string value;
-
             if (pos == 1) {
                 if (option.size() == 1) {
                     /* Value in next argv */
@@ -171,8 +170,6 @@ OptionSet::doOption(string &option, string::size_type const &pos)
 	break;
 
     case Option::Required: {
-            string value;
-
             if (pos == 1) {
                 if (option.size() == 1) {
                     /* Value in next argv */

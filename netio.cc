@@ -84,7 +84,7 @@ NetIO::set_url (char const *Purl)
   ep = strstr (bp, "://");
   if (!ep)
     {
-      path = url;
+      path = strdup (url);
       return;
     }
 
