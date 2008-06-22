@@ -1,3 +1,9 @@
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* libgetopt++/src/OptionSet.cc (OptionSet::doOption):  Move value
+	string to outer scope so it is not destroyed while optionValue
+	still has a dangling reference to its c_str().
+
 2008-04-08  Brian Dessent  <brian@dessent.net>
 
 	* src/OptionSet.cc: Include algorithm.
