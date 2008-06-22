@@ -70,7 +70,10 @@ AC_CHECK_HEADERS(alloca.h \
 		 string \
 		 string.h )
 
-AC_CONFIG_SUBDIRS(libgetopt++)
+dnl override configure of sub-libraries
+ac_cv_path_GPG_ERROR_CONFIG="${ac_abs_confdir}/gpg-error-config-fake --dir=$ac_pwd"
+
+AC_CONFIG_SUBDIRS(libgetopt++ libgpg-error libgcrypt)
 
 dnl add portability sources to inilint
 case "$host_os" in
