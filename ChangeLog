@@ -1,5 +1,9 @@
 2008-06-24  Christopher Faylor  <me+cygwin@cgf.cx>
 
+	* configure.in: Disable shared library builds.
+
+2008-06-24  Christopher Faylor  <me+cygwin@cgf.cx>
+
 	* Makefile.am: Make and install libraries into common location and use
 	them from there.
 	* configure.in: Find gpg-error-config in the libgpg-error/src

@@ -75,7 +75,7 @@ ac_cv_path_GPG_ERROR_CONFIG="${ac_abs_confdir}/gpg-error-config-fake --dir=$ac_p
 
 prefix=`pwd`/inst; mkdir -p "$prefix"
 exec_prefix=$prefix
-# ac_configure_args="$ac_configure_args --with-gpg-error-prefix=$prefix"
+ac_configure_args="$ac_configure_args --disable-shared"
 export GPG_ERROR_CONFIG="`pwd`/libgpg-error/src/gpg-error-config"
 AC_CONFIG_SUBDIRS(libgetopt++ libgpg-error libgcrypt)
 
