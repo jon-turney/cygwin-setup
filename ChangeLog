@@ -1,13 +1,22 @@
+2008-06-24  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* Makefile.am: Make and install libraries into common location and use
+	them from there.
+	* configure.in: Find gpg-error-config in the libgpg-error/src
+	subdirectory rather than using the host system's version.  Set the
+	prefix and exec_prefix to a common location for the subdirs so that
+	useful files will be installed in a common location.
+
 2008-06-22  Dave Korn  <dave.korn.cygwin@gmail.com>
 
-  Merged across diffs between setup_crypto_branch_branchpoint and
-setup_crypto_branch_mergepoint2 from setup_crypto_branch.
+	Merged across diffs between setup_crypto_branch_branchpoint and
+	setup_crypto_branch_mergepoint2 from setup_crypto_branch.
 
 	* crypto.cc, crypto.h, gpg-packet.cc, gpg-packet.h, KeysSetting.cc,
 	KeysSetting.h, gpg-error-config-fake, cygwin.pub, cyg-pubkey.h,
-	gpg-key-to-s-expr.sh:  New files.
+	gpg-key-to-s-expr.sh: New files.
 	* ini.cc, ini.h, resource.h, res.rc, netio.cc, Makefile.am,
-	configure.ac, libgetopt++/src/OptionSet.cc:  Modified files.
+	configure.ac, libgetopt++/src/OptionSet.cc: Modified files.
 
   2008-06-21  Dave Korn  <dave.korn.cygwin@gmail.com>
 

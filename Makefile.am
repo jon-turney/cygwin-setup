@@ -18,8 +18,9 @@
 #
 # Makefile for Cygwin installer
 
-DIST_SUBDIRS = libgetopt++ tests libgpg-error libgcrypt
-SUBDIRS = libgetopt++ tests libgpg-error libgcrypt
+INST_SUBDIRS:=@subdirs@
+DIST_SUBDIRS:=${INST_SUBDIRS} tests
+SUBDIRS:=tests
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
@@ -65,7 +66,8 @@ EXTRA_DIST = \
 # knows about that already)
 BUILT_SOURCES = \
 	setup_version.c \
-	iniparse.h
+	iniparse.h \
+	${INST_SUBDIRS}
 
 CLEANFILES = setup_version.c
 
@@ -115,9 +117,8 @@ libinilex_a_SOURCES = inilex.ll
 libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
 
 setup_LDADD = \
-	libinilex.a libgetopt++/libgetopt++.la res.o \
-	libgcrypt/src/.libs/libgcrypt.a \
-	libgpg-error/src/.libs/libgpg-error.a \
+	libinilex.a \
+	-Linst/lib -lgetopt++ -lgcrypt -lgpg-error \
 	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -lbz2 -lz 
 setup_LDFLAGS = -mwindows -Wl,-static
 setup_SOURCES = \
@@ -314,3 +315,7 @@ release: setup.exe $(srcdir)/ChangeLog Makefile
 snapshot: release
 	scp -C setup-${VER}.exe setup-debug-${VER}.exe.gz setup-${VER}.tar.bz2 \
 	    $${cygwinsite:-cygwin.com}:setup-snapshots/
+
+.PHONY: ${INST_SUBDIRS}
+${INST_SUBDIRS}:
+	${MAKE} -C $@ install
