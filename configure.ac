@@ -71,6 +71,8 @@ AC_CHECK_HEADERS(alloca.h \
 		 string.h )
 
 dnl override configure of sub-libraries
+ac_cv_path_GPG_ERROR_CONFIG="${ac_abs_confdir}/gpg-error-config-fake --dir=$ac_pwd"
+
 prefix=`pwd`/inst; mkdir -p "$prefix"
 exec_prefix=$prefix
 ac_configure_args="$ac_configure_args --disable-shared"

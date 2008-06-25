@@ -1,5 +1,9 @@
 2008-06-25  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* configure.in, gpg-error-config-fake:  Revert previous removal.
+
+2008-06-25  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* net.cc:  Correct stray CRLF.
 
 2008-06-25  Dave Korn  <dave.korn.cygwin@gmail.com>
