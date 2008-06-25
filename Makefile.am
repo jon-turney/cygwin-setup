@@ -18,8 +18,9 @@
 #
 # Makefile for Cygwin installer
 
-DIST_SUBDIRS = libgetopt++ tests libgpg-error libgcrypt
-SUBDIRS = libgetopt++ tests libgpg-error libgcrypt
+INST_SUBDIRS:=@subdirs@
+DIST_SUBDIRS:=${INST_SUBDIRS} tests
+SUBDIRS:=tests
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
@@ -65,7 +66,8 @@ EXTRA_DIST = \
 # knows about that already)
 BUILT_SOURCES = \
 	setup_version.c \
-	iniparse.h
+	iniparse.h \
+	${INST_SUBDIRS}
 
 if MINGWTARGET
 inilint_extras = \
@@ -113,9 +115,8 @@ libinilex_a_SOURCES = inilex.ll
 libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
 
 setup_LDADD = \
-	libinilex.a libgetopt++/libgetopt++.la \
-	libgcrypt/src/.libs/libgcrypt.a \
-	libgpg-error/src/.libs/libgpg-error.a \
+	libinilex.a \
+	-Linst/lib -lgetopt++ -lgcrypt -lgpg-error \
 	res.o \
 	/usr/lib/mingw/libbz2.a /usr/lib/mingw/libz.a \
 	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid
@@ -314,3 +315,7 @@ release: setup.exe $(srcdir)/ChangeLog Makefile
 snapshot: release
 	scp -C setup-${VER}.exe setup-debug-${VER}.exe.gz setup-${VER}.tar.bz2 \
 	    $${cygwinsite}:setup-snapshots/
+
+.PHONY: ${INST_SUBDIRS}
+${INST_SUBDIRS}:
+	${MAKE} -C $@ install
