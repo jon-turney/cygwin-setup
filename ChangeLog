@@ -1,5 +1,9 @@
 2008-06-25  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* net.cc:  Correct stray CRLF.
+
+2008-06-25  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* configure.in (ac_cv_path_GPG_ERROR_CONFIG):  Remove nasty hack.
 	* gpg-error-config-fake:  Delete file obsoleted by de-hackification.
 
