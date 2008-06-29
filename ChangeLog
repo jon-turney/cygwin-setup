@@ -1,5 +1,13 @@
 2008-06-29  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+  Backport reversion from HEAD to fix excess libgcrypt rebuilding.
+
+  2008-06-25  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* configure.in, gpg-error-config-fake:  Revert previous removal.
+
+2008-06-29  Dave Korn  <dave.korn.cygwin@gmail.com>
+
   Backport bugfix for crashes caused by corrupt compressed listing files.
 
   2008-02-23  Dave Korn  <dave.korn@artimi.com>
