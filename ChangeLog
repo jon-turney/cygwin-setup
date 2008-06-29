@@ -1,3 +1,13 @@
+2008-06-29  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+  Backport bugfix for crashes caused by corrupt compressed listing files.
+
+  2008-02-23  Dave Korn  <dave.korn@artimi.com>
+
+	* cygpackage.cc (cygpackage::getfirstfile):  Guard against trying to
+	construct std::string from NULL returned by io_stream::gets when the
+	stream decompressor fails on a corrupt *.lst.gz file.
+
 2008-06-25  Dave Korn  <dave.korn.cygwin@gmail.com>
 
   Backport improved build patches from HEAD.
