@@ -51,10 +51,12 @@ public:
       * over a WAN :} */
   virtual size_t get_size () {return 0;};
   virtual int get_mtime ();
+  virtual void release_original (); /* give up ownership of original io_stream */
   /* if you are still needing these hints... give up now! */
     virtual ~ compress_bz ();
 private:
   io_stream *original;
+  bool owns_original;
   char peekbuf[512];
   size_t peeklen;
   int lasterr;

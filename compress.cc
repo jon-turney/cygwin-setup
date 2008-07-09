@@ -42,6 +42,9 @@ compress::decompress (io_stream * original)
 	  compress_gz *rv = new compress_gz (original);
 	  if (!rv->error ())
 	    return rv;
+	  /* else */
+	  rv->release_original();
+	  delete rv;
 	  return NULL;
 	}
       else if (memcmp (magic, "BZh", 3) == 0)
@@ -49,6 +52,9 @@ compress::decompress (io_stream * original)
 	  compress_bz *rv = new compress_bz (original);
 	  if (!rv->error ())
 	    return rv;
+	  /* else */
+	  rv->release_original();
+	  delete rv;
 	  return NULL;
 	}
     }

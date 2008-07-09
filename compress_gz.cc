@@ -54,6 +54,7 @@ void
 compress_gz::construct (io_stream * parent, const char *openmode)
 {
   original = parent;
+  owns_original = true;
   peeklen = 0;
   int err;
   int level = Z_DEFAULT_COMPRESSION;	/* compression level */
@@ -429,6 +430,12 @@ compress_gz::get_mtime ()
 }
 
 void
+compress_gz::release_original ()
+{
+  owns_original = false;
+}
+
+void
 compress_gz::destroy ()
 {
   if (msg)
@@ -450,7 +457,7 @@ compress_gz::destroy ()
     free (inbuf);
   if (outbuf)
     free (outbuf);
-  if (original)
+  if (original && owns_original)
     delete original;
 }
 

@@ -1,3 +1,21 @@
+2008-07-08  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	* compress.cc (compress::decompress): clean up concrete
+	decompressor objects on failure -- but in that case, do
+	NOT destroy original io_stream.
+	* compress_bz.h (compress_bz::release_original): new method.
+	(owns_original): new member variable.
+	* compress_bz.cc (compress_bz::release_original): new method.
+	(compress_bz::compress_bz): take ownership of parent by default.
+	(compress_bz::~compress_bz): only delete original if 
+	owns_original is true.
+	* compress_gz.h (compress_gz::release_original): new method.
+	(owns_original): new member variable.
+	* compress_gz.cc (compress_gz::release_original): new method.
+	(compress_gz::construct): take ownership of parent by default.
+	(compress_gz::~compress_gz): only delete original if 
+	owns_original is true.
+
 2008-06-25  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* configure.in, gpg-error-config-fake:  Revert previous removal.

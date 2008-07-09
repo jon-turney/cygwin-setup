@@ -33,6 +33,7 @@ compress_bz::compress_bz (io_stream * parent) : peeklen (0), position (0)
       return;
     }
   original = parent;
+  owns_original = true;
 
   initialisedOk = 0;
   bufN = 0;
@@ -202,10 +203,16 @@ compress_bz::get_mtime ()
   return 0;
 }
 
+void
+compress_bz::release_original ()
+{
+  owns_original = false;
+}
+
 compress_bz::~compress_bz ()
 {
   if (initialisedOk)
     BZ2_bzDecompressEnd (&strm);
-  if (original)
+  if (original && owns_original)
     delete original;
 }
