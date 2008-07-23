@@ -138,6 +138,8 @@ setup_SOURCES = \
 	compress_bz.h \
 	compress_gz.cc \
 	compress_gz.h \
+	compress_lzma.cc \
+	compress_lzma.h \
 	ConnectionSetting.cc \
 	ConnectionSetting.h \
 	ControlAdjuster.cc \
@@ -285,7 +287,10 @@ setup_SOURCES = \
 	csu_util/version_compare.cc \
 	csu_util/version_compare.h \
 	libmd5-rfc/md5.c \
-	libmd5-rfc/md5.h
+	libmd5-rfc/md5.h \
+	lzma-sdk/LzmaDec.c \
+	lzma-sdk/LzmaDec.h \
+	lzma-sdk/Types.h
 
 VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
                $(srcdir)/ChangeLog)

@@ -239,8 +239,9 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 
 
   /* At this point pkgfile is an opened io_stream to either a .tar.bz2 file,
-     a .tar.gz file, or just a .tar file.  Try it first as a compressed file
-     and if that fails try opening it as a tar directly.  If both fail, abort.
+     a .tar.gz file, a .tar.lzma file, or just a .tar file.  Try it first as
+     a compressed file and if that fails try opening it as a tar directly.
+     If both fail, abort.
 
      Note on io_stream pointer management:
 

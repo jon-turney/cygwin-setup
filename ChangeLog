@@ -1,3 +1,19 @@
+2008-07-22  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	Add support for .tar.lzma files (decompress only).
+
+	* Makefile.am: Add new files.
+	* compress.cc (compress::decompress): add support
+	for compress_lzma.
+	* compress_lzma.h: new file.
+	* compress_lzma.cc: new file.
+	* filemanip.cc (find_tar_ext): add support for
+	.tar.lzma files.
+	* install.cc (Installer::installOne): update comments.
+	* lzma-sdk/LzmaDec.h: new file.
+	* lzma-sdk/LzmaDec.c: new file.
+	* lzma-sdk/Types.h: new file.
+
 2008-07-08  Charles Wilson  <cygwin@cwilson.fastmail.fm>
 
 	* compress.cc (compress::decompress): clean up concrete
