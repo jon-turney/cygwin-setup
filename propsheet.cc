@@ -23,6 +23,7 @@
 #include "resource.h"
 #include "RECTWrapper.h"
 #include "ControlAdjuster.h"
+#include "threebar.h"
 
 //#include <shlwapi.h>
 // ...but since there is no shlwapi.h in mingw yet:
@@ -212,7 +213,7 @@ static LRESULT CALLBACK PropSheetWndProc (HWND hwnd, UINT uMsg,
 	    if (!psd.hasMinRect)
 	      {
 		GetWindowRect (hwnd, &psd.minRect);
-		psd.hasMinRect = true;
+		// psd.hasMinRect = true;
 	      }
 	    
 	    psd.lastClientRect = clientRect;
@@ -242,7 +243,7 @@ PropSheetProc (HWND hwndDlg, UINT uMsg, LPARAM lParam)
     {
     case PSCB_PRECREATE:
       {
-	const LONG additionalStyle = 
+	LONG additionalStyle = 
 	  (WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME);
 	// Add a minimize box to the sheet/wizard.
 	if (((LPDLGTEMPLATEEX) lParam)->signature == 0xFFFF)
@@ -265,6 +266,7 @@ PropSheetProc (HWND hwndDlg, UINT uMsg, LPARAM lParam)
 	  (WNDPROC)GetWindowLongPtr (hwndDlg, GWLP_WNDPROC);
 	SetWindowLongPtr (hwndDlg, GWLP_WNDPROC, 
 	  (LONG_PTR)&PropSheetWndProc);
+	ThreeBarProgressPage::SetHwndDialog (hwndDlg);
       }
       return TRUE;
     }

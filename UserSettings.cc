@@ -88,10 +88,9 @@ UserSettings::saveAllSettings()
 io_stream *
 UserSettings::settingFileForLoad(const std::string& relativeName) const
 {
-  io_stream *result =
-    io_stream::open("cygfile:///etc/setup/" + relativeName, "rt");
+  io_stream *result = io_stream::open("file://" + relativeName, "rt");
   if (!result)
-    result = io_stream::open("file://" + relativeName, "rt");
+    result = io_stream::open("cygfile:///etc/setup/" + relativeName, "rt");
   return result;
 }
 

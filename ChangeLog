@@ -1,3 +1,26 @@
+2008-08-05  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* UserSettings.cc (UserSettings::settingFileForLoad): Look locally for
+	settings before looking outside of current directory.
+	* choose.cc (ChooserPage::ChooserPage): Record the property sheet's
+	current show state via new passed in parameter.
+	* choose.h (ChooserPage::ChooserPage): Reflect change in argument list.
+	(ChooserPage::nCmdShow): Define new element.
+	* main.cc (main): Send current show state to Chooser.
+	* package_version.cc (packageversion::set_requirements): Increase
+	recursion check from 5 to 30.
+	* propsheet.cc (PropSheetWndProc): Register hwndDlg with
+	ThreeBarProgressPage.
+	* threebar.cc (ControlAdjuster::ControlInfo): Initialize cmd_show_set.
+	(ThreeBarProgressPage::MaximizeDialog): New function.
+	(ThreeBarProgressPage::OnMessageApp): Call MaximizeDialog to maximize
+	package selection screen and restore when done.
+	* threebar.h (ThreeBarProgressPage::MaximizeDialog): Declare function.
+	(ThreeBarProgressPage::cmd_show_set): Declare variable.
+	(ThreeBarProgressPage::cmd_show): Declare variable.
+	(ThreeBarProgressPage::ins_dialog): Declare variable.
+	(ThreeBarProgressPage::SetHwndDialog): Define function.
+
 2008-07-22  Charles Wilson  <cygwin@cwilson.fastmail.fm>
 
 	Add support for .tar.lzma files (decompress only).

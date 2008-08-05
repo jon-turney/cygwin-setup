@@ -25,7 +25,7 @@
 class ChooserPage:public PropertyPage
 {
 public:
-  ChooserPage ();
+  ChooserPage (UINT);
   virtual ~ ChooserPage ()
   {
   };
@@ -43,7 +43,7 @@ public:
   {
     return OnNext ();
   }; 
-  private:
+private:
   void createListview ();
   RECT getDefaultListViewSize();
   void getParentRect (HWND parent, HWND child, RECT * r);
@@ -53,6 +53,7 @@ public:
   void logResults();
   void setPrompt(char const *aPrompt);
   PickView *chooser;
+  UINT nCmdShow;
 };
 
 #endif /* SETUP_CHOOSE_H */
