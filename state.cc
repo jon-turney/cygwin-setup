@@ -23,6 +23,7 @@ static const char *cvsid =
 #include "state.h"
 
 bool unattended_mode;
+bool rebootneeded;
 
 int source;
 

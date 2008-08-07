@@ -164,7 +164,10 @@ ThreeBarProgressPage::OnActivate ()
 void
 ThreeBarProgressPage::MaximizeDialog (bool doit)
 {
-  if (doit)
+  // Don't jump up and down in unattended mode.
+  if (unattended_mode)
+    return;
+  else if (doit)
     {
       WINDOWPLACEMENT wp;
       if (GetWindowPlacement (ins_dialog, &wp))

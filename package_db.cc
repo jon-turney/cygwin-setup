@@ -401,6 +401,7 @@ packagedb::setExistence ()
 void
 packagedb::fillMissingCategory ()
 {
+  for_each(packages.begin(), packages.end(), visit_if(mem_fun(&packagemeta::addToCategoryBase), mem_fun(&packagemeta::isManuallyWanted)));
   for_each(packages.begin(), packages.end(), visit_if(mem_fun(&packagemeta::setDefaultCategories), mem_fun(&packagemeta::hasNoCategories)));
   for_each(packages.begin(), packages.end(), mem_fun(&packagemeta::addToCategoryAll));
 }

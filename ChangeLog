@@ -1,3 +1,32 @@
+2008-08-07  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	Implement command-line selection of packages to install and make
+	unattended mode deal with any dialogs that might arise.  A joint
+	effort synthesized from contributions by:
+
+	Dr. Frank Lee  <rl201@cam.ac.uk>
+	Bryan Thrall  <bryan.thrall@flightsafety.com>
+	Kohsuke Kawaguchi  <kk@kohsuke.org>
+	Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* install.cc (rebootneeded):  Don't define statically here.
+	(do_install_thread):  Let exit_msg reflect rebootneeded.
+	* main.cc (main):  If rebootneeded, log it when exiting.
+	* msg.cc (mbox):  In unattended_mode, choose and log default answer.
+	* package_db.cc (packagedb::fillMissingCategory):  Iterate over all
+	packages adding those selected by packagemeta::isManuallyWanted to
+	base category so that command-line selections are installed.
+	* package_meta.cc (PackageOption):  Add new StringOption to allow
+	command-line selection of packages to add to base install.
+	(packagemeta::isManuallyWanted):  New function tests if package was
+	selected on command-line.
+	(packagemeta::addToCategoryBase):  New function adds package to 
+	"base" category.
+	* state.cc (rebootneeded):  Define here non-static.
+	* state.h (rebootneeded):  Declare here with extern linkage.
+	* threebar.cc (ThreeBarProgressPage::MaximizeDialog):  Don't change
+	size when running in unattended mode.
+
 2008-08-05  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* UserSettings.cc (UserSettings::settingFileForLoad): Look locally for

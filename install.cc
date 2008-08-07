@@ -135,7 +135,6 @@ Installer::StandardDirs[] = {
 
 static int num_installs, num_uninstalls;
 static void md5_one (const packagesource& source);
-static bool rebootneeded;
 
 void
 Installer::preremoveOne (packagemeta & pkg)
@@ -637,6 +636,9 @@ do_install_thread (HINSTANCE h, HWND owner)
     exit_msg = IDS_INSTALL_INCOMPLETE;
   else if (!unattended_mode)
     exit_msg = IDS_INSTALL_COMPLETE;
+
+  if (rebootneeded)
+    exit_msg = IDS_REBOOT_REQUIRED;
 }
 
 static DWORD WINAPI

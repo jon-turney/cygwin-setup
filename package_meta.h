@@ -53,6 +53,7 @@ public:
   void set_installed (packageversion &);
   void visited(bool const &);
   bool visited() const;
+  void addToCategoryBase();
   bool hasNoCategories() const;
   void setDefaultCategories();
   void addToCategoryAll();
@@ -97,6 +98,8 @@ public:
   std::string key;
   /* legacy variable used to output data for installed.db versions <= 2 */
   std::string installed_from;
+  /* true if package was selected on command-line. */
+  bool isManuallyWanted() const;
   /* SDesc is global in theory, across all package versions. 
      LDesc is not: it can be different per version */
   const std::string SDesc () const;
