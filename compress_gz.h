@@ -54,6 +54,7 @@ public:
   /* Use seek EOF, then tell (). get_size won't do this incase you are sucking down
    * over a WAN :} */
   virtual size_t get_size () {return 0;};
+  virtual void release_original (); /* give up ownership of original io_stream */
   /* if you are still needing these hints... give up now! */
   virtual ~ compress_gz ();
 private:
@@ -70,6 +71,7 @@ private:
   void destroy ();
   int do_flush (int);
   io_stream *original;
+  bool owns_original;
   /* from zlib */
   z_stream stream;
   int z_err;			/* error code for last stream operation */

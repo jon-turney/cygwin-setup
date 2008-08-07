@@ -484,4 +484,6 @@ BEGIN
        "with names that begin with '_'.  Such packages are usually empty "
        "placeholders for packages that have been removed or renamed, or are "
        "infrastructure packages that are handled automatically."
+    IDS_SIG_INVALID    "Mirror Error:  Setup.ini signature %s from %s failed to verify.\nPossible corrupt mirror?  Setup.ini rejected."
+    IDS_CRYPTO_ERROR   "Internal Error:  gcrypt library error %d %s"
 END

@@ -73,6 +73,8 @@ find_tar_ext (const char *path)
     return ext - path;
   if ((ext = trail (path, ".tar")) && (end - ext) == 4)
     return ext - path;
+  if ((ext = trail (path, ".tar.lzma")) && (end - ext) == 9)
+    return ext - path;
   return 0;
 }
 

@@ -79,9 +79,10 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
   {0, CP_LEFT, CP_TOP}
 };
 
-ChooserPage::ChooserPage ()
+ChooserPage::ChooserPage (UINT WinMain_nCmdShow)
 {
   sizeProcessor.AddControlInfo (ChooserControlsInfo);
+  nCmdShow = WinMain_nCmdShow;
 }
 
 void

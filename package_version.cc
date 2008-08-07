@@ -435,7 +435,7 @@ packageversion::set_requirements (trusts deftrust, size_t depth)
   int changed = 0;
   vector <vector <PackageSpecification *> *>::iterator dp = depends ()->begin();
   /* cheap test for too much recursion */
-  if (depth > 5)
+  if (depth > 30)
     return changed;
   /* walk through each and clause */
   while (dp != depends ()->end())

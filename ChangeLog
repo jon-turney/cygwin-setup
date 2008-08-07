@@ -1,10 +1,212 @@
-2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-08-07  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	Implement command-line selection of packages to install and make
+	unattended mode deal with any dialogs that might arise.  A joint
+	effort synthesized from contributions by:
+
+	Dr. Frank Lee  <rl201@cam.ac.uk>
+	Bryan Thrall  <bryan.thrall@flightsafety.com>
+	Kohsuke Kawaguchi  <kk@kohsuke.org>
+	Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* install.cc (rebootneeded):  Don't define statically here.
+	(do_install_thread):  Let exit_msg reflect rebootneeded.
+	* main.cc (main):  If rebootneeded, log it when exiting.
+	* msg.cc (mbox):  In unattended_mode, choose and log default answer.
+	* package_db.cc (packagedb::fillMissingCategory):  Iterate over all
+	packages adding those selected by packagemeta::isManuallyWanted to
+	base category so that command-line selections are installed.
+	* package_meta.cc (PackageOption):  Add new StringOption to allow
+	command-line selection of packages to add to base install.
+	(packagemeta::isManuallyWanted):  New function tests if package was
+	selected on command-line.
+	(packagemeta::addToCategoryBase):  New function adds package to 
+	"base" category.
+	* state.cc (rebootneeded):  Define here non-static.
+	* state.h (rebootneeded):  Declare here with extern linkage.
+	* threebar.cc (ThreeBarProgressPage::MaximizeDialog):  Don't change
+	size when running in unattended mode.
+
+2008-08-05  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* UserSettings.cc (UserSettings::settingFileForLoad): Look locally for
+	settings before looking outside of current directory.
+	* choose.cc (ChooserPage::ChooserPage): Record the property sheet's
+	current show state via new passed in parameter.
+	* choose.h (ChooserPage::ChooserPage): Reflect change in argument list.
+	(ChooserPage::nCmdShow): Define new element.
+	* main.cc (main): Send current show state to Chooser.
+	* package_version.cc (packageversion::set_requirements): Increase
+	recursion check from 5 to 30.
+	* propsheet.cc (PropSheetWndProc): Register hwndDlg with
+	ThreeBarProgressPage.
+	* threebar.cc (ControlAdjuster::ControlInfo): Initialize cmd_show_set.
+	(ThreeBarProgressPage::MaximizeDialog): New function.
+	(ThreeBarProgressPage::OnMessageApp): Call MaximizeDialog to maximize
+	package selection screen and restore when done.
+	* threebar.h (ThreeBarProgressPage::MaximizeDialog): Declare function.
+	(ThreeBarProgressPage::cmd_show_set): Declare variable.
+	(ThreeBarProgressPage::cmd_show): Declare variable.
+	(ThreeBarProgressPage::ins_dialog): Declare variable.
+	(ThreeBarProgressPage::SetHwndDialog): Define function.
+
+2008-07-22  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	Add support for .tar.lzma files (decompress only).
+
+	* Makefile.am: Add new files.
+	* compress.cc (compress::decompress): add support
+	for compress_lzma.
+	* compress_lzma.h: new file.
+	* compress_lzma.cc: new file.
+	* filemanip.cc (find_tar_ext): add support for
+	.tar.lzma files.
+	* install.cc (Installer::installOne): update comments.
+	* lzma-sdk/LzmaDec.h: new file.
+	* lzma-sdk/LzmaDec.c: new file.
+	* lzma-sdk/Types.h: new file.
+
+2008-07-08  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	* compress.cc (compress::decompress): clean up concrete
+	decompressor objects on failure -- but in that case, do
+	NOT destroy original io_stream.
+	* compress_bz.h (compress_bz::release_original): new method.
+	(owns_original): new member variable.
+	* compress_bz.cc (compress_bz::release_original): new method.
+	(compress_bz::compress_bz): take ownership of parent by default.
+	(compress_bz::~compress_bz): only delete original if 
+	owns_original is true.
+	* compress_gz.h (compress_gz::release_original): new method.
+	(owns_original): new member variable.
+	* compress_gz.cc (compress_gz::release_original): new method.
+	(compress_gz::construct): take ownership of parent by default.
+	(compress_gz::~compress_gz): only delete original if 
+	owns_original is true.
+
+2008-06-25  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* configure.in, gpg-error-config-fake:  Revert previous removal.
+
+2008-06-25  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* net.cc:  Correct stray CRLF.
+
+2008-06-25  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* configure.in (ac_cv_path_GPG_ERROR_CONFIG):  Remove nasty hack.
+	* gpg-error-config-fake:  Delete file obsoleted by de-hackification.
+
+2008-06-24  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* configure.in: Disable shared library builds.
+
+2008-06-24  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* Makefile.am: Make and install libraries into common location and use
+	them from there.
+	* configure.in: Find gpg-error-config in the libgpg-error/src
+	subdirectory rather than using the host system's version.  Set the
+	prefix and exec_prefix to a common location for the subdirs so that
+	useful files will be installed in a common location.
+
+2008-06-22  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	Merged across diffs between setup_crypto_branch_branchpoint and
+	setup_crypto_branch_mergepoint2 from setup_crypto_branch.
+
+	* crypto.cc, crypto.h, gpg-packet.cc, gpg-packet.h, KeysSetting.cc,
+	KeysSetting.h, gpg-error-config-fake, cygwin.pub, cyg-pubkey.h,
+	gpg-key-to-s-expr.sh: New files.
+	* ini.cc, ini.h, resource.h, res.rc, netio.cc, Makefile.am,
+	configure.ac, libgetopt++/src/OptionSet.cc: Modified files.
+
+  2008-06-21  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* ini.cc (do_remote_ini):  Revert misbegotten removal of 
+	not-always-superfluous-after-all added slash in URLs.
+
+  2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* gpg-packet.h (GPG_KEY_SEXPR_BUF_SIZE):  Move from here ...
+	* crypto.h (GPG_KEY_SEXPR_BUF_SIZE):  ... to here.
+	(GPG_KEY_MAX_COEFF_SIZE):  Add related definition.
+
+  2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* gpg-packet.cc (walk_packets_1):  Check packet length field is
+	valid sane and possible to avoid malicious manipulation.
+	* ChangeLog:  Corrected date on previous commit.
+
+  2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* crypto.cc (add_key_from_sexpr):  Use real buffer size, not debug 
+	constant size.
+
+  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* crypto.cc (verify_ini_file_sig):  Actually set init-once flag!
+
+  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* crypto.cc (KeepUntrustedKeysOption):  Fix helpstring punctuation.
+
+  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* crypto.cc (verify_ini_file_sig):  Fix two minor logic errors.
+
+  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* ini.h (current_ini_sig_name):  Declare extern.
+	* ini.cc (current_ini_sig_name):  New variable.
+	(NoVerifyOption):  New boolean option.
+	(do_remote_ini):  If sig verification not disabled, attempt to
+	download the matching sig file for any setup.bz2 or setup.ini
+	and use it to verify or discard the download.
+
+  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* resource.h (IDS_SIG_INVALID, IDS_CRYPTO_ERROR):  Reserve IDs for
+	two new message strings.
+	* res.rc (IDS_SIG_INVALID, IDS_CRYPTO_ERROR):  Define the text.
+
+  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* Makefile.am (setup_SOURCES):  Add new files crypto.cc, crypto.h,
+	cyg-pubkey.h, gpg-packet.cc, gpg-packet.h. KeysSetting.cc and
+	KeysSetting.h to the build.
+	* crypto.cc, crypto.h, gpg-packet.cc, gpg-packet.h, KeysSetting.cc,
+	KeysSetting.h:  New files.  Adds gpg sig verification support.
+
+  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* Makefile.am (DIST_SUBDIRS, SUBDIRS):  Add libgpg-error and
+	libgcrypt subdirs.
+	(AM_CPPFLAGS):  Add -I paths to generated headers in both and to
+	 shipped headers in libgcrypt.
+	(setup_LDADD):  Add libgpg-error.a and libgcrypt.a to final link.
+
+	* configure.in (ac_cv_path_GPG_ERROR_CONFIG):  Preload into cache
+	to fake out libgcrypt configure process.
+	(AC_CONFIG_SUBDIRS):  Add libgpg-error/ and libgcrypt/
+
+	* gpg-error-config-fake:  New shell script to redirect libgcrypt
+	sub-configure into looking for newly-built libgpg-error.
+
+  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* setup/libgpg-error/:  Fresh import of upstream sources of
+	libgpg-error-1.6.tar.bz2 from http://www.gnupg.org/
+	* setup/libgcrypt/:  Fresh import of upstream sources of
+	libgcrypt-1.4.1.tar.bz2 from http://www.gnupg.org/
+
+  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* netio.cc (NetIO::set_url):  Avoid double-free bug on delete
 	by setting path to a strdup of url rather than using the same
 	pointer value twice.
 
-2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* cygwin.pub:  Add reference copy of Cygwin setup signing key.
 	* gpg-key-to-s-expr.sh:  New bash script.  Outputs textual

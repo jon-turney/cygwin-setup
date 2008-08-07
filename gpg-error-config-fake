@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# Copyright (c) 2008, Dave Korn.
+#
+#     This program is free software; you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation; either version 2 of the License, or
+#     (at your option) any later version.
+#
+#     A copy of the GNU General Public License can be found at
+#     http://www.gnu.org/
+#
+# Written by Dave Korn <dave.korn.cygwin@gmail.com>
+#
+#
+# Fake gpg-error-config script redirects libgcrypt configure
+# process to look for our newly-built libgpg-error.  Crudely and
+# viciously hacked up by ripping the guts out of the original
+# until it does just enough to fool the libgcrypt configure 
+# process into using our freshly-built libgpg-error for us.
+#
+
+output=""
+mydir=`dirname $0`
+while test $# -gt 0; do
+    case "$1" in
+        -*=*)
+            optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'`
+            ;;
+        *)
+            optarg=
+            ;;
+    esac
+
+    case $1 in
+        --version)
+            echo "1.6"
+            exit 0
+            ;;
+        --dir=*)
+            mydir="${1#--dir=}"
+            ;;
+        --cflags)
+            output="$output -I$mydir/./libgpg-error/src/"
+            ;;
+        --libs)
+            output="$output -L$mydir/./libgpg-error/src/.libs"
+            output="$output -lgpg-error"
+            ;;
+        *)
+            echo "What's a $1?"
+            ;;
+    esac
+    shift
+done
+
+echo $output

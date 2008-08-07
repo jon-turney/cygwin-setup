@@ -138,7 +138,7 @@ main (int argc, char **argv)
     LocalDirPage LocalDir;
     NetPage Net;
     SitePage Site;
-    ChooserPage Chooser;
+    ChooserPage Chooser (cmd_show);
     PrereqPage Prereq;
     DesktopSetupPage Desktop;
     PropSheet MainWindow;
@@ -200,8 +200,14 @@ main (int argc, char **argv)
 
     // Clean exit.. save user options.
     UserSettings::Instance().saveAllSettings();
-
-    theLog->exit (0);
+    if (rebootneeded)
+      {
+	theLog->exit (IDS_REBOOT_REQUIRED);
+      }
+    else
+      {
+	theLog->exit (0);
+      }
   }
   TOPLEVEL_CATCH("main");
 

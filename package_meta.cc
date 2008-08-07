@@ -27,6 +27,7 @@ using namespace std;
 #include <stdlib.h>
 #include <unistd.h>
 #include <strings.h>
+#include "getopt++/StringOption.h"
 
 #include "io_stream.h"
 #include "compress.h"
@@ -49,6 +50,8 @@ using namespace std;
 #include "Generic.h"
 
 using namespace std;
+
+static StringOption PackageOption ("", 'P', "packages", "Specify packages to install");
 
 /*****************/
 
@@ -240,6 +243,43 @@ static bool
 hasSDesc(packageversion const &pkg)
 {
   return pkg.SDesc().size();
+}
+
+bool packagemeta::isManuallyWanted() const
+{
+  static bool parsed_yet = false;
+  static std::set<string> parsed_names;
+  bool bReturn = false;
+  /* First time through, we parse all the names out from the 
+    option string and store them away in an STL set.  */
+  if (!parsed_yet)
+  {
+    string packages_option = PackageOption;
+    string tname;
+    /* Split up the packages listed in the option.  */
+    string::size_type loc = packages_option.find(",",0);
+    while ( loc != string::npos )
+      {
+	tname = packages_option.substr(0,loc);
+	packages_option = packages_option.substr(loc+1);
+	parsed_names.insert (tname);
+	bReturn = bReturn || (name.compare(tname) == 0);
+	loc = packages_option.find(",",0);
+      }
+    /* At this point, no "," exists in packages_option.  */
+    parsed_names.insert (packages_option);
+    bReturn = bReturn || (name.compare(packages_option) == 0);
+    parsed_yet = true;
+    if (bReturn)
+      log (LOG_PLAIN) << "Added manual package " << name << endLog;
+    return bReturn;
+  }
+  /* If we've already parsed the option string, just do
+    a lookup in the cache of already-parsed names.  */
+  bReturn = parsed_names.find(name) != parsed_names.end();
+  if (bReturn)
+    log (LOG_PLAIN) << "Added manual package " << name << endLog;
+  return bReturn;
 }
 
 const std::string
@@ -645,6 +685,12 @@ packagemeta::ScanDownloadedFiles ()
     }
     /* Don't explicity iterate through sources - any sources that aren't
        referenced are unselectable anyway.  */
+}
+
+void 
+packagemeta::addToCategoryBase() 
+{
+  add_category ("Base");
 }
 
 bool

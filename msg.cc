@@ -29,6 +29,7 @@ static const char *cvsid =
 #include <stdio.h>
 #include <stdarg.h>
 #include "dialog.h"
+#include "state.h"
 
 void
 msg (const char *fmt, ...)
@@ -50,6 +51,31 @@ mbox (HWND owner, const char *name, int type, int id, va_list args)
 
   vsnprintf (buf, 1000, fmt, args);
   log (LOG_PLAIN) << "mbox " << name << ": " << buf << endLog;
+  if (unattended_mode)
+    {
+      // Return some default values.
+      log (LOG_PLAIN) << "unattended_mode is set at mbox: returning default value" << endLog;
+      switch (type & MB_TYPEMASK)
+	{
+	  case MB_OK:
+	  case MB_OKCANCEL:
+	    return IDOK;
+	    break;
+	  case MB_YESNO:
+	  case MB_YESNOCANCEL:
+	    return IDYES;
+	    break;
+	  case MB_ABORTRETRYIGNORE:
+	    return IDIGNORE;
+	    break;
+	  case MB_RETRYCANCEL:
+	    return IDCANCEL;
+	    break;
+	  default:
+	    log (LOG_PLAIN) << "unattended_mode failed for " << (type & MB_TYPEMASK) << endLog;
+	    return 0;
+	}
+    }
   return MessageBox (owner, buf, "Cygwin Setup", type);
 }
 

@@ -18,8 +18,9 @@
 #
 # Makefile for Cygwin installer
 
-DIST_SUBDIRS = libgetopt++ tests
-SUBDIRS = libgetopt++ tests
+INST_SUBDIRS:=@subdirs@
+DIST_SUBDIRS:=${INST_SUBDIRS} tests
+SUBDIRS:=tests
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
@@ -35,7 +36,7 @@ AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
 AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES = @WINDRES@
-AM_CPPFLAGS = -I$(srcdir)/libgetopt++/include
+AM_CPPFLAGS = -I$(srcdir)/libgetopt++/include -I$(top_builddir)/libgpg-error/src -I$(top_builddir)/libgcrypt/src -I$(srcdir)/libgcrypt/src
 
 noinst_PROGRAMS = setup @INILINT@
 
@@ -65,7 +66,8 @@ EXTRA_DIST = \
 # knows about that already)
 BUILT_SOURCES = \
 	setup_version.c \
-	iniparse.h
+	iniparse.h \
+	${INST_SUBDIRS}
 
 CLEANFILES = setup_version.c
 
@@ -115,7 +117,8 @@ libinilex_a_SOURCES = inilex.ll
 libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
 
 setup_LDADD = \
-	libinilex.a libgetopt++/libgetopt++.la res.o \
+	libinilex.a \
+	-Linst/lib -lgetopt++ -lgcrypt -lgpg-error \
 	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -lbz2 -lz 
 setup_LDFLAGS = -mwindows -Wl,-static
 setup_SOURCES = \
@@ -135,10 +138,15 @@ setup_SOURCES = \
 	compress_bz.h \
 	compress_gz.cc \
 	compress_gz.h \
+	compress_lzma.cc \
+	compress_lzma.h \
 	ConnectionSetting.cc \
 	ConnectionSetting.h \
 	ControlAdjuster.cc \
 	ControlAdjuster.h \
+	crypto.cc \
+	crypto.h \
+	cyg-pubkey.h \
 	cygpackage.cc \
 	cygpackage.h \
 	desktop.cc \
@@ -161,6 +169,8 @@ setup_SOURCES = \
 	Generic.h \
 	geturl.cc \
 	geturl.h \
+	gpg-packet.cc \
+	gpg-packet.h \
 	ini.cc \
 	ini.h \
 	IniDBBuilder.h \
@@ -181,6 +191,8 @@ setup_SOURCES = \
 	io_stream_memory.cc \
 	io_stream_memory.h \
 	IOStreamProvider.h \
+	KeysSetting.cc \
+	KeysSetting.h \
 	localdir.cc \
 	localdir.h \
 	LogFile.cc \
@@ -275,7 +287,10 @@ setup_SOURCES = \
 	csu_util/version_compare.cc \
 	csu_util/version_compare.h \
 	libmd5-rfc/md5.c \
-	libmd5-rfc/md5.h
+	libmd5-rfc/md5.h \
+	lzma-sdk/LzmaDec.c \
+	lzma-sdk/LzmaDec.h \
+	lzma-sdk/Types.h
 
 VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
                $(srcdir)/ChangeLog)
@@ -305,3 +320,7 @@ release: setup.exe $(srcdir)/ChangeLog Makefile
 snapshot: release
 	scp -C setup-${VER}.exe setup-debug-${VER}.exe.gz setup-${VER}.tar.bz2 \
 	    $${cygwinsite:-cygwin.com}:setup-snapshots/
+
+.PHONY: ${INST_SUBDIRS}
+${INST_SUBDIRS}:
+	${MAKE} -C $@ install

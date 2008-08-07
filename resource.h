@@ -31,6 +31,8 @@
 #define IDS_TRUSTEXP_TOOLTIP              128
 #define IDS_VIEWBUTTON_TOOLTIP            129
 #define IDS_HIDEOBS_TOOLTIP               130
+#define IDS_SIG_INVALID                   131
+#define IDS_CRYPTO_ERROR                  132
 
 // Dialogs
 

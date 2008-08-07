@@ -32,6 +32,7 @@
 #include <string>
 
 extern bool unattended_mode;
+extern bool rebootneeded;
 
 extern int source;
 
