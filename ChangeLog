@@ -1,3 +1,66 @@
+2008-08-12  Corinna Vinschen  <corinna@vinschen.de>
+
+	Revamp for Cygwin 1.7.
+	* desktop.cc (make_cygwin_bat): Use wide char file functions on NT.
+	(save_icon): Ditto.
+	* filemanip.cc (tfx_chars): New char table for wide char transformation
+	of reserved FS chars to UNICODE private use area.
+	(transform_chars): New static function.
+	(mklongpath): New function to convert multibyte path to wide char
+	path with long path prefix.
+	* filemanip.h (mklongpath): Declare.
+	* ini.h (SETUP_INI_FILENAME): Use setup.ini filenames as defined in
+	real life (setup-2.ini/setup.ini).
+	(SETUP_BZ2_FILENAME): Ditto.
+	* install.cc (do_install_thread): Don't create registry mount points
+	on NT, rather create setup/rootdir entry.
+	* io_stream_cygfile.cc: Throughout use wide char file functions on NT.
+	(io_stream_cygfile::w_str): New method to create wide char path.
+	* io_stream_cygfile.h (class io_stream_cygfile): Remove lmode member.
+	Add wname member and w_str method.
+	* io_stream_file.cc: Throughout use wide char file functions on NT.
+	(io_stream_file::w_str): New method to create wide char path.
+	* io_stream_file.h (class io_stream_file): Remove lmode member.
+	Add wname member and w_str method.
+	* mkdir.cc (mkdir_p): Use wide char file functions on NT.
+	* mklink2.cc (mkcygsymlink_9x): Rename from mkcygsymlink.  Make static.
+	(mkcygsymlink_nt): New static function.
+	(mkcygsymlink): Just call mkcygsymlink_9x or mkcygsymlink_nt dependent
+	on OS.
+	* mount.cc (CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME): Define.
+	(remove1): Move to earlier point in file to avoid declaration.
+	(remove_mount): Ditto.  Make static.
+	(create_install_root): New function to create setup/rootdir registry
+	value on NT.
+	(read_mounts_9x): Rename from read_mounts.  Make static.  Conditionalize
+	for OS.
+	(add_usr_mnts): New static function.
+	(read_mounts_nt): Ditto, to read mounts on NT.
+	(read_mounts): Just call read_mounts_nt or read_mounts_9x dependent on
+	OS.
+	(set_root_dir): On NT, call read_mounts.
+	(cygpath): Only add slash for non-root mount to avoid multiple slashes
+	in resulting path (invalid in long path names).
+	* mount.h (find_mount): Drop declaration.
+	(remove_mount): Ditto.
+	(create_install_root): Add declaration.
+	(read_mounts): Accommodate new parameter.
+	* package_db.cc (chosen_db_task): New global variable.
+	* package_db.h (chosen_db_task): Declare.
+	* root.cc (check_if_enable_next): Don't use get_root_dir here to
+	avoid having to call save_dialog in RootPage::OnMessageCmd.
+	(GetDlgItemRect): New static inline function.
+	(SetDlgItemRect): Ditto.
+	(load_dialog): On NT, stretch "Install For" block to full dialog width
+	and hide "Default Text File Type" block.
+	(save_dialog): On NT set root_text always to IDC_ROOT_BINARY.
+	(RootPage::OnMessageCmd): Remove call to save_dialog.
+	(RootPage::OnNext): Initialize packagedb here the first time, to
+	avoid fetching wrong data from different previous installation.
+	* source.cc (save_dialog): Don't initialize packagedb here, rather
+	just memorize setting in chosen_db_task for the deferred initialization
+	in RootPage::OnNext.
+
 2008-08-07  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	Implement command-line selection of packages to install and make

@@ -55,8 +55,7 @@ static void
 save_dialog (HWND h)
 {
   source = rbget (h, rb);
-  packagedb db;
-  db.task =
+  chosen_db_task =
     source == IDC_SOURCE_DOWNLOAD ? PackageDB_Download : PackageDB_Install;
 }
 

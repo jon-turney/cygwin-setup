@@ -56,7 +56,8 @@ private:
   FILE *fp;
   int lasterr;
   std::string fname;
-  std::string lmode;
+  wchar_t *wname;
+  wchar_t *w_str ();
 };
 
 #endif /* SETUP_IO_STREAM_FILE_H */

@@ -167,12 +167,27 @@ static void
 make_cygwin_bat ()
 {
   batname = backslash (cygpath ("/Cygwin.bat"));
+  FILE *bat;
 
-  /* if the batch file exists, don't overwrite it */
-  if (_access (batname.c_str(), 0) == 0)
-    return;
+  if (IsWindowsNT ())
+    {
+      size_t len = batname.size () + 7;
+      WCHAR wname[len];
+      mklongpath (wname, batname.c_str (), len);
 
-  FILE *bat = fopen (batname.c_str(), "wt");
+      /* if the batch file exists, don't overwrite it */
+      if (_waccess (wname, 0) == 0)
+	return;
+
+      bat = _wfopen (wname, L"wt");
+    }
+  else
+    {
+      if (_access (batname.c_str (), 0) == 0)
+	return;
+
+      bat = fopen (batname.c_str (), "wt");
+    }
   if (!bat)
     return;
 
@@ -201,7 +216,16 @@ save_icon ()
   char *data = (char *) LockResource (res);
   int len = SizeofResource (NULL, rsrc);
 
-  FILE *f = fopen (iconname.c_str(), "wb");
+  FILE *f;
+  if (IsWindowsNT ())
+    {
+      size_t ilen = iconname.size () + 7;
+      WCHAR wname[ilen];
+      mklongpath (wname, iconname.c_str (), ilen);
+      f = _wfopen (wname, L"wb");
+    }
+  else
+    f = fopen (iconname.c_str (), "wb");
   if (f)
     {
       fwrite (data, 1, len, f);

@@ -32,24 +32,31 @@ static const char *cvsid =
 #include <stdio.h>
 
 #include "mkdir.h"
+#include "filemanip.h"
 
 int
 mkdir_p (int isadir, const char *in_path)
 {
   char saved_char, *slash = 0;
   char *c;
-  char path[strlen (in_path) + 1];
+  const size_t len = strlen (in_path) + 1;
+  char path[len];
 #if defined(WIN32) && !defined (_CYGWIN_)
   DWORD d, gse;
-  strcpy (path, in_path);
+  WCHAR wpath[len + 6];
 
-  d = GetFileAttributes (path);
-  if (d != 0xffffffff && d & FILE_ATTRIBUTE_DIRECTORY)
+  strcpy (path, in_path);
+  if (IsWindowsNT ())
+    mklongpath (wpath, path, len + 6);
+
+  d = IsWindowsNT () ? GetFileAttributesW (wpath) : GetFileAttributesA (path);
+  if (d != INVALID_FILE_ATTRIBUTES && d & FILE_ATTRIBUTE_DIRECTORY)
     return 0;
 
   if (isadir)
     {
-      if (CreateDirectory (path, 0))
+      if (IsWindowsNT () ? CreateDirectoryW (wpath, 0)
+			 : CreateDirectoryA (path, 0))
 	return 0;
       gse = GetLastError ();
       if (gse != ERROR_PATH_NOT_FOUND && gse != ERROR_FILE_NOT_FOUND)
@@ -59,7 +66,7 @@ mkdir_p (int isadir, const char *in_path)
 	      fprintf (stderr,
 		       "warning: deleting \"%s\" so I can make a directory there\n",
 		       path);
-	      if (DeleteFileA (path))
+	      if (IsWindowsNT () ? DeleteFileW (wpath) : DeleteFileA (path))
 		return mkdir_p (isadir, path);
 	    }
 	  return 1;

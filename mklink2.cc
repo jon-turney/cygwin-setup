@@ -3,6 +3,7 @@
 #include "win32.h"
 #include "shlobj.h"
 #include "mklink2.h"
+#include "filemanip.h"
 
 #if 0
 static const char *cvsid =
@@ -40,12 +41,12 @@ make_link_2 (char const *exepath, char const *args, char const *icon, char const
 /* Predicate: file is not currently in existence.
  * A file race can occur otherwise.
  */
-extern "C"
-int
-mkcygsymlink (const char *from, const char *to)
+static int
+mkcygsymlink_9x (const char *from, const char *to)
 {
   char buf[512];
   unsigned long w;
+
   HANDLE h = CreateFileA (from, GENERIC_WRITE, 0, 0, CREATE_NEW,
 		   FILE_ATTRIBUTE_NORMAL, 0);
   if (h == INVALID_HANDLE_VALUE)
@@ -61,4 +62,38 @@ mkcygsymlink (const char *from, const char *to)
   CloseHandle (h);
   DeleteFileA (from);
   return 1;
+}
+
+static int
+mkcygsymlink_nt (const char *from, const char *to)
+{
+  char buf[512];
+  unsigned long w;
+  const size_t len = strlen (from) + 7;
+  WCHAR wfrom[len];
+
+  mklongpath (wfrom, from, len);
+  HANDLE h = CreateFileW (wfrom, GENERIC_WRITE, 0, 0, CREATE_NEW,
+		   FILE_ATTRIBUTE_NORMAL, 0);
+  if (h == INVALID_HANDLE_VALUE)
+    return 1;
+  strcpy (buf, SYMLINK_COOKIE);
+  strcat (buf, to);
+  if (WriteFile (h, buf, strlen (buf) + 1, &w, NULL))
+    {
+      CloseHandle (h);
+      SetFileAttributesW (wfrom, FILE_ATTRIBUTE_SYSTEM);
+      return 0;
+    }
+  CloseHandle (h);
+  DeleteFileW (wfrom);
+  return 1;
+}
+
+extern "C"
+int
+mkcygsymlink (const char *from, const char *to)
+{
+  return IsWindowsNT () ? mkcygsymlink_nt (from, to)
+			: mkcygsymlink_9x (from, to);
 }

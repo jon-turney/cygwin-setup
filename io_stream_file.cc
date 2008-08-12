@@ -21,6 +21,7 @@ static const char *cvsid =
 #if defined(WIN32) && !defined (_CYGWIN_)
 #include "win32.h"
 #include "mklink2.h"
+#include "filemanip.h"
 #endif
 
 #include "mkdir.h"
@@ -76,13 +77,31 @@ FileProvider FileProvider::theInstance = FileProvider();
 #define FACTOR (0x19db1ded53ea710LL)
 #define NSPERSEC 10000000LL
 
-io_stream_file::io_stream_file (const std::string& name, const std::string& mode):
-fp(), fname(name),lmode (mode)
+wchar_t *
+io_stream_file::w_str ()
+{
+  if (!wname)
+    {
+      wname = new wchar_t [fname.size () + 7];
+      if (wname)
+	mklongpath (wname, fname.c_str (), fname.size () + 7);
+    }
+  return wname;
+}
+
+io_stream_file::io_stream_file (const std::string& name, const std::string& mode) : fp(), fname(name), wname (NULL)
 {
   errno = 0;
   if (!name.size() || !mode.size())
     return;
-  fp = fopen (name.c_str(), mode.c_str());
+  if (IsWindowsNT ())
+    {
+      wchar_t lmode[mode.size () + 1];
+      mbstowcs (lmode, mode.c_str (), mode.size () + 1);
+      fp = _wfopen (w_str (), lmode); 
+    }
+  else
+    fp = fopen (fname.c_str (), mode.c_str ());
   if (!fp)
     lasterr = errno;
 }
@@ -91,13 +110,23 @@ io_stream_file::~io_stream_file ()
 {
   if (fp)
     fclose (fp);
+  if (wname)
+    delete [] wname;
 }
 
 int
 io_stream_file::exists (const std::string& path)
 {
 #if defined(WIN32) && !defined (_CYGWIN_)
-  if (_access (path.c_str(), 0) == 0)
+  if (IsWindowsNT ())
+    {
+      size_t len = path.size () + 7;
+      WCHAR wname[len];
+      mklongpath (wname, path.c_str (), len);
+      if (_waccess (wname, 0) == 0)
+	return 1;
+    }
+  else if (_access (path.c_str(), F_OK) == 0)
 #else
   if (access (path.c_str(), F_OK) == 0)
 #endif
@@ -111,24 +140,54 @@ io_stream_file::remove (const std::string& path)
   if (!path.size())
     return 1;
 #if defined(WIN32) && !defined (_CYGWIN_)
-  unsigned long w = GetFileAttributes (path.c_str());
-  if (w != 0xffffffff && w & FILE_ATTRIBUTE_DIRECTORY)
+  if (IsWindowsNT ())
     {
-      char *tmp = new char [path.size() + 10];
-      int i = 0;
-      do
+      size_t len = path.size () + 7;
+      WCHAR wpath[len];
+      mklongpath (wpath, path.c_str (), len);
+
+      unsigned long w = GetFileAttributesW (wpath);
+      if (w != INVALID_FILE_ATTRIBUTES && w & FILE_ATTRIBUTE_DIRECTORY)
 	{
-	  i++;
-	  sprintf (tmp, "%s.old-%d", path.c_str(), i);
+	  len = wcslen (wpath);
+	  WCHAR tmp[len + 10];
+	  wcscpy (tmp, wpath);
+	  int i = 0;
+	  do
+	    {
+	      i++;
+	      swprintf (tmp + len, L"old-%d", i);
+	    }
+	  while (GetFileAttributesW (tmp) != INVALID_FILE_ATTRIBUTES);
+	  fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
+		   path.c_str());
+	  MoveFileW (wpath, tmp);
 	}
-      while (GetFileAttributes (tmp) != 0xffffffff);
-      fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-	       path.c_str());
-      MoveFile (path.c_str(), tmp);
-      delete[] tmp;
+      SetFileAttributesW (wpath, w & ~FILE_ATTRIBUTE_READONLY);
+      return !DeleteFileW (wpath);
     }
-  SetFileAttributes (path.c_str(), w & ~FILE_ATTRIBUTE_READONLY);
-  return !DeleteFileA (path.c_str());
+  else
+    {
+      unsigned long w = GetFileAttributesA (path.c_str ());
+      if (w != INVALID_FILE_ATTRIBUTES && w & FILE_ATTRIBUTE_DIRECTORY)
+	{
+	  size_t len = path.size ();
+	  char tmp[len + 10];
+	  strcpy (tmp, path.c_str ());
+	  int i = 0;
+	  do
+	    {
+	      i++;
+	      sprintf (tmp + len, "old-%d", i);
+	    }
+	  while (GetFileAttributesA (tmp) != INVALID_FILE_ATTRIBUTES);
+	  fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
+		   path.c_str());
+	  MoveFileA (path.c_str (), tmp);
+	}
+      SetFileAttributesA (path.c_str (), w & ~FILE_ATTRIBUTE_READONLY);
+      return !DeleteFileA (path.c_str ());
+    }
 #else
   // FIXME: try rmdir if unlink fails - remove the dir
   return unlink (path.c_str());
@@ -234,11 +293,16 @@ io_stream_file::set_mtime (int mtime)
   FILETIME ftime;
   ftime.dwHighDateTime = ftimev >> 32;
   ftime.dwLowDateTime = ftimev;
-  HANDLE h =
-    CreateFileA (fname.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-		 0, OPEN_EXISTING,
-		 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
-  if (h)
+  HANDLE h;
+  if (IsWindowsNT ())
+    h = CreateFileW (w_str(), GENERIC_WRITE,
+		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
+		     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
+  else
+    h = CreateFileA (fname.c_str (), GENERIC_WRITE,
+		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
+		     FILE_ATTRIBUTE_NORMAL, 0);
+  if (h != INVALID_HANDLE_VALUE)
     {
       SetFileTime (h, 0, 0, &ftime);
       CloseHandle (h);
@@ -265,15 +329,28 @@ io_stream_file::get_size ()
     return 0;
 #if defined(WIN32) && !defined (_CYGWIN_)
   HANDLE h;
-  WIN32_FIND_DATA buf;
   DWORD ret = 0;
-
-  h = FindFirstFileA (fname.c_str(), &buf);
-  if (h != INVALID_HANDLE_VALUE)
+  if (IsWindowsNT ())
     {
-      if (buf.nFileSizeHigh == 0)
-	ret = buf.nFileSizeLow;
-      FindClose (h);
+      WIN32_FIND_DATAW buf;
+      h = FindFirstFileW (w_str(), &buf);
+      if (h != INVALID_HANDLE_VALUE)
+	{
+	  if (buf.nFileSizeHigh == 0)
+	    ret = buf.nFileSizeLow;
+	  FindClose (h);
+	}
+    }
+  else
+    {
+      WIN32_FIND_DATAA buf;
+      h = FindFirstFileA (fname.c_str(), &buf);
+      if (h != INVALID_HANDLE_VALUE)
+	{
+	  if (buf.nFileSizeHigh == 0)
+	    ret = buf.nFileSizeLow;
+	  FindClose (h);
+	}
     }
   return ret;
 #else

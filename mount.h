@@ -23,20 +23,16 @@
 #include <string>
 #include "String++.h"
 
-char *find_mount (int *istext, int *issystem, char *path);
-
-/* Similar to the mount and umount functions, but simplified */
-
 void create_mount (const std::string posix, const std::string win32,
-                   int istext, int issystem);
-void remove_mount (const std::string posix);
-void read_mounts ();
+		   int istext, int issystem);
+void create_install_root ();
+void read_mounts (const std::string);
 
 /* Sets the cygdrive flags.  Used to make the automounted drives' binary/text
 mode consistent with the standard Cygwin mounts. */
 
 void set_cygdrive_flags (int istext, int issystem);
-std::string cygpath (const std::string& );
+std::string cygpath (const std::string&);
 void set_root_dir (const std::string);
 const std::string get_root_dir ();
 

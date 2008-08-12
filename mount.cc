@@ -33,6 +33,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 
 #define CYGWIN_INFO_CYGNUS_REGISTRY_NAME "Cygnus Solutions"
 #define CYGWIN_INFO_CYGWIN_REGISTRY_NAME "Cygwin"
+#define CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME "setup"
 #define CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME "mounts v2"
 #define CYGWIN_INFO_CYGDRIVE_FLAGS "cygdrive flags"
 #define CYGWIN_INFO_CYGDRIVE_PREFIX "cygdrive prefix"
@@ -133,6 +134,26 @@ find2 (HKEY rkey, int *istext, const std::string& what)
   return Sretval;
 }
 
+static void
+remove1 (HKEY rkey, const std::string posix)
+{
+  char buf[1000];
+
+  snprintf (buf, sizeof(buf), "Software\\%s\\%s\\%s\\%s",
+	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
+	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
+	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.c_str ());
+
+  RegDeleteKey (rkey, buf);
+}
+
+static void
+remove_mount (const std::string posix)
+{
+  remove1 (HKEY_LOCAL_MACHINE, posix);
+  remove1 (HKEY_CURRENT_USER, posix);
+}
+
 void
 create_mount (const std::string posix, const std::string win32, int istext,
 	      int issystem)
@@ -167,27 +188,7 @@ create_mount (const std::string posix, const std::string win32, int istext,
 		 sizeof (flags));
 
   RegCloseKey (key);
-  read_mounts ();
-}
-
-static void
-remove1 (HKEY rkey, const std::string posix)
-{
-  char buf[1000];
-
-  snprintf (buf, sizeof(buf), "Software\\%s\\%s\\%s\\%s",
-	   CYGWIN_INFO_CYGNUS_REGISTRY_NAME,
-	   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
-	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.c_str ());
-
-  RegDeleteKey (rkey, buf);
-}
-
-void
-remove_mount (const std::string posix)
-{
-  remove1 (HKEY_LOCAL_MACHINE, posix);
-  remove1 (HKEY_CURRENT_USER, posix);
+  read_mounts (std::string ());
 }
 
 static void
@@ -353,7 +354,34 @@ is_admin ()
 }
 
 void
-read_mounts ()
+create_install_root ()
+{
+  char buf[1000];
+  HKEY key;
+  DWORD disposition;
+  DWORD rv;
+
+  snprintf (buf, sizeof(buf), "Software\\%s\\%s",
+	    CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
+	    CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME);
+  HKEY kr = (root_scope == IDC_ROOT_USER) ? HKEY_CURRENT_USER
+					  : HKEY_LOCAL_MACHINE;
+  rv = RegCreateKeyEx (kr, buf, 0, (char *)"Cygwin", 0, KEY_ALL_ACCESS,
+		       0, &key, &disposition);
+  if (rv != ERROR_SUCCESS)
+    fatal ("mount", rv);
+  rv = RegSetValueEx (key, "rootdir", 0, REG_SZ,
+		      (BYTE *) get_root_dir ().c_str (),
+		      get_root_dir ().size () + 1);
+  if (rv != ERROR_SUCCESS)
+    fatal ("mount", rv);
+  RegCloseKey (key);
+
+  read_mounts (std::string ());
+}
+
+static void
+read_mounts_9x ()
 {
   DWORD posix_path_size;
   int res;
@@ -380,8 +408,11 @@ read_mounts ()
 	       CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME);
 
       HKEY key = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
-      if (RegCreateKeyEx (key, buf, 0, (char *)"Cygwin", 0, KEY_ALL_ACCESS,
-			  0, &key, &disposition) != ERROR_SUCCESS)
+      if ((IsWindowsNT () ? RegOpenKeyEx (key, buf, 0, KEY_ALL_ACCESS, &key)
+			  : RegCreateKeyEx (key, buf, 0, (char *)"Cygwin", 0,
+					    KEY_ALL_ACCESS, 0, &key,
+					    &disposition))
+	  != ERROR_SUCCESS)
 	break;
       for (int i = 0;; i++, m++)
 	{
@@ -431,7 +462,7 @@ read_mounts ()
       RegCloseKey (key);
     }
 
-  if (!root_here)
+  if (!IsWindowsNT () && !root_here)
     {
       root_here = m;
       m->posix = "/";
@@ -445,10 +476,106 @@ read_mounts ()
     }
 }
 
+static void
+add_usr_mnts (struct mnt *m)
+{
+  /* Set default /usr/bin and /usr/lib */
+  m->posix = "/usr/bin";
+  m->native = root_here->native + "\\bin";
+  ++m;
+  m->posix = "/usr/lib";
+  m->native = root_here->native + "\\lib";
+}
+
+static void
+read_mounts_nt (const std::string val)
+{
+  DWORD posix_path_size;
+  struct mnt *m = mount_table;
+  DWORD disposition;
+  char buf[10000];
+
+  root_here = NULL;
+  for (mnt * m1 = mount_table; m1->posix.size (); m1++)
+    {
+      m1->posix.clear();
+      m1->native.clear();
+    }
+
+  root_text = IDC_ROOT_BINARY;
+  root_scope = (is_admin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
+
+  if (val.size ())
+    {
+      m->native = val;
+      m->posix = "/";
+      root_here = m;
+      add_usr_mnts (++m);
+    }
+  else
+    {
+      /* Always check HKEY_LOCAL_MACHINE first. */
+      for (int isuser = 0; isuser <= 1; isuser++)
+	{
+	  snprintf (buf, sizeof(buf), "Software\\%s\\%s",
+		   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
+		   CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME);
+	  HKEY key = isuser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
+	  if (RegCreateKeyEx (key, buf, 0, (char *)"Cygwin", 0, KEY_ALL_ACCESS,
+			      0, &key, &disposition) != ERROR_SUCCESS)
+	    break;
+	  DWORD type;
+	  char aBuffer[MAX_PATH + 1];
+	  posix_path_size = MAX_PATH;
+	  if (RegQueryValueEx
+	      (key, "rootdir", 0, &type, (BYTE *) aBuffer,
+	       &posix_path_size) == ERROR_SUCCESS)
+	    {
+	      m->native = std::string (aBuffer);
+	      m->posix = "/";
+	      root_scope = isuser ? IDC_ROOT_USER : IDC_ROOT_SYSTEM;
+	      root_here = m;
+
+	      /* TODO: Read /etc/fstab and skip add_usr_mnts if available. */
+	      add_usr_mnts (++m);
+	      break;
+	    }
+	  RegCloseKey (key);
+	}
+    }
+
+  /* Check for an old installation to allow overriding. */
+  if (!root_here)
+    read_mounts_9x ();
+
+  if (!root_here)
+    {
+      char windir[MAX_PATH];
+      GetWindowsDirectory (windir, sizeof (windir));
+      windir[2] = 0;
+      m->native = std::string (windir) + "\\cygwin";
+      m->posix = "/";
+      root_here = m;
+      add_usr_mnts (++m);
+    }
+}
+
+void
+read_mounts (const std::string val)
+{
+  if (IsWindowsNT ())
+    read_mounts_nt (val);
+  else
+    read_mounts_9x ();
+}
+
 void
 set_root_dir (const std::string val)
 {
-  root_here->native = val;
+  if (IsWindowsNT ())
+    read_mounts (val);
+  else
+    root_here->native = val;
 }
 
 const std::string
@@ -511,6 +638,8 @@ cygpath (const std::string& thePath)
     {
       native = match->native;
     }
+  else if (match->posix.size () > 1)
+    native = match->native + thePath.substr(max_len, std::string::npos);
   else
     native = match->native + "/" + thePath.substr(max_len, std::string::npos);
   return native;

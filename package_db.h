@@ -29,6 +29,7 @@ typedef enum {
   PackageDB_Download
 } PackageDBActions;
 
+extern PackageDBActions chosen_db_task;
 
 class packagedb;
 typedef std::vector <packagemeta *>::iterator PackageDBConnectedIterator;

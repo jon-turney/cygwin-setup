@@ -503,13 +503,19 @@ do_install_thread (HINSTANCE h, HWND owner)
   int df = diskfull (get_root_dir ().c_str());
   Progress.SetBar3 (df);
 
-  int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;
-  int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
+  /* Writes Cygwin/setup/rootdir registry value */
+  if (IsWindowsNT ())
+    create_install_root ();
+  else
+    {
+      int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;
+      int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
 
-  create_mount ("/", get_root_dir (), istext, issystem);
-  create_mount ("/usr/bin", cygpath ("/bin"), istext, issystem);
-  create_mount ("/usr/lib", cygpath ("/lib"), istext, issystem);
-  set_cygdrive_flags (istext, issystem);
+      create_mount ("/", get_root_dir (), istext, issystem);
+      create_mount ("/usr/bin", cygpath ("/bin"), istext, issystem);
+      create_mount ("/usr/lib", cygpath ("/lib"), istext, issystem);
+      set_cygdrive_flags (istext, issystem);
+    }
 
   /* Let's hope people won't uninstall packages before installing [b]ash */
   init_run_script ();

@@ -30,6 +30,7 @@ static const char *cvsid =
 #include "mount.h"
 #include "mkdir.h"
 #include "mklink2.h"
+#include "filemanip.h"
 #include <unistd.h>
 #include "String++.h"
 
@@ -111,15 +112,27 @@ io_stream_cygfile::normalise (const std::string& unixpath)
   return rv;
 }
 
+wchar_t *
+io_stream_cygfile::w_str ()
+{
+  if (!wname)
+    {
+      wname = new wchar_t [fname.size () + 7];
+      if (wname)
+	mklongpath (wname, fname.c_str (), fname.size () + 7);
+    }
+  return wname;
+}
+
 static void
 get_root_dir_now ()
 {
   if (get_root_dir ().size())
     return;
-  read_mounts ();
+  read_mounts (std::string ());
 }
 
-io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string& mode) : fp(), fname()
+io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string& mode) : fp(), fname(), wname (NULL)
 {
   errno = 0;
   if (!name.size() || !mode.size())
@@ -140,8 +153,14 @@ io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string
   }
 
   fname = cygpath (normalise(name));
-  lmode = mode;
-  fp = fopen (fname.c_str(), mode.c_str());
+  if (IsWindowsNT ())
+    {
+      wchar_t lmode[mode.size () + 1];
+      mbstowcs (lmode, mode.c_str (), mode.size () + 1);
+      fp = _wfopen (w_str(), lmode);
+    }
+  else
+    fp = fopen (fname.c_str (), mode.c_str ());
   if (!fp)
   {
     lasterr = errno;
@@ -154,6 +173,8 @@ io_stream_cygfile::~io_stream_cygfile ()
 {
   if (fp)
     fclose (fp);
+  if (wname)
+    delete [] wname;
 }
 
 /* Static members */
@@ -161,7 +182,18 @@ int
 io_stream_cygfile::exists (const std::string& path)
 {
   get_root_dir_now ();
-  if (get_root_dir ().size() && _access (cygpath (normalise(path)).c_str(), 0) == 0)
+  if (!get_root_dir ().size())
+    return 0;
+
+  if (IsWindowsNT ())
+    {
+      size_t len = cygpath (normalise(path)).size () + 7;
+      WCHAR wname[len];
+      mklongpath (wname, cygpath (normalise(path)).c_str (), len);
+      if (_waccess (wname, 0) == 0)
+	return 1;
+    }
+  else if (_access (cygpath (normalise(path)).c_str (), 0))
     return 1;
   return 0;
 }
@@ -176,20 +208,49 @@ io_stream_cygfile::remove (const std::string& path)
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
 
-  unsigned long w = GetFileAttributes (cygpath (normalise(path)).c_str());
-  if (w != 0xffffffff && w & FILE_ATTRIBUTE_DIRECTORY)
+  if (IsWindowsNT ())
     {
-      char tmp[cygpath (normalise(path)).size() + 10];
-      int i = 0;
-      do
+      size_t len = cygpath (normalise(path)).size () + 7;
+      WCHAR wpath[len];
+      mklongpath (wpath, cygpath (normalise(path)).c_str (), len);
+
+      unsigned long w = GetFileAttributesW (wpath);
+      if (w != INVALID_FILE_ATTRIBUTES && w & FILE_ATTRIBUTE_DIRECTORY)
 	{
-	  ++i;
-	  sprintf (tmp, "%s.old-%d", cygpath (normalise(path)).c_str(), i);
+	  len = wcslen (wpath);
+	  WCHAR tmp[len + 10];
+	  wcscpy (tmp, wpath);
+	  int i = 0;
+	  do
+	    {
+	      ++i;
+	      swprintf (tmp + len, L"old-%d", i);
+	    }
+	  while (GetFileAttributesW (tmp) != INVALID_FILE_ATTRIBUTES);
+	  fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
+		   normalise(path).c_str());
+	  MoveFileW (wpath, tmp);
 	}
-      while (GetFileAttributes (tmp) != 0xffffffff);
-      fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-	       normalise(path).c_str());
-      MoveFile (cygpath (normalise(path)).c_str(), tmp);
+    }
+  else
+    {
+      unsigned long w = GetFileAttributesA (cygpath (normalise(path)).c_str ());
+      if (w != INVALID_FILE_ATTRIBUTES && w & FILE_ATTRIBUTE_DIRECTORY)
+	{
+	  size_t len = cygpath (normalise(path)).size ();
+	  char tmp[len + 10];
+	  strcpy (tmp, cygpath (normalise(path)).c_str ());
+	  int i = 0;
+	  do
+	    {
+	      ++i;
+	      sprintf (tmp + len, "old-%d", i);
+	    }
+	  while (GetFileAttributesA (tmp) != INVALID_FILE_ATTRIBUTES);
+	  fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
+		   normalise(path).c_str());
+	  MoveFileA (cygpath (normalise(path)).c_str (), tmp);
+	}
     }
   return io_stream::remove (std::string ("file://") + cygpath (normalise(path)).c_str());
 }
@@ -331,29 +392,21 @@ io_stream_cygfile::set_mtime (int mtime)
   FILETIME ftime;
   ftime.dwHighDateTime = ftimev >> 32;
   ftime.dwLowDateTime = ftimev;
-  HANDLE h =
-    CreateFileA (fname.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-		 0, OPEN_EXISTING,
-		 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
-  if (h)
+  HANDLE h;
+  if (IsWindowsNT ())
+    h = CreateFileW (w_str (), GENERIC_WRITE,
+		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
+		     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
+  else
+    h = CreateFileA (fname.c_str (), GENERIC_WRITE,
+		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
+		     FILE_ATTRIBUTE_NORMAL, 0);
+  if (h != INVALID_HANDLE_VALUE)
     {
       SetFileTime (h, 0, 0, &ftime);
       CloseHandle (h);
-#if 0
-      fp = fopen (fname, lmode);
-      if (!fp)
-	lasterr = errno;
-#endif
       return 0;
     }
-#if 0
-//  this results in truncated files.
-//  also, semantically, it's nonsense, you cannot write to a file after setting the 
-//  mtime without changing the mtime
-  fp = fopen (fname, lmode);
-  if (!fp)
-    lasterr = errno;
-#endif
   return 1;
 }
 
@@ -378,15 +431,28 @@ io_stream_cygfile::get_size ()
     return 0;
 #ifdef WIN32
   HANDLE h;
-  WIN32_FIND_DATA buf;
   DWORD ret = 0;
-
-  h = FindFirstFileA (fname.c_str(), &buf);
-  if (h != INVALID_HANDLE_VALUE)
+  if (IsWindowsNT ())
     {
-      if (buf.nFileSizeHigh == 0)
-        ret = buf.nFileSizeLow;
-      FindClose (h);
+      WIN32_FIND_DATAW buf;
+      h = FindFirstFileW (w_str (), &buf);
+      if (h != INVALID_HANDLE_VALUE)
+	{
+	  if (buf.nFileSizeHigh == 0)
+	    ret = buf.nFileSizeLow;
+	  FindClose (h);
+	}
+    }
+  else
+    {
+      WIN32_FIND_DATAA buf;
+      h = FindFirstFileA (fname.c_str (), &buf);
+      if (h != INVALID_HANDLE_VALUE)
+	{
+	  if (buf.nFileSizeHigh == 0)
+	    ret = buf.nFileSizeLow;
+	  FindClose (h);
+	}
     }
   return ret;
 #else

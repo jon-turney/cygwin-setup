@@ -22,6 +22,7 @@ static const char *cvsid =
 #endif
 
 #include <string.h>
+#include <wchar.h>
 #include "filemanip.h"
 #include "io_stream.h"
 #include "String++.h"
@@ -174,4 +175,64 @@ backslash(const std::string& s)
       *it = '\\';
     
   return rv;
+}
+
+wchar_t tfx_chars[] = {
+   0,   1,   2,   3,   4,   5,   6,   7,
+   8,   9,  10,  11,  12,  13,  14,  15,
+  16,  17,  18,  19,  20,  21,  22,  23,
+  24,  25,  26,  27,  28,  29,  30,  31,
+  32, '!', 0xf000 | '"', '#', '$', '%', '&',  39,
+  '(', ')', 0xf000 | '*', '+', ',', '-', '.', '\\',
+ '0', '1', '2', '3', '4', '5', '6', '7', 
+ '8', '9', 0xf000 | ':', ';', 0xf000 | '<', '=', 0xf000 | '>', 0xf000 | '?',
+ '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+ 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+ 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+ 'X', 'Y', 'Z', '[',  '\\', ']', '^', '_',
+ '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+ 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+ 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
+ 'x', 'y', 'z', '{', 0xf000 | '|', '}', '~', 127
+};
+
+static inline void
+transform_chars (register wchar_t *path, register wchar_t *path_end)
+{
+  for (; path <= path_end; ++path)
+    if (*path < 128)
+      *path = tfx_chars[*path];
+}
+
+#define isslash(c) ((c) == '\\' || (c) == '/')
+
+int
+mklongpath (wchar_t *tgt, const char *src, size_t len)
+{
+  wchar_t *tp;
+  size_t ret;
+
+  wcscpy (tgt, L"\\\\?\\");
+  tp = tgt + 4;
+  len -= 4;
+  if (isslash (src[0]) && isslash (src[1]))
+    {
+      wcscpy (tp, L"UNC");
+      tp += 3;
+      len -= 3;
+      ret = mbstowcs (tp, src + 1, len);
+      /* Malformed or not null terminated. */
+      if (ret == (size_t) -1 || ret == len)
+	return -1;
+      transform_chars (tp, tp + ret);
+    }
+  else
+    {
+      ret = mbstowcs (tp, src, len);
+      /* Malformed or not null terminated. */
+      if (ret == (size_t) -1 || ret == len)
+	return -1;
+      transform_chars (tp + 2, tp + ret - 2);
+    }
+  return 0;
 }
