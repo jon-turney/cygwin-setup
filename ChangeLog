@@ -1,5 +1,10 @@
 2008-08-13  Corinna Vinschen  <corinna@vinschen.de>
 
+	* install.cc (Installer::installOne): Skip 46 bytes type tar package
+	silently.
+
+2008-08-13  Corinna Vinschen  <corinna@vinschen.de>
+
 	* install.cc (Installer::installOne): Use MoveFileExW on NT.  Special
 	case for bug in Windows 2000.
 	* package_meta.cc (packagemeta::uninstall): Use wide char file functions

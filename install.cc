@@ -215,6 +215,8 @@ int _custom_MessageBox(HWND hWnd, LPCTSTR szText, LPCTSTR szCaption, UINT uType)
 #undef MessageBox
 #define MessageBox _custom_MessageBox
 
+static char all_null[512];
+
 /* install one source at a given prefix. */
 void
 Installer::installOne (packagemeta &pkgm, const packageversion &ver,
@@ -258,12 +260,16 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
         {
           /* Decompression succeeded but we couldn't grok it as a valid tar
              archive.  */
-          char c;
-          if (try_decompress->peek (&c, 1) < 0)
+          char c[512];
+	  ssize_t len;
+          if ((len = try_decompress->peek (c, 512)) < 0
+	      || !memcmp (c, all_null, len))
             /* In some cases, maintainers have uploaded bzipped
                0-byte files as dummy packages instead of empty tar files.
                This is common enough that we should not treat this as an
-               error condition.  */
+               error condition.
+	       Same goes for tar archives consisting of a big block of
+	       all zero bytes (the famous 46 bytes tar archives). */
             ;
           else
             {
