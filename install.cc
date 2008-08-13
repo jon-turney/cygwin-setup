@@ -406,9 +406,25 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                        * - we need a io method to get win32 paths
                        * or to wrap this system call
                        */
-                      if (!MoveFileEx (s.c_str (), d.c_str (),
-                                       MOVEFILE_DELAY_UNTIL_REBOOT |
-                                       MOVEFILE_REPLACE_EXISTING))
+		      WCHAR sname[s.size () + 7];
+		      WCHAR dname[d.size () + 7];
+		      /* Windows 2000 has a bug:  Prepending \\?\ does not
+		       * work in conjunction with MOVEFILE_DELAY_UNTIL_REBOOT.
+		       * So in case of Windows 2000 we just convert the path
+		       * to wide char and hope for the best. */
+		      if (OSMajorVersion () == 5 && OSMinorVersion () == 0)
+		      	{
+			  mbstowcs (sname, s.c_str (), s.size () + 7);
+			  mbstowcs (dname, d.c_str (), d.size () + 7);
+			}
+		      else
+			{
+			  mklongpath (sname, s.c_str (), s.size () + 7);
+			  mklongpath (dname, d.c_str (), d.size () + 7);
+			}
+                      if (!MoveFileExW (sname, dname,
+					MOVEFILE_DELAY_UNTIL_REBOOT |
+					MOVEFILE_REPLACE_EXISTING))
                         replaceOnRebootFailed (fn);
                       else
                         replaceOnRebootSucceeded (fn, rebootneeded);

@@ -170,24 +170,54 @@ packagemeta::uninstall ()
           }
 
 	  std::string d = cygpath ("/" + line);
-	  DWORD dw = GetFileAttributes (d.c_str());
-	  if (dw != INVALID_FILE_ATTRIBUTES
-	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+	  WCHAR wname[d.size () + 11]; /* Prefix + ".lnk". */
+	  if (IsWindowsNT ())
 	    {
-	      log (LOG_BABBLE) << "unlink " << d << endLog;
-	      SetFileAttributes (d.c_str(), dw & ~FILE_ATTRIBUTE_READONLY);
-	      DeleteFile (d.c_str());
+	      mklongpath (wname, d.c_str (), d.size () + 11);
+	      DWORD dw = GetFileAttributesW (wname);
+	      if (dw != INVALID_FILE_ATTRIBUTES
+		  && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+		{
+		  log (LOG_BABBLE) << "unlink " << d << endLog;
+		  SetFileAttributesW (wname, dw & ~FILE_ATTRIBUTE_READONLY);
+		  DeleteFileW (wname);
+		}
+	    }
+	  else
+	    {
+	      DWORD dw = GetFileAttributesA (d.c_str());
+	      if (dw != INVALID_FILE_ATTRIBUTES
+		  && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+		{
+		  log (LOG_BABBLE) << "unlink " << d << endLog;
+		  SetFileAttributesA (d.c_str(), dw & ~FILE_ATTRIBUTE_READONLY);
+		  DeleteFileA (d.c_str());
+		}
 	    }
 	  /* Check for Windows shortcut of same name. */
 	  d += ".lnk";
-	  dw = GetFileAttributes (d.c_str());
-	  if (dw != INVALID_FILE_ATTRIBUTES
-	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+	  if (IsWindowsNT ())
 	    {
-	      log (LOG_BABBLE) << "unlink " << d << endLog;
-	      SetFileAttributes (d.c_str(),
-				 dw & ~FILE_ATTRIBUTE_READONLY);
-	      DeleteFile (d.c_str());
+	      wcscat (wname, L".lnk");
+	      DWORD dw = GetFileAttributesW (wname);
+	      if (dw != INVALID_FILE_ATTRIBUTES
+		  && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+		{
+		  log (LOG_BABBLE) << "unlink " << d << endLog;
+		  SetFileAttributesW (wname, dw & ~FILE_ATTRIBUTE_READONLY);
+		  DeleteFileW (wname);
+		}
+	    }
+	  else
+	    {
+	      DWORD dw = GetFileAttributesA (d.c_str());
+	      if (dw != INVALID_FILE_ATTRIBUTES
+		  && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+		{
+		  log (LOG_BABBLE) << "unlink " << d << endLog;
+		  SetFileAttributesA (d.c_str(), dw & ~FILE_ATTRIBUTE_READONLY);
+		  DeleteFileA (d.c_str());
+		}
 	    }
 	  line = installed.getnextfile ();
 	}
@@ -200,7 +230,14 @@ packagemeta::uninstall ()
       {
         it--;
         std::string d = cygpath("/" + *it);
-        if (RemoveDirectory (d.c_str()))
+	WCHAR wname[d.size () + 11];
+	if (IsWindowsNT ())
+	  {
+	    mklongpath (wname, d.c_str (), d.size () + 11);
+	    if (RemoveDirectoryW (wname))
+	      log (LOG_BABBLE) << "rmdir " << d << endLog;
+	  }
+        else if (RemoveDirectoryA (d.c_str()))
           log (LOG_BABBLE) << "rmdir " << d << endLog;
       }
     }
