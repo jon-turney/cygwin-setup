@@ -1,3 +1,15 @@
+2008-08-14  Corinna Vinschen  <corinna@vinschen.de>
+
+	* mount.cc (unconvert_slashes): New inline function.
+	(skip_ws): New inline function.
+	(find_ws): New inline function.
+	(conv_fstab_spaces): New inline function.
+	(from_fstab_line): New function to read single line from fstab file.
+	(from_fstab): New function to read /etc/fstab file and fill mount
+	table.
+	(read_mounts_nt): Call from_fstab after getting setup/rootdir from
+	registry.  Only call add_usr_mnts if no fstab file found.
+
 2008-08-13  Corinna Vinschen  <corinna@vinschen.de>
 
 	* install.cc (Installer::installOne): Skip 46 bytes type tar package

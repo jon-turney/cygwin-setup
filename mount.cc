@@ -22,6 +22,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 #endif
 
 #include "win32.h"
+#include "filemanip.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -476,6 +477,134 @@ read_mounts_9x ()
     }
 }
 
+inline char *
+unconvert_slashes (char *in_name)
+{
+  char *name = in_name;
+  while ((name = strchr (name, '/')) != NULL)
+    *name++ = '\\';
+  return in_name;
+}
+
+inline char *
+skip_ws (char *in)
+{
+  while (*in == ' ' || *in == '\t')
+    ++in;
+  return in;
+}
+
+inline char *
+find_ws (char *in)
+{
+  while (*in && *in != ' ' && *in != '\t')
+    ++in;
+  return in;
+}
+
+inline char *
+conv_fstab_spaces (char *field)
+{
+  register char *sp = field;
+  while (sp = strstr (sp, "\\040"))
+    {
+      *sp++ = ' ';
+      memmove (sp, sp + 3, strlen (sp + 3) + 1);
+    }
+  return field;
+}
+
+static bool
+from_fstab_line (mnt *m, char *line)
+{
+  char *native_path, *posix_path, *fs_type;
+
+  /* First field: Native path. */
+  char *c = skip_ws (line);
+  if (!*c || *c == '#')
+    return false;
+  char *cend = find_ws (c);
+  *cend = '\0';
+  native_path = conv_fstab_spaces (c);
+  /* Second field: POSIX path. */
+  c = skip_ws (cend + 1);
+  if (!*c)
+    return false;
+  cend = find_ws (c);
+  *cend = '\0';
+  posix_path = conv_fstab_spaces (c);
+  /* Third field: FS type. */
+  c = skip_ws (cend + 1);
+  if (!*c)
+    return false;
+  cend = find_ws (c);
+  *cend = '\0';
+  fs_type = c;
+
+  if (strcmp (fs_type, "cygdrive"))
+    {
+      for (mnt *sm = mount_table; sm < m; ++sm)
+	if (sm->posix == std::string (posix_path))
+	  {
+	    sm->native = std::string (unconvert_slashes (native_path));
+	    return false;
+	  }
+      m->posix = std::string (posix_path);
+      m->native = std::string (unconvert_slashes (native_path));
+    }
+  return true;
+}
+
+#define BUFSIZE 65536
+
+static bool
+from_fstab (mnt *m, std::string in_path)
+{
+  char buf[BUFSIZE];
+  WCHAR path[in_path.size () + 7];
+
+  mklongpath (path, in_path.c_str (), in_path.size () + 7);
+  wcscat (path, L"\\etc\\fstab");
+  HANDLE h = CreateFileW (path, GENERIC_READ, FILE_SHARE_READ, NULL,
+                          OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  if (h == INVALID_HANDLE_VALUE)
+    return false;
+  char *got = buf;
+  DWORD len = 0;
+  /* Using BUFSIZE-2 leaves space to append two \0. */
+  while (ReadFile (h, got, BUFSIZE - 2 - (got - buf), &len, NULL))
+    {
+      char *end;
+
+      /* Set end marker. */
+      got[len] = got[len + 1] = '\0';
+      /* Set len to the absolute len of bytes in buf. */
+      len += got - buf;
+      /* Reset got to start reading at the start of the buffer again. */
+      got = buf;
+      while (got < buf + len && (end = strchr (got, '\n')))
+        {
+          end[end[-1] == '\r' ? -1 : 0] = '\0';
+          if (from_fstab_line (m, got))
+            ++m;
+          got = end + 1;
+        }
+      if (len < BUFSIZE - 1)
+        break;
+      /* We have to read once more.  Move remaining bytes to the start of
+         the buffer and reposition got so that it points to the end of
+         the remaining bytes. */
+      len = buf + len - got;
+      memmove (buf, got, len);
+      got = buf + len;
+      buf[len] = buf[len + 1] = '\0';
+    }
+  if (got > buf && from_fstab_line (m, got))
+    ++m;
+  CloseHandle (h);
+  return true;
+}
+
 static void
 add_usr_mnts (struct mnt *m)
 {
@@ -534,10 +663,9 @@ read_mounts_nt (const std::string val)
 	      m->native = std::string (aBuffer);
 	      m->posix = "/";
 	      root_scope = isuser ? IDC_ROOT_USER : IDC_ROOT_SYSTEM;
-	      root_here = m;
-
-	      /* TODO: Read /etc/fstab and skip add_usr_mnts if available. */
-	      add_usr_mnts (++m);
+	      root_here = m++;
+	      if (!from_fstab (m, root_here->native))
+		add_usr_mnts (m);
 	      break;
 	    }
 	  RegCloseKey (key);
