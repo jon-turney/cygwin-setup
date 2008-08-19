@@ -88,13 +88,11 @@ public:
   virtual int seek (long where, io_stream_seek_t whence);
   /* try guessing this one */
   virtual int error ();
-  virtual int get_mtime ();
+  virtual time_t get_mtime ();
+  virtual mode_t get_mode ();
   virtual size_t get_size () {return state.file_length;};
-  virtual int set_mtime (int)
-  {
-    return 1;
-  };
-    virtual ~ archive_tar_file ();
+  virtual int set_mtime_and_mode (time_t, mode_t) { return 1; };
+  virtual ~ archive_tar_file ();
 private:
     tar_state & state;
 };
@@ -122,14 +120,12 @@ public:
   virtual const std::string next_file_name ();
   virtual archive_file_t next_file_type ();
   /* returns the mtime of the archive file, not of the current file */
-  virtual int get_mtime ();
+  virtual time_t get_mtime ();
+  virtual mode_t get_mode ();
   /* nonsense for a tarball */
   virtual size_t get_size () {return 0;};
   /* only of use when we support writing to tar */
-  virtual int set_mtime (int)
-  {
-    return 1;
-  };
+  virtual int set_mtime_and_mode (time_t, mode_t) { return 1; };
   virtual const std::string linktarget ();
   virtual int skip_file ();
   /* if you are still needing these hints... give up now! */

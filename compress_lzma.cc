@@ -258,18 +258,26 @@ compress_lzma::error ()
 }
 
 int
-compress_lzma::set_mtime (int time)
+compress_lzma::set_mtime_and_mode (time_t mtime, mode_t mode)
 {
   if (original)
-    return original->set_mtime (time);
+    return original->set_mtime_and_mode (mtime, mode);
   return 1;
 }
 
-int
+time_t
 compress_lzma::get_mtime ()
 {
   if (original)
       return original->get_mtime ();
+  return 0;
+}
+
+mode_t
+compress_lzma::get_mode ()
+{
+  if (original)
+    return original->get_mode ();
   return 0;
 }
 

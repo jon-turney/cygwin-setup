@@ -97,7 +97,7 @@ archive::extract_file (archive * source, const std::string& prefixURL,
       {
 
 	/* TODO: remove in-the-way directories via mkpath_p */
-	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
+	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
 	{
 	  log (LOG_TIMESTAMP) << "Failed to make the path for " << destfilename
 	  		      << endLog;
@@ -128,14 +128,14 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	    io_stream::remove (destfilename);
 	    return 1;
 	  }
-	tmp->set_mtime (in->get_mtime ());
+	tmp->set_mtime_and_mode (in->get_mtime (), in->get_mode ());
 	delete in;
 	delete tmp;
       }
       break;
     case ARCHIVE_FILE_SYMLINK:
       {
-	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
+	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
 	{
 	  log (LOG_TIMESTAMP) << "Failed to make the path for %s" 
 	    		      << destfilename << endLog;
@@ -151,7 +151,7 @@ archive::extract_file (archive * source, const std::string& prefixURL,
       }
     case ARCHIVE_FILE_HARDLINK:
       {
-	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename))
+	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
 	{
 	  log (LOG_TIMESTAMP) << "Failed to make the path for %s"
 	    		      << destfilename << endLog;
@@ -172,8 +172,11 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	strcpy (path, destfilename.c_str());
 	while (path[0] && path[strlen (path) - 1] == '/')
 	  path[strlen (path) - 1] = 0;
+	io_stream *in = source->extract_file ();
+	int ok = io_stream::mkpath_p (PATH_TO_DIR, path, in->get_mode ());
+	delete in;
 	source->skip_file ();
-	return io_stream::mkpath_p (PATH_TO_DIR, path);
+	return ok;
       }
     case ARCHIVE_FILE_INVALID:
       source->skip_file ();

@@ -32,7 +32,7 @@ public:
   virtual io_stream *open (const std::string&, const std::string&) const = 0;
   virtual ~IOStreamProvider (){}
   virtual int move (const std::string&, const std::string&) const = 0;
-  virtual int mkdir_p (path_type_t isadir, const std::string& path) const = 0;
+  virtual int mkdir_p (path_type_t isadir, const std::string& path, mode_t mode) const = 0;
   std::string key; // Do not set - managed automatically.
 protected:
   IOStreamProvider(){} // no base instances

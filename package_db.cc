@@ -134,7 +134,7 @@ packagedb::flush ()
   char const *odbn = "cygfile:///etc/setup/installed.db";
   char const *ndbn = "cygfile:///etc/setup/installed.db.new";
 
-  io_stream::mkpath_p (PATH_TO_FILE, ndbn);
+  io_stream::mkpath_p (PATH_TO_FILE, ndbn, 0755);
 
   io_stream *ndb = io_stream::open (ndbn, "wb");
 

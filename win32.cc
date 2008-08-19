@@ -20,9 +20,102 @@ static const char *cvsid =
 
 #include "win32.h"
 #include <memory>
+#include <malloc.h>
 #include "LogFile.h"
 
+void
+SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
+{
+  PSECURITY_DESCRIPTOR in_sd, out_sd;
+  DWORD len, attribute;
+  BOOL dummy;
+  PSID owner_sid = NULL;
+  PSID group_sid = NULL;
+  PACL acl;
 
+  if (!IsWindowsNT ())
+    return;
+  /* Get file's owner and group. */
+  len = sizeof (SECURITY_DESCRIPTOR) + 2 * MAX_SID_LEN;
+  in_sd = (PSECURITY_DESCRIPTOR) alloca (len);
+  if (!GetKernelObjectSecurity (fh, OWNER_SECURITY_INFORMATION
+				    | GROUP_SECURITY_INFORMATION,
+				in_sd, len, &len))
+    {
+      log (LOG_TIMESTAMP) << "GetKernelObjectSecurity(" << fname << ") failed: "
+			  << GetLastError () << endLog;
+      return;
+    }
+  if (!GetSecurityDescriptorOwner (in_sd, &owner_sid, &dummy))
+    log (LOG_TIMESTAMP) << "GetSecurityDescriptorOwner(" << fname
+    			<< ") failed: " << GetLastError () << endLog;
+  if (!GetSecurityDescriptorGroup (in_sd, &group_sid, &dummy))
+    log (LOG_TIMESTAMP) << "GetSecurityDescriptorGroup(" << fname
+    			<< ") failed: " << GetLastError () << endLog;
+
+  /* Build new self-relative SD */
+  len = sizeof (ACL) +
+	3 * (sizeof (ACCESS_ALLOWED_ACE) - sizeof (DWORD));
+  len += GetLengthSid (owner_sid);
+  len += GetLengthSid (group_sid);
+  len += GetLengthSid (nt_sec.everyOneSID.theSID ());
+  out_sd = (PSECURITY_DESCRIPTOR) alloca (sizeof (SECURITY_DESCRIPTOR) + len);
+  if (!InitializeSecurityDescriptor (out_sd, SECURITY_DESCRIPTOR_REVISION))
+    log (LOG_TIMESTAMP) << "InitializeSecurityDescriptor(" << fname
+    			<< ") failed: " << GetLastError () << endLog;
+  if (OSMajorVersion () >= 5)
+    out_sd->Control |= SE_DACL_PROTECTED;
+  if (!InitializeAcl (acl = (PACL) (out_sd + 1), len, ACL_REVISION))
+    log (LOG_TIMESTAMP) << "InitializeAcl(" << fname << ") failed: "
+    			<< GetLastError () << endLog;
+
+  /* Fill ACL with almost POSIX-like permissions.
+     Note that the current user always requires write permissions, otherwise
+     creating files in directories with restricted permissions fails. */
+  attribute = STANDARD_RIGHTS_ALL | FILE_GENERIC_READ | FILE_GENERIC_WRITE;
+  if (mode & 0100) // S_IXUSR
+    attribute |= FILE_GENERIC_EXECUTE;
+  if ((mode & 0300) == 0300) // S_IWUSR | S_IXUSR
+    attribute |= FILE_DELETE_CHILD;
+  if (!AddAccessAllowedAce (acl, ACL_REVISION, attribute, owner_sid))
+    log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+    			<< ", owner) failed: " << GetLastError () << endLog;
+  attribute = STANDARD_RIGHTS_READ | FILE_READ_ATTRIBUTES;
+  if (mode & 0040) // S_IRGRP
+    attribute |= FILE_GENERIC_READ;
+  if (mode & 0020) // S_IWGRP
+    attribute |= FILE_GENERIC_WRITE;
+  if (mode & 0010) // S_IXGRP
+    attribute |= FILE_GENERIC_EXECUTE;
+  if ((mode & 01030) == 00030) // S_IWGRP | S_IXGRP, !S_ISVTX
+    attribute |= FILE_DELETE_CHILD;
+  if (!AddAccessAllowedAce (acl, ACL_REVISION, attribute, group_sid))
+    log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+    			<< ", group) failed: " << GetLastError () << endLog;
+  attribute = STANDARD_RIGHTS_READ | FILE_READ_ATTRIBUTES;
+  if (mode & 0004) // S_IROTH
+    attribute |= FILE_GENERIC_READ;
+  if (mode & 0002) // S_IWOTH
+    attribute |= FILE_GENERIC_WRITE;
+  if (mode & 0001) // S_IXOTH
+    attribute |= FILE_GENERIC_EXECUTE;
+  if ((mode & 01003) == 00003) // S_IWOTH | S_IXOTH, !S_ISVTX
+    attribute |= FILE_DELETE_CHILD;
+  if (!AddAccessAllowedAce (acl, ACL_REVISION, attribute,
+			    nt_sec.everyOneSID.theSID ()))
+    log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+    			<< ", everyone) failed: " << GetLastError () << endLog;
+
+  /* Set SD's DACL to just created ACL. */
+  if (!SetSecurityDescriptorDacl (out_sd, TRUE, acl, FALSE))
+    log (LOG_TIMESTAMP) << "SetSecurityDescriptorDacl(" << fname
+    			<< ") failed: " << GetLastError () << endLog;
+
+  /* Write DACL back to file. */
+  if (!SetKernelObjectSecurity (fh, DACL_SECURITY_INFORMATION, out_sd))
+    log (LOG_TIMESTAMP) << "SetKernelObjectSecurity(" << fname << ") failed: "
+    			<< GetLastError () << endLog;
+}
 
 void
 TokenGroupCollection::populate ()
@@ -48,6 +141,8 @@ TokenGroupCollection::find (SIDWrapper const &aSID) const
       return true;
   return false;
 }
+
+NTSecurity nt_sec;
 
 void
 NTSecurity::NoteFailedAPI (const std::string &api)
@@ -112,7 +207,8 @@ NTSecurity::setDefaultDACL ()
 
   /* Get the processes access token. */
   if (!OpenProcessToken (GetCurrentProcess (),
-                        TOKEN_READ | TOKEN_ADJUST_DEFAULT, &token.theHANDLE ()))
+			 TOKEN_READ | TOKEN_ADJUST_DEFAULT
+			 | TOKEN_ADJUST_PRIVILEGES, &token.theHANDLE ()))
     {
       NoteFailedAPI ("OpenProcessToken");
       failed (true);
@@ -131,8 +227,35 @@ NTSecurity::setDefaultDACL ()
 void
 NTSecurity::setDefaultSecurity ()
 {
-
   setDefaultDACL ();
+
+  /* Enable backup privileges if available.  Must run after setDefaultDACL
+     to have a valid token handle. */
+  LUID backup, restore;
+  if (!LookupPrivilegeValue (NULL, SE_BACKUP_NAME, &backup))
+      NoteFailedAPI ("LookupPrivilegeValue");
+  else if (!LookupPrivilegeValue (NULL, SE_RESTORE_NAME, &restore))
+      NoteFailedAPI ("LookupPrivilegeValue");
+  else
+    {
+      PTOKEN_PRIVILEGES new_privs;
+
+      new_privs = (PTOKEN_PRIVILEGES) alloca (sizeof (TOKEN_PRIVILEGES)
+					      + sizeof (LUID_AND_ATTRIBUTES));
+      new_privs->PrivilegeCount = 2;
+      new_privs->Privileges[0].Luid = backup;
+      new_privs->Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+      new_privs->Privileges[1].Luid = restore;
+      new_privs->Privileges[1].Attributes = SE_PRIVILEGE_ENABLED;
+      if (!AdjustTokenPrivileges (token.theHANDLE (), FALSE, new_privs,
+				  0, NULL, NULL))
+	NoteFailedAPI ("AdjustTokenPrivileges");
+      else if (GetLastError () == ERROR_NOT_ALL_ASSIGNED)
+	log (LOG_TIMESTAMP) << "User has NO backup/restore rights" << endLog;
+      else 
+	log (LOG_TIMESTAMP) << "User has backup/restore rights" << endLog;
+    }
+
   if (failed ())
     return;
 
@@ -152,6 +275,7 @@ NTSecurity::setDefaultSecurity ()
     }
 
   SID_IDENTIFIER_AUTHORITY sid_auth;
+
   sid_auth = (SID_IDENTIFIER_AUTHORITY) { SECURITY_NT_AUTHORITY };
   /* Get the SID for "Administrators" S-1-5-32-544 */
   if (!AllocateAndInitializeSid (&sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 

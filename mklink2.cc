@@ -48,7 +48,7 @@ mkcygsymlink_9x (const char *from, const char *to)
   unsigned long w;
 
   HANDLE h = CreateFileA (from, GENERIC_WRITE, 0, 0, CREATE_NEW,
-		   FILE_ATTRIBUTE_NORMAL, 0);
+			  FILE_ATTRIBUTE_NORMAL, 0);
   if (h == INVALID_HANDLE_VALUE)
     return 1;
   strcpy (buf, SYMLINK_COOKIE);
@@ -73,14 +73,17 @@ mkcygsymlink_nt (const char *from, const char *to)
   WCHAR wfrom[len];
 
   mklongpath (wfrom, from, len);
-  HANDLE h = CreateFileW (wfrom, GENERIC_WRITE, 0, 0, CREATE_NEW,
-		   FILE_ATTRIBUTE_NORMAL, 0);
+  HANDLE h = CreateFileW (wfrom, STANDARD_RIGHTS_ALL | GENERIC_WRITE,
+			  0, 0, CREATE_NEW,
+			  FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS,
+			  0);
   if (h == INVALID_HANDLE_VALUE)
     return 1;
   strcpy (buf, SYMLINK_COOKIE);
   strcat (buf, to);
   if (WriteFile (h, buf, strlen (buf) + 1, &w, NULL))
     {
+      SetPosixPerms (from, h, 0644);
       CloseHandle (h);
       SetFileAttributesW (wfrom, FILE_ATTRIBUTE_SYSTEM);
       return 0;

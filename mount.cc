@@ -566,7 +566,9 @@ from_fstab (mnt *m, std::string in_path)
   mklongpath (path, in_path.c_str (), in_path.size () + 7);
   wcscat (path, L"\\etc\\fstab");
   HANDLE h = CreateFileW (path, GENERIC_READ, FILE_SHARE_READ, NULL,
-                          OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+                          OPEN_EXISTING,
+			  FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS,
+			  NULL);
   if (h == INVALID_HANDLE_VALUE)
     return false;
   char *got = buf;

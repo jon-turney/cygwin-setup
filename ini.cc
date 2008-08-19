@@ -264,7 +264,7 @@ do_remote_ini (HWND owner)
 	  const std::string fp = "file://" + local_dir + "/" +
 				   rfc1738_escape_part (n->url) +
 				   "/" + SETUP_INI_FILENAME;
-	  io_stream::mkpath_p (PATH_TO_FILE, fp);
+	  io_stream::mkpath_p (PATH_TO_FILE, fp, 0755);
 	  if (io_stream *out = io_stream::open (fp, "wb"))
 	    {
               ini_file->seek (0, IO_SEEK_SET);
@@ -298,7 +298,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
 
   if (get_root_dir ().c_str())
     {
-      io_stream::mkpath_p (PATH_TO_DIR, "cygfile:///etc/setup");
+      io_stream::mkpath_p (PATH_TO_DIR, "cygfile:///etc/setup", 0755);
 
       unsigned int old_timestamp = 0;
       io_stream *ots =

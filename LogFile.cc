@@ -156,7 +156,7 @@ LogFile::log_save (int babble, const std::string& filename, bool append)
     return;
   been_here = 1;
 
-  io_stream::mkpath_p (PATH_TO_FILE, "file://" + filename);
+  io_stream::mkpath_p (PATH_TO_FILE, "file://" + filename, 0755);
 
   io_stream *f = io_stream::open("file://" + filename, append ? "at" : "wt");
   if (!f)

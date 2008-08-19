@@ -157,11 +157,7 @@ main (int argc, char **argv)
     /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
        no idea of access control lists and security at all.  */
     if (IsWindowsNT ())
-      {
-          NTSecurity worker;
-          worker.setDefaultSecurity ();
-      }
-
+      nt_sec.setDefaultSecurity ();
 
     // Initialize common controls
     InitCommonControls ();

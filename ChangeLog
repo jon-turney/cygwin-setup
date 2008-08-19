@@ -1,3 +1,70 @@
+2008-08-19  Corinna Vinschen  <corinna@vinschen.de>
+
+	* install.cc (struct std_dirs_t): New type.
+	(class Installer): Change type of StandardDirs to std_dirs_t.
+	(Installer::StandardDirs): Store filename and mode.
+	(do_install_thread): Call io_stream::mkpath_p with name and mode from
+	Installer::StandardDirs.
+	* main.cc (main): Call setDefaultSecurity on global nt_sec.
+	* IOStreamProvider.h (IOStreamProvider::mkdir_p): Add mode parameter.
+	* LogFile.cc (LogFile::log_save): Call io_stream::mkpath_p with 0755
+	mode.
+	* UserSettings.cc (UserSettings::settingFileForSave): Ditto.
+	* desktop.cc (make_link): Ditto.
+	* download.cc (download_one): Ditto.
+	* ini.cc (do_remote_ini): Ditto.
+	(do_ini_thread): Ditto.
+	* package_db.cc (packagedb::flush): Ditto.
+	* archive.cc (archive::extract_file): Ditto.  Call set_mtime_and_mode
+	with mode from archive.  Add code to handle directory permissions as
+	well.
+	* archive_tar.cc (archive_tar::get_mtime): Return time_t.  Reformat.
+	(archive_tar::get_mode): New method.
+	* archive_tar.h (class archive_tar_file): Fix prototypes.  Replace
+	prototype for set_mtime with prototype for set_mtime_and_mode.
+	(class archive_tar): Ditto.
+	* archive_tar_file.cc (archive_tar_file::get_mtime): Return time_t.
+	(archive_tar_file::get_mode): New method returning mode from tar header.
+	* compress_bz.cc (compress_bz::set_mtime_and_mode): Replace set_mtime.
+	(compress_bz::get_mtime): Return time_t.
+	(compress_bz::get_mode): New function.
+	* compress_gz.cc: Ditto.
+	* compress_lzma.cc: Ditto.
+	* io_stream.cc (io_stream::mkpath_p): Take additional file mode.
+	Call mkdir_p with additional file mode.
+	* io_stream_cygfile.cc (CygFileProvider::mkdir_p): Take additional file
+	mode.
+	(cygmkdir_p): Ditto.  Call mkdir_p with additional file mode.
+	(io_stream_cygfile::set_mtime_and_mode): Replace set_mtime.  Call
+	SetPosixPerms.
+	* io_stream_file.cc (FileProvider::mkdir_p): Take additional file mode.
+	(io_stream_file::set_mtime_and_mode): Replace set_mtime.
+	* mkdir.cc (init_ntfuncs): New function to initialize function pointers
+	from ntdll.dll.
+	(mkdir_p): Take additional file mode.  On NT, use NT functions to create
+	directory.  Call SetPosixPerms.
+	* compress_bz.h: Change prototypes accordingly.
+	* compress_gz.h: Ditto.
+	* compress_lzma.h: Ditto.
+	* io_stream.h: Ditto.
+	* io_stream_cygfile.h: Ditto.
+	* io_stream_file.h: Ditto.
+	* io_stream_memory.h: Ditto.
+	* mkdir.h: Ditto.
+	* mklink2.cc (mkcygsymlink_nt): Open file with STANDARD_RIGHTS_ALL
+	access and FILE_FLAG_BACKUP_SEMANTICS flag.  Call SetPosixPerms.
+	* mount.cc (from_fstab): Open file with FILE_FLAG_BACKUP_SEMANTICS.
+	* script.cc (OutputLog::OutputLog): Call io_stream::mkpath_p with 0755
+	mode.  Open file with FILE_FLAG_BACKUP_SEMANTICS.
+	* win32.cc (SetPosixPerms): New function to set POSIX-like permissions.
+	(nt_sec): New global NTSecurity variable.
+	(NTSecurity::setDefaultDACL): Open token with TOKEN_ADJUST_PRIVILEGES.
+	(NTSecurity::setDefaultSecurity): Enable SE_BACKUP_NAME and
+	SE_RESTORE_NAME privileges if available.
+	* win32.h (SetPosixPerms): Add prototype.
+	(class NTSecurity): Make everyOneSID and administratorsSID public.
+	(nt_sec): Declare.
+
 2008-08-14  Corinna Vinschen  <corinna@vinschen.de>
 
 	* mount.cc (unconvert_slashes): New inline function.

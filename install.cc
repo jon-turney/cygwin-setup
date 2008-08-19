@@ -75,10 +75,15 @@ static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot",
 				     "Disable replacing in-use files on next "
 				     "reboot.");
 
+struct std_dirs_t {
+  const char *name;
+  mode_t mode;
+};
+
 class Installer
 {
   public:
-    static const char *StandardDirs[];
+    static std_dirs_t StandardDirs[];
     Installer();
     void initDialog();
     void progress (int bytes);
@@ -113,24 +118,24 @@ Installer::progress (int bytes)
       Progress.SetBar2 (total_bytes_sofar + bytes, total_bytes);
 }
 
-const char *
+std_dirs_t
 Installer::StandardDirs[] = {
-  "/bin",
-  "/etc",
-  "/lib",
-  "/tmp",
-  "/usr",
-  "/usr/bin",
-  "/usr/lib",
-  "/usr/src",
-  "/usr/local",
-  "/usr/local/bin",
-  "/usr/local/etc",
-  "/usr/local/lib",
-  "/usr/tmp",
-  "/var/run",
-  "/var/tmp",
-  0
+  { "/bin", 0755 },
+  { "/etc", 0755 },
+  { "/lib", 0755 },
+  { "/tmp", 01777 },
+  { "/usr", 0755 },
+  { "/usr/bin", 0755 },
+  { "/usr/lib", 0755 },
+  { "/usr/src", 0755 },
+  { "/usr/local", 0755 },
+  { "/usr/local/bin", 0755 },
+  { "/usr/local/etc", 0755 },
+  { "/usr/local/lib", 0755 },
+  { "/usr/tmp", 01777 },
+  { "/var/run", 0755 },
+  { "/var/tmp", 01777 },
+  { NULL, 0 }
 };
 
 static int num_installs, num_uninstalls;
@@ -503,13 +508,15 @@ do_install_thread (HINSTANCE h, HWND owner)
   rebootneeded = false;
 
   io_stream::mkpath_p (PATH_TO_DIR,
-                       std::string("file://") + std::string(get_root_dir()));
+                       std::string("file://") + std::string(get_root_dir()),
+		       0755);
 
-  for (i = 0; Installer::StandardDirs[i]; i++)
+  for (i = 0; Installer::StandardDirs[i].name; i++)
   {
-    std::string p = cygpath (Installer::StandardDirs[i]);
+    std::string p = cygpath (Installer::StandardDirs[i].name);
     if (p.size())
-      io_stream::mkpath_p (PATH_TO_DIR, "file://" + p);
+      io_stream::mkpath_p (PATH_TO_DIR, "file://" + p,
+			   Installer::StandardDirs[i].mode);
   }
 
   /* Create /var/run/utmp */

@@ -112,7 +112,7 @@ public:
   /* Create a directory, and any needed parent directories.
    * returns 1 on failure.
    */
-  static int mkpath_p (path_type_t, const std::string& );
+  static int mkpath_p (path_type_t, const std::string&, mode_t);
   /* link from, to, type. Returns 1 on failure */
   static int mklink (const std::string& , const std::string& , io_stream_link_t);
   /* copy from stream to stream - 0 on success */
@@ -125,9 +125,10 @@ public:
   /* set the modification time of a file - returns 1 on failure
    * may distrupt internal state - use after all important io is complete
    */
-  virtual int set_mtime (int) = 0;
+  virtual int set_mtime_and_mode (time_t, mode_t) = 0;
   /* get the mtime for a file TODO make this a stat(0 style call */
-  virtual int get_mtime () = 0;
+  virtual time_t get_mtime () = 0;
+  virtual mode_t get_mode () = 0;
   /* How long is the file? 0 means check error(). if error() is 0, the file
    * is 0 bytes long. Otherwise the file length cannot be determined
    */

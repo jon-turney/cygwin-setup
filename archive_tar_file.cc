@@ -121,10 +121,18 @@ archive_tar_file::error ()
   return state.lasterr;
 }
 
-int
+time_t
 archive_tar_file::get_mtime ()
 {
-  int mtime;
-  sscanf (state.tar_header.mtime, "%o", &mtime);
-  return mtime;
+  unsigned long mtime;
+  sscanf (state.tar_header.mtime, "%lo", &mtime);
+  return (time_t) mtime;
+}
+
+mode_t
+archive_tar_file::get_mode ()
+{
+  unsigned long mode;
+  sscanf (state.tar_header.mode, "%lo", &mode);
+  return (mode_t) mode;
 }

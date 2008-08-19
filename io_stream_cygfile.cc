@@ -51,8 +51,8 @@ public:
   ~CygFileProvider (){}
   int move (const std::string& a,const std::string& b) const
     {return io_stream_cygfile::move (a, b);}
-  int mkdir_p (path_type_t isadir, const std::string& path) const
-    {return cygmkdir_p (isadir, path);}
+  int mkdir_p (path_type_t isadir, const std::string& path, mode_t mode) const
+    {return cygmkdir_p (isadir, path, mode);}
 protected:
   CygFileProvider() // no creating this
     {
@@ -369,7 +369,7 @@ io_stream_cygfile::error ()
 }
 
 int
-cygmkdir_p (path_type_t isadir, const std::string& _name)
+cygmkdir_p (path_type_t isadir, const std::string& _name, mode_t mode)
 {
   if (!_name.size())
     return 1;
@@ -378,11 +378,11 @@ cygmkdir_p (path_type_t isadir, const std::string& _name)
   if (!get_root_dir ().size())
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
-  return mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, cygpath (name).c_str());
+  return mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, cygpath (name).c_str(), mode);
 }
 
 int
-io_stream_cygfile::set_mtime (int mtime)
+io_stream_cygfile::set_mtime_and_mode (time_t mtime, mode_t mode)
 {
   if (!fname.size())
     return 1;
@@ -394,7 +394,7 @@ io_stream_cygfile::set_mtime (int mtime)
   ftime.dwLowDateTime = ftimev;
   HANDLE h;
   if (IsWindowsNT ())
-    h = CreateFileW (w_str (), GENERIC_WRITE,
+    h = CreateFileW (w_str (), STANDARD_RIGHTS_ALL | GENERIC_WRITE,
 		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
 		     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
   else
@@ -404,6 +404,7 @@ io_stream_cygfile::set_mtime (int mtime)
   if (h != INVALID_HANDLE_VALUE)
     {
       SetFileTime (h, 0, 0, &ftime);
+      SetPosixPerms (fname.c_str (), h, mode);
       CloseHandle (h);
       return 0;
     }

@@ -96,12 +96,13 @@ OutputLog::OutputLog (const std::string& filename)
   sa.bInheritHandle = TRUE;
   sa.lpSecurityDescriptor = NULL;
 
-  if (mkdir_p (0, backslash (cygpath (_filename)).c_str()))
+  if (mkdir_p (0, backslash (cygpath (_filename)).c_str(), 0755))
     return;
 
   _handle = CreateFile (backslash (cygpath (_filename)).c_str(),
       GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE,
-      &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+      &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS,
+      NULL);
 
   if (_handle == INVALID_HANDLE_VALUE)
     {

@@ -33,8 +33,9 @@ public:
   virtual int seek (long where, io_stream_seek_t whence); /* not implemented */
   virtual int error ();
   virtual const char *next_file_name () { return NULL; };
-  virtual int set_mtime (int);
-  virtual int get_mtime ();
+  virtual int set_mtime_and_mode (time_t, mode_t);
+  virtual time_t get_mtime ();
+  virtual mode_t get_mode ();
   virtual size_t get_size () {return 0;};
   virtual ~compress_lzma ();
   static bool is_lzma(void *buffer, size_t len);

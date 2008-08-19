@@ -316,10 +316,18 @@ archive_tar::extract_file ()
   return rv;
 }
 
-int
+time_t
 archive_tar::get_mtime ()
 {
-      if (state.parent)
-	            return state.parent->get_mtime ();
-            return 0;
+  if (state.parent)
+    return state.parent->get_mtime ();
+  return 0;
+}
+
+mode_t
+archive_tar::get_mode ()
+{
+  if (state.parent)
+    return state.parent->get_mode ();
+  return 0;
 }

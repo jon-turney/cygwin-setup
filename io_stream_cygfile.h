@@ -43,12 +43,10 @@ public:
   virtual int seek (long where, io_stream_seek_t whence);
   /* can't guess, oh well */
   virtual int error ();
-  virtual int set_mtime (int);
+  virtual int set_mtime_and_mode (time_t, mode_t);
   /* not relevant yet */
-  virtual int get_mtime ()
-  {
-    return 0;
-  };
+  virtual time_t get_mtime () { return 0; };
+  virtual mode_t get_mode () { return 0; };
   virtual size_t get_size ();
   static int move (const std::string& ,const std::string& );
 private:
@@ -56,7 +54,7 @@ private:
   io_stream_cygfile ()
   {
   };
-  friend int cygmkdir_p (path_type_t isadir, const std::string& _name);
+  friend int cygmkdir_p (path_type_t isadir, const std::string& _name, mode_t mode);
   static std::string normalise (const std::string& unixpath);
   FILE *fp;
   int lasterr;

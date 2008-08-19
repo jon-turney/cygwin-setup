@@ -54,6 +54,11 @@
 /* Maximum size of a SID on NT/W2K. */
 #define MAX_SID_LEN	40
 
+/* Helper function to set POSIX-like permissions on files.  The fname
+   is only used for printing log output.  The function requires an open
+   HANDLE with sufficient permissions (READ_DAC | WRITE_DAC). */
+void SetPosixPerms (const char *fname, HANDLE fh, mode_t mode);
+
 /* Computes the size of an ACL in relation to the number of ACEs it
    should contain. */
 #define TOKEN_ACL_SIZE(cnt) (sizeof (ACL) + \
@@ -121,6 +126,8 @@ public:
   NTSecurity& operator= (NTSecurity const &);
   NTSecurity (NTSecurity const &);
 
+  SIDWrapper everyOneSID, administratorsSID;
+
   void NoteFailedAPI (const std::string &);
   void setDefaultSecurity();
 private:
@@ -128,7 +135,7 @@ private:
   bool const &failed () const { return failed_; }
   void initialiseEveryOneSID ();
   void setDefaultDACL ();
-  SIDWrapper everyOneSID, administratorsSID, usid;
+  SIDWrapper usid;
   HANDLEWrapper token;
   bool failed_;
   struct {
@@ -137,6 +144,8 @@ private:
   } osid;
   DWORD size;
 };
+
+extern NTSecurity nt_sec;
 
 class VersionInfo
 {

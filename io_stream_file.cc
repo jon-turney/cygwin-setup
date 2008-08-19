@@ -56,9 +56,9 @@ public:
   ~FileProvider (){}
   int move (const std::string& a,const std::string& b) const
     {return io_stream_file::move (a, b);}
-  int mkdir_p (path_type_t isadir, const std::string& path) const
+  int mkdir_p (path_type_t isadir, const std::string& path, mode_t mode) const
     {
-      return ::mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, path.c_str());
+      return ::mkdir_p (isadir == PATH_TO_DIR ? 1 : 0, path.c_str(), mode);
     }
 protected:
   FileProvider() // no creating this
@@ -282,7 +282,8 @@ io_stream_file::error ()
 }
 
 int
-io_stream_file::set_mtime (int mtime)
+io_stream_file::set_mtime_and_mode (time_t mtime,
+				    mode_t mode __attribute__ ((unused)))
 {
   if (!fname.size())
     return 1;
@@ -309,7 +310,7 @@ io_stream_file::set_mtime (int mtime)
       return 0;
     }
 #else
-  throw new runtime_error ("set_mtime not supported on posix yet.");
+  throw new runtime_error ("set_mtime_and_mode not supported on posix yet.");
 #endif
   return 1;
 }

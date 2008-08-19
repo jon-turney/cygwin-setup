@@ -46,11 +46,12 @@ public:
   {
     return NULL;
   };
-  virtual int set_mtime (int);
+  virtual int set_mtime_and_mode (time_t, mode_t);
   /* Use seek EOF, then tell (). get_size won't do this incase you are sucking dow
       * over a WAN :} */
   virtual size_t get_size () {return 0;};
-  virtual int get_mtime ();
+  virtual time_t get_mtime ();
+  virtual mode_t get_mode ();
   virtual void release_original (); /* give up ownership of original io_stream */
   /* if you are still needing these hints... give up now! */
     virtual ~ compress_bz ();

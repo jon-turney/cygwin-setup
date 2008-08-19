@@ -105,12 +105,12 @@ io_stream::open (const std::string& name, const std::string& mode)
 }
 
 int
-io_stream::mkpath_p (path_type_t isadir, const std::string& name)
+io_stream::mkpath_p (path_type_t isadir, const std::string& name, mode_t mode)
 {
   IOStreamProvider const *p = findProvider (name);
   if (!p)
     url_scheme_not_registered (name);
-  return p->mkdir_p (isadir, &name.c_str()[p->key.size()]);
+  return p->mkdir_p (isadir, &name.c_str()[p->key.size()], mode);
 }
 
 /* remove a file or directory. */

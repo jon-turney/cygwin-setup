@@ -98,7 +98,7 @@ io_stream *
 UserSettings::settingFileForSave(const std::string& relativeName) const
 {
   // TODO: this doesn't belong here.
-  io_stream::mkpath_p(PATH_TO_DIR, "file://" + local_dir);
+  io_stream::mkpath_p(PATH_TO_DIR, "file://" + local_dir, 0755);
 
   io_stream *result;
   // If cygwin's root is known.
