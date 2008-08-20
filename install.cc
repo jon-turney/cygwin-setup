@@ -133,7 +133,8 @@ Installer::StandardDirs[] = {
   { "/usr/local/etc", 0755 },
   { "/usr/local/lib", 0755 },
   { "/usr/tmp", 01777 },
-  { "/var/run", 0755 },
+  { "/var/log", 01777 },
+  { "/var/run", 01777 },
   { "/var/tmp", 01777 },
   { NULL, 0 }
 };

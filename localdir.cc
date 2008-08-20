@@ -40,6 +40,7 @@ static const char *cvsid =
 #include "msg.h"
 #include "mount.h"
 #include "io_stream.h"
+#include "mkdir.h"
 
 #include "UserSettings.h"
 
@@ -97,6 +98,7 @@ LocalDirSetting::save()
   else
     {
       theLog->clearFiles();
+      mkdir_p (0, "/var/log", 01777);
       theLog->setFile (LOG_BABBLE, cygpath ("/var/log/setup.log.full"), false);
       theLog->setFile (0, cygpath ("/var/log/setup.log"), true);
     }
