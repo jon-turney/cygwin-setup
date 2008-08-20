@@ -404,7 +404,7 @@ io_stream_cygfile::set_mtime_and_mode (time_t mtime, mode_t mode)
   if (h != INVALID_HANDLE_VALUE)
     {
       SetFileTime (h, 0, 0, &ftime);
-      SetPosixPerms (fname.c_str (), h, mode);
+      nt_sec.SetPosixPerms (fname.c_str (), h, mode);
       CloseHandle (h);
       return 0;
     }

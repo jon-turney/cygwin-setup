@@ -54,11 +54,6 @@
 /* Maximum size of a SID on NT/W2K. */
 #define MAX_SID_LEN	40
 
-/* Helper function to set POSIX-like permissions on files.  The fname
-   is only used for printing log output.  The function requires an open
-   HANDLE with sufficient permissions (READ_DAC | WRITE_DAC). */
-void SetPosixPerms (const char *fname, HANDLE fh, mode_t mode);
-
 /* Computes the size of an ACL in relation to the number of ACEs it
    should contain. */
 #define TOKEN_ACL_SIZE(cnt) (sizeof (ACL) + \
@@ -118,26 +113,30 @@ class TokenGroupCollection {
 class NTSecurity
 {
 public:
-  NTSecurity () : everyOneSID (), administratorsSID (), usid (), token (), 
-                  failed_ (false) {}
+  NTSecurity () : nullSID (), everyOneSID (), administratorsSID (), usersSID (),
+		  _wellKnownSIDsinitialized (false), token () {}
   ~NTSecurity() {}
 
   /* prevent synthetics */
   NTSecurity& operator= (NTSecurity const &);
   NTSecurity (NTSecurity const &);
 
-  SIDWrapper everyOneSID, administratorsSID;
-
-  void NoteFailedAPI (const std::string &);
+  /* Set POSIX-like permissions on files.  The fname is only used for printing
+     log output.  The function requires an open HANDLE with sufficient
+     permissions (READ_DAC | WRITE_DAC). */
+  void SetPosixPerms (const char *fname, HANDLE fh, mode_t mode);
   void setDefaultSecurity();
 private:
-  void failed (bool const &aBool) { failed_ = aBool; }
-  bool const &failed () const { return failed_; }
-  void initialiseEveryOneSID ();
+  void NoteFailedAPI (const std::string &);
+  bool wellKnownSIDsinitialized () const { return _wellKnownSIDsinitialized; }
+  void wellKnownSIDsinitialized (bool b) { _wellKnownSIDsinitialized = b; }
+  void initialiseWellKnownSIDs ();
   void setDefaultDACL ();
-  SIDWrapper usid;
+  void setBackupPrivileges ();
+
+  SIDWrapper nullSID, everyOneSID, administratorsSID, usersSID;
+  bool _wellKnownSIDsinitialized;
   HANDLEWrapper token;
-  bool failed_;
   struct {
     PSID psid;
     char buf[MAX_SID_LEN];

@@ -1,3 +1,32 @@
+2008-08-20  Corinna Vinschen  <corinna@vinschen.de>
+
+	* io_stream_cygfile.cc (io_stream_cygfile::set_mtime_and_mode):
+	Accommodate SetPosixPerms being method of nt_sec.
+	* mkdir.cc (mkdir_p): Ditto.
+	* mklink2.cc (mkcygsymlink_nt): Ditto.
+	* win32.cc: Slightly rearrange.
+	(NTSecurity::SetPosixPerms): Make SetPosixPerms method of NTSecurity
+	rather than stand-alone function.  Remove dynamic allocation for
+	security descriptors in favor of static allocation.  Drop out
+	preliminary if well-known SIDs are not initialized.  Slightly change
+	and rearrange comments.  Add creating NULL SID ACE for special
+	permissions.
+	(NTSecurity::initialiseWellKnownSIDs): New function, replacing
+	NTSecurity::initialiseEveryOneSID.  Initialize all well-known SIDs
+	here.  Set wellKnownSIDsinitialized to true on success.
+	(NTSecurity::setDefaultDACL): Don't call initialiseEveryOneSID.  Change
+	comment.  Drop setting failed.  Don't open process token here.
+	(NTSecurity::setBackupPrivileges): New function.
+	(NTSecurity::setDefaultSecurity): Call initialiseWellKnownSIDs.
+	Open process token here.  Disable setting primary group.  Add comment
+	to explain why.
+	* win32.h (SetPosixPerms): Move to NTSecurity.
+	(class NTSecurity): Add SetPosixPerms method.  Make all SIDs private
+	again.  Make NoteFailedAPI private.  Add setBackupPrivileges method.
+	Rename usid to UsersSID.  Remove failed method and _failed member.
+	Add wellKnownSIDsinitialized accessors and _wellKnownSIDsinitialized
+	member.
+
 2008-08-19  Corinna Vinschen  <corinna@vinschen.de>
 
 	* install.cc (struct std_dirs_t): New type.

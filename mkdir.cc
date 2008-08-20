@@ -102,7 +102,7 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 				  | FILE_OPEN_FOR_BACKUP_INTENT, NULL, 0);
 	  if (NT_SUCCESS (status))
 	    {
-	      SetPosixPerms (path, dir, mode);
+	      nt_sec.SetPosixPerms (path, dir, mode);
 	      _NtClose (dir);
 	      return 0;
 	    }

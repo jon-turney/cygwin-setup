@@ -83,7 +83,7 @@ mkcygsymlink_nt (const char *from, const char *to)
   strcat (buf, to);
   if (WriteFile (h, buf, strlen (buf) + 1, &w, NULL))
     {
-      SetPosixPerms (from, h, 0644);
+      nt_sec.SetPosixPerms (from, h, 0644);
       CloseHandle (h);
       SetFileAttributesW (wfrom, FILE_ATTRIBUTE_SYSTEM);
       return 0;
