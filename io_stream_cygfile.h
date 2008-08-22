@@ -23,7 +23,7 @@
  * and potentially understanding links in the future
  */
 
-extern int cygmkdir_p (path_type_t isadir, const std::string& path);
+extern int cygmkdir_p (path_type_t isadir, const std::string& path, mode_t mode);
 
 class io_stream_cygfile:public io_stream
 {

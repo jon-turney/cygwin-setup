@@ -27,6 +27,7 @@ static const char *cvsid =
 #endif
 
 #include <stdlib.h>
+#include <string.h>
 #include "UserSettings.h"
 #include "io_stream.h"
 #include "KeysSetting.h"

@@ -1,3 +1,11 @@
+2008-08-22  Brian Dessent  <brian@dessent.net>
+
+	* KeysSetting.cc: Include string.h for memcpy et al.
+	* filemanip.cc: Include stdlib.h for for mbstowcs.
+	* io_stream_cygfile.h: Update cygmkdir_p prototype for mode_t.
+	* mount.cc (conv_fstab_spaces): Silence gcc 4.3 warning ("parentheses
+	around assignment used as truth value").
+
 2008-08-20  Corinna Vinschen  <corinna@vinschen.de>
 
 	* install.cc (Installer::StandardDirs): Additionally create /var/log

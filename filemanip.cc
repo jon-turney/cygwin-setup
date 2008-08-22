@@ -23,6 +23,7 @@ static const char *cvsid =
 
 #include <string.h>
 #include <wchar.h>
+#include <stdlib.h>
 #include "filemanip.h"
 #include "io_stream.h"
 #include "String++.h"
