@@ -240,6 +240,53 @@ ConnectedLoopFinder::doIt()
   /* XXX this could be done useing a class to hold both the visitedInIteration and the package
    * meta reference. Then we could use a range, not an int loop. 
    */
+  /* We have to expect dependency loops.  These loops break the topological
+     sorting which would be a result of the below algorithm looking for
+     strongly connected components in a directed graph.  Unfortunately it's
+     not possible to order a directed graph with loops topologially.
+     The idea here is to look for packages with no dependencies first,
+     then for the packages which only depend on these packages, then
+     packages which depend on these and another one.  The last loop then
+     collects all the rest.  This is not foolproof, but it should easy
+     the pain.  */
+  for (size_t i = 0; i < db.packages.size(); ++i)
+    {
+      packagemeta &pkg (*db.packages[i]);
+      if (pkg.installed && pkg.installed.depends ()->size () == 0)
+	visit (i);
+    }
+  /* FIXME: Is there a more elegant way to get the same? */
+  size_t num_packages = 1;
+  for (size_t cnt = 0; cnt < 5; ++cnt)
+    {
+      if (cnt == 3)
+	num_packages = 2;
+      for (size_t i = 0; i < db.packages.size(); ++i)
+	{
+	  packagemeta &pkg (*db.packages[i]);
+	  if (visitOrder[i] || !pkg.installed
+	      || pkg.installed.depends ()->size () != num_packages)
+	    continue;
+	  for (PackageDBConnectedIterator j = db.connectedBegin ();
+	       j != db.connectedEnd ();
+	       ++j)
+	    {
+	      for (vector <vector <PackageSpecification *> *>::iterator dp
+		     = pkg.installed.depends ()->begin ();
+		   dp != pkg.installed.depends ()->end ();
+		   ++dp)
+		for (vector <PackageSpecification *>::iterator dp2
+		     = (*dp)->begin (); dp2 != (*dp)->end (); ++dp2)
+		  if (!casecompare ((*j)->name, (*dp2)->packageName ()))
+		    {
+		      visit (i);
+		      goto post_conn_iterate;
+		    }
+	    }
+  post_conn_iterate:
+	  ;
+	}
+    }
   for (size_t i = 0; i < db.packages.size(); ++i)
     {
       packagemeta &pkg (*db.packages[i]);
