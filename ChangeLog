@@ -1,3 +1,7 @@
+2008-12-10  Ralph Hempel
+
+	* source.cc: Add support for both -D and -L on command line
+
 2008-08-07  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	Implement command-line selection of packages to install and make

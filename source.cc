@@ -87,7 +87,9 @@ SourcePage::Create ()
 void
 SourcePage::OnActivate ()
 {
-  if (DownloadOption)
+  if (DownloadOption && LocalOption)
+    source = IDC_SOURCE_NETINST;
+  else if (DownloadOption)
     source = IDC_SOURCE_DOWNLOAD;
   else if (LocalOption)
     source = IDC_SOURCE_CWD;
