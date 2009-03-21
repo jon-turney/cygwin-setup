@@ -199,6 +199,11 @@ LogFile::operator() (log_level theLevel)
 void
 LogFile::endEntry()
 {
+  string buf = theStream->str();
+  delete theStream;
+
+  cout << buf << endl;
+
   if (!currEnt)
     {
       /* get a default LogEnt */
@@ -219,12 +224,9 @@ LogFile::endEntry()
   /* What follows is a hack to get around an (apparent) bug in libg++-3 with
    * non-0 memory on alloc
    */
-  currEnt->msg += theStream->str();
-    // OLD code (libg++3) string(theStream->str()).substr(0,theStream->pcount()).c_str();
-  msg ("LOG: %d %s", currEnt->level, theStream->str().c_str());
-       //string(theStream->str()).substr(0,theStream->rdbuf()->pcount()).c_str());
-  // theStream->freeze(0);
-  delete theStream;
+  currEnt->msg += buf;
+  msg ("LOG: %d %s", currEnt->level, buf.c_str());
+
   /* reset for next use */
   theStream = new std::stringbuf;
   rdbuf (theStream);

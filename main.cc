@@ -31,6 +31,8 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
 #include "win32.h"
 #include <commctrl.h>
 
@@ -68,12 +70,28 @@ static const char *cvsid =
 #include "Exception.h"
 #include <stdexcept>
 
+#include <wincon.h>
+#include <fstream>
+
 using namespace std;
 
 HINSTANCE hinstance;
 
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
 static BoolOption HelpOption (false, 'h', "help", "print help");
+
+static void inline
+set_cout ()
+{
+  HANDLE hstdout = GetStdHandle (STD_OUTPUT_HANDLE);
+  if (GetFileType (hstdout) == FILE_TYPE_UNKNOWN && GetLastError () != NO_ERROR
+      && AttachConsole ((DWORD) -1))
+      {
+	ofstream *conout = new ofstream ("conout$");
+	cout.rdbuf (conout->rdbuf ());
+	cout.flush ();
+      }
+}
 
 // Other threads talk to this page, so we need to have it externable.
 ThreeBarProgressPage Progress;
@@ -116,6 +134,10 @@ main (int argc, char **argv)
     if (!GetOption::GetInstance ().Process (argc,_argv, NULL))
       exit (1);
 
+    unattended_mode = UnattendedOption;
+    if (unattended_mode || HelpOption)
+      set_cout ();
+
     LogSingleton::SetInstance (*(theLog = LogFile::createLogFile ()));
     theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
     theLog->setFile (0, local_dir + "/setup.log", true);
@@ -151,8 +173,6 @@ main (int argc, char **argv)
                                                 << "\nCommand Line Options:\n");
       theLog->exit (0);
     }
-
-    unattended_mode = UnattendedOption;
 
     /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
        no idea of access control lists and security at all.  */

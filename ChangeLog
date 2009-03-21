@@ -1,3 +1,17 @@
+2009-03-21  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* LogFile.cc (LogFile::endEntry): Output messages to stdout.
+	* main.cc (set_cout): New function.  Sets stdout to console if one
+	exists.
+	(main): Redirect stdout to console if unattended_mode or help option is
+	specified and no stdout is available.
+
+2009-03-21 Terry Fleming  <terrynfleming@gmail.com>
+	   Christopher Faylor <me+cygwin@cgf.cx>
+
+	* propsheet.cc (PropSheetWndProc): Detect a Window closing event and
+	issue an "Are you sure" message.
+
 2008-08-29  Corinna Vinschen  <corinna@vinschen.de>
 
 	* package_db.cc (ConnectedLoopFinder::doIt): Add code to get a basic
