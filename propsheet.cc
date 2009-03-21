@@ -167,18 +167,18 @@ static LRESULT CALLBACK PropSheetWndProc (HWND hwnd, UINT uMsg,
   switch (uMsg)
     {
     case WM_SYSCOMMAND:
-	if ((wParam & 0xfff0) == SC_CLOSE)
-	  goto areyousure;
-	break;
+      if ((wParam & 0xfff0) == SC_CLOSE)
+	goto areyousure;
+      break;
     case WM_COMMAND:
-	if (wParam != 2)
-	  break;
-    areyousure:
-	if (MessageBox(hwnd,
-		       "Are you sure you want to exit setup? Any current download or installation will be aborted.",
-		       "Exit Cygwin Setup?", MB_YESNO) == IDNO)
-	  return 0;
+      if (wParam != 2)
 	break;
+    areyousure:
+      if (MessageBox(hwnd,
+		     "Are you sure you want to exit setup? Any current download or installation will be aborted.",
+		     "Exit Cygwin Setup?", MB_YESNO) == IDNO)
+	return 0;
+      break;
     case WM_SIZE:
       {
         RECTWrapper clientRect;
