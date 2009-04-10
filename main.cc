@@ -83,14 +83,23 @@ static BoolOption HelpOption (false, 'h', "help", "print help");
 static void inline
 set_cout ()
 {
+  HMODULE hm = LoadLibrary ("kernel32.dll");
+  if (!hm)
+    return;
+
+  BOOL WINAPI (*dyn_AttachConsole) (DWORD) = (BOOL WINAPI (*)(DWORD)) GetProcAddress (hm, "AttachConsole");
+  if (!dyn_AttachConsole)
+    return;
+
   HANDLE hstdout = GetStdHandle (STD_OUTPUT_HANDLE);
   if (GetFileType (hstdout) == FILE_TYPE_UNKNOWN && GetLastError () != NO_ERROR
-      && AttachConsole ((DWORD) -1))
+      && dyn_AttachConsole ((DWORD) -1))
       {
 	ofstream *conout = new ofstream ("conout$");
 	cout.rdbuf (conout->rdbuf ());
 	cout.flush ();
       }
+  FreeLibrary (hm);
 }
 
 // Other threads talk to this page, so we need to have it externable.

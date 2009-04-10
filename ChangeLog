@@ -1,3 +1,8 @@
+2009-04-09  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* main.cc (set_cout): Load AttachConsole dynamically to avoid using it
+	on older Windows which don't support it.
+
 2009-03-21  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* LogFile.cc (LogFile::endEntry): Output messages to stdout.
