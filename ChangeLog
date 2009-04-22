@@ -1,3 +1,16 @@
+2009-04-22  Corinna Vinschen  <corinna@vinschen.de>
+
+	* mklink2.cc (mkcygsymlink_nt): Allow 4K chars in symlink.  Use strncat
+	rather than strcat.
+	* postinstall.cc (do_postinstall): Reset user token to original
+	primary group.
+	* win32.cc (NTSecurity::resetPrimaryGroup): New methid.
+	(NTSecurity::setDefaultSecurity): Store original primary group in
+	new NTSecurity member primaryGroupSID.  Set primary group in user token
+	to Administrators group for admin users.  Align comment.
+	* win32.h (class NTSecurity): Add member primaryGroupSID.
+	(NTSecurity::resetPrimaryGroup): Declare.
+
 2009-04-09  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* main.cc (set_cout): Load AttachConsole dynamically to avoid using it

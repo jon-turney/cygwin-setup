@@ -277,6 +277,19 @@ NTSecurity::setBackupPrivileges ()
 }
 
 void
+NTSecurity::resetPrimaryGroup ()
+{
+  TOKEN_PRIMARY_GROUP tpg;
+
+  tpg.PrimaryGroup = primaryGroupSID.theSID ();
+  if (tpg.PrimaryGroup
+      && !SetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
+			       &tpg, sizeof tpg))
+    NoteFailedAPI ("SetTokenInformation");
+    
+}
+
+void
 NTSecurity::setDefaultSecurity ()
 {
   /* First initialize the well known SIDs used later on. */
@@ -315,13 +328,19 @@ NTSecurity::setDefaultSecurity ()
       NoteFailedAPI ("SetTokenInformation");
       return;
     }
-#if 0
-  /* FIXME: Setting the primary group to another group negatively
-     influences how the postinstall calls to `mkpasswd -c, mkgroup -c'
-     work, if the installing user is a domain user.  The group
-     information created by the postinstall script will be plain wrong.
-     So, for now, until we find a better solution, we better disable
-     setting the primary group. */
+  /* Get original primary group.  The token's primary group will be reset
+     to the original group right before we call the postinstall scripts.
+     This is necessary, otherwise, if the installing user is a domain user,
+     the group information created by the postinstall calls to `mkpasswd -c,
+     mkgroup -c' will be plain wrong. */
+  primaryGroupSID.theSID () = (PSID) malloc (MAX_SID_LEN);
+  if (!GetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
+			    primaryGroupSID.theSID (), MAX_SID_LEN, &size))
+    {
+      NoteFailedAPI("GetTokenInformation");
+      free ((void *) primaryGroupSID.theSID ());
+      primaryGroupSID.theSID () = (PSID) NULL;
+    }
 
   /* Get the token groups */
   if (!GetTokenInformation (token.theHANDLE(), TokenGroups, NULL, 0, &size)
@@ -335,21 +354,25 @@ NTSecurity::setDefaultSecurity ()
   if (!ntGroups.populated ())
     return;
   /* Set the primary group to one of the above computed SID.  */
-  PSID nsid = NULL;
+  TOKEN_PRIMARY_GROUP tpg;
+  /* Only if the user is admin. */
+#if 0
   if (ntGroups.find (usersSID))
     {
-      nsid = usersSID.theSID ();
+      tpg.PrimaryGroup = usersSID.theSID ();
       log (LOG_TIMESTAMP) << "Changing gid to Users" << endLog;
     }
-  else if (ntGroups.find (administratorsSID))
+  else
+#endif
+  if (ntGroups.find (administratorsSID))
     {
-      nsid = administratorsSID.theSID ();
+      tpg.PrimaryGroup = administratorsSID.theSID ();
       log (LOG_TIMESTAMP) << "Changing gid to Administrators" << endLog;
     }
-  if (nsid && !SetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
-                                    &nsid, sizeof nsid))
+  if (tpg.PrimaryGroup
+      && !SetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
+			       &tpg, sizeof tpg))
     NoteFailedAPI ("SetTokenInformation");
-#endif
 }
 
 VersionInfo::VersionInfo ()

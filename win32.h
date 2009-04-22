@@ -125,6 +125,7 @@ public:
      log output.  The function requires an open HANDLE with sufficient
      permissions (READ_DAC | WRITE_DAC). */
   void SetPosixPerms (const char *fname, HANDLE fh, mode_t mode);
+  void resetPrimaryGroup();
   void setDefaultSecurity();
 private:
   void NoteFailedAPI (const std::string &);
@@ -135,6 +136,7 @@ private:
   void setBackupPrivileges ();
 
   SIDWrapper nullSID, everyOneSID, administratorsSID, usersSID;
+  SIDWrapper primaryGroupSID;
   bool _wellKnownSIDsinitialized;
   HANDLEWrapper token;
   struct {

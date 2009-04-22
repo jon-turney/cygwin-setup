@@ -67,7 +67,7 @@ mkcygsymlink_9x (const char *from, const char *to)
 static int
 mkcygsymlink_nt (const char *from, const char *to)
 {
-  char buf[512];
+  char buf[strlen (SYMLINK_COOKIE) + 4096];
   unsigned long w;
   const size_t len = strlen (from) + 7;
   WCHAR wfrom[len];
@@ -80,7 +80,7 @@ mkcygsymlink_nt (const char *from, const char *to)
   if (h == INVALID_HANDLE_VALUE)
     return 1;
   strcpy (buf, SYMLINK_COOKIE);
-  strcat (buf, to);
+  strncat (buf, to, 4095);
   if (WriteFile (h, buf, strlen (buf) + 1, &w, NULL))
     {
       nt_sec.SetPosixPerms (from, h, 0644);

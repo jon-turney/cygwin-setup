@@ -150,6 +150,8 @@ static HANDLE context[2];
 void
 do_postinstall (HINSTANCE h, HWND owner)
 {
+  nt_sec.resetPrimaryGroup ();
+
   context[0] = h;
   context[1] = owner;
 
