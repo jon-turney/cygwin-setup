@@ -126,6 +126,7 @@ public:
      permissions (READ_DAC | WRITE_DAC). */
   void SetPosixPerms (const char *fname, HANDLE fh, mode_t mode);
   void resetPrimaryGroup();
+  void setAdminGroup ();
   void setDefaultSecurity();
 private:
   void NoteFailedAPI (const std::string &);
@@ -136,13 +137,13 @@ private:
   void setBackupPrivileges ();
 
   SIDWrapper nullSID, everyOneSID, administratorsSID, usersSID;
-  SIDWrapper primaryGroupSID;
+  struct {
+    TOKEN_PRIMARY_GROUP pgrp;
+    char buf[MAX_SID_LEN];
+  } primaryGroupSID;
+
   bool _wellKnownSIDsinitialized;
   HANDLEWrapper token;
-  struct {
-    PSID psid;
-    char buf[MAX_SID_LEN];
-  } osid;
   DWORD size;
 };
 

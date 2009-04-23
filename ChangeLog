@@ -1,10 +1,25 @@
+2009-04-23  Corinna Vinschen  <corinna@vinschen.de>
+
+	* win32.h (NTSecurity::primaryGroupSID): Convert to a structure for
+	direct usage in GetTokenInformation.
+	(NTSecurity::osid): Remove.
+	(NTSecurity::setAdminGroup): Declare.
+	* win32.cc (NTSecurity::resetPrimaryGroup): Accommodate change to
+	primaryGroupSID.  Add log output.
+	(NTSecurity::setAdminGroup): New method.
+	(NTSecurity::setDefaultSecurity): Use local structures for getting
+	TOKEN_USER and setting TOKEN_OWNER information.  Accommodate change to
+	primaryGroupSID.  Slightly enhance log output.
+	Only set primary group to Administrators group when installing for
+	all users.  Call setAdminGroup to do it.
+
 2009-04-22  Corinna Vinschen  <corinna@vinschen.de>
 
 	* mklink2.cc (mkcygsymlink_nt): Allow 4K chars in symlink.  Use strncat
 	rather than strcat.
 	* postinstall.cc (do_postinstall): Reset user token to original
 	primary group.
-	* win32.cc (NTSecurity::resetPrimaryGroup): New methid.
+	* win32.cc (NTSecurity::resetPrimaryGroup): New method.
 	(NTSecurity::setDefaultSecurity): Store original primary group in
 	new NTSecurity member primaryGroupSID.  Set primary group in user token
 	to Administrators group for admin users.  Align comment.

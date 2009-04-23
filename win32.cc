@@ -22,6 +22,8 @@ static const char *cvsid =
 #include <memory>
 #include <malloc.h>
 #include "LogFile.h"
+#include "resource.h"
+#include "state.h"
 
 NTSecurity nt_sec;
 
@@ -279,14 +281,25 @@ NTSecurity::setBackupPrivileges ()
 void
 NTSecurity::resetPrimaryGroup ()
 {
+  if (primaryGroupSID.pgrp.PrimaryGroup)
+    {
+      log (LOG_TIMESTAMP) << "Changing gid back to original" << endLog;
+      if (!SetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
+				&primaryGroupSID, sizeof primaryGroupSID))
+	NoteFailedAPI ("SetTokenInformation");
+    }
+}
+
+void
+NTSecurity::setAdminGroup ()
+{
   TOKEN_PRIMARY_GROUP tpg;
 
-  tpg.PrimaryGroup = primaryGroupSID.theSID ();
-  if (tpg.PrimaryGroup
-      && !SetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
-			       &tpg, sizeof tpg))
+  tpg.PrimaryGroup = administratorsSID.theSID ();
+  log (LOG_TIMESTAMP) << "Changing gid to Administrators" << endLog;
+  if (!SetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
+			    &tpg, sizeof tpg))
     NoteFailedAPI ("SetTokenInformation");
-    
 }
 
 void
@@ -315,17 +328,22 @@ NTSecurity::setDefaultSecurity ()
   setDefaultDACL ();
 
   /* Get the user */
-  if (!GetTokenInformation (token.theHANDLE (), TokenUser, &osid, 
-			    sizeof osid, &size))
+  struct {
+    TOKEN_USER user;
+    char buf[MAX_SID_LEN];
+  } tuser;
+  if (!GetTokenInformation (token.theHANDLE (), TokenUser, &tuser, 
+			    sizeof tuser, &size))
     {
-      NoteFailedAPI ("GetTokenInformation");
+      NoteFailedAPI ("GetTokenInformation(user)");
       return;
     }
   /* Make it the owner */
-  if (!SetTokenInformation (token.theHANDLE (), TokenOwner, &osid, 
-			    sizeof osid))
+  TOKEN_OWNER owner = { tuser.user.User.Sid };
+  if (!SetTokenInformation (token.theHANDLE (), TokenOwner, &owner, 
+			    sizeof owner))
     {
-      NoteFailedAPI ("SetTokenInformation");
+      NoteFailedAPI ("SetTokenInformation(owner)");
       return;
     }
   /* Get original primary group.  The token's primary group will be reset
@@ -333,46 +351,27 @@ NTSecurity::setDefaultSecurity ()
      This is necessary, otherwise, if the installing user is a domain user,
      the group information created by the postinstall calls to `mkpasswd -c,
      mkgroup -c' will be plain wrong. */
-  primaryGroupSID.theSID () = (PSID) malloc (MAX_SID_LEN);
   if (!GetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
-			    primaryGroupSID.theSID (), MAX_SID_LEN, &size))
+			    &primaryGroupSID, sizeof primaryGroupSID, &size))
     {
-      NoteFailedAPI("GetTokenInformation");
-      free ((void *) primaryGroupSID.theSID ());
-      primaryGroupSID.theSID () = (PSID) NULL;
+      NoteFailedAPI("GetTokenInformation(pgrp)");
+      primaryGroupSID.pgrp.PrimaryGroup = (PSID) NULL;
     }
-
   /* Get the token groups */
   if (!GetTokenInformation (token.theHANDLE(), TokenGroups, NULL, 0, &size)
 	  && GetLastError () != ERROR_INSUFFICIENT_BUFFER)
     {
-      NoteFailedAPI("GetTokenInformation");
+      NoteFailedAPI("GetTokenInformation(groups)");
       return;
     }
   TokenGroupCollection ntGroups(size, token);
   ntGroups.populate ();
   if (!ntGroups.populated ())
     return;
-  /* Set the primary group to one of the above computed SID.  */
-  TOKEN_PRIMARY_GROUP tpg;
-  /* Only if the user is admin. */
-#if 0
-  if (ntGroups.find (usersSID))
-    {
-      tpg.PrimaryGroup = usersSID.theSID ();
-      log (LOG_TIMESTAMP) << "Changing gid to Users" << endLog;
-    }
-  else
-#endif
-  if (ntGroups.find (administratorsSID))
-    {
-      tpg.PrimaryGroup = administratorsSID.theSID ();
-      log (LOG_TIMESTAMP) << "Changing gid to Administrators" << endLog;
-    }
-  if (tpg.PrimaryGroup
-      && !SetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
-			       &tpg, sizeof tpg))
-    NoteFailedAPI ("SetTokenInformation");
+  /* Set the primary group to the Administrators group, but only if
+     the user is admin and if "Install for all users" has been chosen. */
+  if (root_scope == IDC_ROOT_SYSTEM && ntGroups.find (administratorsSID))
+    setAdminGroup ();
 }
 
 VersionInfo::VersionInfo ()
