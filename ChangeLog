@@ -1,3 +1,7 @@
+2009-04-24  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* propsheet.cc (PropSheetWndProc):  Re-enable hasMinRect.
+
 2009-04-23  Corinna Vinschen  <corinna@vinschen.de>
 
 	* win32.h (NTSecurity::primaryGroupSID): Convert to a structure for

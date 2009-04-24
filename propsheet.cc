@@ -226,7 +226,7 @@ static LRESULT CALLBACK PropSheetWndProc (HWND hwnd, UINT uMsg,
 	    if (!psd.hasMinRect)
 	      {
 		GetWindowRect (hwnd, &psd.minRect);
-		// psd.hasMinRect = true;
+		psd.hasMinRect = true;
 	      }
 	    
 	    psd.lastClientRect = clientRect;
