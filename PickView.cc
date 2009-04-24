@@ -191,8 +191,12 @@ PickView::setViewMode (views mode)
               // "Not installed"
               || (view_mode == PickView::views::PackageSkips &&
                   (!pkg.desired && !pkg.installed)))
-            
-            insert_pkg (pkg);
+            {
+              // Filter by package name
+              if (packageFilterString.empty ()
+                  || pkg.name.find (packageFilterString) != std::string::npos)
+                insert_pkg (pkg);
+            }
         }
     }
 
@@ -309,13 +313,23 @@ PickView::insert_category (Category *cat, bool collapsed)
       (!showObsolete && isObsolete (cat->first)))
     return;
   PickCategoryLine & catline = *new PickCategoryLine (*this, *cat, 1, collapsed);
+  int packageCount = 0;
   for (vector <packagemeta *>::iterator i = cat->second.begin ();
        i != cat->second.end () ; ++i)
     {
-      PickLine & line = *new PickPackageLine (*this, **i);
-      catline.insert (line);
+      if (packageFilterString.empty () \
+          || (*i && (*i)->name.find (packageFilterString) != std::string::npos))
+	{
+	  PickLine & line = *new PickPackageLine (*this, **i);
+	  catline.insert (line);
+	  packageCount++;
+	}
     }
-  contents.insert (catline);
+  
+  if (packageFilterString.empty () || packageCount)
+    contents.insert (catline);
+  else
+    delete &catline;
 }
 
 PickView::views&
@@ -502,7 +516,7 @@ PickView::init_headers (HDC dc)
 
 PickView::PickView (Category &cat) : deftrust (TRUST_UNKNOWN),
 contents (*this, cat, 0, false, true), showObsolete (false), 
-hasClientRect (false)
+packageFilterString (), hasClientRect (false)
 {
 }
 

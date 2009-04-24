@@ -316,6 +316,9 @@ STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION |
 CAPTION "Cygwin Setup - Select Packages"
 FONT 8, "MS Shell Dlg"
 BEGIN
+    RTEXT           "&Search",IDC_STATIC,0,30,32,12,SS_CENTERIMAGE,
+                    WS_EX_RIGHT
+    EDITTEXT        IDC_CHOOSE_SEARCH_EDIT, 34, 30, 60, 12
     CONTROL         "&Keep",IDC_CHOOSE_KEEP,"Button",BS_AUTORADIOBUTTON | 
                     WS_GROUP | WS_TABSTOP,99,30,30,14
     CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON , 
@@ -486,4 +489,5 @@ BEGIN
        "infrastructure packages that are handled automatically."
     IDS_SIG_INVALID    "Mirror Error:  Setup.ini signature %s from %s failed to verify.\nPossible corrupt mirror?  Setup.ini rejected."
     IDS_CRYPTO_ERROR   "Internal Error:  gcrypt library error %d %s"
+    IDS_SEARCH_TOOLTIP "Search for this string in package names."
 END

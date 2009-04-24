@@ -67,6 +67,8 @@ extern ThreeBarProgressPage Progress;
   Sizing information.
  */
 static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
+  {IDC_CHOOSE_SEARCH_LABEL, 	CP_LEFT,    CP_TOP},
+  {IDC_CHOOSE_SEARCH_EDIT,	CP_LEFT,    CP_TOP},
   {IDC_CHOOSE_KEEP, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_PREV, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_CURR, 		CP_RIGHT,   CP_TOP},
@@ -172,6 +174,7 @@ ChooserPage::OnInit ()
   AddTooltip (IDC_CHOOSE_EXP, IDS_TRUSTEXP_TOOLTIP);
   AddTooltip (IDC_CHOOSE_VIEW, IDS_VIEWBUTTON_TOOLTIP);  
   AddTooltip (IDC_CHOOSE_HIDE, IDS_HIDEOBS_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_SEARCH_EDIT, IDS_SEARCH_TOOLTIP);
 }
 
 void
@@ -255,7 +258,14 @@ ChooserPage::changeTrust(trusts aTrust)
 bool
 ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
-  if (code != BN_CLICKED)
+  if (code == EN_CHANGE && id == IDC_CHOOSE_SEARCH_EDIT)
+    {
+      std::string value (egetString (GetHWND (), IDC_CHOOSE_SEARCH_EDIT));
+      chooser->SetPackageFilter (value);
+      chooser->refresh ();
+      return true;
+    }
+  else if (code != BN_CLICKED && code != EN_CHANGE)
     {
       // Not a click notification, we don't care.
       return false;

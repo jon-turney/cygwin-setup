@@ -1,3 +1,23 @@
+2009-04-24  Andrew Punch  <andrew@magneticbooks.com.au>
+
+	* PickView.h:  Add #include <string>.
+	(PickView::SetPackageFilter):  Add new function.
+	(PickView::packageFilterString):  Add new string data member.
+	* PickView.cc (PickView::setViewMode):  Use it to filter names.
+	(PickView::insert_category):  Likewise.
+	(PickView::PickView):  Initialise packageFilterString to blank.
+	* res.rc (IDD_CHOOSE):  Add IDC_CHOOSE_SEARCH_EDIT and
+	IDC_CHOOSE_SEARCH_LABEL controls.
+	(IDS_SEARCH_TOOLTIP):  Add new string resource.
+	* resource.h (IDS_SEARCH_TOOLTIP):  New string resource ID.
+	(IDC_CHOOSE_SEARCH_EDIT):  New edit control ID.
+	(IDC_CHOOSE_SEARCH_LABEL):  Mew static text control ID.
+	* choose.cc (ChooserControlsInfo[]):  Add IDC_CHOOSE_SEARCH_LABEL
+	and IDC_CHOOSE_SEARCH_EDIT controls to auto-resize list.
+	(ChooserPage::OnInit):  Add tooltip to search edit box.
+	(ChooserPage::OnMessageCmd):  Handle EN_CHANGE event from
+	IDC_CHOOSE_SEARCH_EDIT.
+
 2009-04-24  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* propsheet.cc (PropSheetWndProc):  Re-enable hasMinRect.

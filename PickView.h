@@ -16,6 +16,7 @@
 #ifndef SETUP_PICKVIEW_H
 #define SETUP_PICKVIEW_H
 
+#include <string>
 #include "win32.h"
 #include "window.h"
 #include "RECTWrapper.h"
@@ -82,6 +83,13 @@ public:
   int header_height;
   PickCategoryLine contents;
   void scroll (HWND hwnd, int which, int *var, int code, int howmany);
+
+  void SetPackageFilter (const std::string &filterString)
+  {
+    packageFilterString = filterString;
+  }
+  
+  
   HWND ListHeader (void) const
   {
     return listheader;
@@ -135,6 +143,7 @@ private:
   HWND listheader;
   views view_mode;
   bool showObsolete;
+  std::string packageFilterString;
 
   // Stuff needed to handle resizing
   bool hasClientRect;

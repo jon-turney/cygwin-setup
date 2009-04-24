@@ -33,6 +33,7 @@
 #define IDS_HIDEOBS_TOOLTIP               130
 #define IDS_SIG_INVALID                   131
 #define IDS_CRYPTO_ERROR                  132
+#define IDS_SEARCH_TOOLTIP                133
 
 // Dialogs
 
@@ -161,3 +162,5 @@
 #define IDC_STATUS_HEADER                 582
 #define IDC_STATUS                        583
 #define IDC_STATIC_HEADER                 584
+#define IDC_CHOOSE_SEARCH_EDIT            585
+#define IDC_CHOOSE_SEARCH_LABEL           586
