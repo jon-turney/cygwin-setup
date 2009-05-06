@@ -154,12 +154,6 @@ main (int argc, char **argv)
     log (LOG_PLAIN) << "Starting cygwin install, version " 
                     << setup_version << endLog;
 
-    // Ensure files created by postinstall and preremove scripts
-    // get sane permissions.
-    if (putenv ("CYGWIN=nontsec") != 0)
-      log (LOG_PLAIN) << "Failed to set CYGWIN=nontsec (errno " << errno 
-            << ": " << strerror(errno) << ")" << endLog;
-    
     UserSettings::Instance ().loadAllSettings ();
 
     SplashPage Splash;

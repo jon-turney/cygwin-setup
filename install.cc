@@ -121,6 +121,7 @@ Installer::progress (int bytes)
 std_dirs_t
 Installer::StandardDirs[] = {
   { "/bin", 0755 },
+  { "/home", 01777 },
   { "/etc", 0755 },
   { "/lib", 0755 },
   { "/tmp", 01777 },

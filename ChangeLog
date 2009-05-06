@@ -1,3 +1,8 @@
+2009-05-06  Corinna Vinschen  <corinna@vinschen.de>
+
+	* install.cc (Installer::StandardDirs): Add /home with 1777 perms.
+	* main.cc (main): Drop setting $CYGWIN to nontsec.
+
 2009-04-24  Andrew Punch  <andrew@magneticbooks.com.au>
 
 	* PickView.h:  Add #include <string>.
