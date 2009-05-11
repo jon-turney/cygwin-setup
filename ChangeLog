@@ -1,5 +1,19 @@
 2009-05-11  Bryan Thrall  <bryan.thrall@flightsafety.com>
 
+	* localdir.cc (load_dialog): Choose description string based on install
+	type.
+	* res.rc (IDD_LOCAL_DIR): Replace static description text with
+	IDC_LOCAL_DIR_DESC.
+	* resource.h (IDS_LOCAL_DIR_DOWNLOAD): New string resource id.
+	(IDS_LOCAL_DIR_INSTALL): Likewise.
+	(IDC_LOCAL_DIR_DESC): New text control resource id.
+
+2009-05-11  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* main.cc (set_cout): Simplify code a little.
+
+2009-05-11  Bryan Thrall  <bryan.thrall@flightsafety.com>
+
 	* choose.cc (ChooserPage::OnMessageCmd): Clear search filter when
 	clear button clicked.
 	* res.rc (IDD_CHOOSE_DIALOG): Add IDC_CHOOSE_CLEAR_SEARCH button.

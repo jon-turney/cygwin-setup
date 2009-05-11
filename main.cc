@@ -88,17 +88,17 @@ set_cout ()
     return;
 
   BOOL WINAPI (*dyn_AttachConsole) (DWORD) = (BOOL WINAPI (*)(DWORD)) GetProcAddress (hm, "AttachConsole");
-  if (!dyn_AttachConsole)
-    return;
-
-  HANDLE hstdout = GetStdHandle (STD_OUTPUT_HANDLE);
-  if (GetFileType (hstdout) == FILE_TYPE_UNKNOWN && GetLastError () != NO_ERROR
-      && dyn_AttachConsole ((DWORD) -1))
-      {
-	ofstream *conout = new ofstream ("conout$");
-	cout.rdbuf (conout->rdbuf ());
-	cout.flush ();
-      }
+  if (dyn_AttachConsole)
+    {
+      HANDLE hstdout = GetStdHandle (STD_OUTPUT_HANDLE);
+      if (GetFileType (hstdout) == FILE_TYPE_UNKNOWN && GetLastError () != NO_ERROR
+	  && dyn_AttachConsole ((DWORD) -1))
+	  {
+	    ofstream *conout = new ofstream ("conout$");
+	    cout.rdbuf (conout->rdbuf ());
+	    cout.flush ();
+	  }
+    }
   FreeLibrary (hm);
 }
 

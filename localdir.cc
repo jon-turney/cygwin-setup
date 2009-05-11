@@ -113,6 +113,16 @@ check_if_enable_next (HWND h)
 static void
 load_dialog (HWND h)
 {
+  char descText[1000];
+  if (source != IDC_SOURCE_CWD)
+    {
+      LoadString (hinstance, IDS_LOCAL_DIR_DOWNLOAD, descText, sizeof (descText));
+    }
+  else
+    {
+      LoadString (hinstance, IDS_LOCAL_DIR_INSTALL, descText, sizeof (descText));
+    }
+  eset (h, IDC_LOCAL_DIR_DESC, descText);
   eset (h, IDC_LOCAL_DIR, local_dir);
   check_if_enable_next (h);
 }

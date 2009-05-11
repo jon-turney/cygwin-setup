@@ -34,6 +34,8 @@
 #define IDS_SIG_INVALID                   131
 #define IDS_CRYPTO_ERROR                  132
 #define IDS_SEARCH_TOOLTIP                133
+#define IDS_LOCAL_DIR_DOWNLOAD            134
+#define IDS_LOCAL_DIR_INSTALL             135
 
 // Dialogs
 
@@ -165,3 +167,4 @@
 #define IDC_CHOOSE_SEARCH_EDIT            585
 #define IDC_CHOOSE_SEARCH_LABEL           586
 #define IDC_CHOOSE_CLEAR_SEARCH           587
+#define IDC_LOCAL_DIR_DESC                588
