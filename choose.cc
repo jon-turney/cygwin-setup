@@ -273,6 +273,15 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 
   switch (id)
     {
+    case IDC_CHOOSE_CLEAR_SEARCH:
+      {
+	std::string value;
+	eset (GetHWND (), IDC_CHOOSE_SEARCH_EDIT, value);
+	chooser->SetPackageFilter (value);
+	chooser->refresh ();
+      }
+      break;
+
     case IDC_CHOOSE_KEEP:
       if (IsButtonChecked (id))
         keepClicked();

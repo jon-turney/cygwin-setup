@@ -1,3 +1,10 @@
+2009-05-11  Bryan Thrall  <bryan.thrall@flightsafety.com>
+
+	* choose.cc (ChooserPage::OnMessageCmd): Clear search filter when
+	clear button clicked.
+	* res.rc (IDD_CHOOSE_DIALOG): Add IDC_CHOOSE_CLEAR_SEARCH button.
+	* resource.h (IDC_CHOOSE_CLEAR_SEARCH): New button resource ID.
+
 2009-05-11  Corinna Vinschen  <corinna@vinschen.de>
 
 	* UserSettings.cc (UserSettings::settingFileForLoad): Fix local load

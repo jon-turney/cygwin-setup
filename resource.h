@@ -164,3 +164,4 @@
 #define IDC_STATIC_HEADER                 584
 #define IDC_CHOOSE_SEARCH_EDIT            585
 #define IDC_CHOOSE_SEARCH_LABEL           586
+#define IDC_CHOOSE_CLEAR_SEARCH           587
