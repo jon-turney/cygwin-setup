@@ -61,6 +61,16 @@ Auto (advapi32, OpenServiceA, 16);
 Auto (advapi32, QueryServiceStatus, 8);
 Auto (advapi32, StartServiceA, 16);
 
+DLL (ntdll);
+
+Auto (ntdll, NtCreateFile, 44);
+Auto (ntdll, NtOpenFile, 24);
+Auto (ntdll, NtClose, 4);
+Auto (ntdll, NtQueryAttributesFile, 8);
+Auto (ntdll, NtQueryInformationFile, 20);
+Auto (ntdll, NtSetInformationFile, 20);
+Auto (ntdll, RtlInitUnicodeString, 8);
+Auto (ntdll, RtlNtStatusToDosError, 4);
 
 typedef struct {
   DllInfo *dll;

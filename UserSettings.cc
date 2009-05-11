@@ -88,7 +88,8 @@ UserSettings::saveAllSettings()
 io_stream *
 UserSettings::settingFileForLoad(const std::string& relativeName) const
 {
-  io_stream *result = io_stream::open("file://" + relativeName, "rt");
+  io_stream *result = io_stream::open("file://" + local_dir + "\\"
+  						+ relativeName, "rt");
   if (!result)
     result = io_stream::open("cygfile:///etc/setup/" + relativeName, "rt");
   return result;
@@ -105,9 +106,9 @@ UserSettings::settingFileForSave(const std::string& relativeName) const
   if (get_root_dir ().size())
     {
       result = io_stream::open("cygfile:///etc/setup/" + relativeName, "wb");
-      io_stream::remove("file://" + relativeName);
+      io_stream::remove("file://" + local_dir + "\\" + relativeName);
     }
   else
-    result = io_stream::open("file://" + relativeName, "wb");
+    result = io_stream::open("file://" + local_dir + "\\" + relativeName, "wb");
   return result;
 }

@@ -27,6 +27,10 @@ static const char *cvsid =
 #include "filemanip.h"
 #include "io_stream.h"
 #include "String++.h"
+#include "win32.h"
+#include "ntdll.h"
+#include "io.h"
+#include "fcntl.h"
 
 using namespace std;
 
@@ -35,7 +39,7 @@ using namespace std;
 size_t
 get_file_size (const std::string& name)
 {
-  io_stream *theFile = io_stream::open (name, "rb");
+  io_stream *theFile = io_stream::open (name, "");
   if (!theFile)
     /* To consider: throw an exception ? */
     return 0;
@@ -236,4 +240,244 @@ mklongpath (wchar_t *tgt, const char *src, size_t len)
       transform_chars (tp + 2, tp + ret - 2);
     }
   return 0;
+}
+
+/* Replacement functions for Win32 API functions.  The joke here is that the
+   replacement functions always use the FILE_OPEN_FOR_BACKUP_INTENT flag. */
+
+extern "C" DWORD WINAPI
+GetFileAttributesW (LPCWSTR wpath)
+{
+  NTSTATUS status;
+  HANDLE h;
+  IO_STATUS_BLOCK io;
+  UNICODE_STRING uname;
+  OBJECT_ATTRIBUTES attr;
+  DWORD ret = INVALID_FILE_ATTRIBUTES;
+
+  PWCHAR wname = (PWCHAR) wpath;
+  wname[1] = L'?';
+  RtlInitUnicodeString (&uname, wname);
+  InitializeObjectAttributes (&attr, &uname, 0, NULL, NULL);
+  status = NtOpenFile (&h, READ_CONTROL | FILE_READ_ATTRIBUTES, &attr, &io,
+		       FILE_SHARE_VALID_FLAGS,
+                       FILE_OPEN_FOR_BACKUP_INTENT | FILE_OPEN_REPARSE_POINT);
+  wname[1] = L'\\';
+  if (NT_SUCCESS (status))
+    {
+      FILE_BASIC_INFORMATION fbi;
+
+      status = NtQueryInformationFile (h, &io, &fbi, sizeof fbi,
+				       FileBasicInformation);
+      if (NT_SUCCESS (status))
+	ret = fbi.FileAttributes;
+      NtClose (h);
+    }
+  if (!NT_SUCCESS (status))
+    SetLastError (RtlNtStatusToDosError (status));
+  return ret;
+}
+
+extern "C" BOOL WINAPI
+SetFileAttributesW (LPCWSTR wpath, DWORD attribs)
+{
+  NTSTATUS status;
+  HANDLE h;
+  IO_STATUS_BLOCK io;
+  UNICODE_STRING uname;
+  OBJECT_ATTRIBUTES attr;
+
+  PWCHAR wname = (PWCHAR) wpath;
+  wname[1] = L'?';
+  RtlInitUnicodeString (&uname, wname);
+  InitializeObjectAttributes (&attr, &uname, 0, NULL, NULL);
+  status = NtOpenFile (&h, READ_CONTROL | FILE_WRITE_ATTRIBUTES, &attr, &io,
+		       FILE_SHARE_VALID_FLAGS,
+                       FILE_OPEN_FOR_BACKUP_INTENT | FILE_OPEN_REPARSE_POINT);
+  wname[1] = L'\\';
+  if (NT_SUCCESS (status))
+    {
+      FILE_BASIC_INFORMATION fbi;
+
+      memset (&fbi, 0, sizeof fbi);
+      fbi.FileAttributes = attribs ?: FILE_ATTRIBUTE_NORMAL;
+      status = NtSetInformationFile (h, &io, &fbi, sizeof fbi,
+				     FileBasicInformation);
+      NtClose (h);
+    }
+  if (!NT_SUCCESS (status))
+    SetLastError (RtlNtStatusToDosError (status));
+  return NT_SUCCESS (status);
+}
+
+typedef struct _FILE_RENAME_INFORMATION {
+  BOOLEAN ReplaceIfExists;
+  HANDLE RootDirectory;
+  ULONG FileNameLength;
+  WCHAR FileName[1];
+} FILE_RENAME_INFORMATION, *PFILE_RENAME_INFORMATION;
+
+extern "C" BOOL WINAPI
+MoveFileW (LPCWSTR from, LPCWSTR to)
+{
+  NTSTATUS status;
+  HANDLE h;
+  IO_STATUS_BLOCK io;
+  UNICODE_STRING uname;
+  OBJECT_ATTRIBUTES attr;
+
+  PWCHAR wfrom = (PWCHAR) from;
+  wfrom[1] = L'?';
+  RtlInitUnicodeString (&uname, wfrom);
+  InitializeObjectAttributes (&attr, &uname, 0, NULL, NULL);
+  status = NtOpenFile (&h, READ_CONTROL | DELETE,
+		       &attr, &io, FILE_SHARE_VALID_FLAGS,
+		       FILE_OPEN_FOR_BACKUP_INTENT | FILE_OPEN_REPARSE_POINT);
+  wfrom[1] = L'\\';
+  if (NT_SUCCESS (status))
+    {
+      size_t len = wcslen (to) * sizeof (WCHAR);
+      PFILE_RENAME_INFORMATION pfri = (PFILE_RENAME_INFORMATION)
+	malloc (sizeof (FILE_RENAME_INFORMATION) + len);
+      pfri->ReplaceIfExists = TRUE;
+      pfri->RootDirectory = NULL;
+      pfri->FileNameLength = len;
+      memcpy (pfri->FileName, to, len);
+      pfri->FileName[1] = L'?';
+      status = NtSetInformationFile(h, &io, pfri,
+				    sizeof (FILE_RENAME_INFORMATION) + len,
+				    FileRenameInformation);
+      free (pfri);
+      NtClose (h);
+    }
+  if (!NT_SUCCESS (status))
+    SetLastError (RtlNtStatusToDosError (status));
+  return NT_SUCCESS (status);
+}
+
+extern "C" BOOL WINAPI
+DeleteFileW (LPCWSTR wpath)
+{
+  NTSTATUS status;
+  HANDLE h;
+  IO_STATUS_BLOCK io;
+  UNICODE_STRING uname;
+  OBJECT_ATTRIBUTES attr;
+
+  PWCHAR wname = (PWCHAR) wpath;
+  wname[1] = L'?';
+  RtlInitUnicodeString (&uname, wname);
+  InitializeObjectAttributes (&attr, &uname, 0, NULL, NULL);
+  status = NtOpenFile (&h, READ_CONTROL | DELETE,
+		       &attr, &io, FILE_SHARE_VALID_FLAGS,
+		       FILE_OPEN_FOR_BACKUP_INTENT | FILE_OPEN_REPARSE_POINT);
+  wname[1] = L'\\';
+  if (NT_SUCCESS (status))
+    {
+      FILE_DISPOSITION_INFORMATION fdi = { TRUE };
+      status = NtSetInformationFile (h, &io, &fdi, sizeof fdi,
+				     FileDispositionInformation);
+      NtClose (h);
+    }
+  if (!NT_SUCCESS (status))
+    SetLastError (RtlNtStatusToDosError (status));
+  return NT_SUCCESS (status);
+}
+
+extern "C" BOOL WINAPI
+RemoveDirectoryW (LPCWSTR wpath)
+{
+  return DeleteFileW (wpath);
+}
+
+FILE *
+nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
+{
+  NTSTATUS status;
+  HANDLE h;
+  IO_STATUS_BLOCK io;
+  UNICODE_STRING uname;
+  OBJECT_ATTRIBUTES attr;
+  const char *c;
+  ULONG access, disp;
+  int oflags = 0;
+
+  switch (mode[0])
+    {
+    case 'r':
+      access = GENERIC_READ;
+      disp = FILE_OPEN;
+      break;
+    case 'w':
+      access = GENERIC_WRITE;
+      disp = FILE_OVERWRITE_IF;
+      break;
+    case 'a':
+      access = GENERIC_WRITE;
+      disp = FILE_OPEN_IF;
+      oflags = _O_APPEND;
+      break;
+    default:
+      errno = EINVAL;
+      return NULL;
+    }
+  for (c = mode + 1; *c; ++c)
+    switch (*c)
+      {
+      case '+':
+	access = GENERIC_READ | GENERIC_WRITE;
+	break;
+      case 't':
+      	oflags |= _O_TEXT;
+	break;
+      case 'b':
+	oflags |= _O_BINARY;
+	break;
+      default:
+	errno = EINVAL;
+	return NULL;
+      }
+  switch (access)
+    {
+    case GENERIC_READ:
+      oflags |= _O_RDONLY;
+      break;
+    case GENERIC_WRITE:
+      access |= WRITE_DAC;
+      oflags |= _O_WRONLY;
+      break;
+    case GENERIC_READ | GENERIC_WRITE:
+      access |= WRITE_DAC;
+      oflags |= _O_RDWR;
+      break;
+    }
+  PWCHAR wname = (PWCHAR) wpath;
+  wname[1] = L'?';
+  RtlInitUnicodeString (&uname, wname);
+  InitializeObjectAttributes (&attr, &uname, 0, NULL, NULL);
+  status = NtCreateFile (&h, access | SYNCHRONIZE, &attr, &io, NULL,
+			 FILE_ATTRIBUTE_NORMAL, FILE_SHARE_VALID_FLAGS, disp, 
+			 FILE_OPEN_FOR_BACKUP_INTENT
+			 | FILE_OPEN_REPARSE_POINT
+			 | FILE_SYNCHRONOUS_IO_NONALERT,
+			 NULL, 0);
+  wname[1] = L'\\';
+  if (!NT_SUCCESS (status))
+    {
+      if (status == STATUS_OBJECT_NAME_NOT_FOUND
+	  || status == STATUS_OBJECT_PATH_NOT_FOUND
+	  || status == STATUS_NO_SUCH_FILE)
+      	errno = ENOENT;
+      else if (status == STATUS_OBJECT_NAME_INVALID)
+      	errno = EINVAL;
+      else
+      	errno = EACCES;
+      return NULL;
+    }
+  if (io.Information == FILE_CREATED)
+    nt_sec.SetPosixPerms ("", h, perms);
+  int fd = _open_osfhandle ((long) h, oflags);
+  if (fd < 0)
+    return NULL;
+  return _fdopen (fd, mode);
 }

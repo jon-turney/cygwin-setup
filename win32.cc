@@ -28,31 +28,6 @@ static const char *cvsid =
 NTSecurity nt_sec;
 
 void
-TokenGroupCollection::populate ()
-{
-  if (!GetTokenInformation (token.theHANDLE(), TokenGroups, buffer,
-                            bufferSize, &bufferSize))
-    {
-      log (LOG_TIMESTAMP) << "GetTokenInformation() failed: " <<
-	  	GetLastError () << endLog;
-	return;
-    }
-  populated_ = true;
-}
-
-bool
-TokenGroupCollection::find (SIDWrapper const &aSID) const
-{
-  if (!populated ())
-    return false;
-  TOKEN_GROUPS *groups = (TOKEN_GROUPS *) buffer;
-  for (DWORD pg = 0; pg < groups->GroupCount; ++pg)
-    if (EqualSid (groups->Groups[pg].Sid, aSID.theSID ()))
-      return true;
-  return false;
-}
-
-void
 NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
 {
   struct {
@@ -357,20 +332,10 @@ NTSecurity::setDefaultSecurity ()
       NoteFailedAPI("GetTokenInformation(pgrp)");
       primaryGroupSID.pgrp.PrimaryGroup = (PSID) NULL;
     }
-  /* Get the token groups */
-  if (!GetTokenInformation (token.theHANDLE(), TokenGroups, NULL, 0, &size)
-	  && GetLastError () != ERROR_INSUFFICIENT_BUFFER)
-    {
-      NoteFailedAPI("GetTokenInformation(groups)");
-      return;
-    }
-  TokenGroupCollection ntGroups(size, token);
-  ntGroups.populate ();
-  if (!ntGroups.populated ())
-    return;
-  /* Set the primary group to the Administrators group, but only if
-     the user is admin and if "Install for all users" has been chosen. */
-  if (root_scope == IDC_ROOT_SYSTEM && ntGroups.find (administratorsSID))
+  /* Try to set the primary group to the Administrators group, but only if
+     "Install for all users" has been chosen.  If it doesn't work, we're
+     no admin and that's all there's to say about it. */
+  if (root_scope == IDC_ROOT_SYSTEM)
     setAdminGroup ();
 }
 

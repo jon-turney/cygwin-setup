@@ -176,10 +176,10 @@ make_cygwin_bat ()
       mklongpath (wname, batname.c_str (), len);
 
       /* if the batch file exists, don't overwrite it */
-      if (_waccess (wname, 0) == 0)
+      if (GetFileAttributesW (wname) != INVALID_FILE_ATTRIBUTES)
 	return;
 
-      bat = _wfopen (wname, L"wt");
+      bat = nt_wfopen (wname, "wt", 0755);
     }
   else
     {
@@ -222,7 +222,9 @@ save_icon ()
       size_t ilen = iconname.size () + 7;
       WCHAR wname[ilen];
       mklongpath (wname, iconname.c_str (), ilen);
-      f = _wfopen (wname, L"wb");
+      if (GetFileAttributesW (wname) != INVALID_FILE_ATTRIBUTES)
+	return;
+      f = nt_wfopen (wname, "wb", 0644);
     }
   else
     f = fopen (iconname.c_str (), "wb");

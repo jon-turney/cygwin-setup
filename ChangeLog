@@ -1,3 +1,53 @@
+2009-05-11  Corinna Vinschen  <corinna@vinschen.de>
+
+	* UserSettings.cc (UserSettings::settingFileForLoad): Fix local load
+	path strings.
+	(UserSettings::settingFileForSave): Never store in cwd.
+	* autoload.c (ntdll): Autoload ntdll.dll functions here.
+	* desktop.cc (make_cygwin_bat): Use GetFileAttributesW rather than
+	_waccess.  Use nt_wfopen instead of _wfopen.
+	(save_icon): Ditto.
+	* filemanip.cc (get_file_size): Call io_stream::open with empty mode
+	string to avoid opening file twice.
+	(GetFileAttributesW): New function to replace Win32 function with
+	equivalent function opening files with backup intent.
+	(SetFileAttributesW): Ditto.
+	(MoveFileW): Ditto.
+	(DeleteFileW): Ditto.
+	(RemoveDirectoryW): Ditto.
+	(nt_wfopen): New function to replace _wfopen with equivalent function
+	opening files with backup intent.
+	* filemanip.h (nt_wfopen): Declare.
+	* io_stream_cygfile.cc (io_stream_cygfile::io_stream_cygfile): Initalize
+	lasterr to 0.  Allow empty mode and don't open file, if so.  Call
+	nt_wfopen rather than _wfopen.
+	(io_stream_cygfile::exists): Use GetFileAttributesW rather than
+	_waccess.
+	(io_stream_cygfile::get_size): Use CreateFileW/GetFileSize to get
+	file size on NT.
+	* io_stream_file.cc (io_stream_file::io_stream_file): Initalize lasterr
+	to 0.  Allow empty mode and don't open file, if so.  Call nt_wfopen
+	rather than _wfopen.
+	(io_stream_file::exists): Use GetFileAttributesW rather than _waccess.
+	(io_stream_file::remove): Don't try to remove non-existant file.
+	(io_stream_file::get_size): Use CreateFileW/GetFileSize to get
+	file size on NT.  Add comment to keep track of 2GB border.
+	* mkdir.cc: Remove function pointers for ntdll functions.
+	(init_ntfuncs): Remove function.
+	(mkdir_p): Drop call to init_ntfuncs.  Call ntdll functions directly
+	rather than over local function pointers.
+	* ntdll.h: New file.
+	* postinstall.cc (do_postinstall_reflector): Switch to admins group
+	as primary group after postinstall scripts have been written. 
+	Explain why.
+	(do_postinstall): Add comment.
+	* res.rc: Bump copyright date.
+	* win32.h (class TokenGroupCollection): Remove.
+	* win32.cc (TokenGroupCollection::populate): Remove.
+	(TokenGroupCollection::find): Remove.
+	(NTSecurity::setDefaultSecurity): Drop reading token groups.  Just
+	try to switch to admins group as primary group.
+
 2009-05-07  Corinna Vinschen  <corinna@vinschen.de>
 
 	* package_db.cc (ConnectedLoopFinder::doIt): Revert patch from

@@ -90,26 +90,6 @@ class HANDLEWrapper {
     HANDLE value;
 };
 
-class TokenGroupCollection {
-  public:
-    TokenGroupCollection (DWORD aSize, HANDLEWrapper &aHandle) :
-                         populated_(false), buffer(new char[aSize]), 
-                         bufferSize(aSize), token(aHandle) {}
-    ~TokenGroupCollection () { if (buffer) delete[] buffer; }
-
-    /* prevent synthetics */
-    TokenGroupCollection& operator= (TokenGroupCollection const &);
-    TokenGroupCollection (TokenGroupCollection const &);
-    bool find (SIDWrapper const &) const;
-    bool populated() const { return populated_; }
-    void populate();
-  private:
-    mutable bool populated_;
-    char *buffer;
-    DWORD bufferSize;
-    HANDLEWrapper &token;
-};
-
 class NTSecurity
 {
 public:

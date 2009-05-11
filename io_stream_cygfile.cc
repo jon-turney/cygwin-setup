@@ -132,10 +132,10 @@ get_root_dir_now ()
   read_mounts (std::string ());
 }
 
-io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string& mode) : fp(), fname(), wname (NULL)
+io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string& mode) : fp(), lasterr (0), fname(), wname (NULL)
 {
   errno = 0;
-  if (!name.size() || !mode.size())
+  if (!name.size())
   {
     log(LOG_TIMESTAMP) << "io_stream_cygfile: Bad parameters" << endLog;
     return;
@@ -153,20 +153,19 @@ io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string
   }
 
   fname = cygpath (normalise(name));
-  if (IsWindowsNT ())
+  if (mode.size ())
     {
-      wchar_t lmode[mode.size () + 1];
-      mbstowcs (lmode, mode.c_str (), mode.size () + 1);
-      fp = _wfopen (w_str(), lmode);
+      if (IsWindowsNT ())
+	fp = nt_wfopen (w_str(), mode.c_str (), 0644);
+      else
+	fp = fopen (fname.c_str (), mode.c_str ());
+      if (!fp)
+      {
+	lasterr = errno;
+	log(LOG_TIMESTAMP) << "io_stream_cygfile: fopen(" << name << ") failed " << errno << " "
+	  << strerror(errno) << endLog;
+      }
     }
-  else
-    fp = fopen (fname.c_str (), mode.c_str ());
-  if (!fp)
-  {
-    lasterr = errno;
-    log(LOG_TIMESTAMP) << "io_stream_cygfile: fopen(" << name << ") failed " << errno << " "
-      << strerror(errno) << endLog;
-  }
 }
 
 io_stream_cygfile::~io_stream_cygfile ()
@@ -190,7 +189,8 @@ io_stream_cygfile::exists (const std::string& path)
       size_t len = cygpath (normalise(path)).size () + 7;
       WCHAR wname[len];
       mklongpath (wname, cygpath (normalise(path)).c_str (), len);
-      if (_waccess (wname, 0) == 0)
+      DWORD attr = GetFileAttributesW (wname);
+      if (attr != INVALID_FILE_ATTRIBUTES)
 	return 1;
     }
   else if (_access (cygpath (normalise(path)).c_str (), 0))
@@ -435,14 +435,12 @@ io_stream_cygfile::get_size ()
   DWORD ret = 0;
   if (IsWindowsNT ())
     {
-      WIN32_FIND_DATAW buf;
-      h = FindFirstFileW (w_str (), &buf);
+      h = CreateFileW (w_str (), GENERIC_READ,
+		       FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
+		       FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
       if (h != INVALID_HANDLE_VALUE)
-	{
-	  if (buf.nFileSizeHigh == 0)
-	    ret = buf.nFileSizeLow;
-	  FindClose (h);
-	}
+	ret = GetFileSize (h, NULL);
+      CloseHandle (h);
     }
   else
     {

@@ -22,7 +22,7 @@ static const char *cvsid =
 
 #if defined(WIN32) && !defined (_CYGWIN_)
 #include "win32.h"
-#include "ddk/ntapi.h"
+#include "ntdll.h"
 #else
 #include <unistd.h>
 #include <string.h>
@@ -34,28 +34,6 @@ static const char *cvsid =
 
 #include "mkdir.h"
 #include "filemanip.h"
-
-NTSTATUS DDKAPI (*_NtCreateFile) (PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES,
-				  PIO_STATUS_BLOCK, PLARGE_INTEGER, ULONG,
-				  ULONG, ULONG, ULONG, PVOID, ULONG);
-NTSTATUS DDKAPI (*_NtClose) (HANDLE);
-ULONG NTAPI (*_RtlNtStatusToDosError) (NTSTATUS);
-
-static void
-init_ntfuncs ()
-{
-  HMODULE h;
-  if (!_NtCreateFile && (h = LoadLibrary ("ntdll.dll")))
-    {
-      _NtCreateFile = (NTSTATUS DDKAPI (*) (PHANDLE, ACCESS_MASK,
-		       POBJECT_ATTRIBUTES, PIO_STATUS_BLOCK, PLARGE_INTEGER,
-		       ULONG, ULONG, ULONG, ULONG, PVOID, ULONG))
-		       GetProcAddress (h, "NtCreateFile");
-      _NtClose = (NTSTATUS DDKAPI (*) (HANDLE)) GetProcAddress (h, "NtClose");
-      _RtlNtStatusToDosError = (ULONG NTAPI (*) (NTSTATUS))
-			       GetProcAddress (h, "RtlNtStatusToDosError");
-    }
-}
 
 int
 mkdir_p (int isadir, const char *in_path, mode_t mode)
@@ -86,28 +64,27 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 	  OBJECT_ATTRIBUTES attr;
 	  IO_STATUS_BLOCK io;
 
-	  init_ntfuncs ();
 	  wpath[1] = '?';
 	  upath.Length = wcslen (wpath) * sizeof (WCHAR);
 	  upath.MaximumLength = upath.Length + sizeof (WCHAR);
 	  upath.Buffer = wpath;
 	  InitializeObjectAttributes (&attr, &upath, OBJ_CASE_INSENSITIVE,
 				      NULL, NULL);
-	  status = _NtCreateFile (&dir,
-	  			  STANDARD_RIGHTS_ALL | FILE_LIST_DIRECTORY,
-				  &attr, &io, NULL, FILE_ATTRIBUTE_DIRECTORY,
-				  FILE_SHARE_VALID_FLAGS, FILE_CREATE,
-				  FILE_DIRECTORY_FILE
-				  | FILE_SYNCHRONOUS_IO_NONALERT
-				  | FILE_OPEN_FOR_BACKUP_INTENT, NULL, 0);
+	  status = NtCreateFile (&dir,
+	  			 STANDARD_RIGHTS_ALL | FILE_LIST_DIRECTORY,
+				 &attr, &io, NULL, FILE_ATTRIBUTE_DIRECTORY,
+				 FILE_SHARE_VALID_FLAGS, FILE_CREATE,
+				 FILE_DIRECTORY_FILE
+				 | FILE_SYNCHRONOUS_IO_NONALERT
+				 | FILE_OPEN_FOR_BACKUP_INTENT, NULL, 0);
 	  if (NT_SUCCESS (status))
 	    {
 	      nt_sec.SetPosixPerms (path, dir, mode);
-	      _NtClose (dir);
+	      NtClose (dir);
 	      return 0;
 	    }
 	  else
-	    SetLastError (_RtlNtStatusToDosError (status));
+	    SetLastError (RtlNtStatusToDosError (status));
       	}
       else if (CreateDirectoryA (path, 0))
 	return 0;

@@ -20,6 +20,7 @@ static const char *cvsid =
 
 #if defined(WIN32) && !defined (_CYGWIN_)
 #include "win32.h"
+#include "ntdll.h"
 #include "mklink2.h"
 #include "filemanip.h"
 #endif
@@ -89,21 +90,20 @@ io_stream_file::w_str ()
   return wname;
 }
 
-io_stream_file::io_stream_file (const std::string& name, const std::string& mode) : fp(), fname(name), wname (NULL)
+io_stream_file::io_stream_file (const std::string& name, const std::string& mode) : fp(), lasterr (0), fname(name), wname (NULL)
 {
   errno = 0;
-  if (!name.size() || !mode.size())
+  if (!name.size())
     return;
-  if (IsWindowsNT ())
+  if (mode.size ())
     {
-      wchar_t lmode[mode.size () + 1];
-      mbstowcs (lmode, mode.c_str (), mode.size () + 1);
-      fp = _wfopen (w_str (), lmode); 
+      if (IsWindowsNT ())
+	fp = nt_wfopen (w_str (), mode.c_str (), 0644); 
+      else
+	fp = fopen (fname.c_str (), mode.c_str ());
+      if (!fp)
+	lasterr = errno;
     }
-  else
-    fp = fopen (fname.c_str (), mode.c_str ());
-  if (!fp)
-    lasterr = errno;
 }
 
 io_stream_file::~io_stream_file ()
@@ -123,7 +123,8 @@ io_stream_file::exists (const std::string& path)
       size_t len = path.size () + 7;
       WCHAR wname[len];
       mklongpath (wname, path.c_str (), len);
-      if (_waccess (wname, 0) == 0)
+      DWORD attr = GetFileAttributesW (wname);
+      if (attr != INVALID_FILE_ATTRIBUTES)
 	return 1;
     }
   else if (_access (path.c_str(), F_OK) == 0)
@@ -147,7 +148,9 @@ io_stream_file::remove (const std::string& path)
       mklongpath (wpath, path.c_str (), len);
 
       unsigned long w = GetFileAttributesW (wpath);
-      if (w != INVALID_FILE_ATTRIBUTES && w & FILE_ATTRIBUTE_DIRECTORY)
+      if (w == INVALID_FILE_ATTRIBUTES)
+	return 0;
+      if (w & FILE_ATTRIBUTE_DIRECTORY)
 	{
 	  len = wcslen (wpath);
 	  WCHAR tmp[len + 10];
@@ -169,7 +172,9 @@ io_stream_file::remove (const std::string& path)
   else
     {
       unsigned long w = GetFileAttributesA (path.c_str ());
-      if (w != INVALID_FILE_ATTRIBUTES && w & FILE_ATTRIBUTE_DIRECTORY)
+      if (w == INVALID_FILE_ATTRIBUTES)
+      	return 0;
+      if (w & FILE_ATTRIBUTE_DIRECTORY)
 	{
 	  size_t len = path.size ();
 	  char tmp[len + 10];
@@ -323,6 +328,8 @@ io_stream_file::move (const std::string& from, const std::string& to)
   return rename (from.c_str(), to.c_str());
 }
 
+/* This only handles file < 2GB.  The chance that files in the distro
+   get bigger is rather small, though... */
 size_t
 io_stream_file::get_size ()
 {
@@ -333,14 +340,12 @@ io_stream_file::get_size ()
   DWORD ret = 0;
   if (IsWindowsNT ())
     {
-      WIN32_FIND_DATAW buf;
-      h = FindFirstFileW (w_str(), &buf);
+      h = CreateFileW (w_str (), GENERIC_READ,
+		       FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
+		       FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
       if (h != INVALID_HANDLE_VALUE)
-	{
-	  if (buf.nFileSizeHigh == 0)
-	    ret = buf.nFileSizeLow;
-	  FindClose (h);
-	}
+	ret = GetFileSize (h, NULL);
+      CloseHandle (h);
     }
   else
     {

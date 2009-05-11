@@ -25,6 +25,7 @@ static const char *cvsid =
 #include "find.h"
 #include "mount.h"
 #include "script.h"
+#include "state.h"
 #include "FindVisitor.h"
 #include "package_db.h"
 #include "package_meta.h"
@@ -112,8 +113,10 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
   for (i = packages.begin (); i != packages.end (); ++i)
     {
       packagemeta & pkg = **i;
+
       for_each (pkg.installed.scripts().begin(), pkg.installed.scripts().end(),
 		RunScript(pkg.name, pkg.installed.scripts().size()));
+
       ++k;
       Progress.SetBar2 (k, numpkg);
     }
@@ -142,6 +145,11 @@ do_postinstall_reflector (void *p)
   }
   TOPLEVEL_CATCH("postinstall");
 
+  /* Revert primary group to admins group.  This allows to create all the
+     state files written by setup as admin group owned. */
+  if (root_scope == IDC_ROOT_SYSTEM)
+    nt_sec.setAdminGroup ();
+
   ExitThread(0);
 }
 
@@ -150,7 +158,13 @@ static HANDLE context[2];
 void
 do_postinstall (HINSTANCE h, HWND owner)
 {
-  nt_sec.resetPrimaryGroup ();
+  /* Switch back to original primary group.  Otherwise we end up with a
+     broken passwd entry for the current user.
+     FIXME: Unfortunately this has the unfortunate side-effect that *all*
+     files created via postinstall are group owned by the original primary
+     group of the user.  Find a way to avoid this at one point. */
+  if (root_scope == IDC_ROOT_SYSTEM)
+    nt_sec.resetPrimaryGroup ();
 
   context[0] = h;
   context[1] = owner;
