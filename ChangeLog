@@ -1,3 +1,13 @@
+2009-05-12  Corinna Vinschen  <corinna@vinschen.de>
+
+	* filemanip.cc (GetFileAttributesW): Add accidentally omited
+	OBJ_CASE_INSENSITIVE when creating OBJECT_ATTRIBUTES.
+	(SetFileAttributesW): Ditto.
+	(MoveFileW): Ditto.
+	(DeleteFileW): Ditto.
+	(RemoveDirectoryW): Ditto.
+	(nt_wfopen): Ditto.
+
 2009-05-11  Bryan Thrall  <bryan.thrall@flightsafety.com>
 
 	* localdir.cc (load_dialog): Choose description string based on install

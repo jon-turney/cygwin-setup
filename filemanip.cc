@@ -258,7 +258,7 @@ GetFileAttributesW (LPCWSTR wpath)
   PWCHAR wname = (PWCHAR) wpath;
   wname[1] = L'?';
   RtlInitUnicodeString (&uname, wname);
-  InitializeObjectAttributes (&attr, &uname, 0, NULL, NULL);
+  InitializeObjectAttributes (&attr, &uname, OBJ_CASE_INSENSITIVE, NULL, NULL);
   status = NtOpenFile (&h, READ_CONTROL | FILE_READ_ATTRIBUTES, &attr, &io,
 		       FILE_SHARE_VALID_FLAGS,
                        FILE_OPEN_FOR_BACKUP_INTENT | FILE_OPEN_REPARSE_POINT);
@@ -290,7 +290,7 @@ SetFileAttributesW (LPCWSTR wpath, DWORD attribs)
   PWCHAR wname = (PWCHAR) wpath;
   wname[1] = L'?';
   RtlInitUnicodeString (&uname, wname);
-  InitializeObjectAttributes (&attr, &uname, 0, NULL, NULL);
+  InitializeObjectAttributes (&attr, &uname, OBJ_CASE_INSENSITIVE, NULL, NULL);
   status = NtOpenFile (&h, READ_CONTROL | FILE_WRITE_ATTRIBUTES, &attr, &io,
 		       FILE_SHARE_VALID_FLAGS,
                        FILE_OPEN_FOR_BACKUP_INTENT | FILE_OPEN_REPARSE_POINT);
@@ -329,7 +329,7 @@ MoveFileW (LPCWSTR from, LPCWSTR to)
   PWCHAR wfrom = (PWCHAR) from;
   wfrom[1] = L'?';
   RtlInitUnicodeString (&uname, wfrom);
-  InitializeObjectAttributes (&attr, &uname, 0, NULL, NULL);
+  InitializeObjectAttributes (&attr, &uname, OBJ_CASE_INSENSITIVE, NULL, NULL);
   status = NtOpenFile (&h, READ_CONTROL | DELETE,
 		       &attr, &io, FILE_SHARE_VALID_FLAGS,
 		       FILE_OPEN_FOR_BACKUP_INTENT | FILE_OPEN_REPARSE_POINT);
@@ -367,7 +367,7 @@ DeleteFileW (LPCWSTR wpath)
   PWCHAR wname = (PWCHAR) wpath;
   wname[1] = L'?';
   RtlInitUnicodeString (&uname, wname);
-  InitializeObjectAttributes (&attr, &uname, 0, NULL, NULL);
+  InitializeObjectAttributes (&attr, &uname, OBJ_CASE_INSENSITIVE, NULL, NULL);
   status = NtOpenFile (&h, READ_CONTROL | DELETE,
 		       &attr, &io, FILE_SHARE_VALID_FLAGS,
 		       FILE_OPEN_FOR_BACKUP_INTENT | FILE_OPEN_REPARSE_POINT);
@@ -454,7 +454,7 @@ nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
   PWCHAR wname = (PWCHAR) wpath;
   wname[1] = L'?';
   RtlInitUnicodeString (&uname, wname);
-  InitializeObjectAttributes (&attr, &uname, 0, NULL, NULL);
+  InitializeObjectAttributes (&attr, &uname, OBJ_CASE_INSENSITIVE, NULL, NULL);
   status = NtCreateFile (&h, access | SYNCHRONIZE, &attr, &io, NULL,
 			 FILE_ATTRIBUTE_NORMAL, FILE_SHARE_VALID_FLAGS, disp, 
 			 FILE_OPEN_FOR_BACKUP_INTENT
