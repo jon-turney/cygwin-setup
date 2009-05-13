@@ -310,13 +310,6 @@ SetFileAttributesW (LPCWSTR wpath, DWORD attribs)
   return NT_SUCCESS (status);
 }
 
-typedef struct _FILE_RENAME_INFORMATION {
-  BOOLEAN ReplaceIfExists;
-  HANDLE RootDirectory;
-  ULONG FileNameLength;
-  WCHAR FileName[1];
-} FILE_RENAME_INFORMATION, *PFILE_RENAME_INFORMATION;
-
 extern "C" BOOL WINAPI
 MoveFileW (LPCWSTR from, LPCWSTR to)
 {

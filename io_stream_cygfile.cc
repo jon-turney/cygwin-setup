@@ -156,7 +156,8 @@ io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string
   if (mode.size ())
     {
       if (IsWindowsNT ())
-	fp = nt_wfopen (w_str(), mode.c_str (), 0644);
+	fp = nt_wfopen (w_str(), mode.c_str (),
+			fname.rfind (".exe") != std::string::npos ? 0755 : 0644);
       else
 	fp = fopen (fname.c_str (), mode.c_str ());
       if (!fp)
@@ -271,7 +272,15 @@ io_stream_cygfile::mklink (const std::string& _from, const std::string& _to,
       return mkcygsymlink (cygpath (from).c_str(), _to.c_str());
     case IO_STREAM_HARDLINK:
       {
-	/* For now, just copy */
+	/* First try to create a real hardlink. */
+	if (!mkcyghardlink (cygpath (from).c_str(), cygpath (to).c_str ()))
+	  return 0;
+
+	/* If creating a hardlink failed, we're probably on a filesystem
+	   which doesn't support hardlinks.  If so, we also don't care for
+	   permissions for now.  The filesystem is probably a filesystem
+	   which doesn't support ACLs anyway. */
+
 	/* textmode alert: should we translate when linking from an binmode to a
 	   text mode mount and vice verca?
 	 */

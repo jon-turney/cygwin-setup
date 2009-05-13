@@ -514,6 +514,9 @@ conv_fstab_spaces (char *field)
   return field;
 }
 
+static bool got_usr_bin;
+static bool got_usr_lib;
+
 static bool
 from_fstab_line (mnt *m, char *line)
 {
@@ -551,6 +554,10 @@ from_fstab_line (mnt *m, char *line)
 	  }
       m->posix = std::string (posix_path);
       m->native = std::string (unconvert_slashes (native_path));
+      if (!strcmp (posix_path, "/usr/bin"))
+	got_usr_bin = true;
+      else if (!strcmp (posix_path, "/usr/lib"))
+	got_usr_lib = true;
     }
   return true;
 }
@@ -611,11 +618,17 @@ static void
 add_usr_mnts (struct mnt *m)
 {
   /* Set default /usr/bin and /usr/lib */
-  m->posix = "/usr/bin";
-  m->native = root_here->native + "\\bin";
-  ++m;
-  m->posix = "/usr/lib";
-  m->native = root_here->native + "\\lib";
+  if (!got_usr_bin)
+    {
+      m->posix = "/usr/bin";
+      m->native = root_here->native + "\\bin";
+      ++m;
+    }
+  if (!got_usr_lib)
+    {
+      m->posix = "/usr/lib";
+      m->native = root_here->native + "\\lib";
+    }
 }
 
 static void
@@ -632,6 +645,7 @@ read_mounts_nt (const std::string val)
       m1->posix.clear();
       m1->native.clear();
     }
+  got_usr_bin = got_usr_lib = false;
 
   root_text = IDC_ROOT_BINARY;
   root_scope = (is_admin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
@@ -666,8 +680,8 @@ read_mounts_nt (const std::string val)
 	      m->posix = "/";
 	      root_scope = isuser ? IDC_ROOT_USER : IDC_ROOT_SYSTEM;
 	      root_here = m++;
-	      if (!from_fstab (m, root_here->native))
-		add_usr_mnts (m);
+	      from_fstab (m, root_here->native);
+	      add_usr_mnts (m);
 	      break;
 	    }
 	  RegCloseKey (key);

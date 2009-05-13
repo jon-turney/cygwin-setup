@@ -15,6 +15,7 @@
 #define SETUP_NTDLL_H
 
 #include "ddk/ntapi.h"
+#include "ddk/ntifs.h"
 
 extern "C" {
 NTSTATUS DDKAPI NtCreateFile (PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES,

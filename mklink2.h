@@ -11,6 +11,7 @@ extern "C"
   void make_link_2 (char const *exepath, char const *args, char const *icon, char const *lname);
 
   int mkcygsymlink (const char *from, const char *to);
+  int mkcyghardlink (const char *from, const char *to);
 
 #ifdef __cplusplus
 };
