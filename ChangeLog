@@ -1,5 +1,9 @@
 2009-05-13  Corinna Vinschen  <corinna@vinschen.de>
 
+	* script.cc (Script::run): Start bash with --norc --noprofile options.
+
+2009-05-13  Corinna Vinschen  <corinna@vinschen.de>
+
 	* filemanip.cc (struct _FILE_RENAME_INFORMATION): Remove definition.
 	* io_stream_cygfile.cc (io_stream_cygfile::io_stream_cygfile): Set
 	default permission for .exe files to 0755.
