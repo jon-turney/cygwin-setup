@@ -1,3 +1,20 @@
+2009-05-13  Corinna Vinschen  <corinna@vinschen.de>
+
+	* filemanip.cc (struct _FILE_RENAME_INFORMATION): Remove definition.
+	* io_stream_cygfile.cc (io_stream_cygfile::io_stream_cygfile): Set
+	default permission for .exe files to 0755.
+	(io_stream_cygfile::mklink): Try to create real hardlink first.  Add
+	comment.
+	* mklink2.cc (mkcyghardlink): New function to create real hardlink.
+	* mklink2.h (mkcyghardlink): Declare.
+	* mount.cc (from_fstab_line): Set got_usr_bin and got_usr_lib flags
+	if /usr/bin and /usr/lib mount points exist in /etc/fstab.
+	(add_usr_mnts): Only create mounts if corresponding got_usr_bin and
+	got_usr_lib flags are not set.
+	(read_mounts_nt): Initialize got_usr_bin and got_usr_lib to false.
+	Always call add_usr_mnts, even if from_fstab succeeded.
+	* ntdll.h: Include ddk/ntifs.h.
+
 2009-05-12  Corinna Vinschen  <corinna@vinschen.de>
 
 	* filemanip.cc (GetFileAttributesW): Add accidentally omited
