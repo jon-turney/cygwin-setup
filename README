@@ -56,10 +56,8 @@ been.
 CODING GUIDELINES:
 ------------------
 setup has a number of different code formats in it. This is ok as long
-as it stays readable. I'll accept patches (if anyone wants to do it :})
-to standardise towards what I'm laying out here. But: thats not needed!
-Mainly, as code is changed, either leave well enough alone, or refactor
-what you are working on accordingly.
+as it stays readable. When submitting a patch, make sure that you use
+the coding-style of the surrounding code.
 
 The GNU standards are acceptable, but:
 They don't explicitly cover C++, and C++ has a number of challenges that
@@ -74,11 +72,6 @@ capitalisedAfterTheFirstWord.
 * Try to keep functions less than 15 lines in length.
 * Try to avoid using return values with non-query methods.
 * Use classes rather than static functions.
-* Place all methods for a single class in a single file. (* Libraries
-may need multiple files, this is for setup.exe's source itself)
-* Name the source file for classes and their headers after the class.
-Capitalise it identically. Where pragmatism requires, try to be as close
-as possible (see for instance, String++.h).
 
 
 SUBMITTING A PATCH:
