@@ -348,8 +348,8 @@ MoveFileW (LPCWSTR from, LPCWSTR to)
   return NT_SUCCESS (status);
 }
 
-extern "C" BOOL WINAPI
-DeleteFileW (LPCWSTR wpath)
+static BOOL
+unlink (LPCWSTR wpath, ULONG file_attr)
 {
   NTSTATUS status;
   HANDLE h;
@@ -363,7 +363,9 @@ DeleteFileW (LPCWSTR wpath)
   InitializeObjectAttributes (&attr, &uname, OBJ_CASE_INSENSITIVE, NULL, NULL);
   status = NtOpenFile (&h, READ_CONTROL | DELETE,
 		       &attr, &io, FILE_SHARE_VALID_FLAGS,
-		       FILE_OPEN_FOR_BACKUP_INTENT | FILE_OPEN_REPARSE_POINT);
+		       FILE_OPEN_FOR_BACKUP_INTENT
+		       | FILE_OPEN_REPARSE_POINT
+		       | file_attr);
   wname[1] = L'\\';
   if (NT_SUCCESS (status))
     {
@@ -378,9 +380,15 @@ DeleteFileW (LPCWSTR wpath)
 }
 
 extern "C" BOOL WINAPI
+DeleteFileW (LPCWSTR wpath)
+{
+  return unlink (wpath, FILE_NON_DIRECTORY_FILE);
+}
+
+extern "C" BOOL WINAPI
 RemoveDirectoryW (LPCWSTR wpath)
 {
-  return DeleteFileW (wpath);
+  return unlink (wpath, FILE_DIRECTORY_FILE);
 }
 
 FILE *

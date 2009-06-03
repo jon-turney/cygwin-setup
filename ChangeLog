@@ -1,3 +1,12 @@
+2009-06-03  Corinna Vinschen  <corinna@vinschen.de>
+
+	* filemanip.cc (unlink): Rename from DeleteFileW.  Take additional
+	parameter to indicate file type to unlink.  Use in flags given to
+	NtCreateFile.
+	(DeleteFileW): Just call unlink from here with FILE_NON_DIRECTORY_FILE
+	flag.
+	(RemoveDirectoryW): Ditto with FILE_DIRECTORY_FILE flag.
+
 2009-05-30  Charles Wilson  <cygwin@cwilson.fastmail.fm>
 
 	* script.cc (Script::run): Really start bash with --norc
