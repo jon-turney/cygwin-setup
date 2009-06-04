@@ -1,3 +1,7 @@
+2009-06-03  Ralph Hempel  <rhempel@bmts.com>
+
+	* source.cc: Add support for both -D and -L on the command line.
+
 2009-06-03  Corinna Vinschen  <corinna@vinschen.de>
 
 	* filemanip.cc (unlink): Rename from DeleteFileW.  Take additional
