@@ -378,7 +378,9 @@ create_install_root ()
     fatal ("mount", rv);
   RegCloseKey (key);
 
-  read_mounts (std::string ());
+  // The mount table is already in the right shape at this point.
+  // Reading it again is not necessary.
+  //read_mounts (std::string ());
 }
 
 static void
@@ -668,7 +670,7 @@ read_mounts_nt (const std::string val)
 	  HKEY key = isuser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
 	  if (RegCreateKeyEx (key, buf, 0, (char *)"Cygwin", 0, KEY_ALL_ACCESS,
 			      0, &key, &disposition) != ERROR_SUCCESS)
-	    break;
+	    continue;
 	  DWORD type;
 	  char aBuffer[MAX_PATH + 1];
 	  posix_path_size = MAX_PATH;

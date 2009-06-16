@@ -1,3 +1,9 @@
+2009-06-16  Corinna Vinschen  <corinna@vinschen.de>
+
+	* mount.cc (create_install_root): Don't load mount table again.
+	(read_mounts_nt): Don't break loop, rather continue when not being
+	able to open "Cygwin" registry key.
+
 2009-06-03  Ralph Hempel  <rhempel@bmts.com>
 
 	* source.cc: Add support for both -D and -L on the command line.
