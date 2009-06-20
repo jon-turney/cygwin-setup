@@ -341,6 +341,8 @@ init_pool (size_t n)
 {
   size_t pgsize;
   long int pgsize_val;
+  int getpagesize (void);
+
   memblock_t *mb;
 
   pool_size = n;

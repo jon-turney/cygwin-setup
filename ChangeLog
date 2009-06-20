@@ -1,3 +1,13 @@
+2009-06-20  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* script.cc (shells): Delete.
+	(cmd): Just assign to "cmd.exe" since we're always running on NT now.
+	(sanitize_PATH ): New function.
+	(init_run_script): Ensure that we're only called once.  Strip
+	environment of non-pertinent stuff.  Call sanitize_PATH to remove
+	non-standard stuff from the PATH.  Set up a few standard environment
+	variables.
+
 2009-06-16  Corinna Vinschen  <corinna@vinschen.de>
 
 	* mount.cc (create_install_root): Don't load mount table again.

@@ -32,40 +32,85 @@ static const char *cvsid =
 #include "io_stream.h"
 #include "script.h"
 #include "mkdir.h"
+#if HAVE_ALLOCA_H
+#include <alloca.h>
+#else
+#ifndef alloca
+#define alloca __builtin_alloca
+#endif
+#endif
 
 static std::string sh;
-static const char *cmd = 0;
+static const char *cmd = "cmd.exe";
 
-static const char *shells[] = {
-  // Bash is guaranteed to exist, /bin/sh is not.  Besides,
-  // upgrading /bin/sh requires that /bin/sh not be used.
-  "/bin/bash.exe",
-  "/usr/bin/bash.exe",
-  0
-};
+static void
+sanitize_PATH ()
+{
+  char dummy;
+  DWORD len = GetEnvironmentVariable ("PATH", &dummy, 0);
+  char *path = (char *) alloca (len + 1);
+  GetEnvironmentVariable ("PATH", path, len);
+  std::string newpath = backslash (cygpath ("/bin") + ";"
+				   + cygpath ("/usr/sbin") + ";"
+				   + cygpath ("/sbin"));
+  len = (UINT) GetWindowsDirectory (&dummy, 0);
+  char *system_root = (char *) alloca (len + 2);
+  GetWindowsDirectory (system_root, len--);
+  if (system_root[len - 1] != '\\')
+    {
+      system_root[len] = '\\';
+      system_root[++len] = '\0';
+    }
+  for (char *p = strtok (path, ";"); p; p = strtok (NULL, ";"))
+    {
+      size_t plen = strlen (p);
+      size_t cmplen = plen == (len - 1) ? plen : len;
+      if (strncasecmp (system_root, p, cmplen) == 0)
+	{
+	  newpath += ";";
+	  newpath += p;
+	}
+    }
+  SetEnvironmentVariable ("PATH", newpath.c_str());
+}
+
 
 void
 init_run_script ()
 {
-  for (int i = 0; shells[i]; i++)
-    {
-      sh = backslash (cygpath (shells[i]));
-      if (_access (sh.c_str(), 0) == 0)
-	break;
-      sh.clear();
-    }
-  
-  char old_path[MAX_PATH];
-  GetEnvironmentVariable ("PATH", old_path, sizeof (old_path));
-  SetEnvironmentVariable ("PATH", backslash (cygpath ("/bin") + ";" +
-					     cygpath ("/usr/bin") + ";" +
-					     old_path).c_str());
-  SetEnvironmentVariable ("CYGWINROOT", get_root_dir ().c_str());
+  static bool initialized;
+  if (initialized)
+    return;
 
-  if (IsWindowsNT ())
-    cmd = "cmd.exe";
-  else
-    cmd = "command.com";
+  initialized = true;
+
+  char *env = GetEnvironmentStrings ();
+  if (env)
+    {
+      for (char *p = env; *p; p = strchr (p, '\0') + 1)
+	{
+	  char *eq = strchr (p, '=');
+	  *eq = '\0';
+	  if (strcasecmp (p, "comspec") != 0
+	      && strcasecmp (p, "path") != 0
+	      && strncasecmp (p, "system", 7) != 0
+	      && strncasecmp (p, "user", 4) != 0
+	      && strcasecmp (p, "windir") != 0)
+	    SetEnvironmentVariable (p, NULL);
+	  p = eq + 1;
+	}
+      FreeEnvironmentStrings (env);
+    }
+
+  SetEnvironmentVariable ("CYGWINROOT", get_root_dir ().c_str());
+  SetEnvironmentVariable ("HOME", "/tmp");
+  sanitize_PATH ();
+  SetEnvironmentVariable ("SHELL", "/bin/bash");
+  SetEnvironmentVariable ("TEMP", backslash (cygpath ("/tmp")).c_str ());
+  SetEnvironmentVariable ("TERM", "dumb");
+  SetEnvironmentVariable ("TMP", "/tmp");
+
+  sh = backslash (cygpath ("/bin/bash.exe"));
 }
 
 class OutputLog
