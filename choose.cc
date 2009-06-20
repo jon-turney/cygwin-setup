@@ -63,6 +63,8 @@ using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
+HWND ChooserPage::ins_dialog;
+
 /*
   Sizing information.
  */
@@ -81,10 +83,10 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
   {0, CP_LEFT, CP_TOP}
 };
 
-ChooserPage::ChooserPage (UINT WinMain_nCmdShow)
+ChooserPage::ChooserPage () :
+  cmd_show_set (false)
 {
   sizeProcessor.AddControlInfo (ChooserControlsInfo);
-  nCmdShow = WinMain_nCmdShow;
 }
 
 void
@@ -128,10 +130,33 @@ ChooserPage::getParentRect (HWND parent, HWND child, RECT * r)
   r->bottom = p.y;
 }
 
+void
+ChooserPage::MaximizeDialog (bool doit)
+{
+  // Don't jump up and down in unattended mode.
+  if (unattended_mode)
+    return;
+  if (doit)
+    {
+      WINDOWPLACEMENT wp;
+      if (GetWindowPlacement (ins_dialog, &wp))
+	{
+	  cmd_show = wp.showCmd;
+	  cmd_show_set = true;
+	  ShowWindow (ins_dialog, SW_MAXIMIZE);
+	}
+    }
+  else if (cmd_show_set)
+    {
+      ShowWindow (ins_dialog, cmd_show);
+      cmd_show_set = false;
+    }
+}
+
 bool
 ChooserPage::Create ()
 {
-    return PropertyPage::Create (IDD_CHOOSE);
+  return PropertyPage::Create (IDD_CHOOSE);
 }
 
 void
@@ -180,7 +205,8 @@ ChooserPage::OnInit ()
 void
 ChooserPage::OnActivate()
 {
-    chooser->refresh();;
+  chooser->refresh();;
+  MaximizeDialog (true);
 }
 
 void
@@ -199,25 +225,22 @@ ChooserPage::OnNext ()
 #endif
 
   PrereqChecker p;
+  long retval;
   if (p.isMet ())
     {
       if (source == IDC_SOURCE_CWD)
-        {
-          // Next, install
-          Progress.SetActivateTask (WM_APP_START_INSTALL);
-        }
+	Progress.SetActivateTask (WM_APP_START_INSTALL);  // install
       else
-        {
-          // Next, start download from internet
-          Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
-        }
-      return IDD_INSTATUS;
+	Progress.SetActivateTask (WM_APP_START_DOWNLOAD); // start download
+      retval = IDD_INSTATUS;
     }
   else
     {
       // rut-roh, some required things are not selected
-      return IDD_PREREQ;
+      retval = IDD_PREREQ;
     }
+  MaximizeDialog (false);
+  return retval;
 }
 
 long

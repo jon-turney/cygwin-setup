@@ -1,5 +1,22 @@
 2009-06-20  Christopher Faylor  <me+cygwin@cgf.cx>
 
+	* threebar.cc (ThreeBarProgressPage::ins_dialog): Move variable to more
+	appropriate class.
+	(ThreeBarProgressPage::MaximizeDialog): Move function to more
+	appropriate class.
+	(ThreeBarProgressPage::OnMessageApp): Remove MaximizeDialog calls.
+	* threebar.h: Remove maximize handling.
+	* choose.cc (ChooserPage::ins_dialog): New variable.
+	(ChooserPage::MaximizeDialog): New function.
+	(ChooserPage::ChooserPage): Remove unneeded handling of nCmdShow.
+	(ChooserPage::OnActivate): Maximize chooser page via MaximizeDialog.
+	(ChooserPage::OnNext): Revert chooser page to normal before returning.
+	* main.cc (main): Don't pass cmd_show to ChooserPage.
+	* propsheet.cc (PropSheetProc): Accommodate change in class for
+	SetHwndDialog.
+
+2009-06-20  Christopher Faylor  <me+cygwin@cgf.cx>
+
 	* script.cc (shells): Delete.
 	(cmd): Just assign to "cmd.exe" since we're always running on NT now.
 	(sanitize_PATH ): New function.

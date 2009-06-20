@@ -163,7 +163,7 @@ main (int argc, char **argv)
     LocalDirPage LocalDir;
     NetPage Net;
     SitePage Site;
-    ChooserPage Chooser (cmd_show);
+    ChooserPage Chooser;
     PrereqPage Prereq;
     DesktopSetupPage Desktop;
     PropSheet MainWindow;

@@ -49,12 +49,6 @@ class ThreeBarProgressPage:public PropertyPage
 
   int task;
 
-  static HWND ins_dialog;
-  bool cmd_show_set;
-  int cmd_show;
-
-  void MaximizeDialog (bool);
-
   void EnableSingleBar (bool enable = true);
 
 public:
@@ -86,10 +80,6 @@ public:
   {
     task = t;
   };
-  static void SetHwndDialog (HWND h)
-  {
-    ins_dialog = h;
-  }
 };
 
 

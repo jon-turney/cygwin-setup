@@ -47,9 +47,7 @@ static ControlAdjuster::ControlInfo ThreeBarControlsInfo[] = {
   {0, CP_LEFT, CP_TOP}
 };
 
-HWND ThreeBarProgressPage::ins_dialog;
-ThreeBarProgressPage::ThreeBarProgressPage ():
-  cmd_show_set (false)
+ThreeBarProgressPage::ThreeBarProgressPage ()
 {
   sizeProcessor.AddControlInfo (ThreeBarControlsInfo);
 }
@@ -161,29 +159,6 @@ ThreeBarProgressPage::OnActivate ()
   Window::PostMessage (task);
 }
 
-void
-ThreeBarProgressPage::MaximizeDialog (bool doit)
-{
-  // Don't jump up and down in unattended mode.
-  if (unattended_mode)
-    return;
-  else if (doit)
-    {
-      WINDOWPLACEMENT wp;
-      if (GetWindowPlacement (ins_dialog, &wp))
-	{
-	  cmd_show = wp.showCmd;
-	  cmd_show_set = true;
-	  ShowWindow (ins_dialog, SW_MAXIMIZE);
-	}
-    }
-  else if (cmd_show_set)
-    {
-      ShowWindow (ins_dialog, cmd_show);
-      cmd_show_set = false;
-    }
-}
-
 bool
 ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -191,7 +166,6 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
     case WM_APP_START_DOWNLOAD:
       {
-	MaximizeDialog (false);
 	// Start the package download thread.
 	do_download (GetInstance (), GetHWND ());
 	break;
@@ -216,7 +190,6 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
       }
     case WM_APP_START_INSTALL:
       {
-	MaximizeDialog (false);
 	// Start the install thread.
 	do_install (GetInstance (), GetHWND ());
 	break;
@@ -258,10 +231,7 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_APP_SETUP_INI_DOWNLOAD_COMPLETE:
       {
 	if (lParam)
-	  {
-	    GetOwner ()->SetActivePageByID (IDD_CHOOSE);
-	    MaximizeDialog (true);
-	  }
+	  GetOwner ()->SetActivePageByID (IDD_CHOOSE);
 	else
 	  {
 	    if (source == IDC_SOURCE_CWD)

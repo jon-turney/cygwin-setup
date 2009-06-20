@@ -23,7 +23,7 @@
 #include "resource.h"
 #include "RECTWrapper.h"
 #include "ControlAdjuster.h"
-#include "threebar.h"
+#include "choose.h"
 
 //#include <shlwapi.h>
 // ...but since there is no shlwapi.h in mingw yet:
@@ -279,7 +279,7 @@ PropSheetProc (HWND hwndDlg, UINT uMsg, LPARAM lParam)
 	  (WNDPROC)GetWindowLongPtr (hwndDlg, GWLP_WNDPROC);
 	SetWindowLongPtr (hwndDlg, GWLP_WNDPROC, 
 	  (LONG_PTR)&PropSheetWndProc);
-	ThreeBarProgressPage::SetHwndDialog (hwndDlg);
+	ChooserPage::SetHwndDialog (hwndDlg);
       }
       return TRUE;
     }
