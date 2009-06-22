@@ -1,3 +1,7 @@
+2009-06-22  Corinna Vinschen  <corinna@vinschen.de>
+
+	* script.cc (Script::run): Start bash without -c option.
+
 2009-06-20  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* threebar.cc (ThreeBarProgressPage::ins_dialog): Move variable to more

@@ -268,8 +268,8 @@ Script::run() const
   OutputLog file_out = std::string (mktemp (tmp_pat));
   if (sh.size() && stricmp (extension(), ".sh") == 0)
     {
-      log(LOG_PLAIN) << "running: " << sh << " --norc --noprofile -c " << scriptName << endLog;
-      retval = ::run (sh.c_str(), "--norc --noprofile -c", scriptName.c_str(), file_out);
+      log(LOG_PLAIN) << "running: " << sh << " --norc --noprofile " << scriptName << endLog;
+      retval = ::run (sh.c_str(), "--norc --noprofile", scriptName.c_str(), file_out);
     }
   else if (cmd && stricmp (extension(), ".bat") == 0)
     {
