@@ -41,7 +41,7 @@ static const char *cvsid =
 #endif
 
 static std::string sh;
-static const char *cmd = "cmd.exe";
+static const char *cmd;
 
 static void
 sanitize_PATH ()
@@ -110,7 +110,7 @@ init_run_script ()
   SetEnvironmentVariable ("TERM", "dumb");
   SetEnvironmentVariable ("TMP", "/tmp");
 
-  sh = backslash (cygpath ("/bin/bash.exe"));
+  cmd = IsWindowsNT () ? "cmd.exe" : "command.com";
 }
 
 class OutputLog

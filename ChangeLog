@@ -1,3 +1,8 @@
+2009-06-22  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* script.cc (init_run_script): Revert to initializing cmd based on OS
+	type.
+
 2009-06-22  Corinna Vinschen  <corinna@vinschen.de>
 
 	* script.cc (Script::run): Start bash without -c option.
