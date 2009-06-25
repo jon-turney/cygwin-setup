@@ -110,6 +110,7 @@ init_run_script ()
   SetEnvironmentVariable ("TERM", "dumb");
   SetEnvironmentVariable ("TMP", "/tmp");
 
+  sh = backslash (cygpath ("/bin/bash.exe"));
   cmd = IsWindowsNT () ? "cmd.exe" : "command.com";
 }
 
