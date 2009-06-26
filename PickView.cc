@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <limits.h>
 #include <commctrl.h>
+#include <shlwapi.h>
 #include "PickPackageLine.h"
 #include "PickCategoryLine.h"
 #include "package_db.h"
@@ -194,7 +195,7 @@ PickView::setViewMode (views mode)
             {
               // Filter by package name
               if (packageFilterString.empty ()
-                  || pkg.name.find (packageFilterString) != std::string::npos)
+		  || StrStrI (pkg.name.c_str (), packageFilterString.c_str ()))
                 insert_pkg (pkg);
             }
         }
@@ -318,7 +319,8 @@ PickView::insert_category (Category *cat, bool collapsed)
        i != cat->second.end () ; ++i)
     {
       if (packageFilterString.empty () \
-          || (*i && (*i)->name.find (packageFilterString) != std::string::npos))
+          || (*i
+	      && StrStrI ((*i)->name.c_str (), packageFilterString.c_str ())))
 	{
 	  PickLine & line = *new PickPackageLine (*this, **i);
 	  catline.insert (line);

@@ -1,5 +1,13 @@
 2009-06-26  Corinna Vinschen  <corinna@vinschen.de>
 
+	* Makefile.am (setup_LDADD): Add -lshlwapi.
+	* PickView.cc: Include shlwapi.h.
+	(PickView::setViewMode): Compare package name with search string
+	case-insensitive.
+	(PickView::insert_category): Ditto.
+
+2009-06-26  Corinna Vinschen  <corinna@vinschen.de>
+
 	* script.cc (init_run_script): Don't set $HOME to /tmp.  It breaks
 	mkpasswd -c.
 

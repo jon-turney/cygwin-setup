@@ -119,7 +119,7 @@ libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
 setup_LDADD = \
 	libinilex.a \
 	-Linst/lib -lgetopt++ -lgcrypt -lgpg-error \
-	-lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -lbz2 -lz 
+	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -lbz2 -lz 
 setup_LDFLAGS = -mwindows -Wl,-static
 setup_SOURCES = \
 	AntiVirus.cc \
