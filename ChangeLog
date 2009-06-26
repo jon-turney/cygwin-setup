@@ -1,3 +1,8 @@
+2009-06-26  Corinna Vinschen  <corinna@vinschen.de>
+
+	* script.cc (init_run_script): Don't set $HOME to /tmp.  It breaks
+	mkpasswd -c.
+
 2009-06-25  Corinna Vinschen  <corinna@vinschen.de>
 
 	* script.cc (init_run_script): Reinstantiate accidentally removed

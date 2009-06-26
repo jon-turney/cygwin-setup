@@ -103,7 +103,6 @@ init_run_script ()
     }
 
   SetEnvironmentVariable ("CYGWINROOT", get_root_dir ().c_str());
-  SetEnvironmentVariable ("HOME", "/tmp");
   sanitize_PATH ();
   SetEnvironmentVariable ("SHELL", "/bin/bash");
   SetEnvironmentVariable ("TEMP", backslash (cygpath ("/tmp")).c_str ());
