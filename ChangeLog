@@ -1,3 +1,25 @@
+2009-06-26  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* res.rc (SETUP_STANDARD_DIALOG_W, SETUP_STANDARD_DIALOG_H,
+	SETUP_SMALL_DIALOG_W, SETUP_SMALL_DIALOG_H):  Add constant defines
+	for dialog sizes.
+	(SETUP_STANDARD_DIALOG_DIMS, SETUP_SMALL_DIALOG_DIMS):  Add helper
+	macros for (W,H) pairs of dimensions.
+	(SETUP_HEADICON_X):  New global constant define.
+	(IDD_SOURCE, IDD_VIRUS, IDD_LOCAL, IDD_ROOT, IDD_SITE, IDD_NET,
+	IDD_INSTATUS, IDD_PROXY_AUTH, IDD_NET_AUTH, IDD_DESKTOP,
+	IDD_FTP_AUTH DIALOG, IDD_DROPPED):  Use the above for dialog sizes,
+	horizontal rules and icon positioning.
+	(SETUP_KPCE_W):  New define for radio-button size.
+	(SETUP_VIEWCAP_W, SETUP_VIEWCAP_X, SETUP_VIEW_W, SETUP_VIEW_X,
+	SETUP_EXP_X, SETUP_CURR_X, SETUP_PREV_X, SETUP_KEEP_X):  Add defines
+	for right-aligned controls.
+	(SETUP_SEARCH_X, SETUP_SEARCH_W, SETUP_SEARCHTEXT_X,
+	SETUP_SEARCHTEXT_W, SETUP_CLEAR_X, SETUP_CLEAR_W):  Likewise defines
+	for left-aligned controls.
+	(IDD_CHOOSE):  Use all the above, and reformat with whitespace
+	between args for clarity.
+
 2009-06-26  Corinna Vinschen  <corinna@vinschen.de>
 
 	* Makefile.am (setup_LDADD): Add -lshlwapi.

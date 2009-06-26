@@ -1,6 +1,16 @@
 #include "resource.h"
 #include "windows.h"
 
+#define SETUP_STANDARD_DIALOG_W	339
+#define SETUP_STANDARD_DIALOG_H	179
+#define SETUP_SMALL_DIALOG_W		215
+#define SETUP_SMALL_DIALOG_H		95
+
+#define SETUP_STANDARD_DIALOG_DIMS	SETUP_STANDARD_DIALOG_W, SETUP_STANDARD_DIALOG_H
+#define SETUP_SMALL_DIALOG_DIMS	SETUP_SMALL_DIALOG_W, SETUP_SMALL_DIALOG_H
+
+#define SETUP_HEADICON_X		(SETUP_STANDARD_DIALOG_W - 27)
+
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 /////////////////////////////////////////////////////////////////////////////
@@ -14,7 +24,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // this topic is at:
 //   http://sources.redhat.com/ml/cygwin-apps/2003-05/msg00177.html
 
-IDD_SOURCE DIALOG DISCARDABLE  0, 0, 317, 179
+IDD_SOURCE DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup - Choose Installation Type"
 FONT 8, "MS Shell Dlg"
@@ -34,9 +44,9 @@ BEGIN
                     BS_AUTORADIOBUTTON | WS_TABSTOP,
                     71,120,200,10
 
-    ICON            IDI_CYGWIN, IDC_HEADICON, 290, 0, 21, 20
+    ICON            IDI_CYGWIN, IDC_HEADICON, SETUP_HEADICON_X, 0, 21, 20
     CONTROL         "", IDC_HEADSEPARATOR, "Static", SS_BLACKFRAME | SS_SUNKEN,
-                    0, 28, 317, 1
+                    0, 28, SETUP_STANDARD_DIALOG_W, 1
     LTEXT           "Choose A Download Source", IDC_STATIC_HEADER_TITLE,
                     7, 0, 258, 8, NOT WS_GROUP
     LTEXT           "Choose whether to install or download from the internet, or install from files in a local directory.",
@@ -44,7 +54,7 @@ BEGIN
                     21, 9, 239, 16, NOT WS_GROUP
 END
 
-IDD_VIRUS DIALOG DISCARDABLE  0, 0, 317, 179
+IDD_VIRUS DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup - Disable Virus Scanner?"
 FONT 8, "MS Shell Dlg"
@@ -53,9 +63,9 @@ BEGIN
                     BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,101,69,115,10
     CONTROL         "&Leave Virus scanner alone",IDC_LEAVE_AV,"Button",
                     BS_AUTORADIOBUTTON | WS_TABSTOP,101,84,115,10
-    ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
-                    317,1
+                    SETUP_STANDARD_DIALOG_W,1
     LTEXT           "Choose whether to disable your virus scanner while installing.",IDC_STATIC_HEADER_TITLE,7,0,
                     258,8,NOT WS_GROUP
     LTEXT           "Some Antivirus programs, notably McAfee, cause a blue screen on Windows NT/2000/XP computers during installation of Cygwin.", 
@@ -64,7 +74,7 @@ BEGIN
                     IDC_STATIC,21,32,239,24,NOT WS_GROUP
 END
 
-IDD_LOCAL_DIR DIALOG DISCARDABLE  0, 0, 317, 179
+IDD_LOCAL_DIR DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup - Select Local Package Directory"
 FONT 8, "MS Shell Dlg"
@@ -72,16 +82,16 @@ BEGIN
     LTEXT           "Select Local Package Directory",IDC_STATIC_HEADER_TITLE,
                     7,0,258,8,NOT WS_GROUP
     LTEXT           "",IDC_LOCAL_DIR_DESC,21,9,248,16,NOT WS_GROUP
-    ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
-                    317,1
+                    SETUP_STANDARD_DIALOG_W,1
 
     GROUPBOX        "Local Package Directory",IDC_LOCALDIR_GRP,5,72,305,35
     EDITTEXT        IDC_LOCAL_DIR,13,85,245,14,ES_AUTOHSCROLL | WS_GROUP
     PUSHBUTTON      "B&rowse...",IDC_LOCAL_DIR_BROWSE,260,85,44,14
 END
 
-IDD_ROOT DIALOG DISCARDABLE  0, 0, 317, 179
+IDD_ROOT DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup - Choose Installation Directory"
 FONT 8, "MS Shell Dlg"
@@ -91,9 +101,9 @@ BEGIN
     LTEXT           "Select the directory where you want to install Cygwin.  "
                     "Also choose a few installation parameters.",
                     IDC_STATIC,21,9,239,16,NOT WS_GROUP
-    ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
-                    317,1
+                    SETUP_STANDARD_DIALOG_W,1
 
     GROUPBOX        "Root Directory",IDC_ROOTDIR_GRP,5,35,305,35
     EDITTEXT        IDC_ROOT_DIR,13,47,245,14,ES_AUTOHSCROLL | WS_TABSTOP
@@ -126,21 +136,21 @@ BEGIN
                     200,166,99,8
 END
 
-IDD_SITE DIALOG DISCARDABLE  0, 0, 317, 179
+IDD_SITE DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
     WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_CONTROLPARENT
 CAPTION "Cygwin Setup - Choose Download Site(s)"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     LISTBOX         IDC_URL_LIST,66,45,185,110,LBS_NOINTEGRALHEIGHT | 
                     LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_GROUP | 
                     WS_TABSTOP
     LTEXT           "Available Download Sites:",IDC_STATIC,66,34,183,8,NOT 
                     WS_GROUP
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
-                    317,1
+                    SETUP_STANDARD_DIALOG_W,1
     LTEXT           "Choose a site from this list, or add your own sites to the list",
                     IDC_STATIC,21,9,239,16,NOT WS_GROUP
     LTEXT           "Choose A Download Site",IDC_STATIC_HEADER_TITLE,7,0,258,
@@ -151,7 +161,7 @@ BEGIN
     PUSHBUTTON      "Add",IDC_BUTTON_ADD_URL,255,160,50,14
 END
 
-IDD_NET DIALOG DISCARDABLE  0, 0, 317, 179
+IDD_NET DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup - Select Connection Type"
 FONT 8, "MS Shell Dlg"
@@ -171,16 +181,16 @@ BEGIN
                     NOT WS_GROUP
     RTEXT           "Por&t",IDC_STATIC,85,125,30,12,SS_CENTERIMAGE | NOT 
                     WS_GROUP
-    ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
-                    317,1
+                    SETUP_STANDARD_DIALOG_W,1
     LTEXT           "Setup needs to know how you want it to connect to the internet.  Choose the appropriate settings below.",
                     IDC_STATIC,21,9,239,16,NOT WS_GROUP
     LTEXT           "Select Your Internet Connection",
                     IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
 END
 
-IDD_INSTATUS DIALOG DISCARDABLE  0, 0, 317, 179
+IDD_INSTATUS DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Cygwin Setup"
@@ -198,16 +208,16 @@ BEGIN
     LTEXT           "Package:",IDC_INS_BL_PACKAGE,45,100,47,8,NOT WS_GROUP
     LTEXT           "Total:",IDC_INS_BL_TOTAL,45,115,48,8,NOT WS_GROUP
     LTEXT           "Disk:",IDC_INS_BL_DISK,45,130,47,8,NOT WS_GROUP
-    ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
-                    317,1
+                    SETUP_STANDARD_DIALOG_W,1
     LTEXT           "This page displays the progress of the download or installation.",
                     IDC_STATIC,21,9,239,16,NOT WS_GROUP
     LTEXT           "Progress",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT 
                     WS_GROUP
 END
 
-IDD_PROXY_AUTH DIALOG DISCARDABLE  0, 0, 215, 95
+IDD_PROXY_AUTH DIALOG DISCARDABLE  0, 0, SETUP_SMALL_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Proxy Authentication required"
 FONT 8, "MS Shell Dlg"
@@ -224,7 +234,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
 END
 
-IDD_NET_AUTH DIALOG DISCARDABLE  0, 0, 215, 95
+IDD_NET_AUTH DIALOG DISCARDABLE  0, 0, SETUP_SMALL_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Server Authentication required"
 FONT 8, "MS Shell Dlg"
@@ -241,7 +251,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
 END
 
-IDD_SPLASH DIALOG DISCARDABLE  0, 0, 317, 179
+IDD_SPLASH DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
     WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup"
@@ -266,7 +276,7 @@ BEGIN
     LTEXT           "http://www.cygwin.com/",IDC_SPLASH_URL,115,162,90,8
 END
 
-IDD_DESKTOP DIALOG DISCARDABLE  0, 0, 317, 179
+IDD_DESKTOP DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
     WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup - Installation Status and Create Icons"
@@ -276,21 +286,21 @@ BEGIN
                     BS_AUTOCHECKBOX,108,78,100,8
     CONTROL         "Add icon to &Start Menu",IDC_ROOT_MENU,"Button",
                     BS_AUTOCHECKBOX,108,93,100,8
-    ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
-                    317,1
+                    SETUP_STANDARD_DIALOG_W,1
     LTEXT           "Tell setup if you want it to create a few icons for convenient access to the Cygwin environment.",
                     IDC_STATIC_HEADER,21,9,239,16,NOT WS_GROUP
     LTEXT           "Create Icons",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT 
                     WS_GROUP
     CONTROL         "",IDC_DESKTOP_SEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
-                    0,155,317,1
+                    0,155,SETUP_STANDARD_DIALOG_W,1
     LTEXT           "Installation Status",IDC_STATUS_HEADER,7,160,258,8,NOT WS_GROUP
     LTEXT           "Cygwin installation completed successfully.",IDC_STATUS,
                     21,169,239,16,NOT WS_GROUP
 END
 
-IDD_FTP_AUTH DIALOG DISCARDABLE  0, 0, 215, 95
+IDD_FTP_AUTH DIALOG DISCARDABLE  0, 0, SETUP_SMALL_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "FTP Authentication required"
 FONT 8, "MS Shell Dlg"
@@ -307,48 +317,72 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
 END
 
-IDD_CHOOSE DIALOG DISCARDABLE  0, 0, 317, 179
+// Width for Keep/Prev/Curr/Exp buttons.
+#define SETUP_KPCE_W		(30)
+
+// Right-aligned controls.
+#define SETUP_VIEWCAP_W		(40)
+#define SETUP_VIEWCAP_X		(SETUP_STANDARD_DIALOG_W - SETUP_VIEWCAP_W - 7)
+#define SETUP_VIEW_W		(26)
+#define SETUP_VIEW_X		(SETUP_VIEWCAP_X - SETUP_VIEW_W - 5)
+#define SETUP_EXP_X		(SETUP_VIEW_X - SETUP_KPCE_W - 5)
+#define SETUP_CURR_X		(SETUP_EXP_X - SETUP_KPCE_W - 5)
+#define SETUP_PREV_X		(SETUP_CURR_X - SETUP_KPCE_W - 5)
+#define SETUP_KEEP_X		(SETUP_PREV_X - SETUP_KPCE_W - 5)
+
+// Left-aligned controls.
+#define SETUP_SEARCH_X		(0)
+#define SETUP_SEARCH_W		(32)
+#define SETUP_SEARCHTEXT_X	(SETUP_SEARCH_X + SETUP_SEARCH_W + 2)
+#define SETUP_SEARCHTEXT_W	(60)
+#define SETUP_CLEAR_X		(SETUP_SEARCHTEXT_X + SETUP_SEARCHTEXT_W + 2)
+#define SETUP_CLEAR_W		(22)
+
+IDD_CHOOSE DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Cygwin Setup - Select Packages"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    RTEXT           "&Search",IDC_STATIC,0,30,32,12,SS_CENTERIMAGE,
-                    WS_EX_RIGHT
-    EDITTEXT        IDC_CHOOSE_SEARCH_EDIT, 34, 30, 60, 12
-    PUSHBUTTON      "&Clear",IDC_CHOOSE_CLEAR_SEARCH, 96, 30, 22, 12
-    CONTROL         "&Keep",IDC_CHOOSE_KEEP,"Button",BS_AUTORADIOBUTTON | 
-                    WS_GROUP | WS_TABSTOP,99,30,30,14
-    CONTROL         "&Prev",IDC_CHOOSE_PREV,"Button",BS_AUTORADIOBUTTON , 
-                    134,30,27,14
-    CONTROL         "&Curr",IDC_CHOOSE_CURR,"Button",BS_AUTORADIOBUTTON , 
-                    169,30,25,14
-    CONTROL         "E&xp",IDC_CHOOSE_EXP,"Button",BS_AUTORADIOBUTTON , 
-                    204,30,25,14
-    PUSHBUTTON      "&View",IDC_CHOOSE_VIEW,239,30,26,14,WS_GROUP
-    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
-                    317,1
-    CONTROL         "",IDC_LISTVIEW_POS,"Static",SS_BLACKFRAME | NOT 
-                    WS_VISIBLE,7,45,303,122
-    CONTROL         "&Hide obsolete packages",IDC_CHOOSE_HIDE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,167,160,14
-    ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
+    RTEXT           "&Search", IDC_STATIC, SETUP_SEARCH_X, 30, SETUP_SEARCH_W,
+                    12, SS_CENTERIMAGE, WS_EX_RIGHT
+    EDITTEXT        IDC_CHOOSE_SEARCH_EDIT, SETUP_SEARCHTEXT_X, 30,
+                    SETUP_SEARCHTEXT_W, 12
+    PUSHBUTTON      "&Clear", IDC_CHOOSE_CLEAR_SEARCH, SETUP_CLEAR_X, 30,
+                    SETUP_CLEAR_W, 12
+    CONTROL         "&Keep", IDC_CHOOSE_KEEP, "Button", BS_AUTORADIOBUTTON
+                    | WS_GROUP | WS_TABSTOP, SETUP_KEEP_X, 30, SETUP_KPCE_W, 14
+    CONTROL         "&Prev", IDC_CHOOSE_PREV, "Button", BS_AUTORADIOBUTTON,
+                    SETUP_PREV_X, 30, SETUP_KPCE_W, 14
+    CONTROL         "&Curr", IDC_CHOOSE_CURR, "Button", BS_AUTORADIOBUTTON,
+                    SETUP_CURR_X, 30, SETUP_KPCE_W, 14
+    CONTROL         "E&xp", IDC_CHOOSE_EXP, "Button", BS_AUTORADIOBUTTON,
+                    SETUP_EXP_X, 30, SETUP_KPCE_W, 14
+    PUSHBUTTON      "&View", IDC_CHOOSE_VIEW, SETUP_VIEW_X, 30, SETUP_VIEW_W,
+                    14, WS_GROUP
+    CONTROL         "", IDC_HEADSEPARATOR, "Static", SS_BLACKFRAME | SS_SUNKEN,
+                    0, 28, SETUP_STANDARD_DIALOG_W, 1
+    CONTROL         "", IDC_LISTVIEW_POS, "Static", SS_BLACKFRAME | NOT 
+                    WS_VISIBLE, 7, 45, SETUP_STANDARD_DIALOG_W - 14, 122
+    CONTROL         "&Hide obsolete packages", IDC_CHOOSE_HIDE,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 167, 160, 14
+    ICON            IDI_CYGWIN, IDC_HEADICON, SETUP_HEADICON_X, 0, 21, 20
     LTEXT           "Select the packages you want setup to install.",
-                    IDC_CHOOSE_INST_TEXT,21,9,239,16,NOT WS_GROUP
-    LTEXT           "Select Packages",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT 
-                    WS_GROUP
-    LTEXT           "",IDC_CHOOSE_VIEWCAPTION,270,33,40,10
+                    IDC_CHOOSE_INST_TEXT, 21, 9, 239, 16, NOT WS_GROUP
+    LTEXT           "Select Packages", IDC_STATIC_HEADER_TITLE, 7, 0, 258, 8,
+                    NOT WS_GROUP
+    LTEXT           "", IDC_CHOOSE_VIEWCAPTION, SETUP_VIEWCAP_X, 33, SETUP_VIEWCAP_W, 10
 END
 
-IDD_PREREQ DIALOG DISCARDABLE  0, 0, 317, 179
+IDD_PREREQ DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Cygwin Setup - Resolve Dependencies"
 FONT 8, "MS Shell Dlg"
 BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
-                    0,28,317,1
-    ICON            IDI_CYGWIN,IDC_HEADICON,290,0,21,20
+                    0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     LTEXT           "Warning!  Unmet Dependencies Found",IDC_STATIC_HEADER_TITLE
                     ,7,0,258,8,NOT WS_GROUP
     LTEXT           "The following packages are required but have not been "
@@ -362,7 +396,7 @@ BEGIN
 
 END
 
-IDD_DROPPED DIALOG DISCARDABLE  0, 0, 317, 142
+IDD_DROPPED DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_W, 142
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin Setup - Use dropped mirrors?"
 FONT 8, "MS Shell Dlg"
