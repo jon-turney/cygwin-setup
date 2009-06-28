@@ -84,7 +84,7 @@ UserSettings::UserSettings (std::string local_dir)
 {
   global = this;
   extend_table (0);
-  io_stream *f = open_settings ("settings.rc", filename);
+  io_stream *f = open_settings ("setup.rc", filename);
 
   if (!f)
     return;
