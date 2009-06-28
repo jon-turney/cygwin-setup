@@ -28,9 +28,6 @@ static const char *cvsid =
 
 ConnectionSetting::ConnectionSetting ()
 {
-  static int inited = 0;
-  if (inited)
-    return;
   const char *fg_ret;
   if ((fg_ret = UserSettings::instance().get ("net-method")))
     NetIO::net_method = typeFromString(fg_ret);
@@ -38,7 +35,6 @@ ConnectionSetting::ConnectionSetting ()
     NetIO::net_proxy_host = strdup(fg_ret);
   if ((fg_ret = UserSettings::instance().get ("net-proxy-port")))
     NetIO::net_proxy_port = atoi(fg_ret);
-  inited = 1;
 }
 
 ConnectionSetting::~ConnectionSetting ()

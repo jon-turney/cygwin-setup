@@ -1,5 +1,13 @@
 2009-06-28  Christopher Faylor  <me+cygwin@cgf.cx>
 
+	* ConnectionSetting.cc (ConnectionSetting::ConnectionSetting): Remove
+	old code which no longer makes sense when run from a constructor.
+	* SourceSetting.cc (SourceSetting::SourceSetting): Ditto.
+	* localdir.cc (LocalDirSetting::LocalDirSetting): Ditto.  Fix typo
+	which caused saved settings to be ignored.
+
+2009-06-28  Christopher Faylor  <me+cygwin@cgf.cx>
+
 	* UserSettings.cc (UserSettings::UserSettings): settings.rc -> setup.rc.
 
 2009-06-28  Corinna Vinschen  <corinna@vinschen.de>

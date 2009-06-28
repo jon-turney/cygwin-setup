@@ -27,12 +27,8 @@ static const char *cvsid =
 
 SourceSetting::SourceSetting ()
 {
-  static int inited = 0;
-  if (inited)
-    return;
   const char *fg_ret;
   if ((fg_ret = UserSettings::instance().get ("last-action")))
-    source = sourceFromString (fg_ret);
   inited = 1;
 }
 
