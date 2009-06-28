@@ -33,8 +33,10 @@ static const char *cvsid =
 
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0501
+#define CINTERFACE
 #include "win32.h"
 #include <commctrl.h>
+#include "shlobj.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -151,7 +153,26 @@ main_display ()
     nt_sec.setDefaultSecurity ();
 
   // Initialize common controls
-  InitCommonControls ();
+  INITCOMMONCONTROLSEX icce = { sizeof (INITCOMMONCONTROLSEX),
+				ICC_WIN95_CLASSES };
+  InitCommonControlsEx (&icce);
+
+  // Initialize COM and ShellLink instance here.  For some reason
+  // Windows 7 fails to create the ShellLink instance if this is
+  // done later, in the thread which actually creates the shortcuts.
+  extern IShellLink *sl;
+  CoInitializeEx (NULL, COINIT_MULTITHREADED);
+  HRESULT res = CoCreateInstance (&CLSID_ShellLink, NULL,
+				  CLSCTX_INPROC_SERVER, &IID_IShellLink,
+				  (LPVOID *) & sl);
+  if (res)
+    {
+      char buf[256];
+      sprintf (buf, "CoCreateInstance failed with error %p.\n"
+		    "Setup will not be able to create Cygwin Icons\n"
+		    "in the Start Menu or on the Desktop.", (void *) res);
+      MessageBox (NULL, buf, "make_link_2", MB_OK);
+    }
 
   // Init window class lib
   Window::SetAppInstance (hinstance);
@@ -184,6 +205,11 @@ main_display ()
 
   // Create the PropSheet main window
   MainWindow.Create ();
+
+  // Uninitalize COM
+  if (sl)
+    sl->lpVtbl->Release (sl);
+  CoUninitialize ();
 }
 
 #ifndef __CYGWIN__

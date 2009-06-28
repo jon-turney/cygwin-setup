@@ -15,27 +15,31 @@ static const char *cvsid =
 /* This part of the code must be in C because the C++ interface to COM
 doesn't work. */
 
+/* Initialized in WinMain.  This is required under Windows 7.  If 
+   CoCreateInstance gets called from here, it fails to create the
+   instance with an undocumented error code 0x80110474.
+   FIXME: I have no idea why this happens. */
+IShellLink *sl;
+
 extern "C"
 void
 make_link_2 (char const *exepath, char const *args, char const *icon, char const *lname)
 {
-  IShellLink *sl;
   IPersistFile *pf;
   WCHAR widepath[MAX_PATH];
+  if (sl)
+    {
+      sl->lpVtbl->QueryInterface (sl, &IID_IPersistFile, (void **) &pf);
 
-  CoCreateInstance (&CLSID_ShellLink, NULL,
-		    CLSCTX_INPROC_SERVER, &IID_IShellLink, (LPVOID *) & sl);
-  sl->lpVtbl->QueryInterface (sl, &IID_IPersistFile, (void **) &pf);
+      sl->lpVtbl->SetPath (sl, exepath);
+      sl->lpVtbl->SetArguments (sl, args);
+      sl->lpVtbl->SetIconLocation (sl, icon, 0);
 
-  sl->lpVtbl->SetPath (sl, exepath);
-  sl->lpVtbl->SetArguments (sl, args);
-  sl->lpVtbl->SetIconLocation (sl, icon, 0);
+      MultiByteToWideChar (CP_ACP, 0, lname, -1, widepath, MAX_PATH);
+      pf->lpVtbl->Save (pf, widepath, TRUE);
 
-  MultiByteToWideChar (CP_ACP, 0, lname, -1, widepath, MAX_PATH);
-  pf->lpVtbl->Save (pf, widepath, TRUE);
-
-  pf->lpVtbl->Release (pf);
-  sl->lpVtbl->Release (sl);
+      pf->lpVtbl->Release (pf);
+    }
 }
 
 #define SYMLINK_COOKIE "!<symlink>"

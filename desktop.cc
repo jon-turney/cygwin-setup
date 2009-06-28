@@ -405,9 +405,6 @@ DesktopSetupPage::Create ()
 void
 DesktopSetupPage::OnInit ()
 {
-  // FIXME: This CoInitialize() feels like it could be moved to startup in main.cc.
-  CoInitialize (NULL);
-
   SetDlgItemFont(IDC_STATUS_HEADER, "MS Shell Dlg", 8, FW_BOLD);
 }
 

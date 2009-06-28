@@ -1,3 +1,13 @@
+2009-06-28  Corinna Vinschen  <corinna@vinschen.de>
+
+	* desktop.cc (DesktopSetupPage::OnInit): Drop CoInitialize call here.
+	* main.cc (main_display): Use InitCommonControlsEx rather than
+	InitCommonControls per MSDN.  Call CoInitializeEx and create IShellLink
+	instance here to workaround a problem on Windows 7.  Release IShellLink
+	instance and call CoUninitialize on exit.
+	* mklink.cc (sl): Change to global variable.  Drop call to
+	CoCreateInstance here.  Check if sl is valid before using it.
+
 2009-06-27  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	Preliminary option handling revamp.
