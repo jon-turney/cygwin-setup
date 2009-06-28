@@ -43,7 +43,6 @@ extern ThreeBarProgressPage Progress;
 static StringOption ProxyOption ("", 'p', "proxy", "HTTP/FTP proxy (host:port)", false);
 
 static int rb[] = { IDC_NET_IE5, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
-static ConnectionSetting theSetting;
 static bool doing_loading = false;
 
 void

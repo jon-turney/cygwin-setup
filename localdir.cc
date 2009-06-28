@@ -52,8 +52,6 @@ extern LogFile * theLog;
 
 static StringOption LocalDirOption ("", 'l', "local-package-dir", "Local package directory", false);
 
-static LocalDirSetting localDir;
-
 static ControlAdjuster::ControlInfo LocaldirControlsInfo[] = {
   { IDC_LOCALDIR_GRP,       CP_STRETCH,   CP_TOP },
   { IDC_LOCAL_DIR,          CP_STRETCH,   CP_TOP },
@@ -61,34 +59,23 @@ static ControlAdjuster::ControlInfo LocaldirControlsInfo[] = {
   {0, CP_LEFT, CP_TOP}
 };
 
-void 
-LocalDirSetting::load(){
+LocalDirSetting::LocalDirSetting ()
+{
   static int inited = 0;
   if (inited)
     return;
-  io_stream *f = UserSettings::Instance().settingFileForLoad("last-cache");
-  if (f)
-    {
-      char localdir[1000];
-      char *fg_ret = f->gets (localdir, 1000);
-      delete f;
-      if (fg_ret)
-        local_dir = std::string (localdir);
-    }
-  if (((std::string)LocalDirOption).size())
+  const char *fg_ret;
+  if (((std::string) LocalDirOption).size ())
     local_dir = ((std::string)LocalDirOption);
+  else if ((fg_ret = UserSettings::instance().get ("last-cache")))
+    local_dir = std::string (local_dir);
   inited = 1;
 }
 
-void 
-LocalDirSetting::save()
+void
+LocalDirSetting::save ()
 {
-  io_stream *f = UserSettings::Instance().settingFileForSave("last-cache");
-  if (f)
-    {
-      f->write (local_dir.c_str(), local_dir.size());
-      delete f;
-    }
+  UserSettings::instance().set ("last-cache", local_dir);
   if (source == IDC_SOURCE_DOWNLOAD || !get_root_dir ().size())
     {
       theLog->clearFiles();
@@ -208,7 +195,7 @@ LocalDirPage::OnNext ()
   HWND h = GetHWND ();
 
   save_dialog (h);
-  localDir.save ();
+  LocalDirSetting::save ();
   log (LOG_PLAIN) << "Selected local directory: " << local_dir << endLog;
   
   bool trySetCurDir = true;

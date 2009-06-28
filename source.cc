@@ -35,7 +35,6 @@ static const char *cvsid =
 #include "package_db.h"
 
 #include "SourceSetting.h"
-static SourceSetting theSetting;
 
 #include "getopt++/BoolOption.h"
 

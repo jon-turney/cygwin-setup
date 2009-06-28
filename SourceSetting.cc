@@ -25,46 +25,33 @@ static const char *cvsid =
 #include "resource.h"
 #include "String++.h"
 
-void
-SourceSetting::load()
+SourceSetting::SourceSetting ()
 {
   static int inited = 0;
   if (inited)
     return;
-  io_stream *f = UserSettings::Instance().settingFileForLoad("last-action");
-  if (f)
-    {
-      char localdir[1000];
-      char *fg_ret = f->gets (localdir, 1000);
-      delete f;
-      if (fg_ret)
-        source = sourceFromString(fg_ret);
-    }
+  const char *fg_ret;
+  if ((fg_ret = UserSettings::instance().get ("last-action")))
+    source = sourceFromString (fg_ret);
   inited = 1;
 }
 
-void
-SourceSetting::save()
+SourceSetting::~SourceSetting ()
 {
-  
-  io_stream *f = UserSettings::Instance().settingFileForSave("last-action");
-  if (f)
+  switch (source)
     {
-      switch (source) {
-        case IDC_SOURCE_DOWNLOAD:
-            f->write("Download\n",9);
-            break;
-        case IDC_SOURCE_NETINST:
-            f->write("Download,Install\n",17);
-            break;
-        case IDC_SOURCE_CWD:
-            f->write("Install\n",8);
-            break;
-        default:
-            break;
-      }
-      delete f;
-    }
+    case IDC_SOURCE_DOWNLOAD:
+      UserSettings::instance().set ("last-action", "Download");
+      break;
+    case IDC_SOURCE_NETINST:
+      UserSettings::instance().set ("last-action", "Download,Install");
+      break;
+    case IDC_SOURCE_CWD:
+      UserSettings::instance().set ("last-action", "Install");
+      break;
+    default:
+      break;
+  }
 }
 
 int

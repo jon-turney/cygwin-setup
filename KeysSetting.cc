@@ -32,39 +32,26 @@ static const char *cvsid =
 #include "io_stream.h"
 #include "KeysSetting.h"
 
-void
-ExtraKeysSetting::load()
+ExtraKeysSetting *ExtraKeysSetting::global;
+
+ExtraKeysSetting::ExtraKeysSetting ():
+  keybuffer (NULL), bufsize (0), numkeys (0)
 {
-  static int inited = 0;
-  if (inited)
-    return;
-  io_stream *f = UserSettings::Instance().settingFileForLoad("last-extrakeys");
-  if (f)
+  global = this;
+  const char *p = UserSettings::instance().get ("extrakeys");
+  if (p)
     {
-      bufsize = f->get_size ();
-      if (bufsize)
-	{
-	  keybuffer = new char[bufsize];
-	  f->read (keybuffer, bufsize);
-	  // Calling count_keys gets the count but also sizes the buffer
-	  // correctly, discarding any trailing non-LF-terminated data.
-	  bufsize = count_keys ();
-	}
-      delete f;
+      keybuffer = strdup (p);
+      // Calling count_keys gets the count but also sizes the buffer
+      // correctly, discarding any trailing non-LF-terminated data.
+      bufsize = count_keys ();
     }
-  inited = 1;
 }
 
-void
-ExtraKeysSetting::save()
+ExtraKeysSetting::~ExtraKeysSetting ()
 {
-  io_stream *f = UserSettings::Instance().settingFileForSave("last-extrakeys");
-  if (f)
-    {
-      if (bufsize)
-        f->write(keybuffer, bufsize);
-      delete f;
-    }
+  if (keybuffer)
+    UserSettings::instance().set ("extrakeys", keybuffer);
 }
 
 void
@@ -163,5 +150,3 @@ ExtraKeysSetting::add_key (const char *key)
     }
   add_unique_key (key);
 }
-
-

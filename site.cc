@@ -100,11 +100,7 @@ SiteList dropped_site_list;
 
 StringOption SiteOption("", 's', "site", "Download site", false);
 
-/* XXX make into a singleton? */
-static SiteSetting ChosenSites;
-
-void 
-SiteSetting::load()
+SiteSetting::SiteSetting (): saved (false)
 {
   string SiteOptionString = SiteOption;
   if (SiteOptionString.size()) 
@@ -116,14 +112,21 @@ SiteSetting::load()
 void 
 SiteSetting::save()
 {
-  io_stream *f = UserSettings::Instance().settingFileForSave("last-mirror");
+  io_stream *f = UserSettings::instance().open ("last-mirror");
   if (f)
     {
       for (SiteList::const_iterator n = site_list.begin ();
-      n != site_list.end (); ++n)
-        f->write ((n->url + "\n").c_str(), n->url.size() + 1);
+	   n != site_list.end (); ++n)
+	*f << n->url;
       delete f;
     }
+  saved = true;
+}
+
+SiteSetting::~SiteSetting ()
+{
+  if (!saved)
+    save ();
 }
 
 void
@@ -286,50 +289,38 @@ get_site_list (HINSTANCE h, HWND owner)
   char mirror_url[1000];
 
   char *theMirrorString, *theCachedString;
-  {
-    cache_is_usable = false;
-    cache_needs_writing = false;
-    string cached_mirrors = "";
-    io_stream *f = UserSettings::Instance().settingFileForLoad("mirrors-lst");
-    if (f)
-      {
-	int len;
-	while ((len = f->read (mirror_url, 999)))
-	  {
-	    mirror_url[len] = '\0';
-	    cached_mirrors += mirror_url;
-	  }
-	delete f;
-	log (LOG_BABBLE) << "Loaded cached mirror list" << endLog;
-	cache_is_usable = true;
-      }
-    else
-      {
-	log (LOG_BABBLE) << "Cached mirror list unavailable" << endLog;
-      }
-    if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
-      return 1;
-    string mirrors = get_url_to_string (mirror_url, owner);
-    if (mirrors.size())
-      {
-	cache_needs_writing = true;
-      }
-    else
-      {
-	if (cached_mirrors.size())
-	  {
-	    mirrors = cached_mirrors;
-	    log (LOG_BABBLE) << "Using cached mirror list" << endLog;
-	  }
-	else
-	  {
-	    log (LOG_BABBLE) << "Defaulting to empty mirror list" << endLog;
-	  }
-	cache_is_usable = false;
-      }
-    theMirrorString = new_cstr_char_array (mirrors);
-    theCachedString = new_cstr_char_array (cached_mirrors);
-  }
+  const char *cached_mirrors = UserSettings::instance().get ("mirrors-lst");
+  if (cached_mirrors)
+    {
+      log (LOG_BABBLE) << "Loaded cached mirror list" << endLog;
+      cache_is_usable = true;
+    }
+  else
+    {
+      log (LOG_BABBLE) << "Cached mirror list unavailable" << endLog;
+      cache_is_usable = false;
+    }
+
+  if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
+    return 1;
+
+  string mirrors = get_url_to_string (mirror_url, owner);
+  if (mirrors.size())
+    cache_needs_writing = true;
+  else
+    {
+      if (!cached_mirrors[0])
+	log (LOG_BABBLE) << "Defaulting to empty mirror list" << endLog;
+      else
+	{
+	  mirrors = cached_mirrors;
+	  log (LOG_BABBLE) << "Using cached mirror list" << endLog;
+	}
+      cache_is_usable = false;
+      cache_needs_writing = false;
+    }
+  theMirrorString = new_cstr_char_array (mirrors);
+  theCachedString = new_cstr_char_array (cached_mirrors);
 
   load_site_list (all_site_list, theMirrorString);
   load_site_list (cached_site_list, theCachedString);
@@ -377,27 +368,11 @@ SiteSetting::registerSavedSite (const char * site)
 void
 SiteSetting::getSavedSites ()
 {
-  io_stream *f = UserSettings::Instance().settingFileForLoad("last-mirror");
-  if (!f)
-    return;
-
-  char site[1000];
-  char *fg_ret;
-  while ((fg_ret = f->gets (site, 1000)))
-    {
-
-      char *eos = site + strlen (site) - 1;
-      while (eos >= site && (*eos == '\n' || *eos == '\r'))
-	*eos-- = '\0';
-
-      if (eos < site)
-	continue;
-
-      registerSavedSite (site);
-
-    }
-  delete f;
-
+  const char *buf = UserSettings::instance().get ("last-mirror");
+  char *fg_ret = strdup (buf);
+  for (char *site = strtok (fg_ret, "\n"); site; site = strtok (NULL, "\n"))
+    registerSavedSite (site);
+  free (fg_ret);
 }
 
 static DWORD WINAPI
@@ -525,30 +500,24 @@ void write_cache_list (io_stream *f, const SiteList& theSites)
 {
   string s;
   for (SiteList::const_iterator n = theSites.begin ();
-	   n != theSites.end (); ++n)
-	if (n->servername.size())
-	  {
-	    s = n->url + ";" + n->servername + ";" + n->area + ";"
-	        + n->location + "\n";
-            f->write(s.c_str(), s.size());
-	  }
+       n != theSites.end (); ++n)
+    if (n->servername.size())
+      *f << (n->url + ";" + n->servername + ";" + n->area + ";"
+	     + n->location);
 }
 
 void save_cache_file (int cache_action)
 {
   string s;
-  io_stream *f = UserSettings::Instance().settingFileForSave("mirrors-lst");
+  io_stream *f = UserSettings::instance().open ("mirrors-lst");
   if (f)
     {
-      s = "# Do not edit - see warning in http://cygwin.com/mirrors.html\n";
-      f->write(s.c_str(), s.size());
       write_cache_list (f, all_site_list);
       if (cache_action == CACHE_ACCEPT_WARN)
 	{
 	  log (LOG_PLAIN) << "Adding dropped mirrors to cache to warn again."
 	      << endLog;
-	  s = "# Following mirrors re-added by setup.exe to warn again about dropped urls.\n";
-	  f->write(s.c_str(), s.size());
+	  *f << "# Following mirrors re-added by setup.exe to warn again about dropped urls.";
 	  write_cache_list (f, dropped_site_list);
 	}
       delete f;
@@ -573,8 +542,6 @@ SitePage::OnNext ()
 
   if (cache_needs_writing)
     save_cache_file (cache_action);
-  
-  ChosenSites.save ();
 
   // Log all the selected URLs from the list.
   for (SiteList::const_iterator n = site_list.begin ();

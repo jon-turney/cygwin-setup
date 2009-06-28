@@ -56,9 +56,6 @@ static BoolOption UntrustedKeysOption (false, 'u', "untrusted-keys",
 static BoolOption KeepUntrustedKeysOption (false, 'U', "keep-untrusted-keys",
 			"Use untrusted keys and retain all");
 
-/*  Persists the extra keys in /etc/setup/last-extrakeys.  */
-static ExtraKeysSetting ExtraKeys;
-
 /*  Embedded public half of Cygwin DSA signing key.  */
 static const char *cygwin_pubkey_sexpr = 
 #include "cyg-pubkey.h"
@@ -429,7 +426,7 @@ add_key_from_sexpr (gcry_sexp_t key)
   n = gcry_sexp_sprint (key, GCRYSEXP_FMT_ADVANCED, sexprbuf, n);
   // +1 because we want to include the nul-terminator.
   n = fold_lfs_and_spaces (sexprbuf, n + 1);
-  ExtraKeys.add_key (sexprbuf);
+  ExtraKeysSetting::instance().add_key (sexprbuf);
   MESSAGE ("keep:%d\n'%s'", n, sexprbuf);
   delete [] sexprbuf;
 }
@@ -488,9 +485,9 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
       // Copy all valid keys from ExtraKeysSetting into a
       // static vector where we can keep them throughout the
       // remainder of the run.
-      for (size_t i = 0; i < ExtraKeys.num_keys (); i++)
+      for (size_t i = 0; i < ExtraKeysSetting::instance().num_keys (); i++)
 	{
-	  const char *keystring = ExtraKeys.get_key (i, &n);
+	  const char *keystring = ExtraKeysSetting::instance().get_key (i, &n);
 	  gcry_sexp_t newkey;
 	  rv = gcry_sexp_new (&newkey, keystring, n, 1);
 	  if (rv == GPG_ERR_NO_ERROR)
@@ -499,7 +496,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 
       // Now flush out the ExtraKeysSetting; from here on it
       // will build up a list of the keys we want to retain.
-      ExtraKeys.flush ();
+      ExtraKeysSetting::instance().flush ();
 
       // Which, if we aren't using them, means all the ones
       // we just read.
@@ -530,7 +527,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 						GPG_KEY_SEXPR_BUF_SIZE);
 	  // +1 because we want to include the nul-terminator.
 	  n = fold_lfs_and_spaces (sexprbuf, n + 1);
-	  ExtraKeys.add_key (sexprbuf);
+	  ExtraKeysSetting::instance().add_key (sexprbuf);
 	  msg ("key2:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
 	  keys_to_try.push_back (dsa_key2);
@@ -563,7 +560,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 						sexprbuf, GPG_KEY_SEXPR_BUF_SIZE);
 	      // +1 because we want to include the nul-terminator.
 	      n = fold_lfs_and_spaces (sexprbuf, n + 1);
-	      ExtraKeys.add_key (sexprbuf);
+	      ExtraKeysSetting::instance().add_key (sexprbuf);
 	      msg ("key3:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
 	      keys_to_try.push_back (kdat.keys.back ());

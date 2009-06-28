@@ -19,7 +19,6 @@
 #include <string>
 #include <vector>
 
-#include "UserSetting.h"
 #include "proppage.h"
 
 class SitePage : public PropertyPage
@@ -78,12 +77,14 @@ extern SiteList site_list;
 /* potential sites */
 extern SiteList all_site_list;
 
-class SiteSetting : public UserSetting 
+class SiteSetting
 {
   public:
-    virtual void load();
-    virtual void save();
+    SiteSetting ();
+    void save ();
+    ~SiteSetting ();
   private:
+    bool saved;
     void getSavedSites();
     void registerSavedSite(char const *);
 };

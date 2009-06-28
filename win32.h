@@ -129,6 +129,8 @@ private:
 
 extern NTSecurity nt_sec;
 
+#undef major
+#undef minor
 class VersionInfo
 {
   public:

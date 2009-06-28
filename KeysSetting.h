@@ -25,19 +25,20 @@
 #define SETUP_KEYSSETTING_H
 
 #include <string>
-#include "UserSetting.h"
 
-class ExtraKeysSetting : public UserSetting 
+class ExtraKeysSetting
 {
   private:
     char *keybuffer;
     size_t bufsize;
     size_t numkeys;
+    static ExtraKeysSetting *global;
   public:
     // Loads keys from last-extrakeys
-    virtual void load();
+    ExtraKeysSetting ();
     // Saves them back again.
-    virtual void save();
+    ~ExtraKeysSetting ();
+    static ExtraKeysSetting& instance () {return *global;}
 
   private:
     // Extend (or shrink) allocated buffer.  Leaves it in a

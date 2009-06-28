@@ -66,9 +66,13 @@ static const char *cvsid =
 #include "getopt++/GetOption.h"
 #include "getopt++/BoolOption.h"
 
-#include "UserSettings.h"
 #include "Exception.h"
 #include <stdexcept>
+
+#include "UserSettings.h"
+#include "SourceSetting.h"
+#include "ConnectionSetting.h"
+#include "KeysSetting.h"
 
 #include <wincon.h>
 #include <fstream>
@@ -109,6 +113,78 @@ ThreeBarProgressPage Progress;
 // after the source is set AND the root mount obtained
 // so we make the actual logger available to the appropriate routine(s).
 LogFile *theLog;
+
+static inline void
+main_display ()
+{
+  /* nondisplay classes */
+  LocalDirSetting localDir;
+  SourceSetting SourceSettings;
+  ConnectionSetting ConnectionSettings;
+  SiteSetting ChosenSites;
+  ExtraKeysSetting ExtraKeys;
+
+  SplashPage Splash;
+  AntiVirusPage AntiVirus;
+  SourcePage Source;
+  RootPage Root;
+  LocalDirPage LocalDir;
+  NetPage Net;
+  SitePage Site;
+  ChooserPage Chooser;
+  PrereqPage Prereq;
+  DesktopSetupPage Desktop;
+  PropSheet MainWindow;
+
+  log (LOG_TIMESTAMP) << "Current Directory: " << local_dir << endLog;
+
+  if (HelpOption)
+  {
+    GetOption::GetInstance ().ParameterUsage (log (LOG_PLAIN)
+					      << "\nCommand Line Options:\n");
+    theLog->exit (0);
+  }
+
+  /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
+     no idea of access control lists and security at all.  */
+  if (IsWindowsNT ())
+    nt_sec.setDefaultSecurity ();
+
+  // Initialize common controls
+  InitCommonControls ();
+
+  // Init window class lib
+  Window::SetAppInstance (hinstance);
+
+  // Create pages
+  Splash.Create ();
+  AntiVirus.Create ();
+  Source.Create ();
+  Root.Create ();
+  LocalDir.Create ();
+  Net.Create ();
+  Site.Create ();
+  Chooser.Create ();
+  Prereq.Create ();
+  Progress.Create ();
+  Desktop.Create ();
+
+  // Add pages to sheet
+  MainWindow.AddPage (&Splash);
+  MainWindow.AddPage (&AntiVirus);
+  MainWindow.AddPage (&Source);
+  MainWindow.AddPage (&Root);
+  MainWindow.AddPage (&LocalDir);
+  MainWindow.AddPage (&Net);
+  MainWindow.AddPage (&Site);
+  MainWindow.AddPage (&Chooser);
+  MainWindow.AddPage (&Prereq);
+  MainWindow.AddPage (&Progress);
+  MainWindow.AddPage (&Desktop);
+
+  // Create the PropSheet main window
+  MainWindow.Create ();
+}
 
 #ifndef __CYGWIN__
 int WINAPI
@@ -154,71 +230,12 @@ main (int argc, char **argv)
     log (LOG_PLAIN) << "Starting cygwin install, version " 
                     << setup_version << endLog;
 
-    UserSettings::Instance ().loadAllSettings ();
+    UserSettings Settings (local_dir);
 
-    SplashPage Splash;
-    AntiVirusPage AntiVirus;
-    SourcePage Source;
-    RootPage Root;
-    LocalDirPage LocalDir;
-    NetPage Net;
-    SitePage Site;
-    ChooserPage Chooser;
-    PrereqPage Prereq;
-    DesktopSetupPage Desktop;
-    PropSheet MainWindow;
+    main_display ();
 
-    log (LOG_TIMESTAMP) << "Current Directory: " << local_dir << endLog;
+    Settings.save ();	// Clean exit.. save user options.
 
-    if (HelpOption)
-    {
-      GetOption::GetInstance ().ParameterUsage (log (LOG_PLAIN)
-                                                << "\nCommand Line Options:\n");
-      theLog->exit (0);
-    }
-
-    /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
-       no idea of access control lists and security at all.  */
-    if (IsWindowsNT ())
-      nt_sec.setDefaultSecurity ();
-
-    // Initialize common controls
-    InitCommonControls ();
-
-    // Init window class lib
-    Window::SetAppInstance (hinstance);
-
-    // Create pages
-    Splash.Create ();
-    AntiVirus.Create ();
-    Source.Create ();
-    Root.Create ();
-    LocalDir.Create ();
-    Net.Create ();
-    Site.Create ();
-    Chooser.Create ();
-    Prereq.Create ();
-    Progress.Create ();
-    Desktop.Create ();
-
-    // Add pages to sheet
-    MainWindow.AddPage (&Splash);
-    MainWindow.AddPage (&AntiVirus);
-    MainWindow.AddPage (&Source);
-    MainWindow.AddPage (&Root);
-    MainWindow.AddPage (&LocalDir);
-    MainWindow.AddPage (&Net);
-    MainWindow.AddPage (&Site);
-    MainWindow.AddPage (&Chooser);
-    MainWindow.AddPage (&Prereq);
-    MainWindow.AddPage (&Progress);
-    MainWindow.AddPage (&Desktop);
-
-    // Create the PropSheet main window
-    MainWindow.Create ();
-
-    // Clean exit.. save user options.
-    UserSettings::Instance().saveAllSettings();
     if (rebootneeded)
       {
 	theLog->exit (IDS_REBOOT_REQUIRED);

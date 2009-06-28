@@ -26,55 +26,40 @@ static const char *cvsid =
 #include "resource.h"
 #include "String++.h"
 
-void
-ConnectionSetting::load()
+ConnectionSetting::ConnectionSetting ()
 {
   static int inited = 0;
   if (inited)
     return;
-  io_stream *f = UserSettings::Instance().settingFileForLoad("last-connection");
-  if (f)
-    {
-      char localdir[1000];
-      char *fg_ret = f->gets (localdir, 1000);
-      if (fg_ret)
-        NetIO::net_method = typeFromString(fg_ret);
-      fg_ret = f->gets (localdir, 1000);
-      if (fg_ret)
-        NetIO::net_proxy_host = strdup(fg_ret);
-      fg_ret = f->gets (localdir, 1000);
-      if (fg_ret)
-        NetIO::net_proxy_port = atoi(fg_ret);
-      delete f;
-    }
+  const char *fg_ret;
+  if ((fg_ret = UserSettings::instance().get ("net-method")))
+    NetIO::net_method = typeFromString(fg_ret);
+  if ((fg_ret = UserSettings::instance().get ("net-proxy-host")))
+    NetIO::net_proxy_host = strdup(fg_ret);
+  if ((fg_ret = UserSettings::instance().get ("net-proxy-port")))
+    NetIO::net_proxy_port = atoi(fg_ret);
   inited = 1;
 }
 
-void
-ConnectionSetting::save()
+ConnectionSetting::~ConnectionSetting ()
 {
-  char port_str[20];
-  
-  io_stream *f = UserSettings::Instance().settingFileForSave("last-connection");
-  if (f)
+  switch (NetIO::net_method)
     {
-      switch (NetIO::net_method) {
-        case IDC_NET_DIRECT:
-            f->write("Direct\n",7);
-            break;
-        case IDC_NET_IE5:
-            f->write("IE\n",3);
-            break;
-        case IDC_NET_PROXY:
-            f->write("Proxy\n",6);
-            f->write(NetIO::net_proxy_host, strlen(NetIO::net_proxy_host));
-            sprintf(port_str, "\n%d\n", NetIO::net_proxy_port);
-            f->write(port_str, strlen(port_str));
-            break;
-        default:
-            break;
-      }
-      delete f;
+    case IDC_NET_DIRECT:
+      UserSettings::instance().set("net-method", "Direct");
+      break;
+    case IDC_NET_IE5:
+      UserSettings::instance().set("net-method", "IE");
+      break;
+    case IDC_NET_PROXY:
+      char port_str[20];
+      UserSettings::instance().set("net-method", "Proxy");
+      UserSettings::instance().set("net-proxy-host", NetIO::net_proxy_host);
+      sprintf(port_str, "%d", NetIO::net_proxy_port);
+      UserSettings::instance().set("net-proxy-port", port_str);
+      break;
+    default:
+	break;
     }
 }
 

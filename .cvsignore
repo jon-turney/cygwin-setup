@@ -4,3 +4,5 @@ cfgaux
 configure
 configure.lineno
 Makefile.in
+GNUmakefile
+make.out

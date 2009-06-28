@@ -161,9 +161,11 @@ public:
    */
 //  virtual const char* next_file_name() = NULL;
   /* if you are still needing these hints... give up now! */
-  virtual ~ io_stream () = 0;
+  virtual ~io_stream () = 0;
 
   io_stream& operator << (io_stream&);
+  virtual void operator << (std::string) {}
+  virtual void operator << (const char *) {}
   
 protected:
   void operator= (const io_stream &);

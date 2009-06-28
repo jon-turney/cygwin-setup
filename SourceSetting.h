@@ -20,13 +20,12 @@
 // in user settings to decide what setup should be trying to do...
 
 #include <string>
-#include "UserSetting.h"
 
-class SourceSetting : public UserSetting 
+class SourceSetting
 {
   public:
-    virtual void load();
-    virtual void save();
+    SourceSetting ();
+    ~SourceSetting ();
   private:
     int sourceFromString(const std::string& aSource);
 };

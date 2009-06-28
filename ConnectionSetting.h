@@ -20,13 +20,12 @@
 // in user settings to decide how setup should connect...
 
 #include <string>
-#include "UserSetting.h"
 
-class ConnectionSetting : public UserSetting 
+class ConnectionSetting
 {
   public:
-    virtual void load();
-    virtual void save();
+    ConnectionSetting ();
+    ~ConnectionSetting ();
   private:
     int typeFromString(const std::string& aType);
 };

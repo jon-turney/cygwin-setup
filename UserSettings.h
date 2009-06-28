@@ -1,43 +1,50 @@
-/*
- * Copyright (c) 2003, Robert Collins.
- *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
- *
- *     A copy of the GNU General Public License can be found at
- *     http://www.gnu.org/
- *
- * Written by Robert Collins  <rbtcollins@hotmail.com>
- *
- */
+/*  UserSettings.h
+
+    Copyright (c) 2009, Christopher Faylor
+ 
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    A copy of the GNU General Public License can be found at http://www.gnu.org
+*/
 
 #ifndef SETUP_USERSETTINGS_H
 #define SETUP_USERSETTINGS_H
 
-/* A collection of user-related settings */
-
 #include <string>
-#include <vector>
+#include "io_stream.h"
 
-class io_stream;
-class UserSetting;
-class UserSettings {
-  public:
-    static UserSettings &Instance();
-    void registerSetting(UserSetting &);
-    void deRegisterSetting(UserSetting &);
-    void loadAllSettings();
-    void saveAllSettings();
-    io_stream * settingFileForLoad(const std::string& relativeName) const;
-    io_stream * settingFileForSave(const std::string& relativeName) const;
-  private:
-    static UserSettings Instance_;
-    typedef std::vector<UserSetting *> Settings;
-    void init();
-    int inited;
-    Settings settings;
+class UserSettings
+{
+private:
+  struct Element
+  {
+    const char *key;
+    const char *value;
+  } **table;
+  ssize_t table_len;
+
+  std::string filename;
+  std::string cwd;
+
+public:
+  static class UserSettings *global;
+  UserSettings (std::string);
+  static UserSettings& instance() {return *global;}
+
+  const char *get (const char *);
+  unsigned int get_index (const char *key);
+  io_stream *open (const char *);
+  const char *set (const char *, const char *);
+  const char *set (const char *key, const std::string val) {return set (key, val.c_str ());}
+  void save ();
+
+private:
+  void extend_table (ssize_t);
+  io_stream *open_settings (const char *, std::string&);
+
 };
 
-#endif /* SETUP_USERSETTINGS_H */
+#endif // SETUP_USERSETTINGS_H

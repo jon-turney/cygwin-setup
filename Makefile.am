@@ -272,8 +272,6 @@ setup_SOURCES = \
 	String++.h \
 	threebar.cc \
 	threebar.h \
-	UserSetting.cc \
-	UserSetting.h \
 	UserSettings.cc \
 	UserSettings.h \
 	win32.cc \

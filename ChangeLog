@@ -1,3 +1,44 @@
+2009-06-27  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	Preliminary option handling revamp.
+	Throughout, change load/save methods to constructors/destructors which
+	use new UserSettings methods.  Do not inherit from UserSetting class.
+	* KeysSetting.cc (ExtraKeysSetting *ExtraKeysSetting::global): Define.
+	(ExtraKeysSetting::ExtraKeysSetting): Initialize some class members use
+	new UserSettings methods.
+	(ExtraKeysSetting::~ExtraKeysSetting): Use new UserSettings method.
+	* Makefile.am (setup_SOURCES): Eliminate UserSetting.h and
+	UserSetting.cc.
+	* UserSettings.cc: Complete rewrite.  Implements new UserSettings
+	class methods.
+	* UserSettings.h: Complete rewrite.  Defines new UserSettings class
+	methods.
+	* crypto.cc (ExtraKeys): Delete.
+	(add_key_from_sexpr): Use ExtraKeysSetting::instance rather than
+	ExtraKeys.
+	(verify_ini_file_sig): Ditto.
+	* io_stream.h (io_stream): Define virtual << operators.
+	* localdir.cc (localDir): Delete.
+	* main.cc: Include headers which declar new dynamically invoked
+	classes.
+	(main_display): New function.  Controls order of option setting and
+	property page setup.  Add new class invocations to force option setting
+	initializtion.
+	(main): Invoke new UserSettings class constructor to populate new
+	settings class.  Call main_display() to do most of the setup work.
+	Call Settings.save () to save all settings.
+	* net.cc (theSetting): Delete.
+	* site.cc (SiteSetting::save): Record whether we've saved the
+	information already.
+	(get_site_list): Just use value returned from new UserSettings method
+	rather than parsing a file.
+	(SiteSetting::getSavedSites): Ditto.
+	(write_cache_list): Use UserSettings operator to store mirror cache.
+	(save_cache_file): Ditto.
+	* source.cc (theSetting): Delete.
+
+	* win32.h: gcc-4 accommodation.
+
 2009-06-26  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* res.rc (SETUP_STANDARD_DIALOG_W, SETUP_STANDARD_DIALOG_H,
