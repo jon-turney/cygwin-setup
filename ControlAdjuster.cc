@@ -16,13 +16,13 @@
 
 #include "ControlAdjuster.h"
 #include "RECTWrapper.h"
- 
-void ControlAdjuster::AdjustControls (HWND dlg, 
-				      const ControlInfo controlInfo[],   
+
+void ControlAdjuster::AdjustControls (HWND dlg,
+				      const ControlInfo controlInfo[],
 				      int widthChange, int heightChange)
 {
   const ControlInfo* ci = controlInfo;
-  
+
   while (ci->control > 0)
   {
     ci->adjust(dlg, widthChange,heightChange);
@@ -32,8 +32,8 @@ void ControlAdjuster::AdjustControls (HWND dlg,
 
 void
 ControlAdjuster::ControlInfo::adjust(HWND dlg, int widthChange, int heightChange) const
-{    
-  HWND ctl = GetDlgItem (dlg, control);  
+{
+  HWND ctl = GetDlgItem (dlg, control);
   if (ctl == 0)
     return;
   RECTWrapper ctlRect;
@@ -41,7 +41,7 @@ ControlAdjuster::ControlInfo::adjust(HWND dlg, int widthChange, int heightChange
   // We want client coords.
   ScreenToClient (dlg, (LPPOINT)&ctlRect.left);
   ScreenToClient (dlg, (LPPOINT)&ctlRect.right);
-  
+
   ControlDimension horizontal(ctlRect.left, ctlRect.right);
   ControlDimension vertical(ctlRect.top, ctlRect.bottom);
   /*
@@ -50,45 +50,45 @@ ControlAdjuster::ControlInfo::adjust(HWND dlg, int widthChange, int heightChange
   adjust(horizontalPos, horizontal, widthChange);
   adjust(verticalPos, vertical, heightChange);
   /* update the windows window */
-  SetWindowPos (ctl, 0, ctlRect.left, ctlRect.top, 
+  SetWindowPos (ctl, 0, ctlRect.left, ctlRect.top,
     ctlRect.width (), ctlRect.height (), SWP_NOACTIVATE | SWP_NOZORDER);
   // If not done, weird visual glitches can occur.
   InvalidateRect (ctl, 0, false);
 }
- 
+
 void
 ControlAdjuster::ControlInfo::adjust (ControlPosition const &how, ControlDimension &where, int by) const
 {
   switch (how)
     {
       case CP_LEFT:
-        break;
+	break;
       case CP_CENTERED:
-        where.left += by/2;
-        where.right += by - by/2;
-        break;
+	where.left += by/2;
+	where.right += by - by/2;
+	break;
       case CP_RIGHT:
-        where.left += by;
-        where.right += by;
-        break;
+	where.left += by;
+	where.right += by;
+	break;
       case CP_STRETCH:
-        where.right += by;
-        break;
+	where.right += by;
+	break;
       case CP_STRETCH_LEFTHALF:
-        where.right += by/2;
-        break;
+	where.right += by/2;
+	break;
       case CP_STRETCH_RIGHTHALF:
-        where.left += by/2;
-        where.right += by;
-        break;
+	where.left += by/2;
+	where.right += by;
+	break;
   }
 }
- 
+
 SizeProcessor::SizeProcessor ()
 {
   rectValid = false;
 }
- 
+
 void SizeProcessor::AddControlInfo (
   const ControlAdjuster::ControlInfo* controlInfo)
 {
@@ -104,12 +104,11 @@ void SizeProcessor::UpdateSize (HWND dlg)
     {
       const int dX = clientRect.width () - lastRect.width ();
       const int dY = clientRect.height () - lastRect.height ();
-	
       for (size_t i = 0; i < controlInfos.size (); i++)
 	ControlAdjuster::AdjustControls (dlg, controlInfos[i], dX, dY);
     }
   else
     rectValid = true;
-    
+
   lastRect = clientRect;
 }

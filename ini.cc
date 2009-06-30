@@ -18,11 +18,6 @@
    flex parsers are provided also.  We check to see if this setup.ini
    is older than the one we used last time, and if so, warn the user. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "ini.h"
 
 #include "csu_util/rfc1738.h"
@@ -58,7 +53,7 @@ static const char *cvsid =
 #include "compress.h"
 #include "Exception.h"
 #include "crypto.h"
-  
+
 extern ThreeBarProgressPage Progress;
 
 unsigned int setup_timestamp = 0;
@@ -73,7 +68,7 @@ extern int yyparse ();
 class GuiParseFeedback : public IniParseFeedback
 {
 public:
-  GuiParseFeedback () : lastpct (0) 
+  GuiParseFeedback () : lastpct (0)
     {
       Progress.SetText2 ("");
       Progress.SetText3 ("");
@@ -91,7 +86,7 @@ public:
 	{
 	  lastpct = pos * 100 / max;
 	  /* log (LOG_BABBLE) << lastpct << "% (" << pos << " of " << max
-            << " bytes of ini file read)" << endLog; */
+	    << " bytes of ini file read)" << endLog; */
 	}
       Progress.SetBar1(pos, max);
     }
@@ -128,7 +123,7 @@ do_local_ini (HWND owner)
   Find (local_dir).accept(myVisitor);
   setup_timestamp = myVisitor.timeStamp();
   ini_setup_version = myVisitor.version();
-  return myVisitor.iniCount(); 
+  return myVisitor.iniCount();
 }
 
 static int
@@ -153,7 +148,7 @@ do_remote_ini (HWND owner)
       current_ini_sig_name = n->url + "/" + SETUP_BZ2_FILENAME + ".sig";
       ini_file = get_url_to_membuf (current_ini_name, owner);
       if (!NoVerifyOption)
-        ini_sig_file = get_url_to_membuf (current_ini_sig_name, owner);
+	ini_sig_file = get_url_to_membuf (current_ini_sig_name, owner);
       if (!NoVerifyOption && ini_file && !ini_sig_file)
 	{
 	  note (owner, IDS_SETUPINI_MISSING, current_ini_sig_name.c_str(), n->url.c_str());
@@ -172,14 +167,14 @@ do_remote_ini (HWND owner)
 	}
       if (ini_file)
 	{
-          /* Decompress the entire file in memory right now.  This has the
-             advantage that input_stream->get_size() will work during parsing
-             and we'll have an accurate status bar.  Also, we can't seek 
-             bz2 streams, so when it comes time to write out a local cached
-             copy of the .ini file below, we'd otherwise have to delete this
-             stream and uncompress it again from the start, which is wasteful.
-             The current uncompresed size of the .ini file as of 2007 is less
-             than 600 kB, so this is not a great deal of memory.  */
+	  /* Decompress the entire file in memory right now.  This has the
+	     advantage that input_stream->get_size() will work during parsing
+	     and we'll have an accurate status bar.  Also, we can't seek
+	     bz2 streams, so when it comes time to write out a local cached
+	     copy of the .ini file below, we'd otherwise have to delete this
+	     stream and uncompress it again from the start, which is wasteful.
+	     The current uncompresed size of the .ini file as of 2007 is less
+	     than 600 kB, so this is not a great deal of memory.  */
 	  io_stream *bz2_stream = compress::decompress (ini_file);
 	  if (!bz2_stream)
 	    {
@@ -188,39 +183,39 @@ do_remote_ini (HWND owner)
 	      ini_file = NULL;
 	    }
 	  else
-            {
+	    {
 	      io_stream *uncompressed = new io_stream_memory ();
 
-              if (io_stream::copy (bz2_stream, uncompressed) != 0 ||
-                  bz2_stream->error () == EIO)
-                {
-                  /* There was a problem decompressing bz2.  */
-                  delete bz2_stream;
-                  delete uncompressed;
-                  ini_file = NULL;
-                  log (LOG_PLAIN) << 
-                    "Warning: Problem encountered while uncompressing " <<
-                    current_ini_name << " - possibly truncated or corrupt bzip2"
-                    " file.  Retrying with uncompressed version." << endLog;
-                }
-              else
-                {
-                  delete bz2_stream;
-                  ini_file = uncompressed;
-                  ini_file->seek (0, IO_SEEK_SET);
-                }
-            }
+	      if (io_stream::copy (bz2_stream, uncompressed) != 0 ||
+		  bz2_stream->error () == EIO)
+		{
+		  /* There was a problem decompressing bz2.  */
+		  delete bz2_stream;
+		  delete uncompressed;
+		  ini_file = NULL;
+		  log (LOG_PLAIN) <<
+		    "Warning: Problem encountered while uncompressing " <<
+		    current_ini_name << " - possibly truncated or corrupt bzip2"
+		    " file.  Retrying with uncompressed version." << endLog;
+		}
+	      else
+		{
+		  delete bz2_stream;
+		  ini_file = uncompressed;
+		  ini_file->seek (0, IO_SEEK_SET);
+		}
+	    }
 	}
-      
+
       if (!ini_file)
-        {
-          /* Try to look for a plain .ini file because one of the following
-             happened above:
-               - there was no .bz2 file found on the mirror.
-               - the .bz2 file didn't look like a valid bzip2 file.
-               - there was an error during bzip2 decompression.  */
-          current_ini_name = n->url + "/" + SETUP_INI_FILENAME;
-          current_ini_sig_name = n->url + "/" + SETUP_INI_FILENAME + ".sig";
+	{
+	  /* Try to look for a plain .ini file because one of the following
+	     happened above:
+	       - there was no .bz2 file found on the mirror.
+	       - the .bz2 file didn't look like a valid bzip2 file.
+	       - there was an error during bzip2 decompression.  */
+	  current_ini_name = n->url + "/" + SETUP_INI_FILENAME;
+	  current_ini_sig_name = n->url + "/" + SETUP_INI_FILENAME + ".sig";
 	  ini_file = get_url_to_membuf (current_ini_name, owner);
 	  if (!NoVerifyOption)
 	    ini_sig_file = get_url_to_membuf (current_ini_sig_name, owner);
@@ -257,7 +252,7 @@ do_remote_ini (HWND owner)
       /*yydebug = 1; */
 
       if (yyparse () || yyerror_count > 0)
-        myFeedback.error (yyerror_messages);
+	myFeedback.error (yyerror_messages);
       else
 	{
 	  /* save known-good setup.ini locally */
@@ -267,7 +262,7 @@ do_remote_ini (HWND owner)
 	  io_stream::mkpath_p (PATH_TO_FILE, fp, 0755);
 	  if (io_stream *out = io_stream::open (fp, "wb"))
 	    {
-              ini_file->seek (0, IO_SEEK_SET);
+	      ini_file->seek (0, IO_SEEK_SET);
 	      if (io_stream::copy (ini_file, out) != 0)
 		io_stream::remove (fp);
 	      delete out;
@@ -332,14 +327,14 @@ do_ini_thread (HINSTANCE h, HWND owner)
 	}
     }
 
-  msg (".ini setup_version is %s, our setup_version is %s", ini_setup_version.size() ? 
+  msg (".ini setup_version is %s, our setup_version is %s", ini_setup_version.size() ?
        ini_setup_version.c_str() : "(null)",
        setup_version);
   if (ini_setup_version.size())
     {
       if (version_compare(setup_version, ini_setup_version) < 0)
 	note (owner, IDS_OLD_SETUP_VERSION, setup_version,
-              ini_setup_version.c_str());
+	      ini_setup_version.c_str());
     }
 
   return true;
@@ -370,8 +365,8 @@ do_ini (HINSTANCE h, HWND owner)
 {
   context[0] = h;
   context[1] = owner;
-	
-  DWORD threadID;	
+
+  DWORD threadID;
   CreateThread (NULL, 0, do_ini_thread_reflector, context, 0, &threadID);
 }
 
