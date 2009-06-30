@@ -59,6 +59,8 @@ static const char *cvsid =
 #include "ControlAdjuster.h"
 #include "prereq.h"
 
+#include "UserSettings.h"
+
 using namespace std;
 
 extern ThreeBarProgressPage Progress;
@@ -84,9 +86,46 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
 };
 
 ChooserPage::ChooserPage () :
-  cmd_show_set (false)
+  cmd_show_set (false), saved_geom (false), saw_geom_change (false)
 {
   sizeProcessor.AddControlInfo (ChooserControlsInfo);
+
+  const char *fg_ret =
+    UserSettings::instance().get ("window_placement");
+  if (!fg_ret)
+    return;
+
+  writer buf;
+  UINT *py = buf.wpi;
+  char *buf_copy = strdup (fg_ret);
+  for (char *p = strtok (buf_copy, ","); p; p = strtok (NULL, ","))
+    *py++ = atoi (p);
+  free (buf_copy);
+  if ((py - buf.wpi) == (sizeof (buf.wpi) / sizeof (buf.wpi[0])))
+    {
+      saved_geom = true;
+      window_placement = buf.wp;
+    }
+}
+
+ChooserPage::~ChooserPage ()
+{
+  if (saw_geom_change)
+    {
+      writer buf;
+      buf.wp = window_placement;
+      std::string toset;
+      const char *comma = "";
+      for (unsigned i = 0; i < (sizeof (buf.wpi) / sizeof (buf.wpi[0])); i++)
+	{
+	  char intbuf[33];
+	  sprintf (intbuf, "%u", buf.wpi[i]);
+	  toset += comma;
+	  toset += intbuf;
+	  comma = ",";
+	}
+      UserSettings::instance().set ("window_placement", toset);
+    }
 }
 
 void
@@ -104,7 +143,7 @@ ChooserPage::createListview ()
   chooser->defaultTrust (TRUST_CURR);
   chooser->setViewMode (PickView::views::Category);
   if (!SetDlgItemText (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-    log (LOG_BABBLE) << "Failed to set View button caption %ld" << 
+    log (LOG_BABBLE) << "Failed to set View button caption %ld" <<
 	 GetLastError () << endLog;
   for_each (db.packages.begin(), db.packages.end(), bind2nd(mem_fun(&packagemeta::set_requirements), chooser->deftrust));
   /* FIXME: do we need to init the desired fields ? */
@@ -131,24 +170,34 @@ ChooserPage::getParentRect (HWND parent, HWND child, RECT * r)
 }
 
 void
-ChooserPage::MaximizeDialog (bool doit)
+ChooserPage::PlaceDialog (bool doit)
 {
-  // Don't jump up and down in unattended mode.
   if (unattended_mode)
-    return;
-  if (doit)
+    /* Don't jump up and down in unattended mode */;
+  else if (doit)
     {
-      WINDOWPLACEMENT wp;
-      if (GetWindowPlacement (ins_dialog, &wp))
+      pre_chooser_placement.length = sizeof pre_chooser_placement.length;
+      GetWindowPlacement (ins_dialog, &pre_chooser_placement);
+      if (saved_geom)
+	SetWindowPlacement (ins_dialog, &window_placement);
+      else
 	{
-	  cmd_show = wp.showCmd;
-	  cmd_show_set = true;
 	  ShowWindow (ins_dialog, SW_MAXIMIZE);
+	  window_placement.length = sizeof window_placement.length;
+	  GetWindowPlacement (ins_dialog, &window_placement);
 	}
+      cmd_show_set = true;
     }
   else if (cmd_show_set)
     {
-      ShowWindow (ins_dialog, cmd_show);
+      WINDOWPLACEMENT wp;
+      wp.length = sizeof wp.length;
+      if (GetWindowPlacement (ins_dialog, &wp)
+	  && memcmp (&wp, &window_placement, sizeof (wp)) != 0)
+	saw_geom_change = true;
+      SetWindowPlacement (ins_dialog, &pre_chooser_placement);
+      if (saw_geom_change)
+	window_placement = wp;
       cmd_show_set = false;
     }
 }
@@ -192,12 +241,12 @@ ChooserPage::OnInit ()
   else
     setPrompt("Select packages to install ");
   createListview ();
-  
+
   AddTooltip (IDC_CHOOSE_KEEP, IDS_TRUSTKEEP_TOOLTIP);
   AddTooltip (IDC_CHOOSE_PREV, IDS_TRUSTPREV_TOOLTIP);
   AddTooltip (IDC_CHOOSE_CURR, IDS_TRUSTCURR_TOOLTIP);
   AddTooltip (IDC_CHOOSE_EXP, IDS_TRUSTEXP_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_VIEW, IDS_VIEWBUTTON_TOOLTIP);  
+  AddTooltip (IDC_CHOOSE_VIEW, IDS_VIEWBUTTON_TOOLTIP);
   AddTooltip (IDC_CHOOSE_HIDE, IDS_HIDEOBS_TOOLTIP);
   AddTooltip (IDC_CHOOSE_SEARCH_EDIT, IDS_SEARCH_TOOLTIP);
 }
@@ -206,7 +255,7 @@ void
 ChooserPage::OnActivate()
 {
   chooser->refresh();;
-  MaximizeDialog (true);
+  PlaceDialog (true);
 }
 
 void
@@ -239,7 +288,7 @@ ChooserPage::OnNext ()
       // rut-roh, some required things are not selected
       retval = IDD_PREREQ;
     }
-  MaximizeDialog (false);
+  PlaceDialog (false);
   return retval;
 }
 
@@ -309,17 +358,17 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       if (IsButtonChecked (id))
         keepClicked();
       break;
-      
+
     case IDC_CHOOSE_PREV:
       if (IsButtonChecked (id))
         changeTrust (TRUST_PREV);
       break;
-      
+
     case IDC_CHOOSE_CURR:
       if (IsButtonChecked (id))
         changeTrust (TRUST_CURR);
       break;
-      
+
     case IDC_CHOOSE_EXP:
       if (IsButtonChecked (id))
         changeTrust (TRUST_TEST);
@@ -329,10 +378,10 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       chooser->cycleViewMode ();
       if (!SetDlgItemText
         (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-      log (LOG_BABBLE) << "Failed to set View button caption " << 
+      log (LOG_BABBLE) << "Failed to set View button caption " <<
            GetLastError () << endLog;
       break;
-      
+
     case IDC_CHOOSE_HIDE:
       chooser->setObsolete (!IsButtonChecked (id));
       break;

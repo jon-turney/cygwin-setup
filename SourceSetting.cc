@@ -29,7 +29,7 @@ SourceSetting::SourceSetting ()
 {
   const char *fg_ret;
   if ((fg_ret = UserSettings::instance().get ("last-action")))
-  inited = 1;
+    source = sourceFromString(fg_ret);
 }
 
 SourceSetting::~SourceSetting ()
@@ -47,7 +47,7 @@ SourceSetting::~SourceSetting ()
       break;
     default:
       break;
-  }
+    }
 }
 
 int

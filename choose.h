@@ -26,9 +26,7 @@ class ChooserPage:public PropertyPage
 {
 public:
   ChooserPage ();
-  virtual ~ ChooserPage ()
-  {
-  };
+  ~ChooserPage ();
 
   virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code);
   virtual BOOL CALLBACK OnMouseWheel (UINT message, WPARAM wParam,
@@ -42,7 +40,7 @@ public:
   virtual long OnUnattended ()
   {
     return OnNext ();
-  }; 
+  };
 
   static void SetHwndDialog (HWND h)
   {
@@ -61,9 +59,16 @@ private:
 
   static HWND ins_dialog;
   bool cmd_show_set;
-  int cmd_show;
-
-  void MaximizeDialog (bool);
+  bool saved_geom;
+  bool saw_geom_change;
+  WINDOWPLACEMENT window_placement;
+  WINDOWPLACEMENT pre_chooser_placement;
+  union writer
+  {
+    WINDOWPLACEMENT wp;
+    UINT wpi[sizeof (WINDOWPLACEMENT) / sizeof (UINT)];
+  };
+  void PlaceDialog (bool);
 };
 
 #endif /* SETUP_CHOOSE_H */
