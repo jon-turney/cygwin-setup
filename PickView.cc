@@ -86,15 +86,13 @@ DoInsertItem (HWND hwndHeader, int iInsertAfter, int nWidth, LPSTR lpsz)
   return index;
 }
 
-void
-PickView::set_headers ()
+int
+PickView::set_header_column_order (views vm)
 {
-  if (view_mode == views::Unknown)
-    return;
-  if (view_mode == views::PackageFull ||
-      view_mode == views::Package ||
-      view_mode == views::PackageKeeps ||
-      view_mode == views::PackageSkips)
+  if (vm == views::Unknown)
+    return -1;
+  else if (vm == views::PackageFull || vm == views::Package
+      || vm == views::PackageKeeps || vm == views::PackageSkips)
     {
       headers = pkg_headers;
       current_col = 0;
@@ -106,19 +104,27 @@ PickView::set_headers ()
       pkg_col = size_col + 1;
       last_col = pkg_col;
     }
-  else if (view_mode == views::Category)
+  else if (vm == views::Category)
     {
       headers = cat_headers;
+      cat_col = 0;
       current_col = 1;
       new_col = current_col + 1;
       bintick_col = new_col + 1;
       srctick_col = bintick_col + 1;
-      cat_col = 0;
       size_col = srctick_col + 1;
       pkg_col = size_col + 1;
       last_col = pkg_col;
     }
   else
+    return -1;
+  return last_col;
+}
+
+void
+PickView::set_headers ()
+{
+  if (set_header_column_order (view_mode) == -1)
     return;
   while (int n = SendMessage (listheader, HDM_GETITEMCOUNT, 0, 0))
     {
@@ -513,12 +519,15 @@ PickView::init_headers (HDC dc)
   headers[0].x = 0;
   for (i = 1; i <= last_col; i++)
     headers[i].x = headers[i - 1].x + headers[i - 1].width;
+  // and allow for resizing to ensure the last column reaches
+  // all the way to the end of the chooser box.
+  headers[last_col].width += total_delta_x;
 }
 
 
 PickView::PickView (Category &cat) : deftrust (TRUST_UNKNOWN),
 contents (*this, cat, 0, false, true), showObsolete (false), 
-packageFilterString (), hasClientRect (false)
+packageFilterString (), hasClientRect (false), total_delta_x (0)
 {
 }
 
@@ -810,11 +819,14 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
             if ((dx = clientRect.right - clientRect.left -
                         lastClientRect.width ()) != 0)
               {
-                headers[last_col].width += dx;
+                cat_headers[set_header_column_order (views::Category)].width += dx;
+                pkg_headers[set_header_column_order (views::Package)].width += dx;
+                set_header_column_order (view_mode);
                 set_headers ();
                 ::MoveWindow (listheader, -scroll_ulc_x, 0,
                             headers[last_col].x +
                             headers[last_col].width, header_height, TRUE);
+                total_delta_x += dx;
               }
           }
         else

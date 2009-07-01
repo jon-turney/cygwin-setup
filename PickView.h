@@ -148,7 +148,9 @@ private:
   // Stuff needed to handle resizing
   bool hasClientRect;
   RECTWrapper lastClientRect;
-  
+  int total_delta_x;
+
+  int set_header_column_order (views vm);
   void set_headers ();
   void init_headers (HDC dc);
   void note_width (Header *hdrs, HDC dc, const std::string& string,

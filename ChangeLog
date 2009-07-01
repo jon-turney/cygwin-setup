@@ -1,3 +1,15 @@
+2009-07-01  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* PickView.h (PickView::total_delta_x):  New int member.
+	(PickView::set_header_column_order):  Add prototype.
+	* PickView.cc (PickView::set_header_column_order):  New function,
+	broken out from ...
+	(PickView::set_headers):  ... here.  Call it.
+	(PickView::init_headers):  Apply total_delta_x to last_col width.
+	(PickView::PickView):  Initialise new total_delta_x member to zero.
+	(PickView::WindowProc):  Use set_header_column_order to find and
+	adjust final column for both sets of headers.
+
 2009-06-29  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* SourceSetting.cc (SourceSetting::SourceSetting): Restore proper
