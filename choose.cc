@@ -91,7 +91,7 @@ ChooserPage::ChooserPage () :
   sizeProcessor.AddControlInfo (ChooserControlsInfo);
 
   const char *fg_ret =
-    UserSettings::instance().get ("window_placement");
+    UserSettings::instance().get ("chooser_window_settings");
   if (!fg_ret)
     return;
 
@@ -124,7 +124,7 @@ ChooserPage::~ChooserPage ()
 	  toset += intbuf;
 	  comma = ",";
 	}
-      UserSettings::instance().set ("window_placement", toset);
+      UserSettings::instance().set ("chooser_window_settings", toset);
     }
 }
 
