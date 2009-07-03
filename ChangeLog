@@ -1,5 +1,9 @@
 2009-07-03  Christopher Faylor  <me+cygwin@cgf.cx>
 
+	* main.cc (set_cout): Don't reset stdout if we already have a stdout.
+
+2009-07-03  Christopher Faylor  <me+cygwin@cgf.cx>
+
 	* choose.cc (ChooserPage::ChooserPage): Use more specific name for
 	saving window settings.
 	(ChooserPage::~ChooserPage): Ditto.

@@ -89,6 +89,8 @@ static BoolOption HelpOption (false, 'h', "help", "print help");
 static void inline
 set_cout ()
 {
+  if (GetStdHandle (STD_OUTPUT_HANDLE) != INVALID_HANDLE_VALUE)
+    return;
   HMODULE hm = LoadLibrary ("kernel32.dll");
   if (!hm)
     return;
