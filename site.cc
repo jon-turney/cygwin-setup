@@ -348,7 +348,7 @@ SiteSetting::registerSavedSite (const char * site)
 			       all_site_list.end(), tempSite);
   if (i == all_site_list.end())
     {
-      /* Don't default to certain machines ever since they suffer
+      /* Don't default to certain machines if they suffer
 	 from bandwidth limitations. */
       if (strnicmp (site, NOSAVE1, NOSAVE1_LEN) == 0
 	  || strnicmp (site, NOSAVE2, NOSAVE2_LEN) == 0
