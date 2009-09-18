@@ -1,3 +1,10 @@
+2009-09-18  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* site.cc (get_site_list): Use empty string if user settings
+	return NULL pointer for cached mirrors list.
+	(SiteSetting::getSavedSites): Do nothing if user settings return
+	NULL pointer for last mirror URL.
+
 2009-08-21  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* site.cc (SiteSetting::registerSavedSite): Fix comment.

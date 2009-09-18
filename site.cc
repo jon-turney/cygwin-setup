@@ -299,6 +299,7 @@ get_site_list (HINSTANCE h, HWND owner)
     {
       log (LOG_BABBLE) << "Cached mirror list unavailable" << endLog;
       cache_is_usable = false;
+      cached_mirrors = "";
     }
 
   if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
@@ -369,6 +370,8 @@ void
 SiteSetting::getSavedSites ()
 {
   const char *buf = UserSettings::instance().get ("last-mirror");
+  if (!buf)
+    return;
   char *fg_ret = strdup (buf);
   for (char *site = strtok (fg_ret, "\n"); site; site = strtok (NULL, "\n"))
     registerSavedSite (site);
