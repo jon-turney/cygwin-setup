@@ -68,6 +68,8 @@ static ControlAdjuster::ControlInfo RootControlsInfo[] = {
 static int rb[] = { IDC_ROOT_TEXT, IDC_ROOT_BINARY, 0 };
 static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
 
+static string orig_root_dir;
+
 static void
 check_if_enable_next (HWND h)
 {
@@ -254,6 +256,7 @@ RootPage::OnInit ()
     set_root_dir((string)RootOption);
   if (!get_root_dir ().size())
     read_mounts (std::string ());
+  orig_root_dir = get_root_dir();
   load_dialog (GetHWND ());
 }
 
@@ -275,7 +278,8 @@ RootPage::OnNext ()
       note (h, IDS_ROOT_ABSOLUTE);
       return -1;
     }
-  else if (directory_is_rootdir () && (IDNO == yesno (h, IDS_ROOT_SLASH)))
+  else if (get_root_dir() != orig_root_dir &&
+           directory_is_rootdir () && (IDNO == yesno (h, IDS_ROOT_SLASH)))
     return -1;
   else if (directory_has_spaces () && (IDNO == yesno (h, IDS_ROOT_SPACE)))
     return -1;

@@ -1,3 +1,16 @@
+2009-09-18  Andy Koppe  <andy.koppe@gmail.com>
+
+	* root.cc (string orig_root_dir): New variable.
+	(check_if_enable_next): Show warning against installing Cygwin into
+	disk root only if the root directory has actually been changed.
+	* res.rc: Make the root dir warning a bit more meaningful, and refrain
+	from using uppercase.
+
+2009-09-18  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* choose.cc (ChooserPage::OnBack): Revert to non-maximized when
+	returning to mirror from package selection.
+
 2009-09-18  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* site.cc (get_site_list): Use empty string if user settings

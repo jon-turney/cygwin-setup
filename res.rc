@@ -464,7 +464,7 @@ IDB_TREE_MINUS          BITMAP  DISCARDABLE     "tree-minus.bmp"
 
 STRINGTABLE DISCARDABLE 
 BEGIN
-    IDS_ROOT_SLASH          "Warning: we recommend you do NOT use the root of your hard drive as the cygwin root.  Proceed anyway?"
+    IDS_ROOT_SLASH          "Warning: we recommend you do not use the root of your hard drive as the cygwin root, to prevent possible conflicts with other programs.  Proceed anyway?"
     IDS_ROOT_SPACE          "You should not choose a root path that include spaces in directory names.  Proceed anyway?"
     IDS_MIRROR_LST          "http://cygwin.com/mirrors.lst"
     IDS_ERR_OPEN_WRITE      "Can't open %s for writing: %s"
