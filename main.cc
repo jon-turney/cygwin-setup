@@ -89,23 +89,20 @@ static BoolOption HelpOption (false, 'h', "help", "print help");
 static void inline
 set_cout ()
 {
-  if (GetStdHandle (STD_OUTPUT_HANDLE) != INVALID_HANDLE_VALUE)
+  HANDLE my_stdout = GetStdHandle (STD_OUTPUT_HANDLE);
+  if (my_stdout != INVALID_HANDLE_VALUE && GetFileType (my_stdout) != FILE_TYPE_UNKNOWN)
     return;
+
   HMODULE hm = LoadLibrary ("kernel32.dll");
   if (!hm)
     return;
 
   BOOL WINAPI (*dyn_AttachConsole) (DWORD) = (BOOL WINAPI (*)(DWORD)) GetProcAddress (hm, "AttachConsole");
-  if (dyn_AttachConsole)
+  if (dyn_AttachConsole && dyn_AttachConsole ((DWORD) -1))
     {
-      HANDLE hstdout = GetStdHandle (STD_OUTPUT_HANDLE);
-      if (GetFileType (hstdout) == FILE_TYPE_UNKNOWN && GetLastError () != NO_ERROR
-	  && dyn_AttachConsole ((DWORD) -1))
-	  {
-	    ofstream *conout = new ofstream ("conout$");
-	    cout.rdbuf (conout->rdbuf ());
-	    cout.flush ();
-	  }
+      ofstream *conout = new ofstream ("conout$");
+      cout.rdbuf (conout->rdbuf ());
+      cout.flush ();
     }
   FreeLibrary (hm);
 }
