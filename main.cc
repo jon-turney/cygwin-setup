@@ -170,7 +170,7 @@ main_display ()
       sprintf (buf, "CoCreateInstance failed with error %p.\n"
 		    "Setup will not be able to create Cygwin Icons\n"
 		    "in the Start Menu or on the Desktop.", (void *) res);
-      MessageBox (NULL, buf, "make_link_2", MB_OK);
+      MessageBox (NULL, buf, "Cygwin Setup", MB_OK);
     }
 
   // Init window class lib
@@ -224,6 +224,11 @@ main (int argc, char **argv)
 {
   hinstance = GetModuleHandle (NULL);
 #endif
+
+  // Make sure the C runtime functions use the same codepage as the GUI
+  char locale[12];
+  snprintf(locale, sizeof locale, ".%u", GetACP());
+  setlocale(LC_ALL, locale);
 
   try {
     char cwd[MAX_PATH];
