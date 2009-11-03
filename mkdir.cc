@@ -27,9 +27,9 @@ static const char *cvsid =
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-#include <sys/stat.h>
 #endif
-  
+
+#include <sys/stat.h>
 #include <stdio.h>
 
 #include "mkdir.h"
@@ -79,7 +79,7 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 				 | FILE_OPEN_FOR_BACKUP_INTENT, NULL, 0);
 	  if (NT_SUCCESS (status))
 	    {
-	      nt_sec.SetPosixPerms (path, dir, mode);
+	      nt_sec.SetPosixPerms (path, dir, S_IFDIR | mode);
 	      NtClose (dir);
 	      return 0;
 	    }

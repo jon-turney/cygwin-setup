@@ -24,6 +24,7 @@ static const char *cvsid =
 #include "LogFile.h"
 #include "resource.h"
 #include "state.h"
+#include <sys/stat.h>
 
 NTSecurity nt_sec;
 
@@ -35,14 +36,15 @@ NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
     char sidbuf[2 * MAX_SID_LEN];
   } in_sd;
   SECURITY_DESCRIPTOR out_sd;
-  DWORD len, attribute;
+  DWORD len, u_attribute, g_attribute, o_attribute;
   BOOL dummy;
   PSID owner_sid = NULL;
   PSID group_sid = NULL;
   struct {
     ACL acl;
-    char aclbuf[4 * (sizeof (ACCESS_ALLOWED_ACE) + MAX_SID_LEN)];
+    char aclbuf[7 * (sizeof (ACCESS_ALLOWED_ACE) + MAX_SID_LEN)];
   } acl;
+  DWORD offset = 0;
 
   if (!IsWindowsNT () || !wellKnownSIDsinitialized ())
     return;
@@ -75,42 +77,51 @@ NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
   if (!InitializeAcl (&acl.acl , sizeof acl, ACL_REVISION))
     log (LOG_TIMESTAMP) << "InitializeAcl(" << fname << ") failed: "
     			<< GetLastError () << endLog;
-  attribute = STANDARD_RIGHTS_ALL | FILE_GENERIC_READ | FILE_GENERIC_WRITE;
+  /* USER */
+  u_attribute = STANDARD_RIGHTS_ALL | FILE_GENERIC_READ | FILE_GENERIC_WRITE;
   if (mode & 0100) // S_IXUSR
-    attribute |= FILE_GENERIC_EXECUTE;
+    u_attribute |= FILE_GENERIC_EXECUTE;
   if ((mode & 0300) == 0300) // S_IWUSR | S_IXUSR
-    attribute |= FILE_DELETE_CHILD;
-  if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, attribute, owner_sid))
+    u_attribute |= FILE_DELETE_CHILD;
+  if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, u_attribute, owner_sid))
     log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
     			<< ", owner) failed: " << GetLastError () << endLog;
-  attribute = STANDARD_RIGHTS_READ | FILE_READ_ATTRIBUTES;
+  else
+    offset++;
+  /* GROUP */
+  g_attribute = STANDARD_RIGHTS_READ | FILE_READ_ATTRIBUTES;
   if (mode & 0040) // S_IRGRP
-    attribute |= FILE_GENERIC_READ;
+    g_attribute |= FILE_GENERIC_READ;
   if (mode & 0020) // S_IWGRP
-    attribute |= FILE_GENERIC_WRITE;
+    g_attribute |= FILE_GENERIC_WRITE;
   if (mode & 0010) // S_IXGRP
-    attribute |= FILE_GENERIC_EXECUTE;
+    g_attribute |= FILE_GENERIC_EXECUTE;
   if ((mode & 01030) == 00030) // S_IWGRP | S_IXGRP, !S_ISVTX
-    attribute |= FILE_DELETE_CHILD;
-  if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, attribute, group_sid))
+    g_attribute |= FILE_DELETE_CHILD;
+  if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, g_attribute, group_sid))
     log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
     			<< ", group) failed: " << GetLastError () << endLog;
-  attribute = STANDARD_RIGHTS_READ | FILE_READ_ATTRIBUTES;
+  else
+    offset++;
+  /* OTHER */
+  o_attribute = STANDARD_RIGHTS_READ | FILE_READ_ATTRIBUTES;
   if (mode & 0004) // S_IROTH
-    attribute |= FILE_GENERIC_READ;
+    o_attribute |= FILE_GENERIC_READ;
   if (mode & 0002) // S_IWOTH
-    attribute |= FILE_GENERIC_WRITE;
+    o_attribute |= FILE_GENERIC_WRITE;
   if (mode & 0001) // S_IXOTH
-    attribute |= FILE_GENERIC_EXECUTE;
+    o_attribute |= FILE_GENERIC_EXECUTE;
   if ((mode & 01003) == 00003) // S_IWOTH | S_IXOTH, !S_ISVTX
-    attribute |= FILE_DELETE_CHILD;
-  if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, attribute,
+    o_attribute |= FILE_DELETE_CHILD;
+  if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, o_attribute,
 			    everyOneSID.theSID ()))
     log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
     			<< ", everyone) failed: " << GetLastError () << endLog;
+  else
+    offset++;
   if (mode & 07000) /* At least one of S_ISUID, S_ISGID, S_ISVTX */
     {
-      attribute = 0;
+      DWORD attribute = 0;
       if (mode & 04000) // S_ISUID
       	attribute |= FILE_APPEND_DATA;
       if (mode & 02000) // S_ISGID
@@ -121,6 +132,52 @@ NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
 				nullSID.theSID ()))
 	log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
 			    << ", null) failed: " << GetLastError () << endLog;
+      else
+	offset++;
+    }
+  /* For directories, we also add inherit-only ACEs for CREATOR OWNER,
+     CREATOR GROUP, and EVERYONE (aka OTHER). */
+  if (mode & S_IFDIR)
+    {
+      if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, u_attribute,
+				ownerSID.theSID ()))
+	log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+			    << ", creator owner) failed: "
+			    << GetLastError () << endLog;
+      else
+	{
+	  ACCESS_ALLOWED_ACE *ace;
+	  if (GetAce (&acl.acl, offset, (PVOID *) &ace))
+	    ace->Header.AceFlags |= CONTAINER_INHERIT_ACE | OBJECT_INHERIT_ACE
+				    | INHERIT_ONLY_ACE;
+	  offset++;
+	}
+      if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, g_attribute,
+				groupSID.theSID ()))
+	log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+			    << ", creator group) failed: "
+			    << GetLastError () << endLog;
+      else
+	{
+	  ACCESS_ALLOWED_ACE *ace;
+	  if (GetAce (&acl.acl, offset, (PVOID *) &ace))
+	    ace->Header.AceFlags |= CONTAINER_INHERIT_ACE | OBJECT_INHERIT_ACE
+				    | INHERIT_ONLY_ACE;
+	  offset++;
+	}
+      if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, o_attribute,
+				everyOneSID.theSID ()))
+	log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+			    << ", everyone inherit) failed: "
+			    << GetLastError () << endLog;
+      else
+	{
+	  ACCESS_ALLOWED_ACE *ace;
+	  if (GetAce (&acl.acl, offset, (PVOID *) &ace))
+	    ace->Header.AceFlags |= CONTAINER_INHERIT_ACE | OBJECT_INHERIT_ACE
+				    | INHERIT_ONLY_ACE;
+	  offset++;
+	}
     }
 
   /* Set SD's DACL to just created ACL. */
@@ -172,6 +229,21 @@ NTSecurity::initialiseWellKnownSIDs ()
   if (!AllocateAndInitializeSid (&nt_sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
 				 DOMAIN_ALIAS_RID_USERS, 0, 0, 0, 0, 0, 0,
 				 &usersSID.theSID ()))
+    {
+      NoteFailedAPI ("AllocateAndInitializeSid(users)");
+      return;
+    }
+  SID_IDENTIFIER_AUTHORITY c_sid_auth = { SECURITY_CREATOR_SID_AUTHORITY };
+  /* Get the SID for "CREATOR OWNER" S-1-3-0 */
+  if (!AllocateAndInitializeSid (&c_sid_auth, 1, SECURITY_CREATOR_OWNER_RID, 
+				 0, 0, 0, 0, 0, 0, 0, &ownerSID.theSID ()))
+    {
+      NoteFailedAPI ("AllocateAndInitializeSid(users)");
+      return;
+    }
+  /* Get the SID for "CREATOR GROUP" S-1-3-1 */
+  if (!AllocateAndInitializeSid (&c_sid_auth, 1, SECURITY_CREATOR_GROUP_RID, 
+				 0, 0, 0, 0, 0, 0, 0, &groupSID.theSID ()))
     {
       NoteFailedAPI ("AllocateAndInitializeSid(users)");
       return;

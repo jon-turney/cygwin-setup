@@ -1,3 +1,14 @@
+2009-11-03  Corinna Vinschen  <corinna@vinschen.de>
+
+	* mkdir.cc: Include sys/stat.h unconditionally.
+	(mkdir_p): Add S_IFDIR flag in call to nt_sec.SetPosixPerms.
+	* win32.cc: Include sys/stat.h.
+	(NTSecurity::SetPosixPerms): Add CREATOR OWNER, CREATOR GROUP, and
+	Everyone inheritance-only entries when setting a directory DACL.
+	(NTSecurity::initialiseWellKnownSIDs): Create SIDs for CREATOR OWNER and
+	CREATOR GROUP.
+	* win32.h (class NTSecurity): Add members ownerSID and groupSID.
+
 2009-10-03  Andy Koppe  <andy.koppe@gmail.com>
 
 	* main.cc (main): Make sure C runtime uses same codepage as GUI.

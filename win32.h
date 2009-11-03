@@ -116,7 +116,8 @@ private:
   void setDefaultDACL ();
   void setBackupPrivileges ();
 
-  SIDWrapper nullSID, everyOneSID, administratorsSID, usersSID;
+  SIDWrapper nullSID, everyOneSID, administratorsSID, usersSID,
+	     ownerSID, groupSID;
   struct {
     TOKEN_PRIMARY_GROUP pgrp;
     char buf[MAX_SID_LEN];
