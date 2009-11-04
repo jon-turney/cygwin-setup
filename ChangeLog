@@ -1,5 +1,12 @@
 2009-11-04  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* site.cc: Add #include of BoolOption header from libgetopt.
+	(OnlySiteOption): New BoolOption for command-line -O option.
+	(get_site_list): Respect BoolOption by not downloading mirror
+	list, nor using nor updating cached mirrors.
+
+2009-11-04  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* download.cc (do_download_thread): Only retry an incomplete download
 	a limited number of times in unattended mode.
 

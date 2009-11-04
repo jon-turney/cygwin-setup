@@ -78,6 +78,7 @@ SitePage::SitePage ()
 }
 
 #include "getopt++/StringOption.h"
+#include "getopt++/BoolOption.h"
 #include "UserSettings.h"
 
 using namespace std;
@@ -99,6 +100,8 @@ SiteList cached_site_list;
 SiteList dropped_site_list;
 
 StringOption SiteOption("", 's', "site", "Download site", false);
+
+BoolOption OnlySiteOption(false, 'O', "only-site", "Ignore all sites except for -s");
 
 SiteSetting::SiteSetting (): saved (false)
 {
@@ -289,7 +292,7 @@ get_site_list (HINSTANCE h, HWND owner)
   char mirror_url[1000];
 
   char *theMirrorString, *theCachedString;
-  const char *cached_mirrors = UserSettings::instance().get ("mirrors-lst");
+  const char *cached_mirrors = OnlySiteOption ? NULL : UserSettings::instance().get ("mirrors-lst");
   if (cached_mirrors)
     {
       log (LOG_BABBLE) << "Loaded cached mirror list" << endLog;
@@ -305,7 +308,7 @@ get_site_list (HINSTANCE h, HWND owner)
   if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
     return 1;
 
-  string mirrors = get_url_to_string (mirror_url, owner);
+  string mirrors = OnlySiteOption ? string ("") : get_url_to_string (mirror_url, owner);
   if (mirrors.size())
     cache_needs_writing = true;
   else
