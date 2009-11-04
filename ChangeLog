@@ -1,3 +1,9 @@
+2009-11-04  Corinna Vinschen  <corinna@vinschen.de>
+
+	* localdir.cc (browse): Make title text depend on what we do.
+	(LocalDirPage::OnNext): If we plan to download, try to create directory
+	before cd'ing into it.
+
 2009-11-03  Corinna Vinschen  <corinna@vinschen.de>
 
 	* mkdir.cc: Include sys/stat.h unconditionally.

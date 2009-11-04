@@ -137,7 +137,8 @@ browse (HWND h)
   memset (&bi, 0, sizeof (bi));
   bi.hwndOwner = h;
   bi.pszDisplayName = name;
-  bi.lpszTitle = "Select download directory";
+  bi.lpszTitle = (source != IDC_SOURCE_CWD) ? "Select download directory"
+					    : "Select local package directory";
   bi.ulFlags = BIF_RETURNONLYFSDIRS;
   bi.lpfn = browse_cb;
   pidl = SHBrowseForFolder (&bi);
@@ -196,6 +197,10 @@ LocalDirPage::OnNext ()
   while (trySetCurDir)
     {
       trySetCurDir = false;
+      /* If we just install from local directory, the directory must already
+         exist.  Otherwise, we just try to create it before we cd into it. */
+      if (source != IDC_SOURCE_CWD)
+	mkdir_p (1, local_dir.c_str (), 0755);
       if (SetCurrentDirectoryA (local_dir.c_str()))
 	{
 	  if (source == IDC_SOURCE_CWD)
