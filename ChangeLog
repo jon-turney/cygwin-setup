@@ -1,5 +1,9 @@
 2009-11-04  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* localdir.cc (LocalDirSetting::LocalDirSetting): Restore -l option.
+
+2009-11-04  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* site.cc: Add #include of BoolOption header from libgetopt.
 	(OnlySiteOption): New BoolOption for command-line -O option.
 	(get_site_list): Respect BoolOption by not downloading mirror

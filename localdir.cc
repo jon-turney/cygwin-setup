@@ -62,7 +62,9 @@ static ControlAdjuster::ControlInfo LocaldirControlsInfo[] = {
 LocalDirSetting::LocalDirSetting ()
 {
   const char *fg_ret;
-  if ((fg_ret = UserSettings::instance().get ("last-cache")))
+  if (std::string (LocalDirOption).size ())
+    local_dir = std::string (LocalDirOption);
+  else if ((fg_ret = UserSettings::instance().get ("last-cache")))
     local_dir = std::string (fg_ret);
 }
 
