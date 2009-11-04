@@ -160,7 +160,7 @@ main_display ()
   // Windows 7 fails to create the ShellLink instance if this is
   // done later, in the thread which actually creates the shortcuts.
   extern IShellLink *sl;
-  CoInitializeEx (NULL, COINIT_MULTITHREADED);
+  CoInitializeEx (NULL, COINIT_APARTMENTTHREADED);
   HRESULT res = CoCreateInstance (&CLSID_ShellLink, NULL,
 				  CLSCTX_INPROC_SERVER, &IID_IShellLink,
 				  (LPVOID *) & sl);
