@@ -1,5 +1,10 @@
 2009-11-04  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* download.cc (do_download_thread): Only retry an incomplete download
+	a limited number of times in unattended mode.
+
+2009-11-04  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* main.cc (main_display): Use apartment-, not multi- threading model
 	when initialiseing COM.
 
