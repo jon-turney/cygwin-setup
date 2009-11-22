@@ -236,13 +236,33 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  {
 	    if (source == IDC_SOURCE_CWD)
 	      {
-		// There was a setup.ini file (as found by
-		// do_fromcwd), but it had parse errors.
+		// There was a setup.ini file (as found by do_fromcwd), but it
+		// had parse errors.  In unattended mode, don't retry even once,
+		// because we'll only loop forever.
+		if (unattended_mode)
+		  {
+		    log (LOG_PLAIN)
+			<< "can't install from bad local package dir"
+			<< endLog;
+		    exit_msg = IDS_INSTALL_INCOMPLETE;
+		    LogSingleton::GetInstance().exit (1);
+		  }
 		GetOwner ()->SetActivePageByID (IDD_SOURCE);
 	      }
 	    else
 	      {
-		// Download failed, try another site.
+		// Download failed, try another site; in unattended mode, retry
+		// the same site a few times in case it was a transient network
+		// glitch, but don't loop forever.
+		static int retries = 4;
+		if (unattended_mode && retries-- <= 0)
+		  {
+		    log (LOG_PLAIN)
+			<< "download/verify error in unattended_mode: out of retries"
+			<< endLog;
+		    exit_msg = IDS_INSTALL_INCOMPLETE;
+		    LogSingleton::GetInstance().exit (1);
+		  }
 		GetOwner ()->SetActivePageByID (IDD_SITE);
 	      }
 	  }

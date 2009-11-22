@@ -1,5 +1,10 @@
 2009-11-22  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* threebar.cc (ThreeBarProgressPage::OnMessageApp): Don't loop forever
+	retrying ini file download/parse if it errors in unattended mode.
+
+2009-11-22  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* package_meta.cc (CategoryOption): New StringOption for '-C'.
 	(parseNames): New helper subroutine abstracts string parsing from ...
 	(packagemeta::isManuallyWanted): Use it, and check for category names
