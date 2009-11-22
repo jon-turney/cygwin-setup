@@ -52,6 +52,7 @@ using namespace std;
 using namespace std;
 
 static StringOption PackageOption ("", 'P', "packages", "Specify packages to install");
+static StringOption CategoryOption ("", 'C', "categories", "Specify entire categories to install");
 
 /*****************/
 
@@ -282,38 +283,62 @@ hasSDesc(packageversion const &pkg)
   return pkg.SDesc().size();
 }
 
+static void
+parseNames (std::set<string> &parsed, std::string &option)
+{
+  string tname;
+
+  /* Split up the packages listed in the option.  */
+  string::size_type loc = option.find (",", 0);
+  while (loc != string::npos)
+    {
+      tname = option.substr (0, loc);
+      option = option.substr (loc + 1);
+      parsed.insert (tname);
+      loc = option.find (",", 0);
+    }
+
+  /* At this point, no "," exists in option.  Don't add
+     an empty string if the entire option was empty.  */
+  if (option.length ())
+    parsed.insert (option);
+}
+
 bool packagemeta::isManuallyWanted() const
 {
   static bool parsed_yet = false;
   static std::set<string> parsed_names;
+  static std::set<string> parsed_categories;
   bool bReturn = false;
+
   /* First time through, we parse all the names out from the 
     option string and store them away in an STL set.  */
   if (!parsed_yet)
   {
     string packages_option = PackageOption;
-    string tname;
-    /* Split up the packages listed in the option.  */
-    string::size_type loc = packages_option.find(",",0);
-    while ( loc != string::npos )
-      {
-	tname = packages_option.substr(0,loc);
-	packages_option = packages_option.substr(loc+1);
-	parsed_names.insert (tname);
-	bReturn = bReturn || (name.compare(tname) == 0);
-	loc = packages_option.find(",",0);
-      }
-    /* At this point, no "," exists in packages_option.  */
-    parsed_names.insert (packages_option);
-    bReturn = bReturn || (name.compare(packages_option) == 0);
+    string categories_option = CategoryOption;
+    parseNames (parsed_names, packages_option);
+    parseNames (parsed_categories, categories_option);
     parsed_yet = true;
-    if (bReturn)
-      log (LOG_PLAIN) << "Added manual package " << name << endLog;
-    return bReturn;
   }
-  /* If we've already parsed the option string, just do
+
+  /* Once we've already parsed the option string, just do
     a lookup in the cache of already-parsed names.  */
   bReturn = parsed_names.find(name) != parsed_names.end();
+
+  /* If we didn't select the package manually, did we select any 
+     of the categories it is in? */
+  if (!bReturn && parsed_categories.size ())
+    {
+      std::set<std::string, casecompare_lt_op>::iterator curcat;
+      for (curcat = categories.begin (); curcat != categories.end (); curcat++)
+	if (parsed_categories.find (*curcat) != parsed_categories.end ())
+	  {
+	    log (LOG_PLAIN) << "Found category " << *curcat << " in package " << name << endLog;
+	    bReturn = true;
+	  }
+    }
+  
   if (bReturn)
     log (LOG_PLAIN) << "Added manual package " << name << endLog;
   return bReturn;
