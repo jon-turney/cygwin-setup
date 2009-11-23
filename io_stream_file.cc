@@ -344,8 +344,10 @@ io_stream_file::get_size ()
 		       FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
 		       FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
       if (h != INVALID_HANDLE_VALUE)
-	ret = GetFileSize (h, NULL);
-      CloseHandle (h);
+	{
+	  ret = GetFileSize (h, NULL);
+	  CloseHandle (h);
+	}
     }
   else
     {

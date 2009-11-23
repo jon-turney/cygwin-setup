@@ -1,3 +1,9 @@
+2009-11-23  Corinna Vinschen  <corinna@vinschen.de>
+
+	* io_stream_cygfile.cc (io_stream_cygfile::get_size): Don't try to
+	close invalid handle.
+	* io_stream_file.cc (io_stream_file::get_size): Ditto
+
 2009-11-22  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* threebar.cc (ThreeBarProgressPage::OnMessageApp): Don't loop forever
