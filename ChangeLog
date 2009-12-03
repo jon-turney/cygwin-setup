@@ -1,3 +1,9 @@
+2009-12-03  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	(ChooserPage::createListview): When nothing is found in the "All"
+	category, pass an empty static dummy category object to the PickView
+	constructor, instead of trying to dereference not-found iterator.
+
 2009-11-23  Corinna Vinschen  <corinna@vinschen.de>
 
 	* io_stream_cygfile.cc (io_stream_cygfile::get_size): Don't try to
