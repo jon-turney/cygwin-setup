@@ -230,6 +230,18 @@ main (int argc, char **argv)
   snprintf(locale, sizeof locale, ".%u", GetACP());
   setlocale(LC_ALL, locale);
 
+  if (!IsWindowsNT ())
+    {
+      MessageBox (NULL,
+		  "Cygwin 1.7 and later does not run on Windows 95,\n"
+		  "Windows 98, or Windows Me.  If you want to install Cygwin\n"
+		  "on one of these systems, please install an older version.\n"
+		  "See http://cygwin.com/ for more information.",
+		  "Unsupported Version of Windows detected",
+		  MB_OK | MB_ICONSTOP | MB_SETFOREGROUND | MB_TOPMOST);
+      return 1;
+    }
+
   try {
     char cwd[MAX_PATH];
     GetCurrentDirectory (MAX_PATH, cwd);

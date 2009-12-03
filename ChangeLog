@@ -1,3 +1,8 @@
+2009-12-03  Corinna Vinschen  <corinna@vinschen.de>
+
+	* main.cc (WinMain): Disable running on Windows 9x.  Show message box
+	instead and exit.
+
 2009-12-03  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	(ChooserPage::createListview): When nothing is found in the "All"
