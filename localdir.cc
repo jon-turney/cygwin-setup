@@ -116,16 +116,64 @@ save_dialog (HWND h)
   local_dir = egetString (h, IDC_LOCAL_DIR);
 }
 
+// returns non-zero if refused or error, 0 if accepted and created ok.
+static int
+offer_to_create (HWND h, const char *dirname)
+{
+  if (!dirname || !*dirname)
+    return -1;
+
+  if (!unattended_mode)
+    {
+      char msgText[MAX_PATH + 100];
+      char fmtString[100];
+      DWORD ret;
+
+      LoadString (hinstance, IDS_MAYBE_MKDIR, fmtString, sizeof fmtString);
+      snprintf (msgText, sizeof msgText, fmtString, dirname);
+
+      ret = MessageBox (h, msgText, 0, MB_ICONSTOP | MB_YESNO);
+      if (ret == IDNO)
+	return -1;
+    }
+
+  int rv = mkdir_p (true, dirname, 0755);
+
+  if (rv)
+    note (h, IDS_CANT_MKDIR, dirname);
+
+  return rv;
+}
 
 static int CALLBACK
 browse_cb (HWND h, UINT msg, LPARAM lp, LPARAM data)
 {
+  static CHAR dirname[MAX_PATH];
   switch (msg)
     {
     case BFFM_INITIALIZED:
       if (local_dir.size())
 	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) local_dir.c_str());
       break;
+    case BFFM_SELCHANGED:
+      // Make a note of each new dir we successfully select, so that
+      // we know where to create the new directory if an invalid name
+      // is entered in the text box.
+      LPITEMIDLIST pidl = reinterpret_cast<LPITEMIDLIST>(lp);
+      SHGetPathFromIDList (pidl, dirname);
+      break;
+    case BFFM_VALIDATEFAILED:
+      // See if user wants to create a dir in the last successfully-selected.
+      CHAR tempname[MAX_PATH];
+      snprintf (tempname, sizeof tempname, "%s\\%s", dirname, reinterpret_cast<LPTSTR>(lp));
+      if (!offer_to_create (h, tempname))
+	{
+	  SendMessage (h, BFFM_SETSELECTION, TRUE, reinterpret_cast<LPARAM>(tempname));
+	  return -1;
+	}
+      // Reset to original directory instead.
+      SendMessage (h, BFFM_SETSELECTION, TRUE, reinterpret_cast<LPARAM>(dirname));
+      return -1;
     }
   return 0;
 }
@@ -141,7 +189,8 @@ browse (HWND h)
   bi.pszDisplayName = name;
   bi.lpszTitle = (source != IDC_SOURCE_CWD) ? "Select download directory"
 					    : "Select local package directory";
-  bi.ulFlags = BIF_RETURNONLYFSDIRS;
+  bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE
+	      | ((source != IDC_SOURCE_CWD) ? (BIF_EDITBOX | BIF_VALIDATE) : 0);
   bi.lpfn = browse_cb;
   pidl = SHBrowseForFolder (&bi);
   if (pidl)
@@ -199,10 +248,6 @@ LocalDirPage::OnNext ()
   while (trySetCurDir)
     {
       trySetCurDir = false;
-      /* If we just install from local directory, the directory must already
-         exist.  Otherwise, we just try to create it before we cd into it. */
-      if (source != IDC_SOURCE_CWD)
-	mkdir_p (1, local_dir.c_str (), 0755);
       if (SetCurrentDirectoryA (local_dir.c_str()))
 	{
 	  if (source == IDC_SOURCE_CWD)
@@ -214,6 +259,25 @@ LocalDirPage::OnNext ()
 		}
 	      return IDD_CHOOSE;
 	    }
+	}
+      else if ((GetLastError () == ERROR_FILE_NOT_FOUND)
+		|| (GetLastError () == ERROR_PATH_NOT_FOUND))
+	{
+	  if (source == IDC_SOURCE_CWD && unattended_mode)
+	    return IDD_CHOOSE;
+	  else if (source == IDC_SOURCE_CWD)
+	    {
+	      // Check the user really wants only to uninstall.
+	      char msgText[1000];
+	      LoadString (hinstance, IDS_NO_CWD, msgText, sizeof (msgText));
+	      char msg[1000 + MAX_PATH];
+	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str ());
+	      int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | MB_OKCANCEL);
+	      return (ret == IDOK) ? IDD_CHOOSE : -1;
+	    }
+	  else if (offer_to_create (GetHWND (), local_dir.c_str ()))
+	    return -1;
+	  trySetCurDir = true;
 	}
       else
 	{
@@ -228,6 +292,7 @@ LocalDirPage::OnNext ()
 	    {
 	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str(), 
 	        buf, err);
+	      LocalFree (buf);
 	    }
 	    else
 	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str(), 

@@ -36,6 +36,9 @@
 #define IDS_SEARCH_TOOLTIP                133
 #define IDS_LOCAL_DIR_DOWNLOAD            134
 #define IDS_LOCAL_DIR_INSTALL             135
+#define IDS_MAYBE_MKDIR                   136
+#define IDS_CANT_MKDIR                    137
+#define IDS_NO_CWD			  138
 
 // Dialogs
 

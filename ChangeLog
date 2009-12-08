@@ -1,3 +1,19 @@
+2009-12-08  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* localdir.cc (offer_to_create): New function.
+	(browse_cb): Handle selection changed and validate failed
+	callbacks, and call offer_to_create where appropriate.
+	(browse): Set new dialog style flags in browser info.
+	(LocalDirPage::OnNext): Replace call to mkdir_p with offer to
+	create or error message dialog display, allow proceeding to
+	chooser even if local dir does not exist in unattend mode or
+	if user insists, and fix small memory leak.
+
+	* res.rc (IDS_MAYBE_MKDIR, IDS_CANT_MKDIR, IDS_NO_CWD): Define new
+	string resources.
+	* resource.h (IDS_MAYBE_MKDIR, IDS_CANT_MKDIR, IDS_NO_CWD): Define
+	corresponding resource ID numbers.
+
 2009-12-03  Corinna Vinschen  <corinna@vinschen.de>
 
 	* main.cc (WinMain): Disable running on Windows 9x.  Show message box
