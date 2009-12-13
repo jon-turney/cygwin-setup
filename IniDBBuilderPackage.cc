@@ -576,3 +576,9 @@ IniDBBuilderPackage::setSourceSize (packagesource &src, const std::string& size)
   if (!src.size)
     src.size = atoi(size.c_str());
 }
+
+void
+IniDBBuilderPackage::buildMessage (const std::string& message_id, const std::string& message)
+{
+  cp->set_message (message_id, message);
+}

@@ -24,6 +24,7 @@ class category;
 #include <set>
 #include "PackageTrust.h"
 #include "package_version.h"
+#include "package_message.h"
 
 typedef std::pair<const std::string, std::vector<packagemeta *> > Category;
 
@@ -85,6 +86,10 @@ public:
   // explicit separation for generic programming.
   int set_requirements (trusts deftrust) 
     { return set_requirements (deftrust, 0); }
+  void set_message (const std::string& message_id, const std::string& message_string)
+  {
+    message.set (message_id, message_string);
+  }
 
   std::string action_caption () const;
   packageversion trustp (trusts const t) const
@@ -137,6 +142,8 @@ public:
    * TODO: this should be linked into a list of priorities.
    */
   std::string priority;
+
+  packagemessage message;
 
   /* can one or more versions be installed? */
   bool accessible () const;

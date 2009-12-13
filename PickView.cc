@@ -976,7 +976,7 @@ PickView::defaultTrust (trusts trust)
           pkg.desired = pkg.trustp (trust);
           if (pkg.desired)
             pkg.desired.pick (pkg.desired.accessible() && 
-                                  pkg.desired != pkg.installed);
+                                  pkg.desired != pkg.installed, &pkg);
         }
       else
         pkg.desired = packageversion ();

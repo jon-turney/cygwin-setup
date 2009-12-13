@@ -126,11 +126,11 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
   if (pkg.desired.accessible ()
       && x >= theView.headers[theView.bintick_col].x - HMARGIN / 2
       && x <= theView.headers[theView.bintick_col + 1].x - HMARGIN / 2)
-    pkg.desired.pick(!pkg.desired.picked());
+    pkg.desired.pick(!pkg.desired.picked(), &pkg);
   if (pkg.desired.sourcePackage ().accessible ()
       && x >= theView.headers[theView.srctick_col].x - HMARGIN / 2
       && x <= theView.headers[theView.srctick_col + 1].x - HMARGIN / 2)
-    pkg.desired.sourcePackage().pick(!pkg.desired.sourcePackage().picked());
+    pkg.desired.sourcePackage().pick(!pkg.desired.sourcePackage().picked(), NULL);
 
   if (x >= theView.headers[theView.new_col].x - HMARGIN / 2
       && x <= theView.headers[theView.new_col + 1].x - HMARGIN / 2)

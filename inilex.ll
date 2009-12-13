@@ -75,6 +75,7 @@ STR	[!a-zA-Z0-9_./:\+-]+
 "source:"		return SOURCE;
 "sdesc:"		return SDESC;
 "ldesc:"		return LDESC;
+"message:"		return MESSAGE;
 "Description:"		BEGIN (descriptionstate); return DESCTAG;
 "Size:"			return FILESIZE;
 "MD5sum:"		return MD5LINE;

@@ -1,3 +1,24 @@
+2009-12-13  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* IniDBBuilder.h (buildMessage): Define for base class.
+	* IniDBBuilderPackage.cc (IniDBBuilderPackage::buildMessage): Define.
+	* IniDBBuilderPackage.h (IniDBBuilderPackage::buildMessage): Declare.
+	* PickPackageLine.cc: Pass pointer to package to "pick" throughout,
+	where appropriate.
+	* PickView.cc: Ditto.
+	* install.cc: Ditto.
+	* package_meta.cc: Ditto.
+	* prereq.cc: Ditto.
+	* package_version.cc: Ditto.
+	(packageversion::pick): Add pkg pointer as second argument.  Display
+	message where appropriate.
+	* package_version.h (packageversion::pick): Add pkg pointer as second
+	argument.
+	* package_meta.h (packagemeta::mesage): Define.
+	(packagemeta::set_message): Define.
+	* inilex.ll: Properly return MESSAGE token.
+	* iniparse.yy: Handle message: keyword.
+
 2009-12-08  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* localdir.cc (offer_to_create): New function.

@@ -568,7 +568,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       catch (Exception *e)
       {
         if (yesno (owner, IDS_SKIP_PACKAGE, e->what()) == IDYES)
-          pkg.desired.pick (false);
+          pkg.desired.pick (false, &pkg);
       }
       if (pkg.desired.picked())
       {
@@ -586,7 +586,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       catch (Exception *e)
       {
         if (yesno (owner, IDS_SKIP_PACKAGE, e->what()) == IDYES)
-          pkg.desired.sourcePackage ().pick (false);
+          pkg.desired.sourcePackage ().pick (false, &pkg);
       }
       if (pkg.desired.sourcePackage().picked())
       {

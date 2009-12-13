@@ -283,9 +283,11 @@ packageversion::picked () const
 }
 
 void 
-packageversion::pick (bool aBool)
+packageversion::pick (bool aBool, packagemeta *pkg)
 {
   data->pick(aBool);
+  if (pkg && aBool)
+    pkg->message.display ();
 }
 
 void
@@ -392,8 +394,8 @@ select (trusts deftrust, size_t depth, packagemeta *required,
   bool sourceticked = required->desired.sourcePackage ().picked();
   /* install this version */
   required->desired = aVersion;
-  required->desired.pick (required->installed != required->desired);
-  required->desired.sourcePackage ().pick (sourceticked);
+  required->desired.pick (required->installed != required->desired, required);
+  required->desired.sourcePackage ().pick (sourceticked, NULL);
   /* does this requirement have requirements? */
   return required->set_requirements (deftrust, depth + 1);
 }

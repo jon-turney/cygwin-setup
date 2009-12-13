@@ -57,6 +57,7 @@ public:
   virtual void buildPackageListOrNode (const std::string& ) = 0;
   virtual void buildPackageListOperator (PackageSpecification::_operators const &) = 0;
   virtual void buildPackageListOperatorVersion (const std::string& ) = 0;
+  virtual void buildMessage (const std::string&, const std::string&) = 0;
 
   unsigned int timestamp;
   std::string version;

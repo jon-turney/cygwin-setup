@@ -58,7 +58,8 @@ public:
   virtual void buildBeginProvides ();
   virtual void buildBeginBuildDepends ();
   virtual void buildBeginBinary ();
-  virtual void buildDescription (const std::string& );
+  virtual void buildDescription (const std::string&);
+  virtual void buildMessage (const std::string&, const std::string&);
   virtual void buildSourceName (const std::string& );
   virtual void buildSourceNameVersion (const std::string& );
   virtual void buildPackageListAndNode ();

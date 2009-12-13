@@ -428,8 +428,8 @@ packagemeta::set_action (packageversion const &default_version)
       desired = installed;
       if (desired)
 	{
-	  desired.pick (false);
-	  desired.sourcePackage().pick (false);
+	  desired.pick (false, NULL);
+	  desired.sourcePackage().pick (false, NULL);
 	}
       return;
     }
@@ -448,9 +448,9 @@ packagemeta::set_action (packageversion const &default_version)
       if (desired)
 	{
 	  if (desired.accessible())
-	    desired.pick (true);
+	    desired.pick (true, this);
 	  else
-	    desired.sourcePackage().pick (true);
+	    desired.sourcePackage().pick (true, NULL);
 	  return;
 	}
     }
@@ -462,8 +462,8 @@ packagemeta::set_action (packageversion const &default_version)
     {
       /* source only this file */
       desired = installed;
-      desired.pick (false);
-      desired.sourcePackage().pick (true);
+      desired.pick (false, NULL);
+      desired.sourcePackage().pick (true, NULL);
       return;
     }
   /* are we currently on source only or on the radio button but not installed */
@@ -477,8 +477,8 @@ packagemeta::set_action (packageversion const &default_version)
       if (i != versions.end())
 	{
 	  desired = *i;
-	  desired.pick (desired.accessible());
-	  desired.sourcePackage ().pick (false);
+	  desired.pick (desired.accessible(), this);
+	  desired.sourcePackage ().pick (false, NULL);
 	}
       else
 	desired = packageversion ();
@@ -501,9 +501,9 @@ packagemeta::set_action (packageversion const &default_version)
 	    {
 	      desired = *i;
 	      if (desired.sourcePackage().accessible ())
-		desired.sourcePackage ().pick (sourceticked);
+		desired.sourcePackage ().pick (sourceticked, NULL);
 	      else
-		desired.sourcePackage ().pick (false);
+		desired.sourcePackage ().pick (false, NULL);
 	      return;
 	    }
 	}
@@ -545,8 +545,8 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
 	  desired = default_version;
 	  if (desired)
 	    {
-	      desired.pick (desired != installed);
-	      desired.sourcePackage ().pick (false);
+	      desired.pick (desired != installed, this);
+	      desired.sourcePackage ().pick (false, NULL);
 	    }
 	}
       else
@@ -561,18 +561,18 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
 	  if (desired != installed)
 	    if (desired.accessible ())
 	      {
-		desired.pick (true);
-		desired.sourcePackage ().pick (false);
+		desired.pick (true, this);
+		desired.sourcePackage ().pick (false, NULL);
 	      }
 	    else
 	      {
-		desired.pick (false);
-		desired.sourcePackage ().pick (true);
+		desired.pick (false, NULL);
+		desired.sourcePackage ().pick (true, NULL);
 	      }
 	  else
 	    {
-	      desired.pick (false);
-	      desired.sourcePackage ().pick (false);
+	      desired.pick (false, NULL);
+	      desired.sourcePackage ().pick (false, NULL);
 	    }
 	}
       return;
@@ -582,8 +582,8 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
       desired = installed;
       if (desired)
 	{
-	  desired.pick (true);
-	  desired.sourcePackage ().pick (false);
+	  desired.pick (true, this);
+	  desired.sourcePackage ().pick (false, NULL);
 	}
     }
   else if (action == Uninstall_action)

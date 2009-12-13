@@ -77,6 +77,7 @@ package_type_t;
    */
 
 class _packageversion;
+class packagemeta;
 
 /* This class has pointer semantics 
    Specifically: a=b does not alter the value of *a.
@@ -122,7 +123,7 @@ public:
   const std::vector <std::vector <PackageSpecification *> *> *depends() const; 
 
   bool picked() const;   /* true if this version is to be installed */
-  void pick(bool); /* trigger an install/reinsall */
+  void pick(bool, packagemeta *); /* trigger an install/reinsall */
 
   void uninstall ();
   /* invariant: never null */

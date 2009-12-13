@@ -229,18 +229,18 @@ PrereqChecker::selectMissing ()
     {
       packageversion vers = i->first->trustp (theTrust);
       i->first->desired = vers;
-      vers.sourcePackage ().pick (false);
+      vers.sourcePackage ().pick (false, NULL);
       
       if (vers == i->first->installed)
         {
-          vers.pick (false);
+          vers.pick (false, NULL);
           log (LOG_PLAIN) << "Adding required dependency " << i->first->name <<
                ": Selecting already-installed version " <<
                i->first->installed.Canonical_version () << "." << endLog;
         }
       else
         {
-          vers.pick (vers.accessible ());
+          vers.pick (vers.accessible (), i->first);
           log (LOG_PLAIN) << "Adding required dependency " << i->first->name <<
               ": Selecting version " << vers.Canonical_version () <<
               " for installation." << endLog;
