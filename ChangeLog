@@ -1,3 +1,10 @@
+2009-12-16  Corinna Vinschen  <corinna@vinschen.de>
+
+	* UserSettings.cc (UserSettings::open_settings): Never add more than
+	one slash.
+	* filemanip.cc (tfx_chars): Align to Cygwin's transformation table.
+	* localdir.cc (LocalDirSetting::save): Call mkdir_p with DOS path.
+
 2009-12-16  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* package_message.h: New file.

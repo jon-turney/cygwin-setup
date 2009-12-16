@@ -62,12 +62,15 @@ UserSettings::extend_table (ssize_t i)
   table[i] = NULL;
 }
 
+#define isslash(c) ((c) == '\\' || (c) == '/')
+
 io_stream *
 UserSettings::open_settings (const char *filename, std::string &pathname)
 {
   pathname = "file://";
   pathname += cwd;
-  pathname += "//";
+  if (!isslash (cwd[cwd.size () - 1]) && !isslash (filename[0]))
+    pathname += "/";
   pathname += filename;
   io_stream *f = io_stream::open(pathname, "rt");
   if (!f)
