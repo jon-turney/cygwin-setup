@@ -1,3 +1,7 @@
+2009-12-16  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* package_message.h: New file.
+
 2009-12-13  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* IniDBBuilder.h (buildMessage): Define for base class.
