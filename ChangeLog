@@ -1,3 +1,8 @@
+2009-12-17  Corinna Vinschen  <corinna@vinschen.de>
+
+	* localdir.cc (LocalDirSetting::save): Call mkdir_p with isadir set
+	since /var/log is a dir.
+
 2009-12-16  Corinna Vinschen  <corinna@vinschen.de>
 
 	* UserSettings.cc (UserSettings::open_settings): Never add more than

@@ -81,7 +81,7 @@ LocalDirSetting::save ()
   else
     {
       theLog->clearFiles();
-      mkdir_p (0, cygpath ("/var/log").c_str (), 01777);
+      mkdir_p (1, cygpath ("/var/log").c_str (), 01777);
       theLog->setFile (LOG_BABBLE, cygpath ("/var/log/setup.log.full"), false);
       theLog->setFile (0, cygpath ("/var/log/setup.log"), true);
     }
