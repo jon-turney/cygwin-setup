@@ -483,7 +483,7 @@ retry:
       return NULL;
     }
   wname[1] = L'\\';
-  if (io.Information == FILE_CREATED)
+  if (io.Information == FILE_CREATED && (access & WRITE_DAC))
     nt_sec.SetPosixPerms ("", h, perms);
   int fd = _open_osfhandle ((long) h, oflags);
   if (fd < 0)

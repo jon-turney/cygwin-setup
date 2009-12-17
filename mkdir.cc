@@ -81,7 +81,8 @@ retry:
 				 | FILE_OPEN_FOR_BACKUP_INTENT, NULL, 0);
 	  if (NT_SUCCESS (status))
 	    {
-	      nt_sec.SetPosixPerms (path, dir, S_IFDIR | mode);
+	      if (write_dac == WRITE_DAC)
+		nt_sec.SetPosixPerms (path, dir, S_IFDIR | mode);
 	      NtClose (dir);
 	      return 0;
 	    }
