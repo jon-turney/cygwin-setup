@@ -402,22 +402,31 @@ io_stream_cygfile::set_mtime_and_mode (time_t mtime, mode_t mode)
   ftime.dwHighDateTime = ftimev >> 32;
   ftime.dwLowDateTime = ftimev;
   HANDLE h;
+  DWORD access = WRITE_DAC | GENERIC_WRITE;
+retry:
   if (IsWindowsNT ())
-    h = CreateFileW (w_str (), STANDARD_RIGHTS_ALL | GENERIC_WRITE,
+    h = CreateFileW (w_str (), access,
 		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
 		     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
   else
     h = CreateFileA (fname.c_str (), GENERIC_WRITE,
 		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
 		     FILE_ATTRIBUTE_NORMAL, 0);
-  if (h != INVALID_HANDLE_VALUE)
+  if (h == INVALID_HANDLE_VALUE)
     {
-      SetFileTime (h, 0, 0, &ftime);
-      nt_sec.SetPosixPerms (fname.c_str (), h, mode);
-      CloseHandle (h);
-      return 0;
+      /* WRITE_DAC can be fatal for non-admin users. */
+      if ((access & WRITE_DAC) && GetLastError () == ERROR_ACCESS_DENIED)
+	{
+	  access = GENERIC_WRITE;
+	  goto retry;
+	}
+      return 1;
     }
-  return 1;
+  SetFileTime (h, 0, 0, &ftime);
+  if (access & WRITE_DAC)
+    nt_sec.SetPosixPerms (fname.c_str (), h, mode);
+  CloseHandle (h);
+  return 0;
 }
 
 int

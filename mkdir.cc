@@ -70,8 +70,10 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 	  upath.Buffer = wpath;
 	  InitializeObjectAttributes (&attr, &upath, OBJ_CASE_INSENSITIVE,
 				      NULL, NULL);
-	  status = NtCreateFile (&dir,
-	  			 STANDARD_RIGHTS_ALL | FILE_LIST_DIRECTORY,
+	  ULONG write_dac = WRITE_DAC;
+retry:
+	  status = NtCreateFile (&dir, SYNCHRONIZE | READ_CONTROL | write_dac
+				 | FILE_LIST_DIRECTORY,
 				 &attr, &io, NULL, FILE_ATTRIBUTE_DIRECTORY,
 				 FILE_SHARE_VALID_FLAGS, FILE_CREATE,
 				 FILE_DIRECTORY_FILE
@@ -82,6 +84,12 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 	      nt_sec.SetPosixPerms (path, dir, S_IFDIR | mode);
 	      NtClose (dir);
 	      return 0;
+	    }
+	  else if (status == STATUS_ACCESS_DENIED && write_dac == WRITE_DAC)
+	    {
+	      /* WRITE_DAC can be fatal for non-admin users. */
+	      write_dac = 0;
+	      goto retry;
 	    }
 	  else
 	    SetLastError (RtlNtStatusToDosError (status));

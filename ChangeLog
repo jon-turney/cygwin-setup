@@ -1,5 +1,13 @@
 2009-12-17  Corinna Vinschen  <corinna@vinschen.de>
 
+	* filemanip.cc (nt_wfopen): Fix requested access rights.  Retry
+	without WRITE_DAC access on access denied.  Add comment.
+	* io_stream_cygfile.cc (io_stream_cygfile::set_mtime_and_mode): Ditto.
+	* mkdir.cc (mkdir_p): Ditto.
+	* mklink2.cc (mkcygsymlink_nt): Ditto.
+
+2009-12-17  Corinna Vinschen  <corinna@vinschen.de>
+
 	* localdir.cc (LocalDirSetting::save): Call mkdir_p with isadir set
 	since /var/log is a dir.
 

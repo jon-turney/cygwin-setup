@@ -406,15 +406,15 @@ nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
   switch (mode[0])
     {
     case 'r':
-      access = GENERIC_READ;
+      access = STANDARD_RIGHTS_READ | GENERIC_READ;
       disp = FILE_OPEN;
       break;
     case 'w':
-      access = GENERIC_WRITE;
+      access = STANDARD_RIGHTS_WRITE | GENERIC_WRITE;
       disp = FILE_OVERWRITE_IF;
       break;
     case 'a':
-      access = GENERIC_WRITE;
+      access = STANDARD_RIGHTS_WRITE | GENERIC_WRITE;
       disp = FILE_OPEN_IF;
       oflags = _O_APPEND;
       break;
@@ -426,7 +426,7 @@ nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
     switch (*c)
       {
       case '+':
-	access = GENERIC_READ | GENERIC_WRITE;
+	access = STANDARD_RIGHTS_WRITE | GENERIC_READ | GENERIC_WRITE;
 	break;
       case 't':
       	oflags |= _O_TEXT;
@@ -456,13 +456,13 @@ nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
   wname[1] = L'?';
   RtlInitUnicodeString (&uname, wname);
   InitializeObjectAttributes (&attr, &uname, OBJ_CASE_INSENSITIVE, NULL, NULL);
+retry:
   status = NtCreateFile (&h, access | SYNCHRONIZE, &attr, &io, NULL,
 			 FILE_ATTRIBUTE_NORMAL, FILE_SHARE_VALID_FLAGS, disp, 
 			 FILE_OPEN_FOR_BACKUP_INTENT
 			 | FILE_OPEN_REPARSE_POINT
 			 | FILE_SYNCHRONOUS_IO_NONALERT,
 			 NULL, 0);
-  wname[1] = L'\\';
   if (!NT_SUCCESS (status))
     {
       if (status == STATUS_OBJECT_NAME_NOT_FOUND
@@ -471,10 +471,18 @@ nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
       	errno = ENOENT;
       else if (status == STATUS_OBJECT_NAME_INVALID)
       	errno = EINVAL;
+      else if (status == STATUS_ACCESS_DENIED && (access & WRITE_DAC))
+	{
+	  /* WRITE_DAC can be fatal for non-admin users. */
+	  access &= ~WRITE_DAC;
+	  goto retry;
+	}
       else
       	errno = EACCES;
+      wname[1] = L'\\';
       return NULL;
     }
+  wname[1] = L'\\';
   if (io.Information == FILE_CREATED)
     nt_sec.SetPosixPerms ("", h, perms);
   int fd = _open_osfhandle ((long) h, oflags);
