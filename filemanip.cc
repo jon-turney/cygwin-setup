@@ -39,7 +39,7 @@ using namespace std;
 size_t
 get_file_size (const std::string& name)
 {
-  io_stream *theFile = io_stream::open (name, "");
+  io_stream *theFile = io_stream::open (name, "", 0);
   if (!theFile)
     /* To consider: throw an exception ? */
     return 0;
@@ -399,6 +399,8 @@ nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
   IO_STATUS_BLOCK io;
   UNICODE_STRING uname;
   OBJECT_ATTRIBUTES attr;
+  SECURITY_DESCRIPTOR sd;
+  acl_t acl;
   const char *c;
   ULONG access, disp;
   int oflags = 0;
@@ -444,19 +446,20 @@ nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
       oflags |= _O_RDONLY;
       break;
     case GENERIC_WRITE:
-      access |= WRITE_DAC;
       oflags |= _O_WRONLY;
       break;
     case GENERIC_READ | GENERIC_WRITE:
-      access |= WRITE_DAC;
       oflags |= _O_RDWR;
       break;
     }
   PWCHAR wname = (PWCHAR) wpath;
   wname[1] = L'?';
   RtlInitUnicodeString (&uname, wname);
-  InitializeObjectAttributes (&attr, &uname, OBJ_CASE_INSENSITIVE, NULL, NULL);
-retry:
+  InitializeObjectAttributes (&attr, &uname, OBJ_CASE_INSENSITIVE, NULL,
+			      disp == FILE_OPEN
+			      ? NULL
+			      : nt_sec.GetPosixPerms ("", NULL, NULL,
+						      perms, sd, acl));
   status = NtCreateFile (&h, access | SYNCHRONIZE, &attr, &io, NULL,
 			 FILE_ATTRIBUTE_NORMAL, FILE_SHARE_VALID_FLAGS, disp, 
 			 FILE_OPEN_FOR_BACKUP_INTENT
@@ -471,20 +474,12 @@ retry:
       	errno = ENOENT;
       else if (status == STATUS_OBJECT_NAME_INVALID)
       	errno = EINVAL;
-      else if (status == STATUS_ACCESS_DENIED && (access & WRITE_DAC))
-	{
-	  /* WRITE_DAC can be fatal for non-admin users. */
-	  access &= ~WRITE_DAC;
-	  goto retry;
-	}
       else
       	errno = EACCES;
       wname[1] = L'\\';
       return NULL;
     }
   wname[1] = L'\\';
-  if (io.Information == FILE_CREATED && (access & WRITE_DAC))
-    nt_sec.SetPosixPerms ("", h, perms);
   int fd = _open_osfhandle ((long) h, oflags);
   if (fd < 0)
     return NULL;

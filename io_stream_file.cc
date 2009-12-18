@@ -52,8 +52,8 @@ public:
     {return io_stream_file::remove(path);}
   int mklink (const std::string& a , const std::string& b, io_stream_link_t c) const
     {return io_stream_file::mklink(a,b,c);}
-  io_stream *open (const std::string& a,const std::string& b) const
-    {return new io_stream_file (a, b);}
+  io_stream *open (const std::string& a,const std::string& b, mode_t m) const
+    {return new io_stream_file (a, b, m);}
   ~FileProvider (){}
   int move (const std::string& a,const std::string& b) const
     {return io_stream_file::move (a, b);}
@@ -90,7 +90,7 @@ io_stream_file::w_str ()
   return wname;
 }
 
-io_stream_file::io_stream_file (const std::string& name, const std::string& mode) : fp(), lasterr (0), fname(name), wname (NULL)
+io_stream_file::io_stream_file (const std::string& name, const std::string& mode, mode_t perms) : fp(), lasterr (0), fname(name), wname (NULL)
 {
   errno = 0;
   if (!name.size())
@@ -98,7 +98,7 @@ io_stream_file::io_stream_file (const std::string& name, const std::string& mode
   if (mode.size ())
     {
       if (IsWindowsNT ())
-	fp = nt_wfopen (w_str (), mode.c_str (), 0644); 
+	fp = nt_wfopen (w_str (), mode.c_str (), perms); 
       else
 	fp = fopen (fname.c_str (), mode.c_str ());
       if (!fp)
@@ -287,8 +287,7 @@ io_stream_file::error ()
 }
 
 int
-io_stream_file::set_mtime_and_mode (time_t mtime,
-				    mode_t mode __attribute__ ((unused)))
+io_stream_file::set_mtime (time_t mtime)
 {
   if (!fname.size())
     return 1;
@@ -315,7 +314,7 @@ io_stream_file::set_mtime_and_mode (time_t mtime,
       return 0;
     }
 #else
-  throw new runtime_error ("set_mtime_and_mode not supported on posix yet.");
+  throw new runtime_error ("set_mtime not supported on posix yet.");
 #endif
   return 1;
 }

@@ -59,6 +59,11 @@
 #define TOKEN_ACL_SIZE(cnt) (sizeof (ACL) + \
 			     (cnt) * (sizeof (ACCESS_ALLOWED_ACE) + MAX_SID_LEN))
 
+struct acl_t {
+ ACL acl;
+ char aclbuf[TOKEN_ACL_SIZE (7)];
+};
+
 class SIDWrapper {
   public:
     SIDWrapper () : value (NULL) {}
@@ -94,6 +99,7 @@ class NTSecurity
 {
 public:
   NTSecurity () : nullSID (), everyOneSID (), administratorsSID (), usersSID (),
+		  cr_ownerSID (), cr_groupSID (), groupSID (NULL),
 		  _wellKnownSIDsinitialized (false), token () {}
   ~NTSecurity() {}
 
@@ -104,6 +110,9 @@ public:
   /* Set POSIX-like permissions on files.  The fname is only used for printing
      log output.  The function requires an open HANDLE with sufficient
      permissions (READ_DAC | WRITE_DAC). */
+  PSECURITY_DESCRIPTOR GetPosixPerms (const char *fname, PSID owner_sid,
+				      PSID group_sid, mode_t mode,
+				      SECURITY_DESCRIPTOR &out_sd, acl_t &acl);
   void SetPosixPerms (const char *fname, HANDLE fh, mode_t mode);
   void resetPrimaryGroup();
   void setAdminGroup ();
@@ -117,7 +126,12 @@ private:
   void setBackupPrivileges ();
 
   SIDWrapper nullSID, everyOneSID, administratorsSID, usersSID,
-	     ownerSID, groupSID;
+	     cr_ownerSID, cr_groupSID;
+  struct {
+    TOKEN_USER user;
+    char buf[MAX_SID_LEN];
+  } ownerSID;
+  PSID groupSID;
   struct {
     TOKEN_PRIMARY_GROUP pgrp;
     char buf[MAX_SID_LEN];

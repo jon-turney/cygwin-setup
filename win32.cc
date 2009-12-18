@@ -28,41 +28,12 @@ static const char *cvsid =
 
 NTSecurity nt_sec;
 
-void
-NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
+PSECURITY_DESCRIPTOR
+NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
+			   mode_t mode, SECURITY_DESCRIPTOR &out_sd, acl_t &acl)
 {
-  struct {
-    SECURITY_DESCRIPTOR sd;
-    char sidbuf[2 * MAX_SID_LEN];
-  } in_sd;
-  SECURITY_DESCRIPTOR out_sd;
-  DWORD len, u_attribute, g_attribute, o_attribute;
-  BOOL dummy;
-  PSID owner_sid = NULL;
-  PSID group_sid = NULL;
-  struct {
-    ACL acl;
-    char aclbuf[7 * (sizeof (ACCESS_ALLOWED_ACE) + MAX_SID_LEN)];
-  } acl;
+  DWORD u_attribute, g_attribute, o_attribute;
   DWORD offset = 0;
-
-  if (!IsWindowsNT () || !wellKnownSIDsinitialized ())
-    return;
-  /* Get file's owner and group. */
-  if (!GetKernelObjectSecurity (fh, OWNER_SECURITY_INFORMATION
-				    | GROUP_SECURITY_INFORMATION,
-				&in_sd.sd, sizeof in_sd, &len))
-    {
-      log (LOG_TIMESTAMP) << "GetKernelObjectSecurity(" << fname << ") failed: "
-			  << GetLastError () << endLog;
-      return;
-    }
-  if (!GetSecurityDescriptorOwner (&in_sd.sd, &owner_sid, &dummy))
-    log (LOG_TIMESTAMP) << "GetSecurityDescriptorOwner(" << fname
-    			<< ") failed: " << GetLastError () << endLog;
-  if (!GetSecurityDescriptorGroup (&in_sd.sd, &group_sid, &dummy))
-    log (LOG_TIMESTAMP) << "GetSecurityDescriptorGroup(" << fname
-    			<< ") failed: " << GetLastError () << endLog;
 
   /* Initialize out SD */
   if (!InitializeSecurityDescriptor (&out_sd, SECURITY_DESCRIPTOR_REVISION))
@@ -78,6 +49,9 @@ NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
     log (LOG_TIMESTAMP) << "InitializeAcl(" << fname << ") failed: "
     			<< GetLastError () << endLog;
   /* USER */
+  /* Default user to current user. */
+  if (!owner_sid)
+    owner_sid = ownerSID.user.User.Sid;
   u_attribute = STANDARD_RIGHTS_ALL | FILE_GENERIC_READ | FILE_GENERIC_WRITE;
   if (mode & 0100) // S_IXUSR
     u_attribute |= FILE_GENERIC_EXECUTE;
@@ -89,6 +63,9 @@ NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
   else
     offset++;
   /* GROUP */
+  /* Default group to current primary group. */
+  if (!group_sid)
+    group_sid = groupSID;
   g_attribute = STANDARD_RIGHTS_READ | FILE_READ_ATTRIBUTES;
   if (mode & 0040) // S_IRGRP
     g_attribute |= FILE_GENERIC_READ;
@@ -140,7 +117,7 @@ NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
   if (mode & S_IFDIR)
     {
       if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, u_attribute,
-				ownerSID.theSID ()))
+				cr_ownerSID.theSID ()))
 	log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
 			    << ", creator owner) failed: "
 			    << GetLastError () << endLog;
@@ -153,7 +130,7 @@ NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
 	  offset++;
 	}
       if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, g_attribute,
-				groupSID.theSID ()))
+				cr_groupSID.theSID ()))
 	log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
 			    << ", creator group) failed: "
 			    << GetLastError () << endLog;
@@ -184,7 +161,42 @@ NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
   if (!SetSecurityDescriptorDacl (&out_sd, TRUE, &acl.acl, FALSE))
     log (LOG_TIMESTAMP) << "SetSecurityDescriptorDacl(" << fname
     			<< ") failed: " << GetLastError () << endLog;
+  return &out_sd;
+}
 
+void
+NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
+{
+  struct {
+    SECURITY_DESCRIPTOR sd;
+    char sidbuf[2 * MAX_SID_LEN];
+  } in_sd;
+  SECURITY_DESCRIPTOR out_sd;
+  acl_t acl;
+  DWORD len;
+  BOOL dummy;
+  PSID owner_sid = NULL;
+  PSID group_sid = NULL;
+
+  if (!IsWindowsNT () || !wellKnownSIDsinitialized ())
+    return;
+  /* Get file's owner and group. */
+  if (!GetKernelObjectSecurity (fh, OWNER_SECURITY_INFORMATION
+				    | GROUP_SECURITY_INFORMATION,
+				&in_sd.sd, sizeof in_sd, &len))
+    {
+      log (LOG_TIMESTAMP) << "GetKernelObjectSecurity(" << fname << ") failed: "
+			  << GetLastError () << endLog;
+      return;
+    }
+  if (!GetSecurityDescriptorOwner (&in_sd.sd, &owner_sid, &dummy))
+    log (LOG_TIMESTAMP) << "GetSecurityDescriptorOwner(" << fname
+    			<< ") failed: " << GetLastError () << endLog;
+  if (!GetSecurityDescriptorGroup (&in_sd.sd, &group_sid, &dummy))
+    log (LOG_TIMESTAMP) << "GetSecurityDescriptorGroup(" << fname
+    			<< ") failed: " << GetLastError () << endLog;
+
+  GetPosixPerms (fname, owner_sid, group_sid, mode, out_sd, acl);
   /* Write DACL back to file. */
   if (!SetKernelObjectSecurity (fh, DACL_SECURITY_INFORMATION, &out_sd))
     log (LOG_TIMESTAMP) << "SetKernelObjectSecurity(" << fname << ") failed: "
@@ -236,14 +248,14 @@ NTSecurity::initialiseWellKnownSIDs ()
   SID_IDENTIFIER_AUTHORITY c_sid_auth = { SECURITY_CREATOR_SID_AUTHORITY };
   /* Get the SID for "CREATOR OWNER" S-1-3-0 */
   if (!AllocateAndInitializeSid (&c_sid_auth, 1, SECURITY_CREATOR_OWNER_RID, 
-				 0, 0, 0, 0, 0, 0, 0, &ownerSID.theSID ()))
+				 0, 0, 0, 0, 0, 0, 0, &cr_ownerSID.theSID ()))
     {
       NoteFailedAPI ("AllocateAndInitializeSid(users)");
       return;
     }
   /* Get the SID for "CREATOR GROUP" S-1-3-1 */
   if (!AllocateAndInitializeSid (&c_sid_auth, 1, SECURITY_CREATOR_GROUP_RID, 
-				 0, 0, 0, 0, 0, 0, 0, &groupSID.theSID ()))
+				 0, 0, 0, 0, 0, 0, 0, &cr_groupSID.theSID ()))
     {
       NoteFailedAPI ("AllocateAndInitializeSid(users)");
       return;
@@ -347,6 +359,8 @@ NTSecurity::setAdminGroup ()
   if (!SetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
 			    &tpg, sizeof tpg))
     NoteFailedAPI ("SetTokenInformation");
+  else
+    groupSID = administratorsSID.theSID ();
 }
 
 void
@@ -375,18 +389,14 @@ NTSecurity::setDefaultSecurity ()
   setDefaultDACL ();
 
   /* Get the user */
-  struct {
-    TOKEN_USER user;
-    char buf[MAX_SID_LEN];
-  } tuser;
-  if (!GetTokenInformation (token.theHANDLE (), TokenUser, &tuser, 
-			    sizeof tuser, &size))
+  if (!GetTokenInformation (token.theHANDLE (), TokenUser, &ownerSID, 
+			    sizeof ownerSID, &size))
     {
       NoteFailedAPI ("GetTokenInformation(user)");
       return;
     }
   /* Make it the owner */
-  TOKEN_OWNER owner = { tuser.user.User.Sid };
+  TOKEN_OWNER owner = { ownerSID.user.User.Sid };
   if (!SetTokenInformation (token.theHANDLE (), TokenOwner, &owner, 
 			    sizeof owner))
     {
@@ -404,6 +414,7 @@ NTSecurity::setDefaultSecurity ()
       NoteFailedAPI("GetTokenInformation(pgrp)");
       primaryGroupSID.pgrp.PrimaryGroup = (PSID) NULL;
     }
+  groupSID = primaryGroupSID.pgrp.PrimaryGroup;
   /* Try to set the primary group to the Administrators group, but only if
      "Install for all users" has been chosen.  If it doesn't work, we're
      no admin and that's all there's to say about it. */

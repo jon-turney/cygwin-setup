@@ -414,10 +414,10 @@ compress_gz::error ()
 }
 
 int
-compress_gz::set_mtime_and_mode (time_t time, mode_t mode)
+compress_gz::set_mtime (time_t time)
 {
   if (original)
-    return original->set_mtime_and_mode (time, mode);
+    return original->set_mtime (time);
   return 1;
 }
 

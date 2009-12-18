@@ -55,7 +55,7 @@ packagedb::packagedb ()
   if (!installeddbread)
     {
       /* no parameters. Read in the local installation database. */
-      db = io_stream::open ("cygfile:///etc/setup/installed.db", "rt");
+      db = io_stream::open ("cygfile:///etc/setup/installed.db", "rt", 0);
       installeddbread = 1;
       if (!db)
 	return;
@@ -77,7 +77,7 @@ packagedb::packagedb ()
 	  if (dbver == 1 || dbver == 2)
 	    {
 	      db =
-		io_stream::open ("cygfile:///etc/setup/installed.db", "rt");
+		io_stream::open ("cygfile:///etc/setup/installed.db", "rt", 0);
 	      if (dbver == 2)
 		db->gets (line, 1000);
 	      while (db->gets (line, 1000))
@@ -136,7 +136,7 @@ packagedb::flush ()
 
   io_stream::mkpath_p (PATH_TO_FILE, ndbn, 0755);
 
-  io_stream *ndb = io_stream::open (ndbn, "wb");
+  io_stream *ndb = io_stream::open (ndbn, "wb", 0644);
 
   // XXX if this failed, try removing any existing .new database?
   if (!ndb)

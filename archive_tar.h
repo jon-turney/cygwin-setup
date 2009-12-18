@@ -91,7 +91,7 @@ public:
   virtual time_t get_mtime ();
   virtual mode_t get_mode ();
   virtual size_t get_size () {return state.file_length;};
-  virtual int set_mtime_and_mode (time_t, mode_t) { return 1; };
+  virtual int set_mtime (time_t) { return 1; };
   virtual ~ archive_tar_file ();
 private:
     tar_state & state;
@@ -125,7 +125,7 @@ public:
   /* nonsense for a tarball */
   virtual size_t get_size () {return 0;};
   /* only of use when we support writing to tar */
-  virtual int set_mtime_and_mode (time_t, mode_t) { return 1; };
+  virtual int set_mtime (time_t) { return 1; };
   virtual const std::string linktarget ();
   virtual int skip_file ();
   /* if you are still needing these hints... give up now! */

@@ -78,28 +78,22 @@ mkcygsymlink_nt (const char *from, const char *to)
   const size_t len = strlen (from) + 7;
   WCHAR wfrom[len];
   HANDLE h;
-  DWORD access = WRITE_DAC | READ_CONTROL | GENERIC_WRITE;
+  SECURITY_DESCRIPTOR sd;
+  acl_t acl;
+  SECURITY_ATTRIBUTES sa = { sizeof (SECURITY_ATTRIBUTES),
+			     nt_sec.GetPosixPerms (from, NULL, NULL, 0644,
+						   sd, acl),
+			     FALSE };
 
   mklongpath (wfrom, from, len);
-retry:
-  h = CreateFileW (wfrom, access, 0, 0, CREATE_NEW,
+  h = CreateFileW (wfrom, GENERIC_WRITE, 0, &sa, CREATE_NEW,
 		   FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
   if (h == INVALID_HANDLE_VALUE)
-    {
-      /* WRITE_DAC can be fatal for non-admin users. */
-      if ((access & WRITE_DAC) && GetLastError () == ERROR_ACCESS_DENIED)
-	{
-	  access = GENERIC_WRITE;
-	  goto retry;
-	}
-      return 1;
-    }
+    return 1;
   strcpy (buf, SYMLINK_COOKIE);
   strncat (buf, to, 4095);
   if (WriteFile (h, buf, strlen (buf) + 1, &w, NULL))
     {
-      if (access & WRITE_DAC)
-	nt_sec.SetPosixPerms (from, h, 0644);
       CloseHandle (h);
       SetFileAttributesW (wfrom, FILE_ATTRIBUTE_SYSTEM);
       return 0;

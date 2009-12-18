@@ -33,7 +33,7 @@ public:
   virtual int seek (long where, io_stream_seek_t whence); /* not implemented */
   virtual int error ();
   virtual const char *next_file_name () { return NULL; };
-  virtual int set_mtime_and_mode (time_t, mode_t);
+  virtual int set_mtime (time_t);
   virtual time_t get_mtime ();
   virtual mode_t get_mode ();
   virtual size_t get_size () {return 0;};

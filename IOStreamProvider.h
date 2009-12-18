@@ -29,7 +29,7 @@ public:
   virtual int remove (const std::string& ) const = 0;
   virtual int mklink (const std::string&, const std::string&,
                       io_stream_link_t) const = 0;
-  virtual io_stream *open (const std::string&, const std::string&) const = 0;
+  virtual io_stream *open (const std::string&, const std::string&, mode_t) const = 0;
   virtual ~IOStreamProvider (){}
   virtual int move (const std::string&, const std::string&) const = 0;
   virtual int mkdir_p (path_type_t isadir, const std::string& path, mode_t mode) const = 0;

@@ -43,11 +43,11 @@ public:
   /* set the modification time of a file - returns 1 on failure
    * may distrupt internal state - use after all important io is complete
    */
-  virtual int set_mtime_and_mode (time_t newmtime, mode_t newmode)
-    {mtime = newmtime; mode = newmode; return 0;};
+  virtual int set_mtime (time_t newmtime)
+    {mtime = newmtime; return 0;};
   /* get the mtime for a file TODO make this a stat(0 style call */
   virtual time_t get_mtime () {return mtime;};
-  virtual mode_t get_mode () {return mode;};
+  virtual mode_t get_mode () {return 0;};
   /* returns the _current_ size. */
   virtual size_t get_size () {return length;};
   /* read data (duh!) */
@@ -68,7 +68,6 @@ public:
 private:
   int lasterr;
   time_t mtime;
-  mode_t mode;
   size_t length;
   memblock head;
   memblock *tail;

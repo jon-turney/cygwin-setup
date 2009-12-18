@@ -23,7 +23,7 @@ class io_stream_key : public io_stream
 public:
   io_stream_key (const char *);
   ~io_stream_key ();
-  int set_mtime_and_mode (time_t, mode_t) {return 0;}
+  int set_mtime(time_t) {return 0;}
   time_t get_mtime () {return 0;}
   mode_t get_mode () {return 0;}
   size_t get_size () {return 0;}
@@ -72,12 +72,12 @@ UserSettings::open_settings (const char *filename, std::string &pathname)
   if (!isslash (cwd[cwd.size () - 1]) && !isslash (filename[0]))
     pathname += "/";
   pathname += filename;
-  io_stream *f = io_stream::open(pathname, "rt");
+  io_stream *f = io_stream::open(pathname, "rt", 0);
   if (!f)
     {
       pathname = "cygfile:///etc/setup/";
       pathname += filename;
-      f = io_stream::open (pathname, "rt");
+      f = io_stream::open (pathname, "rt", 0);
     }
   return f;
 }
@@ -215,7 +215,7 @@ UserSettings::set (const char *key, const char *val)
 void
 UserSettings::save ()
 {
-  io_stream *f = io_stream::open(filename, "wb");
+  io_stream *f = io_stream::open(filename, "wb", 0644);
   if (!f)
     return;
   for (Element **e = table; *e; e++)

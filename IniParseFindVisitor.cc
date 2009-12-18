@@ -54,7 +54,7 @@ IniParseFindVisitor::visitFile(const std::string& basePath,
 
   current_ini_name = basePath + theFile->cFileName;
   
-  io_stream *ini_file = io_stream::open("file://" + current_ini_name, "rb");
+  io_stream *ini_file = io_stream::open("file://" + current_ini_name, "rb", 0);
 
   if (!ini_file)
     // We don't throw an exception, because while this is fatal to parsing, it

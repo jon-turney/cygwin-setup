@@ -101,7 +101,7 @@ public:
    * will return non-NULL. To access the files within the archive use io_stream::factory
    * to create a new stream that will read from the archive.
    */
-  static io_stream *open (const std::string& , const std::string& );
+  static io_stream *open (const std::string&, const std::string&, mode_t);
   static int remove (const std::string& );
   static int exists (const std::string& );
   /* moves physical stream source to dest. A copy will be attempted if a 
@@ -125,7 +125,7 @@ public:
   /* set the modification time of a file - returns 1 on failure
    * may distrupt internal state - use after all important io is complete
    */
-  virtual int set_mtime_and_mode (time_t, mode_t) = 0;
+  virtual int set_mtime (time_t) = 0;
   /* get the mtime for a file TODO make this a stat(0 style call */
   virtual time_t get_mtime () = 0;
   virtual mode_t get_mode () = 0;

@@ -127,7 +127,7 @@ cygpackage::getfirstfile ()
   if (listdata)
     delete listdata;
   listfile =
-    io_stream::open ("cygfile:///etc/setup/" + name + ".lst.gz", "rb");
+    io_stream::open ("cygfile:///etc/setup/" + name + ".lst.gz", "rb", 0);
   listdata = compress::decompress (listfile);
   if (!listdata)
     return std::string();

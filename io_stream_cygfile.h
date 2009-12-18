@@ -31,7 +31,7 @@ public:
   static int exists (const std::string& );
   static int remove (const std::string& );
   static int mklink (const std::string& , const std::string& , io_stream_link_t);
-    io_stream_cygfile (const std::string& , const std::string& );
+    io_stream_cygfile (const std::string&, const std::string&, mode_t);
     virtual ~ io_stream_cygfile ();
   /* read data (duh!) */
   virtual ssize_t read (void *buffer, size_t len);
@@ -43,7 +43,7 @@ public:
   virtual int seek (long where, io_stream_seek_t whence);
   /* can't guess, oh well */
   virtual int error ();
-  virtual int set_mtime_and_mode (time_t, mode_t);
+  virtual int set_mtime (time_t);
   /* not relevant yet */
   virtual time_t get_mtime () { return 0; };
   virtual mode_t get_mode () { return 0; };

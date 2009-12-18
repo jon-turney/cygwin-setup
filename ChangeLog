@@ -1,3 +1,57 @@
+2009-12-18  Corinna Vinschen  <corinna@vinschen.de>
+
+	Throughout, revert prototypes and methods set_mtime_and_mode to
+	set_mtime and only care for the file timestamp.
+
+	Throughout, accommodate additional mode_t parameter in call to
+	io_stream::open.
+
+	* IOStreamProvider.h (IOStreamProvider::open): Add mode_t parameter.
+	* archive.cc (archive::extract_file): Reorder creation of in and tmp
+	to get the file mode from the tar archive earlier.  Call io_stream::open
+	with additional mode from tar archive.  Accommodate reversion to
+	set_mtime.
+	* filemanip.cc (nt_wfopen): Remove retry loop.  Instead initialize
+	OBJECT_ATTRIBUTES with matching POSIX perms according to incoming
+	perms to create correct ACL on file creation.  Remove subsequent call
+	to nt_sec.SetPosixPerms.
+	* io_stream.cc (io_stream::open): Take additional mode_t parameter
+	and connect through to IOStreamProvider's open.
+	* io_stream.h (io_stream::open): Add mode_t parameter.
+	* io_stream_cygfile.cc (CygFileProvider::open): Ditto.
+	(io_stream_cygfile::io_stream_cygfile): Ditto.  Call nt_wfopen with
+	incoming mode_t parameter.  Make sure .exe and .dll files always
+	have execute permissions set.
+	(io_stream_cygfile::set_mtime): Remove retry loop and open file with
+	just GENERIC_WRITE access.
+	* io_stream_cygfile.h (io_stream_cygfile::io_stream_cygfile): Add mode_t
+	parameter.
+	* io_stream_file.cc (FileProvider::open): Ditto.
+	(io_stream_file::io_stream_file): Ditto.  Call nt_wfopen with incoming
+	mode_t parameter.
+	* io_stream_file.h (io_stream_file::io_stream_file): Add mode_t
+	parameter.
+	* io_stream_memory.h (class io_stream_memory): Remove mode member.
+	Just return 0 from get_mode.
+	* mkdir.cc (mkdir_p): Remove retry loop.  Instead initialize
+	OBJECT_ATTRIBUTES with matching POSIX perms according to incoming
+	perms to create correct ACL on file creation.  Remove subsequent call
+	to nt_sec.SetPosixPerms.
+	* mklink2.cc (mkcygsymlink_nt): Remove retry loop.  Instead initialize
+	SECURITY_ATTRIBUTES with matching POSIX perms to create correct ACL on
+	file creation.
+	* win32.cc (NTSecurity::GetPosixPerms): New function to generate
+	POSIX ACL.  Default to current owner and current primary group for
+	owner/group permissions.
+	(NTSecurity::SetPosixPerms): Let GetPosixPerms create the DACL.
+	(NTSecurity::setAdminGroup): Set groupSID to admins SID if successful.
+	(NTSecurity::setDefaultSecurity): Store user SID in ownerSID member.
+	Default groupSID to original primary group.
+	* win32.h (struct acl_t): Define here.
+	(class NTSecurity): Rename ownerSID and groupSID to cr_ownerSID and
+	cr_groupSID.  Change throughout.  Add members ownerSID and groupSID.
+	Declare new method GetPosixPerms.
+
 2009-12-17  Corinna Vinschen  <corinna@vinschen.de>
 
 	* filemanip.cc (nt_wfopen): Only call nt_sec.SetPosixPerms if we have

@@ -188,10 +188,10 @@ compress_bz::error ()
 }
 
 int
-compress_bz::set_mtime_and_mode (time_t time, mode_t mode)
+compress_bz::set_mtime (time_t time)
 {
   if (original)
-    return original->set_mtime_and_mode (time, mode);
+    return original->set_mtime (time);
   return 1;
 }
 

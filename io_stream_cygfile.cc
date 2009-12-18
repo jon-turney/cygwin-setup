@@ -46,8 +46,8 @@ public:
     {return io_stream_cygfile::remove(path);}
   int mklink (const std::string& a , const std::string& b, io_stream_link_t c) const
     {return io_stream_cygfile::mklink(a,b,c);}
-  io_stream *open (const std::string& a,const std::string& b) const
-    {return new io_stream_cygfile (a, b);}
+  io_stream *open (const std::string& a,const std::string& b, mode_t m) const
+    {return new io_stream_cygfile (a, b, m);}
   ~CygFileProvider (){}
   int move (const std::string& a,const std::string& b) const
     {return io_stream_cygfile::move (a, b);}
@@ -132,7 +132,7 @@ get_root_dir_now ()
   read_mounts (std::string ());
 }
 
-io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string& mode) : fp(), lasterr (0), fname(), wname (NULL)
+io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string& mode, mode_t perms) : fp(), lasterr (0), fname(), wname (NULL)
 {
   errno = 0;
   if (!name.size())
@@ -156,8 +156,12 @@ io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string
   if (mode.size ())
     {
       if (IsWindowsNT ())
-	fp = nt_wfopen (w_str(), mode.c_str (),
-			fname.rfind (".exe") != std::string::npos ? 0755 : 0644);
+	{
+	  if (fname.rfind (".exe") != std::string::npos
+	      || fname.rfind (".dll") != std::string::npos)
+	    perms |= 0111;	/* Make .exe and .dll always executable. */
+	  fp = nt_wfopen (w_str(), mode.c_str (), perms);
+	}
       else
 	fp = fopen (fname.c_str (), mode.c_str ());
       if (!fp)
@@ -284,14 +288,14 @@ io_stream_cygfile::mklink (const std::string& _from, const std::string& _to,
 	/* textmode alert: should we translate when linking from an binmode to a
 	   text mode mount and vice verca?
 	 */
-	io_stream *in = io_stream::open (std::string ("cygfile://") + to, "rb");
+	io_stream *in = io_stream::open (std::string ("cygfile://") + to, "rb", 0);
 	if (!in)
 	  {
 	    log (LOG_TIMESTAMP) << "could not open " << to
               << " for reading in mklink" << endLog;
 	    return 1;
 	  }
-	io_stream *out = io_stream::open (std::string ("cygfile://") + from, "wb");
+	io_stream *out = io_stream::open (std::string ("cygfile://") + from, "wb", 0644);
 	if (!out)
 	  {
 	    log (LOG_TIMESTAMP) << "could not open " << from
@@ -391,7 +395,7 @@ cygmkdir_p (path_type_t isadir, const std::string& _name, mode_t mode)
 }
 
 int
-io_stream_cygfile::set_mtime_and_mode (time_t mtime, mode_t mode)
+io_stream_cygfile::set_mtime (time_t mtime)
 {
   if (!fname.size())
     return 1;
@@ -402,10 +406,8 @@ io_stream_cygfile::set_mtime_and_mode (time_t mtime, mode_t mode)
   ftime.dwHighDateTime = ftimev >> 32;
   ftime.dwLowDateTime = ftimev;
   HANDLE h;
-  DWORD access = WRITE_DAC | GENERIC_WRITE;
-retry:
   if (IsWindowsNT ())
-    h = CreateFileW (w_str (), access,
+    h = CreateFileW (w_str (), GENERIC_WRITE,
 		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
 		     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
   else
@@ -413,18 +415,8 @@ retry:
 		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
 		     FILE_ATTRIBUTE_NORMAL, 0);
   if (h == INVALID_HANDLE_VALUE)
-    {
-      /* WRITE_DAC can be fatal for non-admin users. */
-      if ((access & WRITE_DAC) && GetLastError () == ERROR_ACCESS_DENIED)
-	{
-	  access = GENERIC_WRITE;
-	  goto retry;
-	}
-      return 1;
-    }
+    return 1;
   SetFileTime (h, 0, 0, &ftime);
-  if (access & WRITE_DAC)
-    nt_sec.SetPosixPerms (fname.c_str (), h, mode);
   CloseHandle (h);
   return 0;
 }

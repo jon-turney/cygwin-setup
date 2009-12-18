@@ -260,7 +260,7 @@ do_remote_ini (HWND owner)
 				   rfc1738_escape_part (n->url) +
 				   "/" + SETUP_INI_FILENAME;
 	  io_stream::mkpath_p (PATH_TO_FILE, fp, 0755);
-	  if (io_stream *out = io_stream::open (fp, "wb"))
+	  if (io_stream *out = io_stream::open (fp, "wb", 0644))
 	    {
 	      ini_file->seek (0, IO_SEEK_SET);
 	      if (io_stream::copy (ini_file, out) != 0)
@@ -297,7 +297,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
 
       unsigned int old_timestamp = 0;
       io_stream *ots =
-	io_stream::open ("cygfile:///etc/setup/timestamp", "rt");
+	io_stream::open ("cygfile:///etc/setup/timestamp", "rt", 0);
       if (ots)
 	{
 	  char temp[20];
@@ -316,7 +316,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
       if (setup_timestamp)
 	{
 	  io_stream *nts =
-	    io_stream::open ("cygfile:///etc/setup/timestamp", "wt");
+	    io_stream::open ("cygfile:///etc/setup/timestamp", "wt", 0);
 	  if (nts)
 	    {
 	      char temp[20];

@@ -158,7 +158,7 @@ LogFile::log_save (int babble, const std::string& filename, bool append)
 
   io_stream::mkpath_p (PATH_TO_FILE, "file://" + filename, 0755);
 
-  io_stream *f = io_stream::open("file://" + filename, append ? "at" : "wt");
+  io_stream *f = io_stream::open("file://" + filename, append ? "at" : "wt", 0644);
   if (!f)
     {
       fatal (NULL, IDS_NOLOGFILE, filename.c_str());

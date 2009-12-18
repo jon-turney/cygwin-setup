@@ -238,7 +238,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
   io_stream *pkgfile = NULL;
 
   if (!source.Cached() || !io_stream::exists (source.Cached ())
-      || !(pkgfile = io_stream::open (source.Cached (), "rb")))
+      || !(pkgfile = io_stream::open (source.Cached (), "rb", 0)))
     {
       note (NULL, IDS_ERR_OPEN_READ, source.Cached (), "No such file");
       ++errors;
@@ -307,7 +307,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
       std::string lstfn = "cygfile:///etc/setup/" + pkgm.name + ".lst.gz";
 
       io_stream *tmp;
-      if ((tmp = io_stream::open (lstfn, "wb")) == NULL)
+      if ((tmp = io_stream::open (lstfn, "wb", 0644)) == NULL)
         log (LOG_PLAIN) << "Warning: Unable to create lst file " + lstfn +
           " - uninstall of this package will leave orphaned files." << endLog;
       else
@@ -522,7 +522,7 @@ do_install_thread (HINSTANCE h, HWND owner)
   }
 
   /* Create /var/run/utmp */
-  io_stream *utmp = io_stream::open ("cygfile:///var/run/utmp", "wb");
+  io_stream *utmp = io_stream::open ("cygfile:///var/run/utmp", "wb", 0666);
   delete utmp;
 
   Installer myInstaller;
@@ -714,7 +714,7 @@ void md5_one (const packagesource& pkgsource)
   {
     std::string fullname (pkgsource.Cached ());
 
-    io_stream *thefile = io_stream::open (fullname, "rb");
+    io_stream *thefile = io_stream::open (fullname, "rb", 0);
     if (!thefile)
       throw new Exception (TOSTRING (__LINE__) " " __FILE__,
                            std::string ("IO Error opening ") + fullname,

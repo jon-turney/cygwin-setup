@@ -104,31 +104,32 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	  return 1;
 	}
 	io_stream::remove (destfilename);
-	io_stream *tmp = io_stream::open (destfilename, "wb");
-	if (!tmp)
-	{
-	  log (LOG_TIMESTAMP) << "Failed to open " << destfilename;
-	  log (LOG_TIMESTAMP) << " for writing." << endLog;
-	  return 1;
-	}
 	io_stream *in = source->extract_file ();
 	if (!in)
 	  {
-	    delete tmp;
 	    log (LOG_TIMESTAMP) << "Failed to extract the file "
 	     			<< destfilename << " from the archive" 
 				<< endLog;
 	    return 1;
 	  }
+	io_stream *tmp = io_stream::open (destfilename, "wb", in->get_mode ());
+	if (!tmp)
+	{
+	  delete in;
+	  log (LOG_TIMESTAMP) << "Failed to open " << destfilename;
+	  log (LOG_TIMESTAMP) << " for writing." << endLog;
+	  return 1;
+	}
 	if (io_stream::copy (in, tmp))
 	  {
 	    log (LOG_TIMESTAMP) << "Failed to output " << destfilename
 	      			<< endLog;
+	    delete in;
 	    delete tmp;
 	    io_stream::remove (destfilename);
 	    return 1;
 	  }
-	tmp->set_mtime_and_mode (in->get_mtime (), in->get_mode ());
+	tmp->set_mtime (in->get_mtime ());
 	delete in;
 	delete tmp;
       }

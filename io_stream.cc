@@ -92,12 +92,12 @@ io_stream::factory (io_stream * parent)
 				  name+"' not registered!").c_str())
 
 io_stream *
-io_stream::open (const std::string& name, const std::string& mode)
+io_stream::open (const std::string& name, const std::string& mode, mode_t perms)
 {
   IOStreamProvider const *p = findProvider (name);
   if (!p)
     url_scheme_not_registered (name);
-  io_stream *rv = p->open (&name.c_str()[p->key.size()], mode);
+  io_stream *rv = p->open (&name.c_str()[p->key.size()], mode, perms);
   if (!rv->error ())
     return rv;
   delete rv;
@@ -145,8 +145,8 @@ int
 io_stream::move_copy (const std::string& from, const std::string& to)
 {
   /* parameters are ok - checked before calling us, and we are private */
-  io_stream *in = io_stream::open (to, "wb");
-  io_stream *out = io_stream::open (from, "rb");
+  io_stream *in = io_stream::open (to, "wb", 0644);
+  io_stream *out = io_stream::open (from, "rb", 0);
   if (io_stream::copy (in, out))
     {
       log (LOG_TIMESTAMP) << "Failed copy of " << from << " to " << to
