@@ -1,3 +1,8 @@
+2009-12-21  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* choose.cc (ChooserPage::PlaceDialog): Put *correct* size in
+	WINDOWPLACEMENT length field.
+
 2009-12-18  Corinna Vinschen  <corinna@vinschen.de>
 
 	Throughout, revert prototypes and methods set_mtime_and_mode to

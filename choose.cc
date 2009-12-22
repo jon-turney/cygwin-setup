@@ -180,14 +180,14 @@ ChooserPage::PlaceDialog (bool doit)
     /* Don't jump up and down in unattended mode */;
   else if (doit)
     {
-      pre_chooser_placement.length = sizeof pre_chooser_placement.length;
+      pre_chooser_placement.length = sizeof pre_chooser_placement;
       GetWindowPlacement (ins_dialog, &pre_chooser_placement);
       if (saved_geom)
 	SetWindowPlacement (ins_dialog, &window_placement);
       else
 	{
 	  ShowWindow (ins_dialog, SW_MAXIMIZE);
-	  window_placement.length = sizeof window_placement.length;
+	  window_placement.length = sizeof window_placement;
 	  GetWindowPlacement (ins_dialog, &window_placement);
 	}
       cmd_show_set = true;
@@ -195,7 +195,7 @@ ChooserPage::PlaceDialog (bool doit)
   else if (cmd_show_set)
     {
       WINDOWPLACEMENT wp;
-      wp.length = sizeof wp.length;
+      wp.length = sizeof wp;
       if (GetWindowPlacement (ins_dialog, &wp)
 	  && memcmp (&wp, &window_placement, sizeof (wp)) != 0)
 	saw_geom_change = true;
