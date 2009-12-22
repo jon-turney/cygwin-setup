@@ -209,8 +209,6 @@ transform_chars (register wchar_t *path, register wchar_t *path_end)
       *path = tfx_chars[*path];
 }
 
-#define isslash(c) ((c) == '\\' || (c) == '/')
-
 int
 mklongpath (wchar_t *tgt, const char *src, size_t len)
 {
@@ -220,7 +218,7 @@ mklongpath (wchar_t *tgt, const char *src, size_t len)
   wcscpy (tgt, L"\\\\?\\");
   tp = tgt + 4;
   len -= 4;
-  if (isslash (src[0]) && isslash (src[1]))
+  if (isdirsep (src[0]) && isdirsep (src[1]))
     {
       wcscpy (tp, L"UNC");
       tp += 3;

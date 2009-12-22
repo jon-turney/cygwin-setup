@@ -15,6 +15,7 @@
 #include <string.h>
 #include "UserSettings.h"
 #include "io_stream.h"
+#include "win32.h"
 
 class io_stream_key : public io_stream
 {
@@ -62,14 +63,12 @@ UserSettings::extend_table (ssize_t i)
   table[i] = NULL;
 }
 
-#define isslash(c) ((c) == '\\' || (c) == '/')
-
 io_stream *
 UserSettings::open_settings (const char *filename, std::string &pathname)
 {
   pathname = "file://";
   pathname += cwd;
-  if (!isslash (cwd[cwd.size () - 1]) && !isslash (filename[0]))
+  if (!isdirsep (cwd[cwd.size () - 1]) && !isdirsep (filename[0]))
     pathname += "/";
   pathname += filename;
   io_stream *f = io_stream::open(pathname, "rt", 0);

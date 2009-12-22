@@ -1,3 +1,14 @@
+2009-12-22  Corinna Vinschen  <corinna@vinschen.de>
+
+	* win32.h (isdirsep): Define to replace local isslash definitions.
+	* UserSettings.cc (UserSettings::open_settings): Remove isslash.
+	Use isdirsep instead of isslash.
+	* filemanip.cc (mklongpath): Ditto.
+	* root.cc (directory_is_rootdir): Ditto.
+	* localdir.cc (LocalDirSetting::save): Avoid consecutive backslashes
+	in setup log file paths.
+	* main.cc (main): Ditto.
+
 2009-12-21  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* choose.cc (ChooserPage::PlaceDialog): Put *correct* size in

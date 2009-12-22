@@ -181,8 +181,6 @@ browse (HWND h)
     }
 }
 
-#define isslash(c) ((c) == '\\' || (c) == '/')
-
 static int
 directory_is_absolute ()
 {
@@ -200,7 +198,7 @@ directory_is_rootdir ()
 {
   
   for (const char *c = get_root_dir().c_str(); *c; c++)
-    if (isslash (c[0]) && c[1] && !isslash (c[1]))
+    if (isdirsep (c[0]) && c[1] && !isdirsep (c[1]))
       return 0;
   return 1;
 }

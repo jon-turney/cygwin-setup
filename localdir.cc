@@ -74,9 +74,10 @@ LocalDirSetting::save ()
   UserSettings::instance().set ("last-cache", local_dir);
   if (source == IDC_SOURCE_DOWNLOAD || !get_root_dir ().size())
     {
+      const char *sep = isdirsep (local_dir[local_dir.size () - 1]) ? "" : "\\";
       theLog->clearFiles();
-      theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
-      theLog->setFile (0, local_dir + "/setup.log", true);
+      theLog->setFile (LOG_BABBLE, local_dir + sep + "setup.log.full", false);
+      theLog->setFile (0, local_dir + sep + "setup.log", true);
     }
   else
     {

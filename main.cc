@@ -266,8 +266,9 @@ main (int argc, char **argv)
       set_cout ();
 
     LogSingleton::SetInstance (*(theLog = LogFile::createLogFile ()));
-    theLog->setFile (LOG_BABBLE, local_dir + "/setup.log.full", false);
-    theLog->setFile (0, local_dir + "/setup.log", true);
+    const char *sep = isdirsep (local_dir[local_dir.size () - 1]) ? "" : "\\";
+    theLog->setFile (LOG_BABBLE, local_dir + sep + "setup.log.full", false);
+    theLog->setFile (0, local_dir + sep + "setup.log", true);
 
     log (LOG_PLAIN) << "Starting cygwin install, version " 
                     << setup_version << endLog;

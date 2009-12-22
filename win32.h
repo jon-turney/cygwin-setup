@@ -51,6 +51,14 @@
 #define _access access
 #endif
 
+/* When we have to check for a path delimiter, check for both, slash and
+   backslash. */
+#define isdirsep(ch) \
+    ({ \
+	char __c = (ch); \
+	((__c) == '/' || (__c) == '\\'); \
+    })
+
 /* Maximum size of a SID on NT/W2K. */
 #define MAX_SID_LEN	40
 
