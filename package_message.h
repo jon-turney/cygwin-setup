@@ -14,6 +14,7 @@
 #define SETUP_PACKAGE_MESSAGE_H
 
 #include "UserSettings.h"
+#include "state.h"
 #include <windows.h>
 
 class packagemessage
@@ -29,7 +30,7 @@ public:
   }
   void display ()
   {
-    if (!id.length () || UserSettings::instance().get (id.c_str ()))
+    if (unattended_mode || !id.length () || UserSettings::instance().get (id.c_str ()))
       /* No message or already seen */;
     else if (MessageBox (NULL, message.c_str (), "Setup Alert",
 			 MB_OKCANCEL | MB_ICONSTOP | MB_SETFOREGROUND
