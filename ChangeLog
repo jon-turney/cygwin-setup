@@ -1,5 +1,13 @@
 2009-12-22  Christopher Faylor  <me+cygwin@cgf.cx>
 
+	* ini.h: Use is_legacy to control setup.ini names.
+	* main.cc (set_legacy): New function.
+	(main): Call set_legacy with program name to determine if this is
+	supposed to be an installation of the legacy version of cygwin.  Issue
+	a warning on attempt to install legacy on Windows NT class system.
+
+2009-12-22  Christopher Faylor  <me+cygwin@cgf.cx>
+
 	* package_message (packagemessage::display): Avoid displaying a message
 	when in unattended mode.
 

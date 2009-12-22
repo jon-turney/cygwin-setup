@@ -82,6 +82,7 @@ static const char *cvsid =
 using namespace std;
 
 HINSTANCE hinstance;
+bool is_legacy;
 
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
 static BoolOption HelpOption (false, 'h', "help", "print help");
@@ -211,6 +212,15 @@ main_display ()
   CoUninitialize ();
 }
 
+static void
+set_legacy (const char *command)
+{
+  char buf[MAX_PATH];
+  GetLongPathName (command, buf, MAX_PATH);
+  strlwr (buf);
+  is_legacy = strstr (buf, "setup-legacy");
+}
+
 #ifndef __CYGWIN__
 int WINAPI
 WinMain (HINSTANCE h,
@@ -230,14 +240,28 @@ main (int argc, char **argv)
   snprintf(locale, sizeof locale, ".%u", GetACP());
   setlocale(LC_ALL, locale);
 
-  if (!IsWindowsNT ())
+  set_legacy (_argv[0]);
+
+  if (is_legacy && IsWindowsNT ())
+    {
+      if (MessageBox (NULL,
+		      "You are attempting to install a legacy version of Cygwin\n"
+		      "on a modern version of Windows.  Press \"OK\" if this is\n"
+		      "really want you want to do.  Otherwise press \"Cancel\".\n"
+		      "See http://cygwin.com/ for more information.",
+		      "Attempt to install legacy version of Cygwin",
+		      MB_OKCANCEL | MB_ICONSTOP | MB_SETFOREGROUND | MB_TOPMOST)
+	  == IDCANCEL)
+	return 1;
+    }
+  else if (!is_legacy && !IsWindowsNT ())
     {
       MessageBox (NULL,
 		  "Cygwin 1.7 and later does not run on Windows 95,\n"
 		  "Windows 98, or Windows Me.  If you want to install Cygwin\n"
 		  "on one of these systems, please install an older version.\n"
 		  "See http://cygwin.com/ for more information.",
-		  "Unsupported Version of Windows detected",
+		  "Unsupported version of Windows detected",
 		  MB_OK | MB_ICONSTOP | MB_SETFOREGROUND | MB_TOPMOST);
       return 1;
     }

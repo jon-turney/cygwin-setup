@@ -36,11 +36,11 @@ typedef enum
   EXCLUDE_NONE = 0,
   EXCLUDE_BY_SETUP,
   EXCLUDE_NOT_FOUND
-}
-excludes;
+} excludes;
 
-#define SETUP_INI_FILENAME (IsWindowsNT () ? "setup-2.ini" : "setup.ini")
-#define SETUP_BZ2_FILENAME (IsWindowsNT () ? "setup-2.bz2" : "setup.bz2")
+extern bool is_legacy;
+#define SETUP_INI_FILENAME (is_legacy ? "setup-legacy.ini" : "setup.ini")
+#define SETUP_BZ2_FILENAME (is_legacy ? "setup-legacy.bz2" : "setup.bz2")
 
 /* The following three vars are used to facilitate error handling between the
    parser/lexer and its callers, namely ini.cc:do_remote_ini() and
