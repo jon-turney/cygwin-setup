@@ -1,3 +1,13 @@
+2009-12-27  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* main.cc (dyn_AttachConsole): Make static.
+	(dyn_GetLongPathName): New variable.
+	(set_dynaddr): New function.
+	(set_cout): Don't set dyn_AttachConsole here.
+	(set_legacy): Don't attempt to call function which does not exist in
+	older versions of NT.
+	(main): Call set_dynaddr to set dynamic load addresses.
+
 2009-12-22  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* ini.h: Use is_legacy to control setup.ini names.

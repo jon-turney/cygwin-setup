@@ -86,6 +86,20 @@ bool is_legacy;
 
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
 static BoolOption HelpOption (false, 'h', "help", "print help");
+static BOOL WINAPI (*dyn_AttachConsole) (DWORD);
+static BOOL WINAPI (*dyn_GetLongPathName) (LPCTSTR, LPTSTR, DWORD);
+
+
+static void inline
+set_dynaddr ()
+{
+  HMODULE hm = LoadLibrary ("kernel32.dll");
+  if (!hm)
+    return;
+
+  dyn_AttachConsole = (BOOL WINAPI (*)(DWORD)) GetProcAddress (hm, "AttachConsole");
+  dyn_GetLongPathName = (BOOL WINAPI (*)(LPCTSTR, LPTSTR, DWORD)) GetProcAddress (hm, "GetLongPathNameA");
+}
 
 static void inline
 set_cout ()
@@ -94,18 +108,12 @@ set_cout ()
   if (my_stdout != INVALID_HANDLE_VALUE && GetFileType (my_stdout) != FILE_TYPE_UNKNOWN)
     return;
 
-  HMODULE hm = LoadLibrary ("kernel32.dll");
-  if (!hm)
-    return;
-
-  BOOL WINAPI (*dyn_AttachConsole) (DWORD) = (BOOL WINAPI (*)(DWORD)) GetProcAddress (hm, "AttachConsole");
   if (dyn_AttachConsole && dyn_AttachConsole ((DWORD) -1))
     {
       ofstream *conout = new ofstream ("conout$");
       cout.rdbuf (conout->rdbuf ());
       cout.flush ();
     }
-  FreeLibrary (hm);
 }
 
 // Other threads talk to this page, so we need to have it externable.
@@ -215,8 +223,13 @@ main_display ()
 static void
 set_legacy (const char *command)
 {
-  char buf[MAX_PATH];
-  GetLongPathName (command, buf, MAX_PATH);
+  char buf[MAX_PATH + 1];
+  if (strchr (command, '~') == NULL || !dyn_GetLongPathName
+      || !dyn_GetLongPathName (command, buf, MAX_PATH))
+    {
+      strncpy (buf, command, MAX_PATH);
+      buf[MAX_PATH] = '\0';
+    }
   strlwr (buf);
   is_legacy = strstr (buf, "setup-legacy");
 }
@@ -235,6 +248,7 @@ main (int argc, char **argv)
   hinstance = GetModuleHandle (NULL);
 #endif
 
+  set_dynaddr ();
   // Make sure the C runtime functions use the same codepage as the GUI
   char locale[12];
   snprintf(locale, sizeof locale, ".%u", GetACP());
