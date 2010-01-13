@@ -18,11 +18,6 @@
  * locally downloaded package files to be cached
  */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "localdir.h"
 
 #include "LogSingleton.h"
@@ -242,6 +237,8 @@ LocalDirPage::OnNext ()
   HWND h = GetHWND ();
 
   save_dialog (h);
+  while (local_dir[local_dir.size() - 1] == '\\' || local_dir[local_dir.size() - 1] == '/')
+    local_dir.erase (local_dir.size() - 1, 1);
   LocalDirSetting::save ();
   log (LOG_PLAIN) << "Selected local directory: " << local_dir << endLog;
   
