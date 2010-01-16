@@ -27,13 +27,14 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "archive.h"
 #include "archive_tar.h"
 
-archive_tar_file::archive_tar_file (tar_state & newstate):state (newstate)
+archive_tar_file::archive_tar_file (tar_state & newstate):read_something (false), state (newstate)
 {
 }
 
 archive_tar_file::~archive_tar_file ()
 {
-  state.header_read = 0;
+  if (read_something)
+    state.header_read = 0;
 }
 
 /* Virtual memebrs */
@@ -53,6 +54,7 @@ ssize_t archive_tar_file::read (void *buffer, size_t len)
 	throwaway[512];
       ssize_t
 	got2 = state.parent->read (throwaway, roundup);
+      read_something = true;
       if (got == want && got2 == roundup)
 	{
 	  state.file_offset += got;

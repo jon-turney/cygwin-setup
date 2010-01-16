@@ -77,6 +77,8 @@ public:
 
 class archive_tar_file:public io_stream
 {
+private:
+  bool read_something;
 public:
   archive_tar_file (tar_state &);
   virtual ssize_t read (void *buffer, size_t len);
