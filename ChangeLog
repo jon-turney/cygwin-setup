@@ -1,5 +1,10 @@
 2010-01-16  Christopher Faylor  <me+cygwin@cgf.cx>
 
+	* archive_tar.c (archive_tar_file::read): Always set read_something
+	even for zero-length files.
+
+2010-01-16  Christopher Faylor  <me+cygwin@cgf.cx>
+
 	* archive_tar.h (archive_tar_file::read_something): New member.
 	* archive_tar_file.cc (archive_tar_file::archive_tar_file): Don't reset
 	state unless we've actually read something.

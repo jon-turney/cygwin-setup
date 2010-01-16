@@ -46,6 +46,7 @@ ssize_t archive_tar_file::read (void *buffer, size_t len)
   /* how many do we need to read after that to line up the file pointer */
   int
     roundup = (512 - (want % 512)) % 512;
+  read_something = true;
   if (want)
     {
       ssize_t
@@ -54,7 +55,6 @@ ssize_t archive_tar_file::read (void *buffer, size_t len)
 	throwaway[512];
       ssize_t
 	got2 = state.parent->read (throwaway, roundup);
-      read_something = true;
       if (got == want && got2 == roundup)
 	{
 	  state.file_offset += got;
