@@ -39,6 +39,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include <errno.h>
 #include <process.h>
 
+#include "ini.h"
 #include "resource.h"
 #include "dialog.h"
 #include "geturl.h"
@@ -232,6 +233,8 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                        const std::string& prefixPath,
                        HWND owner)
 {
+  if (!source.Canonical())
+    return;
   Progress.SetText1 ("Installing");
   Progress.SetText2 (source.Base () ? source.Base () : "(unknown)");
 
@@ -535,7 +538,7 @@ do_install_thread (HINSTANCE h, HWND owner)
   Progress.SetBar3 (df);
 
   /* Writes Cygwin/setup/rootdir registry value */
-  if (IsWindowsNT ())
+  if (!is_legacy)
     create_install_root ();
   else
     {

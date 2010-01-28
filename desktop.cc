@@ -32,6 +32,7 @@ static const char *cvsid =
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "ini.h"
 #include "resource.h"
 #include "msg.h"
 #include "state.h"
@@ -92,7 +93,7 @@ make_link (const std::string& linkpath,
   std::string exepath;
   std::string argbuf;
 
-  if (IsWindowsNT ())
+  if (!is_legacy)
     {
       exepath = target;
       argbuf = " ";
@@ -169,7 +170,7 @@ make_cygwin_bat ()
   batname = backslash (cygpath ("/Cygwin.bat"));
   FILE *bat;
 
-  if (IsWindowsNT ())
+  if (!is_legacy)
     {
       size_t len = batname.size () + 7;
       WCHAR wname[len];
@@ -217,7 +218,7 @@ save_icon ()
   int len = SizeofResource (NULL, rsrc);
 
   FILE *f;
-  if (IsWindowsNT ())
+  if (!is_legacy)
     {
       size_t ilen = iconname.size () + 7;
       WCHAR wname[ilen];

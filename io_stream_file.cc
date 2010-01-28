@@ -117,22 +117,19 @@ io_stream_file::~io_stream_file ()
 int
 io_stream_file::exists (const std::string& path)
 {
-#if defined(WIN32) && !defined (_CYGWIN_)
-  if (IsWindowsNT ())
+  DWORD attr;
+  if (!IsWindowsNT ())
+    attr = GetFileAttributesA (path.c_str ());
+  else
     {
       size_t len = path.size () + 7;
       WCHAR wname[len];
       mklongpath (wname, path.c_str (), len);
-      DWORD attr = GetFileAttributesW (wname);
-      if (attr != INVALID_FILE_ATTRIBUTES)
-	return 1;
+      attr = GetFileAttributesW (wname);
     }
-  else if (_access (path.c_str(), F_OK) == 0)
-#else
-  if (access (path.c_str(), F_OK) == 0)
-#endif
-    return 1;
-  return 0;
+  return attr != INVALID_FILE_ATTRIBUTES
+	 && attr != FILE_ATTRIBUTE_DIRECTORY
+	 && attr != FILE_ATTRIBUTE_DEVICE;
 }
 
 int

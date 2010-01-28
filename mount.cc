@@ -21,6 +21,7 @@
 static const char *cvsid = "\n%%% $Id$\n";
 #endif
 
+#include "ini.h"
 #include "win32.h"
 #include "filemanip.h"
 
@@ -709,7 +710,7 @@ read_mounts_nt (const std::string val)
 void
 read_mounts (const std::string val)
 {
-  if (IsWindowsNT ())
+  if (!is_legacy)
     read_mounts_nt (val);
   else
     read_mounts_9x ();
@@ -718,7 +719,7 @@ read_mounts (const std::string val)
 void
 set_root_dir (const std::string val)
 {
-  if (IsWindowsNT ())
+  if (!is_legacy)
     read_mounts (val);
   else
     root_here->native = val;

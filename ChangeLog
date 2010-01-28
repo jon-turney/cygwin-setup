@@ -1,3 +1,20 @@
+2010-01-28  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* desktop.cc (make_link): Preserve old way of doing things when
+	is_legacy.
+	(make_cygwin_bat): Ditto.
+	(save_icon): Ditto.
+	* mount.cc (read_mounts): Ditto.
+	(set_root_dir): Ditto.
+	* root.cc (load_dialog): Ditto.
+	(save_dialog): Ditto.
+	* install.cc (Installer::installOne): Don't install anything if there
+	is no canonical file associated with source.
+	(do_install_thread): Set up old-style registry entries if is_legacy
+	rather than just keying on whether this is Windows NT.
+	* io_stream_file.cc (io_stream_file::exists): Redefine "exists" to mean
+	"it's a file".
+
 2010-01-16  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* archive_tar.c (archive_tar_file::read): Always set read_something

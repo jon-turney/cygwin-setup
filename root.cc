@@ -32,6 +32,7 @@ static const char *cvsid =
 #include <stdlib.h>
 #include <ctype.h>
 
+#include "ini.h"
 #include "dialog.h"
 #include "resource.h"
 #include "state.h"
@@ -98,7 +99,7 @@ load_dialog (HWND h)
   rbset (h, su, root_scope);
   eset (h, IDC_ROOT_DIR, get_root_dir ());
   check_if_enable_next (h);
-  if (IsWindowsNT ())
+  if (!is_legacy)
     {
       /* Stretch IDC_ROOTDIR_GRP content to full dialog width.  Use
          IDC_ROOTDIR_GRP rectangle as fix point. */
@@ -143,7 +144,7 @@ load_dialog (HWND h)
 static void
 save_dialog (HWND h)
 {
-  root_text = IsWindowsNT () ? IDC_ROOT_BINARY : rbget (h, rb);
+  root_text = !is_legacy ? IDC_ROOT_BINARY : rbget (h, rb);
   root_scope = rbget (h, su);
   set_root_dir (egetString (h, IDC_ROOT_DIR));
 }
