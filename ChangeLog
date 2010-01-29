@@ -1,3 +1,8 @@
+2010-01-29  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* mount.cc (read_mounts_9x): Preserve old way of doing things when
+	is_legacy.
+
 2010-01-28  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* desktop.cc (make_link): Preserve old way of doing things when

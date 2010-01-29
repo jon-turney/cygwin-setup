@@ -466,7 +466,7 @@ read_mounts_9x ()
       RegCloseKey (key);
     }
 
-  if (!IsWindowsNT () && !root_here)
+  if (is_legacy && !root_here)
     {
       root_here = m;
       m->posix = "/";
