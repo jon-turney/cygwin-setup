@@ -88,7 +88,7 @@ make_link (const std::string& linkpath,
   msg ("make_link %s, %s, %s\n",
        fname.c_str(), title.c_str(), target.c_str());
 
-  io_stream::mkpath_p (PATH_TO_FILE, std::string ("file://") + fname, 0755);
+  io_stream::mkpath_p (PATH_TO_FILE, std::string ("file://") + fname, 0);
 
   std::string exepath;
   std::string argbuf;

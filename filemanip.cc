@@ -389,6 +389,7 @@ RemoveDirectoryW (LPCWSTR wpath)
   return unlink (wpath, FILE_DIRECTORY_FILE);
 }
 
+/* Perms of 0 means no POSIX perms. */
 FILE *
 nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
 {
@@ -454,7 +455,7 @@ nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
   wname[1] = L'?';
   RtlInitUnicodeString (&uname, wname);
   InitializeObjectAttributes (&attr, &uname, OBJ_CASE_INSENSITIVE, NULL,
-			      disp == FILE_OPEN
+			      disp == FILE_OPEN || perms == 0
 			      ? NULL
 			      : nt_sec.GetPosixPerms ("", NULL, NULL,
 						      perms, sd, acl));

@@ -1,3 +1,14 @@
+2010-02-02  Corinna Vinschen  <corinna@vinschen.de>
+
+	* desktop.cc (make_link): Use 0 default permissions when creating files
+	and directories.
+	* download.cc (download_one): Ditto.
+	* ini.cc (do_remote_ini): Ditto.
+	* localdir.cc (offer_to_create): Ditto.
+	* filemanip.cc (nt_wfopen): Use Windows default permissions if perms
+	is set to 0.
+	* mkdir.cc (mkdir_p): Ditto if mode is set to 0.
+
 2010-01-29  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* mount.cc (read_mounts_9x): Preserve old way of doing things when

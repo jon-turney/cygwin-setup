@@ -153,7 +153,7 @@ download_one (packagesource & pkgsource, HWND owner)
       const std::string local = local_dir + "/" +
 				  rfc1738_escape_part (n->key) + "/" +
 				  pkgsource.Canonical ();
-      io_stream::mkpath_p (PATH_TO_FILE, "file://" + local, 0755);
+      io_stream::mkpath_p (PATH_TO_FILE, "file://" + local, 0);
 
       if (get_url_to_file(n->key +  "/" + pkgsource.Canonical (),
 			  local + ".tmp", pkgsource.size, owner))

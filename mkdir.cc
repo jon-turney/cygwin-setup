@@ -35,6 +35,7 @@ static const char *cvsid =
 #include "mkdir.h"
 #include "filemanip.h"
 
+/* A mode of 0 means no POSIX perms. */
 int
 mkdir_p (int isadir, const char *in_path, mode_t mode)
 {
@@ -71,9 +72,10 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 	  upath.MaximumLength = upath.Length + sizeof (WCHAR);
 	  upath.Buffer = wpath;
 	  InitializeObjectAttributes (&attr, &upath, OBJ_CASE_INSENSITIVE, NULL,
-				      nt_sec.GetPosixPerms (path, NULL, NULL,
-							    S_IFDIR | mode,
-							    sd, acl));
+				      mode == 0 ? NULL
+				      : nt_sec.GetPosixPerms (path, NULL, NULL,
+							      S_IFDIR | mode,
+							      sd, acl));
 	  status = NtCreateFile (&dir, SYNCHRONIZE | READ_CONTROL
 				 | FILE_LIST_DIRECTORY,
 				 &attr, &io, NULL, FILE_ATTRIBUTE_DIRECTORY,
@@ -100,7 +102,7 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 		       "warning: deleting \"%s\" so I can make a directory there\n",
 		       path);
 	      if (IsWindowsNT () ? DeleteFileW (wpath) : DeleteFileA (path))
-		return mkdir_p (isadir, path, 0755);
+		return mkdir_p (isadir, path, mode ? 0755 : 0);
 	    }
 	  return 1;
 	}
@@ -148,7 +150,7 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 
   saved_char = *slash;
   *slash = 0;
-  if (mkdir_p (1, path, 0755))
+  if (mkdir_p (1, path, mode ? 0755 : 0))
     {
       *slash = saved_char;
       return 1;

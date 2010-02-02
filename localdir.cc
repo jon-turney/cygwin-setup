@@ -133,7 +133,7 @@ offer_to_create (HWND h, const char *dirname)
 	return -1;
     }
 
-  int rv = mkdir_p (true, dirname, 0755);
+  int rv = mkdir_p (true, dirname, 0);
 
   if (rv)
     note (h, IDS_CANT_MKDIR, dirname);
