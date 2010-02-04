@@ -1,3 +1,10 @@
+2010-02-04  Corinna Vinschen  <corinna@vinschen.de>
+
+	* win32.cc (NTSecurity::GetPosixPerms): Return NULL security descriptor
+	if is_legacy is set.
+	(NTSecurity::SetPosixPerms): Remove.
+	* win32.h (NTSecurity::GetPosixPerms): Remove declaration.
+
 2010-02-02  Corinna Vinschen  <corinna@vinschen.de>
 
 	* desktop.cc (make_link): Use 0 default permissions when creating files

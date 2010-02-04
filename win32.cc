@@ -24,6 +24,7 @@ static const char *cvsid =
 #include "LogFile.h"
 #include "resource.h"
 #include "state.h"
+#include "ini.h"
 #include <sys/stat.h>
 
 NTSecurity nt_sec;
@@ -34,6 +35,9 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 {
   DWORD u_attribute, g_attribute, o_attribute;
   DWORD offset = 0;
+
+  if (is_legacy)
+    return NULL;
 
   /* Initialize out SD */
   if (!InitializeSecurityDescriptor (&out_sd, SECURITY_DESCRIPTOR_REVISION))
@@ -162,45 +166,6 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
     log (LOG_TIMESTAMP) << "SetSecurityDescriptorDacl(" << fname
     			<< ") failed: " << GetLastError () << endLog;
   return &out_sd;
-}
-
-void
-NTSecurity::SetPosixPerms (const char *fname, HANDLE fh, mode_t mode)
-{
-  struct {
-    SECURITY_DESCRIPTOR sd;
-    char sidbuf[2 * MAX_SID_LEN];
-  } in_sd;
-  SECURITY_DESCRIPTOR out_sd;
-  acl_t acl;
-  DWORD len;
-  BOOL dummy;
-  PSID owner_sid = NULL;
-  PSID group_sid = NULL;
-
-  if (!IsWindowsNT () || !wellKnownSIDsinitialized ())
-    return;
-  /* Get file's owner and group. */
-  if (!GetKernelObjectSecurity (fh, OWNER_SECURITY_INFORMATION
-				    | GROUP_SECURITY_INFORMATION,
-				&in_sd.sd, sizeof in_sd, &len))
-    {
-      log (LOG_TIMESTAMP) << "GetKernelObjectSecurity(" << fname << ") failed: "
-			  << GetLastError () << endLog;
-      return;
-    }
-  if (!GetSecurityDescriptorOwner (&in_sd.sd, &owner_sid, &dummy))
-    log (LOG_TIMESTAMP) << "GetSecurityDescriptorOwner(" << fname
-    			<< ") failed: " << GetLastError () << endLog;
-  if (!GetSecurityDescriptorGroup (&in_sd.sd, &group_sid, &dummy))
-    log (LOG_TIMESTAMP) << "GetSecurityDescriptorGroup(" << fname
-    			<< ") failed: " << GetLastError () << endLog;
-
-  GetPosixPerms (fname, owner_sid, group_sid, mode, out_sd, acl);
-  /* Write DACL back to file. */
-  if (!SetKernelObjectSecurity (fh, DACL_SECURITY_INFORMATION, &out_sd))
-    log (LOG_TIMESTAMP) << "SetKernelObjectSecurity(" << fname << ") failed: "
-    			<< GetLastError () << endLog;
 }
 
 void

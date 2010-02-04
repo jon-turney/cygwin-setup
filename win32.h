@@ -121,7 +121,6 @@ public:
   PSECURITY_DESCRIPTOR GetPosixPerms (const char *fname, PSID owner_sid,
 				      PSID group_sid, mode_t mode,
 				      SECURITY_DESCRIPTOR &out_sd, acl_t &acl);
-  void SetPosixPerms (const char *fname, HANDLE fh, mode_t mode);
   void resetPrimaryGroup();
   void setAdminGroup ();
   void setDefaultSecurity();
