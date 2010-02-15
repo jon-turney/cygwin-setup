@@ -1,5 +1,9 @@
 2010-02-15  Corinna Vinschen  <corinna@vinschen.de>
 
+	* filemanip.cc (mklongpath): Simplify backslash folding.
+
+2010-02-15  Corinna Vinschen  <corinna@vinschen.de>
+
 	* filemanip.cc (transform_chars): Drop function.
 	(mklongpath): Call mbrtowc in a loop rather than just mbstowcs.
 	Transform characters on the fly.  Fold multiple backslashes into one.

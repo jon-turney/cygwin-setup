@@ -207,7 +207,6 @@ mklongpath (wchar_t *tgt, const char *src, size_t len)
   wchar_t *tp, *ts;
   size_t ret, n;
   mbstate_t mb;
-  bool bs = false;
 
   wcscpy (tgt, L"\\\\?\\");
   tp = tgt + 4;
@@ -236,14 +235,8 @@ mklongpath (wchar_t *tgt, const char *src, size_t len)
       if (tp >= ts && *tp < 128)
 	*tp = tfx_chars[*tp];
       /* Skip multiple backslashes. */
-      if (*tp != L'\\')
-	bs = false;
-      else
-      	{
-	  if (bs)
-	    continue;
-	  bs = true;
-	}
+      if (*tp == L'\\' && tp[-1] == '\\')
+	continue;
       ++ret;
       ++tp;
       --len;
