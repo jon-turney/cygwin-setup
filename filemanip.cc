@@ -201,19 +201,13 @@ wchar_t tfx_chars[] = {
  'x', 'y', 'z', '{', 0xf000 | '|', '}', '~', 127
 };
 
-static inline void
-transform_chars (register wchar_t *path, register wchar_t *path_end)
-{
-  for (; path <= path_end; ++path)
-    if (*path < 128)
-      *path = tfx_chars[*path];
-}
-
 int
 mklongpath (wchar_t *tgt, const char *src, size_t len)
 {
-  wchar_t *tp;
-  size_t ret;
+  wchar_t *tp, *ts;
+  size_t ret, n;
+  mbstate_t mb;
+  bool bs = false;
 
   wcscpy (tgt, L"\\\\?\\");
   tp = tgt + 4;
@@ -223,20 +217,42 @@ mklongpath (wchar_t *tgt, const char *src, size_t len)
       wcscpy (tp, L"UNC");
       tp += 3;
       len -= 3;
-      ret = mbstowcs (tp, src + 1, len);
-      /* Malformed or not null terminated. */
-      if (ret == (size_t) -1 || ret == len)
-	return -1;
-      transform_chars (tp, tp + ret);
+      ts = tp;
+      ++src;		/* Skip one leading backslash. */
     }
   else
+    ts = tp + 2;	/* Skip colon in leading drive specifier. */
+  ret = tp - tgt;
+  memset (&mb, 0, sizeof mb);
+  while (len > 0)
     {
-      ret = mbstowcs (tp, src, len);
-      /* Malformed or not null terminated. */
-      if (ret == (size_t) -1 || ret == len)
-	return -1;
-      transform_chars (tp + 2, tp + ret - 2);
+      n = mbrtowc (tp, src, 6, &mb);
+      if (n == (size_t) -1 || n == (size_t) -2)
+      	return -1;
+      if (n == 0)
+      	break;
+      src += n;
+      /* Transform char according to Cygwin rules. */
+      if (tp >= ts && *tp < 128)
+	*tp = tfx_chars[*tp];
+      /* Skip multiple backslashes. */
+      if (*tp != L'\\')
+	bs = false;
+      else
+      	{
+	  if (bs)
+	    continue;
+	  bs = true;
+	}
+      ++ret;
+      ++tp;
+      --len;
     }
+  if (len == 0)
+    return -1;
+  /* Always remove trailing backslash. */
+  if (tgt[ret - 1] == L'\\')
+    tgt[--ret] = L'\0';
   return 0;
 }
 

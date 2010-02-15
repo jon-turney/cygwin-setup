@@ -1,3 +1,10 @@
+2010-02-15  Corinna Vinschen  <corinna@vinschen.de>
+
+	* filemanip.cc (transform_chars): Drop function.
+	(mklongpath): Call mbrtowc in a loop rather than just mbstowcs.
+	Transform characters on the fly.  Fold multiple backslashes into one.
+	Drop trailing backslash.
+
 2010-02-15  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* choose.cc (ChooserPage::PlaceDialog): Only skip resizing window
