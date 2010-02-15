@@ -22,7 +22,7 @@ static const char *cvsid =
 
 #include "state.h"
 
-bool unattended_mode;
+enum attend_mode unattended_mode = attended;
 bool rebootneeded;
 
 int source;

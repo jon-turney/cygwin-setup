@@ -85,6 +85,7 @@ HINSTANCE hinstance;
 bool is_legacy;
 
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
+static BoolOption PackageManagerOption (false, 'M', "package-manager", "Semi-attended chooser-only mode");
 static BoolOption HelpOption (false, 'h', "help", "print help");
 static BOOL WINAPI (*dyn_AttachConsole) (DWORD);
 static BOOL WINAPI (*dyn_GetLongPathName) (LPCTSTR, LPTSTR, DWORD);
@@ -299,7 +300,9 @@ main (int argc, char **argv)
     if (!GetOption::GetInstance ().Process (argc,_argv, NULL))
       exit (1);
 
-    unattended_mode = UnattendedOption;
+    unattended_mode = PackageManagerOption ? chooseronly
+			: (UnattendedOption ? unattended : attended);
+
     if (unattended_mode || HelpOption)
       set_cout ();
 

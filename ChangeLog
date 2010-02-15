@@ -1,3 +1,19 @@
+2010-02-15  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* choose.cc (ChooserPage::PlaceDialog): Only skip resizing window
+	in fully-unattended mode, not chooser-only mode.
+	(ChooserPage::OnUnattended): Return appropriate status to run page
+	or not according to kind of unattended mode.
+	* choose.h (ChooserPage::OnUnattended): Remove inline implementation
+	and retain prototype only.
+	* main.cc (PackageManagerOption): New boolean option.
+	(main): Take it into account when setting unattended_mode.
+	* proppage.cc (PropertyPage::DialogProc): Use new enum type when
+	setting unattended_mode.
+	* state.cc (unattended_mode): Change from bool to enum attend_mode.
+	* state.h (enum attend_mode): Declare new enum type.
+	(unattended_mode): Update extern declaration to use it.
+
 2010-02-04  Corinna Vinschen  <corinna@vinschen.de>
 
 	* win32.cc (NTSecurity::GetPosixPerms): Return NULL security descriptor

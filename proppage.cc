@@ -195,7 +195,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
                 long nextwindow = OnUnattended();
                 if (nextwindow == -2)
                 {
-                  unattended_mode = false;
+                  unattended_mode = attended;
                   SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
                   return TRUE;
                 }

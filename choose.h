@@ -37,10 +37,7 @@ public:
   virtual long OnNext ();
   virtual long OnBack ();
   virtual void OnActivate ();
-  virtual long OnUnattended ()
-  {
-    return OnNext ();
-  };
+  virtual long OnUnattended ();
 
   static void SetHwndDialog (HWND h)
   {

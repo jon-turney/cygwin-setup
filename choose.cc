@@ -176,8 +176,8 @@ ChooserPage::getParentRect (HWND parent, HWND child, RECT * r)
 void
 ChooserPage::PlaceDialog (bool doit)
 {
-  if (unattended_mode)
-    /* Don't jump up and down in unattended mode */;
+  if (unattended_mode == unattended)
+    /* Don't jump up and down in (fully) unattended mode */;
   else if (doit)
     {
       pre_chooser_placement.length = sizeof pre_chooser_placement;
@@ -260,6 +260,16 @@ ChooserPage::OnActivate()
 {
   chooser->refresh();;
   PlaceDialog (true);
+}
+
+long
+ChooserPage::OnUnattended()
+{
+  if (unattended_mode == unattended)
+    return OnNext ();
+  // Magic constant -1 (FIXME) means 'display page but stay unattended', as
+  // also used for progress bars; see proppage.cc!PropertyPage::DialogProc().
+  return -1;
 }
 
 void
