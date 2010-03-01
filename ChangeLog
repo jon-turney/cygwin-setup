@@ -1,3 +1,7 @@
+2010-03-01  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* Makefile.in: Add a setup-src target.
+
 2010-03-01  Corinna Vinschen  <corinna@vinschen.de>
 
 	* filemanip.cc (mklongpath): Skip "." and ".." path components to
