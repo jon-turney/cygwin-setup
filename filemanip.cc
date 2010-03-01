@@ -235,8 +235,34 @@ mklongpath (wchar_t *tgt, const char *src, size_t len)
       if (tp >= ts && *tp < 128)
 	*tp = tfx_chars[*tp];
       /* Skip multiple backslashes. */
-      if (*tp == L'\\' && tp[-1] == '\\')
+      if (*tp == L'\\' && tp[-1] == L'\\')
 	continue;
+      /* Skip "." and ".." path components.  They result in annoying error
+	 messages. */
+      if (*tp == L'.' && tp[-1] == L'\\')
+      	{
+	  if (!src[0])
+	    continue;
+	  if (isdirsep (src[0]))
+	    {
+	      ++src;
+	      continue;
+	    }
+	  if (src[0] == '.' && isdirsep (src[1]))
+	    {
+	      src += 2;
+	      /* Set tp back to start of previous path component. */
+	      if (tp > ts + 1)
+	      	do
+		  {
+		    --tp;
+		    --ret;
+		    ++len;
+		  }
+		while (tp > ts && tp[-1] != L'\\');
+	      continue;
+	    }
+	}
       ++ret;
       ++tp;
       --len;
