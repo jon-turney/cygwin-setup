@@ -174,7 +174,11 @@ NetIO_FTP::ok ()
 int
 NetIO_FTP::read (char *buf, int nbytes)
 {
+  int rv, code;
   if (!ok ())
     return 0;
-  return s->read (buf, nbytes);
+  rv = s->read (buf, nbytes);
+  if (rv == 0)
+    code = ftp_line (cmd);
+  return rv;
 }

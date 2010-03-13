@@ -1,3 +1,8 @@
+2010-03-13  DJ Delorie  <dj@redhat.com>
+
+	* nio-ftp.c (read): Read RETR status code on EOF to avoid
+	deadlock with PASV.
+
 2010-03-01  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* Makefile.in: Output the name of the generated src target.
