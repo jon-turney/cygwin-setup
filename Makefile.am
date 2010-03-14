@@ -36,7 +36,7 @@ AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
 AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES = @WINDRES@
-AM_CPPFLAGS = -I$(srcdir)/libgetopt++/include -I$(top_builddir)/libgpg-error/src -I$(top_builddir)/libgcrypt/src -I$(srcdir)/libgcrypt/src
+AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include -I$(top_builddir)/libgpg-error/src -I$(top_builddir)/libgcrypt/src -I$(srcdir)/libgcrypt/src
 
 noinst_PROGRAMS = setup @INILINT@
 
@@ -119,8 +119,8 @@ libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
 setup_LDADD = \
 	libinilex.a \
 	-Linst/lib -lgetopt++ -lgcrypt -lgpg-error \
-	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -lbz2 -lz 
-setup_LDFLAGS = -mwindows -Wl,-static
+	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -llzma -lbz2 -lz 
+setup_LDFLAGS = -mwindows -Wl,-static -static-libtool-libs
 setup_SOURCES = \
 	AntiVirus.cc \
 	AntiVirus.h \
@@ -138,8 +138,8 @@ setup_SOURCES = \
 	compress_bz.h \
 	compress_gz.cc \
 	compress_gz.h \
-	compress_lzma.cc \
-	compress_lzma.h \
+	compress_xz.cc \
+	compress_xz.h \
 	ConnectionSetting.cc \
 	ConnectionSetting.h \
 	ControlAdjuster.cc \
@@ -285,10 +285,7 @@ setup_SOURCES = \
 	csu_util/version_compare.cc \
 	csu_util/version_compare.h \
 	libmd5-rfc/md5.c \
-	libmd5-rfc/md5.h \
-	lzma-sdk/LzmaDec.c \
-	lzma-sdk/LzmaDec.h \
-	lzma-sdk/Types.h
+	libmd5-rfc/md5.h
 
 VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
                $(srcdir)/ChangeLog)

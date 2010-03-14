@@ -1,3 +1,21 @@
+2010-03-14  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	Support xz and lzma decompression via liblzma
+	* Makefile.am: Add -DLZMA_API_STATIC to AM_CPPFLAGS,
+	-lzma to setup_LDADD, and -static-libtool-libs to
+	setup_LDFLAGS. Update setup_SOURCES.
+	* compress.cc: Update includes.
+	(compress::decompress): Use compress_xz rather than
+	compress_lzma; compress_xz supports both xz and lzma
+	decompression.
+	* compress_xz.h: New.
+	* compress_xz.cc: New.
+	* compress_lzma.h: Removed.
+	* compress_lzma.cc: Removed.
+	* lzma-sdk/LzmaDec.c: Removed.
+	* lzma-sdk/LzmaDec.h: Removed.
+	* lzma-sdk/Types.h: Removed.
+
 2010-03-13  DJ Delorie  <dj@redhat.com>
 
 	* nio-ftp.c (read): Read RETR status code on EOF to avoid

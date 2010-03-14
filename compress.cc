@@ -16,7 +16,7 @@
 #include "compress.h"
 #include "compress_gz.h"
 #include "compress_bz.h"
-#include "compress_lzma.h"
+#include "compress_xz.h"
 
 /* In case you are wondering why the file magic is not in one place:
  * It could be. But there is little (any?) benefit.
@@ -27,7 +27,7 @@
  * the class could test itself. 
  */
 
-#define longest_magic LZMA_PROPS_SIZE + 8
+#define longest_magic 14 /* lzma_alone */
 
 io_stream *
 compress::decompress (io_stream * original)
@@ -58,9 +58,9 @@ compress::decompress (io_stream * original)
 	  delete rv;
 	  return NULL;
 	}
-      else if (compress_lzma::is_lzma (magic, LZMA_PROPS_SIZE + 8))
+      else if (compress_xz::is_xz_or_lzma (magic, 14))
 	{
-	  compress_lzma *rv = new compress_lzma (original);
+	  compress_xz *rv = new compress_xz (original);
 	  if (!rv->error ())
 	    return rv;
 	  /* else */
