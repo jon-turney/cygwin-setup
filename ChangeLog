@@ -1,3 +1,7 @@
+2010-03-14  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* Makefile.am: Refresh to reflect Makefile.in changes.
+
 2010-03-14  Charles Wilson  <cygwin@cwilson.fastmail.fm>
 
 	Support xz and lzma decompression via liblzma

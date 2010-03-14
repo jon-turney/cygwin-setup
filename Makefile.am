@@ -316,6 +316,16 @@ snapshot: release
 	scp -C setup-${VER}.exe setup-debug-${VER}.exe.gz setup-${VER}.tar.bz2 \
 	    $${cygwinsite:-cygwin.com}:setup-snapshots/
 
+# static const char version_store[] = VERSION_PREFIX " 2.686";
+setup-src:
+	@ver=setup-$$(sed -n 's/^static const char version_store.* VERSION_PREFIX " \([^"]*\)".*$$/\1/p' setup_version.c);\
+	cd ${srcdir};\
+	rm -f $$ver;\
+	ln -sf . $$ver;\
+	cvs status -R | sed -n "s%^ *Repository revision:.*/cvs/cygwin-apps/setup/\(.*\),v%$$ver/\1%p" |\
+	sort | tar -T - -cjf ${CURDIR}/$$ver.tar.bz2;\
+	echo $$ver.tar.bz2
+
 .PHONY: ${INST_SUBDIRS}
 ${INST_SUBDIRS}:
 	${MAKE} -C $@ install
