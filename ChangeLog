@@ -1,3 +1,8 @@
+2010-03-17  Corinna Vinschen  <corinna@vinschen.de>
+
+	* autoload.cc (Auto): Create autoload code in an executable section
+	called .autoload_text to avoid problems with DEP.
+
 2010-03-14  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* Makefile.am: Add a setup-src target.

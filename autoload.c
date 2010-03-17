@@ -27,7 +27,7 @@ typedef struct {
 #define DLL(n) __attribute__ ((used)) static DllInfo n ## _info __asm__ (#n "_info") = { #n, 0}
 
 #define Auto(dll, func, size) \
-	__asm__ ("\t.data"); \
+	__asm__ ("\t.section .autoload_text,\"wx\""); \
 	__asm__ ("\t.global\t_" #func "@" #size); \
 	__asm__ ("_" #func "@" #size ":"); \
 	__asm__ ("\tcall\tautoload_common"); \
