@@ -9,11 +9,19 @@ if [ ! -f "$DIR/configure" ]; then
   ( cd "$DIR" && ./bootstrap.sh )
 fi
 
+# If $build == cygwin, set PATH so that correct (mingw)
+# version of gpg-error-config and libgcrypt-config are
+# used.  Otherwise: assume cross-compiler users are
+# sophisticated enough to do this manually.
+case `uname -s` in
+*CYGWIN* ) export PATH="/usr/lib/mingw:${PATH}" ;;
+esac
+
 # Configure
 cmd="\"$DIR/configure\""
 cmd=$cmd' -C --disable-shared --enable-maintainer-mode'
 cmd=$cmd' --host=i686-pc-mingw32 --build=i686-pc-cygwin'
-cmd=$cmd' CC="gcc -mno-cygwin" CXX="g++ -mno-cygwin"'
+cmd=$cmd' CC="gcc-3 -mno-cygwin" CXX="g++-3 -mno-cygwin"'
 
 for i in "$@"; do
   case $i in

@@ -36,7 +36,7 @@ AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
 AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES = @WINDRES@
-AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include -I$(top_builddir)/libgpg-error/src -I$(top_builddir)/libgcrypt/src -I$(srcdir)/libgcrypt/src
+AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include
 
 noinst_PROGRAMS = setup @INILINT@
 
