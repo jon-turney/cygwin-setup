@@ -1,3 +1,14 @@
+2010-04-07  Matthias Andree  <matthias.andree@gmx.de>
+
+	* README (HOW TO BUILD): Mention mingw-lib{gcrypt,lzma}-devel.
+
+	* res.rc (IDD_DESKTOP): Move Installation Status line,
+	IDC_STATUS_HEADER and IDC_STATUS up 20 units, make IDC_STATUS text
+	20 units taller and 40 units wider so that IDS_REBOOT_REQUIRED
+	message fits the screen.
+	* res.rc (IDD_SPLASH): Bump copyright years in IDC_SLASH_COPYR to
+	"2000-2010".
+
 2010-04-07  Corinna Vinschen  <corinna@vinschen.de>
 
 	* install.cc (create_allow_protected_renames): New function to

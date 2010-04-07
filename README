@@ -8,8 +8,10 @@ Setup should build out-of-the-box on any Cygwin environment that has all the
 required packages installed:
   - gcc-mingw-g++
   - make
-  - mingw-zlib
   - mingw-bzip2
+  - mingw-libgcrypt-devel
+  - mingw-liblzma-devel
+  - mingw-zlib
   - and all packages that are dependencies of the above, i.e. gcc-core,
     gcc-mingw-core, gcc-g++, mingw-runtime, binutils, w32api, etc.  These
     should all be automatically added by setup.

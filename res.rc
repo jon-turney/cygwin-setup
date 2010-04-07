@@ -272,7 +272,7 @@ BEGIN
                     "necessary.",IDC_SPLASH_TEXT,115,25,195,90
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,114,114,21,20,WS_GROUP
     LTEXT           "Version (unknown)",IDC_VERSION,115,137,195,10
-    LTEXT           "Copyright 2000-2009",IDC_SPLASH_COPYR,115,150,195,8
+    LTEXT           "Copyright 2000-2010",IDC_SPLASH_COPYR,115,150,195,8
     LTEXT           "http://www.cygwin.com/",IDC_SPLASH_URL,115,162,90,8
 END
 
@@ -294,10 +294,10 @@ BEGIN
     LTEXT           "Create Icons",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT 
                     WS_GROUP
     CONTROL         "",IDC_DESKTOP_SEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
-                    0,155,SETUP_STANDARD_DIALOG_W,1
-    LTEXT           "Installation Status",IDC_STATUS_HEADER,7,160,258,8,NOT WS_GROUP
+                    0,135,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Installation Status",IDC_STATUS_HEADER,7,140,258,8,NOT WS_GROUP
     LTEXT           "Cygwin installation completed successfully.",IDC_STATUS,
-                    21,169,239,16,NOT WS_GROUP
+                    21,149,279,36,NOT WS_GROUP
 END
 
 IDD_FTP_AUTH DIALOG DISCARDABLE  0, 0, SETUP_SMALL_DIALOG_DIMS
