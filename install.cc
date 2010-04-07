@@ -220,6 +220,27 @@ int _custom_MessageBox(HWND hWnd, LPCTSTR szText, LPCTSTR szCaption, UINT uType)
   return retval;
 }
 
+/* Helper function to create the registry value "AllowProtectedRenames",
+   which is required to make MOVEFILE_DELAY_UNTIL_REBOOT to work on WFP
+   protected files.  By default, the entire system drive is WFP protected,
+   so a Cygwin installation on this drive sufferes from the WFP problem.
+   Even though this value is only required since Windows Server 2003 SP1,
+   we just set it here unconditionally since it doesn't hurt at all on
+   older systems. */
+void
+create_allow_protected_renames ()
+{
+  HKEY key;
+  DWORD val = 1;
+
+  if (RegOpenKeyEx (HKEY_LOCAL_MACHINE,
+		    "System\\CurrentControlSet\\Control\\Session Manager",
+		    0, KEY_ALL_ACCESS, &key) == ERROR_SUCCESS)
+    RegSetValueEx (key, "AllowProtectedRenames", 0, REG_DWORD,
+		   (BYTE *) &val, sizeof (DWORD));
+  RegCloseKey (key);
+}
+
 #undef MessageBox
 #define MessageBox _custom_MessageBox
 
@@ -443,7 +464,10 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 					MOVEFILE_REPLACE_EXISTING))
                         replaceOnRebootFailed (fn);
                       else
-                        replaceOnRebootSucceeded (fn, rebootneeded);
+			{
+			  create_allow_protected_renames ();
+			  replaceOnRebootSucceeded (fn, rebootneeded);
+			}
                     }
                 }
             }

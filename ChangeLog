@@ -1,3 +1,10 @@
+2010-04-07  Corinna Vinschen  <corinna@vinschen.de>
+
+	* install.cc (create_allow_protected_renames): New function to
+	create AllowProtectedRenames registry entry.
+	(Installer::installOne): Call create_allow_protected_renames if former
+	call to MoveFileEx was successful.
+
 2010-03-18  Charles Wilson  <cygwin@cwilson.fastmail.fm>
 
 	Use external crypto libraries
