@@ -1,3 +1,10 @@
+2010-04-08  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	* bootstrap.sh: Always reconfigure in libgetopt++.
+
+	* Makefile.am: Remove old code for direct copying to sourceware.  Add
+	-src to source tarball.
+
 2010-04-07  Matthias Andree  <matthias.andree@gmx.de>
 
 	* README (HOW TO BUILD): Mention mingw-lib{gcrypt,lzma}-devel.

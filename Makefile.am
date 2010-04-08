@@ -13,9 +13,6 @@
 #     A copy of the GNU General Public License can be found at
 #     http://www.gnu.org/
 #
-# Written by Christopher Faylor <cgf@redhat.com>
-# and Robert Collins  <rbtcollins@hotmail.com>
-#
 # Makefile for Cygwin installer
 
 INST_SUBDIRS:=@subdirs@
@@ -299,23 +296,6 @@ setup_version.c : $(srcdir)/ChangeLog Makefile
 .rc.o:
 	$(WINDRES) --include-dir $(srcdir) -o $@ $<
 
-# this target creates:
-#   setup-x.yyy.exe             (UPXed stripped exe)
-#   setup-debug-x.yyy.exe.gz    (gzipped unstripped exe)
-#   setup-x.yyy.tar.bz2         (source)
-release: setup.exe $(srcdir)/ChangeLog Makefile
-	$(MAKE) dist-bzip2 distdir=setup-${VER}
-	cp -pf setup.exe setup-debug-${VER}.exe
-	gzip -f9 setup-debug-${VER}.exe
-	cp -pf setup.exe setup-${VER}.exe
-	$(STRIP) setup-${VER}.exe
-	upx --best setup-${VER}.exe
-
-# Create a snapshot and upload it (requires write access)
-snapshot: release
-	scp -C setup-${VER}.exe setup-debug-${VER}.exe.gz setup-${VER}.tar.bz2 \
-	    $${cygwinsite:-cygwin.com}:setup-snapshots/
-
 # static const char version_store[] = VERSION_PREFIX " 2.686";
 setup-src:
 	@ver=setup-$$(sed -n 's/^static const char version_store.* VERSION_PREFIX " \([^"]*\)".*$$/\1/p' setup_version.c);\
@@ -323,8 +303,8 @@ setup-src:
 	rm -f $$ver;\
 	ln -sf . $$ver;\
 	cvs status -R | sed -n "s%^ *Repository revision:.*/cvs/cygwin-apps/setup/\(.*\),v%$$ver/\1%p" |\
-	sort | tar -T - -cjf ${CURDIR}/$$ver.tar.bz2;\
-	echo $$ver.tar.bz2
+	sort | tar -T - -cjf ${CURDIR}/$$ver-src.tar.bz2;\
+	echo $$ver-src.tar.bz2; exec rm -f $$ver
 
 .PHONY: ${INST_SUBDIRS}
 ${INST_SUBDIRS}:

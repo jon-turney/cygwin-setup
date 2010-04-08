@@ -22,15 +22,6 @@ if [ ! -f cygpackage.cc ]; then
   exit 1
 fi
 
-# Run bootstrap in required subdirs, iff it has not yet been run
-if [ ! -f libgetopt++/configure ]; then
-  echo "Running bootstrap.sh in libgetopt++"
-  (
-    cd libgetopt++
-    ./bootstrap.sh
-  )
-  echo "Continuing with bootstrap in current directory"
-fi
 
 # Make sure cfgaux exists
 mkdir -p cfgaux
@@ -41,5 +32,9 @@ bootstrap aclocal
 bootstrap libtoolize --automake
 bootstrap autoconf
 bootstrap automake --foreign --add-missing
+
+# Run bootstrap in required subdirs, iff it has not yet been run
+echo "bootstrapping in libgetopt++"
+cd libgetopt++; ./bootstrap.sh
 
 echo "Autotool bootstrapping complete."
