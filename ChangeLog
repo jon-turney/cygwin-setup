@@ -1,5 +1,19 @@
 2010-04-13  Dave Korn  <dave.korn.cygwin@gmail.com>
 
+	* PickView.h (PickView::set_vscroll_info): Add prototype.
+	(PickView::hasClientRect): Rename from this ...
+	(PickView::hasWindowRect): ... to this ...
+	(PickView::lastClientRect): ... and from this ...
+	(PickView::lastWindowRect): ... to this.
+	* PickView.cc (PickView::PickView): Adjust member init to match.
+	(PickView::set_vscroll_info): Abstract code to set vertical scroll
+	bar proportions from ...
+	(PickView::list_click): ... here.  Call it.  Fix comment typo.
+	(PickView::WindowProc): Update all renamed variables in WM_SIZE
+	case, and check also for a y delta, calling set_vscroll_info if so.
+
+2010-04-13  Dave Korn  <dave.korn.cygwin@gmail.com>
+
 	* window.cc (Window::Window): Initialise BusyCount and BusyCursor.
 	(Window::SetBusy): Set hourglass cursor, counting nested activations.
 	(Window::ClearBusy): Cancel one call to SetBusy and restore original

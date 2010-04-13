@@ -527,7 +527,7 @@ PickView::init_headers (HDC dc)
 
 PickView::PickView (Category &cat) : deftrust (TRUST_UNKNOWN),
 contents (*this, cat, 0, false, true), showObsolete (false), 
-packageFilterString (), hasClientRect (false), total_delta_x (0)
+packageFilterString (), hasWindowRect (false), total_delta_x (0)
 {
 }
 
@@ -668,6 +668,28 @@ PickView::list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos)
   return 0;
 }
 
+void
+PickView::set_vscroll_info (const RECT &r)
+{
+  SCROLLINFO si;
+  memset (&si, 0, sizeof (si));
+  si.cbSize = sizeof (si);
+  si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;    /* SIF_RANGE was giving strange behaviour */
+  si.nMin = 0;
+
+  si.nMax = contents.itemcount () * row_height;
+  si.nPage = r.bottom - header_height;
+
+  /* if we are under the minimum display count ,
+   * set the offset to 0
+   */
+  if ((unsigned int) si.nMax <= si.nPage)
+    scroll_ulc_y = 0;
+  si.nPos = scroll_ulc_y;
+
+  SetScrollInfo (GetHWND(), SB_VERT, &si, TRUE);
+}
+
 LRESULT CALLBACK
 PickView::list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 {
@@ -688,31 +710,14 @@ PickView::list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 
   refresh = click (row, x);
 
-  // XXX we need a method to queryt he database to see if more
+  // XXX we need a method to query the database to see if more
   // than just one package has changed! Until then...
 #if 0
   if (refresh)
     {
 #endif
       RECT r = GetClientRect ();
-      SCROLLINFO si;
-      memset (&si, 0, sizeof (si));
-      si.cbSize = sizeof (si);
-      si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;    /* SIF_RANGE was giving strange behaviour */
-      si.nMin = 0;
-
-      si.nMax = contents.itemcount () * row_height;
-      si.nPage = r.bottom - header_height;
-
-      /* if we are under the minimum display count ,
-       * set the offset to 0
-       */
-      if ((unsigned int) si.nMax <= si.nPage)
-        scroll_ulc_y = 0;
-      si.nPos = scroll_ulc_y;
-
-      SetScrollInfo (GetHWND(), SB_VERT, &si, TRUE);
-
+      set_vscroll_info (r);
       InvalidateRect (GetHWND(), &r, TRUE);
 #if 0
     }
@@ -812,12 +817,14 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
       {
         // Note: WM_SIZE msgs only appear when 'just' scrolling the window
-        RECT clientRect = GetWindowRect ();
-        if (hasClientRect)
+        RECT windowRect = GetWindowRect ();
+	log(LOG_BABBLE) << "WR: (" << windowRect.left << "," << windowRect.top
+		<< ") x (" << windowRect.right << "," << windowRect.bottom << ")" << endLog;
+        if (hasWindowRect)
           {
             int dx;
-            if ((dx = clientRect.right - clientRect.left -
-                        lastClientRect.width ()) != 0)
+            if ((dx = windowRect.right - windowRect.left -
+                        lastWindowRect.width ()) != 0)
               {
                 cat_headers[set_header_column_order (views::Category)].width += dx;
                 pkg_headers[set_header_column_order (views::Package)].width += dx;
@@ -828,11 +835,13 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
                             headers[last_col].width, header_height, TRUE);
                 total_delta_x += dx;
               }
+	    if (windowRect.bottom - windowRect.top - lastWindowRect.height ())
+	      set_vscroll_info (GetClientRect ());
           }
         else
-          hasClientRect = true;
+          hasWindowRect = true;
   
-        lastClientRect = clientRect;
+        lastWindowRect = windowRect;
         return 0;     
       }
     }

@@ -51,6 +51,7 @@ public:
   LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
   LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);
   LRESULT CALLBACK list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos);
+  void set_vscroll_info (const RECT &r);
   virtual LRESULT WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam);
   Header *headers;
   PickView (Category & cat);
@@ -146,8 +147,8 @@ private:
   std::string packageFilterString;
 
   // Stuff needed to handle resizing
-  bool hasClientRect;
-  RECTWrapper lastClientRect;
+  bool hasWindowRect;
+  RECTWrapper lastWindowRect;
   int total_delta_x;
 
   int set_header_column_order (views vm);
