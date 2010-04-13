@@ -31,6 +31,9 @@ Window::Window ()
   WindowHandle = NULL;
   Parent = NULL;
   TooltipHandle = NULL;
+  BusyCount = 0;
+  BusyCursor = NULL;
+
 }
 
 Window::~Window ()
@@ -485,5 +488,31 @@ Window::TooltipNotificationHandler (LPARAM lParam)
   }
 
   return FALSE;
+}
+
+void
+Window::SetBusy (void)
+{
+  // The docs suggest that you can call SetCursor, and it won't do
+  // anything if you've chosen the same cursor as is already set.
+  // However it looked to me as if it was resetting the animation
+  // frame every time when I tried it, hence this routine to make
+  // sure we only call it once on the way into and once on the way
+  // out of busy mode.
+  if (BusyCount++ == 0)
+    {
+      if (BusyCursor == NULL)
+	BusyCursor = LoadCursor (NULL, IDC_WAIT);
+      OldCursor = SetCursor (BusyCursor);
+    }
+}
+
+void
+Window::ClearBusy (void)
+{
+  if (BusyCount && (--BusyCount == 0))
+    {
+      SetCursor (OldCursor);
+    }
 }
 

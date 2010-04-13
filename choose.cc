@@ -131,6 +131,7 @@ ChooserPage::~ChooserPage ()
 void
 ChooserPage::createListview ()
 {
+  SetBusy ();
   static std::vector<packagemeta *> empty_cat;
   static Category dummy_cat (std::string ("No packages found."), empty_cat);
   packagedb db;
@@ -153,6 +154,7 @@ ChooserPage::createListview ()
   /* FIXME: do we need to init the desired fields ? */
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_PREV, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
   rbset (GetHWND (), ta, IDC_CHOOSE_CURR);
+  ClearBusy ();
 }
 
 /* TODO: review ::overrides for possible consolidation */
@@ -233,12 +235,14 @@ ChooserPage::OnInit ()
 {
   CheckDlgButton (GetHWND (), IDC_CHOOSE_HIDE, BST_CHECKED);
 
+  SetBusy ();
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_CWD)
     packagemeta::ScanDownloadedFiles ();
 
   packagedb db;
   db.setExistence ();
   db.fillMissingCategory ();
+  ClearBusy ();
 
   if (source == IDC_SOURCE_DOWNLOAD)
     setPrompt("Select packages to download ");
@@ -334,6 +338,7 @@ ChooserPage::keepClicked()
 void
 ChooserPage::changeTrust(trusts aTrust)
 {
+  SetBusy ();
   chooser->defaultTrust (aTrust);
   packagedb db;
   db.markUnVisited ();
@@ -342,6 +347,7 @@ ChooserPage::changeTrust(trusts aTrust)
   chooser->refresh();
   PrereqChecker p;
   p.setTrust (aTrust);
+  ClearBusy ();
 }
 
 bool

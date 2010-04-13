@@ -56,7 +56,18 @@ private:
   
   // maps a control ID to a string resource ID
   std::map<int, int> TooltipStrings;
-  
+
+  // Recursive count of number of times we've called SetBusy,
+  // so that we only reset the cursor when we've cleared it
+  // the same number of times.
+  int BusyCount;
+
+  // Saved old cursor handle, only while BusyCount is non-zero.
+  HCURSOR OldCursor;
+
+  // Handle to busy cursor (loaded first time needed, NULL until then).
+  HCURSOR BusyCursor;
+
 protected:
   void SetHWND (HWND h)
   {
@@ -92,7 +103,7 @@ public:
     // Ideally this could be hidden from the user completely.
     return WindowHandle;
   };
-  HINSTANCE GetInstance () const
+  static HINSTANCE GetInstance ()
   {
     return AppInstance;
   };
@@ -147,6 +158,11 @@ public:
   void AddTooltip (int id, const char *text);
   void AddTooltip (int id, int string_resource);
   BOOL TooltipNotificationHandler (LPARAM lParam);
+  // Call this to set an hourglass cursor.
+  void SetBusy (void);
+  // Call this to reset to normal cursor.  It must be called
+  // once for each call to SetBusy; they nest recursively.
+  void ClearBusy (void);
 };
 
 #endif /* SETUP_WINDOW_H */

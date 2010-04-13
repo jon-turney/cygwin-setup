@@ -141,9 +141,11 @@ PickCategoryLine::click (int const myrow, int const ClickedRow, int const x)
 int 
 PickCategoryLine::set_action (packagemeta::_actions action)
 {
+  theView.GetParent ()->SetBusy ();
   current_default = action;
   int accum_diff = 0;
   for (size_t n = 0; n < bucket.size (); n++)
       accum_diff += bucket[n]->set_action (current_default);
+  theView.GetParent ()->ClearBusy ();
   return accum_diff;
 }

@@ -1,3 +1,20 @@
+2010-04-13  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* window.cc (Window::Window): Initialise BusyCount and BusyCursor.
+	(Window::SetBusy): Set hourglass cursor, counting nested activations.
+	(Window::ClearBusy): Cancel one call to SetBusy and restore original
+	cursor if no longer busy.
+	* window.h (Window::BusyCount): New data member.
+	(Window::OldCursor): Likewise.
+	(Window::BusyCursor): Likewise.
+	(Window::SetBusy): Prototype.
+	(Window::ClearBusy): Likewise.
+	* choose.cc (ChooserPage::createListview): Invoke busy cursor
+	around long-running operation.
+	(ChooserPage::OnInit): Likewise.
+	(ChooserPage::changeTrust): Likewise.
+	* PickCategoryLine.cc (PickCategoryLine::set_action): Likewise.
+
 2010-04-08  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	* bootstrap.sh: Always reconfigure in libgetopt++.
