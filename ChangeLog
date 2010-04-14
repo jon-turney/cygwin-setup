@@ -1,3 +1,8 @@
+2010-04-14  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* PickView.cc (PickView::WindowProc): Delete inadvertently-committed
+	debug logging.
+
 2010-04-13  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* PickView.h (PickView::set_vscroll_info): Add prototype.

@@ -818,8 +818,6 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
       {
         // Note: WM_SIZE msgs only appear when 'just' scrolling the window
         RECT windowRect = GetWindowRect ();
-	log(LOG_BABBLE) << "WR: (" << windowRect.left << "," << windowRect.top
-		<< ") x (" << windowRect.right << "," << windowRect.bottom << ")" << endLog;
         if (hasWindowRect)
           {
             int dx;
