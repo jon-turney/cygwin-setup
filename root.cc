@@ -287,11 +287,6 @@ RootPage::OnNext ()
     << (root_text == IDC_ROOT_TEXT ? " text" : " binary")
     << (root_scope == IDC_ROOT_USER ? " user" : " system") << endLog;
 
-  /* Deferred initialization of packagedb *after* the root dir has been
-     chosen. */
-  packagedb db;
-  db.task = chosen_db_task;
-
   return 0;
 }
 

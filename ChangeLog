@@ -1,3 +1,16 @@
+2010-04-17  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* root.cc (RootPage::OnNext): Don't construct a packagedb here nor
+	do deferred initialisation of static packagedb::task.
+	* source.cc (save_dialog): Don't construct a packagedb here, and
+	set static packagedb::task directly instead of chosen_db_task.
+	* package_meta.cc (packagemeta::action_caption): Don't bother to
+	construct a packagedb here, just access packagedb::task directly.
+	* package_db.cc: Move 'static members' comment near static members.
+	(chosen_db_task): Delete.
+	* package_db.h (chosen_db_task): Don't declare extern.
+	(packagedb): Extend comments on class.
+
 2010-04-14  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* PickView.cc (PickView::WindowProc): Delete inadvertently-committed

@@ -54,7 +54,12 @@ static void
 save_dialog (HWND h)
 {
   source = rbget (h, rb);
-  chosen_db_task =
+  /* We mustn't construct any packagedb objects until after the root
+     directory has been selected, but setting the static data member
+     that records the mode we're running in is fine here (and conversely,
+     would be A Bad Thing if we did it again after the first time we
+     construct a packagedb object; see package_db.h for details).  */
+  packagedb::task = 
     source == IDC_SOURCE_DOWNLOAD ? PackageDB_Download : PackageDB_Install;
 }
 

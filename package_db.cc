@@ -45,10 +45,6 @@ static const char *cvsid =
 
 using namespace std;
 
-PackageDBActions chosen_db_task = PackageDB_Install;
-
-/* static members */
-
 packagedb::packagedb ()
 {
   io_stream *db = 0;
@@ -198,6 +194,8 @@ packagedb::findSource (PackageSpecification const &spec) const
     }
   return NULL;
 }
+
+/* static members */
 
 int
   packagedb::installeddbread =

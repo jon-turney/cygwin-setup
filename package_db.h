@@ -29,12 +29,33 @@ typedef enum {
   PackageDB_Download
 } PackageDBActions;
 
-extern PackageDBActions chosen_db_task;
-
 class packagedb;
 typedef std::vector <packagemeta *>::iterator PackageDBConnectedIterator;
 
 /*TODO: add mutexs */
+
+/*TODO: add sanity.   Beware, Here Be C++ Dragons:
+
+   This class is a hidden singleton.  It's a singleton, but you create
+   and delete transient objects of the class, none of which have any
+   member data, but solely serve as shortcuts to access one static set
+   of shared data through an irrelevant this-pointer.
+
+   Not only that, but it's a hidden singleton that is constructed
+   the first time you access it, and constructed differently 
+   based on implicit global state.
+
+   Not only that, but it has some static state of its own that also
+   controls how it gets constructed, but that could then be changed
+   afterward without invalidating the cached data, silently changing
+   its semantic interpretation.
+
+   To use this class, you must first set the packagedb::task member
+   and the cygfile:// (install dir) root path.  You must only then
+   construct a packagedb, and must remember not to change the
+   task or root path any later in the execution sequence.
+
+*/
 class packagedb
 {
 public:

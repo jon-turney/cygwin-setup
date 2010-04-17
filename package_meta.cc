@@ -362,10 +362,7 @@ packagemeta::action_caption () const
   else if (!desired)
     return "Skip";
   else if (desired == installed && desired.picked())
-    {
-      packagedb db;
-      return db.task == PackageDB_Install ? "Reinstall" : "Retrieve";
-    }
+    return packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve";
   else if (desired == installed && desired.sourcePackage() && desired.sourcePackage().picked())
     /* FIXME: Redo source should come up if the tarball is already present locally */
     return "Source";
