@@ -136,14 +136,11 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
       && x <= theView.headers[theView.new_col + 1].x - HMARGIN / 2)
     pkg.set_action (pkg.trustp(theView.deftrust));
 
-  packagedb().markUnVisited();
-  /* Add any packages that are needed by this package */
-  /* TODO: This hardcoded TRUST_CURR does not seem right. */
-  return pkg.set_requirements (TRUST_CURR);
+  return 0;
 }
 
 int PickPackageLine::set_action (packagemeta::_actions action)
 {
-  pkg.set_action (action , pkg.trustp(theView.deftrust));
-  return pkg.set_requirements(theView.deftrust) + 1;
+  pkg.set_action (action, pkg.trustp(theView.deftrust));
+  return 1;
 }

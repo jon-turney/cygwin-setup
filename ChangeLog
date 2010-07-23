@@ -1,3 +1,13 @@
+2010-07-22  Andy.Koppe  <andy.koppe@gmail.com>
+
+	* PickPackageLine.cc (PickPackageLine::{click,set_action}):
+	Don't trigger automatic package selection when clicking on
+	packages or categories on chooser screen.
+	* PickCategoryLine.cc (PickCategoryLine::click): No more need to
+	prepare for automatic package selection with markUnVisited().
+	* res.rc: Drop "Warning!" from caption of Resolve Dependencies
+	screen.
+
 2010-04-17  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* root.cc (RootPage::OnNext): Don't construct a packagedb here nor

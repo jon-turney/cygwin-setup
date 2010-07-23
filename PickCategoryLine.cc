@@ -112,8 +112,6 @@ PickCategoryLine::click (int const myrow, int const ClickedRow, int const x)
 	{
 	  ++current_default;
 	  
-          packagedb().markUnVisited();
-
 	  return set_action (current_default);
 	}
       else

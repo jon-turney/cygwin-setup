@@ -383,7 +383,7 @@ BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
                     0,28,SETUP_STANDARD_DIALOG_W,1
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
-    LTEXT           "Warning!  Unmet Dependencies Found",IDC_STATIC_HEADER_TITLE
+    LTEXT           "Unmet Dependencies Found",IDC_STATIC_HEADER_TITLE
                     ,7,0,258,8,NOT WS_GROUP
     LTEXT           "The following packages are required but have not been "
                     "selected.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
