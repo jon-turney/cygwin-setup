@@ -183,7 +183,7 @@ PickView::setViewMode (views mode)
           if ( // "Full" : everything
               (view_mode == PickView::views::PackageFull)
 
-              // "Partial" : packages that are being added/removed/upgraded
+              // "Pending" : packages that are being added/removed/upgraded
               || (view_mode == PickView::views::Package &&
                   ((!pkg.desired && pkg.installed) ||         // uninstall
                     (pkg.desired &&
@@ -240,7 +240,7 @@ PickView::views::caption ()
     case 1:
       return "Full";
     case 2:
-      return "Partial";
+      return "Pending";
     case 3:
       return "Up To Date";
     case 4:

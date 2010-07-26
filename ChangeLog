@@ -1,4 +1,10 @@
-2010-07-22  Andy.Koppe  <andy.koppe@gmail.com>
+2010-07-26  Andy Koppe  <andy.koppe@gmail.com>
+
+	* PickView.cc (PickView::views::caption): Rename "Partial" view 
+	to "Pending".
+	* res.rc (IDS_VIEWBUTTON_TOOLTIP): Ditto.
+
+2010-07-22  Andy Koppe  <andy.koppe@gmail.com>
 
 	* PickPackageLine.cc (PickPackageLine::{click,set_action}):
 	Don't trigger automatic package selection when clicking on
