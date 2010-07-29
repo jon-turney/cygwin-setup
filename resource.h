@@ -64,6 +64,7 @@
 #define IDD_DESKTOP                       219
 #define IDD_PREREQ                        220
 #define IDD_DROPPED                       221
+#define IDD_POSTINSTALL                   222
 
 // Bitmaps
 
@@ -171,3 +172,4 @@
 #define IDC_CHOOSE_SEARCH_LABEL           586
 #define IDC_CHOOSE_CLEAR_SEARCH           587
 #define IDC_LOCAL_DIR_DESC                588
+#define IDC_POSTINSTALL_EDIT              589
