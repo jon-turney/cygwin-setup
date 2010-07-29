@@ -236,6 +236,8 @@ setup_SOURCES = \
 	PickView.cc \
 	PickView.h \
 	postinstall.cc \
+	postinstallresults.cc \
+	postinstallresults.h \
 	prereq.cc \
 	prereq.h \
 	proppage.cc \
