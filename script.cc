@@ -285,11 +285,13 @@ Script::run() const
   if (retval)
     log(LOG_PLAIN) << "abnormal exit: exit code=" << retval << endLog;
 
-  /* if file exists then delete it otherwise just ignore no file error */
+  /* if .done file exists then delete it otherwise just ignore no file error */
   io_stream::remove ("cygfile://" + scriptName + ".done");
 
-  io_stream::move ("cygfile://" + scriptName,
-                   "cygfile://" + scriptName + ".done");
+  /* don't rename the script as .done if it didn't run successfully */
+  if (!retval)
+    io_stream::move ("cygfile://" + scriptName,
+                     "cygfile://" + scriptName + ".done");
 
   return retval;
 }
