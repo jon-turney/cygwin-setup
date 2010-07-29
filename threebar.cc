@@ -208,9 +208,7 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
       }
     case WM_APP_POSTINSTALL_THREAD_COMPLETE:
       {
-	// Re-enable and "Push" the Next button
-	GetOwner ()->SetButtons (PSWIZB_NEXT);
-	GetOwner ()->PressButton (PSBTN_NEXT);
+	GetOwner ()->SetActivePageByID (lParam);
 	break;
       }
     case WM_APP_START_SITE_INFO_DOWNLOAD:
