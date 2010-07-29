@@ -64,6 +64,7 @@ static const char *cvsid =
 #include "prereq.h"
 #include "threebar.h"
 #include "desktop.h"
+#include "postinstallresults.h"
 
 #include "getopt++/GetOption.h"
 #include "getopt++/BoolOption.h"
@@ -117,8 +118,9 @@ set_cout ()
     }
 }
 
-// Other threads talk to this page, so we need to have it externable.
+// Other threads talk to these pages, so we need to have it externable.
 ThreeBarProgressPage Progress;
+PostInstallResultsPage PostInstallResults;
 
 // This is a little ugly, but the decision about where to log occurs
 // after the source is set AND the root mount obtained
@@ -197,6 +199,7 @@ main_display ()
   Chooser.Create ();
   Prereq.Create ();
   Progress.Create ();
+  PostInstallResults.Create ();
   Desktop.Create ();
 
   // Add pages to sheet
@@ -210,6 +213,7 @@ main_display ()
   MainWindow.AddPage (&Chooser);
   MainWindow.AddPage (&Prereq);
   MainWindow.AddPage (&Progress);
+  MainWindow.AddPage (&PostInstallResults);
   MainWindow.AddPage (&Desktop);
 
   // Create the PropSheet main window
