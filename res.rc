@@ -422,6 +422,25 @@ BEGIN
 
 END
 
+IDD_POSTINSTALL DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_W, 142
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE |
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup - Running postinstall scripts"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
+                    0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Postinstall script errors",IDC_STATIC_HEADER_TITLE
+                    ,7,0,258,8,NOT WS_GROUP
+    LTEXT           "The following errors occured executing postinstall scripts",
+                    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    EDITTEXT        IDC_POSTINSTALL_EDIT,7,41,303,124,WS_VSCROLL | WS_HSCROLL |
+                    ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL |
+                    ES_AUTOVSCROLL
+
+END
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Manifest
@@ -506,9 +525,9 @@ BEGIN
        "\r\n"
        "Full: Show all packages.\r\n"
        "\r\n"
-       "Pending: Show only packages that are about to be installed, removed, "
-       "or upgraded.  This tells you what is going to change when you press "
-       "'Next'.\r\n"
+       "Partial: Show only packages that are about to be installed, removed, "
+       "or upgraded.  This tells you everything that setup is about to change "
+       "when you press 'Next'.\r\n"
        "\r\n"
        "Up To Date: Show installed packages that need no action because they "
        "are at the desired version already.\r\n"
