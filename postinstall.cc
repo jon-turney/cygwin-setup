@@ -32,12 +32,18 @@ static const char *cvsid =
 #include "resource.h"
 #include "threebar.h"
 #include "Exception.h"
+#include "postinstallresults.h"
 
-#include <algorithm>
+#include <sstream>
 
 using namespace std;
 
 extern ThreeBarProgressPage Progress;
+extern PostInstallResultsPage PostInstallResults;
+
+// ---------------------------------------------------------------------------
+//
+// ---------------------------------------------------------------------------
 
 class RunFindVisitor : public FindVisitor
 {
@@ -61,33 +67,62 @@ private:
   vector<Script> *_scripts;
 };
 
-class RunScript : public unary_function<Script const &, int>
+// ---------------------------------------------------------------------------
+//
+// ---------------------------------------------------------------------------
+
+class RunScript
 {
 public:
-  RunScript(const std::string& name, int num) : _num(num), _cnt(0)
+  RunScript(const std::string& name, const vector<Script> &scripts) : _name(name), _scripts(scripts), _cnt(0)
     {
       Progress.SetText2 (name.c_str());
-      Progress.SetBar1 (_cnt, _num);
+      Progress.SetBar1 (0, _scripts.size());
     }
   virtual ~RunScript()
     {
       Progress.SetText3 ("");
     }
-  int operator() (Script const &aScript) 
+  int run_one(Script const &aScript)
     {
       int retval;
       Progress.SetText3 (aScript.fullName().c_str());
       retval = aScript.run();
       ++_cnt;
-      Progress.SetBar1 (_cnt, _num);
+      Progress.SetBar1 (_cnt, _scripts.size());
       return retval;
     }
+  void run_all(std::string &s)
+  {
+    bool package_name_recorded = FALSE;
+
+    for (std::vector <Script>::const_iterator j = _scripts.begin();
+         j != _scripts.end();
+         j++)
+      {
+        int retval = run_one(*j);
+
+        if ((retval != 0) && (retval != -ERROR_INVALID_DATA))
+          {
+            if (!package_name_recorded)
+              {
+                s = s + "Package: " + _name + "\r\n";
+                package_name_recorded = TRUE;
+              }
+
+            std::ostringstream fs;
+            fs << "\t" <<  j->baseName() << " exit code " << retval << "\r\n";
+            s = s + fs.str();
+          }
+      }
+  }
 private:
-  int _num;
+  std::string _name;
+  const vector<Script> &_scripts;
   int _cnt;
 };
 
-static void
+static std::string
 do_postinstall_thread (HINSTANCE h, HWND owner)
 {
   Progress.SetText1 ("Running...");
@@ -108,26 +143,39 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
 	packages.push_back(&pkg);
       ++i;
     }
+
+  std::string s = "";
+
+  // For each package we installed, we noted anything installed into /etc/postinstall.
+  // run those scripts now
   int numpkg = packages.size() + 1;
   int k = 0;
   for (i = packages.begin (); i != packages.end (); ++i)
     {
       packagemeta & pkg = **i;
 
-      for_each (pkg.installed.scripts().begin(), pkg.installed.scripts().end(),
-		RunScript(pkg.name, pkg.installed.scripts().size()));
+      RunScript scriptRunner(pkg.name, pkg.installed.scripts());
+      scriptRunner.run_all(s);
 
       ++k;
       Progress.SetBar2 (k, numpkg);
     }
+
+  // Look for any scripts in /etc/postinstall which haven't been renamed .done,
+  // and try to run them...
   std::string postinst = cygpath ("/etc/postinstall");
   vector<Script> scripts;
   RunFindVisitor myVisitor (&scripts);
-  Progress.SetBar1 (0, 1);
   Find (postinst).accept (myVisitor);
-  for_each (scripts.begin(), scripts.end(),
-	    RunScript("No package", scripts.size()));
+
+  {
+    RunScript scriptRunner("No package", scripts);
+    scriptRunner.run_all(s);
+  }
+
   Progress.SetBar2 (numpkg, numpkg);
+
+  return s;
 }
 
 static DWORD WINAPI
@@ -138,10 +186,14 @@ do_postinstall_reflector (void *p)
 
   try
   {
-    do_postinstall_thread ((HINSTANCE) context[0], (HWND) context[1]);
+    std::string s = do_postinstall_thread ((HINSTANCE) context[0], (HWND) context[1]);
+
+    // Tell the postinstall results page the results string
+    PostInstallResults.SetResultsString(s);
 
     // Tell the progress page that we're done running scripts
-    Progress.PostMessage (WM_APP_POSTINSTALL_THREAD_COMPLETE);
+    Progress.PostMessage (WM_APP_POSTINSTALL_THREAD_COMPLETE,
+                          s.empty() ? IDD_DESKTOP : IDD_POSTINSTALL);
   }
   TOPLEVEL_CATCH("postinstall");
 
