@@ -1,3 +1,24 @@
+2010-07-29  Jon TURNEY <jon.turney@dronecode.org.uk>
+
+        * resource.h (IDD_POSTINSTALL, IDC_POSTINSTALL_EDIT):  Add
+	resource identifiers for postinstall results page.
+        * res.rc (IDD_POSTINSTALL): Add dialog resource for postinstall
+	results page.
+        * postinstallresults.h: New file.
+        * postinstallresults.cc: New file.
+        * main.cc (main_display): Add a PostInstallResultsPage to the
+        wizard.
+        * Makefile.am (setup_SOURCES): Add new files.
+        * threebar.cc (OnMessageApp): Allow WM_APP_POSTINSTALL_THREAD_COMPLETE
+        to select the next page shown.
+        * postinstall.cc (do_postinstall_thread)
+        (do_postinstall_reflector): Collect results of running scripts
+        and compose a reporting message which we pass to the postinstall
+        results page.  Select postinstall results page next if there are
+        results to show, otherwise desktop setup page as before.
+        * script.cc (run): Don't rename as .done scripts which didn't run
+        successfully.
+
 2010-07-26  Andy Koppe  <andy.koppe@gmail.com>
 
 	* PickView.cc (PickView::views::caption): Rename "Partial" view 
