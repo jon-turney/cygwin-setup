@@ -42,7 +42,7 @@ static void ignore_line (void);
 %x descriptionstate
 %x eolstate
 
-STR	[!a-zA-Z0-9_./:\+-]+
+STR	[!a-zA-Z0-9_./:\+~-]+
 
 %%
 
