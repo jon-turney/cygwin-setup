@@ -1,3 +1,8 @@
+2010-07-31  Dave Korn  <dave.korn.cygwin@gmail.com>
+
+	* install.cc (Installer::installOne): Also record zero-sized
+	tarballs as successfully installed.
+
 2010-07-30  Jon TURNEY <jon.turney@dronecode.org.uk>
 
 	* postinstall.cc (do_postinstall_reflector): Fix typo

@@ -301,7 +301,10 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                error condition.
 	       Same goes for tar archives consisting of a big block of
 	       all zero bytes (the famous 46 bytes tar archives). */
-            ;
+	    {
+	      if (ver.Type () == package_binary)
+		pkgm.installed = ver;
+	    }
           else
             {
               note (NULL, IDS_ERR_OPEN_READ, source.Cached (),
