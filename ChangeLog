@@ -5,7 +5,7 @@
 
 2010-07-30  Jon TURNEY <jon.turney@dronecode.org.uk>
 
-	* postinstall.cc (do_postinstall_reflector): Fix typo
+	* postinstall.cc (do_postinstall_reflector): Fix typo.
 
 2010-07-30  Christopher Faylor  <me+cygwin@cgf.cx>
 
@@ -13,28 +13,27 @@
 
 2010-07-29  Jon TURNEY <jon.turney@dronecode.org.uk>
 
-        * resource.h (IDD_POSTINSTALL, IDC_POSTINSTALL_EDIT):  Add
-	resource identifiers for postinstall results page.
-        * res.rc (IDD_POSTINSTALL): Add dialog resource for postinstall
-	results page.
-        * postinstallresults.h: New file.
-        * postinstallresults.cc: New file.
-        * main.cc (main_display): Add a PostInstallResultsPage to the
-        wizard.
-        * Makefile.am (setup_SOURCES): Add new files.
-        * threebar.cc (OnMessageApp): Allow WM_APP_POSTINSTALL_THREAD_COMPLETE
-        to select the next page shown.
-        * postinstall.cc (do_postinstall_thread)
-        (do_postinstall_reflector): Collect results of running scripts
-        and compose a reporting message which we pass to the postinstall
-        results page.  Select postinstall results page next if there are
-        results to show, otherwise desktop setup page as before.
-        * script.cc (run): Don't rename as .done scripts which didn't run
-        successfully.
+	* resource.h (IDD_POSTINSTALL, IDC_POSTINSTALL_EDIT): Add resource
+	identifiers for postinstall results page.
+	* res.rc (IDD_POSTINSTALL): Add dialog resource for postinstall results
+	page.
+	* postinstallresults.h: New file.
+	* postinstallresults.cc: New file.
+	* main.cc (main_display): Add a PostInstallResultsPage to the wizard.
+	* Makefile.am (setup_SOURCES): Add new files.
+	* threebar.cc (OnMessageApp): Allow WM_APP_POSTINSTALL_THREAD_COMPLETE
+	to select the next page shown.
+	* postinstall.cc (do_postinstall_thread)
+	(do_postinstall_reflector): Collect results of running scripts and
+	compose a reporting message which we pass to the postinstall results
+	page.  Select postinstall results page next if there are results to
+	show, otherwise desktop setup page as before.
+	* script.cc (run): Don't rename as .done scripts which didn't run
+	successfully.
 
 2010-07-26  Andy Koppe  <andy.koppe@gmail.com>
 
-	* PickView.cc (PickView::views::caption): Rename "Partial" view 
+	* PickView.cc (PickView::views::caption): Rename "Partial" view
 	to "Pending".
 	* res.rc (IDS_VIEWBUTTON_TOOLTIP): Ditto.
 
@@ -1462,41 +1461,41 @@
 	* ini.cc, ini.h, resource.h, res.rc, netio.cc, Makefile.am,
 	configure.ac, libgetopt++/src/OptionSet.cc: Modified files.
 
-  2008-06-21  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-21  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* ini.cc (do_remote_ini):  Revert misbegotten removal of
 	not-always-superfluous-after-all added slash in URLs.
 
-  2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* gpg-packet.h (GPG_KEY_SEXPR_BUF_SIZE):  Move from here ...
 	* crypto.h (GPG_KEY_SEXPR_BUF_SIZE):  ... to here.
 	(GPG_KEY_MAX_COEFF_SIZE):  Add related definition.
 
-  2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* gpg-packet.cc (walk_packets_1):  Check packet length field is
 	valid sane and possible to avoid malicious manipulation.
 	* ChangeLog:  Corrected date on previous commit.
 
-  2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-18  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* crypto.cc (add_key_from_sexpr):  Use real buffer size, not debug
 	constant size.
 
-  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* crypto.cc (verify_ini_file_sig):  Actually set init-once flag!
 
-  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* crypto.cc (KeepUntrustedKeysOption):  Fix helpstring punctuation.
 
-  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* crypto.cc (verify_ini_file_sig):  Fix two minor logic errors.
 
-  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* ini.h (current_ini_sig_name):  Declare extern.
 	* ini.cc (current_ini_sig_name):  New variable.
@@ -1505,13 +1504,13 @@
 	download the matching sig file for any setup.bz2 or setup.ini
 	and use it to verify or discard the download.
 
-  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* resource.h (IDS_SIG_INVALID, IDS_CRYPTO_ERROR):  Reserve IDs for
 	two new message strings.
 	* res.rc (IDS_SIG_INVALID, IDS_CRYPTO_ERROR):  Define the text.
 
-  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* Makefile.am (setup_SOURCES):  Add new files crypto.cc, crypto.h,
 	cyg-pubkey.h, gpg-packet.cc, gpg-packet.h. KeysSetting.cc and
@@ -1519,7 +1518,7 @@
 	* crypto.cc, crypto.h, gpg-packet.cc, gpg-packet.h, KeysSetting.cc,
 	KeysSetting.h:  New files.  Adds gpg sig verification support.
 
-  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* Makefile.am (DIST_SUBDIRS, SUBDIRS):  Add libgpg-error and
 	libgcrypt subdirs.
@@ -1534,20 +1533,20 @@
 	* gpg-error-config-fake:  New shell script to redirect libgcrypt
 	sub-configure into looking for newly-built libgpg-error.
 
-  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* setup/libgpg-error/:  Fresh import of upstream sources of
 	libgpg-error-1.6.tar.bz2 from http://www.gnupg.org/
 	* setup/libgcrypt/:  Fresh import of upstream sources of
 	libgcrypt-1.4.1.tar.bz2 from http://www.gnupg.org/
 
-  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* netio.cc (NetIO::set_url):  Avoid double-free bug on delete
 	by setting path to a strdup of url rather than using the same
 	pointer value twice.
 
-  2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
+2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* cygwin.pub:  Add reference copy of Cygwin setup signing key.
 	* gpg-key-to-s-expr.sh:  New bash script.  Outputs textual
