@@ -1,3 +1,7 @@
+2010-08-05  Andy Koppe  <andy.koppe@gmail.com>
+
+	* res.rc (IDD_PREREQ DIALOG): Tweak wording on dependency page.
+
 2010-07-31  Dave Korn  <dave.korn.cygwin@gmail.com>
 
 	* install.cc (Installer::installOne): Also record zero-sized

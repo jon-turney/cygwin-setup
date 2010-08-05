@@ -385,9 +385,9 @@ BEGIN
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     LTEXT           "Unmet Dependencies Found",IDC_STATIC_HEADER_TITLE
                     ,7,0,258,8,NOT WS_GROUP
-    LTEXT           "The following packages are required but have not been "
-                    "selected.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
-    CONTROL         "&Install these packages to meet dependencies (RECOMMENDED)"
+    LTEXT           "The following packages are required to satisfy "
+                    "dependencies.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    CONTROL         "&Select required packages (RECOMMENDED)"
                     ,IDC_PREREQ_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
                     7,167,225,14
     EDITTEXT        IDC_PREREQ_EDIT,7,41,303,124,WS_VSCROLL | WS_HSCROLL |
