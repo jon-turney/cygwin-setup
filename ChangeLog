@@ -1,3 +1,8 @@
+2010-08-06  Andy Koppe  <andy.koppe@gmail.com>
+
+	* res.rc (IDS_VIEWBUTTON_TOOLTIP): Rename "Partial" view
+	to "Pending" (again).
+
 2010-08-05  Andy Koppe  <andy.koppe@gmail.com>
 
 	* res.rc (IDD_PREREQ DIALOG): Tweak wording on dependency page.
