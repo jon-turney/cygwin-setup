@@ -24,6 +24,7 @@ static const char *cvsid =
 #include <io.h>
 #include <ctype.h>
 #include <process.h>
+#include <queue>
 
 #include "prereq.h"
 #include "dialog.h"
@@ -150,47 +151,57 @@ bool
 PrereqChecker::isMet ()
 {
   packagedb db;
-  bool foundUnmet = false;
 
   // unmet is static - clear it each time this is called
   unmet.clear ();
-  
-  // loop through each package
-  for (vector <packagemeta *>::iterator n = db.packages.begin ();
-        n != db.packages.end (); ++n)
-    {
-      // if the package is installed or selected to be installed...
-      if ((*n)->desired)
-        {
-          // loop through each dependency
-          for (vector <vector <PackageSpecification *> *>::iterator i = 
-                (*n)->desired.depends ()->begin ();
-                i != (*n)->desired.depends ()->end (); ++i)
-            {
-              // XXX: the following assumes that there is only a single
-              // node in each OR clause, which is currently the case.
-              // if setup is ever pushed to use AND/OR in "depends:"
-              // lines this will have to be updated
-              PackageSpecification *spec = (*i)->at(0);
-                  
-              packagemeta *pack = db.findBinary (*spec);
-              if (!pack)
-                continue;  // asking for a package that doesn't exist - error?
 
-              if (pack->desired && spec->satisfies (pack->desired))
+  // packages that need to be checked for dependencies
+  queue <packagemeta *> todo;
+
+  // go through all packages, adding desired ones to the initial work list
+  for (vector <packagemeta *>::iterator p = db.packages.begin ();
+        p != db.packages.end (); ++p)
+    {
+      if ((*p)->desired)
+        todo.push (*p);
+    }
+
+  // churn through the work list
+  while (!todo.empty ())
+    {
+      // get the first package off the work list
+      packagemeta *pack = todo.front ();
+      todo.pop ();
+
+      // Fetch the dependencies of the package. This assumes that the
+      // dependencies of the prev, curr, and exp versions are all the same.
+      vector <vector <PackageSpecification *> *> *deps = pack->curr.depends ();
+
+      // go through the package's dependencies
+      for (vector <vector <PackageSpecification *> *>::iterator d =
+            deps->begin (); d != deps->end (); ++d)
+        {
+          // XXX: the following assumes that there is only a single
+          // node in each OR clause, which is currently the case.
+          // if setup is ever pushed to use AND/OR in "depends:"
+          // lines this will have to be updated
+          PackageSpecification *dep_spec = (*d)->at(0);
+          packagemeta *dep = db.findBinary (*dep_spec);
+          
+          if (dep && !(dep->desired && dep_spec->satisfies (dep->desired)))
+            {
+              // we've got an unmet dependency
+              if (unmet.find (dep) == unmet.end ())
                 {
-                  // dependency met
+                  // newly found dependency: add to worklist
+                  todo.push (dep);
                 }
-              else
-                {                  
-                  foundUnmet = true;
-                  unmet[pack].push_back (*n);
-                }
+              unmet[dep].push_back (pack);
             }
         }
     }
-    
-  return !foundUnmet;
+
+  return unmet.empty ();
 }
 
 /* Formats 'unmet' as a string for display to the user.  */
