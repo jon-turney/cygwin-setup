@@ -213,7 +213,10 @@ PrereqChecker::getUnmetString (std::string &s)
   map <packagemeta *, vector <packagemeta *>, packagemeta_ltcomp>::iterator i;
   for (i = unmet.begin(); i != unmet.end(); i++)
     {
-      s = s + "Package: " + std::string(i->first->name) + "\r\n\tRequired by: ";
+      s = s + i->first->name
+	    + "\t(" + i->first->trustp (theTrust).Canonical_version ()
+	    + ")\r\n\t" + i->first->SDesc ()
+	    + "\r\n\tRequired by: ";
       for (unsigned int j = 0; j < i->second.size(); j++)
         {
           s += i->second[j]->name;
