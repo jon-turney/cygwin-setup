@@ -1,5 +1,20 @@
 2010-08-10  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
+	Fix compatibility with GCC 4.x.
+	* Makefile.am (setup_LDFLAGS): Pass -static to compiler instead of
+	linker so that libgcc is statically linked as well.
+	(autoload.o): Disable optimization.
+	* localdir.cc (browse_cb): Fix "jump to case label crosses
+	initialization" error.
+	* mklink2.cc (sfli): Fix "non-local variable uses anonymous type"
+	warning.
+	* ntdll.h: Fix "redeclared without dllimport attribute: previous
+	dllimport ignored" warnings.
+	* package_message.h (display): Fix "'exit' was not declared in this
+	scope" error.
+
+2010-08-10  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
 	* Makefile.am: Treat libgetopt++ as full-fledged SUBDIRS.
 	(setup_LDADD): Always link against included libgetopt++.
 

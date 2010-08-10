@@ -111,7 +111,7 @@ mkcygsymlink (const char *from, const char *to)
 			: mkcygsymlink_9x (from, to);
 }
 
-struct {
+static struct {
   FILE_LINK_INFORMATION fli;
   WCHAR namebuf[32768];
 } sfli;

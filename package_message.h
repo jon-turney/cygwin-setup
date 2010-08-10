@@ -15,6 +15,7 @@
 
 #include "UserSettings.h"
 #include "state.h"
+#include <stdlib.h>
 #include <windows.h>
 
 class packagemessage

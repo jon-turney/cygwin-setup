@@ -114,7 +114,7 @@ setup_LDADD = \
 	libinilex.a \
 	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error \
 	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -llzma -lbz2 -lz 
-setup_LDFLAGS = -mwindows -Wl,-static -static-libtool-libs
+setup_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 setup_SOURCES = \
 	AntiVirus.cc \
 	AntiVirus.h \
@@ -282,6 +282,9 @@ setup_SOURCES = \
 	csu_util/version_compare.h \
 	libmd5-rfc/md5.c \
 	libmd5-rfc/md5.h
+
+# autoload code does not optimize properly with gcc-4.x
+autoload.o: CFLAGS += -O0
 
 VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
                $(srcdir)/ChangeLog)

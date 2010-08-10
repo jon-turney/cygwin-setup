@@ -152,12 +152,14 @@ browse_cb (HWND h, UINT msg, LPARAM lp, LPARAM data)
 	SendMessage (h, BFFM_SETSELECTION, TRUE, (LPARAM) local_dir.c_str());
       break;
     case BFFM_SELCHANGED:
-      // Make a note of each new dir we successfully select, so that
-      // we know where to create the new directory if an invalid name
-      // is entered in the text box.
-      LPITEMIDLIST pidl = reinterpret_cast<LPITEMIDLIST>(lp);
-      SHGetPathFromIDList (pidl, dirname);
-      break;
+      {
+        // Make a note of each new dir we successfully select, so that
+        // we know where to create the new directory if an invalid name
+        // is entered in the text box.
+        LPITEMIDLIST pidl = reinterpret_cast<LPITEMIDLIST>(lp);
+        SHGetPathFromIDList (pidl, dirname);
+        break;
+      }
     case BFFM_VALIDATEFAILED:
       // See if user wants to create a dir in the last successfully-selected.
       CHAR tempname[MAX_PATH];

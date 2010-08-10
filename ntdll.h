@@ -14,6 +14,8 @@
 #ifndef SETUP_NTDLL_H
 #define SETUP_NTDLL_H
 
+#define NTOSAPI
+
 #include "ddk/ntapi.h"
 #include "ddk/ntifs.h"
 
