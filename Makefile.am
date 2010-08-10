@@ -15,9 +15,7 @@
 #
 # Makefile for Cygwin installer
 
-INST_SUBDIRS:=@subdirs@
-DIST_SUBDIRS:=${INST_SUBDIRS} tests
-SUBDIRS:=tests
+SUBDIRS := @subdirs@ tests
 
 ## DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
@@ -63,8 +61,7 @@ EXTRA_DIST = \
 # knows about that already)
 BUILT_SOURCES = \
 	setup_version.c \
-	iniparse.h \
-	${INST_SUBDIRS}
+	iniparse.h
 
 CLEANFILES = setup_version.c
 
@@ -115,7 +112,7 @@ libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
 
 setup_LDADD = \
 	libinilex.a \
-	-Linst/lib -lgetopt++ -lgcrypt -lgpg-error \
+	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error \
 	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -llzma -lbz2 -lz 
 setup_LDFLAGS = -mwindows -Wl,-static -static-libtool-libs
 setup_SOURCES = \
@@ -308,6 +305,3 @@ setup-src:
 	sort | tar -T - -cjf ${CURDIR}/$$ver-src.tar.bz2;\
 	echo $$ver-src.tar.bz2; exec rm -f $$ver
 
-.PHONY: ${INST_SUBDIRS}
-${INST_SUBDIRS}:
-	${MAKE} -C $@ install

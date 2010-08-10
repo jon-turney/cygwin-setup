@@ -1,3 +1,8 @@
+2010-08-10  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* Makefile.am: Treat libgetopt++ as full-fledged SUBDIRS.
+	(setup_LDADD): Always link against included libgetopt++.
+
 2010-08-08  Corinna Vinschen  <corinna@vinschen.de>
 
 	* prereq.cc (PrereqChecker::getUnmetString): Improve dependency list
