@@ -49,7 +49,6 @@ EXTRA_DIST = \
 	choose-rtarrow.bmp \
 	choose-spin.bmp \
 	cygwin.ico \
-	doconfigure \
 	libmd5-rfc/README \
 	libmd5-rfc/md5main.c \
 	setup.exe.manifest \

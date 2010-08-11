@@ -1,3 +1,12 @@
+2010-08-11  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* bootstrap.sh: Allow running from a builddir. Run configure
+	unless NOCONFIGURE is defined.
+	* doconfigure: Remove.
+	* Makefile.am (EXTRA_DIST): Remove doconfigure.
+	* README: Document that bootstrap.sh runs configure.
+	Remove reference to doconfigure.
+
 2010-08-10  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	* configure.in: Check for prerequisites' headers.

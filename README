@@ -29,6 +29,7 @@ a source tarball, or if you want to make changes to the build system.
 Build commands:
 1) Skip this step if building from a source tarball.
    $ ./bootstrap.sh
+   This will automatically handle step 2 as well, so proceed to step 3.
 
 2) Configure using the following set of options.
    $ ./configure -C --disable-shared --host=i686-pc-mingw32 \
@@ -43,8 +44,6 @@ Build commands:
    $ strip -s setup.exe
    Compress using UPX:
    $ upx -9 setup.exe
-
-As a convenient shortcut to steps 1 and 2 above you can use "./doconfigure".
 
 ABOUT BRANCHES:
 ---------------
