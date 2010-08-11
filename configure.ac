@@ -70,6 +70,15 @@ AC_CHECK_HEADERS(alloca.h \
 		 string \
 		 string.h )
 
+AC_CHECK_HEADER(zlib.h, , missing_deps="$missing_deps zlib")
+AC_CHECK_HEADER(bzlib.h, , missing_deps="$missing_deps libbz2")
+AC_CHECK_HEADER(lzma.h, , missing_deps="$missing_deps liblzma")
+AC_CHECK_HEADER(gcrypt.h, , missing_deps="$missing_deps libgcrypt")
+
+if test -n "$missing_deps"; then
+	AC_MSG_ERROR([missing prerequisites: $missing_deps])
+fi
+
 prefix=`pwd`/inst; mkdir -p "$prefix"
 exec_prefix=$prefix
 ac_configure_args="$ac_configure_args --disable-shared"

@@ -74,7 +74,7 @@ inilint_extras =
 endif
 
 inilint_LDADD = \
-	libinilex.a libgetopt++/libgetopt++.la
+	libgetopt++/libgetopt++.la
 inilint_SOURCES = \
 	filemanip.cc \
 	filemanip.h \
@@ -86,6 +86,7 @@ inilint_SOURCES = \
 	LogSingleton.h \
 	IniDBBuilder.h \
 	inilintmain.cc \
+	inilex.ll \
 	iniparse.yy \
 	IniParseFeedback.cc \
 	IniParseFeedback.h \
@@ -105,13 +106,7 @@ inilint_SOURCES = \
 	String++.h \
 	$(inilint_extras)
 
-# workaround to allow omitting -Werror on inilex.cc.
-noinst_LIBRARIES = libinilex.a
-libinilex_a_SOURCES = inilex.ll
-libinilex_a_CXXFLAGS = $(BASECXXFLAGS)
-
 setup_LDADD = \
-	libinilex.a \
 	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error \
 	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -llzma -lbz2 -lz 
 setup_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
@@ -170,6 +165,7 @@ setup_SOURCES = \
 	IniDBBuilder.h \
 	IniDBBuilderPackage.cc \
 	IniDBBuilderPackage.h \
+	inilex.ll \
 	iniparse.yy \
 	IniParseFeedback.cc \
 	IniParseFeedback.h \

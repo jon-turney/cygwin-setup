@@ -35,6 +35,7 @@ static void ignore_line (void);
 %}
 
 /*%option debug */
+%option nounput
 %option noyywrap
 %option yylineno
 %option never-interactive

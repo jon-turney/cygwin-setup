@@ -1,5 +1,13 @@
 2010-08-10  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
+	* configure.in: Check for prerequisites' headers.
+	* Makefile.am: Remove libinilex.a library, instead...
+	(inilint_SOURCES): Add inilex.ll. (setup_SOURCES): Ditto.
+	* inilex.ll: Use option nounput to avoid "defined but not used"
+	warning from yyunput().
+
+2010-08-10  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
 	Fix compatibility with GCC 4.x.
 	* Makefile.am (setup_LDFLAGS): Pass -static to compiler instead of
 	linker so that libgcc is statically linked as well.
