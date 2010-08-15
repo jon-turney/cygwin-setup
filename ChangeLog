@@ -1,3 +1,10 @@
+2010-08-15  Andy Koppe  <andy.koppe@gmail.com>
+
+	* postinstall.cc (PostInstallResultsPage::OnNext):
+	Remove postinstall script error message box.
+	* res.rc (IDS_POSTINSTALL): Try to make postinstall errors
+	less scary.
+
 2010-08-11  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	* bootstrap.sh: Allow running from a builddir. Run configure

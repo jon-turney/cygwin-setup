@@ -433,9 +433,11 @@ BEGIN
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     LTEXT           "Postinstall script errors",IDC_STATIC_HEADER_TITLE
                     ,7,0,258,8,NOT WS_GROUP
-    LTEXT           "The following errors occured executing postinstall scripts",
+    LTEXT           "These do not necessarily mean that affected packages "
+                    "will fail to function properly, but please check "
+                    "/var/log/setup.log.full and report any problems.",
                     IDC_STATIC,21,9,239,16,NOT WS_GROUP
-    EDITTEXT        IDC_POSTINSTALL_EDIT,7,41,303,124,WS_VSCROLL | WS_HSCROLL |
+    EDITTEXT        IDC_POSTINSTALL_EDIT,7,41,303,112,WS_VSCROLL | WS_HSCROLL |
                     ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL |
                     ES_AUTOVSCROLL
 

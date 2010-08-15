@@ -54,15 +54,6 @@ PostInstallResultsPage::OnActivate()
 long
 PostInstallResultsPage::OnNext ()
 {
-  // one or more postinstall scripts failed to run successfully
-  // installation may be broken
-  MessageBox (NULL,
-              "You will need to investigate and correct these errors "
-              "before your Cygwin installation will function properly.\n"
-              "Check setup.log for details.",
-              "ERROR - postinstall scripts failed",
-              MB_OK | MB_ICONERROR | MB_SETFOREGROUND | MB_TOPMOST);
-
   return IDD_DESKTOP;
 }
 
