@@ -97,10 +97,10 @@ PrereqPage::OnNext ()
     {
       // breakage imminent!  danger, danger
       int res = MessageBox (h, 
-          "If you continue without correcting the listed conflicts, your "
-          "Cygwin installation will not function properly.\r\n"
-          "We strongly recommend that you let Setup install the listed packages.\r\n\r\n"
-          "Are you sure you want to proceed?",
+          "The listed packages are required for packages depending on them to "
+          "work.  We strongly recommend that you allow Setup to select them."
+          "\r\n\r\n"
+          "Are you sure you want to proceed without these packages?",
           "WARNING - Required Packages Not Selected",
           MB_YESNO | MB_ICONEXCLAMATION | MB_DEFBUTTON2);
       if (res == IDNO)

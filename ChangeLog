@@ -1,3 +1,10 @@
+2010-08-18  Andy Koppe  <andy.koppe@gmail.com>
+
+	* res.rc (IDD_PREREQ): Say "Resolving Dependencies" instead of 
+	"Unmet Dependencies found"
+	* prereq.cc (PrereqPage::OnNext): Tone down message box about
+	missing dependencies.
+
 2010-08-15  Andy Koppe  <andy.koppe@gmail.com>
 
 	* postinstall.cc (PostInstallResultsPage::OnNext):
