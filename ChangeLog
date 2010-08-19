@@ -1,3 +1,8 @@
+2010-08-19  Andy Koppe  <andy.koppe@gmail.com>
+
+	* package_meta.h (packagemeta::trustp): Update non-experimental 
+	packages too when Exp is selected.
+
 2010-08-18  Andy Koppe  <andy.koppe@gmail.com>
 
 	* res.rc (IDD_PREREQ): Say "Resolving Dependencies" instead of 

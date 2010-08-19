@@ -94,9 +94,9 @@ public:
   std::string action_caption () const;
   packageversion trustp (trusts const t) const
   {
-    return t == TRUST_PREV ? (prev ? prev : (curr ? curr : installed))
-         : t == TRUST_CURR ? (curr ? curr : installed)
-	 : exp ? exp : installed;
+    return (t == TRUST_PREV && prev) ? prev 
+         : (t == TRUST_TEST && exp) ? exp
+         : curr ? curr : installed;
   }
 
   std::string name;			/* package name, like "cygwin" */
