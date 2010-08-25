@@ -1,3 +1,7 @@
+2010-08-25  Andy Koppe  <andy.koppe@gmail.com>
+	* script.cc (init_run_script): Set CYGWINFORALL="-A" for
+	postinstall/preremove scripts when installing for all users.
+
 2010-08-19  Andy Koppe  <andy.koppe@gmail.com>
 
 	* package_meta.h (packagemeta::trustp): Update non-experimental 

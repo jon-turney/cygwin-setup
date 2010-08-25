@@ -32,6 +32,8 @@ static const char *cvsid =
 #include "io_stream.h"
 #include "script.h"
 #include "mkdir.h"
+#include "state.h"
+#include "resource.h"
 #if HAVE_ALLOCA_H
 #include <alloca.h>
 #else
@@ -103,6 +105,8 @@ init_run_script ()
     }
 
   SetEnvironmentVariable ("CYGWINROOT", get_root_dir ().c_str());
+  SetEnvironmentVariable ("CYGWINFORALL",
+                          (root_scope == IDC_ROOT_SYSTEM) ? "-A" : NULL);
   sanitize_PATH ();
   SetEnvironmentVariable ("SHELL", "/bin/bash");
   SetEnvironmentVariable ("TEMP", backslash (cygpath ("/tmp")).c_str ());
