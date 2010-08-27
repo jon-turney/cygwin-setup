@@ -1,4 +1,5 @@
 2010-08-25  Andy Koppe  <andy.koppe@gmail.com>
+
 	* script.cc (init_run_script): Set CYGWINFORALL="-A" for
 	postinstall/preremove scripts when installing for all users.
 
