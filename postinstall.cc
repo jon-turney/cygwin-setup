@@ -161,13 +161,29 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
       Progress.SetBar2 (k, numpkg);
     }
 
-  // Look for any scripts in /etc/postinstall which haven't been renamed .done,
-  // and try to run them...
+  // Look for any scripts in /etc/postinstall which haven't been renamed .done
   std::string postinst = cygpath ("/etc/postinstall");
   vector<Script> scripts;
   RunFindVisitor myVisitor (&scripts);
   Find (postinst).accept (myVisitor);
 
+  // Remove anything which we just tried to run (so we don't try twice)
+  for (i = packages.begin (); i != packages.end (); ++i)
+    {
+       packagemeta & pkg = **i;
+       for (std::vector<Script>::const_iterator j = pkg.installed.scripts().begin();
+            j != pkg.installed.scripts().end();
+            j++)
+         {
+           std::vector<Script>::iterator p = find(scripts.begin(), scripts.end(), *j);
+           if (p != scripts.end())
+             {
+               scripts.erase(p);
+             }
+         }
+    }
+
+  // and try to run what's left...
   {
     RunScript scriptRunner("No package", scripts);
     scriptRunner.run_all(s);
