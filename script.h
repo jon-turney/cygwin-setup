@@ -35,6 +35,7 @@ public:
    or command.com (9x).  Returns the exit status of the process, or 
    negative error if any.  */
   int run() const;
+  bool operator == (const Script s) { return s.scriptName == scriptName; } ;
 private:
   std::string scriptName;
   static char const ETCPostinstall[];
