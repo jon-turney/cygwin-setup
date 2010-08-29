@@ -1,3 +1,9 @@
+2010-08-29  Jon TURNEY <jon.turney@dronecode.org.uk>
+
+	* postinstall.cc (do_postinstall_thread): Don't run postinstall
+	scripts belonging to a just installed package twice.
+	* script.h (Script): Add operator ==
+
 2010-08-25  Andy Koppe  <andy.koppe@gmail.com>
 
 	* script.cc (init_run_script): Set CYGWINFORALL="-A" for
