@@ -34,6 +34,7 @@ static const char *cvsid =
 #include "Exception.h"
 #include "postinstallresults.h"
 
+#include <algorithm>
 #include <sstream>
 
 using namespace std;

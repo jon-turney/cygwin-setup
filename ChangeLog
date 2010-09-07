@@ -1,3 +1,7 @@
+2010-09-07  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* postinstall.cc: Add #include <algorithm> to fix build with gcc-4.x.
+
 2010-08-29  Jon TURNEY <jon.turney@dronecode.org.uk>
 
 	* postinstall.cc (do_postinstall_thread): Don't run postinstall
