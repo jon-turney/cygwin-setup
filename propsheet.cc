@@ -441,7 +441,7 @@ bool
 PropSheet::SetActivePage (int i)
 {
   // Posts a message to the message queue, so this won't block
-  return static_cast < bool > (::PropSheet_SetCurSel (GetHWND (), NULL, i));
+  return static_cast < bool > (PropSheet_SetCurSel (GetHWND (), NULL, i));
 }
 
 bool
@@ -449,18 +449,18 @@ PropSheet::SetActivePageByID (int resource_id)
 {
   // Posts a message to the message queue, so this won't block
   return static_cast < bool >
-    (::PropSheet_SetCurSelByID (GetHWND (), resource_id));
+    (PropSheet_SetCurSelByID (GetHWND (), resource_id));
 }
 
 void
 PropSheet::SetButtons (DWORD flags)
 {
   // Posts a message to the message queue, so this won't block
-  ::PropSheet_SetWizButtons (GetHWND (), flags);
+  PropSheet_SetWizButtons (GetHWND (), flags);
 }
 
 void
 PropSheet::PressButton (int button)
 {
-  ::PropSheet_PressButton (GetHWND (), button);
+  PropSheet_PressButton (GetHWND (), button);
 }

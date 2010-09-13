@@ -1,3 +1,12 @@
+2010-09-13  Václav Haisman  <v.haisman@sh.cvut.cz>
+
+	* propsheet.cc (PropSheet::SetActivePage): Remove :: from call to
+	PropSheet_SetCurSel.
+	(PropSheet::SetActivePageByID): Remove :: from call to
+	PropSheet_SetCurSelByID.
+	(PropSheet::SetButtons): Remove :: from call to PropSheet_SetWizButtons.
+	(PropSheet::PressButton): Remove :: from call to PropSheet_PressButton.
+
 2010-09-07  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	* postinstall.cc: Add #include <algorithm> to fix build with gcc-4.x.
