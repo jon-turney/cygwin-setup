@@ -36,6 +36,7 @@ compress_bz::compress_bz (io_stream * parent) : peeklen (0), position (0)
   owns_original = true;
 
   initialisedOk = 0;
+  endReached = 0;
   bufN = 0;
   writing = 0;
   strm.bzalloc = 0;
@@ -57,6 +58,8 @@ compress_bz::read (void *buffer, size_t len)
 {
   if (!initialisedOk || writing)
     return EBADF;
+  if (endReached)
+    return 0;
   if (len == 0)
     return 0;
 
@@ -113,6 +116,7 @@ compress_bz::read (void *buffer, size_t len)
 	}
       if (ret == BZ_STREAM_END)
 	{
+	  endReached = 1;
 	  position += len - strm.avail_out;
 	  return len - strm.avail_out;
 	}

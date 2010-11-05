@@ -186,17 +186,17 @@ do_remote_ini (HWND owner)
 	    {
 	      io_stream *uncompressed = new io_stream_memory ();
 
-	      if (io_stream::copy (bz2_stream, uncompressed) != 0 ||
-		  bz2_stream->error () == EIO)
+	      if ((io_stream::copy (bz2_stream, uncompressed) != 0) ||
+                  (bz2_stream->error() != 0))
 		{
 		  /* There was a problem decompressing bz2.  */
-		  delete bz2_stream;
-		  delete uncompressed;
 		  ini_file = NULL;
 		  log (LOG_PLAIN) <<
-		    "Warning: Problem encountered while uncompressing " <<
+		    "Warning: Error code " << bz2_stream->error() << " occurred while uncompressing " <<
 		    current_ini_name << " - possibly truncated or corrupt bzip2"
 		    " file.  Retrying with uncompressed version." << endLog;
+		  delete bz2_stream;
+		  delete uncompressed;
 		}
 	      else
 		{
