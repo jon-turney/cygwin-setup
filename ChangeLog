@@ -1,3 +1,7 @@
+2010-11-06  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * res.rc (IDD_NET): Make text referring to IE5 more general
+
 2010-11-04 Jon TURNEY <jon.turney@dronecode.org.uk>
 
 	* compress_bz.h (compress): Add endReached flag.
