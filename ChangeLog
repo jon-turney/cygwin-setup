@@ -1,5 +1,10 @@
 2010-11-07  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+        * propsheet.cc (PropSheetProc): Set the big icon for the propsheet
+        window
+
+2010-11-07  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
         * ini.cc (GuiParseFeedback::progress, GuiParseFeedback::iniName):
         Update all the text in the progress dialog whilst parsing .ini file,
         not just the top line.

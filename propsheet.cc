@@ -271,6 +271,11 @@ PropSheetProc (HWND hwndDlg, UINT uMsg, LPARAM lParam)
       return TRUE;
     case PSCB_INITIALIZED:
       {
+        /*
+          PropSheet() with PSH_USEICONID only sets the small icon,
+          so we must set the big icon ourselves
+        */
+        SendMessage(hwndDlg, WM_SETICON, ICON_BIG, (LPARAM)LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_CYGWIN)));
 	/*
 	  Hook into the window proc.
 	  We need to catch some messages for resizing.
