@@ -1,5 +1,11 @@
 2010-11-07  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+        * ini.cc (GuiParseFeedback::progress, GuiParseFeedback::iniName):
+        Update all the text in the progress dialog whilst parsing .ini file,
+        not just the top line.
+
+2010-11-07  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
         * choose.cc (OnBack): Move PlaceDialog(false) so window is resized in
         'Install from Local Directory' mode as well.
 

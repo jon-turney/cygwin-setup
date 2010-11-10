@@ -89,10 +89,16 @@ public:
 	    << " bytes of ini file read)" << endLog; */
 	}
       Progress.SetBar1(pos, max);
+
+      static char buf[100];
+      sprintf(buf, "%d %%  (%ldk/%ldk)", lastpct, pos/1000, max/1000);
+      Progress.SetText3(buf);
     }
   virtual void iniName (const std::string& name)
     {
-      Progress.SetText1 (("Parsing ini file \"" + name + "\"").c_str());
+      Progress.SetText1 ("Parsing...");
+      Progress.SetText2 (name.c_str());
+      Progress.SetText3 ("");
     }
   virtual void babble(const std::string& message)const
     {
