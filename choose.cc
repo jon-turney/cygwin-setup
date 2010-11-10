@@ -313,13 +313,12 @@ ChooserPage::OnNext ()
 long
 ChooserPage::OnBack ()
 {
+  PlaceDialog (false);
+
   if (source == IDC_SOURCE_CWD)
     return IDD_LOCAL_DIR;
   else
-    {
-      PlaceDialog (false);
-      return IDD_SITE;
-    }
+    return IDD_SITE;
 }
 
 void

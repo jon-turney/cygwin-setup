@@ -1,3 +1,8 @@
+2010-11-07  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * choose.cc (OnBack): Move PlaceDialog(false) so window is resized in
+        'Install from Local Directory' mode as well.
+
 2010-11-06  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
         * res.rc (IDD_NET): Make text referring to IE5 more general
