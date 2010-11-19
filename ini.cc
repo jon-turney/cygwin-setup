@@ -357,7 +357,7 @@ do_ini_thread_reflector(void* p)
     bool succeeded = do_ini_thread((HINSTANCE)context[0], (HWND)context[1]);
 
     // Tell the progress page that we're done downloading
-    Progress.PostMessage(WM_APP_SETUP_INI_DOWNLOAD_COMPLETE, 0, succeeded);
+    Progress.PostMessageNow(WM_APP_SETUP_INI_DOWNLOAD_COMPLETE, 0, succeeded);
   }
   TOPLEVEL_CATCH("ini");
 

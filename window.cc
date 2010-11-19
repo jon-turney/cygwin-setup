@@ -292,7 +292,7 @@ Window::MessageLoop ()
 }
 
 void
-Window::PostMessage (UINT uMsg, WPARAM wParam, LPARAM lParam)
+Window::PostMessageNow (UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   ::PostMessage (GetHWND (), uMsg, wParam, lParam);
 }

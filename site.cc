@@ -403,14 +403,14 @@ do_download_site_info_thread (void *p)
           NULL, MB_OK);
 
       // Tell the progress page that we're done downloading
-      Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_NET);
+      Progress.PostMessageNow (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_NET);
     }
     else 
     {
       downloaded = true;
       // Everything worked, go to the site select page
       // Tell the progress page that we're done downloading
-      Progress.PostMessage (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_SITE);
+      Progress.PostMessageNow (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_SITE);
     }
   }
   TOPLEVEL_CATCH("site");

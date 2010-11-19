@@ -156,7 +156,7 @@ ThreeBarProgressPage::OnActivate ()
       break;
     }
 
-  Window::PostMessage (task);
+  Window::PostMessageNow (task);
 }
 
 bool
@@ -175,7 +175,7 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 	if (lParam == IDD_S_INSTALL)
 	  {
 	    // Download is complete and we want to go on to the install.
-	    Window::PostMessage (WM_APP_START_INSTALL);
+	    Window::PostMessageNow (WM_APP_START_INSTALL);
 	  }
 	else if (lParam != 0)
 	  {
@@ -197,7 +197,7 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_APP_INSTALL_THREAD_COMPLETE:
       {
 	// Install is complete and we want to go on to the postinstall.
-	Window::PostMessage (WM_APP_START_POSTINSTALL);
+	Window::PostMessageNow (WM_APP_START_POSTINSTALL);
 	break;
       }
     case WM_APP_START_POSTINSTALL:

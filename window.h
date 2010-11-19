@@ -122,7 +122,7 @@ public:
 
   UINT IsButtonChecked (int nIDButton) const;
 
-  void PostMessage (UINT uMsg, WPARAM wParam = 0, LPARAM lParam = 0);
+  void PostMessageNow (UINT uMsg, WPARAM wParam = 0, LPARAM lParam = 0);
 
   virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
   {

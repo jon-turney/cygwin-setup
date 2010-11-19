@@ -465,7 +465,7 @@ DesktopSetupPage::OnFinish ()
 long 
 DesktopSetupPage::OnUnattended ()
 {
-  Window::PostMessage (WM_APP_UNATTENDED_FINISH);
+  Window::PostMessageNow (WM_APP_UNATTENDED_FINISH);
   // GetOwner ()->PressButton(PSBTN_FINISH);
   return -1;
 }

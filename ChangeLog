@@ -1,3 +1,9 @@
+2010-11-19  Christopher Faylor  <me+cygwin@cgf.cx>
+
+	Throughout, change all occurrences of "PostMessage" to PostMessageNow.
+	This works around problem where w32api uses a #define which calls the
+	Windows API version of PostMessage directly, confusing g++ 3.4.4.
+
 2010-11-07  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
         * propsheet.cc (PropSheetProc): Set the big icon for the propsheet

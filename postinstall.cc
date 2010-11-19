@@ -209,7 +209,7 @@ do_postinstall_reflector (void *p)
     PostInstallResults.SetResultsString(s);
 
     // Tell the progress page that we're done running scripts
-    Progress.PostMessage (WM_APP_POSTINSTALL_THREAD_COMPLETE, 0,
+    Progress.PostMessageNow (WM_APP_POSTINSTALL_THREAD_COMPLETE, 0,
                           s.empty() ? IDD_DESKTOP : IDD_POSTINSTALL);
   }
   TOPLEVEL_CATCH("postinstall");
