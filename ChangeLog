@@ -1,3 +1,8 @@
+2010-11-17  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * postinstall.cc (do_postinstall_thread): Refer to "Unknown package"
+        rather than "No package"
+
 2010-11-19  Christopher Faylor  <me+cygwin@cgf.cx>
 
 	Throughout, change all occurrences of "PostMessage" to PostMessageNow.

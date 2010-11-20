@@ -186,7 +186,7 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
 
   // and try to run what's left...
   {
-    RunScript scriptRunner("No package", scripts);
+    RunScript scriptRunner("Unknown package", scripts);
     scriptRunner.run_all(s);
   }
 
