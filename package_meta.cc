@@ -497,6 +497,7 @@ packagemeta::set_action (packageversion const &default_version)
 	  if (i != versions.end ())
 	    {
 	      desired = *i;
+	      desired.pick (desired.accessible(), this);
 	      if (desired.sourcePackage().accessible ())
 		desired.sourcePackage ().pick (sourceticked, NULL);
 	      else

@@ -1,5 +1,10 @@
 2010-11-17  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+        * package_meta.cc (set_action): Always set the binary tick box
+        when selecting a specific version (if binary is available)
+
+2010-11-17  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
         * postinstall.cc (do_postinstall_thread): Refer to "Unknown package"
         rather than "No package"
 
