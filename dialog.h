@@ -38,6 +38,7 @@ bool do_fromcwd(HINSTANCE _h, HWND owner);
 D (do_ini);
 D (do_install);
 D (do_postinstall);
+D (do_prereq_check);
 
 #undef D
 

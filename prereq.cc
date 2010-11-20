@@ -38,6 +38,7 @@ static const char *cvsid =
 #include "package_db.h"
 #include "package_meta.h"
 #include "msg.h"
+#include "Exception.h"
 
 // Sizing information.
 static ControlAdjuster::ControlInfo PrereqControlsInfo[] = {
@@ -152,6 +153,10 @@ PrereqChecker::isMet ()
 {
   packagedb db;
 
+  Progress.SetText1 ("Checking prerequisites...");
+  Progress.SetText2 ("");
+  Progress.SetText3 ("");
+
   // unmet is static - clear it each time this is called
   unmet.clear ();
 
@@ -166,12 +171,22 @@ PrereqChecker::isMet ()
         todo.push (*p);
     }
 
+  int max = todo.size();
+  int pos = 0;
+
   // churn through the work list
   while (!todo.empty ())
     {
       // get the first package off the work list
       packagemeta *pack = todo.front ();
       todo.pop ();
+
+      pos++;
+      Progress.SetText2 (pack->name.c_str());
+      static char buf[100];
+      sprintf(buf, "%d %%  (%d/%d)", pos * 100 / max, pos, max);
+      Progress.SetText3(buf);
+      Progress.SetBar1(pos, max);
 
       // Fetch the dependencies of the package. This assumes that the
       // dependencies of the prev, curr, and exp versions are all the same.
@@ -260,4 +275,61 @@ PrereqChecker::selectMissing ()
               " for installation." << endLog;
         }
     }
+}
+
+// ---------------------------------------------------------------------------
+// progress page glue
+// ---------------------------------------------------------------------------
+
+static int
+do_prereq_check_thread(HINSTANCE h, HWND owner)
+{
+  PrereqChecker p;
+  int retval;
+
+  if (p.isMet ())
+    {
+      if (source == IDC_SOURCE_CWD)
+	Progress.SetActivateTask (WM_APP_START_INSTALL);  // install
+      else
+	Progress.SetActivateTask (WM_APP_START_DOWNLOAD); // start download
+      retval = IDD_INSTATUS;
+    }
+  else
+    {
+      // rut-roh, some required things are not selected
+      retval = IDD_PREREQ;
+    }
+
+  return retval;
+}
+
+static DWORD WINAPI
+do_prereq_check_reflector (void *p)
+{
+  HANDLE *context;
+  context = (HANDLE *) p;
+
+  try
+  {
+    int next_dialog = do_prereq_check_thread ((HINSTANCE) context[0], (HWND) context[1]);
+
+    // Tell the progress page that we're done prereq checking
+    Progress.PostMessageNow (WM_APP_PREREQ_CHECK_THREAD_COMPLETE, 0, next_dialog);
+  }
+  TOPLEVEL_CATCH("prereq_check");
+
+  ExitThread(0);
+}
+
+static HANDLE context[2];
+
+void
+do_prereq_check (HINSTANCE h, HWND owner)
+{
+  context[0] = h;
+  context[1] = owner;
+
+  DWORD threadID;
+  CreateThread (NULL, 0, do_prereq_check_reflector, context, 0, &threadID);
 }

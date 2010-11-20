@@ -291,23 +291,10 @@ ChooserPage::OnNext ()
   logResults();
 #endif
 
-  PrereqChecker p;
-  long retval;
-  if (p.isMet ())
-    {
-      if (source == IDC_SOURCE_CWD)
-	Progress.SetActivateTask (WM_APP_START_INSTALL);  // install
-      else
-	Progress.SetActivateTask (WM_APP_START_DOWNLOAD); // start download
-      retval = IDD_INSTATUS;
-    }
-  else
-    {
-      // rut-roh, some required things are not selected
-      retval = IDD_PREREQ;
-    }
   PlaceDialog (false);
-  return retval;
+  Progress.SetActivateTask (WM_APP_PREREQ_CHECK);
+
+  return IDD_INSTATUS;
 }
 
 long

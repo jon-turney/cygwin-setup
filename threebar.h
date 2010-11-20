@@ -34,6 +34,8 @@
 // desktop.h: WM_APP_UNATTENDED_FINISH WM_APP+8
 #define WM_APP_START_POSTINSTALL           WM_APP+9
 #define WM_APP_POSTINSTALL_THREAD_COMPLETE WM_APP+10
+#define WM_APP_PREREQ_CHECK                WM_APP+11
+#define WM_APP_PREREQ_CHECK_THREAD_COMPLETE WM_APP+12
 
 class ThreeBarProgressPage:public PropertyPage
 {

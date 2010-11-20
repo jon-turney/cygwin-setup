@@ -1,3 +1,16 @@
+2010-11-19  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * choose.cc (OnNext): Remove PrereqChecker call, instead use new
+        WM_APP_PREREQ_CHECK state of Progress dialog.
+        * threebar.h (WM_APP_PREREQ_CHECK)
+        (WM_APP_PREREQ_CHECK_THREAD_COMPLETE): Add new messages.
+        * threebar.cc (OnActivate, OnMessageApp): Use single bar mode for
+        WM_APP_PREREQ_CHECK state.  Handle new messages.
+        * dialog.h (do_prereq_check_thread): Add prototype.
+        * prereq.cc (isMet, do_prereq_check_thread)
+        (do_prereq_check_reflector, do_prereq_check): Add progress reporting
+        during isMet, and thread containing moved PrereqChecker code.
+
 2010-11-17  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
         * package_meta.cc (set_action): Always set the binary tick box

@@ -147,6 +147,7 @@ ThreeBarProgressPage::OnActivate ()
     {
     case WM_APP_START_SITE_INFO_DOWNLOAD:
     case WM_APP_START_SETUP_INI_DOWNLOAD:
+    case WM_APP_PREREQ_CHECK:
       // For these tasks, show only a single progress bar.
       EnableSingleBar ();
       break;
@@ -164,6 +165,17 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   switch (uMsg)
     {
+    case WM_APP_PREREQ_CHECK:
+      {
+	// Start the prereq-check thread
+	do_prereq_check (GetInstance (), GetHWND ());
+	break;
+      }
+    case WM_APP_PREREQ_CHECK_THREAD_COMPLETE:
+      {
+        GetOwner ()->SetActivePageByID (lParam);
+        break;
+      }
     case WM_APP_START_DOWNLOAD:
       {
 	// Start the package download thread.
@@ -274,4 +286,5 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 
   return true;
+
 }
