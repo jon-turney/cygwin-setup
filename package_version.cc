@@ -30,6 +30,7 @@ static const char *cvsid =
 #include <algorithm>
 #include "download.h"
 #include "Exception.h"
+#include "csu_util/version_compare.h"
 
 using namespace std;
 
@@ -148,6 +149,18 @@ const std::string
 packageversion::Name () const
 {
   return data->Name ();
+}
+
+const std::string
+packageversion::Vendor_version() const
+{
+  return data->Vendor_version();
+}
+
+const std::string
+packageversion::Package_version() const
+{
+  return data->Package_version();
 }
 
 const std::string
@@ -493,6 +506,30 @@ std::vector <Script> &
 packageversion::scripts()
 {
   return data->scripts();
+}
+
+int
+packageversion::compareVersions(packageversion a, packageversion b)
+{
+  /* Compare Vendor_version */
+  int comparison = version_compare(a.Vendor_version(), b.Vendor_version());
+ 
+#if DEBUG
+  log (LOG_BABBLE) << "vendor version comparison " << a.Vendor_version() << " and " << b.Vendor_version() << ", result was " << comparison << endLog;
+#endif
+
+  if (comparison != 0)
+    {
+      return comparison;
+    }
+
+  /* Vendor_version are tied, compare Package_version */
+#if DEBUG
+  log (LOG_BABBLE) <<  "package version comparison " << a.Package_version() << " and " << b.Package_version() << ", result was " << comparison << endLog;
+#endif
+
+  comparison = version_compare(a.Package_version(), b.Package_version());
+  return comparison;
 }
 
 /* the parent data class */

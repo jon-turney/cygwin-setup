@@ -85,19 +85,20 @@ void
 cygpackage::setCanonicalVersion (const std::string& version)
 {
   canonical = version;
-  char *start = strchr (canonical.c_str(), '-');
-  char*curr=start;
+
+  const char *start = canonical.c_str();
+  const char *curr = strchr(start, '-');
+
   if (curr)
     {
-      char *next;
+      const char *next;
       while ((next = strchr (curr + 1, '-')))
 	curr = next;
-      /* curr = last - in the version string */
+
+      /* package version appears after the last '-' in the version string */
       packagev = curr + 1;
-      char tvendor [version.size() +1];
-      strcpy (tvendor, version.c_str());
-      tvendor[curr - start] = '\0';
-      vendor=tvendor;
+      /* vendor version is everything up to that last '-' */
+      vendor.assign(canonical.c_str(), (size_t)(curr - start));
     }
   else
     {

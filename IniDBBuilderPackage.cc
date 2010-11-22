@@ -505,6 +505,10 @@ IniDBBuilderPackage::add_correct_version()
            categories and requires are consistent for the same version across
            all mirrors
            */
+        /*
+          XXX: if the versions are equal but the size/md5sum are different,
+          we should alert the user, as they may not be getting what they expect...
+        */
         /* Copy the binary mirror across if this site claims to have an install */
         if (cbpv.source()->sites.size() )
           ver.source()->sites.push_back(site (cbpv.source()->sites.begin()->key));
@@ -522,34 +526,50 @@ IniDBBuilderPackage::add_correct_version()
 	currentSpec = NULL;
         cbpv = *n;
         merged = 1;
+#if DEBUG
+        log (LOG_BABBLE) << cp->name << " merged with an existing version " << cbpv.Canonical_version() << endLog;
+#endif
       }
+
   if (!merged)
-    cp->add_version (cbpv);
-  /* trust setting */
+    {
+      cp->add_version (cbpv);
+#if DEBUG
+      log (LOG_BABBLE) << cp->name << " version " << cbpv.Canonical_version() << " added" << endLog;
+#endif
+    }
+
+  /*
+    Should this version be the one selected for this package at a given
+    stability/trust setting?  After merging potentially multiple package
+    databases, we should pick the one with the highest version number.
+  */
+  packageversion *v = NULL;
   switch (trust)
   {
     case TRUST_CURR:
-      if (cp->currtimestamp < timestamp)
-      {
-        cp->currtimestamp = timestamp;
-        cp->curr = cbpv;
-      }
+      v = &(cp->curr);
     break;
     case TRUST_PREV:
-    if (cp->prevtimestamp < timestamp)
-    {
-        cp->prevtimestamp = timestamp;
-        cp->prev = cbpv;
-    }
+      v = &(cp->prev);
     break;
     case TRUST_TEST:
-    if (cp->exptimestamp < timestamp)
-    {
-        cp->exptimestamp = timestamp;
-        cp->exp = cbpv;
-    }
+      v = &(cp->exp);
     break;
   }
+
+  if (v)
+    {
+      int comparison = packageversion::compareVersions(cbpv, *v);
+
+      if ((bool)(*v))
+        log (LOG_BABBLE) << "package " << cp->name << " comparing versions " << cbpv.Canonical_version() << " and " << v->Canonical_version() << ", result was " << comparison << endLog;
+
+      if (comparison > 0)
+        {
+          *v = cbpv;
+        }
+    }
 }
 
 void

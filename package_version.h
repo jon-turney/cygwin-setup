@@ -145,6 +145,9 @@ public:
   void addScript(Script const &);
   std::vector <Script> &scripts();
 
+  /* utility function to compare package versions */
+  static int compareVersions(packageversion a, packageversion b);
+
 private:
   _packageversion *data; /* Invariant: * data is always valid */
 };

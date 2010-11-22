@@ -1,3 +1,17 @@
+2010-11-06  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * package_version.h (packageversion): Add compareVersion() utility
+        function.
+        * package_version.cc (Vendor_version, Package_version)
+        (compareVersions): Implement the Vendor_version() and Package_version()
+        accessor functions.  Add compareVersions() utility function.
+        * cygpackage.cc (setCanonicalVersion): Fix to extract vendor version
+        correctly.
+        * IniDBBuilderPackage.cc (add_correct_version): When multiple setup.ini's
+        offer different packages for the same stability level, use the package with
+        the highest version number rather than the package coming from the setup.ini
+        with the latest timestamp.
+
 2010-11-19  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
         * choose.cc (OnNext): Remove PrereqChecker call, instead use new
