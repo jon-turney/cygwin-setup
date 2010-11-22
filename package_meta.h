@@ -35,16 +35,14 @@ public:
   static void ScanDownloadedFiles();
   packagemeta (packagemeta const &);
   packagemeta (const std::string& pkgname):name (pkgname), key(pkgname), installed_from (),
-  prevtimestamp (0), currtimestamp (0),
-    exptimestamp (0), architecture (), priority(), visited_(false)
+    architecture (), priority(), visited_(false)
   {
   }
 
   packagemeta (const std::string& pkgname,
 	       const std::string& installedfrom):name (pkgname), key(pkgname),
 	       installed_from (installedfrom),
-    prevtimestamp (0), currtimestamp (0),
-    exptimestamp (0), architecture (), priority(), visited_(false)
+    architecture (), priority(), visited_(false)
   {
   }
 
@@ -120,14 +118,10 @@ public:
   packageversion installed;
   /* which one is listed as "prev" in our available packages db */
   packageversion prev;
-  /* And what was the timestamp of the ini it was found from */
-  unsigned int prevtimestamp;
   /* ditto for current - stable */
   packageversion curr;
-  unsigned int currtimestamp;
   /* and finally the experimental version */
   packageversion exp;
-  unsigned int exptimestamp;
   /* Now for the user stuff :] */
   /* What version does the user want ? */
   packageversion desired;

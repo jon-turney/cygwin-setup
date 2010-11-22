@@ -1,5 +1,11 @@
 2010-11-06  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+        * package_meta.h (packagemeta): Remove unused member variables for
+        storing timestamp of the setup.ini that package version came from.
+        * package_meta.cc (packagemeta): Ditto.
+
+2010-11-06  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
         * package_version.h (packageversion): Add compareVersion() utility
         function.
         * package_version.cc (Vendor_version, Package_version)

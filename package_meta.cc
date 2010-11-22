@@ -90,10 +90,10 @@ packagemeta::_actions::caption ()
 packagemeta::packagemeta (packagemeta const &rhs) :
   name (rhs.name), key (rhs.name), installed_from (), 
   categories (rhs.categories), versions (rhs.versions),
-  installed (rhs.installed), prev (rhs.prev), 
-  prevtimestamp (rhs.prevtimestamp), curr (rhs.curr),
-  currtimestamp (rhs.currtimestamp), exp (rhs.exp),
-  exptimestamp (rhs.exptimestamp), desired (rhs.desired),
+  installed (rhs.installed), prev (rhs.prev),
+  curr (rhs.curr),
+  exp (rhs.exp),
+  desired (rhs.desired),
   architecture (rhs.architecture), priority (rhs.priority),
   visited_(rhs.visited_)
 {
