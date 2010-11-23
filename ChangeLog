@@ -1,3 +1,8 @@
+2010-11-23  Corinna Vinschen  <corinna@vinschen.de>
+
+	* package_db.cc (ConnectedLoopFinder::doIt): Drop hardcoded base-passwd
+	dependency setting.  Fix condition for base-cygwin string check.
+
 2010-11-06  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
         * package_meta.h (packagemeta): Remove unused member variables for
