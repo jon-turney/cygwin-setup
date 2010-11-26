@@ -1,3 +1,8 @@
+2010-11-25  Corinna Vinschen  <corinna@vinschen.de>
+
+	* package_db.cc (ConnectedLoopFinder::doIt): Drop hardcoded base-cygwin
+	dependency setting.  Fix comment.
+
 2010-11-23  Corinna Vinschen  <corinna@vinschen.de>
 
 	* package_db.cc (ConnectedLoopFinder::doIt): Drop hardcoded base-passwd

@@ -242,19 +242,8 @@ ConnectedLoopFinder::doIt()
      sorting which would be a result of the below algorithm looking for
      strongly connected components in a directed graph.  Unfortunately it's
      not possible to order a directed graph with loops topologially.
-     UGLY, but we really have to make sure that "base-cygwin" runs first,
-     whatever the dependency loops come up with in future.
-     FIXME: Find another depnendecy mechanism which ensures this without
-            hardcoding. */
-  for (size_t i = 0; i < db.packages.size(); ++i)
-    {
-      packagemeta &pkg (*db.packages[i]);
-      if (pkg.installed && casecompare (pkg.name, "base-cygwin") == 0)
-	{
-	  visit (i);
-	  break;
-	}
-    }
+     So we always have to make sure that the really important packages don't
+     introduce dependency loops, since we can't do this from within setup. */
   for (size_t i = 0; i < db.packages.size(); ++i)
     {
       packagemeta &pkg (*db.packages[i]);
