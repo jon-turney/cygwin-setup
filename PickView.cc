@@ -175,10 +175,10 @@ PickView::setViewMode (views mode)
     {
       contents.ShowLabel (false);
       // iterate through every package
-      for (vector <packagemeta *>::iterator i = db.packages.begin ();
+      for (packagedb::packagecollection::iterator i = db.packages.begin ();
             i != db.packages.end (); ++i)
         {
-          packagemeta & pkg = **i;
+          packagemeta & pkg = *(i->second);
 
           if ( // "Full" : everything
               (view_mode == PickView::views::PackageFull)
@@ -463,10 +463,10 @@ PickView::init_headers (HDC dc)
      width of the sdesc for the pkg_col.  Also, if this is not a Category
      view, adjust the 'category' column so that the first NUM_CATEGORY_COL_WIDTH
      categories from each package fits.  */
-  for (vector <packagemeta *>::iterator n = db.packages.begin ();
+  for (packagedb::packagecollection::iterator n = db.packages.begin ();
        n != db.packages.end (); ++n)
     {
-      packagemeta & pkg = **n;
+      packagemeta & pkg = *(n->second);
       if (!showObsolete && isObsolete (pkg.categories))
         continue;
       if (pkg.installed)
@@ -972,10 +972,10 @@ PickView::defaultTrust (trusts trust)
 {
   this->deftrust = trust;
   packagedb db;
-  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+  for (packagedb::packagecollection::iterator i = db.packages.begin ();
        i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = **i;
+      packagemeta & pkg = *(i->second);
       if (pkg.installed
             || pkg.categories.find ("Base") != pkg.categories.end ()
             || pkg.categories.find ("Misc") != pkg.categories.end ())

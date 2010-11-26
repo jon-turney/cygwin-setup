@@ -150,7 +150,12 @@ ChooserPage::createListview ()
   if (!SetDlgItemText (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE) << "Failed to set View button caption %ld" <<
 	 GetLastError () << endLog;
-  for_each (db.packages.begin(), db.packages.end(), bind2nd(mem_fun(&packagemeta::set_requirements), chooser->deftrust));
+
+  for (packagedb::packagecollection::iterator i = db.packages.begin(); i != db.packages.end(); i++)
+    {
+      i->second->set_requirements(chooser->deftrust);
+    }
+
   /* FIXME: do we need to init the desired fields ? */
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_PREV, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
   rbset (GetHWND (), ta, IDC_CHOOSE_CURR);
@@ -281,7 +286,11 @@ ChooserPage::logResults()
 {
   log (LOG_BABBLE) << "Chooser results..." << endLog;
   packagedb db;
-  for_each (db.packages.begin (), db.packages.end (), mem_fun(&packagemeta::logSelectionStatus));
+
+  for (packagedb::packagecollection::iterator i = db.packages.begin(); i != db.packages.end(); i++)
+    {
+      i->second->logSelectionStatus();
+    }
 }
 
 long
@@ -312,10 +321,10 @@ void
 ChooserPage::keepClicked()
 {
   packagedb db;
-  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+  for (packagedb::packagecollection::iterator i = db.packages.begin ();
         i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = **i;
+      packagemeta & pkg = *(i->second);
       pkg.desired = pkg.installed;
     }
   chooser->refresh();
@@ -328,8 +337,12 @@ ChooserPage::changeTrust(trusts aTrust)
   chooser->defaultTrust (aTrust);
   packagedb db;
   db.markUnVisited ();
-  for_each (db.packages.begin (), db.packages.end (),
-            bind2nd (mem_fun (&packagemeta::set_requirements), aTrust));
+
+  for (packagedb::packagecollection::iterator i = db.packages.begin(); i != db.packages.end(); i++)
+    {
+      i->second->set_requirements(aTrust);
+    }
+
   chooser->refresh();
   PrereqChecker p;
   p.setTrust (aTrust);

@@ -69,10 +69,11 @@ public:
   void fillMissingCategory();
   void markUnVisited();
   void setExistence();
+  typedef std::map <std::string, packagemeta *> packagecollection;
   /* all seen binary packages */
-  static std::vector < packagemeta *> packages;
+  static packagecollection packages;
   /* all seen source packages */
-  static std::vector <packagemeta *> sourcePackages;
+  static packagecollection sourcePackages;
   /* all seen categories */
   typedef std::map <std::string, std::vector <packagemeta *>, casecompare_lt_op > categoriesType;
   static categoriesType categories;

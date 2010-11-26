@@ -1,3 +1,25 @@
+2010-11-19  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * IniDBBuilderPackage.cc (IniDBBuilderPackage): Remove db.packages vector
+        sorting.
+        (buildPackage, buildPackageSource): Change package collection from vector
+        to map.
+        * PickView.cc (setViewMode, init_headers, defaultTrust): Ditto.
+        * choose.cc (createListview, logResults, keepClicked)
+        (changeTrust): Ditto
+        * install.cc (do_install_thread): Ditto
+        * download.cc (do_download_thread): Ditto
+        * prereq.cc (isMet): Ditto
+        * package_meta.cc (ScanDownloadedFiles): Ditto
+        * package_db.h (packagedb): Ditto
+        * package_db.cc (packagedb, flush, markUnVisited, setExistence)
+        (fillMissingCategory): Ditto
+        (findBinary, findSource): Rewrite to locate packages in map rather than
+        searching the whole vector, for performance.
+        (ConnectedLoopFinder, doIt, visit): Rewrite to refer to package using a
+        packagemeta *, as an index into the vector of packages can no longer be
+        used.
+
 2010-11-25  Corinna Vinschen  <corinna@vinschen.de>
 
 	* package_db.cc (ConnectedLoopFinder::doIt): Drop hardcoded base-cygwin

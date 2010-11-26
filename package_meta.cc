@@ -711,10 +711,10 @@ packagemeta::ScanDownloadedFiles ()
    * and fill in the Cached attribute if it exists.
    */
   packagedb db;
-  for (vector <packagemeta *>::iterator n = db.packages.begin ();
+  for (packagedb::packagecollection::iterator n = db.packages.begin ();
        n != db.packages.end (); ++n)
     {
-      packagemeta & pkg = **n;
+      packagemeta & pkg = *(n->second);
       set<packageversion>::iterator i = pkg.versions.begin ();
       while (i != pkg.versions.end ())
 	{

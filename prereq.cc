@@ -164,11 +164,11 @@ PrereqChecker::isMet ()
   queue <packagemeta *> todo;
 
   // go through all packages, adding desired ones to the initial work list
-  for (vector <packagemeta *>::iterator p = db.packages.begin ();
+  for (packagedb::packagecollection::iterator p = db.packages.begin ();
         p != db.packages.end (); ++p)
     {
-      if ((*p)->desired)
-        todo.push (*p);
+      if (p->second->desired)
+        todo.push (p->second);
     }
 
   int max = todo.size();

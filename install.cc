@@ -584,10 +584,10 @@ do_install_thread (HINSTANCE h, HWND owner)
   vector <packagemeta *> install_q, uninstall_q, sourceinstall_q;
 
   packagedb db;
-  for (vector <packagemeta *>::iterator i = db.packages.begin ();
+  for (packagedb::packagecollection::iterator i = db.packages.begin ();
        i != db.packages.end (); ++i)
   {
-    packagemeta & pkg = **i;
+    packagemeta & pkg = *(i->second);
 
     if (pkg.desired.picked())
     {

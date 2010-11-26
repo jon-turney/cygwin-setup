@@ -97,7 +97,7 @@ packagedb::packagedb ()
 		  if (!pkg)
 		    {
 		      pkg = new packagemeta (pkgname, inst);
-		      packages.push_back (pkg);
+		      packages.insert (packagedb::packagecollection::value_type(pkgname, pkg));
 		      /* we should install a new handler then not check this...
 		       */
 		      //if (!pkg)
@@ -139,10 +139,10 @@ packagedb::flush ()
     return errno ? errno : 1;
 
   ndb->write ("INSTALLED.DB 2\n", strlen ("INSTALLED.DB 2\n"));
-  for (vector <packagemeta *>::iterator i = packages.begin ();
+  for (packagedb::packagecollection::iterator i = packages.begin ();
        i != packages.end (); ++i)
     {
-      packagemeta & pkgm = **i;
+      packagemeta & pkgm = *(i->second);
       if (pkgm.installed)
 	{
 	  /* size here is irrelevant - as we can assume that this install source
@@ -169,10 +169,10 @@ packagedb::flush ()
 packagemeta *
 packagedb::findBinary (PackageSpecification const &spec) const
 {
-  for (vector <packagemeta *>::iterator n = packages.begin ();
-       n != packages.end (); ++n)
+  packagedb::packagecollection::iterator n = packages.find(spec.packageName());
+  if (n != packages.end())
     {
-      packagemeta & pkgm = **n;
+      packagemeta & pkgm = *(n->second);
       for (set<packageversion>::iterator i=pkgm.versions.begin();
 	  i != pkgm.versions.end(); ++i)
 	if (spec.satisfies (*i))
@@ -184,31 +184,26 @@ packagedb::findBinary (PackageSpecification const &spec) const
 packagemeta *
 packagedb::findSource (PackageSpecification const &spec) const
 {
-  for (vector <packagemeta *>::iterator n=sourcePackages.begin();
-       n != sourcePackages.end(); ++n)
+  packagedb::packagecollection::iterator n = sourcePackages.find(spec.packageName());
+  if (n != sourcePackages.end())
     {
-      for (set<packageversion>::iterator i = (*n)->versions.begin();
-	   i != (*n)->versions.end(); ++i)
+      packagemeta & pkgm = *(n->second);
+      for (set<packageversion>::iterator i = pkgm.versions.begin();
+	   i != pkgm.versions.end(); ++i)
 	if (spec.satisfies (*i))
-	  return *n;
+	  return &pkgm;
     }
   return NULL;
 }
 
 /* static members */
 
-int
-  packagedb::installeddbread =
-  0;
-vector < packagemeta * > packagedb::packages;
-packagedb::categoriesType
-  packagedb::categories;
-vector <packagemeta *> packagedb::sourcePackages;
-PackageDBActions
-  packagedb::task =
-  PackageDB_Install;
-std::vector <packagemeta *> 
-packagedb::dependencyOrderedPackages;
+int packagedb::installeddbread = 0;
+packagedb::packagecollection packagedb::packages;
+packagedb::categoriesType packagedb::categories;
+packagedb::packagecollection packagedb::sourcePackages;
+PackageDBActions packagedb::task = PackageDB_Install;
+std::vector <packagemeta *> packagedb::dependencyOrderedPackages;
 
 #include "LogSingleton.h"
 #include <stack>
@@ -216,20 +211,25 @@ packagedb::dependencyOrderedPackages;
 class
 ConnectedLoopFinder
 {
-  public:
-  ConnectedLoopFinder();
-  void doIt();
+public:
+  ConnectedLoopFinder(void);
+  void doIt(void);
+private:
+  size_t visit (packagemeta *pkg);
+
   packagedb db;
   size_t visited;
-  std::vector<size_t> visitOrder;
-  size_t visit (size_t const nodeToVisit);
-  std::stack<size_t> nodesInStronglyConnectedComponent;
+
+  typedef std::map<packagemeta *, size_t> visitMap;
+  visitMap visitOrder;
+  std::stack<packagemeta *> nodesInStronglyConnectedComponent;
 };
 
 ConnectedLoopFinder::ConnectedLoopFinder() : visited(0)
 {
-  for (size_t counter = 0; counter < db.packages.size(); ++counter)
-    visitOrder.push_back(0);
+  for (packagedb::packagecollection::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
+    visitOrder.insert(visitMap::value_type(i->second, 0));
 }
 
 void
@@ -244,11 +244,12 @@ ConnectedLoopFinder::doIt()
      not possible to order a directed graph with loops topologially.
      So we always have to make sure that the really important packages don't
      introduce dependency loops, since we can't do this from within setup. */
-  for (size_t i = 0; i < db.packages.size(); ++i)
+  for (packagedb::packagecollection::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      packagemeta &pkg (*db.packages[i]);
-      if (pkg.installed && !visitOrder[i])
-	visit (i);
+      packagemeta &pkg (*(i->second));
+      if (pkg.installed && !visitOrder[&pkg])
+	visit (&pkg);
     }
   log (LOG_BABBLE) << "Visited: " << visited << " nodes out of "
                    << db.packages.size() << " while creating dependency order."
@@ -271,24 +272,31 @@ checkForInstalled (PackageSpecification *spec)
 }
 
 size_t
-ConnectedLoopFinder::visit(size_t const nodeToVisit)
+ConnectedLoopFinder::visit(packagemeta *nodeToVisit)
 {
-  if (!db.packages[nodeToVisit]->installed)
+  if (!nodeToVisit->installed)
     /* Can't visit this node, and it is not less than any visted node */
     return db.packages.size() + 1;
+
+  if (visitOrder[nodeToVisit])
+    return visitOrder[nodeToVisit];
+
   ++visited;
   visitOrder[nodeToVisit] = visited;
+
+#if DEBUG
+  log (LOG_PLAIN) << "visited '" << nodeToVisit->name << "', assigned id " << visited << endLog;
+#endif
 
   size_t minimumVisitId = visited;
   nodesInStronglyConnectedComponent.push(nodeToVisit);
 
-  vector <vector <PackageSpecification *> *>::iterator dp = db.packages[nodeToVisit]->installed.depends ()->begin();
+  vector <vector <PackageSpecification *> *>::const_iterator dp = nodeToVisit->installed.depends()->begin();
   /* walk through each and clause (a link in the graph) */
-  while (dp != db.packages[nodeToVisit]->installed.depends ()->end())
+  while (dp != nodeToVisit->installed.depends()->end())
     {
       /* check each or clause for an installed match */
-      vector <PackageSpecification *>::iterator i =
-	find_if ((*dp)->begin(), (*dp)->end(), checkForInstalled);
+      vector <PackageSpecification *>::const_iterator i = find_if ((*dp)->begin(), (*dp)->end(), checkForInstalled);
       if (i != (*dp)->end())
 	{
 	  /* we found an installed ok package */
@@ -296,16 +304,13 @@ ConnectedLoopFinder::visit(size_t const nodeToVisit)
 	  /* UGLY. Need to refactor. iterators in the outer would help as we could simply
 	   * vist the iterator
 	   */
-	   size_t nodeJustVisited = 0;
-	   while (nodeJustVisited < db.packages.size() && casecompare(db.packages[nodeJustVisited]->name, (*i)->packageName())) 
-	     ++nodeJustVisited;
-	   if (nodeJustVisited == db.packages.size())
+	  const packagedb::packagecollection::iterator n = db.packages.find((*i)->packageName());
+
+	  if (n == db.packages.end())
 	     log (LOG_PLAIN) << "Search for package '" << (*i)->packageName() << "' failed." << endLog;
 	   else
 	   {
-	     if (visitOrder[nodeJustVisited])
-	       minimumVisitId = std::min (minimumVisitId, visitOrder[nodeJustVisited]);
-	     else
+	       packagemeta *nodeJustVisited = n->second;
 	       minimumVisitId = std::min (minimumVisitId, visit (nodeJustVisited));
 	   }
 	  /* next and clause */
@@ -315,21 +320,21 @@ ConnectedLoopFinder::visit(size_t const nodeToVisit)
 	/* not installed or not available we ignore */
       ++dp;
     }
-  
+
   if (minimumVisitId == visitOrder[nodeToVisit])
   {
-    size_t popped;
+    packagemeta *popped;
     do {
       popped = nodesInStronglyConnectedComponent.top();
       nodesInStronglyConnectedComponent.pop();
-      db.dependencyOrderedPackages.push_back(db.packages[popped]);
+      db.dependencyOrderedPackages.push_back(popped);
       /* mark as displayed in a connected component */
       visitOrder[popped] = db.packages.size() + 2;
     } while (popped != nodeToVisit);
   }
-  
+
   return minimumVisitId;
-}  
+}
 
 PackageDBConnectedIterator
 packagedb::connectedBegin()
@@ -358,10 +363,10 @@ packagedb::connectedEnd()
 void
 packagedb::markUnVisited()
 {
-  for (vector <packagemeta *>::iterator n = packages.begin ();
+  for (packagedb::packagecollection::iterator n = packages.begin ();
        n != packages.end (); ++n)
     {
-      packagemeta & pkgm = **n;
+      packagemeta & pkgm = *(n->second);
       pkgm.visited(false);
     }
 }
@@ -372,20 +377,21 @@ packagedb::setExistence ()
   /* binary packages */
   /* Remove packages that are in the db, not installed, and have no 
      mirror info and are not cached for both binary and source packages. */
-  vector <packagemeta *>::iterator i = packages.begin ();
+  packagedb::packagecollection::iterator i = packages.begin ();
   while (i != packages.end ())
     {
-      packagemeta & pkg = **i;
+      packagemeta & pkg = *(i->second);
       if (!pkg.installed && !pkg.accessible() && 
-     !pkg.sourceAccessible() )
-   {
-   packagemeta *pkgm = *i;
-   delete pkgm;
-      i = packages.erase (i);
-  }
+          !pkg.sourceAccessible() )
+        {
+          packagemeta *pkgm = (*i).second;
+          delete pkgm;
+          packages.erase (i++);
+        }
       else
- ++i;
+        ++i;
     }
+
 #if 0
   /* remove any source packages which are not accessible */
   vector <packagemeta *>::iterator i = db.sourcePackages.begin();
@@ -407,8 +413,15 @@ packagedb::setExistence ()
 void
 packagedb::fillMissingCategory ()
 {
-  for_each(packages.begin(), packages.end(), visit_if(mem_fun(&packagemeta::setDefaultCategories), mem_fun(&packagemeta::hasNoCategories)));
-  for_each(packages.begin(), packages.end(), mem_fun(&packagemeta::addToCategoryAll));
-  for_each(packages.begin(), packages.end(), visit_if(mem_fun(&packagemeta::addToCategoryBase), mem_fun(&packagemeta::isManuallyWanted)));
+  for (packagedb::packagecollection::iterator i = packages.begin(); i != packages.end(); i++)
+    {
+      if (i->second->hasNoCategories())
+        i->second->setDefaultCategories();
+
+      i->second->addToCategoryAll();
+
+      if (i->second->isManuallyWanted())
+        i->second->addToCategoryBase();
+    }
 }
 

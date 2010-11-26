@@ -36,13 +36,8 @@ using namespace std;
 IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
 cp (0), cbpv (), cspv (), currentSpec (0), currentOrList (0), currentAndList (0), trust (0), _feedback (aFeedback){}
 
-inline bool lt_packagemeta(packagemeta *p1, packagemeta *p2) 
-{ return casecompare(p1->name, p2->name) < 0; }
-
 IniDBBuilderPackage::~IniDBBuilderPackage()
 {
-  packagedb db;
-  sort (db.packages.begin(), db.packages.end(), lt_packagemeta);
 }
 
 void
@@ -82,7 +77,7 @@ IniDBBuilderPackage::buildPackage (const std::string& name)
   if (!cp)
     {
       cp = new packagemeta (name);
-      db.packages.push_back (cp);
+      db.packages.insert (packagedb::packagecollection::value_type(cp->name,cp));
     }
   cbpv = cygpackage::createInstance (name, package_binary);
   cspv = packageversion ();
@@ -141,7 +136,7 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
       csp->prev = packageversion();
       csp->curr = packageversion();
       csp->exp = packageversion();
-      db.sourcePackages.push_back (csp);
+      db.sourcePackages.insert (packagedb::packagecollection::value_type(csp->name,csp));
     }
   /* create a source packageversion */
   cspv = cygpackage::createInstance (cbpv.Name(), package_source);
