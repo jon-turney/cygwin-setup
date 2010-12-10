@@ -1,3 +1,8 @@
+2010-11-26  Jon TURNEY <jon.turney@dronecode.org.uk>
+
+        * site.cc (init): Canonicalize mirror URLs to ensure the end
+        with a '/'.
+
 2010-11-19  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
         * IniDBBuilderPackage.cc (IniDBBuilderPackage): Remove db.packages vector

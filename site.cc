@@ -140,6 +140,12 @@ site_list_type::init (const string &_url, const string &_servername,
   servername = _servername;
   area = _area;
   location = _location;
+
+  /* Canonicalize URL to ensure it ends with a '/' */
+  if (url.at(url.length()-1) != '/')
+    url.append("/");
+
+  /* displayed_url is protocol and site name part of url */
   displayed_url = url.substr (0, url.find ("/", url.find (".")));
 
   key = string();
