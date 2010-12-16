@@ -190,7 +190,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
               {
                 // -2 == disable unattended mode, display page
                 // -1 == display page but stay in unattended mode (progress bars)
-                // 0 == skip to next page
+                // 0 == skip to next page (in propsheet sequence)
                 // IDD_* == skip to specified page
                 long nextwindow = OnUnattended();
                 if (nextwindow == -2)

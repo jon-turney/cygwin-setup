@@ -26,7 +26,9 @@ public:
   virtual void OnActivate ();
   virtual long OnNext ();
   virtual long OnBack ();
-  virtual long OnUnattended () { return 0; };
+  virtual long OnUnattended ();
+private:
+  long whatNext ();
 };
 
 class PrereqChecker

@@ -117,6 +117,13 @@ PrereqPage::OnNext ()
       PrereqChecker p;
       p.selectMissing ();
     }
+
+  return whatNext();
+}
+
+long
+PrereqPage::whatNext ()
+{
   if (source == IDC_SOURCE_CWD)
     {
       // Next, install
@@ -136,6 +143,18 @@ PrereqPage::OnBack ()
   return IDD_CHOOSE;
 }
 
+long
+PrereqPage::OnUnattended ()
+{
+  // in chooser-only mode, show this page so the user can choose to fix dependency problems or not
+  if (unattended_mode == chooseronly)
+    return -1;
+
+  // in unattended mode, carry on to download/install
+  // (this can only happen if there some kind of problem with dependencies, as all required dependencies
+  //  should be selected automatically by the chooser page in unattended mode, so we should never get here)
+  return whatNext();
+}
 
 // ---------------------------------------------------------------------------
 // implements class PrereqChecker
