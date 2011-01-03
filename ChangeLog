@@ -1,3 +1,7 @@
+2011-01-02  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * crypto.c (ExtraKeyOption): Correct option description.
+
 2010-12-16  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
 	* prereq.cc (OnNext, whatNext, OnUnattended): Fix PrereqPage::OnUnattended()

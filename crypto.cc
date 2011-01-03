@@ -46,7 +46,7 @@ static const char *cvsid =
 
 /*  Command-line options for specifying and controlling extra keys.  */
 static StringOption ExtraKeyOption ("", 'K', "pubkey",
-			"Path to extra public key file (gpg format)", true);
+			"URL of extra public key file (gpg format)", true);
 
 static StringOption SexprExtraKeyOption ("", 'S', "sexpr-pubkey",
 			"Extra public key in s-expr format", true);
