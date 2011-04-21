@@ -1,5 +1,9 @@
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+        * io_stream.cc (copy): Propagate errors.
+
+2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
         * compress_bz.cc (read, peek): Consistently return -1 and set lasterr
         on an error.
         * compress_gz.cc (read, write, peek): Ditto.
