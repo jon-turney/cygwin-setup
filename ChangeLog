@@ -1,5 +1,11 @@
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+        * compress_bz.cc (read, peek): Consistently return -1 and set lasterr
+        on an error.
+        * compress_gz.cc (read, write, peek): Ditto.
+
+2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
         * archive_tar_file.cc (read, write, peek, seek): Consistently return -1
         and set lasterr on an error.
 

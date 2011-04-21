@@ -231,7 +231,10 @@ compress_gz::read (void *buffer, size_t len)
   Byte *next_out;		/* == stream.next_out but not forced far (for MSDOS) */
 
   if (mode != 'r')
-    return Z_STREAM_ERROR;
+    {
+      z_err =  Z_STREAM_ERROR;
+      return -1;
+    }
 
   if (z_err == Z_DATA_ERROR || z_err == Z_ERRNO)
     return -1;
@@ -336,7 +339,10 @@ ssize_t
 compress_gz::write (const void *buffer, size_t len)
 {
   if (mode != 'w')
-    return Z_STREAM_ERROR;
+    {
+      z_err = Z_STREAM_ERROR;
+      return -1;
+    }
 
   stream.next_in = (Bytef *) buffer;
   stream.avail_in = len;
@@ -368,10 +374,16 @@ ssize_t
 compress_gz::peek (void *buffer, size_t len)
 {
   if (mode != 'r')
-    return Z_STREAM_ERROR;
+    {
+      z_err = Z_STREAM_ERROR;
+      return -1;
+    }
   /* can only peek 512 bytes */
   if (len > 512)
-    return ENOMEM;
+    {
+      z_err = ENOMEM;
+      return -1;
+    }
 
   if (len > peeklen)
     {

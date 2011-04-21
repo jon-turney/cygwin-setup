@@ -57,7 +57,10 @@ ssize_t
 compress_bz::read (void *buffer, size_t len)
 {
   if (!initialisedOk || writing)
-    return EBADF;
+    {
+      lasterr = EBADF;
+      return -1;
+    }
   if (endReached)
     return 0;
   if (len == 0)
@@ -143,10 +146,13 @@ ssize_t compress_bz::peek (void *buffer, size_t len)
       lasterr = EBADF;
       return -1;
     }
-  
+
   /* can only peek 512 bytes */
   if (len > 512)
-    return ENOMEM;
+    {
+      lasterr = ENOMEM;
+      return -1;
+    }
 
   if (len > peeklen)
     {
