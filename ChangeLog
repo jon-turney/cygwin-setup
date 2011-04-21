@@ -1,5 +1,12 @@
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+        * install.cc (extract_replace_on_reboot): New function containg code
+        extracted from...
+        (installOne): Report read errors differently to write errors
+        * archive.cc (extract_file): Distinguish read errors from write errors
+
+2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
         * io_stream.cc (copy): Propagate errors.
 
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>

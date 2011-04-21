@@ -127,7 +127,7 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	    delete in;
 	    delete tmp;
 	    io_stream::remove (destfilename);
-	    return 1;
+	    return 2;
 	  }
 	tmp->set_mtime (in->get_mtime ());
 	delete in;

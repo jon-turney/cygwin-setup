@@ -96,6 +96,10 @@ class Installer
                      packagesource &source,
                      const std::string& , const std::string&, HWND );
     int errors;
+  private:
+    bool extract_replace_on_reboot(archive *, const std::string&,
+                                   const std::string&, std::string);
+
 };
 
 Installer::Installer() : errors(0)
@@ -241,6 +245,74 @@ create_allow_protected_renames ()
   RegCloseKey (key);
 }
 
+bool
+Installer::extract_replace_on_reboot (archive *tarstream, const std::string& prefixURL,
+                                      const std::string& prefixPath, std::string fn)
+{
+  /* Extract a copy of the file with extension .new appended and
+     indicate it should be replaced on the next reboot.  */
+  if (archive::extract_file (tarstream, prefixURL, prefixPath,
+                             ".new") != 0)
+    {
+      log (LOG_PLAIN) << "Unable to install file " << prefixURL
+                      << prefixPath << fn << ".new" << endLog;
+      ++errors;
+      return true;
+    }
+  else
+    {
+      std::string s = cygpath ("/" + fn + ".new"),
+        d = cygpath ("/" + fn);
+
+      if (!IsWindowsNT())
+        {
+          /* Get the short file names */
+          char s2[MAX_PATH], d2[MAX_PATH];
+          unsigned int slen =
+            GetShortPathName (s.c_str (), s2, MAX_PATH),
+            dlen = GetShortPathName (d.c_str (), d2, MAX_PATH);
+
+          if (!slen || slen > MAX_PATH || !dlen || dlen > MAX_PATH)
+            replaceOnRebootFailed(fn);
+          else
+            if (!WritePrivateProfileString ("rename", d2, s2,
+                                            "WININIT.INI"))
+              replaceOnRebootFailed (fn);
+            else
+              replaceOnRebootSucceeded (fn, rebootneeded);
+        }
+      else
+        {
+          WCHAR sname[s.size () + 7];
+          WCHAR dname[d.size () + 7];
+          /* Windows 2000 has a bug:  Prepending \\?\ does not
+           * work in conjunction with MOVEFILE_DELAY_UNTIL_REBOOT.
+           * So in case of Windows 2000 we just convert the path
+           * to wide char and hope for the best. */
+          if (OSMajorVersion () == 5 && OSMinorVersion () == 0)
+            {
+              mbstowcs (sname, s.c_str (), s.size () + 7);
+              mbstowcs (dname, d.c_str (), d.size () + 7);
+            }
+          else
+            {
+              mklongpath (sname, s.c_str (), s.size () + 7);
+              mklongpath (dname, d.c_str (), d.size () + 7);
+            }
+          if (!MoveFileExW (sname, dname,
+                            MOVEFILE_DELAY_UNTIL_REBOOT |
+                            MOVEFILE_REPLACE_EXISTING))
+            replaceOnRebootFailed (fn);
+          else
+            {
+              create_allow_protected_renames ();
+              replaceOnRebootSucceeded (fn, rebootneeded);
+            }
+        }
+    }
+  return false;
+}
+
 #undef MessageBox
 #define MessageBox _custom_MessageBox
 
@@ -352,6 +424,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
     }
 
   bool error_in_this_package = false;
+  bool ignoreInUseErrors = unattended_mode;
   bool ignoreExtractErrors = unattended_mode;
 
   package_bytes = source.size;
@@ -373,107 +446,78 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
         pkgm.desired.addScript (Script (canonicalfn));
 
       bool firstIteration = true;
-      while (archive::extract_file (tarstream, prefixURL, prefixPath) != 0)
+      int extract_error = 0;
+      while ((extract_error = archive::extract_file (tarstream, prefixURL, prefixPath)) != 0)
         {
-          if (!ignoreExtractErrors)
+          switch (extract_error)
             {
-              char msg[fn.size() + 300];
-              sprintf (msg,
-                       "%snable to extract /%s -- the file is in use.\r\n"
-                       "Please stop %s Cygwin processes and select \"Retry\", or\r\n"
-                       "select \"Continue\" to go on anyway (you will need to reboot).\r\n",
-                       firstIteration?"U":"Still u", fn.c_str(), firstIteration?"all":"ALL");
-              switch (MessageBox (owner, msg, "In-use files detected",
-                       MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL))
-                {
-                  case IDRETRY:
-                    // retry
-                    firstIteration = false;
-                    continue;
-                  case IDCONTINUE:
-                    ignoreExtractErrors = true;
-                    break;
-                  default:
-                    break;
-                }
-              // fall through to previous functionality
-            }
-          if (NoReplaceOnReboot)
-            {
-              ++errors;
-              error_in_this_package = true;
-              log (LOG_PLAIN) << "Not replacing in-use file " << prefixURL
-                  << prefixPath << fn << endLog;
-            }
-          else
-            {
-              /* Extract a copy of the file with extension .new appended and
-                 indicate it should be replaced on the next reboot.  */
-              if (archive::extract_file (tarstream, prefixURL, prefixPath,
-                                         ".new") != 0)
-                {
-                  log (LOG_PLAIN) << "Unable to install file " << prefixURL
-                      << prefixPath << fn << ".new" << endLog;
-                  ++errors;
-                  error_in_this_package = true;
-                }
-              else
-                {
-                  std::string s = cygpath ("/" + fn + ".new"),
-                              d = cygpath ("/" + fn);
+            case 1: // in use
+              {
+                if (!ignoreInUseErrors)
+                  {
+                    char msg[fn.size() + 300];
+                    sprintf (msg,
+                             "%snable to extract /%s -- the file is in use.\r\n"
+                             "Please stop %s Cygwin processes and select \"Retry\", or\r\n"
+                             "select \"Continue\" to go on anyway (you will need to reboot).\r\n",
+                             firstIteration?"U":"Still u", fn.c_str(), firstIteration?"all":"ALL");
 
-                  if (!IsWindowsNT())
-                    {
-                      /* Get the short file names */
-                      char s2[MAX_PATH], d2[MAX_PATH];
-                      unsigned int slen =
-                                GetShortPathName (s.c_str (), s2, MAX_PATH),
-                         dlen = GetShortPathName (d.c_str (), d2, MAX_PATH);
+                    switch (MessageBox (owner, msg, "In-use files detected",
+                                        MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL))
+                      {
+                      case IDRETRY:
+                        // retry
+                        firstIteration = false;
+                        continue;
+                      case IDCONTINUE:
+                        ignoreInUseErrors = true;
+                        break;
+                      default:
+                        break;
+                      }
+                    // fall through to previous functionality
+                  }
 
-                      if (!slen || slen > MAX_PATH || !dlen || dlen > MAX_PATH)
-                        replaceOnRebootFailed(fn);
-                      else
-                        if (!WritePrivateProfileString ("rename", d2, s2,
-                                                        "WININIT.INI"))
-                          replaceOnRebootFailed (fn);
-                        else
-                          replaceOnRebootSucceeded (fn, rebootneeded);
-                    }
-                  else
-                    {
-                      /* XXX FIXME: prefix may not be / for in use files -
-                       * although it most likely is
-                       * - we need a io method to get win32 paths
-                       * or to wrap this system call
-                       */
-		      WCHAR sname[s.size () + 7];
-		      WCHAR dname[d.size () + 7];
-		      /* Windows 2000 has a bug:  Prepending \\?\ does not
-		       * work in conjunction with MOVEFILE_DELAY_UNTIL_REBOOT.
-		       * So in case of Windows 2000 we just convert the path
-		       * to wide char and hope for the best. */
-		      if (OSMajorVersion () == 5 && OSMinorVersion () == 0)
-		      	{
-			  mbstowcs (sname, s.c_str (), s.size () + 7);
-			  mbstowcs (dname, d.c_str (), d.size () + 7);
-			}
-		      else
-			{
-			  mklongpath (sname, s.c_str (), s.size () + 7);
-			  mklongpath (dname, d.c_str (), d.size () + 7);
-			}
-                      if (!MoveFileExW (sname, dname,
-					MOVEFILE_DELAY_UNTIL_REBOOT |
-					MOVEFILE_REPLACE_EXISTING))
-                        replaceOnRebootFailed (fn);
-                      else
-			{
-			  create_allow_protected_renames ();
-			  replaceOnRebootSucceeded (fn, rebootneeded);
-			}
-                    }
-                }
+                if (NoReplaceOnReboot)
+                  {
+                    ++errors;
+                    error_in_this_package = true;
+                    log (LOG_PLAIN) << "Not replacing in-use file " << prefixURL
+                                    << prefixPath << fn << endLog;
+                  }
+                else
+                  {
+                    error_in_this_package = extract_replace_on_reboot(tarstream, prefixURL, prefixPath, fn);
+                  }
+              }
+              break;
+            case 2: // extract failed
+              {
+                if (!ignoreExtractErrors)
+                  {
+                    char msg[fn.size() + 300];
+                    sprintf (msg,
+                             "Unable to extract /%s -- corrupt package?\r\n",
+                             fn.c_str());
+
+                    // XXX: We should offer the option to retry,
+                    // continue without extracting this particular archive,
+                    // or ignore all extraction errors.
+                    // Unfortunately, we don't currently know how to rewind
+                    // the archive, so we can't retry at present,
+                    // and ignore all errors is mis-implemented at present
+                    // to only apply to errors arising from a single archive,
+                    // so we degenerate to the continue option.
+                    MessageBox (owner, msg, "File extraction error",
+                                MB_OK | MB_ICONWARNING | MB_TASKMODAL);
+                  }
+
+                // don't mark this package as successfully installed
+                error_in_this_package = true;
+              }
+              break;
             }
+
           // We're done with this file
           break;
         }
