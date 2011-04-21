@@ -1,3 +1,8 @@
+2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * archive_tar_file.cc (read, write, peek, seek): Consistently return -1
+        and set lasterr on an error.
+
 2011-01-02  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
         * crypto.c (ExtraKeyOption): Correct option description.

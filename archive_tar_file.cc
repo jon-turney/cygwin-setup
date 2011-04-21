@@ -65,7 +65,7 @@ ssize_t archive_tar_file::read (void *buffer, size_t len)
 	  /* unexpected EOF or read error in the tar parent stream */
 	  /* the user can query the parent for the error */
 	  state.lasterr = EIO;
-	  return EIO;
+	  return -1;
 	}
     }
   return 0;
@@ -75,7 +75,8 @@ ssize_t archive_tar_file::read (void *buffer, size_t len)
 ssize_t archive_tar_file::write (const void *buffer, size_t len)
 {
   /* write not supported */
-  return EBADF;
+  state.lasterr = EBADF;
+  return -1;
 }
 
 /* read data without removing it from the class's internal buffer */
@@ -96,7 +97,7 @@ ssize_t archive_tar_file::peek (void *buffer, size_t len)
 	  /* unexpected EOF or read error in the tar parent stream */
 	  /* the user can query the parent for the error */
 	  state.lasterr = EIO;
-	  return EIO;
+	  return -1;
 	}
     }
   return 0;
@@ -113,6 +114,7 @@ archive_tar_file::seek (long where, io_stream_seek_t whence)
 {
   /* nothing needs seeking here yet. Implement when needed 
    */
+  state.lasterr = EINVAL;
   return -1;
 }
 
