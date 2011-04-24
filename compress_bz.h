@@ -64,7 +64,6 @@ private:
   bz_stream strm;
   int initialisedOk;
   int endReached;
-  int bufN;
   char buf[4096];
   int writing;
   size_t position;

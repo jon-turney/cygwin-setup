@@ -37,7 +37,6 @@ compress_bz::compress_bz (io_stream * parent) : peeklen (0), position (0)
 
   initialisedOk = 0;
   endReached = 0;
-  bufN = 0;
   writing = 0;
   strm.bzalloc = 0;
   strm.bzfree = 0;
@@ -78,34 +77,26 @@ compress_bz::read (void *buffer, size_t len)
       else
         return tmpread;
   }
-  
+
   strm.avail_out = len;
   strm.next_out = (char *) buffer;
   int rlen = 1;
   while (1)
     {
-      if (original->error ())
-	{
-	  lasterr = original->error ();
-	  return -1;
-	}
+      int ret = BZ2_bzDecompress (&strm);
+
       if (strm.avail_in == 0 && rlen > 0)
 	{
 	  rlen = original->read (buf, 4096);
 	  if (rlen < 0)
 	    {
-	      if (original->error ())
-    		lasterr = original->error ();
-	      else
-		lasterr = rlen;
+              lasterr = original->error ();
 	      return -1;
 	    }
-	  bufN = rlen;
 	  strm.avail_in = rlen;
 	  strm.next_in = buf;
 	}
-      int
-	ret = BZ2_bzDecompress (&strm);
+
       if (ret != BZ_OK && ret != BZ_STREAM_END)
 	{
 	  lasterr = ret;
@@ -119,7 +110,21 @@ compress_bz::read (void *buffer, size_t len)
 	}
       if (ret == BZ_STREAM_END)
 	{
-	  endReached = 1;
+          /* Are we also at EOF? */
+          if (rlen == 0)
+            {
+              endReached = 1;
+            }
+          else
+            {
+              /* BZ_SSTREAM_END but not at EOF means the file contains
+                 another stream */
+              BZ2_bzDecompressEnd (&strm);
+              BZ2_bzDecompressInit (&(strm), 0, 0);
+              /* This doesn't reinitialize strm, so strm.next_in still
+                 points at strm.avail_in bytes left to decompress in buf */
+            }
+
 	  position += len - strm.avail_out;
 	  return len - strm.avail_out;
 	}
