@@ -1,5 +1,9 @@
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+        * archive_tar_file.cc (read): Handle short reads
+
+2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
         * compress_bz.h (compress): Remove unused bufN member.
         * compress_bz.cc (read): Handle bzip2 files containing multiple
         streams

@@ -49,24 +49,40 @@ ssize_t archive_tar_file::read (void *buffer, size_t len)
   read_something = true;
   if (want)
     {
-      ssize_t
-	got = state.parent->read (buffer, want);
-      char
-	throwaway[512];
-      ssize_t
-	got2 = state.parent->read (throwaway, roundup);
-      if (got == want && got2 == roundup)
-	{
-	  state.file_offset += got;
-	  return got;
-	}
-      else
-	{
-	  /* unexpected EOF or read error in the tar parent stream */
-	  /* the user can query the parent for the error */
-	  state.lasterr = EIO;
-	  return -1;
-	}
+      int need = want;
+      char *p = (char *)buffer;
+      while (need > 0)
+        {
+          ssize_t got = state.parent->read (p, need);
+          if (got <= 0)
+            {
+              /* unexpected EOF or read error in the tar parent stream */
+              /* the user can query the parent for the error */
+              state.lasterr = EIO;
+              return -1;
+            }
+          p += got;
+          need -= got;
+        }
+
+      char throwaway[512];
+      p = &throwaway[0];
+      while (roundup > 0)
+        {
+          ssize_t got2 = state.parent->read (p, roundup);
+          if (got2 <= 0)
+            {
+              /* unexpected EOF or read error in the tar parent stream */
+              /* the user can query the parent for the error */
+              state.lasterr = EIO;
+              return -1;
+            }
+          p += got2;
+          roundup -= got2;
+        }
+
+      state.file_offset += want;
+      return want;
     }
   return 0;
 }
