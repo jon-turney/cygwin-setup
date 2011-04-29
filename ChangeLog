@@ -1,3 +1,8 @@
+2011-04-24  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * install.cc (do_install_thread): Report overall progress while
+        md5summing packages.
+
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
         * archive_tar_file.cc (read): Handle short reads

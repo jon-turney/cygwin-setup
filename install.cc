@@ -628,6 +628,29 @@ do_install_thread (HINSTANCE h, HWND owner)
   vector <packagemeta *> install_q, uninstall_q, sourceinstall_q;
 
   packagedb db;
+
+  /* Calculate the amount of data to md5sum */
+  Progress.SetText1("Calculating...");
+  int md5sum_total_bytes = 0;
+  for (packagedb::packagecollection::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
+  {
+    packagemeta & pkg = *(i->second);
+
+    if (pkg.desired.picked())
+    {
+      md5sum_total_bytes += pkg.desired.source()->size;
+    }
+
+    if (pkg.desired.sourcePackage ().picked())
+    {
+      md5sum_total_bytes += pkg.desired.sourcePackage ().source()->size;
+    }
+  }
+
+  /* md5sum the packages, build lists of packages to install and uninstall
+     and calculate the total amount of data to install */
+  int md5sum_total_bytes_sofar = 0;
   for (packagedb::packagecollection::iterator i = db.packages.begin ();
        i != db.packages.end (); ++i)
   {
@@ -646,6 +669,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       }
       if (pkg.desired.picked())
       {
+        md5sum_total_bytes_sofar += pkg.desired.source()->size;
         total_bytes += pkg.desired.source()->size;
         install_q.push_back (&pkg);
       }
@@ -664,6 +688,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       }
       if (pkg.desired.sourcePackage().picked())
       {
+        md5sum_total_bytes_sofar += pkg.desired.sourcePackage ().source()->size;
         total_bytes += pkg.desired.sourcePackage ().source()->size;
         sourceinstall_q.push_back (&pkg);
       }
@@ -674,6 +699,8 @@ do_install_thread (HINSTANCE h, HWND owner)
     {
       uninstall_q.push_back (&pkg);
     }
+
+    Progress.SetBar2 (md5sum_total_bytes_sofar, md5sum_total_bytes);
   }
 
   /* start with uninstalls - remove files that new packages may replace */
