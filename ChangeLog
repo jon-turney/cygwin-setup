@@ -1,5 +1,10 @@
 2011-04-24  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+        * download.cc (do_download_thread): Update progress display
+        when download phase starts
+
+2011-04-24  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
         * install.cc (do_install_thread): Report overall progress while
         md5summing packages.
 

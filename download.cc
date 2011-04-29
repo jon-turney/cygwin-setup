@@ -199,6 +199,10 @@ do_download_thread (HINSTANCE h, HWND owner)
   total_download_bytes = 0;
   total_download_bytes_sofar = 0;
 
+  Progress.SetText1 ("Checking for packages to download...");
+  Progress.SetText2 ("");
+  Progress.SetText3 ("");
+
   packagedb db;
   /* calculate the amount needed */
   for (packagedb::packagecollection::iterator i = db.packages.begin ();
