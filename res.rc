@@ -327,8 +327,7 @@ END
 #define SETUP_VIEW_X		(SETUP_VIEWCAP_X - SETUP_VIEW_W - 5)
 #define SETUP_EXP_X		(SETUP_VIEW_X - SETUP_KPCE_W - 5)
 #define SETUP_CURR_X		(SETUP_EXP_X - SETUP_KPCE_W - 5)
-#define SETUP_PREV_X		(SETUP_CURR_X - SETUP_KPCE_W - 5)
-#define SETUP_KEEP_X		(SETUP_PREV_X - SETUP_KPCE_W - 5)
+#define SETUP_KEEP_X		(SETUP_CURR_X - SETUP_KPCE_W - 5)
 
 // Left-aligned controls.
 #define SETUP_SEARCH_X		(0)
@@ -352,8 +351,6 @@ BEGIN
                     SETUP_CLEAR_W, 12
     CONTROL         "&Keep", IDC_CHOOSE_KEEP, "Button", BS_AUTORADIOBUTTON
                     | WS_GROUP | WS_TABSTOP, SETUP_KEEP_X, 30, SETUP_KPCE_W, 14
-    CONTROL         "&Prev", IDC_CHOOSE_PREV, "Button", BS_AUTORADIOBUTTON,
-                    SETUP_PREV_X, 30, SETUP_KPCE_W, 14
     CONTROL         "&Curr", IDC_CHOOSE_CURR, "Button", BS_AUTORADIOBUTTON,
                     SETUP_CURR_X, 30, SETUP_KPCE_W, 14
     CONTROL         "E&xp", IDC_CHOOSE_EXP, "Button", BS_AUTORADIOBUTTON,
@@ -513,9 +510,6 @@ BEGIN
     IDS_TRUSTKEEP_TOOLTIP   "Sets all packages to their currently installed "
        "version.  This is equivalent to telling setup not to make any "
        "changes to any package."
-    IDS_TRUSTPREV_TOOLTIP   "Globally select the version marked as 'Prev', "
-       "which generally means the version that was last considered stable "
-       "prior to the current stable version."
     IDS_TRUSTCURR_TOOLTIP   "Globally select the version that is currently "
        "considered the most stable. (RECOMMENDED)"
     IDS_TRUSTEXP_TOOLTIP    "Globally select the most recent version, even if "

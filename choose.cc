@@ -74,7 +74,6 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
   {IDC_CHOOSE_SEARCH_LABEL, 	CP_LEFT,    CP_TOP},
   {IDC_CHOOSE_SEARCH_EDIT,	CP_LEFT,    CP_TOP},
   {IDC_CHOOSE_KEEP, 		CP_RIGHT,   CP_TOP},
-  {IDC_CHOOSE_PREV, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_CURR, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_EXP, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_VIEW, 		CP_RIGHT,   CP_TOP},
@@ -157,7 +156,7 @@ ChooserPage::createListview ()
     }
 
   /* FIXME: do we need to init the desired fields ? */
-  static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_PREV, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
+  static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
   rbset (GetHWND (), ta, IDC_CHOOSE_CURR);
   ClearBusy ();
 }
@@ -256,7 +255,6 @@ ChooserPage::OnInit ()
   createListview ();
 
   AddTooltip (IDC_CHOOSE_KEEP, IDS_TRUSTKEEP_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_PREV, IDS_TRUSTPREV_TOOLTIP);
   AddTooltip (IDC_CHOOSE_CURR, IDS_TRUSTCURR_TOOLTIP);
   AddTooltip (IDC_CHOOSE_EXP, IDS_TRUSTEXP_TOOLTIP);
   AddTooltip (IDC_CHOOSE_VIEW, IDS_VIEWBUTTON_TOOLTIP);
@@ -379,11 +377,6 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
     case IDC_CHOOSE_KEEP:
       if (IsButtonChecked (id))
         keepClicked();
-      break;
-
-    case IDC_CHOOSE_PREV:
-      if (IsButtonChecked (id))
-        changeTrust (TRUST_PREV);
       break;
 
     case IDC_CHOOSE_CURR:

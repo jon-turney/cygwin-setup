@@ -26,7 +26,6 @@
 #define IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO 123
 #define IDS_SKIP_PACKAGE                  124
 #define IDS_TRUSTKEEP_TOOLTIP             125
-#define IDS_TRUSTPREV_TOOLTIP             126
 #define IDS_TRUSTCURR_TOOLTIP             127
 #define IDS_TRUSTEXP_TOOLTIP              128
 #define IDS_VIEWBUTTON_TOOLTIP            129
@@ -117,7 +116,6 @@
 #define IDC_CHOOSE_VIEW                   531
 #define IDC_CHOOSE_EXP                    532
 #define IDC_CHOOSE_CURR                   533
-#define IDC_CHOOSE_PREV                   534
 #define IDC_CHOOSE_LIST                   535
 #define IDC_INS_ACTION                    536
 #define IDC_ROOT_DESKTOP                  537

@@ -1,3 +1,10 @@
+2010-07-20  Andy Koppe  <andy.koppe@gmail.com>
+
+	* res.rc: Remove Prev button from chooser page.
+	* resource.h: Reflect removal of Prev button.
+	* package_meta.h (trustp): Ditto.
+	* choose.cc: Ditto.
+
 2011-04-24  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
         * download.cc (do_download_thread): Update progress display
