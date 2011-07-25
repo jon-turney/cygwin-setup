@@ -1,3 +1,7 @@
+2011-07-25  Corinna Vinschen  <corinna@vinschen.de>
+
+	* desktop.cc (make_link): Create shortcuts to command.com only on 9x.
+
 2010-07-20  Andy Koppe  <andy.koppe@gmail.com>
 
 	* res.rc: Remove Prev button from chooser page.

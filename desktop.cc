@@ -93,7 +93,7 @@ make_link (const std::string& linkpath,
   std::string exepath;
   std::string argbuf;
 
-  if (!is_legacy)
+  if (IsWindowsNT ())
     {
       exepath = target;
       argbuf = " ";
