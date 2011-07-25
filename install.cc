@@ -700,7 +700,8 @@ do_install_thread (HINSTANCE h, HWND owner)
       uninstall_q.push_back (&pkg);
     }
 
-    Progress.SetBar2 (md5sum_total_bytes_sofar, md5sum_total_bytes);
+    if (md5sum_total_bytes > 0)
+      Progress.SetBar2 (md5sum_total_bytes_sofar, md5sum_total_bytes);
   }
 
   /* start with uninstalls - remove files that new packages may replace */

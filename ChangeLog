@@ -1,3 +1,8 @@
+2011-07-25  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+	* install.cc (do_install_thread): Only set progress bar output if at least
+	one package gets installed, to avoid a cosmetic issue.
+
 2011-07-25  Corinna Vinschen  <corinna@vinschen.de>
 
 	* desktop.cc (make_link): Create shortcuts to command.com only on 9x.
