@@ -1,5 +1,9 @@
 2011-08-12  Corinna Vinschen  <corinna@vinschen.de>
 
+	* res.rc: Move spash icon slightly.  Fix copyright.
+
+2011-08-12  Corinna Vinschen  <corinna@vinschen.de>
+
 	* cygwin-setup.ico: New file.
 	* cygwin-terminal.ico: New file.
 	* cygwin.ico: New icons.
