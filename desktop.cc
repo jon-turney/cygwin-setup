@@ -78,7 +78,8 @@ DesktopSetupPage::DesktopSetupPage ()
 static void
 make_link (const std::string& linkpath,
            const std::string& title,
-           const std::string& target)
+           const std::string& target,
+           const std::string& arg)
 {
   std::string fname = linkpath + "/" + title + ".lnk";
 
@@ -96,7 +97,7 @@ make_link (const std::string& linkpath,
   if (IsWindowsNT ())
     {
       exepath = target;
-      argbuf = " ";
+      argbuf = arg;
     }
   else
     {
@@ -105,6 +106,8 @@ make_link (const std::string& linkpath,
       GetWindowsDirectory (windir, sizeof (windir));
       exepath = std::string(windir) + "\\command.com";
       argbuf = "/E:4096 /c " + target;
+      if (arg.size ())
+	argbuf += " " + arg;
     }
 
   msg ("make_link_2 (%s, %s, %s, %s)",
@@ -115,7 +118,8 @@ make_link (const std::string& linkpath,
 }
 
 static void
-start_menu (const std::string& title, const std::string& target)
+start_menu (const std::string& title, const std::string& target,
+	    const std::string& arg)
 {
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
@@ -137,11 +141,12 @@ start_menu (const std::string& title, const std::string& target)
     }
 // end of Win95 addition
   path += "/Cygwin";
-  make_link (path, title, target);
+  make_link (path, title, target, arg);
 }
 
 static void
-desktop_icon (const std::string& title, const std::string& target)
+desktop_icon (const std::string& title, const std::string& target,
+	      const std::string& arg)
 {
   char path[MAX_PATH];
   LPITEMIDLIST id;
@@ -161,7 +166,7 @@ desktop_icon (const std::string& title, const std::string& target)
       msg ("Desktop directory for deskop link changed to: %s", path);
     }
 // end of Win95 addition
-  make_link (path, title, target);
+  make_link (path, title, target, arg);
 }
 
 static void
@@ -204,11 +209,11 @@ make_cygwin_bat ()
 }
 
 static void
-save_icon ()
+save_icon (const char *path, const char *resource_name)
 {
-  iconname = backslash (cygpath ("/Cygwin.ico"));
+  iconname = backslash (cygpath (path));
 
-  HRSRC rsrc = FindResource (NULL, "CYGWIN.ICON", "FILE");
+  HRSRC rsrc = FindResource (NULL, resource_name, "FILE");
   if (rsrc == NULL)
     {
       fatal ("FindResource failed");
@@ -220,10 +225,14 @@ save_icon ()
   FILE *f;
   if (!is_legacy)
     {
+      WIN32_FILE_ATTRIBUTE_DATA attr;
+
       size_t ilen = iconname.size () + 7;
       WCHAR wname[ilen];
       mklongpath (wname, iconname.c_str (), ilen);
-      if (GetFileAttributesW (wname) != INVALID_FILE_ATTRIBUTES)
+      if (GetFileAttributesExW (wname, GetFileExInfoStandard, &attr)
+	  && attr.dwFileAttributes != INVALID_FILE_ATTRIBUTES
+	  && attr.nFileSizeLow > 7022)	/* Size of old icon */
 	return;
       f = nt_wfopen (wname, "wb", 0644);
     }
@@ -239,19 +248,22 @@ save_icon ()
 static void
 do_desktop_setup ()
 {
-  save_icon ();
+  save_icon ("/Cygwin.ico", "CYGWIN.ICON");
+  save_icon ("/Cygwin-Terminal.ico", "CYGWIN-TERMINAL.ICON");
 
   make_cygwin_bat ();
 
+  std::string target;
+
+  target = is_legacy ? batname : backslash (cygpath ("/bin/mintty"));
+
   if (root_menu)
-    {
-      start_menu ("Cygwin Bash Shell", batname);
-    }
+    start_menu (is_legacy ? "Cygwin Bash Shell" : "Cygwin Terminal", target,
+    		is_legacy ? "" : "-i /Cygwin-Terminal.ico -");
 
   if (root_desktop)
-    {
-      desktop_icon ("Cygwin", batname);
-    }
+    desktop_icon (is_legacy ? "Cygwin" : "Cygwin Terminal", target,
+		  is_legacy ? "" : "-i /Cygwin-Terminal.ico -");
 }
 
 static int da[] = { IDC_ROOT_DESKTOP, 0 };
@@ -425,8 +437,11 @@ DesktopSetupPage::OnActivate ()
       else
 	{
 	  root_menu =
-	    check_startmenu ("Cygwin Bash Shell",
-			     backslash (cygpath ("/cygwin.bat")));
+	    is_legacy
+	    ? check_startmenu ("Cygwin Bash Shell",
+			       backslash (cygpath ("/cygwin.bat")))
+	    : check_startmenu ("Cygwin Terminal",
+			       backslash (cygpath ("/bin/mintty")));
 	}
 
       if (NoDesktopOption) 
@@ -436,7 +451,10 @@ DesktopSetupPage::OnActivate ()
       else
 	{
 	  root_desktop =
-	    check_desktop ("Cygwin", backslash (cygpath ("/cygwin.bat")));
+	    is_legacy
+	    ? check_desktop ("Cygwin", backslash (cygpath ("/cygwin.bat")))
+	    : check_desktop ("Cygwin Terminal",
+			     backslash (cygpath ("/bin/mintty")));
 	}
     }
 

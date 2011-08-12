@@ -1,3 +1,26 @@
+2011-08-12  Corinna Vinschen  <corinna@vinschen.de>
+
+	* cygwin-setup.ico: New file.
+	* cygwin-terminal.ico: New file.
+	* cygwin.ico: New icons.
+	* desktop.cc (make_link): Take additional argument to take arguments
+	for shortcut.  Append arg to argbuf.
+	(start_menu): Take additional argument to take argments for shortcut.
+	Add to call to make_link.
+	(desktop_icon): Ditto.
+	(save_icon): Take path and name of resource as arguments.  Replace
+	Cygwin icon if it's the old one.
+	(do_desktop_setup): Save Cygwin standalone and Cygwin terminal icons.
+	Rename desktop and start menu shortcut name to "Cygwin Terminal", use
+	the cygwin terminal icon for them, and point them to mintty.
+	* res.rc: Change splash icon to keep size of original icon.
+	(IDI_CYGWIN_SETUP): New entry.
+	(IDI_CYGWIN_TERMINAL): New entry.
+	(CYGWIN-SETUP.ICON): New entry.
+	(CYGWIN-TERMINAL.ICON): New entry.
+	* resource.h (IDI_CYGWIN_SETUP): Define.
+	(IDI_CYGWIN_TERMINAL): Define.
+
 2011-07-25  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
 	* install.cc (do_install_thread): Only set progress bar output if at least

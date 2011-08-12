@@ -77,7 +77,9 @@
 // icons
 
 #define IDI_SPIN                          400
-#define IDI_CYGWIN                        401
+#define IDI_CYGWIN_SETUP                  401
+#define IDI_CYGWIN                        402
+#define IDI_CYGWIN_TERMINAL               403
 
 // controls
 
