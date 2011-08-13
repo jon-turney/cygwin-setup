@@ -143,8 +143,6 @@ ChooserPage::createListview ()
     exit (11);
   chooser->init(PickView::views::Category);
   chooser->Show(SW_SHOW);
-
-  chooser->defaultTrust (TRUST_CURR);
   chooser->setViewMode (PickView::views::Category);
   if (!SetDlgItemText (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     log (LOG_BABBLE) << "Failed to set View button caption %ld" <<
@@ -246,6 +244,34 @@ ChooserPage::OnInit ()
   packagedb db;
   db.setExistence ();
   db.fillMissingCategory ();
+  bool bCommandLineAddedPackages = db.addCommandLinePackages();
+
+  // in unattended mode, if packages were selected on the command line using the --packages
+  // or --categories options, just install those selected packages and don't upgrade all others
+  // (we always install all packages in the Base or Misc categories; packages selected on the
+  // command line are added to the Base category)
+  if ((unattended_mode == unattended) && (bCommandLineAddedPackages))
+    {
+      for (packagedb::packagecollection::iterator i = db.packages.begin ();
+           i != db.packages.end (); ++i)
+        {
+          packagemeta & pkg = *(i->second);
+          if (pkg.installed)
+            {
+              pkg.desired = pkg.installed;
+            }
+          else if (pkg.categories.find ("Base") != pkg.categories.end ()
+                   || pkg.categories.find ("Misc") != pkg.categories.end ())
+            {
+              pkg.desired = pkg.trustp(TRUST_CURR);
+            }
+        }
+    }
+  else
+    {
+      db.defaultTrust (TRUST_CURR);
+    }
+
   ClearBusy ();
 
   if (source == IDC_SOURCE_DOWNLOAD)

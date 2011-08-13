@@ -419,10 +419,24 @@ packagedb::fillMissingCategory ()
         i->second->setDefaultCategories();
 
       i->second->addToCategoryAll();
-
-      if (i->second->isManuallyWanted())
-        i->second->addToCategoryBase();
     }
+}
+
+bool
+packagedb::addCommandLinePackages ()
+{
+  bool bReturn = false;
+
+  for (packagedb::packagecollection::iterator i = packages.begin(); i != packages.end(); i++)
+    {
+      if (i->second->isManuallyWanted())
+        {
+          i->second->addToCategoryBase();
+          bReturn = true;
+        }
+    }
+
+  return bReturn;
 }
 
 void

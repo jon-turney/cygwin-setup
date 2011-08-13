@@ -1,5 +1,14 @@
 2011-07-21  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+        * choose.cc (OnInit, createListview): Build the initial list of packages
+        to install in OnInit() not in CreateListView().  If packages were selected
+        on command line in unattended mode, just install those packages.
+        * package_db.h (packagedb):Add addCommandLinePackages() method
+        * package_db.cc (addCommandLinePackages): Add separate method to add these
+        so we can indicate if packages were added on the command line
+
+2011-07-21  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
         * PickView.cc (defaultTrust): Move implementation which deals with
         package db from here...
         * package_db.cc (defaultTrust): ... to here.

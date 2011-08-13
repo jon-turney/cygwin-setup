@@ -70,6 +70,7 @@ public:
   PackageDBConnectedIterator connectedBegin();
   PackageDBConnectedIterator connectedEnd();
   void fillMissingCategory();
+  bool addCommandLinePackages();
   void defaultTrust (trusts trust);
   void markUnVisited();
   void setExistence();
