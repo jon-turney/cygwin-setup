@@ -425,3 +425,30 @@ packagedb::fillMissingCategory ()
     }
 }
 
+void
+packagedb::defaultTrust (trusts trust)
+{
+  for (packagedb::packagecollection::iterator i = packages.begin (); i != packages.end (); ++i)
+    {
+      packagemeta & pkg = *(i->second);
+      if (pkg.installed
+            || pkg.categories.find ("Base") != pkg.categories.end ()
+            || pkg.categories.find ("Misc") != pkg.categories.end ())
+        {
+          pkg.desired = pkg.trustp (trust);
+          if (pkg.desired)
+            pkg.desired.pick (pkg.desired.accessible() && pkg.desired != pkg.installed, &pkg);
+        }
+      else
+        pkg.desired = packageversion ();
+    }
+
+  // side effect, remove categories with no packages.
+  for (packagedb::categoriesType::iterator n = packagedb::categories.begin();
+       n != packagedb::categories.end(); ++n)
+    if (!n->second.size())
+      {
+        log (LOG_BABBLE) << "Removing empty category " << n->first << endLog;
+        packagedb::categories.erase (n++);
+      }
+}

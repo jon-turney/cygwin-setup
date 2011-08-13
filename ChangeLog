@@ -1,3 +1,10 @@
+2011-07-21  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * PickView.cc (defaultTrust): Move implementation which deals with
+        package db from here...
+        * package_db.cc (defaultTrust): ... to here.
+        * package_db.h (packagedb): ... a new member function.
+
 2011-08-12  Corinna Vinschen  <corinna@vinschen.de>
 
 	* res.rc: Move spash icon slightly.  Fix copyright.

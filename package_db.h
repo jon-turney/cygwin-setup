@@ -56,6 +56,9 @@ typedef std::vector <packagemeta *>::iterator PackageDBConnectedIterator;
    task or root path any later in the execution sequence.
 
 */
+
+#include <PackageTrust.h>
+
 class packagedb
 {
 public:
@@ -67,6 +70,7 @@ public:
   PackageDBConnectedIterator connectedBegin();
   PackageDBConnectedIterator connectedEnd();
   void fillMissingCategory();
+  void defaultTrust (trusts trust);
   void markUnVisited();
   void setExistence();
   typedef std::map <std::string, packagemeta *> packagecollection;
