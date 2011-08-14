@@ -50,7 +50,7 @@
 
 	* desktop.cc (make_link): Create shortcuts to command.com only on 9x.
 
-2010-07-20  Andy Koppe  <andy.koppe@gmail.com>
+2011-07-20  Andy Koppe  <andy.koppe@gmail.com>
 
 	* res.rc: Remove Prev button from chooser page.
 	* resource.h: Reflect removal of Prev button.
