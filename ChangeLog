@@ -1,9 +1,15 @@
+2011-09-01  Corinna Vinschen  <corinna@vinschen.de>
+
+	* CONTRIBUTORS: Add Warren Young.
+
 2011-08-16  Corinna Vinschen  <corinna@vinschen.de>
+	    Warren Young  <warren@etr-usa.com>
 
 	* cygwin-setup.ico: Slightly modified.
 	* cygwin-terminal.ico: Ditto.
 
 2011-08-15  Corinna Vinschen  <corinna@vinschen.de>
+	    Warren Young  <warren@etr-usa.com>
 
 	* cygwin.ico: New, smoother 152x152 icon.
 
@@ -29,6 +35,7 @@
 	* res.rc: Move spash icon slightly.  Fix copyright.
 
 2011-08-12  Corinna Vinschen  <corinna@vinschen.de>
+	    Warren Young  <warren@etr-usa.com>
 
 	* cygwin-setup.ico: New file.
 	* cygwin-terminal.ico: New file.
