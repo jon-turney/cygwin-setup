@@ -32,10 +32,7 @@ class IOStreamProvider;
  * make mkdir_p fit in the hierarchy
  */
 
-//Where is this defined?
-#if defined(_WIN32) && ! defined(__CYGWIN__)
-typedef signed long ssize_t;
-#endif
+#include <sys/types.h>
 
 #if __GNUC__
 #define _ATTR_(foo) __attribute__ foo

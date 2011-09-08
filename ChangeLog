@@ -1,3 +1,8 @@
+2011-09-08  Christopher Faylor  <me.cygwin2011@cgf.cx>
+
+	* io_stream.h: Just call sys/types.h here rather than using our own
+	version of ssize_t.
+
 2011-09-01  Corinna Vinschen  <corinna@vinschen.de>
 
 	* CONTRIBUTORS: Add Warren Young.
