@@ -440,7 +440,6 @@ io_stream_cygfile::get_size ()
 {
   if (!fname.size() )
     return 0;
-#ifdef WIN32
   HANDLE h;
   DWORD ret = 0;
   if (IsWindowsNT ())
@@ -466,13 +465,4 @@ io_stream_cygfile::get_size ()
 	}
     }
   return ret;
-#else
-  struct stat buf;
-  /* Should this be lstat? */
-  if (stat (fname.c_str(), &buf))
-    /* failed - should never happen in this version */
-    /* Throw an exception? */
-    return 0;
-  return buf.off_t;
-#endif
 }

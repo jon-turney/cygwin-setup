@@ -21,6 +21,7 @@
    zero, "path" is the name of a *file* that we need a directory
    for. */
 
+#include <sys/types.h>
 extern int mkdir_p (int isadir, const char *path, mode_t mode);
 
 #endif /* SETUP_MKDIR_H */

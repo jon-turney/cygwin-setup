@@ -21,6 +21,7 @@
 #include <stdexcept>
 using namespace std;
 #include <errno.h>
+#include <string.h>
 
 compress_bz::compress_bz (io_stream * parent) : peeklen (0), position (0)
 {

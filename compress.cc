@@ -17,6 +17,7 @@
 #include "compress_gz.h"
 #include "compress_bz.h"
 #include "compress_xz.h"
+#include <string.h>
 
 /* In case you are wondering why the file magic is not in one place:
  * It could be. But there is little (any?) benefit.

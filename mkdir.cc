@@ -20,14 +20,8 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-#if defined(WIN32) && !defined (_CYGWIN_)
 #include "win32.h"
 #include "ntdll.h"
-#else
-#include <unistd.h>
-#include <string.h>
-#include <errno.h>
-#endif
 
 #include <sys/stat.h>
 #include <stdio.h>
@@ -43,7 +37,6 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
   char *c;
   const size_t len = strlen (in_path) + 1;
   char path[len];
-#if defined(WIN32) && !defined (_CYGWIN_)
   DWORD d, gse;
   WCHAR wpath[len + 6];
 
@@ -107,32 +100,7 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 	  return 1;
 	}
     }
-#else
-  struct stat st;
-  strcpy (path, in_path);
 
-  if (stat(path,&st) == 0 && S_ISDIR(st.st_mode))
-    return 0;
-
-  if (isadir)
-    {
-      if (mkdir (path, 0777))
-	return 0;
-      if (errno != ENOENT)
-	{
-	  if (errno == EEXIST)
-	    {
-	      fprintf (stderr,
-		       "warning: deleting \"%s\" so I can make a directory there\n",
-		       path);
-	      if (unlink (path))
-		return mkdir_p (isadir, path);
-	    }
-	  return 1;
-	}
-    }
-#endif
-  
   for (c = path; *c; c++)
     {
       if (*c == ':')

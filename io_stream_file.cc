@@ -18,12 +18,10 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-#if defined(WIN32) && !defined (_CYGWIN_)
 #include "win32.h"
 #include "ntdll.h"
 #include "mklink2.h"
 #include "filemanip.h"
-#endif
 
 #include "mkdir.h"
   
@@ -137,7 +135,6 @@ io_stream_file::remove (const std::string& path)
 {
   if (!path.size())
     return 1;
-#if defined(WIN32) && !defined (_CYGWIN_)
   if (IsWindowsNT ())
     {
       size_t len = path.size () + 7;
@@ -190,10 +187,6 @@ io_stream_file::remove (const std::string& path)
       SetFileAttributesA (path.c_str (), w & ~FILE_ATTRIBUTE_READONLY);
       return !DeleteFileA (path.c_str ());
     }
-#else
-  // FIXME: try rmdir if unlink fails - remove the dir
-  return unlink (path.c_str());
-#endif
 }
 
 int
@@ -202,7 +195,6 @@ io_stream_file::mklink (const std::string& from, const std::string& to,
 {
   if (!from.size() || !to.size())
     return 1;
-#if defined(WIN32) && !defined (_CYGWIN_)
   switch (linktype)
     {
     case IO_STREAM_SYMLINK:
@@ -210,15 +202,6 @@ io_stream_file::mklink (const std::string& from, const std::string& to,
     case IO_STREAM_HARDLINK:
       return 1;
     }
-#else
-  switch (linktype)
-    {
-    case IO_STREAM_SYMLINK:
-      return symlink (to.c_str(), from.c_str());
-    case IO_STREAM_HARDLINK:
-      return link (to.c_str(), from.c_str());
-    }
-#endif
   return 1;
 }
 
@@ -290,7 +273,6 @@ io_stream_file::set_mtime (time_t mtime)
     return 1;
   if (fp)
     fclose (fp);
-#if defined(WIN32) && !defined (_CYGWIN_)
   long long ftimev = mtime * NSPERSEC + FACTOR;
   FILETIME ftime;
   ftime.dwHighDateTime = ftimev >> 32;
@@ -310,9 +292,6 @@ io_stream_file::set_mtime (time_t mtime)
       CloseHandle (h);
       return 0;
     }
-#else
-  throw new runtime_error ("set_mtime not supported on posix yet.");
-#endif
   return 1;
 }
 
@@ -331,7 +310,6 @@ io_stream_file::get_size ()
 {
   if (!fname.size())
     return 0;
-#if defined(WIN32) && !defined (_CYGWIN_)
   HANDLE h;
   DWORD ret = 0;
   if (IsWindowsNT ())
@@ -357,10 +335,4 @@ io_stream_file::get_size ()
 	}
     }
   return ret;
-#else
-  struct stat buf;
-  if (stat(fname.c_str(), &buf))
-    throw new runtime_error ("Failed to stat file - has it been deleted?");
-  return buf.st_size;
-#endif
 }

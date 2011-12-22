@@ -1,3 +1,13 @@
+2011-12-22  Christopher Faylor  <me.cygwin2011@cgf.cx>
+
+	* compress.cc: Explicitly include needed header.
+	* compress_bz.cc: Ditto.
+	* mkdir.h: Ditto.
+	* io_stream_cygfile.cc: Eliminate obsolete attempt to build as
+	non-mingw.
+	* io_stream_file.cc: Ditto throughout.
+	* mkdir.cc: Ditto.
+
 2011-12-21  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
 	* choose.cc (OnInit): Properly mark packages which were selected on
