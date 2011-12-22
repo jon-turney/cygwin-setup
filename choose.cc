@@ -264,6 +264,7 @@ ChooserPage::OnInit ()
                    || pkg.categories.find ("Misc") != pkg.categories.end ())
             {
               pkg.desired = pkg.trustp(TRUST_CURR);
+              pkg.desired.pick(TRUE, &pkg);
             }
         }
     }
