@@ -693,7 +693,7 @@ PickView::set_vscroll_info (const RECT &r)
 LRESULT CALLBACK
 PickView::list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 {
-  int row, refresh;
+  int row, refresh __attribute__ ((unused));
 
   if (contents.itemcount () == 0)
     return 0;

@@ -1,3 +1,15 @@
+2012-02-19  Corinna Vinschen  <corinna@vinschen.de>
+
+	* PickView.cc (PickView::list_click): Mark variable refresh as unused
+	to avoid compiler warning.
+	* nio-ftp.cc (NetIO_FTP::ok): Remove variable code to avoid compiler
+	warning.
+	* proppage.cc (PropertyPage::DialogProc): Ditto for retval.
+
+	* setup.exe.manifest: Add supportedOS entries to avoid annoying
+	"This program might not have installed correctly" PCA message on
+	Windows 7.
+
 2011-12-22  Christopher Faylor  <me.cygwin2011@cgf.cx>
 
 	* compress.cc: Explicitly include needed header.

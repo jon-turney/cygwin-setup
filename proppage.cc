@@ -124,8 +124,6 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
       proc (GetHWND (), message, wParam, lParam);
     }
 
-    bool retval;
-
     switch (message)
     {
       case WM_INITDIALOG:
@@ -247,7 +245,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
             }
           case PSN_WIZFINISH:
             {
-              retval = OnFinish ();
+              OnFinish ();
               // False = Allow the wizard to finish
               SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
               return TRUE;
