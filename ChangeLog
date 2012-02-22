@@ -1,3 +1,7 @@
+2012-02-22  Christopher Faylor  <me.cygwin2012@cgf.cx>
+
+	* res.rc: Change copyright notice to -2012.
+
 2012-02-19  Corinna Vinschen  <corinna@vinschen.de>
 
 	* PickView.cc (PickView::list_click): Mark variable refresh as unused
