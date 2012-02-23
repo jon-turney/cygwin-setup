@@ -1,3 +1,12 @@
+2011-05-30 SZAVAI Gyula <szgyg@ludens.elte.hu>
+
+        * site.cc (SiteSetting::SiteSetting): Handle multiple
+        --site options.
+        * crypto.cc (verify_ini_file_sig): Handle multiple
+        --pubkey and --sexpr-pubkey options.
+        * package_meta.cc (packagemeta::isManuallyWanted): Handle
+        multiple --packages and --categories options.
+
 2012-02-22  Christopher Faylor  <me.cygwin2012@cgf.cx>
 
 	* res.rc: Change copyright notice to -2012.

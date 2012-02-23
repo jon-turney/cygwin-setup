@@ -77,7 +77,7 @@ SitePage::SitePage ()
   sizeProcessor.AddControlInfo (SiteControlsInfo);
 }
 
-#include "getopt++/StringOption.h"
+#include "getopt++/StringArrayOption.h"
 #include "getopt++/BoolOption.h"
 #include "UserSettings.h"
 
@@ -99,15 +99,19 @@ SiteList cached_site_list;
 /* Stale selected sites to warn about and add to cache */
 SiteList dropped_site_list;
 
-StringOption SiteOption("", 's', "site", "Download site", false);
+StringArrayOption SiteOption('s', "site", "Download site");
 
 BoolOption OnlySiteOption(false, 'O', "only-site", "Ignore all sites except for -s");
 
 SiteSetting::SiteSetting (): saved (false)
 {
-  string SiteOptionString = SiteOption;
-  if (SiteOptionString.size()) 
-    registerSavedSite (SiteOptionString.c_str());
+  vector<string> SiteOptionStrings = SiteOption;
+  if (SiteOptionStrings.size())
+    {
+      for (vector<string>::const_iterator n = SiteOptionStrings.begin ();
+	   n != SiteOptionStrings.end (); ++n)
+	registerSavedSite (n->c_str ());
+    }
   else
     getSavedSites ();
 }

@@ -27,7 +27,7 @@ using namespace std;
 #include <stdlib.h>
 #include <unistd.h>
 #include <strings.h>
-#include "getopt++/StringOption.h"
+#include "getopt++/StringArrayOption.h"
 
 #include "io_stream.h"
 #include "compress.h"
@@ -51,8 +51,8 @@ using namespace std;
 
 using namespace std;
 
-static StringOption PackageOption ("", 'P', "packages", "Specify packages to install");
-static StringOption CategoryOption ("", 'C', "categories", "Specify entire categories to install");
+static StringArrayOption PackageOption ('P', "packages", "Specify packages to install");
+static StringArrayOption CategoryOption ('C', "categories", "Specify entire categories to install");
 
 /*****************/
 
@@ -315,10 +315,18 @@ bool packagemeta::isManuallyWanted() const
     option string and store them away in an STL set.  */
   if (!parsed_yet)
   {
-    string packages_option = PackageOption;
-    string categories_option = CategoryOption;
-    parseNames (parsed_names, packages_option);
-    parseNames (parsed_categories, categories_option);
+    vector<string> packages_options = PackageOption;
+    vector<string> categories_options = CategoryOption;
+    for (vector<string>::iterator n = packages_options.begin ();
+		n != packages_options.end (); ++n)
+      {
+	parseNames (parsed_names, *n);
+      }
+    for (vector<string>::iterator n = categories_options.begin ();
+		n != categories_options.end (); ++n)
+      {
+	parseNames (parsed_categories, *n);
+      }
     parsed_yet = true;
   }
 

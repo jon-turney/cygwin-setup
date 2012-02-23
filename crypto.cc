@@ -28,7 +28,7 @@ static const char *cvsid =
 #include "gcrypt.h"
 #include "msg.h"
 #include "resource.h"
-#include "getopt++/StringOption.h"
+#include "getopt++/StringArrayOption.h"
 #include "getopt++/BoolOption.h"
 #include "KeysSetting.h"
 #include "gpg-packet.h"
@@ -45,11 +45,11 @@ static const char *cvsid =
 #endif /* CRYPTODEBUGGING */
 
 /*  Command-line options for specifying and controlling extra keys.  */
-static StringOption ExtraKeyOption ("", 'K', "pubkey",
-			"URL of extra public key file (gpg format)", true);
+static StringArrayOption ExtraKeyOption ('K', "pubkey",
+			"URL of extra public key file (gpg format)");
 
-static StringOption SexprExtraKeyOption ("", 'S', "sexpr-pubkey",
-			"Extra public key in s-expr format", true);
+static StringArrayOption SexprExtraKeyOption ('S', "sexpr-pubkey",
+			"Extra public key in s-expr format");
 
 static BoolOption UntrustedKeysOption (false, 'u', "untrusted-keys",
 			"Use untrusted keys from last-extrakeys");
@@ -509,13 +509,14 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
     }
 
   /* Next, there may have been command-line options. */
-  std::string SexprExtraKeyString = SexprExtraKeyOption;
-  MESSAGE ("key str is '%s'\n", SexprExtraKeyString.c_str ());
-  if (SexprExtraKeyString.size ())
+  std::vector<std::string> SexprExtraKeyStrings = SexprExtraKeyOption;
+  for (std::vector<std::string>::const_iterator it
+					= SexprExtraKeyStrings.begin ();
+		it != SexprExtraKeyStrings.end (); ++it)
     {
+      MESSAGE ("key str is '%s'\n", it->c_str ());
       gcry_sexp_t dsa_key2 = 0;
-      rv = gcry_sexp_new (&dsa_key2, SexprExtraKeyString.c_str (),
-						SexprExtraKeyString.size (), 1);
+      rv = gcry_sexp_new (&dsa_key2, it->c_str (), it->size (), 1);
       if (rv == GPG_ERR_NO_ERROR)
 	{
 	  // We probably want to add it to the extra keys setting
@@ -539,10 +540,12 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
     }
 
   /* Also, we may have to read a key(s) file. */
-  std::string ExtraKeysFile = ExtraKeyOption;
-  if (ExtraKeysFile.size ())
+  std::vector<std::string> ExtraKeysFiles = ExtraKeyOption;
+  for (std::vector<std::string>::const_iterator it
+					= ExtraKeysFiles.begin ();
+		it != ExtraKeysFiles.end (); ++it)
     {
-      io_stream *keys = get_url_to_membuf (ExtraKeysFile, owner);
+      io_stream *keys = get_url_to_membuf (*it, owner);
       if (keys)
 	{
 	  struct key_data kdat;
