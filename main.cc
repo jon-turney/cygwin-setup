@@ -151,11 +151,6 @@ main_display ()
 
   log (LOG_TIMESTAMP) << "Current Directory: " << local_dir << endLog;
 
-  /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
-     no idea of access control lists and security at all.  */
-  if (IsWindowsNT ())
-    nt_sec.setDefaultSecurity ();
-
   // Initialize common controls
   INITCOMMONCONTROLSEX icce = { sizeof (INITCOMMONCONTROLSEX),
 				ICC_WIN95_CLASSES };
@@ -310,6 +305,11 @@ main (int argc, char **argv)
 
     log (LOG_PLAIN) << "Starting cygwin install, version " 
                     << setup_version << endLog;
+
+    /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
+       no idea of access control lists and security at all.  */
+    if (IsWindowsNT ())
+      nt_sec.setDefaultSecurity ();
 
     if (HelpOption)
       {

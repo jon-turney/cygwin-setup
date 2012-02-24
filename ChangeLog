@@ -1,17 +1,24 @@
+2012-02-24  Corinna Vinschen  <corinna@vinschen.de>
+
+	* main.cc (WinMain): Move call to nt_sec.setDefaultSecurity here so
+	it's called earlier in the process.  This avoids spurious error
+	messages in --help output.
+
 2012-02-23  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * main.cc (main_display): Move --help output from here ...
-        (WinMain): ... to here, so we don't logging of the current directory and
-        any errors from constructing a UserSettings object preceding the --help output.
+	* main.cc (main_display): Move --help output from here ...
+	(WinMain): ... to here, so we don't logging of the current directory
+	and any errors from constructing a UserSettings object preceding the
+	--help output.
 
 2011-05-30 SZAVAI Gyula <szgyg@ludens.elte.hu>
 
-        * site.cc (SiteSetting::SiteSetting): Handle multiple
-        --site options.
-        * crypto.cc (verify_ini_file_sig): Handle multiple
-        --pubkey and --sexpr-pubkey options.
-        * package_meta.cc (packagemeta::isManuallyWanted): Handle
-        multiple --packages and --categories options.
+	* site.cc (SiteSetting::SiteSetting): Handle multiple
+	--site options.
+	* crypto.cc (verify_ini_file_sig): Handle multiple
+	--pubkey and --sexpr-pubkey options.
+	* package_meta.cc (packagemeta::isManuallyWanted): Handle
+	multiple --packages and --categories options.
 
 2012-02-22  Christopher Faylor  <me.cygwin2012@cgf.cx>
 
@@ -127,49 +134,49 @@
 
 2011-04-24  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * download.cc (do_download_thread): Update progress display
-        when download phase starts
+	* download.cc (do_download_thread): Update progress display
+	when download phase starts
 
 2011-04-24  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * install.cc (do_install_thread): Report overall progress while
-        md5summing packages.
+	* install.cc (do_install_thread): Report overall progress while
+	md5summing packages.
 
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * archive_tar_file.cc (read): Handle short reads
+	* archive_tar_file.cc (read): Handle short reads
 
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * compress_bz.h (compress): Remove unused bufN member.
-        * compress_bz.cc (read): Handle bzip2 files containing multiple
-        streams
+	* compress_bz.h (compress): Remove unused bufN member.
+	* compress_bz.cc (read): Handle bzip2 files containing multiple
+	streams
 
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * install.cc (extract_replace_on_reboot): New function containg code
-        extracted from...
-        (installOne): Report read errors differently to write errors
-        * archive.cc (extract_file): Distinguish read errors from write errors
+	* install.cc (extract_replace_on_reboot): New function containg code
+	extracted from...
+	(installOne): Report read errors differently to write errors
+	* archive.cc (extract_file): Distinguish read errors from write errors
 
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * io_stream.cc (copy): Propagate errors.
+	* io_stream.cc (copy): Propagate errors.
 
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * compress_bz.cc (read, peek): Consistently return -1 and set lasterr
-        on an error.
-        * compress_gz.cc (read, write, peek): Ditto.
+	* compress_bz.cc (read, peek): Consistently return -1 and set lasterr
+	on an error.
+	* compress_gz.cc (read, write, peek): Ditto.
 
 2011-04-08  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * archive_tar_file.cc (read, write, peek, seek): Consistently return -1
-        and set lasterr on an error.
+	* archive_tar_file.cc (read, write, peek, seek): Consistently return -1
+	and set lasterr on an error.
 
 2011-01-02  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * crypto.c (ExtraKeyOption): Correct option description.
+	* crypto.c (ExtraKeyOption): Correct option description.
 
 2010-12-16  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
@@ -181,30 +188,30 @@
 
 2010-11-26  Jon TURNEY <jon.turney@dronecode.org.uk>
 
-        * site.cc (init): Canonicalize mirror URLs to ensure the end
-        with a '/'.
+	* site.cc (init): Canonicalize mirror URLs to ensure the end
+	with a '/'.
 
 2010-11-19  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * IniDBBuilderPackage.cc (IniDBBuilderPackage): Remove db.packages vector
-        sorting.
-        (buildPackage, buildPackageSource): Change package collection from vector
-        to map.
-        * PickView.cc (setViewMode, init_headers, defaultTrust): Ditto.
-        * choose.cc (createListview, logResults, keepClicked)
-        (changeTrust): Ditto
-        * install.cc (do_install_thread): Ditto
-        * download.cc (do_download_thread): Ditto
-        * prereq.cc (isMet): Ditto
-        * package_meta.cc (ScanDownloadedFiles): Ditto
-        * package_db.h (packagedb): Ditto
-        * package_db.cc (packagedb, flush, markUnVisited, setExistence)
-        (fillMissingCategory): Ditto
-        (findBinary, findSource): Rewrite to locate packages in map rather than
-        searching the whole vector, for performance.
-        (ConnectedLoopFinder, doIt, visit): Rewrite to refer to package using a
-        packagemeta *, as an index into the vector of packages can no longer be
-        used.
+	* IniDBBuilderPackage.cc (IniDBBuilderPackage): Remove db.packages vector
+	sorting.
+	(buildPackage, buildPackageSource): Change package collection from vector
+	to map.
+	* PickView.cc (setViewMode, init_headers, defaultTrust): Ditto.
+	* choose.cc (createListview, logResults, keepClicked)
+	(changeTrust): Ditto
+	* install.cc (do_install_thread): Ditto
+	* download.cc (do_download_thread): Ditto
+	* prereq.cc (isMet): Ditto
+	* package_meta.cc (ScanDownloadedFiles): Ditto
+	* package_db.h (packagedb): Ditto
+	* package_db.cc (packagedb, flush, markUnVisited, setExistence)
+	(fillMissingCategory): Ditto
+	(findBinary, findSource): Rewrite to locate packages in map rather than
+	searching the whole vector, for performance.
+	(ConnectedLoopFinder, doIt, visit): Rewrite to refer to package using a
+	packagemeta *, as an index into the vector of packages can no longer be
+	used.
 
 2010-11-25  Corinna Vinschen  <corinna@vinschen.de>
 
@@ -218,46 +225,46 @@
 
 2010-11-06  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * package_meta.h (packagemeta): Remove unused member variables for
-        storing timestamp of the setup.ini that package version came from.
-        * package_meta.cc (packagemeta): Ditto.
+	* package_meta.h (packagemeta): Remove unused member variables for
+	storing timestamp of the setup.ini that package version came from.
+	* package_meta.cc (packagemeta): Ditto.
 
 2010-11-06  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * package_version.h (packageversion): Add compareVersion() utility
-        function.
-        * package_version.cc (Vendor_version, Package_version)
-        (compareVersions): Implement the Vendor_version() and Package_version()
-        accessor functions.  Add compareVersions() utility function.
-        * cygpackage.cc (setCanonicalVersion): Fix to extract vendor version
-        correctly.
-        * IniDBBuilderPackage.cc (add_correct_version): When multiple setup.ini's
-        offer different packages for the same stability level, use the package with
-        the highest version number rather than the package coming from the setup.ini
-        with the latest timestamp.
+	* package_version.h (packageversion): Add compareVersion() utility
+	function.
+	* package_version.cc (Vendor_version, Package_version)
+	(compareVersions): Implement the Vendor_version() and Package_version()
+	accessor functions.  Add compareVersions() utility function.
+	* cygpackage.cc (setCanonicalVersion): Fix to extract vendor version
+	correctly.
+	* IniDBBuilderPackage.cc (add_correct_version): When multiple setup.ini's
+	offer different packages for the same stability level, use the package with
+	the highest version number rather than the package coming from the setup.ini
+	with the latest timestamp.
 
 2010-11-19  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * choose.cc (OnNext): Remove PrereqChecker call, instead use new
-        WM_APP_PREREQ_CHECK state of Progress dialog.
-        * threebar.h (WM_APP_PREREQ_CHECK)
-        (WM_APP_PREREQ_CHECK_THREAD_COMPLETE): Add new messages.
-        * threebar.cc (OnActivate, OnMessageApp): Use single bar mode for
-        WM_APP_PREREQ_CHECK state.  Handle new messages.
-        * dialog.h (do_prereq_check_thread): Add prototype.
-        * prereq.cc (isMet, do_prereq_check_thread)
-        (do_prereq_check_reflector, do_prereq_check): Add progress reporting
-        during isMet, and thread containing moved PrereqChecker code.
+	* choose.cc (OnNext): Remove PrereqChecker call, instead use new
+	WM_APP_PREREQ_CHECK state of Progress dialog.
+	* threebar.h (WM_APP_PREREQ_CHECK)
+	(WM_APP_PREREQ_CHECK_THREAD_COMPLETE): Add new messages.
+	* threebar.cc (OnActivate, OnMessageApp): Use single bar mode for
+	WM_APP_PREREQ_CHECK state.  Handle new messages.
+	* dialog.h (do_prereq_check_thread): Add prototype.
+	* prereq.cc (isMet, do_prereq_check_thread)
+	(do_prereq_check_reflector, do_prereq_check): Add progress reporting
+	during isMet, and thread containing moved PrereqChecker code.
 
 2010-11-17  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * package_meta.cc (set_action): Always set the binary tick box
-        when selecting a specific version (if binary is available)
+	* package_meta.cc (set_action): Always set the binary tick box
+	when selecting a specific version (if binary is available)
 
 2010-11-17  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * postinstall.cc (do_postinstall_thread): Refer to "Unknown package"
-        rather than "No package"
+	* postinstall.cc (do_postinstall_thread): Refer to "Unknown package"
+	rather than "No package"
 
 2010-11-19  Christopher Faylor  <me+cygwin@cgf.cx>
 
@@ -267,23 +274,23 @@
 
 2010-11-07  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * propsheet.cc (PropSheetProc): Set the big icon for the propsheet
-        window
+	* propsheet.cc (PropSheetProc): Set the big icon for the propsheet
+	window
 
 2010-11-07  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * ini.cc (GuiParseFeedback::progress, GuiParseFeedback::iniName):
-        Update all the text in the progress dialog whilst parsing .ini file,
-        not just the top line.
+	* ini.cc (GuiParseFeedback::progress, GuiParseFeedback::iniName):
+	Update all the text in the progress dialog whilst parsing .ini file,
+	not just the top line.
 
 2010-11-07  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * choose.cc (OnBack): Move PlaceDialog(false) so window is resized in
-        'Install from Local Directory' mode as well.
+	* choose.cc (OnBack): Move PlaceDialog(false) so window is resized in
+	'Install from Local Directory' mode as well.
 
 2010-11-06  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * res.rc (IDD_NET): Make text referring to IE5 more general
+	* res.rc (IDD_NET): Make text referring to IE5 more general
 
 2010-11-04 Jon TURNEY <jon.turney@dronecode.org.uk>
 
