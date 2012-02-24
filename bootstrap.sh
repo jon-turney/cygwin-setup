@@ -40,7 +40,7 @@ bootstrap automake --foreign --add-missing
 
 # Run bootstrap in required subdirs, iff it has not yet been run
 echo "bootstrapping in $srcdir/libgetopt++"
-cd libgetopt++; ./bootstrap.sh
+cd libgetopt++ && ./bootstrap.sh
 
 if test -n "$NOCONFIGURE"; then
 	echo "Skipping configure per request"

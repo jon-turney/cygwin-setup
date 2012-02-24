@@ -1,3 +1,11 @@
+2012-02-24  Christopher Faylor  <me.cygwin2012@cgf.cx>
+
+	* bootstrap.sh: Don't assume that libgetopt++ exists in source directory.
+	* configure.in: Remove some old options.
+	* Makefile.am: Ditto.
+	* libgetopt++/Makefile.am: Ditto.
+	* libgetopt++/configure.in: Ditto.
+
 2012-02-24  Corinna Vinschen  <corinna@vinschen.de>
 
 	* main.cc (WinMain): Move call to nt_sec.setDefaultSecurity here so

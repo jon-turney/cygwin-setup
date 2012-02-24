@@ -20,7 +20,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT([setup], [0], [cygwin-apps@cygwin.com])
 AC_PREREQ(2.60)
 AC_CONFIG_AUX_DIR([cfgaux])
-AM_INIT_AUTOMAKE([dist-bzip2 subdir-objects 1.9 foreign no-define -Wall -Wno-portability])
+AM_INIT_AUTOMAKE([subdir-objects foreign no-define -Wall -Wno-portability])
 dnl AM_CONFIG_HEADER(include/autoconf.h)
 AM_MAINTAINER_MODE
 AC_CONFIG_SRCDIR([Makefile.in])

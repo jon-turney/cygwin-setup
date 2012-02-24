@@ -3,7 +3,7 @@
 # $Id$
 #
 
-AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.5 foreign
+AUTOMAKE_OPTIONS = subdir-objects 1.9 foreign
 # -Wno-uninitialized added to deal with g++ 3.4.4's spurious STL warnings
 # (http://gcc.gnu.org/bugzilla/show_bug.cgi?id=22207)
 AM_CXXFLAGS = -Wall -Werror -Wno-uninitialized
