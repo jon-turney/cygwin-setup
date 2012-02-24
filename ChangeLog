@@ -1,3 +1,9 @@
+2012-02-23  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * main.cc (main_display): Move --help output from here ...
+        (WinMain): ... to here, so we don't logging of the current directory and
+        any errors from constructing a UserSettings object preceding the --help output.
+
 2011-05-30 SZAVAI Gyula <szgyg@ludens.elte.hu>
 
         * site.cc (SiteSetting::SiteSetting): Handle multiple

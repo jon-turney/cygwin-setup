@@ -151,13 +151,6 @@ main_display ()
 
   log (LOG_TIMESTAMP) << "Current Directory: " << local_dir << endLog;
 
-  if (HelpOption)
-  {
-    GetOption::GetInstance ().ParameterUsage (log (LOG_PLAIN)
-					      << "\nCommand Line Options:\n");
-    theLog->exit (0);
-  }
-
   /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
      no idea of access control lists and security at all.  */
   if (IsWindowsNT ())
@@ -318,11 +311,19 @@ main (int argc, char **argv)
     log (LOG_PLAIN) << "Starting cygwin install, version " 
                     << setup_version << endLog;
 
-    UserSettings Settings (local_dir);
+    if (HelpOption)
+      {
+        GetOption::GetInstance ().ParameterUsage (log (LOG_PLAIN)
+                                                  << "\nCommand Line Options:\n");
+      }
+    else
+      {
+        UserSettings Settings (local_dir);
 
-    main_display ();
+        main_display ();
 
-    Settings.save ();	// Clean exit.. save user options.
+        Settings.save ();	// Clean exit.. save user options.
+      }
 
     if (rebootneeded)
       {
