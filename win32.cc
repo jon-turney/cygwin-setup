@@ -120,6 +120,23 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
      CREATOR GROUP, and EVERYONE (aka OTHER). */
   if (mode & S_IFDIR)
     {
+      if (mode & 01000) // S_ISVTX
+	{
+	  /* Don't allow default write permissions for group and other
+	     in a S_ISVTX dir. */
+	  /* GROUP */
+	  g_attribute = STANDARD_RIGHTS_READ | FILE_READ_ATTRIBUTES;
+	  if (mode & 0040) // S_IRGRP
+	    g_attribute |= FILE_GENERIC_READ;
+	  if (mode & 0010) // S_IXGRP
+	    g_attribute |= FILE_GENERIC_EXECUTE;
+	  /* OTHER */
+	  o_attribute = STANDARD_RIGHTS_READ | FILE_READ_ATTRIBUTES;
+	  if (mode & 0004) // S_IROTH
+	    o_attribute |= FILE_GENERIC_READ;
+	  if (mode & 0001) // S_IXOTH
+	    o_attribute |= FILE_GENERIC_EXECUTE;
+	}
       if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, u_attribute,
 				cr_ownerSID.theSID ()))
 	log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname

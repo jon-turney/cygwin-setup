@@ -1,3 +1,9 @@
+2012-02-29  Corinna Vinschen  <corinna@vinschen.de>
+
+	* win32.cc (NTSecurity::GetPosixPerms): Don't allow write permissions
+	in inheritable default permission ACEs for group and other if the
+	directory is an S_ISVTX dir.
+
 2012-02-24  Christopher Faylor  <me.cygwin2012@cgf.cx>
 
 	* bootstrap.sh: Don't assume that libgetopt++ exists in source directory.
