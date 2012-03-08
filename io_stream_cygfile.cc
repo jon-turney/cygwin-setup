@@ -66,10 +66,6 @@ private:
 CygFileProvider CygFileProvider::theInstance = CygFileProvider();
 
 
-/* For set mtime */
-#define FACTOR (0x19db1ded53ea710LL)
-#define NSPERSEC 10000000LL
-
 std::string io_stream_cygfile::cwd("/");
   
 // Normalise a unix style path relative to 

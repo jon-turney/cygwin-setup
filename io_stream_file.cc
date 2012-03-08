@@ -71,11 +71,6 @@ private:
 };
 FileProvider FileProvider::theInstance = FileProvider();
   
-
-/* for set_mtime */
-#define FACTOR (0x19db1ded53ea710LL)
-#define NSPERSEC 10000000LL
-
 wchar_t *
 io_stream_file::w_str ()
 {

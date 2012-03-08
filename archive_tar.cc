@@ -29,6 +29,7 @@ static const char *cvsid =
 //#include "zlib/zlib.h"
 #include "io_stream.h"
 //#include "compress.h"
+#include "win32.h"
 #include "archive.h"
 #include "archive_tar.h"
 #include "mkdir.h"
@@ -39,8 +40,6 @@ static const char *cvsid =
 #undef _WIN32
 #include "bzlib.h"
 
-#define FACTOR (0x19db1ded53ea710LL)
-#define NSPERSEC 10000000LL
 #define SYMLINK_COOKIE "!<symlink>"
 #endif
 static int err;

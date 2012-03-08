@@ -1,3 +1,11 @@
+2012-03-08  Corinna Vinschen  <corinna@vinschen.de>
+
+	* win32.h (FACTOR): Define, use correct value.
+	(NSPERSEC): Ditto.
+	* archive_tar.cc: Drop FACTOR and NSPERSEC definitions here.
+	* io_stream_cygfile.cc: Ditto.
+	* io_stream_file.cc: Ditto.
+
 2012-02-29  Corinna Vinschen  <corinna@vinschen.de>
 
 	* win32.cc (NTSecurity::GetPosixPerms): Don't allow write permissions

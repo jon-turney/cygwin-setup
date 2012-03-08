@@ -32,6 +32,11 @@
 #define NOMINMAX
 #endif
 
+/* 100ns difference between Windows and UNIX timebase. */
+#define FACTOR (0x19db1ded53e8000LL)
+/* # of 100ns intervals per second. */
+#define NSPERSEC 10000000LL
+
 /* In w32api 3.1, __declspec(dllimport) decoration is added to
  * certain symbols. This breaks our autoload mechanism - the symptom is
  * multiple declaration errors at link time. This define turns that off again.
