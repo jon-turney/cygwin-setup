@@ -1,3 +1,8 @@
+2012-04-26  Corinna Vinschen  <corinna@vinschen.de>
+
+	* script.cc (run): Add quotes around file to allow spaces in path.
+	(Script::run): Add aforementioned quotes to log output as well.
+
 2012-03-08  Corinna Vinschen  <corinna@vinschen.de>
 
 	* win32.h (FACTOR): Define, use correct value.

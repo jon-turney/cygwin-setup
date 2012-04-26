@@ -207,7 +207,7 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
   BOOL inheritHandles = FALSE;
   BOOL exitCodeValid = FALSE;
 
-  sprintf (cmdline, "%s %s %s", sh, args, file);
+  sprintf (cmdline, "%s %s \"%s\"", sh, args, file);
   memset (&pi, 0, sizeof (pi));
   memset (&si, 0, sizeof (si));
   si.cb = sizeof (si);
@@ -272,12 +272,12 @@ Script::run() const
   OutputLog file_out = std::string (mktemp (tmp_pat));
   if (sh.size() && stricmp (extension(), ".sh") == 0)
     {
-      log(LOG_PLAIN) << "running: " << sh << " --norc --noprofile " << scriptName << endLog;
+      log(LOG_PLAIN) << "running: " << sh << " --norc --noprofile \"" << scriptName << "\"" << endLog;
       retval = ::run (sh.c_str(), "--norc --noprofile", scriptName.c_str(), file_out);
     }
   else if (cmd && stricmp (extension(), ".bat") == 0)
     {
-      log(LOG_PLAIN) << "running: " << cmd << " /c " << windowsName << endLog;
+      log(LOG_PLAIN) << "running: " << cmd << " /c \"" << windowsName << "\"" << endLog;
       retval = ::run (cmd, "/c", windowsName.c_str(), file_out);
     }
   else
