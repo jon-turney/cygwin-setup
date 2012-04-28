@@ -121,8 +121,7 @@ io_stream_file::exists (const std::string& path)
       attr = GetFileAttributesW (wname);
     }
   return attr != INVALID_FILE_ATTRIBUTES
-	 && attr != FILE_ATTRIBUTE_DIRECTORY
-	 && attr != FILE_ATTRIBUTE_DEVICE;
+	 && !(attr & (FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_DEVICE));
 }
 
 int

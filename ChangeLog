@@ -1,3 +1,9 @@
+2012-04-28  Christopher Faylor  <me.cygwin2012@cgf.cx>
+
+	* io_stream_file.cc (io_stream_file::exists): Properly treat return
+	from GetFileAttributesW as a bit field so that a directory will not be
+	seen as "existing".
+
 2012-04-26  Corinna Vinschen  <corinna@vinschen.de>
 
 	* script.cc (run): Add quotes around file to allow spaces in path.
