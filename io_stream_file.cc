@@ -115,7 +115,7 @@ io_stream_file::exists (const std::string& path)
     attr = GetFileAttributesA (path.c_str ());
   else
     {
-      size_t len = path.size () + 7;
+      size_t len = 2 * path.size () + 7;
       WCHAR wname[len];
       mklongpath (wname, path.c_str (), len);
       attr = GetFileAttributesW (wname);

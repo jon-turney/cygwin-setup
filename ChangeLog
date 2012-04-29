@@ -1,3 +1,7 @@
+2012-04-29  Christopher Faylor  <me.cygwin2012@cgf.cx>
+
+	* window.cc: Remove trailing whitespace.
+
 2012-04-28  Christopher Faylor  <me.cygwin2012@cgf.cx>
 
 	* io_stream_file.cc (io_stream_file::exists): Properly treat return

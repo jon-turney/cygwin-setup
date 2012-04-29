@@ -121,12 +121,12 @@ Window::Create (Window * parent, DWORD Style)
 			       // Default positions and size
 			       CW_USEDEFAULT,
 			       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-			       // Parent Window 
+			       // Parent Window
 			       parent ==
 			       NULL ? (HWND) NULL : parent->GetHWND (),
-			       // use class menu 
+			       // use class menu
 			       (HMENU) NULL,
-			       // The application instance 
+			       // The application instance
 			       GetInstance (),
 			       // The this ptr, which we'll use to set up the WindowProc reflection.
 			       (LPVOID) this);
@@ -355,21 +355,21 @@ Window::ScreenToClient(const RECT &r) const
 {
   POINT tl;
   POINT br;
-  
+
   tl.y = r.top;
   tl.x = r.left;
   ::ScreenToClient(GetHWND(), &tl);
   br.y = r.bottom;
   br.x = r.right;
   ::ScreenToClient(GetHWND(), &br);
-  
+
   RECT ret;
-  
+
   ret.top = tl.y;
   ret.left = tl.x;
   ret.bottom = br.y;
   ret.right = br.x;
-  
+
   return ret;
 }
 
@@ -379,11 +379,11 @@ Window::ActivateTooltips ()
 {
   if (TooltipHandle != NULL)
     return;     // already initialized
-    
+
   // create a window for the tool tips - will be invisible most of the time
-  if ((TooltipHandle = CreateWindowEx (0, (LPCTSTR) TOOLTIPS_CLASS, NULL, 
+  if ((TooltipHandle = CreateWindowEx (0, (LPCTSTR) TOOLTIPS_CLASS, NULL,
         WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP, CW_USEDEFAULT,
-        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, GetHWND (), 
+        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, GetHWND (),
         (HMENU) 0, GetInstance (), (LPVOID) 0)) == (HWND) NULL)
     {
       log (LOG_PLAIN) << "Warning: call to CreateWindowEx failed when "
@@ -391,15 +391,15 @@ Window::ActivateTooltips ()
               << endLog;
       return;
     }
-  
+
   // must be topmost so that tooltips will display on top
   SetWindowPos (TooltipHandle, HWND_TOPMOST, 0, 0, 0, 0,
               SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 
   // some of our tooltips are lengthy, and will disappear before they can be
   // read with the default windows delay, so we set a long (30s) delay here.
-  SendMessage (TooltipHandle, TTM_SETDELAYTIME, TTDT_AUTOPOP, 
-              (LPARAM) MAKELONG (30000, 0));
+  SendMessage (TooltipHandle, TTM_SETDELAYTIME, TTDT_AUTOPOP,
+	      (LPARAM) MAKELONG (30000, 0));
 }
 
 void
@@ -418,19 +418,19 @@ Window::AddTooltip (HWND target, HWND win, const char *text)
     ActivateTooltips ();
 
   TOOLINFO ti;
-  
+
   memset ((void *)&ti, 0, sizeof(ti));
   ti.cbSize = sizeof(ti);
-   
+
   ti.uFlags = TTF_IDISHWND    // add tool based on handle not ID
-            | TTF_SUBCLASS;   // tool is to subclass the window in order
-                              // to automatically get mouse events
+	    | TTF_SUBCLASS;   // tool is to subclass the window in order
+			      // to automatically get mouse events
   ti.hwnd = win;
   ti.uId = reinterpret_cast<UINT_PTR>(target);
   ti.lpszText = (LPTSTR)text; // pointer to text or string resource
-  
-  SendMessage (TooltipHandle, (UINT)TTM_ADDTOOL, 0, 
-        (LPARAM)(LPTOOLINFO)&ti);
+
+  SendMessage (TooltipHandle, (UINT)TTM_ADDTOOL, 0,
+	(LPARAM)(LPTOOLINFO)&ti);
 }
 
 void
@@ -438,8 +438,8 @@ Window::AddTooltip (int id, const char *text)
 // adds a tooltip to a control identified by its ID
 {
   HWND target, parent;
-  
-  if ((target = GetDlgItem (id)) != NULL && 
+
+  if ((target = GetDlgItem (id)) != NULL &&
       (parent = ::GetParent (target)) != NULL)
     AddTooltip (target, parent, text);
 }
@@ -448,7 +448,7 @@ void
 Window::AddTooltip (int id, int string_resource)
 // adds a tooltip that's represented by a string resource
 // this also allows for tooltips greater than 80 characters
-// we do this by setting the lpszText to LPSTR_TEXTCALLBACK 
+// we do this by setting the lpszText to LPSTR_TEXTCALLBACK
 // and then responding to the TTN_GETDISPINFO notification
 // in order to do this we store a list of (control ID, string ID) pairs
 {
@@ -463,24 +463,24 @@ Window::TooltipNotificationHandler (LPARAM lParam)
   NMTTDISPINFO *dispinfo = (NMTTDISPINFO *)lParam;
   int ctrlID;
   std::map<int, int>::iterator findID;
-  
+
   if ((dispinfo->uFlags & TTF_IDISHWND) &&
       ((ctrlID = GetDlgCtrlID ((HWND)dispinfo->hdr.idFrom)) != 0) &&
       ((findID = TooltipStrings.find (ctrlID)) != TooltipStrings.end ())) {
-  
+
     // enable multiple lines
     SendMessage(dispinfo->hdr.hwndFrom, TTM_SETMAXTIPWIDTH, 0, 450);
-    
+
     // this is quite ugly.  Apparently even when using string resources
     // the tooltip length still can't exceed 80 chars.  So, we fetch the
     // resource into our own buffer and use that
 
     TCHAR buf[2048];
     LoadString (GetInstance (), findID->second, (LPTSTR)buf,
-        (sizeof (buf) / sizeof (TCHAR)));
-    
+	(sizeof (buf) / sizeof (TCHAR)));
+
     dispinfo->lpszText = buf;
-    
+
     // set this flag so that the control will not ask for this again
     dispinfo->uFlags |= TTF_DI_SETITEM;
     dispinfo->hinst = NULL;
