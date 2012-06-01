@@ -1,3 +1,7 @@
+2012-06-01  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* configure.in: Enable silent rules with automake-1.11.
+
 2011-05-30 SZAVAI Gyula <szgyg@ludens.elte.hu>
         * libgetopt++/src/StringArrayOption.cc: New file.
         * libgetopt++/include/getopt++/StringArrayOption.h: New file.

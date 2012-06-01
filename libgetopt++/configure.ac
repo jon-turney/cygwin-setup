@@ -15,6 +15,7 @@ AM_CONFIG_HEADER(include/autoconf.h)
 AC_REVISION($Revision$)dnl
 AC_PREFIX_DEFAULT(/usr/local)
 AM_MAINTAINER_MODE
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES(yes)])
 
 dnl Check for GNU cc
 AC_LANG_CPLUSPLUS

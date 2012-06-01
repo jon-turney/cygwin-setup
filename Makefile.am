@@ -285,13 +285,13 @@ VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
                $(srcdir)/ChangeLog)
 
 setup_version.c : $(srcdir)/ChangeLog Makefile
-	(echo '#define VERSION_PREFIX "%%% setup-version"';\
+	$(AM_V_GEN)(echo '#define VERSION_PREFIX "%%% setup-version"';\
 	echo 'static const char version_store[] = VERSION_PREFIX " '${VER}'";';\
-	echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp
+	echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp && \
 	mv version.tmp setup_version.c
 
 .rc.o:
-	$(WINDRES) --include-dir $(srcdir) -o $@ $<
+	$(AM_V_GEN)$(WINDRES) --include-dir $(srcdir) -o $@ $<
 
 # static const char version_store[] = VERSION_PREFIX " 2.686";
 setup-src:

@@ -1,3 +1,9 @@
+2012-06-01  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* Makefile.am (setup_version.c): Respect silent rules.
+	(.rc.o): Ditto.
+	* configure.in: Enable silent rules with automake-1.11.
+
 2012-04-29  Christopher Faylor  <me.cygwin2012@cgf.cx>
 
 	* window.cc: Remove trailing whitespace.

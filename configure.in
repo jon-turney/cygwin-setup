@@ -23,6 +23,7 @@ AC_CONFIG_AUX_DIR([cfgaux])
 AM_INIT_AUTOMAKE([subdir-objects foreign no-define -Wall -Wno-portability])
 dnl AM_CONFIG_HEADER(include/autoconf.h)
 AM_MAINTAINER_MODE
+m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES(yes)])
 AC_CONFIG_SRCDIR([Makefile.in])
 AC_REVISION($Revision$)dnl
 
