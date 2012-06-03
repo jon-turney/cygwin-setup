@@ -227,19 +227,12 @@ set_legacy (const char *command)
   is_legacy = strstr (buf, "setup-legacy");
 }
 
-#ifndef __CYGWIN__
 int WINAPI
 WinMain (HINSTANCE h,
 	 HINSTANCE hPrevInstance, LPSTR command_line, int cmd_show)
 {
 
   hinstance = h;
-#else
-int
-main (int argc, char **argv)
-{
-  hinstance = GetModuleHandle (NULL);
-#endif
 
   set_dynaddr ();
   // Make sure the C runtime functions use the same codepage as the GUI
@@ -280,14 +273,10 @@ main (int argc, char **argv)
 
     // TODO: make an equivalent for __argv under cygwin.
     char **_argv;
-#ifndef __CYGWIN__
     int argc;
     for (argc = 0, _argv = __argv; *_argv; _argv++)
       ++argc;
     _argv = __argv;
-#else
-    _argv = argv;
-#endif
 
     if (!GetOption::GetInstance ().Process (argc,_argv, NULL))
       exit (1);

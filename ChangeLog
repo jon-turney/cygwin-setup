@@ -1,3 +1,8 @@
+2012-06-03  Christopher Faylor  <me.cygwin2012@cgf.cx>
+
+	* main.cc: Remove __CYGWIN__ ifdefs.
+	(main): Ditto.
+
 2012-06-01  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	* Makefile.am (setup_version.c): Respect silent rules.
