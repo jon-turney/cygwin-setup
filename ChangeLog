@@ -1,3 +1,8 @@
+2012-08-21  Christopher Faylor  <me.cygwin2012@cgf.cx>
+
+	* setup.exe.manifest: Reorder "supportedOS" entries and add entry for
+	Windows 8.
+
 2012-06-03  Christopher Faylor  <me.cygwin2012@cgf.cx>
 
 	* main.cc: Remove __CYGWIN__ ifdefs.
