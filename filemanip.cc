@@ -514,7 +514,7 @@ nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
       return NULL;
     }
   wname[1] = L'\\';
-  int fd = _open_osfhandle ((long) h, oflags);
+  int fd = _open_osfhandle ((intptr_t) h, oflags);
   if (fd < 0)
     return NULL;
   return _fdopen (fd, mode);

@@ -66,13 +66,13 @@ Window::FirstWindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
       wnd = reinterpret_cast<Window *>(((LPCREATESTRUCT)lParam)->lpCreateParams);
 
       // Set a backreference to this class instance in the HWND.
-      SetWindowLongPtr (hwnd, GWL_USERDATA, reinterpret_cast<LONG_PTR>(wnd));
+      SetWindowLongPtr (hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(wnd));
 
       // Set a new WindowProc now that we have the peliminaries done.
       // We could instead simply do the contents of Window::WindowProcReflector
       // in the 'else' clause below, but this way we eliminate an unnecessary 'if/else' on
       // every message.  Yeah, it's probably not worth the trouble.
-      SetWindowLongPtr (hwnd, GWL_WNDPROC, (LONG_PTR) & Window::WindowProcReflector);
+      SetWindowLongPtr (hwnd, GWLP_WNDPROC, (LONG_PTR) & Window::WindowProcReflector);
       // Finally, store the window handle in the class.
       wnd->WindowHandle = hwnd;
     }
@@ -92,7 +92,7 @@ Window::WindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
   Window *This;
 
   // Get our this pointer
-  This = reinterpret_cast<Window *>(GetWindowLongPtr (hwnd, GWL_USERDATA));
+  This = reinterpret_cast<Window *>(GetWindowLongPtr (hwnd, GWLP_USERDATA));
 
   return This->WindowProc (uMsg, wParam, lParam);
 }

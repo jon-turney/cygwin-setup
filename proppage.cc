@@ -81,7 +81,7 @@ PropertyPage::Create (DLGPROC dlgproc,
   return true;
 }
 
-BOOL CALLBACK
+INT_PTR CALLBACK
 PropertyPage::FirstDialogProcReflector (HWND hwnd, UINT message,
 					WPARAM wParam, LPARAM lParam)
 {
@@ -96,25 +96,25 @@ PropertyPage::FirstDialogProcReflector (HWND hwnd, UINT message,
 
   This = (PropertyPage *) (((PROPSHEETPAGE *) lParam)->lParam);
 
-  SetWindowLong (hwnd, DWL_USER, (DWORD) This);
-  SetWindowLong (hwnd, DWL_DLGPROC, (DWORD) DialogProcReflector);
+  SetWindowLongPtr (hwnd, DWLP_USER, (LONG_PTR) This);
+  SetWindowLongPtr (hwnd, DWLP_DLGPROC, (LONG_PTR) DialogProcReflector);
 
   This->SetHWND (hwnd);
   return This->DialogProc (message, wParam, lParam);
 }
 
-BOOL CALLBACK
+INT_PTR CALLBACK
 PropertyPage::DialogProcReflector (HWND hwnd, UINT message, WPARAM wParam,
 				   LPARAM lParam)
 {
   PropertyPage *This;
 
-  This = (PropertyPage *) GetWindowLong (hwnd, DWL_USER);
+  This = (PropertyPage *) GetWindowLongPtr (hwnd, DWLP_USER);
 
   return This->DialogProc (message, wParam, lParam);
 }
 
-BOOL CALLBACK
+INT_PTR CALLBACK
 PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 {
   try
@@ -143,7 +143,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
         {
           case PSN_APPLY:
             {
-              SetWindowLong (GetHWND (), DWL_MSGRESULT, PSNRET_NOERROR);
+              SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, PSNRET_NOERROR);
               return TRUE;
             }
           case PSN_SETACTIVE:
@@ -178,7 +178,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 
               if(!wantsActivation())
               {
-                ::SetWindowLong (GetHWND (), DWL_MSGRESULT, -1);
+                ::SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, -1);
                 return TRUE;
               }
 
@@ -194,29 +194,29 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
                 if (nextwindow == -2)
                 {
                   unattended_mode = attended;
-                  SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+                  SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, 0);
                   return TRUE;
                 }
                 else if (nextwindow == -1)
                 {
-                  SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+                  SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, 0);
                   return TRUE;
                 }
                 else if (nextwindow == 0)
                 {
-                  SetWindowLong (GetHWND (), DWL_MSGRESULT, -1);
+                  SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, -1);
                   return TRUE;
                 }
                 else
                 {
-                  SetWindowLong (GetHWND (), DWL_MSGRESULT, nextwindow);
+                  SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, nextwindow);
                   return TRUE;
                 }
               } 
               else 
               {
                 // 0 == Accept activation, -1 = Don't accept
-                ::SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+                ::SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, 0);
                 return TRUE;
               }
 
@@ -226,28 +226,28 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
             {
               OnDeactivate ();
               // FALSE = Allow deactivation
-              SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
+              SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, FALSE);
               return TRUE;
             }
           case PSN_WIZNEXT:
             {
               LONG retval;
               retval = OnNext ();
-              SetWindowLong (GetHWND (), DWL_MSGRESULT, retval);
+              SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, retval);
               return TRUE;
             }
           case PSN_WIZBACK:
             {
               LONG retval;
               retval = OnBack ();
-              SetWindowLong (GetHWND (), DWL_MSGRESULT, retval);
+              SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, retval);
               return TRUE;
             }
           case PSN_WIZFINISH:
             {
               OnFinish ();
               // False = Allow the wizard to finish
-              SetWindowLong (GetHWND (), DWL_MSGRESULT, FALSE);
+              SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, FALSE);
               return TRUE;
             }
           case TTN_GETDISPINFO:
@@ -270,7 +270,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
           if (retval == true)
           {
             // Handled, return 0
-            SetWindowLong (GetHWND (), DWL_MSGRESULT, 0);
+            SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, 0);
             return TRUE;
           }
           else if (cmdproc != NULL)
@@ -334,9 +334,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
               theURL->second.brush = CreateSolidBrush 
                                             (GetSysColor (COLOR_BTNFACE));
 
-          // now this is really crazy, but apparently MSDN says we are to
-          // cast this brush as a BOOL and return it (?!)
-          return (BOOL)theURL->second.brush;
+          return (INT_PTR) theURL->second.brush;
         }
       case WM_MOUSEWHEEL:
         // we do this so that derived classes that wish to process this message
@@ -362,7 +360,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
   return FALSE;
 }
 
-BOOL CALLBACK
+INT_PTR CALLBACK
 PropertyPage::OnMouseWheel (UINT message, WPARAM wParam, LPARAM lParam)
 {
   return 1; // not handled; define in a derived class to support this
@@ -428,7 +426,7 @@ PropertyPage::urlWinProc (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_LBUTTONDOWN:
       {
         // they clicked our URL!  yay!
-        int rc = (int)ShellExecute (hwnd, "open", 
+        intptr_t rc = (intptr_t) ShellExecute (hwnd, "open", 
             theURL->second.url.c_str (), NULL, NULL, SW_SHOWNORMAL);        
 
         if (rc <= 32)

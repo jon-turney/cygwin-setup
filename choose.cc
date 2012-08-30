@@ -436,7 +436,7 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
   return true;
 }
 
-BOOL CALLBACK
+INT_PTR CALLBACK
 ChooserPage::OnMouseWheel (UINT message, WPARAM wParam, LPARAM lParam)
 {
   return chooser->WindowProc (message, wParam, lParam);

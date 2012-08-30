@@ -441,7 +441,7 @@ do_download_site_info (HINSTANCE hinst, HWND owner)
   CreateThread (NULL, 0, do_download_site_info_thread, context, 0, &threadID);
 }
 
-static BOOL CALLBACK
+static INT_PTR CALLBACK
 drop_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 {
   switch (message)

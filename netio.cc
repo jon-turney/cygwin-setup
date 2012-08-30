@@ -233,7 +233,7 @@ auth_cmd (HWND h, int id, HWND hwndctl, UINT code)
   return 0;
 }
 
-static BOOL CALLBACK
+static INT_PTR CALLBACK
 auth_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
 {
   switch (message)

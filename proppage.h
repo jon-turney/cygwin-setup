@@ -42,10 +42,10 @@ class PropertyPage:public Window
   // For setting the back/finish buttons properly.
   bool IsFirst, IsLast;
   
-  static BOOL CALLBACK FirstDialogProcReflector (HWND hwnd, UINT message,
+  static INT_PTR CALLBACK FirstDialogProcReflector (HWND hwnd, UINT message,
 						 WPARAM wParam,
 						 LPARAM lParam);
-  static BOOL CALLBACK DialogProcReflector (HWND hwnd, UINT message,
+  static INT_PTR CALLBACK DialogProcReflector (HWND hwnd, UINT message,
 					    WPARAM wParam, LPARAM lParam);
   void setTitleFont ();
 
@@ -78,10 +78,10 @@ class PropertyPage:public Window
 protected:
     SizeProcessor sizeProcessor;
   
-    virtual BOOL CALLBACK DialogProc (UINT message, WPARAM wParam,
-				      LPARAM lParam);
-    virtual BOOL CALLBACK OnMouseWheel (UINT message, WPARAM wParam,
-				      LPARAM lParam);
+    virtual INT_PTR CALLBACK DialogProc (UINT message, WPARAM wParam,
+					 LPARAM lParam);
+    virtual INT_PTR CALLBACK OnMouseWheel (UINT message, WPARAM wParam,
+					   LPARAM lParam);
 
 public:
     PropertyPage ();

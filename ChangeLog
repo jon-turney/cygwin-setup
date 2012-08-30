@@ -1,3 +1,26 @@
+2012-08-30  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	First step towards X86-64 compatibility.
+	* archive_tar.cc (archive_tar::next_file_name): Fix sscanf formats
+	for 64-bit size_t.
+	* choose.cc (ChooserPage::OnMouseWheel): Fix return type.
+	* choose.h (ChooserPage::OnMouseWheel): Ditto.
+	* filemanip.cc (nt_wfopen): Fix argument cast for _open_osfhandle.
+	* netio.cc (auth_proc): Fix return type.
+	* proppage.cc (PropertyPage::FirstDialogProcReflector): Fix return type.
+	Use SetWindowLongPtr and DWLP_* instead of SetWindowLong and DWL_*.
+	(PropertyPage::DialogProcReflector): Ditto.
+	(PropertyPage::DialogProc): Ditto.
+	(PropertyPage::OnMouseWheel): Ditto.
+	* proppage.h (PropertyPage::FirstDialogProcReflector): Fix return type.
+	(PropertyPage::DialogProcReflector): Ditto.
+	(PropertyPage::DialogProc): Ditto.
+	(PropertyPage::OnMouseWheel): Ditto.
+	* site.cc (drop_proc): Fix return type.
+	* window.cc (Window::FirstWindowProcReflector): Use GWLP_* with
+	SetWindowLongPtr calls.
+	(Window::WindowProcReflector): Ditto.
+
 2012-08-30  Jacek Caban <jacek@codeweavers.com>
 	    Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
