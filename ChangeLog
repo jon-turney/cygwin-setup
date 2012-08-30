@@ -1,3 +1,11 @@
+2012-08-30  Jacek Caban <jacek@codeweavers.com>
+	    Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* main.cc: Remove CINTERFACE define.
+	(main_display): Use C++ syntax for COM.
+	* mklink2.cc: Remove CINTERFACE define.
+	(make_link_2): Use C++ syntax for COM.
+
 2012-08-21  Christopher Faylor  <me.cygwin2012@cgf.cx>
 
 	* setup.exe.manifest: Reorder "supportedOS" entries and add entry for

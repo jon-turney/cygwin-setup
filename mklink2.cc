@@ -1,4 +1,3 @@
-#define CINTERFACE
 #include <stdlib.h>
 #include <wchar.h>
 #include "win32.h"
@@ -29,16 +28,16 @@ make_link_2 (char const *exepath, char const *args, char const *icon, char const
   WCHAR widepath[MAX_PATH];
   if (sl)
     {
-      sl->lpVtbl->QueryInterface (sl, &IID_IPersistFile, (void **) &pf);
+      sl->QueryInterface (IID_IPersistFile, (void **) &pf);
 
-      sl->lpVtbl->SetPath (sl, exepath);
-      sl->lpVtbl->SetArguments (sl, args);
-      sl->lpVtbl->SetIconLocation (sl, icon, 0);
+      sl->SetPath (exepath);
+      sl->SetArguments (args);
+      sl->SetIconLocation (icon, 0);
 
       MultiByteToWideChar (CP_ACP, 0, lname, -1, widepath, MAX_PATH);
-      pf->lpVtbl->Save (pf, widepath, TRUE);
+      pf->Save (widepath, TRUE);
 
-      pf->lpVtbl->Release (pf);
+      pf->Release ();
     }
 }
 

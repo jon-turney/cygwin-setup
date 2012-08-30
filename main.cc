@@ -33,7 +33,6 @@ static const char *cvsid =
 
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0501
-#define CINTERFACE
 #include "win32.h"
 #include <commctrl.h>
 #include "shlobj.h"
@@ -161,8 +160,8 @@ main_display ()
   // done later, in the thread which actually creates the shortcuts.
   extern IShellLink *sl;
   CoInitializeEx (NULL, COINIT_APARTMENTTHREADED);
-  HRESULT res = CoCreateInstance (&CLSID_ShellLink, NULL,
-				  CLSCTX_INPROC_SERVER, &IID_IShellLink,
+  HRESULT res = CoCreateInstance (CLSID_ShellLink, NULL,
+				  CLSCTX_INPROC_SERVER, IID_IShellLink,
 				  (LPVOID *) & sl);
   if (res)
     {
@@ -209,7 +208,7 @@ main_display ()
 
   // Uninitalize COM
   if (sl)
-    sl->lpVtbl->Release (sl);
+    sl->Release ();
   CoUninitialize ();
 }
 
