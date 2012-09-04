@@ -16,8 +16,15 @@
 
 #define NTOSAPI
 
+#ifdef __MINGW64_VERSION_MAJOR
+#include <winternl.h>
+#include <ntdef.h>
+#include <ntstatus.h>
+#define DDKAPI __stdcall
+#else
 #include "ddk/ntapi.h"
 #include "ddk/ntifs.h"
+#endif
 
 extern "C" {
 NTSTATUS DDKAPI NtCreateFile (PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES,

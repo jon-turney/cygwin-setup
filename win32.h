@@ -17,6 +17,7 @@
 #ifndef SETUP_WIN32_H
 #define SETUP_WIN32_H
 
+#include <sys/types.h>
 #include <string>
 
 /* Any include of <windows.h> should be through this file, which wraps it in
@@ -42,6 +43,7 @@
  * multiple declaration errors at link time. This define turns that off again.
  * It will default to off again in later w32api versions, but we need to work
  * with 3.1 for now. */
+#define DECLSPEC_IMPORT
 #define WINBASEAPI
 
 /* Require at least Internet Explorer 3, in order to have access to

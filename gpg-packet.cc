@@ -26,6 +26,7 @@ static const char *cvsid =
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "win32.h"
 #include "io_stream.h"
 #include "gcrypt.h"
 #include "gpg-packet.h"
@@ -42,7 +43,9 @@ static const char *cvsid =
 #define MESSAGE while (0) msg
 #endif /* CRYPTODEBUGGING */
 
+#ifndef ARRAYSIZE
 #define ARRAYSIZE(_ar) (sizeof (_ar) / sizeof (_ar[0]))
+#endif
 
 static const struct { char from; char to; } RFC4880HashCodesToGPGHashCodes[] =
 {

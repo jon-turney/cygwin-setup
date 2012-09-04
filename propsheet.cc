@@ -37,7 +37,10 @@ typedef struct _DllVersionInfo
 }
 DLLVERSIONINFO;
 typedef HRESULT CALLBACK (*DLLGETVERSIONPROC) (DLLVERSIONINFO * pdvi);
+
+#ifndef PROPSHEETHEADER_V1_SIZE
 #define PROPSHEETHEADER_V1_SIZE 40
+#endif
 
 // Sort of a "hidden" Windows structure.  Used in the PropSheetCallback.
 #include <pshpack1.h>

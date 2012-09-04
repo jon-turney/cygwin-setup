@@ -1,3 +1,21 @@
+2012-09-04  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	Fix build with mingw-w64 headers.
+	* autoload.c: Define DECLSPEC_IMPORT for mingw-w64 headers.
+	* filemanip.h: Include <sys/types.h> to fix missing mode_t typedef
+	error with mingw-w64 headers.
+	* gpg-packet.cc: Include "win32.h" to avoid macro redefinition
+	errors with mingw-w64 headers.
+	(ARRAYSIZE): Do not redefine.
+	* main.cc (_argv): Declare if using mingw-w64 headers.
+	(WinMain): Move up _argv definition to before it is first used.
+	* ntdll.h: Include PSDK headers with mingw-w64 instead of DDK.
+	* package_message.h: Include "win32.h" instead of <windows.h>.
+	* propsheet.cc (PROPSHEETHEADER_V1_SIZE): Do not redefine.
+	* win32.h: Include <sys/types.h> to fix missing mode_t typedef
+	error with mingw-w64 headers.
+	Define DECLSPEC_IMPORT for mingw-w64 headers.
+
 2012-08-30  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	First step towards X86-64 compatibility.

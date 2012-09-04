@@ -79,6 +79,10 @@ static const char *cvsid =
 #include <wincon.h>
 #include <fstream>
 
+#ifdef __MINGW64_VERSION_MAJOR
+extern char **_argv;
+#endif
+
 using namespace std;
 
 HINSTANCE hinstance;
@@ -239,6 +243,12 @@ WinMain (HINSTANCE h,
   snprintf(locale, sizeof locale, ".%u", GetACP());
   setlocale(LC_ALL, locale);
 
+  char **_argv;
+  int argc;
+  for (argc = 0, _argv = __argv; *_argv; _argv++)
+    ++argc;
+  _argv = __argv;
+
   set_legacy (_argv[0]);
 
   if (is_legacy && IsWindowsNT ())
@@ -269,13 +279,6 @@ WinMain (HINSTANCE h,
     char cwd[MAX_PATH];
     GetCurrentDirectory (MAX_PATH, cwd);
     local_dir = std::string (cwd);
-
-    // TODO: make an equivalent for __argv under cygwin.
-    char **_argv;
-    int argc;
-    for (argc = 0, _argv = __argv; *_argv; _argv++)
-      ++argc;
-    _argv = __argv;
 
     if (!GetOption::GetInstance ().Process (argc,_argv, NULL))
       exit (1);

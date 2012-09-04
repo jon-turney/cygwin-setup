@@ -16,6 +16,7 @@
 #ifndef SETUP_FILEMANIP_H
 #define SETUP_FILEMANIP_H
 
+#include <sys/types.h>
 #include <string>
 
 extern int find_tar_ext (const char *path);
