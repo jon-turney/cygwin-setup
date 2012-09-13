@@ -1,3 +1,10 @@
+2012-09-12  Christopher Faylor  <me.cygwin2012@cgf.cx>
+
+	* README: Modernize.
+	* bootstrap.sh: Remove outdated options from configure.  Use mingw
+	compiler.
+	* configure.in: Remove AM_MAINTAINER_MODE.
+
 2012-09-04  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	Fix build with mingw-w64 headers.

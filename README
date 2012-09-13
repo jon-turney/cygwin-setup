@@ -1,7 +1,6 @@
 This directory contains the source code for the Setup program
 for the Cygwin net releases.
 
-
 HOW TO BUILD:
 -------------
 Setup should build out-of-the-box on any Cygwin environment that has all the
@@ -12,47 +11,29 @@ required packages installed:
   - mingw-libgcrypt-devel
   - mingw-liblzma-devel
   - mingw-zlib
-  - and all packages that are dependencies of the above, i.e. gcc-core,
-    gcc-mingw-core, gcc-g++, mingw-runtime, binutils, w32api, etc.  These
-    should all be automatically added by setup.
+  - and all packages that are dependencies of the above, i.e.  gcc-mingw-core,
+    mingw-runtime, binutils, w*api, etc.
 
 The following additional packages are required if building from CVS, not from
 a source tarball, or if you want to make changes to the build system.
-  - autoconf
-  - autoconf2.5
-  - automake
-  - automake1.9
-  - libtool1.5
+  - recent autoconf
+  - recent automake
+  - recent libtool
   - flex
   - bison
 
 Build commands:
-1) Skip this step if building from a source tarball.
-   $ ./bootstrap.sh
-   This will automatically handle step 2 as well, so proceed to step 3.
+1) Configure using this option
+   $ /path/to/setup/bootstrap.sh
+   This will automatically rebuild configure files and run configure in the
+   current directory.
+2) $ make
 
-2) Configure using the following set of options.
-   $ ./configure -C --disable-shared --host=i686-pc-mingw32 \
-       --build=i686-pc-cygwin CC="gcc -mno-cygwin" CXX="g++ -mno-cygwin"
-   If you plan to do any work on the setup build system, you will
-   probably want to add "--enable-maintainer-mode".
-
-3) $ make
-
-4) Wondering why your binary is so much bigger than the official releases?
+3) Wondering why your binary is so much bigger than the official releases?
    Remove debugging symbols:
    $ strip -s setup.exe
    Compress using UPX:
    $ upx -9 setup.exe
-
-ABOUT BRANCHES:
----------------
-Main setup development usually occurs on trunk. Releases are made from branches
-named setup-YYYYMM. We do not have a defined stabilization period between the
-creation of the release branch and the first release - instead, we decide on
-a case by case basis, considering how rapid the recent development on trunk has
-been.
-
 
 CODING GUIDELINES:
 ------------------
@@ -60,35 +41,23 @@ setup has a number of different code formats in it. This is ok as long
 as it stays readable. When submitting a patch, make sure that you use
 the coding-style of the surrounding code.
 
-The GNU standards are acceptable, but:
-They don't explicitly cover C++, and C++ has a number of challenges that
-are not met by them. 
-If you choose not to follow the GNU standards, then you should follow
-these:
-* classes or structs to be FirstLetterCapitalised.
-* static members and globals to be FirstLetterCapitalised.
-* local variables and non-static members to be
-capitalisedAfterTheFirstWord.
-* hungarian notation is banned.
-* Try to keep functions less than 15 lines in length.
-* Try to avoid using return values with non-query methods.
-* Use classes rather than static functions.
+For new code, use the GNU standards as much as possible.  We understand
+that this is not a precise fit for C++ code but you can use Cygwin itself
+as a guide.
 
 
 SUBMITTING A PATCH:
 -------------------
-As per cygwin1.dll:
-no changelog in the patch itself.
-attach the changelog to the email.
-new files are ok in the patch, or as attachments.
-ChangeLog as per GNU standards.
-One goal per patch. (*)
-Multiple patches per email accepted, but my preference is for one patch
-per email.
+As per cygwin1.dll and many GNU projects:
+
+No changelog in the patch itself.
+Attach the changelog to the email.
+Use, at a minimum "diff -uN" when constructing diffs for submission.
+As much as possible please provide only one goal per patch.
 
 
-TODO:
------
+WISHLIST:
+---------
  * Don't downgrade if the curr version is <= installed?
  * Support rpm/deb files for reading the package from. (To allow the
    maintainers the use of rpm/deb tools to create packages.)
@@ -103,20 +72,10 @@ TODO:
    5) Something to return a list of files associated with a package.
  * Mark versions as prev/curr/test in the GUI when clicking through them.
  * Make setup.exe available through Add/Remove
- * Chooser scrollbar sometimes lost with odd font sizes.
- * Cancelling during MD5 check just stops the GUI updating until the check
-   completes, and then continues with setup as if Cancel had not been clicked. 
- * Toggling from All Default to All Install takes *way* too long.
  * Remove installed packages from Misc when other (non-All) categories are
    found.
  * Local package scan stops updating when it stops being the active window.
-
- 	   
-WISHLIST:
----------
  * Some way to download *all* the source.
- * When clicking on a category that is showing a partial list (auto added items
-   due to dependencies) show the full list rather than minimizing.
  * Incremental/recoverable download capability.
  * Build-depends.
  * FTP control connections should be closed when we are awaiting user input.
@@ -124,11 +83,6 @@ WISHLIST:
  * Add friendly error reporting to simpsock.cc.
  * Scan newly installed files for README files, show list to user, let them
    read them if they want.
- * Mouse wheel support broken/missing for *some* users.
- * When in category view, and changing from prev->normal->exp the categories
-   get collapsed. This is non-intuitive.
- * mirrors.lst to be copied to setup.ini and cached locally. Then the master
-   mirrors list is reserved for bootstrapping.
  * Clicking on a package that is in multiple categories should update the view
    of the package in both locations on screen. - Done?
  * Remember the view mode - ie if you leave setup in partial, it returns to
@@ -141,10 +95,8 @@ WISHLIST:
  * Don't ask about the start menu or desktop options if they already exist.
  * Save the manual proxy settings so they don't need to be retyped.
  * Detect files in multiple packages.
- * Save all options.
  * Run a different script after finishing setup.
  * Show bin and src download size.
  * Confirm cancellation of setup if in the middle of doing something.
  * Improve mirror selection UI.
  * Ability to "hold" the version of a package - i.e. never auto-upgrade.
-

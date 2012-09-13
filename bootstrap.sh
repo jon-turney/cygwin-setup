@@ -61,8 +61,6 @@ else
 fi
 
 echo "running configure"
-$srcdir/configure -C --enable-maintainer-mode \
-	--build=$build --host=$host CC="$CC" CXX="$CXX" \
-	"$@"
+$srcdir/configure -C --build=$build --host=$host "$@"
 
 exit $?
