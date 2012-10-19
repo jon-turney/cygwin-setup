@@ -50,14 +50,14 @@ fi
 cd "$builddir"
 
 build=`$srcdir/cfgaux/config.guess`
-host="i686-pc-mingw32"
 
-if hash $host-g++ 2> /dev/null; then
-	CC="$host-gcc"
-	CXX="$host-g++"
+if hash i686-w64-mingw32-g++ 2> /dev/null; then
+	host="i686-w64-mingw32"
+elif hash i686-pc-mingw32-g++ 2> /dev/null; then
+	host="i686-pc-mingw32"
 else
-	CC="gcc-3 -mno-cygwin"
-	CXX="g++-3 -mno-cygwin"
+	echo "mingw32-target g++ required for building setup"
+	exit 1
 fi
 
 echo "running configure"

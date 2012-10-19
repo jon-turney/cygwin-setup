@@ -1,3 +1,8 @@
+2012-10-19  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* bootstrap.sh: Add support for i686-w64-mingw32 toolchain.
+	Remove support for gcc-3 -mno-cygwin.
+
 2012-09-12  Christopher Faylor  <me.cygwin2012@cgf.cx>
 
 	* README: Modernize.
