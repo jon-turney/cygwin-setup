@@ -1,3 +1,12 @@
+2012-11-08  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* Makefile.am (EXTRA_DIST): Remove libmd5-rfc files.
+	(setup_SOURCES): Ditto.
+	* download.cc: Remove unused include.
+	* csu_util/MD5Sum.cc: Port from libmd5-rfc to libgcrypt.
+	* csu_util/MD5Sum.h: Ditto.
+	* libmd5-rfc/*: Remove.
+
 2012-10-19  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	* bootstrap.sh: Add support for i686-w64-mingw32 toolchain.

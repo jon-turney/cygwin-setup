@@ -51,7 +51,6 @@ static const char *cvsid =
 #include "Exception.h"
 
 #include "getopt++/BoolOption.h"
-#include "csu_util/MD5Sum.h"
 
 using namespace std;
 

@@ -16,7 +16,7 @@
 #define SETUP_MD5SUM_H
 
 /*
- * A C++ wrapper for the libmd5-rfc library, which additionally provides
+ * A C++ wrapper for the libgcrypt library, which additionally provides
  * storage and comparison of MD5 checksums.
  *
  * An MD5Sum may be given a value in one of two ways:
@@ -27,10 +27,8 @@
  */
 
 #include <string>
-
-namespace libmd5_rfc {
-  struct md5_state_s;
-};
+#include "win32.h"
+#include <gcrypt.h>
 
 class MD5Sum
 {
@@ -54,7 +52,7 @@ class MD5Sum
   private:
     enum { Empty, Accumulating, Set } state;
     unsigned char digest[16];
-    libmd5_rfc::md5_state_s* internalData;
+    gcry_md_hd_t* internalData;
 };
     
 #endif /* SETUP_MD5SUM_H */

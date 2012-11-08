@@ -49,8 +49,6 @@ EXTRA_DIST = \
 	choose-rtarrow.bmp \
 	choose-spin.bmp \
 	cygwin.ico \
-	libmd5-rfc/README \
-	libmd5-rfc/md5main.c \
 	setup.exe.manifest \
 	tree-minus.bmp \
 	tree-plus.bmp
@@ -274,9 +272,7 @@ setup_SOURCES = \
 	csu_util/rfc1738.cc \
 	csu_util/rfc1738.h \
 	csu_util/version_compare.cc \
-	csu_util/version_compare.h \
-	libmd5-rfc/md5.c \
-	libmd5-rfc/md5.h
+	csu_util/version_compare.h
 
 # autoload code does not optimize properly with gcc-4.x
 autoload.o: CFLAGS += -O0

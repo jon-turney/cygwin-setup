@@ -16,10 +16,6 @@
 #include <string.h>
 #include <stdexcept>
 
-namespace libmd5_rfc {
-#include "../libmd5-rfc/md5.h"
-}
-
 MD5Sum::MD5Sum(const MD5Sum& source)
 {
   *this = source;
@@ -33,7 +29,7 @@ MD5Sum::operator= (const MD5Sum& source)
   internalData = 0;
   if (source.internalData)
   {
-    internalData = new libmd5_rfc::md5_state_s;
+    internalData = new gcry_md_hd_t;
     *internalData = *(source.internalData);
   }
   return *this;
@@ -56,9 +52,9 @@ void
 MD5Sum::begin()
 {
   if (internalData) delete internalData;
-  internalData = new libmd5_rfc::md5_state_s;
+  internalData = new gcry_md_hd_t;
   state = Accumulating;
-  libmd5_rfc::md5_init(internalData);
+  gcry_md_open(internalData, GCRY_MD_MD5, 0);
 }
 
 void
@@ -67,7 +63,7 @@ MD5Sum::append(const unsigned char* data, int nbytes)
   if (!internalData)
     throw new std::logic_error("MD5Sum::append() called on an object not "
                                "in the 'Accumulating' state");
-  libmd5_rfc::md5_append(internalData, data, nbytes);
+  gcry_md_write(*internalData, data, nbytes);
 }
 
 void
@@ -76,7 +72,7 @@ MD5Sum::finish()
   if (!internalData)
     throw new std::logic_error("MD5Sum::finish() called on an object not "
                                "in the 'Accumulating' state");
-  libmd5_rfc::md5_finish(internalData, digest);
+  memcpy(digest, gcry_md_read(*internalData, GCRY_MD_MD5), 16);
   state = Set;
   delete internalData; internalData = 0;
 }
