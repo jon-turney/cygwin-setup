@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "ini.h"
-#include "iniparse.h"
+#include "iniparse.hh"
 #include "String++.h"
 #include "IniParseFeedback.h"
 

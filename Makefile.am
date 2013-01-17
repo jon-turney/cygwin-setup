@@ -53,12 +53,12 @@ EXTRA_DIST = \
 	tree-minus.bmp \
 	tree-plus.bmp
 
-# iniparse.h is generated from iniparse.yy via bison -d, so it needs to be
+# iniparse.hh is generated from iniparse.yy via bison -d, so it needs to be
 # included here for proper tracking (but not iniparse.cc, since automake
 # knows about that already)
 BUILT_SOURCES = \
 	setup_version.c \
-	iniparse.h
+	iniparse.hh
 
 CLEANFILES = setup_version.c
 
