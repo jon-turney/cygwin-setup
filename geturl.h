@@ -21,8 +21,8 @@
 
 #include <string>
 
-extern int total_download_bytes;
-extern int total_download_bytes_sofar;
+extern long long int total_download_bytes;
+extern long long int total_download_bytes_sofar;
 
 class io_stream;
 

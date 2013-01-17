@@ -68,8 +68,8 @@ using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
-static int total_bytes = 0;
-static int total_bytes_sofar = 0;
+static long long int total_bytes = 0;
+static long long int total_bytes_sofar = 0;
 static int package_bytes = 0;
 
 static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot",
@@ -631,7 +631,7 @@ do_install_thread (HINSTANCE h, HWND owner)
 
   /* Calculate the amount of data to md5sum */
   Progress.SetText1("Calculating...");
-  int md5sum_total_bytes = 0;
+  long long int md5sum_total_bytes = 0;
   for (packagedb::packagecollection::iterator i = db.packages.begin ();
        i != db.packages.end (); ++i)
   {
@@ -650,7 +650,7 @@ do_install_thread (HINSTANCE h, HWND owner)
 
   /* md5sum the packages, build lists of packages to install and uninstall
      and calculate the total amount of data to install */
-  int md5sum_total_bytes_sofar = 0;
+  long long int md5sum_total_bytes_sofar = 0;
   for (packagedb::packagecollection::iterator i = db.packages.begin ();
        i != db.packages.end (); ++i)
   {

@@ -1,3 +1,12 @@
+2013-01-16  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+	* threebar.cc (ThreeBarProgressPage::SetBar2): Change from long int to
+	long long int to handle more than 2GB of data.
+	* threebar.h (ThreeBarProgressPage::SetBar2): Update prototype.
+	* install.cc: Change md5sum and install counters to long long int.
+	* geturl.cc: Change download counter to long long int.
+	* geturl.h: Ditto.
+
 2012-11-08  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	* Makefile.am (EXTRA_DIST): Remove libmd5-rfc files.

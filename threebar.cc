@@ -106,7 +106,7 @@ ThreeBarProgressPage::SetBar1 (long progress, long max)
 }
 
 void
-ThreeBarProgressPage::SetBar2 (long progress, long max)
+ThreeBarProgressPage::SetBar2 (long long progress, long long max)
 {
   int percent = (int) (100.0 * ((double) progress) / (double) max);
   SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) percent, 0);

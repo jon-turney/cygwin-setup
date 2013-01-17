@@ -55,8 +55,8 @@ extern ThreeBarProgressPage Progress;
 static int max_bytes = 0;
 static int is_local_install = 0;
 
-int total_download_bytes = 0;
-int total_download_bytes_sofar = 0;
+long long int total_download_bytes = 0;
+long long int total_download_bytes_sofar = 0;
 
 static DWORD start_tics;
 

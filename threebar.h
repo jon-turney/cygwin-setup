@@ -75,7 +75,7 @@ public:
   void SetText4 (const TCHAR * t);
 
   void SetBar1 (long progress, long max = 100);
-  void SetBar2 (long progress, long max = 100);
+  void SetBar2 (long long progress, long long max = 100);
   void SetBar3 (long progress, long max = 100);
 
   void SetActivateTask (int t)
