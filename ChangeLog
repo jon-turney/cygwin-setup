@@ -1,5 +1,10 @@
 2015-02-16  Achim Gratz  <ASSI <Stromeko@NexGo.DE>>
 
+	* README: Adapt the documentation to the recent changes and some
+	not-so-recent ones.
+
+2015-02-16  Achim Gratz  <ASSI <Stromeko@NexGo.DE>>
+
 	* Makefile.am (setup-src): Create file list for archive from
 	git-ls-files instead of cvs and create an XZ compressed archive.
 

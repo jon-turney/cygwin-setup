@@ -4,30 +4,39 @@ for the Cygwin net releases.
 HOW TO BUILD:
 -------------
 Setup should build out-of-the-box on any Cygwin environment that has all the
-required packages installed:
-  - mingw-gcc-g++
+required packages and their dependencies installed:
+
   - make
-  - mingw-bzip2
-  - mingw-libgcrypt-devel
-  - mingw-liblzma-devel
-  - mingw-zlib
-  - and all packages that are dependencies of the above, i.e.  gcc-mingw-core,
-    mingw-runtime, binutils, w*api, etc.
+  - mingw64-${arch}-headers
+  - mingw64-${arch}-gcc-g++
+  - mingw64-${arch}-libgcrypt
+  - mingw64-${arch}-bzip2
+  - mingw64-${arch}-xz
+  - mingw64-${arch}-zlib
   - upx (optional)
 
-The following additional packages are required if building from CVS, not from
-a source tarball, or if you want to make changes to the build system.
-  - recent autoconf
-  - recent automake
-  - recent libtool
+The ${arch} needs to be replaced with either "i686" or "x86_64"
+depending on the target architecture to build for.  The following
+additional packages are required if building from Git, or if you want
+to make changes to the build system.
+
+  - autoconf
+  - automake
+  - libtool
   - flex
   - bison
 
 Build commands:
+
 1) Configure using this option
    $ /path/to/setup/bootstrap.sh
-   This will automatically rebuild configure files and run configure in the
-   current directory.
+   This will automatically rebuild configure files and run configure
+   in the current directory.  If you have installed toolchains for
+   both i686 and x86_64 architectures, then you need to select for
+   which architecture you want to build:
+   $ /path/to/setup/bootstrap.sh --host=i686-w64-mingw32
+   $ /path/to/setup/bootstrap.sh --host=x86_64-w64-mingw32
+
 2) $ make
 
 3) Wondering why your binary is so much bigger than the official releases?
@@ -60,22 +69,19 @@ As much as possible please provide only one goal per patch.
 
 WISHLIST:
 ---------
- * Don't downgrade if the curr version is <= installed?
  * Support rpm/deb files for reading the package from. (To allow the
    maintainers the use of rpm/deb tools to create packages.)
- * Make a librar(y|ies) for setup and cygcheck to use containing 
+ * Make a librar(y|ies) for setup and cygcheck to use containing
    1) Something to translate POSIX -> native.  Currently called "cygpath"
       in setup, although this is probably a bad choice of name.
    2) Something to return the list of installed packages.
    3) Something to return the cygwin mount table.  Currently, I have implemented
-      a lightweight setmntent and getmntent using the code in 
+      a lightweight setmntent and getmntent using the code in
    4) Something to parse a tar file name into package/version or alternatively,
       return that information from 2)
    5) Something to return a list of files associated with a package.
  * Mark versions as prev/curr/test in the GUI when clicking through them.
  * Make setup.exe available through Add/Remove
- * Remove installed packages from Misc when other (non-All) categories are
-   found.
  * Local package scan stops updating when it stops being the active window.
  * Some way to download *all* the source.
  * Incremental/recoverable download capability.
@@ -97,7 +103,6 @@ WISHLIST:
  * Don't ask about the start menu or desktop options if they already exist.
  * Save the manual proxy settings so they don't need to be retyped.
  * Detect files in multiple packages.
- * Run a different script after finishing setup.
  * Show bin and src download size.
  * Confirm cancellation of setup if in the middle of doing something.
  * Improve mirror selection UI.
