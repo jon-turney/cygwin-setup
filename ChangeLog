@@ -1,3 +1,7 @@
+2013-01-25  Achim Gratz <Stromeko@nexgo.de>
+        * README (HOW TO BUILD): Cross compiler package is now named
+        mingw-gcc-g++, also mention package upx as an optional dependency.
+
 2013-02-01  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
         * install.cc ( _custom_MessageBox): Remove custom message box.

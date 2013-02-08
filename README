@@ -5,7 +5,7 @@ HOW TO BUILD:
 -------------
 Setup should build out-of-the-box on any Cygwin environment that has all the
 required packages installed:
-  - gcc-mingw-g++
+  - mingw-gcc-g++
   - make
   - mingw-bzip2
   - mingw-libgcrypt-devel
@@ -13,6 +13,7 @@ required packages installed:
   - mingw-zlib
   - and all packages that are dependencies of the above, i.e.  gcc-mingw-core,
     mingw-runtime, binutils, w*api, etc.
+  - upx (optional)
 
 The following additional packages are required if building from CVS, not from
 a source tarball, or if you want to make changes to the build system.
