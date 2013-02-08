@@ -105,7 +105,7 @@ inilint_SOURCES = \
 
 setup_LDADD = \
 	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error \
-	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lnetapi32 -luuid -llzma -lbz2 -lz 
+	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lnetapi32 -lpsapi -luuid -llzma -lbz2 -lz
 setup_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 setup_SOURCES = \
 	AntiVirus.cc \
@@ -230,6 +230,8 @@ setup_SOURCES = \
 	postinstallresults.h \
 	prereq.cc \
 	prereq.h \
+	processlist.cc \
+	processlist.h \
 	proppage.cc \
 	proppage.h \
 	propsheet.cc \

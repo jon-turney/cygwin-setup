@@ -440,6 +440,26 @@ BEGIN
 
 END
 
+IDD_FILE_INUSE DIALOG DISCARDABLE  0, 0, SETUP_SMALL_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "In-use file detected"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_WARNING,IDC_HEADICON,5,5
+    LTEXT           "Unable to extract %s",
+                    IDC_FILE_INUSE_MSG,27,5,183,8,SS_PATHELLIPSIS
+    LTEXT           "The file is in use by the following processes:",
+                    IDC_STATIC,27,14,183,8
+    EDITTEXT        IDC_FILE_INUSE_EDIT,27,23,183,28,WS_VSCROLL |
+                    ES_LEFT | ES_MULTILINE | ES_READONLY |
+                    ES_AUTOVSCROLL | NOT WS_TABSTOP
+    LTEXT           "Select 'Stop' to stop Cygwin processes and retry, or "
+                    "select 'Continue' to go on anyway (you will need to reboot).",
+                    IDC_FILE_INUSE_HELP,27,52,183,16,NOT WS_GROUP
+    DEFPUSHBUTTON   "&Stop Processes",IDRETRY,47,75,55,15
+    PUSHBUTTON      "&Continue",IDOK,113,75,55,15
+END
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Manifest

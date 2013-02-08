@@ -1,5 +1,20 @@
 2013-02-01  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+        * install.cc ( _custom_MessageBox): Remove custom message box.
+        (FileInuseDlgProc): Add file-in-use dialog box.
+        (installOne): Use processlist to list processes using a file, and
+        offer to kill them with the file-in-use dialog.
+        * res.rc (IDD_FILE_INUSE) : New dialog.
+        * resource.h (IDD_FILE_INUSE, IDC_FILE_INUSE_EDIT)
+        (IDC_FILE_INUSE_MSG, IDC_FILE_INUSE_HELP): Define corresponding
+        resource ID numbers.
+        * processlist.h: New file.
+        * processlist.cc: New file.
+        * Makefile.am (setup_LDADD): Add -lpsapi.
+        (setup_SOURCES): Add new files.
+
+2013-02-01  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
         * script.cc (::run, Script::run): Move the formatting of the command
         line used for postinstall script running out to Script::run. Move the
         logging of the command and it's output into ::run.

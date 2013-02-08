@@ -64,6 +64,7 @@
 #define IDD_PREREQ                        220
 #define IDD_DROPPED                       221
 #define IDD_POSTINSTALL                   222
+#define IDD_FILE_INUSE                    223
 
 // Bitmaps
 
@@ -173,3 +174,6 @@
 #define IDC_CHOOSE_CLEAR_SEARCH           587
 #define IDC_LOCAL_DIR_DESC                588
 #define IDC_POSTINSTALL_EDIT              589
+#define IDC_FILE_INUSE_EDIT               590
+#define IDC_FILE_INUSE_MSG                591
+#define IDC_FILE_INUSE_HELP               592

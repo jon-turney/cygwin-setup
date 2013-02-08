@@ -63,6 +63,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 
 #include "threebar.h"
 #include "Exception.h"
+#include "processlist.h"
 
 using namespace std;
 
@@ -189,39 +190,61 @@ Installer::replaceOnRebootSucceeded (const std::string& fn, bool &rebootneeded)
   rebootneeded = true;
 }
 
-#define MB_RETRYCONTINUE 7
-#if !defined(IDCONTINUE)
-#define IDCONTINUE IDCANCEL
-#endif
+typedef struct
+{
+  const char *msg;
+  const char *processlist;
+  int iteration;
+} FileInuseDlgData;
 
-static HHOOK hMsgBoxHook;
-LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  HWND hWnd;
-  switch (nCode) {
-    case HCBT_ACTIVATE:
-      hWnd = (HWND)wParam;
-      if (GetDlgItem(hWnd, IDCANCEL) != NULL)
-         SetDlgItemText(hWnd, IDCANCEL, "Continue");
-      UnhookWindowsHookEx(hMsgBoxHook);
-  }
-  return CallNextHookEx(hMsgBoxHook, nCode, wParam, lParam);
-}
+static BOOL CALLBACK
+FileInuseDlgProc (HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+  switch (uMsg)
+    {
+    case WM_INITDIALOG:
+      {
+        FileInuseDlgData *dlg_data = (FileInuseDlgData *)lParam;
 
-int _custom_MessageBox(HWND hWnd, LPCTSTR szText, LPCTSTR szCaption, UINT uType) {
-  int retval;
-  bool retry_continue = (uType & MB_TYPEMASK) == MB_RETRYCONTINUE;
-  if (retry_continue) {
-    uType &= ~MB_TYPEMASK; uType |= MB_RETRYCANCEL;
-    // Install a window hook, so we can intercept the message-box
-    // creation, and customize it
-    // Only install for THIS thread!!!
-    hMsgBoxHook = SetWindowsHookEx(WH_CBT, CBTProc, NULL, GetCurrentThreadId());
-  }
-  retval = MessageBox(hWnd, szText, szCaption, uType);
-  // Intercept the return value for less confusing results
-  if (retry_continue && retval == IDCANCEL)
-    return IDCONTINUE;
-  return retval;
+        SetDlgItemText (hwndDlg, IDC_FILE_INUSE_MSG, dlg_data->msg);
+        SetDlgItemText (hwndDlg, IDC_FILE_INUSE_EDIT, dlg_data->processlist);
+
+        switch (dlg_data->iteration)
+          {
+          case 0:
+            break; // show the dialog the way it is in the resource
+
+          case 1:
+            SetDlgItemText (hwndDlg, IDRETRY, "&Kill Processes");
+            SetDlgItemText (hwndDlg, IDC_FILE_INUSE_HELP,
+                            "Select 'Kill' to kill Cygwin processes and retry, or "
+                            "select 'Continue' to go on anyway (you will need to reboot).");
+            break;
+
+          default:
+          case 2:
+            SetDlgItemText (hwndDlg, IDRETRY, "&Kill Processes");
+            SetDlgItemText (hwndDlg, IDC_FILE_INUSE_HELP,
+                            "Select 'Kill' to forcibly kill all processes and retry, or "
+                            "select 'Continue' to go on anyway (you will need to reboot).");
+          }
+      }
+      return TRUE; // automatically set focus, please
+
+    case WM_COMMAND:
+      if (HIWORD (wParam) == BN_CLICKED)
+        {
+          switch (LOWORD (wParam))
+            {
+            case IDRETRY:
+            case IDOK:
+              EndDialog (hwndDlg, LOWORD (wParam));
+              return TRUE;
+            }
+        }
+    }
+
+  return FALSE;
 }
 
 /* Helper function to create the registry value "AllowProtectedRenames",
@@ -312,9 +335,6 @@ Installer::extract_replace_on_reboot (archive *tarstream, const std::string& pre
     }
   return false;
 }
-
-#undef MessageBox
-#define MessageBox _custom_MessageBox
 
 static char all_null[512];
 
@@ -424,7 +444,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
     }
 
   bool error_in_this_package = false;
-  bool ignoreInUseErrors = unattended_mode;
+  bool ignoreInUseErrors = false;
   bool ignoreExtractErrors = unattended_mode;
 
   package_bytes = source.size;
@@ -445,7 +465,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
       if (Script::isAScript (fn))
         pkgm.desired.addScript (Script (canonicalfn));
 
-      bool firstIteration = true;
+      int iteration = 0;
       int extract_error = 0;
       while ((extract_error = archive::extract_file (tarstream, prefixURL, prefixPath)) != 0)
         {
@@ -455,21 +475,61 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
               {
                 if (!ignoreInUseErrors)
                   {
-                    char msg[fn.size() + 300];
-                    sprintf (msg,
-                             "%snable to extract /%s -- the file is in use.\r\n"
-                             "Please stop %s Cygwin processes and select \"Retry\", or\r\n"
-                             "select \"Continue\" to go on anyway (you will need to reboot).\r\n",
-                             firstIteration?"U":"Still u", fn.c_str(), firstIteration?"all":"ALL");
+                    // convert the file name to long UNC form
+                    std::string s = backslash (cygpath ("/" + fn));
+                    WCHAR sname[s.size () + 7];
+                    mklongpath (sname, s.c_str (), s.size () + 7);
 
-                    switch (MessageBox (owner, msg, "In-use files detected",
-                                        MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL))
+                    // find any process which has that file loaded into it
+                    // (note that this doesn't find when the file is un-writeable because the process has
+                    // that file opened exclusively)
+                    ProcessList processes = Process::listProcessesWithModuleLoaded (sname);
+
+                    std::string plm;
+                    for (ProcessList::iterator i = processes.begin (); i != processes.end (); i++)
+                      {
+                        if (i != processes.begin ()) plm += "\r\n";
+
+                        std::string processName = i->getName ();
+                        log (LOG_BABBLE) << processName << endLog;
+                        plm += processName;
+                      }
+
+                    INT_PTR rc = (iteration < 3) ? IDRETRY : IDOK;
+                    if (unattended_mode == attended)
+                      {
+                        FileInuseDlgData dlg_data;
+                        dlg_data.msg = ("Unable to extract /" + fn).c_str ();
+                        dlg_data.processlist = plm.c_str ();
+                        dlg_data.iteration = iteration;
+
+                        rc = DialogBoxParam(hinstance, MAKEINTRESOURCE (IDD_FILE_INUSE), owner, FileInuseDlgProc, (LPARAM)&dlg_data);
+                      }
+
+                    switch (rc)
                       {
                       case IDRETRY:
+                        // try to stop all the processes
+                        for (ProcessList::iterator i = processes.begin (); i != processes.end (); i++)
+                          {
+                            i->kill (iteration);
+                          }
+
+                        // wait up to 15 seconds for processes to stop
+                        for (unsigned int i = 0; i < 15; i++)
+                          {
+                            processes = Process::listProcessesWithModuleLoaded (sname);
+                            if (processes.size () == 0)
+                              break;
+
+                            Sleep (1000);
+                          }
+
                         // retry
-                        firstIteration = false;
+                        iteration++;
                         continue;
-                      case IDCONTINUE:
+                      case IDOK:
+                        // ignore this in-use error, and any subsequent in-use errors for other files in the same package
                         ignoreInUseErrors = true;
                         break;
                       default:
