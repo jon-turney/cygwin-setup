@@ -14,7 +14,7 @@
  */
 #ifndef SETUP_SCRIPT_H
 #define SETUP_SCRIPT_H
-   
+
 /* Initialisation stuff for run_script: sh, cmd, CYGWINROOT and PATH */
 void init_run_script ();
 
@@ -24,6 +24,9 @@ int try_run_script (const std::string& dir,
                     const std::string& fname,
                     const std::string& ext);
 
+/* Run a command and capture it's output to the log */
+int run (const char *cmdline);
+
 class Script {
 public:
   static bool isAScript (const std::string& file);
@@ -32,7 +35,7 @@ public:
   std::string fullName() const;
 /* Run the script.  If its suffix is .sh, and we have a Bourne shell, execute
    it using sh.  Otherwise, if the suffix is .bat, execute using cmd.exe (NT)
-   or command.com (9x).  Returns the exit status of the process, or 
+   or command.com (9x).  Returns the exit status of the process, or
    negative error if any.  */
   int run() const;
   bool operator == (const Script s) { return s.scriptName == scriptName; } ;

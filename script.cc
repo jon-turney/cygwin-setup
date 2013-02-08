@@ -196,10 +196,10 @@ OutputLog::out_to(std::ostream &out)
   SetFilePointer(_handle, 0, NULL, FILE_END);
 }
 
-static int
-run (const char *sh, const char *args, const char *file, OutputLog &file_out)
+int
+run (const char *cmdline)
 {
-  char cmdline[MAX_PATH];
+
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
   DWORD flags = CREATE_NEW_CONSOLE;
@@ -207,7 +207,11 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
   BOOL inheritHandles = FALSE;
   BOOL exitCodeValid = FALSE;
 
-  sprintf (cmdline, "%s %s \"%s\"", sh, args, file);
+  log(LOG_PLAIN) << "running: " << cmdline << endLog;
+
+  char tmp_pat[] = "/var/log/setup.log.runXXXXXXX";
+  OutputLog file_out = std::string (mktemp (tmp_pat));
+
   memset (&pi, 0, sizeof (pi));
   memset (&si, 0, sizeof (si));
   si.cb = sizeof (si);
@@ -226,7 +230,7 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
       flags = CREATE_NO_WINDOW;  // Note: this is ignored on Win9x
     }
 
-  BOOL createSucceeded = CreateProcess (0, cmdline, 0, 0, inheritHandles,
+  BOOL createSucceeded = CreateProcess (0, (char *)cmdline, 0, 0, inheritHandles,
 					flags, 0, get_root_dir ().c_str(),
 					&si, &pi);
 
@@ -237,6 +241,10 @@ run (const char *sh, const char *args, const char *file, OutputLog &file_out)
     }
   CloseHandle(pi.hProcess);
   CloseHandle(pi.hThread);
+
+  if (!file_out.isEmpty ())
+    log(LOG_BABBLE) << file_out << endLog;
+
   if (exitCodeValid)
     return exitCode;
   return -GetLastError();
@@ -268,23 +276,20 @@ Script::run() const
     }
 
   int retval;
-  char tmp_pat[] = "/var/log/setup.log.postinstallXXXXXXX";
-  OutputLog file_out = std::string (mktemp (tmp_pat));
+  char cmdline[MAX_PATH];
+
   if (sh.size() && stricmp (extension(), ".sh") == 0)
     {
-      log(LOG_PLAIN) << "running: " << sh << " --norc --noprofile \"" << scriptName << "\"" << endLog;
-      retval = ::run (sh.c_str(), "--norc --noprofile", scriptName.c_str(), file_out);
+      sprintf (cmdline, "%s %s \"%s\"", sh.c_str(), "--norc --noprofile", scriptName.c_str());
+      retval = ::run (cmdline);
     }
   else if (cmd && stricmp (extension(), ".bat") == 0)
     {
-      log(LOG_PLAIN) << "running: " << cmd << " /c \"" << windowsName << "\"" << endLog;
-      retval = ::run (cmd, "/c", windowsName.c_str(), file_out);
+      sprintf (cmdline, "%s %s \"%s\"", cmd, "/c", windowsName.c_str());
+      retval = ::run (cmdline);
     }
   else
     return -ERROR_INVALID_DATA;
-
-  if (!file_out.isEmpty ())
-    log(LOG_BABBLE) << file_out << endLog;
 
   if (retval)
     log(LOG_PLAIN) << "abnormal exit: exit code=" << retval << endLog;

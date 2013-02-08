@@ -1,3 +1,10 @@
+2013-02-01  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * script.cc (::run, Script::run): Move the formatting of the command
+        line used for postinstall script running out to Script::run. Move the
+        logging of the command and it's output into ::run.
+        * script.h: Add ::run() prototype.
+
 2013-01-17  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
 	* configure.in: Require automake 1.12.
