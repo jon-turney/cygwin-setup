@@ -1,5 +1,19 @@
 2013-02-17  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
+	* configure.ac: Rename from configure.in.
+	* configure.in: Delete.
+	* libgetopt++/configure.ac: Rename from configure.in.
+	* libgetopt++/configure.in: Delete.
+	* Makefile.am: Remove ill-advised iniparse.hh change.
+	* libgetopt++/Makefile.am: Use "modern" AM_CPPFLAGS rather than INCLUDES.
+	* inilex.ll: Add autodep token recognition.
+	* iniparse.yy: Handle autodep.
+	* IniDBBuilder.h (autodep): Define for base class.
+        * IniDBBuilderPackage.cc (IniDBBuilderPackage::autodep): Define.
+        * IniDBBuilderPackage.h (IniDBBuilderPackage::autodep): Declare.
+
+2013-02-17  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
 	* Makefile.am: Add regex.c to list of sources.
 	(iniparse.hh): Rename if a iniparse.h has been created.
 	* regex/config.h: New file.

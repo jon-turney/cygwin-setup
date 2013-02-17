@@ -15,7 +15,7 @@ EXTRA_DIST = \
 
 DISTCLEANFILES = include/stamp-h include/stamp-h[0-9]*
 
-INCLUDES = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include
 
 getoptincludedir = $(includedir)/getopt++
 

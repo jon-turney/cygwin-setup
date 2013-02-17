@@ -281,9 +281,6 @@ setup_SOURCES = \
 # autoload code does not optimize properly with gcc-4.x
 autoload.o: CFLAGS += -O0
 
-iniparse.hh: iniparse.cc
-	@mv -f $(basename $<).h $(basename $<).hh 2>/dev/null || :
-
 VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
                $(srcdir)/ChangeLog)
 

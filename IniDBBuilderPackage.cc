@@ -597,3 +597,9 @@ IniDBBuilderPackage::buildMessage (const std::string& message_id, const std::str
 {
   cp->set_message (message_id, message);
 }
+
+void
+IniDBBuilderPackage::autodep (const std::string& message_id, const std::string& message)
+{
+  cp->set_message (message_id, message);
+}
