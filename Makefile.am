@@ -24,14 +24,14 @@ SUBDIRS := @subdirs@ tests
 # -Wno-uninitialized added to deal with g++ 3.4.4's spurious STL warnings
 # (http://gcc.gnu.org/bugzilla/show_bug.cgi?id=22207)
 BASECXXFLAGS = -Wall -Wno-uninitialized -Wpointer-arith -Wcomments \
-               -Wcast-align -Wwrite-strings
+               -Wcast-align -Wwrite-strings -fno-builtin-sscanf
 AM_CXXFLAGS = -Werror $(BASECXXFLAGS)
 AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
             -Wstrict-prototypes -Wmissing-prototypes
 AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES = @WINDRES@
-AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include
+AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include -I${srcdir}/regex
 
 noinst_PROGRAMS = setup @INILINT@
 
@@ -103,6 +103,7 @@ inilint_SOURCES = \
 	String++.h \
 	$(inilint_extras)
 
+regex_SOURCES = regex/regex.c
 setup_LDADD = \
 	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error \
 	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lnetapi32 -lpsapi -luuid -llzma -lbz2 -lz
@@ -237,6 +238,7 @@ setup_SOURCES = \
 	propsheet.cc \
 	propsheet.h \
 	RECTWrapper.h \
+	${regex_SOURCES} \
 	res.rc \
 	resource.h \
 	root.cc \
@@ -278,6 +280,9 @@ setup_SOURCES = \
 
 # autoload code does not optimize properly with gcc-4.x
 autoload.o: CFLAGS += -O0
+
+iniparse.hh: iniparse.cc
+	@mv -f $(basename $<).h $(basename $<).hh 2>/dev/null || :
 
 VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
                $(srcdir)/ChangeLog)

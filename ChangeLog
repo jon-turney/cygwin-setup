@@ -1,3 +1,18 @@
+2013-02-17  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
+	* Makefile.am: Add regex.c to list of sources.
+	(iniparse.hh): Rename if a iniparse.h has been created.
+	* regex/config.h: New file.
+	* regex/re_comp.h: New file.
+	* regex/regcomp.c: New file.
+	* regex/regex.c: New file.
+	* regex/regex.h: New file.
+	* regex/regex_internal.c: New file.
+	* regex/regex_internal.h: New file.
+	* regex/regexec.c: New file.
+	* processlist.cc (Process::isModuleLoadedInProcess): Avoid compiler
+	warning by changing 'i' to unsigned.
+
 2013-01-25  Achim Gratz <Stromeko@nexgo.de>
         * README (HOW TO BUILD): Cross compiler package is now named
         mingw-gcc-g++, also mention package upx as an optional dependency.

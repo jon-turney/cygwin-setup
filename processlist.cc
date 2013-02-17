@@ -143,7 +143,7 @@ Process::isModuleLoadedInProcess (const WCHAR *moduleName)
         }
 
       // Search module list for the module we are looking for
-      for (int i = 0; i < (cbNeeded / sizeof (HMODULE)); i++ )
+      for (unsigned i = 0; i < (cbNeeded / sizeof (HMODULE)); i++ )
         {
           WCHAR szModName[MAX_PATH];
 
