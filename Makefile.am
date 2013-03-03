@@ -290,6 +290,9 @@ setup_version.c : $(srcdir)/ChangeLog Makefile
 	echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp && \
 	mv version.tmp setup_version.c
 
+# setup.exe.manifest is included in res.rc
+res.o: setup.exe.manifest
+
 .rc.o:
 	$(AM_V_GEN)$(WINDRES) --include-dir $(srcdir) -o $@ $<
 

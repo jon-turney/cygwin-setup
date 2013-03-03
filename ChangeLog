@@ -1,3 +1,8 @@
+2013-03-03  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* Makefile.am (res.o): Add rule to force rebuild upon change
+	to setup.exe.manifest, which is included by res.rc.
+
 2013-02-17  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
 	* configure.ac: Rename from configure.in.
