@@ -1,5 +1,13 @@
 2013-03-04  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
+	* install.cc (FileInuseDlgProc): Fix return type.
+	* regex/regcomp.c (parse_dup_op): Fix invalid cast warning.
+	(create_token_tree): Ditto.
+	* setup.exe.manifest: Set processorArchitecture to "*".
+	Add explicit requestedExecutionLevel for 64-bit compatibility.
+
+2013-03-04  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
 	* Makefile.am (inilint_extras): Remove autoload.c.
 	(setup_SOURCES): Ditto.
 	(setup_LDADD): Add ntdll and wininet.

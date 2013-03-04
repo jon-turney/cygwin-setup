@@ -197,7 +197,7 @@ typedef struct
   int iteration;
 } FileInuseDlgData;
 
-static BOOL CALLBACK
+static INT_PTR CALLBACK
 FileInuseDlgProc (HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   switch (uMsg)
