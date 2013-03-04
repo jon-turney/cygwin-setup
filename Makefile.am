@@ -64,7 +64,6 @@ CLEANFILES = setup_version.c
 
 if MINGWTARGET
 inilint_extras = \
-	autoload.c \
 	mklink2.cc
 else
 inilint_extras =
@@ -105,8 +104,8 @@ inilint_SOURCES = \
 
 regex_SOURCES = regex/regex.c
 setup_LDADD = \
-	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error \
-	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lnetapi32 -lpsapi -luuid -llzma -lbz2 -lz
+	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error -llzma -lbz2 -lz \
+	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lpsapi -luuid -lntdll -lwininet
 setup_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 setup_SOURCES = \
 	AntiVirus.cc \
@@ -116,7 +115,6 @@ setup_SOURCES = \
 	archive_tar.cc \
 	archive_tar.h \
 	archive_tar_file.cc \
-	autoload.c \
 	choose.cc \
 	choose.h \
 	compress.cc \
@@ -277,9 +275,6 @@ setup_SOURCES = \
 	csu_util/rfc1738.h \
 	csu_util/version_compare.cc \
 	csu_util/version_compare.h
-
-# autoload code does not optimize properly with gcc-4.x
-autoload.o: CFLAGS += -O0
 
 VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
                $(srcdir)/ChangeLog)

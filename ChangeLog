@@ -1,3 +1,11 @@
+2013-03-04  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* Makefile.am (inilint_extras): Remove autoload.c.
+	(setup_SOURCES): Ditto.
+	(setup_LDADD): Add ntdll and wininet.
+	(autoload.o): Remove rule.
+	* autoload.c: Remove file.
+
 2013-03-03  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	* Makefile.am (res.o): Add rule to force rebuild upon change
