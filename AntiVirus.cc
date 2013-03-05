@@ -163,8 +163,6 @@ AntiVirusPage::OnUnattended ()
 void
 detect ()
 {
-    if (!IsWindowsNT())
-	return;
     // TODO: trim the access rights down
     SCM = OpenSCManager (NULL, NULL, SC_MANAGER_ALL_ACCESS);
 

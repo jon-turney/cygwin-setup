@@ -304,10 +304,6 @@ in_table (struct mnt *m)
 static int
 is_admin ()
 {
-  // Windows 9X users are considered Administrators by definition
-  if (!IsWindowsNT ())
-    return 1;
-
   // Get the process token for the current process
   HANDLE token;
   if (!OpenProcessToken (GetCurrentProcess (), TOKEN_QUERY, &token))
@@ -390,7 +386,6 @@ read_mounts_9x ()
   DWORD posix_path_size;
   int res;
   struct mnt *m = mount_table;
-  DWORD disposition;
   char buf[10000];
 
   root_here = NULL;
@@ -412,11 +407,7 @@ read_mounts_9x ()
 	       CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME);
 
       HKEY key = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
-      if ((IsWindowsNT () ? RegOpenKeyEx (key, buf, 0, KEY_ALL_ACCESS, &key)
-			  : RegCreateKeyEx (key, buf, 0, (char *)"Cygwin", 0,
-					    KEY_ALL_ACCESS, 0, &key,
-					    &disposition))
-	  != ERROR_SUCCESS)
+      if ((RegOpenKeyEx (key, buf, 0, KEY_ALL_ACCESS, &key)) != ERROR_SUCCESS)
 	break;
       for (int i = 0;; i++, m++)
 	{
@@ -464,19 +455,6 @@ read_mounts_9x ()
 	  --m;
 	}
       RegCloseKey (key);
-    }
-
-  if (is_legacy && !root_here)
-    {
-      root_here = m;
-      m->posix = "/";
-      char windir[MAX_PATH];
-      root_text = IDC_ROOT_BINARY;
-      root_scope = (is_admin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
-      GetWindowsDirectory (windir, sizeof (windir));
-      windir[2] = 0;
-      set_root_dir (std::string (windir) + "\\cygwin");
-      m++;
     }
 }
 
@@ -634,8 +612,8 @@ add_usr_mnts (struct mnt *m)
     }
 }
 
-static void
-read_mounts_nt (const std::string val)
+void
+read_mounts (const std::string val)
 {
   DWORD posix_path_size;
   struct mnt *m = mount_table;
@@ -708,21 +686,9 @@ read_mounts_nt (const std::string val)
 }
 
 void
-read_mounts (const std::string val)
-{
-  if (!is_legacy)
-    read_mounts_nt (val);
-  else
-    read_mounts_9x ();
-}
-
-void
 set_root_dir (const std::string val)
 {
-  if (!is_legacy)
-    read_mounts (val);
-  else
-    root_here->native = val;
+  read_mounts (val);
 }
 
 const std::string

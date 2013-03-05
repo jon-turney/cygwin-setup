@@ -164,7 +164,6 @@ class VersionInfo
 {
   public:
      VersionInfo ();
-     bool isNT () { return (v.dwPlatformId == VER_PLATFORM_WIN32_NT); }
      DWORD major () const { return v.dwMajorVersion; }
      DWORD minor () const { return v.dwMinorVersion; }
   private:
@@ -173,7 +172,6 @@ class VersionInfo
 
 VersionInfo& GetVer ();
 
-#define IsWindowsNT() (GetVer ().isNT ())
 #define OSMajorVersion() (GetVer ().major ())
 #define OSMinorVersion() (GetVer ().minor ())
 

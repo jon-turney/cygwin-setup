@@ -43,34 +43,9 @@ make_link_2 (char const *exepath, char const *args, char const *icon, char const
 
 #define SYMLINK_COOKIE "!<symlink>"
 
-/* Predicate: file is not currently in existence.
- * A file race can occur otherwise.
- */
-static int
-mkcygsymlink_9x (const char *from, const char *to)
-{
-  char buf[512];
-  unsigned long w;
-
-  HANDLE h = CreateFileA (from, GENERIC_WRITE, 0, 0, CREATE_NEW,
-			  FILE_ATTRIBUTE_NORMAL, 0);
-  if (h == INVALID_HANDLE_VALUE)
-    return 1;
-  strcpy (buf, SYMLINK_COOKIE);
-  strcat (buf, to);
-  if (WriteFile (h, buf, strlen (buf) + 1, &w, NULL))
-    {
-      CloseHandle (h);
-      SetFileAttributesA (from, FILE_ATTRIBUTE_SYSTEM);
-      return 0;
-    }
-  CloseHandle (h);
-  DeleteFileA (from);
-  return 1;
-}
-
-static int
-mkcygsymlink_nt (const char *from, const char *to)
+extern "C"
+int
+mkcygsymlink (const char *from, const char *to)
 {
   char buf[strlen (SYMLINK_COOKIE) + 4096];
   unsigned long w;
@@ -102,14 +77,6 @@ mkcygsymlink_nt (const char *from, const char *to)
   return 1;
 }
 
-extern "C"
-int
-mkcygsymlink (const char *from, const char *to)
-{
-  return IsWindowsNT () ? mkcygsymlink_nt (from, to)
-			: mkcygsymlink_9x (from, to);
-}
-
 static struct {
   FILE_LINK_INFORMATION fli;
   WCHAR namebuf[32768];
@@ -119,9 +86,6 @@ extern "C"
 int
 mkcyghardlink (const char *from, const char *to)
 {
-  if (!IsWindowsNT ())
-    return 1;
-
   size_t flen = strlen (from) + 7;
   size_t tlen = strlen (to) + 7;
   wchar_t wfrom[flen];

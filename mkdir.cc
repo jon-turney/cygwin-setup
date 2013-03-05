@@ -41,51 +41,45 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
   WCHAR wpath[len + 6];
 
   strcpy (path, in_path);
-  if (IsWindowsNT ())
-    mklongpath (wpath, path, len + 6);
+  mklongpath (wpath, path, len + 6);
 
-  d = IsWindowsNT () ? GetFileAttributesW (wpath) : GetFileAttributesA (path);
+  d = GetFileAttributesW (wpath);
   if (d != INVALID_FILE_ATTRIBUTES && d & FILE_ATTRIBUTE_DIRECTORY)
     return 0;
 
   if (isadir)
     {
-      if (IsWindowsNT ())
-      	{
-	  NTSTATUS status;
-	  HANDLE dir;
-	  UNICODE_STRING upath;
-	  OBJECT_ATTRIBUTES attr;
-	  IO_STATUS_BLOCK io;
-	  SECURITY_DESCRIPTOR sd;
-	  acl_t acl;
+      NTSTATUS status;
+      HANDLE dir;
+      UNICODE_STRING upath;
+      OBJECT_ATTRIBUTES attr;
+      IO_STATUS_BLOCK io;
+      SECURITY_DESCRIPTOR sd;
+      acl_t acl;
 
-	  wpath[1] = '?';
-	  upath.Length = wcslen (wpath) * sizeof (WCHAR);
-	  upath.MaximumLength = upath.Length + sizeof (WCHAR);
-	  upath.Buffer = wpath;
-	  InitializeObjectAttributes (&attr, &upath, OBJ_CASE_INSENSITIVE, NULL,
-				      mode == 0 ? NULL
-				      : nt_sec.GetPosixPerms (path, NULL, NULL,
-							      S_IFDIR | mode,
-							      sd, acl));
-	  status = NtCreateFile (&dir, SYNCHRONIZE | READ_CONTROL
-				 | FILE_LIST_DIRECTORY,
-				 &attr, &io, NULL, FILE_ATTRIBUTE_DIRECTORY,
-				 FILE_SHARE_VALID_FLAGS, FILE_CREATE,
-				 FILE_DIRECTORY_FILE
-				 | FILE_SYNCHRONOUS_IO_NONALERT
-				 | FILE_OPEN_FOR_BACKUP_INTENT, NULL, 0);
-	  if (NT_SUCCESS (status))
-	    {
-	      NtClose (dir);
-	      return 0;
-	    }
-	  else
-	    SetLastError (RtlNtStatusToDosError (status));
-      	}
-      else if (CreateDirectoryA (path, 0))
-	return 0;
+      wpath[1] = '?';
+      upath.Length = wcslen (wpath) * sizeof (WCHAR);
+      upath.MaximumLength = upath.Length + sizeof (WCHAR);
+      upath.Buffer = wpath;
+      InitializeObjectAttributes (&attr, &upath, OBJ_CASE_INSENSITIVE, NULL,
+				  mode == 0 ? NULL
+				  : nt_sec.GetPosixPerms (path, NULL, NULL,
+							  S_IFDIR | mode,
+							  sd, acl));
+      status = NtCreateFile (&dir, SYNCHRONIZE | READ_CONTROL
+			     | FILE_LIST_DIRECTORY,
+			     &attr, &io, NULL, FILE_ATTRIBUTE_DIRECTORY,
+			     FILE_SHARE_VALID_FLAGS, FILE_CREATE,
+			     FILE_DIRECTORY_FILE
+			     | FILE_SYNCHRONOUS_IO_NONALERT
+			     | FILE_OPEN_FOR_BACKUP_INTENT, NULL, 0);
+      if (NT_SUCCESS (status))
+	{
+	  NtClose (dir);
+	  return 0;
+	}
+      else
+	SetLastError (RtlNtStatusToDosError (status));
       gse = GetLastError ();
       if (gse != ERROR_PATH_NOT_FOUND && gse != ERROR_FILE_NOT_FOUND)
 	{
@@ -94,7 +88,7 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 	      fprintf (stderr,
 		       "warning: deleting \"%s\" so I can make a directory there\n",
 		       path);
-	      if (IsWindowsNT () ? DeleteFileW (wpath) : DeleteFileA (path))
+	      if (DeleteFileW (wpath))
 		return mkdir_p (isadir, path, mode ? 0755 : 0);
 	    }
 	  return 1;

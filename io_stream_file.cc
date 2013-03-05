@@ -90,10 +90,7 @@ io_stream_file::io_stream_file (const std::string& name, const std::string& mode
     return;
   if (mode.size ())
     {
-      if (IsWindowsNT ())
-	fp = nt_wfopen (w_str (), mode.c_str (), perms); 
-      else
-	fp = fopen (fname.c_str (), mode.c_str ());
+      fp = nt_wfopen (w_str (), mode.c_str (), perms);
       if (!fp)
 	lasterr = errno;
     }
@@ -111,15 +108,10 @@ int
 io_stream_file::exists (const std::string& path)
 {
   DWORD attr;
-  if (!IsWindowsNT ())
-    attr = GetFileAttributesA (path.c_str ());
-  else
-    {
-      size_t len = 2 * path.size () + 7;
-      WCHAR wname[len];
-      mklongpath (wname, path.c_str (), len);
-      attr = GetFileAttributesW (wname);
-    }
+  size_t len = 2 * path.size () + 7;
+  WCHAR wname[len];
+  mklongpath (wname, path.c_str (), len);
+  attr = GetFileAttributesW (wname);
   return attr != INVALID_FILE_ATTRIBUTES
 	 && !(attr & (FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_DEVICE));
 }
@@ -129,58 +121,31 @@ io_stream_file::remove (const std::string& path)
 {
   if (!path.size())
     return 1;
-  if (IsWindowsNT ())
-    {
-      size_t len = path.size () + 7;
-      WCHAR wpath[len];
-      mklongpath (wpath, path.c_str (), len);
+  size_t len = path.size () + 7;
+  WCHAR wpath[len];
+  mklongpath (wpath, path.c_str (), len);
 
-      unsigned long w = GetFileAttributesW (wpath);
-      if (w == INVALID_FILE_ATTRIBUTES)
-	return 0;
-      if (w & FILE_ATTRIBUTE_DIRECTORY)
-	{
-	  len = wcslen (wpath);
-	  WCHAR tmp[len + 10];
-	  wcscpy (tmp, wpath);
-	  int i = 0;
-	  do
-	    {
-	      i++;
-	      swprintf (tmp + len, L"old-%d", i);
-	    }
-	  while (GetFileAttributesW (tmp) != INVALID_FILE_ATTRIBUTES);
-	  fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-		   path.c_str());
-	  MoveFileW (wpath, tmp);
-	}
-      SetFileAttributesW (wpath, w & ~FILE_ATTRIBUTE_READONLY);
-      return !DeleteFileW (wpath);
-    }
-  else
+  unsigned long w = GetFileAttributesW (wpath);
+  if (w == INVALID_FILE_ATTRIBUTES)
+    return 0;
+  if (w & FILE_ATTRIBUTE_DIRECTORY)
     {
-      unsigned long w = GetFileAttributesA (path.c_str ());
-      if (w == INVALID_FILE_ATTRIBUTES)
-      	return 0;
-      if (w & FILE_ATTRIBUTE_DIRECTORY)
+      len = wcslen (wpath);
+      WCHAR tmp[len + 10];
+      wcscpy (tmp, wpath);
+      int i = 0;
+      do
 	{
-	  size_t len = path.size ();
-	  char tmp[len + 10];
-	  strcpy (tmp, path.c_str ());
-	  int i = 0;
-	  do
-	    {
-	      i++;
-	      sprintf (tmp + len, "old-%d", i);
-	    }
-	  while (GetFileAttributesA (tmp) != INVALID_FILE_ATTRIBUTES);
-	  fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-		   path.c_str());
-	  MoveFileA (path.c_str (), tmp);
+	  i++;
+	  swprintf (tmp + len, L"old-%d", i);
 	}
-      SetFileAttributesA (path.c_str (), w & ~FILE_ATTRIBUTE_READONLY);
-      return !DeleteFileA (path.c_str ());
+      while (GetFileAttributesW (tmp) != INVALID_FILE_ATTRIBUTES);
+      fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
+	       path.c_str());
+      MoveFileW (wpath, tmp);
     }
+  SetFileAttributesW (wpath, w & ~FILE_ATTRIBUTE_READONLY);
+  return !DeleteFileW (wpath);
 }
 
 int
@@ -272,14 +237,9 @@ io_stream_file::set_mtime (time_t mtime)
   ftime.dwHighDateTime = ftimev >> 32;
   ftime.dwLowDateTime = ftimev;
   HANDLE h;
-  if (IsWindowsNT ())
-    h = CreateFileW (w_str(), GENERIC_WRITE,
-		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
-		     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
-  else
-    h = CreateFileA (fname.c_str (), GENERIC_WRITE,
-		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
-		     FILE_ATTRIBUTE_NORMAL, 0);
+  h = CreateFileW (w_str(), GENERIC_WRITE,
+		   FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
+		   FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
   if (h != INVALID_HANDLE_VALUE)
     {
       SetFileTime (h, 0, 0, &ftime);
@@ -306,27 +266,13 @@ io_stream_file::get_size ()
     return 0;
   HANDLE h;
   DWORD ret = 0;
-  if (IsWindowsNT ())
+  h = CreateFileW (w_str (), GENERIC_READ,
+		   FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
+		   FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
+  if (h != INVALID_HANDLE_VALUE)
     {
-      h = CreateFileW (w_str (), GENERIC_READ,
-		       FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
-		       FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
-      if (h != INVALID_HANDLE_VALUE)
-	{
-	  ret = GetFileSize (h, NULL);
-	  CloseHandle (h);
-	}
-    }
-  else
-    {
-      WIN32_FIND_DATAA buf;
-      h = FindFirstFileA (fname.c_str(), &buf);
-      if (h != INVALID_HANDLE_VALUE)
-	{
-	  if (buf.nFileSizeHigh == 0)
-	    ret = buf.nFileSizeLow;
-	  FindClose (h);
-	}
+      ret = GetFileSize (h, NULL);
+      CloseHandle (h);
     }
   return ret;
 }

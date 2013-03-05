@@ -99,52 +99,49 @@ load_dialog (HWND h)
   rbset (h, su, root_scope);
   eset (h, IDC_ROOT_DIR, get_root_dir ());
   check_if_enable_next (h);
-  if (!is_legacy)
-    {
-      /* Stretch IDC_ROOTDIR_GRP content to full dialog width.  Use
-         IDC_ROOTDIR_GRP rectangle as fix point. */
-      RECT rect_base, rect;
-      GetDlgItemRect (h, IDC_ROOTDIR_GRP, &rect_base);
+  /* Stretch IDC_ROOTDIR_GRP content to full dialog width.  Use
+     IDC_ROOTDIR_GRP rectangle as fix point. */
+  RECT rect_base, rect;
+  GetDlgItemRect (h, IDC_ROOTDIR_GRP, &rect_base);
 
-      GetDlgItemRect (h, IDC_INSTALLFOR_GRP, &rect);
-      rect.right = rect_base.right;
-      SetDlgItemRect (h, IDC_INSTALLFOR_GRP, &rect);
+  GetDlgItemRect (h, IDC_INSTALLFOR_GRP, &rect);
+  rect.right = rect_base.right;
+  SetDlgItemRect (h, IDC_INSTALLFOR_GRP, &rect);
 
-      GetDlgItemRect (h, IDC_ALLUSERS_TEXT, &rect);
-      rect.right = rect_base.right - 25;
-      SetDlgItemRect (h, IDC_ALLUSERS_TEXT, &rect);
+  GetDlgItemRect (h, IDC_ALLUSERS_TEXT, &rect);
+  rect.right = rect_base.right - 25;
+  SetDlgItemRect (h, IDC_ALLUSERS_TEXT, &rect);
 
-      GetDlgItemRect (h, IDC_JUSTME_TEXT, &rect);
-      rect.right = rect_base.right - 25;
-      SetDlgItemRect (h, IDC_JUSTME_TEXT, &rect);
+  GetDlgItemRect (h, IDC_JUSTME_TEXT, &rect);
+  rect.right = rect_base.right - 25;
+  SetDlgItemRect (h, IDC_JUSTME_TEXT, &rect);
 
-      /* Change adjustment accordingly. */
-      RootControlsInfo[3].horizontalPos = CP_STRETCH;
-      RootControlsInfo[5].horizontalPos = CP_STRETCH;
-      RootControlsInfo[7].horizontalPos = CP_STRETCH;
+  /* Change adjustment accordingly. */
+  RootControlsInfo[3].horizontalPos = CP_STRETCH;
+  RootControlsInfo[5].horizontalPos = CP_STRETCH;
+  RootControlsInfo[7].horizontalPos = CP_STRETCH;
 
-      SetWindowText (GetDlgItem (h, IDC_ALLUSERS_TEXT),
-		     "Cygwin will be available to all users of the system.");
-      SetWindowText (GetDlgItem (h, IDC_JUSTME_TEXT),
-		     "Cygwin will still be available to all users, but "
-		     "Desktop Icons, Cygwin Menu Entries, and important "
-		     "Installer information are only available to the current "
-		     "user.  Only select this if you lack Administrator "
-		     "privileges or if you have specific needs.");
+  SetWindowText (GetDlgItem (h, IDC_ALLUSERS_TEXT),
+		 "Cygwin will be available to all users of the system.");
+  SetWindowText (GetDlgItem (h, IDC_JUSTME_TEXT),
+		 "Cygwin will still be available to all users, but "
+		 "Desktop Icons, Cygwin Menu Entries, and important "
+		 "Installer information are only available to the current "
+		 "user.  Only select this if you lack Administrator "
+		 "privileges or if you have specific needs.");
 
-      ShowWindow (GetDlgItem (h, IDC_MODE_GRP), SW_HIDE);
-      ShowWindow (GetDlgItem (h, IDC_ROOT_BINARY), SW_HIDE);
-      ShowWindow (GetDlgItem (h, IDC_MODE_BIN), SW_HIDE);
-      ShowWindow (GetDlgItem (h, IDC_ROOT_TEXT), SW_HIDE);
-      ShowWindow (GetDlgItem (h, IDC_MODE_TEXT), SW_HIDE);
-      ShowWindow (GetDlgItem (h, IDC_FILEMODES_LINK), SW_HIDE);
-    }
+  ShowWindow (GetDlgItem (h, IDC_MODE_GRP), SW_HIDE);
+  ShowWindow (GetDlgItem (h, IDC_ROOT_BINARY), SW_HIDE);
+  ShowWindow (GetDlgItem (h, IDC_MODE_BIN), SW_HIDE);
+  ShowWindow (GetDlgItem (h, IDC_ROOT_TEXT), SW_HIDE);
+  ShowWindow (GetDlgItem (h, IDC_MODE_TEXT), SW_HIDE);
+  ShowWindow (GetDlgItem (h, IDC_FILEMODES_LINK), SW_HIDE);
 }
 
 static void
 save_dialog (HWND h)
 {
-  root_text = !is_legacy ? IDC_ROOT_BINARY : rbget (h, rb);
+  root_text = IDC_ROOT_BINARY;
   root_scope = rbget (h, su);
   set_root_dir (egetString (h, IDC_ROOT_DIR));
 }

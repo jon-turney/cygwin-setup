@@ -151,15 +151,10 @@ io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string
   fname = cygpath (normalise(name));
   if (mode.size ())
     {
-      if (IsWindowsNT ())
-	{
-	  if (fname.rfind (".exe") != std::string::npos
-	      || fname.rfind (".dll") != std::string::npos)
-	    perms |= 0111;	/* Make .exe and .dll always executable. */
-	  fp = nt_wfopen (w_str(), mode.c_str (), perms);
-	}
-      else
-	fp = fopen (fname.c_str (), mode.c_str ());
+      if (fname.rfind (".exe") != std::string::npos
+	  || fname.rfind (".dll") != std::string::npos)
+        perms |= 0111;	/* Make .exe and .dll always executable. */
+      fp = nt_wfopen (w_str(), mode.c_str (), perms);
       if (!fp)
       {
 	lasterr = errno;
@@ -185,16 +180,11 @@ io_stream_cygfile::exists (const std::string& path)
   if (!get_root_dir ().size())
     return 0;
 
-  if (IsWindowsNT ())
-    {
-      size_t len = cygpath (normalise(path)).size () + 7;
-      WCHAR wname[len];
-      mklongpath (wname, cygpath (normalise(path)).c_str (), len);
-      DWORD attr = GetFileAttributesW (wname);
-      if (attr != INVALID_FILE_ATTRIBUTES)
-	return 1;
-    }
-  else if (_access (cygpath (normalise(path)).c_str (), 0))
+  size_t len = cygpath (normalise(path)).size () + 7;
+  WCHAR wname[len];
+  mklongpath (wname, cygpath (normalise(path)).c_str (), len);
+  DWORD attr = GetFileAttributesW (wname);
+  if (attr != INVALID_FILE_ATTRIBUTES)
     return 1;
   return 0;
 }
@@ -209,49 +199,26 @@ io_stream_cygfile::remove (const std::string& path)
     /* TODO: assign a errno for "no mount table :} " */
     return 1;
 
-  if (IsWindowsNT ())
-    {
-      size_t len = cygpath (normalise(path)).size () + 7;
-      WCHAR wpath[len];
-      mklongpath (wpath, cygpath (normalise(path)).c_str (), len);
+  size_t len = cygpath (normalise(path)).size () + 7;
+  WCHAR wpath[len];
+  mklongpath (wpath, cygpath (normalise(path)).c_str (), len);
 
-      unsigned long w = GetFileAttributesW (wpath);
-      if (w != INVALID_FILE_ATTRIBUTES && w & FILE_ATTRIBUTE_DIRECTORY)
-	{
-	  len = wcslen (wpath);
-	  WCHAR tmp[len + 10];
-	  wcscpy (tmp, wpath);
-	  int i = 0;
-	  do
-	    {
-	      ++i;
-	      swprintf (tmp + len, L"old-%d", i);
-	    }
-	  while (GetFileAttributesW (tmp) != INVALID_FILE_ATTRIBUTES);
-	  fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-		   normalise(path).c_str());
-	  MoveFileW (wpath, tmp);
-	}
-    }
-  else
+  unsigned long w = GetFileAttributesW (wpath);
+  if (w != INVALID_FILE_ATTRIBUTES && w & FILE_ATTRIBUTE_DIRECTORY)
     {
-      unsigned long w = GetFileAttributesA (cygpath (normalise(path)).c_str ());
-      if (w != INVALID_FILE_ATTRIBUTES && w & FILE_ATTRIBUTE_DIRECTORY)
-	{
-	  size_t len = cygpath (normalise(path)).size ();
-	  char tmp[len + 10];
-	  strcpy (tmp, cygpath (normalise(path)).c_str ());
-	  int i = 0;
-	  do
-	    {
-	      ++i;
-	      sprintf (tmp + len, "old-%d", i);
-	    }
-	  while (GetFileAttributesA (tmp) != INVALID_FILE_ATTRIBUTES);
-	  fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-		   normalise(path).c_str());
-	  MoveFileA (cygpath (normalise(path)).c_str (), tmp);
+      len = wcslen (wpath);
+      WCHAR tmp[len + 10];
+      wcscpy (tmp, wpath);
+      int i = 0;
+      do
+        {
+	  ++i;
+	  swprintf (tmp + len, L"old-%d", i);
 	}
+      while (GetFileAttributesW (tmp) != INVALID_FILE_ATTRIBUTES);
+      fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
+	       normalise(path).c_str());
+      MoveFileW (wpath, tmp);
     }
   return io_stream::remove (std::string ("file://") + cygpath (normalise(path)).c_str());
 }
@@ -402,14 +369,9 @@ io_stream_cygfile::set_mtime (time_t mtime)
   ftime.dwHighDateTime = ftimev >> 32;
   ftime.dwLowDateTime = ftimev;
   HANDLE h;
-  if (IsWindowsNT ())
-    h = CreateFileW (w_str (), GENERIC_WRITE,
-		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
-		     FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
-  else
-    h = CreateFileA (fname.c_str (), GENERIC_WRITE,
-		     FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
-		     FILE_ATTRIBUTE_NORMAL, 0);
+  h = CreateFileW (w_str (), GENERIC_WRITE,
+		   FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
+		   FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
   if (h == INVALID_HANDLE_VALUE)
     return 1;
   SetFileTime (h, 0, 0, &ftime);
@@ -438,27 +400,13 @@ io_stream_cygfile::get_size ()
     return 0;
   HANDLE h;
   DWORD ret = 0;
-  if (IsWindowsNT ())
+  h = CreateFileW (w_str (), GENERIC_READ,
+		   FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
+		   FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
+  if (h != INVALID_HANDLE_VALUE)
     {
-      h = CreateFileW (w_str (), GENERIC_READ,
-		       FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING,
-		       FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
-      if (h != INVALID_HANDLE_VALUE)
-	{
-	  ret = GetFileSize (h, NULL);
-	  CloseHandle (h);
-	}
-    }
-  else
-    {
-      WIN32_FIND_DATAA buf;
-      h = FindFirstFileA (fname.c_str (), &buf);
-      if (h != INVALID_HANDLE_VALUE)
-	{
-	  if (buf.nFileSizeHigh == 0)
-	    ret = buf.nFileSizeLow;
-	  FindClose (h);
-	}
+      ret = GetFileSize (h, NULL);
+      CloseHandle (h);
     }
   return ret;
 }

@@ -287,50 +287,30 @@ Installer::extract_replace_on_reboot (archive *tarstream, const std::string& pre
       std::string s = cygpath ("/" + fn + ".new"),
         d = cygpath ("/" + fn);
 
-      if (!IsWindowsNT())
-        {
-          /* Get the short file names */
-          char s2[MAX_PATH], d2[MAX_PATH];
-          unsigned int slen =
-            GetShortPathName (s.c_str (), s2, MAX_PATH),
-            dlen = GetShortPathName (d.c_str (), d2, MAX_PATH);
-
-          if (!slen || slen > MAX_PATH || !dlen || dlen > MAX_PATH)
-            replaceOnRebootFailed(fn);
-          else
-            if (!WritePrivateProfileString ("rename", d2, s2,
-                                            "WININIT.INI"))
-              replaceOnRebootFailed (fn);
-            else
-              replaceOnRebootSucceeded (fn, rebootneeded);
-        }
+      WCHAR sname[s.size () + 7];
+      WCHAR dname[d.size () + 7];
+      /* Windows 2000 has a bug:  Prepending \\?\ does not
+       * work in conjunction with MOVEFILE_DELAY_UNTIL_REBOOT.
+       * So in case of Windows 2000 we just convert the path
+       * to wide char and hope for the best. */
+      if (OSMajorVersion () == 5 && OSMinorVersion () == 0)
+	{
+	  mbstowcs (sname, s.c_str (), s.size () + 7);
+	  mbstowcs (dname, d.c_str (), d.size () + 7);
+	}
+      else
+	{
+	  mklongpath (sname, s.c_str (), s.size () + 7);
+	  mklongpath (dname, d.c_str (), d.size () + 7);
+	}
+      if (!MoveFileExW (sname, dname,
+                        MOVEFILE_DELAY_UNTIL_REBOOT |
+                        MOVEFILE_REPLACE_EXISTING))
+        replaceOnRebootFailed (fn);
       else
         {
-          WCHAR sname[s.size () + 7];
-          WCHAR dname[d.size () + 7];
-          /* Windows 2000 has a bug:  Prepending \\?\ does not
-           * work in conjunction with MOVEFILE_DELAY_UNTIL_REBOOT.
-           * So in case of Windows 2000 we just convert the path
-           * to wide char and hope for the best. */
-          if (OSMajorVersion () == 5 && OSMinorVersion () == 0)
-            {
-              mbstowcs (sname, s.c_str (), s.size () + 7);
-              mbstowcs (dname, d.c_str (), d.size () + 7);
-            }
-          else
-            {
-              mklongpath (sname, s.c_str (), s.size () + 7);
-              mklongpath (dname, d.c_str (), d.size () + 7);
-            }
-          if (!MoveFileExW (sname, dname,
-                            MOVEFILE_DELAY_UNTIL_REBOOT |
-                            MOVEFILE_REPLACE_EXISTING))
-            replaceOnRebootFailed (fn);
-          else
-            {
-              create_allow_protected_renames ();
-              replaceOnRebootSucceeded (fn, rebootneeded);
-            }
+          create_allow_protected_renames ();
+          replaceOnRebootSucceeded (fn, rebootneeded);
         }
     }
   return false;
@@ -669,18 +649,7 @@ do_install_thread (HINSTANCE h, HWND owner)
   Progress.SetBar3 (df);
 
   /* Writes Cygwin/setup/rootdir registry value */
-  if (!is_legacy)
-    create_install_root ();
-  else
-    {
-      int istext = (root_text == IDC_ROOT_TEXT) ? 1 : 0;
-      int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
-
-      create_mount ("/", get_root_dir (), istext, issystem);
-      create_mount ("/usr/bin", cygpath ("/bin"), istext, issystem);
-      create_mount ("/usr/lib", cygpath ("/lib"), istext, issystem);
-      set_cygdrive_flags (istext, issystem);
-    }
+  create_install_root ();
 
   /* Let's hope people won't uninstall packages before installing [b]ash */
   init_run_script ();

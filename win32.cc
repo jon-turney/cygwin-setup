@@ -36,15 +36,11 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
   DWORD u_attribute, g_attribute, o_attribute;
   DWORD offset = 0;
 
-  if (is_legacy)
-    return NULL;
-
   /* Initialize out SD */
   if (!InitializeSecurityDescriptor (&out_sd, SECURITY_DESCRIPTOR_REVISION))
     log (LOG_TIMESTAMP) << "InitializeSecurityDescriptor(" << fname
     			<< ") failed: " << GetLastError () << endLog;
-  if (OSMajorVersion () >= 5)
-    out_sd.Control |= SE_DACL_PROTECTED;
+  out_sd.Control |= SE_DACL_PROTECTED;
 
   /* Initialize ACL and fill with almost POSIX-like permissions.
      Note that the current user always requires write permissions, otherwise

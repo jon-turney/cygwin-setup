@@ -86,7 +86,6 @@ extern char **_argv;
 using namespace std;
 
 HINSTANCE hinstance;
-bool is_legacy;
 
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
 static BoolOption PackageManagerOption (false, 'M', "package-manager", "Semi-attended chooser-only mode");
@@ -216,20 +215,6 @@ main_display ()
   CoUninitialize ();
 }
 
-static void
-set_legacy (const char *command)
-{
-  char buf[MAX_PATH + 1];
-  if (strchr (command, '~') == NULL || !dyn_GetLongPathName
-      || !dyn_GetLongPathName (command, buf, MAX_PATH))
-    {
-      strncpy (buf, command, MAX_PATH);
-      buf[MAX_PATH] = '\0';
-    }
-  strlwr (buf);
-  is_legacy = strstr (buf, "setup-legacy");
-}
-
 int WINAPI
 WinMain (HINSTANCE h,
 	 HINSTANCE hPrevInstance, LPSTR command_line, int cmd_show)
@@ -248,32 +233,6 @@ WinMain (HINSTANCE h,
   for (argc = 0, _argv = __argv; *_argv; _argv++)
     ++argc;
   _argv = __argv;
-
-  set_legacy (_argv[0]);
-
-  if (is_legacy && IsWindowsNT ())
-    {
-      if (MessageBox (NULL,
-		      "You are attempting to install a legacy version of Cygwin\n"
-		      "on a modern version of Windows.  Press \"OK\" if this is\n"
-		      "really want you want to do.  Otherwise press \"Cancel\".\n"
-		      "See http://cygwin.com/ for more information.",
-		      "Attempt to install legacy version of Cygwin",
-		      MB_OKCANCEL | MB_ICONSTOP | MB_SETFOREGROUND | MB_TOPMOST)
-	  == IDCANCEL)
-	return 1;
-    }
-  else if (!is_legacy && !IsWindowsNT ())
-    {
-      MessageBox (NULL,
-		  "Cygwin 1.7 and later does not run on Windows 95,\n"
-		  "Windows 98, or Windows Me.  If you want to install Cygwin\n"
-		  "on one of these systems, please install an older version.\n"
-		  "See http://cygwin.com/ for more information.",
-		  "Unsupported version of Windows detected",
-		  MB_OK | MB_ICONSTOP | MB_SETFOREGROUND | MB_TOPMOST);
-      return 1;
-    }
 
   try {
     char cwd[MAX_PATH];
@@ -299,8 +258,7 @@ WinMain (HINSTANCE h,
 
     /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
        no idea of access control lists and security at all.  */
-    if (IsWindowsNT ())
-      nt_sec.setDefaultSecurity ();
+    nt_sec.setDefaultSecurity ();
 
     if (HelpOption)
       {

@@ -1,3 +1,7 @@
+2013-03-05  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	Throughout, drop support for Cygwin 1.5 and Windows pre-2000.
+
 2013-03-04  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	* install.cc (FileInuseDlgProc): Fix return type.

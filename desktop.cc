@@ -94,21 +94,8 @@ make_link (const std::string& linkpath,
   std::string exepath;
   std::string argbuf;
 
-  if (IsWindowsNT ())
-    {
-      exepath = target;
-      argbuf = arg;
-    }
-  else
-    {
-      char windir[MAX_PATH];
-
-      GetWindowsDirectory (windir, sizeof (windir));
-      exepath = std::string(windir) + "\\command.com";
-      argbuf = "/E:4096 /c " + target;
-      if (arg.size ())
-	argbuf += " " + arg;
-    }
+  exepath = target;
+  argbuf = arg;
 
   msg ("make_link_2 (%s, %s, %s, %s)",
        exepath.c_str(), argbuf.c_str(),
@@ -175,25 +162,16 @@ make_cygwin_bat ()
   batname = backslash (cygpath ("/Cygwin.bat"));
   FILE *bat;
 
-  if (!is_legacy)
-    {
-      size_t len = batname.size () + 7;
-      WCHAR wname[len];
-      mklongpath (wname, batname.c_str (), len);
+  size_t len = batname.size () + 7;
+  WCHAR wname[len];
+  mklongpath (wname, batname.c_str (), len);
 
-      /* if the batch file exists, don't overwrite it */
-      if (GetFileAttributesW (wname) != INVALID_FILE_ATTRIBUTES)
-	return;
+  /* if the batch file exists, don't overwrite it */
+  if (GetFileAttributesW (wname) != INVALID_FILE_ATTRIBUTES)
+    return;
 
-      bat = nt_wfopen (wname, "wt", 0755);
-    }
-  else
-    {
-      if (_access (batname.c_str (), 0) == 0)
-	return;
+  bat = nt_wfopen (wname, "wt", 0755);
 
-      bat = fopen (batname.c_str (), "wt");
-    }
   if (!bat)
     return;
 
@@ -223,21 +201,17 @@ save_icon (const char *path, const char *resource_name)
   int len = SizeofResource (NULL, rsrc);
 
   FILE *f;
-  if (!is_legacy)
-    {
-      WIN32_FILE_ATTRIBUTE_DATA attr;
+  WIN32_FILE_ATTRIBUTE_DATA attr;
 
-      size_t ilen = iconname.size () + 7;
-      WCHAR wname[ilen];
-      mklongpath (wname, iconname.c_str (), ilen);
-      if (GetFileAttributesExW (wname, GetFileExInfoStandard, &attr)
-	  && attr.dwFileAttributes != INVALID_FILE_ATTRIBUTES
-	  && attr.nFileSizeLow > 7022)	/* Size of old icon */
-	return;
-      f = nt_wfopen (wname, "wb", 0644);
-    }
-  else
-    f = fopen (iconname.c_str (), "wb");
+  size_t ilen = iconname.size () + 7;
+  WCHAR wname[ilen];
+  mklongpath (wname, iconname.c_str (), ilen);
+  if (GetFileAttributesExW (wname, GetFileExInfoStandard, &attr)
+      && attr.dwFileAttributes != INVALID_FILE_ATTRIBUTES
+      && attr.nFileSizeLow > 7022)	/* Size of old icon */
+    return;
+
+  f = nt_wfopen (wname, "wb", 0644);
   if (f)
     {
       fwrite (data, 1, len, f);
@@ -255,15 +229,13 @@ do_desktop_setup ()
 
   std::string target;
 
-  target = is_legacy ? batname : backslash (cygpath ("/bin/mintty"));
+  target = backslash (cygpath ("/bin/mintty"));
 
   if (root_menu)
-    start_menu (is_legacy ? "Cygwin Bash Shell" : "Cygwin Terminal", target,
-    		is_legacy ? "" : "-i /Cygwin-Terminal.ico -");
+    start_menu ("Cygwin Terminal", target, "-i /Cygwin-Terminal.ico -");
 
   if (root_desktop)
-    desktop_icon (is_legacy ? "Cygwin" : "Cygwin Terminal", target,
-		  is_legacy ? "" : "-i /Cygwin-Terminal.ico -");
+    desktop_icon ("Cygwin Terminal", target, "-i /Cygwin-Terminal.ico -");
 }
 
 static int da[] = { IDC_ROOT_DESKTOP, 0 };
@@ -436,12 +408,8 @@ DesktopSetupPage::OnActivate ()
 	}
       else
 	{
-	  root_menu =
-	    is_legacy
-	    ? check_startmenu ("Cygwin Bash Shell",
-			       backslash (cygpath ("/cygwin.bat")))
-	    : check_startmenu ("Cygwin Terminal",
-			       backslash (cygpath ("/bin/mintty")));
+	  root_menu = check_startmenu ("Cygwin Terminal",
+				       backslash (cygpath ("/bin/mintty")));
 	}
 
       if (NoDesktopOption) 
@@ -450,11 +418,8 @@ DesktopSetupPage::OnActivate ()
 	}
       else
 	{
-	  root_desktop =
-	    is_legacy
-	    ? check_desktop ("Cygwin", backslash (cygpath ("/cygwin.bat")))
-	    : check_desktop ("Cygwin Terminal",
-			     backslash (cygpath ("/bin/mintty")));
+	  root_desktop = check_desktop ("Cygwin Terminal",
+					backslash (cygpath ("/bin/mintty")));
 	}
     }
 

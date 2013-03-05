@@ -114,7 +114,7 @@ init_run_script ()
   SetEnvironmentVariable ("TMP", "/tmp");
 
   sh = backslash (cygpath ("/bin/bash.exe"));
-  cmd = IsWindowsNT () ? "cmd.exe" : "command.com";
+  cmd = "cmd.exe";
 }
 
 class OutputLog
