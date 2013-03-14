@@ -1,3 +1,21 @@
+2013-03-14  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* configure.ac: Remove check for libmingw32.
+	(SETUP): Define EXE name based on host_cpu.
+	(MINGWTARGET): Remove.
+	* Makefile.am: Use SETUP throughout.  Remove MINGWTARGET conditional.
+	Add -lmingw32 to LDFLAGS.
+	* ini.h (is_64bit): Declare.
+	(SETUP_INI_FILENAME): Make dependent on value of is_64bit.
+	(SETUP_BZ2_FILENAME): Ditto.
+	* main.cc (is_64bit): Define based on compiler target.
+	* mount.h (SETUP_KEY_WOW64): Define based on value of is_64bit.
+	* install.cc (create_allow_protected_renames): Add SETUP_KEY_WOW64
+	flag to RegOpenKeyEx call.
+	* mount.cc: Throughout, add SETUP_KEY_WOW64 flag to all RegOpenKeyEx
+	and RegCreateKeyEx calls.
+	(read_mounts): Change default Cygwin root depending on is_64bit.
+
 2013-03-05  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	Throughout, drop support for Cygwin 1.5 and Windows pre-2000.

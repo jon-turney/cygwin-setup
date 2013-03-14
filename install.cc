@@ -262,7 +262,7 @@ create_allow_protected_renames ()
 
   if (RegOpenKeyEx (HKEY_LOCAL_MACHINE,
 		    "System\\CurrentControlSet\\Control\\Session Manager",
-		    0, KEY_ALL_ACCESS, &key) == ERROR_SUCCESS)
+		    0, KEY_ALL_ACCESS | SETUP_KEY_WOW64, &key) == ERROR_SUCCESS)
     RegSetValueEx (key, "AllowProtectedRenames", 0, REG_DWORD,
 		   (BYTE *) &val, sizeof (DWORD));
   RegCloseKey (key);

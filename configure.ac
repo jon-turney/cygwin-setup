@@ -63,8 +63,6 @@ AC_SUBST(WINDRES)
 dnl AC_CHECK_TOOL(OBJCOPY, objcopy, objcopy)
 dnl AC_SUBST(OBJCOPY)
 
-AC_CHECK_LIB(mingw32,main)
-
 AC_CHECK_HEADERS(alloca.h \
 		 errno.h \
 		 string \
@@ -85,14 +83,18 @@ ac_configure_args="$ac_configure_args --disable-shared"
 AC_CONFIG_SUBDIRS(libgetopt++)
 
 dnl add portability sources to inilint
-case "$host_os" in
-mingw32)
-  AM_CONDITIONAL(MINGWTARGET, true)
+case "$host" in
+i?86-*-mingw32)
+  SETUP="setup"
+  ;;
+x86_64-*-mingw32)
+  SETUP="setup64"
   ;;
 *)
-  AM_CONDITIONAL(MINGWTARGET, false)
+  AC_MSG_ERROR([Cygwin Setup can only be built for Win32 or Win64 hosts])
   ;;
 esac
+AC_SUBST(SETUP)
 
 AC_CONFIG_FILES([Makefile tests/Makefile])
 AC_OUTPUT

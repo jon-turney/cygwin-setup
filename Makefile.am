@@ -33,7 +33,7 @@ AM_LFLAGS = -8
 WINDRES = @WINDRES@
 AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include -I${srcdir}/regex
 
-noinst_PROGRAMS = setup @INILINT@
+noinst_PROGRAMS = @SETUP@$(EXEEXT) @INILINT@
 
 EXTRA_PROGRAMS = inilint
 ## noinst_PROGRAMS +=inilint
@@ -62,13 +62,6 @@ BUILT_SOURCES = \
 
 CLEANFILES = setup_version.c
 
-if MINGWTARGET
-inilint_extras = \
-	mklink2.cc
-else
-inilint_extras =
-endif
-
 inilint_LDADD = \
 	libgetopt++/libgetopt++.la
 inilint_SOURCES = \
@@ -93,21 +86,20 @@ inilint_SOURCES = \
 	IOStreamProvider.h \
 	mkdir.cc \
 	mkdir.h \
+	mklink2.cc \
 	PackageSpecification.cc \
 	PackageSpecification.h \
 	PackageTrust.h \
 	csu_util/rfc1738.cc \
 	csu_util/rfc1738.h \
 	String++.cc \
-	String++.h \
-	$(inilint_extras)
+	String++.h
 
-regex_SOURCES = regex/regex.c
-setup_LDADD = \
+@SETUP@_LDADD = \
 	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error -llzma -lbz2 -lz \
-	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lpsapi -luuid -lntdll -lwininet
-setup_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
-setup_SOURCES = \
+ 	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lpsapi -luuid -lntdll -lwininet -lmingw32
+@SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
+@SETUP@_SOURCES = \
 	AntiVirus.cc \
 	AntiVirus.h \
 	archive.cc \
@@ -236,7 +228,6 @@ setup_SOURCES = \
 	propsheet.cc \
 	propsheet.h \
 	RECTWrapper.h \
-	${regex_SOURCES} \
 	res.rc \
 	resource.h \
 	root.cc \
@@ -274,7 +265,8 @@ setup_SOURCES = \
 	csu_util/rfc1738.cc \
 	csu_util/rfc1738.h \
 	csu_util/version_compare.cc \
-	csu_util/version_compare.h
+	csu_util/version_compare.h \
+	regex/regex.c
 
 VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
                $(srcdir)/ChangeLog)

@@ -23,6 +23,8 @@
 #include <string>
 #include "String++.h"
 
+#define SETUP_KEY_WOW64 (is_64bit ? KEY_WOW64_64KEY : KEY_WOW64_32KEY)
+
 void create_mount (const std::string posix, const std::string win32,
 		   int istext, int issystem);
 void create_install_root ();

@@ -106,8 +106,8 @@ find2 (HKEY rkey, int *istext, const std::string& what)
 {
   HKEY key;
 
-  if (RegOpenKeyEx (rkey, what.c_str (), 0, KEY_READ, &key) !=
-      ERROR_SUCCESS)
+  if (RegOpenKeyEx (rkey, what.c_str (), 0, KEY_READ | SETUP_KEY_WOW64, &key)
+      != ERROR_SUCCESS)
     return 0;
 
   DWORD retvallen = 0;
@@ -174,8 +174,9 @@ create_mount (const std::string posix, const std::string win32, int istext,
 	   CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME, posix.c_str ());
 
   HKEY kr = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
-  rv = RegCreateKeyEx (kr, buf, 0, (char *)"Cygwin", 0, KEY_ALL_ACCESS,
-                       0, &key, &disposition);
+  rv = RegCreateKeyEx (kr, buf, 0, (char *)"Cygwin", 0,
+		       KEY_ALL_ACCESS | SETUP_KEY_WOW64,
+		       0, &key, &disposition);
   if (rv != ERROR_SUCCESS)
     fatal ("mount", rv);
 
@@ -245,7 +246,8 @@ set_cygdrive_flags (int istext, int issystem)
       HKEY key;
       DWORD disposition;
       LONG status = RegCreateKeyEx (HKEY_LOCAL_MACHINE, buf, 0, 0, 0,
-				    KEY_ALL_ACCESS, 0, &key, &disposition);
+				    KEY_ALL_ACCESS | SETUP_KEY_WOW64,
+				    0, &key, &disposition);
       if (status == ERROR_SUCCESS)
 	{
 	  DWORD cygdrive_flags = 0;
@@ -267,7 +269,8 @@ set_cygdrive_flags (int istext, int issystem)
   HKEY key;
   DWORD disposition;
   LONG status =
-    RegCreateKeyEx (HKEY_CURRENT_USER, buf, 0, 0, 0, KEY_ALL_ACCESS,
+    RegCreateKeyEx (HKEY_CURRENT_USER, buf, 0, 0, 0,
+		    KEY_ALL_ACCESS | SETUP_KEY_WOW64,
 		    0, &key, &disposition);
   if (status != ERROR_SUCCESS)
     fatal ("set_cygdrive_flags");
@@ -364,7 +367,8 @@ create_install_root ()
 	    CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME);
   HKEY kr = (root_scope == IDC_ROOT_USER) ? HKEY_CURRENT_USER
 					  : HKEY_LOCAL_MACHINE;
-  rv = RegCreateKeyEx (kr, buf, 0, (char *)"Cygwin", 0, KEY_ALL_ACCESS,
+  rv = RegCreateKeyEx (kr, buf, 0, (char *)"Cygwin", 0,
+		       KEY_ALL_ACCESS | SETUP_KEY_WOW64,
 		       0, &key, &disposition);
   if (rv != ERROR_SUCCESS)
     fatal ("mount", rv);
@@ -407,7 +411,8 @@ read_mounts_9x ()
 	       CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME);
 
       HKEY key = issystem ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
-      if ((RegOpenKeyEx (key, buf, 0, KEY_ALL_ACCESS, &key)) != ERROR_SUCCESS)
+      if ((RegOpenKeyEx (key, buf, 0, KEY_ALL_ACCESS | SETUP_KEY_WOW64, &key))
+          != ERROR_SUCCESS)
 	break;
       for (int i = 0;; i++, m++)
 	{
@@ -647,7 +652,8 @@ read_mounts (const std::string val)
 		   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
 		   CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME);
 	  HKEY key = isuser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
-	  if (RegCreateKeyEx (key, buf, 0, (char *)"Cygwin", 0, KEY_ALL_ACCESS,
+	  if (RegCreateKeyEx (key, buf, 0, (char *)"Cygwin", 0,
+			      KEY_ALL_ACCESS | SETUP_KEY_WOW64,
 			      0, &key, &disposition) != ERROR_SUCCESS)
 	    continue;
 	  DWORD type;
@@ -678,7 +684,7 @@ read_mounts (const std::string val)
       char windir[MAX_PATH];
       GetWindowsDirectory (windir, sizeof (windir));
       windir[2] = 0;
-      m->native = std::string (windir) + "\\cygwin";
+      m->native = std::string (windir) + (is_64bit ? "\\cygwin64" : "\\cygwin");
       m->posix = "/";
       root_here = m;
       add_usr_mnts (++m);

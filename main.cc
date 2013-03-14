@@ -83,6 +83,8 @@ static const char *cvsid =
 extern char **_argv;
 #endif
 
+bool is_64bit;
+
 using namespace std;
 
 HINSTANCE hinstance;
@@ -233,6 +235,12 @@ WinMain (HINSTANCE h,
   for (argc = 0, _argv = __argv; *_argv; _argv++)
     ++argc;
   _argv = __argv;
+
+#ifdef __x86_64__
+  is_64bit = TRUE;
+#else
+  is_64bit = FALSE;
+#endif
 
   try {
     char cwd[MAX_PATH];
