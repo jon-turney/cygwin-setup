@@ -551,7 +551,7 @@ from_fstab_line (mnt *m, char *line)
 #define BUFSIZE 65536
 
 static bool
-from_fstab (mnt *m, std::string in_path)
+from_fstab (mnt *m, const std::string& in_path)
 {
   char buf[BUFSIZE];
   WCHAR path[in_path.size () + 7];

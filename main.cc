@@ -171,9 +171,9 @@ main_display ()
   if (res)
     {
       char buf[256];
-      sprintf (buf, "CoCreateInstance failed with error %p.\n"
+      sprintf (buf, "CoCreateInstance failed with error 0x%x.\n"
 		    "Setup will not be able to create Cygwin Icons\n"
-		    "in the Start Menu or on the Desktop.", (void *) res);
+		    "in the Start Menu or on the Desktop.", (int) res);
       MessageBox (NULL, buf, "Cygwin Setup", MB_OK);
     }
 

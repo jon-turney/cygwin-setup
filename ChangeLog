@@ -1,3 +1,13 @@
+2013-03-22  Corinna Vinschen  <corinna@vinschen.de>
+
+	* desktop.cc (do_desktop_setup): Install "Cygwin64 Terminal" link on
+	64 bit.
+	(DesktopSetupPage::OnActivate): Check for "Cygwin64 Terminal" link on
+	64 bit.
+	* main.cc (main_display): Avoid compiler warning on 64 bit.
+	* mount.cc (from_fstab): Take 2nd parameter as const by reference to
+	avoid potential crash due to scope issue.
+
 2013-03-14  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	* configure.ac: Remove check for libmingw32.

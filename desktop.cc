@@ -232,10 +232,12 @@ do_desktop_setup ()
   target = backslash (cygpath ("/bin/mintty"));
 
   if (root_menu)
-    start_menu ("Cygwin Terminal", target, "-i /Cygwin-Terminal.ico -");
+    start_menu (is_64bit ? "Cygwin64 Terminal" : "Cygwin Terminal",
+		target, "-i /Cygwin-Terminal.ico -");
 
   if (root_desktop)
-    desktop_icon ("Cygwin Terminal", target, "-i /Cygwin-Terminal.ico -");
+    desktop_icon (is_64bit ? "Cygwin64 Terminal" : "Cygwin Terminal",
+		  target, "-i /Cygwin-Terminal.ico -");
 }
 
 static int da[] = { IDC_ROOT_DESKTOP, 0 };
@@ -408,7 +410,8 @@ DesktopSetupPage::OnActivate ()
 	}
       else
 	{
-	  root_menu = check_startmenu ("Cygwin Terminal",
+	  root_menu = check_startmenu (is_64bit ? "Cygwin64 Terminal"
+						: "Cygwin Terminal",
 				       backslash (cygpath ("/bin/mintty")));
 	}
 
@@ -418,7 +421,8 @@ DesktopSetupPage::OnActivate ()
 	}
       else
 	{
-	  root_desktop = check_desktop ("Cygwin Terminal",
+	  root_desktop = check_desktop (is_64bit ? "Cygwin64 Terminal"
+						 : "Cygwin Terminal",
 					backslash (cygpath ("/bin/mintty")));
 	}
     }
