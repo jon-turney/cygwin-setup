@@ -1,3 +1,13 @@
+2013-04-05  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* Makefile.am (EXTRA_DIST): Add setup64.exe.manifest.
+	(res.o): Depend on arch-specific manifest file.
+	* res.rc (CREATEPROCESS_MANIFEST_RESOURCE_ID): Add separate
+	definition for x86-64.
+	* setup.exe.manifest: Throughout, set processorArchitecture to x86.
+	Remove trustInfo section.
+	* setup64.exe.manifest: New file.
+
 2013-03-22  Corinna Vinschen  <corinna@vinschen.de>
 
 	* desktop.cc (do_desktop_setup): Install "Cygwin64 Terminal" link on

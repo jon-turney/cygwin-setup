@@ -50,6 +50,7 @@ EXTRA_DIST = \
 	choose-spin.bmp \
 	cygwin.ico \
 	setup.exe.manifest \
+	setup64.exe.manifest \
 	tree-minus.bmp \
 	tree-plus.bmp
 
@@ -278,7 +279,7 @@ setup_version.c : $(srcdir)/ChangeLog Makefile
 	mv version.tmp setup_version.c
 
 # setup.exe.manifest is included in res.rc
-res.o: setup.exe.manifest
+res.o: @SETUP@.exe.manifest
 
 .rc.o:
 	$(AM_V_GEN)$(WINDRES) --include-dir $(srcdir) -o $@ $<
