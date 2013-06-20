@@ -1,3 +1,7 @@
+2013-06-20  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
+	* res.rc: Update copyright.
+
 2013-04-05  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	* Makefile.am (EXTRA_DIST): Add setup64.exe.manifest.
