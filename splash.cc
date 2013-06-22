@@ -19,6 +19,7 @@
 #include "setup_version.h"
 #include "resource.h"
 #include "splash.h"
+#include "ini.h"
 
 static ControlAdjuster::ControlInfo SplashControlsInfo[] = {
   { IDC_SPLASH_TEXT,        CP_STRETCH,   CP_STRETCH },
@@ -45,6 +46,8 @@ SplashPage::OnInit ()
 {
   std::string ver = "Setup.exe version ";
   ver += (setup_version[0] ? setup_version : "[unknown]");
+  ver += is_64bit ? " (64 bit)" : " (32 bit)";
+  SetDlgItemFont(IDC_VERSION, "Arial", 10, FW_BOLD);
   ::SetWindowText (GetDlgItem (IDC_VERSION), ver.c_str());
   makeClickable (IDC_SPLASH_URL, "http://www.cygwin.com");
 }

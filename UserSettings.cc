@@ -148,47 +148,7 @@ const char *
 UserSettings::get (const char *key)
 {
   unsigned int i = get_index (key);
-  if (table[i])
-    return table[i]->value;
-
-  std::string path;
-  io_stream *f = open_settings (key, path);
-  if (!f)
-    return NULL;
-
-  size_t sz = f->get_size ();
-  char *buf = new char [sz + 2];
-  ssize_t szread = f->read (buf, sz);
-  delete f;
-
-  if (szread < 0)
-    return NULL;
-
-  buf[szread] = '\0';
-  buf[szread + 1] = '\0';
-  std::string thisval;
-  const char *nl = "";
-  char *p = buf;
-  while (*p)
-    {
-      char *eol = strchr (p, '\n');
-      if (eol)
-	*eol = '\0';
-      else
-	eol = strchr (p, '\0');
-      const char *s = trim (p);
-      if (*s)
-	{
-	  thisval += nl;
-	  thisval += s;
-	  nl = "\n";
-	}
-      p = eol + 1;
-    }
-
-  const char *outval = set (key, thisval);
-  delete buf;
-  return outval;
+  return table[i] ? table[i]->value : NULL;
 }
 
 const char *

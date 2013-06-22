@@ -1,3 +1,16 @@
+2013-06-22  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
+	* ini.h (SETUP_BZ2_FILENAME): Reflect new architecture layout in ftp.
+	(SETUP_INI_FILENAME): Ditto.
+	* main.cc (Arch): New option.  Include StringOption.h for this.
+	(WinMain): Change is_64bit calculation to allow overriding from
+	command-line.  Issue error if bad value provided.
+	* res.rc: Move some text closer together.
+	* splash.cc: Include ini.h.  Add architecture to opening screen.
+
+	* UserSettings.cc (UserSettings::get): Don't try to open a filename
+	with the name of the key.  That's old behavior.
+
 2013-06-20  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
 	* res.rc: Update copyright.

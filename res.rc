@@ -271,9 +271,9 @@ BEGIN
                     "the future to add, remove, or upgrade packages as "
                     "necessary.",IDC_SPLASH_TEXT,115,25,195,90
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
-    LTEXT           "Version (unknown)",IDC_VERSION,115,137,195,10
-    LTEXT           "Copyright 2000-2013",IDC_SPLASH_COPYR,115,150,195,8
-    LTEXT           "http://www.cygwin.com/",IDC_SPLASH_URL,115,162,90,8
+    LTEXT           "Version (unknown)",IDC_VERSION,115,127,195,10
+    LTEXT           "Copyright 2000-2013",IDC_SPLASH_COPYR,115,140,195,8
+    LTEXT           "http://www.cygwin.com/",IDC_SPLASH_URL,115,152,90,8
 END
 
 IDD_DESKTOP DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS

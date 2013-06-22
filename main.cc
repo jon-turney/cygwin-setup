@@ -11,7 +11,7 @@
  *     http://www.gnu.org/
  *
  * Written by DJ Delorie <dj@cygnus.com>
- *            Robert Collins <rbtcollins@hotmail.com>
+ *	      Robert Collins <rbtcollins@hotmail.com>
  *
  *
  */
@@ -67,6 +67,7 @@ static const char *cvsid =
 
 #include "getopt++/GetOption.h"
 #include "getopt++/BoolOption.h"
+#include "getopt++/StringOption.h"
 
 #include "Exception.h"
 #include <stdexcept>
@@ -89,12 +90,12 @@ using namespace std;
 
 HINSTANCE hinstance;
 
+static StringOption Arch ("", 'a', "arch", "architecture to install (x86_64 or x86)", false);
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
 static BoolOption PackageManagerOption (false, 'M', "package-manager", "Semi-attended chooser-only mode");
 static BoolOption HelpOption (false, 'h', "help", "print help");
 static BOOL WINAPI (*dyn_AttachConsole) (DWORD);
 static BOOL WINAPI (*dyn_GetLongPathName) (LPCTSTR, LPTSTR, DWORD);
-
 
 static void inline
 set_dynaddr ()
@@ -236,12 +237,6 @@ WinMain (HINSTANCE h,
     ++argc;
   _argv = __argv;
 
-#ifdef __x86_64__
-  is_64bit = TRUE;
-#else
-  is_64bit = FALSE;
-#endif
-
   try {
     char cwd[MAX_PATH];
     GetCurrentDirectory (MAX_PATH, cwd);
@@ -249,6 +244,28 @@ WinMain (HINSTANCE h,
 
     if (!GetOption::GetInstance ().Process (argc,_argv, NULL))
       exit (1);
+
+    if (!((string) Arch).size ())
+      {
+#ifdef __x86_64__
+	is_64bit = true;
+#else
+	is_64bit = false;
+#endif
+      }
+    else if (((string) Arch).find ("64") != string::npos)
+      is_64bit = true;
+    else if (((string) Arch).find ("32") != string::npos
+	     || ((string) Arch).find ("x86") != string::npos)
+      is_64bit = false;
+    else
+      {
+	char buff[80 + ((string) Arch).size ()];
+	sprintf (buff, "Invalid option for --arch:  \"%s\"", ((string) Arch).c_str ());
+	fprintf (stderr, "*** %s\n", buff);
+	MessageBox (NULL, buff, "Invalid option", MB_ICONEXCLAMATION | MB_OK);
+	exit (1);
+      }
 
     unattended_mode = PackageManagerOption ? chooseronly
 			: (UnattendedOption ? unattended : attended);
@@ -261,25 +278,22 @@ WinMain (HINSTANCE h,
     theLog->setFile (LOG_BABBLE, local_dir + sep + "setup.log.full", false);
     theLog->setFile (0, local_dir + sep + "setup.log", true);
 
-    log (LOG_PLAIN) << "Starting cygwin install, version " 
-                    << setup_version << endLog;
+    log (LOG_PLAIN) << "Starting cygwin install, version "
+		    << setup_version << endLog;
 
-    /* Set the default DACL and Group only on NT/W2K. 9x/ME has 
-       no idea of access control lists and security at all.  */
+    /* Set the default DACL and Group. */
     nt_sec.setDefaultSecurity ();
 
     if (HelpOption)
-      {
-        GetOption::GetInstance ().ParameterUsage (log (LOG_PLAIN)
-                                                  << "\nCommand Line Options:\n");
-      }
+      GetOption::GetInstance ().ParameterUsage (log (LOG_PLAIN)
+						<< "\nCommand Line Options:\n");
     else
       {
-        UserSettings Settings (local_dir);
+	UserSettings Settings (local_dir);
 
-        main_display ();
+	main_display ();
 
-        Settings.save ();	// Clean exit.. save user options.
+	Settings.save ();	// Clean exit.. save user options.
       }
 
     if (rebootneeded)
