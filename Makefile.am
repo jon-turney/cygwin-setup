@@ -25,13 +25,15 @@ SUBDIRS := @subdirs@ tests
 # (http://gcc.gnu.org/bugzilla/show_bug.cgi?id=22207)
 BASECXXFLAGS = -Wall -Wno-uninitialized -Wpointer-arith -Wcomments \
                -Wcast-align -Wwrite-strings -fno-builtin-sscanf
-AM_CXXFLAGS = -Werror $(BASECXXFLAGS)
+AM_CXXFLAGS = -Werror $(BASECXXFLAGS) ${$(*F)_CXXFLAGS}
 AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
             -Wstrict-prototypes -Wmissing-prototypes
 AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES = @WINDRES@
 AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include -I${srcdir}/regex
+
+inilex_CXXFLAGS:=-Wno-sign-compare
 
 noinst_PROGRAMS = @SETUP@$(EXEEXT) @INILINT@
 

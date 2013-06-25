@@ -1,3 +1,10 @@
+2013-03-25  Corinna Vinschen  <corinna@vinschen.de>
+
+	* Makefile.am (AM_CXXFLAGS): Add source file specific CXXFLAGS.
+	(inilex_CXXFLAGS): Add -Wno-sign-compare to workaround failing build
+	on Fedora 18 due to bison creating sign comparison mismatches in
+	generic yylex wrapper code.
+
 2013-06-22  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
 	* ini.h (SETUP_BZ2_FILENAME): Reflect new architecture layout in ftp.
