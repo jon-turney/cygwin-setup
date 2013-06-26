@@ -18,23 +18,21 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
-
-#include "io_stream_cygfile.h"
-
-#include "LogSingleton.h"
-
 #include "win32.h"
+#include "mklink2.h"
+#include "filemanip.h"
+#include "mkdir.h"
+#include "mount.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "mount.h"
-#include "mkdir.h"
-#include "mklink2.h"
-#include "filemanip.h"
 #include <unistd.h>
-#include "String++.h"
 
+#include "io_stream_cygfile.h"
 #include "IOStreamProvider.h"
+#include "LogSingleton.h"
+
 
 /* completely private iostream registration class */
 class CygFileProvider : public IOStreamProvider

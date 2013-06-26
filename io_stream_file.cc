@@ -19,21 +19,14 @@ static const char *cvsid =
 #endif
 
 #include "win32.h"
-#include "ntdll.h"
 #include "mklink2.h"
 #include "filemanip.h"
-
 #include "mkdir.h"
-  
   
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
-#if HAVE_SYS_STAT_H
-#include <sys/stat.h>
-#endif
-#include <stdexcept>
   
 #include "io_stream_file.h"
 #include "IOStreamProvider.h"

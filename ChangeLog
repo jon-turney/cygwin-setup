@@ -1,5 +1,11 @@
 2013-03-26  Corinna Vinschen  <corinna@vinschen.de>
 
+	* io_stream_cygfile.cc: Rearrange inclusion of headers to workaround
+	bug in older mingw-w64 system headers.  Drop unneeded include files.
+	* io_stream_file.cc: Drop unneeded include files.
+
+2013-03-26  Corinna Vinschen  <corinna@vinschen.de>
+
 	Drop pre-1.7 mount point considerations.
 	* mount.cc (find2): Remove.
 	(remove1): Remove.
