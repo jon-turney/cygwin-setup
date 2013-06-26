@@ -56,6 +56,8 @@ using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
+BoolOption IncludeSource (false, 'I', "include-source", "Automatically include source download");
+
 static bool
 validateCachedPackage (const std::string& fullname, packagesource & pkgsource)
 {
@@ -228,7 +230,7 @@ do_download_thread (HINSTANCE h, HWND owner)
 		    if (!check_for_cached (*i))
       		      total_download_bytes += i->size;
 		}
-    	      if (sourceversion.picked ())
+    	      if (sourceversion.picked () || IncludeSource)
 		{
 		  for (vector<packagesource>::iterator i =
 		       sourceversion.sources ()->begin();
@@ -267,7 +269,7 @@ do_download_thread (HINSTANCE h, HWND owner)
 		   i != version.sources ()->end(); ++i)
     		e += download_one (*i, owner);
 	    }
-	  if (sourceversion && sourceversion.picked())
+	  if (sourceversion && (sourceversion.picked() || IncludeSource))
 	    {
 	      for (vector<packagesource>::iterator i =
    		   sourceversion.sources ()->begin();

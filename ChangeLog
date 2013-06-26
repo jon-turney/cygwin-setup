@@ -1,3 +1,13 @@
+2015-08-01 David Hoke  <d_hoke@hotmail.com>
+
+	* download.cc (IncludeSource): New command line switch
+	-I/--include-source.  Automatically download sources
+	associated with any binary package being downloaded when
+	IncludeSource is true.
+	* install.cc (do_install_thread): Automatically install
+	sources associated with any binary package being installed
+	when IncludeSource is true.
+
 2015-08-01  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* choose.cc (PruneInstallOption): New option -Y/--prune-install.

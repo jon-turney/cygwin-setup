@@ -73,6 +73,7 @@ static long long int total_bytes = 0;
 static long long int total_bytes_sofar = 0;
 static int package_bytes = 0;
 
+extern BoolOption IncludeSource;
 static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot",
 				     "Disable replacing in-use files on next "
 				     "reboot.");
@@ -782,8 +783,9 @@ do_install_thread (HINSTANCE h, HWND owner)
       }
     }
 
-    if (pkg.desired.sourcePackage ().picked())
+    if (pkg.desired.sourcePackage ().picked() || IncludeSource)
     {
+      bool skiprequested = false ;
       try
       {
         chksum_one (*pkg.desired.sourcePackage ().source ());
@@ -791,9 +793,12 @@ do_install_thread (HINSTANCE h, HWND owner)
       catch (Exception *e)
       {
         if (yesno (owner, IDS_SKIP_PACKAGE, e->what()) == IDYES)
+	{
+	  skiprequested = true ; //(err occurred,) skip pkg desired
           pkg.desired.sourcePackage ().pick (false, &pkg);
+	}
       }
-      if (pkg.desired.sourcePackage().picked())
+      if (pkg.desired.sourcePackage().picked() || (IncludeSource && !skiprequested))
       {
         md5sum_total_bytes_sofar += pkg.desired.sourcePackage ().source()->size;
         total_bytes += pkg.desired.sourcePackage ().source()->size;
