@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, Red Hat, Inc.
+ * Copyright (c) 2000, 2001, 2002, 2003, 2006, 2008, 2013 Red Hat, Inc.
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -25,15 +25,12 @@
 
 #define SETUP_KEY_WOW64 (is_64bit ? KEY_WOW64_64KEY : KEY_WOW64_32KEY)
 
-void create_mount (const std::string posix, const std::string win32,
-		   int istext, int issystem);
 void create_install_root ();
 void read_mounts (const std::string);
 
 /* Sets the cygdrive flags.  Used to make the automounted drives' binary/text
 mode consistent with the standard Cygwin mounts. */
 
-void set_cygdrive_flags (int istext, int issystem);
 std::string cygpath (const std::string&);
 void set_root_dir (const std::string);
 const std::string get_root_dir ();

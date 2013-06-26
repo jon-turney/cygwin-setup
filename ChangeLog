@@ -1,3 +1,21 @@
+2013-03-26  Corinna Vinschen  <corinna@vinschen.de>
+
+	Drop pre-1.7 mount point considerations.
+	* mount.cc (find2): Remove.
+	(remove1): Remove.
+	(remove_mount): Remove.
+	(create_mount): Remove.
+	(set_cygdrive_flags): Remove.
+	(get_cygdrive_flags): Remove.
+	(default_cygdrive): Remove.
+	(in_table): Remove.
+	(is_admin): Fix comment.
+	(read_mounts_9x): Remove.
+	(read_mounts): Drop call to read_mounts_9x.
+	* mount.h (create_mount): Remove declaration.
+	(set_cygdrive_flags): Ditto.
+	* script.cc (run): Fix comment.
+
 2013-03-25  Corinna Vinschen  <corinna@vinschen.de>
 
 	* Makefile.am (AM_CXXFLAGS): Add source file specific CXXFLAGS.

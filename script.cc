@@ -227,7 +227,7 @@ run (const char *cmdline)
       si.hStdError = file_out.handle ();
       si.dwFlags |= STARTF_USESHOWWINDOW;
       si.wShowWindow = SW_HIDE;
-      flags = CREATE_NO_WINDOW;  // Note: this is ignored on Win9x
+      flags = CREATE_NO_WINDOW;
     }
 
   BOOL createSucceeded = CreateProcess (0, (char *)cmdline, 0, 0, inheritHandles,
