@@ -83,107 +83,113 @@ archive::extract (io_stream * original)
   return NULL;
 }
 
-int
+archive::extract_results
 archive::extract_file (archive * source, const std::string& prefixURL,
                        const std::string& prefixPath, std::string suffix)
 {
-  if (!source)
-    return 1;
-  const std::string destfilename = prefixURL + prefixPath
-    + source->next_file_name() + suffix;
-  switch (source->next_file_type ())
+  extract_results res = extract_other;
+  if (source)
     {
-    case ARCHIVE_FILE_REGULAR:
-      {
+      const std::string destfilename = prefixURL + prefixPath
+	+ source->next_file_name() + suffix;
+      switch (source->next_file_type ())
+	{
+	case ARCHIVE_FILE_REGULAR:
+	  {
 
-	/* TODO: remove in-the-way directories via mkpath_p */
-	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
-	{
-	  log (LOG_TIMESTAMP) << "Failed to make the path for " << destfilename
-	  		      << endLog;
-	  return 1;
-	}
-	io_stream::remove (destfilename);
-	io_stream *in = source->extract_file ();
-	if (!in)
-	  {
-	    log (LOG_TIMESTAMP) << "Failed to extract the file "
-	     			<< destfilename << " from the archive" 
-				<< endLog;
-	    return 1;
-	  }
-	io_stream *tmp = io_stream::open (destfilename, "wb", in->get_mode ());
-	if (!tmp)
-	{
-	  delete in;
-	  log (LOG_TIMESTAMP) << "Failed to open " << destfilename;
-	  log (LOG_TIMESTAMP) << " for writing." << endLog;
-	  return 1;
-	}
-	if (io_stream::copy (in, tmp))
-	  {
-	    log (LOG_TIMESTAMP) << "Failed to output " << destfilename
-	      			<< endLog;
+	    /* TODO: remove in-the-way directories via mkpath_p */
+	    if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
+	    {
+	      log (LOG_TIMESTAMP) << "Failed to make the path for " << destfilename
+				  << endLog;
+	      res = extract_inuse;
+	      goto out;
+	    }
+	    io_stream::remove (destfilename);
+	    io_stream *in = source->extract_file ();
+	    if (!in)
+	      {
+		log (LOG_TIMESTAMP) << "Failed to extract the file "
+				    << destfilename << " from the archive" 
+				    << endLog;
+		res = extract_inuse;
+		goto out;
+	      }
+	    io_stream *tmp = io_stream::open (destfilename, "wb", in->get_mode ());
+	    if (!tmp)
+	    {
+	      delete in;
+	      log (LOG_TIMESTAMP) << "Failed to open " << destfilename;
+	      log (LOG_TIMESTAMP) << " for writing." << endLog;
+	      return extract_inuse;
+	    }
+	    if (io_stream::copy (in, tmp))
+	      {
+		log (LOG_TIMESTAMP) << "Failed to output " << destfilename
+				    << endLog;
+		delete in;
+		delete tmp;
+		io_stream::remove (destfilename);
+		return extract_other;
+	      }
+	    tmp->set_mtime (in->get_mtime ());
 	    delete in;
 	    delete tmp;
-	    io_stream::remove (destfilename);
-	    return 2;
+	    res = extract_ok;
 	  }
-	tmp->set_mtime (in->get_mtime ());
-	delete in;
-	delete tmp;
-      }
-      break;
-    case ARCHIVE_FILE_SYMLINK:
-      {
-	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
-	{
-	  log (LOG_TIMESTAMP) << "Failed to make the path for %s" 
-	    		      << destfilename << endLog;
-	  return 1;}
-	io_stream::remove (destfilename);
-	int ok =
-	  io_stream::mklink (destfilename,
-	      prefixURL+ source->linktarget (),
-			     IO_STREAM_SYMLINK);
-	/* FIXME: check what tar's filelength is set to for symlinks */
-	source->skip_file ();
-	return ok;
-      }
-    case ARCHIVE_FILE_HARDLINK:
-      {
-	if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
-	{
-	  log (LOG_TIMESTAMP) << "Failed to make the path for %s"
-	    		      << destfilename << endLog;
-	  return 1;
+	  break;
+	case ARCHIVE_FILE_SYMLINK:
+	  {
+	    if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
+	    {
+	      log (LOG_TIMESTAMP) << "Failed to make the path for %s" 
+				  << destfilename << endLog;
+	      return extract_inuse;
+	    }
+	    io_stream::remove (destfilename);
+	    int x = io_stream::mklink (destfilename,
+				       prefixURL+ source->linktarget (),
+				       IO_STREAM_SYMLINK);
+	    /* FIXME: check what tar's filelength is set to for symlinks */
+	    source->skip_file ();
+	    res = x == 0 ? extract_ok : extract_other;
+	  }
+	case ARCHIVE_FILE_HARDLINK:
+	  {
+	    if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
+	    {
+	      log (LOG_TIMESTAMP) << "Failed to make the path for %s"
+				  << destfilename << endLog;
+	      res = extract_other;
+	      goto out;
+	    }
+	    io_stream::remove (destfilename);
+	    int x = io_stream::mklink (destfilename,
+				       prefixURL + prefixPath + source->linktarget (),
+				       IO_STREAM_HARDLINK);
+	    /* FIXME: check what tar's filelength is set to for hardlinks */
+	    source->skip_file ();
+	    res = x == 0 ? extract_ok : extract_other;
+	  }
+	case ARCHIVE_FILE_DIRECTORY:
+	  {
+	    char *path = (char *) alloca (destfilename.size());
+	    strcpy (path, destfilename.c_str());
+	    while (path[0] && path[strlen (path) - 1] == '/')
+	      path[strlen (path) - 1] = 0;
+	    io_stream *in = source->extract_file ();
+	    int x = io_stream::mkpath_p (PATH_TO_DIR, path, in->get_mode ());
+	    delete in;
+	    source->skip_file ();
+	    res = x == 0 ? extract_ok : extract_other;
+	  }
+	case ARCHIVE_FILE_INVALID:
+	  source->skip_file ();
+	  break;
 	}
-	io_stream::remove (destfilename);
-	int ok =
-	  io_stream::mklink (destfilename,
-                             prefixURL + prefixPath + source->linktarget (),
-                             IO_STREAM_HARDLINK);
-	/* FIXME: check what tar's filelength is set to for hardlinks */
-	source->skip_file ();
-	return ok;
-      }
-    case ARCHIVE_FILE_DIRECTORY:
-      {
-	char *path = (char *) alloca (destfilename.size());
-	strcpy (path, destfilename.c_str());
-	while (path[0] && path[strlen (path) - 1] == '/')
-	  path[strlen (path) - 1] = 0;
-	io_stream *in = source->extract_file ();
-	int ok = io_stream::mkpath_p (PATH_TO_DIR, path, in->get_mode ());
-	delete in;
-	source->skip_file ();
-	return ok;
-      }
-    case ARCHIVE_FILE_INVALID:
-      source->skip_file ();
-      break;
     }
-  return 0;
+out:
+  return res;
 }
 
 archive::~archive () {};

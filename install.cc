@@ -446,12 +446,12 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
         pkgm.desired.addScript (Script (canonicalfn));
 
       int iteration = 0;
-      int extract_error = 0;
-      while ((extract_error = archive::extract_file (tarstream, prefixURL, prefixPath)) != 0)
+      archive::extract_results extres;
+      while ((extres = archive::extract_file (tarstream, prefixURL, prefixPath)) != archive::extract_ok)
         {
-          switch (extract_error)
+          switch (extres)
             {
-            case 1: // in use
+	    case archive::extract_inuse: // in use
               {
                 if (!ignoreInUseErrors)
                   {
@@ -531,7 +531,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                   }
               }
               break;
-            case 2: // extract failed
+	    case archive::extract_other: // extract failed
               {
                 if (!ignoreExtractErrors)
                   {
@@ -556,6 +556,8 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                 error_in_this_package = true;
               }
               break;
+	    case archive::extract_ok:
+	      break;
             }
 
           // We're done with this file

@@ -221,6 +221,7 @@ io_stream_cygfile::remove (const std::string& path)
   return io_stream::remove (std::string ("file://") + cygpath (normalise(path)).c_str());
 }
 
+/* Returns 0 for success */
 int
 io_stream_cygfile::mklink (const std::string& _from, const std::string& _to,
 			   io_stream_link_t linktype)

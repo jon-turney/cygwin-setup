@@ -29,7 +29,8 @@ static const char *cvsid =
 #include "mkdir.h"
 #include "filemanip.h"
 
-/* A mode of 0 means no POSIX perms. */
+/* Return 0 on success.  See: Hobgoblins vs. consistency
+   A mode of 0 means no POSIX perms. */
 int
 mkdir_p (int isadir, const char *in_path, mode_t mode)
 {

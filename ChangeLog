@@ -1,3 +1,14 @@
+2013-06-29  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
+	* archive.cc (archive::extract_file): Use named constants for return
+	values.
+	* archive.h (archive::extract_results): New enum.
+	(archive::extract_file): Use extract_results for return value.
+	* install.cc (Installer::installOne): Use archive::extract_results to
+	make decisions about archive::extract_file return.
+	* io_stream_cygfile.cc: Add a comment making return value clear.
+	* mkdir.cc: Ditto.
+
 2013-03-26  Corinna Vinschen  <corinna@vinschen.de>
 
 	* io_stream_cygfile.cc: Rearrange inclusion of headers to workaround

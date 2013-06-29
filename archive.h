@@ -41,6 +41,12 @@ archive_file_t;
 class archive:public io_stream
 {
 public:
+  enum extract_results
+  {
+    extract_inuse = 7,		/* Arbitrary number != 1 */
+    extract_ok = 0,
+    extract_other = 9
+  };
   /* get an archive child class from an io_stream */
   static archive *extract (io_stream *);
   /* get an ouput stream for the next files from the archive.
@@ -52,8 +58,9 @@ public:
    * given suffix.
    * returns 1 on failure.
    */
-  static int extract_file (archive *, const std::string&, const std::string&,
-                           const std::string = std::string());
+  static extract_results extract_file (archive *, const std::string&,
+				       const std::string&,
+				       const std::string = std::string());
 
   /* 
    * To create a stream that will be compressed, you should open the url, and then get a new stream
