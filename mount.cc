@@ -25,6 +25,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "ini.h"
 #include "win32.h"
 #include "filemanip.h"
+// #include "LogSingleton.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -273,15 +274,16 @@ from_fstab_line (mnt *m, char *line)
 }
 
 #define BUFSIZE 65536
+#define LFSTAB L"\\etc\\fstab"
 
 static bool
 from_fstab (mnt *m, const std::string& in_path)
 {
   char buf[BUFSIZE];
-  WCHAR path[in_path.size () + 7];
+  WCHAR path[in_path.size () + sizeof (LFSTAB)];
 
-  mklongpath (path, in_path.c_str (), in_path.size () + 7);
-  wcscat (path, L"\\etc\\fstab");
+  mklongpath (path, in_path.c_str (), sizeof (path) / sizeof (WCHAR));
+  wcscat (path, LFSTAB);
   HANDLE h = CreateFileW (path, GENERIC_READ, FILE_SHARE_READ, NULL,
                           OPEN_EXISTING,
 			  FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS,

@@ -1,3 +1,10 @@
+2013-06-30  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
+	* mount.cc (LFSTAB): Define.
+	(from_fstab): Use LFSTAB constant where appropriate.  Properly size
+	path array to include \etc\fstab.  Change len argument of mklongpath to
+	reflect the actual size of the destination argument.
+
 2013-06-29  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
 	* archive.cc (archive::extract_file): Use named constants for return
