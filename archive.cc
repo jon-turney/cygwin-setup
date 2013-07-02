@@ -96,15 +96,14 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	{
 	case ARCHIVE_FILE_REGULAR:
 	  {
-
 	    /* TODO: remove in-the-way directories via mkpath_p */
 	    if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
-	    {
-	      log (LOG_TIMESTAMP) << "Failed to make the path for " << destfilename
-				  << endLog;
-	      res = extract_inuse;
-	      goto out;
-	    }
+	      {
+		log (LOG_TIMESTAMP) << "Failed to make the path for " << destfilename
+				    << endLog;
+		res = extract_inuse;
+		goto out;
+	      }
 	    io_stream::remove (destfilename);
 	    io_stream *in = source->extract_file ();
 	    if (!in)
@@ -117,61 +116,65 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	      }
 	    io_stream *tmp = io_stream::open (destfilename, "wb", in->get_mode ());
 	    if (!tmp)
-	    {
-	      delete in;
-	      log (LOG_TIMESTAMP) << "Failed to open " << destfilename;
-	      log (LOG_TIMESTAMP) << " for writing." << endLog;
-	      return extract_inuse;
-	    }
-	    if (io_stream::copy (in, tmp))
+	      {
+		delete in;
+		log (LOG_TIMESTAMP) << "Failed to open " << destfilename;
+		log (LOG_TIMESTAMP) << " for writing." << endLog;
+		res = extract_inuse;
+	      }
+	    else if (io_stream::copy (in, tmp))
 	      {
 		log (LOG_TIMESTAMP) << "Failed to output " << destfilename
 				    << endLog;
 		delete in;
 		delete tmp;
 		io_stream::remove (destfilename);
-		return extract_other;
+		res = extract_other;
 	      }
-	    tmp->set_mtime (in->get_mtime ());
-	    delete in;
-	    delete tmp;
-	    res = extract_ok;
+	    else
+	      {
+		tmp->set_mtime (in->get_mtime ());
+		delete in;
+		delete tmp;
+		res = extract_ok;
+	      }
 	  }
 	  break;
 	case ARCHIVE_FILE_SYMLINK:
-	  {
-	    if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
+	  if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
 	    {
 	      log (LOG_TIMESTAMP) << "Failed to make the path for %s" 
 				  << destfilename << endLog;
-	      return extract_inuse;
+	      res = extract_other;
 	    }
-	    io_stream::remove (destfilename);
-	    int x = io_stream::mklink (destfilename,
-				       prefixURL+ source->linktarget (),
-				       IO_STREAM_SYMLINK);
-	    /* FIXME: check what tar's filelength is set to for symlinks */
-	    source->skip_file ();
-	    res = x == 0 ? extract_ok : extract_other;
-	  }
+	  else
+	    {
+	      io_stream::remove (destfilename);
+	      int x = io_stream::mklink (destfilename,
+					 prefixURL+ source->linktarget (),
+					 IO_STREAM_SYMLINK);
+	      /* FIXME: check what tar's filelength is set to for symlinks */
+	      source->skip_file ();
+	      res = x == 0 ? extract_ok : extract_inuse;
+	    }
 	  break;
 	case ARCHIVE_FILE_HARDLINK:
-	  {
-	    if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
+	  if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
 	    {
 	      log (LOG_TIMESTAMP) << "Failed to make the path for %s"
 				  << destfilename << endLog;
 	      res = extract_other;
-	      goto out;
 	    }
-	    io_stream::remove (destfilename);
-	    int x = io_stream::mklink (destfilename,
-				       prefixURL + prefixPath + source->linktarget (),
-				       IO_STREAM_HARDLINK);
-	    /* FIXME: check what tar's filelength is set to for hardlinks */
-	    source->skip_file ();
-	    res = x == 0 ? extract_ok : extract_other;
-	  }
+	  else
+	    {
+	      io_stream::remove (destfilename);
+	      int x = io_stream::mklink (destfilename,
+					 prefixURL + prefixPath + source->linktarget (),
+					 IO_STREAM_HARDLINK);
+	      /* FIXME: check what tar's filelength is set to for hardlinks */
+	      source->skip_file ();
+	      res = x == 0 ? extract_ok : extract_inuse;
+	    }
 	  break;
 	case ARCHIVE_FILE_DIRECTORY:
 	  {

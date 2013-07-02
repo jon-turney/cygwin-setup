@@ -1,5 +1,10 @@
 2013-07-02  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
+	* archive.cc (archive::extract_file): Reformat.  Always return at the
+	bottom.
+
+2013-07-02  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
 	* archive.cc (archive::extract_file): Fix recently introduced bug:
 	don't fall through to next case.  break is your friend.
 
