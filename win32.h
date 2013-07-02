@@ -66,7 +66,7 @@
 	((__c) == '/' || (__c) == '\\'); \
     })
 
-/* Maximum size of a SID on NT/W2K. */
+/* Maximum size of a SID. */
 #define MAX_SID_LEN	40
 
 /* Computes the size of an ACL in relation to the number of ACEs it
@@ -75,6 +75,7 @@
 			     (cnt) * (sizeof (ACCESS_ALLOWED_ACE) + MAX_SID_LEN))
 
 struct acl_t {
+ LONG __align;	/* Make sure &acl is 4-byte aligned. */
  ACL acl;
  char aclbuf[TOKEN_ACL_SIZE (7)];
 };

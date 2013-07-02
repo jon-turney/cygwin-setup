@@ -1,3 +1,7 @@
+2013-07-02  Corinna Vinschen  <corinna@vinschen.de>
+
+	* win32.h (struct acl_t): Make sure struct is 4 byte aligned.
+
 2013-07-02  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
 	* archive.cc (archive::extract_file): Reformat.  Always return at the
