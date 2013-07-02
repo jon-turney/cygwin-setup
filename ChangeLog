@@ -16,13 +16,13 @@
 	* io_stream_cygfile.cc: Add a comment making return value clear.
 	* mkdir.cc: Ditto.
 
-2013-03-26  Corinna Vinschen  <corinna@vinschen.de>
+2013-06-26  Corinna Vinschen  <corinna@vinschen.de>
 
 	* io_stream_cygfile.cc: Rearrange inclusion of headers to workaround
 	bug in older mingw-w64 system headers.  Drop unneeded include files.
 	* io_stream_file.cc: Drop unneeded include files.
 
-2013-03-26  Corinna Vinschen  <corinna@vinschen.de>
+2013-06-26  Corinna Vinschen  <corinna@vinschen.de>
 
 	Drop pre-1.7 mount point considerations.
 	* mount.cc (find2): Remove.
@@ -40,7 +40,7 @@
 	(set_cygdrive_flags): Ditto.
 	* script.cc (run): Fix comment.
 
-2013-03-25  Corinna Vinschen  <corinna@vinschen.de>
+2013-06-25  Corinna Vinschen  <corinna@vinschen.de>
 
 	* Makefile.am (AM_CXXFLAGS): Add source file specific CXXFLAGS.
 	(inilex_CXXFLAGS): Add -Wno-sign-compare to workaround failing build
