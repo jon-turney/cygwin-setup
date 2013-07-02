@@ -154,6 +154,7 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	    source->skip_file ();
 	    res = x == 0 ? extract_ok : extract_other;
 	  }
+	  break;
 	case ARCHIVE_FILE_HARDLINK:
 	  {
 	    if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
@@ -171,6 +172,7 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	    source->skip_file ();
 	    res = x == 0 ? extract_ok : extract_other;
 	  }
+	  break;
 	case ARCHIVE_FILE_DIRECTORY:
 	  {
 	    char *path = (char *) alloca (destfilename.size());
@@ -183,6 +185,7 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	    source->skip_file ();
 	    res = x == 0 ? extract_ok : extract_other;
 	  }
+	  break;
 	case ARCHIVE_FILE_INVALID:
 	  source->skip_file ();
 	  break;

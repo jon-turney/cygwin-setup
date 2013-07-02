@@ -1,3 +1,8 @@
+2013-07-02  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
+	* archive.cc (archive::extract_file): Fix recently introduced bug:
+	don't fall through to next case.  break is your friend.
+
 2013-06-30  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
 	* mount.cc (LFSTAB): Define.
