@@ -75,10 +75,8 @@
 			     (cnt) * (sizeof (ACCESS_ALLOWED_ACE) + MAX_SID_LEN))
 
 struct acl_t {
-  union {
-    LONG __align;	/* Make sure &acl is 4-byte aligned. */
-    ACL acl;
-  };
+  /* Make sure &acl is 4-byte aligned. */
+  ACL acl __attribute__ ((aligned (4)));
   char aclbuf[TOKEN_ACL_SIZE (7)];
 };
 
