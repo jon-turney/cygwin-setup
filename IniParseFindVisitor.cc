@@ -51,6 +51,12 @@ IniParseFindVisitor::visitFile(const std::string& basePath,
   //TODO: Test for case sensitivity issues
   if (casecompare(SETUP_INI_FILENAME, theFile->cFileName))
     return;
+  /* Check if base dir ends in SETUP_INI_DIR. */
+  const char *dir = basePath.c_str() + basePath.size() - strlen (SETUP_INI_DIR);
+  if (dir <= basePath.c_str())
+    return;
+  if ((dir[-1] != '/' && dir[-1] != '\\') || casecompare (SETUP_INI_DIR, dir))
+    return;
 
   current_ini_name = basePath + theFile->cFileName;
   

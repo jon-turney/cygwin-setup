@@ -1,5 +1,25 @@
 2013-07-03  Corinna Vinschen  <corinna@vinschen.de>
 
+	* FindVisitor.cc (FindVisitor::visitDirectory): Check tracking level
+	argument to limit the search depth.
+	* FindVisitor.h (FindVisitor::visitDirectory): Add tracking level
+	argument to declaration.
+	* IniParseFindVisitor.cc (IniParseFindVisitor::visitFile): Check
+	found file's basePath to end in SETUP_INI_DIR.
+	* find.cc (Find::accept): Accept additional tracking level argument
+	and submit to FindVisitor::visitDirectory.
+	* find.h (Find::accept): Add tracking level argument to declaration.
+	* fromcwd.cc (SetupFindVisitor::visitFile): Check found file's basePath
+	to end in SETUP_INI_DIR.
+	(do_fromcwd): Only search ini file two directory levels deep.
+	* ini.cc (do_local_ini): Ditto.
+	(do_remote_ini): Add SETUP_INI_DIR to current_ini_name.
+	* ini.h (SETUP_INI_DIR): New macro.
+	(SETUP_INI_FILENAME): Just define filename.
+	(SETUP_BZ2_FILENAME): Ditto.
+
+2013-07-03  Corinna Vinschen  <corinna@vinschen.de>
+
 	* win32.h (struct acl_t): Use a union.
 
 2013-07-02  Corinna Vinschen  <corinna@vinschen.de>

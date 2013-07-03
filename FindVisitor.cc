@@ -33,8 +33,11 @@ FindVisitor::visitFile(const std::string& basePath, WIN32_FIND_DATA const *)
 // Default to recursing through directories.
 void
 FindVisitor::visitDirectory(const std::string& basePath,
-                            WIN32_FIND_DATA const *aDir)
+                            WIN32_FIND_DATA const *aDir, int level)
 {
-  Find aFinder (basePath + aDir->cFileName);
-  aFinder.accept (*this);
+  if (level-- > 0)
+    {
+      Find aFinder (basePath + aDir->cFileName);
+      aFinder.accept (*this, level);
+    }
 }

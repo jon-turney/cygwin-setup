@@ -26,7 +26,8 @@ public:
   virtual void visitFile(const std::string& basePath,
                          WIN32_FIND_DATA const *);
   virtual void visitDirectory(const std::string& basePath,
-                              WIN32_FIND_DATA const *);
+                              WIN32_FIND_DATA const *,
+			      int level);
   virtual ~ FindVisitor ();
 protected:
   FindVisitor ();

@@ -30,7 +30,7 @@ class Find
 public:
   Find (const std::string& starting_dir);
   ~Find ();
-  void accept (FindVisitor &);
+  void accept (FindVisitor &, int level = __INT_MAX__);
 private:
   std::string _start_dir;
   HANDLE h;

@@ -59,7 +59,17 @@ public:
     {
       if (!casecompare(SETUP_INI_FILENAME, theFile->cFileName) && 
 	  (theFile->nFileSizeLow || theFile->nFileSizeHigh))
-	found = true;
+	{
+	  /* Check if base dir ends in SETUP_INI_DIR. */
+	  const char *dir = basePath.c_str() + basePath.size()
+			    - strlen (SETUP_INI_DIR);
+	  if (dir <= basePath.c_str())
+	    return;
+	  if ((dir[-1] != '/' && dir[-1] != '\\')
+	      || casecompare (SETUP_INI_DIR, dir))
+	    return;
+	  found = true;
+	}
     }
   virtual ~ SetupFindVisitor (){}
   operator bool () const {return found;}
@@ -75,7 +85,7 @@ do_fromcwd (HINSTANCE h, HWND owner)
 {
   // Assume we won't find the INI file.
   SetupFindVisitor found_ini;
-  Find(".").accept(found_ini);
+  Find(".").accept(found_ini, 2);	// Only search two levels deep.
   if (found_ini)
     {
       // Found INI, load it.

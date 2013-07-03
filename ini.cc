@@ -126,7 +126,7 @@ do_local_ini (HWND owner)
   GuiParseFeedback myFeedback;
   IniDBBuilderPackage findBuilder(myFeedback);
   IniParseFindVisitor myVisitor (findBuilder, local_dir, myFeedback);
-  Find (local_dir).accept(myVisitor);
+  Find (local_dir).accept(myVisitor, 2);	// Only search two levels deep.
   setup_timestamp = myVisitor.timeStamp();
   ini_setup_version = myVisitor.version();
   return myVisitor.iniCount();
@@ -150,8 +150,8 @@ do_remote_ini (HWND owner)
     {
       bool sig_fail = false;
       /* First try to fetch the .bz2 compressed ini file.  */
-      current_ini_name = n->url + SETUP_BZ2_FILENAME;
-      current_ini_sig_name = n->url + SETUP_BZ2_FILENAME + ".sig";
+      current_ini_name = n->url + SETUP_INI_DIR + SETUP_BZ2_FILENAME;
+      current_ini_sig_name = n->url + SETUP_INI_DIR + SETUP_BZ2_FILENAME + ".sig";
       ini_file = get_url_to_membuf (current_ini_name, owner);
       if (!NoVerifyOption)
 	ini_sig_file = get_url_to_membuf (current_ini_sig_name, owner);
@@ -220,8 +220,8 @@ do_remote_ini (HWND owner)
 	       - there was no .bz2 file found on the mirror.
 	       - the .bz2 file didn't look like a valid bzip2 file.
 	       - there was an error during bzip2 decompression.  */
-	  current_ini_name = n->url + SETUP_INI_FILENAME;
-	  current_ini_sig_name = n->url + SETUP_INI_FILENAME + ".sig";
+	  current_ini_name = n->url + SETUP_INI_DIR + SETUP_INI_FILENAME;
+	  current_ini_sig_name = n->url + SETUP_INI_DIR + SETUP_INI_FILENAME + ".sig";
 	  ini_file = get_url_to_membuf (current_ini_name, owner);
 	  if (!NoVerifyOption)
 	    ini_sig_file = get_url_to_membuf (current_ini_sig_name, owner);
@@ -264,7 +264,7 @@ do_remote_ini (HWND owner)
 	  /* save known-good setup.ini locally */
 	  const std::string fp = "file://" + local_dir + "/" +
 				   rfc1738_escape_part (n->url) +
-				   "/" + SETUP_INI_FILENAME;
+				   "/" + SETUP_INI_DIR + SETUP_INI_FILENAME;
 	  io_stream::mkpath_p (PATH_TO_FILE, fp, 0);
 	  if (io_stream *out = io_stream::open (fp, "wb", 0))
 	    {

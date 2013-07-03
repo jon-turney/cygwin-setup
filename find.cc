@@ -47,7 +47,7 @@ Find::~Find()
 }
 
 void
-Find::accept (FindVisitor &aVisitor)
+Find::accept (FindVisitor &aVisitor, int level)
 {
   WIN32_FIND_DATA wfd;
   if (_start_dir.size() > MAX_PATH)
@@ -68,7 +68,7 @@ Find::accept (FindVisitor &aVisitor)
        * visited node 
        */
       if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-	aVisitor.visitDirectory (_start_dir, &wfd);
+	aVisitor.visitDirectory (_start_dir, &wfd, level);
       else
 	aVisitor.visitFile (_start_dir, &wfd);
     }
