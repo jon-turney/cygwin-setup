@@ -75,9 +75,11 @@
 			     (cnt) * (sizeof (ACCESS_ALLOWED_ACE) + MAX_SID_LEN))
 
 struct acl_t {
- LONG __align;	/* Make sure &acl is 4-byte aligned. */
- ACL acl;
- char aclbuf[TOKEN_ACL_SIZE (7)];
+  union {
+    LONG __align;	/* Make sure &acl is 4-byte aligned. */
+    ACL acl;
+  };
+  char aclbuf[TOKEN_ACL_SIZE (7)];
 };
 
 class SIDWrapper {
