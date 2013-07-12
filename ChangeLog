@@ -1,3 +1,21 @@
+2013-07-12  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
+	* IniDBBuilder.h (IniDBBuilder::set_arch): New function.
+	(IniDBBuilder::set_release): New function.
+	(IniDBBuilder::arch): New storage for arch:.
+	(IniDBBuilder::arch): New storage for release:.
+	* IniDBBuilderPackage.cc (IniDBBuilderPackage::autodep): Fix cut/paste
+	error which ended up calling the wrong thing.
+	* ScanFindVisitor.cc (ScanFindVisitor::visitFile): Remove old code.
+	* cygpackage.cc (cygpackage::set_autodep): Implement to satisfy setup's
+	insane class hierarchy.
+	* cygpackage.h (cygpackage::set_autodep): See above.
+	(std::string autodep_regex): Ditto.
+	* package_version.cc (packageversion::set_autodep): Ditto.
+	* package_version.h (packageversion::set_autodep): Ditto.
+	* inilex.ll: Tokenize "arch:" and "release:".
+	* iniparse.yy: Parse ARCH and RELEASE.
+
 2013-07-03  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
 	* win32.h (struct acl_t): Just enforce alignment using attribute.

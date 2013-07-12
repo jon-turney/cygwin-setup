@@ -52,6 +52,7 @@ public:
   {
     return ldesc;
   };
+  virtual void set_autodep (const std::string& );
   virtual void uninstall ();
 
 
@@ -85,6 +86,7 @@ private:
   std::string canonical;
   std::string fn;
   std::string sdesc, ldesc;
+  std::string autodep_regex;
   char getfilenamebuffer[MAX_PATH];
 
 //  package_stability_t stability;

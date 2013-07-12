@@ -599,7 +599,7 @@ IniDBBuilderPackage::buildMessage (const std::string& message_id, const std::str
 }
 
 void
-IniDBBuilderPackage::autodep (const std::string& message_id, const std::string& message)
+IniDBBuilderPackage::autodep (const std::string& file_regex, const std::string& message)
 {
-  cp->set_message (message_id, message);
+  cbpv.set_autodep (file_regex);
 }

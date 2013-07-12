@@ -51,6 +51,7 @@ void add_correct_version();
 %token OPENSQUARE CLOSESQUARE
 %token BINARYPACKAGE BUILDDEPENDS STANDARDSVERSION FORMAT DIRECTORY FILES
 %token MESSAGE AUTODEP
+%token ARCH RELEASE
 
 %%
 
@@ -121,6 +122,8 @@ singleitem /* non-empty */
  | FILES NL SourceFilesList
  | MESSAGE STRING STRING NL	{ iniBuilder->buildMessage ($2, $3); }
  | AUTODEP STRING STRING NL	{ iniBuilder->autodep ($2, $3); }
+ | ARCH STRING			{ iniBuilder->set_arch ($2); }
+ | RELEASE STRING		{ iniBuilder->set_release ($2); }
  | DESCTAG mlinedesc
  | error 			{ yyerror (std::string("unrecognized line ") 
 					  + stringify(yylineno)
