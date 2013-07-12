@@ -64,8 +64,10 @@ setup_headers: /* empty */
  ;
  
 header /* non-empty */
- : SETUP_TIMESTAMP STRING { iniBuilder->buildTimestamp ($2); } NL
- | SETUP_VERSION STRING { iniBuilder->buildVersion ($2); } NL
+ : SETUP_TIMESTAMP STRING	{ iniBuilder->buildTimestamp ($2); } NL
+ | SETUP_VERSION STRING		{ iniBuilder->buildVersion ($2); } NL
+ | RELEASE STRING		{ iniBuilder->set_release ($2); } NL
+ | ARCH STRING 			{ iniBuilder->set_arch ($2); } NL
  ;
 
 packages: /* empty */
@@ -113,7 +115,7 @@ singleitem /* non-empty */
  | BINARYPACKAGE  { iniBuilder->buildBeginBinary (); } packagelist NL
  | CONFLICTS	{ iniBuilder->buildBeginConflicts(); } versionedpackagelist NL
  | DEPENDS { iniBuilder->buildBeginDepends(); } versionedpackagelist NL
- | REQUIRES { iniBuilder->buildBeginDepends(); }versionedpackagelistsp NL
+ | REQUIRES { iniBuilder->buildBeginDepends(); } versionedpackagelistsp NL
  | PREDEPENDS { iniBuilder->buildBeginPreDepends(); } versionedpackagelist NL
  | RECOMMENDS { iniBuilder->buildBeginRecommends(); }   versionedpackagelist NL
  | SUGGESTS { iniBuilder->buildBeginSuggests(); } versionedpackagelist NL
@@ -122,8 +124,6 @@ singleitem /* non-empty */
  | FILES NL SourceFilesList
  | MESSAGE STRING STRING NL	{ iniBuilder->buildMessage ($2, $3); }
  | AUTODEP STRING STRING NL	{ iniBuilder->autodep ($2, $3); }
- | ARCH STRING			{ iniBuilder->set_arch ($2); }
- | RELEASE STRING		{ iniBuilder->set_release ($2); }
  | DESCTAG mlinedesc
  | error 			{ yyerror (std::string("unrecognized line ") 
 					  + stringify(yylineno)

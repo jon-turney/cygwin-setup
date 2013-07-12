@@ -1,5 +1,10 @@
 2013-07-12  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
+	* iniparse.yy: Move ARCH and RELEASE to the header processing, where
+	they belong.
+
+2013-07-12  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
 	* IniDBBuilder.h (IniDBBuilder::set_arch): New function.
 	(IniDBBuilder::set_release): New function.
 	(IniDBBuilder::arch): New storage for arch:.
