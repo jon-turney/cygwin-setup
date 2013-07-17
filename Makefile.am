@@ -24,10 +24,10 @@ SUBDIRS := @subdirs@ tests
 # -Wno-uninitialized added to deal with g++ 3.4.4's spurious STL warnings
 # (http://gcc.gnu.org/bugzilla/show_bug.cgi?id=22207)
 BASECXXFLAGS = -Wall -Wno-uninitialized -Wpointer-arith -Wcomments \
-               -Wcast-align -Wwrite-strings -fno-builtin-sscanf
+	       -Wcast-align -Wwrite-strings -fno-builtin-sscanf
 AM_CXXFLAGS = -Werror $(BASECXXFLAGS) ${$(*F)_CXXFLAGS}
 AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
-            -Wstrict-prototypes -Wmissing-prototypes
+	    -Wstrict-prototypes -Wmissing-prototypes
 AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES = @WINDRES@
@@ -100,7 +100,7 @@ inilint_SOURCES = \
 
 @SETUP@_LDADD = \
 	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error -llzma -lbz2 -lz \
- 	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lpsapi -luuid -lntdll -lwininet -lmingw32
+	-lshlwapi -lcomctl32 -lole32 -lwsock32 -lpsapi -luuid -lntdll -lwininet -lmingw32
 @SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 @SETUP@_SOURCES = \
 	AntiVirus.cc \
@@ -272,7 +272,7 @@ inilint_SOURCES = \
 	regex/regex.c
 
 VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
-               $(srcdir)/ChangeLog)
+	       $(srcdir)/ChangeLog)
 
 setup_version.c : $(srcdir)/ChangeLog Makefile
 	$(AM_V_GEN)(echo '#define VERSION_PREFIX "%%% setup-version"';\
