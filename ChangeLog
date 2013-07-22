@@ -3,7 +3,7 @@
 	* root.cc (directory_contains_wrong_version): Check cygwin1.dll's
 	machine type.  If that fails, fall back to testing of cygcheck.exe's
 	binary type.  Tweak message text slightly for clearness.  Add comment
-	to explain wht this function does.
+	to explain what this function does.
 
 2013-07-22  Corinna Vinschen  <corinna@vinschen.de>
 
