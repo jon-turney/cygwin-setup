@@ -209,6 +209,36 @@ directory_has_spaces ()
   return 0;
 }
 
+static int
+directory_contains_wrong_version (HWND h)
+{
+  DWORD type;
+  char text[512];
+
+  std::string cygwin_dll = get_root_dir() + "\\bin\\cygcheck.exe";
+
+  if (!GetBinaryType (cygwin_dll.c_str (), &type)) /* New install */
+    return 0;
+  if (type == SCS_32BIT_BINARY && !is_64bit) /* 32 bit setup and 32 bit inst? */
+    return 0;
+  if (type == SCS_64BIT_BINARY && is_64bit)  /* 64 bit setup and 64 bit inst? */
+    return 0;
+  snprintf (text, sizeof text,
+	    "You're trying to install a %s bit version of Cygwin but this\n"
+	    "directory contains a %s bit version of Cygwin.  Doing so would\n"
+	    "break the existing installation.\n\n"
+	    "Either run setup-%s.exe to update your existing %s bit\n"
+	    "installation of Cygwin, or continue with another directory\n"
+	    "for your %s bit installation.",
+	    is_64bit ? "64" : "32",
+	    is_64bit ? "32" : "64",
+	    is_64bit ? "x86" : "x86_64",
+	    is_64bit ? "32" : "64",
+	    is_64bit ? "64" : "32");
+  MessageBox (h, text, "Target CPU mismatch", MB_OK);
+  return 1;
+}
+
 bool
 RootPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
@@ -278,6 +308,8 @@ RootPage::OnNext ()
            directory_is_rootdir () && (IDNO == yesno (h, IDS_ROOT_SLASH)))
     return -1;
   else if (directory_has_spaces () && (IDNO == yesno (h, IDS_ROOT_SPACE)))
+    return -1;
+  else if (directory_contains_wrong_version (h))
     return -1;
 
   log (LOG_PLAIN) << "root: " << get_root_dir ()

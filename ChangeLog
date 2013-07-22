@@ -1,3 +1,10 @@
+2013-07-22  Corinna Vinschen  <corinna@vinschen.de>
+
+	* root.cc (directory_contains_wrong_version): New function to check
+	setup machine type against installation machine type.
+	(RootPage::OnNext): Call directory_contains_wrong_version and refuse to
+	continue if it returns != 0.
+
 2013-07-22  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
 	* IniParseFindVisitor.cc (iniParseFindVisitor::visitFile): Relax check
