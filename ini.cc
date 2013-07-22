@@ -121,7 +121,7 @@ private:
 };
 
 static int
-do_local_ini (HWND owner)
+do_local_ini (HWND)
 {
   GuiParseFeedback myFeedback;
   IniDBBuilderPackage findBuilder(myFeedback);
@@ -334,13 +334,13 @@ do_ini_thread (HINSTANCE h, HWND owner)
     }
 
   msg (".ini setup_version is %s, our setup_version is %s", ini_setup_version.size() ?
-       ini_setup_version.c_str() : "(null)",
+       ini_setup_version.c_str () : "(null)",
        setup_version);
-  if (ini_setup_version.size())
+  if (ini_setup_version.size ())
     {
-      if (version_compare(setup_version, ini_setup_version) < 0)
+      if (version_compare (setup_version, ini_setup_version) < 0)
 	note (owner, IDS_OLD_SETUP_VERSION, setup_version,
-	      ini_setup_version.c_str());
+	      ini_setup_version.c_str ());
     }
 
   return true;

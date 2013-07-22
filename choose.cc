@@ -250,16 +250,14 @@ ChooserPage::OnInit ()
   // or --categories options, just install those selected packages and don't upgrade all others
   // (we always install all packages in the Base or Misc categories; packages selected on the
   // command line are added to the Base category)
-  if ((unattended_mode == unattended) && (bCommandLineAddedPackages))
+  if ((unattended_mode == unattended) && bCommandLineAddedPackages)
     {
       for (packagedb::packagecollection::iterator i = db.packages.begin ();
            i != db.packages.end (); ++i)
         {
           packagemeta & pkg = *(i->second);
           if (pkg.installed)
-            {
-              pkg.desired = pkg.installed;
-            }
+	    pkg.desired = pkg.installed;
           else if (pkg.categories.find ("Base") != pkg.categories.end ()
                    || pkg.categories.find ("Misc") != pkg.categories.end ())
             {

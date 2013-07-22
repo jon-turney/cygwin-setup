@@ -51,11 +51,11 @@ IniParseFindVisitor::visitFile(const std::string& basePath,
   //TODO: Test for case sensitivity issues
   if (casecompare(SETUP_INI_FILENAME, theFile->cFileName))
     return;
-  /* Check if base dir ends in SETUP_INI_DIR. */
-  const char *dir = basePath.c_str() + basePath.size() - strlen (SETUP_INI_DIR);
-  if (dir <= basePath.c_str())
+  
+  const char *dir = basePath.c_str () + basePath.size() - strlen (SETUP_INI_DIR);
+  if (dir < basePath.c_str ())
     return;
-  if ((dir[-1] != '/' && dir[-1] != '\\') || casecompare (SETUP_INI_DIR, dir))
+  if ((dir != basePath.c_str () && dir[-1] != '/' && dir[-1] != '\\') || casecompare (SETUP_INI_DIR, dir))
     return;
 
   current_ini_name = basePath + theFile->cFileName;
@@ -77,13 +77,10 @@ IniParseFindVisitor::visitFile(const std::string& basePath,
   
   /* Copy leading part of path to temporary buffer and unescape it */
   
-  std::string prefix (&basePath.c_str()[baseLength + 1]);
-  std::string mirror;
-  if (prefix.size())
-    mirror = rfc1738_unescape (prefix.substr(0,prefix.size() - 1));
-  else
-    mirror = ".";
-  _Builder.parse_mirror = mirror;
+  size_t pos = baseLength + 1;
+  size_t len = basePath.size () - (pos + strlen (SETUP_INI_DIR) + 1);
+  _Builder.parse_mirror = len <= 0 ? ""
+    			  : rfc1738_unescape (basePath.substr (pos, len));
   ini_init (ini_file, &_Builder, _feedback);
   
   /*yydebug = 1; */

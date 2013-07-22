@@ -57,15 +57,15 @@ public:
   virtual void visitFile(const std::string& basePath,
                          const WIN32_FIND_DATA *theFile)
     {
-      if (!casecompare(SETUP_INI_FILENAME, theFile->cFileName) && 
+      if (!casecompare (SETUP_INI_FILENAME, theFile->cFileName) && 
 	  (theFile->nFileSizeLow || theFile->nFileSizeHigh))
 	{
 	  /* Check if base dir ends in SETUP_INI_DIR. */
-	  const char *dir = basePath.c_str() + basePath.size()
+	  const char *dir = basePath.c_str() + basePath.size ()
 			    - strlen (SETUP_INI_DIR);
-	  if (dir <= basePath.c_str())
+	  if (dir < basePath.c_str ())
 	    return;
-	  if ((dir[-1] != '/' && dir[-1] != '\\')
+	  if ((dir != basePath.c_str () && dir[-1] != '/' && dir[-1] != '\\')
 	      || casecompare (SETUP_INI_DIR, dir))
 	    return;
 	  found = true;

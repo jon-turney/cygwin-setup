@@ -1,3 +1,20 @@
+2013-07-22  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
+	* IniParseFindVisitor.cc (iniParseFindVisitor::visitFile): Relax check
+	for SETUP_INI_DIR slightly.  Remove trailing SETUP_INI_DIR from mirror
+	directory or local downloaded packages will never be found.
+
+	* choose.cc (ChooserPage::OnInit): Fix some formatting.
+	* fromcwd.cc (SetupFindVisitor::visitFile): Relax check for
+	SETUP_INI_DIR slightly.
+	(ChooserPage::OnInit): Fix some formatting.
+	* ini.cc (do_local_ini): Remove name from unused parameter.  Fix some
+	formatting.
+	(do_ini_thread): Fix some formatting.
+
+	* package_version.cc (dumpAndList): Temporarily (?) just return from this
+	debugging function since it SEGVs otherwise.
+
 2013-07-12  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
 	* iniparse.yy: Move ARCH and RELEASE to the header processing, where

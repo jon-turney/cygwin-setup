@@ -622,6 +622,7 @@ void
 dumpAndList (vector<vector <PackageSpecification *> *> const *currentAndList,
              std::ostream &logger)
 {
+  return;
   if (currentAndList)
   {
     vector<vector <PackageSpecification *> *>::const_iterator iAnd =
