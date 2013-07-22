@@ -212,29 +212,73 @@ directory_has_spaces ()
 static int
 directory_contains_wrong_version (HWND h)
 {
-  DWORD type;
+  HANDLE fh;
   char text[512];
+  std::string cygwin_dll = get_root_dir() + "\\bin\\cygwin1.dll";
 
-  std::string cygwin_dll = get_root_dir() + "\\bin\\cygcheck.exe";
+  /* Check if we have a cygwin1.dll.  If not, this is a new install.
+     If yes, check if the target machine type of this setup version is the
+     same as the machine type of the install Cygwin DLL.  If yes, just go
+     ahead.  If not, show a message and indicate this to the caller.
 
-  if (!GetBinaryType (cygwin_dll.c_str (), &type)) /* New install */
-    return 0;
-  if (type == SCS_32BIT_BINARY && !is_64bit) /* 32 bit setup and 32 bit inst? */
-    return 0;
-  if (type == SCS_64BIT_BINARY && is_64bit)  /* 64 bit setup and 64 bit inst? */
-    return 0;
+     If anything goes wrong reading the header of cygwin1.dll, we check
+     cygcheck.exe's binary type.  This also covers the situation that the
+     installed cygwin1.dll is broken for some reason. */
+  fh = CreateFileA (cygwin_dll.c_str (), GENERIC_READ, FILE_SHARE_VALID_FLAGS,
+		    NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
+  if (fh != INVALID_HANDLE_VALUE)
+    {
+      DWORD read = 0;
+      struct {
+	LONG dos_header[32];
+	IMAGE_NT_HEADERS32 nt_header;
+      } hdr;
+
+      ReadFile (fh, &hdr, sizeof hdr, &read, NULL);
+      CloseHandle (fh);
+      if (read != sizeof hdr)
+	fh = INVALID_HANDLE_VALUE;
+      else
+	{
+	  /* 32 bit setup and 32 bit inst? */
+	  if (hdr.nt_header.FileHeader.Machine == IMAGE_FILE_MACHINE_I386
+	      && !is_64bit)
+	    return 0;
+	  /* 64 bit setup and 64 bit inst? */
+	  if (hdr.nt_header.FileHeader.Machine == IMAGE_FILE_MACHINE_AMD64
+	      && is_64bit)
+	    return 0;
+	}
+    }
+  if (fh == INVALID_HANDLE_VALUE)
+    {
+      DWORD type;
+      std::string cygcheck_exe = get_root_dir() + "\\bin\\cygcheck.exe";
+
+      /* Probably new installation */
+      if (!GetBinaryType (cygcheck_exe.c_str (), &type))
+	return 0;
+      /* 64 bit setup and 64 bit inst? */
+      if (type == SCS_32BIT_BINARY && !is_64bit)
+	return 0;
+      /* 32 bit setup and 32 bit inst? */
+      if (type == SCS_64BIT_BINARY && is_64bit)
+	return 0;
+    }
+
+  /* Forestall mixing. */
+  const char *setup_ver = is_64bit ? "64" : "32";
+  const char *inst_ver = is_64bit ? "32" : "64";
   snprintf (text, sizeof text,
-	    "You're trying to install a %s bit version of Cygwin but this\n"
-	    "directory contains a %s bit version of Cygwin.  Doing so would\n"
-	    "break the existing installation.\n\n"
-	    "Either run setup-%s.exe to update your existing %s bit\n"
-	    "installation of Cygwin, or continue with another directory\n"
-	    "for your %s bit installation.",
-	    is_64bit ? "64" : "32",
-	    is_64bit ? "32" : "64",
-	    is_64bit ? "x86" : "x86_64",
-	    is_64bit ? "32" : "64",
-	    is_64bit ? "64" : "32");
+	"You're trying to install a %s bit version of Cygwin into a directory\n"
+	"containing a %s bit version of Cygwin.  Continuing to do so would\n"
+	"break the existing installation.\n\n"
+	"Either run http://cygwin.com/setup-%s.exe to update your\n"
+	"existing %s bit installation of Cygwin, or choose another directory\n"
+	"for your %s bit installation.",
+	setup_ver, inst_ver,
+	is_64bit ? "x86" : "x86_64",
+	inst_ver, setup_ver);
   MessageBox (h, text, "Target CPU mismatch", MB_OK);
   return 1;
 }
