@@ -1,3 +1,7 @@
+2013-07-24  Christopher Faylor  <me.cygwin2013@cgf.cx>
+
+	* configure.ac: Change setup64.exe -> setup.exe.
+
 2013-07-23  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
 	* install.cc (_custom_MessageBox): Restore custom message box.

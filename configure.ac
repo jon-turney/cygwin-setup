@@ -88,7 +88,7 @@ i?86-*-mingw32)
   SETUP="setup"
   ;;
 x86_64-*-mingw32)
-  SETUP="setup64"
+  SETUP="setup"
   ;;
 *)
   AC_MSG_ERROR([Cygwin Setup can only be built for Win32 or Win64 hosts])
