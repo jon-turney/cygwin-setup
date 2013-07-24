@@ -190,6 +190,44 @@ Installer::replaceOnRebootSucceeded (const std::string& fn, bool &rebootneeded)
   rebootneeded = true;
 }
 
+#define MB_RETRYCONTINUE 7
+#if !defined(IDCONTINUE)
+#define IDCONTINUE IDCANCEL
+#endif
+
+static HHOOK hMsgBoxHook;
+LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam) {
+  HWND hWnd;
+  switch (nCode) {
+    case HCBT_ACTIVATE:
+      hWnd = (HWND)wParam;
+      if (GetDlgItem(hWnd, IDCANCEL) != NULL)
+         SetDlgItemText(hWnd, IDCANCEL, "Continue");
+      UnhookWindowsHookEx(hMsgBoxHook);
+  }
+  return CallNextHookEx(hMsgBoxHook, nCode, wParam, lParam);
+}
+
+int _custom_MessageBox(HWND hWnd, LPCTSTR szText, LPCTSTR szCaption, UINT uType) {
+  int retval;
+  bool retry_continue = (uType & MB_TYPEMASK) == MB_RETRYCONTINUE;
+  if (retry_continue) {
+    uType &= ~MB_TYPEMASK; uType |= MB_RETRYCANCEL;
+    // Install a window hook, so we can intercept the message-box
+    // creation, and customize it
+    // Only install for THIS thread!!!
+    hMsgBoxHook = SetWindowsHookEx(WH_CBT, CBTProc, NULL, GetCurrentThreadId());
+  }
+  retval = MessageBox(hWnd, szText, szCaption, uType);
+  // Intercept the return value for less confusing results
+  if (retry_continue && retval == IDCANCEL)
+    return IDCONTINUE;
+  return retval;
+}
+
+#undef MessageBox
+#define MessageBox _custom_MessageBox
+
 typedef struct
 {
   const char *msg;
@@ -237,7 +275,7 @@ FileInuseDlgProc (HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
           switch (LOWORD (wParam))
             {
             case IDRETRY:
-            case IDOK:
+            case IDCONTINUE:
               EndDialog (hwndDlg, LOWORD (wParam));
               return TRUE;
             }
@@ -475,40 +513,68 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                         plm += processName;
                       }
 
-                    INT_PTR rc = (iteration < 3) ? IDRETRY : IDOK;
+                    INT_PTR rc = (iteration < 3) ? IDRETRY : IDCONTINUE;
                     if (unattended_mode == attended)
                       {
-                        FileInuseDlgData dlg_data;
-                        dlg_data.msg = ("Unable to extract /" + fn).c_str ();
-                        dlg_data.processlist = plm.c_str ();
-                        dlg_data.iteration = iteration;
+                        if (!processes.empty())
+                          {
+                            // Use the IDD_FILE_INUSE dialog to ask the user if we should try to kill the
+                            // listed processes, or just ignore the problem and schedule the file to be
+                            // replaced after a reboot
+                            FileInuseDlgData dlg_data;
+                            dlg_data.msg = ("Unable to extract /" + fn).c_str ();
+                            dlg_data.processlist = plm.c_str ();
+                            dlg_data.iteration = iteration;
 
-                        rc = DialogBoxParam(hinstance, MAKEINTRESOURCE (IDD_FILE_INUSE), owner, FileInuseDlgProc, (LPARAM)&dlg_data);
+                            rc = DialogBoxParam(hinstance, MAKEINTRESOURCE (IDD_FILE_INUSE), owner, FileInuseDlgProc, (LPARAM)&dlg_data);
+                          }
+                        else
+                          {
+                            // We couldn't enumerate any processes which have this file loaded into it
+                            // either the cause of the error is something else, or something (e.g security
+                            // policy) prevents us from listing those processes.
+                            // All we can offer the user is a generic "retry or ignore" choice and a chance
+                            // to fix the problem themselves
+                            char msg[fn.size() + 300];
+                            sprintf (msg,
+                                     "Unable to extract /%s\r\n"
+                                     "The file is in use or some other error occurred.\r\n"
+                                     "Please stop all Cygwin processes and select \"Retry\", or\r\n"
+                                     "select \"Continue\" to go on anyway (you will need to reboot).\r\n",
+                                     fn.c_str());
+
+                            rc = MessageBox (owner, msg, "Error writing file",
+                                             MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL);
+                          }
                       }
 
                     switch (rc)
                       {
                       case IDRETRY:
-                        // try to stop all the processes
-                        for (ProcessList::iterator i = processes.begin (); i != processes.end (); i++)
+                        if (!processes.empty())
                           {
-                            i->kill (iteration);
-                          }
+                            // try to stop all the processes
+                            for (ProcessList::iterator i = processes.begin (); i != processes.end (); i++)
+                              {
+                                i->kill (iteration);
+                              }
 
-                        // wait up to 15 seconds for processes to stop
-                        for (unsigned int i = 0; i < 15; i++)
-                          {
-                            processes = Process::listProcessesWithModuleLoaded (sname);
-                            if (processes.size () == 0)
-                              break;
+                            // wait up to 15 seconds for processes to stop
+                            for (unsigned int i = 0; i < 15; i++)
+                              {
+                                processes = Process::listProcessesWithModuleLoaded (sname);
+                                if (processes.size () == 0)
+                                  break;
 
-                            Sleep (1000);
+                                Sleep (1000);
+                              }
                           }
+                        // else, manual intervention may have fixed the problem
 
                         // retry
                         iteration++;
                         continue;
-                      case IDOK:
+                      case IDCONTINUE:
                         // ignore this in-use error, and any subsequent in-use errors for other files in the same package
                         ignoreInUseErrors = true;
                         break;

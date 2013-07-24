@@ -457,7 +457,7 @@ BEGIN
                     "select 'Continue' to go on anyway (you will need to reboot).",
                     IDC_FILE_INUSE_HELP,27,52,183,16,NOT WS_GROUP
     DEFPUSHBUTTON   "&Stop Processes",IDRETRY,47,75,55,15
-    PUSHBUTTON      "&Continue",IDOK,113,75,55,15
+    PUSHBUTTON      "&Continue",IDCONTINUE,113,75,55,15
 END
 
 /////////////////////////////////////////////////////////////////////////////

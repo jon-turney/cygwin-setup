@@ -1,3 +1,11 @@
+2013-07-23  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+	* install.cc (_custom_MessageBox): Restore custom message box.
+	(installOne): If processList is empty, use the custom message box
+	to ask if we should retry or continue.
+	* res.rc (IDD_FILE_INUSE): Use IDCONTINUE for continue buttom, to be
+	the same custom message box.
+
 2013-07-22  Corinna Vinschen  <corinna@vinschen.de>
 
 	* root.cc (directory_contains_wrong_version): Check cygwin1.dll's
