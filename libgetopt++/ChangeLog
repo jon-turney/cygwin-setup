@@ -1,3 +1,8 @@
+2013-07-24  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * configure.ac: Update for aclocal-1.13 by replacing obsolete macro
+	AM_CONFIG_HEADER with AC_CONFIG_HEADERS.
+
 2012-06-01  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
 
 	* configure.in: Enable silent rules with automake-1.11.
