@@ -1,5 +1,10 @@
 2013-07-25  Achim Gratz <Stromeko@Stromeko.DE>
 
+	* package_db.h (packagedb::addCommandLinePackages): Remove declaration.
+	* package_db.cc (packagedb::addCommandLinePackages): Remove.
+
+2013-07-25  Achim Gratz <Stromeko@Stromeko.DE>
+
 	* choose.h (hasManualSelections): Declare new variable.
 	* choose.cc (ChooserPage::OnInit): Re-implement package handling
 	depending on options given on CLI using package actions instead of
