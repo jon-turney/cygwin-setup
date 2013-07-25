@@ -148,11 +148,6 @@ ChooserPage::createListview ()
     log (LOG_BABBLE) << "Failed to set View button caption %ld" <<
 	 GetLastError () << endLog;
 
-  for (packagedb::packagecollection::iterator i = db.packages.begin(); i != db.packages.end(); i++)
-    {
-      i->second->set_requirements(chooser->deftrust);
-    }
-
   /* FIXME: do we need to init the desired fields ? */
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
   rbset (GetHWND (), ta, IDC_CHOOSE_CURR);

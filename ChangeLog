@@ -1,3 +1,9 @@
+2013-07-25  Achim Gratz <Stromeko@Stromeko.DE>
+
+	* choose.cc (ChooserPage::createListview): Remove superflous and
+	detrimental default trust setting.  This has already been set correctly
+	in OnInit.
+
 2013-07-24  Christopher Faylor  <me.cygwin2013@cgf.cx>
 
 	* configure.ac: Change setup64.exe -> setup.exe.
