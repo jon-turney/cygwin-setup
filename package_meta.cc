@@ -51,8 +51,11 @@ using namespace std;
 
 using namespace std;
 
+static StringArrayOption DeletePackageOption ('x', "remove-packages", "Specify packages to uninstall");
+static StringArrayOption DeleteCategoryOption ('c', "remove-categories", "Specify categories to uninstall");
 static StringArrayOption PackageOption ('P', "packages", "Specify packages to install");
 static StringArrayOption CategoryOption ('C', "categories", "Specify entire categories to install");
+bool hasManualSelections = 0;
 
 /*****************/
 
@@ -275,7 +278,9 @@ bool packagemeta::isManuallyWanted() const
 {
   static bool parsed_yet = false;
   static std::set<string> parsed_names;
+  hasManualSelections |= parsed_names.size ();
   static std::set<string> parsed_categories;
+  hasManualSelections |= parsed_categories.size ();
   bool bReturn = false;
 
   /* First time through, we parse all the names out from the 
@@ -316,6 +321,56 @@ bool packagemeta::isManuallyWanted() const
   
   if (bReturn)
     log (LOG_PLAIN) << "Added manual package " << name << endLog;
+  return bReturn;
+}
+
+bool packagemeta::isManuallyDeleted() const
+{
+  static bool parsed_yet = false;
+  static std::set<string> parsed_delete;
+  hasManualSelections |= parsed_delete.size ();
+  static std::set<string> parsed_delete_categories;
+  hasManualSelections |= parsed_delete_categories.size ();
+  bool bReturn = false;
+
+  /* First time through, we parse all the names out from the
+    option string and store them away in an STL set.  */
+  if (!parsed_yet)
+  {
+    vector<string> delete_options   = DeletePackageOption;
+    vector<string> categories_options = DeleteCategoryOption;
+    for (vector<string>::iterator n = delete_options.begin ();
+		n != delete_options.end (); ++n)
+      {
+	parseNames (parsed_delete, *n);
+      }
+    for (vector<string>::iterator n = categories_options.begin ();
+		n != categories_options.end (); ++n)
+      {
+	parseNames (parsed_delete_categories, *n);
+      }
+    parsed_yet = true;
+  }
+
+  /* Once we've already parsed the option string, just do
+    a lookup in the cache of already-parsed names.  */
+  bReturn = parsed_delete.find(name) != parsed_delete.end();
+
+  /* If we didn't select the package manually, did we select any
+     of the categories it is in? */
+  if (!bReturn && parsed_delete_categories.size ())
+    {
+      std::set<std::string, casecompare_lt_op>::iterator curcat;
+      for (curcat = categories.begin (); curcat != categories.end (); curcat++)
+	if (parsed_delete_categories.find (*curcat) != parsed_delete_categories.end ())
+	  {
+	    log (LOG_PLAIN) << "Found category " << *curcat << " in package " << name << endLog;
+	    bReturn = true;
+	  }
+    }
+
+  if (bReturn)
+    log (LOG_PLAIN) << "Deleted manual package " << name << endLog;
   return bReturn;
 }
 

@@ -239,31 +239,28 @@ ChooserPage::OnInit ()
   packagedb db;
   db.setExistence ();
   db.fillMissingCategory ();
-  bool bCommandLineAddedPackages = db.addCommandLinePackages();
 
-  // in unattended mode, if packages were selected on the command line using the --packages
-  // or --categories options, just install those selected packages and don't upgrade all others
-  // (we always install all packages in the Base or Misc categories; packages selected on the
-  // command line are added to the Base category)
-  if ((unattended_mode == unattended) && bCommandLineAddedPackages)
+  for (packagedb::packagecollection::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
     {
-      for (packagedb::packagecollection::iterator i = db.packages.begin ();
-           i != db.packages.end (); ++i)
-        {
-          packagemeta & pkg = *(i->second);
-          if (pkg.installed)
-	    pkg.desired = pkg.installed;
-          else if (pkg.categories.find ("Base") != pkg.categories.end ()
-                   || pkg.categories.find ("Misc") != pkg.categories.end ())
-            {
-              pkg.desired = pkg.trustp(TRUST_CURR);
-              pkg.desired.pick(TRUE, &pkg);
-            }
-        }
-    }
-  else
-    {
-      db.defaultTrust (TRUST_CURR);
+      packagemeta & pkg = *(i->second);
+      bool wanted    = pkg.isManuallyWanted();
+      bool deleted   = pkg.isManuallyDeleted();
+      bool basemisc  = (pkg.categories.find ("Base") != pkg.categories.end ()
+		     || pkg.categories.find ("Misc") != pkg.categories.end ());
+      bool current   = pkg.curr;
+      bool upgrade   =  wanted  || (!pkg.installed && basemisc) || !hasManualSelections;
+      bool install   =   wanted  && !deleted && !pkg.installed;
+      bool reinstall =  (wanted  || basemisc ) && deleted;
+      bool uninstall = !(wanted  || basemisc ) && deleted;
+      if (install)
+	pkg.set_action( packagemeta::Install_action, pkg.curr );
+      else if (reinstall)
+	pkg.set_action( packagemeta::Reinstall_action, pkg.curr );
+      else if (uninstall)
+	pkg.set_action( packagemeta::Uninstall_action, packageversion() );
+      else
+	pkg.set_action( packagemeta::Default_action, ((upgrade && current) ? pkg.curr : pkg.installed) );
     }
 
   ClearBusy ();

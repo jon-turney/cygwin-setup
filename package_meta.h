@@ -106,6 +106,8 @@ public:
   std::string installed_from;
   /* true if package was selected on command-line. */
   bool isManuallyWanted() const;
+  /* true if package was deleted on command-line. */
+  bool isManuallyDeleted() const;
   /* SDesc is global in theory, across all package versions. 
      LDesc is not: it can be different per version */
   const std::string SDesc () const;

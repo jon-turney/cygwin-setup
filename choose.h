@@ -21,6 +21,7 @@
 #include "package_meta.h"
 #include "PickView.h"
 
+extern bool hasManualSelections;
 
 class ChooserPage:public PropertyPage
 {

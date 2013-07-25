@@ -1,5 +1,31 @@
 2013-07-25  Achim Gratz <Stromeko@Stromeko.DE>
 
+	* choose.h (hasManualSelections): Declare new variable.
+	* choose.cc (ChooserPage::OnInit): Re-implement package handling
+	depending on options given on CLI using package actions instead of
+	package_meta low-level functions.  When no CLI package or category
+	options have been given, upgrade installed packages.  Do not check for
+	updates when packages are to be added or removed from the CLI, but this
+	behaviour can be requested with --upgrade-also.  A package that is
+	requested to be removed and also added at the same time gets reinstalled
+	or upgraded (when version curr != installed).  Uninstalled packages in
+	categories "Base" or "Misc" are always selected for installation;
+	installed packages in these categories are not eligible for deletion
+	and will be reinstalled or upgraded instead.
+	* package_meta.h (packagemeta::ismanuallyDeleted): Declare new method.
+	* package_meta.cc (DeletePackageOption): Add new CLI option
+	-x/--remove-packages, packages listed here are considered candidates
+	for deletion.
+	(DeleteCategoryOption): Add new CLI option -c/--remove-categories,
+	packages belonging to categories listed here are considered candidates
+	for deletion.
+	(hasManualSelections): Additional boolean to record if any manual
+	installations or deletions have been requested.
+	(packagemeta::isManuallyDeleted): Implement along the same lines as
+	isManuallyWanted, but for deletion candidates.
+
+2013-07-25  Achim Gratz <Stromeko@Stromeko.DE>
+
 	* choose.cc (ChooserPage::createListview): Remove superflous and
 	detrimental default trust setting.  This has already been set correctly
 	in OnInit.
