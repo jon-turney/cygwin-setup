@@ -1,3 +1,7 @@
+2013-07-24  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+        * bootstrap.sh : Add support for x86_64-w64-mingw32 toolchain.
+
 2013-07-25  Achim Gratz <Stromeko@Stromeko.DE>
 
 	* package_db.h (packagedb::addCommandLinePackages): Remove declaration.
