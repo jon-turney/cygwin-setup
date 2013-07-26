@@ -61,6 +61,10 @@ static const char *cvsid =
 
 #include "UserSettings.h"
 
+#include "getopt++/BoolOption.h"
+static BoolOption UpgradeAlsoOption (false, 'g', "upgrade-also", "also upgrade installed packages");
+static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", "remove orphaned packages");
+
 using namespace std;
 
 extern ThreeBarProgressPage Progress;
@@ -248,8 +252,8 @@ ChooserPage::OnInit ()
       bool deleted   = pkg.isManuallyDeleted();
       bool basemisc  = (pkg.categories.find ("Base") != pkg.categories.end ()
 		     || pkg.categories.find ("Misc") != pkg.categories.end ());
-      bool current   = pkg.curr;
-      bool upgrade   =  wanted  || (!pkg.installed && basemisc) || !hasManualSelections;
+      bool current   = pkg.curr || CleanOrphansOption;
+      bool upgrade   =  wanted  || (!pkg.installed && basemisc) || UpgradeAlsoOption || !hasManualSelections;
       bool install   =   wanted  && !deleted && !pkg.installed;
       bool reinstall =  (wanted  || basemisc ) && deleted;
       bool uninstall = !(wanted  || basemisc ) && deleted;

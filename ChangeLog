@@ -1,6 +1,17 @@
+2013-07-26  Achim Gratz <Stromeko@Stromeko.DE>
+
+	* choose.cc (UpgradeAlsoOption): Add new CLI option -g/--upgrade-also.
+	(CleanOrphansOption): Add new CLI option -o/--delete-orphans.
+	(OnInit): Implement -g/--upgrade-also, considers all installed packages
+	as candidates for upgrades (the default when no CLI package or category
+	options have been given) also when manual additions or removals are
+	requested at the same time.  Implement -o/--delete-orphans, considers
+	installed packages that do not exist anymore in the package repositories
+	as candidates for deletion.
+
 2013-07-24  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * bootstrap.sh : Add support for x86_64-w64-mingw32 toolchain.
+	* bootstrap.sh : Add support for x86_64-w64-mingw32 toolchain.
 
 2013-07-25  Achim Gratz <Stromeko@Stromeko.DE>
 
