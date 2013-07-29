@@ -25,6 +25,7 @@
 #include "package_version.h"
 #include "cygpackage.h"
 #include "filemanip.h"
+#include "ini.h"
 // for strtoul
 #include <string.h>
 #include "LogSingleton.h"
@@ -53,7 +54,16 @@ IniDBBuilderPackage::buildVersion (const std::string& aVersion)
   if (version.size())
     {
       if (version_compare(setup_version, version) < 0)
-	_feedback.warning("The current ini file is from a newer version of setup.exe. If you have any trouble installing, please download a fresh version from http://www.cygwin.com/setup.exe");
+	{
+	  char old_vers[256];
+	  snprintf (old_vers, sizeof old_vers,
+	    "The current ini file is from a newer version of setup-%s.exe. "
+	    "If you have any trouble installing, please download a fresh "
+	    "version from http://www.cygwin.com/setup-%s.exe",
+	    is_64bit ? "x86_64" : "x86",
+	    is_64bit ? "x86_64" : "x86");
+	  _feedback.warning(old_vers);
+	}
     }
 }
 
