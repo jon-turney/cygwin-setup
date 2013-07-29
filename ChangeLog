@@ -1,5 +1,11 @@
 2013-07-29  Corinna Vinschen  <corinna@vinschen.de>
 
+	* localdir.cc (LocalDirPage::OnNext): Accommodate architecture parameter
+	in IDS_NO_CWD string.
+	(IDS_NO_CWD): Add string argument for architecture in setup name.
+
+2013-07-29  Corinna Vinschen  <corinna@vinschen.de>
+
 	* IniDBBuilderPackage.cc (IniDBBuilderPackage::buildVersion): Align
 	warning string to target architecture.
 

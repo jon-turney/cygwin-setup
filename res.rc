@@ -572,6 +572,6 @@ BEGIN
        "downloaded installation files."
     IDS_MAYBE_MKDIR    "Directory %s does not exist, would you like me to create it?"
     IDS_CANT_MKDIR     "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
-    IDS_NO_CWD	       "Local package directory %s not found.\nYou can still use setup.exe to remove installed\npackages, but there "
+    IDS_NO_CWD	       "Local package directory %s not found.\nYou can still use setup-%s.exe to remove installed\npackages, but there "
       "will be nothing to install.\n\nPress OK if that's what you wanted\nor Cancel to choose a different directory."
 END

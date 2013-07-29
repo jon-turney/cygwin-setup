@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#include "ini.h"
 #include "dialog.h"
 #include "resource.h"
 #include "state.h"
@@ -271,7 +272,8 @@ LocalDirPage::OnNext ()
 	      char msgText[1000];
 	      LoadString (hinstance, IDS_NO_CWD, msgText, sizeof (msgText));
 	      char msg[1000 + MAX_PATH];
-	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str ());
+	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str (),
+		        is_64bit ? "x86_64" : "x86");
 	      int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | MB_OKCANCEL);
 	      return (ret == IDOK) ? IDD_CHOOSE : -1;
 	    }
