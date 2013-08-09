@@ -1,3 +1,8 @@
+2013-08-09  Achim Gratz  <Stromeko@Stromeko.DE>
+
+	* csu_util/MD5Sum.cc (MD5Sum::operator std::string() const):
+	Reimplement using stringstream to avoid a SEGV.
+
 2013-07-29  Corinna Vinschen  <corinna@vinschen.de>
 
 	* localdir.cc (LocalDirPage::OnNext): Accommodate architecture parameter

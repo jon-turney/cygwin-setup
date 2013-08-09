@@ -13,7 +13,10 @@
  */
 
 #include "MD5Sum.h"
-#include <string.h>
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
 #include <stdexcept>
 
 MD5Sum::MD5Sum(const MD5Sum& source)
@@ -79,22 +82,12 @@ MD5Sum::finish()
 
 MD5Sum::operator std::string() const
 {
-  char hexdigest[33];
-  hexdigest[32] = '\0';
+  std::ostringstream hexdigest;
 
-  for (int i = 0; i < 16; ++i)
-  {
-    int hexdigit = 2 * i;
-    char tmp;
-    
-    tmp = digest[i] >> 4;
-    hexdigest[hexdigit] =     (tmp < 10) ? (tmp + '0') : (tmp + 'a' - 10);
-
-    tmp = digest[i] & 0x0f;
-    hexdigest[hexdigit + 1] = (tmp < 10) ? (tmp + '0') : (tmp + 'a' - 10);
-  }
-
-  return std::string(hexdigest);
+  hexdigest << std::hex << std::setfill('0') << std::setw(2);
+  for (int i=0; i<16; ++i )
+    hexdigest << static_cast<unsigned int>(digest[i]);
+  return hexdigest.str();
 }
 
 bool
