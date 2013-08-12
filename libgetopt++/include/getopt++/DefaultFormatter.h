@@ -21,31 +21,47 @@
 #include "getopt++/Option.h"
 
 /* Show the options on the left, the short description on the right.
- * descriptions must be < 40 characters in length
+ * Option display must be < o_len characters in length.
+ * Descriptions must be < h_len characters in length.
+ * For compatibility with default terminal width o_len + h_len <= 80.
  */
 class DefaultFormatter {
+  private:
+    const unsigned int o_len;
+    const unsigned int h_len;
+    const std::string s_lead;
+    const std::string l_lead;
   public:
-    DefaultFormatter (std::ostream &aStream) : theStream(aStream) {}
+    DefaultFormatter (std::ostream &aStream)
+      : o_len(35), h_len(45),
+        s_lead(" -"), l_lead(" --"),
+        theStream(aStream)
+    {}
+    DefaultFormatter (std::ostream &aStream,
+		      unsigned int o_len, unsigned int h_len,
+		      std::string s_lead, std::string l_lead)
+      : o_len(o_len), h_len(h_len),
+        s_lead(s_lead), l_lead(l_lead),
+        theStream(aStream)
+    {}
     void operator () (Option *anOption) {
-      std::string output = std::string() + " -" + anOption->shortOption ()[0];
-      output += " --" ;
-      output += anOption->longOption ();
-      output += std::string (40 - output.size(), ' ');
+      theStream << s_lead << anOption->shortOption ()[0]
+		<< l_lead << anOption->longOption ()
+		<< std::string (o_len
+				- s_lead.size () - 1 - l_lead.size ()
+				- anOption->longOption ().size (), ' ');
       std::string helpmsg = anOption->shortHelp();
-      while (helpmsg.size() > 40)
+      while (helpmsg.size() > h_len)
 	{
 	  // TODO: consider using a line breaking strategy here.
-	  int pos = helpmsg.substr(0,40).find_last_of(" ");
-	  output += helpmsg.substr(0,pos);
+	  int pos = helpmsg.substr(0,h_len).find_last_of(" ");
+	  theStream << helpmsg.substr(0,pos)
+		    << std::endl << std::string (o_len, ' ');
 	  helpmsg.erase (0,pos+1);
-	  theStream << output << std::endl;
-	  output = std::string (40, ' ');
 	}
-      output += helpmsg;
-      theStream << output << std::endl;
+      theStream << helpmsg << std::endl;
     }
     std::ostream &theStream;
 };
-
 
 #endif // _GETOPT___DEFAULTFORMATTER_H_

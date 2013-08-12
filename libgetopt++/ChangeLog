@@ -1,6 +1,19 @@
+2013-08-12  Achim Gratz  <Stromeko@Stromeko.DE>
+
+	* include/getopt++/DefaultFormatter.h (DefaultFormatter):
+	Introduce private data members and use them, adjust comment
+	accordingly.  Split the line 35/45 instead of 40/40 by default
+	to get less linebreaks.  Add default initializers for data
+	members to the constructor.  Add a second constructor that
+	offers parameters for initialization of the private data
+	members.
+	(DefaultFormatter::operator ()): Remove automatic variable
+	output and directly put the data on the output stream instead.
+	Use private data members to construct the output rather than
+
 2013-07-24  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
-        * configure.ac: Update for aclocal-1.13 by replacing obsolete macro
+	* configure.ac: Update for aclocal-1.13 by replacing obsolete macro
 	AM_CONFIG_HEADER with AC_CONFIG_HEADERS.
 
 2012-06-01  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
@@ -8,9 +21,10 @@
 	* configure.in: Enable silent rules with automake-1.11.
 
 2011-05-30 SZAVAI Gyula <szgyg@ludens.elte.hu>
-        * libgetopt++/src/StringArrayOption.cc: New file.
-        * libgetopt++/include/getopt++/StringArrayOption.h: New file.
-        * libgetopt++/Makefile.am: Add new files.
+
+	* libgetopt++/src/StringArrayOption.cc: New file.
+	* libgetopt++/include/getopt++/StringArrayOption.h: New file.
+	* libgetopt++/Makefile.am: Add new files.
 
 2008-06-16  Dave Korn  <dave.korn.cygwin@gmail.com>
 
