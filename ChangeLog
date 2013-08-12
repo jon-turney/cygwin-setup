@@ -1,3 +1,11 @@
+2013-08-12  Achim Gratz  <Stromeko@Stromeko.DE>
+
+	* csu_util/MD5Sum.h (MD5Sum): Remove declaration for conversion
+	operator std::string().  Remove implementation of member
+	function str() using the conversion operator.
+	* csu_util/MD5Sum.cc (MD5Sum::str): Reuse implementation of conversion
+	operator std::String to implement member function str() with.
+
 2013-08-09  Achim Gratz  <Stromeko@Stromeko.DE>
 
 	* csu_util/MD5Sum.cc (MD5Sum::operator std::string() const):

@@ -44,8 +44,7 @@ class MD5Sum
     void finish();
 
     bool isSet() const { return (state == Set); };
-    operator std::string() const;
-    std::string str() const { return (std::string)(*this); };
+    std::string str() const;
     bool operator == (const MD5Sum& other) const;
     bool operator != (const MD5Sum& other) const { return !(*this == other); };
 

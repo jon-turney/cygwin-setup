@@ -80,7 +80,8 @@ MD5Sum::finish()
   delete internalData; internalData = 0;
 }
 
-MD5Sum::operator std::string() const
+std::string
+MD5Sum::str() const
 {
   std::ostringstream hexdigest;
 
