@@ -1,3 +1,8 @@
+2013-09-17  Christopher Faylor <me.cygwin2013@cgf.cx>
+
+	* filemanip.cc (find_tar_ext): Generalize search for .tar extension,
+	avoiding looking for specific compression types.
+
 2013-08-12  Achim Gratz  <Stromeko@Stromeko.DE>
 
 	* csu_util/MD5Sum.h (MD5Sum): Remove declaration for conversion

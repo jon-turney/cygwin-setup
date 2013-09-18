@@ -70,18 +70,13 @@ base (const std::string& aString)
 int
 find_tar_ext (const char *path)
 {
-  char *end = strchr (path, '\0');
-  /* check in longest first order */
-  const char *ext;
-  if ((ext = trail (path, ".tar.bz2")) && (end - ext) == 8)
-    return ext - path;
-  if ((ext = trail (path, ".tar.gz")) && (end - ext) == 7)
-    return ext - path;
-  if ((ext = trail (path, ".tar")) && (end - ext) == 4)
-    return ext - path;
-  if ((ext = trail (path, ".tar.lzma")) && (end - ext) == 9)
-    return ext - path;
-  return 0;
+  char *p = strchr (path, '\0') - 9;
+  if (p <= path)
+    return 0;
+  if ((p = strstr (p, ".tar")) != NULL)
+    return p - path;
+  else
+    return 0;
 }
 
 /* Parse a filename into package, version, and extension components. */
