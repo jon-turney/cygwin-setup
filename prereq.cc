@@ -150,9 +150,10 @@ PrereqPage::OnUnattended ()
   if (unattended_mode == chooseronly)
     return -1;
 
-  // in unattended mode, carry on to download/install
-  // (this can only happen if there some kind of problem with dependencies, as all required dependencies
-  //  should be selected automatically by the chooser page in unattended mode, so we should never get here)
+  // in unattended mode, add the missing requirements, then carry on to download/install
+  PrereqChecker p;
+  p.selectMissing ();
+
   return whatNext();
 }
 

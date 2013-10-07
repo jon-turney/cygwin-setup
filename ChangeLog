@@ -1,3 +1,8 @@
+2013-10-07  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+	* prereq.cc (OnUnattended): Also select missing requirements in unattended
+	mode, since it's no longer a side effect of the chooser.
+
 2013-09-17  Christopher Faylor <me.cygwin2013@cgf.cx>
 
 	* filemanip.cc (find_tar_ext): Generalize search for .tar extension,
