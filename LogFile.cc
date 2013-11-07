@@ -137,7 +137,8 @@ LogFile::exit (int const exit_code)
         }
     }
   
-  log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
+  if (exit_code != IDS_ELEVATED)
+    log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
 
   for (FileSet::iterator i = files.begin();
        i != files.end(); ++i)
@@ -146,6 +147,18 @@ LogFile::exit (int const exit_code)
     }
   // TODO: remove this when the ::exit issue is tidied up.
   ::exit (exit_code);
+}
+
+void
+LogFile::flushAll ()
+{
+  log (LOG_TIMESTAMP) << "Writing messages to log files without exiting" << endLog;
+
+  for (FileSet::iterator i = files.begin();
+       i != files.end(); ++i)
+    {
+      log_save (i->level, i->key, i->append);
+    }
 }
 
 void

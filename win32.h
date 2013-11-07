@@ -132,6 +132,7 @@ public:
   void resetPrimaryGroup();
   void setAdminGroup ();
   void setDefaultSecurity();
+  bool isRunAsAdmin ();
 private:
   void NoteFailedAPI (const std::string &);
   bool wellKnownSIDsinitialized () const { return _wellKnownSIDsinitialized; }

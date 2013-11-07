@@ -32,6 +32,7 @@ public:
    * but doesn't call generic C++ destructors
    */
   virtual void exit (int const exit_code) __attribute__ ((noreturn));
+  virtual void flushAll ();
   virtual ~LogFile();
   // get a specific verbosity stream.
   virtual std::ostream &operator() (enum log_level level);

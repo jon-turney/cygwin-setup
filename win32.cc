@@ -400,6 +400,18 @@ NTSecurity::setDefaultSecurity ()
     setAdminGroup ();
 }
 
+bool
+NTSecurity::isRunAsAdmin ()
+{
+  BOOL is_run_as_admin = FALSE;
+  if (!CheckTokenMembership(NULL, administratorsSID.theSID (), &is_run_as_admin))
+  {
+	  NoteFailedAPI("CheckTokenMembership(administratorsSID)");
+  }
+  return (is_run_as_admin == TRUE);
+}
+
+
 VersionInfo::VersionInfo ()
 {
   v.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);

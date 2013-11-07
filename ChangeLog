@@ -1,3 +1,32 @@
+2013-11-07  Corinna Vinschen  <corinna@vinschen.de>
+
+	* LogFile.cc (LogFile::exit): Don't print ending message after
+	successful elevation.
+	* res.rc (IDS_ELEVATED): New string.
+	* resource.h (IDS_ELEVATED): New string resource number.
+
+2013-11-07  Shaddy Baddah  <lithium-cygwin@shaddybaddah.name>
+
+	* LogFile.cc (LogFile::flushAll): New function to flush log all logging
+	to files without exiting (as LogFile::exit does).
+	* LogFile.h: Declare new method closeAll.
+	* main.cc (NoAdminOption): Add new CLI options -B/--no-admin. This
+	option allows the user to suppress privilege elevation (in tandem with
+	"asInvoker" requestedExecutionLevel changes to exe manifests).
+	(WinMain): check if setup run with Administrator privilege and if the
+	NoAdminOption has not been specified, attempt to elevate privilege to an
+	Administrator via WINAPI ShellExecuteEx().
+	* setup.exe.manifest: Add requestedExecutionLevel of asInvoker to allow
+	suppression of privilege elevation.
+	* setup64.exe.manifest: Modify requestedExecutionLevel from
+	requireAdministrator to asInvoker to allow suppression of privilege
+	elevation. Continuity of privilege elevation attempt on startup is
+	implemented by main.cc changes to WinMain().
+	* win32.cc (NTSecurity::isRunAsAdmin): New function to allow main.cc to
+	check if setup.exe has been run with privilege elevated to Administrator
+	level.
+	* win32.h: Declare new method isRunAsAdmin.
+
 2013-10-07  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
 	* prereq.cc (OnUnattended): Also select missing requirements in unattended

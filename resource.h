@@ -38,6 +38,7 @@
 #define IDS_MAYBE_MKDIR                   136
 #define IDS_CANT_MKDIR                    137
 #define IDS_NO_CWD			  138
+#define IDS_ELEVATED			  139
 
 // Dialogs
 
