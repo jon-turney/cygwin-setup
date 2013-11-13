@@ -51,6 +51,8 @@ EXTRA_DIST = \
 	choose-rtarrow.bmp \
 	choose-spin.bmp \
 	cygwin.ico \
+	cygwin-setup.ico \
+	cygwin-terminal.ico \
 	setup.exe.manifest \
 	setup64.exe.manifest \
 	tree-minus.bmp \

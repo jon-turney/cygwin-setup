@@ -1,3 +1,8 @@
+2013-11-13  Corinna Vinschen  <corinna@vinschen.de>
+
+	* Makefile.am (EXTRA_DIST): Add cygwin-setup.ico and
+	cygwin-terminal.ico.
+
 2013-11-07  Corinna Vinschen  <corinna@vinschen.de>
 
 	* LogFile.cc (LogFile::exit): Don't print ending message after
