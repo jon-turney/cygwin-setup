@@ -221,6 +221,7 @@ save_icon (std::string &iconpath, const char *resource_name)
 #define TERMINALICON	"/Cygwin-Terminal.ico"
 #define TERMINALTITLE	(is_64bit ? "Cygwin64 Terminal" \
 				  : "Cygwin Terminal")
+#define STARTMENUDIR	"/Cygwin"
 
 static void
 do_desktop_setup ()
@@ -348,7 +349,7 @@ check_startmenu (const std::string title, const std::string target)
       msg ("Program directory for program link changed to: %s", path);
     }
   // end of Win95 addition
-  strcat (path, "/Cygwin");
+  strcat (path, STARTMENUDIR);
   std::string fname = std::string(path) + "/" + title + ".lnk";
 
   if (_access (fname.c_str(), 0) == 0)
@@ -405,15 +406,15 @@ DesktopSetupPage::OnActivate ()
     }
   else
     {
+      std::string target = backslash (cygpath (TARGET));
+
       if (NoStartMenuOption) 
 	{
 	  root_menu = 0;
 	}
       else
 	{
-	  root_menu = check_startmenu (is_64bit ? "Cygwin64 Terminal"
-						: "Cygwin Terminal",
-				       backslash (cygpath ("/bin/mintty")));
+	  root_menu = check_startmenu (TERMINALTITLE, target);
 	}
 
       if (NoDesktopOption) 
@@ -422,9 +423,7 @@ DesktopSetupPage::OnActivate ()
 	}
       else
 	{
-	  root_desktop = check_desktop (is_64bit ? "Cygwin64 Terminal"
-						 : "Cygwin Terminal",
-					backslash (cygpath ("/bin/mintty")));
+	  root_desktop = check_desktop (TERMINALTITLE, target);
 	}
     }
 

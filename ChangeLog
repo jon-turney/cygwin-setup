@@ -1,5 +1,12 @@
 2013-11-13  Corinna Vinschen  <corinna@vinschen.de>
 
+	* desktop.cc (STARTMENUDIR): Define.
+	(check_startmenu): Use STARTMENUDIR instead of constant string.
+	(DesktopSetupPage::OnActivate): Use TARGET and TERMINALTITLE defines
+	to simplify calls to check_startmenu and check_desktop.
+
+2013-11-13  Corinna Vinschen  <corinna@vinschen.de>
+
 	* desktop.cc: Drop dependency on static variable and order of
 	initialization.  Allow easier reconfiguration.
 	(iconname): Drop static variable.
