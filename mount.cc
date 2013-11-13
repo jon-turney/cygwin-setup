@@ -35,14 +35,8 @@ static const char *cvsid = "\n%%% $Id$\n";
 // #include "../cygwin/include/cygwin/version.h"
 // KEEP SYNCHRONISED WITH /src/winsup/cygwin/include/cygwin/version.h
 
-#define CYGWIN_INFO_CYGNUS_REGISTRY_NAME "Cygnus Solutions"
 #define CYGWIN_INFO_CYGWIN_REGISTRY_NAME "Cygwin"
 #define CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME "setup"
-#define CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME "mounts v2"
-#define CYGWIN_INFO_CYGDRIVE_FLAGS "cygdrive flags"
-#define CYGWIN_INFO_CYGDRIVE_PREFIX "cygdrive prefix"
-#define CYGWIN_INFO_CYGDRIVE_DEFAULT_PREFIX "/cygdrive"
-
 
 // #include "../cygwin/include/sys/mount.h"
 

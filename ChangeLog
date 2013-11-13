@@ -1,5 +1,14 @@
 2013-11-13  Corinna Vinschen  <corinna@vinschen.de>
 
+	* mount.cc (CYGWIN_INFO_CYGNUS_REGISTRY_NAME): Remove now unused
+	pre-1.7 registry key name.
+	(CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME): Ditto.
+	(CYGWIN_INFO_CYGDRIVE_FLAGS): Ditto.
+	(CYGWIN_INFO_CYGDRIVE_PREFIX): Ditto.
+	(CYGWIN_INFO_CYGDRIVE_DEFAULT_PREFIX): Ditto.
+
+2013-11-13  Corinna Vinschen  <corinna@vinschen.de>
+
 	* Makefile.am (EXTRA_DIST): Add cygwin-setup.ico and
 	cygwin-terminal.ico.
 
