@@ -61,8 +61,6 @@ static BoolOption NoDesktopOption (false, 'd', "no-desktop", "Disable creation o
    */
 
 static std::string batname;
-static std::string iconname;
-
 static ControlAdjuster::ControlInfo DesktopControlsInfo[] = {
   {IDC_DESKTOP_SEPARATOR, 	CP_STRETCH, CP_BOTTOM},
   {IDC_STATUS, 			CP_LEFT, CP_BOTTOM},
@@ -79,7 +77,8 @@ static void
 make_link (const std::string& linkpath,
            const std::string& title,
            const std::string& target,
-           const std::string& arg)
+           const std::string& arg,
+	   const std::string& icon)
 {
   std::string fname = linkpath + "/" + title + ".lnk";
 
@@ -99,14 +98,14 @@ make_link (const std::string& linkpath,
 
   msg ("make_link_2 (%s, %s, %s, %s)",
        exepath.c_str(), argbuf.c_str(),
-       iconname.c_str(), fname.c_str());
+       icon.c_str(), fname.c_str());
   make_link_2 (exepath.c_str(), argbuf.c_str(),
-	       iconname.c_str(), fname.c_str());
+	       icon.c_str(), fname.c_str());
 }
 
 static void
 start_menu (const std::string& title, const std::string& target,
-	    const std::string& arg)
+	    const std::string& arg, const std::string& iconpath)
 {
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
@@ -128,12 +127,12 @@ start_menu (const std::string& title, const std::string& target,
     }
 // end of Win95 addition
   path += "/Cygwin";
-  make_link (path, title, target, arg);
+  make_link (path, title, target, arg, iconpath);
 }
 
 static void
 desktop_icon (const std::string& title, const std::string& target,
-	      const std::string& arg)
+	      const std::string& arg, const std::string& iconpath)
 {
   char path[MAX_PATH];
   LPITEMIDLIST id;
@@ -153,7 +152,7 @@ desktop_icon (const std::string& title, const std::string& target,
       msg ("Desktop directory for deskop link changed to: %s", path);
     }
 // end of Win95 addition
-  make_link (path, title, target, arg);
+  make_link (path, title, target, arg, iconpath);
 }
 
 static void
@@ -187,10 +186,8 @@ make_cygwin_bat ()
 }
 
 static void
-save_icon (const char *path, const char *resource_name)
+save_icon (std::string &iconpath, const char *resource_name)
 {
-  iconname = backslash (cygpath (path));
-
   HRSRC rsrc = FindResource (NULL, resource_name, "FILE");
   if (rsrc == NULL)
     {
@@ -203,9 +200,9 @@ save_icon (const char *path, const char *resource_name)
   FILE *f;
   WIN32_FILE_ATTRIBUTE_DATA attr;
 
-  size_t ilen = iconname.size () + 7;
+  size_t ilen = iconpath.size () + 7;
   WCHAR wname[ilen];
-  mklongpath (wname, iconname.c_str (), ilen);
+  mklongpath (wname, iconpath.c_str (), ilen);
   if (GetFileAttributesExW (wname, GetFileExInfoStandard, &attr)
       && attr.dwFileAttributes != INVALID_FILE_ATTRIBUTES
       && attr.nFileSizeLow > 7022)	/* Size of old icon */
@@ -219,25 +216,29 @@ save_icon (const char *path, const char *resource_name)
     }
 }
 
+#define TARGET		"/bin/mintty"
+#define DEFAULTICON	"/Cygwin.ico"
+#define TERMINALICON	"/Cygwin-Terminal.ico"
+#define TERMINALTITLE	(is_64bit ? "Cygwin64 Terminal" \
+				  : "Cygwin Terminal")
+
 static void
 do_desktop_setup ()
 {
-  save_icon ("/Cygwin.ico", "CYGWIN.ICON");
-  save_icon ("/Cygwin-Terminal.ico", "CYGWIN-TERMINAL.ICON");
+  std::string target = backslash (cygpath (TARGET));
+  std::string defaulticon = backslash (cygpath (DEFAULTICON));
+  std::string terminalicon = backslash (cygpath (TERMINALICON));
+
+  save_icon (defaulticon, "CYGWIN.ICON");
+  save_icon (terminalicon, "CYGWIN-TERMINAL.ICON");
 
   make_cygwin_bat ();
 
-  std::string target;
-
-  target = backslash (cygpath ("/bin/mintty"));
-
   if (root_menu)
-    start_menu (is_64bit ? "Cygwin64 Terminal" : "Cygwin Terminal",
-		target, "-i /Cygwin-Terminal.ico -");
+    start_menu (TERMINALTITLE, target, "-i " TERMINALICON " -", terminalicon);
 
   if (root_desktop)
-    desktop_icon (is_64bit ? "Cygwin64 Terminal" : "Cygwin Terminal",
-		  target, "-i /Cygwin-Terminal.ico -");
+    desktop_icon (TERMINALTITLE, target, "-i " TERMINALICON " -", terminalicon);
 }
 
 static int da[] = { IDC_ROOT_DESKTOP, 0 };

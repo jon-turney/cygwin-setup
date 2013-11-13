@@ -1,5 +1,22 @@
 2013-11-13  Corinna Vinschen  <corinna@vinschen.de>
 
+	* desktop.cc: Drop dependency on static variable and order of
+	initialization.  Allow easier reconfiguration.
+	(iconname): Drop static variable.
+	(make_link): Add parameter to specify icon path.
+	(start_menu): Ditto.  Call make_link accordingly.
+	(desktop_icon): Ditto.
+	(save_icon): Take windows path as first parameter.  Drop setting
+	global iconname variable.
+	(TARGET): Define.
+	(DEFAULTICON): Define.
+	(TERMINALICON): Define.
+	(TERMINALTITLE): Define.
+	(do_desktop_setup): Rearrange code to use aforementioned defines and
+	align function calls to aforementioned changes.
+
+2013-11-13  Corinna Vinschen  <corinna@vinschen.de>
+
 	* mount.cc (CYGWIN_INFO_CYGNUS_REGISTRY_NAME): Remove now unused
 	pre-1.7 registry key name.
 	(CYGWIN_INFO_CYGWIN_MOUNT_REGISTRY_NAME): Ditto.
