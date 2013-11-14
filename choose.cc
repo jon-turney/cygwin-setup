@@ -237,7 +237,7 @@ ChooserPage::OnInit ()
   CheckDlgButton (GetHWND (), IDC_CHOOSE_HIDE, BST_CHECKED);
 
   SetBusy ();
-  if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_CWD)
+  if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_LOCALDIR)
     packagemeta::ScanDownloadedFiles ();
 
   packagedb db;
@@ -330,7 +330,7 @@ ChooserPage::OnBack ()
 {
   PlaceDialog (false);
 
-  if (source == IDC_SOURCE_CWD)
+  if (source == IDC_SOURCE_LOCALDIR)
     return IDD_LOCAL_DIR;
   else
     return IDD_SITE;

@@ -244,7 +244,7 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  GetOwner ()->SetActivePageByID (IDD_CHOOSE);
 	else
 	  {
-	    if (source == IDC_SOURCE_CWD)
+	    if (source == IDC_SOURCE_LOCALDIR)
 	      {
 		// There was a setup.ini file (as found by do_fromcwd), but it
 		// had parse errors.  In unattended mode, don't retry even once,

@@ -22,6 +22,8 @@ static const char *cvsid =
   "\n%%% $Id$\n";
 #endif
 
+#include "win32.h"
+#include "filemanip.h"
 #include "find.h"
 
 #include "FindVisitor.h"
@@ -49,28 +51,45 @@ Find::~Find()
 void
 Find::accept (FindVisitor &aVisitor, int level)
 {
-  WIN32_FIND_DATA wfd;
-  if (_start_dir.size() > MAX_PATH)
-    throw new length_error ("starting dir longer than MAX_PATH");
+  /* The usage of multibyte strings within setup is so entangled into
+     the various C++ classes, it's very hard to disentangle it and use
+     UNICODE strings throughout without ripping everything apart.
+     On the other hand, we want to support paths > MAX_PATH, but this is
+     only supported by the UNICODE API.
+     What you see here is nothing less than a hack.  We get the string
+     as a multibyte string, convert it, call the UNICODE FindFile functions,
+     then convert the returned structure back to multibyte to call the
+     visitor methods, which in turn call other methods expecting multibyte
+     strings. */
+  WIN32_FIND_DATAW w_wfd;
 
-  h = FindFirstFile ((_start_dir + "*").c_str(), &wfd);
+  size_t len = _start_dir.size() + 9;
+  WCHAR wstart[len];
+  mklongpath (wstart, _start_dir.c_str (), len);
+  wcscat (wstart, L"\\*");
+
+  h = FindFirstFileW (wstart, &w_wfd);
 
   if (h == INVALID_HANDLE_VALUE)
     return;
 
   do
     {
-      if (strcmp (wfd.cFileName, ".") == 0
-	  || strcmp (wfd.cFileName, "..") == 0)
+      if (wcscmp (w_wfd.cFileName, L".") == 0
+	  || wcscmp (w_wfd.cFileName, L"..") == 0)
 	continue;
 
       /* TODO: make a non-win32 file and dir info class and have that as the 
        * visited node 
        */
+      WIN32_FIND_DATAA wfd;
+      memcpy (&wfd, &w_wfd, sizeof (wfd));
+      WideCharToMultiByte (CP_UTF8, 0, w_wfd.cFileName, MAX_PATH,
+			   wfd.cFileName, MAX_PATH, NULL, NULL);
       if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 	aVisitor.visitDirectory (_start_dir, &wfd, level);
       else
 	aVisitor.visitFile (_start_dir, &wfd);
     }
-  while (FindNextFile (h, &wfd));
+  while (FindNextFileW (h, &w_wfd));
 }

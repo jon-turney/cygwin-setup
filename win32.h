@@ -20,6 +20,9 @@
 #include <sys/types.h>
 #include <string>
 
+/* Needed for some buffers etc., to have a useful replacement for MAX_PATH. */
+#define CYG_PATH_MAX	4096
+
 /* Any include of <windows.h> should be through this file, which wraps it in
  * various other handling. */
 

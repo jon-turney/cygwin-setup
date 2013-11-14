@@ -124,7 +124,7 @@ PrereqPage::OnNext ()
 long
 PrereqPage::whatNext ()
 {
-  if (source == IDC_SOURCE_CWD)
+  if (source == IDC_SOURCE_LOCALDIR)
     {
       // Next, install
       Progress.SetActivateTask (WM_APP_START_INSTALL);
@@ -309,7 +309,7 @@ do_prereq_check_thread(HINSTANCE h, HWND owner)
 
   if (p.isMet ())
     {
-      if (source == IDC_SOURCE_CWD)
+      if (source == IDC_SOURCE_LOCALDIR)
 	Progress.SetActivateTask (WM_APP_START_INSTALL);  // install
       else
 	Progress.SetActivateTask (WM_APP_START_DOWNLOAD); // start download

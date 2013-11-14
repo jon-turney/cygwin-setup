@@ -87,7 +87,7 @@ private:
   std::string fn;
   std::string sdesc, ldesc;
   std::string autodep_regex;
-  char getfilenamebuffer[MAX_PATH];
+  char getfilenamebuffer[CYG_PATH_MAX];
 
 //  package_stability_t stability;
   package_status_t status;

@@ -37,7 +37,7 @@
 #define IDS_LOCAL_DIR_INSTALL             135
 #define IDS_MAYBE_MKDIR                   136
 #define IDS_CANT_MKDIR                    137
-#define IDS_NO_CWD			  138
+#define IDS_NO_LOCALDIR			  138
 #define IDS_ELEVATED			  139
 
 // Dialogs
@@ -88,7 +88,7 @@
 #define IDC_STATIC                         -1
 #define IDC_SOURCE_DOWNLOAD               500
 #define IDC_SOURCE_NETINST                501
-#define IDC_SOURCE_CWD                    502
+#define IDC_SOURCE_LOCALDIR               502
 #define IDC_ROOT_DIR                      503
 #define IDC_ROOT_BROWSE                   504
 #define IDC_ROOT_TEXT                     505

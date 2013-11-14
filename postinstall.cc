@@ -133,7 +133,6 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
   Progress.SetBar2 (0, 1);
 
   init_run_script ();
-  SetCurrentDirectory (get_root_dir ().c_str());
   packagedb db;
   vector<packagemeta*> packages;
   PackageDBConnectedIterator i = db.connectedBegin ();

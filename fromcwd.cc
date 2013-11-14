@@ -81,11 +81,12 @@ private:
 };
   
 bool
-do_fromcwd (HINSTANCE h, HWND owner)
+do_from_local_dir (HINSTANCE h, HWND owner, std::string &local_dir)
 {
   // Assume we won't find the INI file.
   SetupFindVisitor found_ini;
-  Find(".").accept(found_ini, 2);	// Only search two levels deep.
+  // Only search two levels deep.
+  Find (local_dir.c_str ()).accept(found_ini, 2);
   if (found_ini)
     {
       // Found INI, load it.
@@ -95,6 +96,6 @@ do_fromcwd (HINSTANCE h, HWND owner)
   IniParseFeedback myFeedback;
   IniDBBuilderPackage myBuilder(myFeedback);
   ScanFindVisitor myVisitor (myBuilder);
-  Find(".").accept(myVisitor);
+  Find(local_dir.c_str ()).accept(myVisitor);
   return false;
 }

@@ -23,6 +23,7 @@
 #include "LogSingleton.h"
 #include "LogFile.h"
 #include "win32.h"
+#include "filemanip.h"
 
 #include <shlobj.h>
 #include <stdio.h>
@@ -94,7 +95,7 @@ static void
 load_dialog (HWND h)
 {
   char descText[1000];
-  if (source != IDC_SOURCE_CWD)
+  if (source != IDC_SOURCE_LOCALDIR)
     {
       LoadString (hinstance, IDS_LOCAL_DIR_DOWNLOAD, descText, sizeof (descText));
     }
@@ -145,6 +146,7 @@ offer_to_create (HWND h, const char *dirname)
 static int CALLBACK
 browse_cb (HWND h, UINT msg, LPARAM lp, LPARAM data)
 {
+  /* SHGetPathFromIDList doesn't handle path length > MAX_PATH. */
   static CHAR dirname[MAX_PATH];
   switch (msg)
     {
@@ -181,15 +183,17 @@ static void
 browse (HWND h)
 {
   BROWSEINFO bi;
+  /* SHGetPathFromIDList doesn't handle path length > MAX_PATH. */
   CHAR name[MAX_PATH];
   LPITEMIDLIST pidl;
   memset (&bi, 0, sizeof (bi));
   bi.hwndOwner = h;
   bi.pszDisplayName = name;
-  bi.lpszTitle = (source != IDC_SOURCE_CWD) ? "Select download directory"
+  bi.lpszTitle = (source != IDC_SOURCE_LOCALDIR) ? "Select download directory"
 					    : "Select local package directory";
   bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE
-	      | ((source != IDC_SOURCE_CWD) ? (BIF_EDITBOX | BIF_VALIDATE) : 0);
+	      | ((source != IDC_SOURCE_LOCALDIR) ? (BIF_EDITBOX | BIF_VALIDATE)
+						 : 0);
   bi.lpfn = browse_cb;
   pidl = SHBrowseForFolder (&bi);
   if (pidl)
@@ -245,15 +249,24 @@ LocalDirPage::OnNext ()
   LocalDirSetting::save ();
   log (LOG_PLAIN) << "Selected local directory: " << local_dir << endLog;
   
-  bool trySetCurDir = true;
-  while (trySetCurDir)
+  bool tryLocalDir = true;
+  while (tryLocalDir)
     {
-      trySetCurDir = false;
-      if (SetCurrentDirectoryA (local_dir.c_str()))
+      tryLocalDir = false;
+      /* FIXME: As for almost any other string, we should store local_dir
+         as UNICODE string to avoid the whole conversion mess.
+	 We call GetFileAttributesW because our own version implies
+	 FILE_OPEN_FOR_BACKUP_INTENT.  We don't try to change CWD for
+	 the same reason. */
+      size_t len = local_dir.size () + 7;
+      WCHAR wlocal[len];
+      mklongpath (wlocal, local_dir.c_str (), len);
+      DWORD attr = GetFileAttributesW (wlocal);
+      if (attr != INVALID_FILE_ATTRIBUTES && (attr & FILE_ATTRIBUTE_DIRECTORY))
 	{
-	  if (source == IDC_SOURCE_CWD)
+	  if (source == IDC_SOURCE_LOCALDIR)
 	    {
-	      if (do_fromcwd (GetInstance (), GetHWND ()))
+	      if (do_from_local_dir (GetInstance (), GetHWND (), local_dir))
 		{
 		  Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
 		  return IDD_INSTATUS;
@@ -261,17 +274,19 @@ LocalDirPage::OnNext ()
 	      return IDD_CHOOSE;
 	    }
 	}
-      else if ((GetLastError () == ERROR_FILE_NOT_FOUND)
-		|| (GetLastError () == ERROR_PATH_NOT_FOUND))
+      else if (attr == INVALID_FILE_ATTRIBUTES
+	       && (GetLastError () == ERROR_FILE_NOT_FOUND
+		   || GetLastError () == ERROR_PATH_NOT_FOUND))
 	{
-	  if (source == IDC_SOURCE_CWD && unattended_mode)
+	  if (source == IDC_SOURCE_LOCALDIR && unattended_mode)
 	    return IDD_CHOOSE;
-	  else if (source == IDC_SOURCE_CWD)
+	  else if (source == IDC_SOURCE_LOCALDIR)
 	    {
 	      // Check the user really wants only to uninstall.
 	      char msgText[1000];
-	      LoadString (hinstance, IDS_NO_CWD, msgText, sizeof (msgText));
-	      char msg[1000 + MAX_PATH];
+	      LoadString (hinstance, IDS_NO_LOCALDIR, msgText,
+			  sizeof (msgText));
+	      char msg[1000 + local_dir.size ()];
 	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str (),
 		        is_64bit ? "x86_64" : "x86");
 	      int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | MB_OKCANCEL);
@@ -279,7 +294,7 @@ LocalDirPage::OnNext ()
 	    }
 	  else if (offer_to_create (GetHWND (), local_dir.c_str ()))
 	    return -1;
-	  trySetCurDir = true;
+	  tryLocalDir = true;
 	}
       else
 	{
@@ -306,7 +321,7 @@ LocalDirPage::OnNext ()
 	  if ((ret == IDABORT) || (ret == IDCANCEL))
 	    return -1;
 	  else
-	    trySetCurDir = (ret == IDRETRY);
+	    tryLocalDir = (ret == IDRETRY);
 	}
     }
 

@@ -24,49 +24,21 @@ static const char *cvsid =
 #endif
 
 #include "win32.h"
-
+#include "filemanip.h"
 #include "diskfull.h"
-
-typedef BOOL WINAPI (*GDFS) (LPCTSTR, PULARGE_INTEGER, PULARGE_INTEGER,
-			     PULARGE_INTEGER);
 
 int
 diskfull (const std::string& path)
 {
-  WINAPI GDFS gdfs = 0;
+  ULARGE_INTEGER avail, total, free;
+  size_t len = path.size () + 7;
+  WCHAR wpath[len];
 
-  HINSTANCE k = LoadLibrary ("KERNEL32.DLL");
-  if (k)
+  mklongpath (wpath, path.c_str (), len);
+  if (GetDiskFreeSpaceExW (wpath, &avail, &total, &free))
     {
-      gdfs = (GDFS) GetProcAddress (k, "GetDiskFreeSpaceExA");
-
-      if (gdfs)
-	{
-	  ULARGE_INTEGER avail, total, free;
-	  if (gdfs (path.c_str(), &avail, &total, &free))
-	    {
-	      int perc = avail.QuadPart * 100 / total.QuadPart;
-	      return 100 - perc;
-	    }
-	}
-    }
-
-  char root[4];
-  if (path.c_str()[1] != ':')
-    return 0;
-
-  root[0] = path.c_str()[0];
-  root[1] = ':';
-  root[2] = '\\';
-  root[3] = 0;
-
-  DWORD junk, free_clusters, total_clusters;
-
-  if (GetDiskFreeSpace (root, &junk, &junk, &free_clusters, &total_clusters))
-    {
-      int perc = free_clusters * 100 / total_clusters;
+      int perc = avail.QuadPart * 100 / total.QuadPart;
       return 100 - perc;
     }
-
   return 0;
 }

@@ -47,7 +47,7 @@ type (package_binary),
 listdata (),
 listfile ()
 {
-  memset( getfilenamebuffer, '\0', MAX_PATH);
+  memset( getfilenamebuffer, '\0', CYG_PATH_MAX);
 
   /* FIXME: query the install database for the currently installed 
    * version details

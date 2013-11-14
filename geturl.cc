@@ -113,7 +113,7 @@ static void
 getUrlToStream (const string &_url, io_stream *output)
 {
   log (LOG_BABBLE) << "getUrlToStream " << _url << endLog;
-  is_local_install = (source == IDC_SOURCE_CWD);
+  is_local_install = (source == IDC_SOURCE_LOCALDIR);
   init_dialog (_url, 0);
   NetIO *n = NetIO::open (_url.c_str());
   if (!n || !n->ok ())

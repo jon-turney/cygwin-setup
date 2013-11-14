@@ -347,7 +347,7 @@ packageversion::scan()
    */
   try
     {
-      if (!check_for_cached (*(source())) && ::source == IDC_SOURCE_CWD)
+      if (!check_for_cached (*(source())) && ::source == IDC_SOURCE_LOCALDIR)
 	source()->sites.clear();
     }
   catch (Exception * e)
@@ -596,7 +596,7 @@ _packageversion::accessible() const
       cached = false;
   if (cached) 
     return true;
-  if (::source == IDC_SOURCE_CWD)
+  if (::source == IDC_SOURCE_LOCALDIR)
     return false;
   unsigned int retrievable = 0;
   for (vector<packagesource>::const_iterator i = sources.begin();

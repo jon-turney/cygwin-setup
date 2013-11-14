@@ -1,3 +1,42 @@
+2013-11-14  Corinna Vinschen  <corinna@vinschen.de>
+
+	* archive_tar.cc: Drop commented out static variable definitions.
+	(archive_tar::next_file_name): Replace MAX_PATH with CYG_PATH_MAX.
+	* archive_tar.h (tar_state::filename): Ditto.
+	* cygpackage.cc (cygpackage::cygpackage): Ditto.
+	* cygpackage.h (cygpackage::getfilenamebuffer): Ditto.
+	* desktop.cc (start_menu): Add comment.  Drop Windows 9x considerations.
+	(desktop_icon): Ditto.
+	(check_desktop): Ditto.
+	(check_startmenu): Ditto.
+	* diskfull.cc (diskfull): Drop Windows 9x considerations.  Convert
+	incoming path to wide char and call GetDiskFreeSpaceExW.
+	* filemanip.cc (fopen): New function, overriding MSVCRT function.
+	Explain why.
+	(remove): Ditto.
+	(rename): Ditto.
+	(_access): Ditto.
+	* install.cc (check_for_old_cygwin): Add comment.
+	* localdir.cc (browse): Add comment.
+	(LocalDirPage::OnNext): Don't rely on being able to change CWD.
+	Call GetFileAttributesW instead and change conditional expressions
+	accordingly.  Explain why.  Rename trySetCurDir to tryLocalDir to
+	avoid confusion.  Call do_from_local_dir rather than do_fromcwd.
+	* mount.cc (read_mounts): Add comments.  Call GetSystemWindowsDirectory
+	rather than GetWindowsDirectory since that's what we're really want.
+	* postinstall.cc (do_postinstall_thread): Drop setting CWD.  Scripts
+	are called with CWD set to Cygwin root dir anyway.
+	* processlist.cc (Process::getName): Allow CYG_PATH_MAX sized module
+	names. 
+	(Process::isModuleLoadedInProcess): Allow CYG_PATH_MAX sized module
+	names.
+	* root.cc (browse): Add comment.
+	* script.cc (sanitize_PATH): Call GetSystemWindowsDirectory rather than
+	GetWindowsDirectory since that's what we're really want.
+	(Script::run): Allow cmdline up to CYG_PATH_MAX chars to allow longer
+	script paths.
+	* win32.h (CYG_PATH_MAX): Define as 4096 as Cygwin's PATH_MAX.
+
 2013-11-13  Corinna Vinschen  <corinna@vinschen.de>
 
 	* desktop.cc (STARTMENUDIR): Define.

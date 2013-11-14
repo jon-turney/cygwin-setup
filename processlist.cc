@@ -11,10 +11,11 @@
  *
  */
 
-#include <windows.h>
+#include "win32.h"
 #define PSAPI_VERSION 1
 #include <psapi.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "processlist.h"
 #include <String++.h>
@@ -37,7 +38,7 @@ std::string
 Process::getName (void)
 {
   HANDLE hProcess = OpenProcess (PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processID);
-  char modName[MAX_PATH];
+  char modName[CYG_PATH_MAX];
   GetModuleFileNameExA (hProcess, NULL, modName, sizeof (modName));
   CloseHandle (hProcess);
 
@@ -145,12 +146,12 @@ Process::isModuleLoadedInProcess (const WCHAR *moduleName)
       // Search module list for the module we are looking for
       for (unsigned i = 0; i < (cbNeeded / sizeof (HMODULE)); i++ )
         {
-          WCHAR szModName[MAX_PATH];
+          WCHAR szModName[CYG_PATH_MAX];
 
           // Get the full path to the module's file.
           if (GetModuleFileNameExW (hProcess, hMods[i], szModName, sizeof (szModName)/sizeof (WCHAR)))
             {
-              WCHAR canonicalModName[MAX_PATH];
+              WCHAR canonicalModName[CYG_PATH_MAX];
 
               // Canonicalise returned module name to long UNC form
               if (wcscmp (szModName, L"\\\\?\\") != 0)

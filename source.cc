@@ -42,7 +42,7 @@ static BoolOption DownloadOption (false, 'D', "download", "Download from interne
 static BoolOption LocalOption (false, 'L', "local-install", "Install from local directory");
 
 static int rb[] =
-  { IDC_SOURCE_NETINST, IDC_SOURCE_DOWNLOAD, IDC_SOURCE_CWD, 0 };
+  { IDC_SOURCE_NETINST, IDC_SOURCE_DOWNLOAD, IDC_SOURCE_LOCALDIR, 0 };
 
 static void
 load_dialog (HWND h)
@@ -71,7 +71,7 @@ dialog_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDC_SOURCE_DOWNLOAD:
     case IDC_SOURCE_NETINST:
-    case IDC_SOURCE_CWD:
+    case IDC_SOURCE_LOCALDIR:
       save_dialog (h);
       break;
 
@@ -95,7 +95,7 @@ SourcePage::OnActivate ()
   else if (DownloadOption)
     source = IDC_SOURCE_DOWNLOAD;
   else if (LocalOption)
-    source = IDC_SOURCE_CWD;
+    source = IDC_SOURCE_LOCALDIR;
   else if (!source)
     //only default to IDC_SOURCE_NETINST if
     //source not already set:
@@ -106,7 +106,7 @@ SourcePage::OnActivate ()
   if ((!SendMessage
        (GetDlgItem (IDC_SOURCE_DOWNLOAD), BM_GETCHECK, 0,
 	0) == BST_CHECKED)
-      && (!SendMessage (GetDlgItem (IDC_SOURCE_CWD), BM_GETCHECK, 0, 0)
+      && (!SendMessage (GetDlgItem (IDC_SOURCE_LOCALDIR), BM_GETCHECK, 0, 0)
 	  == BST_CHECKED))
     {
       SendMessage (GetDlgItem (IDC_SOURCE_NETINST), BM_SETCHECK,
@@ -135,7 +135,7 @@ SourcePage::OnDeactivate ()
 {
   log (LOG_PLAIN) << "source: "
     << ((source == IDC_SOURCE_DOWNLOAD) ? "download" :
-        (source == IDC_SOURCE_NETINST) ? "network install" : "from cwd")
+        (source == IDC_SOURCE_NETINST) ? "network install" : "from local dir")
     << endLog;
 }
 

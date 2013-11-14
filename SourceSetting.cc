@@ -42,7 +42,7 @@ SourceSetting::~SourceSetting ()
     case IDC_SOURCE_NETINST:
       UserSettings::instance().set ("last-action", "Download,Install");
       break;
-    case IDC_SOURCE_CWD:
+    case IDC_SOURCE_LOCALDIR:
       UserSettings::instance().set ("last-action", "Install");
       break;
     default:
@@ -58,7 +58,7 @@ SourceSetting::sourceFromString(const std::string& aSource)
   if (!casecompare(aSource, "Download,Install"))
     return IDC_SOURCE_NETINST;
   if (!casecompare(aSource, "Install"))
-    return IDC_SOURCE_CWD;
+    return IDC_SOURCE_LOCALDIR;
 
   /* A sanish default */
   return IDC_SOURCE_NETINST;

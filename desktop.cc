@@ -107,26 +107,16 @@ static void
 start_menu (const std::string& title, const std::string& target,
 	    const std::string& arg, const std::string& iconpath)
 {
+  /* Special folders always < MAX_PATH. */
+  char path[MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
   SHGetSpecialFolderLocation (NULL,
 			      issystem ? CSIDL_COMMON_PROGRAMS :
 			      CSIDL_PROGRAMS, &id);
-  char _path[MAX_PATH];
-  SHGetPathFromIDList (id, _path);
-  std::string path(_path);
-  // Win95 does not use common programs unless multiple users for Win95 is enabled
-  msg ("Program directory for program link: %s", path.c_str());
-  if (path.empty())
-    {
-      SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
-      SHGetPathFromIDList (id, _path);
-      path = _path;
-      msg ("Program directory for program link changed to: %s",
-	   path.c_str());
-    }
-// end of Win95 addition
-  path += "/Cygwin";
+  SHGetPathFromIDList (id, path);
+  strncat (path, "/Cygwin", MAX_PATH);
+  msg ("Program directory for program link: %s", path);
   make_link (path, title, target, arg, iconpath);
 }
 
@@ -134,24 +124,15 @@ static void
 desktop_icon (const std::string& title, const std::string& target,
 	      const std::string& arg, const std::string& iconpath)
 {
+  /* Special folders always < MAX_PATH. */
   char path[MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
-  //SHGetSpecialFolderLocation (NULL, issystem ? CSIDL_DESKTOP : CSIDL_COMMON_DESKTOPDIRECTORY, &id);
   SHGetSpecialFolderLocation (NULL,
 			      issystem ? CSIDL_COMMON_DESKTOPDIRECTORY :
 			      CSIDL_DESKTOPDIRECTORY, &id);
   SHGetPathFromIDList (id, path);
-// following lines added because it appears Win95 does not use common programs
-// unless it comes into play when multiple users for Win95 is enabled
   msg ("Desktop directory for desktop link: %s", path);
-  if (strlen (path) == 0)
-    {
-      SHGetSpecialFolderLocation (NULL, CSIDL_DESKTOPDIRECTORY, &id);
-      SHGetPathFromIDList (id, path);
-      msg ("Desktop directory for deskop link changed to: %s", path);
-    }
-// end of Win95 addition
   make_link (path, title, target, arg, iconpath);
 }
 
@@ -299,6 +280,7 @@ load_dialog (HWND h)
 static int
 check_desktop (const std::string title, const std::string target)
 {
+  /* Special folders always < MAX_PATH. */
   char path[MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
@@ -306,22 +288,8 @@ check_desktop (const std::string title, const std::string target)
 			      issystem ? CSIDL_COMMON_DESKTOPDIRECTORY :
 			      CSIDL_DESKTOPDIRECTORY, &id);
   SHGetPathFromIDList (id, path);
-  // following lines added because it appears Win95 does not use common programs
-  // unless it comes into play when multiple users for Win95 is enabled
   msg ("Desktop directory for desktop link: %s", path);
-  if (strlen (path) == 0)
-    {
-      SHGetSpecialFolderLocation (NULL, CSIDL_DESKTOPDIRECTORY, &id);
-      SHGetPathFromIDList (id, path);
-      msg ("Desktop directory for deskop link changed to: %s", path);
-    }
-  // end of Win95 addition
   std::string fname = std::string(path) + "/" + title + ".lnk";
-
-  if (_access (fname.c_str(), 0) == 0)
-    return 0;			/* already exists */
-
-  fname = std::string(path) + "/" + title + ".pif";	/* check for a pif as well */
 
   if (_access (fname.c_str(), 0) == 0)
     return 0;			/* already exists */
@@ -332,6 +300,7 @@ check_desktop (const std::string title, const std::string target)
 static int
 check_startmenu (const std::string title, const std::string target)
 {
+  /* Special folders always < MAX_PATH. */
   char path[MAX_PATH];
   LPITEMIDLIST id;
   int issystem = (root_scope == IDC_ROOT_SYSTEM) ? 1 : 0;
@@ -339,23 +308,9 @@ check_startmenu (const std::string title, const std::string target)
 			      issystem ? CSIDL_COMMON_PROGRAMS :
 			      CSIDL_PROGRAMS, &id);
   SHGetPathFromIDList (id, path);
-  // following lines added because it appears Win95 does not use common programs
-  // unless it comes into play when multiple users for Win95 is enabled
   msg ("Program directory for program link: %s", path);
-  if (strlen (path) == 0)
-    {
-      SHGetSpecialFolderLocation (NULL, CSIDL_PROGRAMS, &id);
-      SHGetPathFromIDList (id, path);
-      msg ("Program directory for program link changed to: %s", path);
-    }
-  // end of Win95 addition
   strcat (path, STARTMENUDIR);
   std::string fname = std::string(path) + "/" + title + ".lnk";
-
-  if (_access (fname.c_str(), 0) == 0)
-    return 0;			/* already exists */
-
-  fname = std::string(path) + "/" + title + ".pif";	/* check for a pif as well */
 
   if (_access (fname.c_str(), 0) == 0)
     return 0;			/* already exists */

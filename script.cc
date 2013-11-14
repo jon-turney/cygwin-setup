@@ -55,9 +55,9 @@ sanitize_PATH ()
   std::string newpath = backslash (cygpath ("/bin") + ";"
 				   + cygpath ("/usr/sbin") + ";"
 				   + cygpath ("/sbin"));
-  len = (UINT) GetWindowsDirectory (&dummy, 0);
+  len = (UINT) GetSystemWindowsDirectory (&dummy, 0);
   char *system_root = (char *) alloca (len + 2);
-  GetWindowsDirectory (system_root, len--);
+  GetSystemWindowsDirectory (system_root, len--);
   if (system_root[len - 1] != '\\')
     {
       system_root[len] = '\\';
@@ -276,7 +276,7 @@ Script::run() const
     }
 
   int retval;
-  char cmdline[MAX_PATH];
+  char cmdline[CYG_PATH_MAX];
 
   if (sh.size() && stricmp (extension(), ".sh") == 0)
     {

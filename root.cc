@@ -163,6 +163,7 @@ static void
 browse (HWND h)
 {
   BROWSEINFO bi;
+  /* SHGetPathFromIDList doesn't handle path length > MAX_PATH. */
   CHAR name[MAX_PATH];
   LPITEMIDLIST pidl;
   memset (&bi, 0, sizeof (bi));

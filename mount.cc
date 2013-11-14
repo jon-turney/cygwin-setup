@@ -377,6 +377,7 @@ read_mounts (const std::string val)
 			      0, &key, &disposition) != ERROR_SUCCESS)
 	    continue;
 	  DWORD type;
+	  /* Cygwin rootdir always < MAX_PATH. */
 	  char aBuffer[MAX_PATH + 1];
 	  posix_path_size = MAX_PATH;
 	  if (RegQueryValueEx
@@ -397,8 +398,9 @@ read_mounts (const std::string val)
 
   if (!root_here)
     {
+      /* Affected path always < MAX_PATH. */
       char windir[MAX_PATH];
-      GetWindowsDirectory (windir, sizeof (windir));
+      GetSystemWindowsDirectory (windir, sizeof (windir));
       windir[2] = 0;
       m->native = std::string (windir) + (is_64bit ? "\\cygwin64" : "\\cygwin");
       m->posix = "/";

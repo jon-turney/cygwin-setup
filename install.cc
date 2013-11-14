@@ -650,6 +650,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 static void
 check_for_old_cygwin (HWND owner)
 {
+  /* Paths within system dir expected to be always < MAX_PATH. */
   char buf[MAX_PATH + sizeof ("\\cygwin1.dll")];
   if (!GetSystemDirectory (buf, sizeof (buf)))
     return;

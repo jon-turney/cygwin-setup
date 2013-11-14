@@ -289,7 +289,7 @@ static bool
 do_ini_thread (HINSTANCE h, HWND owner)
 {
   size_t ini_count = 0;
-  if (source == IDC_SOURCE_CWD)
+  if (source == IDC_SOURCE_LOCALDIR)
     ini_count = do_local_ini (owner);
   else
     ini_count = do_remote_ini (owner);

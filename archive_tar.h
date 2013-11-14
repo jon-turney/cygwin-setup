@@ -71,7 +71,7 @@ public:
   size_t file_length;
   int header_read;
   tar_header_type tar_header;
-  char filename[MAX_PATH + 512];
+  char filename[CYG_PATH_MAX + 512];
   tar_map_result_type *tar_map_result;
 };
 

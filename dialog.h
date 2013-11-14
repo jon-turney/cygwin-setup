@@ -34,7 +34,7 @@ extern int exit_msg;
 /* prototypes for all the do_* functions (most called by main.cc) */
 
 D (do_download);
-bool do_fromcwd(HINSTANCE _h, HWND owner);
+bool do_from_local_dir (HINSTANCE _h, HWND owner, std::string &local_dir);
 D (do_ini);
 D (do_install);
 D (do_postinstall);
