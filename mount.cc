@@ -353,7 +353,6 @@ read_mounts (const std::string val)
     }
   got_usr_bin = got_usr_lib = false;
 
-  root_text = IDC_ROOT_BINARY;
   root_scope = (is_admin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
 
   if (val.size ())

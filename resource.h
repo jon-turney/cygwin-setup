@@ -91,8 +91,6 @@
 #define IDC_SOURCE_LOCALDIR               502
 #define IDC_ROOT_DIR                      503
 #define IDC_ROOT_BROWSE                   504
-#define IDC_ROOT_TEXT                     505
-#define IDC_ROOT_BINARY                   506
 #define IDC_URL_LIST                      507
 #define IDC_SITE_NEXT                     508
 #define IDC_BACK                          509
@@ -147,14 +145,10 @@
 #define IDC_HEADICON                      559
 #define IDC_HEADSEPARATOR                 560
 #define IDC_SPLASH_URL                    561
-#define IDC_FILEMODES_LINK                562
 #define IDC_ROOTDIR_GRP                   563
 #define IDC_INSTALLFOR_GRP                564
 #define IDC_ALLUSERS_TEXT                 565
 #define IDC_JUSTME_TEXT                   566
-#define IDC_MODE_GRP                      567
-#define IDC_MODE_TEXT                     568
-#define IDC_MODE_BIN                      569
 #define IDC_LOCALDIR_GRP                  570
 #define IDC_SPLASH_TEXT                   571
 #define IDC_SPLASH_ICON                   572

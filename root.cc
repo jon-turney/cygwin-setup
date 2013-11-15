@@ -51,22 +51,15 @@ static ControlAdjuster::ControlInfo RootControlsInfo[] = {
   { IDC_ROOT_DIR,                 CP_STRETCH,           CP_TOP      },
   { IDC_ROOT_BROWSE,              CP_RIGHT,             CP_TOP      },
 
-  { IDC_INSTALLFOR_GRP,           CP_STRETCH_LEFTHALF,  CP_STRETCH  },
+  { IDC_INSTALLFOR_GRP,           CP_STRETCH,		CP_STRETCH  },
   { IDC_ROOT_SYSTEM,              CP_LEFT,              CP_TOP      },
-  { IDC_ALLUSERS_TEXT,            CP_STRETCH_LEFTHALF,  CP_TOP      },
+  { IDC_ALLUSERS_TEXT,            CP_STRETCH,		CP_TOP      },
   { IDC_ROOT_USER,                CP_LEFT,              CP_BOTTOM   },
-  { IDC_JUSTME_TEXT,              CP_STRETCH_LEFTHALF,  CP_BOTTOM   },
+  { IDC_JUSTME_TEXT,              CP_STRETCH,		CP_BOTTOM   },
 
-  { IDC_MODE_GRP,                 CP_STRETCH_RIGHTHALF, CP_STRETCH  },
-  { IDC_ROOT_BINARY,              CP_STRETCH_RIGHTHALF, CP_TOP      },
-  { IDC_MODE_BIN,                 CP_STRETCH_RIGHTHALF, CP_TOP      },
-  { IDC_ROOT_TEXT,                CP_STRETCH_RIGHTHALF, CP_BOTTOM   },
-  { IDC_MODE_TEXT,                CP_STRETCH_RIGHTHALF, CP_BOTTOM   },
-  { IDC_FILEMODES_LINK,           CP_RIGHT,             CP_BOTTOM   },
   {0, CP_LEFT, CP_TOP}
 };
 
-static int rb[] = { IDC_ROOT_TEXT, IDC_ROOT_BINARY, 0 };
 static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
 
 static string orig_root_dir;
@@ -74,8 +67,8 @@ static string orig_root_dir;
 static void
 check_if_enable_next (HWND h)
 {
-  EnableWindow (GetDlgItem (h, IDOK), root_text
-		&& egetString (h, IDC_ROOT_DIR).size() && root_scope);
+  EnableWindow (GetDlgItem (h, IDOK),
+		egetString (h, IDC_ROOT_DIR).size() && root_scope);
 }
 
 static inline void
@@ -95,53 +88,14 @@ SetDlgItemRect (HWND h, int item, LPRECT r)
 static void
 load_dialog (HWND h)
 {
-  rbset (h, rb, root_text);
   rbset (h, su, root_scope);
   eset (h, IDC_ROOT_DIR, get_root_dir ());
   check_if_enable_next (h);
-  /* Stretch IDC_ROOTDIR_GRP content to full dialog width.  Use
-     IDC_ROOTDIR_GRP rectangle as fix point. */
-  RECT rect_base, rect;
-  GetDlgItemRect (h, IDC_ROOTDIR_GRP, &rect_base);
-
-  GetDlgItemRect (h, IDC_INSTALLFOR_GRP, &rect);
-  rect.right = rect_base.right;
-  SetDlgItemRect (h, IDC_INSTALLFOR_GRP, &rect);
-
-  GetDlgItemRect (h, IDC_ALLUSERS_TEXT, &rect);
-  rect.right = rect_base.right - 25;
-  SetDlgItemRect (h, IDC_ALLUSERS_TEXT, &rect);
-
-  GetDlgItemRect (h, IDC_JUSTME_TEXT, &rect);
-  rect.right = rect_base.right - 25;
-  SetDlgItemRect (h, IDC_JUSTME_TEXT, &rect);
-
-  /* Change adjustment accordingly. */
-  RootControlsInfo[3].horizontalPos = CP_STRETCH;
-  RootControlsInfo[5].horizontalPos = CP_STRETCH;
-  RootControlsInfo[7].horizontalPos = CP_STRETCH;
-
-  SetWindowText (GetDlgItem (h, IDC_ALLUSERS_TEXT),
-		 "Cygwin will be available to all users of the system.");
-  SetWindowText (GetDlgItem (h, IDC_JUSTME_TEXT),
-		 "Cygwin will still be available to all users, but "
-		 "Desktop Icons, Cygwin Menu Entries, and important "
-		 "Installer information are only available to the current "
-		 "user.  Only select this if you lack Administrator "
-		 "privileges or if you have specific needs.");
-
-  ShowWindow (GetDlgItem (h, IDC_MODE_GRP), SW_HIDE);
-  ShowWindow (GetDlgItem (h, IDC_ROOT_BINARY), SW_HIDE);
-  ShowWindow (GetDlgItem (h, IDC_MODE_BIN), SW_HIDE);
-  ShowWindow (GetDlgItem (h, IDC_ROOT_TEXT), SW_HIDE);
-  ShowWindow (GetDlgItem (h, IDC_MODE_TEXT), SW_HIDE);
-  ShowWindow (GetDlgItem (h, IDC_FILEMODES_LINK), SW_HIDE);
 }
 
 static void
 save_dialog (HWND h)
 {
-  root_text = IDC_ROOT_BINARY;
   root_scope = rbget (h, su);
   set_root_dir (egetString (h, IDC_ROOT_DIR));
 }
@@ -291,8 +245,6 @@ RootPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
     {
 
     case IDC_ROOT_DIR:
-    case IDC_ROOT_TEXT:
-    case IDC_ROOT_BINARY:
     case IDC_ROOT_SYSTEM:
     case IDC_ROOT_USER:
       check_if_enable_next (GetHWND ());
@@ -321,8 +273,6 @@ RootPage::Create ()
 void
 RootPage::OnInit ()
 {
-  makeClickable (IDC_FILEMODES_LINK, 
-        "http://cygwin.com/cygwin-ug-net/using-textbinary.html");
   if (((string)RootOption).size()) 
     set_root_dir((string)RootOption);
   if (!get_root_dir ().size())
@@ -358,7 +308,6 @@ RootPage::OnNext ()
     return -1;
 
   log (LOG_PLAIN) << "root: " << get_root_dir ()
-    << (root_text == IDC_ROOT_TEXT ? " text" : " binary")
     << (root_scope == IDC_ROOT_USER ? " user" : " system") << endLog;
 
   return 0;

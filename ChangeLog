@@ -1,3 +1,27 @@
+2013-11-15  Corinna Vinschen  <corinna@vinschen.de>
+
+	* mount.cc (read_mounts): Drop setting root_text.
+	* res.rc: Set content of root dir dialog correctly right from the start.
+	Remove unused items.
+	* resource.h (IDC_ROOT_TEXT): Remove.
+	(IDC_ROOT_BINARY): Ditto.
+	(IDC_FILEMODES_LINK): Ditto.
+	(IDC_MODE_GRP): Ditto.
+	(IDC_MODE_TEXT): Ditto.
+	(IDC_MODE_BIN): Ditto.
+	* root.cc (Root): Set "Install For" group items to CP_STRETCH.
+	Remove all "text/binary" items.
+	(rb): Remove.
+	(check_if_enable_next): Drop test for root_text.
+	(load_dialog): Remove all code setting items differently to what's
+	specified as default in the resources, in favor of setting this
+	correctly in the resources.
+	(save_dialog): Drop setting root_text.
+	(RootPage::OnMessageCmd): Drop IDC_ROOT_TEXT/IDC_ROOT_BINARY handling.
+	(RootPage::OnInit): Drop IDC_FILEMODES_LINK handling.
+	(RootPage::OnNext): Drop "text"/"binary" state from debug output.
+	* state.cc (root_text): Remove.
+
 2013-11-14  Corinna Vinschen  <corinna@vinschen.de>
 
 	* archive_tar.cc: Drop commented out static variable definitions.

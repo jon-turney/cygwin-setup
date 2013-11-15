@@ -29,7 +29,6 @@ int source;
 
 std::string local_dir;
 
-int root_text;
 int root_scope;
 int root_menu;
 int root_desktop;
