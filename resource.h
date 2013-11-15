@@ -91,6 +91,7 @@
 #define IDC_SOURCE_LOCALDIR               502
 #define IDC_ROOT_DIR                      503
 #define IDC_ROOT_BROWSE                   504
+#define IDC_SOURCE_SUBTEXT		  505
 #define IDC_URL_LIST                      507
 #define IDC_SITE_NEXT                     508
 #define IDC_BACK                          509

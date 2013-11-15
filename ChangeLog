@@ -1,5 +1,11 @@
 2013-11-15  Corinna Vinschen  <corinna@vinschen.de>
 
+	* resource.h (IDC_SOURCE_SUBTEXT): Define.
+	* res.rc: Define text below header as IDC_SOURCE_SUBTEXT to allow
+	reconfiguration.
+
+2013-11-15  Corinna Vinschen  <corinna@vinschen.de>
+
 	* root.cc: Move inline definitions of GetDlgItemRect and
 	SetDlgItemRect from here...
 	* win32.h: ...to here, for potential usage in other dialogs.

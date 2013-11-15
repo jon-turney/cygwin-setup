@@ -50,7 +50,7 @@ BEGIN
     LTEXT           "Choose A Download Source", IDC_STATIC_HEADER_TITLE,
                     7, 0, 258, 8, NOT WS_GROUP
     LTEXT           "Choose whether to install or download from the internet, or install from files in a local directory.",
-                    IDC_STATIC,
+                    IDC_SOURCE_SUBTEXT,
                     21, 9, 239, 16, NOT WS_GROUP
 END
 
