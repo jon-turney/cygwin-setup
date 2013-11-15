@@ -1,5 +1,9 @@
 2013-11-15  Corinna Vinschen  <corinna@vinschen.de>
 
+	* resource.h (IDC_ROOTDIR_SUBTEXT): Fix typo.
+
+2013-11-15  Corinna Vinschen  <corinna@vinschen.de>
+
 	* resource.h (IDC_ROOTDIR_SUBTEXT): Define.
 	* res.rc: Define text below header as IDC_ROOTDIR_SUBTEXT to allow
 	reconfiguration.

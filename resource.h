@@ -145,7 +145,7 @@
 #define IDC_HEADICON                      559
 #define IDC_HEADSEPARATOR                 560
 #define IDC_SPLASH_URL                    561
-#define IDC_ROOTDIR_SUBTEXT               563
+#define IDC_ROOTDIR_SUBTEXT               562
 #define IDC_ROOTDIR_GRP                   563
 #define IDC_INSTALLFOR_GRP                564
 #define IDC_ALLUSERS_TEXT                 565
