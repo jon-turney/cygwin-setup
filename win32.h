@@ -180,4 +180,18 @@ VersionInfo& GetVer ();
 #define OSMajorVersion() (GetVer ().major ())
 #define OSMinorVersion() (GetVer ().minor ())
 
+static inline void
+GetDlgItemRect (HWND h, int item, LPRECT r)
+{
+  GetWindowRect (GetDlgItem (h, item), r);
+  MapWindowPoints (HWND_DESKTOP, h, (LPPOINT) r, 2);
+}
+
+static inline void
+SetDlgItemRect (HWND h, int item, LPRECT r)
+{
+  MoveWindow (GetDlgItem (h, item), r->left, r->top,
+	      r->right - r->left, r->bottom - r->top, TRUE);
+}
+
 #endif /* SETUP_WIN32_H */

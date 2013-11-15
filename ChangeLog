@@ -1,5 +1,11 @@
 2013-11-15  Corinna Vinschen  <corinna@vinschen.de>
 
+	* root.cc: Move inline definitions of GetDlgItemRect and
+	SetDlgItemRect from here...
+	* win32.h: ...to here, for potential usage in other dialogs.
+
+2013-11-15  Corinna Vinschen  <corinna@vinschen.de>
+
 	* res.rc: Fix size and position of rootdir textbox and button.
 	Align size and position of localdir fields to rootdir fields for
 	optical reasons.

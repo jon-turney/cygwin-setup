@@ -71,20 +71,6 @@ check_if_enable_next (HWND h)
 		egetString (h, IDC_ROOT_DIR).size() && root_scope);
 }
 
-static inline void
-GetDlgItemRect (HWND h, int item, LPRECT r)
-{
-  GetWindowRect (GetDlgItem (h, item), r);
-  MapWindowPoints (HWND_DESKTOP, h, (LPPOINT) r, 2);
-}
-
-static inline void
-SetDlgItemRect (HWND h, int item, LPRECT r)
-{
-  MoveWindow (GetDlgItem (h, item), r->left, r->top,
-	      r->right - r->left, r->bottom - r->top, TRUE);
-}
-
 static void
 load_dialog (HWND h)
 {
