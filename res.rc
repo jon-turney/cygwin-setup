@@ -100,7 +100,7 @@ BEGIN
                     7,0,258,8,NOT WS_GROUP
     LTEXT           "Select the directory where you want to install Cygwin.  "
                     "Also choose a few installation parameters.",
-                    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+                    IDC_ROOTDIR_SUBTEXT,21,9,239,16,NOT WS_GROUP
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
                     SETUP_STANDARD_DIALOG_W,1

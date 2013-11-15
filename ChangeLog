@@ -1,5 +1,11 @@
 2013-11-15  Corinna Vinschen  <corinna@vinschen.de>
 
+	* resource.h (IDC_ROOTDIR_SUBTEXT): Define.
+	* res.rc: Define text below header as IDC_ROOTDIR_SUBTEXT to allow
+	reconfiguration.
+
+2013-11-15  Corinna Vinschen  <corinna@vinschen.de>
+
 	* mount.cc (read_mounts): Drop setting root_text.
 	* res.rc: Set content of root dir dialog correctly right from the start.
 	Remove unused items.
