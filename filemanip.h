@@ -36,5 +36,6 @@ std::string backslash (const std::string& s);
 const char * trail (const char *, const char *);
 int mklongpath (wchar_t *tgt, const char *src, size_t len);
 FILE *nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms);
+FILE *nt_fopen (const char *path, const char *mode, mode_t perms = 0644);
 
 #endif /* SETUP_FILEMANIP_H */

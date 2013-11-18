@@ -515,18 +515,18 @@ nt_wfopen (const wchar_t *wpath, const char *mode, mode_t perms)
   return _fdopen (fd, mode);
 }
 
-/* Override C file io functions for the sake of the download side of setup.
-   These overrides eliminate the problem that the ANSI file API limits the
-   filename length to MAX_PATH. */
-extern "C" FILE *
-fopen (const char *path, const char *mode)
+FILE *
+nt_fopen (const char *path, const char *mode, mode_t perms)
 {
   size_t len = strlen (path) + 8;
   WCHAR wpath[len];
   mklongpath (wpath, path, len);
-  return nt_wfopen (wpath, mode, 0644);
+  return nt_wfopen (wpath, mode, perms);
 }
 
+/* Override C file io functions for the sake of the download side of setup.
+   These overrides eliminate the problem that the ANSI file API limits the
+   filename length to MAX_PATH. */
 extern "C" int
 remove (const char *path)
 {

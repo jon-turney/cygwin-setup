@@ -96,19 +96,6 @@ static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup 
 static BoolOption PackageManagerOption (false, 'M', "package-manager", "Semi-attended chooser-only mode");
 static BoolOption NoAdminOption (false, 'B', "no-admin", "Do not check for and enforce running as Administrator");
 static BoolOption HelpOption (false, 'h', "help", "print help");
-static BOOL WINAPI (*dyn_AttachConsole) (DWORD);
-static BOOL WINAPI (*dyn_GetLongPathName) (LPCTSTR, LPTSTR, DWORD);
-
-static void inline
-set_dynaddr ()
-{
-  HMODULE hm = LoadLibrary ("kernel32.dll");
-  if (!hm)
-    return;
-
-  dyn_AttachConsole = (BOOL WINAPI (*)(DWORD)) GetProcAddress (hm, "AttachConsole");
-  dyn_GetLongPathName = (BOOL WINAPI (*)(LPCTSTR, LPTSTR, DWORD)) GetProcAddress (hm, "GetLongPathNameA");
-}
 
 static void inline
 set_cout ()
@@ -117,7 +104,7 @@ set_cout ()
   if (my_stdout != INVALID_HANDLE_VALUE && GetFileType (my_stdout) != FILE_TYPE_UNKNOWN)
     return;
 
-  if (dyn_AttachConsole && dyn_AttachConsole ((DWORD) -1))
+  if (AttachConsole ((DWORD) -1))
     {
       ofstream *conout = new ofstream ("conout$");
       cout.rdbuf (conout->rdbuf ());
@@ -227,7 +214,6 @@ WinMain (HINSTANCE h,
 
   hinstance = h;
 
-  set_dynaddr ();
   // Make sure the C runtime functions use the same codepage as the GUI
   char locale[12];
   snprintf(locale, sizeof locale, ".%u", GetACP());

@@ -35,7 +35,7 @@ static const char *cvsid =
 NetIO_File::NetIO_File (char const *Purl):
 NetIO (Purl)
 {
-  fd = fopen (path, "rb");
+  fd = nt_fopen (path, "rb");
   if (fd)
     {
       file_size = get_file_size (std::string("file://") + path);

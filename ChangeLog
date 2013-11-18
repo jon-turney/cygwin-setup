@@ -1,3 +1,16 @@
+2013-11-18  Corinna Vinschen  <corinna@vinschen.de>
+
+	* filemanip.cc (nt_fopen): Rename from fopen.  Add permission parameter.
+	Drop C binding.  Move comment.
+	* filemanip.h (nt_fopen): Declare.
+	* geturl.cc (get_url_to_file): Call nt_fopen instead of fopen.
+	* nio-file.cc (NetIO_File::NetIO_File): Ditto.
+	* main.cc (dyn_AttachConsole): Remove.
+	(dyn_GetLongPathName): Remove.
+	(set_dynaddr): Remove.
+	(set_cout): Just call AttachConsole directly.
+	(WinMain): Drop call to set_dynaddr.
+
 2013-11-15  Corinna Vinschen  <corinna@vinschen.de>
 
 	* resource.h (IDC_SOURCE_SUBTEXT): Define.

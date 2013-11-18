@@ -41,6 +41,7 @@ static const char *cvsid =
 #include "state.h"
 #include "diskfull.h"
 #include "mount.h"
+#include "filemanip.h"
 
 #include "threebar.h"
 
@@ -225,7 +226,7 @@ get_url_to_file (const string &_url,
       return 1;
     }
 
-  FILE *f = fopen (_filename.c_str(), "wb");
+  FILE *f = nt_fopen (_filename.c_str(), "wb");
   if (!f)
     {
       const char *err = strerror (errno);
