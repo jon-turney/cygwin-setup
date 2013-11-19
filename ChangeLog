@@ -1,3 +1,8 @@
+2013-11-19  Corinna Vinschen  <corinna@vinschen.de>
+
+	* setup.exe.manifest: Add Windows 8.1 GUID.
+	* setup64.exe.manifest: Ditto.
+
 2013-11-18  Corinna Vinschen  <corinna@vinschen.de>
 
 	* filemanip.cc (nt_fopen): Rename from fopen.  Add permission parameter.
