@@ -134,13 +134,13 @@ public:
 				      SECURITY_DESCRIPTOR &out_sd, acl_t &acl);
   void resetPrimaryGroup();
   void setAdminGroup ();
+  void initialiseWellKnownSIDs ();
   void setDefaultSecurity();
   bool isRunAsAdmin ();
 private:
   void NoteFailedAPI (const std::string &);
   bool wellKnownSIDsinitialized () const { return _wellKnownSIDsinitialized; }
   void wellKnownSIDsinitialized (bool b) { _wellKnownSIDsinitialized = b; }
-  void initialiseWellKnownSIDs ();
   void setDefaultDACL ();
   void setBackupPrivileges ();
 

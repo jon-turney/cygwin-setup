@@ -1,3 +1,22 @@
+2014-03-10  Corinna Vinschen  <corinna@vinschen.de>
+	    Jon Beniston <jon@beniston.com>
+
+	* main.cc (WaitOption): New -W/--wait option.
+	(WinMain): Rearrange code to make sure only the actual worker
+	instance of setup logs into the setup.log and setup.log.full files.
+	Call NTSecurity::initialiseWellKnownSIDs explicitely.  Explain why.
+	If WaitOption is given, let the parent process wait for the elevated
+	child process.
+	* win32.cc (NTSecurity::initialiseWellKnownSIDs): Drop generating
+	log messages.
+	(NTSecurity::setDefaultSecurity): Drop call to initialiseWellKnownSIDs.
+	* win32.h (NTSecurity::initialiseWellKnownSIDs): Make public.
+
+2014-03-10  Jon Beniston <jon@beniston.com>
+
+	* main.cc (WinMain): If setup elevates, let the parent wait for the
+	child process to accommodate enclosing installers.
+
 2013-11-19  Corinna Vinschen  <corinna@vinschen.de>
 
 	* setup.exe.manifest: Add Windows 8.1 GUID.

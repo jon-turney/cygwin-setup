@@ -194,50 +194,32 @@ NTSecurity::initialiseWellKnownSIDs ()
   /* Get the SID for "NULL" S-1-0-0 */
   if (!AllocateAndInitializeSid (&n_sid_auth, 1, SECURITY_NULL_RID,
 				 0, 0, 0, 0, 0, 0, 0, &nullSID.theSID ()))
-    {
-      NoteFailedAPI ("AllocateAndInitializeSid(null)");
       return;
-    }
   SID_IDENTIFIER_AUTHORITY e_sid_auth = { SECURITY_WORLD_SID_AUTHORITY };
   /* Get the SID for "Everyone" S-1-1-0 */
   if (!AllocateAndInitializeSid (&e_sid_auth, 1, SECURITY_WORLD_RID,
 				 0, 0, 0, 0, 0, 0, 0, &everyOneSID.theSID ()))
-    {
-      NoteFailedAPI ("AllocateAndInitializeSid(everyone)");
       return;
-    }
   SID_IDENTIFIER_AUTHORITY nt_sid_auth = { SECURITY_NT_AUTHORITY };
   /* Get the SID for "Administrators" S-1-5-32-544 */
   if (!AllocateAndInitializeSid (&nt_sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
 				 DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
 				 &administratorsSID.theSID ()))
-    {
-      NoteFailedAPI ("AllocateAndInitializeSid(admins)");
       return;
-    }
   /* Get the SID for "Users" S-1-5-32-545 */
   if (!AllocateAndInitializeSid (&nt_sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
 				 DOMAIN_ALIAS_RID_USERS, 0, 0, 0, 0, 0, 0,
 				 &usersSID.theSID ()))
-    {
-      NoteFailedAPI ("AllocateAndInitializeSid(users)");
       return;
-    }
   SID_IDENTIFIER_AUTHORITY c_sid_auth = { SECURITY_CREATOR_SID_AUTHORITY };
   /* Get the SID for "CREATOR OWNER" S-1-3-0 */
   if (!AllocateAndInitializeSid (&c_sid_auth, 1, SECURITY_CREATOR_OWNER_RID, 
 				 0, 0, 0, 0, 0, 0, 0, &cr_ownerSID.theSID ()))
-    {
-      NoteFailedAPI ("AllocateAndInitializeSid(users)");
       return;
-    }
   /* Get the SID for "CREATOR GROUP" S-1-3-1 */
   if (!AllocateAndInitializeSid (&c_sid_auth, 1, SECURITY_CREATOR_GROUP_RID, 
 				 0, 0, 0, 0, 0, 0, 0, &cr_groupSID.theSID ()))
-    {
-      NoteFailedAPI ("AllocateAndInitializeSid(users)");
       return;
-    }
   wellKnownSIDsinitialized (true);
 }
 
@@ -344,9 +326,6 @@ NTSecurity::setAdminGroup ()
 void
 NTSecurity::setDefaultSecurity ()
 {
-  /* First initialize the well known SIDs used later on. */
-  initialiseWellKnownSIDs ();
-
   /* Get the processes access token. */
   if (!OpenProcessToken (GetCurrentProcess (),
 			 TOKEN_READ | TOKEN_ADJUST_DEFAULT

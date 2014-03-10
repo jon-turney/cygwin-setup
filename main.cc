@@ -95,6 +95,7 @@ static StringOption Arch ("", 'a', "arch", "architecture to install (x86_64 or x
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
 static BoolOption PackageManagerOption (false, 'M', "package-manager", "Semi-attended chooser-only mode");
 static BoolOption NoAdminOption (false, 'B', "no-admin", "Do not check for and enforce running as Administrator");
+static BoolOption WaitOption (false, 'W', "wait", "When elevating, wait for elevated child process");
 static BoolOption HelpOption (false, 'h', "help", "print help");
 
 static void inline
@@ -261,70 +262,66 @@ WinMain (HINSTANCE h,
     if (unattended_mode || HelpOption)
       set_cout ();
 
-    LogSingleton::SetInstance (*(theLog = LogFile::createLogFile ()));
-    const char *sep = isdirsep (local_dir[local_dir.size () - 1]) ? "" : "\\";
-    theLog->setFile (LOG_BABBLE, local_dir + sep + "setup.log.full", false);
-    theLog->setFile (0, local_dir + sep + "setup.log", true);
+    /* Get System info */
+    OSVERSIONINFO version;
+    version.dwOSVersionInfoSize = sizeof version;
+    GetVersionEx (&version);
+    /* Initialize well known SIDs.  We need the admin SID to test if we're
+       supposed to elevate. */
+    nt_sec.initialiseWellKnownSIDs ();
+    /* Check if we have to elevate. */
+    bool elevate = !HelpOption && version.dwMajorVersion >= 6
+		   && !NoAdminOption && !nt_sec.isRunAsAdmin ();
 
-    log (LOG_PLAIN) << "Starting cygwin install, version "
-		    << setup_version << endLog;
+    /* Start logging only if we don't elevate.  Same for setting default
+       security settings. */
+    if (!elevate)
+      {
+	LogSingleton::SetInstance (*(theLog = LogFile::createLogFile ()));
+	const char *sep = isdirsep (local_dir[local_dir.size () - 1])
+				    ? "" : "\\";
+	theLog->setFile (LOG_BABBLE, local_dir + sep + "setup.log.full", false);
+	theLog->setFile (0, local_dir + sep + "setup.log", true);
 
-    /* Set the default DACL and Group. */
-    nt_sec.setDefaultSecurity ();
+	log (LOG_PLAIN) << "Starting cygwin install, version "
+			<< setup_version << endLog;
+	/* Set the default DACL and Group. */
+	nt_sec.setDefaultSecurity ();
+      }
 
     if (HelpOption)
       GetOption::GetInstance ().ParameterUsage (log (LOG_PLAIN)
 						<< "\nCommand Line Options:\n");
     else
       {
-	OSVERSIONINFO version;
-	version.dwOSVersionInfoSize = sizeof version;
-	GetVersionEx (&version);
-	if ((version.dwMajorVersion >= 6)
-	    && !NoAdminOption && !nt_sec.isRunAsAdmin ())
+	if (elevate)
 	  {
-		log (LOG_PLAIN) << "Attempting to elevate to Administrator" << endLog;
-		char exe_path[MAX_PATH];
-		if (!GetModuleFileName(NULL, exe_path, ARRAYSIZE(exe_path)))
-		  {
-			log (LOG_TIMESTAMP) << "GetModuleFileName() failed: " << GetLastError () << endLog;
-			goto finish_up;
-		  }
+	    char exe_path[MAX_PATH];
+	    if (!GetModuleFileName(NULL, exe_path, ARRAYSIZE(exe_path)))
+	      goto finish_up;
 
-		SHELLEXECUTEINFO sei = { sizeof(sei) };
-		sei.lpVerb = "runas";
-		sei.lpFile = exe_path;
-		sei.nShow = SW_NORMAL;
+	    SHELLEXECUTEINFO sei = { sizeof(sei) };
+	    sei.lpVerb = "runas";
+	    sei.lpFile = exe_path;
+	    sei.nShow = SW_NORMAL;
+	    if (WaitOption)
+	      sei.fMask |= SEE_MASK_NOCLOSEPROCESS;
 
-		// Avoid another isRunAsAdmin check in the child.
-		std::string command_line_cs (command_line);
-		command_line_cs += " -";
-		command_line_cs += NoAdminOption.shortOption();
-		sei.lpParameters = command_line_cs.c_str ();
+	    // Avoid another isRunAsAdmin check in the child.
+	    std::string command_line_cs (command_line);
+	    command_line_cs += " -";
+	    command_line_cs += NoAdminOption.shortOption();
+	    sei.lpParameters = command_line_cs.c_str ();
 
-		// Avoid the ambiguity of having both the parent and child
-		// process logging simultaneously, by ending it here. perhaps
-		// overkill, but safe.
-		theLog->flushAll ();
-		theLog->clearFiles ();
+	    if (ShellExecuteEx(&sei))
+	      {
+		exit_msg = IDS_ELEVATED;
+		/* Wait until child process is finished. */
+		if (WaitOption && sei.hProcess != NULL)
+		  WaitForSingleObject (sei.hProcess, INFINITE);
+	      }
+	    goto finish_up;
 
-		if (!ShellExecuteEx(&sei))
-		  {
-		    // Note: If user declined, we get an ERROR_CANCELLED.
-		    // Merely to be compatible with existing Cygwin Setup
-		    // behaviour, we do nothing with it but just exit.
-		    // Future improvement is possible here.
-
-		    // TODO: because we have been prudent and closed off the
-		    // logging, we can't actually log in this way. Though it
-		    // would be helpful
-//		    log (LOG_TIMESTAMP) << "ShellExecuteEx() failed: " << GetLastError () << endLog;
-		  }
-		else
-		  exit_msg = IDS_ELEVATED;
-		// Once we are set on course to privilege elevate, the parent
-		// process is unnecessary.
-		goto finish_up;
 	  }
 	UserSettings Settings (local_dir);
 
@@ -333,7 +330,6 @@ WinMain (HINSTANCE h,
 	Settings.save ();	// Clean exit.. save user options.
       }
 
-finish_up:
     if (rebootneeded)
       {
 	theLog->exit (IDS_REBOOT_REQUIRED);
@@ -342,6 +338,8 @@ finish_up:
       {
 	theLog->exit (0);
       }
+finish_up:
+    ;
   }
   TOPLEVEL_CATCH("main");
 
