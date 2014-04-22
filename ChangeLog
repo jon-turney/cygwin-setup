@@ -1,3 +1,14 @@
+2014-04-22  Corinna Vinschen  <corinna@vinschen.de>
+
+	* mount.cc (is_admin): Drop function.  It's incorrectly implemented
+	and redundant.
+	(create_install_root): If installing the setup rootdir entry to HKLM
+	results in ERROR_ACCESS_DENIED, fall back to installing into HKCU.
+	Don't exit with a fatal error if writing the registry key fails.  Just
+	pop up an informative message box instead.  Also log access denied.
+	(read_mounts): call nt_sec.isRunAsAdmin instead of removed is_admin.
+	(NTSecurity::isRunAsAdmin): Fix formatting.
+
 2014-03-10  Corinna Vinschen  <corinna@vinschen.de>
 	    Jon Beniston <jon@beniston.com>
 

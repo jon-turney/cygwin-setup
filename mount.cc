@@ -25,7 +25,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "ini.h"
 #include "win32.h"
 #include "filemanip.h"
-// #include "LogSingleton.h"
+#include "LogSingleton.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -97,61 +97,6 @@ mount_table[255];
 
 struct mnt *root_here = NULL;
 
-/*
- * is_admin () determines whether or not the current user is a member of the
- * Administrators group.
- */
-
-static int
-is_admin ()
-{
-  // Get the process token for the current process
-  HANDLE token;
-  if (!OpenProcessToken (GetCurrentProcess (), TOKEN_QUERY, &token))
-    return 0;
-
-  // Get the group token information
-  DWORD size;
-  GetTokenInformation (token, TokenGroups, NULL, 0, &size);
-  if (GetLastError () != ERROR_INSUFFICIENT_BUFFER)
-    {
-      CloseHandle (token);
-      return 0;
-    }
-
-  char *buf = (char *) alloca (size);
-  PTOKEN_GROUPS groups = (PTOKEN_GROUPS) buf;
-  DWORD status = GetTokenInformation (token, TokenGroups, buf, size, &size);
-  CloseHandle (token);
-  if (!status)
-    return 0;
-
-  // Create the Administrators group SID
-  PSID admin_sid;
-  SID_IDENTIFIER_AUTHORITY authority = { SECURITY_NT_AUTHORITY };
-  if (!AllocateAndInitializeSid (&authority, 2, SECURITY_BUILTIN_DOMAIN_RID,
-                                 DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
-                                 &admin_sid))
-    return 0;
-
-  // Check to see if the user is a member of the Administrators group
-  int ret = 0;
-  for (UINT i = 0; i < groups->GroupCount; i++)
-    {
-      if (EqualSid (groups->Groups[i].Sid, admin_sid))
-	{
-	  ret = 1;
-	  break;
-	}
-    }
-
-  // Destroy the Administrators group SID
-  FreeSid (admin_sid);
-
-  // Return whether or not the user is a member of the Administrators group
-  return ret;
-}
-
 void
 create_install_root ()
 {
@@ -165,16 +110,35 @@ create_install_root ()
 	    CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME);
   HKEY kr = (root_scope == IDC_ROOT_USER) ? HKEY_CURRENT_USER
 					  : HKEY_LOCAL_MACHINE;
-  rv = RegCreateKeyEx (kr, buf, 0, (char *)"Cygwin", 0,
-		       KEY_ALL_ACCESS | SETUP_KEY_WOW64,
-		       0, &key, &disposition);
+  do
+    {
+      rv = RegCreateKeyEx (kr, buf, 0, (char *)"Cygwin", 0,
+			   KEY_ALL_ACCESS | SETUP_KEY_WOW64,
+			   0, &key, &disposition);
+      if (rv != ERROR_ACCESS_DENIED || kr != HKEY_LOCAL_MACHINE)
+	break;
+      log (LOG_PLAIN) << "Access denied trying to create rootdir registry key"
+		      << endLog;
+      kr = HKEY_CURRENT_USER;
+    }
+  while (rv == ERROR_ACCESS_DENIED);
+  if (rv == ERROR_SUCCESS)
+    do
+      {
+	rv = RegSetValueEx (key, "rootdir", 0, REG_SZ,
+			    (BYTE *) get_root_dir ().c_str (),
+			    get_root_dir ().size () + 1);
+	if (rv != ERROR_ACCESS_DENIED || kr != HKEY_LOCAL_MACHINE)
+	  break;
+	log (LOG_PLAIN) << "Access denied trying to create rootdir registry value"
+			<< endLog;
+	kr = HKEY_CURRENT_USER;
+      }
+    while (rv == ERROR_ACCESS_DENIED);
   if (rv != ERROR_SUCCESS)
-    fatal ("mount", rv);
-  rv = RegSetValueEx (key, "rootdir", 0, REG_SZ,
-		      (BYTE *) get_root_dir ().c_str (),
-		      get_root_dir ().size () + 1);
-  if (rv != ERROR_SUCCESS)
-    fatal ("mount", rv);
+    MessageBox (NULL, "Couldn't create registry key\n"
+		      "to store installation path",
+		"Cygwin Setup", MB_OK | MB_ICONWARNING);
   RegCloseKey (key);
 
   // The mount table is already in the right shape at this point.
@@ -353,7 +317,7 @@ read_mounts (const std::string val)
     }
   got_usr_bin = got_usr_lib = false;
 
-  root_scope = (is_admin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
+  root_scope = (nt_sec.isRunAsAdmin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
 
   if (val.size ())
     {
