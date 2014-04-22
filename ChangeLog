@@ -1,3 +1,10 @@
+2013-11-18  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+	* msg.cc (mbox): Generalize to a MessageBox wrapper which knows
+	what to do in unattended mode.
+	* msg.h: Add prototype.
+	* ini.cc (IniParseFeedback): Use here rather than MessageBox.
+
 2014-04-22  Corinna Vinschen  <corinna@vinschen.de>
 
 	* mount.cc (read_mounts): Don't create rootdir key when just fetching

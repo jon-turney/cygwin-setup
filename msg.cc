@@ -41,15 +41,9 @@ msg (const char *fmt, ...)
   OutputDebugString (buf);
 }
 
-static int
-mbox (HWND owner, const char *name, int type, int id, va_list args)
+int
+mbox (HWND owner, const char *buf, const char *name, int type)
 {
-  char buf[1000], fmt[1000];
-
-  if (LoadString (hinstance, id, fmt, sizeof (fmt)) <= 0)
-    ExitProcess (0);
-
-  vsnprintf (buf, 1000, fmt, args);
   log (LOG_PLAIN) << "mbox " << name << ": " << buf << endLog;
   if (unattended_mode)
     {
@@ -77,6 +71,18 @@ mbox (HWND owner, const char *name, int type, int id, va_list args)
 	}
     }
   return MessageBox (owner, buf, "Cygwin Setup", type);
+}
+
+static int
+mbox (HWND owner, const char *name, int type, int id, va_list args)
+{
+  char buf[1000], fmt[1000];
+
+  if (LoadString (hinstance, id, fmt, sizeof (fmt)) <= 0)
+    ExitProcess (0);
+
+  vsnprintf (buf, 1000, fmt, args);
+  return mbox(owner, buf, name, type);
 }
 
 void

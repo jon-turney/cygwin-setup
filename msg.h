@@ -37,4 +37,7 @@ void note (HWND owner, int id, ...);
 /* returns IDYES or IDNO, otherwise same as note() */
 int yesno (HWND owner, int id, ...);
 
+/* general MessageBox() wrapper which understands unattended mode */
+int mbox (HWND owner, const char *buf, const char *name, int type);
+
 #endif /* SETUP_MSG_H */
