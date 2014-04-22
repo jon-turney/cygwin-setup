@@ -637,10 +637,12 @@ SitePage::PopulateListBox ()
   for (SiteList::const_iterator n = site_list.begin ();
        n != site_list.end (); ++n)
     {
-      int index = SendMessage (listbox, LB_FINDSTRING, (WPARAM) - 1,
-			       (LPARAM) n->displayed_url.c_str());
-      if (index != LB_ERR)
-	{
+      SiteList::iterator i = find (all_site_list.begin(),
+                                   all_site_list.end(), *n);
+      if (i != all_site_list.end())
+        {
+          int index = i - all_site_list.begin();
+
 	  // Highlight the selected item
 	  SendMessage (listbox, LB_SELITEMRANGE, TRUE, (index << 16) | index);
 	  // Make sure it's fully visible
