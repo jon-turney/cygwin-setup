@@ -1,5 +1,10 @@
 2014-04-22  Corinna Vinschen  <corinna@vinschen.de>
 
+	* mount.cc (read_mounts): Don't create rootdir key when just fetching
+	info from registry.
+
+2014-04-22  Corinna Vinschen  <corinna@vinschen.de>
+
 	* mount.cc (is_admin): Drop function.  It's incorrectly implemented
 	and redundant.
 	(create_install_root): If installing the setup rootdir entry to HKLM

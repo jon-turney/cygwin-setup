@@ -306,7 +306,6 @@ read_mounts (const std::string val)
 {
   DWORD posix_path_size;
   struct mnt *m = mount_table;
-  DWORD disposition;
   char buf[10000];
 
   root_here = NULL;
@@ -335,9 +334,8 @@ read_mounts (const std::string val)
 		   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
 		   CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME);
 	  HKEY key = isuser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
-	  if (RegCreateKeyEx (key, buf, 0, (char *)"Cygwin", 0,
-			      KEY_ALL_ACCESS | SETUP_KEY_WOW64,
-			      0, &key, &disposition) != ERROR_SUCCESS)
+	  if (RegOpenKeyEx (key, buf, 0, KEY_ALL_ACCESS | SETUP_KEY_WOW64,
+			    &key) != ERROR_SUCCESS)
 	    continue;
 	  DWORD type;
 	  /* Cygwin rootdir always < MAX_PATH. */
