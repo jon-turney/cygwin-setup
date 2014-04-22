@@ -150,8 +150,11 @@ site_list_type::init (const string &_url, const string &_servername,
     url.append("/");
 
   /* displayed_url is protocol and site name part of url */
-  displayed_url = url.substr (0, url.find ("/", url.find (".")));
+  string::size_type path_offset = url.find ("/", url.find ("//") + 2);
+  displayed_url = url.substr(0, path_offset);
 
+  /* the sorting key is hostname components in reverse order (to sort by country code)
+     plus the url (to ensure uniqueness) */
   key = string();
   string::size_type last_idx = displayed_url.length () - 1;
   string::size_type idx = url.find_last_of("./", last_idx);

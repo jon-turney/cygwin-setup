@@ -1,3 +1,7 @@
+2014-04-19  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+	* site.cc (init): Handle sitenames which aren't FQDNs correctly.
+
 2014-04-19 Jon TURNEY <jon.turney@dronecode.org.uk>
 
 	* site.cc (PopulateListBox): Select listbox items by finding the
