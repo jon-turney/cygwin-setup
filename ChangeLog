@@ -1,3 +1,7 @@
+2014-09-27  Eric Blake  <eblake@redhat.com>
+
+	* res.rc: Fix missing space.
+
 2014-04-19  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
 	* site.cc (init): Handle sitenames which aren't FQDNs correctly.

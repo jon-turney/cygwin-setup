@@ -387,7 +387,7 @@ CAPTION "Cygwin Setup - Use dropped mirrors?"
 FONT 8, "MS Shell Dlg"
 BEGIN
     LTEXT           "Warning:",IDC_STATIC,7,8,40,8
-    LTEXT           "One or more mirrors you have selected is/are not on the"
+    LTEXT           "One or more mirrors you have selected is/are not on the "
                     "list of official Cygwin mirrors any more. "
                     "It/They may be out of date or missing some packages.\n"
                     "This affects the following mirror(s):",
