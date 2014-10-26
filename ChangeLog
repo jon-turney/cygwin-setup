@@ -1,3 +1,8 @@
+2014-10-26  Corinna Vinschen  <corinna@vinschen.de>
+
+	* setup.exe.manifest: Add Windows 10 OS GUID.
+	* setup64.exe.manifest: Ditto.
+
 2014-09-27  Eric Blake  <eblake@redhat.com>
 
 	* res.rc: Fix missing space.
