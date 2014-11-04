@@ -31,10 +31,11 @@ Build commands:
 2) $ make
 
 3) Wondering why your binary is so much bigger than the official releases?
-   Remove debugging symbols:
-   $ strip -s setup.exe
-   Compress using UPX:
-   $ upx -9 setup.exe
+   This removes debugging symbols:
+   $ make strip
+   This additionally compresses it using UPX
+   (requires package upx to be installed):
+   $ make upx
 
 CODING GUIDELINES:
 ------------------

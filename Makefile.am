@@ -298,3 +298,14 @@ setup-src:
 	sort | tar -T - -cjf ${CURDIR}/$$ver-src.tar.bz2;\
 	echo $$ver-src.tar.bz2; exec rm -f $$ver
 
+# optional: strip and compress executable
+.PHONY:	strip upx
+
+strip:	all
+	$(STRIP) -s setup$(EXEEXT)
+upx:	strip
+	@if [ -e `which upx` ]; then\
+		upx --best --lzma setup$(EXEEXT) ;\
+	else \
+		echo "UPX doesn't seem to be installed, cannot compress setup$(EXEEXT)." ;\
+	fi
