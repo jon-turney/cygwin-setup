@@ -1,3 +1,8 @@
+2014-11-20  Corinna Vinschen  <corinna@vinschen.de>
+
+	* install.cc (Installer::StandardDirs): Add /etc/fstab.d, /dev,
+	/dev/mqueue, /dev/shm.  Sort array alphabetically.
+
 2014-11-04  Achim Gratz  <Stromeko@nexgo.de>
 
 	* Makefile.am: Provide new targets "strip" and "upx" to remove
