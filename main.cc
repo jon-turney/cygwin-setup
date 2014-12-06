@@ -232,7 +232,12 @@ WinMain (HINSTANCE h,
     local_dir = std::string (cwd);
 
     if (!GetOption::GetInstance ().Process (argc,_argv, NULL))
-      exit (1);
+      {
+	GetOption::GetInstance ().ParameterUsage (cerr
+						  << "\nError during option processing."
+						  << "\nCommand Line Options:\n");
+	exit (1);
+      }
 
     if (!((string) Arch).size ())
       {

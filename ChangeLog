@@ -1,3 +1,9 @@
+2014-11-22  Achim Gratz  <Stromeko@nexgo.de>
+
+	* main.cc (WinMain): Show parameter usage before exiting when
+	options processing was unsuccessful (this usually means that an
+	unknown option was given on the command line).
+
 2014-11-20  Corinna Vinschen  <corinna@vinschen.de>
 
 	* install.cc (Installer::StandardDirs): Add /etc/fstab.d, /dev,
