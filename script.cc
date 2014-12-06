@@ -42,7 +42,7 @@ static const char *cvsid =
 #endif
 #endif
 
-static std::string sh;
+static std::string sh, dash;
 static const char *cmd;
 
 static void
@@ -113,8 +113,9 @@ init_run_script ()
   SetEnvironmentVariable ("TERM", "dumb");
   SetEnvironmentVariable ("TMP", "/tmp");
 
-  sh = backslash (cygpath ("/bin/bash.exe"));
-  cmd = "cmd.exe";
+  sh   = backslash (cygpath ("/bin/bash.exe"));
+  dash = backslash (cygpath ("/bin/dash.exe"));
+  cmd  = "cmd.exe";
 }
 
 class OutputLog
@@ -279,7 +280,13 @@ Script::run() const
       sprintf (cmdline, "%s %s \"%s\"", sh.c_str(), "--norc --noprofile", scriptName.c_str());
       retval = ::run (cmdline);
     }
-  else if (cmd && ("bat" == scriptExtension))
+  else if (dash.size() && ("dash" == scriptExtension))
+    {
+      sprintf (cmdline, "%s \"%s\"", dash.c_str(), scriptName.c_str());
+      retval = ::run (cmdline);
+    }
+  else if (cmd && (("bat" == scriptExtension) ||
+		   ("cmd" == scriptExtension)))
     {
       sprintf (cmdline, "%s %s \"%s\"", cmd, "/c", windowsName.c_str());
       retval = ::run (cmdline);

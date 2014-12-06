@@ -1,5 +1,12 @@
 2014-11-28  Achim Gratz  <Stromeko@NexGo.DE>
 
+	* script.cc: New static string dash.
+	(init_run_script): Initialize dash.
+	(run): Implement dash as an extra shell type that is invoked for
+	suffix ".dash".  Implement suffix ".cmd" as an alias for ".bat".
+
+2014-11-28  Achim Gratz  <Stromeko@NexGo.DE>
+
 	* install.cc (do_install_thread): Remove initialization for
 	run_script.
 	* postinstall.cc (do_postinstall_thread): Remove initialization
