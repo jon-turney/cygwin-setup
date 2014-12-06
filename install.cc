@@ -158,7 +158,7 @@ Installer::preremoveOne (packagemeta & pkg)
 {
   Progress.SetText1 ("Running preremove script...");
   Progress.SetText2 (pkg.name.c_str());
-  log (LOG_PLAIN) << "Running preremove script for  " << pkg.name << endLog;
+  Log (LOG_PLAIN) << "Running preremove script for  " << pkg.name << endLog;
   try_run_script ("/etc/preremove/", pkg.name, ".sh");
   try_run_script ("/etc/preremove/", pkg.name, ".bat");
 }
@@ -168,7 +168,7 @@ Installer::uninstallOne (packagemeta & pkg)
 {
   Progress.SetText1 ("Uninstalling...");
   Progress.SetText2 (pkg.name.c_str());
-  log (LOG_PLAIN) << "Uninstalling " << pkg.name << endLog;
+  Log (LOG_PLAIN) << "Uninstalling " << pkg.name << endLog;
   pkg.uninstall ();
   num_uninstalls++;
 }
@@ -178,7 +178,7 @@ Installer::uninstallOne (packagemeta & pkg)
 void
 Installer::replaceOnRebootFailed (const std::string& fn)
 {
-  log (LOG_TIMESTAMP) << "Unable to schedule reboot replacement of file "
+  Log (LOG_TIMESTAMP) << "Unable to schedule reboot replacement of file "
     << cygpath("/" + fn) << " with " << cygpath("/" + fn + ".new")
     << " (Win32 Error " << GetLastError() << ")" << endLog;
   ++errors;
@@ -189,7 +189,7 @@ Installer::replaceOnRebootFailed (const std::string& fn)
 void
 Installer::replaceOnRebootSucceeded (const std::string& fn, bool &rebootneeded)
 {
-  log (LOG_TIMESTAMP) << "Scheduled reboot replacement of file "
+  Log (LOG_TIMESTAMP) << "Scheduled reboot replacement of file "
     << cygpath("/" + fn) << " with " << cygpath("/" + fn + ".new") << endLog;
   rebootneeded = true;
 }
@@ -319,7 +319,7 @@ Installer::extract_replace_on_reboot (archive *tarstream, const std::string& pre
   if (archive::extract_file (tarstream, prefixURL, prefixPath,
                              ".new") != 0)
     {
-      log (LOG_PLAIN) << "Unable to install file " << prefixURL
+      Log (LOG_PLAIN) << "Unable to install file " << prefixURL
                       << prefixPath << fn << ".new" << endLog;
       ++errors;
       return true;
@@ -449,7 +449,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 
       io_stream *tmp;
       if ((tmp = io_stream::open (lstfn, "wb", 0644)) == NULL)
-        log (LOG_PLAIN) << "Warning: Unable to create lst file " + lstfn +
+        Log (LOG_PLAIN) << "Warning: Unable to create lst file " + lstfn +
           " - uninstall of this package will leave orphaned files." << endLog;
       else
         {
@@ -458,7 +458,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
             {
               delete lst;
               lst = NULL;
-              log (LOG_PLAIN) << "Warning: gzip unable to write to lst file " +
+              Log (LOG_PLAIN) << "Warning: gzip unable to write to lst file " +
                 lstfn + " - uninstall of this package will leave orphaned files."
                 << endLog;
             }
@@ -470,14 +470,14 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
   bool ignoreExtractErrors = unattended_mode;
 
   package_bytes = source.size;
-  log (LOG_PLAIN) << "Extracting from " << source.Cached () << endLog;
+  Log (LOG_PLAIN) << "Extracting from " << source.Cached () << endLog;
 
   std::string fn;
   while ((fn = tarstream->next_file_name ()).size ())
     {
       std::string canonicalfn = prefixPath + fn;
       Progress.SetText3 (canonicalfn.c_str ());
-      log (LOG_BABBLE) << "Installing file " << prefixURL << prefixPath
+      Log (LOG_BABBLE) << "Installing file " << prefixURL << prefixPath
           << fn << endLog;
       if (lst)
         {
@@ -513,7 +513,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                         if (i != processes.begin ()) plm += "\r\n";
 
                         std::string processName = i->getName ();
-                        log (LOG_BABBLE) << processName << endLog;
+                        Log (LOG_BABBLE) << processName << endLog;
                         plm += processName;
                       }
 
@@ -592,7 +592,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                   {
                     ++errors;
                     error_in_this_package = true;
-                    log (LOG_PLAIN) << "Not replacing in-use file " << prefixURL
+                    Log (LOG_PLAIN) << "Not replacing in-use file " << prefixURL
                                     << prefixPath << fn << endLog;
                   }
                 else
@@ -830,7 +830,7 @@ do_install_thread (HINSTANCE h, HWND owner)
     {
       if (yesno (owner, IDS_INSTALL_ERROR, e->what()) != IDYES)
       {
-        log (LOG_TIMESTAMP)
+        Log (LOG_TIMESTAMP)
           << "User cancelled setup after install error" << endLog;
         LogSingleton::GetInstance().exit (1);
         return;
@@ -926,7 +926,7 @@ void md5_one (const packagesource& pkgsource)
     MD5Sum tempMD5;
     tempMD5.begin ();
 
-    log (LOG_BABBLE) << "Checking MD5 for " << fullname << endLog;
+    Log (LOG_BABBLE) << "Checking MD5 for " << fullname << endLog;
 
     Progress.SetText1 ((std::string ("Checking MD5 for ")
                         + pkgsource.Base ()).c_str ());
@@ -950,7 +950,7 @@ void md5_one (const packagesource& pkgsource)
 
     if (pkgsource.md5 != tempMD5)
     {
-      log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
+      Log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
         << " - MD5 mismatch: Ini-file: " << pkgsource.md5.str()
         << " != On-disk: " << tempMD5.str() << endLog;
       throw new Exception (TOSTRING(__LINE__) " " __FILE__,
@@ -958,7 +958,7 @@ void md5_one (const packagesource& pkgsource)
                            APPERR_CORRUPT_PACKAGE);
     }
 
-    log (LOG_BABBLE) << "MD5 verified OK: " << fullname << " "
+    Log (LOG_BABBLE) << "MD5 verified OK: " << fullname << " "
       << pkgsource.md5.str() << endLog;
   }
 }

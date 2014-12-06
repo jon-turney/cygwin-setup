@@ -83,7 +83,7 @@ io_stream::factory (io_stream * parent)
    * case io_stream * foo = new bz2
    * return foo
    */
-  log (LOG_TIMESTAMP) <<  "io_stream::factory has been called" << endLog;
+  Log (LOG_TIMESTAMP) <<  "io_stream::factory has been called" << endLog;
   return NULL;
 }
 
@@ -127,7 +127,7 @@ int
 io_stream::mklink (const std::string& from, const std::string& to,
 		   io_stream_link_t linktype)
 {
-  log (LOG_BABBLE) << "io_stream::mklink (" << from << "->" << to << ")"
+  Log (LOG_BABBLE) << "io_stream::mklink (" << from << "->" << to << ")"
     << endLog;
   IOStreamProvider const *fromp = findProvider (from);
   IOStreamProvider const *top = findProvider (to);
@@ -149,7 +149,7 @@ io_stream::move_copy (const std::string& from, const std::string& to)
   io_stream *out = io_stream::open (from, "rb", 0);
   if (io_stream::copy (in, out))
     {
-      log (LOG_TIMESTAMP) << "Failed copy of " << from << " to " << to
+      Log (LOG_TIMESTAMP) << "Failed copy of " << from << " to " << to
 	<< endLog;
       delete out;
       io_stream::remove (to);
@@ -179,7 +179,7 @@ ssize_t io_stream::copy (io_stream * in, io_stream * out)
       countout = out->write (buffer, countin);
       if (countout != countin)
 	{
-	  log (LOG_TIMESTAMP) << "io_stream::copy failed to write "
+	  Log (LOG_TIMESTAMP) << "io_stream::copy failed to write "
 	    << countin << " bytes" << endLog;
 	  return countout ? countout : -1;
 	}

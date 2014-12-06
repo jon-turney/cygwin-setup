@@ -73,12 +73,12 @@ IniDBBuilderPackage::buildPackage (const std::string& name)
 #if DEBUG
   if (cp)
     {
-      log (LOG_BABBLE) << "Finished with package " << cp->name << endLog;
+      Log (LOG_BABBLE) << "Finished with package " << cp->name << endLog;
       if (cbpv)
 	{
-	  log (LOG_BABBLE) << "Version " << cbpv.Canonical_version() << endLog;
-	  log (LOG_BABBLE) << "Depends:" << endLog;
-	  dumpAndList (cbpv.depends(), log(LOG_BABBLE));
+	  Log (LOG_BABBLE) << "Version " << cbpv.Canonical_version() << endLog;
+	  Log (LOG_BABBLE) << "Depends:" << endLog;
+	  dumpAndList (cbpv.depends(), Log (LOG_BABBLE));
 	}
     }
 #endif
@@ -96,7 +96,7 @@ IniDBBuilderPackage::buildPackage (const std::string& name)
   currentAndList = NULL;
   trust = TRUST_CURR;
 #if DEBUG
-  log (LOG_BABBLE) << "Created package " << name << endLog;
+  Log (LOG_BABBLE) << "Created package " << name << endLog;
 #endif
 }
 
@@ -202,9 +202,9 @@ void
 IniDBBuilderPackage::buildBeginDepends ()
 {
 #if DEBUG
-  log (LOG_BABBLE) << "Beginning of a depends statement for " << cp->name 
+  Log (LOG_BABBLE) << "Beginning of a depends statement for " << cp->name
     << endLog;
-  dumpAndList (currentAndList, log(LOG_BABBLE));
+  dumpAndList (currentAndList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -215,8 +215,8 @@ void
 IniDBBuilderPackage::buildBeginPreDepends ()
 {
 #if DEBUG
-  log (LOG_BABBLE) << "Beginning of a predepends statement" << endLog;
-  dumpAndList (currentAndList, log(LOG_BABBLE));
+  Log (LOG_BABBLE) << "Beginning of a predepends statement" << endLog;
+  dumpAndList (currentAndList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -228,7 +228,7 @@ IniDBBuilderPackage::buildPriority (const std::string& priority)
 {
   cp->priority = priority;
 #if DEBUG
-  log (LOG_BABBLE) << "Package " << cp->name << " is " << priority << endLog;
+  Log (LOG_BABBLE) << "Package " << cp->name << " is " << priority << endLog;
 #endif
 }
 
@@ -237,7 +237,7 @@ IniDBBuilderPackage::buildInstalledSize (const std::string& size)
 {
   cbpv.source()->setInstalledSize (atoi(size.c_str()));
 #if DEBUG
-  log (LOG_BABBLE) << "Installed size for " << cp->name << " is " << cbpv.source()->installedSize() << endLog;
+  Log (LOG_BABBLE) << "Installed size for " << cp->name << " is " << cbpv.source()->installedSize() << endLog;
 #endif
 }
 
@@ -254,7 +254,7 @@ IniDBBuilderPackage::buildArchitecture (const std::string& arch)
 {
   cp->architecture = arch;
 #if DEBUG
-  log (LOG_BABBLE) << "Package " << cp->name << " is for " << arch << " architectures." << endLog;
+  Log (LOG_BABBLE) << "Package " << cp->name << " is for " << arch << " architectures." << endLog;
 #endif
 }
 
@@ -282,8 +282,8 @@ void
 IniDBBuilderPackage::buildBeginRecommends ()
 {
 #if DEBUG
-  log (LOG_BABBLE) << "Beginning of a recommends statement" << endLog;
-  dumpAndList (currentAndList, log(LOG_BABBLE));
+  Log (LOG_BABBLE) << "Beginning of a recommends statement" << endLog;
+  dumpAndList (currentAndList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -294,8 +294,8 @@ void
 IniDBBuilderPackage::buildBeginSuggests ()
 {
 #if DEBUG
-  log (LOG_BABBLE) << "Beginning of a suggests statement" << endLog;
-  dumpAndList (currentAndList, log(LOG_BABBLE));
+  Log (LOG_BABBLE) << "Beginning of a suggests statement" << endLog;
+  dumpAndList (currentAndList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -306,8 +306,8 @@ void
 IniDBBuilderPackage::buildBeginReplaces ()
 {
 #if DEBUG
-  log (LOG_BABBLE) << "Beginning of a replaces statement" << endLog;
-  dumpAndList (currentAndList, log(LOG_BABBLE));
+  Log (LOG_BABBLE) << "Beginning of a replaces statement" << endLog;
+  dumpAndList (currentAndList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -318,8 +318,8 @@ void
 IniDBBuilderPackage::buildBeginConflicts ()
 {
 #if DEBUG
-  log (LOG_BABBLE) << "Beginning of a conflicts statement" << endLog;
-  dumpAndList (currentAndList, log(LOG_BABBLE));
+  Log (LOG_BABBLE) << "Beginning of a conflicts statement" << endLog;
+  dumpAndList (currentAndList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -330,8 +330,8 @@ void
 IniDBBuilderPackage::buildBeginProvides ()
 {
 #if DEBUG
-  log (LOG_BABBLE) << "Beginning of a provides statement" << endLog;
-  dumpAndList (currentAndList, log(LOG_BABBLE));
+  Log (LOG_BABBLE) << "Beginning of a provides statement" << endLog;
+  dumpAndList (currentAndList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -342,21 +342,21 @@ void
 IniDBBuilderPackage::buildBeginBuildDepends ()
 {
 #if DEBUG
-  log (LOG_BABBLE) << "Beginning of a Build-Depends statement" << endLog;
-  dumpAndList (currentAndList, log(LOG_BABBLE));
+  Log (LOG_BABBLE) << "Beginning of a Build-Depends statement" << endLog;
+  dumpAndList (currentAndList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
   currentAndList = cspv.depends ();
 }
 
-  
+
 void
 IniDBBuilderPackage::buildBeginBinary ()
 {
 #if DEBUG
-  log (LOG_BABBLE) << "Beginning of a Binary statement" << endLog;
-  dumpAndList (currentAndList, log(LOG_BABBLE));
+  Log (LOG_BABBLE) << "Beginning of a Binary statement" << endLog;
+  dumpAndList (currentAndList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
@@ -370,24 +370,24 @@ IniDBBuilderPackage::buildDescription (const std::string& descline)
     {
       cbpv.set_ldesc(cbpv.LDesc() + descline + "\n");
 #if DEBUG
-      log (LOG_BABBLE) << "Description for " << cp->name << ": \"" << 
+      Log (LOG_BABBLE) << "Description for " << cp->name << ": \"" <<
 	descline << "\"." << endLog;
 #endif
     }
   else
     _feedback.warning ((std::string ("Attempt to set description for package")
-                        + std::string(cp->name) 
+                        + std::string(cp->name)
 		       + "before creation of a version.").c_str());
 }
 
-void 
+void
 IniDBBuilderPackage::buildSourceName (const std::string& name)
 {
   if (cbpv)
     {
       cbpv.setSourcePackageSpecification (PackageSpecification (name));
 #if DEBUG
-      log (LOG_BABBLE) << "\"" << cbpv.sourcePackageSpecification() << 
+      Log (LOG_BABBLE) << "\"" << cbpv.sourcePackageSpecification() <<
 	"\" is the source package for " << cp->name << "." << endLog;
 #endif
     }
@@ -405,7 +405,7 @@ IniDBBuilderPackage::buildSourceNameVersion (const std::string& version)
       cbpv.sourcePackageSpecification().setOperator (PackageSpecification::Equals);
       cbpv.sourcePackageSpecification().setVersion (version);
 #if DEBUG
-      log (LOG_BABBLE) << "The source version needed for " << cp->name << 
+      Log (LOG_BABBLE) << "The source version needed for " << cp->name <<
 	" is " << version << "." << endLog;
 #endif
     }
@@ -421,12 +421,12 @@ IniDBBuilderPackage::buildPackageListAndNode ()
   if (currentAndList)
     {
 #if DEBUG
-      log (LOG_BABBLE) << "New AND node for a package list" << endLog;
+      Log (LOG_BABBLE) << "New AND node for a package list" << endLog;
       if (currentOrList)
     	{
-     	  ostream &os = log (LOG_BABBLE);
+     	  ostream &os = Log (LOG_BABBLE);
      	  os << "Current OR list is :";
-     	  for (vector<PackageSpecification *>::const_iterator i= currentOrList->begin(); 
+     	  for (vector<PackageSpecification *>::const_iterator i= currentOrList->begin();
      	       i != currentOrList->end(); ++i)
      	      os << endl << **i;
      	  os << endLog;
@@ -450,7 +450,7 @@ IniDBBuilderPackage::buildPackageListOrNode (const std::string& packageName)
       currentSpec = new PackageSpecification (packageName);
       currentOrList->push_back (currentSpec);
 #if DEBUG
-      log (LOG_BABBLE) << "New OR node in a package list refers to \"" <<
+      Log (LOG_BABBLE) << "New OR node in a package list refers to \"" <<
         *currentSpec << "\"." << endLog;
 #endif
     }
@@ -467,7 +467,7 @@ IniDBBuilderPackage::buildPackageListOperator (PackageSpecification::_operators 
     {
       currentSpec->setOperator (_operator);
 #if DEBUG
-      log (LOG_BABBLE) << "Current specification is " << *currentSpec << "." <<
+      Log (LOG_BABBLE) << "Current specification is " << *currentSpec << "." <<
 	endLog;
 #endif
     }
@@ -485,7 +485,7 @@ IniDBBuilderPackage::buildPackageListOperatorVersion (const std::string& aVersio
     {
       currentSpec->setVersion (aVersion);
 #if DEBUG
-      log (LOG_BABBLE) << "Current specification is " << *currentSpec << "." <<
+      Log (LOG_BABBLE) << "Current specification is " << *currentSpec << "." <<
 	endLog;
 #endif
     }
@@ -532,7 +532,7 @@ IniDBBuilderPackage::add_correct_version()
         cbpv = *n;
         merged = 1;
 #if DEBUG
-        log (LOG_BABBLE) << cp->name << " merged with an existing version " << cbpv.Canonical_version() << endLog;
+        Log (LOG_BABBLE) << cp->name << " merged with an existing version " << cbpv.Canonical_version() << endLog;
 #endif
       }
 
@@ -540,7 +540,7 @@ IniDBBuilderPackage::add_correct_version()
     {
       cp->add_version (cbpv);
 #if DEBUG
-      log (LOG_BABBLE) << cp->name << " version " << cbpv.Canonical_version() << " added" << endLog;
+      Log (LOG_BABBLE) << cp->name << " version " << cbpv.Canonical_version() << " added" << endLog;
 #endif
     }
 
@@ -568,7 +568,7 @@ IniDBBuilderPackage::add_correct_version()
       int comparison = packageversion::compareVersions(cbpv, *v);
 
       if ((bool)(*v))
-        log (LOG_BABBLE) << "package " << cp->name << " comparing versions " << cbpv.Canonical_version() << " and " << v->Canonical_version() << ", result was " << comparison << endLog;
+        Log (LOG_BABBLE) << "package " << cp->name << " comparing versions " << cbpv.Canonical_version() << " and " << v->Canonical_version() << ", result was " << comparison << endLog;
 
       if (comparison > 0)
         {
@@ -583,7 +583,7 @@ IniDBBuilderPackage::process_src (packagesource &src, const std::string& path)
   if (!src.Canonical())
     src.set_canonical (path.c_str());
   src.sites.push_back(site(parse_mirror));
-  
+
   if (!cbpv.Canonical_version ().size())
     {
       fileparse f;

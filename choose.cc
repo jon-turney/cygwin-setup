@@ -149,7 +149,7 @@ ChooserPage::createListview ()
   chooser->Show(SW_SHOW);
   chooser->setViewMode (PickView::views::Category);
   if (!SetDlgItemText (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-    log (LOG_BABBLE) << "Failed to set View button caption %ld" <<
+    Log (LOG_BABBLE) << "Failed to set View button caption %ld" <<
 	 GetLastError () << endLog;
 
   /* FIXME: do we need to init the desired fields ? */
@@ -303,7 +303,7 @@ ChooserPage::OnUnattended()
 void
 ChooserPage::logResults()
 {
-  log (LOG_BABBLE) << "Chooser results..." << endLog;
+  Log (LOG_BABBLE) << "Chooser results..." << endLog;
   packagedb db;
 
   for (packagedb::packagecollection::iterator i = db.packages.begin(); i != db.packages.end(); i++)
@@ -414,7 +414,7 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       chooser->cycleViewMode ();
       if (!SetDlgItemText
         (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-      log (LOG_BABBLE) << "Failed to set View button caption " <<
+      Log (LOG_BABBLE) << "Failed to set View button caption " <<
            GetLastError () << endLog;
       break;
 

@@ -251,7 +251,7 @@ ConnectedLoopFinder::doIt()
       if (pkg.installed && !visitOrder[&pkg])
 	visit (&pkg);
     }
-  log (LOG_BABBLE) << "Visited: " << visited << " nodes out of "
+  Log (LOG_BABBLE) << "Visited: " << visited << " nodes out of "
                    << db.packages.size() << " while creating dependency order."
                    << endLog;
 }
@@ -285,7 +285,7 @@ ConnectedLoopFinder::visit(packagemeta *nodeToVisit)
   visitOrder[nodeToVisit] = visited;
 
 #if DEBUG
-  log (LOG_PLAIN) << "visited '" << nodeToVisit->name << "', assigned id " << visited << endLog;
+  Log (LOG_PLAIN) << "visited '" << nodeToVisit->name << "', assigned id " << visited << endLog;
 #endif
 
   size_t minimumVisitId = visited;
@@ -307,7 +307,7 @@ ConnectedLoopFinder::visit(packagemeta *nodeToVisit)
 	  const packagedb::packagecollection::iterator n = db.packages.find((*i)->packageName());
 
 	  if (n == db.packages.end())
-	     log (LOG_PLAIN) << "Search for package '" << (*i)->packageName() << "' failed." << endLog;
+	     Log (LOG_PLAIN) << "Search for package '" << (*i)->packageName() << "' failed." << endLog;
 	   else
 	   {
 	       packagemeta *nodeJustVisited = n->second;
@@ -349,7 +349,7 @@ packagedb::connectedBegin()
            dependencyOrderedPackages.begin();
            i != dependencyOrderedPackages.end(); ++i)
         s = s + (*i)->name + " ";
-      log (LOG_BABBLE) << s << endLog;
+      Log (LOG_BABBLE) << s << endLog;
     }
   return dependencyOrderedPackages.begin();
 }
@@ -445,7 +445,7 @@ packagedb::defaultTrust (trusts trust)
        n != packagedb::categories.end(); ++n)
     if (!n->second.size())
       {
-        log (LOG_BABBLE) << "Removing empty category " << n->first << endLog;
+        Log (LOG_BABBLE) << "Removing empty category " << n->first << endLog;
         packagedb::categories.erase (n++);
       }
 }

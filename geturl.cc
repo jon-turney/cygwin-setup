@@ -113,14 +113,14 @@ progress (int bytes)
 static void
 getUrlToStream (const string &_url, io_stream *output)
 {
-  log (LOG_BABBLE) << "getUrlToStream " << _url << endLog;
+  Log (LOG_BABBLE) << "getUrlToStream " << _url << endLog;
   is_local_install = (source == IDC_SOURCE_LOCALDIR);
   init_dialog (_url, 0);
   NetIO *n = NetIO::open (_url.c_str());
   if (!n || !n->ok ())
     {
       delete n;
-      log (LOG_BABBLE) <<  "getUrlToStream failed!" << endLog;
+      Log (LOG_BABBLE) <<  "getUrlToStream failed!" << endLog;
       throw new Exception (TOSTRING(__LINE__) " " __FILE__, "Error opening url",  APPERR_IO_ERROR);
     }
 
@@ -157,14 +157,14 @@ get_url_to_membuf (const string &_url, HWND owner)
   io_stream_memory *membuf = new io_stream_memory ();
   try 
     {
-      log (LOG_BABBLE) << "get_url_to_membuf " << _url << endLog;
+      Log (LOG_BABBLE) << "get_url_to_membuf " << _url << endLog;
       getUrlToStream (_url, membuf);
       
       if (membuf->seek (0, IO_SEEK_SET))
     	{
     	  if (membuf)
       	      delete membuf;
-    	  log (LOG_BABBLE) << "get_url_to_membuf(): seek (0) failed for membuf!" << endLog;
+    	  Log (LOG_BABBLE) << "get_url_to_membuf(): seek (0) failed for membuf!" << endLog;
     	  return 0;
 	}
       return membuf;
@@ -173,7 +173,7 @@ get_url_to_membuf (const string &_url, HWND owner)
     {
       if (e->errNo() != APPERR_IO_ERROR)
 	throw e;
-      log (LOG_BABBLE) << "get_url_to_membuf failed!" << endLog;
+      Log (LOG_BABBLE) << "get_url_to_membuf failed!" << endLog;
       delete membuf;
       return 0;
     }
@@ -191,7 +191,7 @@ get_url_to_string (const string &_url, HWND owner)
     {
       /* zero length, or error retrieving length */
       delete stream;
-      log (LOG_BABBLE) << "get_url_to_string(): couldn't retrieve buffer size, or zero length buffer" << endLog;
+      Log (LOG_BABBLE) << "get_url_to_string(): couldn't retrieve buffer size, or zero length buffer" << endLog;
       return string();
     }
   char temp [bytes + 1];
@@ -208,7 +208,7 @@ get_url_to_file (const string &_url,
                  int expected_length,
 		 HWND owner)
 {
-  log (LOG_BABBLE) << "get_url_to_file " << _url << " " << _filename << endLog;
+  Log (LOG_BABBLE) << "get_url_to_file " << _url << " " << _filename << endLog;
   if (total_download_bytes > 0)
     {
       int df = diskfull (get_root_dir ().c_str());
@@ -222,7 +222,7 @@ get_url_to_file (const string &_url,
   if (!n || !n->ok ())
     {
       delete n;
-      log (LOG_BABBLE) <<  "get_url_to_file failed!" << endLog;
+      Log (LOG_BABBLE) <<  "get_url_to_file failed!" << endLog;
       return 1;
     }
 

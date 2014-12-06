@@ -131,7 +131,7 @@ io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string
   errno = 0;
   if (!name.size())
   {
-    log(LOG_TIMESTAMP) << "io_stream_cygfile: Bad parameters" << endLog;
+    Log (LOG_TIMESTAMP) << "io_stream_cygfile: Bad parameters" << endLog;
     return;
   }
 
@@ -142,7 +142,7 @@ io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string
   if (!get_root_dir ().size())
   {
     /* TODO: assign a errno for "no mount table :} " */
-    log(LOG_TIMESTAMP) << "io_stream_cygfile: Error reading mounts" << endLog;
+    Log (LOG_TIMESTAMP) << "io_stream_cygfile: Error reading mounts" << endLog;
     return;
   }
 
@@ -156,7 +156,7 @@ io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string
       if (!fp)
       {
 	lasterr = errno;
-	log(LOG_TIMESTAMP) << "io_stream_cygfile: fopen(" << name << ") failed " << errno << " "
+	Log (LOG_TIMESTAMP) << "io_stream_cygfile: fopen(" << name << ") failed " << errno << " "
 	  << strerror(errno) << endLog;
       }
     }
@@ -253,14 +253,14 @@ io_stream_cygfile::mklink (const std::string& _from, const std::string& _to,
 	io_stream *in = io_stream::open (std::string ("cygfile://") + to, "rb", 0);
 	if (!in)
 	  {
-	    log (LOG_TIMESTAMP) << "could not open " << to
+	    Log (LOG_TIMESTAMP) << "could not open " << to
               << " for reading in mklink" << endLog;
 	    return 1;
 	  }
 	io_stream *out = io_stream::open (std::string ("cygfile://") + from, "wb", 0644);
 	if (!out)
 	  {
-	    log (LOG_TIMESTAMP) << "could not open " << from
+	    Log (LOG_TIMESTAMP) << "could not open " << from
               << " for writing in mklink" << endLog;
 	    delete in;
 	    return 1;
@@ -268,7 +268,7 @@ io_stream_cygfile::mklink (const std::string& _from, const std::string& _to,
 
 	if (io_stream::copy (in, out))
 	  {
-	    log (LOG_TIMESTAMP) << "Failed to hardlink " << from << "->"
+	    Log (LOG_TIMESTAMP) << "Failed to hardlink " << from << "->"
               << to << " during file copy." << endLog;
 	    delete in;
 	    delete out;

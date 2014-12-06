@@ -650,7 +650,7 @@ bool PickView::registerWindowClass ()
   // All set, try to register
   WindowClassAtom = RegisterClassEx (&wc);
   if (WindowClassAtom == 0)
-    log (LOG_BABBLE) << "Failed to register listview " << GetLastError () << endLog;
+    Log (LOG_BABBLE) << "Failed to register listview " << GetLastError () << endLog;
   return WindowClassAtom != 0;
 }
 
@@ -960,7 +960,7 @@ PickView::Create (Window * parent, DWORD Style, RECT *r)
                   reinterpret_cast<void *>((Window *)this));
   if (GetHWND() == NULL)
     {
-      log (LOG_BABBLE) << "Failed to create PickView " << GetLastError () << endLog;
+      Log (LOG_BABBLE) << "Failed to create PickView " << GetLastError () << endLog;
       return false;
     }
 

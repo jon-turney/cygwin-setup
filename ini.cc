@@ -85,7 +85,7 @@ public:
       if (pos * 100 / max > lastpct)
 	{
 	  lastpct = pos * 100 / max;
-	  /* log (LOG_BABBLE) << lastpct << "% (" << pos << " of " << max
+	  /* Log (LOG_BABBLE) << lastpct << "% (" << pos << " of " << max
 	    << " bytes of ini file read)" << endLog; */
 	}
       Progress.SetBar1(pos, max);
@@ -102,7 +102,7 @@ public:
     }
   virtual void babble(const std::string& message)const
     {
-      log (LOG_BABBLE) << message << endLog;
+      Log (LOG_BABBLE) << message << endLog;
     }
   virtual void warning (const std::string& message)const
     {
@@ -197,7 +197,7 @@ do_remote_ini (HWND owner)
 		{
 		  /* There was a problem decompressing bz2.  */
 		  ini_file = NULL;
-		  log (LOG_PLAIN) <<
+		  Log (LOG_PLAIN) <<
 		    "Warning: Error code " << bz2_stream->error() << " occurred while uncompressing " <<
 		    current_ini_name << " - possibly truncated or corrupt bzip2"
 		    " file.  Retrying with uncompressed version." << endLog;

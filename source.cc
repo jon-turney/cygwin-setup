@@ -133,7 +133,7 @@ SourcePage::OnBack ()
 void
 SourcePage::OnDeactivate ()
 {
-  log (LOG_PLAIN) << "source: "
+  Log (LOG_PLAIN) << "source: "
     << ((source == IDC_SOURCE_DOWNLOAD) ? "download" :
         (source == IDC_SOURCE_NETINST) ? "network install" : "from local dir")
     << endLog;

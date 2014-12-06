@@ -62,7 +62,7 @@ validateCachedPackage (const std::string& fullname, packagesource & pkgsource)
   DWORD size = get_file_size(fullname);
   if (size != pkgsource.size)
   {
-    log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
+    Log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
       << " - Size mismatch: Ini-file: " << pkgsource.size
       << " != On-disk: " << size << endLog;
     return false;
@@ -165,7 +165,7 @@ download_one (packagesource & pkgsource, HWND owner)
 	  size_t size = get_file_size ("file://" + local + ".tmp");
 	  if (size == pkgsource.size)
 	    {
-	      log (LOG_PLAIN) << "Downloaded " << local << endLog;
+	      Log (LOG_PLAIN) << "Downloaded " << local << endLog;
 	      if (_access (local.c_str(), 0) == 0)
 		remove (local.c_str());
 	      rename ((local + ".tmp").c_str(), local.c_str());
@@ -177,7 +177,7 @@ download_one (packagesource & pkgsource, HWND owner)
 	    }
 	  else
 	    {
-	      log (LOG_PLAIN) << "Download " << local << " wrong size (" <<
+	      Log (LOG_PLAIN) << "Download " << local << " wrong size (" <<
 		size << " actual vs " << pkgsource.size << " expected)" << 
 		endLog;
 	      remove ((local + ".tmp").c_str());
@@ -286,13 +286,13 @@ do_download_thread (HINSTANCE h, HWND owner)
       static int retries = 4;
       if (unattended_mode && retries-- <= 0)
         {
-	  log (LOG_PLAIN) << "download error in unattended_mode: out of retries" << endLog;
+	  Log (LOG_PLAIN) << "download error in unattended_mode: out of retries" << endLog;
 	  exit_msg = IDS_INSTALL_INCOMPLETE;
 	  LogSingleton::GetInstance().exit (1);
 	}
       else if (unattended_mode)
         {
-	  log (LOG_PLAIN) << "download error in unattended_mode: " << retries
+	  Log (LOG_PLAIN) << "download error in unattended_mode: " << retries
 	    << (retries > 1 ? " retries" : " retry") << " remaining." << endLog;
 	  return IDD_SITE;
 	}

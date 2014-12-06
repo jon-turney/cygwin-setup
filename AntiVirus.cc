@@ -138,14 +138,14 @@ AntiVirusPage::OnDeactivate ()
   if (!ControlService (McAfeeService, SERVICE_CONTROL_STOP, &status) &&
       GetLastError() != ERROR_SERVICE_NOT_ACTIVE)
     {
-      log (LOG_PLAIN) << "Could not stop McAfee service, disabled AV logic"
+      Log (LOG_PLAIN) << "Could not stop McAfee service, disabled AV logic"
 	<< endLog;
       disableAV = IDC_LEAVE_AV;
       return;
     }
 
   AVRunning = false;
-  log (LOG_PLAIN) << "Disabled Anti Virus software" << endLog;
+  Log (LOG_PLAIN) << "Disabled Anti Virus software" << endLog;
 }
 
 long
@@ -167,7 +167,7 @@ detect ()
     SCM = OpenSCManager (NULL, NULL, SC_MANAGER_ALL_ACCESS);
 
     if (!SCM) {
-	log (LOG_PLAIN) << "Could not open Service control manager" << endLog;
+	Log (LOG_PLAIN) << "Could not open Service control manager" << endLog;
 	return;
     }
 
@@ -178,7 +178,7 @@ detect ()
 	SERVICE_QUERY_STATUS| SERVICE_STOP| SERVICE_START);
 
     if (!McAfeeService) {
-	log (LOG_PLAIN) << "Could not open service McShield for query, start and stop. McAfee may not be installed, or we don't have access." << endLog;
+	Log (LOG_PLAIN) << "Could not open service McShield for query, start and stop. McAfee may not be installed, or we don't have access." << endLog;
 	CloseServiceHandle(SCM);
 	return;
     }
@@ -189,7 +189,7 @@ detect ()
       {
 	CloseServiceHandle(SCM);
 	CloseServiceHandle(McAfeeService);
-	log (LOG_PLAIN) << "Couldn't determine status of McAfee service."
+	Log (LOG_PLAIN) << "Couldn't determine status of McAfee service."
 	  << endLog;
 	return;
       }
@@ -199,11 +199,11 @@ detect ()
       {
 	CloseServiceHandle(SCM);
 	CloseServiceHandle(McAfeeService);
-	log (LOG_PLAIN) << "Mcafee is already stopped, nothing to see here"
+	Log (LOG_PLAIN) << "Mcafee is already stopped, nothing to see here"
 	  << endLog;
       }
 
-    log (LOG_PLAIN) << "Found McAfee anti virus program" << endLog;
+    Log (LOG_PLAIN) << "Found McAfee anti virus program" << endLog;
     KnownAVIsPresent = true;
 }
 
@@ -225,12 +225,12 @@ AntiVirus::AtExit()
 
     if (!StartService(McAfeeService, 0, NULL))
 	{
-	  log (LOG_PLAIN) << "Could not start McAfee service again, disabled AV logic" << endLog;
+	  Log (LOG_PLAIN) << "Could not start McAfee service again, disabled AV logic" << endLog;
 	  disableAV = IDC_LEAVE_AV;
 	  return;
 	}
 
-    log (LOG_PLAIN) << "Enabled Anti Virus software" << endLog;
+    Log (LOG_PLAIN) << "Enabled Anti Virus software" << endLog;
 
     AVRunning = true;
 }

@@ -65,11 +65,11 @@ Process::kill (int force)
         {
           if (TerminateProcess(hProcess, (UINT)-1))
             {
-              log (LOG_BABBLE) << "TerminateProcess succeeded on pid " << processID << endLog;
+              Log (LOG_BABBLE) << "TerminateProcess succeeded on pid " << processID << endLog;
             }
           else
             {
-              log (LOG_BABBLE) << "TerminateProcess failed " << GetLastError () << " for pid " << processID << endLog;
+              Log (LOG_BABBLE) << "TerminateProcess failed " << GetLastError () << " for pid " << processID << endLog;
             }
           CloseHandle (hProcess);
         }
@@ -129,7 +129,7 @@ Process::isModuleLoadedInProcess (const WCHAR *moduleName)
           // Don't log ERROR_PARTIAL_COPY as expected for System process and those of different bitness
           if (GetLastError () != ERROR_PARTIAL_COPY)
             {
-              log (LOG_BABBLE) << "EnumProcessModules failed " << GetLastError () << " for pid " << processID << endLog;
+              Log (LOG_BABBLE) << "EnumProcessModules failed " << GetLastError () << " for pid " << processID << endLog;
             }
 
           cbNeeded = 0;
@@ -204,7 +204,7 @@ Process::snapshot (void)
     {
       if (!EnumProcesses (pProcessIDs, bytesAllocated, &bytesReturned))
         {
-          log (LOG_BABBLE) << "EnumProcesses failed " << GetLastError () << endLog;
+          Log (LOG_BABBLE) << "EnumProcesses failed " << GetLastError () << endLog;
           bytesReturned = 0;
         }
 

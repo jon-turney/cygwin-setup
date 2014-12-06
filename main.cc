@@ -144,7 +144,7 @@ main_display ()
   DesktopSetupPage Desktop;
   PropSheet MainWindow;
 
-  log (LOG_TIMESTAMP) << "Current Directory: " << local_dir << endLog;
+  Log (LOG_TIMESTAMP) << "Current Directory: " << local_dir << endLog;
 
   // Initialize common controls
   INITCOMMONCONTROLSEX icce = { sizeof (INITCOMMONCONTROLSEX),
@@ -288,14 +288,14 @@ WinMain (HINSTANCE h,
 	theLog->setFile (LOG_BABBLE, local_dir + sep + "setup.log.full", false);
 	theLog->setFile (0, local_dir + sep + "setup.log", true);
 
-	log (LOG_PLAIN) << "Starting cygwin install, version "
+	Log (LOG_PLAIN) << "Starting cygwin install, version "
 			<< setup_version << endLog;
 	/* Set the default DACL and Group. */
 	nt_sec.setDefaultSecurity ();
       }
 
     if (HelpOption)
-      GetOption::GetInstance ().ParameterUsage (log (LOG_PLAIN)
+      GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN)
 						<< "\nCommand Line Options:\n");
     else
       {

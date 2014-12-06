@@ -1,5 +1,43 @@
 2014-11-22  Achim Gratz  <Stromeko@nexgo.de>
 
+	* LogSingleton.h: Rename log macro to Log to avoid collision with
+	standard math function in some versions of g++.
+	* AntiVirus.cc: Replace invocations of log with Log.
+	* IniDBBuilderPackage.cc: Ditto.
+	* LogFile.cc: Ditto.
+	* PickView.cc: Ditto.
+	* archive.cc: Ditto.
+	* archive_tar.cc: Ditto.
+	* choose.cc: Ditto.
+	* cygpackage.cc: Ditto.
+	* download.cc: Ditto.
+	* geturl.cc: Ditto.
+	* ini.cc: Ditto.
+	* install.cc: Ditto.
+	* io_stream.cc: Ditto.
+	* io_stream_cygfile.cc: Ditto.
+	* localdir.cc: Ditto.
+	* main.cc: Ditto.
+	* mount.cc: Ditto.
+	* msg.cc: Ditto.
+	* net.cc: Ditto.
+	* nio-ftp.cc: Ditto.
+	* package_db.cc: Ditto.
+	* package_meta.cc: Ditto.
+	* package_version.cc: Ditto.
+	* prereq.cc: Ditto.
+	* processlist.cc: Ditto.
+	* proppage.cc: Ditto.
+	* root.cc: Ditto.
+	* script.cc: Ditto.
+	* site.cc: Ditto.
+	* source.cc: Ditto.
+	* threebar.cc: Ditto.
+	* win32.cc: Ditto.
+	* window.cc: Ditto.
+
+2014-11-22  Achim Gratz  <Stromeko@nexgo.de>
+
 	* main.cc (WinMain): Show parameter usage before exiting when
 	options processing was unsuccessful (this usually means that an
 	unknown option was given on the command line).

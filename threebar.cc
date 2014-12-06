@@ -251,7 +251,7 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// because we'll only loop forever.
 		if (unattended_mode)
 		  {
-		    log (LOG_PLAIN)
+		    Log (LOG_PLAIN)
 			<< "can't install from bad local package dir"
 			<< endLog;
 		    exit_msg = IDS_INSTALL_INCOMPLETE;
@@ -267,7 +267,7 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 		static int retries = 4;
 		if (unattended_mode && retries-- <= 0)
 		  {
-		    log (LOG_PLAIN)
+		    Log (LOG_PLAIN)
 			<< "download/verify error in unattended_mode: out of retries"
 			<< endLog;
 		    exit_msg = IDS_INSTALL_INCOMPLETE;

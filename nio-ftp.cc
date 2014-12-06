@@ -47,7 +47,7 @@ ftp_line (SimpleSocket * s)
   do
     {
       last_line = s->gets ();
-      log (LOG_BABBLE) << "ftp > " << (last_line ? last_line : "error")
+      Log (LOG_BABBLE) << "ftp > " << (last_line ? last_line : "error")
         << endLog;
     }
   while (last_line && (!isdigit (last_line[0]) || last_line[3] != ' '));
@@ -125,7 +125,7 @@ control_reconnect:
   while (code == 226);		/* previous RETR */
   if (code == 421)              /* Timeout, retry */
     {
-      log (LOG_BABBLE) << "FTP timeout -- reconnecting" << endLog;
+      Log (LOG_BABBLE) << "FTP timeout -- reconnecting" << endLog;
       delete [] cmd_host;
       cmd_host = new char[1]; cmd_host[0] = '\0';
       goto control_reconnect;

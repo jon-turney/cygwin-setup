@@ -69,7 +69,7 @@ archive_tar::archive_tar (io_stream * original)
   if (sizeof (state.tar_header) != 512)
     {
       /* drastic, but important */
-      log (LOG_TIMESTAMP) << "compilation error: tar header struct not 512"
+      Log (LOG_TIMESTAMP) << "compilation error: tar header struct not 512"
 			  << " bytes (it's " << sizeof (state.tar_header)
 			  << ")" << endLog;
       LogSingleton::GetInstance().exit (1);

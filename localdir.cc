@@ -247,7 +247,7 @@ LocalDirPage::OnNext ()
   while (local_dir[local_dir.size() - 1] == '\\' || local_dir[local_dir.size() - 1] == '/')
     local_dir.erase (local_dir.size() - 1, 1);
   LocalDirSetting::save ();
-  log (LOG_PLAIN) << "Selected local directory: " << local_dir << endLog;
+  Log (LOG_PLAIN) << "Selected local directory: " << local_dir << endLog;
   
   bool tryLocalDir = true;
   while (tryLocalDir)
@@ -314,7 +314,7 @@ LocalDirPage::OnNext ()
 	    else
 	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str(), 
 	        "(unknown error)", err);
-	  log (LOG_PLAIN) << msg << endLog;
+	  Log (LOG_PLAIN) << msg << endLog;
 	  int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | 
 	    MB_ABORTRETRYIGNORE);
 	  

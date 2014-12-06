@@ -44,11 +44,11 @@ msg (const char *fmt, ...)
 int
 mbox (HWND owner, const char *buf, const char *name, int type)
 {
-  log (LOG_PLAIN) << "mbox " << name << ": " << buf << endLog;
+  Log (LOG_PLAIN) << "mbox " << name << ": " << buf << endLog;
   if (unattended_mode)
     {
       // Return some default values.
-      log (LOG_PLAIN) << "unattended_mode is set at mbox: returning default value" << endLog;
+      Log (LOG_PLAIN) << "unattended_mode is set at mbox: returning default value" << endLog;
       switch (type & MB_TYPEMASK)
 	{
 	  case MB_OK:
@@ -66,7 +66,7 @@ mbox (HWND owner, const char *buf, const char *name, int type)
 	    return IDCANCEL;
 	    break;
 	  default:
-	    log (LOG_PLAIN) << "unattended_mode failed for " << (type & MB_TYPEMASK) << endLog;
+	    Log (LOG_PLAIN) << "unattended_mode failed for " << (type & MB_TYPEMASK) << endLog;
 	    return 0;
 	}
     }

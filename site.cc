@@ -308,12 +308,12 @@ get_site_list (HINSTANCE h, HWND owner)
   const char *cached_mirrors = OnlySiteOption ? NULL : UserSettings::instance().get ("mirrors-lst");
   if (cached_mirrors)
     {
-      log (LOG_BABBLE) << "Loaded cached mirror list" << endLog;
+      Log (LOG_BABBLE) << "Loaded cached mirror list" << endLog;
       cache_is_usable = true;
     }
   else
     {
-      log (LOG_BABBLE) << "Cached mirror list unavailable" << endLog;
+      Log (LOG_BABBLE) << "Cached mirror list unavailable" << endLog;
       cache_is_usable = false;
       cached_mirrors = "";
     }
@@ -327,11 +327,11 @@ get_site_list (HINSTANCE h, HWND owner)
   else
     {
       if (!cached_mirrors[0])
-	log (LOG_BABBLE) << "Defaulting to empty mirror list" << endLog;
+	Log (LOG_BABBLE) << "Defaulting to empty mirror list" << endLog;
       else
 	{
 	  mirrors = cached_mirrors;
-	  log (LOG_BABBLE) << "Using cached mirror list" << endLog;
+	  Log (LOG_BABBLE) << "Using cached mirror list" << endLog;
 	}
       cache_is_usable = false;
       cache_needs_writing = false;
@@ -496,7 +496,7 @@ int check_dropped_mirrors (HWND h)
 				       cached_site_list.end(), *n);
 	  if (j != cached_site_list.end())
 	    {
-	      log (LOG_PLAIN) << "Dropped selected mirror: " << n->url
+	      Log (LOG_PLAIN) << "Dropped selected mirror: " << n->url
 		  << endLog;
 	      dropped_site_list.push_back (*j);
 	      if (cache_warn_urls.size())
@@ -534,7 +534,7 @@ void save_cache_file (int cache_action)
       write_cache_list (f, all_site_list);
       if (cache_action == CACHE_ACCEPT_WARN)
 	{
-	  log (LOG_PLAIN) << "Adding dropped mirrors to cache to warn again."
+	  Log (LOG_PLAIN) << "Adding dropped mirrors to cache to warn again."
 	      << endLog;
 	  *f << "# Following mirrors re-added by setup.exe to warn again about dropped urls.";
 	  write_cache_list (f, dropped_site_list);
@@ -565,7 +565,7 @@ SitePage::OnNext ()
   // Log all the selected URLs from the list.
   for (SiteList::const_iterator n = site_list.begin ();
        n != site_list.end (); ++n)
-    log (LOG_PLAIN) << "site: " << n->url << endLog;
+    Log (LOG_PLAIN) << "site: " << n->url << endLog;
 
   Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
   return IDD_INSTATUS;
@@ -686,12 +686,12 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 	    if (i == all_site_list.end())
 	      {
 		all_site_list.push_back (newsite);
-		log (LOG_BABBLE) << "Adding site: " << other_url << endLog;
+		Log (LOG_BABBLE) << "Adding site: " << other_url << endLog;
 	      }
 	    else
 	      {
 		*i = newsite;
-		log (LOG_BABBLE) << "Replacing site: " << other_url << endLog;
+		Log (LOG_BABBLE) << "Replacing site: " << other_url << endLog;
 	      }
 
 	    // Assume the user wants to use it and select it for him.

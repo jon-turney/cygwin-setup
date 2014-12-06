@@ -38,7 +38,7 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 
   /* Initialize out SD */
   if (!InitializeSecurityDescriptor (&out_sd, SECURITY_DESCRIPTOR_REVISION))
-    log (LOG_TIMESTAMP) << "InitializeSecurityDescriptor(" << fname
+    Log (LOG_TIMESTAMP) << "InitializeSecurityDescriptor(" << fname
     			<< ") failed: " << GetLastError () << endLog;
   out_sd.Control |= SE_DACL_PROTECTED;
 
@@ -46,7 +46,7 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
      Note that the current user always requires write permissions, otherwise
      creating files in directories with restricted permissions fails. */
   if (!InitializeAcl (&acl.acl , sizeof acl, ACL_REVISION))
-    log (LOG_TIMESTAMP) << "InitializeAcl(" << fname << ") failed: "
+    Log (LOG_TIMESTAMP) << "InitializeAcl(" << fname << ") failed: "
     			<< GetLastError () << endLog;
   /* USER */
   /* Default user to current user. */
@@ -58,7 +58,7 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
   if ((mode & 0300) == 0300) // S_IWUSR | S_IXUSR
     u_attribute |= FILE_DELETE_CHILD;
   if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, u_attribute, owner_sid))
-    log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+    Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
     			<< ", owner) failed: " << GetLastError () << endLog;
   else
     offset++;
@@ -76,7 +76,7 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
   if ((mode & 01030) == 00030) // S_IWGRP | S_IXGRP, !S_ISVTX
     g_attribute |= FILE_DELETE_CHILD;
   if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, g_attribute, group_sid))
-    log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+    Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
     			<< ", group) failed: " << GetLastError () << endLog;
   else
     offset++;
@@ -92,7 +92,7 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
     o_attribute |= FILE_DELETE_CHILD;
   if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, o_attribute,
 			    everyOneSID.theSID ()))
-    log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+    Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
     			<< ", everyone) failed: " << GetLastError () << endLog;
   else
     offset++;
@@ -107,7 +107,7 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
       	attribute |= FILE_READ_DATA;
       if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, attribute,
 				nullSID.theSID ()))
-	log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+	Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
 			    << ", null) failed: " << GetLastError () << endLog;
       else
 	offset++;
@@ -135,7 +135,7 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 	}
       if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, u_attribute,
 				cr_ownerSID.theSID ()))
-	log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+	Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
 			    << ", creator owner) failed: "
 			    << GetLastError () << endLog;
       else
@@ -148,7 +148,7 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 	}
       if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, g_attribute,
 				cr_groupSID.theSID ()))
-	log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+	Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
 			    << ", creator group) failed: "
 			    << GetLastError () << endLog;
       else
@@ -161,7 +161,7 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 	}
       if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, o_attribute,
 				everyOneSID.theSID ()))
-	log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+	Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
 			    << ", everyone inherit) failed: "
 			    << GetLastError () << endLog;
       else
@@ -176,7 +176,7 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 
   /* Set SD's DACL to just created ACL. */
   if (!SetSecurityDescriptorDacl (&out_sd, TRUE, &acl.acl, FALSE))
-    log (LOG_TIMESTAMP) << "SetSecurityDescriptorDacl(" << fname
+    Log (LOG_TIMESTAMP) << "SetSecurityDescriptorDacl(" << fname
     			<< ") failed: " << GetLastError () << endLog;
   return &out_sd;
 }
@@ -184,7 +184,7 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 void
 NTSecurity::NoteFailedAPI (const std::string &api)
 {
-  log (LOG_TIMESTAMP) << api << "() failed: " << GetLastError () << endLog;
+  Log (LOG_TIMESTAMP) << api << "() failed: " << GetLastError () << endLog;
 }
 
 void
@@ -202,22 +202,22 @@ NTSecurity::initialiseWellKnownSIDs ()
       return;
   SID_IDENTIFIER_AUTHORITY nt_sid_auth = { SECURITY_NT_AUTHORITY };
   /* Get the SID for "Administrators" S-1-5-32-544 */
-  if (!AllocateAndInitializeSid (&nt_sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
+  if (!AllocateAndInitializeSid (&nt_sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID,
 				 DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
 				 &administratorsSID.theSID ()))
       return;
   /* Get the SID for "Users" S-1-5-32-545 */
-  if (!AllocateAndInitializeSid (&nt_sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID, 
+  if (!AllocateAndInitializeSid (&nt_sid_auth, 2, SECURITY_BUILTIN_DOMAIN_RID,
 				 DOMAIN_ALIAS_RID_USERS, 0, 0, 0, 0, 0, 0,
 				 &usersSID.theSID ()))
       return;
   SID_IDENTIFIER_AUTHORITY c_sid_auth = { SECURITY_CREATOR_SID_AUTHORITY };
   /* Get the SID for "CREATOR OWNER" S-1-3-0 */
-  if (!AllocateAndInitializeSid (&c_sid_auth, 1, SECURITY_CREATOR_OWNER_RID, 
+  if (!AllocateAndInitializeSid (&c_sid_auth, 1, SECURITY_CREATOR_OWNER_RID,
 				 0, 0, 0, 0, 0, 0, 0, &cr_ownerSID.theSID ()))
       return;
   /* Get the SID for "CREATOR GROUP" S-1-3-1 */
-  if (!AllocateAndInitializeSid (&c_sid_auth, 1, SECURITY_CREATOR_GROUP_RID, 
+  if (!AllocateAndInitializeSid (&c_sid_auth, 1, SECURITY_CREATOR_GROUP_RID,
 				 0, 0, 0, 0, 0, 0, 0, &cr_groupSID.theSID ()))
       return;
   wellKnownSIDsinitialized (true);
@@ -226,11 +226,11 @@ NTSecurity::initialiseWellKnownSIDs ()
 void
 NTSecurity::setDefaultDACL ()
 {
-  /* To assure that the created files have a useful ACL, the 
+  /* To assure that the created files have a useful ACL, the
      default DACL in the process token is set to full access to
      everyone. This applies to files and subdirectories created
      in directories which don't propagate permissions to child
-     objects. 
+     objects.
      To assure that the files group is meaningful, a token primary
      group of None is changed to Users or Administrators.
      This is the fallback if real POSIX permissions don't
@@ -263,7 +263,7 @@ NTSecurity::setDefaultDACL ()
     }
 
   /* Set the default DACL to the above computed ACL. */
-  if (!SetTokenInformation (token.theHANDLE(), TokenDefaultDacl, &dacl, 
+  if (!SetTokenInformation (token.theHANDLE(), TokenDefaultDacl, &dacl,
                             bufferSize))
     NoteFailedAPI ("SetTokenInformation");
 }
@@ -291,9 +291,9 @@ NTSecurity::setBackupPrivileges ()
 				  0, NULL, NULL))
 	NoteFailedAPI ("AdjustTokenPrivileges");
       else if (GetLastError () == ERROR_NOT_ALL_ASSIGNED)
-	log (LOG_TIMESTAMP) << "User has NO backup/restore rights" << endLog;
-      else 
-	log (LOG_TIMESTAMP) << "User has backup/restore rights" << endLog;
+	Log (LOG_TIMESTAMP) << "User has NO backup/restore rights" << endLog;
+      else
+	Log (LOG_TIMESTAMP) << "User has backup/restore rights" << endLog;
     }
 }
 
@@ -302,7 +302,7 @@ NTSecurity::resetPrimaryGroup ()
 {
   if (primaryGroupSID.pgrp.PrimaryGroup)
     {
-      log (LOG_TIMESTAMP) << "Changing gid back to original" << endLog;
+      Log (LOG_TIMESTAMP) << "Changing gid back to original" << endLog;
       if (!SetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
 				&primaryGroupSID, sizeof primaryGroupSID))
 	NoteFailedAPI ("SetTokenInformation");
@@ -315,7 +315,7 @@ NTSecurity::setAdminGroup ()
   TOKEN_PRIMARY_GROUP tpg;
 
   tpg.PrimaryGroup = administratorsSID.theSID ();
-  log (LOG_TIMESTAMP) << "Changing gid to Administrators" << endLog;
+  Log (LOG_TIMESTAMP) << "Changing gid to Administrators" << endLog;
   if (!SetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
 			    &tpg, sizeof tpg))
     NoteFailedAPI ("SetTokenInformation");
@@ -346,7 +346,7 @@ NTSecurity::setDefaultSecurity ()
   setDefaultDACL ();
 
   /* Get the user */
-  if (!GetTokenInformation (token.theHANDLE (), TokenUser, &ownerSID, 
+  if (!GetTokenInformation (token.theHANDLE (), TokenUser, &ownerSID,
 			    sizeof ownerSID, &size))
     {
       NoteFailedAPI ("GetTokenInformation(user)");
@@ -354,7 +354,7 @@ NTSecurity::setDefaultSecurity ()
     }
   /* Make it the owner */
   TOKEN_OWNER owner = { ownerSID.user.User.Sid };
-  if (!SetTokenInformation (token.theHANDLE (), TokenOwner, &owner, 
+  if (!SetTokenInformation (token.theHANDLE (), TokenOwner, &owner,
 			    sizeof owner))
     {
       NoteFailedAPI ("SetTokenInformation(owner)");
@@ -394,9 +394,9 @@ VersionInfo::VersionInfo ()
   v.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
   if (GetVersionEx (&v) == 0)
     {
-      log (LOG_PLAIN) << "GetVersionEx () failed: " << GetLastError () 
+      Log (LOG_PLAIN) << "GetVersionEx () failed: " << GetLastError ()
                       << endLog;
-      
+
       /* If GetVersionEx fails we really should bail with an error of some kind,
          but for now just assume we're on NT and continue.  */
       v.dwPlatformId = VER_PLATFORM_WIN32_NT;

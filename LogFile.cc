@@ -133,12 +133,12 @@ LogFile::exit (int const exit_code)
       if (LoadString (hinstance, exit_msg, fmt, sizeof (fmt)) > 0)
         {
           snprintf (buf, 1000, fmt, backslash(getFileName(LOG_BABBLE)).c_str());
-          log (LOG_PLAIN) << "note: " << buf << endLog;
+          Log (LOG_PLAIN) << "note: " << buf << endLog;
         }
     }
   
   if (exit_code != IDS_ELEVATED)
-    log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
+    Log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
 
   for (FileSet::iterator i = files.begin();
        i != files.end(); ++i)
@@ -152,7 +152,7 @@ LogFile::exit (int const exit_code)
 void
 LogFile::flushAll ()
 {
-  log (LOG_TIMESTAMP) << "Writing messages to log files without exiting" << endLog;
+  Log (LOG_TIMESTAMP) << "Writing messages to log files without exiting" << endLog;
 
   for (FileSet::iterator i = files.begin();
        i != files.end(); ++i)

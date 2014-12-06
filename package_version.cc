@@ -436,7 +436,7 @@ processOneDependency (trusts deftrust, size_t depth,
       return select (deftrust, depth, required, trusted);
   }
 
-  log (LOG_TIMESTAMP) << "Warning, the default trust level for package "
+  Log (LOG_TIMESTAMP) << "Warning, the default trust level for package "
     << trusted.Name() << " does not meet this specification " << *spec
     << endLog;
   
@@ -522,7 +522,7 @@ packageversion::compareVersions(packageversion a, packageversion b)
   int comparison = version_compare(a.Vendor_version(), b.Vendor_version());
  
 #if DEBUG
-  log (LOG_BABBLE) << "vendor version comparison " << a.Vendor_version() << " and " << b.Vendor_version() << ", result was " << comparison << endLog;
+  Log (LOG_BABBLE) << "vendor version comparison " << a.Vendor_version() << " and " << b.Vendor_version() << ", result was " << comparison << endLog;
 #endif
 
   if (comparison != 0)
@@ -532,7 +532,7 @@ packageversion::compareVersions(packageversion a, packageversion b)
 
   /* Vendor_version are tied, compare Package_version */
 #if DEBUG
-  log (LOG_BABBLE) <<  "package version comparison " << a.Package_version() << " and " << b.Package_version() << ", result was " << comparison << endLog;
+  Log (LOG_BABBLE) <<  "package version comparison " << a.Package_version() << " and " << b.Package_version() << ", result was " << comparison << endLog;
 #endif
 
   comparison = version_compare(a.Package_version(), b.Package_version());
@@ -629,17 +629,17 @@ dumpAndList (vector<vector <PackageSpecification *> *> const *currentAndList,
       currentAndList->begin();
     while (true)
     {
-      if ((*iAnd)->size() > 1) log (LOG_BABBLE) << "( ";
+      if ((*iAnd)->size() > 1) Log (LOG_BABBLE) << "( ";
       vector<PackageSpecification *>::const_iterator i= (*iAnd)->begin();
       while (true)
       {
-        log(LOG_BABBLE) << **i;
+        Log (LOG_BABBLE) << **i;
         if (++i == (*iAnd)->end()) break;
-        log(LOG_BABBLE) << " | ";
+        Log (LOG_BABBLE) << " | ";
       }
-      if ((*iAnd)->size() > 1) log (LOG_BABBLE) << " )";
+      if ((*iAnd)->size() > 1) Log (LOG_BABBLE) << " )";
       if (++iAnd == currentAndList->end()) break;
-      log (LOG_BABBLE) << " & ";
+      Log (LOG_BABBLE) << " & ";
     }
   }
 }

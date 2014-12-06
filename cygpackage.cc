@@ -135,7 +135,7 @@ cygpackage::getfirstfile ()
   /* std::string(NULL) will crash, so be careful to test for that. */
   const char *result = listdata->gets (getfilenamebuffer, sizeof (getfilenamebuffer));
   if (result == NULL)
-    log (LOG_PLAIN) << "Corrupt package listing for " << name << ", can't uninstall old files." << endLog;
+    Log (LOG_PLAIN) << "Corrupt package listing for " << name << ", can't uninstall old files." << endLog;
   return std::string (result ? result : "");
 }
 

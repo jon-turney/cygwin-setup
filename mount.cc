@@ -117,7 +117,7 @@ create_install_root ()
 			   0, &key, &disposition);
       if (rv != ERROR_ACCESS_DENIED || kr != HKEY_LOCAL_MACHINE)
 	break;
-      log (LOG_PLAIN) << "Access denied trying to create rootdir registry key"
+      Log (LOG_PLAIN) << "Access denied trying to create rootdir registry key"
 		      << endLog;
       kr = HKEY_CURRENT_USER;
     }
@@ -130,7 +130,7 @@ create_install_root ()
 			    get_root_dir ().size () + 1);
 	if (rv != ERROR_ACCESS_DENIED || kr != HKEY_LOCAL_MACHINE)
 	  break;
-	log (LOG_PLAIN) << "Access denied trying to create rootdir registry value"
+	Log (LOG_PLAIN) << "Access denied trying to create rootdir registry value"
 			<< endLog;
 	kr = HKEY_CURRENT_USER;
       }

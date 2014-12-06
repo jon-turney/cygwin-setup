@@ -56,5 +56,5 @@ private:
 extern std::ostream& endLog(std::ostream& outs);
 //extern ostream& endLog(ostream& outs);
 
-#define log(X) LogSingleton::GetInstance()(X)
+#define Log(X) (LogSingleton::GetInstance()(X))
 #endif /* SETUP_LOGSINGLETON_H */

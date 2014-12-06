@@ -386,7 +386,7 @@ Window::ActivateTooltips ()
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, GetHWND (),
         (HMENU) 0, GetInstance (), (LPVOID) 0)) == (HWND) NULL)
     {
-      log (LOG_PLAIN) << "Warning: call to CreateWindowEx failed when "
+      Log (LOG_PLAIN) << "Warning: call to CreateWindowEx failed when "
               "initializing tooltips.  Error = %8.8x" << GetLastError ()
               << endLog;
       return;

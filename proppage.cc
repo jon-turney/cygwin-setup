@@ -322,7 +322,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
               lf.lfPitchAndFamily = tm.tmPitchAndFamily;
               GetTextFace ((HDC)wParam, LF_FACESIZE, lf.lfFaceName);
               if ((theURL->second.font = CreateFontIndirect (&lf)) == NULL)
-                log(LOG_PLAIN) << "Warning: unable to set font for url "
+                Log (LOG_PLAIN) << "Warning: unable to set font for url "
                     << theURL->second.url << endLog;
             }
           
@@ -430,7 +430,7 @@ PropertyPage::urlWinProc (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             theURL->second.url.c_str (), NULL, NULL, SW_SHOWNORMAL);        
 
         if (rc <= 32)
-          log(LOG_PLAIN) << "Unable to launch browser for URL " <<
+          Log (LOG_PLAIN) << "Unable to launch browser for URL " <<
               theURL->second.url << " (rc = " << rc << ")" << endLog;
         break;
       }

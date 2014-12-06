@@ -43,7 +43,7 @@ static const char *cvsid =
  * One such task is identifying archives
  *
  * to federate into each class one might add a magic parameter to the constructor, which
- * the class could test itself. 
+ * the class could test itself.
  */
 
 /* GNU TAR:
@@ -99,7 +99,7 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	    /* TODO: remove in-the-way directories via mkpath_p */
 	    if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
 	      {
-		log (LOG_TIMESTAMP) << "Failed to make the path for " << destfilename
+		Log (LOG_TIMESTAMP) << "Failed to make the path for " << destfilename
 				    << endLog;
 		res = extract_inuse;
 		goto out;
@@ -108,8 +108,8 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	    io_stream *in = source->extract_file ();
 	    if (!in)
 	      {
-		log (LOG_TIMESTAMP) << "Failed to extract the file "
-				    << destfilename << " from the archive" 
+		Log (LOG_TIMESTAMP) << "Failed to extract the file "
+				    << destfilename << " from the archive"
 				    << endLog;
 		res = extract_inuse;
 		goto out;
@@ -118,13 +118,13 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	    if (!tmp)
 	      {
 		delete in;
-		log (LOG_TIMESTAMP) << "Failed to open " << destfilename;
-		log (LOG_TIMESTAMP) << " for writing." << endLog;
+		Log (LOG_TIMESTAMP) << "Failed to open " << destfilename;
+		Log (LOG_TIMESTAMP) << " for writing." << endLog;
 		res = extract_inuse;
 	      }
 	    else if (io_stream::copy (in, tmp))
 	      {
-		log (LOG_TIMESTAMP) << "Failed to output " << destfilename
+		Log (LOG_TIMESTAMP) << "Failed to output " << destfilename
 				    << endLog;
 		delete in;
 		delete tmp;
@@ -143,7 +143,7 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	case ARCHIVE_FILE_SYMLINK:
 	  if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
 	    {
-	      log (LOG_TIMESTAMP) << "Failed to make the path for %s" 
+	      Log (LOG_TIMESTAMP) << "Failed to make the path for %s"
 				  << destfilename << endLog;
 	      res = extract_other;
 	    }
@@ -161,7 +161,7 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	case ARCHIVE_FILE_HARDLINK:
 	  if (io_stream::mkpath_p (PATH_TO_FILE, destfilename, 0755))
 	    {
-	      log (LOG_TIMESTAMP) << "Failed to make the path for %s"
+	      Log (LOG_TIMESTAMP) << "Failed to make the path for %s"
 				  << destfilename << endLog;
 	      res = extract_other;
 	    }
@@ -203,40 +203,40 @@ archive::~archive () {};
 #if 0
 ssize_t archive::read (void *buffer, size_t len)
 {
-  log (LOG_TIMESTAMP, "archive::read called");
+  Log (LOG_TIMESTAMP, "archive::read called");
   return 0;
 }
 
 ssize_t archive::write (void *buffer, size_t len)
 {
-  log (LOG_TIMESTAMP, "archive::write called");
+  Log (LOG_TIMESTAMP, "archive::write called");
   return 0;
 }
 
 ssize_t archive::peek (void *buffer, size_t len)
 {
-  log (LOG_TIMESTAMP, "archive::peek called");
+  Log (LOG_TIMESTAMP, "archive::peek called");
   return 0;
 }
 
 long
 archive::tell ()
 {
-  log (LOG_TIMESTAMP, "bz::tell called");
+  Log (LOG_TIMESTAMP, "bz::tell called");
   return 0;
 }
 
 int
 archive::error ()
 {
-  log (LOG_TIMESTAMP, "archive::error called");
+  Log (LOG_TIMESTAMP, "archive::error called");
   return 0;
 }
 
 const char *
 archive::next_file_name ()
 {
-  log (LOG_TIMESTAMP, "archive::next_file_name called");
+  Log (LOG_TIMESTAMP, "archive::next_file_name called");
   return NULL;
 }
 

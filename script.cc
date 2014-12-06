@@ -155,7 +155,7 @@ OutputLog::OutputLog (const std::string& filename)
 
   if (_handle == INVALID_HANDLE_VALUE)
     {
-      log(LOG_PLAIN) << "error: Unable to redirect output to '" << _filename
+      Log (LOG_PLAIN) << "error: Unable to redirect output to '" << _filename
 		     << "'; using console" << endLog;
     }
 }
@@ -167,7 +167,7 @@ OutputLog::~OutputLog ()
   if (_filename.size() &&
       !DeleteFile(backslash (cygpath (_filename)).c_str()))
     {
-      log(LOG_PLAIN) << "error: Unable to remove temporary file '" << _filename
+      Log (LOG_PLAIN) << "error: Unable to remove temporary file '" << _filename
 		     << "'" << endLog;
     }
 }
@@ -207,7 +207,7 @@ run (const char *cmdline)
   BOOL inheritHandles = FALSE;
   BOOL exitCodeValid = FALSE;
 
-  log(LOG_PLAIN) << "running: " << cmdline << endLog;
+  Log (LOG_PLAIN) << "running: " << cmdline << endLog;
 
   char tmp_pat[] = "/var/log/setup.log.runXXXXXXX";
   OutputLog file_out = std::string (mktemp (tmp_pat));
@@ -243,7 +243,7 @@ run (const char *cmdline)
   CloseHandle(pi.hThread);
 
   if (!file_out.isEmpty ())
-    log(LOG_BABBLE) << file_out << endLog;
+    Log (LOG_BABBLE) << file_out << endLog;
 
   if (exitCodeValid)
     return exitCode;
@@ -270,7 +270,7 @@ Script::run() const
   std::string windowsName = backslash (cygpath (scriptName));
   if (_access (windowsName.c_str(), 0) == -1)
     {
-      log(LOG_PLAIN) << "can't run " << scriptName << ": No such file"
+      Log (LOG_PLAIN) << "can't run " << scriptName << ": No such file"
                      << endLog;
       return -ERROR_INVALID_DATA;
     }
@@ -292,7 +292,7 @@ Script::run() const
     return -ERROR_INVALID_DATA;
 
   if (retval)
-    log(LOG_PLAIN) << "abnormal exit: exit code=" << retval << endLog;
+    Log (LOG_PLAIN) << "abnormal exit: exit code=" << retval << endLog;
 
   /* if .done file exists then delete it otherwise just ignore no file error */
   io_stream::remove ("cygfile://" + scriptName + ".done");

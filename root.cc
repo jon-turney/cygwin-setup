@@ -293,7 +293,7 @@ RootPage::OnNext ()
   else if (directory_contains_wrong_version (h))
     return -1;
 
-  log (LOG_PLAIN) << "root: " << get_root_dir ()
+  Log (LOG_PLAIN) << "root: " << get_root_dir ()
     << (root_scope == IDC_ROOT_USER ? " user" : " system") << endLog;
 
   return 0;

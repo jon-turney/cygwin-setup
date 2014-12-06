@@ -180,7 +180,7 @@ packagemeta::uninstall ()
 	  if (dw != INVALID_FILE_ATTRIBUTES
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
-	      log (LOG_BABBLE) << "unlink " << d << endLog;
+	      Log (LOG_BABBLE) << "unlink " << d << endLog;
 	      SetFileAttributesW (wname, dw & ~FILE_ATTRIBUTE_READONLY);
 	      DeleteFileW (wname);
 	    }
@@ -191,7 +191,7 @@ packagemeta::uninstall ()
 	  if (dw != INVALID_FILE_ATTRIBUTES
 	      && !(dw & FILE_ATTRIBUTE_DIRECTORY))
 	    {
-	      log (LOG_BABBLE) << "unlink " << d << endLog;
+	      Log (LOG_BABBLE) << "unlink " << d << endLog;
 	      SetFileAttributesW (wname, dw & ~FILE_ATTRIBUTE_READONLY);
 	      DeleteFileW (wname);
 	    }
@@ -209,7 +209,7 @@ packagemeta::uninstall ()
 	WCHAR wname[d.size () + 11];
 	mklongpath (wname, d.c_str (), d.size () + 11);
 	if (RemoveDirectoryW (wname))
-	  log (LOG_BABBLE) << "rmdir " << d << endLog;
+	  Log (LOG_BABBLE) << "rmdir " << d << endLog;
       }
     }
   installed = packageversion();
@@ -314,13 +314,13 @@ bool packagemeta::isManuallyWanted() const
       for (curcat = categories.begin (); curcat != categories.end (); curcat++)
 	if (parsed_categories.find (*curcat) != parsed_categories.end ())
 	  {
-	    log (LOG_PLAIN) << "Found category " << *curcat << " in package " << name << endLog;
+	    Log (LOG_PLAIN) << "Found category " << *curcat << " in package " << name << endLog;
 	    bReturn = true;
 	  }
     }
   
   if (bReturn)
-    log (LOG_PLAIN) << "Added manual package " << name << endLog;
+    Log (LOG_PLAIN) << "Added manual package " << name << endLog;
   return bReturn;
 }
 
@@ -364,13 +364,13 @@ bool packagemeta::isManuallyDeleted() const
       for (curcat = categories.begin (); curcat != categories.end (); curcat++)
 	if (parsed_delete_categories.find (*curcat) != parsed_delete_categories.end ())
 	  {
-	    log (LOG_PLAIN) << "Found category " << *curcat << " in package " << name << endLog;
+	    Log (LOG_PLAIN) << "Found category " << *curcat << " in package " << name << endLog;
 	    bReturn = true;
 	  }
     }
 
   if (bReturn)
-    log (LOG_PLAIN) << "Deleted manual package " << name << endLog;
+    Log (LOG_PLAIN) << "Deleted manual package " << name << endLog;
   return bReturn;
 }
 
@@ -649,24 +649,24 @@ packagemeta::logAllVersions () const
     for (set<packageversion>::iterator i = versions.begin();
 	 i != versions.end(); ++i) 
       {
-	log (LOG_BABBLE) << "    [" << trustLabel(*i) <<
+	Log (LOG_BABBLE) << "    [" << trustLabel(*i) <<
 	  "] ver=" << i->Canonical_version() << endLog;
 	if (i->depends()->size()) 
 	{
-	  std::ostream & logger = log (LOG_BABBLE);
+	  std::ostream & logger = Log (LOG_BABBLE);
 	  logger << "      depends=";
 	  dumpAndList(i->depends(), logger);
 	  logger << endLog;
 	}
       }
 #if 0
-    log (LOG_BABBLE) << "      inst=" << i->
+    Log (LOG_BABBLE) << "      inst=" << i->
       /* FIXME: Reinstate this code, but spit out all mirror sites */
 
       for (int t = 1; t < NTRUST; t++)
 	{
 	  if (pkg->info[t].install)
-	    log (LOG_BABBLE) << "     [%s] ver=%s\n"
+	    Log (LOG_BABBLE) << "     [%s] ver=%s\n"
 		 "          inst=%s %d exists=%s\n"
 		 "          src=%s %d exists=%s",
 		 infos[t],
@@ -716,9 +716,9 @@ packagemeta::logSelectionStatus() const
   const std::string installed =
    pkg.installed ? pkg.installed.Canonical_version () : "none";
 
-  log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && pkg.desired.sourcePackage().picked() ? "yes" : "no") << endLog;
+  Log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && pkg.desired.sourcePackage().picked() ? "yes" : "no") << endLog;
   if (pkg.categories.size ())
-    log (LOG_BABBLE) << "     categories=" << for_each(pkg.categories.begin(), pkg.categories.end(), StringConcatenator(", ")).result << endLog;
+    Log (LOG_BABBLE) << "     categories=" << for_each(pkg.categories.begin(), pkg.categories.end(), StringConcatenator(", ")).result << endLog;
 #if 0
   if (pkg.desired.required())
   {
@@ -728,7 +728,7 @@ packagemeta::logSelectionStatus() const
     for (dp = dp->next; dp; dp = dp->next)
        requires += std::string (", ") + dp->package.serialise ();
 
-   log (LOG_BABBLE) << "     requires=" << requires;
+   Log (LOG_BABBLE) << "     requires=" << requires;
     }
 #endif
   pkg.logAllVersions();
