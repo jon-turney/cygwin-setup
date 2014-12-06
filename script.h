@@ -30,6 +30,8 @@ int run (const char *cmdline);
 class Script {
 public:
   static bool isAScript (const std::string& file);
+  bool is_p  (const std::string& stratum);
+  bool not_p (const std::string& stratum);
   Script (const std::string& fileName);
   std::string baseName() const;
   std::string fullName() const;
@@ -38,11 +40,22 @@ public:
    or command.com (9x).  Returns the exit status of the process, or
    negative error if any.  */
   int run() const;
-  bool operator == (const Script s) { return s.scriptName == scriptName; } ;
+  bool operator == (const Script s) const {
+    return scriptName == s.scriptName;
+  };
+  bool operator <  (const Script s) const {
+    return scriptBaseName < s.scriptBaseName;
+  };
 private:
+  bool match (const std::string& stratum, const std::string& type);
   std::string scriptName;
+  std::string scriptBaseName;
+  std::string scriptExtension;
+  std::string scriptStratum;
+  std::string scriptType;
   static char const ETCPostinstall[];
-  char const * extension() const;
+  static char const allowedStrata[];
+  static char const allowedTypes[];
 };
 
 #endif /* SETUP_SCRIPT_H */

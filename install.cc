@@ -724,9 +724,6 @@ do_install_thread (HINSTANCE h, HWND owner)
   /* Writes Cygwin/setup/rootdir registry value */
   create_install_root ();
 
-  /* Let's hope people won't uninstall packages before installing [b]ash */
-  init_run_script ();
-
   vector <packagemeta *> install_q, uninstall_q, sourceinstall_q;
 
   packagedb db;

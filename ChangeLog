@@ -1,3 +1,38 @@
+2014-11-28  Achim Gratz  <Stromeko@NexGo.DE>
+
+	* install.cc (do_install_thread): Remove initialization for
+	run_script.
+	* postinstall.cc (do_postinstall_thread): Remove initialization
+	for run_script.  Implement stratified postinstall (hardcode three
+	strata for now).  For each stratum, run perpetual scripts first
+	after sorting them as ASCII, then the postinstall scripts just
+	installed, then check for dormant scripts in postinstall and try
+	to run those.
+	(PerpetualFindVisitor): New helper class to pick up perpetual
+	scripts.
+	(RunFindVisitor): Use new Script member function and pick up only
+	runnable non-perpetual scripts.
+	* script.h (Script::baseName): Add private variable.
+	(Script::scriptExtension): Ditto.
+	(Script::scriptStratum): Ditto
+	(Script::scriptType): Ditto
+	(Script::allowedStrata): Ditto
+	(Script::allowedTypes): Ditto
+	(Script::match): New private member function.
+	(Script::not_p): New public member function to check for
+	non-perpetual runnable script.
+	(Script::is_p): Ditto, but for perpetual scripts.
+	(Script::operator ==): Qualify as const.
+	(Script::operator <): New const qualified, used for sorting as ASCII.
+	* script.cc (class Script): Implement those additional members.
+	(run): Implement using the new member variables and std::string
+	functions instead of C string manipulations.
+	(isAScript): Ditto.
+	(fullName): Ditto.
+	(baseName): Ditto.
+	(Script): Extend initialization section and calculate values for
+	member variables.  Move initialization for run_script into the constructor.
+
 2014-11-22  Achim Gratz  <Stromeko@nexgo.de>
 
 	* LogSingleton.h: Rename log macro to Log to avoid collision with

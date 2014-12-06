@@ -186,7 +186,7 @@ OutputLog::out_to(std::ostream &out)
   DWORD num;
   FlushFileBuffers (_handle);
   SetFilePointer(_handle, 0, NULL, FILE_BEGIN);
-  
+
   while (ReadFile(_handle, buf, BUFLEN-1, &num, NULL) && num != 0)
     {
       buf[num] = '\0';
@@ -250,23 +250,19 @@ run (const char *cmdline)
   return -GetLastError();
 }
 
-char const *
-Script::extension() const
-{
-  return strrchr (scriptName.c_str(), '.');
-}
-
 int
 Script::run() const
 {
-  if (!extension())
+  if ("done" == scriptExtension)
+    return NO_ERROR;
+  if (0 == scriptExtension.size())
     return -ERROR_INVALID_DATA;
 
   /* Bail here if the script file does not exist.  This can happen for
      example in the case of tetex-* where two or more packages contain a
      postinstall script by the same name.  When we are called the second
      time the file has already been renamed to .done, and if we don't
-     return here we end up erroniously deleting this .done file.  */
+     return here we end up erroneously deleting this .done file.  */
   std::string windowsName = backslash (cygpath (scriptName));
   if (_access (windowsName.c_str(), 0) == -1)
     {
@@ -278,12 +274,12 @@ Script::run() const
   int retval;
   char cmdline[CYG_PATH_MAX];
 
-  if (sh.size() && stricmp (extension(), ".sh") == 0)
+  if (sh.size() && ("sh" == scriptExtension))
     {
       sprintf (cmdline, "%s %s \"%s\"", sh.c_str(), "--norc --noprofile", scriptName.c_str());
       retval = ::run (cmdline);
     }
-  else if (cmd && stricmp (extension(), ".bat") == 0)
+  else if (cmd && ("bat" == scriptExtension))
     {
       sprintf (cmdline, "%s %s \"%s\"", cmd, "/c", windowsName.c_str());
       retval = ::run (cmdline);
@@ -297,8 +293,9 @@ Script::run() const
   /* if .done file exists then delete it otherwise just ignore no file error */
   io_stream::remove ("cygfile://" + scriptName + ".done");
 
-  /* don't rename the script as .done if it didn't run successfully */
-  if (!retval)
+  /* don't rename the script as .done if it didn't run successfully or
+     if this script is marked to be always run */
+  if (!retval && ("p" != scriptType))
     io_stream::move ("cygfile://" + scriptName,
                      "cygfile://" + scriptName + ".done");
 
@@ -315,31 +312,79 @@ try_run_script (const std::string& dir,
   return NO_ERROR;
 }
 
-char const Script::ETCPostinstall[] = "/etc/postinstall/";
-
 bool
 Script::isAScript (const std::string& file)
 {
-    /* file may be /etc/postinstall or etc/postinstall */
-    if (casecompare(file, ETCPostinstall, sizeof(ETCPostinstall)-1) &&
-	casecompare(file, ETCPostinstall+1, sizeof(ETCPostinstall)-2))
+    // is a directory path
+    if ('/'  == file[file.size()-1])
       return false;
-    if (file.c_str()[file.size() - 1] == '/')
-      return false;
-    return true;
+    // file may start with /etc/postinstall/ or etc/postinstall/
+    std::size_t found = file.find(ETCPostinstall+1);
+    if (( found == 0) ||
+	((found == 1) && (0 == file.find('/'))))
+      return true;
+    return false;
 }
 
-Script::Script (const std::string& fileName) : scriptName (fileName)
+bool
+Script::match (const std::string& stratum, const std::string& type)
 {
-  
+  // empty string for each parameter always matches
+  bool matchedStratum, matchedType;
+  if ("done" == scriptExtension)
+    return false;
+  if (stratum.size())
+    matchedStratum = (std::string::npos != stratum.find(scriptStratum));
+  else
+    matchedStratum = true;
+  if (type.size())
+    matchedType = (std::string::npos != type.find(scriptType));
+  else
+    matchedType = true;
+  return matchedStratum && matchedType;
+}
+bool
+Script::is_p (const std::string& stratum)
+{
+  return match( stratum, "p");
+}
+bool
+Script::not_p (const std::string& stratum)
+{
+  return match( stratum, allowedTypes+1);
+}
+
+Script::Script (const std::string& fileName)
+  : scriptName      (fileName),
+    scriptBaseName  (""),
+    scriptExtension (""),
+    scriptStratum   ("_"),
+    scriptType      ("r")
+{
+  std::size_t found;
+  found = fileName.rfind('/');
+  if (found != std::string::npos)
+    scriptBaseName = fileName.substr(found + 1);
+  found = fileName.rfind('.');
+  if (found != std::string::npos)
+    scriptExtension = fileName.substr(found + 1);
+  if ( "_" == scriptBaseName.substr(2,1) &&
+       0   == scriptBaseName.substr(1,1).find_first_of(allowedTypes)  &&
+       "_" != scriptBaseName.substr(0,1)  && // default stratum cannot be explicitly named
+       0   == scriptBaseName.substr(0,1).find_first_of(allowedStrata))
+    {
+      // stratified script
+      scriptStratum = scriptBaseName.substr(0,1);
+      scriptType    = scriptBaseName.substr(1,1);
+    }
+  // Let's hope people won't uninstall packages before installing bash
+  init_run_script ();
 }
 
 std::string
 Script::baseName() const
 {
-  std::string result = scriptName;
-  result = result.substr(result.rfind('/') + 1);
-  return result;
+  return scriptBaseName;
 }
 
 std::string
@@ -347,3 +392,7 @@ Script::fullName() const
 {
   return scriptName;
 }
+
+char const Script::ETCPostinstall[] = "/etc/postinstall/";
+char const Script::allowedStrata[]  = "0_z";
+char const Script::allowedTypes[]   = "pr";

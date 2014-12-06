@@ -49,16 +49,17 @@ extern PostInstallResultsPage PostInstallResults;
 class RunFindVisitor : public FindVisitor
 {
 public:
-  RunFindVisitor (vector<Script> *scripts) : _scripts(scripts) {}
+  RunFindVisitor (vector<Script> *scripts, const std::string& stratum = "")
+    : _scripts(scripts),
+      stratum(stratum)
+  {}
   virtual void visitFile(const std::string& basePath,
                          const WIN32_FIND_DATA *theFile)
     {
-      std::string fileName(theFile->cFileName);
-      if (fileName.size() >= 5 &&
-          fileName.substr(fileName.size() - 5) == ".done")
-        return;
       std::string fn = std::string("/etc/postinstall/") + theFile->cFileName;
-      _scripts->push_back(Script (fn));
+      Script script(fn);
+      if (script.not_p(stratum))
+	  _scripts->push_back(Script (fn));
     }
   virtual ~ RunFindVisitor () {}
 protected:
@@ -66,6 +67,31 @@ protected:
   RunFindVisitor & operator= (RunFindVisitor const &);
 private:
   vector<Script> *_scripts;
+  const std::string stratum;
+};
+
+class PerpetualFindVisitor : public FindVisitor
+{
+public:
+  PerpetualFindVisitor (vector<Script> *scripts, const string& stratum)
+    : _scripts(scripts),
+      stratum(stratum)
+  {}
+  virtual void visitFile(const std::string& basePath,
+                         const WIN32_FIND_DATA *theFile)
+    {
+      std::string fn = std::string("/etc/postinstall/") + theFile->cFileName;
+      Script script(fn);
+      if (script.is_p(stratum))
+	  _scripts->push_back(Script (fn));
+    }
+  virtual ~ PerpetualFindVisitor () {}
+protected:
+  PerpetualFindVisitor (PerpetualFindVisitor const &);
+  PerpetualFindVisitor & operator= (PerpetualFindVisitor const &);
+private:
+  vector<Script> *_scripts;
+  const std::string stratum;
 };
 
 // ---------------------------------------------------------------------------
@@ -132,7 +158,6 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
   Progress.SetBar1 (0, 1);
   Progress.SetBar2 (0, 1);
 
-  init_run_script ();
   packagedb db;
   vector<packagemeta*> packages;
   PackageDBConnectedIterator i = db.connectedBegin ();
@@ -144,31 +169,53 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
       ++i;
     }
 
+  const std::string postinst = cygpath ("/etc/postinstall");
+  const std::string strata("0_z");
   std::string s = "";
-
+  // iterate over all strata
+  for (std::string::const_iterator it = strata.begin(); it != strata.end(); ++it)
+    {
+      const std::string sit(1, *it);
+  // Look for any scripts in /etc/postinstall which should always be run
+  vector<Script> perpetual;
+  PerpetualFindVisitor myPerpetualVisitor (&perpetual, sit);
+  Find (postinst).accept (myPerpetualVisitor);
+  // sort the list alphabetically, assumes ASCII names only
+  sort (perpetual.begin(), perpetual.end());
+  // and try to run what we've found
+  {
+    RunScript scriptRunner(sit + "/Perpetual", perpetual);
+    scriptRunner.run_all(s);
+  }
   // For each package we installed, we noted anything installed into /etc/postinstall.
   // run those scripts now
   int numpkg = packages.size() + 1;
   int k = 0;
-  for (i = packages.begin (); i != packages.end (); ++i)
+  for (vector <packagemeta *>::iterator  i = packages.begin (); i != packages.end (); ++i)
     {
       packagemeta & pkg = **i;
 
-      RunScript scriptRunner(pkg.name, pkg.installed.scripts());
+      vector<Script> installed = pkg.installed.scripts();
+      vector<Script> run;
+      // extract non-perpetual scripts for the current stratum
+      for (vector <Script>::iterator  j = installed.begin(); j != installed.end(); j++)
+	{
+	  if ((*j).not_p(sit))
+	    run.push_back(*j);
+	}
+
+      RunScript scriptRunner(sit + "/" + pkg.name, run);
       scriptRunner.run_all(s);
 
-      ++k;
-      Progress.SetBar2 (k, numpkg);
+      Progress.SetBar2 (++k, numpkg);
     }
-
-  // Look for any scripts in /etc/postinstall which haven't been renamed .done
-  std::string postinst = cygpath ("/etc/postinstall");
+  // Look for runnable non-perpetual scripts in /etc/postinstall.
+  // This happens when a script from a previous install failed to run.
   vector<Script> scripts;
-  RunFindVisitor myVisitor (&scripts);
+  RunFindVisitor myVisitor (&scripts, sit);
   Find (postinst).accept (myVisitor);
-
   // Remove anything which we just tried to run (so we don't try twice)
-  for (i = packages.begin (); i != packages.end (); ++i)
+  for (vector <packagemeta *>::iterator i = packages.begin (); i != packages.end (); ++i)
     {
        packagemeta & pkg = **i;
        for (std::vector<Script>::const_iterator j = pkg.installed.scripts().begin();
@@ -182,15 +229,15 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
              }
          }
     }
-
   // and try to run what's left...
   {
-    RunScript scriptRunner("Unknown package", scripts);
+    RunScript scriptRunner(sit + "/Unknown package", scripts);
     scriptRunner.run_all(s);
   }
 
   Progress.SetBar2 (numpkg, numpkg);
 
+    }
   return s;
 }
 
