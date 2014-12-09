@@ -38,7 +38,7 @@ packagesource::set_canonical (char const *fn)
   canonical = new char[strlen (fn) + 1];
   strcpy (canonical, fn);
 
-  /* The base is from the last '/' to the first '.' following the last - */
+  /* The base is from the last '/' to the '.tar' following the last - */
   char const *bstart = strchr (fn, '/');
   char const *tmp;
   while (bstart && (tmp = strchr (bstart + 1, '/')))
@@ -52,9 +52,9 @@ packagesource::set_canonical (char const *fn)
   while (bend && (tmp = strchr (bend + 1, '-')))
     bend = tmp;
   if (bend)
-    bend = strchr (bend, '.');
+    bend = strstr (bend, ".tar");
   else
-    bend = strchr (bstart, '.');
+    bend = strstr (bstart, ".tar");
 
   if (!bend)
     bend = strchr (bstart, '\0');

@@ -1,3 +1,8 @@
+2014-12-09  Yaakov Selkowitz  <yselkowitz@cygwin.com>
+
+	* package_source.cc (packagesource::set_canonical): Fix handling
+	of package release number containing a period.
+
 2014-11-28  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* script.cc: New static string dash.
