@@ -1,3 +1,10 @@
+2015-01-25  Corinna Vinschen  <corinna@vinschen.de>
+
+	* package_version.cc (packageversion::compareVersions): Get arguments
+	by const references instead of by value.
+	* package_version.h (packageversion::compareVersions): Match prototype.
+	* res.rc: Bump version date.
+
 2014-12-09  Yaakov Selkowitz  <yselkowitz@cygwin.com>
 
 	* package_source.cc (packagesource::set_canonical): Fix handling

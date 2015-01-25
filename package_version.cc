@@ -516,7 +516,7 @@ packageversion::scripts()
 }
 
 int
-packageversion::compareVersions(packageversion a, packageversion b)
+packageversion::compareVersions(const packageversion &a, const packageversion &b)
 {
   /* Compare Vendor_version */
   int comparison = version_compare(a.Vendor_version(), b.Vendor_version());
