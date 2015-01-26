@@ -264,7 +264,7 @@ ChooserPage::OnInit ()
       else if (uninstall)
 	pkg.set_action( packagemeta::Uninstall_action, packageversion() );
       else
-	pkg.set_action( packagemeta::Default_action, ((upgrade && current) ? pkg.curr : pkg.installed) );
+	pkg.set_action( packagemeta::Default_action, ((upgrade && current) ? pkg.trustp (true,  TRUST_UNKNOWN) : pkg.installed) );
     }
 
   ClearBusy ();

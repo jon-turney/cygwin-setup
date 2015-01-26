@@ -404,139 +404,47 @@ packagemeta::action_caption () const
 
 /* Set the next action given a current action.  */
 void
-packagemeta::set_action (packageversion const &default_version)
+packagemeta::set_action ()
 {
-  /* actions are the following:
-
-     for install modes (from net/local)
-     for each version:
-     install this version
-     install the source for this version
-     and a boolean flag - force install to allow reinstallation, or bypassing requirements
-     globally:
-     install the source for the current version.
-
-     to uninstall a package, the desired version is set to NULL;
-
-     for mirroring modes (download only)
-     for each version
-     download this version
-     download source for this version
-
-     these are represented by the following:
-     the desired pointer in the packagemetadata indicated which version we are operating on.
-     if we are operating on the installed version, reinstall is a valid option.
-     for the selected version, forceinstall means Do an install no matter what, and
-     srcpicked means download the source.
-
-     The default action for any installed package is to install the 'curr version'
-     if it is not already installed.
-
-     The default action for any non-installed package is to do nothing.
-
-     To achieve a no-op, set desired==installed, and if (installed) set forceinstall=0 and
-     srcpicked = 0;
-
-     Iteration through versions should follow the following rules:
-     selected radio button (prev/curr/test) (show as reinstall if that is the
-     current version) ->source only (only if the package is installed) ->oldest version....s
-     kip version of radio button...
-     newest version->uninstall->no-op->selected radio button.
-
-     If any state cannot be set (ie because (say) no prev entry exists for a package
-     simply progress to the next option.
-
-   */
-
-  /* We were set to uninstall the package */
-  if (!desired && installed)
+  if (!desired)
     {
-      /* No-op - keep whatever we've got */
-      desired = installed;
-      if (desired)
-	{
-	  desired.pick (false, NULL);
-	  desired.sourcePackage().pick (false, NULL);
-	}
+      /* If we were on "Uninstall", switch to the first version in the list.
+         If that's the installed version it will be automatically in state
+	 "Keep". */
+      desired = *versions.begin ();
+      desired.pick (false, this);
+      desired.sourcePackage ().pick (false, NULL);
       return;
     }
-  else if (desired == installed &&
-	   (!installed || 
-	    // neither bin nor source are being installed
-	    (!(installed.picked() || installed.sourcePackage().picked()) &&
-	     // bin or source are available
-	     (installed.accessible() || installed.sourcePackage().accessible()) ))
-	   )
-    /* Install the default trust version - this is a 'reinstall' for installed
-       * packages */
+
+  if (desired == installed && !desired.picked () && installed.accessible ())
     {
-      /* No-op */
-      desired = default_version;
-      if (desired)
-	{
-	  if (desired.accessible())
-	    desired.pick (true, this);
-	  else
-	    desired.sourcePackage().pick (true, NULL);
-	  return;
-	}
-    }
-  /* are we currently on the radio button selection and installed */
-  if (desired == default_version && installed &&
-      (!desired || desired.picked())
-      && (desired && desired.sourcePackage().accessible())
-      )
-    {
-      /* source only this file */
-      desired = installed;
-      desired.pick (false, NULL);
-      desired.sourcePackage().pick (true, NULL);
+      /* If we're on "Keep" on the installed version, and the installed version
+         is available, switch to "Reinstall". */
+      desired.pick (true, this);
+      desired.sourcePackage ().pick (false, NULL);
       return;
     }
-  /* are we currently on source only or on the radio button but not installed */
-  else if ((desired == installed 
-	    && installed.sourcePackage().picked ()) || desired == default_version)
-    {
-      /* move onto the loop through versions */
-      set<packageversion>::iterator i = versions.begin();
-      if (*i == default_version)
-	++i;
-      if (i != versions.end())
-	{
-	  desired = *i;
-	  desired.pick (desired.accessible(), this);
-	  desired.sourcePackage ().pick (false, NULL);
-	}
-      else
-	desired = packageversion ();
-      return;
-    }
+
+  bool binary_picked = desired.picked();
+  bool source_picked = desired.sourcePackage().picked();
+
+  /* So we're on "some" version, switch to the next in line. */
+  set<packageversion>::iterator i;
+  for (i = versions.begin(); i != versions.end() && *i != desired; ++i)
+    ;
+  ++i;
+  /* If there's another version in the list, switch to it, otherwise
+     switch to "Uninstall". */
+  if (i != versions.end ())
+    desired = *i;
   else
+    desired = packageversion ();
+  if (desired)
     {
-      /* preserve the src tick box */
-      bool sourceticked = desired.sourcePackage().picked();
-      /* bump the version selected, skipping the radio button trust along the way */
-      set<packageversion>::iterator i;
-      for (i=versions.begin(); i != versions.end() && *i != desired; ++i);
-      /* i points at desired in the versions set */
-      ++i;
-      if (i != versions.end ())
-	{
-	  if (default_version == *i)
-	    ++i;
-	  if (i != versions.end ())
-	    {
-	      desired = *i;
-	      desired.pick (desired.accessible(), this);
-	      if (desired.sourcePackage().accessible ())
-		desired.sourcePackage ().pick (sourceticked, NULL);
-	      else
-		desired.sourcePackage ().pick (false, NULL);
-	      return;
-	    }
-	}
-      /* went past the end - uninstall the package */
-      desired = packageversion ();
+      desired.pick (desired.accessible() && binary_picked, this);
+      desired.sourcePackage ().pick (desired.sourcePackage().accessible ()
+				     && source_picked, NULL);
     }
 }
 

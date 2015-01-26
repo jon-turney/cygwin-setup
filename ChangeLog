@@ -1,3 +1,26 @@
+2015-01-26  Corinna Vinschen  <corinna@vinschen.de>
+
+	* PickPackageLine.cc (PickPackageLine::paint): Call trustp with default
+	flag set to false.
+	(PickPackageLine::click): Drop parameter from packagemeta::set_action
+	call.
+	(PickPackageLine::set_action): Call trustp with default flag set to
+	true.
+	* choose.cc (ChooserPage::OnInit): Call trustp with default flag set to
+	true to fetch default package version, rather than defaulting to curr.
+	* package_db.cc (packagedb::defaultTrust): Call trustp with default
+	flag set to true.
+	* package_meta.cc (packagemeta::set_action): Drop default_version
+	parameter.  Rewrite to simplify mechanism, and to account for correct
+	stepping through versions if installed version is not available anymore.
+	* package_meta.h (packagemeta::set_action): Align prototype.
+	(packagemeta::trustp): Add bool to request default package handling.
+	Add code to make sure not to downgrade packages by default.
+	* package_version.cc (processOneDependency): Call trustp with default
+	flag set to false.
+	* prereq.cc (PrereqChecker::getUnmetString): Ditto.
+	(PrereqChecker::selectMissing): Ditto.
+
 2015-01-25  Corinna Vinschen  <corinna@vinschen.de>
 
 	* package_version.cc (packageversion::compareVersions): Get arguments

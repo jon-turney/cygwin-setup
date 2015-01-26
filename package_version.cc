@@ -431,7 +431,7 @@ processOneDependency (trusts deftrust, size_t depth,
   packagedb db;
   packagemeta *required = db.findBinary (*spec);
 
-  packageversion trusted = required->trustp(deftrust);
+  packageversion trusted = required->trustp(false, deftrust);
   if (spec->satisfies (trusted)) {
       return select (deftrust, depth, required, trusted);
   }

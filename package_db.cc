@@ -432,7 +432,7 @@ packagedb::defaultTrust (trusts trust)
             || pkg.categories.find ("Base") != pkg.categories.end ()
             || pkg.categories.find ("Misc") != pkg.categories.end ())
         {
-          pkg.desired = pkg.trustp (trust);
+          pkg.desired = pkg.trustp (true, trust);
           if (pkg.desired)
             pkg.desired.pick (pkg.desired.accessible() && pkg.desired != pkg.installed, &pkg);
         }

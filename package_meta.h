@@ -77,7 +77,7 @@ public:
   static const _actions Install_action;
   static const _actions Reinstall_action;
   static const _actions Uninstall_action;
-  void set_action (packageversion const &default_version);
+  void set_action ();
   void set_action (_actions, packageversion const & default_version);
   void uninstall ();
   int set_requirements (trusts deftrust, size_t depth);
@@ -90,14 +90,24 @@ public:
   }
 
   std::string action_caption () const;
-  packageversion trustp (trusts const t) const
+  packageversion trustp (bool _default, trusts const t) const
   {
+    /* If the user chose "test" and a "test" version is available, return it. */
     if (t == TRUST_TEST && exp)
       return exp;
-    else if (curr)
+    /* Are we looking for the default version and does the installed version
+       have a higher version number than the "curr" package?  This means the
+       user has installed a "test" version, or built her own version newer
+       than "curr".  Rather than pulling the user back to "curr", we stick to
+       "test" if a "test" version is available, or to "installed" if not.
+       This reflects the behaviour of `yum update' on Fedora. */
+    if (_default && packageversion::compareVersions (curr, installed) < 0)
+      return exp ? exp : installed;
+    /* Otherwise, if a "curr" version exists, return "curr". */
+    if (curr)
       return curr;
-    else
-      return installed;
+    /* Otherwise return the installed version. */
+    return installed;
   }
 
   std::string name;			/* package name, like "cygwin" */

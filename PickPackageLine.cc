@@ -95,7 +95,7 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
       else if (pkg.installed)
         picked = pkg.installed;
       else
-        picked = pkg.trustp (theView.deftrust);
+        picked = pkg.trustp (false, theView.deftrust);
 
       /* Include the size of the binary package, and if selected, the source
          package as well.  */
@@ -134,13 +134,13 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
 
   if (x >= theView.headers[theView.new_col].x - HMARGIN / 2
       && x <= theView.headers[theView.new_col + 1].x - HMARGIN / 2)
-    pkg.set_action (pkg.trustp(theView.deftrust));
+    pkg.set_action ();
 
   return 0;
 }
 
 int PickPackageLine::set_action (packagemeta::_actions action)
 {
-  pkg.set_action (action, pkg.trustp(theView.deftrust));
+  pkg.set_action (action, pkg.trustp (true, theView.deftrust));
   return 1;
 }
