@@ -17,6 +17,6 @@
 #define SETUP_DOWNLOAD_H
 
 class packagesource;
-int check_for_cached (packagesource & pkgsource);
+int check_for_cached (packagesource & pkgsource, bool = false);
 
 #endif /* SETUP_DOWNLOAD_H */

@@ -64,6 +64,7 @@ static const char *cvsid =
 #include "getopt++/BoolOption.h"
 static BoolOption UpgradeAlsoOption (false, 'g', "upgrade-also", "also upgrade installed packages");
 static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", "remove orphaned packages");
+static BoolOption MirrorOption (false, 'm', "mirror-mode", "Skip availability check when installing from local directory (requires local directory to be clean mirror!)");
 
 using namespace std;
 
@@ -238,7 +239,7 @@ ChooserPage::OnInit ()
 
   SetBusy ();
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_LOCALDIR)
-    packagemeta::ScanDownloadedFiles ();
+    packagemeta::ScanDownloadedFiles (MirrorOption);
 
   packagedb db;
   db.setExistence ();

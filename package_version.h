@@ -138,7 +138,7 @@ public:
 
   bool accessible () const;
   /* scan for local copies */
-  void scan();
+  void scan (bool);
 
   /* ensure that the depends clause is satisfied */
   int set_requirements (trusts deftrust, size_t depth = 0);

@@ -337,7 +337,7 @@ packageversion::accessible() const
 }
 
 void
-packageversion::scan()
+packageversion::scan (bool mirror_mode)
 {
   if (!*this)
     return;
@@ -347,15 +347,16 @@ packageversion::scan()
    */
   try
     {
-      if (!check_for_cached (*(source())) && ::source == IDC_SOURCE_LOCALDIR)
-	source()->sites.clear();
+      if (!check_for_cached (*(source ()), mirror_mode)
+	  && ::source == IDC_SOURCE_LOCALDIR)
+	source ()->sites.clear ();
     }
   catch (Exception * e)
     {
       // We can ignore these, since we're clearing the source list anyway
-      if (e->errNo() == APPERR_CORRUPT_PACKAGE)
+      if (e->errNo () == APPERR_CORRUPT_PACKAGE)
 	{
-	  source()->sites.clear();
+	  source ()->sites.clear ();
 	  return;
 	}
       // Unexpected exception.

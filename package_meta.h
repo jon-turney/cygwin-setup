@@ -32,7 +32,7 @@ typedef std::pair<const std::string, std::vector<packagemeta *> > Category;
 class packagemeta
 {
 public:
-  static void ScanDownloadedFiles();
+  static void ScanDownloadedFiles (bool);
   packagemeta (packagemeta const &);
   packagemeta (const std::string& pkgname):name (pkgname), key(pkgname), installed_from (),
     architecture (), priority(), visited_(false)

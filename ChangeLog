@@ -1,5 +1,21 @@
 2015-01-28  Corinna Vinschen  <corinna@vinschen.de>
 
+	* choose.cc (MirrorOption): Add experimental local mirror option.
+	(ChooserPage::OnInit): Call packagemeta::ScanDownloadedFiles with
+	value of MirrorOption as argument.
+	* download.cc (check_for_cached): Add bool parameter.  If true, assume
+	correctness of download (==mirror) directory without checking files.
+	* download.h (check_for_cached): Add bool parameter to prototype,
+	default to false.
+	* package_meta.cc (packagemeta::ScanDownloadedFiles): Add bool
+	parameter.  Use to compute flag to call packageversion::scan with.
+	* package_meta.h (packagemeta::ScanDownloadedFiles): Align prototype.
+	* package_version.cc (packageversion::scan): Add bool parameter.  Call
+	check_for_cached with value of this parameter.
+	* package_version.h (packageversion::scan): Align prototype.
+
+2015-01-28  Corinna Vinschen  <corinna@vinschen.de>
+
 	* PickPackageLine.cc (PickPackageLine::click): Rearrange code.  Switch
 	package to "Uninstall" if neither binary, nor source package are picked.
 	Explain why.

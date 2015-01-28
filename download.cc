@@ -73,7 +73,7 @@ validateCachedPackage (const std::string& fullname, packagesource & pkgsource)
 /* 0 on failure
  */
 int
-check_for_cached (packagesource & pkgsource)
+check_for_cached (packagesource & pkgsource, bool mirror_mode)
 {
   /* search algo:
      1) is there a legacy version in the cache dir available.
@@ -90,16 +90,22 @@ check_for_cached (packagesource & pkgsource)
    * std::string-ified, and doesn't use overcomplex semantics. */
   std::string fullname = prefix + 
     (pkgsource.Canonical() ? pkgsource.Canonical() : "");
-  if (io_stream::exists(fullname))
-  {
-    if (validateCachedPackage (fullname, pkgsource))
+  if (mirror_mode)
+    {
+      /* Just assume correctness of mirror. */
       pkgsource.set_cached (fullname);
-    else
-      throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-          "Package validation failure for " + fullname,
-          APPERR_CORRUPT_PACKAGE);
-    return 1;
-  }
+      return 1;
+    }
+  if (io_stream::exists (fullname))
+    {
+      if (validateCachedPackage (fullname, pkgsource))
+	pkgsource.set_cached (fullname);
+      else
+	throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+	    "Package validation failure for " + fullname,
+	    APPERR_CORRUPT_PACKAGE);
+      return 1;
+    }
 
   /*
      2) is there a version from one of the selected mirror sites available ?

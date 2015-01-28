@@ -643,7 +643,7 @@ packagemeta::logSelectionStatus() const
 }
 
 void
-packagemeta::ScanDownloadedFiles ()
+packagemeta::ScanDownloadedFiles (bool mirror_mode)
 {
   /* Look at every known package, in all the known mirror dirs,
    * and fill in the Cached attribute if it exists.
@@ -657,10 +657,15 @@ packagemeta::ScanDownloadedFiles ()
       while (i != pkg.versions.end ())
 	{
 	  /* scan doesn't alter operator == for packageversions */
-	  const_cast<packageversion &>(*i).scan ();
+	  bool lazy_scan = mirror_mode
+			   && (*i != pkg.installed
+			       || pkg.installed == pkg.prev
+			       || pkg.installed == pkg.curr
+			       || pkg.installed == pkg.exp);
+	  const_cast<packageversion &>(*i).scan (lazy_scan);
 	  packageversion foo = *i;
 	  packageversion pkgsrcver = foo.sourcePackage ();
-	  pkgsrcver.scan ();
+	  pkgsrcver.scan (lazy_scan);
 
 	  /* For local installs, if there is no src and no bin, the version
 	   * is unavailable
