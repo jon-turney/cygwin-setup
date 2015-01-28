@@ -1,3 +1,15 @@
+2015-01-28  Corinna Vinschen  <corinna@vinschen.de>
+
+	* PickPackageLine.cc (PickPackageLine::click): Rearrange code.  Switch
+	package to "Uninstall" if neither binary, nor source package are picked.
+	Explain why.
+	* choose.cc (ChooserPage::OnInit): Fix CleanOrphansOption broken with
+	latest patch.  Reformat slightly.
+	* package_meta.cc (packagemeta::set_action): Rearrange and further
+	simplify code.  Make sure to have binary and source version never
+	unpicked at the same time to avoid spurious uninstallation of package.
+	Try to comment thoroughly.
+
 2015-01-26  Corinna Vinschen  <corinna@vinschen.de>
 
 	* PickPackageLine.cc (PickPackageLine::paint): Call trustp with default

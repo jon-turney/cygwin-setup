@@ -247,24 +247,27 @@ ChooserPage::OnInit ()
   for (packagedb::packagecollection::iterator i = db.packages.begin ();
        i != db.packages.end (); ++i)
     {
-      packagemeta & pkg = *(i->second);
+      packagemeta &pkg = *(i->second);
       bool wanted    = pkg.isManuallyWanted();
       bool deleted   = pkg.isManuallyDeleted();
       bool basemisc  = (pkg.categories.find ("Base") != pkg.categories.end ()
 		     || pkg.categories.find ("Misc") != pkg.categories.end ());
-      bool current   = pkg.curr || CleanOrphansOption;
-      bool upgrade   =  wanted  || (!pkg.installed && basemisc) || UpgradeAlsoOption || !hasManualSelections;
-      bool install   =   wanted  && !deleted && !pkg.installed;
-      bool reinstall =  (wanted  || basemisc ) && deleted;
-      bool uninstall = !(wanted  || basemisc ) && deleted;
+      bool upgrade   = wanted || (!pkg.installed && basemisc)
+		     || UpgradeAlsoOption || !hasManualSelections;
+      bool install   = wanted  && !deleted && !pkg.installed;
+      bool reinstall = (wanted  || basemisc) && deleted;
+      bool uninstall = (!(wanted  || basemisc) && deleted)
+		     || (!pkg.curr && CleanOrphansOption);
       if (install)
-	pkg.set_action( packagemeta::Install_action, pkg.curr );
+	pkg.set_action (packagemeta::Install_action, pkg.curr);
       else if (reinstall)
-	pkg.set_action( packagemeta::Reinstall_action, pkg.curr );
+	pkg.set_action (packagemeta::Reinstall_action, pkg.curr);
       else if (uninstall)
-	pkg.set_action( packagemeta::Uninstall_action, packageversion() );
+	pkg.set_action (packagemeta::Uninstall_action, packageversion ());
       else
-	pkg.set_action( packagemeta::Default_action, ((upgrade && current) ? pkg.trustp (true,  TRUST_UNKNOWN) : pkg.installed) );
+	pkg.set_action (packagemeta::Default_action,
+			upgrade ? pkg.trustp (true,  TRUST_UNKNOWN)
+				: pkg.installed);
     }
 
   ClearBusy ();

@@ -406,46 +406,46 @@ packagemeta::action_caption () const
 void
 packagemeta::set_action ()
 {
-  if (!desired)
-    {
-      /* If we were on "Uninstall", switch to the first version in the list.
-         If that's the installed version it will be automatically in state
-	 "Keep". */
-      desired = *versions.begin ();
-      desired.pick (false, this);
-      desired.sourcePackage ().pick (false, NULL);
-      return;
-    }
+  /* Keep the picked settings of the former desired version, if any, and make
+     sure at least one of them is picked.  If both are unpicked, pick the
+     binary version. */
+  bool source_picked = desired && desired.sourcePackage().picked();
+  bool binary_picked = !desired || desired.picked() || !source_picked;
 
-  if (desired == installed && !desired.picked () && installed.accessible ())
+  /* If we're on "Keep" on the installed version, and the version is available,
+     switch to "Reinstall". */
+  if (desired && desired == installed && !desired.picked ()
+      && desired.accessible ())
     {
-      /* If we're on "Keep" on the installed version, and the installed version
-         is available, switch to "Reinstall". */
       desired.pick (true, this);
-      desired.sourcePackage ().pick (false, NULL);
       return;
     }
 
-  bool binary_picked = desired.picked();
-  bool source_picked = desired.sourcePackage().picked();
-
-  /* So we're on "some" version, switch to the next in line. */
   set<packageversion>::iterator i;
-  for (i = versions.begin(); i != versions.end() && *i != desired; ++i)
-    ;
-  ++i;
+  /* From "Uninstall" switch to the first version.  Otherwise switch to the
+     next version. */
+  if (!desired)
+    i = versions.begin();
+  else
+    {
+      for (i = versions.begin(); i != versions.end() && *i != desired; ++i)
+	;
+      ++i;
+    }
   /* If there's another version in the list, switch to it, otherwise
      switch to "Uninstall". */
   if (i != versions.end ())
-    desired = *i;
-  else
-    desired = packageversion ();
-  if (desired)
     {
-      desired.pick (desired.accessible() && binary_picked, this);
+      desired = *i;
+      /* If the next version is the installed version, unpick it.  This will
+	 have the desired effect to show the package in "Keep" mode.  See also
+	 above for the code switching to "Reinstall". */
+      desired.pick (desired != installed && binary_picked, this);
       desired.sourcePackage ().pick (desired.sourcePackage().accessible ()
 				     && source_picked, NULL);
     }
+  else
+    desired = packageversion ();
 }
 
 int

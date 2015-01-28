@@ -123,19 +123,31 @@ int
 PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
 {
   // assert (myrow == ClickedRow);
-  if (pkg.desired.accessible ()
-      && x >= theView.headers[theView.bintick_col].x - HMARGIN / 2
-      && x <= theView.headers[theView.bintick_col + 1].x - HMARGIN / 2)
-    pkg.desired.pick(!pkg.desired.picked(), &pkg);
-  if (pkg.desired.sourcePackage ().accessible ()
-      && x >= theView.headers[theView.srctick_col].x - HMARGIN / 2
-      && x <= theView.headers[theView.srctick_col + 1].x - HMARGIN / 2)
-    pkg.desired.sourcePackage().pick(!pkg.desired.sourcePackage().picked(), NULL);
-
   if (x >= theView.headers[theView.new_col].x - HMARGIN / 2
       && x <= theView.headers[theView.new_col + 1].x - HMARGIN / 2)
-    pkg.set_action ();
-
+    {
+      pkg.set_action ();
+      return 0;
+    }
+  if (x >= theView.headers[theView.bintick_col].x - HMARGIN / 2
+      && x <= theView.headers[theView.bintick_col + 1].x - HMARGIN / 2)
+    {
+      if (pkg.desired.accessible ())
+	pkg.desired.pick (!pkg.desired.picked (), &pkg);
+    }
+  else if (x >= theView.headers[theView.srctick_col].x - HMARGIN / 2
+	   && x <= theView.headers[theView.srctick_col + 1].x - HMARGIN / 2)
+    {
+      if (pkg.desired.sourcePackage ().accessible ())
+	pkg.desired.sourcePackage ().pick (
+			!pkg.desired.sourcePackage ().picked (), NULL);
+    }
+  /* Unchecking binary while source is unchecked or vice versa is equivalent
+     to uninstalling.  It's essential to set desired correctly, otherwise the
+     package gets uninstalled without visual feedback to the user.  The package
+     will not even show up in the "Pending" view! */
+  if (!pkg.desired.picked () && !pkg.desired.sourcePackage ().picked ())
+    pkg.desired = packageversion ();
   return 0;
 }
 
