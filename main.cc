@@ -280,68 +280,65 @@ WinMain (HINSTANCE h,
 
     /* Start logging only if we don't elevate.  Same for setting default
        security settings. */
-    if (!elevate)
+    LogSingleton::SetInstance (*(theLog = LogFile::createLogFile ()));
+    const char *sep = isdirsep (local_dir[local_dir.size () - 1])
+				? "" : "\\";
+    /* Don't create log files for help output only. */
+    if (!elevate && !HelpOption)
       {
-	LogSingleton::SetInstance (*(theLog = LogFile::createLogFile ()));
-	const char *sep = isdirsep (local_dir[local_dir.size () - 1])
-				    ? "" : "\\";
-	theLog->setFile (LOG_BABBLE, local_dir + sep + "setup.log.full", false);
+	theLog->setFile (LOG_BABBLE, local_dir + sep + "setup.log.full",
+			 false);
 	theLog->setFile (0, local_dir + sep + "setup.log", true);
-
 	Log (LOG_PLAIN) << "Starting cygwin install, version "
 			<< setup_version << endLog;
-	/* Set the default DACL and Group. */
-	nt_sec.setDefaultSecurity ();
       }
 
     if (HelpOption)
-      GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN)
-						<< "\nCommand Line Options:\n");
-    else
       {
-	if (elevate)
+	Log (LOG_PLAIN) << "\nCommand Line Options:\n" << endLog;
+	GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN));
+	Log (LOG_PLAIN) << endLog;
+	theLog->exit (-1);
+      }
+    else if (elevate)
+      {
+	char exe_path[MAX_PATH];
+	if (!GetModuleFileName(NULL, exe_path, ARRAYSIZE(exe_path)))
+	  goto finish_up;
+
+	SHELLEXECUTEINFO sei = { sizeof(sei) };
+	sei.lpVerb = "runas";
+	sei.lpFile = exe_path;
+	sei.nShow = SW_NORMAL;
+	if (WaitOption)
+	  sei.fMask |= SEE_MASK_NOCLOSEPROCESS;
+
+	// Avoid another isRunAsAdmin check in the child.
+	std::string command_line_cs (command_line);
+	command_line_cs += " -";
+	command_line_cs += NoAdminOption.shortOption();
+	sei.lpParameters = command_line_cs.c_str ();
+
+	if (ShellExecuteEx(&sei))
 	  {
-	    char exe_path[MAX_PATH];
-	    if (!GetModuleFileName(NULL, exe_path, ARRAYSIZE(exe_path)))
-	      goto finish_up;
-
-	    SHELLEXECUTEINFO sei = { sizeof(sei) };
-	    sei.lpVerb = "runas";
-	    sei.lpFile = exe_path;
-	    sei.nShow = SW_NORMAL;
-	    if (WaitOption)
-	      sei.fMask |= SEE_MASK_NOCLOSEPROCESS;
-
-	    // Avoid another isRunAsAdmin check in the child.
-	    std::string command_line_cs (command_line);
-	    command_line_cs += " -";
-	    command_line_cs += NoAdminOption.shortOption();
-	    sei.lpParameters = command_line_cs.c_str ();
-
-	    if (ShellExecuteEx(&sei))
-	      {
-		exit_msg = IDS_ELEVATED;
-		/* Wait until child process is finished. */
-		if (WaitOption && sei.hProcess != NULL)
-		  WaitForSingleObject (sei.hProcess, INFINITE);
-	      }
-	    goto finish_up;
-
+	    /* Wait until child process is finished. */
+	    if (WaitOption && sei.hProcess != NULL)
+	      WaitForSingleObject (sei.hProcess, INFINITE);
 	  }
-	UserSettings Settings (local_dir);
-
-	main_display ();
-
-	Settings.save ();	// Clean exit.. save user options.
-      }
-
-    if (rebootneeded)
-      {
-	theLog->exit (IDS_REBOOT_REQUIRED);
+	exit_msg = IDS_ELEVATED;
+	theLog->exit (-1);
       }
     else
       {
-	theLog->exit (0);
+	/* Set default DACL and Group. */
+	nt_sec.setDefaultSecurity ();
+
+	UserSettings Settings (local_dir);
+	main_display ();
+	Settings.save ();	// Clean exit.. save user options.
+	if (rebootneeded)
+	  exit_msg = IDS_REBOOT_REQUIRED;
+	theLog->exit (rebootneeded ? IDS_REBOOT_REQUIRED : 0);
       }
 finish_up:
     ;

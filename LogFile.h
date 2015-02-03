@@ -31,7 +31,7 @@ public:
    * which guarantees to flush any log data...
    * but doesn't call generic C++ destructors
    */
-  virtual void exit (int const exit_code) __attribute__ ((noreturn));
+  virtual void exit (int exit_code) __attribute__ ((noreturn));
   virtual void flushAll ();
   virtual ~LogFile();
   // get a specific verbosity stream.

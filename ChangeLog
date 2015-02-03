@@ -1,3 +1,14 @@
+2015-02-03  Corinna Vinschen  <corinna@vinschen.de>
+
+	* LogFile.cc (LogFile::exit): Deconstify exit_code.  Handle
+	exit_code -1 special (instead of IDS_ELEVATED).  Add comments to
+	explain.
+	* LogFile.h (LogFile::exit): Deconstify exit_code in prototype.
+	* main.cc (WinMain): Restructure code.  Revert to always initializing
+	log output.  Don't generate log files if setup is going to elevate
+	itself, or if only help output is requested.  Set exit_code to -1 in
+	call to LogFile::exit in the cases we don't want a log (elevate/help).
+
 2015-01-28  Corinna Vinschen  <corinna@vinschen.de>
 
 	* choose.cc (MirrorOption): Add experimental local mirror option.

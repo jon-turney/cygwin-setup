@@ -119,12 +119,13 @@ LogFile::getFileName (int level) const
 }
 
 void
-LogFile::exit (int const exit_code)
+LogFile::exit (int exit_code)
 {
   AntiVirus::AtExit();
   static int been_here = 0;
+  /* Exitcode -1 is special... */
   if (been_here)
-    ::exit (exit_code);
+    ::exit (exit_code == -1 ? 0 : exit_code);
   been_here = 1;
   
   if (exit_msg)
@@ -137,8 +138,13 @@ LogFile::exit (int const exit_code)
         }
     }
   
-  if (exit_code != IDS_ELEVATED)
-    Log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
+  /* ... in that it skips the boring log messages.  Exit code -1 is used when
+     just printing the help output and when we're self-elevating. */
+  if (exit_code != -1)
+    {
+      Log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
+      exit_code = 0;
+    }
 
   for (FileSet::iterator i = files.begin();
        i != files.end(); ++i)
