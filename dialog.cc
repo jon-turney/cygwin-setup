@@ -26,7 +26,7 @@ static const char *cvsid =
 #include <stdlib.h>
 #include "dialog.h"
 #include "msg.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "mount.h"
 
 char *
@@ -109,7 +109,7 @@ fatal (const char *msg, DWORD err)
   FormatMessage (FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		 0, e, 0, (CHAR *) & buf, 0, 0);
   MessageBox (0, buf, msg, 0);
-  LogSingleton::GetInstance().exit (1);
+  Logger ().exit (1);
   // Keep gcc happy - some sort of bug!
   exit (1);
 }

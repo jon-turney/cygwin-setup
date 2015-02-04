@@ -17,6 +17,7 @@
 // progress indicator property page with three progress bars.
 
 #include <string>
+#include "LogFile.h"
 #include "win32.h"
 #include "commctrl.h"
 #include "resource.h"
@@ -254,8 +255,8 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 		    Log (LOG_PLAIN)
 			<< "can't install from bad local package dir"
 			<< endLog;
-		    exit_msg = IDS_INSTALL_INCOMPLETE;
-		    LogSingleton::GetInstance().exit (1);
+		    Logger ().setExitMsg (IDS_INSTALL_INCOMPLETE);
+		    Logger ().exit (1);
 		  }
 		GetOwner ()->SetActivePageByID (IDD_SOURCE);
 	      }
@@ -270,8 +271,8 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 		    Log (LOG_PLAIN)
 			<< "download/verify error in unattended_mode: out of retries"
 			<< endLog;
-		    exit_msg = IDS_INSTALL_INCOMPLETE;
-		    LogSingleton::GetInstance().exit (1);
+		    Logger ().setExitMsg (IDS_INSTALL_INCOMPLETE);
+		    Logger ().exit (1);
 		  }
 		GetOwner ()->SetActivePageByID (IDD_SITE);
 	      }

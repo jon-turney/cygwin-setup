@@ -117,11 +117,6 @@ set_cout ()
 ThreeBarProgressPage Progress;
 PostInstallResultsPage PostInstallResults;
 
-// This is a little ugly, but the decision about where to log occurs
-// after the source is set AND the root mount obtained
-// so we make the actual logger available to the appropriate routine(s).
-LogFile *theLog;
-
 static inline void
 main_display ()
 {
@@ -227,17 +222,16 @@ WinMain (HINSTANCE h,
   _argv = __argv;
 
   try {
+    bool help_option = false;
+    bool invalid_option = false;
     char cwd[MAX_PATH];
     GetCurrentDirectory (MAX_PATH, cwd);
     local_dir = std::string (cwd);
 
     if (!GetOption::GetInstance ().Process (argc,_argv, NULL))
-      {
-	GetOption::GetInstance ().ParameterUsage (cerr
-						  << "\nError during option processing."
-						  << "\nCommand Line Options:\n");
-	exit (1);
-      }
+      help_option = invalid_option = true;
+    else if (HelpOption)
+      help_option = true;
 
     if (!((string) Arch).size ())
       {
@@ -255,7 +249,8 @@ WinMain (HINSTANCE h,
     else
       {
 	char buff[80 + ((string) Arch).size ()];
-	sprintf (buff, "Invalid option for --arch:  \"%s\"", ((string) Arch).c_str ());
+	sprintf (buff, "Invalid option for --arch:  \"%s\"",
+		 ((string) Arch).c_str ());
 	fprintf (stderr, "*** %s\n", buff);
 	MessageBox (NULL, buff, "Invalid option", MB_ICONEXCLAMATION | MB_OK);
 	exit (1);
@@ -264,7 +259,7 @@ WinMain (HINSTANCE h,
     unattended_mode = PackageManagerOption ? chooseronly
 			: (UnattendedOption ? unattended : attended);
 
-    if (unattended_mode || HelpOption)
+    if (unattended_mode || help_option)
       set_cout ();
 
     /* Get System info */
@@ -275,30 +270,32 @@ WinMain (HINSTANCE h,
        supposed to elevate. */
     nt_sec.initialiseWellKnownSIDs ();
     /* Check if we have to elevate. */
-    bool elevate = !HelpOption && version.dwMajorVersion >= 6
+    bool elevate = !help_option && version.dwMajorVersion >= 6
 		   && !NoAdminOption && !nt_sec.isRunAsAdmin ();
 
     /* Start logging only if we don't elevate.  Same for setting default
        security settings. */
-    LogSingleton::SetInstance (*(theLog = LogFile::createLogFile ()));
+    LogSingleton::SetInstance (*LogFile::createLogFile ());
     const char *sep = isdirsep (local_dir[local_dir.size () - 1])
 				? "" : "\\";
     /* Don't create log files for help output only. */
-    if (!elevate && !HelpOption)
+    if (!elevate && !help_option)
       {
-	theLog->setFile (LOG_BABBLE, local_dir + sep + "setup.log.full",
-			 false);
-	theLog->setFile (0, local_dir + sep + "setup.log", true);
+	Logger ().setFile (LOG_BABBLE, local_dir + sep + "setup.log.full",
+			   false);
+	Logger ().setFile (0, local_dir + sep + "setup.log", true);
 	Log (LOG_PLAIN) << "Starting cygwin install, version "
 			<< setup_version << endLog;
       }
 
-    if (HelpOption)
+    if (help_option)
       {
+	if (invalid_option)
+	  Log (LOG_PLAIN) << "\nError during option processing." << endLog;
 	Log (LOG_PLAIN) << "\nCommand Line Options:\n" << endLog;
 	GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN));
 	Log (LOG_PLAIN) << endLog;
-	theLog->exit (-1);
+	Logger ().exit (invalid_option ? 1 : 0, false);
       }
     else if (elevate)
       {
@@ -325,8 +322,8 @@ WinMain (HINSTANCE h,
 	    if (WaitOption && sei.hProcess != NULL)
 	      WaitForSingleObject (sei.hProcess, INFINITE);
 	  }
-	exit_msg = IDS_ELEVATED;
-	theLog->exit (-1);
+	Logger ().setExitMsg (IDS_ELEVATED);
+	Logger ().exit (0, false);
       }
     else
       {
@@ -337,8 +334,8 @@ WinMain (HINSTANCE h,
 	main_display ();
 	Settings.save ();	// Clean exit.. save user options.
 	if (rebootneeded)
-	  exit_msg = IDS_REBOOT_REQUIRED;
-	theLog->exit (rebootneeded ? IDS_REBOOT_REQUIRED : 0);
+	  Logger ().setExitMsg (IDS_REBOOT_REQUIRED);
+	Logger ().exit (rebootneeded ? IDS_REBOOT_REQUIRED : 0);
       }
 finish_up:
     ;

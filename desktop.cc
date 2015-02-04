@@ -232,16 +232,15 @@ check_if_enable_next (HWND h)
   EnableWindow (GetDlgItem (h, IDOK), 1);
 }
 
-extern LogFile * theLog;
-
 static void
 set_status (HWND h)
 {
   char buf[1000], fmt[1000];
-  if (LoadString (hinstance, exit_msg, fmt, sizeof (fmt)) > 0)
+  if (LoadString (hinstance, Logger ().getExitMsg (), fmt, sizeof (fmt)) > 0)
     {
-      snprintf (buf, 1000, fmt, backslash(theLog->getFileName(LOG_BABBLE)).c_str());
-      eset(h, IDC_STATUS, buf);
+      snprintf (buf, 1000, fmt,
+      		backslash (Logger ().getFileName (LOG_BABBLE)).c_str ());
+      eset (h, IDC_STATUS, buf);
     }
 }
 

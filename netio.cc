@@ -24,7 +24,7 @@ static const char *cvsid =
 
 #include "netio.h"
 
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -227,7 +227,7 @@ auth_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDCANCEL:
       EndDialog (h, 1);
-      LogSingleton::GetInstance().exit (1);
+      Logger ().exit (1);
       break;
     }
   return 0;

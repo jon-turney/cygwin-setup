@@ -26,7 +26,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 
 #include "getopt++/BoolOption.h"
 #include "csu_util/MD5Sum.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 #include "win32.h"
 #include "commctrl.h"
@@ -829,7 +829,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       {
         Log (LOG_TIMESTAMP)
           << "User cancelled setup after install error" << endLog;
-        LogSingleton::GetInstance().exit (1);
+        Logger ().exit (1);
         return;
       }
     }
@@ -861,22 +861,24 @@ do_install_thread (HINSTANCE h, HWND owner)
     check_for_old_cygwin (owner);
   if (num_installs == 0 && num_uninstalls == 0)
     {
-      if (!unattended_mode) exit_msg = IDS_NOTHING_INSTALLED;
+      if (!unattended_mode)
+	Logger ().setExitMsg (IDS_NOTHING_INSTALLED);
       return;
     }
   if (num_installs == 0)
     {
-      if (!unattended_mode) exit_msg = IDS_UNINSTALL_COMPLETE;
+      if (!unattended_mode)
+	Logger ().setExitMsg (IDS_UNINSTALL_COMPLETE);
       return;
     }
 
   if (myInstaller.errors)
-    exit_msg = IDS_INSTALL_INCOMPLETE;
+    Logger ().setExitMsg (IDS_INSTALL_INCOMPLETE);
   else if (!unattended_mode)
-    exit_msg = IDS_INSTALL_COMPLETE;
+    Logger ().setExitMsg (IDS_INSTALL_COMPLETE);
 
   if (rebootneeded)
-    exit_msg = IDS_REBOOT_REQUIRED;
+    Logger ().setExitMsg (IDS_REBOOT_REQUIRED);
 }
 
 static DWORD WINAPI

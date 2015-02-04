@@ -33,7 +33,7 @@ static const char *cvsid =
 #include "archive.h"
 #include "archive_tar.h"
 #include "mkdir.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "filemanip.h"
 
 #if 0
@@ -72,7 +72,7 @@ archive_tar::archive_tar (io_stream * original)
       Log (LOG_TIMESTAMP) << "compilation error: tar header struct not 512"
 			  << " bytes (it's " << sizeof (state.tar_header)
 			  << ")" << endLog;
-      LogSingleton::GetInstance().exit (1);
+      Logger ().exit (1);
     }
 }
 

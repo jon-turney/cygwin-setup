@@ -1,3 +1,30 @@
+2015-02-04  Corinna Vinschen  <corinna@vinschen.de>
+
+	* Throughout, include LogFile.h instead of LogSingleton.h where
+	required.
+	* LogFile.cc (LogFile::exit_msg): Convert globally available variable
+	to protected, static LogFile member.
+	(LogFile::exit): Accept second parameter to decide if the end of install
+	message is  to be printed.  Revert to using the exit_code as is.
+	* LogFile.h (LogFile::setExitMsg): New static method.  Use throughout
+	rather than setting exit_msg directly.
+	(LogFile::getExitMsg): Ditto.
+	(LogFile::exit): Add second parameter to prototype.
+	(LogFile::exit_msg): New static member.
+	(Logger): New macro defining simplified access th logger instance.
+	Use throughout in place of LogSingleton::GetInstance and direct access
+	to theLog.
+	* LogSingleton.h (LogSingleton::exit): Add second parameter to
+	prototype.
+	* desktop.cc (theLog): Remove extern declaration.
+	(set_status): Call Logger ().getExitMsg () instead of
+	accessing exit_msg directly.
+	* localdir.cc (theLog): Remove extern declaration.
+	* main.cc (theLog): Remove.
+	(WinMain): Introduce local variables to store requirement to print
+	help output and if command line options were used incorrectly.  Use
+	throughout function.
+
 2015-02-03  Corinna Vinschen  <corinna@vinschen.de>
 
 	* LogFile.cc (LogFile::exit): Deconstify exit_code.  Handle

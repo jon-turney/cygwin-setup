@@ -25,7 +25,7 @@
 
 #include "setup_version.h"
 #include "win32.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -316,7 +316,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
 	    {
 	      int yn = yesno (owner, IDS_OLD_SETUPINI);
 	      if (yn == IDNO)
-		LogSingleton::GetInstance().exit (1);
+		Logger ().exit (1);
 	    }
 	}
       if (setup_timestamp)

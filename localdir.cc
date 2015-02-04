@@ -45,7 +45,6 @@
 
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
-extern LogFile * theLog;
 
 static StringOption LocalDirOption ("", 'l', "local-package-dir", "Local package directory", false);
 
@@ -72,16 +71,17 @@ LocalDirSetting::save ()
   if (source == IDC_SOURCE_DOWNLOAD || !get_root_dir ().size())
     {
       const char *sep = isdirsep (local_dir[local_dir.size () - 1]) ? "" : "\\";
-      theLog->clearFiles();
-      theLog->setFile (LOG_BABBLE, local_dir + sep + "setup.log.full", false);
-      theLog->setFile (0, local_dir + sep + "setup.log", true);
+      Logger ().clearFiles();
+      Logger ().setFile (LOG_BABBLE, local_dir + sep + "setup.log.full", false);
+      Logger ().setFile (0, local_dir + sep + "setup.log", true);
     }
   else
     {
-      theLog->clearFiles();
+      Logger ().clearFiles();
       mkdir_p (1, cygpath ("/var/log").c_str (), 01777);
-      theLog->setFile (LOG_BABBLE, cygpath ("/var/log/setup.log.full"), false);
-      theLog->setFile (0, cygpath ("/var/log/setup.log"), true);
+      Logger ().setFile (LOG_BABBLE, cygpath ("/var/log/setup.log.full"),
+      			 false);
+      Logger ().setFile (0, cygpath ("/var/log/setup.log"), true);
     }
 }
 

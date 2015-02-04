@@ -23,7 +23,7 @@ static const char *cvsid =
 
 #include "msg.h"
 
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "win32.h"
 
 #include <stdio.h>
@@ -99,7 +99,7 @@ fatal (HWND owner, int id, ...)
   va_list args;
   va_start (args, id);
   mbox (owner, "fatal", 0, id, args);
-  LogSingleton::GetInstance().exit (1);
+  Logger ().exit (1);
 }
 
 int

@@ -36,7 +36,7 @@ static const char *cvsid =
 #include "dialog.h"
 #include "geturl.h"
 #include "state.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "filemanip.h"
 
 #include "io_stream.h"
@@ -293,8 +293,8 @@ do_download_thread (HINSTANCE h, HWND owner)
       if (unattended_mode && retries-- <= 0)
         {
 	  Log (LOG_PLAIN) << "download error in unattended_mode: out of retries" << endLog;
-	  exit_msg = IDS_INSTALL_INCOMPLETE;
-	  LogSingleton::GetInstance().exit (1);
+	  Logger ().setExitMsg (IDS_INSTALL_INCOMPLETE);
+	  Logger ().exit (1);
 	}
       else if (unattended_mode)
         {
@@ -309,9 +309,9 @@ do_download_thread (HINSTANCE h, HWND owner)
   if (source == IDC_SOURCE_DOWNLOAD)
     {
       if (errors)
-	exit_msg = IDS_DOWNLOAD_INCOMPLETE;
+	Logger ().setExitMsg (IDS_DOWNLOAD_INCOMPLETE);
       else if (!unattended_mode)
-	exit_msg = IDS_DOWNLOAD_COMPLETE;
+	Logger ().setExitMsg (IDS_DOWNLOAD_COMPLETE);
       return IDD_DESKTOP;
     }
   else

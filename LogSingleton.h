@@ -36,7 +36,7 @@ public:
    * which guarantees to flush any log data...
    * but doesn't call generic C++ destructors
    */
-  __attribute__ ((noreturn)) virtual void exit (int const exit_code) = 0;
+  __attribute__ ((noreturn)) virtual void exit (int, bool = true) = 0;
   virtual ~LogSingleton();
   // get a specific verbosity stream.
   virtual std::ostream &operator() (enum log_level level) = 0;
@@ -56,5 +56,5 @@ private:
 extern std::ostream& endLog(std::ostream& outs);
 //extern ostream& endLog(ostream& outs);
 
-#define Log(X) (LogSingleton::GetInstance()(X))
+#define Log(X) (LogSingleton::GetInstance ()(X))
 #endif /* SETUP_LOGSINGLETON_H */

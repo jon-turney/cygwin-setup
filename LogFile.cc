@@ -69,7 +69,8 @@ struct LogEnt
 static LogEnt *first_logent = 0;
 static LogEnt **next_logent = &first_logent;
 static LogEnt *currEnt = 0;
-int exit_msg = 0;
+
+int LogFile::exit_msg = 0;
 
 typedef set<filedef> FileSet;
 static FileSet files;
@@ -119,13 +120,13 @@ LogFile::getFileName (int level) const
 }
 
 void
-LogFile::exit (int exit_code)
+LogFile::exit (int exit_code, bool show_end_install_msg)
 {
   AntiVirus::AtExit();
   static int been_here = 0;
   /* Exitcode -1 is special... */
   if (been_here)
-    ::exit (exit_code == -1 ? 0 : exit_code);
+    ::exit (exit_code);
   been_here = 1;
   
   if (exit_msg)
@@ -140,11 +141,8 @@ LogFile::exit (int exit_code)
   
   /* ... in that it skips the boring log messages.  Exit code -1 is used when
      just printing the help output and when we're self-elevating. */
-  if (exit_code != -1)
-    {
-      Log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
-      exit_code = 0;
-    }
+  if (show_end_install_msg)
+    Log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
 
   for (FileSet::iterator i = files.begin();
        i != files.end(); ++i)
