@@ -24,7 +24,8 @@ SUBDIRS := @subdirs@ tests
 # -Wno-uninitialized added to deal with g++ 3.4.4's spurious STL warnings
 # (http://gcc.gnu.org/bugzilla/show_bug.cgi?id=22207)
 BASECXXFLAGS = -Wall -Wno-uninitialized -Wpointer-arith -Wcomments \
-	       -Wcast-align -Wwrite-strings -fno-builtin-sscanf
+	       -Wcast-align -Wwrite-strings -fno-builtin-sscanf \
+	       -Wno-attributes
 AM_CXXFLAGS = -Werror $(BASECXXFLAGS) ${$(*F)_CXXFLAGS}
 AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
 	    -Wstrict-prototypes -Wmissing-prototypes

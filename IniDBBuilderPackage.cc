@@ -266,17 +266,17 @@ IniDBBuilderPackage::buildInstallSize (const std::string &size)
 }
 
 void
-IniDBBuilderPackage::buildInstallSHA256 (unsigned char const *sha256)
+IniDBBuilderPackage::buildInstallSHA512 (unsigned char const *sha512)
 {
-  if (sha256)
-    memcpy (cbpv.source()->sha256sum, sha256, sizeof cbpv.source()->sha256sum);
+  if (sha512)
+    memcpy (cbpv.source()->sha512sum, sha512, sizeof cbpv.source()->sha512sum);
 }
 
 void
-IniDBBuilderPackage::buildSourceSHA256 (unsigned char const *sha256)
+IniDBBuilderPackage::buildSourceSHA512 (unsigned char const *sha512)
 {
-  if (sha256)
-    memcpy (cspv.source()->sha256sum, sha256, sizeof cspv.source()->sha256sum);
+  if (sha512)
+    memcpy (cspv.source()->sha512sum, sha512, sizeof cspv.source()->sha512sum);
 }
 
 void

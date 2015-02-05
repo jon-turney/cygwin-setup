@@ -1,5 +1,11 @@
 2015-02-05  Corinna Vinschen  <corinna@vinschen.de>
 
+	Throughout, change preceeding patch from SHA256 to SHA512.
+	* Makefile.am (BASECXXFLAGS): Add -Wno-attributes for the sake of
+	sha2.c.
+
+2015-02-05  Corinna Vinschen  <corinna@vinschen.de>
+
 	Prepare for changing from MD5 to SHA256 checksums.
 	* IniDBBuilder.h (IniDBBuilder::buildInstallSHA256): Declare as pure
 	virtual method.

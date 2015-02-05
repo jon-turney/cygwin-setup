@@ -61,7 +61,7 @@ public:
   packagesource ():size (0), canonical (0), base (0), filename (0), cached (),
    _installedSize (0)
   {
-    memset (sha256sum, 0, sizeof sha256sum);
+    memset (sha512sum, 0, sizeof sha512sum);
   };
   /* how big is the source file */
   size_t size;
@@ -106,7 +106,7 @@ public:
   /* sets the canonical path, and parses and creates base and filename */
   virtual void set_canonical (char const *);
   virtual void set_cached (const std::string& );
-  unsigned char sha256sum[SHA256_DIGEST_LENGTH];
+  unsigned char sha512sum[SHA512_DIGEST_LENGTH];
   MD5Sum md5;
   typedef std::vector <site> sitestype;
   sitestype sites;

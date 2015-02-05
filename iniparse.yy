@@ -42,7 +42,7 @@ void add_correct_version();
 %token CATEGORY DEPENDS REQUIRES
 %token APATH PPATH INCLUDE_SETUP EXCLUDE_PACKAGE DOWNLOAD_URL
 %token T_PREV T_CURR T_TEST
-%token SHA256 MD5 INSTALLEDSIZE MAINTAINER PRIORITY
+%token SHA512 MD5 INSTALLEDSIZE MAINTAINER PRIORITY
 %token DESCTAG DESCRIPTION FILESIZE ARCHITECTURE SOURCEPACKAGE MD5LINE 
 %token RECOMMENDS PREDEPENDS
 %token SUGGESTS CONFLICTS REPLACES PROVIDES PACKAGENAME STRTOEOL PARAGRAPH
@@ -145,12 +145,12 @@ installmeta: /* empty */
 
 installchksum: /* empty */
  | MD5 			{ iniBuilder->buildInstallMD5 ((unsigned char *)$1);}
- | SHA256		{ iniBuilder->buildInstallSHA256 ((unsigned char *)$1);}
+ | SHA512		{ iniBuilder->buildInstallSHA512 ((unsigned char *)$1);}
  ;
 
 sourcechksum: /* empty */
  | MD5 			{ iniBuilder->buildSourceMD5 ((unsigned char *)$1); }
- | SHA256 		{ iniBuilder->buildSourceSHA256 ((unsigned char *)$1); }
+ | SHA512 		{ iniBuilder->buildSourceSHA512 ((unsigned char *)$1); }
  ;
 
 source /* non-empty */

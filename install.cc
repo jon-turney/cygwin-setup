@@ -912,17 +912,17 @@ do_install (HINSTANCE h, HWND owner)
 }
 
 static char *
-sha256_str (const unsigned char *in, char *buf)
+sha512_str (const unsigned char *in, char *buf)
 {
   char *bp = buf;
-  for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i)
+  for (int i = 0; i < SHA512_DIGEST_LENGTH; ++i)
     bp += sprintf (bp, "%02x", in[i]);
   *bp = '\0';
   return buf;
 }
 
 static void
-sha256_one (const packagesource& pkgsource)
+sha512_one (const packagesource& pkgsource)
 {
   std::string fullname (pkgsource.Cached ());
 
@@ -932,15 +932,15 @@ sha256_one (const packagesource& pkgsource)
 			 std::string ("IO Error opening ") + fullname,
 			 APPERR_IO_ERROR);
   SHA2_CTX ctx;
-  unsigned char sha256result[SHA256_DIGEST_LENGTH];
-  char ini_sum[SHA256_DIGEST_STRING_LENGTH],
-       disk_sum[SHA256_DIGEST_STRING_LENGTH];
+  unsigned char sha512result[SHA512_DIGEST_LENGTH];
+  char ini_sum[SHA512_DIGEST_STRING_LENGTH],
+       disk_sum[SHA512_DIGEST_STRING_LENGTH];
 
-  SHA256Init (&ctx);
+  SHA512Init (&ctx);
 
-  Log (LOG_BABBLE) << "Checking SHA256 for " << fullname << endLog;
+  Log (LOG_BABBLE) << "Checking SHA512 for " << fullname << endLog;
 
-  Progress.SetText1 ((std::string ("Checking SHA256 for ")
+  Progress.SetText1 ((std::string ("Checking SHA512 for ")
 		      + pkgsource.Base ()).c_str ());
   Progress.SetText4 ("Progress:");
   Progress.SetBar1 (0);
@@ -949,7 +949,7 @@ sha256_one (const packagesource& pkgsource)
   ssize_t count;
   while ((count = thefile->read (buffer, sizeof (buffer))) > 0)
   {
-    SHA256Update (&ctx, buffer, count);
+    SHA512Update (&ctx, buffer, count);
     Progress.SetBar1 (thefile->tell (), thefile->get_size ());
   }
   delete thefile;
@@ -958,23 +958,23 @@ sha256_one (const packagesource& pkgsource)
 			 "IO Error reading " + fullname,
 			 APPERR_IO_ERROR);
 
-  SHA256Final (sha256result, &ctx);
+  SHA512Final (sha512result, &ctx);
 
-  if (memcmp (pkgsource.sha256sum, sha256result, sizeof sha256result))
+  if (memcmp (pkgsource.sha512sum, sha512result, sizeof sha512result))
     {
       Log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
-		       << " - SHA256 mismatch: Ini-file: "
-		       << sha256_str (pkgsource.sha256sum, ini_sum)
+		       << " - SHA512 mismatch: Ini-file: "
+		       << sha512_str (pkgsource.sha512sum, ini_sum)
 		       << " != On-disk: "
-		       << sha256_str (sha256result, disk_sum)
+		       << sha512_str (sha512result, disk_sum)
 		       << endLog;
       throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-			   "SHA256 failure for " + fullname,
+			   "SHA512 failure for " + fullname,
 			   APPERR_CORRUPT_PACKAGE);
     }
 
-  Log (LOG_BABBLE) << "SHA256 verified OK: " << fullname << " "
-    <<  sha256_str (pkgsource.sha256sum, ini_sum) << endLog;
+  Log (LOG_BABBLE) << "SHA512 verified OK: " << fullname << " "
+    <<  sha512_str (pkgsource.sha512sum, ini_sum) << endLog;
 }
 
 static void
@@ -1031,8 +1031,8 @@ chksum_one (const packagesource& pkgsource)
 {
   if (!pkgsource.Cached ())
     return;
-  if (pkgsource.sha256sum[0])
-    sha256_one (pkgsource);
+  if (pkgsource.sha512sum[0])
+    sha512_one (pkgsource);
   else if (pkgsource.md5.isSet())
     md5_one (pkgsource);
 }

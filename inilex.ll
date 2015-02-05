@@ -63,10 +63,10 @@ STR	[!a-zA-Z0-9_./:\+~-]+
     return MD5;
 }
 
-[0123456789abcdef]{64,64}       {
-    yylval = (char *) new unsigned char[SHA256_DIGEST_LENGTH];
-    memset (yylval, 0, SHA256_DIGEST_LENGTH);
-    for (int i = 0; i < SHA256_BLOCK_LENGTH; ++i)
+[0123456789abcdef]{128,128}       {
+    yylval = (char *) new unsigned char[SHA512_DIGEST_LENGTH];
+    memset (yylval, 0, SHA512_DIGEST_LENGTH);
+    for (int i = 0; i < SHA512_BLOCK_LENGTH; ++i)
       {
 	unsigned char val = (unsigned char) yytext[i];
 	if (val > '9')
@@ -75,7 +75,7 @@ STR	[!a-zA-Z0-9_./:\+~-]+
 	  val = val - '0';
 	((unsigned char *) yylval) [i / 2] += val << ((i % 2) ? 0 : 4);
       }
-    return SHA256;
+    return SHA512;
 }
 
 \"[^"]*\"		{ yylval = new char [strlen (yytext+1) + 1];

@@ -41,8 +41,8 @@ public:
   virtual void buildMaintainer (const std::string& ) = 0;
   virtual void buildArchitecture (const std::string& ) = 0;
   virtual void buildInstallSize (const std::string& ) = 0;
-  virtual void buildInstallSHA256 (unsigned char const[32]) = 0;
-  virtual void buildSourceSHA256 (unsigned char const[32]) = 0;
+  virtual void buildInstallSHA512 (unsigned char const[64]) = 0;
+  virtual void buildSourceSHA512 (unsigned char const[64]) = 0;
   virtual void buildInstallMD5 (unsigned char const[16]) = 0;
   virtual void buildSourceMD5 (unsigned char const[16]) = 0;
   virtual void buildBeginRecommends () = 0;
