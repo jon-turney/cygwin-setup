@@ -42,7 +42,7 @@ void add_correct_version();
 %token CATEGORY DEPENDS REQUIRES
 %token APATH PPATH INCLUDE_SETUP EXCLUDE_PACKAGE DOWNLOAD_URL
 %token T_PREV T_CURR T_TEST
-%token MD5 INSTALLEDSIZE MAINTAINER PRIORITY
+%token SHA256 MD5 INSTALLEDSIZE MAINTAINER PRIORITY
 %token DESCTAG DESCRIPTION FILESIZE ARCHITECTURE SOURCEPACKAGE MD5LINE 
 %token RECOMMENDS PREDEPENDS
 %token SUGGESTS CONFLICTS REPLACES PROVIDES PACKAGENAME STRTOEOL PARAGRAPH
@@ -110,7 +110,7 @@ singleitem /* non-empty */
  | SOURCEPACKAGE source NL
  | CATEGORY categories NL
  | INSTALL STRING { iniBuilder->buildPackageInstall ($2); } installmeta NL
- | SOURCE STRING STRING sourceMD5 NL {iniBuilder->buildPackageSource ($2, $3);}
+ | SOURCE STRING STRING sourcechksum NL {iniBuilder->buildPackageSource ($2, $3);}
  | PROVIDES 		{ iniBuilder->buildBeginProvides(); } packagelist NL
  | BINARYPACKAGE  { iniBuilder->buildBeginBinary (); } packagelist NL
  | CONFLICTS	{ iniBuilder->buildBeginConflicts(); } versionedpackagelist NL
@@ -140,15 +140,17 @@ categories: /* empty */
  ;
 
 installmeta: /* empty */
- | STRING installMD5		{ iniBuilder->buildInstallSize($1); }
+ | STRING installchksum		{ iniBuilder->buildInstallSize($1); }
  ;
 
-installMD5: /* empty */
+installchksum: /* empty */
  | MD5 			{ iniBuilder->buildInstallMD5 ((unsigned char *)$1);}
+ | SHA256		{ iniBuilder->buildInstallSHA256 ((unsigned char *)$1);}
  ;
 
-sourceMD5: /* empty */
+sourcechksum: /* empty */
  | MD5 			{ iniBuilder->buildSourceMD5 ((unsigned char *)$1); }
+ | SHA256 		{ iniBuilder->buildSourceSHA256 ((unsigned char *)$1); }
  ;
 
 source /* non-empty */

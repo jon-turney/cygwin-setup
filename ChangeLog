@@ -1,3 +1,32 @@
+2015-02-05  Corinna Vinschen  <corinna@vinschen.de>
+
+	Prepare for changing from MD5 to SHA256 checksums.
+	* IniDBBuilder.h (IniDBBuilder::buildInstallSHA256): Declare as pure
+	virtual method.
+	(IniDBBuilder::buildSourceSHA256): Ditto.
+	* IniDBBuilderPackage.h (IniDBBuilderPackage::buildInstallSHA256):
+	Declare.
+	(IniDBBuilderPackage::buildSourceSHA256): Ditto.
+	* IniDBBuilderPackage.cc: Formatting changes.
+	(IniDBBuilderPackage::buildInstallSHA256): New method to store SHA256
+	sum for binary package.
+	(IniDBBuilderPackage::buildSourceSHA256): Ditto for source package.
+	* Makefile.am (@SETUP@_SOURCES): Add sha256sum.c and sha256sum.h.
+	* inilex.ll: Formatting changes.  Implement string recognition for
+	SHA256 sums.
+	* iniparse.yy: Define new token.  Allow SHA256 as well as MD5 checksums.
+	* install.cc (do_install_thread): Call chksum_one instead of md5sum.
+	(sha256_str): New static function to create SHA256 checksum string for
+	log output.
+	(sha256_one): New function to compute SHA256 checksum for file.
+	(md5_one): Move validity tests into chksum_one.
+	(chksum_one): New static function.  Call either sha256_one
+	or md5_one depending on checksum read from ini file.
+	* package_source.h (packagesource::packagesource): Initialize sha256sum.
+	(packagesource::sha256sum): New member.
+	* sha2.c: New file, taken from OpenBSD.
+	* sha2.h: New file, taken from OpenBSD.
+
 2015-02-04  Corinna Vinschen  <corinna@vinschen.de>
 
 	* Throughout, include LogFile.h instead of LogSingleton.h where

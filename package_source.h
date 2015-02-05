@@ -21,6 +21,7 @@
  */
 
 /* required to parse this file */
+#include "sha2.h"
 #include "strings.h"
 #include "String++.h"
 #include "csu_util/MD5Sum.h"
@@ -60,6 +61,7 @@ public:
   packagesource ():size (0), canonical (0), base (0), filename (0), cached (),
    _installedSize (0)
   {
+    memset (sha256sum, 0, sizeof sha256sum);
   };
   /* how big is the source file */
   size_t size;
@@ -104,6 +106,7 @@ public:
   /* sets the canonical path, and parses and creates base and filename */
   virtual void set_canonical (char const *);
   virtual void set_cached (const std::string& );
+  unsigned char sha256sum[SHA256_DIGEST_LENGTH];
   MD5Sum md5;
   typedef std::vector <site> sitestype;
   sitestype sites;

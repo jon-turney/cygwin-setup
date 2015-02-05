@@ -250,29 +250,44 @@ IniDBBuilderPackage::buildMaintainer (const std::string& ){}
    or binary at the moment
    */
 void
-IniDBBuilderPackage::buildArchitecture (const std::string& arch)
+IniDBBuilderPackage::buildArchitecture (const std::string &arch)
 {
   cp->architecture = arch;
 #if DEBUG
-  Log (LOG_BABBLE) << "Package " << cp->name << " is for " << arch << " architectures." << endLog;
+  Log (LOG_BABBLE) << "Package " << cp->name << " is for "
+		   << arch << " architectures." << endLog;
 #endif
 }
 
 void
-IniDBBuilderPackage::buildInstallSize (const std::string& size)
+IniDBBuilderPackage::buildInstallSize (const std::string &size)
 {
   setSourceSize (*cbpv.source(), size);
 }
 
 void
-IniDBBuilderPackage::buildInstallMD5 (unsigned char const * md5)
+IniDBBuilderPackage::buildInstallSHA256 (unsigned char const *sha256)
+{
+  if (sha256)
+    memcpy (cbpv.source()->sha256sum, sha256, sizeof cbpv.source()->sha256sum);
+}
+
+void
+IniDBBuilderPackage::buildSourceSHA256 (unsigned char const *sha256)
+{
+  if (sha256)
+    memcpy (cspv.source()->sha256sum, sha256, sizeof cspv.source()->sha256sum);
+}
+
+void
+IniDBBuilderPackage::buildInstallMD5 (unsigned char const *md5)
 {
   if (md5 && !cbpv.source()->md5.isSet())
     cbpv.source()->md5.set(md5);
 }
 
 void
-IniDBBuilderPackage::buildSourceMD5 (unsigned char const * md5)
+IniDBBuilderPackage::buildSourceMD5 (unsigned char const *md5)
 {
   if (md5 && !cspv.source()->md5.isSet())
     cspv.source()->md5.set(md5);

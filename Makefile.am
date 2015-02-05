@@ -243,6 +243,8 @@ inilint_SOURCES = \
 	script.h \
 	setup_version.h \
 	setup_version.c \
+	sha2.h \
+	sha2.c \
 	simpsock.cc \
 	simpsock.h \
 	site.cc \

@@ -26,6 +26,7 @@
 #include "iniparse.hh"
 #include "String++.h"
 #include "IniParseFeedback.h"
+#include "sha2.h"
 
 #define YY_INPUT(buf,result,max_size) { result = ini_getchar(buf, max_size); }
 
@@ -49,9 +50,8 @@ STR	[!a-zA-Z0-9_./:\+~-]+
 
 [0123456789abcdef]{32,32}       {
     yylval = (char *) new unsigned char[16];
-    for (int i=0; i< 16; ++i)
-      ((unsigned char *) yylval) [i] = 0;
-    for (int i=0; i< 32; ++i)
+    memset (yylval, 0, 16);
+    for (int i = 0; i < 32; ++i)
       {
 	unsigned char val = (unsigned char) yytext[i];
 	if (val > '9')
@@ -61,6 +61,21 @@ STR	[!a-zA-Z0-9_./:\+~-]+
 	((unsigned char *) yylval) [i / 2] += val << ((i % 2) ? 0 : 4);
       }
     return MD5;
+}
+
+[0123456789abcdef]{64,64}       {
+    yylval = (char *) new unsigned char[SHA256_DIGEST_LENGTH];
+    memset (yylval, 0, SHA256_DIGEST_LENGTH);
+    for (int i = 0; i < SHA256_BLOCK_LENGTH; ++i)
+      {
+	unsigned char val = (unsigned char) yytext[i];
+	if (val > '9')
+	  val = val - 'a' + 10;
+	else
+	  val = val - '0';
+	((unsigned char *) yylval) [i / 2] += val << ((i % 2) ? 0 : 4);
+      }
+    return SHA256;
 }
 
 \"[^"]*\"		{ yylval = new char [strlen (yytext+1) + 1];
