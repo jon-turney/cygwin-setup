@@ -98,11 +98,17 @@ public:
     /* Are we looking for the default version and does the installed version
        have a higher version number than the "curr" package?  This means the
        user has installed a "test" version, or built her own version newer
-       than "curr".  Rather than pulling the user back to "curr", we stick to
-       "test" if a "test" version is available, or to "installed" if not.
-       This reflects the behaviour of `yum update' on Fedora. */
-    if (_default && packageversion::compareVersions (curr, installed) < 0)
-      return exp ? exp : installed;
+       than "curr".  Rather than pulling the user back to "curr", we install
+       "test" if a "test" version is available and the version number is higher,
+       or we stick to "installed" if not.  This reflects the behaviour of
+       `yum update' on Fedora. */
+    if (_default && curr && installed
+	&& packageversion::compareVersions (curr, installed) < 0)
+      {
+	if (exp && packageversion::compareVersions (installed, exp) < 0)
+	  return exp;
+	return installed;
+      }
     /* Otherwise, if a "curr" version exists, return "curr". */
     if (curr)
       return curr;

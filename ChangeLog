@@ -1,3 +1,9 @@
+2015-02-06  Corinna Vinschen  <corinna@vinschen.de>
+
+	* package_meta.h (packagemeta::trustp): Make sure that curr and
+	installed exist before using them in version comparisons.  Install exp
+	over installed only if exp has a higher version number than installed.
+
 2015-02-05  Corinna Vinschen  <corinna@vinschen.de>
 
 	Throughout, change preceeding patch from SHA256 to SHA512.
