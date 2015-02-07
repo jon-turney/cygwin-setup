@@ -1,3 +1,8 @@
+2015-02-07  Achim Gratz  <Stromeko@NexGo.DE>
+
+	* install.cc (preremoveOne): Allow dash scripts and ".cmd" as an
+	additional extension for WIndows batch files.
+
 2015-02-06  Corinna Vinschen  <corinna@vinschen.de>
 
 	* package_meta.h (packagemeta::trustp): Make sure that curr and
