@@ -1,0 +1,10 @@
+aclocal.m4
+autom4te.cache
+cfgaux
+configure
+configure.lineno
+Makefile.in
+GNUmakefile
+make.out
+.git
+tags
