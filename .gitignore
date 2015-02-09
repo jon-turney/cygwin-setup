@@ -6,5 +6,5 @@ configure.lineno
 Makefile.in
 GNUmakefile
 make.out
-.git
+CVS
 tags
