@@ -8,3 +8,4 @@ GNUmakefile
 make.out
 CVS
 tags
+autoconf.h.in
