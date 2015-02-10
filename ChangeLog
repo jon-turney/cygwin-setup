@@ -1,3 +1,8 @@
+2015-02-10  Corinna Vinschen  <corinna@vinschen.de>
+
+	* Makefile.am (VER): Don't use ChangeLog revision number since git
+	doesn't maintain it.  Use ChangeLog's commit count instead.
+
 2015-02-07  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* install.cc (preremoveOne): Allow dash scripts and ".cmd" as an

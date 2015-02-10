@@ -276,8 +276,7 @@ inilint_SOURCES = \
 	csu_util/version_compare.h \
 	regex/regex.c
 
-VER := $(shell sed -ne 's/^\$$Revi[s]ion: *\([^ ]*\) *$$.*/\1/p' \
-	       $(srcdir)/ChangeLog)
+VER := $(shell cd ${srcdir} && git rev-list master --count ChangeLog)
 
 setup_version.c : $(srcdir)/ChangeLog Makefile
 	$(AM_V_GEN)(echo '#define VERSION_PREFIX "%%% setup-version"';\
