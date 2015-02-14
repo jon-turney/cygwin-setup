@@ -276,11 +276,13 @@ inilint_SOURCES = \
 	csu_util/version_compare.h \
 	regex/regex.c
 
-VER := $(shell cd ${srcdir} && git rev-list master --count ChangeLog)
+GITVER := $(shell cd $(srcdir) && git describe --match release_\* --abbrev=6 HEAD || "N/A")
+VER := $(subst release_,,$(GITVER))
 
 setup_version.c : $(srcdir)/ChangeLog Makefile
+	@echo "Setup version: " $(VER)
 	$(AM_V_GEN)(echo '#define VERSION_PREFIX "%%% setup-version"';\
-	echo 'static const char version_store[] = VERSION_PREFIX " '${VER}'";';\
+	echo 'static const char version_store[] = VERSION_PREFIX " '$(VER)'";';\
 	echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp && \
 	mv version.tmp setup_version.c
 

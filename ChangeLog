@@ -1,3 +1,10 @@
+2015-02-16  Achim Gratz  <ASSI <Stromeko@NexGo.DE>>
+
+	* Makefile.am (VER): Use git-describe to construct version string
+	based on annotated release tags.
+	(setup_version.c): Echo setup version, use round parens instead of
+	curlies.
+
 2015-02-10  Corinna Vinschen  <corinna@vinschen.de>
 
 	* Makefile.am (VER): Don't use ChangeLog revision number since git
