@@ -292,15 +292,11 @@ res.o: @SETUP@.exe.manifest
 .rc.o:
 	$(AM_V_GEN)$(WINDRES) --include-dir $(srcdir) -o $@ $<
 
-# static const char version_store[] = VERSION_PREFIX " 2.686";
 setup-src:
-	@ver=setup-$$(sed -n 's/^static const char version_store.* VERSION_PREFIX " \([^"]*\)".*$$/\1/p' setup_version.c);\
-	cd ${srcdir};\
-	rm -f $$ver;\
-	ln -sf . $$ver;\
-	cvs status -R | sed -n "s%^ *Repository revision:.*/cvs/cygwin-apps/setup/\(.*\),v%$$ver/\1%p" |\
-	sort | tar -T - -cjf ${CURDIR}/$$ver-src.tar.bz2;\
-	echo $$ver-src.tar.bz2; exec rm -f $$ver
+	@ver=setup-$(VER);\
+	cd ${srcdir}; rm -f $$ver; ln -sf . $$ver;\
+	git ls-files | tar -T - -cJf ${CURDIR}/$$ver-src.tar.xz;\
+	echo $$ver-src.tar.xz; exec rm -f $$ver
 
 # optional: strip and compress executable
 .PHONY:	strip upx
