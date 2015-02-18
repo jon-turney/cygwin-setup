@@ -1,3 +1,15 @@
+2015-02-18  Corinna Vinschen  <corinna@vinschen.de>
+
+	* PickPackageLine.cc (PickPackageLine::click): Call
+	packagemeta::set_action with current trust level as argument.
+	* package_meta.cc  (packagemeta::set_action): Take trust level as
+	argument.  When the user picks a package for the first time (from
+	"Skip"), pick the version matching the current trust level.  Improve
+	comments.
+	* package_meta.h (class packagemeta): Add member user_picked.
+	(packagemeta::packagemeta): Initialize user_picked to false.
+	(packagemeta::set_action): Align prototype to above change.
+
 2015-02-16  Achim Gratz  <ASSI <Stromeko@NexGo.DE>>
 
 	* README: Adapt the documentation to the recent changes and some

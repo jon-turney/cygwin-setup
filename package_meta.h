@@ -34,15 +34,15 @@ class packagemeta
 public:
   static void ScanDownloadedFiles (bool);
   packagemeta (packagemeta const &);
-  packagemeta (const std::string& pkgname):name (pkgname), key(pkgname), installed_from (),
+  packagemeta (const std::string& pkgname)
+  : name (pkgname), key(pkgname), installed_from (), user_picked (false),
     architecture (), priority(), visited_(false)
   {
   }
 
-  packagemeta (const std::string& pkgname,
-	       const std::string& installedfrom):name (pkgname), key(pkgname),
-	       installed_from (installedfrom),
-    architecture (), priority(), visited_(false)
+  packagemeta (const std::string& pkgname, const std::string& installedfrom)
+  : name (pkgname), key(pkgname), installed_from (installedfrom),
+    user_picked (false), architecture (), priority(), visited_(false)
   {
   }
 
@@ -77,7 +77,7 @@ public:
   static const _actions Install_action;
   static const _actions Reinstall_action;
   static const _actions Uninstall_action;
-  void set_action ();
+  void set_action (trusts const t);
   void set_action (_actions, packageversion const & default_version);
   void uninstall ();
   int set_requirements (trusts deftrust, size_t depth);
@@ -135,6 +135,8 @@ public:
   const std::string getReadableCategoryList () const;
   std::set <packageversion> versions;
 
+  /* Did the user already pick a version at least once? */
+  bool user_picked;
   /* which one is installed. */
   packageversion installed;
   /* which one is listed as "prev" in our available packages db */

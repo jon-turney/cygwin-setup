@@ -404,13 +404,15 @@ packagemeta::action_caption () const
 
 /* Set the next action given a current action.  */
 void
-packagemeta::set_action ()
+packagemeta::set_action (trusts const trust)
 {
+  set<packageversion>::iterator i;
+
   /* Keep the picked settings of the former desired version, if any, and make
      sure at least one of them is picked.  If both are unpicked, pick the
      binary version. */
-  bool source_picked = desired && desired.sourcePackage().picked();
-  bool binary_picked = !desired || desired.picked() || !source_picked;
+  bool source_picked = desired && desired.sourcePackage().picked ();
+  bool binary_picked = !desired || desired.picked () || !source_picked;
 
   /* If we're on "Keep" on the installed version, and the version is available,
      switch to "Reinstall". */
@@ -421,14 +423,23 @@ packagemeta::set_action ()
       return;
     }
 
-  set<packageversion>::iterator i;
-  /* From "Uninstall" switch to the first version.  Otherwise switch to the
-     next version. */
   if (!desired)
-    i = versions.begin();
+    {
+      /* From "Uninstall" switch to the first version.  From "Skip" switch to
+         the first version as well, unless the user picks for the first time.
+	 In that case switch to the trustp version immediately. */
+      if (installed || user_picked)
+	i = versions.begin ();
+      else
+	for (i = versions.begin ();
+	     i != versions.end () && *i != trustp (false, trust);
+	     ++i)
+	  ;
+    }
   else
     {
-      for (i = versions.begin(); i != versions.end() && *i != desired; ++i)
+      /* Otherwise switch to the next version. */
+      for (i = versions.begin (); i != versions.end () && *i != desired; ++i)
 	;
       ++i;
     }
@@ -446,6 +457,8 @@ packagemeta::set_action ()
     }
   else
     desired = packageversion ();
+  /* Memorize the fact that the user picked at least once. */
+  user_picked = true;
 }
 
 int

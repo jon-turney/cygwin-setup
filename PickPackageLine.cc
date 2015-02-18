@@ -126,7 +126,7 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
   if (x >= theView.headers[theView.new_col].x - HMARGIN / 2
       && x <= theView.headers[theView.new_col + 1].x - HMARGIN / 2)
     {
-      pkg.set_action ();
+      pkg.set_action (theView.deftrust);
       return 0;
     }
   if (x >= theView.headers[theView.bintick_col].x - HMARGIN / 2
