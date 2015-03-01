@@ -441,13 +441,15 @@ PickView::init_headers (HDC dc)
       headers[i].x = 0;
     }
 
-  // accomodate widths of the 'bin' and 'src' checkbox columns
-  // FIXME: What's up with the "0"? It's probably a mistake, and should be
-  // "". It used to be written as 0, and was subject to a bizarre implicit
-  // conversion by the unwise String(int) constructor.
-  note_width (headers, dc, "0", HMARGIN + 11, bintick_col);
-  note_width (headers, dc, "0", HMARGIN + 11, srctick_col);
-  
+  // A margin of 3*GetSystemMetrics(SM_CXEDGE) is used at each side of the
+  // header text.  (Probably should use that rather than hard-coding HMARGIN
+  // everywhere)
+  int addend = 2*3*GetSystemMetrics(SM_CXEDGE);
+
+  // accommodate widths of the 'bin' and 'src' checkbox columns
+  note_width (headers, dc, headers[bintick_col].text, addend, bintick_col);
+  note_width (headers, dc, headers[srctick_col].text, addend, srctick_col);
+
   // accomodate the width of each category name
   packagedb db;
   for (packagedb::categoriesType::iterator n = packagedb::categories.begin();

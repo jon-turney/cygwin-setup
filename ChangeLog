@@ -1,3 +1,8 @@
+2015-03-02  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+	* PickView.cc (init_headers): More correctly size "Bin?" and
+	"Src?" columns.
+
 2015-02-18  Corinna Vinschen  <corinna@vinschen.de>
 
 	* PickPackageLine.cc (PickPackageLine::click): Call
