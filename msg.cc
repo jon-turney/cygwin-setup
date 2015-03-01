@@ -38,7 +38,7 @@ mbox (HWND owner, const char *buf, const char *name, int type)
   if (unattended_mode)
     {
       // Return some default values.
-      Log (LOG_PLAIN) << "unattended_mode is set at mbox: returning default value" << endLog;
+      Log (LOG_BABBLE) << "unattended_mode is set at mbox: returning default value" << endLog;
       switch (type & MB_TYPEMASK)
 	{
 	  case MB_OK:
