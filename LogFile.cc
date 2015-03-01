@@ -248,7 +248,8 @@ LogFile::endEntry()
    * non-0 memory on alloc
    */
   currEnt->msg += buf;
-  msg ("LOG: %d %s", currEnt->level, buf.c_str());
+  // also write to debugger using OutputDebugString()
+  //  msg ("LOG: %d %s", currEnt->level, buf.c_str());
 
   /* reset for next use */
   theStream = new std::stringbuf;

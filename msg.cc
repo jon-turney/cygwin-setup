@@ -31,6 +31,7 @@ static const char *cvsid =
 #include "dialog.h"
 #include "state.h"
 
+#if 0
 void
 msg (const char *fmt, ...)
 {
@@ -40,6 +41,7 @@ msg (const char *fmt, ...)
   vsnprintf (buf, 2000, fmt, args);
   OutputDebugString (buf);
 }
+#endif
 
 int
 mbox (HWND owner, const char *buf, const char *name, int type)
