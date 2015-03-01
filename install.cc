@@ -261,16 +261,18 @@ FileInuseDlgProc (HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
           case 1:
             SetDlgItemText (hwndDlg, IDRETRY, "&Kill Processes");
             SetDlgItemText (hwndDlg, IDC_FILE_INUSE_HELP,
-                            "Select 'Kill' to kill Cygwin processes and retry, or "
-                            "select 'Continue' to go on anyway (you will need to reboot).");
+                            "Select 'Retry' to retry, "
+                            "Select 'Kill' to kill processes and retry, or "
+                            "select 'Continue' to go on anyway (the file will be updated after a reboot).");
             break;
 
           default:
           case 2:
             SetDlgItemText (hwndDlg, IDRETRY, "&Kill Processes");
             SetDlgItemText (hwndDlg, IDC_FILE_INUSE_HELP,
-                            "Select 'Kill' to forcibly kill all processes and retry, or "
-                            "select 'Continue' to go on anyway (you will need to reboot).");
+                            "Select 'Retry' to retry, "
+                            "select 'Kill' to forcibly kill all processes and retry, or "
+                            "select 'Continue' to go on anyway (the file will be updated after a reboot).");
           }
       }
       return TRUE; // automatically set focus, please
@@ -280,6 +282,7 @@ FileInuseDlgProc (HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
           switch (LOWORD (wParam))
             {
+            case IDIGNORE:
             case IDRETRY:
             case IDCONTINUE:
               EndDialog (hwndDlg, LOWORD (wParam));
@@ -543,10 +546,10 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                             // to fix the problem themselves
                             char msg[fn.size() + 300];
                             sprintf (msg,
-                                     "Unable to extract /%s\r\n"
-                                     "The file is in use or some other error occurred.\r\n"
-                                     "Please stop all Cygwin processes and select \"Retry\", or\r\n"
-                                     "select \"Continue\" to go on anyway (you will need to reboot).\r\n",
+                                     "Unable to extract /%s\r\n\r\n"
+                                     "The file is in use or some other error occurred.\r\n\r\n"
+                                     "Please stop all Cygwin processes and select \"Retry\", or "
+                                     "select \"Continue\" to go on anyway (the file will be updated after a reboot).\r\n",
                                      fn.c_str());
 
                             rc = MessageBox (owner, msg, "Error writing file",
@@ -556,6 +559,9 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 
                     switch (rc)
                       {
+                      case IDIGNORE:
+                        // manual intervention may have fixed the problem, retry
+                        continue;
                       case IDRETRY:
                         if (!processes.empty())
                           {

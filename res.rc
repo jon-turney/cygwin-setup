@@ -3,10 +3,13 @@
 
 #define SETUP_STANDARD_DIALOG_W	339
 #define SETUP_STANDARD_DIALOG_H	179
+#define SETUP_MEDIUM_DIALOG_W		277
+#define SETUP_MEDIUM_DIALOG_H		137
 #define SETUP_SMALL_DIALOG_W		215
 #define SETUP_SMALL_DIALOG_H		95
 
 #define SETUP_STANDARD_DIALOG_DIMS	SETUP_STANDARD_DIALOG_W, SETUP_STANDARD_DIALOG_H
+#define SETUP_MEDIUM_DIALOG_DIMS	SETUP_MEDIUM_DIALOG_W, SETUP_MEDIUM_DIALOG_H
 #define SETUP_SMALL_DIALOG_DIMS	SETUP_SMALL_DIALOG_W, SETUP_SMALL_DIALOG_H
 
 #define SETUP_HEADICON_X		(SETUP_STANDARD_DIALOG_W - 27)
@@ -428,24 +431,26 @@ BEGIN
 
 END
 
-IDD_FILE_INUSE DIALOG DISCARDABLE  0, 0, SETUP_SMALL_DIALOG_DIMS
+IDD_FILE_INUSE DIALOG DISCARDABLE  0, 0, SETUP_MEDIUM_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION
 CAPTION "In-use file detected"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    ICON            IDI_WARNING,IDC_HEADICON,5,5
+    ICON            IDI_WARNING,IDC_HEADICON,10,10
     LTEXT           "Unable to extract %s",
-                    IDC_FILE_INUSE_MSG,27,5,183,8,SS_PATHELLIPSIS
+                    IDC_FILE_INUSE_MSG,33,10,234,8,SS_PATHELLIPSIS
     LTEXT           "The file is in use by the following processes:",
-                    IDC_STATIC,27,14,183,8
-    EDITTEXT        IDC_FILE_INUSE_EDIT,27,23,183,28,WS_VSCROLL |
+                    IDC_STATIC,33,28,234,8
+    EDITTEXT        IDC_FILE_INUSE_EDIT,33,40,234,32,WS_VSCROLL |
                     ES_LEFT | ES_MULTILINE | ES_READONLY |
                     ES_AUTOVSCROLL | NOT WS_TABSTOP
-    LTEXT           "Select 'Stop' to stop Cygwin processes and retry, or "
-                    "select 'Continue' to go on anyway (you will need to reboot).",
-                    IDC_FILE_INUSE_HELP,27,52,183,16,NOT WS_GROUP
-    DEFPUSHBUTTON   "&Stop Processes",IDRETRY,47,75,55,15
-    PUSHBUTTON      "&Continue",IDCONTINUE,113,75,55,15
+    LTEXT           "Select 'Retry' to retry, "
+                    "select 'Stop' to stop processes and retry, or "
+                    "select 'Continue' to go on anyway (the file will be updated after a reboot).",
+                    IDC_FILE_INUSE_HELP,33,80,234,24,NOT WS_GROUP
+    PUSHBUTTON      "&Retry",IDIGNORE,45,112,55,15
+    DEFPUSHBUTTON   "&Stop Processes",IDRETRY,111,112,55,15
+    PUSHBUTTON      "&Continue",IDCONTINUE,177,112,55,15
 END
 
 /////////////////////////////////////////////////////////////////////////////
