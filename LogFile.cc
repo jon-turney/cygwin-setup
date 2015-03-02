@@ -99,14 +99,14 @@ LogFile::clearFiles ()
 }
 
 void
-LogFile::setFile (int minlevel, const std::string& path, bool append)
+LogFile::setFile (int maxlevel, const std::string& path, bool append)
 {
   FileSet::iterator f = files.find (filedef(path));
   if (f != files.end ())
     files.erase (f);
   
   filedef t (path);
-  t.level = minlevel;
+  t.level = maxlevel;
   t.append = append;
   files.insert (t);
 }
@@ -170,7 +170,7 @@ LogFile::flushAll ()
 }
 
 void
-LogFile::log_save (int babble, const std::string& filename, bool append)
+LogFile::log_save (int maxlevel, const std::string& filename, bool append)
 {
   static int been_here = 0;
   if (been_here)
@@ -190,7 +190,7 @@ LogFile::log_save (int babble, const std::string& filename, bool append)
 
   for (l = first_logent; l; l = l->next)
     {
-      if (babble || !(l->level == LOG_BABBLE))
+      if (l->level <= (maxlevel+1))
         {
           const char *tstr = l->msg.c_str();
           f->write (tstr, strlen (tstr));

@@ -19,9 +19,9 @@
 #include <iostream>
 
 enum log_level {
-  LOG_PLAIN = 2,
-  LOG_BABBLE = 1,
-  LOG_TIMESTAMP	= 2
+  LOG_PLAIN = 1,
+  LOG_TIMESTAMP = 1,
+  LOG_BABBLE = 2,
 };
 
 // Logging class. Default logging level is PLAIN.
