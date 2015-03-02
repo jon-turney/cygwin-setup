@@ -18,7 +18,7 @@
  */
 
 #include "compress_xz.h"
-#include "msg.h"
+#include "LogSingleton.h"
 
 #include <stdexcept>
 using namespace std;
@@ -186,35 +186,35 @@ compress_xz::read (void *buffer, size_t len)
           case LZMA_OK: /* Decompressor made some progress. */
             break;
           case LZMA_MEM_ERROR:
-            msg ("Lzma library error: Cannot allocate memory\n");
+            Log (LOG_PLAIN) << "Lzma library error: Cannot allocate memory" << endLog;
             this->lasterr = ENOMEM;
             return -1;
           case LZMA_MEMLIMIT_ERROR:
-            msg ("Lzma library error: Out of memory\n");
+            Log (LOG_PLAIN) << "Lzma library error: Out of memory\n" << endLog;
             this->lasterr = ENOMEM;
             return -1;
           case LZMA_FORMAT_ERROR:
-            msg ("Lzma library error: format not recognized\n");
+            Log (LOG_PLAIN) << "Lzma library error: format not recognized\n" << endLog;
             this->lasterr = EINVAL;
             return -1;
           case LZMA_OPTIONS_ERROR:
-            msg ("Lzma library error: Invalid options\n");
+            Log (LOG_PLAIN) << "Lzma library error: Invalid options\n" << endLog;
             this->lasterr = EINVAL;
             return -1;
           case LZMA_DATA_ERROR:
-            msg ("Lzma library error: Corrupted input data\n");
+            Log (LOG_PLAIN) << "Lzma library error: Corrupted input data\n" << endLog;
             this->lasterr = EINVAL;
             return -1;
           case LZMA_BUF_ERROR:
-            msg ("Lzma library error: No progress is possible\n");
+            Log (LOG_PLAIN) << "Lzma library error: No progress is possible\n" << endLog;
             this->lasterr = EINVAL;
             return -1;
           case LZMA_PROG_ERROR:
-            msg ("Lzma library error: Internal error\n");
+            Log (LOG_PLAIN) << "Lzma library error: Internal error\n" << endLog;
             this->lasterr = EINVAL;
             return -1;
           default:
-            msg ("Lzma decompression failed:  Unknown error %d\n", res);
+            Log (LOG_PLAIN) << "Lzma decompression failed:  Unknown error " << res << endLog;
             this->lasterr = EINVAL;
             return -1;
         }
@@ -508,7 +508,7 @@ compress_xz::bid_xz (void * buffer, size_t len)
     return 0;
   bits_checked += 8;
 
-  msg ("compress_xz::bid_xz: success: %d\n", bits_checked);
+  Log (LOG_BABBLE) << "compress_xz::bid_xz: success: " << bits_checked << endLog;
   return (bits_checked);
 }
 
@@ -616,8 +616,6 @@ compress_xz::bid_lzma (void * buffer, size_t len)
 
   /* TODO: The above test is still very weak.  It would be
    * good to do better. */
-  msg ("compress_xz::bid_lzma: success: %d\n", bits_checked);
+  Log (LOG_BABBLE) << "compress_xz::bid_lzma: success: " << bits_checked << endLog ;
   return (bits_checked);
 }
-
-

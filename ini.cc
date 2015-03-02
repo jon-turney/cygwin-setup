@@ -36,7 +36,6 @@
 #include "state.h"
 #include "geturl.h"
 #include "dialog.h"
-#include "msg.h"
 #include "mount.h"
 #include "site.h"
 #include "find.h"
@@ -333,9 +332,10 @@ do_ini_thread (HINSTANCE h, HWND owner)
 	}
     }
 
-  msg (".ini setup_version is %s, our setup_version is %s", ini_setup_version.size() ?
-       ini_setup_version.c_str () : "(null)",
-       setup_version);
+  Log (LOG_PLAIN) << ".ini setup_version is " <<
+    (ini_setup_version.size() ? ini_setup_version.c_str () : "(null)") <<
+    " our setup_version is " << setup_version << endLog;
+
   if (ini_setup_version.size ())
     {
       if (version_compare (setup_version, ini_setup_version) < 0)

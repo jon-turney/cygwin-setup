@@ -31,16 +31,6 @@ static const char *cvsid =
 #include "dialog.h"
 #include "state.h"
 
-void
-msg (const char *fmt, ...)
-{
-  char buf[2000];
-  va_list args;
-  va_start (args, fmt);
-  vsnprintf (buf, 2000, fmt, args);
-  OutputDebugString (buf);
-}
-
 int
 mbox (HWND owner, const char *buf, const char *name, int type)
 {
