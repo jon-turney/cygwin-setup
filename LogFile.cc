@@ -36,6 +36,10 @@ static const char *cvsid =
 #include "AntiVirus.h"
 #include "filemanip.h"
 #include "String++.h"
+#include "getopt++/BoolOption.h"
+
+static BoolOption VerboseOutput (false, 'v', "verbose",
+                                 "Verbose output");
 
 using namespace std;
 
@@ -219,7 +223,9 @@ LogFile::endEntry()
   string buf = theStream->str();
   delete theStream;
 
-  cout << buf << endl;
+  /* also write to stdout */
+  if ((currEnt->level >= LOG_PLAIN) || VerboseOutput)
+    cout << buf << endl;
 
   if (!currEnt)
     {
