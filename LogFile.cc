@@ -117,7 +117,7 @@ LogFile::saveAll ()
 }
 
 void
-LogFile::log_save (int babble, const std::string& filename, bool append)
+LogFile::log_save (int minlevel, const std::string& filename, bool append)
 {
   static int been_here = 0;
   if (been_here)
@@ -137,7 +137,7 @@ LogFile::log_save (int babble, const std::string& filename, bool append)
 
   for (l = first_logent; l; l = l->next)
     {
-      if (babble || !(l->level == LOG_BABBLE))
+      if (l->level >= minlevel)
         {
           const char *tstr = l->msg.c_str();
           f->write (tstr, strlen (tstr));

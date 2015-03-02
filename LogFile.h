@@ -19,7 +19,7 @@
 #include "LogSingleton.h"
 #include <sstream>
 
-// Logging class. Default logging level is PLAIN.
+// Logging class.
 class LogFile : public LogSingleton {
 public:
   static LogFile *createLogFile();

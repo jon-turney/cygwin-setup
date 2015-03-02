@@ -306,15 +306,21 @@ WinMain (HINSTANCE h,
     /* Start logging only if we don't elevate.  Same for setting default
        security settings. */
     LogSingleton::SetInstance (*LogFile::createLogFile ());
-    const char *sep = isdirsep (local_dir[local_dir.size () - 1])
-				? "" : "\\";
 
     /* Don't create log files for help or version output only. */
     if (!elevate && !output_only)
       {
-	Logger ().setFile (LOG_BABBLE, local_dir + sep + "setup.log.full",
-			   false);
-	Logger ().setFile (0, local_dir + sep + "setup.log", true);
+        // tentative settings for log file location: these will be overridden
+        // later once the local package or root directory is established.
+        //
+        // XXX: I don't think local_dir can ever be anything other than cwd
+        // here, so this logic is pointless
+        const char *sep = isdirsep (local_dir[local_dir.size () - 1])
+          ? "" : "\\";
+
+        Logger ().setFile (LOG_BABBLE, local_dir + sep + "setup.log.full", false);
+        Logger ().setFile (LOG_PLAIN, local_dir + sep + "setup.log", true);
+
 	Log (LOG_PLAIN) << "Starting cygwin install, version "
 			<< setup_version << endLog;
       }
