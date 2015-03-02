@@ -73,15 +73,14 @@ LocalDirSetting::save ()
       const char *sep = isdirsep (local_dir[local_dir.size () - 1]) ? "" : "\\";
       Logger ().clearFiles();
       Logger ().setFile (LOG_BABBLE, local_dir + sep + "setup.log.full", false);
-      Logger ().setFile (0, local_dir + sep + "setup.log", true);
+      Logger ().setFile (LOG_PLAIN, local_dir + sep + "setup.log", true);
     }
   else
     {
       Logger ().clearFiles();
       mkdir_p (1, cygpath ("/var/log").c_str (), 01777);
-      Logger ().setFile (LOG_BABBLE, cygpath ("/var/log/setup.log.full"),
-      			 false);
-      Logger ().setFile (0, cygpath ("/var/log/setup.log"), true);
+      Logger ().setFile (LOG_BABBLE, cygpath ("/var/log/setup.log.full"), false);
+      Logger ().setFile (LOG_PLAIN, cygpath ("/var/log/setup.log"), true);
     }
 }
 
