@@ -1,5 +1,10 @@
 2015-03-02  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+	* LogFile.cc (VerboseOutput): Add option.
+	(endEntry): Only write LOG_PLAIN to stdout, unless VerboseOutput.
+
+2015-03-02  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
 	* res.rc (IDD_FILE_INUSE): Add 'Retry' button. Make larger.
 	* install.cc (FileInuseDlgProc): Polish text.  Handle IDIGNORE.
 	(installOne): Ditto.
