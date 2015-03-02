@@ -1,5 +1,9 @@
 2015-03-02  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+	* LogFile.cc (endEntry): Remove msg().
+
+2015-03-02  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
 	* LogFile.cc (VerboseOutput): Add option.
 	(endEntry): Only write LOG_PLAIN to stdout, unless VerboseOutput.
 
