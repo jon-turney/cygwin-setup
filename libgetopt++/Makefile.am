@@ -28,7 +28,7 @@ libgetopt___la_SOURCES = src/GetOption.cc src/Option.cc src/BoolOption.cc \
 	src/OptionSet.cc \
 	src/StringArrayOption.cc src/StringOption.cc
 
-libgetopt___la_LDFLAGS = -version-info 1:1:0
+libgetopt___la_LDFLAGS = -version-info 1:1:0 -no-undefined
 
 getoptinclude_HEADERS = include/getopt++/Option.h \
   include/getopt++/BoolOption.h \
@@ -49,4 +49,3 @@ tests_BoolOptionTest_LDADD = libgetopt++.la
 
 tests_OptionSet_SOURCES = tests/OptionSet.cc
 tests_OptionSet_LDADD = libgetopt++.la
-
