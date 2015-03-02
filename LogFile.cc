@@ -254,3 +254,24 @@ LogFile::endEntry()
   rdbuf (theStream);
   init (theStream);
 }
+
+// Log adapators for printf-style output
+void
+LogBabblePrintf(const char *fmt, ...)
+{
+  char buf[2000];
+  va_list args;
+  va_start (args, fmt);
+  vsnprintf (buf, 2000, fmt, args);
+  Log (LOG_BABBLE) << buf << endLog;
+}
+
+void
+LogPlainPrintf(const char *fmt, ...)
+{
+  char buf[2000];
+  va_list args;
+  va_start (args, fmt);
+  vsnprintf (buf, 2000, fmt, args);
+  Log (LOG_PLAIN) << buf << endLog;
+}
