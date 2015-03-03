@@ -31,16 +31,17 @@ static const char *cvsid =
 #include "gcrypt.h"
 #include "gpg-packet.h"
 #include "msg.h"
+#include "LogSingleton.h"
 #include "resource.h"
 
 #define CRYPTODEBUGGING         (0)
 
 #if CRYPTODEBUGGING
 #define ERRKIND __asm__ __volatile__ (".byte 0xcc"); note
-#define MESSAGE msg
+#define MESSAGE LogBabblePrintf
 #else  /* !CRYPTODEBUGGING */
 #define ERRKIND note
-#define MESSAGE while (0) msg
+#define MESSAGE while (0) LogBabblePrintf
 #endif /* CRYPTODEBUGGING */
 
 #ifndef ARRAYSIZE

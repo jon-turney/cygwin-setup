@@ -27,6 +27,7 @@ static const char *cvsid =
 #include "compress.h"
 #include "gcrypt.h"
 #include "msg.h"
+#include "LogSingleton.h"
 #include "resource.h"
 #include "getopt++/StringArrayOption.h"
 #include "getopt++/BoolOption.h"
@@ -38,10 +39,10 @@ static const char *cvsid =
 
 #if CRYPTODEBUGGING
 #define ERRKIND __asm__ __volatile__ (".byte 0xcc"); note
-#define MESSAGE msg
+#define MESSAGE LogBabblePrintf
 #else  /* !CRYPTODEBUGGING */
 #define ERRKIND note
-#define MESSAGE while (0) msg
+#define MESSAGE while (0) LogBabblePrintf
 #endif /* CRYPTODEBUGGING */
 
 /*  Command-line options for specifying and controlling extra keys.  */

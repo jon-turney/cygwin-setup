@@ -36,7 +36,6 @@
 #include "state.h"
 #include "geturl.h"
 #include "dialog.h"
-#include "msg.h"
 #include "mount.h"
 #include "site.h"
 #include "find.h"
@@ -333,7 +332,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
 	}
     }
 
-  msg (".ini setup_version is %s, our setup_version is %s", ini_setup_version.size() ?
+  LogBabblePrintf (".ini setup_version is %s, our setup_version is %s", ini_setup_version.size() ?
        ini_setup_version.c_str () : "(null)",
        setup_version);
   if (ini_setup_version.size ())
