@@ -24,10 +24,10 @@ static const char *cvsid =
 #include "ntdll.h"
 
 #include <sys/stat.h>
-#include <stdio.h>
 
 #include "mkdir.h"
 #include "filemanip.h"
+#include "LogSingleton.h"
 
 /* Return 0 on success.
    A mode of 0 means no POSIX perms. */
@@ -86,9 +86,8 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 	{
 	  if (gse == ERROR_ALREADY_EXISTS)
 	    {
-	      fprintf (stderr,
-		       "warning: deleting \"%s\" so I can make a directory there\n",
-		       path);
+              Log (LOG_TIMESTAMP) << "warning: deleting \"" << path
+                                  << "\" so I can make a directory there" << endLog;
 	      if (DeleteFileW (wpath))
 		return mkdir_p (isadir, path, mode ? 0755 : 0);
 	    }

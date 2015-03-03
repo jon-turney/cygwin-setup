@@ -1,5 +1,12 @@
 2015-03-04  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+	* io_stream_cygfile.cc (remove): Convert from fprintf(stderr, ...)
+	to output to Log stream.
+	* io_stream_file.cc (remove): Ditto.
+	* mkdir.cc (mkdir_p): Ditto.
+
+2015-03-04  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
 	* archive_tar.cc (next_file_name): Silence error for 'g' and 'x'
 	type headers.
 

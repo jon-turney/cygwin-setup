@@ -30,6 +30,7 @@ static const char *cvsid =
   
 #include "io_stream_file.h"
 #include "IOStreamProvider.h"
+#include "LogSingleton.h"
 
 using namespace std;
 
@@ -133,8 +134,8 @@ io_stream_file::remove (const std::string& path)
 	  swprintf (tmp + len, L"old-%d", i);
 	}
       while (GetFileAttributesW (tmp) != INVALID_FILE_ATTRIBUTES);
-      fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-	       path.c_str());
+      Log (LOG_TIMESTAMP) << "warning: moving directory \"" << path.c_str()
+                          << "\" out of the way." << endLog;
       MoveFileW (wpath, tmp);
     }
   SetFileAttributesW (wpath, w & ~FILE_ATTRIBUTE_READONLY);
