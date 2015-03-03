@@ -233,6 +233,9 @@ archive_tar::next_file_name ()
       LogPlainPrintf ("error: unknown (or unsupported) file type `%c'\n",
                       state.tar_header.typeflag);
       err++;
+      /* fall through */
+    case 'g':			/* POSIX.1-2001 global extended header */
+    case 'x':			/* POSIX.1-2001 extended header */
       skip_file ();
       return next_file_name ();
     }
