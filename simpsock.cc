@@ -27,7 +27,7 @@ static const char *cvsid =
 #include <stdlib.h>
 
 #include "simpsock.h"
-#include "msg.h"
+#include "LogSingleton.h"
 
 #define SSBUFSZ 1024
 
@@ -61,7 +61,7 @@ SimpleSocket::SimpleSocket (const char *hostname, int port)
       he = gethostbyname (hostname);
       if (!he)
 	{
-	  msg ("Can't resolve `%s'\n", hostname);
+	  LogPlainPrintf ("Can't resolve `%s'\n", hostname);
 	  return;
 	}
       memcpy (ip, he->h_addr_list[0], 4);
@@ -70,7 +70,7 @@ SimpleSocket::SimpleSocket (const char *hostname, int port)
   s = socket (AF_INET, SOCK_STREAM, 0);
   if (s == INVALID_SOCKET)
     {
-      msg ("Can't create socket, %d", WSAGetLastError ());
+      LogPlainPrintf ("Can't create socket, %d", WSAGetLastError ());
       return;
     }
 
@@ -83,7 +83,7 @@ SimpleSocket::SimpleSocket (const char *hostname, int port)
 
   if (connect (s, (sockaddr *) & name, sizeof (name)))
     {
-      msg ("Can't connect to %s:%d", hostname, port);
+      LogPlainPrintf ("Can't connect to %s:%d", hostname, port);
       closesocket (s);
       s = INVALID_SOCKET;
       return;

@@ -34,7 +34,6 @@ static const char *cvsid =
 
 #include "ini.h"
 #include "resource.h"
-#include "msg.h"
 #include "state.h"
 #include "dialog.h"
 #include "mount.h"
@@ -85,7 +84,7 @@ make_link (const std::string& linkpath,
   if (_access (fname.c_str(), 0) == 0)
     return;			/* already exists */
 
-  msg ("make_link %s, %s, %s\n",
+  LogBabblePrintf ("make_link %s, %s, %s\n",
        fname.c_str(), title.c_str(), target.c_str());
 
   io_stream::mkpath_p (PATH_TO_FILE, std::string ("file://") + fname, 0);
@@ -96,7 +95,7 @@ make_link (const std::string& linkpath,
   exepath = target;
   argbuf = arg;
 
-  msg ("make_link_2 (%s, %s, %s, %s)",
+  LogBabblePrintf ("make_link_2 (%s, %s, %s, %s)",
        exepath.c_str(), argbuf.c_str(),
        icon.c_str(), fname.c_str());
   make_link_2 (exepath.c_str(), argbuf.c_str(),
@@ -116,7 +115,7 @@ start_menu (const std::string& title, const std::string& target,
 			      CSIDL_PROGRAMS, &id);
   SHGetPathFromIDList (id, path);
   strncat (path, "/Cygwin", MAX_PATH);
-  msg ("Program directory for program link: %s", path);
+  LogBabblePrintf ("Program directory for program link: %s", path);
   make_link (path, title, target, arg, iconpath);
 }
 
@@ -132,7 +131,7 @@ desktop_icon (const std::string& title, const std::string& target,
 			      issystem ? CSIDL_COMMON_DESKTOPDIRECTORY :
 			      CSIDL_DESKTOPDIRECTORY, &id);
   SHGetPathFromIDList (id, path);
-  msg ("Desktop directory for desktop link: %s", path);
+  LogBabblePrintf ("Desktop directory for desktop link: %s", path);
   make_link (path, title, target, arg, iconpath);
 }
 
@@ -287,7 +286,7 @@ check_desktop (const std::string title, const std::string target)
 			      issystem ? CSIDL_COMMON_DESKTOPDIRECTORY :
 			      CSIDL_DESKTOPDIRECTORY, &id);
   SHGetPathFromIDList (id, path);
-  msg ("Desktop directory for desktop link: %s", path);
+  LogBabblePrintf ("Desktop directory for desktop link: %s", path);
   std::string fname = std::string(path) + "/" + title + ".lnk";
 
   if (_access (fname.c_str(), 0) == 0)
@@ -307,7 +306,7 @@ check_startmenu (const std::string title, const std::string target)
 			      issystem ? CSIDL_COMMON_PROGRAMS :
 			      CSIDL_PROGRAMS, &id);
   SHGetPathFromIDList (id, path);
-  msg ("Program directory for program link: %s", path);
+  LogBabblePrintf ("Program directory for program link: %s", path);
   strcat (path, STARTMENUDIR);
   std::string fname = std::string(path) + "/" + title + ".lnk";
 

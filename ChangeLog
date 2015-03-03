@@ -1,5 +1,18 @@
 2015-03-04  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+	* msg.cc (msg): Remove.
+	* msg.h (msg): Ditto.
+	* compress_xz.cc (read, bid_xz, bid_lzma): Convert from msg() to
+	LogBabblePrintf() or LogPlainPrintf() as appropriate.
+	* crypto.cc (MESSAGE): Ditto.
+	* desktop.cc (make_link, start_menu, desktop_icon)
+	(check_desktop, check_startmenu): Ditto.
+	* gpg-packet.cc (MESSAGE): Ditto.
+	* ini.cc (do_ini_thread): Ditto.
+	* simpsock.cc (SimpleSocket): Ditto.
+
+2015-03-04  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
 	* LogSingleton.cc (LogBabblePrintf, LogPlainPrintf): Add.
 	* LogSingleton.h: Ditto.
 
