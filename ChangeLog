@@ -1,3 +1,8 @@
+2015-03-04  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+	* LogSingleton.cc (LogBabblePrintf, LogPlainPrintf): Add.
+	* LogSingleton.h: Ditto.
+
 2015-03-05  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* package_meta.cc (isManuallyWanted, isManuallyDeleted): Demote
