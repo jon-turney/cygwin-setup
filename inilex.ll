@@ -236,7 +236,6 @@ yyerror (const std::string& s)
     yyerror_messages += "\n";
 
   yyerror_messages += e;
-  // OutputDebugString (e.c_str ());
   yyerror_count++;
   /* TODO: is return 0 correct? */
   return 0;
