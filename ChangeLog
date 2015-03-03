@@ -1,5 +1,10 @@
 2015-03-04  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
+	* archive_tar.cc (archive_tar): Convert from fprintf(stderr, ...)
+	to LogBabblePrintf() or LogPlainPrintf() as appropriate.
+
+2015-03-04  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
 	* msg.cc (msg): Remove.
 	* msg.h (msg): Ditto.
 	* compress_xz.cc (read, bid_xz, bid_lzma): Convert from msg() to
