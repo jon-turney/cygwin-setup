@@ -57,4 +57,9 @@ extern std::ostream& endLog(std::ostream& outs);
 //extern ostream& endLog(ostream& outs);
 
 #define Log(X) (LogSingleton::GetInstance ()(X))
+
+// Log adapators for printf-style output
+void LogBabblePrintf(const char *fmt, ...);
+void LogPlainPrintf(const char *fmt, ...);
+
 #endif /* SETUP_LOGSINGLETON_H */

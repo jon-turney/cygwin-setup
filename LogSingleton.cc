@@ -15,6 +15,7 @@
 
 #include "LogSingleton.h"
 #include <stdexcept>
+#include <stdarg.h>
 
 using namespace std;
 
@@ -76,3 +77,30 @@ private:
   static LogSingleton *theInstance;
 };
 #endif
+
+// Log adapators for printf-style output
+void
+LogBabblePrintf(const char *fmt, ...)
+{
+  int len;
+  char buf[2000];
+  va_list args;
+  va_start (args, fmt);
+  len = vsnprintf (buf, 2000, fmt, args);
+  if ((len > 0) && (buf[len-1] == '\n'))
+    buf[len-1] = 0;
+  Log (LOG_BABBLE) << buf << endLog;
+}
+
+void
+LogPlainPrintf(const char *fmt, ...)
+{
+  int len;
+  char buf[2000];
+  va_list args;
+  va_start (args, fmt);
+  len = vsnprintf (buf, 2000, fmt, args);
+  if ((len > 0) && (buf[len-1] == '\n'))
+    buf[len-1] = 0;
+  Log (LOG_PLAIN) << buf << endLog;
+}
