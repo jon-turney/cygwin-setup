@@ -248,19 +248,17 @@ STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE |
 CAPTION "Cygwin Setup"
 FONT 8, "MS Shell Dlg"
 BEGIN
-//    CONTROL         "",IDC_STATIC,"Static",SS_WHITERECT,0,0,95,178
-    LTEXT           "Cygwin Net Release Setup Program",
-                    IDC_STATIC_WELCOME_TITLE,115,1,195,24
-    LTEXT           "This setup program is used for the initial installation "
-                    "of the Cygwin environment as well as all subsequent "
-                    "updates.  Make sure to remember where you saved it.\r\n\r\n"
+    LTEXT
+                    "You can run this program again at any time in "
+                    "the future to add, remove, or upgrade packages as "
+                    "necessary.",IDC_STATIC_HEADER_TITLE,115,16,195,32
+    LTEXT
                     "The pages that follow will guide you through the "
                     "installation.  Please note that Cygwin consists of a "
                     "large number of packages spanning a wide variety of "
                     "purposes.  We only install a base set of packages by "
-                    "default.  You can always run this program at any time in "
-                    "the future to add, remove, or upgrade packages as "
-                    "necessary.",IDC_SPLASH_TEXT,115,25,195,90
+                    "default.", IDC_SPLASH_TEXT,115,66,195,50
+
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "Version (unknown)",IDC_VERSION,115,127,195,10
     LTEXT           "Copyright 2000-2015",IDC_SPLASH_COPYR,115,140,195,8

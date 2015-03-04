@@ -1,4 +1,9 @@
 2015-03-04  Jon TURNEY  <jon.turney@dronecode.org.uk>
+	* res.rc (IDD_SPLASH DIALOG): Remove redundant text.  Try to make
+	the information about re-runing setup to change the installation
+	more prominent.
+
+2015-03-04  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
 	* io_stream_cygfile.cc (remove): Convert from fprintf(stderr, ...)
 	to output to Log stream.
