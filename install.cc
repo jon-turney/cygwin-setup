@@ -211,7 +211,7 @@ LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam) {
   return CallNextHookEx(hMsgBoxHook, nCode, wParam, lParam);
 }
 
-int _custom_MessageBox(HWND hWnd, LPCTSTR szText, LPCTSTR szCaption, UINT uType) {
+int custom_MessageBox(HWND hWnd, LPCTSTR szText, LPCTSTR szCaption, UINT uType) {
   int retval;
   bool retry_continue = (uType & MB_TYPEMASK) == MB_RETRYCONTINUE;
   if (retry_continue) {
@@ -221,15 +221,12 @@ int _custom_MessageBox(HWND hWnd, LPCTSTR szText, LPCTSTR szCaption, UINT uType)
     // Only install for THIS thread!!!
     hMsgBoxHook = SetWindowsHookEx(WH_CBT, CBTProc, NULL, GetCurrentThreadId());
   }
-  retval = MessageBox(hWnd, szText, szCaption, uType);
+  retval = mbox(hWnd, szText, szCaption, uType);
   // Intercept the return value for less confusing results
   if (retry_continue && retval == IDCANCEL)
     return IDCONTINUE;
   return retval;
 }
-
-#undef MessageBox
-#define MessageBox _custom_MessageBox
 
 typedef struct
 {
@@ -548,8 +545,8 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                                      "select \"Continue\" to go on anyway (the file will be updated after a reboot).\r\n",
                                      fn.c_str());
 
-                            rc = MessageBox (owner, msg, "Error writing file",
-                                             MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL);
+                            rc = custom_MessageBox (owner, msg, "Error writing file",
+                                                    MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL);
                           }
                       }
 
@@ -670,7 +667,7 @@ check_for_old_cygwin (HWND owner)
   sprintf (msg,
 	   "An old version of cygwin1.dll was found here:\r\n%s\r\nDelete?",
 	   buf);
-  switch (MessageBox
+  switch (mbox
 	  (owner, msg, "What's that doing there?",
 	   MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL))
     {

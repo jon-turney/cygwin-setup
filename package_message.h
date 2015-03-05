@@ -16,7 +16,8 @@
 #include "UserSettings.h"
 #include "state.h"
 #include <stdlib.h>
-#include "win32.h"
+//#include "win32.h"
+#include <msg.h>
 
 class packagemessage
 {
@@ -33,7 +34,7 @@ public:
   {
     if (unattended_mode || !id.length () || UserSettings::instance().get (id.c_str ()))
       /* No message or already seen */;
-    else if (MessageBox (NULL, message.c_str (), "Setup Alert",
+    else if (mbox (NULL, message.c_str (), "Setup Alert",
 			 MB_OKCANCEL | MB_ICONSTOP | MB_SETFOREGROUND
 			 | MB_TOPMOST) != IDCANCEL)
       UserSettings::instance().set (id.c_str (), "1");
@@ -43,4 +44,3 @@ public:
 };
 
 #endif /* SETUP_PACKAGE_MESSAGE_H */
-
