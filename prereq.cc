@@ -97,7 +97,7 @@ PrereqPage::OnNext ()
   if (!IsDlgButtonChecked (h, IDC_PREREQ_CHECK))
     {
       // breakage imminent!  danger, danger
-      int res = MessageBox (h,
+      int res = mbox (h,
           "The listed packages are required for packages depending on them to "
           "work.  We strongly recommend that you allow Setup to select them."
           "\r\n\r\n"

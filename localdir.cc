@@ -130,7 +130,7 @@ offer_to_create (HWND h, const char *dirname)
       LoadString (hinstance, IDS_MAYBE_MKDIR, fmtString, sizeof fmtString);
       snprintf (msgText, sizeof msgText, fmtString, dirname);
 
-      ret = MessageBox (h, msgText, 0, MB_ICONSTOP | MB_YESNO);
+      ret = mbox (h, msgText, 0, MB_ICONSTOP | MB_YESNO);
       if (ret == IDNO)
 	return -1;
     }
@@ -289,7 +289,7 @@ LocalDirPage::OnNext ()
 	      char msg[1000 + local_dir.size ()];
 	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str (),
 		        is_64bit ? "x86_64" : "x86");
-	      int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | MB_OKCANCEL);
+	      int ret = mbox (h, msg, 0, MB_ICONEXCLAMATION | MB_OKCANCEL);
 	      return (ret == IDOK) ? IDD_CHOOSE : -1;
 	    }
 	  else if (offer_to_create (GetHWND (), local_dir.c_str ()))
@@ -315,7 +315,7 @@ LocalDirPage::OnNext ()
 	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str(), 
 	        "(unknown error)", err);
 	  Log (LOG_PLAIN) << msg << endLog;
-	  int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | 
+	  int ret = mbox (h, msg, 0, MB_ICONEXCLAMATION |
 	    MB_ABORTRETRYIGNORE);
 	  
 	  if ((ret == IDABORT) || (ret == IDCANCEL))

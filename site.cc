@@ -411,7 +411,7 @@ do_download_site_info_thread (void *p)
     {
       // Error: Couldn't download the site info.
       // Go back to the Net setup page.
-      MessageBox (h, TEXT ("Can't get list of download sites.\n")
+      mbox (h, TEXT ("Can't get list of download sites.\n")
           TEXT("Make sure your network settings are correct and try again."),
           NULL, MB_OK);
 

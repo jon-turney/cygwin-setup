@@ -160,7 +160,7 @@ main_display ()
       sprintf (buf, "CoCreateInstance failed with error 0x%x.\n"
 		    "Setup will not be able to create Cygwin Icons\n"
 		    "in the Start Menu or on the Desktop.", (int) res);
-      MessageBox (NULL, buf, "Cygwin Setup", MB_OK);
+      mbox (NULL, buf, "Cygwin Setup", MB_OK);
     }
 
   // Init window class lib
@@ -252,7 +252,7 @@ WinMain (HINSTANCE h,
 	sprintf (buff, "Invalid option for --arch:  \"%s\"",
 		 ((string) Arch).c_str ());
 	fprintf (stderr, "*** %s\n", buff);
-	MessageBox (NULL, buff, "Invalid option", MB_ICONEXCLAMATION | MB_OK);
+	mbox (NULL, buff, "Invalid option", MB_ICONEXCLAMATION | MB_OK);
 	exit (1);
       }
 
