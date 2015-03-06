@@ -47,17 +47,13 @@ static int err;
 static char buf[512];
 
 int _tar_verbose = 0;
-FILE *_tar_vfile = 0;
-#define vp if (_tar_verbose) fprintf
-#define vp2 if (_tar_verbose>1) fprintf
 
 archive_tar::archive_tar (io_stream * original)
 {
   archive_children = 0;
-  if (_tar_vfile == 0)
-    _tar_vfile = stderr;
 
-  vp2 (_tar_vfile, "tar: open `%p'\n", original);
+  if (_tar_verbose)
+    LogBabblePrintf("tar: open `%p'\n", original);
 
   if (!original)
     {
@@ -170,8 +166,9 @@ archive_tar::next_file_name ()
   sscanf (state.tar_header.size, "%Io", &state.file_length);
   state.file_offset = 0;
 
-//  vp2 (_tar_vfile, "%c %9d %s\n", state.tar_header.typeflag,
-//      state.file_length, state.filename);
+  if (_tar_verbose)
+    LogBabblePrintf ("%c %9d %s\n", state.tar_header.typeflag,
+                     state.file_length, state.filename);
 
   switch (state.tar_header.typeflag)
     {
@@ -182,8 +179,8 @@ archive_tar::next_file_name ()
       if (state.file_length > CYG_PATH_MAX)
 	{
 	  skip_file ();
-	  fprintf (stderr, "error: long file name exceeds %d characters\n",
-		   CYG_PATH_MAX);
+	  LogPlainPrintf( "error: long file name exceeds %d characters\n",
+                          CYG_PATH_MAX);
 	  err++;
 	  state.parent->read (&state.tar_header, 512);
 	  sscanf (state.tar_header.size, "%Io", &state.file_length);
@@ -215,8 +212,8 @@ archive_tar::next_file_name ()
     case '3':			/* char */
     case '4':			/* block */
     case '6':			/* fifo */
-      fprintf (stderr, "warning: not extracting special file %s\n",
-	       state.filename);
+      LogPlainPrintf ("warning: not extracting special file %s\n",
+                      state.filename);
       err++;
       return next_file_name ();
 
@@ -233,8 +230,8 @@ archive_tar::next_file_name ()
       return state.filename;
 
     default:
-      fprintf (stderr, "error: unknown (or unsupported) file type `%c'\n",
-	       state.tar_header.typeflag);
+      LogPlainPrintf ("error: unknown (or unsupported) file type `%c'\n",
+                      state.tar_header.typeflag);
       err++;
       skip_file ();
       return next_file_name ();
