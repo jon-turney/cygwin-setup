@@ -1,0 +1,37 @@
+version: '{build}'
+branches:
+  only:
+  - master
+skip_tags: true
+os: Unstable
+environment:
+  CYG_ROOT: C:\cygwin
+  CYG_MIRROR: http://cygwin.mirror.constant.com
+  CACHE: C:\cache
+  matrix:
+  - HOST: i686-w64-mingw32
+  - HOST: x86_64-w64-mingw32
+install:
+- if "%HOST%"=="i686-w64-mingw32" set PKGARCH="mingw64-i686"
+- if "%HOST%"=="x86_64-w64-mingw32" set PKGARCH="mingw64-x86_64"
+- if NOT DEFINED PKGARCH exit 1
+- if not exist %CACHE% mkdir %CACHE%
+- set SETUP=setup-x86.exe
+- appveyor DownloadFile http://www.dronecode.org.uk/cygwin/%SETUP% -FileName %CYG_ROOT%\%SETUP%
+- echo Updating Cygwin
+- '%CYG_ROOT%\%SETUP% -qnNdO -R "%CYG_ROOT%" -s "%CYG_MIRROR%" -l "%CACHE%"'
+- echo Installing build dependencies
+- '%CYG_ROOT%\%SETUP% -qnNdO -R "%CYG_ROOT%" -s "%CYG_MIRROR%" -l "%CACHE%" -P "autoconf,automake,bison,flex,libtool,make,%PKGARCH%-headers,%PKGARCH%-gcc-g++,%PKGARCH%-libgcrypt,%PKGARCH%-bzip2,%PKGARCH%-xz,%PKGARCH%-zlib,pkg-config,upx"'
+cache: C:\cache
+build_script:
+- SET PATH=%CYG_ROOT%/bin
+- echo Bootstrap running...
+- '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./bootstrap.sh --host=%HOST%"'
+- echo Make running...
+- '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make"'
+- echo Strip/UPX running...
+- '%CYG_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make strip upx"'
+test: off
+artifacts:
+- path: setup.exe
+deploy: off
