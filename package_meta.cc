@@ -314,13 +314,13 @@ bool packagemeta::isManuallyWanted() const
       for (curcat = categories.begin (); curcat != categories.end (); curcat++)
 	if (parsed_categories.find (*curcat) != parsed_categories.end ())
 	  {
-	    Log (LOG_PLAIN) << "Found category " << *curcat << " in package " << name << endLog;
+	    Log (LOG_BABBLE) << "Found category " << *curcat << " in package " << name << endLog;
 	    bReturn = true;
 	  }
     }
   
   if (bReturn)
-    Log (LOG_PLAIN) << "Added manual package " << name << endLog;
+    Log (LOG_BABBLE) << "Added manual package " << name << endLog;
   return bReturn;
 }
 
@@ -364,13 +364,13 @@ bool packagemeta::isManuallyDeleted() const
       for (curcat = categories.begin (); curcat != categories.end (); curcat++)
 	if (parsed_delete_categories.find (*curcat) != parsed_delete_categories.end ())
 	  {
-	    Log (LOG_PLAIN) << "Found category " << *curcat << " in package " << name << endLog;
+	    Log (LOG_BABBLE) << "Found category " << *curcat << " in package " << name << endLog;
 	    bReturn = true;
 	  }
     }
 
   if (bReturn)
-    Log (LOG_PLAIN) << "Deleted manual package " << name << endLog;
+    Log (LOG_BABBLE) << "Deleted manual package " << name << endLog;
   return bReturn;
 }
 

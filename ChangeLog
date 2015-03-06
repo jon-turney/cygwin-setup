@@ -1,3 +1,9 @@
+2015-03-05  Achim Gratz  <Stromeko@NexGo.DE>
+
+	* package_meta.cc (isManuallyWanted, isManuallyDeleted): Demote
+	overly talkative messages to LOG_BABBLE, so that they won't
+	clutter stdout by default.
+
 2015-03-02  Jon TURNEY  <jon.turney@dronecode.org.uk>
 
 	* LogFile.cc (endEntry): Remove msg().
