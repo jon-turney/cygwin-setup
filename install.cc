@@ -953,7 +953,7 @@ sha512_one (const packagesource& pkgsource)
   Progress.SetText4 ("Progress:");
   Progress.SetBar1 (0);
 
-  unsigned char buffer[16384];
+  unsigned char buffer[64 * 1024];
   ssize_t count;
   while ((count = thefile->read (buffer, sizeof (buffer))) > 0)
   {
