@@ -1,3 +1,12 @@
+2015-08-01  Achim Gratz  <Stromeko@NexGo.DE>
+
+	* choose.cc (PruneInstallOption): New option -Y/--prune-install.
+	(OnInit): Implement PruneInstallOption to downgrade packages
+	installed with a higher version and delete all packages not
+	explicitly requested to be installed.  This brings an existing
+	installation to the same state a fresh installation would create.
+	Put the handling for upgrade==true into a separate else branch.
+
 2015-07-26  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* iniparse.yy (singleitem): Fix a copy-and-paste bug, use
