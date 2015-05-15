@@ -20,10 +20,10 @@
 typedef enum
 {
   TRUST_UNKNOWN,
+  TRUST_OTHER,
   TRUST_PREV,
   TRUST_CURR,
   TRUST_TEST,
-  NTRUST
 }
 trusts;
 

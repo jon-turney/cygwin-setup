@@ -41,7 +41,7 @@ void add_correct_version();
 %token SETUP_TIMESTAMP SETUP_VERSION PACKAGEVERSION INSTALL SOURCE SDESC LDESC
 %token CATEGORY DEPENDS REQUIRES
 %token APATH PPATH INCLUDE_SETUP EXCLUDE_PACKAGE DOWNLOAD_URL
-%token T_PREV T_CURR T_TEST
+%token T_PREV T_CURR T_TEST T_OTHER
 %token SHA512 SHA512B64URL MD5 INSTALLEDSIZE MAINTAINER PRIORITY
 %token MD5LINE SHA512LINE
 %token DESCTAG DESCRIPTION FILESIZE ARCHITECTURE SOURCEPACKAGE
@@ -99,6 +99,7 @@ singleitem /* non-empty */
  | T_PREV NL 			{ iniBuilder->buildPackageTrust (TRUST_PREV); }
  | T_CURR NL			{ iniBuilder->buildPackageTrust (TRUST_CURR); }
  | T_TEST NL			{ iniBuilder->buildPackageTrust (TRUST_TEST); }
+ | T_OTHER NL			{ iniBuilder->buildPackageTrust (TRUST_OTHER); }
  | PRIORITY STRING NL		{ iniBuilder->buildPriority ($2); }
  | INSTALLEDSIZE STRING NL	{ iniBuilder->buildInstalledSize ($2); }
  | MAINTAINER STRING NL		{ iniBuilder->buildMaintainer ($2); }

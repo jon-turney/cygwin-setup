@@ -158,6 +158,7 @@ STR	[!a-zA-Z0-9_./:\+~-]+
 "[test]"		return T_TEST;
 "[exp]"			return T_TEST;
 "[prev]"		return T_PREV;
+"["{STR}"]"		return T_OTHER;
 
 "("			return OPENBRACE;
 ")"			return CLOSEBRACE;

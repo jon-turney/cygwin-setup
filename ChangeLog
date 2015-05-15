@@ -1,3 +1,10 @@
+2015-05-15  Jon TURNEY  <jon.turney@dronecode.org.uk>
+
+	* PackageTrust.h (trusts): Add TRUST_OTHER.
+	* inilex.ll: tokenize any other [version] as the T_OTHER token.
+	* iniparse.yy: Add T_OTHER token and set package trust
+	to TRUST_OTHER when it is used.
+
 2015-06-11  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* inilex.ll: Increase read buffer size for the lexer input buffer
