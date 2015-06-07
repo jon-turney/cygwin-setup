@@ -1,3 +1,24 @@
+2015-06-07  Achim Gratz  <Stromeko@NexGo.DE>
+
+	* ini.h: Add macros for use within the implementation of the
+	checksum parsers.  Hexdigest requires a 2-to-1 and Base64 a 4-to-3
+	conversion.  Base64 uses the filename and URL safe alphabet from
+	RFC4648.  It would be trivial to additionally process the normal
+	Base64 alphabet but we don't want to allow that in order to be
+	able to use the checksums as filenames without further conversion.
+	(hexnibble, b64url): Process single input character to input value.
+	(nibbled1): Convert 2 processed input values into 1 output value.
+	(b64d1, b64d2, b64d3): Convert 4 input values into 3 output
+	values.
+	* iniparse.yy: Add SHA512B64URL checksum in addition to MD5 and
+	SHA512.  Keep symmetry with MD5LINE and also define SHA512LINE
+	syntax.
+	* inilex.ll: Implement existing MD5 and SHA512 checksum parsers
+	using new macros.  Implement new SHA512B64URL parser using new
+	macros.  Enforce Base64 alphabet as defined in RFC4648 with no
+	padding to enable direct use of checksum values as filenames.
+	Implement SHA512LINE parser.
+
 2015-03-25  Corinna Vinschen  <corinna@vinschen.de>
 
 	* install.cc (sha512_one): Raise buffer size to 64K for performance

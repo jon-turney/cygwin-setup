@@ -42,8 +42,9 @@ void add_correct_version();
 %token CATEGORY DEPENDS REQUIRES
 %token APATH PPATH INCLUDE_SETUP EXCLUDE_PACKAGE DOWNLOAD_URL
 %token T_PREV T_CURR T_TEST
-%token SHA512 MD5 INSTALLEDSIZE MAINTAINER PRIORITY
-%token DESCTAG DESCRIPTION FILESIZE ARCHITECTURE SOURCEPACKAGE MD5LINE 
+%token SHA512 SHA512B64URL MD5 INSTALLEDSIZE MAINTAINER PRIORITY
+%token MD5LINE SHA512LINE
+%token DESCTAG DESCRIPTION FILESIZE ARCHITECTURE SOURCEPACKAGE
 %token RECOMMENDS PREDEPENDS
 %token SUGGESTS CONFLICTS REPLACES PROVIDES PACKAGENAME STRTOEOL PARAGRAPH
 %token EMAIL COMMA OR NL AT
@@ -107,6 +108,8 @@ singleitem /* non-empty */
  | DIRECTORY STRING NL		{ /* TODO */ }
  | STANDARDSVERSION STRING NL	{ /* TODO */ }
  | MD5LINE MD5 NL	{ iniBuilder->buildInstallMD5 ((unsigned char *)$2); }
+ | MD5LINE SHA512 NL	{ iniBuilder->buildInstallSHA512 ((unsigned char *)$2); }
+ | MD5LINE SHA512B64URL NL	{ iniBuilder->buildInstallSHA512 ((unsigned char *)$2); }
  | SOURCEPACKAGE source NL
  | CATEGORY categories NL
  | INSTALL STRING { iniBuilder->buildPackageInstall ($2); } installmeta NL
@@ -146,11 +149,13 @@ installmeta: /* empty */
 installchksum: /* empty */
  | MD5 			{ iniBuilder->buildInstallMD5 ((unsigned char *)$1);}
  | SHA512		{ iniBuilder->buildInstallSHA512 ((unsigned char *)$1);}
+ | SHA512B64URL		{ iniBuilder->buildInstallSHA512 ((unsigned char *)$1);}
  ;
 
 sourcechksum: /* empty */
  | MD5 			{ iniBuilder->buildSourceMD5 ((unsigned char *)$1); }
  | SHA512 		{ iniBuilder->buildSourceSHA512 ((unsigned char *)$1); }
+ | SHA512B64URL		{ iniBuilder->buildSourceSHA512 ((unsigned char *)$1); }
  ;
 
 source /* non-empty */

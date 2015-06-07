@@ -48,34 +48,56 @@ STR	[!a-zA-Z0-9_./:\+~-]+
 
 %%
 
-[0123456789abcdef]{32,32}       {
+[0-9a-f]{32} {
     yylval = (char *) new unsigned char[16];
     memset (yylval, 0, 16);
-    for (int i = 0; i < 32; ++i)
+    int i, j;
+    unsigned char v1, v2;
+    for (i = 0, j = 0; i < 32; i += 2, ++j)
       {
-	unsigned char val = (unsigned char) yytext[i];
-	if (val > '9')
-	  val = val - 'a' + 10;
-	else
-	  val = val - '0';
-	((unsigned char *) yylval) [i / 2] += val << ((i % 2) ? 0 : 4);
+	v1 = hexnibble((unsigned char) yytext[i+0]);
+	v2 = hexnibble((unsigned char) yytext[i+1]);
+	((unsigned char *) yylval) [j] = nibbled1(v1, v2);
       }
     return MD5;
 }
 
-[0123456789abcdef]{128,128}       {
+[0-9a-f]{128} {
     yylval = (char *) new unsigned char[SHA512_DIGEST_LENGTH];
     memset (yylval, 0, SHA512_DIGEST_LENGTH);
-    for (int i = 0; i < SHA512_BLOCK_LENGTH; ++i)
+    int i, j;
+    unsigned char v1, v2;
+    for (i = 0, j = 0; i < SHA512_BLOCK_LENGTH; i += 2, ++j)
       {
-	unsigned char val = (unsigned char) yytext[i];
-	if (val > '9')
-	  val = val - 'a' + 10;
-	else
-	  val = val - '0';
-	((unsigned char *) yylval) [i / 2] += val << ((i % 2) ? 0 : 4);
+	v1 = hexnibble((unsigned char) yytext[i+0]);
+	v2 = hexnibble((unsigned char) yytext[i+1]);
+	((unsigned char *) yylval) [j] = nibbled1(v1, v2);
       }
     return SHA512;
+}
+
+[a-zA-Z0-9_-]{86} {
+    /* base64url as defined in RFC4648 */
+    yylval = (char *) new unsigned char[SHA512_DIGEST_LENGTH];
+    memset (yylval, 0, SHA512_DIGEST_LENGTH);
+    int i, j;
+    unsigned char v1, v2, v3, v4;
+    for (i = 0, j = 0; i < 4*(SHA512_DIGEST_LENGTH/3); i += 4, j += 3)
+      {
+	v1 = b64url(((unsigned char) yytext[i+0]));
+	v2 = b64url(((unsigned char) yytext[i+1]));
+	v3 = b64url(((unsigned char) yytext[i+2]));
+	v4 = b64url(((unsigned char) yytext[i+3]));
+	((unsigned char *) yylval) [j+0] = b64d1(v1, v2, v3, v4);
+	((unsigned char *) yylval) [j+1] = b64d2(v1, v2, v3, v4);
+	((unsigned char *) yylval) [j+2] = b64d3(v1, v2, v3, v4);
+      }
+    v1 = b64url((unsigned char) yytext[i+0]);
+    v2 = b64url((unsigned char) yytext[i+1]);
+    v3 = 0;
+    v4 = 0;
+    ((unsigned char *) yylval) [j+0] = b64d1(v1, v2, v3, v4);
+    return SHA512B64URL;
 }
 
 \"[^"]*\"		{ yylval = new char [strlen (yytext+1) + 1];
@@ -98,6 +120,7 @@ STR	[!a-zA-Z0-9_./:\+~-]+
 "Description:"		BEGIN (descriptionstate); return DESCTAG;
 "Size:"			return FILESIZE;
 "MD5sum:"		return MD5LINE;
+"SHA512:"		return SHA512LINE;
 "Installed-Size:"	return INSTALLEDSIZE;
 "Maintainer:"		BEGIN (eolstate); return MAINTAINER;
 "Architecture:"		return ARCHITECTURE;

@@ -52,4 +52,18 @@ extern std::string current_ini_sig_name;  /* current filename/URL for sig file *
 extern std::string yyerror_messages;  /* textual parse error messages */
 extern int yyerror_count;             /* number of parse errors */
 
+/* The following definitions are used in the parser implementation */
+
+#define hexnibble(val) (255 & (val > '9') ? val - 'a' + 10 : val - '0');
+#define nibbled1(v1,v2) (255 & ((v1 << 4) & v2));
+#define b64url(val)						\
+  (63 & ((  val == '_') ? 63					\
+	 : (val == '-') ? 62					\
+	 : (val >= 'a') ? val - 'a' + 26			\
+	 : (val >= 'A') ? val - 'A' +  0			\
+	 :                val - '0' + 52))
+#define b64d1(v1,v2,v3,v4) (255 & ((v1 << 2) | (v2 >> 4)));
+#define b64d2(v1,v2,v3,v4) (255 & ((v2 << 4) | (v3 >> 2)));
+#define b64d3(v1,v2,v3,v4) (255 & ((v3 << 6) |  v4));
+
 #endif /* SETUP_INI_H */
