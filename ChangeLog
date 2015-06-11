@@ -1,3 +1,8 @@
+2015-06-11  Achim Gratz  <Stromeko@NexGo.DE>
+
+	* io_stream.cc (copy): Increase read buffer size for io_stream to
+	64kiB.  Use sizeof operator instead of repeating magic constant.
+
 2015-06-07  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* ini.h: Add macros for use within the implementation of the
