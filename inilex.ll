@@ -28,6 +28,7 @@
 #include "IniParseFeedback.h"
 #include "sha2.h"
 
+#define YY_READ_BUF_SIZE 65536
 #define YY_INPUT(buf,result,max_size) { result = ini_getchar(buf, max_size); }
 
 static int ini_getchar(char *buf, int max_size);

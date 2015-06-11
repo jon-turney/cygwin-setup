@@ -1,5 +1,10 @@
 2015-06-11  Achim Gratz  <Stromeko@NexGo.DE>
 
+	* inilex.ll: Increase read buffer size for the lexer input buffer
+	to 64kiB.
+
+2015-06-11  Achim Gratz  <Stromeko@NexGo.DE>
+
 	* io_stream.cc (copy): Increase read buffer size for io_stream to
 	64kiB.  Use sizeof operator instead of repeating magic constant.
 
