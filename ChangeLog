@@ -1,3 +1,13 @@
+2015-07-01  Achim Gratz  <Stromeko@NexGo.DE>
+
+	* ini.h: Declare extern SetupBaseName, SetupArch and SetupIniDir.
+	Redefine macros to use them.
+
+	* main.cc: Provide option "-i/--ini-basename" to set the basename
+	for setup, keep the default as "setup" and store in SetupBaseName.
+	Initialize SetupArch and SetupIniDir based on effective
+	architecture.
+
 2015-06-11  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* inilex.ll: Increase read buffer size for the lexer input buffer

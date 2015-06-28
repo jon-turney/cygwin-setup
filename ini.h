@@ -18,6 +18,16 @@
 
 class io_stream;
 #include <string>
+#include <vector>
+
+typedef std::vector <std::string> IniList;
+extern IniList found_ini_list, setup_ext_list;
+const std::string setup_exts[] = { "xz", "bz2", "ini" };
+extern bool is_64bit;
+extern std::string SetupArch;
+extern std::string SetupIniDir;
+extern std::string SetupBaseName;
+
 class IniState;
 class IniDBBuilder;
 class IniParseFeedback;
@@ -38,10 +48,9 @@ typedef enum
   EXCLUDE_NOT_FOUND
 } excludes;
 
-extern bool is_64bit;
-#define SETUP_INI_DIR	   (is_64bit ? "x86_64/" : "x86/")
-#define SETUP_INI_FILENAME "setup.ini"
-#define SETUP_BZ2_FILENAME "setup.bz2"
+#define SETUP_INI_DIR	   (SetupIniDir.c_str ())
+#define SETUP_INI_FILENAME ((SetupBaseName+".ini").c_str ())
+#define SETUP_BZ2_FILENAME ((SetupBaseName+".bz2").c_str ())
 
 /* The following three vars are used to facilitate error handling between the
    parser/lexer and its callers, namely ini.cc:do_remote_ini() and

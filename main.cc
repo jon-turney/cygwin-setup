@@ -86,6 +86,8 @@ extern char **_argv;
 #endif
 
 bool is_64bit;
+std::string SetupArch;
+std::string SetupIniDir;
 
 using namespace std;
 
@@ -97,6 +99,8 @@ static BoolOption PackageManagerOption (false, 'M', "package-manager", "Semi-att
 static BoolOption NoAdminOption (false, 'B', "no-admin", "Do not check for and enforce running as Administrator");
 static BoolOption WaitOption (false, 'W', "wait", "When elevating, wait for elevated child process");
 static BoolOption HelpOption (false, 'h', "help", "print help");
+static StringOption SetupBaseNameOpt ("setup", 'i', "ini-basename", "Use a different basename, e.g. \"foo\", instead of \"setup\"", false);
+std::string SetupBaseName;
 
 static void inline
 set_cout ()
@@ -261,6 +265,10 @@ WinMain (HINSTANCE h,
 
     if (unattended_mode || help_option)
       set_cout ();
+
+    SetupBaseName = SetupBaseNameOpt;
+    SetupArch = is_64bit ? "x86_64" : "x86";
+    SetupIniDir = SetupArch+"/";
 
     /* Get System info */
     OSVERSIONINFO version;
