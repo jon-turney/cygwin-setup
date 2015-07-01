@@ -25,77 +25,137 @@
    (otherwise, why would you have asked to install it?).  Note
    that we search recursively. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
 
-#include "win32.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-#include "resource.h"
-#include "state.h"
-#include "dialog.h"
-#include "msg.h"
+#include "String++.h"
 #include "find.h"
-#include "ScanFindVisitor.h"
-#include "filemanip.h"
 #include "ini.h"
 
+#include "ScanFindVisitor.h"
 #include "IniDBBuilderPackage.h"
 #include "IniParseFeedback.h"
+
+#define DEBUG_FROMCWD
+#ifdef DEBUG_FROMCWD
+#include "LogFile.h"
+#endif
 
 /* Trivial class for detecting the existence of setup.ini */
 
 class SetupFindVisitor : public FindVisitor
 {
 public:
-  SetupFindVisitor (): found(false){}
-  virtual void visitFile(const std::string& basePath,
-                         const WIN32_FIND_DATA *theFile)
-    {
-      if (!casecompare (SETUP_INI_FILENAME, theFile->cFileName) && 
-	  (theFile->nFileSizeLow || theFile->nFileSizeHigh))
-	{
-	  /* Check if base dir ends in SETUP_INI_DIR. */
-	  const char *dir = basePath.c_str() + basePath.size ()
-			    - strlen (SETUP_INI_DIR);
-	  if (dir < basePath.c_str ())
-	    return;
-	  if ((dir != basePath.c_str () && dir[-1] != '/' && dir[-1] != '\\')
-	      || casecompare (SETUP_INI_DIR, dir))
-	    return;
-	  found = true;
-	}
-    }
+  SetupFindVisitor () : inidir (false)
+  {
+    found_ini.resize (setup_ext_list.size ());
+    found_ini.assign (setup_ext_list.size (), false);
+  }
+  virtual void visitFile (const std::string& basePath,
+			  const WIN32_FIND_DATA *theFile)
+  {
+#ifdef DEBUG_FROMCWD
+    Log (LOG_PLAIN) << "examining file: "
+		    << basePath << "./" << theFile->cFileName << endLog;
+#endif
+    if (inidir &&
+	(theFile->nFileSizeLow || theFile->nFileSizeHigh))
+      {
+#ifdef DEBUG_FROMCWD
+	Log (LOG_PLAIN) << "checking extension: ";
+#endif
+	std::vector<bool>::iterator fi = found_ini.begin ();
+	for (std::vector<std::string>::const_iterator ext = setup_ext_list.begin ();
+	     ext != setup_ext_list.end ();
+	     ext++, fi++)
+	  {
+#ifdef DEBUG_FROMCWD
+	    Log (LOG_PLAIN) << *ext << " ";
+#endif
+	    if (!casecompare (SetupBaseName + "." + *ext,  theFile->cFileName))
+	      *fi = true;
+	  }
+#ifdef DEBUG_FROMCWD
+	Log (LOG_PLAIN) << endLog;
+#endif
+      }
+#ifdef DEBUG_FROMCWD
+    Log (LOG_PLAIN) << "state: "
+		    << " inidir="    << inidir
+		    << " found_xz="  << found_ini[0]
+		    << " found_bz2=" << found_ini[1]
+		    << " found_ini=" << found_ini[2]
+		    << endLog;
+#endif
+  }
+  virtual void visitDirectory (const std::string& basePath,
+			       WIN32_FIND_DATA const *aDir, int level)
+  {
+#ifdef DEBUG_FROMCWD
+    Log (LOG_PLAIN) << "examining directory: "
+		    << basePath << "./" << aDir->cFileName
+		    << endLog;
+#endif
+    if (level <= 0)
+      return;
+    inidir = !casecompare (SetupArch, aDir->cFileName);
+    if (level == 1 && !inidir)
+      return;
+#ifdef DEBUG_FROMCWD
+    Log (LOG_PLAIN) << "  recurse into: "
+		    << (inidir ? "inidir" : "mirror") << endLog;
+#endif
+    Find aFinder (basePath + aDir->cFileName);
+    aFinder.accept (*this, inidir ? 0 : --level);
+	std::vector<bool>::const_iterator fi = found_ini.begin ();
+	for (std::vector<std::string>::const_iterator ext = setup_ext_list.begin ();
+	     ext != setup_ext_list.end ();
+	     ext++, fi++)
+	  {
+	    if (*fi)
+	      found_ini_list.push_back (basePath + "/" + aDir->cFileName + "/"
+					+ SetupBaseName + "." + *ext);
+	  }
+	found_ini.assign (setup_ext_list.size (), false);
+  }
   virtual ~ SetupFindVisitor (){}
-  operator bool () const {return found;}
+  operator bool () const
+  {
+    return !found_ini_list.empty ();
+  }
 protected:
   SetupFindVisitor (SetupFindVisitor const &);
   SetupFindVisitor & operator= (SetupFindVisitor const &);
 private:
-  bool found;
+  bool inidir;
+  std::vector<bool> found_ini;
 };
-  
+
+IniList found_ini_list;
+
 bool
 do_from_local_dir (HINSTANCE h, HWND owner, std::string &local_dir)
 {
+#ifdef DEBUG_FROMCWD
+  Log (LOG_PLAIN) << "do_from_local_dir: "
+		  << local_dir << endLog;
+#endif
   // Assume we won't find the INI file.
-  SetupFindVisitor found_ini;
-  // Only search two levels deep.
-  Find (local_dir.c_str ()).accept(found_ini, 2);
-  if (found_ini)
-    {
-      // Found INI, load it.
+  SetupFindVisitor found;
+  // single mirror?
+  Find (local_dir.c_str ()).accept (found, 1);
+  if (found)
       return true;
-    }
-
+  // multi-mirror?
+  Find (local_dir.c_str ()).accept (found, 2);
+  if (found)
+      return true;
+  // nope, do full scan.
+#ifdef DEBUG_FROMCWD
+  Log (LOG_PLAIN) << "  starting full scan from "
+		  << local_dir << endLog;
+#endif
   IniParseFeedback myFeedback;
-  IniDBBuilderPackage myBuilder(myFeedback);
+  IniDBBuilderPackage myBuilder (myFeedback);
   ScanFindVisitor myVisitor (myBuilder);
-  Find(local_dir.c_str ()).accept(myVisitor);
+  Find (local_dir.c_str ()).accept (myVisitor);
   return false;
 }

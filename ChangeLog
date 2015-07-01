@@ -1,5 +1,30 @@
 2015-07-01  Achim Gratz  <Stromeko@NexGo.DE>
 
+	* fromcwd.cc: Remove unused includes.  Add global found_ini_list
+	to record the search result.
+	(SetupFindVisitor): Make setup.{ini,bz2,xz} known and provide bool
+	private variables to record whether we found them.  Another bool
+	inidir to indicate whether we are currently inside a drectory
+	where setup.ini files should exist.
+	(SetupFindVisitor::visitFile): When inidir is true, check if a
+	setup file with one of the known extensions was found and set the
+	corresponding bool variables.
+        (SetupFindVisitor::visitDirectory): Set inidir when appropriate.
+	Recurse into directories only if they are potential mirror dirs,
+	based on level. Truncate search and recurse into inidir.  Record
+	any setup files in found_ini_list while preferring ".xz" over
+	".bz2" over ".ini" extension.
+	(SetupFindVisitor::operator bool): Return true when found_ini_list
+	is non-empty.
+	(do_from_local_dir): Restrict search to either a single mirror
+	hierarchy or multiple mirror hierarchy; setup files directly in
+	local directory or mixed hierarchies are no longer recognized.
+	The setup files must be present in an architecture dependent
+	directory of "x86/" or "x86_64/", either in the local directory
+	for single mirror or one level down for multiple mirrors.
+
+2015-07-01  Achim Gratz  <Stromeko@NexGo.DE>
+
 	* ini.h: Declare extern SetupBaseName, SetupArch and SetupIniDir.
 	Redefine macros to use them.
 
