@@ -48,10 +48,6 @@ typedef enum
   EXCLUDE_NOT_FOUND
 } excludes;
 
-#define SETUP_INI_DIR	   (SetupIniDir.c_str ())
-#define SETUP_INI_FILENAME ((SetupBaseName+".ini").c_str ())
-#define SETUP_BZ2_FILENAME ((SetupBaseName+".bz2").c_str ())
-
 /* The following three vars are used to facilitate error handling between the
    parser/lexer and its callers, namely ini.cc:do_remote_ini() and
    IniParseFindVisitor::visitFile().  */

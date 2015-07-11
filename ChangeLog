@@ -1,5 +1,26 @@
 2015-07-01  Achim Gratz  <Stromeko@NexGo.DE>
 
+	* ini.cc: Construct setup_ext_list from array until we can use
+	C++11 aggregate initializers.
+	(decompress_ini): Refactored for use from do_local_ini and
+	do_remote_ini.  Change outdated comment about setup.ini
+	uncompressed size.
+	(check_ini_sig): Factor out signature check.
+	(fetch_remote_ini): Refactored for use from do_remote_ini.
+	(do_local_ini): Iterate over search results in found_ini_list.
+	Use decompress_ini and check_ini_sig.
+	(do_remote_ini): Iterate over known setup file extensions from
+	setup_ext_list with early-out semantics, preferring ".xz" over
+	".bz2" over ".ini" extension.  Use fetch_remote_ini and
+	check_ini_sig.
+	* ini.h: Remove unused macros.
+	* IniParseFindVisitor.cc: Remove, the search is already done by
+	SetupFindVisitor in do_from_local_dir.
+	* IniParseFindVisitor.cc: Ditto.
+	* Makefile.am (@SETUP@_SOURCES): Ditto.
+
+2015-07-01  Achim Gratz  <Stromeko@NexGo.DE>
+
 	* fromcwd.cc: Remove unused includes.  Add global found_ini_list
 	to record the search result.
 	(SetupFindVisitor): Make setup.{ini,bz2,xz} known and provide bool

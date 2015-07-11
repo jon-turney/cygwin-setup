@@ -163,8 +163,6 @@ inilint_SOURCES = \
 	iniparse.yy \
 	IniParseFeedback.cc \
 	IniParseFeedback.h \
-	IniParseFindVisitor.cc \
-	IniParseFindVisitor.h \
 	install.cc \
 	io_stream.cc \
 	io_stream.h \
