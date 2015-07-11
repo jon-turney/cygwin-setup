@@ -34,13 +34,6 @@
 #include "IniDBBuilderPackage.h"
 #include "IniParseFeedback.h"
 
-#define DEBUG_FROMCWD
-#ifdef DEBUG_FROMCWD
-#include "LogFile.h"
-#endif
-
-/* Trivial class for detecting the existence of setup.ini */
-
 class SetupFindVisitor : public FindVisitor
 {
 public:
@@ -52,57 +45,27 @@ public:
   virtual void visitFile (const std::string& basePath,
 			  const WIN32_FIND_DATA *theFile)
   {
-#ifdef DEBUG_FROMCWD
-    Log (LOG_PLAIN) << "examining file: "
-		    << basePath << "./" << theFile->cFileName << endLog;
-#endif
     if (inidir &&
 	(theFile->nFileSizeLow || theFile->nFileSizeHigh))
       {
-#ifdef DEBUG_FROMCWD
-	Log (LOG_PLAIN) << "checking extension: ";
-#endif
 	std::vector<bool>::iterator fi = found_ini.begin ();
 	for (std::vector<std::string>::const_iterator ext = setup_ext_list.begin ();
 	     ext != setup_ext_list.end ();
 	     ext++, fi++)
 	  {
-#ifdef DEBUG_FROMCWD
-	    Log (LOG_PLAIN) << *ext << " ";
-#endif
 	    if (!casecompare (SetupBaseName + "." + *ext,  theFile->cFileName))
 	      *fi = true;
 	  }
-#ifdef DEBUG_FROMCWD
-	Log (LOG_PLAIN) << endLog;
-#endif
       }
-#ifdef DEBUG_FROMCWD
-    Log (LOG_PLAIN) << "state: "
-		    << " inidir="    << inidir
-		    << " found_xz="  << found_ini[0]
-		    << " found_bz2=" << found_ini[1]
-		    << " found_ini=" << found_ini[2]
-		    << endLog;
-#endif
   }
   virtual void visitDirectory (const std::string& basePath,
 			       WIN32_FIND_DATA const *aDir, int level)
   {
-#ifdef DEBUG_FROMCWD
-    Log (LOG_PLAIN) << "examining directory: "
-		    << basePath << "./" << aDir->cFileName
-		    << endLog;
-#endif
     if (level <= 0)
       return;
     inidir = !casecompare (SetupArch, aDir->cFileName);
     if (level == 1 && !inidir)
       return;
-#ifdef DEBUG_FROMCWD
-    Log (LOG_PLAIN) << "  recurse into: "
-		    << (inidir ? "inidir" : "mirror") << endLog;
-#endif
     Find aFinder (basePath + aDir->cFileName);
     aFinder.accept (*this, inidir ? 0 : --level);
 	std::vector<bool>::const_iterator fi = found_ini.begin ();
@@ -134,10 +97,6 @@ IniList found_ini_list;
 bool
 do_from_local_dir (HINSTANCE h, HWND owner, std::string &local_dir)
 {
-#ifdef DEBUG_FROMCWD
-  Log (LOG_PLAIN) << "do_from_local_dir: "
-		  << local_dir << endLog;
-#endif
   // Assume we won't find the INI file.
   SetupFindVisitor found;
   // single mirror?
@@ -149,10 +108,6 @@ do_from_local_dir (HINSTANCE h, HWND owner, std::string &local_dir)
   if (found)
       return true;
   // nope, do full scan.
-#ifdef DEBUG_FROMCWD
-  Log (LOG_PLAIN) << "  starting full scan from "
-		  << local_dir << endLog;
-#endif
   IniParseFeedback myFeedback;
   IniDBBuilderPackage myBuilder (myFeedback);
   ScanFindVisitor myVisitor (myBuilder);
