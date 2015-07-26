@@ -108,8 +108,8 @@ singleitem /* non-empty */
  | DIRECTORY STRING NL		{ /* TODO */ }
  | STANDARDSVERSION STRING NL	{ /* TODO */ }
  | MD5LINE MD5 NL	{ iniBuilder->buildInstallMD5 ((unsigned char *)$2); }
- | MD5LINE SHA512 NL	{ iniBuilder->buildInstallSHA512 ((unsigned char *)$2); }
- | MD5LINE SHA512B64URL NL	{ iniBuilder->buildInstallSHA512 ((unsigned char *)$2); }
+ | SHA512LINE SHA512 NL		{ iniBuilder->buildInstallSHA512 ((unsigned char *)$2); }
+ | SHA512LINE SHA512B64URL NL	{ iniBuilder->buildInstallSHA512 ((unsigned char *)$2); }
  | SOURCEPACKAGE source NL
  | CATEGORY categories NL
  | INSTALL STRING { iniBuilder->buildPackageInstall ($2); } installmeta NL

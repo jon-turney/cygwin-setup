@@ -1,3 +1,8 @@
+2015-07-26  Achim Gratz  <Stromeko@NexGo.DE>
+
+	* iniparse.yy (singleitem): Fix a copy-and-paste bug, use
+	SHA512Line for SHA512 standalone checksums (unused in setup.ini).
+
 2015-07-01  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* ini.cc: Construct setup_ext_list from array until we can use
