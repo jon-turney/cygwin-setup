@@ -85,9 +85,9 @@ MD5Sum::str() const
 {
   std::ostringstream hexdigest;
 
-  hexdigest << std::hex << std::setfill('0') << std::setw(2);
   for (int i=0; i<16; ++i )
-    hexdigest << static_cast<unsigned int>(digest[i]);
+    hexdigest << std::hex << std::setfill('0') << std::setw(2)
+	      << static_cast<unsigned int>(digest[i]);
   return hexdigest.str();
 }
 
