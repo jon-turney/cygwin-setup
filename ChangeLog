@@ -1,5 +1,13 @@
 2015-08-03  Achim Gratz  <Stromeko@NexGo.DE>
 
+	* ini.h (nibbled1): Fix a thinko in this macro that made the
+	result always zero.
+	(hexnibble, nibbled1, b64url, b64d1, b64d2, b64d3): Use character
+	literals for all numeric constants dealing with characters.
+	Remove trailing semicolons.
+
+2015-08-03  Achim Gratz  <Stromeko@NexGo.DE>
+
 	* csu_util/MD5Sum.cc (str): The stream modifiers are not sticky
 	and must be applied for each conversion.
 
