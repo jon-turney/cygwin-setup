@@ -1,5 +1,12 @@
 2015-08-03  Achim Gratz  <Stromeko@NexGo.DE>
 
+	* install.cc (chksum_one): If MD5 checksum is not available, then
+	SHA512 must always be checked even if just against the zeroed
+	digest as initialized.  Otherwise a package with no checksum would
+	be treated as valid.
+
+2015-08-03  Achim Gratz  <Stromeko@NexGo.DE>
+
 	* ini.h (nibbled1): Fix a thinko in this macro that made the
 	result always zero.
 	(hexnibble, nibbled1, b64url, b64d1, b64d2, b64d3): Use character

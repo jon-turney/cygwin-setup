@@ -1044,8 +1044,8 @@ chksum_one (const packagesource& pkgsource)
 {
   if (!pkgsource.Cached ())
     return;
-  if (pkgsource.sha512sum[0])
-    sha512_one (pkgsource);
-  else if (pkgsource.md5.isSet())
+  if (pkgsource.md5.isSet())
     md5_one (pkgsource);
+  else
+    sha512_one (pkgsource);
 }
