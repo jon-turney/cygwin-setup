@@ -46,10 +46,12 @@ static void ignore_line (void);
 %x eolstate
 
 STR	[!a-zA-Z0-9_./:\+~-]+
+HEX	[0-9a-f]
+B64	[a-zA-Z0-9_-]
 
 %%
 
-[0-9a-f]{32} {
+{HEX}{32} {
     yylval = (char *) new unsigned char[16];
     memset (yylval, 0, 16);
     int i, j;
@@ -63,7 +65,7 @@ STR	[!a-zA-Z0-9_./:\+~-]+
     return MD5;
 }
 
-[0-9a-f]{128} {
+{HEX}{128} {
     yylval = (char *) new unsigned char[SHA512_DIGEST_LENGTH];
     memset (yylval, 0, SHA512_DIGEST_LENGTH);
     int i, j;
@@ -77,7 +79,7 @@ STR	[!a-zA-Z0-9_./:\+~-]+
     return SHA512;
 }
 
-[a-zA-Z0-9_-]{86} {
+{B64}{86} {
     /* base64url as defined in RFC4648 */
     yylval = (char *) new unsigned char[SHA512_DIGEST_LENGTH];
     memset (yylval, 0, SHA512_DIGEST_LENGTH);
@@ -98,7 +100,7 @@ STR	[!a-zA-Z0-9_./:\+~-]+
     v3 = 0;
     v4 = 0;
     ((unsigned char *) yylval) [j+0] = b64d1(v1, v2, v3, v4);
-    return SHA512B64URL;
+    return SHA512;
 }
 
 \"[^"]*\"		{ yylval = new char [strlen (yytext+1) + 1];

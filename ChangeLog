@@ -1,3 +1,11 @@
+2015-08-03  Achim Gratz  <ASSI <Stromeko@NexGo.DE>>
+
+	* inilex.ll: Introduce HEX and B64 definitions, use them in the
+	rules section.  Parse both SHA512 and SHA512-Base64URL checksums
+	to the SHA512 token.
+	* iniparse.yy (packagedata): Remove all occurences of the
+	SHA512B64URL token.
+
 2015-08-03  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* install.cc (chksum_one): If MD5 checksum is not available, then
