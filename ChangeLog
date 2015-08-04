@@ -1,3 +1,13 @@
+2015-08-04  Jon Turney  <jon.turney@dronecode.org.uk>
+
+	* dialog.cc (fatal): Use mbox rather than MessageBox.
+	* install.cc (installOne, check_for_old_cygwin): Ditto.
+	* main.cc (main_display, WinMain): Ditto.
+	* mount.cc (create_install_root): Ditto.
+	* nio-ie5.cc (NetIO_IE5): Ditto.
+	* root.cc (directory_contains_wrong_version): Ditto.
+	* site.cc (do_download_site_info_thread): Ditto.
+
 2015-08-04  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* package_source.h (packagesource): Add boolean member variable

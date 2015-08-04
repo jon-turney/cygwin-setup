@@ -627,8 +627,8 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                     // and ignore all errors is mis-implemented at present
                     // to only apply to errors arising from a single archive,
                     // so we degenerate to the continue option.
-                    MessageBox (owner, msg, "File extraction error",
-                                MB_OK | MB_ICONWARNING | MB_TASKMODAL);
+                    mbox (owner, msg, "File extraction error",
+                          MB_OK | MB_ICONWARNING | MB_TASKMODAL);
                   }
 
                 // don't mark this package as successfully installed
@@ -686,8 +686,8 @@ check_for_old_cygwin (HWND owner)
 		   "Is the DLL in use by another application?\r\n"
 		   "You should delete the old version of cygwin1.dll\r\n"
 		   "at your earliest convenience.", buf);
-	  MessageBox (owner, buf, "Couldn't delete file",
-		      MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
+	  mbox (owner, buf, "Couldn't delete file",
+                MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
 	}
       break;
     default:

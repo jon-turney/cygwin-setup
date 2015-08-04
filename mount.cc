@@ -136,7 +136,7 @@ create_install_root ()
       }
     while (rv == ERROR_ACCESS_DENIED);
   if (rv != ERROR_SUCCESS)
-    MessageBox (NULL, "Couldn't create registry key\n"
+    mbox (NULL, "Couldn't create registry key\n"
 		      "to store installation path",
 		"Cygwin Setup", MB_OK | MB_ICONWARNING);
   RegCloseKey (key);
