@@ -1,4 +1,9 @@
-2015-08-03  Achim Gratz  <ASSI <Stromeko@NexGo.DE>>
+2015-08-04  Achim Gratz  <Stromeko@NexGo.DE>
+
+	* install.cc (md5_one): Change buffer size from 16kiB to 64kiB for
+	faster reading.
+
+2015-08-03  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* inilex.ll: Introduce HEX and B64 definitions, use them in the
 	rules section.  Parse both SHA512 and SHA512-Base64URL checksums
