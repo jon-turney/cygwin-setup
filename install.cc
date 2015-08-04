@@ -1044,8 +1044,12 @@ chksum_one (const packagesource& pkgsource)
 {
   if (!pkgsource.Cached ())
     return;
-  if (pkgsource.md5.isSet())
+  if (pkgsource.sha512_isSet)
+    sha512_one (pkgsource);
+  else if (pkgsource.md5.isSet())
     md5_one (pkgsource);
   else
-    sha512_one (pkgsource);
+    Log (LOG_BABBLE) << "No checksum recorded for " << pkgsource.Base ()
+		     << ", cannot determine integrity of package!"
+		     << endLog;
 }

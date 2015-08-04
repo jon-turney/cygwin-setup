@@ -1,5 +1,24 @@
 2015-08-04  Achim Gratz  <Stromeko@NexGo.DE>
 
+	* package_source.h (packagesource): Add boolean member variable
+	sha512_isSet to record whether an SHA512 checksum has been set.
+	(packagesource): Initialize sha512_isSet to false.
+
+	* IniDBBuilderPackage.cc (buildInstallSHA512, buildSourceSHA512):
+	Only set the SHA512 checksum when it was previously unset like it
+	is done for MD5 checksums.  That will generally be the checksum
+	recorded on the package line in setup.ini, any further checksums
+	in separate lines will thus be ignored.
+
+	* install.cc (chksum_one): Conditionalize the comparison of the
+	SHA512 checksum on whether or not it was previously set.  Check
+	SHA512 checksum first since it is the default now.  This is
+	necessary for ad-hoc installs from local disk without a setup.ini
+	file.  Output a warning when the checksum was not be verified
+	because neither a MD5 nor a SHA512 checksum was set.
+
+2015-08-04  Achim Gratz  <Stromeko@NexGo.DE>
+
 	* install.cc (md5_one): Change buffer size from 16kiB to 64kiB for
 	faster reading.
 

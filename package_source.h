@@ -62,6 +62,7 @@ public:
    _installedSize (0)
   {
     memset (sha512sum, 0, sizeof sha512sum);
+    sha512_isSet = false;
   };
   /* how big is the source file */
   size_t size;
@@ -107,6 +108,7 @@ public:
   virtual void set_canonical (char const *);
   virtual void set_cached (const std::string& );
   unsigned char sha512sum[SHA512_DIGEST_LENGTH];
+  bool sha512_isSet;
   MD5Sum md5;
   typedef std::vector <site> sitestype;
   sitestype sites;
