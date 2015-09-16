@@ -283,15 +283,15 @@ RootPage::OnNext ()
   if (!directory_is_absolute ())
     {
       note (h, IDS_ROOT_ABSOLUTE);
-      return -1;
+      return -3;
     }
   else if (get_root_dir() != orig_root_dir &&
            directory_is_rootdir () && (IDNO == yesno (h, IDS_ROOT_SLASH)))
-    return -1;
+    return -3;
   else if (directory_has_spaces () && (IDNO == yesno (h, IDS_ROOT_SPACE)))
-    return -1;
+    return -3;
   else if (directory_contains_wrong_version (h))
-    return -1;
+    return -3;
 
   Log (LOG_PLAIN) << "root: " << get_root_dir ()
     << (root_scope == IDC_ROOT_USER ? " user" : " system") << endLog;

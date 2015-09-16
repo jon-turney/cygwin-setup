@@ -186,12 +186,19 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 
               if (unattended_mode) 
               {
+                // -3 == fatal error, unattended mode cannot progress, exit
                 // -2 == disable unattended mode, display page
                 // -1 == display page but stay in unattended mode (progress bars)
                 // 0 == skip to next page (in propsheet sequence)
                 // IDD_* == skip to specified page
                 long nextwindow = OnUnattended();
-                if (nextwindow == -2)
+                if (nextwindow == -3)
+                {
+                  PostQuitMessage(-1);
+                  SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, 0);
+                  return TRUE;
+                }
+                else if (nextwindow == -2)
                 {
                   unattended_mode = attended;
                   SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, 0);
@@ -233,6 +240,10 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
             {
               LONG retval;
               retval = OnNext ();
+              // OnNext() can return the same extended range of values as
+              // described for OnUnattended() above.  Map all error values to -1
+              // which prevents the wizard from changing pages.
+              if (retval < 0) retval = -1;
               SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, retval);
               return TRUE;
             }
