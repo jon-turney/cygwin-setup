@@ -1,3 +1,16 @@
+2015-09-18  Jon Turney  <jon.turney@dronecode.org.uk>
+
+	* Makefile.am (AM_CPPFLAGS): Remove regex from include path.
+	(@SETUP@_SOURCES): Remove regex.c.
+	* regex/config.h: Delete file.
+	* regex/re_comp.h: Delete file.
+	* regex/regcomp.c: Delete file.
+	* regex/regex.c: Delete file.
+	* regex/regex.h: Delete file.
+	* regex/regex_internal.c: Delete file.
+	* regex/regex_internal.h: Delete file.
+	* regex/regexec.c: Delete file.
+
 2015-08-04  Jon Turney  <jon.turney@dronecode.org.uk>
 
 	* dialog.cc (fatal): Use mbox rather than MessageBox.

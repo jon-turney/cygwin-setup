@@ -32,7 +32,7 @@ AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
 AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES = @WINDRES@
-AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include -I${srcdir}/regex
+AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include
 
 inilex_CXXFLAGS:=-Wno-sign-compare
 
@@ -271,8 +271,7 @@ inilint_SOURCES = \
 	csu_util/rfc1738.cc \
 	csu_util/rfc1738.h \
 	csu_util/version_compare.cc \
-	csu_util/version_compare.h \
-	regex/regex.c
+	csu_util/version_compare.h
 
 GITVER := $(shell cd $(srcdir) && git describe --match release_\* --abbrev=6 HEAD || "N/A")
 VER := $(subst release_,,$(GITVER))
