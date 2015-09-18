@@ -51,7 +51,7 @@ void add_correct_version();
 %token OPENBRACE CLOSEBRACE EQUAL GT LT GTEQUAL LTEQUAL 
 %token OPENSQUARE CLOSESQUARE
 %token BINARYPACKAGE BUILDDEPENDS STANDARDSVERSION FORMAT DIRECTORY FILES
-%token MESSAGE AUTODEP
+%token MESSAGE
 %token ARCH RELEASE
 
 %%
@@ -125,7 +125,6 @@ singleitem /* non-empty */
  | BUILDDEPENDS { iniBuilder->buildBeginBuildDepends(); } versionedpackagelist NL
  | FILES NL SourceFilesList
  | MESSAGE STRING STRING NL	{ iniBuilder->buildMessage ($2, $3); }
- | AUTODEP STRING STRING NL	{ iniBuilder->autodep ($2, $3); }
  | DESCTAG mlinedesc
  | error 			{ yyerror (std::string("unrecognized line ") 
 					  + stringify(yylineno)
