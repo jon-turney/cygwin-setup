@@ -193,12 +193,6 @@ cygpackage::set_sdesc (const std::string& desc)
 }
 
 void
-cygpackage::set_autodep (const std::string& autodep)
-{
-  autodep_regex = autodep;
-}
-
-void
 cygpackage::set_ldesc (const std::string& desc)
 {
   ldesc = desc;

@@ -113,7 +113,6 @@ public:
   void set_sdesc (const std::string& );
   const std::string LDesc () const;
   void set_ldesc (const std::string& );
-  void set_autodep (const std::string& );
   packageversion sourcePackage () const;
   PackageSpecification & sourcePackageSpecification ();
   void setSourcePackageSpecification (PackageSpecification const &);
@@ -179,7 +178,6 @@ public:
   virtual void set_sdesc (const std::string& ) = 0;
   virtual const std::string LDesc () = 0;
   virtual void set_ldesc (const std::string& ) = 0;
-  virtual void set_autodep (const std::string& ) = 0;
   /* only semantically meaningful for binary packages */
   /* direct link to the source package for this binary */
   /* if multiple versions exist and the source doesn't discriminate

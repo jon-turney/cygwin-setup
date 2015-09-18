@@ -58,7 +58,6 @@ public:
   void set_sdesc (const std::string& ) {}
   const std::string LDesc () {return std::string();}
   void set_ldesc (const std::string& ) {}
-  void set_autodep (const std::string& ) {}
   void uninstall (){}
   void pick(bool const &newValue){/* Ignore attempts to pick this!. Throw an exception here if you want to detect such attemtps instead */}
   virtual void addScript(Script const &) {}
@@ -216,12 +215,6 @@ void
 packageversion::set_ldesc (const std::string& ldesc)
 {
   data->set_ldesc (ldesc);
-}
-
-void
-packageversion::set_autodep (const std::string& regex)
-{
-  data->set_autodep (regex);
 }
 
 packageversion
