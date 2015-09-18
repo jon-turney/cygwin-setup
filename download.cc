@@ -162,7 +162,7 @@ download_one (packagesource & pkgsource, HWND owner)
 				  pkgsource.Canonical ();
       io_stream::mkpath_p (PATH_TO_FILE, "file://" + local, 0);
 
-      if (get_url_to_file(n->key +  "/" + pkgsource.Canonical (),
+      if (get_url_to_file(n->key + pkgsource.Canonical (),
 			  local + ".tmp", pkgsource.size, owner))
 	{
 	  /* FIXME: note new source ? */
