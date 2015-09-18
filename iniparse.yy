@@ -53,6 +53,7 @@ void add_correct_version();
 %token BINARYPACKAGE BUILDDEPENDS STANDARDSVERSION FORMAT DIRECTORY FILES
 %token MESSAGE
 %token ARCH RELEASE
+%token TRIGGER
 
 %%
 
@@ -125,6 +126,7 @@ singleitem /* non-empty */
  | BUILDDEPENDS { iniBuilder->buildBeginBuildDepends(); } versionedpackagelist NL
  | FILES NL SourceFilesList
  | MESSAGE STRING STRING NL	{ iniBuilder->buildMessage ($2, $3); }
+ | TRIGGER STRING NL	{ iniBuilder->buildTrigger ($2); }
  | DESCTAG mlinedesc
  | error 			{ yyerror (std::string("unrecognized line ") 
 					  + stringify(yylineno)

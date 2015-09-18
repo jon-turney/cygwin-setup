@@ -260,6 +260,8 @@ inilint_SOURCES = \
 	String++.h \
 	threebar.cc \
 	threebar.h \
+	trigger.cc \
+	trigger.h \
 	UserSettings.cc \
 	UserSettings.h \
 	win32.cc \

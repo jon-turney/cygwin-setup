@@ -30,6 +30,7 @@
 #include <string.h>
 #include "LogSingleton.h"
 #include "PackageSpecification.h"
+#include "trigger.h"
 #include <algorithm>
 
 using namespace std;
@@ -625,4 +626,10 @@ void
 IniDBBuilderPackage::buildMessage (const std::string& message_id, const std::string& message)
 {
   cp->set_message (message_id, message);
+}
+
+void
+IniDBBuilderPackage::buildTrigger (const std::string& path)
+{
+  Triggers::AddTrigger(cp->name, path);
 }
