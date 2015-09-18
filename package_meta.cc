@@ -48,6 +48,7 @@ using namespace std;
 
 #include <algorithm>
 #include "Generic.h"
+#include "trigger.h"
 
 using namespace std;
 
@@ -161,6 +162,8 @@ packagemeta::uninstall ()
 
       while (line.size())
 	{
+          Triggers::CheckTriggers(line);
+
           /* Insert the paths of all parent directories of line into dirs. */
           size_t idx = line.length();
           while ((idx = line.find_last_of('/', idx-1)) != string::npos)

@@ -64,6 +64,7 @@ static const char *cvsid = "\n%%% $Id$\n";
 #include "threebar.h"
 #include "Exception.h"
 #include "processlist.h"
+#include "trigger.h"
 
 using namespace std;
 
@@ -479,8 +480,11 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
           std::string tmp = fn + "\n";
           lst->write (tmp.c_str(), tmp.size());
         }
+
       if (Script::isAScript (fn))
         pkgm.desired.addScript (Script (canonicalfn));
+
+      Triggers::CheckTriggers(fn);
 
       int iteration = 0;
       archive::extract_results extres;

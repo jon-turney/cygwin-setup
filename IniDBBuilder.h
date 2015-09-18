@@ -60,6 +60,7 @@ public:
   virtual void buildPackageListOperator (PackageSpecification::_operators const &) = 0;
   virtual void buildPackageListOperatorVersion (const std::string& ) = 0;
   virtual void buildMessage (const std::string&, const std::string&) = 0;
+  virtual void buildTrigger (const std::string&) = 0;
   void set_arch (const std::string& a) { arch = a; }
   void set_release (const std::string& rel) { release = rel; }
 

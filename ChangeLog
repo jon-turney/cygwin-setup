@@ -1,3 +1,16 @@
+2015-09-22  Jon Turney  <jon.turney@dronecode.org.uk>
+
+	* IniDBBuilder.h (IniDBBuilder:buildTrigger): Define for base class.
+	* IniDBBuilderPackage.cc (buildTrigger): Define.
+	* IniDBBuilderPackage.h (IniDBBuilder): Declare.
+	* Makefile.am (@SETUP@_SOURCES): Add trigger.cc and trigger.h
+	* inilex.ll: Add 'trigger' token recognition.
+	* iniparse.yy: Parse 'trigger' lines
+	* install.cc (installOne): Check triggers.
+	* package_meta.cc (uninstall): Check triggers.
+	* trigger.cc: New file.
+	* trigger.h: New file.
+
 2015-09-18  Jon Turney  <jon.turney@dronecode.org.uk>
 
 	* IniDBBuilder.h (IniDBBuilder::autodep): Remove.
