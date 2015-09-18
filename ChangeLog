@@ -1,5 +1,17 @@
 2015-09-18  Jon Turney  <jon.turney@dronecode.org.uk>
 
+	* IniDBBuilder.h (IniDBBuilder::autodep): Remove.
+	* IniDBBuilderPackage.cc (IniDBBuilderPackage::autodep): Remove.
+	* IniDBBuilderPackage.h (IniDBBuilderPackage::autodep): Remove.
+	* cygpackage.cc (cygpackage::set_autodep): Remove.
+	* cygpackage.h (cygpackage::set_autodep): Remove.
+	* inilex.ll: Remove autodep.
+	* iniparse.yy: Remove autodep.
+	* package_version.cc (packageversion::set_autodep): Remove.
+	* package_version.h (packageversion::set_autodep): Remove.
+
+2015-09-18  Jon Turney  <jon.turney@dronecode.org.uk>
+
 	* Makefile.am (AM_CPPFLAGS): Remove regex from include path.
 	(@SETUP@_SOURCES): Remove regex.c.
 	* regex/config.h: Delete file.

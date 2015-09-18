@@ -119,7 +119,6 @@ B64	[a-zA-Z0-9_-]
 "sdesc:"		return SDESC;
 "ldesc:"		return LDESC;
 "message:"		return MESSAGE;
-"autodep:"		return AUTODEP;
 "Description:"		BEGIN (descriptionstate); return DESCTAG;
 "Size:"			return FILESIZE;
 "MD5sum:"		return MD5LINE;
