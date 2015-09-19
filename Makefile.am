@@ -63,10 +63,9 @@ EXTRA_DIST = \
 # included here for proper tracking (but not iniparse.cc, since automake
 # knows about that already)
 BUILT_SOURCES = \
-	setup_version.c \
 	iniparse.hh
 
-CLEANFILES = setup_version.c
+CLEANFILES = version_include.h
 
 inilint_LDADD = \
 	libgetopt++/libgetopt++.la
@@ -278,18 +277,25 @@ inilint_SOURCES = \
 GITVER := $(shell cd $(srcdir) && git describe --match release_\* --abbrev=6 HEAD || "N/A")
 VER := $(subst release_,,$(GITVER))
 
-setup_version.c : $(srcdir)/ChangeLog Makefile
+version:
 	@echo "Setup version: " $(VER)
-	$(AM_V_GEN)(echo '#define VERSION_PREFIX "%%% setup-version"';\
-	echo 'static const char version_store[] = VERSION_PREFIX " '$(VER)'";';\
-	echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp && \
-	mv version.tmp setup_version.c
+	@echo '#define VERSION "$(VER)"' >version_include.h.new
+	@if cmp -s version_include.h.new version_include.h ; then \
+		rm version_include.h.new ; \
+	else \
+		mv version_include.h.new version_include.h ; \
+	fi
 
-# setup.exe.manifest is included in res.rc
-res.o: @SETUP@.exe.manifest
+version_include.h: version
+
+# dependencies for files included in res.rc
+res.o: @SETUP@.exe.manifest resource.h version_include.h
+
+# dependency for generated file included in setup_version.c
+setup_version.c: version_include.h
 
 .rc.o:
-	$(AM_V_GEN)$(WINDRES) --include-dir $(srcdir) -o $@ $<
+	$(AM_V_GEN)$(WINDRES) --include-dir $(srcdir) --include-dir $(builddir) -o $@ $<
 
 setup-src:
 	@ver=setup-$(VER);\
@@ -297,14 +303,14 @@ setup-src:
 	git ls-files | tar -T - -cJf ${CURDIR}/$$ver-src.tar.xz;\
 	echo $$ver-src.tar.xz; exec rm -f $$ver
 
-# optional: strip and compress executable
-.PHONY:	strip upx
+.PHONY:	strip upx version
 
+# optional: strip and compress executable
 strip:	all
 	$(STRIP) -s setup$(EXEEXT)
 upx:	strip
 	@if [ -e `which upx` ]; then\
-		upx --best --lzma setup$(EXEEXT) ;\
+		upx --best --lzma --keep-resource=10 setup$(EXEEXT) ;\
 	else \
 		echo "UPX doesn't seem to be installed, cannot compress setup$(EXEEXT)." ;\
 	fi

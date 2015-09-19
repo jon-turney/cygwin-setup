@@ -9,3 +9,4 @@ make.out
 CVS
 tags
 autoconf.h.in*
+version_include.h

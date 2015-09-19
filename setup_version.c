@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004, Max Bowsher
+ * Copyright (c) 2015, Jon Turney
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -12,9 +12,9 @@
  *
  */
 
-#ifndef SETUP_SETUP_VERSION_H
-#define SETUP_SETUP_VERSION_H
+#include "setup_version.h"
 
-extern const char *setup_version;
+/* Include *generated* source defining the VERSION macro */
+#include "version_include.h"
 
-#endif /* SETUP_SETUP_VERSION_H */
+const char *setup_version = VERSION;

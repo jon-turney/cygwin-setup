@@ -1,5 +1,6 @@
 #include "resource.h"
 #include "windows.h"
+#include "version_include.h"
 
 #define SETUP_STANDARD_DIALOG_W	339
 #define SETUP_STANDARD_DIALOG_H	179
@@ -569,3 +570,7 @@ BEGIN
       "will be nothing to install.\n\nPress OK if that's what you wanted\nor Cancel to choose a different directory."
     IDS_ELEVATED       "Hand installation over to elevated child process."
 END
+
+// Putting this string in the STRINGTABLE would cause it to be UTF16 LE encoded,
+// so use RCDATA instead, so windres treats it as just a sequence of bytes.
+IDR_VERSION_STORE RCDATA { "%%% setup-version " VERSION }

@@ -174,3 +174,6 @@
 #define IDC_FILE_INUSE_EDIT               590
 #define IDC_FILE_INUSE_MSG                591
 #define IDC_FILE_INUSE_HELP               592
+
+// rcdata
+#define IDR_VERSION_STORE                 600
