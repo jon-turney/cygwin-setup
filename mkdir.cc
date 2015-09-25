@@ -98,8 +98,6 @@ mkdir_p (int isadir, const char *in_path, mode_t mode)
 
   for (c = path; *c; c++)
     {
-      if (*c == ':')
-	slash = 0;
       if (*c == '/' || *c == '\\')
 	slash = c;
     }

@@ -1,3 +1,8 @@
+2015-10-12  Ken Brown  <kbrown@cornell.edu>
+
+	* mkdir.cc (mkdir_p): Remove special treatment of colon in path
+	name.
+
 2015-08-04  Achim Gratz  <Stromeko@NexGo.DE>
 
 	* package_source.h (packagesource): Add boolean member variable
