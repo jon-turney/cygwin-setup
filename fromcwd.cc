@@ -74,7 +74,7 @@ public:
 	     ext++, fi++)
 	  {
 	    if (*fi)
-	      found_ini_list.push_back (basePath + "/" + aDir->cFileName + "/"
+	      found_ini_list.push_back (basePath + SetupArch + "/"
 					+ SetupBaseName + "." + *ext);
 	  }
 	found_ini.assign (setup_ext_list.size (), false);

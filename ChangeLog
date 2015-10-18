@@ -1,3 +1,23 @@
+2015-10-18  Achim Gratz  <Stromeko@NexGo.DE>
+
+	* ini.cc (check_ini_sig): Do not complain about a missing
+	signature file when installing from localdir.  If it is present it
+	still must be checked, however.  The "download only" mode should
+	pull down both the (compressed) setup file and the corresponding
+	signature (not yet implemented).
+	(do_local_ini): The builder needs to know the (unescaped) mirror
+	name it's associated with in order for the file validation to
+	work.  The found_ini_list should directly provide the constituent
+	parts so that we don't need to extract them (not yet implemented).
+
+	* fromcwd.cc (FindVisitor): Remove superfluous path separator and
+	simply use SetupArch (which has previously compared equal to
+	aDir->cFileName) when constructing the setup file name.
+
+	* Makefile.am (GITVER): Do not use an explicit HEAD parameter and
+	add the "--dirty" option so that builds with uncommitted changes
+	get marked appropriately.
+
 2015-10-12  Ken Brown  <kbrown@cornell.edu>
 
 	* mkdir.cc (mkdir_p): Remove special treatment of colon in path
@@ -106,7 +126,7 @@
 	to record the search result.
 	(SetupFindVisitor): Make setup.{ini,bz2,xz} known and provide bool
 	private variables to record whether we found them.  Another bool
-	inidir to indicate whether we are currently inside a drectory
+	inidir to indicate whether we are currently inside a directory
 	where setup.ini files should exist.
 	(SetupFindVisitor::visitFile): When inidir is true, check if a
 	setup file with one of the known extensions was found and set the
@@ -119,7 +139,7 @@
 	(SetupFindVisitor::operator bool): Return true when found_ini_list
 	is non-empty.
 	(do_from_local_dir): Restrict search to either a single mirror
-	hierarchy or multiple mirror hierarchy; setup files directly in
+	hierarchy or multiple mirrors hierarchy; setup files directly in
 	local directory or mixed hierarchies are no longer recognized.
 	The setup files must be present in an architecture dependent
 	directory of "x86/" or "x86_64/", either in the local directory

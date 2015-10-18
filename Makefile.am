@@ -274,7 +274,7 @@ inilint_SOURCES = \
 	csu_util/version_compare.h \
 	regex/regex.c
 
-GITVER := $(shell cd $(srcdir) && git describe --match release_\* --abbrev=6 HEAD || "N/A")
+GITVER := $(shell cd $(srcdir) && git describe --match release_\* --abbrev=6 --dirty || "N/A")
 VER := $(subst release_,,$(GITVER))
 
 setup_version.c : $(srcdir)/ChangeLog Makefile

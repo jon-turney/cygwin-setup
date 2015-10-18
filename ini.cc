@@ -179,13 +179,18 @@ check_ini_sig (io_stream* ini_file, io_stream* ini_sig_file,
      setup anyway there's be nothing to parse. */
   if (!NoVerifyOption && ini_file)
     {
-      if (!ini_sig_file)
-	{
-	  note (owner, IDS_SETUPINI_MISSING, sig_name, site);
-	  delete ini_file;
-	  ini_file = NULL;
-	  sig_fail = true;
-	}
+      if (!ini_sig_file) {
+	// don't complain if the user installs from localdir and no
+	// signature file is present
+	// TODO: download the ini + signature file instead
+	if (casecompare (site, "localdir"))
+	  {
+	    note (owner, IDS_SETUPINI_MISSING, sig_name, site);
+	    delete ini_file;
+	    ini_file = NULL;
+	    sig_fail = true;
+	  }
+      }
       else if (!verify_ini_file_sig (ini_file, ini_sig_file, owner))
 	{
 	  note (owner, IDS_SIG_INVALID, sig_name, site);
@@ -233,7 +238,10 @@ do_local_ini (HWND owner)
 	  // grok information from setup
 	  myFeedback.babble ("Found ini file - " + current_ini_name);
 	  myFeedback.iniName (current_ini_name);
-	  aBuilder.parse_mirror = "";
+	  int ldl = local_dir.length () + 1;
+	  int cap = current_ini_name.rfind ("/" + SetupArch);
+	  aBuilder.parse_mirror =
+	    rfc1738_unescape (current_ini_name.substr (ldl, cap - ldl));
 	  ini_init (ini_file, &aBuilder, myFeedback);
 
 	  /*yydebug = 1; */
