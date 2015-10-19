@@ -10,3 +10,7 @@ CVS
 tags
 autoconf.h.in*
 version_include.h
+inilex.cc
+iniparse.cc
+iniparse.hh
+
