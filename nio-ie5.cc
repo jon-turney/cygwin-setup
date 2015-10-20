@@ -91,7 +91,7 @@ try_again:
 	  char buf[2000];
 	  DWORD e, l = sizeof (buf);
 	  InternetGetLastResponseInfo (&e, buf, &l);
-	  MessageBox (0, buf, "Internet Error", 0);
+	  mbox (0, buf, "Internet Error", MB_OK);
 	}
     }
 

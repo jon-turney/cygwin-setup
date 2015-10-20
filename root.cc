@@ -220,7 +220,7 @@ directory_contains_wrong_version (HWND h)
 	setup_ver, inst_ver,
 	is_64bit ? "x86" : "x86_64",
 	inst_ver, setup_ver);
-  MessageBox (h, text, "Target CPU mismatch", MB_OK);
+  mbox (h, text, "Target CPU mismatch", MB_OK);
   return 1;
 }
 
