@@ -320,10 +320,16 @@ read_mounts (const std::string val)
 
   if (val.size ())
     {
-      m->native = val;
-      m->posix = "/";
-      root_here = m;
-      add_usr_mnts (++m);
+      /* Cygwin rootdir always < MAX_PATH. */
+      char rootdir[MAX_PATH + 1];
+
+      if (GetFullPathName (val.c_str (), MAX_PATH + 1, rootdir, NULL))
+	{
+	  m->native = rootdir;
+	  m->posix = "/";
+	  root_here = m;
+	  add_usr_mnts (++m);
+	}
     }
   else
     {
