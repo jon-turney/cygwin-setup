@@ -135,13 +135,10 @@ NetPage::OnInit ()
   CheckIfEnableNext();
 
   // Check to see if any radio buttons are selected. If not, select a default.
-  if ((!SendMessage (GetDlgItem (IDC_NET_IE5), BM_GETCHECK, 0, 0) ==
-       BST_CHECKED)
-      && (!SendMessage (GetDlgItem (IDC_NET_PROXY), BM_GETCHECK, 0, 0)
-	  == BST_CHECKED))
-    {
-      SendMessage (GetDlgItem (IDC_NET_DIRECT), BM_CLICK, 0, 0);
-    }
+  if (SendMessage (GetDlgItem (IDC_NET_IE5), BM_GETCHECK, 0, 0) != BST_CHECKED
+      && SendMessage (GetDlgItem (IDC_NET_PROXY), BM_GETCHECK, 0, 0)
+	 != BST_CHECKED)
+    SendMessage (GetDlgItem (IDC_NET_DIRECT), BM_CLICK, 0, 0);
 }
 
 long

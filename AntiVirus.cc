@@ -85,15 +85,11 @@ AntiVirusPage::OnActivate ()
 {
   load_dialog (GetHWND ());
   // Check to see if any radio buttons are selected. If not, select a default.
-  if ((!SendMessage
-       (GetDlgItem (IDC_DISABLE_AV), BM_GETCHECK, 0,
-	0) == BST_CHECKED)
-      && (!SendMessage (GetDlgItem (IDC_LEAVE_AV), BM_GETCHECK, 0, 0)
-	  == BST_CHECKED))
-    {
-      SendMessage (GetDlgItem (IDC_LEAVE_AV), BM_SETCHECK,
-		   BST_CHECKED, 0);
-    }
+  if (SendMessage (GetDlgItem (IDC_DISABLE_AV), BM_GETCHECK, 0, 0)
+      != BST_CHECKED
+      && SendMessage (GetDlgItem (IDC_LEAVE_AV), BM_GETCHECK, 0, 0)
+	 != BST_CHECKED)
+    SendMessage (GetDlgItem (IDC_LEAVE_AV), BM_SETCHECK, BST_CHECKED, 0);
 }
 
 bool
