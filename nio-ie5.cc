@@ -41,13 +41,6 @@ NetIO (_url)
 
   if (internet == 0)
     {
-      HINSTANCE h = LoadLibrary ("wininet.dll");
-      if (!h)
-	{
-	  note (NULL, IDS_WININET);
-	  connection = 0;
-	  return;
-	}
       InternetAttemptConnect (0);
       internet = InternetOpen ("Cygwin Setup", INTERNET_OPEN_TYPE_PRECONFIG,
 			       NULL, NULL, 0);
