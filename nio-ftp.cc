@@ -26,7 +26,7 @@ static const char *cvsid =
 #include "LogSingleton.h"
 
 #include "win32.h"
-#include "winsock.h"
+#include <winsock2.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>

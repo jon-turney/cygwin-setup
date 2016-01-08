@@ -21,7 +21,7 @@ static const char *cvsid =
 #endif
 
 #include "win32.h"
-#include <winsock.h>
+#include <winsock2.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
