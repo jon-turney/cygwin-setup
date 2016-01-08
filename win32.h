@@ -49,10 +49,6 @@
 #define DECLSPEC_IMPORT
 #define WINBASEAPI
 
-/* Require at least Internet Explorer 3, in order to have access to
- * sufficient Windows Common Controls features from <commctrl.h> . */
-#define _WIN32_IE 0x0300
-
 #include <windows.h>
 
 /* FIXME: The use of _access(fname, 0) as an existence check should be

@@ -294,49 +294,6 @@ PropSheetProc (HWND hwndDlg, UINT uMsg, LPARAM lParam)
   return TRUE;
 }
 
-static DWORD
-GetPROPSHEETHEADERSize ()
-{
-  // For compatibility with all versions of comctl32.dll, we have to do this.
-
-  DLLVERSIONINFO vi;
-  HMODULE mod;
-  DLLGETVERSIONPROC DllGetVersion;
-  DWORD retval = 0;
-
-
-  // This 'isn't safe' in a DLL, according to MSDN
-  mod = LoadLibrary ("comctl32.dll");
-
-  DllGetVersion = (DLLGETVERSIONPROC) GetProcAddress (mod, "DllGetVersion");
-  if (DllGetVersion == NULL)
-    {
-      // Something's wildly broken, punt.
-      retval = PROPSHEETHEADER_V1_SIZE;
-    }
-  else
-    {
-      vi.cbSize = sizeof (DLLVERSIONINFO);
-      DllGetVersion (&vi);
-
-      if ((vi.dwMajorVersion < 4) ||
-	  ((vi.dwMajorVersion == 4) && (vi.dwMinorVersion < 71)))
-	{
-	  // Recent.
-	  retval = sizeof (PROPSHEETHEADER);
-	}
-      else
-	{
-	  // Old (== Win95/NT4 w/o IE 4 or better)
-	  retval = PROPSHEETHEADER_V1_SIZE;
-	}
-    }
-
-  FreeLibrary (mod);
-
-  return retval;
-}
-
 bool
 PropSheet::Create (const Window * Parent, DWORD Style)
 {
@@ -344,7 +301,7 @@ PropSheet::Create (const Window * Parent, DWORD Style)
 
   PageHandles = CreatePages ();
 
-  p.dwSize = GetPROPSHEETHEADERSize ();
+  p.dwSize = sizeof (PROPSHEETHEADER);
   p.dwFlags = PSH_NOAPPLYNOW | PSH_WIZARD | PSH_USECALLBACK
     /*| PSH_MODELESS */ | PSH_USEICONID;
   if (Parent != NULL)
