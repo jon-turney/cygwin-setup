@@ -29,6 +29,9 @@
 /* Basic Windows features only. */
 #define WIN32_LEAN_AND_MEAN
 
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0a00
+
 /* libstdc++-v3 _really_ dislikes min & max defined as macros. */
 /* As of gcc 3.3.1, it defines NOMINMAX itself, so test first,
  * to avoid a redefinition error */
