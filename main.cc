@@ -268,15 +268,11 @@ WinMain (HINSTANCE h,
     SetupArch = is_64bit ? "x86_64" : "x86";
     SetupIniDir = SetupArch+"/";
 
-    /* Get System info */
-    OSVERSIONINFO version;
-    version.dwOSVersionInfoSize = sizeof version;
-    GetVersionEx (&version);
     /* Initialize well known SIDs.  We need the admin SID to test if we're
        supposed to elevate. */
     nt_sec.initialiseWellKnownSIDs ();
     /* Check if we have to elevate. */
-    bool elevate = !help_option && version.dwMajorVersion >= 6
+    bool elevate = !help_option && OSMajorVersion () >= 6
 		   && !NoAdminOption && !nt_sec.isRunAsAdmin ();
 
     /* Start logging only if we don't elevate.  Same for setting default
