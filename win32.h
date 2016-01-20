@@ -44,14 +44,6 @@
 /* # of 100ns intervals per second. */
 #define NSPERSEC 10000000LL
 
-/* In w32api 3.1, __declspec(dllimport) decoration is added to
- * certain symbols. This breaks our autoload mechanism - the symptom is
- * multiple declaration errors at link time. This define turns that off again.
- * It will default to off again in later w32api versions, but we need to work
- * with 3.1 for now. */
-#define DECLSPEC_IMPORT
-#define WINBASEAPI
-
 #include <windows.h>
 
 /* FIXME: The use of _access(fname, 0) as an existence check should be
