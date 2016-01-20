@@ -337,20 +337,9 @@ Installer::extract_replace_on_reboot (archive *tarstream, const std::string& pre
 
       WCHAR sname[s.size () + 7];
       WCHAR dname[d.size () + 7];
-      /* Windows 2000 has a bug:  Prepending \\?\ does not
-       * work in conjunction with MOVEFILE_DELAY_UNTIL_REBOOT.
-       * So in case of Windows 2000 we just convert the path
-       * to wide char and hope for the best. */
-      if (OSMajorVersion () == 5 && OSMinorVersion () == 0)
-	{
-	  mbstowcs (sname, s.c_str (), s.size () + 7);
-	  mbstowcs (dname, d.c_str (), d.size () + 7);
-	}
-      else
-	{
-	  mklongpath (sname, s.c_str (), s.size () + 7);
-	  mklongpath (dname, d.c_str (), d.size () + 7);
-	}
+
+      mklongpath (sname, s.c_str (), s.size () + 7);
+      mklongpath (dname, d.c_str (), d.size () + 7);
       if (!MoveFileExW (sname, dname,
                         MOVEFILE_DELAY_UNTIL_REBOOT |
                         MOVEFILE_REPLACE_EXISTING))
