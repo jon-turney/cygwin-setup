@@ -44,14 +44,8 @@
 /* # of 100ns intervals per second. */
 #define NSPERSEC 10000000LL
 
-/* FIXME:
-
-   2016-01-20: Defining WINBASEAPI is required with current versions
-   of the Mingw-w64 cross toolchain on Cygwin due the overloading
-   definitions of some kernel32 functions in filemanip.cc.  It's not
-   required when cross building on Fedora 23, so it must have something
-   to do with current Mingw-w64 headers or libs (4.0.2 vs 4.0.4?).
-   Binutils is 2.25 both. */
+/* Defining WINBASEAPI is required due the overloading definitions of some
+   kernel32 functions in filemanip.cc. */
 #define WINBASEAPI
 
 #include <windows.h>
