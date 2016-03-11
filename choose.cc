@@ -150,7 +150,8 @@ ChooserPage::createListview ()
     exit (11);
   chooser->init(PickView::views::Category);
   chooser->Show(SW_SHOW);
-  chooser->setViewMode (PickView::views::Category);
+  chooser->setViewMode (UpgradeAlsoOption || hasManualSelections ?
+			PickView::views::Package : PickView::views::Category);
   if (!SetDlgItemText (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     Log (LOG_BABBLE) << "Failed to set View button caption %ld" <<
 	 GetLastError () << endLog;
