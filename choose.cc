@@ -64,6 +64,7 @@ static const char *cvsid =
 #include "getopt++/BoolOption.h"
 static BoolOption UpgradeAlsoOption (false, 'g', "upgrade-also", "also upgrade installed packages");
 static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", "remove orphaned packages");
+static BoolOption ForceCurrentOption (false, 'f', "force-current", "select the current version for all packages");
 static BoolOption PruneInstallOption (false, 'Y', "prune-install", "prune the installation to only the requested packages");
 static BoolOption MirrorOption (false, 'm', "mirror-mode", "Skip availability check when installing from local directory (requires local directory to be clean mirror!)");
 
@@ -266,7 +267,7 @@ ChooserPage::OnInit ()
 	pkg.set_action (packagemeta::Reinstall_action, pkg.curr);
       else if (uninstall)
 	pkg.set_action (packagemeta::Uninstall_action, packageversion ());
-      else if (PruneInstallOption)
+      else if (PruneInstallOption || ForceCurrentOption)
 	pkg.set_action (packagemeta::Default_action, pkg.curr);
       else if (upgrade)
 	pkg.set_action (packagemeta::Default_action, pkg.trustp(true, TRUST_UNKNOWN));
