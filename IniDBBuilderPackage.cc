@@ -277,9 +277,9 @@ IniDBBuilderPackage::buildInstallSHA512 (unsigned char const *sha512)
 void
 IniDBBuilderPackage::buildSourceSHA512 (unsigned char const *sha512)
 {
-  if (sha512 && !cbpv.source()->sha512_isSet) {
+  if (sha512 && !cspv.source()->sha512_isSet) {
     memcpy (cspv.source()->sha512sum, sha512, sizeof cspv.source()->sha512sum);
-    cbpv.source()->sha512_isSet = true;
+    cspv.source()->sha512_isSet = true;
   }
 }
 
