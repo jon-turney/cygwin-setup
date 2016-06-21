@@ -339,8 +339,8 @@ setup-src:
 	git ls-files | tar -T - -cJf ${CURDIR}/$$ver-src.tar.xz;\
 	echo $$ver-src.tar.xz; exec rm -f $$ver
 
-# optional: strip and compress executable
-.PHONY:	strip upx release upload
+# optional: strip, compress and sign executable
+.PHONY:	strip upx release sign upload
 
 strip:	all
 	@$(MKDIR_P) stripped
@@ -355,25 +355,51 @@ upx:	strip
 		$(MKDIR_P) upx ;\
 		rm -f upx/setup$(EXEEXT) ;\
 		upx --best --lzma stripped/setup$(EXEEXT) -o upx/setup$(EXEEXT) ;\
+		cp -a stripped/setup${EXEEXT} upx/setup-uncompressed${EXEEXT} ;\
 	else \
 		echo "UPX doesn't seem to be installed, cannot compress setup$(EXEEXT)." ;\
 	fi
 
-release: upx
+# PKCS#11 module for HSM containing signing key
+PKCSMODULE=/usr/lib64/libykcs11.so.2
+# PKCS#11 URI to locate signing key in HSM
+PKCS11_URI="pkcs11:id=%01;pin-value=123456"
+# our code-signing certificate and all intermediate and CA certificates
+CERT_SIGNING_CHAIN=code-signing-chain.pem
+# CA timestamp service
+CA_TIMESTAMP=http://timestamp.sectigo.com
+
+sign:	upx
+	@if [ -e `which osslsigncode` ]; then \
+		$(MKDIR_P) signed ;\
+		for f in setup$(EXEEXT) setup-uncompressed${EXEEXT} ; do \
+		    rm -f signed/$$f ;\
+		    osslsigncode sign \
+			-pkcs11module $(PKCSMODULE) -key $(PKCS11_URI) -nolegacy \
+			-certs $(CERT_SIGNING_CHAIN) \
+			-ts $(CA_TIMESTAMP) \
+			-n 'Cygwin Setup' -i https://cygwin.com/ \
+			-in upx/$$f -out signed/$$f ;\
+		done \
+	else \
+		echo "osslsigncode not found, cannot sign setup$(EXEEXT)." ;\
+	fi
+
+release: sign
 	@$(MKDIR_P) release
 	cp stripped/setup.dbg release/setup-${VER}.${ARCH}.dbg
-	cp stripped/setup${EXEEXT} release/setup-${VER}-uncompressed.${ARCH}${EXEEXT}
-	cp upx/setup${EXEEXT} release/setup-${VER}.${ARCH}${EXEEXT}
+	cp signed//setup-uncompressed${EXEEXT} release/setup-${VER}-uncompressed.${ARCH}${EXEEXT}
+	cp signed/setup${EXEEXT} release/setup-${VER}.${ARCH}${EXEEXT}
 
 UPLOAD_HOST=cygwin-admin@cygwin.com
 UPLOAD_PATH=/www/sourceware/htdocs/cygwin/setup
-SIGN_KEYS="--enable-dsa2 --personal-digest-preferences=sha256 -u 1A698DE9E2E56300"
+GPG_SIGN_KEYS="--enable-dsa2 --personal-digest-preferences=sha256 -u 1A698DE9E2E56300"
 
 upload: release
 	cd release ; scp setup-${VER}.$(ARCH).exe setup-${VER}.$(ARCH).dbg setup-${VER}-uncompressed.${ARCH}${EXEEXT} ${UPLOAD_HOST}:${UPLOAD_PATH}
-	ssh ${UPLOAD_HOST} gpg --batch ${SIGN_KEYS} --detach-sign ${UPLOAD_PATH}/setup-${VER}.$(ARCH).exe
-	ssh ${UPLOAD_HOST} gpg --batch ${SIGN_KEYS} --detach-sign ${UPLOAD_PATH}/setup-${VER}-uncompressed.$(ARCH).exe
+	ssh ${UPLOAD_HOST} gpg --batch ${GPG_SIGN_KEYS} --detach-sign ${UPLOAD_PATH}/setup-${VER}.$(ARCH).exe
+	ssh ${UPLOAD_HOST} gpg --batch ${GPG_SIGN_KEYS} --detach-sign ${UPLOAD_PATH}/setup-${VER}-uncompressed.$(ARCH).exe
 	ssh ${UPLOAD_HOST} "cd ${UPLOAD_PATH} && sha512sum *.exe > sha512.sum"
 
 clean-local:
-	rm -rf stripped upx release
+	rm -rf stripped upx sign release

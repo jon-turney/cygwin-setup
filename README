@@ -24,7 +24,7 @@ required packages and their dependencies installed:
   - mingw64-${arch}-xz
   - mingw64-${arch}-zlib
   - mingw64-${arch}-zstd
-  - upx (optional)
+  - upx (optional, for compressing)
 
 The ${arch} needs to be replaced with either "i686" or "x86_64"
 depending on the target architecture to build for.
@@ -49,6 +49,8 @@ required packages and their dependencies installed:
   - mingw${arch}-xz-libs-static
   - mingw${arch}-zlib-static
   - mingw${arch}-zstd-static (**)
+  - openssl-pkcs11 (optional, for signing) (***)
+  - osslsigncode (optional, for signing)
   - upx (optional)
 
 The ${arch} needs to be replaced with either "32" or "64"
@@ -56,8 +58,10 @@ depending on the target architecture to build for.
 
 (*) Requires 'dnf copr enable jturney/mingw-libsolv'
 (**) Requires 'dnf copr enable jturney/mingw-zstd'
+(***) Plus the package containing the pkcs11 module for your HSM (e.g. yubico-piv-tool for a YubiKey)
 
 Build commands:
+---------------
 
 0) Obtain this project's source code:
    $ git clone git://sourceware.org/git/cygwin-apps/setup.git
@@ -83,6 +87,7 @@ Build commands:
 
 CODING GUIDELINES:
 ------------------
+
 setup has a number of different code formats in it. This is ok as long
 as it stays readable. When submitting a patch, make sure that you use
 the coding-style of the surrounding code.
@@ -94,6 +99,7 @@ as a guide.
 
 SUBMITTING A PATCH:
 -------------------
+
 Follow the general directions given in the Cygwin contributions document:
 
    https://cygwin.com/contrib.html
