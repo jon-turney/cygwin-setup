@@ -159,7 +159,7 @@ Installer::preremoveOne (packagemeta & pkg)
 {
   Progress.SetText1 ("Running preremove script...");
   Progress.SetText2 (pkg.name.c_str());
-  Log (LOG_PLAIN) << "Running preremove script for  " << pkg.name << endLog;
+  Log (LOG_BABBLE) << "Running preremove script for " << pkg.name << endLog;
   const unsigned numexts = 4;
   const char* exts[numexts] = { ".dash", ".sh", ".bat", ".cmd" };
   for (unsigned i = 0; i < numexts; i++)
