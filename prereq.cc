@@ -238,6 +238,7 @@ PrereqChecker::isMet ()
                     {
                       // newly found dependency: add to worklist
                       todo.push (dep);
+                      max++;
                     }
                   unmet[dep].push_back (pack);
                 }
