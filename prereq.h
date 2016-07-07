@@ -51,6 +51,7 @@ private:
   
   // this is the actual hash_map that does all the work
   static map <packagemeta *, vector <packagemeta *>, packagemeta_ltcomp> unmet;
+  static map <std::string, vector <packagemeta *> > notfound;
   static trusts theTrust;
 };
 

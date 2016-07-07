@@ -163,11 +163,16 @@ PrereqPage::OnUnattended ()
 
 // instantiate the static members
 map <packagemeta *, vector <packagemeta *>, packagemeta_ltcomp> PrereqChecker::unmet;
+map <std::string, vector <packagemeta *> > PrereqChecker::notfound;
 trusts PrereqChecker::theTrust = TRUST_CURR;
 
 /* This function builds a list of unmet dependencies to present to the user on
-   the PrereqPage propsheet.  The data is stored as an associative map of
-   unmet[missing-package] = vector of packages that depend on missing-package */
+   the PrereqPage propsheet.
+
+   The data is stored in two associative maps:
+     unmet[package] = vector of packages that depend on package.
+     notfound[package-name] = vector of packages that depend on package.
+*/
 bool
 PrereqChecker::isMet ()
 {
@@ -177,8 +182,9 @@ PrereqChecker::isMet ()
   Progress.SetText2 ("");
   Progress.SetText3 ("");
 
-  // unmet is static - clear it each time this is called
+  // clear static data each time this is called
   unmet.clear ();
+  notfound.clear ();
 
   // packages that need to be checked for dependencies
   queue <packagemeta *> todo;
@@ -223,20 +229,31 @@ PrereqChecker::isMet ()
           PackageSpecification *dep_spec = (*d)->at(0);
           packagemeta *dep = db.findBinary (*dep_spec);
 
-          if (dep && !(dep->desired && dep_spec->satisfies (dep->desired)))
+          if (dep)
             {
-              // we've got an unmet dependency
-              if (unmet.find (dep) == unmet.end ())
+              if (!(dep->desired && dep_spec->satisfies (dep->desired)))
                 {
-                  // newly found dependency: add to worklist
-                  todo.push (dep);
+                  // we've got an unmet dependency
+                  if (unmet.find (dep) == unmet.end ())
+                    {
+                      // newly found dependency: add to worklist
+                      todo.push (dep);
+                    }
+                  unmet[dep].push_back (pack);
                 }
-              unmet[dep].push_back (pack);
+            }
+          else
+            {
+              // dependency on a package which doesn't have any binary versions
+              // (i.e. it is source only or doesn't exist)
+              Log (LOG_PLAIN) << "package " << pack->name << " has dependency "
+                              << dep_spec->packageName() << " we can't find" << endLog;
+              notfound[dep_spec->packageName()].push_back (pack);
             }
         }
     }
 
-  return unmet.empty ();
+  return unmet.empty () && notfound.empty ();
 }
 
 /* Formats 'unmet' as a string for display to the user.  */
@@ -244,6 +261,23 @@ void
 PrereqChecker::getUnmetString (std::string &s)
 {
   s = "";
+
+  {
+    map <std::string, vector <packagemeta *> >::iterator i;
+    for (i = notfound.begin(); i != notfound.end(); i++)
+      {
+        s = s + i->first
+          + "\t(not found)"
+          + "\r\n\tRequired by: ";
+        for (unsigned int j = 0; j < i->second.size(); j++)
+          {
+            s += i->second[j]->name;
+            if (j != i->second.size() - 1)
+              s += ", ";
+          }
+        s += "\r\n\r\n";
+      }
+  }
 
   map <packagemeta *, vector <packagemeta *>, packagemeta_ltcomp>::iterator i;
   for (i = unmet.begin(); i != unmet.end(); i++)
