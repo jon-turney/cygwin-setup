@@ -28,6 +28,10 @@ to make changes to the build system.
 
 Build commands:
 
+0) If building from git, obtain this project's code:
+   $ git clone git://sourceware.org/git/cygwin-apps/setup.git
+   $ cd setup
+
 1) Configure using this option
    $ /path/to/setup/bootstrap.sh
    This will automatically rebuild configure files and run configure
@@ -59,12 +63,14 @@ as a guide.
 
 SUBMITTING A PATCH:
 -------------------
-As per cygwin1.dll and many GNU projects:
+Follow the general directions given in the Cygwin contributions document:
 
-No changelog in the patch itself.
-Attach the changelog to the email.
-Use, at a minimum "diff -uN" when constructing diffs for submission.
-As much as possible please provide only one goal per patch.
+   https://cygwin.com/contrib.html
+
+The appropriate mailing list for this project is cygwin-apps
+(rather than cygwin-patches). Thus, the appropriate final command would be:
+
+   $ git send-email --to="cygwin-patches@cygwin.com"
 
 
 WISHLIST:
