@@ -96,7 +96,7 @@ packagedb::packagedb ()
 		  packagemeta *pkg = findBinary (PackageSpecification(pkgname));
 		  if (!pkg)
 		    {
-		      pkg = new packagemeta (pkgname, inst);
+		      pkg = new packagemeta (pkgname);
 		      packages.insert (packagedb::packagecollection::value_type(pkgname, pkg));
 		      /* we should install a new handler then not check this...
 		       */

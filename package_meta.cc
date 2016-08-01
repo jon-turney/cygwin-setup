@@ -91,7 +91,7 @@ packagemeta::_actions::caption ()
 }
 
 packagemeta::packagemeta (packagemeta const &rhs) :
-  name (rhs.name), key (rhs.name), installed_from (), 
+  name (rhs.name), key (rhs.name),
   categories (rhs.categories), versions (rhs.versions),
   installed (rhs.installed), prev (rhs.prev),
   curr (rhs.curr),

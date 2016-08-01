@@ -35,14 +35,8 @@ public:
   static void ScanDownloadedFiles (bool);
   packagemeta (packagemeta const &);
   packagemeta (const std::string& pkgname)
-  : name (pkgname), key(pkgname), installed_from (), user_picked (false),
+  : name (pkgname), key(pkgname), user_picked (false),
     architecture (), priority(), visited_(false)
-  {
-  }
-
-  packagemeta (const std::string& pkgname, const std::string& installedfrom)
-  : name (pkgname), key(pkgname), installed_from (installedfrom),
-    user_picked (false), architecture (), priority(), visited_(false)
   {
   }
 
@@ -118,8 +112,7 @@ public:
 
   std::string name;			/* package name, like "cygwin" */
   std::string key;
-  /* legacy variable used to output data for installed.db versions <= 2 */
-  std::string installed_from;
+
   /* true if package was selected on command-line. */
   bool isManuallyWanted() const;
   /* true if package was deleted on command-line. */
