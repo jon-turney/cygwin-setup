@@ -57,8 +57,9 @@ const PickView::views PickView::views::Unknown (0);
 const PickView::views PickView::views::PackageFull (1);
 const PickView::views PickView::views::Package (2);
 const PickView::views PickView::views::PackageKeeps (3);
-const PickView::views PickView::views::PackageSkips = PickView::views (4);
-const PickView::views PickView::views::Category (5);
+const PickView::views PickView::views::PackageSkips (4);
+const PickView::views PickView::views::PackageUserPicked (5);
+const PickView::views PickView::views::Category (6);
 
 ATOM PickView::WindowClassAtom = 0;
 
@@ -92,7 +93,8 @@ PickView::set_header_column_order (views vm)
   if (vm == views::Unknown)
     return -1;
   else if (vm == views::PackageFull || vm == views::Package
-      || vm == views::PackageKeeps || vm == views::PackageSkips)
+           || vm == views::PackageKeeps || vm == views::PackageSkips
+           || vm == views::PackageUserPicked)
     {
       headers = pkg_headers;
       current_col = 0;
@@ -197,7 +199,11 @@ PickView::setViewMode (views mode)
 
               // "Not installed"
               || (view_mode == PickView::views::PackageSkips &&
-                  (!pkg.desired && !pkg.installed)))
+                  (!pkg.desired && !pkg.installed))
+
+              // "UserPick" : installed packages that were picked by user
+              || (view_mode == PickView::views::PackageUserPicked &&
+                  (pkg.installed && pkg.user_picked)))
             {
               // Filter by package name
               if (packageFilterString.empty ()
@@ -246,6 +252,8 @@ PickView::views::caption ()
     case 4:
       return "Not Installed";
     case 5:
+      return "Picked";
+    case 6:
       return "Category";
     default:
       return "";

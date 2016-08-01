@@ -104,15 +104,15 @@ public:
     static const views Package;
     static const views PackageKeeps;
     static const views PackageSkips;
+    static const views PackageUserPicked;
     static const views Category;
-    static const views NView;
       views ():_value (0)
     {
     };
     views (int aInt)
     {
       _value = aInt;
-      if (_value < 0 || _value > 5)
+      if (_value < 0 || _value > 6)
 	_value = 0;
     }
     views & operator++ ();
