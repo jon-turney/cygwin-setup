@@ -39,7 +39,6 @@ name (),
 vendor (),
 packagev (),
 canonical (),
-fn (),
 sdesc (),
 ldesc (),
 status (package_installed),
@@ -66,14 +65,12 @@ cygpackage::createInstance (const std::string& pkgname,
 
 packageversion
 cygpackage::createInstance (const std::string& pkgname,
-                            const std::string& filename,
                             const std::string& version,
 			    package_status_t const newstatus,
 			    package_type_t const newtype)
 {
   cygpackage *temp = new cygpackage;
   temp->name = pkgname;
-  temp->fn = filename;
   temp->status = newstatus;
   temp->type = newtype;
   temp->setCanonicalVersion (version);

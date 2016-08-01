@@ -70,10 +70,9 @@ public:
   static packageversion createInstance (const std::string& pkgname,
                                         const package_type_t type);
 
-  static packageversion createInstance (const std::string& ,
-                                        const std::string& , 
-                                        const std::string& ,
-					package_status_t const, 
+  static packageversion createInstance (const std::string& pkgname,
+                                        const std::string& version,
+					package_status_t const,
 					package_type_t const);
 
 private:
@@ -83,7 +82,6 @@ private:
   std::string vendor;
   std::string packagev;
   std::string canonical;
-  std::string fn;
   std::string sdesc, ldesc;
   char getfilenamebuffer[CYG_PATH_MAX];
 
