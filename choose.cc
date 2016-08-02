@@ -291,6 +291,10 @@ ChooserPage::OnInit ()
   AddTooltip (IDC_CHOOSE_VIEW, IDS_VIEWBUTTON_TOOLTIP);
   AddTooltip (IDC_CHOOSE_HIDE, IDS_HIDEOBS_TOOLTIP);
   AddTooltip (IDC_CHOOSE_SEARCH_EDIT, IDS_SEARCH_TOOLTIP);
+
+  /* Set focus to search edittext control. */
+  PostMessage (GetHWND (), WM_NEXTDLGCTL,
+	       (WPARAM) GetDlgItem (IDC_CHOOSE_SEARCH_EDIT), TRUE);
 }
 
 void
