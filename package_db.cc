@@ -42,6 +42,8 @@ static const char *cvsid =
 #include "package_meta.h"
 #include "Exception.h"
 #include "Generic.h"
+#include "LogSingleton.h"
+#include "resource.h"
 
 using namespace std;
 
@@ -55,37 +57,44 @@ packagedb::packagedb ()
       installeddbread = 1;
       if (!db)
 	return;
-      /* flush_local_db_package_data */
-      char line[1000], pkgname[1000], inst[1000];
-      int instsz;
+      char line[1000], pkgname[1000];
 
       if (db->gets (line, 1000))
 	{
+	  /* Look for header line (absent in version 1) */
+	  int instsz;
 	  int dbver;
 	  sscanf (line, "%s %d", pkgname, &instsz);
-	  if (!strcasecmp (pkgname, "INSTALLED.DB") && instsz == 2)
-	    dbver = 2;
+	  if (!strcasecmp (pkgname, "INSTALLED.DB"))
+	    dbver = instsz;
 	  else
 	    dbver = 1;
 	  delete db;
 	  db = 0;
-	  /* Later versions may not use installed.db other than to record the version. */
-	  if (dbver == 1 || dbver == 2)
+
+	  Log (LOG_BABBLE) << "INSTALLED.DB version " << dbver << endLog;
+
+	  if (dbver <= 3)
 	    {
+	      char inst[1000];
+
 	      db =
 		io_stream::open ("cygfile:///etc/setup/installed.db", "rt", 0);
-	      if (dbver == 2)
+
+	      // skip over already-parsed header line
+	      if (dbver >= 2)
 		db->gets (line, 1000);
+
 	      while (db->gets (line, 1000))
 		{
 		  int parseable;
-		  int ign;
+		  int user_picked = 0;
 		  pkgname[0] = '\0';
 		  inst[0] = '\0';
 
-		  sscanf (line, "%s %s %d", pkgname, inst, &ign);
+		  int res = sscanf (line, "%s %s %d", pkgname, inst, &user_picked);
 
-		  if (pkgname[0] == '\0' || inst[0] == '\0')
+		  if (res < 3 || pkgname[0] == '\0' || inst[0] == '\0')
 			continue;
 
 		  fileparse f;
@@ -98,27 +107,29 @@ packagedb::packagedb ()
 		    {
 		      pkg = new packagemeta (pkgname);
 		      packages.insert (packagedb::packagecollection::value_type(pkgname, pkg));
-		      /* we should install a new handler then not check this...
-		       */
-		      //if (!pkg)
-		      //die badly
 		    }
 
 		  packageversion binary = 
 		    cygpackage::createInstance (pkgname, f.ver,
-	    					package_installed,
-	    					package_binary);
+						package_installed,
+						package_binary);
 
 		  pkg->add_version (binary);
 		  pkg->set_installed (binary);
 		  pkg->desired = pkg->installed;
+
+		  if (dbver == 3)
+		    pkg->user_picked = (user_picked & 1);
 		}
 	      delete db;
 	      db = 0;
 	    }
 	  else
-	    // unknown dbversion
-	    exit (1);
+	    {
+              fatal(NULL, IDS_INSTALLEDB_VERSION);
+	    }
+
+	  installeddbver = dbver;
 	}
     }
 }
@@ -138,21 +149,23 @@ packagedb::flush ()
   if (!ndb)
     return errno ? errno : 1;
 
-  ndb->write ("INSTALLED.DB 2\n", strlen ("INSTALLED.DB 2\n"));
+  ndb->write ("INSTALLED.DB 3\n", strlen ("INSTALLED.DB 3\n"));
   for (packagedb::packagecollection::iterator i = packages.begin ();
        i != packages.end (); ++i)
     {
       packagemeta & pkgm = *(i->second);
       if (pkgm.installed)
 	{
-	  /* size here is irrelevant - as we can assume that this install source
-	   * no longer exists, and it does not correlate to used disk space
-	   * also note that we are writing a fictional install source 
-	   * to keep cygcheck happy.               
-	   */
+	  /*
+	    In INSTALLED.DB 3, lines are: 'packagename version flags', where
+	    version is encoded in a notional filename for backwards
+	    compatibility, and the only currently defined flag is user-picked
+	    (bit 0).
+	  */
 	  std::string line;
-	  line = pkgm.name + " " + pkgm.name + "-" + 
-	    std::string(pkgm.installed.Canonical_version()) + ".tar.bz2 0\n";
+	  line = pkgm.name + " " +
+	    pkgm.name + "-" + std::string(pkgm.installed.Canonical_version()) + ".tar.bz2 " +
+	    (pkgm.user_picked ? "1" : "0") + "\n";
 	  ndb->write (line.c_str(), line.size());
 	}
     }
@@ -164,6 +177,18 @@ packagedb::flush ()
   if (io_stream::move (ndbn, odbn))
     return errno ? errno : 1;
   return 0;
+}
+
+void
+packagedb::upgrade()
+{
+  if (installeddbver < 3)
+    {
+      /* Guess which packages were user_picked.  This has to take place after
+         setup.ini has been parsed as it needs dependency information. */
+      guessUserPicked();
+      installeddbver = 3;
+    }
 }
 
 packagemeta *
@@ -199,13 +224,13 @@ packagedb::findSource (PackageSpecification const &spec) const
 /* static members */
 
 int packagedb::installeddbread = 0;
+int packagedb::installeddbver = 0;
 packagedb::packagecollection packagedb::packages;
 packagedb::categoriesType packagedb::categories;
 packagedb::packagecollection packagedb::sourcePackages;
 PackageDBActions packagedb::task = PackageDB_Install;
 std::vector <packagemeta *> packagedb::dependencyOrderedPackages;
 
-#include "LogSingleton.h"
 #include <stack>
 
 class
@@ -448,4 +473,60 @@ packagedb::defaultTrust (trusts trust)
         Log (LOG_BABBLE) << "Removing empty category " << n->first << endLog;
         packagedb::categories.erase (n++);
       }
+}
+
+void
+packagedb::guessUserPicked()
+{
+  /*
+    Assume that any non-base installed package which is a dependency of an
+    installed package wasn't user_picked
+
+    i.e. only installed packages which aren't in the base category, and aren't
+    a dependency of any installed package are user_picked
+  */
+
+  /* First mark all installed non-base packages */
+  for (packagedb::packagecollection::iterator i = packages.begin ();
+       i != packages.end (); ++i)
+    {
+      packagemeta & pkgm = *(i->second);
+
+      if (pkgm.categories.find ("Base") != pkgm.categories.end ())
+	continue;
+
+      if (pkgm.installed)
+	pkgm.user_picked = TRUE;
+    }
+
+  /* Then clear the mark for all dependencies of all installed packages */
+  for (packagedb::packagecollection::iterator i = packages.begin ();
+       i != packages.end (); ++i)
+    {
+      packagemeta & pkgm = *(i->second);
+
+      if (!pkgm.installed)
+	continue;
+
+      /* walk through each and clause */
+      vector <vector <PackageSpecification *> *>::const_iterator dp = pkgm.installed.depends()->begin();
+      while (dp != pkgm.installed.depends()->end())
+	{
+	  /* check each or clause for an installed match */
+	  vector <PackageSpecification *>::const_iterator i = find_if ((*dp)->begin(), (*dp)->end(), checkForInstalled);
+	  if (i != (*dp)->end())
+	    {
+	      const packagedb::packagecollection::iterator n = packages.find((*i)->packageName());
+	      if (n != packages.end())
+		{
+		  packagemeta *pkgm2 = n->second;
+		  pkgm2->user_picked = FALSE;
+		}
+	      /* skip to next and clause */
+	      ++dp;
+	      continue;
+	    }
+	  ++dp;
+	}
+    }
 }

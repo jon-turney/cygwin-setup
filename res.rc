@@ -569,4 +569,5 @@ BEGIN
     IDS_NO_LOCALDIR    "Local package directory %s not found.\nYou can still use setup-%s.exe to remove installed\npackages, but there "
       "will be nothing to install.\n\nPress OK if that's what you wanted\nor Cancel to choose a different directory."
     IDS_ELEVATED       "Hand installation over to elevated child process."
+    IDS_INSTALLEDB_VERSION "Unknown INSTALLED.DB version"
 END

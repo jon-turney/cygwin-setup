@@ -65,6 +65,7 @@ public:
   packagedb ();
   /* 0 on success */
   int flush ();
+  void upgrade ();
   packagemeta * findBinary (PackageSpecification const &) const;
   packagemeta * findSource (PackageSpecification const &) const;
   PackageDBConnectedIterator connectedBegin();
@@ -84,8 +85,10 @@ public:
   static PackageDBActions task;
 private:
   static int installeddbread;	/* do we have to reread this */
+  static int installeddbver;
   friend class ConnectedLoopFinder;
   static std::vector <packagemeta *> dependencyOrderedPackages;
+  void guessUserPicked(void);
 };
 
 #endif /* SETUP_PACKAGE_DB_H */

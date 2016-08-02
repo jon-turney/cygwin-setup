@@ -39,6 +39,7 @@
 #define IDS_CANT_MKDIR                    137
 #define IDS_NO_LOCALDIR			  138
 #define IDS_ELEVATED			  139
+#define IDS_INSTALLEDB_VERSION            140
 
 // Dialogs
 

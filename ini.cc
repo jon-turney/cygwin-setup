@@ -51,6 +51,7 @@
 #include "compress.h"
 #include "Exception.h"
 #include "crypto.h"
+#include "package_db.h"
 
 extern ThreeBarProgressPage Progress;
 
@@ -350,6 +351,9 @@ do_ini_thread (HINSTANCE h, HWND owner)
     ini_count = do_local_ini (owner);
   else
     ini_count = do_remote_ini (owner);
+
+  packagedb db;
+  db.upgrade();
 
   if (ini_count == 0)
     return false;

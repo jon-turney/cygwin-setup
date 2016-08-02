@@ -458,7 +458,8 @@ packagemeta::set_action (trusts const trust)
   else
     desired = packageversion ();
   /* Memorize the fact that the user picked at least once. */
-  user_picked = true;
+  if (!installed)
+    user_picked = true;
 }
 
 int
@@ -510,6 +511,7 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
 	  if (desired != installed)
 	    if (desired.accessible ())
 	      {
+		user_picked = true;
 		desired.pick (true, this);
 		desired.sourcePackage ().pick (false, NULL);
 	      }
