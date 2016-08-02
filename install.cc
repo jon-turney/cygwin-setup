@@ -471,6 +471,15 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
   while ((fn = tarstream->next_file_name ()).size ())
     {
       std::string canonicalfn = prefixPath + fn;
+
+      // pathnames starting "." (i.e. dotfiles in the root directory) are
+      // reserved for package metadata.  Don't extract them.
+      if (fn[0] == '.')
+        {
+          tarstream->skip_file ();
+          continue;
+        }
+
       Progress.SetText3 (canonicalfn.c_str ());
       Log (LOG_BABBLE) << "Installing file " << prefixURL << prefixPath
           << fn << endLog;
