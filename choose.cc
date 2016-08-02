@@ -92,7 +92,8 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
 };
 
 ChooserPage::ChooserPage () :
-  cmd_show_set (false), saved_geom (false), saw_geom_change (false)
+  cmd_show_set (false), saved_geom (false), saw_geom_change (false),
+  timer_id (DEFAULT_TIMER_ID)
 {
   sizeProcessor.AddControlInfo (ChooserControlsInfo);
 
@@ -382,9 +383,7 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
   if (code == EN_CHANGE && id == IDC_CHOOSE_SEARCH_EDIT)
     {
-      std::string value (egetString (GetHWND (), IDC_CHOOSE_SEARCH_EDIT));
-      chooser->SetPackageFilter (value);
-      chooser->refresh ();
+      SetTimer(GetHWND (), timer_id, SEARCH_TIMER_DELAY, (TIMERPROC) NULL);
       return true;
     }
   else if (code != BN_CLICKED && code != EN_CHANGE)
@@ -397,10 +396,10 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
     {
     case IDC_CHOOSE_CLEAR_SEARCH:
       {
-	std::string value;
-	eset (GetHWND (), IDC_CHOOSE_SEARCH_EDIT, value);
-	chooser->SetPackageFilter (value);
-	chooser->refresh ();
+        std::string value;
+        eset (GetHWND (), IDC_CHOOSE_SEARCH_EDIT, value);
+        chooser->SetPackageFilter (value);
+        chooser->refresh ();
       }
       break;
 
@@ -443,4 +442,20 @@ INT_PTR CALLBACK
 ChooserPage::OnMouseWheel (UINT message, WPARAM wParam, LPARAM lParam)
 {
   return chooser->WindowProc (message, wParam, lParam);
+}
+
+INT_PTR CALLBACK
+ChooserPage::OnTimerMessage (UINT message, WPARAM wParam, LPARAM lparam)
+{
+  if (wParam == timer_id)
+    {
+      std::string value (egetString (GetHWND (), IDC_CHOOSE_SEARCH_EDIT));
+
+      KillTimer (GetHWND (), timer_id);
+      chooser->SetPackageFilter (value);
+      chooser->refresh ();
+      return TRUE;
+    }
+
+  return FALSE;
 }

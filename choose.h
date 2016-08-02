@@ -21,6 +21,9 @@
 #include "package_meta.h"
 #include "PickView.h"
 
+#define DEFAULT_TIMER_ID   5   //value doesn't matter, as long as it's unique
+#define SEARCH_TIMER_DELAY 500 //in milliseconds
+
 extern bool hasManualSelections;
 
 class ChooserPage:public PropertyPage
@@ -32,6 +35,8 @@ public:
   virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code);
   virtual INT_PTR CALLBACK OnMouseWheel (UINT message, WPARAM wParam,
 					 LPARAM lParam);
+  virtual INT_PTR CALLBACK OnTimerMessage (UINT message, WPARAM wParam,
+										   LPARAM lparam);
 
   bool Create ();
   virtual void OnInit ();
@@ -53,20 +58,25 @@ private:
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();
   void setPrompt(char const *aPrompt);
-  PickView *chooser;
+  void PlaceDialog (bool);
 
+  PickView *chooser;
   static HWND ins_dialog;
   bool cmd_show_set;
   bool saved_geom;
   bool saw_geom_change;
   WINDOWPLACEMENT window_placement;
   WINDOWPLACEMENT pre_chooser_placement;
+  UINT_PTR timer_id;
   union writer
   {
     WINDOWPLACEMENT wp;
     UINT wpi[sizeof (WINDOWPLACEMENT) / sizeof (UINT)];
   };
-  void PlaceDialog (bool);
+
+
+
+
 };
 
 #endif /* SETUP_CHOOSE_H */

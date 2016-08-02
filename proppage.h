@@ -82,6 +82,8 @@ protected:
 					 LPARAM lParam);
     virtual INT_PTR CALLBACK OnMouseWheel (UINT message, WPARAM wParam,
 					   LPARAM lParam);
+    virtual INT_PTR CALLBACK OnTimerMessage (UINT message, WPARAM wParam,
+					     LPARAM lparam);
 
 public:
     PropertyPage ();

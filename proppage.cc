@@ -343,7 +343,11 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
         // to the parent of the window that received the scroll, so it would
         // not work to just process this message there.)
         return OnMouseWheel (message, wParam, lParam);
-        break;
+
+      case WM_TIMER:
+		// similar delegation as with WM_MOUSEWHEEL
+        return OnTimerMessage (message, wParam, lParam);
+
       default:
         break;
     }
@@ -362,6 +366,12 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 
 INT_PTR CALLBACK
 PropertyPage::OnMouseWheel (UINT message, WPARAM wParam, LPARAM lParam)
+{
+  return 1; // not handled; define in a derived class to support this
+}
+
+INT_PTR CALLBACK
+PropertyPage::OnTimerMessage (UINT message, WPARAM wParam, LPARAM lParam)
 {
   return 1; // not handled; define in a derived class to support this
 }
