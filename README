@@ -70,7 +70,7 @@ Follow the general directions given in the Cygwin contributions document:
 The appropriate mailing list for this project is cygwin-apps
 (rather than cygwin-patches). Thus, the appropriate final command would be:
 
-   $ git send-email --to="cygwin-patches@cygwin.com"
+   $ git send-email --to="cygwin-apps@cygwin.com"
 
 
 WISHLIST:
