@@ -74,8 +74,22 @@ public:
 	     ext++, fi++)
 	  {
 	    if (*fi)
-	      found_ini_list.push_back (basePath + SetupArch + "/"
-					+ SetupBaseName + "." + *ext);
+	      {
+		found_ini_list.push_back (basePath + SetupArch + "/"
+					  + SetupBaseName + "." + *ext);
+		/* 
+		 * Terminate the search after the first setup file
+		 * found, which shadows any setup files with
+		 * extensions later in the preference order in the
+		 * same directory.
+		 *
+		 * FIXME: It would probably be more sensible to return
+		 * all matches (perhaps one list per directory) and
+		 * let do_local_ini pick the first one that parses
+		 * correctly, just like do_remote_ini does.
+		 */
+		break;
+	      }
 	  }
 	found_ini.assign (setup_ext_list.size (), false);
   }
