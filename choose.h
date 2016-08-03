@@ -59,6 +59,7 @@ private:
   void logResults();
   void setPrompt(char const *aPrompt);
   void PlaceDialog (bool);
+  void selectView (void);
 
   PickView *chooser;
   static HWND ins_dialog;

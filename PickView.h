@@ -44,8 +44,8 @@ public:
   class Header;
   int num_columns;
   void defaultTrust (trusts trust);
-  void cycleViewMode ();
   void setViewMode (views mode);
+  views getViewMode ();
   void DrawIcon (HDC hdc, int x, int y, HANDLE hIcon);
   void paint (HWND hwnd);
   LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);

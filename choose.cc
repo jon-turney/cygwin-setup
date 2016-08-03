@@ -385,6 +385,10 @@ ChooserPage::changeTrust(trusts aTrust)
 bool
 ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
+#if DEBUG
+  Log (LOG_BABBLE) << "OnMesageCmd " << id << " " << hwndctl << " " << code << endLog;
+#endif
+
   if (code == EN_CHANGE && id == IDC_CHOOSE_SEARCH_EDIT)
     {
       SetTimer(GetHWND (), timer_id, SEARCH_TIMER_DELAY, (TIMERPROC) NULL);
@@ -423,11 +427,7 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       break;
 
     case IDC_CHOOSE_VIEW:
-      chooser->cycleViewMode ();
-      if (!SetDlgItemText
-        (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-      Log (LOG_BABBLE) << "Failed to set View button caption " <<
-           GetLastError () << endLog;
+      selectView();
       break;
 
     case IDC_CHOOSE_HIDE:
@@ -440,6 +440,104 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 
   // Was handled since we never got to default above.
   return true;
+}
+
+static void
+setMenuItemState (HMENU hMenu, UINT item, UINT state)
+{
+  MENUITEMINFO mii;
+  memset(&mii, 0, sizeof(MENUITEMINFO));
+  mii.cbSize = sizeof(MENUITEMINFO);
+  mii.fMask = MIIM_STATE;
+  mii.fState = state;
+  SetMenuItemInfo (hMenu, item, FALSE, &mii);
+}
+
+void
+ChooserPage::selectView (void)
+{
+  HMENU hMenu = LoadMenu (GetModuleHandle (NULL), MAKEINTRESOURCE (IDM_CHOOSE_VIEW));
+  hMenu = GetSubMenu (hMenu, 0);
+
+  // mark the current view mode as selected
+  int item = 0;
+  PickView::views view_mode = chooser->getViewMode ();
+
+  switch (view_mode)
+    {
+    case PickView::views::PackageFull:
+      item = IDM_VIEW_FULL;
+      break;
+    case PickView::views::PackagePending:
+      item = IDM_VIEW_PENDING;
+      break;
+    case PickView::views::PackageKeeps:
+      item = IDM_VIEW_UPTODATE;
+      break;
+    case PickView::views::PackageSkips:
+      item = IDM_VIEW_NOT_INSTALLED;
+      break;
+    case PickView::views::PackageUserPicked:
+      item = IDM_VIEW_PICKED;
+      break;
+    case PickView::views::Category:
+      item = IDM_VIEW_CATEGORY;
+      break;
+    case PickView::views::Unknown:
+      item = 0;
+    }
+
+  if (item)
+    setMenuItemState (hMenu, item, MFS_CHECKED);
+
+  // place the menu over the 'view' button
+  HWND hButton = ::GetDlgItem (GetHWND (), IDC_CHOOSE_VIEW);
+  RECT rect;
+  ::GetWindowRect (hButton, &rect);
+
+  item = TrackPopupMenu (hMenu,
+                         TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_NOANIMATION,
+                         rect.left, rect.top,
+                         0, GetHWND (), NULL);
+
+  DestroyMenu (hMenu);
+
+#if DEBUG
+  Log (LOG_BABBLE) << "TrackPopupMenu returned " << item << endLog;
+#endif
+
+  // menu cancelled without making a selection
+  if (item == 0)
+    return;
+
+  // switch to the selected view
+  switch (item)
+    {
+    case IDM_VIEW_FULL:
+      view_mode = PickView::views::PackageFull;
+      break;
+    case IDM_VIEW_PENDING:
+      view_mode = PickView::views::PackagePending;
+      break;
+    case IDM_VIEW_UPTODATE:
+      view_mode = PickView::views::PackageKeeps;
+      break;
+    case IDM_VIEW_NOT_INSTALLED:
+      view_mode = PickView::views::PackageSkips;
+      break;
+    case IDM_VIEW_PICKED:
+      view_mode = PickView::views::PackageUserPicked;
+      break;
+    case IDM_VIEW_CATEGORY:
+      view_mode = PickView::views::Category;
+      break;
+    }
+
+  chooser->setViewMode (view_mode);
+  if (!SetDlgItemText
+      (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
+    Log (LOG_BABBLE) << "Failed to set View button caption " <<
+      GetLastError () << endLog;
 }
 
 INT_PTR CALLBACK

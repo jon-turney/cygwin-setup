@@ -141,16 +141,6 @@ PickView::note_width (PickView::Header *hdrs, HDC dc,
 }
 
 void
-PickView::cycleViewMode ()
-{
-  PickView::views _value = (PickView::views)((int)view_mode + 1);
-  if (_value > PickView::views::Category)
-    _value = PickView::views::PackageFull;
-
-  setViewMode (_value);
-}
-
-void
 PickView::setViewMode (views mode)
 {
   view_mode = mode;
@@ -225,6 +215,12 @@ PickView::setViewMode (views mode)
   scroll_ulc_x = scroll_ulc_y = 0;
 
   InvalidateRect (GetHWND(), &r, TRUE);
+}
+
+PickView::views
+PickView::getViewMode ()
+{
+  return view_mode;
 }
 
 const char *

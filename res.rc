@@ -536,8 +536,8 @@ BEGIN
        "considered the most stable. (RECOMMENDED)"
     IDS_TRUSTEXP_TOOLTIP    "Globally select the most recent version, even if "
        "that version is considered Experimental or for test use by the maintainer."
-    IDS_VIEWBUTTON_TOOLTIP  "Cycles the package view.  This determines "
-       "which packages are shown in the chooser below.\r\n"
+    IDS_VIEWBUTTON_TOOLTIP  "Select the package view.  This determines "
+       "which packages are shown below.\r\n"
        "\r\n"
        "Category: Group by package category.  Click on '+' to expand.\r\n"
        "\r\n"
@@ -573,4 +573,22 @@ BEGIN
       "will be nothing to install.\n\nPress OK if that's what you wanted\nor Cancel to choose a different directory."
     IDS_ELEVATED       "Hand installation over to elevated child process."
     IDS_INSTALLEDB_VERSION "Unknown INSTALLED.DB version"
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDM_CHOOSE_VIEW MENUEX
+BEGIN
+    POPUP "ViewMenu"
+    BEGIN
+        MENUITEM "&Full",          IDM_VIEW_FULL,          MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "&Pending",       IDM_VIEW_PENDING,       MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "&Up To Date",    IDM_VIEW_UPTODATE,      MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "&Not Installed", IDM_VIEW_NOT_INSTALLED, MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "P&icked",        IDM_VIEW_PICKED,        MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "&Category",      IDM_VIEW_CATEGORY,      MFT_STRING | MFT_RADIOCHECK
+    END
 END

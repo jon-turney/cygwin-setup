@@ -175,3 +175,13 @@
 #define IDC_FILE_INUSE_EDIT               590
 #define IDC_FILE_INUSE_MSG                591
 #define IDC_FILE_INUSE_HELP               592
+
+// Menus
+
+#define IDM_CHOOSE_VIEW                   900
+#define IDM_VIEW_FULL                     901
+#define IDM_VIEW_PENDING                  902
+#define IDM_VIEW_UPTODATE                 903
+#define IDM_VIEW_NOT_INSTALLED            904
+#define IDM_VIEW_PICKED                   905
+#define IDM_VIEW_CATEGORY                 906
