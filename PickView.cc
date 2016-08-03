@@ -188,29 +188,7 @@ PickView::rebuild ()
             i != db.packages.end (); ++i)
         {
           packagemeta & pkg = *(i->second);
-
-          if ( // "Full" : everything
-              (view_mode == PickView::views::PackageFull)
-
-              // "Pending" : packages that are being added/removed/upgraded
-              || (view_mode == PickView::views::PackagePending &&
-                  ((!pkg.desired && pkg.installed) ||         // uninstall
-                    (pkg.desired &&
-                      (pkg.desired.picked () ||               // install bin
-                       pkg.desired.sourcePackage ().picked ())))) // src
-              
-              // "Up to date" : installed packages that will not be changed
-              || (view_mode == PickView::views::PackageKeeps &&
-                  (pkg.installed && pkg.desired && !pkg.desired.picked ()
-                    && !pkg.desired.sourcePackage ().picked ()))
-
-              // "Not installed"
-              || (view_mode == PickView::views::PackageSkips &&
-                  (!pkg.desired && !pkg.installed))
-
-              // "UserPick" : installed packages that were picked by user
-              || (view_mode == PickView::views::PackageUserPicked &&
-                  (pkg.installed && pkg.user_picked)))
+          if (package_filter(pkg))
             {
               // Filter by package name
               if (packageFilterString.empty ()
@@ -288,49 +266,82 @@ PickView::setObsolete (bool doit)
   refresh ();
 }
 
+bool
+PickView::package_filter (packagemeta & pkg)
+{
+  // apply view filter
+  bool filter = false;
+  switch (view_mode)
+    {
+    case PickView::views::Unknown:
+    case PickView::views::PackageFull:
+      // "Full" : everything
+      filter = true;
+      break;
+
+    case PickView::views::PackagePending:
+      // "Pending" : packages that are being added/removed/upgraded
+      if ((!pkg.desired && pkg.installed) ||           // uninstall
+           (pkg.desired &&
+            (pkg.desired.picked () ||                  // install bin
+             pkg.desired.sourcePackage ().picked ()))) // src
+        filter = true;
+      break;
+
+    case PickView::views::PackageKeeps:
+      // "Up to date" : installed packages that will not be changed
+      if (pkg.installed && pkg.desired && !pkg.desired.picked ()
+           && !pkg.desired.sourcePackage ().picked ())
+        filter = true;
+      break;
+
+    case PickView::views::PackageSkips:
+      // "Not installed"
+      if (!pkg.desired && !pkg.installed)
+        filter = true;
+      break;
+
+    case PickView::views::PackageUserPicked:
+      // "UserPick" : installed packages that were picked by user
+      if (pkg.installed && pkg.user_picked)
+        filter = true;
+      break;
+    }
+
+  return filter;
+}
 
 void
 PickView::insert_pkg (packagemeta & pkg)
 {
+  // If obsolete and hiding obsolete
   if (!showObsolete && isObsolete (pkg.categories))
     return;
-  
-  if (view_style != viewStyles::CategoryTree)
-    {
-      PickLine & line = *new PickPackageLine (*this, pkg);
-      contents.insert (line);
-    }
-  else
-    {
-      for (set <std::string, casecompare_lt_op>::const_iterator x
-	   = pkg.categories.begin (); x != pkg.categories.end (); ++x)
-        {
-	  // Special case - yuck
-	  if (casecompare(*x, "All") == 0)
-	    continue;
 
-	  packagedb db;
-	  PickCategoryLine & catline = 
-	    *new PickCategoryLine (*this, *db.categories.find (*x), 1);
-	  PickLine & line = *new PickPackageLine(*this, pkg);
-	  catline.insert (line);
-	  contents.insert (catline);
-        }
-    }
+  PickLine & line = *new PickPackageLine (*this, pkg);
+  contents.insert (line);
 }
 
 void
 PickView::insert_category (Category *cat, bool collapsed)
 {
-  // Urk, special case
-  if (casecompare(cat->first, "All") == 0 ||
-      (!showObsolete && isObsolete (cat->first)))
+  // Never show "All" category
+  if (casecompare(cat->first, "All") == 0)
     return;
+
+  // If obsolete and hiding obsolete
+  if (!showObsolete && isObsolete (cat->first))
+    return;
+
   PickCategoryLine & catline = *new PickCategoryLine (*this, *cat, 1, collapsed);
   int packageCount = 0;
   for (vector <packagemeta *>::iterator i = cat->second.begin ();
        i != cat->second.end () ; ++i)
     {
+      if (!package_filter(**i))
+          continue;
+
+      // Filter by package name
       if (packageFilterString.empty () \
           || (*i
 	      && StrStrI ((*i)->name.c_str (), packageFilterString.c_str ())))
@@ -340,8 +351,9 @@ PickView::insert_category (Category *cat, bool collapsed)
 	  packageCount++;
 	}
     }
-  
-  if (packageFilterString.empty () || packageCount)
+
+  // Only add non-empty categories
+  if (packageCount)
     contents.insert (catline);
   else
     delete &catline;

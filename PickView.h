@@ -43,7 +43,6 @@ public:
   enum class views;
   enum class viewStyles;
   class Header;
-  int num_columns;
   void defaultTrust (trusts trust);
   void setViewMode (views mode);
   views getViewMode ();
@@ -62,8 +61,7 @@ public:
   ~PickView();
   static const char *mode_caption (views mode);
   void setObsolete (bool doit);
-  void insert_pkg (packagemeta &);
-  void insert_category (Category *, bool);
+
   int click (int row, int x);
   void refresh();
   int current_col;
@@ -124,6 +122,7 @@ public:
   };
 
 private:
+  int num_columns;
   static ATOM WindowClassAtom;
   HWND listheader;
   views view_mode;
@@ -142,6 +141,9 @@ private:
   void note_width (Header *hdrs, HDC dc, const std::string& string,
                    int addend, int column);
   void rebuild ();
+  void insert_category (Category *, bool);
+  void insert_pkg (packagemeta &);
+  bool package_filter (packagemeta &);
 };
 
 bool isObsolete (std::set <std::string, casecompare_lt_op> &categories);
