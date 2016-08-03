@@ -41,11 +41,14 @@ public:
   virtual bool Create (Window * Parent = NULL, DWORD Style = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN, RECT * r = NULL);
   virtual bool registerWindowClass ();
   enum class views;
+  enum class viewStyles;
   class Header;
   int num_columns;
   void defaultTrust (trusts trust);
   void setViewMode (views mode);
   views getViewMode ();
+  void setViewStyle (viewStyles style);
+  viewStyles getViewStyle ();
   void DrawIcon (HDC hdc, int x, int y, HANDLE hIcon);
   void paint (HWND hwnd);
   LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
@@ -55,7 +58,7 @@ public:
   virtual LRESULT WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam);
   Header *headers;
   PickView (Category & cat);
-  void init(views _mode);
+  void init(views _mode, viewStyles _style);
   ~PickView();
   static const char *mode_caption (views mode);
   void setObsolete (bool doit);
@@ -103,7 +106,12 @@ public:
     PackageKeeps,
     PackageSkips,
     PackageUserPicked,
-    Category,
+  };
+
+  enum class viewStyles
+  {
+    CategoryTree,
+    PackageList,
   };
 
   class Header
@@ -119,6 +127,7 @@ private:
   static ATOM WindowClassAtom;
   HWND listheader;
   views view_mode;
+  viewStyles view_style;
   bool showObsolete;
   std::string packageFilterString;
 
@@ -127,11 +136,12 @@ private:
   RECTWrapper lastWindowRect;
   int total_delta_x;
 
-  int set_header_column_order (views vm);
+  int set_header_column_order (viewStyles vs);
   void set_headers ();
   void init_headers (HDC dc);
   void note_width (Header *hdrs, HDC dc, const std::string& string,
                    int addend, int column);
+  void rebuild ();
 };
 
 bool isObsolete (std::set <std::string, casecompare_lt_op> &categories);

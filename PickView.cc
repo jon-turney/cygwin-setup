@@ -79,11 +79,9 @@ DoInsertItem (HWND hwndHeader, int iInsertAfter, int nWidth, LPSTR lpsz)
 }
 
 int
-PickView::set_header_column_order (views vm)
+PickView::set_header_column_order (viewStyles vs)
 {
-  if (vm == views::PackageFull || vm == views::PackagePending
-      || vm == views::PackageKeeps || vm == views::PackageSkips
-      || vm == views::PackageUserPicked)
+  if (vs == viewStyles::PackageList)
     {
       headers = pkg_headers;
       current_col = 0;
@@ -95,7 +93,7 @@ PickView::set_header_column_order (views vm)
       pkg_col = size_col + 1;
       last_col = pkg_col;
     }
-  else if (vm == views::Category)
+  else if (vs == viewStyles::CategoryTree)
     {
       headers = cat_headers;
       cat_col = 0;
@@ -115,7 +113,7 @@ PickView::set_header_column_order (views vm)
 void
 PickView::set_headers ()
 {
-  if (set_header_column_order (view_mode) == -1)
+  if (set_header_column_order (view_style) == -1)
     return;
   while (int n = SendMessage (listheader, HDM_GETITEMCOUNT, 0, 0))
     {
@@ -138,15 +136,41 @@ PickView::note_width (PickView::Header *hdrs, HDC dc,
     hdrs[column].width = s.cx + addend;
 }
 
+
+void
+PickView::setViewStyle (viewStyles style)
+{
+  view_style = style;
+  rebuild();
+}
+
+PickView::viewStyles
+PickView::getViewStyle ()
+{
+  return view_style;
+}
+
 void
 PickView::setViewMode (views mode)
 {
   view_mode = mode;
+  rebuild();
+}
+
+PickView::views
+PickView::getViewMode ()
+{
+  return view_mode;
+}
+
+void
+PickView::rebuild ()
+{
   set_headers ();
   packagedb db;
 
   contents.empty ();
-  if (view_mode == PickView::views::Category)
+  if (view_style == PickView::viewStyles::CategoryTree)
     {
       contents.ShowLabel (true);
       /* start collapsed. TODO: make this a chooser flag */
@@ -215,12 +239,6 @@ PickView::setViewMode (views mode)
   InvalidateRect (GetHWND(), &r, TRUE);
 }
 
-PickView::views
-PickView::getViewMode ()
-{
-  return view_mode;
-}
-
 const char *
 PickView::mode_caption (views mode)
 {
@@ -236,8 +254,6 @@ PickView::mode_caption (views mode)
       return "Not Installed";
     case views::PackageUserPicked:
       return "Picked";
-    case views::Category:
-      return "Category";
     default:
       return "";
     }
@@ -279,7 +295,7 @@ PickView::insert_pkg (packagemeta & pkg)
   if (!showObsolete && isObsolete (pkg.categories))
     return;
   
-  if (view_mode != views::Category)
+  if (view_style != viewStyles::CategoryTree)
     {
       PickLine & line = *new PickPackageLine (*this, pkg);
       contents.insert (line);
@@ -472,7 +488,7 @@ PickView::init_headers (HDC dc)
 	s += std::string (": ") + std::string(pkg.SDesc ());
       note_width (headers, dc, s, HMARGIN, pkg_col);
       
-      if (view_mode != PickView::views::Category && pkg.categories.size () > 2)
+      if (view_style != PickView::viewStyles::CategoryTree && pkg.categories.size () > 2)
         {
           std::string compound_cat("");          
           std::set<std::string, casecompare_lt_op>::const_iterator cat;
@@ -516,7 +532,7 @@ packageFilterString (), hasWindowRect (false), total_delta_x (0)
 }
 
 void
-PickView::init(views _mode)
+PickView::init(views _mode, viewStyles _style)
 {
   HDC dc = GetDC (GetHWND());
   sysfont = GetStockObject (DEFAULT_GUI_FONT);
@@ -584,6 +600,7 @@ PickView::init(views _mode)
   ReleaseDC (GetHWND (), dc);
 
   view_mode = _mode;
+  view_style = _style;
   refresh ();
 }
 
@@ -808,9 +825,9 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
             if ((dx = windowRect.right - windowRect.left -
                         lastWindowRect.width ()) != 0)
               {
-                cat_headers[set_header_column_order (views::Category)].width += dx;
-                pkg_headers[set_header_column_order (views::PackagePending)].width += dx;
-                set_header_column_order (view_mode);
+                cat_headers[set_header_column_order (viewStyles::CategoryTree)].width += dx;
+                pkg_headers[set_header_column_order (viewStyles::PackageList)].width += dx;
+                set_header_column_order (view_style);
                 set_headers ();
                 ::MoveWindow (listheader, -scroll_ulc_x, 0,
                             headers[last_col].x +
@@ -890,8 +907,8 @@ PickView::paint (HWND hwnd)
   int x = cr.left - scroll_ulc_x;
   int y = cr.top - scroll_ulc_y + header_height;
 
-  contents.paint (hdc, hUpdRgn, x, y, 0, (view_mode == 
-                                  PickView::views::Category) ? 0 : 1);
+  contents.paint (hdc, hUpdRgn, x, y, 0,
+                  (view_style == PickView::viewStyles::CategoryTree) ? 0 : 1);
 
   if (contents.itemcount () == 0)
     {
@@ -982,9 +999,9 @@ PickView::refresh()
   // save the current mode
   views cur_view_mode = view_mode;
   
-  // switch to the other type and do those headers
-  view_mode = (view_mode == PickView::views::Category) ? 
-                    PickView::views::PackageFull : PickView::views::Category;
+  // switch to the other style and do those headers
+  view_style = (view_style == PickView::viewStyles::CategoryTree) ?
+    PickView::viewStyles::PackageList : PickView::viewStyles::CategoryTree;
   set_headers ();
   init_headers (dc);
   ReleaseDC (GetHWND (), dc);

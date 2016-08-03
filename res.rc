@@ -589,6 +589,10 @@ BEGIN
         MENUITEM "&Up To Date",    IDM_VIEW_UPTODATE,      MFT_STRING | MFT_RADIOCHECK
         MENUITEM "&Not Installed", IDM_VIEW_NOT_INSTALLED, MFT_STRING | MFT_RADIOCHECK
         MENUITEM "&Picked",        IDM_VIEW_PICKED,        MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "---",            -1,                     MFT_SEPARATOR
         MENUITEM "&Category",      IDM_VIEW_CATEGORY,      MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "&Expand all",    -1,                     MFT_STRING, MFS_DISABLED
+        MENUITEM "&Collapse all",  -1,                     MFT_STRING, MFS_DISABLED
+        MENUITEM "&List",          IDM_VIEW_LIST,          MFT_STRING | MFT_RADIOCHECK
     END
 END

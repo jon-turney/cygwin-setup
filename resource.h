@@ -185,3 +185,4 @@
 #define IDM_VIEW_NOT_INSTALLED            904
 #define IDM_VIEW_PICKED                   905
 #define IDM_VIEW_CATEGORY                 906
+#define IDM_VIEW_LIST                     907

@@ -149,11 +149,13 @@ ChooserPage::createListview ()
   if (!chooser->Create(this, WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_VISIBLE,&r))
     // TODO throw exception
     exit (11);
-  chooser->init(PickView::views::Category);
+  chooser->init(PickView::views::PackageFull, PickView::viewStyles::CategoryTree);
   chooser->Show(SW_SHOW);
   chooser->setViewMode (UpgradeAlsoOption || hasManualSelections ?
-			PickView::views::PackagePending : PickView::views::Category);
-  SendMessage (GetDlgItem (IDC_CHOOSE_VIEW), CB_SETCURSEL, (WPARAM)chooser->getViewMode(), 0);
+			PickView::views::PackagePending : PickView::views::PackageFull);
+  if (!SetDlgItemText (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
+    Log (LOG_BABBLE) << "Failed to set View button caption %ld" <<
+	 GetLastError () << endLog;
 
   /* FIXME: do we need to init the desired fields ? */
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
@@ -453,7 +455,7 @@ ChooserPage::selectView(void)
   HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDM_CHOOSE_VIEW));
   hMenu = GetSubMenu(hMenu, 0);
 
-  // mark the current view mode as selected
+  // mark the current view filter mode as selected
   int item = 0;
   PickView::views view_mode = chooser->getViewMode();
 
@@ -474,11 +476,32 @@ ChooserPage::selectView(void)
     case PickView::views::PackageUserPicked:
       item = IDM_VIEW_PICKED;
       break;
-    case PickView::views::Category:
-      item = IDM_VIEW_CATEGORY;
-      break;
     case PickView::views::Unknown:
       item = 0;
+    }
+
+  if (item)
+    {
+      MENUITEMINFO mii;
+      memset(&mii, 0, sizeof(MENUITEMINFO));
+      mii.cbSize = sizeof(MENUITEMINFO);
+      mii.fMask = MIIM_STATE;
+      mii.fState = MFS_CHECKED;
+      SetMenuItemInfo(hMenu, item, FALSE, &mii);
+    }
+
+  // mark the current view style as selected
+  item = 0;
+  PickView::viewStyles view_style = chooser->getViewStyle();
+
+  switch (view_style)
+    {
+    case PickView::viewStyles::CategoryTree:
+      item = IDM_VIEW_CATEGORY;
+      break;
+    case PickView::viewStyles::PackageList:
+      item = IDM_VIEW_LIST;
+      break;
     }
 
   if (item)
@@ -509,7 +532,7 @@ ChooserPage::selectView(void)
   if (item == 0)
     return;
 
-  // switch to the selected view
+  // switch to the selected view filter
   switch (item)
     {
     case IDM_VIEW_FULL:
@@ -527,12 +550,24 @@ ChooserPage::selectView(void)
     case IDM_VIEW_PICKED:
       view_mode = PickView::views::PackageUserPicked;
       break;
-    case IDM_VIEW_CATEGORY:
-      view_mode = PickView::views::Category;
-      break;
     }
 
   chooser->setViewMode (view_mode);
+
+  // switch to the selected view style
+  switch (item)
+    {
+    case IDM_VIEW_CATEGORY:
+      view_style = PickView::viewStyles::CategoryTree;
+      break;
+    case IDM_VIEW_LIST:
+      view_style = PickView::viewStyles::PackageList;
+      break;
+    }
+
+  chooser->setViewStyle (view_style);
+
+  // Update the caption
   if (!SetDlgItemText
       (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
     Log (LOG_BABBLE) << "Failed to set View button caption " <<
