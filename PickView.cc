@@ -83,7 +83,7 @@ PickView::set_header_column_order (views vm)
 {
   if (vm == views::Unknown)
     return -1;
-  else if (vm == views::PackageFull || vm == views::Package
+  else if (vm == views::PackageFull || vm == views::PackagePending
            || vm == views::PackageKeeps || vm == views::PackageSkips
            || vm == views::PackageUserPicked)
     {
@@ -181,7 +181,7 @@ PickView::setViewMode (views mode)
               (view_mode == PickView::views::PackageFull)
 
               // "Pending" : packages that are being added/removed/upgraded
-              || (view_mode == PickView::views::Package &&
+              || (view_mode == PickView::views::PackagePending &&
                   ((!pkg.desired && pkg.installed) ||         // uninstall
                     (pkg.desired &&
                       (pkg.desired.picked () ||               // install bin
@@ -234,7 +234,7 @@ PickView::mode_caption ()
     {
     case views::PackageFull:
       return "Full";
-    case views::Package:
+    case views::PackagePending:
       return "Pending";
     case views::PackageKeeps:
       return "Up To Date";
@@ -815,7 +815,7 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
                         lastWindowRect.width ()) != 0)
               {
                 cat_headers[set_header_column_order (views::Category)].width += dx;
-                pkg_headers[set_header_column_order (views::Package)].width += dx;
+                pkg_headers[set_header_column_order (views::PackagePending)].width += dx;
                 set_header_column_order (view_mode);
                 set_headers ();
                 ::MoveWindow (listheader, -scroll_ulc_x, 0,

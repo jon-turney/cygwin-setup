@@ -100,7 +100,7 @@ public:
   {
     Unknown,
     PackageFull,
-    Package,
+    PackagePending,
     PackageKeeps,
     PackageSkips,
     PackageUserPicked,
