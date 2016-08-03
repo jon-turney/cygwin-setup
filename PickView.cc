@@ -52,15 +52,6 @@ static PickView::Header cat_headers[] = {
   {0, 0, 0, false}
 };
 
-// PickView:: views
-const PickView::views PickView::views::Unknown (0);
-const PickView::views PickView::views::PackageFull (1);
-const PickView::views PickView::views::Package (2);
-const PickView::views PickView::views::PackageKeeps (3);
-const PickView::views PickView::views::PackageSkips (4);
-const PickView::views PickView::views::PackageUserPicked (5);
-const PickView::views PickView::views::Category (6);
-
 ATOM PickView::WindowClassAtom = 0;
 
 // DoInsertItem - inserts an item into a header control.
@@ -152,7 +143,11 @@ PickView::note_width (PickView::Header *hdrs, HDC dc,
 void
 PickView::cycleViewMode ()
 {
-  setViewMode (++view_mode);
+  PickView::views _value = (PickView::views)((int)view_mode + 1);
+  if (_value > PickView::views::Category)
+    _value = PickView::views::PackageFull;
+
+  setViewMode (_value);
 }
 
 void
@@ -235,25 +230,19 @@ PickView::setViewMode (views mode)
 const char *
 PickView::mode_caption ()
 {
-  return view_mode.caption ();
-}
-
-const char *
-PickView::views::caption ()
-{
-  switch (_value)
+  switch (view_mode)
     {
-    case 1:
+    case views::PackageFull:
       return "Full";
-    case 2:
+    case views::Package:
       return "Pending";
-    case 3:
+    case views::PackageKeeps:
       return "Up To Date";
-    case 4:
+    case views::PackageSkips:
       return "Not Installed";
-    case 5:
+    case views::PackageUserPicked:
       return "Picked";
-    case 6:
+    case views::Category:
       return "Category";
     default:
       return "";
@@ -346,15 +335,6 @@ PickView::insert_category (Category *cat, bool collapsed)
     contents.insert (catline);
   else
     delete &catline;
-}
-
-PickView::views&
-PickView::views::operator++ ()
-{
-  ++_value;
-  if (_value > Category._value)
-    _value = 1;
-  return *this;
 }
 
 int

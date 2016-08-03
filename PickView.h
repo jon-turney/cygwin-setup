@@ -40,7 +40,7 @@ class PickView : public Window
 public:
   virtual bool Create (Window * Parent = NULL, DWORD Style = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN, RECT * r = NULL);
   virtual bool registerWindowClass ();
-  class views;
+  enum class views;
   class Header;
   int num_columns;
   void defaultTrust (trusts trust);
@@ -96,38 +96,15 @@ public:
     return listheader;
   }
 
-  class views
+  enum class views
   {
-  public:
-    static const views Unknown;
-    static const views PackageFull;
-    static const views Package;
-    static const views PackageKeeps;
-    static const views PackageSkips;
-    static const views PackageUserPicked;
-    static const views Category;
-      views ():_value (0)
-    {
-    };
-    views (int aInt)
-    {
-      _value = aInt;
-      if (_value < 0 || _value > 6)
-	_value = 0;
-    }
-    views & operator++ ();
-    bool operator == (views const &rhs)
-    {
-      return _value == rhs._value;
-    }
-    bool operator != (views const &rhs)
-    {
-      return _value != rhs._value;
-    }
-    const char *caption ();
-
-  private:
-    int _value;
+    Unknown,
+    PackageFull,
+    Package,
+    PackageKeeps,
+    PackageSkips,
+    PackageUserPicked,
+    Category,
   };
 
   class Header
