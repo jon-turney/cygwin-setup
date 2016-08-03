@@ -574,3 +574,21 @@ BEGIN
     IDS_ELEVATED       "Hand installation over to elevated child process."
     IDS_INSTALLEDB_VERSION "Unknown INSTALLED.DB version"
 END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDM_CHOOSE_VIEW MENUEX
+BEGIN
+    POPUP "ViewMenu"
+    BEGIN
+        MENUITEM "&Full",          IDM_VIEW_FULL,          MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "&Pending",       IDM_VIEW_PENDING,       MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "&Up To Date",    IDM_VIEW_UPTODATE,      MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "&Not Installed", IDM_VIEW_NOT_INSTALLED, MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "&Picked",        IDM_VIEW_PICKED,        MFT_STRING | MFT_RADIOCHECK
+        MENUITEM "&Category",      IDM_VIEW_CATEGORY,      MFT_STRING | MFT_RADIOCHECK
+    END
+END
