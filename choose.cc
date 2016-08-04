@@ -449,6 +449,17 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
   }
 }
 
+static void
+setMenuItemState(HMENU hMenu, UINT item, UINT state)
+{
+      MENUITEMINFO mii;
+      memset(&mii, 0, sizeof(MENUITEMINFO));
+      mii.cbSize = sizeof(MENUITEMINFO);
+      mii.fMask = MIIM_STATE;
+      mii.fState = state;
+      SetMenuItemInfo(hMenu, item, FALSE, &mii);
+}
+
 void
 ChooserPage::selectView(void)
 {
@@ -482,12 +493,7 @@ ChooserPage::selectView(void)
 
   if (item)
     {
-      MENUITEMINFO mii;
-      memset(&mii, 0, sizeof(MENUITEMINFO));
-      mii.cbSize = sizeof(MENUITEMINFO);
-      mii.fMask = MIIM_STATE;
-      mii.fState = MFS_CHECKED;
-      SetMenuItemInfo(hMenu, item, FALSE, &mii);
+      setMenuItemState(hMenu, item, MFS_CHECKED);
     }
 
   // mark the current view style as selected
@@ -506,13 +512,13 @@ ChooserPage::selectView(void)
 
   if (item)
     {
-      MENUITEMINFO mii;
-      memset(&mii, 0, sizeof(MENUITEMINFO));
-      mii.cbSize = sizeof(MENUITEMINFO);
-      mii.fMask = MIIM_STATE;
-      mii.fState = MFS_CHECKED;
-      SetMenuItemInfo(hMenu, item, FALSE, &mii);
+      setMenuItemState(hMenu, item, MFS_CHECKED);
     }
+
+  // enable or disable the expanded/collapsed items
+  UINT state = (item == IDM_VIEW_CATEGORY) ? MFS_ENABLED : MFS_DISABLED;
+  setMenuItemState(hMenu, IDM_VIEW_CATEGORY_EXPANDED, state);
+  setMenuItemState(hMenu, IDM_VIEW_CATEGORY_COLLAPSED, state);
 
   // place the menu over the 'view' button
   HWND hButton = ::GetDlgItem(GetHWND(), IDC_CHOOSE_VIEW);
@@ -566,6 +572,16 @@ ChooserPage::selectView(void)
     }
 
   chooser->setViewStyle (view_style);
+
+  switch (item)
+    {
+    case IDM_VIEW_CATEGORY_EXPANDED:
+      chooser->setCategoryMode (true);
+      break;
+    case IDM_VIEW_CATEGORY_COLLAPSED:
+      chooser->setCategoryMode (false);
+      break;
+    }
 
   // Update the caption
   if (!SetDlgItemText

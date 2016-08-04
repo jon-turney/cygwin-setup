@@ -186,3 +186,5 @@
 #define IDM_VIEW_PICKED                   905
 #define IDM_VIEW_CATEGORY                 906
 #define IDM_VIEW_LIST                     907
+#define IDM_VIEW_CATEGORY_EXPANDED        908
+#define IDM_VIEW_CATEGORY_COLLAPSED       909

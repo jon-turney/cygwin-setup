@@ -48,6 +48,7 @@ public:
   views getViewMode ();
   void setViewStyle (viewStyles style);
   viewStyles getViewStyle ();
+  void setCategoryMode (bool expanded);
   void DrawIcon (HDC hdc, int x, int y, HANDLE hIcon);
   void paint (HWND hwnd);
   LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
@@ -127,6 +128,7 @@ private:
   HWND listheader;
   views view_mode;
   viewStyles view_style;
+  bool expanded;
   bool showObsolete;
   std::string packageFilterString;
 

@@ -164,6 +164,13 @@ PickView::getViewMode ()
 }
 
 void
+PickView::setCategoryMode (bool _expanded)
+{
+  expanded = _expanded;
+  rebuild();
+}
+
+void
 PickView::rebuild ()
 {
   set_headers ();
@@ -177,8 +184,7 @@ PickView::rebuild ()
       for (packagedb::categoriesType::iterator n =
             packagedb::categories.begin(); n != packagedb::categories.end();
             ++n)
-        insert_category (&*n, (*n).first.c_str()[0] == '.'
-				? CATEGORY_EXPANDED : CATEGORY_COLLAPSED);
+        insert_category (&*n, expanded ? CATEGORY_EXPANDED : CATEGORY_COLLAPSED);
     }
   else
     {
