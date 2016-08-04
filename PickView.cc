@@ -1007,10 +1007,10 @@ PickView::refresh()
   // init headers for the current mode
   set_headers ();
   init_headers (dc);
-  
-  // save the current mode
-  views cur_view_mode = view_mode;
-  
+
+  // save the current view style
+  viewStyles cur_view_style = view_style;
+
   // switch to the other style and do those headers
   view_style = (view_style == PickView::viewStyles::CategoryTree) ?
     PickView::viewStyles::PackageList : PickView::viewStyles::CategoryTree;
@@ -1018,6 +1018,6 @@ PickView::refresh()
   init_headers (dc);
   ReleaseDC (GetHWND (), dc);
 
-  view_mode = cur_view_mode;
-  setViewMode (view_mode);
+  view_style = cur_view_style;
+  setViewStyle (view_style);
 }
