@@ -85,7 +85,6 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
   {IDC_CHOOSE_EXP, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_VIEW, 		CP_LEFT,    CP_TOP},
   {IDC_LISTVIEW_POS, 		CP_RIGHT,   CP_TOP},
-  {IDC_CHOOSE_VIEWCAPTION,	CP_LEFT,    CP_TOP},
   {IDC_CHOOSE_LIST,		CP_STRETCH, CP_STRETCH},
   {IDC_CHOOSE_HIDE,             CP_LEFT,    CP_BOTTOM},
   {0, CP_LEFT, CP_TOP}
@@ -153,9 +152,6 @@ ChooserPage::createListview ()
   chooser->Show(SW_SHOW);
   chooser->setViewMode (UpgradeAlsoOption || hasManualSelections ?
 			PickView::views::PackagePending : PickView::views::Category);
-  if (!SetDlgItemText (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-    Log (LOG_BABBLE) << "Failed to set View button caption %ld" <<
-	 GetLastError () << endLog;
 
   /* FIXME: do we need to init the desired fields ? */
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
@@ -534,10 +530,6 @@ ChooserPage::selectView (void)
     }
 
   chooser->setViewMode (view_mode);
-  if (!SetDlgItemText
-      (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-    Log (LOG_BABBLE) << "Failed to set View button caption " <<
-      GetLastError () << endLog;
 }
 
 INT_PTR CALLBACK

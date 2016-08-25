@@ -57,7 +57,6 @@ public:
   PickView (Category & cat);
   void init(views _mode);
   ~PickView();
-  const char *mode_caption ();
   void setObsolete (bool doit);
   void insert_pkg (packagemeta &);
   void insert_category (Category *, bool);

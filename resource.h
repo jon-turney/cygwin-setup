@@ -132,7 +132,6 @@
 #define IDC_DLS_PPROGRESS_TEXT            544
 #define IDC_DLS_IPROGRESS_TEXT            545
 #define IDC_CHOOSE_INST_TEXT              546
-#define IDC_CHOOSE_VIEWCAPTION            547
 #define IDC_CHOOSE_LISTHEADER             548
 #define IDC_INS_BL_PACKAGE                549
 #define IDC_INS_BL_TOTAL                  550

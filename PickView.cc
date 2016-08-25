@@ -223,28 +223,6 @@ PickView::getViewMode ()
   return view_mode;
 }
 
-const char *
-PickView::mode_caption ()
-{
-  switch (view_mode)
-    {
-    case views::PackageFull:
-      return "Full";
-    case views::PackagePending:
-      return "Pending";
-    case views::PackageKeeps:
-      return "Up To Date";
-    case views::PackageSkips:
-      return "Not Installed";
-    case views::PackageUserPicked:
-      return "Picked";
-    case views::Category:
-      return "Category";
-    default:
-      return "";
-    }
-}
-
 /* meant to be called on packagemeta::categories */
 bool
 isObsolete (set <std::string, casecompare_lt_op> &categories)
