@@ -39,6 +39,7 @@ static const char *cvsid =
 #include "msg.h"
 #include "package_db.h"
 #include "mount.h"
+#include "propsheet.h"
 
 #include "getopt++/StringOption.h"
 
@@ -64,11 +65,14 @@ static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
 
 static string orig_root_dir;
 
-static void
-check_if_enable_next (HWND h)
+void
+RootPage::check_if_enable_next (HWND h)
 {
-  EnableWindow (GetDlgItem (h, IDOK),
-		egetString (h, IDC_ROOT_DIR).size() && root_scope);
+  DWORD ButtonFlags = PSWIZB_BACK;
+  // if there's something in the root dir box, and we have a scope, enable next
+  if (egetString (h, IDC_ROOT_DIR).size() && root_scope)
+    ButtonFlags |= PSWIZB_NEXT;
+  GetOwner ()->SetButtons (ButtonFlags);
 }
 
 static void
@@ -76,7 +80,6 @@ load_dialog (HWND h)
 {
   rbset (h, su, root_scope);
   eset (h, IDC_ROOT_DIR, get_root_dir ());
-  check_if_enable_next (h);
 }
 
 static void
@@ -267,6 +270,12 @@ RootPage::OnInit ()
     read_mounts (std::string ());
   orig_root_dir = get_root_dir();
   load_dialog (GetHWND ());
+}
+
+void
+RootPage::OnActivate ()
+{
+  check_if_enable_next (GetHWND ());
 }
 
 bool
