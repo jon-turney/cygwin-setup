@@ -318,8 +318,8 @@ END
 
 // Left-aligned controls.
 #define SETUP_VIEW_X		(7)
-#define SETUP_VIEW_W		(26)
-#define SETUP_SEARCH_X		(SETUP_VIEW_X + SETUP_VIEW_W + 125)
+#define SETUP_VIEW_W		(33)
+#define SETUP_SEARCH_X		(SETUP_VIEW_X + SETUP_VIEW_W + 2)
 #define SETUP_SEARCH_W		(32)
 #define SETUP_SEARCHTEXT_X	(SETUP_SEARCH_X + SETUP_SEARCH_W + 2)
 #define SETUP_SEARCHTEXT_W	(60)
@@ -333,7 +333,7 @@ CAPTION "Cygwin Setup - Select Packages"
 FONT 8, "MS Shell Dlg"
 BEGIN
     PUSHBUTTON      "&View", IDC_CHOOSE_VIEW, SETUP_VIEW_X, 30, SETUP_VIEW_W,
-                    14, WS_EX_RIGHT
+                    14, BS_SPLITBUTTON
     RTEXT           "&Search", IDC_STATIC, SETUP_SEARCH_X, 33, SETUP_SEARCH_W,
                     10, SS_CENTERIMAGE, WS_EX_RIGHT
     EDITTEXT        IDC_CHOOSE_SEARCH_EDIT, SETUP_SEARCHTEXT_X, 30,

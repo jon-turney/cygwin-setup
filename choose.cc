@@ -385,17 +385,18 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
   Log (LOG_BABBLE) << "OnMesageCmd " << id << " " << hwndctl << " " << code << endLog;
 #endif
 
-  if (code == EN_CHANGE && id == IDC_CHOOSE_SEARCH_EDIT)
+  if (code == EN_CHANGE)
     {
-      SetTimer(GetHWND (), timer_id, SEARCH_TIMER_DELAY, (TIMERPROC) NULL);
-      return true;
+      if (id == IDC_CHOOSE_SEARCH_EDIT)
+        {
+          SetTimer(GetHWND (), timer_id, SEARCH_TIMER_DELAY, (TIMERPROC) NULL);
+          return true;
+        }
+      else
+        return false;
     }
-  else if (code != BN_CLICKED && code != EN_CHANGE)
-    {
-      // Not a click notification, we don't care.
-      return false;
-    }
-
+  else if (code == BN_CLICKED)
+  {
   switch (id)
     {
     case IDC_CHOOSE_CLEAR_SEARCH:
@@ -422,10 +423,6 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
         changeTrust (TRUST_TEST);
       break;
 
-    case IDC_CHOOSE_VIEW:
-      selectView();
-      break;
-
     case IDC_CHOOSE_HIDE:
       chooser->setObsolete (!IsButtonChecked (id));
       break;
@@ -433,9 +430,16 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       // Wasn't recognized or handled.
       return false;
     }
-
-  // Was handled since we never got to default above.
   return true;
+  }
+  else if (code == BCN_DROPDOWN)
+    {
+      if (id == IDC_CHOOSE_VIEW)
+        selectView();
+    }
+
+  // we don't care.
+  return false;
 }
 
 static void
