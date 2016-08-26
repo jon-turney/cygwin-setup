@@ -281,6 +281,11 @@ load_site_list (SiteList& theSites, char *theString)
 		    }
 		}
 	    }
+
+	  /* Ignore malformed lines */
+	  if (!semi || !semi2 || !semi3)
+	    continue;
+
 	  site_list_type newsite (bol, semi, semi2, semi3);
 	  SiteList::iterator i = find (theSites.begin(),
 				       theSites.end(), newsite);
