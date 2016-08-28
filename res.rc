@@ -318,10 +318,10 @@ END
 
 // Left-aligned controls.
 #define SETUP_VIEW_X		(7)
-#define SETUP_VIEW_W		(26)
-#define SETUP_VIEWCAP_X		(SETUP_VIEW_X + SETUP_VIEW_W +5)
-#define SETUP_VIEWCAP_W		(40)
-#define SETUP_SEARCH_X		(SETUP_VIEWCAP_X + SETUP_VIEWCAP_W + 80)
+#define SETUP_VIEW_W		(20)
+#define SETUP_VIEWLIST_X		(SETUP_VIEW_X + SETUP_VIEW_W + 2)
+#define SETUP_VIEWLIST_W		(60)
+#define SETUP_SEARCH_X		(SETUP_VIEWLIST_X + SETUP_VIEWLIST_W + 2)
 #define SETUP_SEARCH_W		(32)
 #define SETUP_SEARCHTEXT_X	(SETUP_SEARCH_X + SETUP_SEARCH_W + 2)
 #define SETUP_SEARCHTEXT_W	(60)
@@ -334,10 +334,10 @@ STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION |
 CAPTION "Cygwin Setup - Select Packages"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    PUSHBUTTON      "&View", IDC_CHOOSE_VIEW, SETUP_VIEW_X, 30, SETUP_VIEW_W,
-                    14, WS_EX_RIGHT
-    LTEXT           "", IDC_CHOOSE_VIEWCAPTION, SETUP_VIEWCAP_X, 33,
-                    SETUP_VIEWCAP_W, 10
+    LTEXT           "View", IDC_CHOOSE_VIEWCAPTION, SETUP_VIEW_X, 33,
+                    SETUP_VIEW_W, 10
+    COMBOBOX        IDC_CHOOSE_VIEW, SETUP_VIEWLIST_X, 30, SETUP_VIEWLIST_W, 84,
+                    CBS_DROPDOWNLIST
     RTEXT           "&Search", IDC_STATIC, SETUP_SEARCH_X, 33, SETUP_SEARCH_W,
                     10, SS_CENTERIMAGE, WS_EX_RIGHT
     EDITTEXT        IDC_CHOOSE_SEARCH_EDIT, SETUP_SEARCHTEXT_X, 30,
@@ -536,8 +536,8 @@ BEGIN
        "considered the most stable. (RECOMMENDED)"
     IDS_TRUSTEXP_TOOLTIP    "Globally select the most recent version, even if "
        "that version is considered Experimental or for test use by the maintainer."
-    IDS_VIEWBUTTON_TOOLTIP  "Cycles the package view.  This determines "
-       "which packages are shown in the chooser below.\r\n"
+    IDS_VIEWBUTTON_TOOLTIP  "Select the package view.  This determines "
+       "which packages are shown below.\r\n"
        "\r\n"
        "Category: Group by package category.  Click on '+' to expand.\r\n"
        "\r\n"

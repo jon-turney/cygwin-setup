@@ -44,8 +44,8 @@ public:
   class Header;
   int num_columns;
   void defaultTrust (trusts trust);
-  void cycleViewMode ();
   void setViewMode (views mode);
+  views getViewMode ();
   void DrawIcon (HDC hdc, int x, int y, HANDLE hIcon);
   void paint (HWND hwnd);
   LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
@@ -57,7 +57,7 @@ public:
   PickView (Category & cat);
   void init(views _mode);
   ~PickView();
-  const char *mode_caption ();
+  static const char *mode_caption (views mode);
   void setObsolete (bool doit);
   void insert_pkg (packagemeta &);
   void insert_category (Category *, bool);
@@ -98,8 +98,7 @@ public:
 
   enum class views
   {
-    Unknown,
-    PackageFull,
+    PackageFull = 0,
     PackagePending,
     PackageKeeps,
     PackageSkips,

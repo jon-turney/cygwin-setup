@@ -81,11 +81,9 @@ DoInsertItem (HWND hwndHeader, int iInsertAfter, int nWidth, LPSTR lpsz)
 int
 PickView::set_header_column_order (views vm)
 {
-  if (vm == views::Unknown)
-    return -1;
-  else if (vm == views::PackageFull || vm == views::PackagePending
-           || vm == views::PackageKeeps || vm == views::PackageSkips
-           || vm == views::PackageUserPicked)
+  if (vm == views::PackageFull || vm == views::PackagePending
+      || vm == views::PackageKeeps || vm == views::PackageSkips
+      || vm == views::PackageUserPicked)
     {
       headers = pkg_headers;
       current_col = 0;
@@ -138,16 +136,6 @@ PickView::note_width (PickView::Header *hdrs, HDC dc,
     GetTextExtentPoint32 (dc, string.c_str(), string.size(), &s);
   if (hdrs[column].width < s.cx + addend)
     hdrs[column].width = s.cx + addend;
-}
-
-void
-PickView::cycleViewMode ()
-{
-  PickView::views _value = (PickView::views)((int)view_mode + 1);
-  if (_value > PickView::views::Category)
-    _value = PickView::views::PackageFull;
-
-  setViewMode (_value);
 }
 
 void
@@ -227,10 +215,16 @@ PickView::setViewMode (views mode)
   InvalidateRect (GetHWND(), &r, TRUE);
 }
 
-const char *
-PickView::mode_caption ()
+PickView::views
+PickView::getViewMode ()
 {
-  switch (view_mode)
+  return view_mode;
+}
+
+const char *
+PickView::mode_caption (views mode)
+{
+  switch (mode)
     {
     case views::PackageFull:
       return "Full";

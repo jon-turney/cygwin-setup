@@ -153,9 +153,7 @@ ChooserPage::createListview ()
   chooser->Show(SW_SHOW);
   chooser->setViewMode (UpgradeAlsoOption || hasManualSelections ?
 			PickView::views::PackagePending : PickView::views::Category);
-  if (!SetDlgItemText (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-    Log (LOG_BABBLE) << "Failed to set View button caption %ld" <<
-	 GetLastError () << endLog;
+  SendMessage (GetDlgItem (IDC_CHOOSE_VIEW), CB_SETCURSEL, (WPARAM)chooser->getViewMode(), 0);
 
   /* FIXME: do we need to init the desired fields ? */
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
@@ -240,6 +238,16 @@ void
 ChooserPage::OnInit ()
 {
   CheckDlgButton (GetHWND (), IDC_CHOOSE_HIDE, BST_CHECKED);
+
+  /* Populate view dropdown list with choices */
+  HWND viewlist = GetDlgItem (IDC_CHOOSE_VIEW);
+  SendMessage (viewlist, CB_RESETCONTENT, 0, 0);
+  for (int view = (int)PickView::views::PackageFull;
+       view <= (int)PickView::views::Category;
+       view++)
+    {
+      SendMessage(viewlist, CB_ADDSTRING, 0, (LPARAM)PickView::mode_caption((PickView::views)view));
+    }
 
   SetBusy ();
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_LOCALDIR)
@@ -385,17 +393,17 @@ ChooserPage::changeTrust(trusts aTrust)
 bool
 ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
+#if DEBUG
+  Log (LOG_BABBLE) << "OnMesageCmd " << id << " " << hwndctl << " " << code << endLog;
+#endif
+
   if (code == EN_CHANGE && id == IDC_CHOOSE_SEARCH_EDIT)
     {
       SetTimer(GetHWND (), timer_id, SEARCH_TIMER_DELAY, (TIMERPROC) NULL);
       return true;
     }
-  else if (code != BN_CLICKED && code != EN_CHANGE)
-    {
-      // Not a click notification, we don't care.
-      return false;
-    }
-
+  else if (code == BN_CLICKED)
+  {
   switch (id)
     {
     case IDC_CHOOSE_CLEAR_SEARCH:
@@ -422,14 +430,6 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
         changeTrust (TRUST_TEST);
       break;
 
-    case IDC_CHOOSE_VIEW:
-      chooser->cycleViewMode ();
-      if (!SetDlgItemText
-        (GetHWND (), IDC_CHOOSE_VIEWCAPTION, chooser->mode_caption ()))
-      Log (LOG_BABBLE) << "Failed to set View button caption " <<
-           GetLastError () << endLog;
-      break;
-
     case IDC_CHOOSE_HIDE:
       chooser->setObsolete (!IsButtonChecked (id));
       break;
@@ -440,6 +440,23 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 
   // Was handled since we never got to default above.
   return true;
+  }
+  else if (code == CBN_SELCHANGE)
+    {
+      if (id == IDC_CHOOSE_VIEW)
+        {
+          // switch to the selected view
+          LRESULT view_mode = SendMessage (GetDlgItem (IDC_CHOOSE_VIEW),
+                                           CB_GETCURSEL, 0, 0);
+          if (view_mode != CB_ERR)
+            chooser->setViewMode ((PickView::views)view_mode);
+
+          return true;
+        }
+    }
+
+  // We don't care.
+  return false;
 }
 
 INT_PTR CALLBACK
