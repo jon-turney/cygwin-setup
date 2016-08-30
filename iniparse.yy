@@ -195,8 +195,8 @@ listseparator: /* empty */
  ;
  
 versionedpackageentry /* empty not allowed */
- : STRING { iniBuilder->buildPackageListOrNode($1); } versioncriteria architecture
- | versionedpackageentry OR STRING { iniBuilder->buildPackageListOrNode($3); } versioncriteria architecture
+ : STRING { iniBuilder->buildPackageListOrNode($1); } versioncriteria
+ | versionedpackageentry OR STRING { iniBuilder->buildPackageListOrNode($3); } versioncriteria
  ;
 
 versioncriteria: /* empty */
@@ -210,16 +210,7 @@ operator /* non-empty */
  | LTEQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::LessThanEquals); }
  | GTEQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::MoreThanEquals); }
  ;
- 
-architecture: /* empty */
- | OPENSQUARE architecturelist CLOSESQUARE
- ;
 
-architecturelist: /* empty */
- | architecturelist STRING
- ;
-  
- 
 SourceFilesList: /* empty */
  | SourceFilesList MD5 STRING STRING { iniBuilder->buildSourceFile ((unsigned char *)$2, $3, $4);  } NL
  ;
