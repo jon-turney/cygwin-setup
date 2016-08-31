@@ -38,9 +38,18 @@ class PickView;
 class PickView : public Window
 {
 public:
+  enum views
+  {
+    PackageFull = 0,
+    PackagePending,
+    PackageKeeps,
+    PackageSkips,
+    PackageUserPicked,
+    PackageCategory,
+  };
+
   virtual bool Create (Window * Parent = NULL, DWORD Style = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN, RECT * r = NULL);
   virtual bool registerWindowClass ();
-  enum class views;
   class Header;
   int num_columns;
   void defaultTrust (trusts trust);
@@ -95,16 +104,6 @@ public:
   {
     return listheader;
   }
-
-  enum class views
-  {
-    PackageFull = 0,
-    PackagePending,
-    PackageKeeps,
-    PackageSkips,
-    PackageUserPicked,
-    Category,
-  };
 
   class Header
   {

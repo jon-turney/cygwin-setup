@@ -149,10 +149,10 @@ ChooserPage::createListview ()
   if (!chooser->Create(this, WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_VISIBLE,&r))
     // TODO throw exception
     exit (11);
-  chooser->init(PickView::views::Category);
+  chooser->init(PickView::PackageCategory);
   chooser->Show(SW_SHOW);
   chooser->setViewMode (UpgradeAlsoOption || hasManualSelections ?
-			PickView::views::PackagePending : PickView::views::Category);
+			PickView::PackagePending : PickView::PackageCategory);
   SendMessage (GetDlgItem (IDC_CHOOSE_VIEW), CB_SETCURSEL, (WPARAM)chooser->getViewMode(), 0);
 
   /* FIXME: do we need to init the desired fields ? */
@@ -242,8 +242,8 @@ ChooserPage::OnInit ()
   /* Populate view dropdown list with choices */
   HWND viewlist = GetDlgItem (IDC_CHOOSE_VIEW);
   SendMessage (viewlist, CB_RESETCONTENT, 0, 0);
-  for (int view = (int)PickView::views::PackageFull;
-       view <= (int)PickView::views::Category;
+  for (int view = (int)PickView::PackageFull;
+       view <= (int)PickView::PackageCategory;
        view++)
     {
       SendMessage(viewlist, CB_ADDSTRING, 0, (LPARAM)PickView::mode_caption((PickView::views)view));

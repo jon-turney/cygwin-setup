@@ -81,9 +81,9 @@ DoInsertItem (HWND hwndHeader, int iInsertAfter, int nWidth, LPSTR lpsz)
 int
 PickView::set_header_column_order (views vm)
 {
-  if (vm == views::PackageFull || vm == views::PackagePending
-      || vm == views::PackageKeeps || vm == views::PackageSkips
-      || vm == views::PackageUserPicked)
+  if (vm == PackageFull || vm == PackagePending
+      || vm == PackageKeeps || vm == PackageSkips
+      || vm == PackageUserPicked)
     {
       headers = pkg_headers;
       current_col = 0;
@@ -95,7 +95,7 @@ PickView::set_header_column_order (views vm)
       pkg_col = size_col + 1;
       last_col = pkg_col;
     }
-  else if (vm == views::Category)
+  else if (vm == PackageCategory)
     {
       headers = cat_headers;
       cat_col = 0;
@@ -146,7 +146,7 @@ PickView::setViewMode (views mode)
   packagedb db;
 
   contents.empty ();
-  if (view_mode == PickView::views::Category)
+  if (view_mode == PickView::PackageCategory)
     {
       contents.ShowLabel (true);
       /* start collapsed. TODO: make this a chooser flag */
@@ -166,26 +166,26 @@ PickView::setViewMode (views mode)
           packagemeta & pkg = *(i->second);
 
           if ( // "Full" : everything
-              (view_mode == PickView::views::PackageFull)
+              (view_mode == PickView::PackageFull)
 
               // "Pending" : packages that are being added/removed/upgraded
-              || (view_mode == PickView::views::PackagePending &&
+              || (view_mode == PickView::PackagePending &&
                   ((!pkg.desired && pkg.installed) ||         // uninstall
                     (pkg.desired &&
                       (pkg.desired.picked () ||               // install bin
                        pkg.desired.sourcePackage ().picked ())))) // src
               
               // "Up to date" : installed packages that will not be changed
-              || (view_mode == PickView::views::PackageKeeps &&
+              || (view_mode == PickView::PackageKeeps &&
                   (pkg.installed && pkg.desired && !pkg.desired.picked ()
                     && !pkg.desired.sourcePackage ().picked ()))
 
               // "Not installed"
-              || (view_mode == PickView::views::PackageSkips &&
+              || (view_mode == PickView::PackageSkips &&
                   (!pkg.desired && !pkg.installed))
 
               // "UserPick" : installed packages that were picked by user
-              || (view_mode == PickView::views::PackageUserPicked &&
+              || (view_mode == PickView::PackageUserPicked &&
                   (pkg.installed && pkg.user_picked)))
             {
               // Filter by package name
@@ -226,17 +226,17 @@ PickView::mode_caption (views mode)
 {
   switch (mode)
     {
-    case views::PackageFull:
+    case PackageFull:
       return "Full";
-    case views::PackagePending:
+    case PackagePending:
       return "Pending";
-    case views::PackageKeeps:
+    case PackageKeeps:
       return "Up To Date";
-    case views::PackageSkips:
+    case PackageSkips:
       return "Not Installed";
-    case views::PackageUserPicked:
+    case PackageUserPicked:
       return "Picked";
-    case views::Category:
+    case PackageCategory:
       return "Category";
     default:
       return "";
@@ -279,7 +279,7 @@ PickView::insert_pkg (packagemeta & pkg)
   if (!showObsolete && isObsolete (pkg.categories))
     return;
   
-  if (view_mode != views::Category)
+  if (view_mode != PackageCategory)
     {
       PickLine & line = *new PickPackageLine (*this, pkg);
       contents.insert (line);
@@ -472,7 +472,7 @@ PickView::init_headers (HDC dc)
 	s += std::string (": ") + std::string(pkg.SDesc ());
       note_width (headers, dc, s, HMARGIN, pkg_col);
       
-      if (view_mode != PickView::views::Category && pkg.categories.size () > 2)
+      if (view_mode != PickView::PackageCategory && pkg.categories.size () > 2)
         {
           std::string compound_cat("");          
           std::set<std::string, casecompare_lt_op>::const_iterator cat;
@@ -808,8 +808,8 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
             if ((dx = windowRect.right - windowRect.left -
                         lastWindowRect.width ()) != 0)
               {
-                cat_headers[set_header_column_order (views::Category)].width += dx;
-                pkg_headers[set_header_column_order (views::PackagePending)].width += dx;
+                cat_headers[set_header_column_order (PackageCategory)].width += dx;
+                pkg_headers[set_header_column_order (PackagePending)].width += dx;
                 set_header_column_order (view_mode);
                 set_headers ();
                 ::MoveWindow (listheader, -scroll_ulc_x, 0,
@@ -891,7 +891,7 @@ PickView::paint (HWND hwnd)
   int y = cr.top - scroll_ulc_y + header_height;
 
   contents.paint (hdc, hUpdRgn, x, y, 0, (view_mode == 
-                                  PickView::views::Category) ? 0 : 1);
+                                  PickView::PackageCategory) ? 0 : 1);
 
   if (contents.itemcount () == 0)
     {
@@ -983,8 +983,8 @@ PickView::refresh()
   views cur_view_mode = view_mode;
   
   // switch to the other type and do those headers
-  view_mode = (view_mode == PickView::views::Category) ? 
-                    PickView::views::PackageFull : PickView::views::Category;
+  view_mode = (view_mode == PickView::PackageCategory) ?
+                    PickView::PackageFull : PickView::PackageCategory;
   set_headers ();
   init_headers (dc);
   ReleaseDC (GetHWND (), dc);
