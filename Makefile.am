@@ -21,12 +21,13 @@ SUBDIRS := @subdirs@ tests
 
 # We would like to use -Winline for C++ as well, but some STL code triggers
 # this warning. (Bug verified present in gcc-3.3)
-BASECXXFLAGS = -Werror -Wall -Wpointer-arith -Wcomments \
+# -Wno-uninitialized added to deal with g++ 3.4.4's spurious STL warnings
+# (http://gcc.gnu.org/bugzilla/show_bug.cgi?id=22207)
+BASECXXFLAGS = -Wall -Wno-uninitialized -Wpointer-arith -Wcomments \
 	       -Wcast-align -Wwrite-strings -fno-builtin-sscanf \
 	       -Wno-attributes
-AM_CXXFLAGS = $(BASECXXFLAGS) -std=gnu++11 -Wno-deprecated-declarations \
-	      ${$(*F)_CXXFLAGS}
-AM_CFLAGS = $(BASECXXFLAGS) -Wmissing-declarations -Winline \
+AM_CXXFLAGS = -Werror $(BASECXXFLAGS) ${$(*F)_CXXFLAGS}
+AM_CFLAGS = $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
 	    -Wstrict-prototypes -Wmissing-prototypes
 AM_YFLAGS = -d
 AM_LFLAGS = -8

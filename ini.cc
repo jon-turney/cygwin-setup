@@ -270,7 +270,7 @@ do_remote_ini (HWND owner)
   size_t ini_count = 0;
   GuiParseFeedback myFeedback;
   IniDBBuilderPackage aBuilder (myFeedback);
-  io_stream *ini_file = NULL, *ini_sig_file;
+  io_stream *ini_file, *ini_sig_file;
 
   /* FIXME: Get rid of this io_stream pointer travesty.  The need to
      explicitly delete these things is ridiculous. */
