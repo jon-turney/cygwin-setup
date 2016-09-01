@@ -29,6 +29,11 @@ static const char *cvsid =
 
 NTSecurity nt_sec;
 
+#define ALL_INHERIT_ACE	(CONTAINER_INHERIT_ACE \
+			 | OBJECT_INHERIT_ACE \
+			 | INHERIT_ONLY_ACE)
+#define NO_INHERIT_ACE  (0)
+
 PSECURITY_DESCRIPTOR
 NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 			   mode_t mode, SECURITY_DESCRIPTOR &out_sd, acl_t &acl)
@@ -57,8 +62,9 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
     u_attribute |= FILE_GENERIC_EXECUTE;
   if ((mode & 0300) == 0300) // S_IWUSR | S_IXUSR
     u_attribute |= FILE_DELETE_CHILD;
-  if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, u_attribute, owner_sid))
-    Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+  if (!AddAccessAllowedAceEx (&acl.acl, ACL_REVISION, NO_INHERIT_ACE,
+			      u_attribute, owner_sid))
+    Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
     			<< ", owner) failed: " << GetLastError () << endLog;
   else
     offset++;
@@ -75,8 +81,9 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
     g_attribute |= FILE_GENERIC_EXECUTE;
   if ((mode & 01030) == 00030) // S_IWGRP | S_IXGRP, !S_ISVTX
     g_attribute |= FILE_DELETE_CHILD;
-  if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, g_attribute, group_sid))
-    Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+  if (!AddAccessAllowedAceEx (&acl.acl, ACL_REVISION, NO_INHERIT_ACE,
+			      g_attribute, group_sid))
+    Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
     			<< ", group) failed: " << GetLastError () << endLog;
   else
     offset++;
@@ -90,9 +97,9 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
     o_attribute |= FILE_GENERIC_EXECUTE;
   if ((mode & 01003) == 00003) // S_IWOTH | S_IXOTH, !S_ISVTX
     o_attribute |= FILE_DELETE_CHILD;
-  if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, o_attribute,
-			    everyOneSID.theSID ()))
-    Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+  if (!AddAccessAllowedAceEx (&acl.acl, ACL_REVISION, NO_INHERIT_ACE,
+			      o_attribute, everyOneSID.theSID ()))
+    Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
     			<< ", everyone) failed: " << GetLastError () << endLog;
   else
     offset++;
@@ -105,9 +112,9 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
       	attribute |= FILE_WRITE_DATA;
       if (mode & 01000) // S_ISVTX
       	attribute |= FILE_READ_DATA;
-      if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, attribute,
-				nullSID.theSID ()))
-	Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+      if (!AddAccessAllowedAceEx (&acl.acl, ACL_REVISION, NO_INHERIT_ACE,
+				  attribute, nullSID.theSID ()))
+	Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
 			    << ", null) failed: " << GetLastError () << endLog;
       else
 	offset++;
@@ -133,45 +140,27 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 	  if (mode & 0001) // S_IXOTH
 	    o_attribute |= FILE_GENERIC_EXECUTE;
 	}
-      if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, u_attribute,
-				cr_ownerSID.theSID ()))
-	Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+      if (!AddAccessAllowedAceEx (&acl.acl, ACL_REVISION, ALL_INHERIT_ACE,
+				  u_attribute, cr_ownerSID.theSID ()))
+	Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
 			    << ", creator owner) failed: "
 			    << GetLastError () << endLog;
       else
-	{
-	  ACCESS_ALLOWED_ACE *ace;
-	  if (GetAce (&acl.acl, offset, (PVOID *) &ace))
-	    ace->Header.AceFlags |= CONTAINER_INHERIT_ACE | OBJECT_INHERIT_ACE
-				    | INHERIT_ONLY_ACE;
-	  offset++;
-	}
-      if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, g_attribute,
-				cr_groupSID.theSID ()))
-	Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+	offset++;
+      if (!AddAccessAllowedAceEx (&acl.acl, ACL_REVISION, ALL_INHERIT_ACE,
+				  g_attribute, cr_groupSID.theSID ()))
+	Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
 			    << ", creator group) failed: "
 			    << GetLastError () << endLog;
       else
-	{
-	  ACCESS_ALLOWED_ACE *ace;
-	  if (GetAce (&acl.acl, offset, (PVOID *) &ace))
-	    ace->Header.AceFlags |= CONTAINER_INHERIT_ACE | OBJECT_INHERIT_ACE
-				    | INHERIT_ONLY_ACE;
-	  offset++;
-	}
-      if (!AddAccessAllowedAce (&acl.acl, ACL_REVISION, o_attribute,
-				everyOneSID.theSID ()))
-	Log (LOG_TIMESTAMP) << "AddAccessAllowedAce(" << fname
+	offset++;
+      if (!AddAccessAllowedAceEx (&acl.acl, ACL_REVISION, ALL_INHERIT_ACE,
+				  o_attribute, everyOneSID.theSID ()))
+	Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
 			    << ", everyone inherit) failed: "
 			    << GetLastError () << endLog;
       else
-	{
-	  ACCESS_ALLOWED_ACE *ace;
-	  if (GetAce (&acl.acl, offset, (PVOID *) &ace))
-	    ace->Header.AceFlags |= CONTAINER_INHERIT_ACE | OBJECT_INHERIT_ACE
-				    | INHERIT_ONLY_ACE;
-	  offset++;
-	}
+	offset++;
     }
 
   /* Set SD's DACL to just created ACL. */
@@ -255,10 +244,10 @@ NTSecurity::setDefaultDACL ()
 
   /* Create the ACE which grants full access to "Everyone" and store it
      in dacl.  */
-  if (!AddAccessAllowedAce
-      (dacl, ACL_REVISION, GENERIC_ALL, everyOneSID.theSID ()))
+  if (!AddAccessAllowedAceEx (dacl, ACL_REVISION, NO_INHERIT_ACE,
+			      GENERIC_ALL, everyOneSID.theSID ()))
     {
-      NoteFailedAPI ("AddAccessAllowedAce");
+      NoteFailedAPI ("AddAccessAllowedAceEx");
       return;
     }
 
