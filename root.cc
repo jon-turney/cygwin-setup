@@ -123,22 +123,24 @@ browse (HWND h)
 static int
 directory_is_absolute ()
 {
-  
-  const char *r = get_root_dir ().c_str();
-  if (isalpha (r[0]) && r[1] == ':' && (r[2] == '\\' || r[2] == '/'))
-    {
-      return 1;
-    }
+  const std::string &r = get_root_dir ();
+  if (isalpha (r[0]) && r[1] == ':' && isdirsep (r[2]))
+    return 1;
   return 0;
 }
 
 static int
 directory_is_rootdir ()
 {
-  
-  for (const char *c = get_root_dir().c_str(); *c; c++)
-    if (isdirsep (c[0]) && c[1] && !isdirsep (c[1]))
-      return 0;
+  const std::string &r = get_root_dir ();
+  size_t pos = r.find_first_of ("/\\");
+  if (pos != std::string::npos)
+    {
+      while (isdirsep (r[++pos]))
+	;
+      if (r[pos])
+	return 0;
+    }
   return 1;
 }
 

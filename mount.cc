@@ -382,10 +382,12 @@ set_root_dir (const std::string val)
   read_mounts (val);
 }
 
-const std::string
+static std::string empty;
+
+const std::string &
 get_root_dir ()
 {
-  return root_here ? root_here->native : std::string();
+  return root_here ? root_here->native : empty;
 }
 
 /* Return non-zero if PATH1 is a prefix of PATH2.

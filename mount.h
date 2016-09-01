@@ -33,6 +33,6 @@ mode consistent with the standard Cygwin mounts. */
 
 std::string cygpath (const std::string&);
 void set_root_dir (const std::string);
-const std::string get_root_dir ();
+const std::string &get_root_dir ();
 
 #endif /* SETUP_MOUNT_H */
