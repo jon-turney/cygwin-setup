@@ -241,7 +241,7 @@ NTSecurity::setDefaultDACL ()
   size_t bufferSize = sizeof (ACL) + sizeof (ACCESS_ALLOWED_ACE)
                       + GetLengthSid (everyOneSID.theSID ()) - sizeof (DWORD);
 
-  std::auto_ptr<char> buf (new char[bufferSize]);
+  std::unique_ptr<char[]> buf (new char[bufferSize]);
 
   /* First initialize the TOKEN_DEFAULT_DACL structure.  */
   PACL dacl = (PACL) buf.get ();

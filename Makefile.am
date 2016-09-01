@@ -24,8 +24,7 @@ SUBDIRS := @subdirs@ tests
 BASECXXFLAGS = -Werror -Wall -Wpointer-arith -Wcomments \
 	       -Wcast-align -Wwrite-strings -fno-builtin-sscanf \
 	       -Wno-attributes
-AM_CXXFLAGS = $(BASECXXFLAGS) -std=gnu++11 -Wno-deprecated-declarations \
-	      ${$(*F)_CXXFLAGS}
+AM_CXXFLAGS = $(BASECXXFLAGS) -std=gnu++11 ${$(*F)_CXXFLAGS}
 AM_CFLAGS = $(BASECXXFLAGS) -Wmissing-declarations -Winline \
 	    -Wstrict-prototypes -Wmissing-prototypes
 AM_YFLAGS = -d
