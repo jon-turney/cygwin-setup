@@ -530,7 +530,8 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                             // listed processes, or just ignore the problem and schedule the file to be
                             // replaced after a reboot
                             FileInuseDlgData dlg_data;
-                            dlg_data.msg = ("Unable to extract /" + fn).c_str ();
+                            std::string msg = "Unable to extract /" + fn;
+                            dlg_data.msg = msg.c_str ();
                             dlg_data.processlist = plm.c_str ();
                             dlg_data.iteration = iteration;
 
