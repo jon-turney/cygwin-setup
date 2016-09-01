@@ -92,6 +92,7 @@ base64_encode (char *username, char *password)
 
 NetIO_HTTP::NetIO_HTTP (char const *Purl):NetIO (Purl)
 {
+  std::string url (Purl);
 retry_get:
   if (port == 0)
     port = 80;
@@ -103,14 +104,13 @@ retry_get:
 
   if (!s->ok ())
     {
-      delete
-	s;
+      delete s;
       s = NULL;
       return;
     }
 
   if (net_method == IDC_NET_PROXY)
-    s->printf ("GET %s HTTP/1.0\r\n", Purl);
+    s->printf ("GET %s HTTP/1.0\r\n", url.c_str ());
   else
     s->printf ("GET %s HTTP/1.0\r\n", path);
 
@@ -132,10 +132,8 @@ retry_get:
 
   s->printf ("\r\n");
 
-  char *
-    l = s->gets ();
-  int
-    code;
+  char * l = s->gets ();
+  int code;
   if (!l)
     return;
   sscanf (l, "%*s %d", &code);
@@ -145,13 +143,11 @@ retry_get:
 	{
 	  if (_strnicmp (l, "Location:", 9) == 0)
 	    {
-	      char *
-		u = l + 9;
+	      char * u = l + 9;
 	      while (*u == ' ' || *u == '\t')
 		u++;
 	      set_url (u);
-	      delete
-		s;
+	      delete s;
 	      goto retry_get;
 	    }
 	}
@@ -159,35 +155,32 @@ retry_get:
   if (code == 401)		/* authorization required */
     {
       get_auth (NULL);
-      delete
-	s;
+      delete s;
       goto retry_get;
     }
   if (code == 407)		/* proxy authorization required */
     {
       get_proxy_auth (NULL);
-      delete
-	s;
+      delete s;
       goto retry_get;
     }
   if (code == 500		/* ftp authentication through proxy required */
-      && net_method == IDC_NET_PROXY && !strncmp (Purl, "ftp://", 6))
+      && net_method == IDC_NET_PROXY
+      && !url.compare (0, std::string::npos, "ftp://", 6))
     {
       get_ftp_auth (NULL);
       if (net_ftp_user && net_ftp_passwd)
 	{
-	  delete
-	    s;
-	  Purl = (std::string("ftp://") + net_ftp_user +
-			":" + net_ftp_passwd + "@" + (Purl + 6)).c_str();
+	  delete s;
+	  url = std::string("ftp://") + net_ftp_user + ":"
+		+ net_ftp_passwd + "@" + url.substr (6);
 	  goto retry_get;
 	}
     }
   if (code >= 300)
     {
-      delete
-	s;
-      s = 0;
+      delete s;
+      s = NULL;
       return;
     }
   
