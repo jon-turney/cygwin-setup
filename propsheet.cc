@@ -25,23 +25,6 @@
 #include "ControlAdjuster.h"
 #include "choose.h"
 
-//#include <shlwapi.h>
-// ...but since there is no shlwapi.h in mingw yet:
-typedef struct _DllVersionInfo
-{
-  DWORD cbSize;
-  DWORD dwMajorVersion;
-  DWORD dwMinorVersion;
-  DWORD dwBuildNumber;
-  DWORD dwPlatformID;
-}
-DLLVERSIONINFO;
-typedef HRESULT CALLBACK (*DLLGETVERSIONPROC) (DLLVERSIONINFO * pdvi);
-
-#ifndef PROPSHEETHEADER_V1_SIZE
-#define PROPSHEETHEADER_V1_SIZE 40
-#endif
-
 // Sort of a "hidden" Windows structure.  Used in the PropSheetCallback.
 #include <pshpack1.h>
 typedef struct DLGTEMPLATEEX
