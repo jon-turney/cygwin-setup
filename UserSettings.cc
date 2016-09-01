@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <memory>
 #include "UserSettings.h"
 #include "io_stream.h"
 #include "win32.h"
@@ -92,15 +93,15 @@ UserSettings::UserSettings (std::string local_dir)
     return;
 
   size_t sz = f->get_size ();
-  char *buf = new char [sz + 2];
-  ssize_t szread = f->read (buf, sz);
+  std::unique_ptr<char[]> buf (new char [sz + 2]);
+  ssize_t szread = f->read (buf.get (), sz);
   delete f;
 
   if (szread > 0)
     {
       buf[szread] = '\0';
       buf[szread + 1] = '\0';
-      for (char *p = strtok (buf, "\n"); p; p = strtok (p, "\n"))
+      for (char *p = strtok (buf.get (), "\n"); p; p = strtok (p, "\n"))
 	{
 	  char *eol = strchr (p, '\0');
 	  char *thiskey = trim (p);
@@ -131,7 +132,6 @@ UserSettings::UserSettings (std::string local_dir)
 	  set (thiskey, thisval);
 	}
     }
-  delete buf;
 }
 
 unsigned int
