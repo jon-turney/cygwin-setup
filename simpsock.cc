@@ -174,7 +174,7 @@ SimpleSocket::gets ()
   if (nl)
     {
       getp = nl - buf + 1;
-      while ((*nl == '\n' || *nl == '\r') && nl >= buf)
+      while (nl >= buf && (*nl == '\n' || *nl == '\r'))
 	*nl-- = 0;
     }
   else if (putp > getp)
