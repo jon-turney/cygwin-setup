@@ -290,6 +290,14 @@ WinMain (HINSTANCE h,
 			<< setup_version << endLog;
       }
 
+    /* Check if Cygwin works on this Windows version */
+    if (OSMajorVersion () < 6)
+      {
+        mbox (NULL, "Cygwin is not supported on this Windows version",
+              "Cygwin Setup", MB_ICONEXCLAMATION | MB_OK);
+        exit (1);
+      }
+
     if (help_option)
       {
 	if (invalid_option)
