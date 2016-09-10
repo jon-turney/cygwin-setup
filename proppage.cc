@@ -67,6 +67,7 @@ PropertyPage::Create (DLGPROC dlgproc,
 			BOOL (*cproc) (HWND h, int id, HWND hwndctl,
 				       UINT code), int TemplateID)
 {
+  memset(&psp, 0, sizeof (PROPSHEETPAGE));
   psp.dwSize = sizeof (PROPSHEETPAGE);
   psp.dwFlags = 0;
   psp.hInstance = GetInstance ();
