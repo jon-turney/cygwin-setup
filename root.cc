@@ -203,7 +203,10 @@ directory_contains_wrong_version (HWND h)
 
       /* Probably new installation */
       if (!GetBinaryType (cygcheck_exe.c_str (), &type))
-	return 0;
+        {
+          is_new_install = true;
+          return 0;
+        }
       /* 64 bit setup and 64 bit inst? */
       if (type == SCS_32BIT_BINARY && !is_64bit)
 	return 0;

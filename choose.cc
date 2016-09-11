@@ -40,6 +40,7 @@ static const char *cvsid =
 #include <process.h>
 #include <algorithm>
 
+#include "ini.h"
 #include "dialog.h"
 #include "resource.h"
 #include "state.h"
@@ -151,7 +152,7 @@ ChooserPage::createListview ()
     exit (11);
   chooser->init(PickView::views::Category);
   chooser->Show(SW_SHOW);
-  chooser->setViewMode (UpgradeAlsoOption || hasManualSelections ?
+  chooser->setViewMode (!is_new_install || UpgradeAlsoOption || hasManualSelections ?
 			PickView::views::PackagePending : PickView::views::Category);
   SendMessage (GetDlgItem (IDC_CHOOSE_VIEW), CB_SETCURSEL, (WPARAM)chooser->getViewMode(), 0);
 
