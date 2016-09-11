@@ -84,6 +84,7 @@ extern char **_argv;
 #endif
 
 bool is_64bit;
+bool is_new_install = false;
 std::string SetupArch;
 std::string SetupIniDir;
 
