@@ -32,11 +32,22 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
     }
   else if (col_num == theView.new_col)
     {
-      // TextOut (hdc, x + HMARGIN/2 + NEW_COL_SIZE_SLOP, y, s.c_str(), s.size());
-      // theView.DrawIcon (hdc, x + HMARGIN/2 + ICON_MARGIN/2 + RTARROW_WIDTH, by, theView.bm_spin);
-      TextOut (hdc, x + HMARGIN/2 + ICON_MARGIN/2 + SPIN_WIDTH , y,
-            pkg.action_caption ().c_str(), pkg.action_caption ().size());
-      theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_spin);
+      long long int idc = 100;
+      HWND h = CreateWindowEx(WS_EX_CLIENTEDGE,
+                              WC_COMBOBOX, "",
+                              WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST,
+                              x + HMARGIN/2, y,
+                              theView.headers[theView.new_col].width - HMARGIN, theView.row_height - 1,
+                              theView.GetHWND(), (HMENU)idc, GetModuleHandle(NULL), NULL);
+
+      SendMessage(h, WM_SETFONT, (WPARAM) theView.sysfont, FALSE);
+
+      // XXX: filter to just valid actions
+      const char *captions[] = { "Uninstall", "Skip", "Reinstall", "Retrieve", "Source", "Keep", NULL };
+      for (int i = 0; captions[i]; i++)
+        SendMessage(h, CB_ADDSTRING, 0, (LPARAM)(captions[i]));
+
+      SendMessage(h, CB_SETCURSEL, 2, 0);
     }
   else if (col_num == theView.bintick_col)
     {
