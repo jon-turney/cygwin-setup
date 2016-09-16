@@ -278,29 +278,9 @@ PickView::insert_pkg (packagemeta & pkg)
 {
   if (!showObsolete && isObsolete (pkg.categories))
     return;
-  
-  if (view_mode != views::Category)
-    {
-      PickLine & line = *new PickPackageLine (*this, pkg);
-      contents.insert (line);
-    }
-  else
-    {
-      for (set <std::string, casecompare_lt_op>::const_iterator x
-	   = pkg.categories.begin (); x != pkg.categories.end (); ++x)
-        {
-	  // Special case - yuck
-	  if (casecompare(*x, "All") == 0)
-	    continue;
 
-	  packagedb db;
-	  PickCategoryLine & catline = 
-	    *new PickCategoryLine (*this, *db.categories.find (*x), 1);
-	  PickLine & line = *new PickPackageLine(*this, pkg);
-	  catline.insert (line);
-	  contents.insert (catline);
-        }
-    }
+  PickLine & line = *new PickPackageLine (*this, pkg);
+  contents.insert (line);
 }
 
 void
