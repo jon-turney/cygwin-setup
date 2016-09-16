@@ -140,7 +140,9 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
           return TRUE;
         }
       case WM_NOTIFY:
-        switch (((NMHDR FAR *) lParam)->code)
+        {
+        NMHDR *pNmHdr = (NMHDR *) lParam;
+        switch (pNmHdr->code)
         {
           case PSN_APPLY:
             {
@@ -257,9 +259,11 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
             }
           default:
             {
-              // Unrecognized notification
-              return FALSE;
+              // Pass unrecognized notifications to WM_COMMAND handler
+              return OnMessageCmd (pNmHdr->idFrom, pNmHdr->hwndFrom,
+                                   pNmHdr->code);
             }
+        }
         }
         break;
       case WM_COMMAND:

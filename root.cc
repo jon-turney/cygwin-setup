@@ -230,6 +230,9 @@ directory_contains_wrong_version (HWND h)
 bool
 RootPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
+  if ((code != BN_CLICKED) && (code != EN_CHANGE))
+    return false;
+
   switch (id)
     {
 
