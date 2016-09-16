@@ -29,6 +29,54 @@ PickCategoryLine::empty (void)
 }
 
 void
+PickCategoryLine::rebuild (int row, int show_cat)
+{
+  int y = 0;
+  int r = y + row * theView.row_height;
+  if (show_label)
+    {
+      int x2 = x + theView.headers[theView.cat_col].x + HMARGIN / 2 + depth * TREE_INDENT;
+      int by = r + (theView.tm.tmHeight / 2) - 5;
+
+      // draw the '+' or '-' box
+      theView.AddIcon(x2, by, (collapsed ? MAKEINTRESOURCE(IDB_TREE_PLUS) : MAKEINTRESOURCE(IDB_TREE_MINUS)));
+
+      // draw the category name
+      if (!labellength)
+        {
+          SIZE s;
+          GetTextExtentPoint32 (hdc, cat.first.c_str(), cat.first.size(), &s);
+          labellength = s.cx;
+        }
+
+      theView.AddText(x2 + 11 + ICON_MARGIN, r, cat.first.c_str());
+
+      // draw the 'spin' glyph
+      spin_x = x2 + 11 + ICON_MARGIN + labellength + ICON_MARGIN;
+      theView.AddIcon(spin_x, by, MAKEINTRESOURCE(IDB_SPIN));
+
+      // draw the caption ('Default', 'Install', etc)
+      theView.AddText(spix_x + SPIN_WIDTH + ICON_MARGIN, r, current_default.caption ());
+
+      row++;
+    }
+
+  // if this node is collapsed, stop
+  if (collapsed)
+    return;
+
+  // ... otherwise, recurse
+  if (bucket.size ())
+    {
+      for (size_t n = 0; n < bucket.size (); n++)
+        {
+          bucket[n]->build (row, show_cat);
+          row += bucket[n]->itemcount ();
+        }
+    }
+}
+
+void
 PickCategoryLine::paint (HDC hdc, HRGN hUpdRgn, int x, int y, int row, int show_cat)
 {
   int r = y + row * theView.row_height;

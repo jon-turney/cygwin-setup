@@ -196,7 +196,6 @@ PickView::setViewMode (views mode)
         }
     }
 
-  RECT r = GetClientRect ();
   SCROLLINFO si;
   memset (&si, 0, sizeof (si));
   si.cbSize = sizeof (si);
@@ -206,13 +205,11 @@ PickView::setViewMode (views mode)
   si.nPage = r.right;
   SetScrollInfo (GetHWND(), SB_HORZ, &si, TRUE);
 
-  si.nMax = contents.itemcount () * row_height;
-  si.nPage = r.bottom - header_height;
-  SetScrollInfo (GetHWND(), SB_VERT, &si, TRUE);
-
   scroll_ulc_x = scroll_ulc_y = 0;
 
-  InvalidateRect (GetHWND(), &r, TRUE);
+  set_vscroll_info();
+
+  rebuild();
 }
 
 PickView::views
@@ -653,14 +650,14 @@ PickView::list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos)
 }
 
 void
-PickView::set_vscroll_info (const RECT &r)
+PickView::set_vscroll_info ()
 {
+  RECT r = GetClientRect ();
   SCROLLINFO si;
   memset (&si, 0, sizeof (si));
   si.cbSize = sizeof (si);
   si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;    /* SIF_RANGE was giving strange behaviour */
   si.nMin = 0;
-
   si.nMax = contents.itemcount () * row_height;
   si.nPage = r.bottom - header_height;
 
@@ -677,8 +674,6 @@ PickView::set_vscroll_info (const RECT &r)
 LRESULT CALLBACK
 PickView::list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 {
-  int row, refresh __attribute__ ((unused));
-
   if (contents.itemcount () == 0)
     return 0;
 
@@ -696,29 +691,9 @@ PickView::list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
 
   // XXX we need a method to query the database to see if more
   // than just one package has changed! Until then...
-#if 0
-  if (refresh)
-    {
-#endif
-      RECT r = GetClientRect ();
-      set_vscroll_info (r);
-      InvalidateRect (GetHWND(), &r, TRUE);
-#if 0
-    }
-  else
-    {
-      RECT rect;
-      rect.left =
-        headers[new_col].x - scroll_ulc_x;
-      rect.right =
-        headers[src_col + 1].x - scroll_ulc_x;
-      rect.top =
-        header_height + row * row_height -
-        scroll_ulc_y;
-      rect.bottom = rect.top + row_height;
-      InvalidateRect (hwnd, &rect, TRUE);
-    }
-#endif
+  set_vscroll_info ();
+  rebuild();
+
   return 0;
 }
 
@@ -758,9 +733,6 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
       return 0; // handled
     case WM_LBUTTONDOWN:
       list_click (GetHWND(), FALSE, LOWORD(lParam), HIWORD(lParam), wParam);
-      return 0;
-    case WM_PAINT:
-      paint (GetHWND());
       return 0;
     case WM_NOTIFY:
       {
@@ -818,7 +790,7 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
                 total_delta_x += dx;
               }
 	    if (windowRect.bottom - windowRect.top - lastWindowRect.height ())
-	      set_vscroll_info (GetClientRect ());
+	      set_vscroll_info ();
           }
         else
           hasWindowRect = true;
@@ -854,58 +826,23 @@ PickView::DrawIcon (HDC hdc, int x, int y, HANDLE hIcon)
 //      DeleteObject (bm_icon);
 }
 
-void
-PickView::paint (HWND hwnd)
+HWND
+PickView::AddIcon (int x, int y, int iconid)
 {
-  // we want to retrieve the update region before calling BeginPaint,
-  // because after we do that the update region is validated and we can
-  // no longer retrieve it
-  HRGN hUpdRgn = CreateRectRgn (0, 0, 0, 0);
-
-  if (GetUpdateRgn (hwnd, hUpdRgn, FALSE) == 0)
-    {
-      // error?
-      return;
-    }
-
-  // tell the system that we're going to begin painting our window
-  // it will prevent further WM_PAINT messages from arriving until we're
-  // done, and if any part of our window was invalidated while we are
-  // painting, it will retrigger us so that we can fix it
-  PAINTSTRUCT ps;
-  HDC hdc = BeginPaint (hwnd, &ps);
- 
-  SelectObject (hdc, sysfont);
-  SetTextColor (hdc, GetSysColor (COLOR_WINDOWTEXT));
-  SetBkColor (hdc, GetSysColor (COLOR_WINDOW));
-  FillRgn (hdc, hUpdRgn, GetSysColorBrush(COLOR_WINDOW));
-
-  COLORREF clr = ~GetSysColor (COLOR_WINDOW) ^ GetSysColor (COLOR_WINDOWTEXT);
-  clr = RGB (GetRValue (clr), GetGValue (clr), GetBValue (clr)); // reconvert
-  bg_fg_brush = CreateSolidBrush (clr);
-
-  RECT cr;
-  ::GetClientRect (hwnd, &cr);
-
-  int x = cr.left - scroll_ulc_x;
-  int y = cr.top - scroll_ulc_y + header_height;
-
-  contents.paint (hdc, hUpdRgn, x, y, 0, (view_mode == 
-                                  PickView::views::Category) ? 0 : 1);
-
-  if (contents.itemcount () == 0)
-    {
-      static const char *msg = "Nothing to Install/Update";
-      if (source == IDC_SOURCE_DOWNLOAD)
-        msg = "Nothing to Download";
-      TextOut (hdc, x + HMARGIN, y, msg, strlen (msg));
-    }
-
-  DeleteObject (hUpdRgn);
-  DeleteObject (bg_fg_brush);
-  EndPaint (hwnd, &ps);
+  return CreateWindow(WC_STATIC, MAKEINTRESOURCE(iconid),
+                      WS_CHILD | WS_VISIBLE | SS_BITMAP,
+                      x, y, r.right - HMARGIN, r.bottom,
+                      GetHWND(), NULL, GetModuleHandle(NULL), NULL);
 }
 
+HWND
+PickView::AddText(int x, int y, const char *text)
+{
+  return CreateWindow(WC_STATIC, text,
+                      WS_CHILD | WS_VISIBLE,
+                      x, y, labellength, theView.row_height,
+                      GetHWND(), NULL, GetModuleHandle(NULL), NULL);
+}
 
 bool 
 PickView::Create (Window * parent, DWORD Style, RECT *r)
@@ -959,9 +896,7 @@ PickView::defaultTrust (trusts trust)
   packagedb db;
   db.defaultTrust(trust);
 
-  // force the picker to redraw
-  RECT r = GetClientRect ();
-  InvalidateRect (this->GetHWND(), &r, TRUE);
+  rebuild();
 }
 
 /* This recalculates all column widths and resets the view */
@@ -991,4 +926,33 @@ PickView::refresh()
 
   view_mode = cur_view_mode;
   setViewMode (view_mode);
+}
+
+void
+PickView::rebuild()
+{
+  RECT r = GetClientRect ();
+  // XXX: remove all child windows
+
+  // XXX: list header ???
+
+  // create child windows reflecting contents
+  if (contents.itemcount () == 0)
+    {
+      static const char *msg = "Nothing to Install/Update";
+      if (source == IDC_SOURCE_DOWNLOAD)
+        msg = "Nothing to Download";
+
+      CreateWindow(WC_STATIC, msg.c_str(),
+                   WS_CHILD | WS_VISIBLE,
+                   HMARGIN, 0, r.right - HMARGIN, r.bottom,
+                   GetHWND(), NULL, GetModuleHandle(NULL), NULL);
+    }
+  else
+    {
+      contents.rebuild (x, y, 0, (view_mode == PickView::views::Category) ? 0 : 1);
+    }
+
+  // force redraw
+  InvalidateRect (GetHWND(), &r, TRUE);
 }

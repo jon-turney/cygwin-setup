@@ -19,6 +19,104 @@
 #include "package_version.h"
 
 void
+PickPackageLine::build (int row, int show_cat)
+{
+  int rb = y + theView.tm.tmHeight;
+  int by = rb - 11; // top of box images
+  std::string s;
+
+  // current_col
+  if (pkg.installed)
+    theView.AddText(x + HMARGIN/2, y, pkg.installed.Canonical_version ().c_str());
+
+  // new_col
+  CreateWindowEx(WS_EX_CLIENTEDGE,
+                 WC_COMBOBOX, "",
+                 WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST,
+                 x + HMARGIN/2, y,
+                 theView.headers[theView.new_col].width - HMARGIN, theView.row_height - 1,
+                 theView.GetHWND(), (HMENU)idc, GetModuleHandle(NULL), NULL);
+
+  SendMessage(h, WM_SETFONT, (WPARAM) theView.sysfont, FALSE);
+
+  // XXX: filter to just valid actions
+  const char *captions[] = { "Uninstall", "Skip", "Reinstall", "Retrieve", "Source", "Keep", NULL };
+  for (int i = 0; captions[i]; i++)
+    SendMessage(h, CB_ADDSTRING, 0, (LPARAM)(captions[i]));
+
+  SendMessage(h, CB_SETCURSEL, 2, 0);
+
+  // bintick_col
+  if (/* uninstall or skip */ !pkg.desired ||
+      /* current version */ pkg.desired == pkg.installed ||
+      /* no source */ !pkg.desired.accessible())
+    theView.AddIcon (x + HMARGIN/2, by, IDB_CHECK_NA);
+  else if (pkg.desired.picked())
+    theView.AddIcon (x + HMARGIN/2, by, IDB_CHECK_YES);
+  else
+    theView.AddIcon (x + HMARGIN/2, by, IDB_CHECK_NO);
+
+  // srctick_col
+  if ( /* uninstall */ !pkg.desired ||
+       /* when no source mirror available */
+       !pkg.desired.sourcePackage().accessible())
+    theView.AddIcon (x + HMARGIN/2, by, IDB_CHECK_NA);
+  else if (pkg.desired.sourcePackage().picked())
+    theView.AddIcon (x + HMARGIN/2, by, IDB_CHECK_YES);
+  else
+    theView.AddIcon (x + HMARGIN/2, by, IDB_CHECK_NO);
+
+  // cat_col
+  /* shows "first" category - do we want to show any? */
+  if (pkg.categories.size () && show_cat)
+    {
+      s = pkg.getReadableCategoryList();
+      theView.AddText (x + HMARGIN / 2, y, s.c_str());
+    }
+
+  // size_col
+  {
+    int sz = 0;
+    packageversion picked;
+
+    /* Find the size of the package.  If user has chosen to upgrade/downgrade
+       the package, use that version.  Otherwise use the currently installed
+       version, or if not installed then use the version that would be chosen
+       based on the current trust level (curr/prev/test).  */
+    if (pkg.desired)
+      picked = pkg.desired;
+    else if (pkg.installed)
+      picked = pkg.installed;
+    else
+      picked = pkg.trustp (false, theView.deftrust);
+
+    /* Include the size of the binary package, and if selected, the source
+       package as well.  */
+    sz += picked.source()->size;
+    if (picked.sourcePackage().picked())
+      sz += picked.sourcePackage().source()->size;
+
+    /* If size still 0, size must be unknown.  */
+    s = (sz == 0) ? "?" : format_1000s((sz+1023)/1024) + "k";
+
+    /* Right-align in column */
+    SIZE tw;
+    GetTextExtentPoint32 (hdc, s.c_str(), s.size(), &tw);
+    int cw = theView.headers[col_num].width - HMARGIN - tw.cx;
+
+    theView.AddText (hdc, x + cw + HMARGIN / 2, y, s.c_str());
+  }
+
+  // pkg_col
+  {
+    s = pkg.name;
+    if (pkg.SDesc ().size())
+      s += std::string(": ") + std::string(pkg.SDesc());
+    theView.AddText (x + HMARGIN / 2, y, s.c_str());
+  }
+}
+
+void
 PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int show_cat)
 {
   int rb = y + theView.tm.tmHeight;

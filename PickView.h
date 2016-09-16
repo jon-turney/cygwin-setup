@@ -47,7 +47,6 @@ public:
   void setViewMode (views mode);
   views getViewMode ();
   void DrawIcon (HDC hdc, int x, int y, HANDLE hIcon);
-  void paint (HWND hwnd);
   LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
   LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);
   LRESULT CALLBACK list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos);
