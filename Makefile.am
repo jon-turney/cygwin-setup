@@ -297,7 +297,10 @@ setup-src:
 .PHONY:	strip upx
 
 strip:	all
-	$(STRIP) -s setup$(EXEEXT)
+	$(OBJCOPY) --add-gnu-debuglink=/dev/null --only-keep-debug setup$(EXEEXT) setup.dbg
+	$(OBJCOPY) --strip-all setup$(EXEEXT)
+	$(OBJCOPY) --add-gnu-debuglink=setup.dbg setup$(EXEEXT) setup$(EXEEXT)
+
 upx:	strip
 	@if [ -e `which upx` ]; then\
 		upx --best --lzma setup$(EXEEXT) ;\

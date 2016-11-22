@@ -48,20 +48,8 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_PROG_LIBTOOL
 
-dnl AC_CHECK_TOOL(AR, ar, ar)
-dnl AC_SUBST(AR)
-dnl AC_CHECK_TOOL(AS, as, as)
-dnl AC_SUBST(AS)
-dnl AC_CHECK_TOOL(RANLIB, ranlib, ranlib)
-dnl AC_SUBST(RANLIB)
-dnl AC_CHECK_TOOL(LD, ld, ld)
-dnl AC_SUBST(LD)
-dnl AC_CHECK_TOOL(DLLTOOL, dlltool, dlltool)
-dnl AC_SUBST(DLLTOOL)
 AC_CHECK_TOOL(WINDRES, windres, windres)
-AC_SUBST(WINDRES)
-dnl AC_CHECK_TOOL(OBJCOPY, objcopy, objcopy)
-dnl AC_SUBST(OBJCOPY)
+AC_CHECK_TOOL(OBJCOPY, objcopy, objcopy)
 
 AC_CHECK_HEADERS(alloca.h \
 		 errno.h \
