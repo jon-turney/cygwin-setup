@@ -36,11 +36,18 @@ typedef std::vector<ListViewLine *> ListViewContents;
 class ListView
 {
  public:
+  enum class ControlType
+  {
+    text,
+    checkbox,
+  };
+
   class Header
   {
   public:
     const char *text;
     int fmt;
+    ControlType type;
     int width;
     int hdr_width;
   };

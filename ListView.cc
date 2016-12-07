@@ -289,6 +289,69 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
       return true;
     }
     break;
+
+  case NM_CUSTOMDRAW:
+    {
+      NMLVCUSTOMDRAW *pNmLvCustomDraw = (NMLVCUSTOMDRAW *)pNmHdr;
+
+      switch(pNmLvCustomDraw->nmcd.dwDrawStage)
+        {
+        case CDDS_PREPAINT:
+          *pResult = CDRF_NOTIFYITEMDRAW;
+          return true;
+        case CDDS_ITEMPREPAINT:
+          *pResult = CDRF_NOTIFYSUBITEMDRAW;
+          return true;
+        case CDDS_SUBITEM | CDDS_ITEMPREPAINT:
+          {
+            LRESULT result = CDRF_DODEFAULT;
+            int iCol = pNmLvCustomDraw->iSubItem;
+            int iRow = pNmLvCustomDraw->nmcd.dwItemSpec;
+
+            switch (headers[iCol].type)
+              {
+              default:
+              case ListView::ControlType::text:
+                result = CDRF_DODEFAULT;
+                break;
+
+              case ListView::ControlType::checkbox:
+                {
+                  // get the subitem text
+                  char buf[3];
+                  ListView_GetItemText(hWndListView, iRow, iCol, buf, _countof(buf));
+
+                  // map the subitem text to a checkbox state
+                  UINT state = DFCS_BUTTONCHECK | DFCS_FLAT;
+                  if (buf[0] == '\0')                           // empty
+                    {
+                      result = CDRF_DODEFAULT;
+                      break;
+                    }
+                  else if (buf[0] == 'y')                       // yes
+                    state |= DFCS_CHECKED;
+                  else if ((buf[0] == 'n') && (buf[1] == 'o'))  // no
+                    state |= 0;
+                  else                                          // n/a
+                    state |= DFCS_INACTIVE;
+
+                  // erase and draw a checkbox
+                  RECT r;
+                  ListView_GetSubItemRect(hWndListView, iRow, iCol, LVIR_BOUNDS, &r);
+                  HBRUSH hBrush = CreateSolidBrush(ListView_GetBkColor(hWndListView));
+                  FillRect(pNmLvCustomDraw->nmcd.hdc, &r, hBrush);
+                  DeleteObject(hBrush);
+                  DrawFrameControl(pNmLvCustomDraw->nmcd.hdc, &r, DFC_BUTTON, state);
+
+                  result = CDRF_SKIPDEFAULT;
+                }
+                break;
+              }
+            *pResult = result;
+            return true;
+          }
+        }
+    }
   }
 
   // We don't care.
