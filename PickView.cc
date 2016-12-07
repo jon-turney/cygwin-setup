@@ -14,12 +14,12 @@
  */
 
 #include "PickView.h"
-#include <algorithm>
-#include <limits.h>
-#include <commctrl.h>
-#include <shlwapi.h>
 #include "PickPackageLine.h"
 #include "PickCategoryLine.h"
+#include <algorithm>
+#include <limits.h>
+#include <shlwapi.h>
+
 #include "package_db.h"
 #include "dialog.h"
 #include "resource.h"
@@ -28,135 +28,25 @@
 #include "LogSingleton.h"
 #include "Exception.h"
 
-static PickView::Header pkg_headers[] = {
-  {"Current", 0, 0, true},
-  {"New", 0, 0, true},
-  {"Bin?", 0, 0, false},
-  {"Src?", 0, 0, false},
-  {"Categories", 0, 0, true},
-  {"Size", 0, 0, true},
-  {"Package", 0, 0, true},
-  {0, 0, 0, false}
-};
-
-static PickView::Header cat_headers[] = {
-  {"Category", 0, 0, true},
-  {"Current", 0, 0, true},
-  {"New", 0, 0, true},
-  {"Bin?", 0, 0, false},
-  {"Src?", 0, 0, false},
-  {"Size", 0, 0, true},
-  {"Package", 0, 0, true},
-  {0, 0, 0, false}
-};
-
-ATOM PickView::WindowClassAtom = 0;
-
-// DoInsertItem - inserts an item into a header control.
-// Returns the index of the new item.
-// hwndHeader - handle to the header control.
-// iInsertAfter - index of the previous item.
-// nWidth - width of the new item.
-// lpsz - address of the item string.
-static int
-DoInsertItem (HWND hwndHeader, int iInsertAfter, int nWidth, LPSTR lpsz)
-{
-  HDITEM hdi;
-  int index;
-
-  hdi.mask = HDI_TEXT | HDI_FORMAT | HDI_WIDTH;
-  hdi.pszText = lpsz;
-  hdi.cxy = nWidth;
-  hdi.cchTextMax = lstrlen (hdi.pszText);
-  hdi.fmt = HDF_LEFT | HDF_STRING;
-
-  index = SendMessage (hwndHeader, HDM_INSERTITEM,
-                       (WPARAM) iInsertAfter, (LPARAM) & hdi);
-
-  return index;
-}
-
-int
-PickView::set_header_column_order (views vm)
-{
-  if (vm == views::PackageFull || vm == views::PackagePending
-      || vm == views::PackageKeeps || vm == views::PackageSkips
-      || vm == views::PackageUserPicked)
-    {
-      headers = pkg_headers;
-      current_col = 0;
-      new_col = 1;
-      bintick_col = new_col + 1;
-      srctick_col = bintick_col + 1;
-      cat_col = srctick_col + 1;
-      size_col = cat_col + 1;
-      pkg_col = size_col + 1;
-      last_col = pkg_col;
-    }
-  else if (vm == views::Category)
-    {
-      headers = cat_headers;
-      cat_col = 0;
-      current_col = 1;
-      new_col = current_col + 1;
-      bintick_col = new_col + 1;
-      srctick_col = bintick_col + 1;
-      size_col = srctick_col + 1;
-      pkg_col = size_col + 1;
-      last_col = pkg_col;
-    }
-  else
-    return -1;
-  return last_col;
-}
-
-void
-PickView::set_headers ()
-{
-  if (set_header_column_order (view_mode) == -1)
-    return;
-  while (int n = SendMessage (listheader, HDM_GETITEMCOUNT, 0, 0))
-    {
-      SendMessage (listheader, HDM_DELETEITEM, n - 1, 0);
-    }
-  int i;
-  for (i = 0; i <= last_col; i++)
-    DoInsertItem (listheader, i, headers[i].width, (char *) headers[i].text);
-}
-
-void
-PickView::note_width (PickView::Header *hdrs, HDC dc,
-                      const std::string& string, int addend, int column)
-{
-  SIZE s = { 0, 0 };
-
-  if (string.size())
-    GetTextExtentPoint32 (dc, string.c_str(), string.size(), &s);
-  if (hdrs[column].width < s.cx + addend)
-    hdrs[column].width = s.cx + addend;
-}
-
 void
 PickView::setViewMode (views mode)
 {
   view_mode = mode;
-  set_headers ();
   packagedb db;
 
-  contents.empty ();
+  size_t i;
+  for (i = 0; i < contents.size();  i++)
+    {
+      delete contents[i];
+    }
+  contents.clear();
+
   if (view_mode == PickView::views::Category)
     {
-      contents.ShowLabel (true);
-      /* start collapsed. TODO: make this a chooser flag */
-      for (packagedb::categoriesType::iterator n =
-            packagedb::categories.begin(); n != packagedb::categories.end();
-            ++n)
-        insert_category (&*n, (*n).first.c_str()[0] == '.'
-				? CATEGORY_EXPANDED : CATEGORY_COLLAPSED);
+      insert_category (cat_tree_root);
     }
   else
     {
-      contents.ShowLabel (false);
       // iterate through every package
       for (packagedb::packagecollection::iterator i = db.packages.begin ();
             i != db.packages.end (); ++i)
@@ -175,7 +65,7 @@ PickView::setViewMode (views mode)
                     (pkg.desired &&
                       (pkg.picked () ||               // install bin
                        pkg.srcpicked ())))) // src
-              
+
               // "Up to date" : installed packages that will not be changed
               || (view_mode == PickView::views::PackageKeeps &&
                   (pkg.installed && pkg.desired && !pkg.picked ()
@@ -191,29 +81,13 @@ PickView::setViewMode (views mode)
             {
               // Filter by package name
               if (packageFilterString.empty ()
-		  || StrStrI (pkg.name.c_str (), packageFilterString.c_str ()))
+                  || StrStrI (pkg.name.c_str (), packageFilterString.c_str ()))
                 insert_pkg (pkg);
             }
         }
     }
 
-  RECT r = GetClientRect ();
-  SCROLLINFO si;
-  memset (&si, 0, sizeof (si));
-  si.cbSize = sizeof (si);
-  si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
-  si.nMin = 0;
-  si.nMax = headers[last_col].x + headers[last_col].width;    // + HMARGIN;
-  si.nPage = r.right;
-  SetScrollInfo (GetHWND(), SB_HORZ, &si, TRUE);
-
-  si.nMax = contents.itemcount () * row_height;
-  si.nPage = r.bottom - header_height;
-  SetScrollInfo (GetHWND(), SB_VERT, &si, TRUE);
-
-  scroll_ulc_x = scroll_ulc_y = 0;
-
-  InvalidateRect (GetHWND(), &r, TRUE);
+  listview->setContents(&contents);
 }
 
 PickView::views
@@ -259,7 +133,7 @@ isObsolete (std::set <std::string, casecompare_lt_op> &categories)
 bool
 isObsolete (const std::string& catname)
 {
-  if (casecompare(catname, "ZZZRemovedPackages") == 0 
+  if (casecompare(catname, "ZZZRemovedPackages") == 0
         || casecompare(catname, "_", 1) == 0)
     return true;
   return false;
@@ -273,120 +147,84 @@ PickView::setObsolete (bool doit)
   refresh ();
 }
 
-
 void
 PickView::insert_pkg (packagemeta & pkg)
 {
   if (!showObsolete && isObsolete (pkg.categories))
     return;
 
-  PickLine & line = *new PickPackageLine (*this, pkg);
-  contents.insert (line);
+  contents.push_back(new PickPackageLine(*this, pkg));
 }
 
 void
-PickView::insert_category (Category *cat, bool collapsed)
+PickView::insert_category (CategoryTree *cat_tree)
 {
-  // Urk, special case
-  if (casecompare(cat->first, "All") == 0 ||
-      (!showObsolete && isObsolete (cat->first)))
+  if (!cat_tree)
     return;
-  PickCategoryLine & catline = *new PickCategoryLine (*this, *cat, 1, collapsed);
-  int packageCount = 0;
-  for (std::vector <packagemeta *>::iterator i = cat->second.begin ();
-       i != cat->second.end () ; ++i)
+
+  const Category *cat = &(cat_tree->category());
+
+  // Suppress obsolete category when not showing obsolete
+  if ((!showObsolete && isObsolete (cat->first)))
+    return;
+
+  // if it's not the "All" category
+  bool hasContents = false;
+  bool isAll = casecompare(cat->first, "All") == 0;
+  if (!isAll)
     {
-      if (packageFilterString.empty () \
-          || (*i
-	      && StrStrI ((*i)->name.c_str (), packageFilterString.c_str ())))
-	{
-	  PickLine & line = *new PickPackageLine (*this, **i);
-	  catline.insert (line);
-	  packageCount++;
-	}
-    }
-  
-  if (packageFilterString.empty () || packageCount)
-    contents.insert (catline);
-  else
-    delete &catline;
-}
+      // count the number of packages in this category
+      int packageCount = 0;
+      for (std::vector <packagemeta *>::const_iterator i = cat->second.begin ();
+           i != cat->second.end () ; ++i)
+        {
+          if (packageFilterString.empty ()      \
+              || (*i
+                  && StrStrI ((*i)->name.c_str (), packageFilterString.c_str ())))
+            {
+              packageCount++;
+            }
+        }
 
-int
-PickView::click (int row, int x)
-{
-  return contents.click (0, row, x);
-}
-
-
-void
-PickView::scroll (HWND hwnd, int which, int *var, int code, int howmany = 1)
-{
-  SCROLLINFO si;
-  si.cbSize = sizeof (si);
-  si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
-  GetScrollInfo (hwnd, which, &si);
-
-  switch (code)
-    {
-    case SB_THUMBTRACK:
-      si.nPos = si.nTrackPos;
-      break;
-    case SB_THUMBPOSITION:
-      break;
-    case SB_BOTTOM:
-      si.nPos = si.nMax;
-      break;
-    case SB_TOP:
-      si.nPos = 0;
-      break;
-    case SB_LINEDOWN:
-      si.nPos += (row_height * howmany);
-      break;
-    case SB_LINEUP:
-      si.nPos -= (row_height * howmany);
-      break;
-    case SB_PAGEDOWN:
-      si.nPos += si.nPage * 9 / 10;
-      break;
-    case SB_PAGEUP:
-      si.nPos -= si.nPage * 9 / 10;
-      break;
+      // if there are some packages in the category, or we are showing everything,
+      if (packageFilterString.empty () || packageCount)
+        {
+          hasContents = true;
+        }
     }
 
-  if ((int) si.nPos < 0)
-    si.nPos = 0;
-  if (si.nPos + si.nPage > (unsigned int) si.nMax)
-    si.nPos = si.nMax - si.nPage;
+  if (!isAll && !hasContents)
+    return;
 
-  si.fMask = SIF_POS;
-  SetScrollInfo (hwnd, which, &si, TRUE);
+  // insert line for the category
+  contents.push_back(new PickCategoryLine(*this, cat_tree));
 
-  int ox = scroll_ulc_x;
-  int oy = scroll_ulc_y;
-  *var = si.nPos;
-
-  RECT cr, sr;
-  ::GetClientRect (hwnd, &cr);
-  sr = cr;
-  sr.top += header_height;
-  UpdateWindow (hwnd);
-  ScrollWindow (hwnd, ox - scroll_ulc_x, oy - scroll_ulc_y, &sr, &sr);
-  /*
-     sr.bottom = sr.top;
-     sr.top = cr.top;
-     ScrollWindow (hwnd, ox - scroll_ulc_x, 0, &sr, &sr);
-   */
-  if (ox - scroll_ulc_x)
+  // if not collapsed
+  if (!cat_tree->collapsed())
     {
-      ::GetClientRect (listheader, &cr);
-      sr = cr;
-//  UpdateWindow (htmp);
-      ::MoveWindow (listheader, -scroll_ulc_x, 0,
-                  headers[last_col].x +
-                  headers[last_col].width, header_height, TRUE);
+      // insert lines for the packages in this category
+      if (!isAll)
+        {
+          for (std::vector <packagemeta *>::const_iterator i = cat->second.begin ();
+               i != cat->second.end () ; ++i)
+            {
+              if (packageFilterString.empty ()  \
+                  || (*i
+                      && StrStrI ((*i)->name.c_str (), packageFilterString.c_str ())))
+                {
+                  insert_pkg(**i);
+                }
+            }
+        }
+
+      // recurse for contained categories
+      for (std::vector <CategoryTree *>::iterator i = cat_tree->bucket().begin ();
+           i != cat_tree->bucket().end();
+           i++)
+        {
+          insert_category(*i);
+        }
     }
-  UpdateWindow (hwnd);
 }
 
 /* this means to make the 'category' column wide enough to fit the first 'n'
@@ -394,72 +232,56 @@ PickView::scroll (HWND hwnd, int which, int *var, int code, int howmany = 1)
 #define NUM_CATEGORY_COL_WIDTH 2
 
 void
-PickView::init_headers (HDC dc)
+PickView::init_headers (void)
 {
-  int i;
+  listview->noteColumnWidthStart();
 
-  for (i = 0; headers[i].text; i++)
-    {
-      headers[i].width = 0;
-      headers[i].x = 0;
-    }
+  // widths of the 'bin' and 'src' checkbox columns just need to accommodate the
+  // column name
+  listview->noteColumnWidth (bintick_col, "");
+  listview->noteColumnWidth (srctick_col, "");
 
-  // A margin of 3*GetSystemMetrics(SM_CXEDGE) is used at each side of the
-  // header text.  (Probably should use that rather than hard-coding HMARGIN
-  // everywhere)
-  int addend = 2*3*GetSystemMetrics(SM_CXEDGE);
-
-  // accommodate widths of the 'bin' and 'src' checkbox columns
-  note_width (headers, dc, headers[bintick_col].text, addend, bintick_col);
-  note_width (headers, dc, headers[srctick_col].text, addend, srctick_col);
-
-  // accomodate the width of each category name
+  // (In category view) accommodate the width of each category name
   packagedb db;
   for (packagedb::categoriesType::iterator n = packagedb::categories.begin();
        n != packagedb::categories.end(); ++n)
     {
-      if (!showObsolete && isObsolete (n->first))
-        continue;
-      note_width (headers, dc, n->first, HMARGIN, cat_col);
+      listview->noteColumnWidth (cat_col, n->first);
     }
 
   /* For each package, accomodate the width of the installed version in the
-     current_col, the widths of all other versions in the new_col, and the
-     width of the sdesc for the pkg_col.  Also, if this is not a Category
-     view, adjust the 'category' column so that the first NUM_CATEGORY_COL_WIDTH
-     categories from each package fits.  */
+     current_col, the widths of all other versions in the new_col, and the width
+     of the sdesc for the pkg_col and the first NUM_CATEGORY_COL_WIDTH
+     categories in the category column. */
   for (packagedb::packagecollection::iterator n = db.packages.begin ();
        n != db.packages.end (); ++n)
     {
       packagemeta & pkg = *(n->second);
-      if (!showObsolete && isObsolete (pkg.categories))
-        continue;
       if (pkg.installed)
-        note_width (headers, dc, pkg.installed.Canonical_version (),
-                    HMARGIN, current_col);
+        listview->noteColumnWidth (current_col, pkg.installed.Canonical_version ());
       for (std::set<packageversion>::iterator i = pkg.versions.begin ();
-	   i != pkg.versions.end (); ++i)
-	{
-          if (*i != pkg.installed)
-            note_width (headers, dc, i->Canonical_version (),
-                        HMARGIN + SPIN_WIDTH, new_col);
-	  std::string z = format_1000s(i->source ()->size);
-	  note_width (headers, dc, z, HMARGIN, size_col);
-	  z = format_1000s(i->sourcePackage ().source ()->size);
-	  note_width (headers, dc, z, HMARGIN, size_col);
-	}
-      std::string s = pkg.name;
-      if (pkg.SDesc ().size())
-	s += std::string (": ") + std::string(pkg.SDesc ());
-      note_width (headers, dc, s, HMARGIN, pkg_col);
-      
-      if (view_mode != PickView::views::Category && pkg.categories.size () > 2)
+           i != pkg.versions.end (); ++i)
         {
-          std::string compound_cat("");          
+          if (*i != pkg.installed)
+            listview->noteColumnWidth (new_col, i->Canonical_version ());
+          std::string z = format_1000s(i->source ()->size);
+          listview->noteColumnWidth (size_col, z);
+          z = format_1000s(i->sourcePackage ().source ()->size);
+          listview->noteColumnWidth (size_col, z);
+        }
+      std::string s = pkg.name;
+      listview->noteColumnWidth (pkgname_col, s);
+
+      s = pkg.SDesc ();
+      listview->noteColumnWidth (pkg_col, s);
+
+      if (pkg.categories.size () > 2)
+        {
+          std::string compound_cat("");
           std::set<std::string, casecompare_lt_op>::const_iterator cat;
           size_t cnt;
-          
-          for (cnt = 0, cat = pkg.categories.begin (); 
+
+          for (cnt = 0, cat = pkg.categories.begin ();
                cnt < NUM_CATEGORY_COL_WIDTH && cat != pkg.categories.end ();
                ++cat)
             {
@@ -470,507 +292,95 @@ PickView::init_headers (HDC dc)
               compound_cat += *cat;
               cnt++;
             }
-          note_width (headers, dc, compound_cat, HMARGIN, cat_col);
+          listview->noteColumnWidth (cat_col, compound_cat);
         }
     }
-  
+
   // ensure that the new_col is wide enough for all the labels
-  const char *captions[] = { "Uninstall", "Skip", "Reinstall", "Retrieve", 
+  const char *captions[] = { "Uninstall", "Skip", "Reinstall", "Retrieve",
                              "Source", "Keep", NULL };
   for (int i = 0; captions[i]; i++)
-    note_width (headers, dc, captions[i], HMARGIN + SPIN_WIDTH, new_col);
+    listview->noteColumnWidth (cat_col, captions[i]);
 
-  // finally, compute the actual x values based on widths
-  headers[0].x = 0;
-  for (i = 1; i <= last_col; i++)
-    headers[i].x = headers[i - 1].x + headers[i - 1].width;
-  // and allow for resizing to ensure the last column reaches
-  // all the way to the end of the chooser box.
-  headers[last_col].width += total_delta_x;
+  listview->noteColumnWidthEnd();
+  listview->resizeColumns();
 }
 
-PickView::PickView (Category &cat) : deftrust (TRUST_CURR),
-contents (*this, cat, 0, false, true), showObsolete (false), 
-packageFilterString (), hasWindowRect (false), total_delta_x (0)
+PickView::PickView() :
+  deftrust (TRUST_UNKNOWN),
+  showObsolete (false),
+  packageFilterString (),
+  cat_tree_root (NULL)
 {
 }
 
 void
-PickView::init(views _mode)
+PickView::init(views _mode, ListView *_listview, Window *_parent)
 {
-  HDC dc = GetDC (GetHWND());
-  sysfont = GetStockObject (DEFAULT_GUI_FONT);
-  SelectObject (dc, sysfont);
-  GetTextMetrics (dc, &tm);
-
-  bitmap_dc = CreateCompatibleDC (dc);
-#define LI(x) LoadImage (hinstance, MAKEINTRESOURCE (x), IMAGE_BITMAP, 0, 0, 0);
-  bm_spin = LI (IDB_SPIN);
-  bm_checkyes = LI (IDB_CHECK_YES);
-  bm_checkno = LI (IDB_CHECK_NO);
-  bm_checkna = LI (IDB_CHECK_NA);
-  bm_treeplus = LI (IDB_TREE_PLUS);
-  bm_treeminus = LI (IDB_TREE_MINUS);  
-#undef LI  
-  icon_dc = CreateCompatibleDC (dc);
-  bm_icon = CreateCompatibleBitmap (dc, 11, 11);
-  SelectObject (icon_dc, bm_icon);
-  rect_icon = CreateRectRgn (0, 0, 11, 11);
-
-  row_height = (tm.tmHeight + tm.tmExternalLeading + ROW_MARGIN);
-  int irh = tm.tmExternalLeading + tm.tmDescent + 11 + ROW_MARGIN;
-  if (row_height < irh)
-    row_height = irh;
-
-  HDLAYOUT hdl;
-  WINDOWPOS wp;
-
-  // Ensure that the common control DLL is loaded, and then create
-  // the header control.
-  INITCOMMONCONTROLSEX controlinfo = { sizeof (INITCOMMONCONTROLSEX), 
-                                       ICC_LISTVIEW_CLASSES };
-  InitCommonControlsEx (&controlinfo);
-
-  if ((listheader = CreateWindowEx (0, WC_HEADER, (LPCTSTR) NULL,
-                                    WS_CHILD | WS_BORDER | CCS_NORESIZE |
-                                    // | HDS_BUTTONS
-                                    HDS_HORZ, 0, 0, 0, 0, GetHWND(),
-                                    (HMENU) IDC_CHOOSE_LISTHEADER, hinstance,
-                                    (LPVOID) NULL)) == NULL)
-    throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-			 "Unable to create list header window",
-			 APPERR_WINDOW_ERROR);
-
-  // Retrieve the bounding rectangle of the parent window's
-  // client area, and then request size and position values
-  // from the header control.
-  RECT rcParent = GetClientRect ();
-
-  hdl.prc = &rcParent;
-  hdl.pwpos = &wp;
-  if (!SendMessage (listheader, HDM_LAYOUT, 0, (LPARAM) & hdl))
-    throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-			 "Unable to get size and position of rectangle",
-			 APPERR_WINDOW_ERROR);
-
-  // Set the font of the listheader, but don't redraw, because its not shown
-  // yet.This message does not return a value, so we are not checking it as we
-  // do above.
-  SendMessage (listheader, WM_SETFONT, (WPARAM) sysfont, FALSE);
-
-  // Set the size, position, and visibility of the header control.
-  SetWindowPos (listheader, wp.hwndInsertAfter, wp.x, wp.y,
-                wp.cx, wp.cy, wp.flags | SWP_SHOWWINDOW);
-
-  header_height = wp.cy;
-  ReleaseDC (GetHWND (), dc);
-
   view_mode = _mode;
+  listview = _listview;
+  parent = _parent;
+}
+
+void
+PickView::build_category_tree()
+{
+  /* Build the category tree */
+
+  /* Start collapsed. TODO: make that a flag */
+  bool collapsed = true;
+
+  /* Dispose of any existing category tree */
+  if (cat_tree_root)
+    {
+      for (std::vector <CategoryTree *>::const_iterator i = cat_tree_root->bucket().begin();
+           i != cat_tree_root->bucket().end();
+           i++)
+        delete *i;
+
+      delete cat_tree_root;
+      cat_tree_root = NULL;
+    }
+
+  /* Find the 'All' category */
+  for (packagedb::categoriesType::iterator n =
+         packagedb::categories.begin(); n != packagedb::categories.end();
+       ++n)
+    {
+      if (casecompare(n->first, "All") == 0)
+        {
+          cat_tree_root = new CategoryTree(*n, collapsed);
+          break;
+        }
+    }
+
+  /* Add all the other categories as children */
+  for (packagedb::categoriesType::iterator n =
+         packagedb::categories.begin(); n != packagedb::categories.end();
+       ++n)
+    {
+      if (casecompare(n->first, "All") == 0)
+        continue;
+
+      CategoryTree *cat_tree = new CategoryTree(*n, collapsed);
+      cat_tree_root->bucket().push_back(cat_tree);
+    }
+
   refresh ();
 }
 
 PickView::~PickView()
 {
-  DeleteDC (bitmap_dc);
-  DeleteObject (bm_spin);
-  DeleteObject (bm_checkyes);
-  DeleteObject (bm_checkno);
-  DeleteObject (bm_checkna);
-  DeleteObject (bm_treeplus);
-  DeleteObject (bm_treeminus);
-  DeleteObject (rect_icon);
-  DeleteObject (bm_icon);
-  DeleteDC (icon_dc);
-}
-
-bool PickView::registerWindowClass ()
-{
-  if (WindowClassAtom != 0)
-    return true;
-
-  // We're not registered yet
-  WNDCLASSEX wc;
-
-  wc.cbSize = sizeof (wc);
-  // Some sensible style defaults
-  wc.style = CS_HREDRAW | CS_VREDRAW;
-  // Our default window procedure.  This replaces itself
-  // on the first call with the simpler Window::WindowProcReflector().
-  wc.lpfnWndProc = Window::FirstWindowProcReflector;
-  // No class bytes
-  wc.cbClsExtra = 0;
-  // One pointer to REFLECTION_INFO in the extra window instance bytes
-  wc.cbWndExtra = 4;
-  // The app instance
-  wc.hInstance = hinstance; //GetInstance ();
-  // Use a bunch of system defaults for the GUI elements
-  wc.hIcon = LoadIcon (0, IDI_APPLICATION);
-  wc.hIconSm = NULL;
-  wc.hCursor = LoadCursor (0, IDC_ARROW);
-  wc.hbrBackground = NULL;
-  // No menu
-  wc.lpszMenuName = NULL;
-  // We'll get a little crazy here with the class name
-  wc.lpszClassName = "listview";
-
-  // All set, try to register
-  WindowClassAtom = RegisterClassEx (&wc);
-  if (WindowClassAtom == 0)
-    Log (LOG_BABBLE) << "Failed to register listview " << GetLastError () << endLog;
-  return WindowClassAtom != 0;
-}
-
-LRESULT CALLBACK
-PickView::list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos)
-{
-  scroll (hwnd, SB_VERT, &scroll_ulc_y, code);
-  return 0;
-}
-
-LRESULT CALLBACK
-PickView::list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos)
-{
-  scroll (hwnd, SB_HORZ, &scroll_ulc_x, code);
-  return 0;
-}
-
-void
-PickView::set_vscroll_info (const RECT &r)
-{
-  SCROLLINFO si;
-  memset (&si, 0, sizeof (si));
-  si.cbSize = sizeof (si);
-  si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;    /* SIF_RANGE was giving strange behaviour */
-  si.nMin = 0;
-
-  si.nMax = contents.itemcount () * row_height;
-  si.nPage = r.bottom - header_height;
-
-  /* if we are under the minimum display count ,
-   * set the offset to 0
-   */
-  if ((unsigned int) si.nMax <= si.nPage)
-    scroll_ulc_y = 0;
-  si.nPos = scroll_ulc_y;
-
-  SetScrollInfo (GetHWND(), SB_VERT, &si, TRUE);
-}
-
-LRESULT CALLBACK
-PickView::list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode)
-{
-  int row, refresh __attribute__ ((unused));
-
-  if (contents.itemcount () == 0)
-    return 0;
-
-  if (y < header_height)
-    return 0;
-  x += scroll_ulc_x;
-  y += scroll_ulc_y - header_height;
-
-  row = (y + ROW_MARGIN / 2) / row_height;
-
-  if (row < 0 || row >= contents.itemcount ())
-    return 0;
-
-  refresh = click (row, x);
-
-  // XXX we need a method to query the database to see if more
-  // than just one package has changed! Until then...
-#if 0
-  if (refresh)
-    {
-#endif
-      RECT r = GetClientRect ();
-      set_vscroll_info (r);
-      InvalidateRect (GetHWND(), &r, TRUE);
-#if 0
-    }
-  else
-    {
-      RECT rect;
-      rect.left =
-        headers[new_col].x - scroll_ulc_x;
-      rect.right =
-        headers[src_col + 1].x - scroll_ulc_x;
-      rect.top =
-        header_height + row * row_height -
-        scroll_ulc_y;
-      rect.bottom = rect.top + row_height;
-      InvalidateRect (hwnd, &rect, TRUE);
-    }
-#endif
-  return 0;
-}
-
-/*
- * LRESULT CALLBACK
- * PickView::listview_proc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
- */
-LRESULT
-PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
-{
-  int wheel_notches;
-  UINT wheel_lines;
-  
-  switch (message)
-    {
-    case WM_HSCROLL:
-      list_hscroll (GetHWND(), (HWND)lParam, LOWORD(wParam), HIWORD(wParam));
-      return 0;
-    case WM_VSCROLL:
-      list_vscroll (GetHWND(), (HWND)lParam, LOWORD(wParam), HIWORD(wParam));
-      return 0;
-    case WM_MOUSEWHEEL:
-      // this is how many 'notches' the wheel scrolled, forward/up = positive
-      wheel_notches = GET_WHEEL_DELTA_WPARAM(wParam) / 120;
-      
-      // determine how many lines the user has configred for a mouse scroll
-      SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, &wheel_lines, 0);
-
-      if (wheel_lines == 0)   // do no scrolling
-        return 0;
-      else if (wheel_lines == WHEEL_PAGESCROLL)
-        scroll (GetHWND (), SB_VERT, &scroll_ulc_y, (wheel_notches > 0) ?
-                SB_PAGEUP : SB_PAGEDOWN);
-      else
-        scroll (GetHWND (), SB_VERT, &scroll_ulc_y, (wheel_notches > 0) ?
-                SB_LINEUP : SB_LINEDOWN, wheel_lines * abs (wheel_notches));
-      return 0; // handled
-    case WM_LBUTTONDOWN:
-      list_click (GetHWND(), FALSE, LOWORD(lParam), HIWORD(lParam), wParam);
-      return 0;
-    case WM_PAINT:
-      paint (GetHWND());
-      return 0;
-    case WM_NOTIFY:
-      {
-        // pnmh = (LPNMHDR) lParam
-        LPNMHEADER phdr = (LPNMHEADER) lParam;
-        switch (phdr->hdr.code)
-          {
-          case HDN_ITEMCHANGED:
-            if (phdr->hdr.hwndFrom == ListHeader ())
-              {
-                if (phdr->pitem && phdr->pitem->mask & HDI_WIDTH)
-                  headers[phdr->iItem].width = phdr->pitem->cxy;
-  
-                for (int i = 1; i <= last_col; i++)
-                  headers[i].x = headers[i - 1].x + headers[i - 1].width;
-  
-                RECT r = GetClientRect ();
-                SCROLLINFO si;
-                si.cbSize = sizeof (si);
-                si.fMask = SIF_ALL | SIF_DISABLENOSCROLL;
-                GetScrollInfo (GetHWND(), SB_HORZ, &si);
-  
-                int oldMax = si.nMax;
-                si.nMax = headers[last_col].x + headers[last_col].width;
-                if (si.nTrackPos && oldMax > si.nMax)
-                  si.nTrackPos += si.nMax - oldMax;
-  
-                si.nPage = r.right;
-                SetScrollInfo (GetHWND(), SB_HORZ, &si, TRUE);
-                InvalidateRect (GetHWND(), &r, TRUE);
-                if (si.nTrackPos && oldMax > si.nMax)
-                  scroll (GetHWND(), SB_HORZ, &scroll_ulc_x, SB_THUMBTRACK);
-              }
-            break;
-          }
-        }
-      break;
-    case WM_SIZE:
-      {
-        // Note: WM_SIZE msgs only appear when 'just' scrolling the window
-        RECT windowRect = GetWindowRect ();
-        if (hasWindowRect)
-          {
-            int dx;
-            if ((dx = windowRect.right - windowRect.left -
-                        lastWindowRect.width ()) != 0)
-              {
-                cat_headers[set_header_column_order (views::Category)].width += dx;
-                pkg_headers[set_header_column_order (views::PackagePending)].width += dx;
-                set_header_column_order (view_mode);
-                set_headers ();
-                ::MoveWindow (listheader, -scroll_ulc_x, 0,
-                            headers[last_col].x +
-                            headers[last_col].width, header_height, TRUE);
-                total_delta_x += dx;
-              }
-	    if (windowRect.bottom - windowRect.top - lastWindowRect.height ())
-	      set_vscroll_info (GetClientRect ());
-          }
-        else
-          hasWindowRect = true;
-  
-        lastWindowRect = windowRect;
-        return 0;     
-      }
-    case WM_MOUSEACTIVATE:
-      SetFocus(GetHWND());
-      return MA_ACTIVATE;
-    }
-  
-  // default: can't handle this message
-  return DefWindowProc (GetHWND(), message, wParam, lParam);
-}
-
-////
-// Turn black into foreground color and white into background color by
-//   1) Filling a square with ~(FG^BG)
-//   2) Blitting the bitmap on it with NOTSRCERASE (white->black; black->FG^BG)
-//   3) Blitting the result on BG with SRCINVERT (white->BG; black->FG)
-void
-PickView::DrawIcon (HDC hdc, int x, int y, HANDLE hIcon)
-{
-  SelectObject (bitmap_dc, hIcon);
-  FillRgn (icon_dc, rect_icon, bg_fg_brush);
-  BitBlt (icon_dc, 0, 0, 11, 11, bitmap_dc, 0, 0, NOTSRCERASE);
-  BitBlt (hdc, x, y, 11, 11, icon_dc, 0, 0, SRCINVERT);
-///////////// On WinNT-based systems, we could've done the below instead
-///////////// See http://support.microsoft.com/default.aspx?scid=kb;en-us;79212
-//      SelectObject (hdc, GetSysColorBrush (COLOR_WINDOWTEXT));
-//      HBITMAP bm_icon = CreateBitmap (11, 11, 1, 1, NULL);
-//      SelectObject (icon_dc, bm_icon);
-//      BitBlt (icon_dc, 0, 0, 11, 11, bitmap_dc, 0, 0, SRCCOPY);
-//      MaskBlt (hdc, x2, by, 11, 11, bitmap_dc, 0, 0, bm_icon, 0, 0, MAKEROP4 (SRCAND, PATCOPY));
-//      DeleteObject (bm_icon);
-}
-
-void
-PickView::paint (HWND hwnd)
-{
-  // we want to retrieve the update region before calling BeginPaint,
-  // because after we do that the update region is validated and we can
-  // no longer retrieve it
-  HRGN hUpdRgn = CreateRectRgn (0, 0, 0, 0);
-
-  if (GetUpdateRgn (hwnd, hUpdRgn, FALSE) == 0)
-    {
-      // error?
-      return;
-    }
-
-  // tell the system that we're going to begin painting our window
-  // it will prevent further WM_PAINT messages from arriving until we're
-  // done, and if any part of our window was invalidated while we are
-  // painting, it will retrigger us so that we can fix it
-  PAINTSTRUCT ps;
-  HDC hdc = BeginPaint (hwnd, &ps);
- 
-  SelectObject (hdc, sysfont);
-  SetTextColor (hdc, GetSysColor (COLOR_WINDOWTEXT));
-  SetBkColor (hdc, GetSysColor (COLOR_WINDOW));
-  FillRgn (hdc, hUpdRgn, GetSysColorBrush(COLOR_WINDOW));
-
-  COLORREF clr = ~GetSysColor (COLOR_WINDOW) ^ GetSysColor (COLOR_WINDOWTEXT);
-  clr = RGB (GetRValue (clr), GetGValue (clr), GetBValue (clr)); // reconvert
-  bg_fg_brush = CreateSolidBrush (clr);
-
-  RECT cr;
-  ::GetClientRect (hwnd, &cr);
-
-  int x = cr.left - scroll_ulc_x;
-  int y = cr.top - scroll_ulc_y + header_height;
-
-  contents.paint (hdc, hUpdRgn, x, y, 0, (view_mode == 
-                                  PickView::views::Category) ? 0 : 1);
-
-  if (contents.itemcount () == 0)
-    {
-      static const char *msg = "Nothing to Install/Update";
-      if (source == IDC_SOURCE_DOWNLOAD)
-        msg = "Nothing to Download";
-      TextOut (hdc, x + HMARGIN, y, msg, strlen (msg));
-    }
-
-  DeleteObject (hUpdRgn);
-  DeleteObject (bg_fg_brush);
-  EndPaint (hwnd, &ps);
-}
-
-
-bool 
-PickView::Create (Window * parent, DWORD Style, RECT *r)
-{
-
-  // First register the window class, if we haven't already
-  if (!registerWindowClass ())
-    {
-      // Registration failed
-      return false;
-    }
-
-  // Save our parent, we'll probably need it eventually.
-  setParent(parent);
-
-  // Create the window instance
-  CreateWindowEx (// Extended Style
-                  WS_EX_CLIENTEDGE,
-                  // window class atom (name)
-                  "listview",   //MAKEINTATOM(WindowClassAtom),
-                  "listviewwindow", // no title-bar string yet
-                  // Style bits
-                  Style,
-                  r ? r->left : CW_USEDEFAULT,
-                  r ? r->top : CW_USEDEFAULT,
-                  r ? r->right - r->left + 1 : CW_USEDEFAULT,
-                  r ? r->bottom - r->top + 1 : CW_USEDEFAULT,
-                  // Parent Window
-                  parent == NULL ? (HWND)NULL : parent->GetHWND (),
-                  // use class menu
-                  (HMENU) MAKEINTRESOURCE (IDC_CHOOSE_LIST),
-                  // The application instance
-                  GetInstance (),
-                  // The this ptr, which we'll use to set up
-                  // the WindowProc reflection.
-                  reinterpret_cast<void *>((Window *)this));
-  if (GetHWND() == NULL)
-    {
-      Log (LOG_BABBLE) << "Failed to create PickView " << GetLastError () << endLog;
-      return false;
-    }
-
-  return true;
 }
 
 void
 PickView::defaultTrust (trusts trust)
 {
   this->deftrust = trust;
-
-  // force the picker to redraw
-  RECT r = GetClientRect ();
-  InvalidateRect (this->GetHWND(), &r, TRUE);
 }
 
-/* This recalculates all column widths and resets the view */
 void
 PickView::refresh()
 {
-  HDC dc = GetDC (GetHWND ());
-  
-  // we must set the font of the DC here, otherwise the width calculations
-  // will be off because the system will use the wrong font metrics
-  sysfont = GetStockObject (DEFAULT_GUI_FONT);
-  SelectObject (dc, sysfont);
-
-  // init headers for the current mode
-  set_headers ();
-  init_headers (dc);
-  
-  // save the current mode
-  views cur_view_mode = view_mode;
-  
-  // switch to the other type and do those headers
-  view_mode = (view_mode == PickView::views::Category) ? 
-                    PickView::views::PackageFull : PickView::views::Category;
-  set_headers ();
-  init_headers (dc);
-  ReleaseDC (GetHWND (), dc);
-
-  view_mode = cur_view_mode;
   setViewMode (view_mode);
 }

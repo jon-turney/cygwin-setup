@@ -16,75 +16,28 @@
 #ifndef SETUP_PICKCATEGORYLINE_H
 #define SETUP_PICKCATEGORYLINE_H
 
-
-class PickView;
-#include <vector>
-#include "PickLine.h"
 #include "package_meta.h"
+#include "ListView.h"
+#include "PickView.h"
 
-class PickCategoryLine:public PickLine
+class PickCategoryLine: public ListViewLine
 {
 public:
-  PickCategoryLine (PickView & aView, Category & _cat, size_t thedepth = 0, bool aBool =
-		      true, bool aBool2 =
-		      true):PickLine (_cat.first),
-    current_default (packagemeta::Default_action), cat (_cat), labellength (0),
-    depth (thedepth), theView (aView)
+  PickCategoryLine (PickView & aView, CategoryTree * _tree) :
+    cat_tree (_tree),
+    theView (aView)
   {
-    if (aBool)
-      {
-	collapsed = true;
-	show_label = true;
-      }
-    else
-      {
-	collapsed = false;
-	show_label = aBool2;
-      }
   };
   ~PickCategoryLine ()
   {
-    empty ();
   }
-  void ShowLabel (bool aBool = true)
-  {
-    show_label = aBool;
-    if (!show_label)
-      collapsed = false;
-  }
-  virtual void paint (HDC hdc, HRGN hUpdRgn, int x, int y, int row, int show_cat);
-  virtual int click (int const myrow, int const ClickedRow, int const x);
-  virtual int itemcount () const
-  {
-    if (collapsed)
-      return 1;
-    int t = show_label ? 1 : 0;
-    for (size_t n = 0; n < bucket.size (); ++n)
-        t += bucket[n]->itemcount ();
-      return t;
-  };
-  virtual bool IsContainer (void) const
-  {
-    return true;
-  }
-  virtual void insert (PickLine & aLine)
-  {
-    bucket.push_back (&aLine);
-  }
-  void empty ();
-  virtual int set_action (packagemeta::_actions);
+
+  const std::string get_text(int col) const;
+  int do_action(int col);
+
 private:
-  packagemeta::_actions
-  current_default;
-  Category & cat;
-  bool collapsed;
-  bool show_label;
-  size_t labellength;
-  size_t spin_x;    // x-coord where the spin button starts
-  size_t depth;
-  PickCategoryLine (PickCategoryLine const &);
-  PickCategoryLine & operator= (PickCategoryLine const &);
-  std::vector < PickLine * > bucket;
-  PickView& theView;
+  CategoryTree * cat_tree;
+  PickView & theView;
 };
+
 #endif /* SETUP_PICKCATEGORYLINE_H */

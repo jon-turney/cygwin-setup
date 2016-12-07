@@ -143,7 +143,7 @@ main_display ()
 
   // Initialize common controls
   INITCOMMONCONTROLSEX icce = { sizeof (INITCOMMONCONTROLSEX),
-				ICC_WIN95_CLASSES };
+				ICC_WIN95_CLASSES | ICC_LISTVIEW_CLASSES };
   InitCommonControlsEx (&icce);
 
   // Initialize COM and ShellLink instance here.  For some reason

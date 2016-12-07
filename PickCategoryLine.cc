@@ -16,134 +16,37 @@
 #include "PickCategoryLine.h"
 #include "package_db.h"
 #include "PickView.h"
+#include "window.h"
 
-void
-PickCategoryLine::empty (void)
+const std::string
+PickCategoryLine::get_text (int col_num) const
 {
-  while (bucket.size ())
+  if (col_num == pkgname_col)
     {
-      PickLine *line = *bucket.begin ();
-      delete line;
-      bucket.erase (bucket.begin ());
+      std::string s = (cat_tree->collapsed() ? "[+] " : "[-] ") + cat_tree->category().first;
+      return s;
     }
-}
-
-void
-PickCategoryLine::paint (HDC hdc, HRGN hUpdRgn, int x, int y, int row, int show_cat)
-{
-  int r = y + row * theView.row_height;
-  if (show_label)
+  else if (col_num == new_col)
     {
-      int x2 = x + theView.headers[theView.cat_col].x + HMARGIN / 2 + depth * TREE_INDENT;
-      int by = r + (theView.tm.tmHeight / 2) - 5;
-
-      // draw the '+' or '-' box
-      theView.DrawIcon (hdc, x2, by, (collapsed ? theView.bm_treeplus : theView.bm_treeminus));
-
-      // draw the category name
-      TextOut (hdc, x2 + 11 + ICON_MARGIN, r, cat.first.c_str(), cat.first.size());
-      if (!labellength)
-	{
-	  SIZE s;
-	  GetTextExtentPoint32 (hdc, cat.first.c_str(), cat.first.size(), &s);
-	  labellength = s.cx;
-	}
-      
-      // draw the 'spin' glyph
-      spin_x = x2 + 11 + ICON_MARGIN + labellength + ICON_MARGIN;
-      theView.DrawIcon (hdc, spin_x, by, theView.bm_spin);
-      
-      // draw the caption ('Default', 'Install', etc)
-      TextOut (hdc, spin_x + SPIN_WIDTH + ICON_MARGIN, r, 
-               packagemeta::action_caption (current_default),
-               strlen (packagemeta::action_caption (current_default)));
-      row++;
+      return packagemeta::action_caption (cat_tree->action());
     }
-  if (collapsed)
-    return;
-  
-  // are the siblings containers?
-  if (bucket.size () && bucket[0]->IsContainer ())
-    {
-      for (size_t n = 0; n < bucket.size (); n++)
-        {
-          bucket[n]->paint (hdc, hUpdRgn, x, y, row, show_cat);
-          row += bucket[n]->itemcount ();
-        }
-    }
-  else
-    {
-      // calculate the maximum y value we expect for this group of lines
-      int max_y = y + (row + bucket.size ()) * theView.row_height;
-    
-      // paint all contained rows, columnwise
-      for (int i = 0; theView.headers[i].text; i++)
-        {
-          RECT r;
-          r.left = x + theView.headers[i].x;
-          r.right = r.left + theView.headers[i].width;
-    
-          // set up a clipping mask if necessary
-          if (theView.headers[i].needs_clip)
-            IntersectClipRect (hdc, r.left, y, r.right, max_y);
-    
-          // draw each row in this column
-          for (unsigned int n = 0; n < bucket.size (); n++)
-            {
-              // test for visibility
-              r.top = y + ((row + n) * theView.row_height);
-              r.bottom = r.top + theView.row_height;      
-              if (RectVisible (hdc, &r) != 0)
-                bucket[n]->paint (hdc, hUpdRgn, (int)r.left, (int)r.top, i, show_cat);
-            }
-    
-          // restore original clipping area
-          if (theView.headers[i].needs_clip)
-            SelectClipRgn (hdc, hUpdRgn);
-        }
-    }
+  return "";
 }
 
 int
-PickCategoryLine::click (int const myrow, int const ClickedRow, int const x)
+PickCategoryLine::do_action(int col_num)
 {
-  if (myrow == ClickedRow && show_label)
+  if (col_num == pkgname_col)
     {
-      if ((size_t) x >= spin_x)
-	{
-	  current_default = (packagemeta::_actions)((current_default + 1) % 4);
-	  return set_action (current_default);
-	}
-      else
-	{
-	  collapsed = !collapsed;
-	  int accum_row = 0;
-	  for (size_t n = 0; n < bucket.size (); ++n)
-	    accum_row += bucket[n]->itemcount ();
-	  return collapsed ? accum_row : -accum_row;
-	}
+      cat_tree->collapsed() = ! cat_tree->collapsed();
+      theView.refresh();
     }
-  else
+  else if (col_num == new_col)
     {
-      int accum_row = myrow + (show_label ? 1 : 0);
-      for (size_t n = 0; n < bucket.size (); ++n)
-	{
-	  if (accum_row + bucket[n]->itemcount () > ClickedRow)
-	    return bucket[n]->click (accum_row, ClickedRow, x);
-	  accum_row += bucket[n]->itemcount ();
-	}
-      return 0;
+      theView.GetParent ()->SetBusy ();
+      int u = cat_tree->do_action((packagemeta::_actions)((cat_tree->action() + 1) % 4), theView.deftrust);
+      theView.GetParent ()->ClearBusy ();
+      return u;
     }
-}
-
-int 
-PickCategoryLine::set_action (packagemeta::_actions action)
-{
-  theView.GetParent ()->SetBusy ();
-  current_default = action;
-  int accum_diff = 0;
-  for (size_t n = 0; n < bucket.size (); n++)
-      accum_diff += bucket[n]->set_action (current_default);
-  theView.GetParent ()->ClearBusy ();
-  return accum_diff;
+  return 1;
 }

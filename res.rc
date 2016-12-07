@@ -1,5 +1,6 @@
 #include "resource.h"
 #include "windows.h"
+#include "commctrl.h"
 
 #define SETUP_STANDARD_DIALOG_W	339
 #define SETUP_STANDARD_DIALOG_H	179
@@ -357,8 +358,8 @@ BEGIN
                     SETUP_EXP_X, 30, SETUP_KPCE_W, 14
     CONTROL         "", IDC_HEADSEPARATOR, "Static", SS_BLACKFRAME | SS_SUNKEN,
                     0, 28, SETUP_STANDARD_DIALOG_W, 1
-    CONTROL         "", IDC_LISTVIEW_POS, "Static", SS_BLACKFRAME | NOT 
-                    WS_VISIBLE, 7, 45, SETUP_STANDARD_DIALOG_W - 14, 122
+    CONTROL         "", IDC_CHOOSE_LIST, WC_LISTVIEW, LVS_NOSORTHEADER | LVS_REPORT | LVS_SINGLESEL,
+                    7, 47, SETUP_STANDARD_DIALOG_W - 14, 120, WS_EX_CLIENTEDGE
     CONTROL         "&Hide obsolete packages", IDC_CHOOSE_HIDE,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 167, 160, 14
     ICON            IDI_CYGWIN, IDC_HEADICON, SETUP_HEADICON_X, 0, 21, 20
@@ -527,18 +528,6 @@ IDI_CYGWIN_TERMINAL     ICON    DISCARDABLE     "cygwin-terminal.ico"
 CYGWIN-SETUP.ICON       FILE    DISCARDABLE     "cygwin-setup.ico"
 CYGWIN.ICON             FILE    DISCARDABLE     "cygwin.ico"
 CYGWIN-TERMINAL.ICON    FILE    DISCARDABLE     "cygwin-terminal.ico"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDB_SPIN                BITMAP  DISCARDABLE     "choose-spin.bmp"
-IDB_CHECK_YES           BITMAP  DISCARDABLE     "check-yes.bmp"
-IDB_CHECK_NO            BITMAP  DISCARDABLE     "check-no.bmp"
-IDB_CHECK_NA            BITMAP  DISCARDABLE     "check-na.bmp"
-IDB_TREE_PLUS           BITMAP  DISCARDABLE     "tree-plus.bmp"
-IDB_TREE_MINUS          BITMAP  DISCARDABLE     "tree-minus.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //

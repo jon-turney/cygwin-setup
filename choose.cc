@@ -79,7 +79,6 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
   {IDC_CHOOSE_SYNC, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_EXP, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_VIEW, 		CP_LEFT,    CP_TOP},
-  {IDC_LISTVIEW_POS, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_VIEWCAPTION,	CP_LEFT,    CP_TOP},
   {IDC_CHOOSE_LIST,		CP_STRETCH, CP_STRETCH},
   {IDC_CHOOSE_HIDE,             CP_LEFT,    CP_BOTTOM},
@@ -130,23 +129,33 @@ ChooserPage::~ChooserPage ()
     }
 }
 
+static ListView::Header pkg_headers[] = {
+  {"Package",     LVCFMT_LEFT},
+  {"Current",     LVCFMT_LEFT},
+  {"New",         LVCFMT_LEFT},
+  {"Bin?",        LVCFMT_LEFT},
+  {"Src?",        LVCFMT_LEFT},
+  {"Categories",  LVCFMT_LEFT},
+  {"Size",        LVCFMT_RIGHT},
+  {"Description", LVCFMT_LEFT},
+  {0}
+};
+
 void
 ChooserPage::createListview ()
 {
   SetBusy ();
-  static std::vector<packagemeta *> empty_cat;
-  static Category dummy_cat (std::string ("All"), empty_cat);
-  chooser = new PickView (dummy_cat);
-  RECT r = getDefaultListViewSize();
-  if (!chooser->Create(this, WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_VISIBLE,&r))
-    throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-			 "Unable to create chooser list window",
-			 APPERR_WINDOW_ERROR);
-  chooser->init(PickView::views::Category);
-  chooser->Show(SW_SHOW);
+
+  listview = new ListView();
+  listview->init(GetHWND (), IDC_CHOOSE_LIST, pkg_headers);
+
+  chooser = new PickView();
+  chooser->init(PickView::views::Category, listview, this);
   chooser->setViewMode (!is_new_install || UpgradeAlsoOption || hasManualSelections ?
-			PickView::views::PackagePending : PickView::views::Category);
+                        PickView::views::PackagePending : PickView::views::Category);
+
   SendMessage (GetDlgItem (IDC_CHOOSE_VIEW), CB_SETCURSEL, (WPARAM)chooser->getViewMode(), 0);
+
   ClearBusy ();
 }
 
@@ -238,16 +247,6 @@ ChooserPage::setPrompt(char const *aString)
   ::SetWindowText (GetDlgItem (IDC_CHOOSE_INST_TEXT), aString);
 }
 
-RECT
-ChooserPage::getDefaultListViewSize()
-{
-  RECT result;
-  getParentRect (GetHWND (), GetDlgItem (IDC_LISTVIEW_POS), &result);
-  result.top += 2;
-  result.bottom -= 2;
-  return result;
-}
-
 void
 ChooserPage::OnInit ()
 {
@@ -333,6 +332,17 @@ ChooserPage::OnActivate()
 
       activated = true;
     }
+
+  packagedb::categoriesType::iterator it = db.categories.find("All");
+  if (it == db.categories.end ())
+    listview->setEmptyText("No packages found.");
+  if (source == IDC_SOURCE_DOWNLOAD)
+    listview->setEmptyText("Nothing to download.");
+  else
+    listview->setEmptyText("Nothing to install or update.");
+
+  chooser->build_category_tree();
+  chooser->init_headers();
 
   ClearBusy();
 
@@ -445,7 +455,7 @@ bool
 ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
 #if DEBUG
-  Log (LOG_BABBLE) << "OnMessageCmd " << id << " " << hwndctl << " " << std::hex << code << endLog;
+  Log (LOG_BABBLE) << "ChooserPage::OnMessageCmd " << id << " " << hwndctl << " " << std::hex << code << endLog;
 #endif
 
   if (id == IDC_CHOOSE_SEARCH_EDIT)
@@ -547,10 +557,19 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
   return false;
 }
 
-INT_PTR CALLBACK
-ChooserPage::OnMouseWheel (UINT message, WPARAM wParam, LPARAM lParam)
+bool
+ChooserPage::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
 {
-  return chooser->WindowProc (message, wParam, lParam);
+#if DEBUG
+  Log (LOG_BABBLE) << "ChooserPage::OnNotify id:" << pNmHdr->idFrom << " hwnd:" << pNmHdr->hwndFrom << " code:" << (int)pNmHdr->code << endLog;
+#endif
+
+  // offer messages to the listview
+  if (listview->OnNotify(pNmHdr, pResult))
+    return true;
+
+  // we don't care
+  return false;
 }
 
 INT_PTR CALLBACK

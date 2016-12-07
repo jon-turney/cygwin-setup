@@ -17,84 +17,17 @@
 #define SETUP_PICKVIEW_H
 
 #include <string>
-#include "win32.h"
-#include "window.h"
-#include "RECTWrapper.h"
 
-#define HMARGIN         10
-#define ROW_MARGIN      5
-#define ICON_MARGIN     4
-#define SPIN_WIDTH      11
-#define CHECK_SIZE      11
-#define TREE_INDENT     12
-
-#define CATEGORY_EXPANDED  0
-#define CATEGORY_COLLAPSED 1
-
-class PickView;
-#include "PickCategoryLine.h"
 #include "package_meta.h"
+#include "ListView.h"
 
-class PickView : public Window
+class Window;
+class CategoryTree;
+
+class PickView
 {
 public:
-  virtual bool Create (Window * Parent = NULL, DWORD Style = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN, RECT * r = NULL);
-  virtual bool registerWindowClass ();
-  enum class views;
-  class Header;
-  int num_columns;
-  void defaultTrust (trusts trust);
-  void setViewMode (views mode);
-  views getViewMode ();
-  void DrawIcon (HDC hdc, int x, int y, HANDLE hIcon);
-  void paint (HWND hwnd);
-  LRESULT CALLBACK list_click (HWND hwnd, BOOL dblclk, int x, int y, UINT hitCode);
-  LRESULT CALLBACK list_hscroll (HWND hwnd, HWND hctl, UINT code, int pos);
-  LRESULT CALLBACK list_vscroll (HWND hwnd, HWND hctl, UINT code, int pos);
-  void set_vscroll_info (const RECT &r);
-  virtual LRESULT WindowProc (UINT uMsg, WPARAM wParam, LPARAM lParam);
-  Header *headers;
-  PickView (Category & cat);
-  void init(views _mode);
-  ~PickView();
-  static const char *mode_caption (views mode);
-  void setObsolete (bool doit);
-  void insert_pkg (packagemeta &);
-  void insert_category (Category *, bool);
-  int click (int row, int x);
-  void refresh();
-  int current_col;
-  int new_col;
-  int bintick_col;
-  int srctick_col;
-  int cat_col;
-  int size_col;
-  int pkg_col;
-  int last_col;
-  int row_height;
-  TEXTMETRIC tm;
-  HDC bitmap_dc, icon_dc;
-  HBITMAP bm_icon;
-  HRGN rect_icon;
-  HBRUSH bg_fg_brush;
-  HANDLE bm_spin, bm_checkyes, bm_checkno, bm_checkna, bm_treeplus, bm_treeminus;
-  trusts deftrust;
-  HANDLE sysfont;
-  int scroll_ulc_x, scroll_ulc_y;
-  int header_height;
-  PickCategoryLine contents;
-  void scroll (HWND hwnd, int which, int *var, int code, int howmany);
-
-  void SetPackageFilter (const std::string &filterString)
-  {
-    packageFilterString = filterString;
-  }
-  
-  
-  HWND ListHeader (void) const
-  {
-    return listheader;
-  }
+  trusts deftrust; // XXX: needs accessor
 
   enum class views
   {
@@ -106,35 +39,135 @@ public:
     Category,
   };
 
-  class Header
+  PickView ();
+  ~PickView();
+  void defaultTrust (trusts trust);
+  void setViewMode (views mode);
+  views getViewMode ();
+  void init(views _mode, ListView *_listview, Window *parent);
+  void build_category_tree();
+  static const char *mode_caption (views mode);
+  void setObsolete (bool doit);
+  void refresh();
+  void init_headers ();
+
+  void SetPackageFilter (const std::string &filterString)
   {
-  public:
-    const char *text;
-    int width;
-    int x;
-    bool needs_clip;
-  };
+    packageFilterString = filterString;
+  }
+
+  Window *GetParent(void) { return parent; }
 
 private:
-  static ATOM WindowClassAtom;
-  HWND listheader;
   views view_mode;
+  ListView *listview;
   bool showObsolete;
   std::string packageFilterString;
+  ListViewContents contents;
+  CategoryTree *cat_tree_root;
+  Window *parent;
 
-  // Stuff needed to handle resizing
-  bool hasWindowRect;
-  RECTWrapper lastWindowRect;
-  int total_delta_x;
+  void insert_pkg (packagemeta &);
+  void insert_category (CategoryTree *);
+};
 
-  int set_header_column_order (views vm);
-  void set_headers ();
-  void init_headers (HDC dc);
-  void note_width (Header *hdrs, HDC dc, const std::string& string,
-                   int addend, int column);
+enum
+{
+ pkgname_col = 0, // package/category name
+ current_col = 1,
+ new_col = 2,     // action
+ bintick_col = 3,
+ srctick_col = 4,
+ cat_col = 5,
+ size_col = 6,
+ pkg_col = 7,     // desc
 };
 
 bool isObsolete (std::set <std::string, casecompare_lt_op> &categories);
 bool isObsolete (const std::string& catname);
+
+//
+// Helper class which stores the contents and collapsed/expanded state for each
+// category (and the pseudo-category 'All')
+//
+
+class CategoryTree
+{
+public:
+  CategoryTree(Category & cat, bool collapsed) :
+    _cat (cat),
+    _collapsed(collapsed),
+    _action (packagemeta::Default_action)
+  {
+  }
+
+  ~CategoryTree()
+  {
+  }
+
+  std::vector <CategoryTree *> & bucket()
+  {
+    return _bucket;
+  }
+
+  bool &collapsed()
+  {
+    return _collapsed;
+  }
+
+  const Category &category()
+  {
+    return _cat;
+  }
+
+  packagemeta::_actions & action()
+  {
+    return _action;
+  }
+
+  int do_action(packagemeta::_actions action_id, trusts const deftrust)
+  {
+    int u = 1;
+    _action = action_id;
+
+    if (_bucket.size())
+      {
+        for (std::vector <CategoryTree *>::const_iterator i = _bucket.begin();
+             i != _bucket.end();
+             i++)
+          {
+            // recurse for all contained categories
+            int l = (*i)->do_action(action_id, deftrust);
+
+            if (!_collapsed)
+              u += l;
+          }
+      }
+    else
+      {
+        // otherwise, this is a leaf category, so apply action to all packages
+        // in this category
+        int l = 0;
+        for (std::vector <packagemeta *>::const_iterator pkg = _cat.second.begin();
+             pkg != _cat.second.end();
+             ++pkg)
+          {
+            (*pkg)->set_action(action_id, (*pkg)->trustp(true, deftrust));
+            l++;
+          }
+
+        // these lines need to be updated, if displayed
+        if (!_collapsed)
+          u += l;
+      }
+    return u;
+  }
+
+private:
+  Category & _cat;
+  bool _collapsed;
+  std::vector <CategoryTree *> _bucket;
+  packagemeta::_actions _action;
+};
 
 #endif /* SETUP_PICKVIEW_H */
