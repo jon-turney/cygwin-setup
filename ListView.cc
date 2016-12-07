@@ -274,18 +274,31 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
 #endif
       int iRow = pNmItemAct->iItem;
       int iCol = pNmItemAct->iSubItem;
+      if (iRow < 0)
+        return false;
 
-      if (iRow >= 0)
+      int update = 0;
+
+      if (headers[iCol].type == ListView::ControlType::popup)
+        {
+          POINT p;
+          // position pop-up menu at the location of the click
+          GetCursorPos(&p);
+
+          update = popup_menu(iRow, iCol, p);
+        }
+      else
         {
           // Inform the item of the click
-          int update = (*contents)[iRow]->do_action(iCol);
-
-          // Update items, if needed
-          if (update > 0)
-            {
-              ListView_RedrawItems(hWndListView, iRow, iRow + update -1);
-            }
+          update = (*contents)[iRow]->do_action(iCol, 0);
         }
+
+      // Update items, if needed
+      if (update > 0)
+        {
+          ListView_RedrawItems(hWndListView, iRow, iRow + update -1);
+        }
+
       return true;
     }
     break;
@@ -346,6 +359,41 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
                   result = CDRF_SKIPDEFAULT;
                 }
                 break;
+
+              case ListView::ControlType::popup:
+                {
+                  // let the control draw the text, but notify us afterwards
+                  result = CDRF_NOTIFYPOSTPAINT;
+                }
+                break;
+              }
+
+            *pResult = result;
+            return true;
+          }
+        case CDDS_SUBITEM | CDDS_ITEMPOSTPAINT:
+          {
+            LRESULT result = CDRF_DODEFAULT;
+            int iCol = pNmLvCustomDraw->iSubItem;
+            int iRow = pNmLvCustomDraw->nmcd.dwItemSpec;
+
+            switch (headers[iCol].type)
+              {
+              default:
+                result = CDRF_DODEFAULT;
+                break;
+
+              case ListView::ControlType::popup:
+                {
+                  // draw the control at the RHS of the cell
+                  RECT r;
+                  ListView_GetSubItemRect(hWndListView, iRow, iCol, LVIR_BOUNDS, &r);
+                  r.left = r.right - GetSystemMetrics(SM_CXVSCROLL);
+                  DrawFrameControl(pNmLvCustomDraw->nmcd.hdc, &r, DFC_SCROLL,DFCS_SCROLLCOMBOBOX);
+
+                  result = CDRF_DODEFAULT;
+                }
+                break;
               }
             *pResult = result;
             return true;
@@ -368,4 +416,47 @@ void
 ListView::setEmptyText(const char *text)
 {
   empty_list_text = text;
+}
+
+int
+ListView::popup_menu(int iRow, int iCol, POINT p)
+{
+  int update = 0;
+  // construct menu
+  HMENU hMenu = CreatePopupMenu();
+
+  MENUITEMINFO mii;
+  memset(&mii, 0, sizeof(mii));
+  mii.cbSize = sizeof(mii);
+  mii.fMask = MIIM_FTYPE | MIIM_STATE | MIIM_STRING | MIIM_ID;
+  mii.fType = MFT_STRING;
+
+  ActionList *al = (*contents)[iRow]->get_actions(iCol);
+
+  Actions::iterator i;
+  int j = 1;
+  for (i = al->list.begin (); i != al->list.end (); ++i, ++j)
+    {
+      BOOL res;
+      mii.dwTypeData = (char *)i->name.c_str();
+      mii.fState = (i->selected ? MFS_CHECKED : MFS_UNCHECKED |
+                    i->enabled ? MFS_ENABLED : MFS_DISABLED);
+      mii.wID = j;
+
+      res = InsertMenuItem(hMenu, -1, TRUE, &mii);
+      if (!res) Log (LOG_BABBLE) << "InsertMenuItem failed " << endLog;
+    }
+
+  int id = TrackPopupMenu(hMenu,
+                          TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_NOANIMATION,
+                          p.x, p.y, 0, hWndListView, NULL);
+
+  // Inform the item of the menu choice
+  if (id)
+    update = (*contents)[iRow]->do_action(iCol, al->list[id-1].id);
+
+  DestroyMenu(hMenu);
+  delete al;
+
+  return update;
 }

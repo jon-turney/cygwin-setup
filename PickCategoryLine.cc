@@ -17,6 +17,7 @@
 #include "package_db.h"
 #include "PickView.h"
 #include "window.h"
+#include "package_meta.h"
 
 const std::string
 PickCategoryLine::get_text (int col_num) const
@@ -34,7 +35,7 @@ PickCategoryLine::get_text (int col_num) const
 }
 
 int
-PickCategoryLine::do_action(int col_num)
+PickCategoryLine::do_action(int col_num, int action_id)
 {
   if (col_num == pkgname_col)
     {
@@ -44,9 +45,24 @@ PickCategoryLine::do_action(int col_num)
   else if (col_num == new_col)
     {
       theView.GetParent ()->SetBusy ();
-      int u = cat_tree->do_action((packagemeta::_actions)((cat_tree->action() + 1) % 4), theView.deftrust);
+      int u = cat_tree->do_action((packagemeta::_actions)(action_id), theView.deftrust);
       theView.GetParent ()->ClearBusy ();
       return u;
     }
   return 1;
+}
+
+ActionList *
+PickCategoryLine::get_actions(int col) const
+{
+  ActionList *al = new ActionList();
+  packagemeta::_actions current_default = cat_tree->action();
+
+  al->add("Default", (int)packagemeta::Default_action, (current_default == packagemeta::Default_action), TRUE);
+  al->add("Install", (int)packagemeta::Install_action, (current_default == packagemeta::Install_action), TRUE);
+  al->add(packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve",
+          (int)packagemeta::Reinstall_action, (current_default == packagemeta::Reinstall_action), TRUE);
+  al->add("Uninstall", (int)packagemeta::Uninstall_action, (current_default == packagemeta::Uninstall_action), TRUE);
+
+  return al;
 }

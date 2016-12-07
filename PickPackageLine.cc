@@ -100,14 +100,13 @@ PickPackageLine::get_text(int col_num) const
 }
 
 int
-PickPackageLine::do_action(int col_num)
+PickPackageLine::do_action(int col_num, int action_id)
 {
   if (col_num == new_col)
     {
-      pkg.set_action (theView.deftrust);
+      pkg.select_action(action_id, theView.deftrust);
       return 1;
     }
-
   if (col_num == bintick_col)
     {
       if (pkg.desired.accessible ())
@@ -132,4 +131,15 @@ PickPackageLine::do_action(int col_num)
     }
 
   return 0;
+}
+
+ActionList *
+PickPackageLine::get_actions(int col_num) const
+{
+  if (col_num == new_col)
+    {
+      return pkg.list_actions (theView.deftrust);
+    }
+
+  return NULL;
 }

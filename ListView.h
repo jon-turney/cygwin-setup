@@ -14,6 +14,7 @@
 #ifndef SETUP_LISTVIEW_H
 #define SETUP_LISTVIEW_H
 
+#include "ActionList.h"
 #include "win32.h"
 #include <vector>
 
@@ -28,7 +29,8 @@ class ListViewLine
  public:
   virtual ~ListViewLine() {};
   virtual const std::string get_text(int col) const = 0;
-  virtual int do_action(int col) = 0;
+  virtual ActionList *get_actions(int col) const = 0;
+  virtual int do_action(int col, int id) = 0;
 };
 
 typedef std::vector<ListViewLine *> ListViewContents;
@@ -40,6 +42,7 @@ class ListView
   {
     text,
     checkbox,
+    popup,
   };
 
   class Header
@@ -75,6 +78,7 @@ class ListView
 
   void initColumns(HeaderList hl);
   void empty(void);
+  int popup_menu(int iRow, int iCol, POINT p);
 };
 
 #endif /* SETUP_LISTVIEW_H */

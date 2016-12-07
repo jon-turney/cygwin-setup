@@ -132,7 +132,7 @@ ChooserPage::~ChooserPage ()
 static ListView::Header pkg_headers[] = {
   {"Package",     LVCFMT_LEFT,  ListView::ControlType::text},
   {"Current",     LVCFMT_LEFT,  ListView::ControlType::text},
-  {"New",         LVCFMT_LEFT,  ListView::ControlType::text},
+  {"New",         LVCFMT_LEFT,  ListView::ControlType::popup},
   {"Bin?",        LVCFMT_LEFT,  ListView::ControlType::checkbox},
   {"Src?",        LVCFMT_LEFT,  ListView::ControlType::checkbox},
   {"Categories",  LVCFMT_LEFT,  ListView::ControlType::text},

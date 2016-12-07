@@ -30,7 +30,8 @@ public:
   {
   };
   const std::string get_text(int col) const;
-  int do_action(int col);
+  ActionList *get_actions(int col_num) const;
+  int do_action(int col, int action_id);
 private:
   packagemeta & pkg;
   PickView & theView;
