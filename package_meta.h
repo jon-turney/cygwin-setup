@@ -26,6 +26,7 @@ class packagemeta;
 #include "package_version.h"
 #include "package_message.h"
 #include "script.h"
+#include "ActionList.h"
 
 typedef std::pair<const std::string, std::vector<packagemeta *> > Category;
 
@@ -52,7 +53,7 @@ public:
 
   enum _actions
     {
-     Default_action,
+     Default_action = 1,
      Install_action,
      Reinstall_action,
      Uninstall_action,
@@ -61,6 +62,8 @@ public:
 
   void set_action (trusts const t);
   void set_action (_actions, packageversion const & default_version);
+  ActionList *list_actions(trusts const trust);
+  void select_action (int id, trusts const deftrust);
 
   void set_message (const std::string& message_id, const std::string& message_string)
   {

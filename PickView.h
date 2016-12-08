@@ -152,7 +152,7 @@ public:
              pkg != _cat.second.end();
              ++pkg)
           {
-            (*pkg)->set_action(action_id, (*pkg)->trustp(true, deftrust));
+            (*pkg)->select_action(action_id, deftrust);
             l++;
           }
 

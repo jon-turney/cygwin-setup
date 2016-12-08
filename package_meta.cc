@@ -489,6 +489,75 @@ packagemeta::set_action (trusts const trust)
     user_picked = true;
 }
 
+void
+packagemeta::select_action (int id, trusts const deftrust)
+{
+  if (id <= 0)
+    {
+      // Install a specific version
+      std::set<packageversion>::iterator i = versions.begin ();
+      for (int j = -id; j > 0; j--)
+        i++;
+
+      set_action(Install_action, *i);
+    }
+  else
+    {
+      if (id == packagemeta::Default_action)
+        set_action((packagemeta::_actions)id, installed);
+      else
+        set_action((packagemeta::_actions)id, trustp (true, deftrust));
+    }
+
+  /* Memorize the fact that the user picked at least once. */
+  if (!installed)
+    user_picked = true;
+}
+
+ActionList *
+packagemeta::list_actions(trusts const trust)
+{
+  // first work out the current action, so we can indicate that
+  _actions action;
+
+  if (!desired && installed)
+    action = Uninstall_action;
+  else if (!desired)
+    action = Default_action; // skip
+  else if (desired == installed && picked())
+    action = Reinstall_action;
+  else if (desired == installed)
+    action = Default_action; // keep
+  else
+    action = Install_action;
+
+  // now build the list of possible actions
+  ActionList *al = new ActionList();
+
+  al->add("Uninstall", (int)Uninstall_action, (action == Uninstall_action), bool(installed));
+  al->add("Skip", (int)Default_action, (action == Default_action) && !installed, !installed);
+
+  std::set<packageversion>::iterator i;
+  for (i = versions.begin (); i != versions.end (); ++i)
+    {
+      if (*i == installed)
+        {
+          al->add("Keep", (int)Default_action, (action == Default_action), TRUE);
+          al->add(packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve",
+                  (int)Reinstall_action, (action == Reinstall_action), TRUE);
+        }
+      else
+        {
+          al->add(i->Canonical_version().c_str(),
+                  -std::distance(versions.begin (), i),
+                  (action == Install_action) && (*i == desired),
+                  TRUE);
+        }
+    }
+
+  return al;
+}
+
 // Set a particular type of action.
 void
 packagemeta::set_action (_actions action, packageversion const &default_version)

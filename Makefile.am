@@ -102,6 +102,7 @@ inilint_SOURCES = \
 	-lshlwapi -lcomctl32 -lole32 -lpsapi -luuid -lntdll -lwininet -lws2_32 -lmingw32
 @SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 @SETUP@_SOURCES = \
+	actionlist.h \
 	AntiVirus.cc \
 	AntiVirus.h \
 	archive.cc \
