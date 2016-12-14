@@ -112,7 +112,7 @@ singleitem /* non-empty */
  | SHA512LINE SHA512 NL		{ iniBuilder->buildInstallSHA512 ((unsigned char *)$2); }
  | SOURCEPACKAGE source NL
  | CATEGORY categories NL
- | INSTALL STRING { iniBuilder->buildPackageInstall ($2); } installmeta NL
+ | INSTALL STRING STRING { iniBuilder->buildPackageInstall ($2); iniBuilder->buildInstallSize($3);} installchksum NL
  | SOURCE STRING STRING sourcechksum NL {iniBuilder->buildPackageSource ($2, $3);}
  | PROVIDES 		{ iniBuilder->buildBeginProvides(); } packagelist NL
  | BINARYPACKAGE  { iniBuilder->buildBeginBinary (); } packagelist NL
@@ -141,17 +141,13 @@ categories: /* empty */
  | categories STRING		{ iniBuilder->buildPackageCategory ($2); }
  ;
 
-installmeta: /* empty */
- | STRING installchksum		{ iniBuilder->buildInstallSize($1); }
- ;
-
-installchksum: /* empty */
- | MD5 			{ iniBuilder->buildInstallMD5 ((unsigned char *)$1);}
+installchksum /* non-empty */
+ : MD5 			{ iniBuilder->buildInstallMD5 ((unsigned char *)$1);}
  | SHA512		{ iniBuilder->buildInstallSHA512 ((unsigned char *)$1);}
  ;
 
-sourcechksum: /* empty */
- | MD5 			{ iniBuilder->buildSourceMD5 ((unsigned char *)$1); }
+sourcechksum /* non-empty */
+ : MD5 			{ iniBuilder->buildSourceMD5 ((unsigned char *)$1); }
  | SHA512 		{ iniBuilder->buildSourceSHA512 ((unsigned char *)$1); }
  ;
 
