@@ -146,13 +146,6 @@ B64	[a-zA-Z0-9_-]
 "Replaces:"		return REPLACES;
 "Provides:"		return PROVIDES;
 
-"apath:"		return APATH;
-"ppath:"		return PPATH;
-
-"include-setup:"	return INCLUDE_SETUP;
-
-"download-url:"		return DOWNLOAD_URL;
-
 ^{STR}":"		ignore_line ();
 
 "[curr]"		return T_CURR;
@@ -163,8 +156,6 @@ B64	[a-zA-Z0-9_-]
 
 "("			return OPENBRACE;
 ")"			return CLOSEBRACE;
-"["			return OPENSQUARE;
-"]"			return CLOSESQUARE;
 "<<"			return LT;
 ">>"			return GT;
 ">="			return GTEQUAL;
@@ -176,9 +167,6 @@ B64	[a-zA-Z0-9_-]
 "|"			return OR;
 "@"			return AT;
 
-{STR}"@"{STR}		{ yylval = new char [strlen(yytext) + 1];
-    			  strcpy (yylval, yytext);
-			  return EMAIL; }
 {STR}			{ yylval = new char [strlen(yytext) + 1];
   			  strcpy (yylval, yytext);
 			  return STRING; }
