@@ -43,7 +43,6 @@ static void ignore_line (void);
 %option never-interactive
 
 %x descriptionstate
-%x eolstate
 
 STR	[!a-zA-Z0-9_./:\+~-]+
 HEX	[0-9a-f]
@@ -124,16 +123,11 @@ B64	[a-zA-Z0-9_-]
 "MD5sum:"		return MD5LINE;
 "SHA512:"		return SHA512LINE;
 "Installed-Size:"	return INSTALLEDSIZE;
-"Maintainer:"		BEGIN (eolstate); return MAINTAINER;
 "Architecture:"		return ARCHITECTURE;
 "Source:"		return SOURCEPACKAGE;
 "Binary:"		return BINARYPACKAGE;
 "Build-Depends:"	return BUILDDEPENDS;
 "Build-Depends-Indep:"	return BUILDDEPENDS; /* technicallyincorrect :[ */
-"Standards-Version:"	return STANDARDSVERSION; 
-"Format:"		return FORMAT;
-"Directory:"		return DIRECTORY;
-"Files:"		return FILES;
 
 "category:"|"Section:"	return CATEGORY;
 "Priority:"		return PRIORITY;
@@ -179,8 +173,6 @@ B64	[a-zA-Z0-9_-]
 				  return STRTOEOL; }
 <descriptionstate>\n	{ return NL; }
 <descriptionstate>"\n"+	{BEGIN(INITIAL); return PARAGRAPH;}
-<eolstate>[^\n]+	{return STRING; }
-<eolstate>\n		{BEGIN(INITIAL); return NL; }
 
 \n			{ return NL; }
 .			{ return *yytext;}

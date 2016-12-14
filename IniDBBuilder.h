@@ -30,15 +30,12 @@ public:
   virtual void buildPackageLDesc (const std::string& ) = 0;
   virtual void buildPackageInstall (const std::string& ) = 0;
   virtual void buildPackageSource (const std::string&, const std::string&) = 0;
-  virtual void buildSourceFile (unsigned char const[16],
-                                const std::string&, const std::string&) = 0;
   virtual void buildPackageTrust (int) = 0;
   virtual void buildPackageCategory (const std::string& ) = 0;
   virtual void buildBeginDepends () = 0;
   virtual void buildBeginPreDepends () = 0;
   virtual void buildPriority (const std::string& ) = 0;
   virtual void buildInstalledSize (const std::string& ) = 0;
-  virtual void buildMaintainer (const std::string& ) = 0;
   virtual void buildArchitecture (const std::string& ) = 0;
   virtual void buildInstallSize (const std::string& ) = 0;
   virtual void buildInstallSHA512 (unsigned char const[64]) = 0;

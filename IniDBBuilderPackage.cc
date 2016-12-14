@@ -175,13 +175,6 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
 }
 
 void
-IniDBBuilderPackage::buildSourceFile (unsigned char const * md5,
-                                      const std::string& size,
-                                      const std::string& path)
-{
-}
-
-void
 IniDBBuilderPackage::buildPackageTrust (int newtrust)
 {
   trust = newtrust;
@@ -240,9 +233,6 @@ IniDBBuilderPackage::buildInstalledSize (const std::string& size)
   Log (LOG_BABBLE) << "Installed size for " << cp->name << " is " << cbpv.source()->installedSize() << endLog;
 #endif
 }
-
-void
-IniDBBuilderPackage::buildMaintainer (const std::string& ){}
 
 /* TODO: we can multiple arch's for a given package,
    and it may befor either source or binary, so we need to either set both

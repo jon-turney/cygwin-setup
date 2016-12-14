@@ -41,14 +41,14 @@ void add_correct_version();
 %token SETUP_TIMESTAMP SETUP_VERSION PACKAGEVERSION INSTALL SOURCE SDESC LDESC
 %token CATEGORY DEPENDS REQUIRES
 %token T_PREV T_CURR T_TEST T_OTHER
-%token INSTALLEDSIZE MAINTAINER PRIORITY
+%token INSTALLEDSIZE PRIORITY
 %token MD5 MD5LINE SHA512 SHA512LINE
 %token DESCTAG FILESIZE ARCHITECTURE SOURCEPACKAGE
 %token RECOMMENDS PREDEPENDS
 %token SUGGESTS CONFLICTS REPLACES PROVIDES PACKAGENAME STRTOEOL PARAGRAPH
 %token COMMA OR NL AT
 %token OPENBRACE CLOSEBRACE EQUAL GT LT GTEQUAL LTEQUAL 
-%token BINARYPACKAGE BUILDDEPENDS STANDARDSVERSION FORMAT DIRECTORY FILES
+%token BINARYPACKAGE BUILDDEPENDS
 %token MESSAGE
 %token ARCH RELEASE
 
@@ -100,12 +100,8 @@ singleitem /* non-empty */
  | T_OTHER NL			{ iniBuilder->buildPackageTrust (TRUST_OTHER); }
  | PRIORITY STRING NL		{ iniBuilder->buildPriority ($2); }
  | INSTALLEDSIZE STRING NL	{ iniBuilder->buildInstalledSize ($2); }
- | MAINTAINER STRING NL		{ iniBuilder->buildMaintainer ($2); }
  | ARCHITECTURE packagearchspec NL 	{ iniBuilder->buildArchitecture ($2); }
  | FILESIZE STRING NL		{ iniBuilder->buildInstallSize($2); }
- | FORMAT STRING NL		{ /* TODO */ }
- | DIRECTORY STRING NL		{ /* TODO */ }
- | STANDARDSVERSION STRING NL	{ /* TODO */ }
  | MD5LINE MD5 NL	{ iniBuilder->buildInstallMD5 ((unsigned char *)$2); }
  | SHA512LINE SHA512 NL		{ iniBuilder->buildInstallSHA512 ((unsigned char *)$2); }
  | SOURCEPACKAGE source NL
@@ -122,7 +118,6 @@ singleitem /* non-empty */
  | SUGGESTS { iniBuilder->buildBeginSuggests(); } versionedpackagelist NL
  | REPLACES { iniBuilder->buildBeginReplaces(); }       versionedpackagelist NL
  | BUILDDEPENDS { iniBuilder->buildBeginBuildDepends(); } versionedpackagelist NL
- | FILES NL SourceFilesList
  | MESSAGE STRING STRING NL	{ iniBuilder->buildMessage ($2, $3); }
  | DESCTAG mlinedesc
  | error 			{ yyerror (std::string("unrecognized line ") 
@@ -205,8 +200,4 @@ operator /* non-empty */
  | GTEQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::MoreThanEquals); }
  ;
 
-SourceFilesList: /* empty */
- | SourceFilesList MD5 STRING STRING { iniBuilder->buildSourceFile ((unsigned char *)$2, $3, $4);  } NL
- ;
- 
 %%

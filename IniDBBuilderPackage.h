@@ -36,9 +36,6 @@ public:
   virtual void buildPackageLDesc (const std::string& );
   virtual void buildPackageInstall (const std::string& );
   virtual void buildPackageSource (const std::string&, const std::string&);
-  virtual void buildSourceFile (unsigned char const[16],
-								const std::string&,
-								const std::string&);
   virtual void buildPackageTrust (int);
   virtual void buildPackageCategory (const std::string& );
 
@@ -46,7 +43,6 @@ public:
   virtual void buildBeginPreDepends ();
   virtual void buildPriority (const std::string& );
   virtual void buildInstalledSize (const std::string& );
-  virtual void buildMaintainer (const std::string& );
   virtual void buildArchitecture (const std::string& );
   virtual void buildInstallSize (const std::string& );
   virtual void buildInstallSHA512 (unsigned char const[64]);
