@@ -118,7 +118,6 @@ B64	[a-zA-Z0-9_-]
 "message:"		return MESSAGE;
 "Source:"		return SOURCEPACKAGE;
 "Build-Depends:"	return BUILDDEPENDS;
-"Build-Depends-Indep:"	return BUILDDEPENDS; /* technicallyincorrect :[ */
 
 "category:"|"Section:"	return CATEGORY;
 "requires:"		return REQUIRES;
