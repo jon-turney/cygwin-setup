@@ -41,8 +41,8 @@ void add_correct_version();
 %token SETUP_TIMESTAMP SETUP_VERSION PACKAGEVERSION INSTALL SOURCE SDESC LDESC
 %token CATEGORY DEPENDS REQUIRES
 %token T_PREV T_CURR T_TEST T_OTHER
-%token MD5 MD5LINE SHA512 SHA512LINE
-%token FILESIZE SOURCEPACKAGE
+%token MD5 SHA512
+%token SOURCEPACKAGE
 %token PACKAGENAME
 %token COMMA OR NL AT
 %token OPENBRACE CLOSEBRACE EQUAL GT LT GTEQUAL LTEQUAL 
@@ -96,9 +96,6 @@ singleitem /* non-empty */
  | T_CURR NL			{ iniBuilder->buildPackageTrust (TRUST_CURR); }
  | T_TEST NL			{ iniBuilder->buildPackageTrust (TRUST_TEST); }
  | T_OTHER NL			{ iniBuilder->buildPackageTrust (TRUST_OTHER); }
- | FILESIZE STRING NL		{ iniBuilder->buildInstallSize($2); }
- | MD5LINE MD5 NL	{ iniBuilder->buildInstallMD5 ((unsigned char *)$2); }
- | SHA512LINE SHA512 NL		{ iniBuilder->buildInstallSHA512 ((unsigned char *)$2); }
  | SOURCEPACKAGE source NL
  | CATEGORY categories NL
  | INSTALL STRING STRING { iniBuilder->buildPackageInstall ($2); iniBuilder->buildInstallSize($3);} installchksum NL
