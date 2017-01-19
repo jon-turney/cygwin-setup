@@ -205,51 +205,6 @@ IniDBBuilderPackage::buildBeginDepends ()
 }
 
 void
-IniDBBuilderPackage::buildBeginPreDepends ()
-{
-#if DEBUG
-  Log (LOG_BABBLE) << "Beginning of a predepends statement" << endLog;
-  dumpAndList (currentAndList, Log (LOG_BABBLE));
-#endif
-  currentSpec = NULL;
-  currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = cbpv.predepends();
-}
-
-void
-IniDBBuilderPackage::buildPriority (const std::string& priority)
-{
-  cp->priority = priority;
-#if DEBUG
-  Log (LOG_BABBLE) << "Package " << cp->name << " is " << priority << endLog;
-#endif
-}
-
-void
-IniDBBuilderPackage::buildInstalledSize (const std::string& size)
-{
-  cbpv.source()->setInstalledSize (atoi(size.c_str()));
-#if DEBUG
-  Log (LOG_BABBLE) << "Installed size for " << cp->name << " is " << cbpv.source()->installedSize() << endLog;
-#endif
-}
-
-/* TODO: we can multiple arch's for a given package,
-   and it may befor either source or binary, so we need to either set both
-   or track a third current package that points to whether we altering source
-   or binary at the moment
-   */
-void
-IniDBBuilderPackage::buildArchitecture (const std::string &arch)
-{
-  cp->architecture = arch;
-#if DEBUG
-  Log (LOG_BABBLE) << "Package " << cp->name << " is for "
-		   << arch << " architectures." << endLog;
-#endif
-}
-
-void
 IniDBBuilderPackage::buildInstallSize (const std::string &size)
 {
   setSourceSize (*cbpv.source(), size);
@@ -288,66 +243,6 @@ IniDBBuilderPackage::buildSourceMD5 (unsigned char const *md5)
 }
 
 void
-IniDBBuilderPackage::buildBeginRecommends ()
-{
-#if DEBUG
-  Log (LOG_BABBLE) << "Beginning of a recommends statement" << endLog;
-  dumpAndList (currentAndList, Log (LOG_BABBLE));
-#endif
-  currentSpec = NULL;
-  currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = cbpv.recommends();
-}
-
-void
-IniDBBuilderPackage::buildBeginSuggests ()
-{
-#if DEBUG
-  Log (LOG_BABBLE) << "Beginning of a suggests statement" << endLog;
-  dumpAndList (currentAndList, Log (LOG_BABBLE));
-#endif
-  currentSpec = NULL;
-  currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = cbpv.suggests();
-}
-
-void
-IniDBBuilderPackage::buildBeginReplaces ()
-{
-#if DEBUG
-  Log (LOG_BABBLE) << "Beginning of a replaces statement" << endLog;
-  dumpAndList (currentAndList, Log (LOG_BABBLE));
-#endif
-  currentSpec = NULL;
-  currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = cbpv.replaces();
-}
-
-void
-IniDBBuilderPackage::buildBeginConflicts ()
-{
-#if DEBUG
-  Log (LOG_BABBLE) << "Beginning of a conflicts statement" << endLog;
-  dumpAndList (currentAndList, Log (LOG_BABBLE));
-#endif
-  currentSpec = NULL;
-  currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = cbpv.conflicts();
-}
-
-void
-IniDBBuilderPackage::buildBeginProvides ()
-{
-#if DEBUG
-  Log (LOG_BABBLE) << "Beginning of a provides statement" << endLog;
-  dumpAndList (currentAndList, Log (LOG_BABBLE));
-#endif
-  currentSpec = NULL;
-  currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = cbpv.provides();
-}
-
-void
 IniDBBuilderPackage::buildBeginBuildDepends ()
 {
 #if DEBUG
@@ -357,36 +252,6 @@ IniDBBuilderPackage::buildBeginBuildDepends ()
   currentSpec = NULL;
   currentOrList = NULL; /* set by the build AndListNode */
   currentAndList = cspv.depends ();
-}
-
-
-void
-IniDBBuilderPackage::buildBeginBinary ()
-{
-#if DEBUG
-  Log (LOG_BABBLE) << "Beginning of a Binary statement" << endLog;
-  dumpAndList (currentAndList, Log (LOG_BABBLE));
-#endif
-  currentSpec = NULL;
-  currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = cspv.binaries ();
-}
-
-void
-IniDBBuilderPackage::buildDescription (const std::string& descline)
-{
-  if (cbpv)
-    {
-      cbpv.set_ldesc(cbpv.LDesc() + descline + "\n");
-#if DEBUG
-      Log (LOG_BABBLE) << "Description for " << cp->name << ": \"" <<
-	descline << "\"." << endLog;
-#endif
-    }
-  else
-    _feedback.warning ((std::string ("Attempt to set description for package")
-                        + std::string(cp->name)
-		       + "before creation of a version.").c_str());
 }
 
 void

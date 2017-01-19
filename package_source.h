@@ -58,23 +58,13 @@ public:
 class packagesource
 {
 public:
-  packagesource ():size (0), canonical (0), base (0), filename (0), cached (),
-   _installedSize (0)
+  packagesource ():size (0), canonical (0), base (0), filename (0), cached ()
   {
     memset (sha512sum, 0, sizeof sha512sum);
     sha512_isSet = false;
   };
   /* how big is the source file */
   size_t size;
-  /* how much space do we need to install this ? */
-  virtual unsigned long installedSize () const
-    {
-      return _installedSize;
-    }
-  virtual void setInstalledSize (unsigned long size)
-    {
-      _installedSize = size;
-    }
   /* The canonical name - the complete path to the source file 
    * i.e. foo/bar/package-1.tar.bz2
    */
@@ -128,7 +118,6 @@ private:
   char *base;
   char *filename;
   std::string cached;
-  unsigned long _installedSize;
 };
 
 #endif /* SETUP_PACKAGE_SOURCE_H */

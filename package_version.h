@@ -118,9 +118,8 @@ public:
   void setSourcePackageSpecification (PackageSpecification const &);
 
   /* invariant: these never return NULL */
-  std::vector <std::vector <PackageSpecification *> *> *depends(), *predepends(), 
-  *recommends(), *suggests(), *replaces(), *conflicts(), *provides(), *binaries();
-  const std::vector <std::vector <PackageSpecification *> *> *depends() const; 
+  std::vector <std::vector <PackageSpecification *> *> *depends();
+  const std::vector <std::vector <PackageSpecification *> *> *depends() const;
 
   bool picked() const;   /* true if this version is to be installed */
   void pick(bool, packagemeta *); /* trigger an install/reinsall */
@@ -187,8 +186,7 @@ public:
   virtual PackageSpecification & sourcePackageSpecification ();
   virtual void setSourcePackageSpecification (PackageSpecification const &);
   
-  std::vector <std::vector <PackageSpecification *> *> depends, predepends, recommends,
-  suggests, replaces, conflicts, provides, binaries;
+  std::vector <std::vector <PackageSpecification *> *> depends;
   
   virtual void pick(bool const &newValue) { picked = newValue;}
   bool picked;	/* non zero if this version is to be installed */

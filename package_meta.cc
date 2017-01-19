@@ -97,7 +97,6 @@ packagemeta::packagemeta (packagemeta const &rhs) :
   curr (rhs.curr),
   exp (rhs.exp),
   desired (rhs.desired),
-  architecture (rhs.architecture), priority (rhs.priority),
   visited_(rhs.visited_)
 {
   

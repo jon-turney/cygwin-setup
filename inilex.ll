@@ -42,8 +42,6 @@ static void ignore_line (void);
 %option yylineno
 %option never-interactive
 
-%x descriptionstate
-
 STR	[!a-zA-Z0-9_./:\+~-]+
 HEX	[0-9a-f]
 B64	[a-zA-Z0-9_-]
@@ -118,27 +116,16 @@ B64	[a-zA-Z0-9_-]
 "sdesc:"		return SDESC;
 "ldesc:"		return LDESC;
 "message:"		return MESSAGE;
-"Description:"		BEGIN (descriptionstate); return DESCTAG;
 "Size:"			return FILESIZE;
 "MD5sum:"		return MD5LINE;
 "SHA512:"		return SHA512LINE;
-"Installed-Size:"	return INSTALLEDSIZE;
-"Architecture:"		return ARCHITECTURE;
 "Source:"		return SOURCEPACKAGE;
-"Binary:"		return BINARYPACKAGE;
 "Build-Depends:"	return BUILDDEPENDS;
 "Build-Depends-Indep:"	return BUILDDEPENDS; /* technicallyincorrect :[ */
 
 "category:"|"Section:"	return CATEGORY;
-"Priority:"		return PRIORITY;
 "requires:"		return REQUIRES;
 "Depends:"		return DEPENDS;
-"Pre-Depends:"		return PREDEPENDS;
-"Recommends:"		return RECOMMENDS;
-"Suggests:"		return SUGGESTS;
-"Conflicts:"		return CONFLICTS;
-"Replaces:"		return REPLACES;
-"Provides:"		return PROVIDES;
 
 ^{STR}":"		ignore_line ();
 
@@ -168,11 +155,6 @@ B64	[a-zA-Z0-9_-]
 [ \t\r]+		/* do nothing */;
 
 ^"#".*\n		/* do nothing */;
-<descriptionstate>[^\n]+	{ yylval = new char [strlen(yytext) + 1];
-    				  strcpy (yylval, yytext);
-				  return STRTOEOL; }
-<descriptionstate>\n	{ return NL; }
-<descriptionstate>"\n"+	{BEGIN(INITIAL); return PARAGRAPH;}
 
 \n			{ return NL; }
 .			{ return *yytext;}

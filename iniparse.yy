@@ -41,14 +41,12 @@ void add_correct_version();
 %token SETUP_TIMESTAMP SETUP_VERSION PACKAGEVERSION INSTALL SOURCE SDESC LDESC
 %token CATEGORY DEPENDS REQUIRES
 %token T_PREV T_CURR T_TEST T_OTHER
-%token INSTALLEDSIZE PRIORITY
 %token MD5 MD5LINE SHA512 SHA512LINE
-%token DESCTAG FILESIZE ARCHITECTURE SOURCEPACKAGE
-%token RECOMMENDS PREDEPENDS
-%token SUGGESTS CONFLICTS REPLACES PROVIDES PACKAGENAME STRTOEOL PARAGRAPH
+%token FILESIZE SOURCEPACKAGE
+%token PACKAGENAME
 %token COMMA OR NL AT
 %token OPENBRACE CLOSEBRACE EQUAL GT LT GTEQUAL LTEQUAL 
-%token BINARYPACKAGE BUILDDEPENDS
+%token BUILDDEPENDS
 %token MESSAGE
 %token ARCH RELEASE
 
@@ -98,9 +96,6 @@ singleitem /* non-empty */
  | T_CURR NL			{ iniBuilder->buildPackageTrust (TRUST_CURR); }
  | T_TEST NL			{ iniBuilder->buildPackageTrust (TRUST_TEST); }
  | T_OTHER NL			{ iniBuilder->buildPackageTrust (TRUST_OTHER); }
- | PRIORITY STRING NL		{ iniBuilder->buildPriority ($2); }
- | INSTALLEDSIZE STRING NL	{ iniBuilder->buildInstalledSize ($2); }
- | ARCHITECTURE packagearchspec NL 	{ iniBuilder->buildArchitecture ($2); }
  | FILESIZE STRING NL		{ iniBuilder->buildInstallSize($2); }
  | MD5LINE MD5 NL	{ iniBuilder->buildInstallMD5 ((unsigned char *)$2); }
  | SHA512LINE SHA512 NL		{ iniBuilder->buildInstallSHA512 ((unsigned char *)$2); }
@@ -108,28 +103,16 @@ singleitem /* non-empty */
  | CATEGORY categories NL
  | INSTALL STRING STRING { iniBuilder->buildPackageInstall ($2); iniBuilder->buildInstallSize($3);} installchksum NL
  | SOURCE STRING STRING sourcechksum NL {iniBuilder->buildPackageSource ($2, $3);}
- | PROVIDES 		{ iniBuilder->buildBeginProvides(); } packagelist NL
- | BINARYPACKAGE  { iniBuilder->buildBeginBinary (); } packagelist NL
- | CONFLICTS	{ iniBuilder->buildBeginConflicts(); } versionedpackagelist NL
  | DEPENDS { iniBuilder->buildBeginDepends(); } versionedpackagelist NL
  | REQUIRES { iniBuilder->buildBeginDepends(); } versionedpackagelistsp NL
- | PREDEPENDS { iniBuilder->buildBeginPreDepends(); } versionedpackagelist NL
- | RECOMMENDS { iniBuilder->buildBeginRecommends(); }   versionedpackagelist NL
- | SUGGESTS { iniBuilder->buildBeginSuggests(); } versionedpackagelist NL
- | REPLACES { iniBuilder->buildBeginReplaces(); }       versionedpackagelist NL
  | BUILDDEPENDS { iniBuilder->buildBeginBuildDepends(); } versionedpackagelist NL
  | MESSAGE STRING STRING NL	{ iniBuilder->buildMessage ($2, $3); }
- | DESCTAG mlinedesc
  | error 			{ yyerror (std::string("unrecognized line ") 
 					  + stringify(yylineno)
 					  + " (do you have the latest setup?)");
 				}
  ;
 
-packagearchspec: /* empty */
- | packagearchspec STRING { iniBuilder->buildArchitecture ($2); }
- ;
- 
 categories: /* empty */
  | categories STRING		{ iniBuilder->buildPackageCategory ($2); }
  ;
@@ -150,21 +133,6 @@ source /* non-empty */
 
 versioninfo: /* empty */
  | OPENBRACE STRING CLOSEBRACE { iniBuilder->buildSourceNameVersion ($2); }
- ;
-
-mlinedesc: /* empty */
- | mlinedesc STRTOEOL NL	{ iniBuilder->buildDescription ($2); }
- | mlinedesc STRTOEOL PARAGRAPH { iniBuilder->buildDescription ($2); }
- ;
-
-packagelist /* non-empty */
- : packagelist COMMA { iniBuilder->buildPackageListAndNode(); } packageentry
- | { iniBuilder->buildPackageListAndNode(); } packageentry
- ;
-
-packageentry /* empty not allowed */
- : STRING 		  { iniBuilder->buildPackageListOrNode($1); } 
- | packageentry OR STRING { iniBuilder->buildPackageListOrNode($3); }
  ;
 
 versionedpackagelist /* non-empty */

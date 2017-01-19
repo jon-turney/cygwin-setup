@@ -40,23 +40,12 @@ public:
   virtual void buildPackageCategory (const std::string& );
 
   virtual void buildBeginDepends ();
-  virtual void buildBeginPreDepends ();
-  virtual void buildPriority (const std::string& );
-  virtual void buildInstalledSize (const std::string& );
-  virtual void buildArchitecture (const std::string& );
   virtual void buildInstallSize (const std::string& );
   virtual void buildInstallSHA512 (unsigned char const[64]);
   virtual void buildSourceSHA512 (unsigned char const[64]);
   virtual void buildInstallMD5 (unsigned char const[16]);
   virtual void buildSourceMD5 (unsigned char const[16]);
-  virtual void buildBeginRecommends ();
-  virtual void buildBeginSuggests ();
-  virtual void buildBeginReplaces ();
-  virtual void buildBeginConflicts ();
-  virtual void buildBeginProvides ();
   virtual void buildBeginBuildDepends ();
-  virtual void buildBeginBinary ();
-  virtual void buildDescription (const std::string&);
   virtual void buildMessage (const std::string&, const std::string&);
   virtual void buildSourceName (const std::string& );
   virtual void buildSourceNameVersion (const std::string& );

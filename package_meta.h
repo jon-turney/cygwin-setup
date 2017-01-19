@@ -36,7 +36,7 @@ public:
   packagemeta (packagemeta const &);
   packagemeta (const std::string& pkgname)
   : name (pkgname), key(pkgname), user_picked (false),
-    architecture (), priority(), visited_(false)
+    visited_(false)
   {
   }
 
@@ -141,17 +141,6 @@ public:
   /* Now for the user stuff :] */
   /* What version does the user want ? */
   packageversion desired;
-
-  /* What platform is this for ? 
-   * i386 - linux i386
-   * cygwin - cygwin for 32 bit MS Windows 
-   * All - no binary code, or a version for every platform
-   */
-  std::string architecture;
-  /* What priority does this package have?
-   * TODO: this should be linked into a list of priorities.
-   */
-  std::string priority;
 
   packagemessage message;
 

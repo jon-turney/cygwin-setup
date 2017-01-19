@@ -247,48 +247,6 @@ packageversion::depends() const
   return &data->depends;
 }
 
-vector <vector <PackageSpecification *> *> *
-packageversion::predepends()
-{
-      return &data->predepends;
-}
-
-vector <vector <PackageSpecification *> *> *
-packageversion::recommends()
-{
-      return &data->recommends;
-}
-
-vector <vector <PackageSpecification *> *> *
-packageversion::suggests()
-{
-      return &data->suggests;
-}
-
-vector <vector <PackageSpecification *> *> *
-packageversion::replaces()
-{
-      return &data->replaces;
-}
-
-vector <vector <PackageSpecification *> *> *
-packageversion::conflicts()
-{
-      return &data->conflicts;
-}
-
-vector <vector <PackageSpecification *> *> *
-packageversion::provides()
-{
-      return &data->provides;
-}
-
-vector <vector <PackageSpecification *> *> *
-packageversion::binaries()
-{
-      return &data->binaries;
-}
-
 bool
 packageversion::picked () const
 {
