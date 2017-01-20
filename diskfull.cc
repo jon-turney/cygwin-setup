@@ -18,11 +18,6 @@
    handle disks bigger than 2G, and a new API that isn't always
    available. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "win32.h"
 #include "filemanip.h"
 #include "diskfull.h"

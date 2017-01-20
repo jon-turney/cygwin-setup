@@ -15,11 +15,6 @@
 
 /* All we do here is instantiate the extern'd variables from state.h */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "state.h"
 
 enum attend_mode unattended_mode = attended;

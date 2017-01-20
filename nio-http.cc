@@ -16,11 +16,6 @@
 /* This file is responsible for implementing all direct HTTP protocol
    channels.  It is intentionally simplistic. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "win32.h"
 #include <winsock2.h>
 #include <stdio.h>

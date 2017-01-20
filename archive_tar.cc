@@ -15,11 +15,6 @@
 
 /* Built-in tar functionality.  See tar.h for usage. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>

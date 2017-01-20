@@ -16,11 +16,6 @@
 /* The purpose of this file is to download all the files we need to
    do the installation. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "csu_util/rfc1738.h"
 
 #include "download.h"

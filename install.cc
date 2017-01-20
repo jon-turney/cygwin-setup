@@ -20,10 +20,6 @@
    handling two tasks in one thread.  We also create or update all the
    files in /etc/setup/\* and create the mount points. */
 
-#if 0
-static const char *cvsid = "\n%%% $Id$\n";
-#endif
-
 #include "getopt++/BoolOption.h"
 #include "csu_util/MD5Sum.h"
 #include "LogFile.h"

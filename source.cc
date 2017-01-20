@@ -17,11 +17,6 @@
    user choose the source of the install - from the net, from the
    current directory, or to just download files. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "source.h"
 
 #include "LogSingleton.h"

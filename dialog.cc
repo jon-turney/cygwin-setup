@@ -16,11 +16,6 @@
 /* The purpose of this file is to provide common functionality for
    all the dialogs in the program. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "win32.h"
 #include <stdio.h>
 #include <stdlib.h>

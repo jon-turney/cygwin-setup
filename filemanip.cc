@@ -16,11 +16,6 @@
 /* The purpose of this file is to put all general purpose file manipulation
    code in one place. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include <string.h>
 #include <wchar.h>
 #include <stdlib.h>

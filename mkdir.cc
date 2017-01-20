@@ -15,11 +15,6 @@
 
 /* see mkdir.h */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "win32.h"
 #include "ntdll.h"
 

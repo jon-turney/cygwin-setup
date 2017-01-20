@@ -15,10 +15,6 @@
 
 /* An individual stream from a tar archive. */
 
-#if 0
-static const char *cvsid = "\n%%% $Id$\n";
-#endif
-
 #include <errno.h>
 #include <algorithm>
 

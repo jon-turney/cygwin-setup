@@ -26,11 +26,6 @@
    install packages, or to install packages that aren't installed by
    default. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "win32.h"
 #include <commctrl.h>
 #include <stdio.h>

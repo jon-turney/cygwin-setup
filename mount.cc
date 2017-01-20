@@ -18,10 +18,6 @@
    Cygwin's mount table.  If the format or location of the mount table
    changes, this is the file to change to match it. */
 
-#if 0
-static const char *cvsid = "\n%%% $Id$\n";
-#endif
-
 #include "ini.h"
 #include "win32.h"
 #include "filemanip.h"

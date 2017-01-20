@@ -16,11 +16,6 @@
 /* The purpose of this file is to get the network configuration
    information from the user. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "net.h"
 
 #include "LogSingleton.h"

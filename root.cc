@@ -17,11 +17,6 @@
    root of the installation to be, and to ask whether the user prefers
    text or binary mounts. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "root.h"
 
 #include "LogSingleton.h"

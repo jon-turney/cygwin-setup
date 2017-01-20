@@ -13,11 +13,6 @@
  *
  */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "getopt++/GetOption.h"
 #include <iostream>
 #include <sstream>

@@ -15,11 +15,6 @@
 
 /* Simplified socket access functions */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "win32.h"
 #include <winsock2.h>
 #include <stdio.h>

@@ -13,10 +13,6 @@
  *
  */
 
-#if 0
-static const char *cvsid = "\n%%% $Id$\n";
-#endif
-
 #include "PackageSpecification.h"
 #include <iostream>
 #include "package_version.h"

@@ -17,11 +17,6 @@
 /* The purpose of this file is to provide functions for the invocation
    of install scripts. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "win32.h"
 #include <stdlib.h>
 #include <unistd.h>

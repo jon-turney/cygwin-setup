@@ -18,11 +18,6 @@
    that unlike other do_* functions, this one is called directly from
    install.cc */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "win32.h"
 #include <shlobj.h>
 #include "desktop.h"

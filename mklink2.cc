@@ -6,11 +6,6 @@
 #include "mklink2.h"
 #include "filemanip.h"
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 /* This part of the code must be in C because the C++ interface to COM
 doesn't work. */
 

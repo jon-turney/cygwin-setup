@@ -26,11 +26,6 @@
    those don't count, although they could).  Replace the IDD_S_* with
    IDD_* if you create a real dialog for those steps. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "win32.h"
 #include <commctrl.h>
 #include <shellapi.h>

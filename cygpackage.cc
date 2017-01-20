@@ -16,11 +16,6 @@
 /* this is the parent class for all package operations. 
  */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "cygpackage.h"
 #include <stdio.h>
 #include <stdlib.h>

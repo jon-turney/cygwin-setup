@@ -15,11 +15,6 @@
 
 /* Log to one or more files. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include <stdlib.h>
 #include "LogFile.h"
 #include "io_stream.h"

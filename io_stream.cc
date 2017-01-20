@@ -19,11 +19,6 @@
  * case.
  */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "LogSingleton.h"
 
 #include "io_stream.h"

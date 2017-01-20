@@ -16,11 +16,6 @@
 /* The purpose of this file is to centralize all the message
    functions. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "msg.h"
 
 #include "LogFile.h"

@@ -16,11 +16,6 @@
 /* This file is responsible for implementing all direct FTP protocol
    channels.  It is intentionally simplistic. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "nio-ftp.h"
 
 #include "LogSingleton.h"

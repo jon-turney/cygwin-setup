@@ -16,11 +16,6 @@
 /* The purpose of this file is to get the list of mirror sites and ask
    the user which mirror site they want to download from. */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include <string>
 #include <algorithm>
 

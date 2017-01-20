@@ -21,11 +21,6 @@
  *
  */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include <stdlib.h>
 #include <string.h>
 #include "UserSettings.h"

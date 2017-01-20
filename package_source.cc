@@ -17,11 +17,6 @@
  * source as in http/ftp/disk file) operations. 
  */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include <stdlib.h>
 #include <strings.h>
 #include "package_source.h"
