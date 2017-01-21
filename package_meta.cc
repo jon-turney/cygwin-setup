@@ -537,6 +537,18 @@ packagemeta::sourceAccessible () const
       if (bin.sourcePackage().accessible())
         return true;
     }
+
+  return false;
+}
+
+bool
+packagemeta::isBinary () const
+{
+  for (set<packageversion>::iterator i=versions.begin();
+       i != versions.end(); ++i)
+    if ((i->Type() == package_binary) && i->accessible())
+      return true;
+
   return false;
 }
 

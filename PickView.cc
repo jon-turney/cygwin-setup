@@ -165,6 +165,9 @@ PickView::setViewMode (views mode)
         {
           packagemeta & pkg = *(i->second);
 
+          if (!pkg.isBinary())
+            continue;
+
           if ( // "Full" : everything
               (view_mode == PickView::views::PackageFull)
 

@@ -142,6 +142,8 @@ public:
   bool accessible () const;
   bool sourceAccessible() const;
 
+  bool isBinary() const;
+
   void logSelectionStatus() const;
   void logAllVersions() const;
 
