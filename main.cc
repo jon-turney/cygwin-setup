@@ -94,6 +94,7 @@ static BoolOption NoAdminOption (false, 'B', "no-admin", "Do not check for and e
 static BoolOption WaitOption (false, 'W', "wait", "When elevating, wait for elevated child process");
 static BoolOption HelpOption (false, 'h', "help", "print help");
 static StringOption SetupBaseNameOpt ("setup", 'i', "ini-basename", "Use a different basename, e.g. \"foo\", instead of \"setup\"", false);
+BoolOption UnsupportedOption (false, '0', "allow-unsupported-windows", "Allow old, unsupported Windows versions");
 std::string SetupBaseName;
 
 static void inline
@@ -286,14 +287,6 @@ WinMain (HINSTANCE h,
 			<< setup_version << endLog;
       }
 
-    /* Check if Cygwin works on this Windows version */
-    if (OSMajorVersion () < 6)
-      {
-	mbox (NULL, "Cygwin is not supported on this Windows version",
-	      "Cygwin Setup", MB_ICONEXCLAMATION | MB_OK);
-	Logger ().exit (1, false);
-      }
-
     if (help_option)
       {
 	if (invalid_option)
@@ -302,8 +295,18 @@ WinMain (HINSTANCE h,
 	GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN));
 	Log (LOG_PLAIN) << endLog;
 	Logger ().exit (invalid_option ? 1 : 0, false);
+	goto finish_up;
       }
-    else if (elevate)
+
+    /* Check if Cygwin works on this Windows version */
+    if (!UnsupportedOption && (OSMajorVersion () < 6))
+      {
+	mbox (NULL, "Cygwin is not supported on this Windows version",
+	      "Cygwin Setup", MB_ICONEXCLAMATION | MB_OK);
+	Logger ().exit (1, false);
+      }
+
+    if (elevate)
       {
 	char exe_path[MAX_PATH];
 	if (!GetModuleFileName(NULL, exe_path, ARRAYSIZE(exe_path)))

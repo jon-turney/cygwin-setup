@@ -87,6 +87,7 @@ class SiteSetting
     bool saved;
     void getSavedSites();
     void registerSavedSite(char const *);
+    const char *lastMirrorKey();
 };
 
 #endif /* SETUP_SITE_H */

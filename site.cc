@@ -97,6 +97,7 @@ SiteList dropped_site_list;
 StringArrayOption SiteOption('s', "site", "Download site");
 
 BoolOption OnlySiteOption(false, 'O', "only-site", "Ignore all sites except for -s");
+extern BoolOption UnsupportedOption;
 
 SiteSetting::SiteSetting (): saved (false)
 {
@@ -111,10 +112,19 @@ SiteSetting::SiteSetting (): saved (false)
     getSavedSites ();
 }
 
+const char *
+SiteSetting::lastMirrorKey ()
+{
+  if (UnsupportedOption)
+    return "last-mirror-unsupported";
+
+  return "last-mirror";
+}
+
 void 
 SiteSetting::save()
 {
-  io_stream *f = UserSettings::instance().open ("last-mirror");
+  io_stream *f = UserSettings::instance().open (lastMirrorKey ());
   if (f)
     {
       for (SiteList::const_iterator n = site_list.begin ();
@@ -305,6 +315,10 @@ get_site_list (HINSTANCE h, HWND owner)
   char mirror_url[1000];
 
   char *theMirrorString, *theCachedString;
+
+  if (UnsupportedOption)
+    return 0;
+
   const char *cached_mirrors = OnlySiteOption ? NULL : UserSettings::instance().get ("mirrors-lst");
   if (cached_mirrors)
     {
@@ -385,7 +399,7 @@ SiteSetting::registerSavedSite (const char * site)
 void
 SiteSetting::getSavedSites ()
 {
-  const char *buf = UserSettings::instance().get ("last-mirror");
+  const char *buf = UserSettings::instance().get (lastMirrorKey ());
   if (!buf)
     return;
   char *fg_ret = strdup (buf);
