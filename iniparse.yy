@@ -33,8 +33,6 @@ int yylex ();
 
 IniDBBuilder *iniBuilder;
 extern int yylineno;
-
-void add_correct_version();
 %}
 
 %token STRING 
