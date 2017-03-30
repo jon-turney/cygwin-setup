@@ -27,28 +27,37 @@
 #include "netio.h"
 #include "nio-ie5.h"
 
-static HINTERNET internet = 0;
+static HINTERNET internet_direct = 0;
+static HINTERNET internet_preconfig = 0;
 
-NetIO_IE5::NetIO_IE5 (char const *_url):
+NetIO_IE5::NetIO_IE5 (char const *_url, bool direct, bool cachable):
 NetIO (_url)
 {
   int resend = 0;
+  HINTERNET *internet;
 
-  if (internet == 0)
+  if (direct)
+    internet = &internet_direct;
+  else
+    internet = &internet_preconfig;
+
+  if (*internet == 0)
     {
       InternetAttemptConnect (0);
-      internet = InternetOpen ("Cygwin Setup", INTERNET_OPEN_TYPE_PRECONFIG,
-			       NULL, NULL, 0);
+      *internet = InternetOpen ("Cygwin Setup",
+				direct ? INTERNET_OPEN_TYPE_DIRECT : INTERNET_OPEN_TYPE_PRECONFIG,
+				NULL, NULL, 0);
     }
 
   DWORD flags =
- //    INTERNET_FLAG_DONT_CACHE |
     INTERNET_FLAG_KEEP_CONNECTION |
- //   INTERNET_FLAG_PRAGMA_NOCACHE |
- //   INTERNET_FLAG_RELOAD |
     INTERNET_FLAG_EXISTING_CONNECT | INTERNET_FLAG_PASSIVE;
 
-  connection = InternetOpenUrl (internet, url, NULL, 0, flags, 0);
+  if (!cachable) {
+    flags |= INTERNET_FLAG_NO_CACHE_WRITE;
+  }
+
+  connection = InternetOpenUrl (*internet, url, NULL, 0, flags, 0);
 
 try_again:
 
@@ -113,6 +122,7 @@ try_again:
 	    }
 	  else if (type >= 300)
 	    {
+	      InternetCloseHandle (connection);
 	      connection = 0;
 	      return;
 	    }
@@ -147,8 +157,15 @@ NetIO_IE5::ok ()
 int
 NetIO_IE5::read (char *buf, int nbytes)
 {
+#define READ_CHUNK (64 * 1024)
+  /* Read in chunks rather than the whole file at once, so we can do progress
+     reporting */
+  if (nbytes > READ_CHUNK)
+    nbytes = READ_CHUNK;
+
   DWORD actual;
   if (InternetReadFile (connection, buf, nbytes, &actual))
     return actual;
+
   return -1;
 }

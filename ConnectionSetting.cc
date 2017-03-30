@@ -49,6 +49,9 @@ ConnectionSetting::~ConnectionSetting ()
       sprintf(port_str, "%d", NetIO::net_proxy_port);
       UserSettings::instance().set("net-proxy-port", port_str);
       break;
+    case IDC_NET_DIRECT_LEGACY:
+      UserSettings::instance().set("net-method", "Legacy");
+      break;
     default:
 	break;
     }
@@ -63,6 +66,8 @@ ConnectionSetting::typeFromString(const std::string& aType)
     return IDC_NET_IE5;
   if (!casecompare(aType, "Proxy"))
     return IDC_NET_PROXY;
+  if (!casecompare(aType, "Legacy"))
+    return IDC_NET_DIRECT_LEGACY;
 
   /* A sanish default */
   return IDC_NET_IE5;

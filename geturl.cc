@@ -111,7 +111,7 @@ getUrlToStream (const string &_url, io_stream *output)
   Log (LOG_BABBLE) << "getUrlToStream " << _url << endLog;
   is_local_install = (source == IDC_SOURCE_LOCALDIR);
   init_dialog (_url, 0);
-  NetIO *n = NetIO::open (_url.c_str());
+  NetIO *n = NetIO::open (_url.c_str(), true);
   if (!n || !n->ok ())
     {
       delete n;
@@ -213,7 +213,7 @@ get_url_to_file (const string &_url,
 
   remove (_filename.c_str());		/* but ignore errors */
 
-  NetIO *n = NetIO::open (_url.c_str());
+  NetIO *n = NetIO::open (_url.c_str(), false);
   if (!n || !n->ok ())
     {
       delete n;

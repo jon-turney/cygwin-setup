@@ -122,26 +122,32 @@ NetIO::read (char *buf, int nbytes)
 }
 
 NetIO *
-NetIO::open (char const *url)
+NetIO::open (char const *url, bool cachable)
 {
   NetIO *rv = 0;
   enum
-  { http, ftp, file }
+  { http, https, ftp, ftps, file }
   proto;
   if (strncmp (url, "http://", 7) == 0)
     proto = http;
+  else if (strncmp (url, "https://", 8) == 0)
+    proto = https;
   else if (strncmp (url, "ftp://", 6) == 0)
     proto = ftp;
+  else if (strncmp (url, "ftps://", 7) == 0)
+    proto = ftps;
   else
     proto = file;
 
   if (proto == file)
     rv = new NetIO_File (url);
   else if (net_method == IDC_NET_IE5)
-    rv = new NetIO_IE5 (url);
+    rv = new NetIO_IE5 (url, false, cachable);
   else if (net_method == IDC_NET_PROXY)
     rv = new NetIO_HTTP (url);
   else if (net_method == IDC_NET_DIRECT)
+    rv = new NetIO_IE5 (url, true, cachable);
+  else if (net_method == IDC_NET_DIRECT_LEGACY)
     {
       switch (proto)
 	{
@@ -154,10 +160,12 @@ NetIO::open (char const *url)
 	case file:
 	  rv = new NetIO_File (url);
 	  break;
+	default:
+	  mbox (NULL, "Protocol not handled by legacy URL handler", "Cygwin Setup", MB_OK);
 	}
     }
 
-  if (!rv->ok ())
+  if (rv && !rv->ok ())
     {
       delete rv;
       return 0;
@@ -283,4 +291,22 @@ NetIO::get_ftp_auth (HWND owner)
   user = &net_ftp_user;
   passwd = &net_ftp_passwd;
   return auth_common (hinstance, IDD_FTP_AUTH, owner);
+}
+
+const char *
+NetIO::net_method_name ()
+{
+  switch (net_method)
+    {
+    case IDC_NET_IE5:
+      return "IE5";
+    case IDC_NET_DIRECT:
+      return "Direct";
+    case IDC_NET_PROXY:
+      return "Proxy";
+    case IDC_NET_DIRECT_LEGACY:
+      return "Direct (legacy)";
+    default:
+      return "Unknown";
+    }
 }

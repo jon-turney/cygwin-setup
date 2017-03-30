@@ -22,8 +22,8 @@ class NetIO_IE5:public NetIO
 {
   HINTERNET connection;
 public:
-    NetIO_IE5 (char const *url);
-   ~NetIO_IE5 ();
+  NetIO_IE5 (char const *url, bool direct, bool cacheable);
+  ~NetIO_IE5 ();
   virtual int ok ();
   virtual int read (char *buf, int nbytes);
   void flush_io ();

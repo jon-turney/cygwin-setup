@@ -175,3 +175,4 @@
 #define IDC_FILE_INUSE_EDIT               590
 #define IDC_FILE_INUSE_MSG                591
 #define IDC_FILE_INUSE_HELP               592
+#define IDC_NET_DIRECT_LEGACY             593

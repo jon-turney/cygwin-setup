@@ -51,7 +51,7 @@ public:
      the given URL.  It uses the network setup state in state.h.  If
      anything fails, either the return values is NULL or the returned
      object is !ok() */
-  static NetIO *open (char const *url);
+  static NetIO *open (char const *url, bool cachable);
 
   /* If !ok() that means the transfer isn't happening. */
   virtual int ok ();
@@ -63,6 +63,8 @@ public:
   static int net_method;
   static char *net_proxy_host;
   static int net_proxy_port;
+
+  static const char *net_method_name();
 
   /* Helper functions for http/ftp protocols.  Both return nonzero for
      "cancel", zero for "ok".  They set net_proxy_user, etc, in

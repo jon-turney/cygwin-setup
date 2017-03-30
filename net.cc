@@ -37,30 +37,31 @@ extern ThreeBarProgressPage Progress;
 
 static StringOption ProxyOption ("", 'p', "proxy", "HTTP/FTP proxy (host:port)", false);
 
-static int rb[] = { IDC_NET_IE5, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
+static int rb[] = { IDC_NET_IE5, IDC_NET_DIRECT, IDC_NET_PROXY, IDC_NET_DIRECT_LEGACY, 0 };
 static bool doing_loading = false;
 
 void
 NetPage::CheckIfEnableNext ()
 {
-  int e = 0, p = 0, pu = 0;
+  int e = 0, p = 0;
   DWORD ButtonFlags = PSWIZB_BACK;
 
-  if (NetIO::net_method == IDC_NET_IE5)
-    pu = 1;
-  if (NetIO::net_method == IDC_NET_IE5 || NetIO::net_method == IDC_NET_DIRECT)
+  if (NetIO::net_method == IDC_NET_IE5 ||
+      NetIO::net_method == IDC_NET_DIRECT ||
+      NetIO::net_method == IDC_NET_DIRECT_LEGACY)
     e = 1;
   else if (NetIO::net_method == IDC_NET_PROXY)
     {
-      p = pu = 1;
+      p = 1;
       if (NetIO::net_proxy_host && NetIO::net_proxy_port)
-	e = 1;
+        e = 1;
     }
-	if (e)
-	{
-		// There's something in the proxy and port boxes, enable "Next".
-		ButtonFlags |= PSWIZB_NEXT;
-	}
+
+  if (e)
+    {
+      // There's something in the proxy and port boxes, enable "Next".
+      ButtonFlags |= PSWIZB_NEXT;
+    }
 
   GetOwner ()->SetButtons (ButtonFlags);
 
@@ -131,8 +132,8 @@ NetPage::OnInit ()
 
   // Check to see if any radio buttons are selected. If not, select a default.
   if (SendMessage (GetDlgItem (IDC_NET_IE5), BM_GETCHECK, 0, 0) != BST_CHECKED
-      && SendMessage (GetDlgItem (IDC_NET_PROXY), BM_GETCHECK, 0, 0)
-	 != BST_CHECKED)
+      && SendMessage (GetDlgItem (IDC_NET_PROXY), BM_GETCHECK, 0, 0) != BST_CHECKED
+      && SendMessage (GetDlgItem (IDC_NET_DIRECT_LEGACY), BM_GETCHECK, 0, 0) != BST_CHECKED)
     SendMessage (GetDlgItem (IDC_NET_DIRECT), BM_CLICK, 0, 0);
 }
 
@@ -141,9 +142,7 @@ NetPage::OnNext ()
 {
   save_dialog (GetHWND ());
 
-  Log (LOG_PLAIN) << "net: "
-    << ((NetIO::net_method == IDC_NET_IE5) ? "IE5" :
-        (NetIO::net_method == IDC_NET_DIRECT) ? "Direct" : "Proxy") << endLog;
+  Log (LOG_PLAIN) << "net: " << NetIO::net_method_name()  << endLog;
 
   Progress.SetActivateTask (WM_APP_START_SITE_INFO_DOWNLOAD);
   return IDD_INSTATUS;
@@ -170,6 +169,7 @@ NetPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
     case IDC_NET_IE5:
     case IDC_NET_DIRECT:
     case IDC_NET_PROXY:
+    case IDC_NET_DIRECT_LEGACY:
     case IDC_PROXY_HOST:
     case IDC_PROXY_PORT:
       save_dialog (GetHWND());
