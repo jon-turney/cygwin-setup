@@ -30,9 +30,9 @@ extern std::string SetupIniDir;
 extern std::string SetupBaseName;
 
 class IniState;
-class IniDBBuilder;
+class IniDBBuilderPackage;
 class IniParseFeedback;
-void ini_init (io_stream *, IniDBBuilder *, IniParseFeedback &);
+void ini_init (io_stream *, IniDBBuilderPackage *, IniParseFeedback &);
 #define YYSTYPE char *
 
 /* When setup.ini is parsed, the information is stored according to

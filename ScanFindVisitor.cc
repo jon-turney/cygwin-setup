@@ -15,9 +15,9 @@
 
 #include "ScanFindVisitor.h"
 #include "filemanip.h"
-#include "IniDBBuilder.h"
+#include "IniDBBuilderPackage.h"
 
-ScanFindVisitor::ScanFindVisitor(IniDBBuilder &aBuilder) : _Builder (aBuilder) {}
+ScanFindVisitor::ScanFindVisitor(IniDBBuilderPackage &aBuilder) : _Builder (aBuilder) {}
 ScanFindVisitor::~ScanFindVisitor(){}
 
 /* look for potential packages we can add to the in-memory package

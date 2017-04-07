@@ -160,13 +160,13 @@ B64	[a-zA-Z0-9_-]
 #include "io_stream.h"
 
 static io_stream *input_stream = 0;
-extern IniDBBuilder *iniBuilder;
+extern IniDBBuilderPackage *iniBuilder;
 static IniParseFeedback *iniFeedback;
 std::string current_ini_name, yyerror_messages;
 int yyerror_count;
 
 void
-ini_init(io_stream *stream, IniDBBuilder *aBuilder, IniParseFeedback &aFeedback)
+ini_init(io_stream *stream, IniDBBuilderPackage *aBuilder, IniParseFeedback &aFeedback)
 {
   input_stream = stream;
   iniBuilder = aBuilder;

@@ -18,19 +18,19 @@
 
 #include "FindVisitor.h"
 
-class IniDBBuilder;
+class IniDBBuilderPackage ;
 /* Scan files and create a package db when no cached .ini exists */
 class ScanFindVisitor : public FindVisitor
 {
 public:
-  ScanFindVisitor (IniDBBuilder &aBuilder);
+  ScanFindVisitor (IniDBBuilderPackage &aBuilder);
   virtual void visitFile(const std::string& basePath, const WIN32_FIND_DATA *);
   virtual ~ ScanFindVisitor ();
 protected:
   ScanFindVisitor (ScanFindVisitor const &);
   ScanFindVisitor & operator= (ScanFindVisitor const &);
 private:
-  IniDBBuilder &_Builder;
+  IniDBBuilderPackage &_Builder;
 };
 
 #endif /* SETUP_SCANFINDVISITOR_H */

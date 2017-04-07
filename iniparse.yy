@@ -25,13 +25,13 @@
 extern int yyerror (const std::string& s);
 int yylex ();
 
-#include "IniDBBuilder.h"
+#include "IniDBBuilderPackage.h"
 
 #define YYERROR_VERBOSE 1
 #define YYINITDEPTH 1000
 /*#define YYDEBUG 1*/
 
-IniDBBuilder *iniBuilder;
+IniDBBuilderPackage *iniBuilder;
 extern int yylineno;
 %}
 

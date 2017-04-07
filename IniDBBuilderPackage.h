@@ -16,48 +16,58 @@
 #ifndef SETUP_INIDBBUILDERPACKAGE_H
 #define SETUP_INIDBBUILDERPACKAGE_H
 
-#include "IniDBBuilder.h"
 #include <vector>
 #include "package_version.h"
 class IniParseFeedback;
 class packagesource;
 class packagemeta;
 
-class IniDBBuilderPackage:public IniDBBuilder
+class IniDBBuilderPackage
 {
 public:
   IniDBBuilderPackage (IniParseFeedback const &);
   ~IniDBBuilderPackage ();
-  virtual void buildTimestamp (const std::string& );
-  virtual void buildVersion (const std::string& );
-  virtual void buildPackage (const std::string& );
-  virtual void buildPackageVersion (const std::string& );
-  virtual void buildPackageSDesc (const std::string& );
-  virtual void buildPackageLDesc (const std::string& );
-  virtual void buildPackageInstall (const std::string& );
-  virtual void buildPackageSource (const std::string&, const std::string&);
-  virtual void buildPackageTrust (int);
-  virtual void buildPackageCategory (const std::string& );
 
-  virtual void buildBeginDepends ();
-  virtual void buildInstallSize (const std::string& );
-  virtual void buildInstallSHA512 (unsigned char const[64]);
-  virtual void buildSourceSHA512 (unsigned char const[64]);
-  virtual void buildInstallMD5 (unsigned char const[16]);
-  virtual void buildSourceMD5 (unsigned char const[16]);
-  virtual void buildBeginBuildDepends ();
-  virtual void buildMessage (const std::string&, const std::string&);
-  virtual void buildSourceName (const std::string& );
-  virtual void buildSourceNameVersion (const std::string& );
-  virtual void buildPackageListAndNode ();
-  virtual void buildPackageListOrNode (const std::string& );
-  virtual void buildPackageListOperator (PackageSpecification::_operators const &);
-  virtual void buildPackageListOperatorVersion (const std::string& );
+  void buildTimestamp (const std::string& );
+  void buildVersion (const std::string& );
+  void buildPackage (const std::string& );
+  void buildPackageVersion (const std::string& );
+  void buildPackageSDesc (const std::string& );
+  void buildPackageLDesc (const std::string& );
+  void buildPackageInstall (const std::string& );
+  void buildPackageSource (const std::string&, const std::string&);
+  void buildPackageTrust (int);
+  void buildPackageCategory (const std::string& );
+
+  void buildBeginDepends ();
+  void buildInstallSize (const std::string& );
+  void buildInstallSHA512 (unsigned char const[64]);
+  void buildSourceSHA512 (unsigned char const[64]);
+  void buildInstallMD5 (unsigned char const[16]);
+  void buildSourceMD5 (unsigned char const[16]);
+  void buildBeginBuildDepends ();
+  void buildMessage (const std::string&, const std::string&);
+  void buildSourceName (const std::string& );
+  void buildSourceNameVersion (const std::string& );
+  void buildPackageListAndNode ();
+  void buildPackageListOrNode (const std::string& );
+  void buildPackageListOperator (PackageSpecification::_operators const &);
+  void buildPackageListOperatorVersion (const std::string& );
+
+  void set_arch (const std::string& a) { arch = a; }
+  void set_release (const std::string& rel) { release = rel; }
+
+  unsigned int timestamp;
+  std::string arch;
+  std::string release;
+  std::string version;
+  std::string parse_mirror;
 
 private:
   void add_correct_version();
   void process_src (packagesource &src, const std::string& );
   void setSourceSize (packagesource &src, const std::string& );
+
   packagemeta *cp;
   packageversion cbpv;
   packagemeta *csp;
