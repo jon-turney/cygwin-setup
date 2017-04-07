@@ -28,7 +28,7 @@ class packagemeta;
 
 typedef std::pair<const std::string, std::vector<packagemeta *> > Category;
 
-/* NOTE: A packagemeta without 1 packageversion is invalid! */
+/* NOTE: A packagemeta without 1 version is invalid! */
 class packagemeta
 {
 public:
@@ -42,8 +42,8 @@ public:
 
   ~packagemeta ();
 
-  void add_version (packageversion &);
-  void set_installed (packageversion &);
+  void add_version (packageversion &, const SolverPool::addPackageData &);
+  void set_installed_version (const std::string &);
   void addToCategoryBase();
   bool hasNoCategories() const;
   void setDefaultCategories();

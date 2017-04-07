@@ -28,6 +28,18 @@ PackageSpecification::packageName () const
   return _packageName;
 }
 
+const PackageSpecification::_operators
+PackageSpecification::op() const
+{
+  return _operator;
+}
+
+const std::string&
+PackageSpecification::version() const
+{
+  return _version;
+}
+
 void
 PackageSpecification::setOperator (_operators anOperator)
 {

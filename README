@@ -3,6 +3,10 @@ for the Cygwin net releases.
 
 HOW TO BUILD:
 -------------
+
+Cygwin
+------
+
 Setup should build out-of-the-box on any Cygwin environment that has all the
 required packages and their dependencies installed:
 
@@ -10,6 +14,7 @@ required packages and their dependencies installed:
   - mingw64-${arch}-headers
   - mingw64-${arch}-gcc-g++
   - mingw64-${arch}-libgcrypt
+  - mingw64-${arch}-libsolv
   - mingw64-${arch}-bzip2
   - mingw64-${arch}-xz
   - mingw64-${arch}-zlib
@@ -25,6 +30,29 @@ to make changes to the build system.
   - libtool
   - flex
   - bison
+
+Fedora
+------
+
+Setup should also build out-of-the-box in a Fedora environment that has all the
+required packages and their dependencies installed:
+
+  - make
+  - libtool
+  - mingw${arch}-gcc-c++
+  - mingw${arch}-zlib-static
+  - mingw${arch}-libgcrypt-static
+  - mingw${arch}-libgnurx-static (*)
+  - mingw${arch}-libsolv-static
+  - mingw${arch}-bzip2-static
+  - mingw${arch}-xz-libs-static
+  - mingw${arch}-winpthreads-static
+  - upx (optional)
+
+The ${arch} needs to be replaced with either "32" or "64"
+depending on the target architecture to build for.
+
+(*) Requires 'dnf copr enable jturney/mingw-libsolv'
 
 Build commands:
 

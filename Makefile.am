@@ -98,7 +98,7 @@ inilint_SOURCES = \
 	String++.h
 
 @SETUP@_LDADD = \
-	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error -llzma -lbz2 -lz \
+	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error -llzma -lbz2 -lz -lsolv -lregex \
 	-lshlwapi -lcomctl32 -lole32 -lws2_32 -lpsapi -luuid -lntdll -lwininet -lmingw32
 @SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 @SETUP@_SOURCES = \
@@ -171,6 +171,8 @@ inilint_SOURCES = \
 	IOStreamProvider.h \
 	KeysSetting.cc \
 	KeysSetting.h \
+	libsolv.cc \
+	libsolv.h \
 	localdir.cc \
 	localdir.h \
 	LogFile.cc \

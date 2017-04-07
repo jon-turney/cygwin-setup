@@ -40,6 +40,7 @@
 #include "Generic.h"
 #include "LogSingleton.h"
 #include "resource.h"
+#include "libsolv.h"
 
 using namespace std;
 
@@ -52,6 +53,8 @@ packagedb::read ()
 {
   if (!installeddbread)
     {
+      solver.internalize();
+
       /* Read in the local installation database. */
       io_stream *db = 0;
       db = io_stream::open ("cygfile:///etc/setup/installed.db", "rt", 0);
@@ -103,23 +106,37 @@ packagedb::read ()
 		  if (!parseable)
 		    continue;
 
-		  packagemeta *pkg = findBinary (PackageSpecification(pkgname));
-		  if (!pkg)
-		    {
-		      pkg = new packagemeta (pkgname);
-		      packages.insert (packagedb::packagecollection::value_type(pkgname, pkg));
-		    }
+                  SolverPool::addPackageData data;
+                  data.reponame = "_installed";
+                  data.version = f.ver;
+                  data.type = package_binary;
 
-		  packageversion binary = 
-		    cygpackage::createInstance (pkgname, f.ver,
-						package_binary);
+                  // very limited information is available from installed.db, so
+                  // we put our best guesses here...
+                  data.vendor = "cygwin";
+                  data.requires = NULL;
+                  data.sdesc = "";
+                  data.ldesc = "";
+                  data.stability = TRUST_CURR; // XXX: would be nice to get this correct as it effects upgrade decisions...
 
-		  pkg->add_version (binary);
-		  pkg->set_installed (binary);
-		  pkg->desired = pkg->installed;
+                  // supplement this with sdesc and source information from
+                  // setup.ini, if possible...
+                  packagemeta *pkgm = findBinary(PackageSpecification(pkgname));
+                  if (pkgm)
+                    {
+                      data.sdesc = pkgm->curr.SDesc();
+                      data.archive = *pkgm->curr.source();
+                      data.spkg = std::string(pkgname) + "-src";
+                      data.spkg_id = pkgm->curr.sourcePackage();
+                    }
+
+                  packagemeta *pkg = packagedb::addBinary (pkgname, data);
+
+                  pkg->set_installed_version (f.ver);
 
 		  if (dbver == 3)
 		    pkg->user_picked = (user_picked & 1);
+
 		}
 	      delete db;
 	      db = 0;
@@ -132,6 +149,50 @@ packagedb::read ()
 	  installeddbver = dbver;
 	}
     }
+  solver.internalize();
+}
+
+/* Add a package version to the packagedb */
+packagemeta *
+packagedb::addBinary (const std::string &pkgname,
+                      const SolverPool::addPackageData &pkgdata)
+{
+  /* If pkgname isn't already in packagedb, add a packagemeta */
+  packagemeta *pkg = findBinary (PackageSpecification(pkgname));
+  if (!pkg)
+    {
+      pkg = new packagemeta (pkgname);
+      packages.insert (packagedb::packagecollection::value_type(pkgname, pkg));
+    }
+
+  /* Create the SolvableVersion  */
+  SolvableVersion sv = solver.addPackage(pkgname, pkgdata);
+
+  /* Register it in packagemeta */
+  pkg->add_version (sv, pkgdata);
+
+  return pkg;
+}
+
+packageversion
+packagedb::addSource (const std::string &pkgname,
+                      const SolverPool::addPackageData &pkgdata)
+{
+  /* If pkgname isn't already in packagedb, add a packagemeta */
+  packagemeta *pkg = findSource (PackageSpecification(pkgname));
+  if (!pkg)
+    {
+      pkg = new packagemeta (pkgname);
+      sourcePackages.insert (packagedb::packagecollection::value_type(pkgname, pkg));
+    }
+
+  /* Create the SolvableVersion  */
+  SolvableVersion sv = solver.addPackage(pkgname, pkgdata);
+
+  /* Register it in packagemeta */
+  pkg->add_version (sv, pkgdata);
+
+  return sv;
 }
 
 int
@@ -230,6 +291,7 @@ packagedb::categoriesType packagedb::categories;
 packagedb::packagecollection packagedb::sourcePackages;
 PackageDBActions packagedb::task = PackageDB_Install;
 std::vector <packagemeta *> packagedb::dependencyOrderedPackages;
+SolverPool packagedb::solver;
 
 #include <stack>
 

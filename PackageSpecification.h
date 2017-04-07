@@ -39,6 +39,9 @@ public:
   };
 
   const std::string& packageName() const;
+  const _operators op() const;
+  const std::string& version() const;
+
   void setOperator (_operators);
   void setVersion (const std::string& );
 

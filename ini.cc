@@ -349,14 +349,13 @@ do_ini_thread (HINSTANCE h, HWND owner)
 {
   bool ini_error = true;
 
-  packagedb db;
-  db.read();
-
   if (source == IDC_SOURCE_LOCALDIR)
     ini_error = do_local_ini (owner);
   else
     ini_error = do_remote_ini (owner);
 
+  packagedb db;
+  db.read();
   db.upgrade();
   db.removeEmptyCategories();
 

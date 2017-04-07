@@ -57,6 +57,7 @@ typedef std::vector <packagemeta *>::iterator PackageDBConnectedIterator;
 
 */
 
+#include "libsolv.h"
 #include <PackageTrust.h>
 
 class packagedb
@@ -69,6 +70,8 @@ public:
   void upgrade ();
   packagemeta * findBinary (PackageSpecification const &) const;
   packagemeta * findSource (PackageSpecification const &) const;
+  packagemeta * addBinary (const std::string &pkgname, const SolverPool::addPackageData &pkgdata);
+  packageversion addSource (const std::string &pkgname, const SolverPool::addPackageData &pkgdata);
   PackageDBConnectedIterator connectedBegin();
   PackageDBConnectedIterator connectedEnd();
   void fillMissingCategory();
@@ -85,6 +88,9 @@ public:
   typedef std::map <std::string, std::vector <packagemeta *>, casecompare_lt_op > categoriesType;
   static categoriesType categories;
   static PackageDBActions task;
+
+  static SolverPool solver;
+
 private:
   static int installeddbread;	/* do we have to reread this */
   static int installeddbver;
