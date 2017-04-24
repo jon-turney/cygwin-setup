@@ -19,7 +19,6 @@
 #include "mkdir.h"
 #include "mount.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
@@ -209,8 +208,8 @@ io_stream_cygfile::remove (const std::string& path)
 	  swprintf (tmp + len, L"old-%d", i);
 	}
       while (GetFileAttributesW (tmp) != INVALID_FILE_ATTRIBUTES);
-      fprintf (stderr, "warning: moving directory \"%s\" out of the way.\n",
-	       normalise(path).c_str());
+      Log (LOG_TIMESTAMP) << "warning: moving directory \"" << normalise(path).c_str()
+                          << "\" out of the way." << endLog;
       MoveFileW (wpath, tmp);
     }
   return io_stream::remove (std::string ("file://") + cygpath (normalise(path)).c_str());
