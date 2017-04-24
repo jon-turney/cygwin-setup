@@ -34,7 +34,7 @@
 using namespace std;
 
 IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
-cp (0), cbpv (), cspv (), currentSpec (0), trust (0), _feedback (aFeedback){}
+cp (0), cbpv (), cspv (), currentSpec (0), _feedback (aFeedback){}
 
 IniDBBuilderPackage::~IniDBBuilderPackage()
 {
@@ -90,10 +90,10 @@ IniDBBuilderPackage::buildPackage (const std::string& name)
       db.packages.insert (packagedb::packagecollection::value_type(cp->name,cp));
     }
   cbpv = cygpackage::createInstance (name, package_binary);
+  cbpv.SetStability(TRUST_CURR);
   cspv = packageversion ();
   currentSpec = NULL;
   currentNodeList = PackageDepends();
-  trust = TRUST_CURR;
 #if DEBUG
   Log (LOG_BABBLE) << "Created package " << name << endLog;
 #endif
@@ -211,12 +211,12 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
 }
 
 void
-IniDBBuilderPackage::buildPackageTrust (int newtrust)
+IniDBBuilderPackage::buildPackageTrust (package_stability_t newtrust)
 {
-  trust = newtrust;
   if (newtrust != TRUST_UNKNOWN)
     {
       cbpv = cygpackage::createInstance (cp->name, package_binary);
+      cbpv.SetStability(newtrust);
       cspv = packageversion ();
     }
 }
@@ -383,13 +383,15 @@ IniDBBuilderPackage::add_correct_version()
     databases, we should pick the one with the highest version number.
   */
   packageversion *v = NULL;
-  switch (trust)
+  switch (cbpv.Stability())
   {
     case TRUST_CURR:
       v = &(cp->curr);
     break;
     case TRUST_TEST:
       v = &(cp->exp);
+    break;
+    default:
     break;
   }
 

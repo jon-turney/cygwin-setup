@@ -31,6 +31,14 @@ public:
   virtual const std::string Vendor_version ();
   virtual const std::string Package_version ();
   virtual const std::string Canonical_version ();
+  virtual package_stability_t Stability ()
+  {
+    return stability;
+  }
+  virtual void SetStability (package_stability_t newstability)
+  {
+    stability = newstability;
+  }
   virtual package_type_t Type ()
   {
     return type;
@@ -67,7 +75,7 @@ private:
   std::string canonical;
   std::string sdesc, ldesc;
 
-//  package_stability_t stability;
+  package_stability_t stability;
   package_type_t type;
 };
 

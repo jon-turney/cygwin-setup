@@ -45,14 +45,7 @@ class CategoryList;
 #include "PackageTrust.h"
 #include "package_depends.h"
 
-typedef enum
-{
-  package_invalid,
-  package_old,
-  package_current,
-  package_experimental
-}
-package_stability_t;
+typedef trusts package_stability_t;
 
 typedef enum
 {
@@ -97,6 +90,8 @@ public:
   const std::string Package_version () const;
   const std::string Canonical_version () const;
   void setCanonicalVersion (const std::string& );
+  package_stability_t Stability () const;
+  void SetStability (package_stability_t);
   package_type_t Type () const;
   const std::string SDesc () const;
   void set_sdesc (const std::string& );
@@ -138,7 +133,8 @@ public:
   virtual const std::string Package_version () = 0;
   virtual const std::string Canonical_version () = 0;
   virtual void setCanonicalVersion (const std::string& ) = 0;
-//  virtual package_stability_t Stability () = 0;
+  virtual package_stability_t Stability () = 0;
+  virtual void SetStability (package_stability_t) = 0;
   virtual package_type_t Type () = 0;
   virtual const std::string SDesc () = 0;
   virtual void set_sdesc (const std::string& ) = 0;

@@ -134,10 +134,3 @@ cygpackage::set_ldesc (const std::string& desc)
 {
   ldesc = desc;
 }
-
-#if 0
-package_stability_t cygpackage::Stability ()
-{
-  return stability;
-}
-#endif

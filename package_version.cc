@@ -43,6 +43,8 @@ public:
   const std::string Package_version() {return std::string();}
   const std::string Canonical_version() {return std::string();}
   void setCanonicalVersion (const std::string& ) {}
+  package_stability_t Stability (){return TRUST_UNKNOWN;}
+  void SetStability (package_stability_t) {}
   package_type_t Type () {return package_binary;}
   const std::string SDesc () {return std::string();}
   void set_sdesc (const std::string& ) {}
@@ -156,6 +158,18 @@ void
 packageversion::setCanonicalVersion (const std::string& ver)
 {
   data->setCanonicalVersion (ver);
+}
+
+package_stability_t
+packageversion::Stability () const
+{
+  return data->Stability ();
+}
+
+void
+packageversion::SetStability (package_stability_t stability)
+{
+  data->SetStability (stability);
 }
 
 package_type_t

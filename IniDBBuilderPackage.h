@@ -42,7 +42,7 @@ public:
   void buildPackageSource (const std::string&, const std::string&,
                            char *, hashType);
 
-  void buildPackageTrust (int);
+  void buildPackageTrust (package_stability_t);
   void buildPackageCategory (const std::string& );
 
   void buildBeginDepends ();
@@ -74,7 +74,6 @@ private:
   packageversion cspv;
   PackageSpecification *currentSpec;
   PackageDepends currentNodeList;
-  int trust;
   IniParseFeedback const &_feedback;
 };
 
