@@ -107,7 +107,6 @@ packagedb::packagedb ()
 
 		  packageversion binary = 
 		    cygpackage::createInstance (pkgname, f.ver,
-						package_installed,
 						package_binary);
 
 		  pkg->add_version (binary);

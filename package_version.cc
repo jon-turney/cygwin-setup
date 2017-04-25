@@ -45,7 +45,6 @@ public:
   const std::string Package_version() {return std::string();}
   const std::string Canonical_version() {return std::string();}
   void setCanonicalVersion (const std::string& ) {}
-  package_status_t Status (){return package_notinstalled;}
   package_type_t Type () {return package_binary;}
   const std::string getfirstfile () {return std::string();}
   const std::string getnextfile () {return std::string();}

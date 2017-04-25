@@ -57,13 +57,6 @@ package_stability_t;
 
 typedef enum
 {
-  package_notinstalled,
-  package_installed
-}
-package_status_t;
-
-typedef enum
-{
   package_binary,
   package_source
 }
@@ -105,7 +98,6 @@ public:
   const std::string Package_version () const;
   const std::string Canonical_version () const;
   void setCanonicalVersion (const std::string& );
-  package_status_t Status () const;
   package_type_t Type () const;
   const std::string getfirstfile ();
   const std::string getnextfile ();
@@ -165,7 +157,6 @@ public:
   virtual const std::string Package_version () = 0;
   virtual const std::string Canonical_version () = 0;
   virtual void setCanonicalVersion (const std::string& ) = 0;
-  virtual package_status_t Status () = 0;
 //  virtual package_stability_t Stability () = 0;
   virtual package_type_t Type () = 0;
   /* TODO: we should probably return a metaclass - file name & path & size & type

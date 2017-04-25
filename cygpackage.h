@@ -34,10 +34,6 @@ public:
   virtual const std::string Vendor_version ();
   virtual const std::string Package_version ();
   virtual const std::string Canonical_version ();
-  virtual package_status_t Status ()
-  {
-    return status;
-  };
   virtual package_type_t Type ()
   {
     return type;
@@ -72,7 +68,6 @@ public:
 
   static packageversion createInstance (const std::string& pkgname,
                                         const std::string& version,
-					package_status_t const,
 					package_type_t const);
 
 private:
@@ -86,7 +81,6 @@ private:
   char getfilenamebuffer[CYG_PATH_MAX];
 
 //  package_stability_t stability;
-  package_status_t status;
   package_type_t type;
 
   io_stream *listdata, *listfile;
