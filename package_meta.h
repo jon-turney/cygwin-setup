@@ -35,8 +35,7 @@ public:
   static void ScanDownloadedFiles (bool);
   packagemeta (packagemeta const &);
   packagemeta (const std::string& pkgname)
-  : name (pkgname), key(pkgname), user_picked (false),
-    visited_(false)
+  : name (pkgname), key(pkgname), user_picked (false)
   {
   }
 
@@ -44,8 +43,6 @@ public:
 
   void add_version (packageversion &);
   void set_installed (packageversion &);
-  void visited(bool const &);
-  bool visited() const;
   void addToCategoryBase();
   bool hasNoCategories() const;
   void setDefaultCategories();
@@ -74,10 +71,7 @@ public:
   void set_action (trusts const t);
   void set_action (_actions, packageversion const & default_version);
   void uninstall ();
-  int set_requirements (trusts deftrust, size_t depth);
-  // explicit separation for generic programming.
-  int set_requirements (trusts deftrust) 
-    { return set_requirements (deftrust, 0); }
+
   void set_message (const std::string& message_id, const std::string& message_string)
   {
     message.set (message_id, message_string);
@@ -155,7 +149,6 @@ protected:
   packagemeta &operator= (packagemeta const &);
 private:
   std::string trustLabel(packageversion const &) const;
-  bool visited_;
 };
 
 #endif /* SETUP_PACKAGE_META_H */

@@ -92,8 +92,7 @@ packagemeta::packagemeta (packagemeta const &rhs) :
   installed (rhs.installed), prev (rhs.prev),
   curr (rhs.curr),
   exp (rhs.exp),
-  desired (rhs.desired),
-  visited_(rhs.visited_)
+  desired (rhs.desired)
 {
   
 }
@@ -457,26 +456,6 @@ packagemeta::set_action (trusts const trust)
     user_picked = true;
 }
 
-int
-packagemeta::set_requirements (trusts deftrust, size_t depth)
-{
-  if (visited())
-    return 0;
-  /* Only prevent further checks once we have been required by something else */
-  if (depth)
-    visited(true);
-  int changed = 0;
-  /* handle build-depends */
-  if (depth == 0 && desired.sourcePackage ().picked())
-    changed += desired.sourcePackage ().set_requirements (deftrust, depth + 1);
-  if (!desired || (desired != installed && !desired.picked ()))
-    /* uninstall || source only */
-    return changed;
-
-  return changed + desired.set_requirements (deftrust, depth);
-}
-
-
 // Set a particular type of action.
 void
 packagemeta::set_action (_actions action, packageversion const &default_version)
@@ -609,18 +588,6 @@ packagemeta::trustLabel(packageversion const &aVersion) const
     if (aVersion == exp)
 	return "Test";
     return "Unknown";
-}
-
-void
-packagemeta::visited(bool const &aBool)
-{
-  visited_ = aBool;
-}
-
-bool
-packagemeta::visited() const
-{
-  return visited_;
 }
 
 void

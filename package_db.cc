@@ -381,17 +381,6 @@ packagedb::connectedEnd()
 }
 
 void
-packagedb::markUnVisited()
-{
-  for (packagedb::packagecollection::iterator n = packages.begin ();
-       n != packages.end (); ++n)
-    {
-      packagemeta & pkgm = *(n->second);
-      pkgm.visited(false);
-    }
-}
-
-void
 packagedb::setExistence ()
 {
   /* binary packages */

@@ -372,14 +372,6 @@ ChooserPage::changeTrust(trusts aTrust)
 {
   SetBusy ();
   chooser->defaultTrust (aTrust);
-  packagedb db;
-  db.markUnVisited ();
-
-  for (packagedb::packagecollection::iterator i = db.packages.begin(); i != db.packages.end(); i++)
-    {
-      i->second->set_requirements(aTrust);
-    }
-
   chooser->refresh();
   PrereqChecker p;
   p.setTrust (aTrust);

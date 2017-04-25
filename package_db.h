@@ -72,7 +72,6 @@ public:
   PackageDBConnectedIterator connectedEnd();
   void fillMissingCategory();
   void defaultTrust (trusts trust);
-  void markUnVisited();
   void setExistence();
   typedef std::map <std::string, packagemeta *> packagecollection;
   /* all seen binary packages */
