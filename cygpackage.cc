@@ -36,12 +36,8 @@ packagev (),
 canonical (),
 sdesc (),
 ldesc (),
-type (package_binary),
-listdata (),
-listfile ()
+type (package_binary)
 {
-  memset( getfilenamebuffer, '\0', CYG_PATH_MAX);
-
   /* FIXME: query the install database for the currently installed 
    * version details
    */
@@ -101,46 +97,6 @@ cygpackage::setCanonicalVersion (const std::string& version)
 
 cygpackage::~cygpackage ()
 {
-}
-
-const std::string
-cygpackage::getfirstfile ()
-{
-  if (listdata)
-    delete listdata;
-  listfile =
-    io_stream::open ("cygfile:///etc/setup/" + name + ".lst.gz", "rb", 0);
-  listdata = compress::decompress (listfile);
-  if (!listdata)
-    return std::string();
-  /* std::string(NULL) will crash, so be careful to test for that. */
-  const char *result = listdata->gets (getfilenamebuffer, sizeof (getfilenamebuffer));
-  if (result == NULL)
-    Log (LOG_PLAIN) << "Corrupt package listing for " << name << ", can't uninstall old files." << endLog;
-  return std::string (result ? result : "");
-}
-
-const std::string
-cygpackage::getnextfile ()
-{
-  if (listdata)
-  {
-    /* std::string(NULL) will crash, so be careful to test for that. */
-    const char *sz = listdata->gets (getfilenamebuffer,
-                                     sizeof (getfilenamebuffer));
-    if (sz)
-      return std::string(sz);
-  }
-  return std::string();
-}
-
-void
-cygpackage::uninstall ()
-{
-  if (listdata)
-    delete listdata;
-  listdata = 0;
-  io_stream::remove ("cygfile:///etc/setup/" + name + ".lst.gz");
 }
 
 const std::string

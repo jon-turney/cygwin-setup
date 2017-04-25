@@ -46,13 +46,10 @@ public:
   const std::string Canonical_version() {return std::string();}
   void setCanonicalVersion (const std::string& ) {}
   package_type_t Type () {return package_binary;}
-  const std::string getfirstfile () {return std::string();}
-  const std::string getnextfile () {return std::string();}
   const std::string SDesc () {return std::string();}
   void set_sdesc (const std::string& ) {}
   const std::string LDesc () {return std::string();}
   void set_ldesc (const std::string& ) {}
-  void uninstall (){}
 };
 static _defaultversion defaultversion;
 
@@ -170,18 +167,6 @@ packageversion::Type () const
 }
 
 const std::string
-packageversion::getfirstfile ()
-{
-  return data->getfirstfile ();
-}
-
-const std::string
-packageversion::getnextfile ()
-{
-  return data->getnextfile ();
-}
-
-const std::string
 packageversion::SDesc () const
 {
   return data->SDesc ();
@@ -233,12 +218,6 @@ const PackageDepends *
 packageversion::depends() const
 {
   return &data->depends;
-}
-
-void
-packageversion::uninstall ()
-{
- data->uninstall ();
 }
 
 packagesource *

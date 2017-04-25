@@ -71,7 +71,6 @@ public:
   static const _actions Uninstall_action;
   void set_action (trusts const t);
   void set_action (_actions, packageversion const & default_version);
-  void uninstall ();
 
   void set_message (const std::string& message_id, const std::string& message_string)
   {

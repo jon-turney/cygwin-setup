@@ -20,9 +20,6 @@
  * arbitrate acceess to cygwin binary packages amd cygwin source packages
  */
 
-/* for MAX_PATH */
-#include "win32.h" 
-
 #include "package_version.h"
 
 class io_stream;
@@ -48,19 +45,11 @@ public:
   {
     return ldesc;
   };
-  virtual void uninstall ();
-
 
   /* pass the name of the package when constructing */
   void setCanonicalVersion (const std::string& );
 
-
   virtual ~ cygpackage ();
-  /* TODO: we should probably return a metaclass - file name & path & size & type
-     - ie doc/script/binary
-   */
-  virtual const std::string getfirstfile ();
-  virtual const std::string getnextfile ();
 
   /* pass the name of the package when constructing */
   static packageversion createInstance (const std::string& pkgname,
@@ -77,12 +66,9 @@ private:
   std::string packagev;
   std::string canonical;
   std::string sdesc, ldesc;
-  char getfilenamebuffer[CYG_PATH_MAX];
 
 //  package_stability_t stability;
   package_type_t type;
-
-  io_stream *listdata, *listfile;
 };
 
 #endif /* SETUP_CYGPACKAGE_H */

@@ -165,10 +165,81 @@ Installer::preremoveOne (packagemeta & pkg)
 void
 Installer::uninstallOne (packagemeta & pkg)
 {
+  if (!pkg.installed)
+    return;
+
   Progress.SetText1 ("Uninstalling...");
   Progress.SetText2 (pkg.name.c_str());
   Log (LOG_PLAIN) << "Uninstalling " << pkg.name << endLog;
-  pkg.uninstall ();
+
+  std::set<std::string> dirs;
+
+  io_stream *listfile = io_stream::open ("cygfile:///etc/setup/" + pkg.name + ".lst.gz", "rb", 0);
+  io_stream *listdata = compress::decompress (listfile);
+
+  while (listdata)
+    {
+      char getfilenamebuffer[CYG_PATH_MAX];
+      const char *sz = listdata->gets (getfilenamebuffer, sizeof (getfilenamebuffer));
+      if (sz == NULL)
+        break;
+
+      std::string line(sz);
+
+      /* Insert the paths of all parent directories of line into dirs. */
+      size_t idx = line.length();
+      while ((idx = line.find_last_of('/', idx-1)) != string::npos)
+      {
+        std::string dir_path = line.substr(0, idx);
+        bool was_new = dirs.insert(dir_path).second;
+        /* If the path was already present in dirs, then all parent paths
+         * must necessarily be present also, so don't do any further work.
+         * */
+        if (!was_new) break;
+      }
+
+      std::string d = cygpath ("/" + line);
+      WCHAR wname[d.size () + 11]; /* Prefix + ".lnk". */
+      mklongpath (wname, d.c_str (), d.size () + 11);
+      DWORD dw = GetFileAttributesW (wname);
+      if (dw != INVALID_FILE_ATTRIBUTES
+          && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+        {
+          Log (LOG_BABBLE) << "unlink " << d << endLog;
+          SetFileAttributesW (wname, dw & ~FILE_ATTRIBUTE_READONLY);
+          DeleteFileW (wname);
+        }
+      /* Check for Windows shortcut of same name. */
+      d += ".lnk";
+      wcscat (wname, L".lnk");
+      dw = GetFileAttributesW (wname);
+      if (dw != INVALID_FILE_ATTRIBUTES
+          && !(dw & FILE_ATTRIBUTE_DIRECTORY))
+        {
+          Log (LOG_BABBLE) << "unlink " << d << endLog;
+          SetFileAttributesW (wname, dw & ~FILE_ATTRIBUTE_READONLY);
+          DeleteFileW (wname);
+        }
+    }
+
+  /* Remove the listing file */
+  delete listdata;
+  io_stream::remove ("cygfile:///etc/setup/" + pkg.name + ".lst.gz");
+
+  /* An STL set maintains itself in sorted order. Thus, iterating over it
+   * in reverse order will ensure we process directories depth-first. */
+  set<string>::const_iterator it = dirs.end();
+  while (it != dirs.begin())
+  {
+    it--;
+    std::string d = cygpath("/" + *it);
+    WCHAR wname[d.size () + 11];
+    mklongpath (wname, d.c_str (), d.size () + 11);
+    if (RemoveDirectoryW (wname))
+      Log (LOG_BABBLE) << "rmdir " << d << endLog;
+  }
+
+  pkg.installed = packageversion();
   num_uninstalls++;
 }
 

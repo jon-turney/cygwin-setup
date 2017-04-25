@@ -98,8 +98,6 @@ public:
   const std::string Canonical_version () const;
   void setCanonicalVersion (const std::string& );
   package_type_t Type () const;
-  const std::string getfirstfile ();
-  const std::string getnextfile ();
   const std::string SDesc () const;
   void set_sdesc (const std::string& );
   const std::string LDesc () const;
@@ -112,7 +110,6 @@ public:
   PackageDepends *depends();
   const PackageDepends *depends() const;
 
-  void uninstall ();
   /* invariant: never null */
   packagesource *source() const; /* where can we source the file from */
 
@@ -146,11 +143,6 @@ public:
   virtual void setCanonicalVersion (const std::string& ) = 0;
 //  virtual package_stability_t Stability () = 0;
   virtual package_type_t Type () = 0;
-  /* TODO: we should probably return a metaclass - file name & path & size & type
-     - ie doc/script/binary
-   */
-  virtual const std::string getfirstfile () = 0;
-  virtual const std::string getnextfile () = 0;
   virtual const std::string SDesc () = 0;
   virtual void set_sdesc (const std::string& ) = 0;
   virtual const std::string LDesc () = 0;
@@ -166,7 +158,6 @@ public:
 
   PackageDepends depends;
 
-  virtual void uninstall () = 0;
   packagesource source; /* where can we source the file from */
 
   virtual bool accessible () const;
