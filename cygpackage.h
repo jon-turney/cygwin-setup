@@ -72,7 +72,6 @@ public:
 
 private:
   cygpackage ();
-  void destroy ();
   std::string name;
   std::string vendor;
   std::string packagev;

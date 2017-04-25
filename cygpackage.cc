@@ -101,14 +101,6 @@ cygpackage::setCanonicalVersion (const std::string& version)
 
 cygpackage::~cygpackage ()
 {
-  destroy ();
-}
-
-/* helper functions */
-
-void
-cygpackage::destroy ()
-{
 }
 
 const std::string
