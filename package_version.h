@@ -114,8 +114,6 @@ public:
   packagesource *source() const; /* where can we source the file from */
 
   bool accessible () const;
-  /* scan for local copies */
-  void scan (bool);
 
   /* ensure that the depends clause is satisfied */
   int set_requirements (trusts deftrust, size_t depth = 0);

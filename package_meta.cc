@@ -44,6 +44,9 @@ using namespace std;
 
 #include <algorithm>
 #include "Generic.h"
+#include "download.h"
+#include "Exception.h"
+#include "resource.h"
 
 using namespace std;
 
@@ -590,6 +593,36 @@ packagemeta::logSelectionStatus() const
   pkg.logAllVersions();
 }
 
+/* scan for local copies of package */
+void
+packagemeta::scan (const packageversion &pkg, bool mirror_mode)
+{
+  /* Already have something */
+  if (!pkg)
+    return;
+
+  /* Remove mirror sites.
+   * FIXME: This is a bit of a hack.
+   */
+  try
+    {
+      if (!check_for_cached (*(pkg.source ()), mirror_mode)
+	  && ::source == IDC_SOURCE_LOCALDIR)
+	pkg.source ()->sites.clear ();
+    }
+  catch (Exception * e)
+    {
+      // We can ignore these, since we're clearing the source list anyway
+      if (e->errNo () == APPERR_CORRUPT_PACKAGE)
+	{
+	  pkg.source ()->sites.clear ();
+	  return;
+	}
+      // Unexpected exception.
+      throw e;
+    }
+}
+
 void
 packagemeta::ScanDownloadedFiles (bool mirror_mode)
 {
@@ -609,10 +642,10 @@ packagemeta::ScanDownloadedFiles (bool mirror_mode)
 			   && (*i != pkg.installed
 			       || pkg.installed == pkg.curr
 			       || pkg.installed == pkg.exp);
-	  const_cast<packageversion &>(*i).scan (lazy_scan);
+	  scan (*i, lazy_scan);
 	  packageversion foo = *i;
 	  packageversion pkgsrcver = foo.sourcePackage ();
-	  pkgsrcver.scan (lazy_scan);
+	  scan (pkgsrcver, lazy_scan);
 
 	  /* For local installs, if there is no src and no bin, the version
 	   * is unavailable

@@ -23,8 +23,6 @@
 #include "state.h"
 #include "resource.h"
 #include <algorithm>
-#include "download.h"
-#include "Exception.h"
 #include "csu_util/version_compare.h"
 
 using namespace std;
@@ -232,33 +230,6 @@ packageversion::accessible() const
   return data->accessible();
 }
 
-void
-packageversion::scan (bool mirror_mode)
-{
-  if (!*this)
-    return;
-  /* Remove mirror sites.
-   * FIXME: This is a bit of a hack. a better way is to abstract
-   * the availability logic to the package
-   */
-  try
-    {
-      if (!check_for_cached (*(source ()), mirror_mode)
-	  && ::source == IDC_SOURCE_LOCALDIR)
-	source ()->sites.clear ();
-    }
-  catch (Exception * e)
-    {
-      // We can ignore these, since we're clearing the source list anyway
-      if (e->errNo () == APPERR_CORRUPT_PACKAGE)
-	{
-	  source ()->sites.clear ();
-	  return;
-	}
-      // Unexpected exception.
-      throw e;
-    }
-}
 
 int
 packageversion::compareVersions(const packageversion &a, const packageversion &b)
