@@ -262,7 +262,7 @@ packageversion::uninstall ()
 }
 
 packagesource *
-packageversion::source ()
+packageversion::source () const
 {
   if (!data->sources.size())
     data->sources.push_back (packagesource());
@@ -270,7 +270,7 @@ packageversion::source ()
 }
 
 vector<packagesource> *
-packageversion::sources ()
+packageversion::sources () const
 {
   return &data->sources;
 }

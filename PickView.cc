@@ -442,9 +442,9 @@ PickView::init_headers (HDC dc)
           if (*i != pkg.installed)
             note_width (headers, dc, i->Canonical_version (),
                         HMARGIN + SPIN_WIDTH, new_col);
-	  std::string z = format_1000s(packageversion(*i).source ()->size);
+	  std::string z = format_1000s(i->source ()->size);
 	  note_width (headers, dc, z, HMARGIN, size_col);
-	  z = format_1000s(packageversion(i->sourcePackage ()).source ()->size);
+	  z = format_1000s(i->sourcePackage ().source ()->size);
 	  note_width (headers, dc, z, HMARGIN, size_col);
 	}
       std::string s = pkg.name;

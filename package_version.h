@@ -118,9 +118,9 @@ public:
 
   void uninstall ();
   /* invariant: never null */
-  packagesource *source(); /* where can we source the file from */
+  packagesource *source() const; /* where can we source the file from */
   /* invariant: never null */
-  std::vector <packagesource> *sources(); /* expose the list of files.
+  std::vector <packagesource> *sources() const; /* expose the list of files.
 					source() returns the 'default' file
 					sources() allows managing multiple files
 					in a single package
