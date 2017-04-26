@@ -218,7 +218,7 @@ packageversion::sourcePackage() const
 }
 
 PackageSpecification &
-packageversion::sourcePackageSpecification ()
+packageversion::sourcePackageSpecification () const
 {
   return data->sourcePackageSpecification ();
 }

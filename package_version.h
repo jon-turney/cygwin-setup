@@ -106,7 +106,7 @@ public:
   const std::string LDesc () const;
   void set_ldesc (const std::string& );
   packageversion sourcePackage () const;
-  PackageSpecification & sourcePackageSpecification ();
+  PackageSpecification & sourcePackageSpecification () const;
   void setSourcePackageSpecification (PackageSpecification const &);
 
   /* invariant: these never return NULL */
