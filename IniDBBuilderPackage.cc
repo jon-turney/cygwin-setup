@@ -24,7 +24,6 @@
 #include "package_meta.h"
 #include "package_version.h"
 #include "cygpackage.h"
-#include "filemanip.h"
 #include "ini.h"
 // for strtoul
 #include <string.h>
@@ -170,7 +169,6 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
   spec.setOperator (PackageSpecification::Equals);
   spec.setVersion (cbpv.Canonical_version());
 
-  // process_src (*cspv.source(), path);
   setSourceSize (*cspv.source(), size);
 }
 
@@ -457,16 +455,6 @@ IniDBBuilderPackage::process_src (packagesource &src, const std::string& path)
   if (!src.Canonical())
     src.set_canonical (path.c_str());
   src.sites.push_back(site(parse_mirror));
-
-  if (!cbpv.Canonical_version ().size())
-    {
-      fileparse f;
-      if (parse_filename (path, f))
-	{
-	  cbpv.setCanonicalVersion (f.ver);
-	  add_correct_version ();
-	}
-    }
 }
 
 void
