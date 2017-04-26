@@ -258,18 +258,18 @@ do_download_thread (HINSTANCE h, HWND owner)
        i != db.packages.end (); ++i)
     {
       packagemeta & pkg = *(i->second);
-      if (pkg.desired.picked () || pkg.desired.sourcePackage ().picked ())
+      if (pkg.desired && (pkg.picked () || pkg.srcpicked ()))
 	{
 	  packageversion version = pkg.desired;
 	  packageversion sourceversion = version.sourcePackage();
 	  try 
 	    {
-    	      if (version.picked())
+	      if (pkg.picked())
 		{
 		    if (!check_for_cached (*version.source()))
 		      total_download_bytes += version.source()->size;
 		}
-    	      if (sourceversion.picked () || IncludeSource)
+	      if (pkg.srcpicked () || IncludeSource)
 		{
 		    if (!check_for_cached (*sourceversion.source()))
 		      total_download_bytes += sourceversion.source()->size;
@@ -293,16 +293,16 @@ do_download_thread (HINSTANCE h, HWND owner)
        i != db.packages.end (); ++i)
     {
       packagemeta & pkg = *(i->second);
-      if (pkg.desired.picked () || pkg.desired.sourcePackage ().picked ())
+      if (pkg.desired && (pkg.picked () || pkg.srcpicked ()))
 	{
 	  int e = 0;
 	  packageversion version = pkg.desired;
 	  packageversion sourceversion = version.sourcePackage();
-	  if (version.picked())
+	  if (pkg.picked())
 	    {
 		e += download_one (*version.source(), owner);
 	    }
-	  if (sourceversion && (sourceversion.picked() || IncludeSource))
+	  if (sourceversion && (pkg.srcpicked() || IncludeSource))
 	    {
 		e += download_one (*sourceversion.source (), owner);
 	    }

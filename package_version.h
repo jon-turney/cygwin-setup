@@ -112,9 +112,6 @@ public:
   PackageDepends *depends();
   const PackageDepends *depends() const;
 
-  bool picked() const;   /* true if this version is to be installed */
-  void pick(bool, packagemeta *); /* trigger an install/reinsall */
-
   void uninstall ();
   /* invariant: never null */
   packagesource *source() const; /* where can we source the file from */
@@ -168,10 +165,6 @@ public:
   virtual void setSourcePackageSpecification (PackageSpecification const &);
 
   PackageDepends depends;
-
-  virtual void pick(bool const &newValue) { picked = newValue;}
-  bool picked;	/* non zero if this version is to be installed */
-		/* This will also trigger reinstalled if it is set */
 
   virtual void uninstall () = 0;
   packagesource source; /* where can we source the file from */

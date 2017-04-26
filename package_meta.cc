@@ -385,9 +385,9 @@ packagemeta::action_caption () const
     return "Uninstall";
   else if (!desired)
     return "Skip";
-  else if (desired == installed && desired.picked())
+  else if (desired == installed && picked())
     return packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve";
-  else if (desired == installed && desired.sourcePackage() && desired.sourcePackage().picked())
+  else if (desired == installed && desired.sourcePackage() && srcpicked())
     /* FIXME: Redo source should come up if the tarball is already present locally */
     return "Source";
   else if (desired == installed)	/* and neither src nor bin */
@@ -405,15 +405,15 @@ packagemeta::set_action (trusts const trust)
   /* Keep the picked settings of the former desired version, if any, and make
      sure at least one of them is picked.  If both are unpicked, pick the
      binary version. */
-  bool source_picked = desired && desired.sourcePackage().picked ();
-  bool binary_picked = !desired || desired.picked () || !source_picked;
+  bool source_picked = desired && srcpicked ();
+  bool binary_picked = !desired || picked () || !source_picked;
 
   /* If we're on "Keep" on the installed version, and the version is available,
      switch to "Reinstall". */
-  if (desired && desired == installed && !desired.picked ()
+  if (desired && desired == installed && !picked ()
       && desired.accessible ())
     {
-      desired.pick (true, this);
+      pick (true);
       return;
     }
 
@@ -445,12 +445,16 @@ packagemeta::set_action (trusts const trust)
       /* If the next version is the installed version, unpick it.  This will
 	 have the desired effect to show the package in "Keep" mode.  See also
 	 above for the code switching to "Reinstall". */
-      desired.pick (desired != installed && binary_picked, this);
-      desired.sourcePackage ().pick (desired.sourcePackage().accessible ()
-				     && source_picked, NULL);
+      pick (desired != installed && binary_picked);
+      srcpick (desired.sourcePackage().accessible () && source_picked);
     }
   else
-    desired = packageversion ();
+    {
+      desired = packageversion ();
+      pick(false);
+      srcpick(false);
+    }
+
   /* Memorize the fact that the user picked at least once. */
   if (!installed)
     user_picked = true;
@@ -469,8 +473,8 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
 	  desired = default_version;
 	  if (desired)
 	    {
-	      desired.pick (desired != installed, this);
-	      desired.sourcePackage ().pick (false, NULL);
+	      pick (desired != installed);
+	      srcpick (false);
 	    }
 	}
       else
@@ -486,18 +490,18 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
 	    if (desired.accessible ())
 	      {
 		user_picked = true;
-		desired.pick (true, this);
-		desired.sourcePackage ().pick (false, NULL);
+		pick (true);
+		srcpick (false);
 	      }
 	    else
 	      {
-		desired.pick (false, NULL);
-		desired.sourcePackage ().pick (true, NULL);
+		pick (false);
+		srcpick (true);
 	      }
 	  else
 	    {
-	      desired.pick (false, NULL);
-	      desired.sourcePackage ().pick (false, NULL);
+	      pick (false);
+	      srcpick (false);
 	    }
 	}
       return;
@@ -507,14 +511,42 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
       desired = installed;
       if (desired)
 	{
-	  desired.pick (true, this);
-	  desired.sourcePackage ().pick (false, NULL);
+	  pick (true);
+	  srcpick (false);
 	}
     }
   else if (action == Uninstall_action)
     {
       desired = packageversion ();
     }
+}
+
+bool
+packagemeta::picked () const
+{
+  return _picked;
+}
+
+void
+packagemeta::pick (bool picked)
+{
+  _picked = picked;
+
+  // side effect: display message when picked (if not already seen)
+  if (picked)
+    this->message.display ();
+}
+
+bool
+packagemeta::srcpicked () const
+{
+  return _srcpicked;
+}
+
+void
+packagemeta::srcpick (bool picked)
+{
+  _srcpicked = picked;
 }
 
 bool
@@ -610,7 +642,7 @@ packagemeta::logSelectionStatus() const
   const std::string installed =
    pkg.installed ? pkg.installed.Canonical_version () : "none";
 
-  Log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && pkg.desired.sourcePackage().picked() ? "yes" : "no") << endLog;
+  Log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && srcpicked() ? "yes" : "no") << endLog;
   if (pkg.categories.size ())
     Log (LOG_BABBLE) << "     categories=" << for_each(pkg.categories.begin(), pkg.categories.end(), StringConcatenator(", ")).result << endLog;
 #if 0

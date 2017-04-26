@@ -175,13 +175,13 @@ PickView::setViewMode (views mode)
               || (view_mode == PickView::views::PackagePending &&
                   ((!pkg.desired && pkg.installed) ||         // uninstall
                     (pkg.desired &&
-                      (pkg.desired.picked () ||               // install bin
-                       pkg.desired.sourcePackage ().picked ())))) // src
+                      (pkg.picked () ||               // install bin
+                       pkg.srcpicked ())))) // src
               
               // "Up to date" : installed packages that will not be changed
               || (view_mode == PickView::views::PackageKeeps &&
-                  (pkg.installed && pkg.desired && !pkg.desired.picked ()
-                    && !pkg.desired.sourcePackage ().picked ()))
+                  (pkg.installed && pkg.desired && !pkg.picked ()
+                    && !pkg.srcpicked ()))
 
               // "Not installed"
               || (view_mode == PickView::views::PackageSkips &&

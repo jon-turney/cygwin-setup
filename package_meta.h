@@ -35,7 +35,8 @@ public:
   static void ScanDownloadedFiles (bool);
   packagemeta (packagemeta const &);
   packagemeta (const std::string& pkgname)
-  : name (pkgname), key(pkgname), user_picked (false)
+    : name (pkgname), key(pkgname), user_picked (false),
+    _picked(false), _srcpicked(false)
   {
   }
 
@@ -134,6 +135,12 @@ public:
   /* What version does the user want ? */
   packageversion desired;
 
+  bool picked() const;   /* true if desired version is to be (re-)installed */
+  void pick(bool); /* trigger an install/reinstall */
+
+  bool srcpicked() const;   /* true if source for desired version is to be installed */
+  void srcpick(bool);
+
   packagemessage message;
 
   /* can one or more versions be installed? */
@@ -153,6 +160,8 @@ protected:
 private:
   std::string trustLabel(packageversion const &) const;
   std::vector <Script> scripts_;
+  bool _picked; /* true if desired version is to be (re)installed */
+  bool _srcpicked;
 };
 
 #endif /* SETUP_PACKAGE_META_H */

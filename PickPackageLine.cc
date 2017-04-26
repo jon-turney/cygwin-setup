@@ -44,7 +44,7 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
           /* current version */ pkg.desired == pkg.installed ||
           /* no source */ !pkg.desired.accessible())
         theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkna);
-      else if (pkg.desired.picked())
+      else if (pkg.picked())
         theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkyes);
       else
         theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkno);
@@ -67,7 +67,7 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
           /* when no source mirror available */
           !pkg.desired.sourcePackage().accessible())
         theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkna);
-      else if (pkg.desired.sourcePackage().picked())
+      else if (pkg.srcpicked())
         theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkyes);
       else
         theView.DrawIcon (hdc, x + HMARGIN/2, by, theView.bm_checkno);
@@ -100,7 +100,7 @@ PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int sho
       /* Include the size of the binary package, and if selected, the source
          package as well.  */
       sz += picked.source()->size;
-      if (picked.sourcePackage().picked())
+      if (pkg.srcpicked())
         sz += picked.sourcePackage().source()->size;
 
       /* If size still 0, size must be unknown.  */
@@ -133,14 +133,13 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
       && x <= theView.headers[theView.bintick_col + 1].x - HMARGIN / 2)
     {
       if (pkg.desired.accessible ())
-	pkg.desired.pick (!pkg.desired.picked (), &pkg);
+	pkg.pick (!pkg.picked ());
     }
   else if (x >= theView.headers[theView.srctick_col].x - HMARGIN / 2
 	   && x <= theView.headers[theView.srctick_col + 1].x - HMARGIN / 2)
     {
       if (pkg.desired.sourcePackage ().accessible ())
-	pkg.desired.sourcePackage ().pick (
-			!pkg.desired.sourcePackage ().picked (), NULL);
+	pkg.srcpick (!pkg.srcpicked ());
     }
 
   /* Unchecking binary while source is unchecked or vice versa is equivalent
@@ -152,7 +151,7 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
       (x >= theView.headers[theView.srctick_col].x - HMARGIN / 2
        && x <= theView.headers[theView.srctick_col + 1].x - HMARGIN / 2))
     {
-      if (!pkg.desired.picked () && !pkg.desired.sourcePackage ().picked ())
+      if (!pkg.picked () && !pkg.srcpicked ())
         pkg.desired = packageversion ();
     }
 

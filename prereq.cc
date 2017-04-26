@@ -302,20 +302,21 @@ PrereqChecker::selectMissing ()
   map <packagemeta *, vector <packagemeta *>, packagemeta_ltcomp>::iterator i;
   for (i = unmet.begin(); i != unmet.end(); i++)
     {
-      packageversion vers = i->first->trustp (false, theTrust);
-      i->first->desired = vers;
-      vers.sourcePackage ().pick (false, NULL);
+      packagemeta *pkg = i->first;
+      packageversion vers = pkg->trustp (false, theTrust);
+      pkg->desired = vers;
+      pkg->srcpick (false);
 
       if (vers == i->first->installed)
         {
-          vers.pick (false, NULL);
+          pkg->pick (false);
           Log (LOG_PLAIN) << "Adding required dependency " << i->first->name <<
                ": Selecting already-installed version " <<
                i->first->installed.Canonical_version () << "." << endLog;
         }
       else
         {
-          vers.pick (vers.accessible (), i->first);
+          pkg->pick (vers.accessible ());
           Log (LOG_PLAIN) << "Adding required dependency " << i->first->name <<
               ": Selecting version " << vers.Canonical_version () <<
               " for installation." << endLog;

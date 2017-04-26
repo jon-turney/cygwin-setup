@@ -439,7 +439,7 @@ packagedb::defaultTrust (trusts trust)
         {
           pkg.desired = pkg.trustp (true, trust);
           if (pkg.desired)
-            pkg.desired.pick (pkg.desired.accessible() && pkg.desired != pkg.installed, &pkg);
+            pkg.pick (pkg.desired.accessible() && pkg.desired != pkg.installed);
         }
       else
         pkg.desired = packageversion ();
