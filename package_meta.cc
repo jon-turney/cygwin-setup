@@ -35,10 +35,7 @@ using namespace std;
 /* this goes at the same time */
 #include "win32.h"
 
-
 #include "script.h"
-
-#include "package_version.h"
 #include "package_db.h"
 
 #include <algorithm>

@@ -21,7 +21,6 @@
 #include "PickPackageLine.h"
 #include "PickCategoryLine.h"
 #include "package_db.h"
-#include "package_version.h"
 #include "dialog.h"
 #include "resource.h"
 /* For 'source' */

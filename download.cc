@@ -39,7 +39,6 @@
 
 #include "package_db.h"
 #include "package_meta.h"
-#include "package_version.h"
 #include "package_source.h"
 
 #include "threebar.h"
