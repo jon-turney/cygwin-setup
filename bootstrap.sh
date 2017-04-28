@@ -21,7 +21,7 @@ bootstrap() {
 cd "$srcdir"
 
 # Make sure we are running in the right directory
-if [ ! -f cygpackage.cc ]; then
+if [ ! -f main.cc ]; then
   echo "You must run this script from the directory containing it"
   exit 1
 fi

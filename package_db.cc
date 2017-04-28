@@ -33,7 +33,6 @@
 #include "filemanip.h"
 
 #include "package_version.h"
-#include "cygpackage.h"
 #include "package_db.h"
 #include "package_meta.h"
 #include "Exception.h"

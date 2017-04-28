@@ -39,7 +39,6 @@ using namespace std;
 #include "script.h"
 
 #include "package_version.h"
-#include "cygpackage.h"
 #include "package_db.h"
 
 #include <algorithm>

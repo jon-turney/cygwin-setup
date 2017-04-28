@@ -126,8 +126,6 @@ inilint_SOURCES = \
 	crypto.cc \
 	crypto.h \
 	cyg-pubkey.h \
-	cygpackage.cc \
-	cygpackage.h \
 	desktop.cc \
 	desktop.h \
 	dialog.cc \
