@@ -18,9 +18,12 @@
 
 #include <vector>
 #include "package_version.h"
+
 class IniParseFeedback;
 class packagesource;
 class packagemeta;
+
+enum class hashType { none, md5, sha512 };
 
 class IniDBBuilderPackage
 {
@@ -34,16 +37,21 @@ public:
   void buildPackageVersion (const std::string& );
   void buildPackageSDesc (const std::string& );
   void buildPackageLDesc (const std::string& );
-  void buildPackageInstall (const std::string&, const std::string&);
-  void buildPackageSource (const std::string&, const std::string&);
+  void buildPackageInstall (const std::string&, const std::string&,
+                            char *, hashType);
+  void buildPackageSource (const std::string&, const std::string&,
+                           char *, hashType);
+
+  // helpers for ScanFindVisitor
+  void buildPackageInstall (const std::string& path, const std::string& size)
+  { buildPackageInstall(path, size, NULL, hashType::none); }
+  void buildPackageSource (const std::string& path, const std::string& size)
+  { buildPackageSource(path, size, NULL, hashType::none); }
+
   void buildPackageTrust (int);
   void buildPackageCategory (const std::string& );
 
   void buildBeginDepends ();
-  void buildInstallSHA512 (unsigned char const[64]);
-  void buildSourceSHA512 (unsigned char const[64]);
-  void buildInstallMD5 (unsigned char const[16]);
-  void buildSourceMD5 (unsigned char const[16]);
   void buildBeginBuildDepends ();
   void buildMessage (const std::string&, const std::string&);
   void buildSourceName (const std::string& );

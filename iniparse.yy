@@ -96,8 +96,10 @@ singleitem /* non-empty */
  | T_OTHER NL			{ iniBuilder->buildPackageTrust (TRUST_OTHER); }
  | SOURCEPACKAGE source NL
  | CATEGORY categories NL
- | INSTALL STRING STRING { iniBuilder->buildPackageInstall ($2, $3);} installchksum NL
- | SOURCE STRING STRING sourcechksum NL {iniBuilder->buildPackageSource ($2, $3);}
+ | INSTALL STRING STRING MD5 NL { iniBuilder->buildPackageInstall ($2, $3, $4, hashType::md5); }
+ | INSTALL STRING STRING SHA512 NL { iniBuilder->buildPackageInstall ($2, $3, $4, hashType::sha512); }
+ | SOURCE STRING STRING MD5 NL {iniBuilder->buildPackageSource ($2, $3, $4, hashType::md5); }
+ | SOURCE STRING STRING SHA512 NL {iniBuilder->buildPackageSource ($2, $3, $4, hashType::sha512); }
  | DEPENDS { iniBuilder->buildBeginDepends(); } versionedpackagelist NL
  | REQUIRES { iniBuilder->buildBeginDepends(); } versionedpackagelistsp NL
  | BUILDDEPENDS { iniBuilder->buildBeginBuildDepends(); } versionedpackagelist NL
@@ -110,16 +112,6 @@ singleitem /* non-empty */
 
 categories: /* empty */
  | categories STRING		{ iniBuilder->buildPackageCategory ($2); }
- ;
-
-installchksum /* non-empty */
- : MD5 			{ iniBuilder->buildInstallMD5 ((unsigned char *)$1);}
- | SHA512		{ iniBuilder->buildInstallSHA512 ((unsigned char *)$1);}
- ;
-
-sourcechksum /* non-empty */
- : MD5 			{ iniBuilder->buildSourceMD5 ((unsigned char *)$1); }
- | SHA512 		{ iniBuilder->buildSourceSHA512 ((unsigned char *)$1); }
  ;
 
 source /* non-empty */

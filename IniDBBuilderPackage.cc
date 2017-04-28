@@ -120,15 +120,37 @@ IniDBBuilderPackage::buildPackageLDesc (const std::string& theDesc)
 
 void
 IniDBBuilderPackage::buildPackageInstall (const std::string& path,
-                                          const std::string& size)
+                                          const std::string& size,
+                                          char *hash,
+                                          hashType type)
 {
   process_src (*cbpv.source(), path);
   setSourceSize (*cbpv.source(), size);
+
+  switch (type) {
+  case hashType::sha512:
+    if (hash && !cbpv.source()->sha512_isSet)
+      {
+        memcpy (cbpv.source()->sha512sum, hash, sizeof(cbpv.source()->sha512sum));
+        cbpv.source()->sha512_isSet = true;
+      }
+    break;
+
+  case hashType::md5:
+    if (hash && !cbpv.source()->md5.isSet())
+      cbpv.source()->md5.set((unsigned char *)hash);
+    break;
+
+  case hashType::none:
+    break;
+  }
 }
 
 void
 IniDBBuilderPackage::buildPackageSource (const std::string& path,
-                                         const std::string& size)
+                                         const std::string& size,
+                                         char *hash,
+                                         hashType type)
 {
   packagedb db;
   /* get an appropriate metadata */
@@ -168,6 +190,24 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
   spec.setVersion (cbpv.Canonical_version());
 
   setSourceSize (*cspv.source(), size);
+
+  switch (type) {
+  case hashType::sha512:
+    if (hash && !cspv.source()->sha512_isSet)
+      {
+        memcpy (cspv.source()->sha512sum, hash, sizeof(cspv.source()->sha512sum));
+        cspv.source()->sha512_isSet = true;
+      }
+    break;
+
+  case hashType::md5:
+    if (hash && !cspv.source()->md5.isSet())
+      cspv.source()->md5.set((unsigned char *)hash);
+    break;
+
+  case hashType::none:
+    break;
+  }
 }
 
 void
@@ -197,38 +237,6 @@ IniDBBuilderPackage::buildBeginDepends ()
 #endif
   currentSpec = NULL;
   currentNodeList = cbpv.depends();
-}
-
-void
-IniDBBuilderPackage::buildInstallSHA512 (unsigned char const *sha512)
-{
-  if (sha512 && !cbpv.source()->sha512_isSet) {
-    memcpy (cbpv.source()->sha512sum, sha512, sizeof cbpv.source()->sha512sum);
-    cbpv.source()->sha512_isSet = true;
-  }
-}
-
-void
-IniDBBuilderPackage::buildSourceSHA512 (unsigned char const *sha512)
-{
-  if (sha512 && !cspv.source()->sha512_isSet) {
-    memcpy (cspv.source()->sha512sum, sha512, sizeof cspv.source()->sha512sum);
-    cspv.source()->sha512_isSet = true;
-  }
-}
-
-void
-IniDBBuilderPackage::buildInstallMD5 (unsigned char const *md5)
-{
-  if (md5 && !cbpv.source()->md5.isSet())
-    cbpv.source()->md5.set(md5);
-}
-
-void
-IniDBBuilderPackage::buildSourceMD5 (unsigned char const *md5)
-{
-  if (md5 && !cspv.source()->md5.isSet())
-    cspv.source()->md5.set(md5);
 }
 
 void
