@@ -219,19 +219,13 @@ do_download_thread (HINSTANCE h, HWND owner)
 	    {
     	      if (version.picked())
 		{
-		  for (vector<packagesource>::iterator i = 
-		       version.sources ()->begin(); 
-		       i != version.sources ()->end(); ++i)
-		    if (!check_for_cached (*i))
-      		      total_download_bytes += i->size;
+		    if (!check_for_cached (*version.source()))
+		      total_download_bytes += version.source()->size;
 		}
     	      if (sourceversion.picked () || IncludeSource)
 		{
-		  for (vector<packagesource>::iterator i =
-		       sourceversion.sources ()->begin();
-		       i != sourceversion.sources ()->end(); ++i)
-		    if (!check_for_cached (*i))
-		      total_download_bytes += i->size;
+		    if (!check_for_cached (*sourceversion.source()))
+		      total_download_bytes += sourceversion.source()->size;
 		}
 	    }
 	  catch (Exception * e)
@@ -259,17 +253,11 @@ do_download_thread (HINSTANCE h, HWND owner)
 	  packageversion sourceversion = version.sourcePackage();
 	  if (version.picked())
 	    {
-	      for (vector<packagesource>::iterator i =
-   		   version.sources ()->begin();
-		   i != version.sources ()->end(); ++i)
-    		e += download_one (*i, owner);
+		e += download_one (*version.source(), owner);
 	    }
 	  if (sourceversion && (sourceversion.picked() || IncludeSource))
 	    {
-	      for (vector<packagesource>::iterator i =
-   		   sourceversion.sources ()->begin();
-		   i != sourceversion.sources ()->end(); ++i)
-    		e += download_one (*i, owner);
+		e += download_one (*sourceversion.source (), owner);
 	    }
 	  errors += e;
 #if 0

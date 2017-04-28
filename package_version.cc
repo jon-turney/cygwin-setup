@@ -264,15 +264,7 @@ packageversion::uninstall ()
 packagesource *
 packageversion::source () const
 {
-  if (!data->sources.size())
-    data->sources.push_back (packagesource());
-  return &data->sources[0];
-}
-
-vector<packagesource> *
-packageversion::sources () const
-{
-  return &data->sources;
+  return &data->source;
 }
 
 bool
@@ -392,24 +384,21 @@ _packageversion::sourcePackage ()
   return sourceVersion;
 }
 
+// is archive accessible
 bool
 _packageversion::accessible() const
 {
-  bool cached (sources.size() > 0);
-  for (vector<packagesource>::const_iterator i = sources.begin();
-       i!=sources.end(); ++i)
-    if (!i->Cached ())
-      cached = false;
-  if (cached) 
+  // cached ?
+  if (source.Cached ())
     return true;
+  // net access allowed?
   if (::source == IDC_SOURCE_LOCALDIR)
     return false;
-  unsigned int retrievable = 0;
-  for (vector<packagesource>::const_iterator i = sources.begin();
-      i!=sources.end(); ++i)
-    if (i->sites.size() || i->Cached ())
-      retrievable += 1;
-  return retrievable > 0;
+  // retrievable ?
+  if (source.sites.size() || source.Cached ())
+    return true;
+  // otherwise, not accessible
+  return false;
 }
 
 void
