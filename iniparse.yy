@@ -96,7 +96,7 @@ singleitem /* non-empty */
  | T_OTHER NL			{ iniBuilder->buildPackageTrust (TRUST_OTHER); }
  | SOURCEPACKAGE source NL
  | CATEGORY categories NL
- | INSTALL STRING STRING { iniBuilder->buildPackageInstall ($2); iniBuilder->buildInstallSize($3);} installchksum NL
+ | INSTALL STRING STRING { iniBuilder->buildPackageInstall ($2, $3);} installchksum NL
  | SOURCE STRING STRING sourcechksum NL {iniBuilder->buildPackageSource ($2, $3);}
  | DEPENDS { iniBuilder->buildBeginDepends(); } versionedpackagelist NL
  | REQUIRES { iniBuilder->buildBeginDepends(); } versionedpackagelistsp NL

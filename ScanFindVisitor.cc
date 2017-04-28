@@ -46,8 +46,8 @@ ScanFindVisitor::visitFile(const std::string& basePath,
   if (!f.what.size())
     {
       //assume binary
-      _Builder.buildPackageInstall (basePath + theFile->cFileName);
-      _Builder.buildInstallSize(stringify(theFile->nFileSizeLow));
+      _Builder.buildPackageInstall (basePath + theFile->cFileName,
+                                    stringify(theFile->nFileSizeLow));
     }
   else
     // patch or src, assume src until someone complains

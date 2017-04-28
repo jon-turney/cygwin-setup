@@ -34,13 +34,12 @@ public:
   void buildPackageVersion (const std::string& );
   void buildPackageSDesc (const std::string& );
   void buildPackageLDesc (const std::string& );
-  void buildPackageInstall (const std::string& );
+  void buildPackageInstall (const std::string&, const std::string&);
   void buildPackageSource (const std::string&, const std::string&);
   void buildPackageTrust (int);
   void buildPackageCategory (const std::string& );
 
   void buildBeginDepends ();
-  void buildInstallSize (const std::string& );
   void buildInstallSHA512 (unsigned char const[64]);
   void buildSourceSHA512 (unsigned char const[64]);
   void buildInstallMD5 (unsigned char const[16]);

@@ -119,9 +119,11 @@ IniDBBuilderPackage::buildPackageLDesc (const std::string& theDesc)
 }
 
 void
-IniDBBuilderPackage::buildPackageInstall (const std::string& path)
+IniDBBuilderPackage::buildPackageInstall (const std::string& path,
+                                          const std::string& size)
 {
   process_src (*cbpv.source(), path);
+  setSourceSize (*cbpv.source(), size);
 }
 
 void
@@ -195,12 +197,6 @@ IniDBBuilderPackage::buildBeginDepends ()
 #endif
   currentSpec = NULL;
   currentNodeList = cbpv.depends();
-}
-
-void
-IniDBBuilderPackage::buildInstallSize (const std::string &size)
-{
-  setSourceSize (*cbpv.source(), size);
 }
 
 void
