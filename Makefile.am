@@ -274,7 +274,7 @@ inilint_SOURCES = \
 GITVER := $(shell cd $(srcdir) && git describe --match release_\* --abbrev=6 --dirty || "N/A")
 VER := $(subst release_,,$(GITVER))
 
-setup_version.c : $(srcdir)/ChangeLog Makefile
+setup_version.c : Makefile
 	@echo "Setup version: " $(VER)
 	$(AM_V_GEN)(echo '#define VERSION_PREFIX "%%% setup-version"';\
 	echo 'static const char version_store[] = VERSION_PREFIX " '$(VER)'";';\
