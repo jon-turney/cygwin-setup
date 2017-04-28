@@ -116,9 +116,6 @@ void
 IniDBBuilderPackage::buildPackageLDesc (const std::string& theDesc)
 {
   cbpv.set_ldesc(theDesc);
-#if DEBUG
-  _feedback.warning(theDesc.c_str());
-#endif
 }
 
 void
