@@ -206,6 +206,7 @@ inilint_SOURCES = \
 	package_meta.h \
 	package_source.cc \
 	package_source.h \
+	package_version.h \
 	PackageSpecification.cc \
 	PackageSpecification.h \
 	PackageTrust.h \

@@ -18,7 +18,9 @@
 
 #include <iosfwd>
 #include "String++.h"
-class packageversion;
+
+class SolvableVersion;
+typedef SolvableVersion packageversion;
 
 /* Describe a package - i.e. we need version 5 of apt */
 

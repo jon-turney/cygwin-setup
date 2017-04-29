@@ -16,7 +16,8 @@
 #ifndef SETUP_PACKAGE_META_H
 #define SETUP_PACKAGE_META_H
 
-class packageversion;
+class SolvableVersion;
+typedef SolvableVersion packageversion;
 class packagemeta;
 
 #include <set>

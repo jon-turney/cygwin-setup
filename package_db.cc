@@ -31,6 +31,7 @@
 #include "compress.h"
 
 #include "filemanip.h"
+#include "package_version.h"
 #include "package_db.h"
 #include "package_meta.h"
 #include "Exception.h"
