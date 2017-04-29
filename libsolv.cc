@@ -18,6 +18,7 @@
 #include "solv/evr.h"
 
 #include "LogSingleton.h"
+#include  <iomanip>
 
 // ---------------------------------------------------------------------------
 // Utility functions for mapping between Operators and Relation Ids
@@ -441,3 +442,244 @@ SolverPool::internalize()
       repodata_internalize(i->second->data);
     }
 }
+
+void
+SolverPool::use_test_packages(bool use_test_packages)
+{
+  // Only enable repos containing test packages if wanted
+  for (RepoList::iterator i = repos.begin();
+       i != repos.end();
+       i++)
+    {
+      if (i->second->test)
+        {
+          i->second->repo->disabled = !use_test_packages;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// implements class SolverSolution
+//
+// A wrapper around the libsolv solver
+// ---------------------------------------------------------------------------
+
+SolverSolution::~SolverSolution()
+{
+  if (solv)
+    {
+      solver_free(solv);
+      solv = NULL;
+    }
+}
+
+static
+std::ostream &operator<<(std::ostream &stream,
+                         SolverTransaction::transType type)
+{
+  switch (type)
+    {
+    case SolverTransaction::transInstall:
+      stream << "install";
+      break;
+    case SolverTransaction::transErase:
+      stream << "erase";
+      break;
+    default:
+      stream << "unknown";
+    }
+  return stream;
+}
+
+bool
+SolverSolution::update(SolverTasks &tasks, bool update, bool use_test_packages, bool include_source)
+{
+  Log (LOG_PLAIN) << "solving: " << tasks.tasks.size() << " tasks," <<
+    " update: " << (update ? "yes" : "no") << "," <<
+    " use test packages: " << (use_test_packages ? "yes" : "no") << "," <<
+    " include_source: " << (include_source ? "yes" : "no") << endLog;
+
+  pool.use_test_packages(use_test_packages);
+
+  Queue job;
+  queue_init(&job);
+  // solver accepts a queue containing pairs of (cmd, id) tasks
+  // cmd is job and selection flags ORed together
+  for (SolverTasks::taskList::const_iterator i = tasks.tasks.begin();
+       i != tasks.tasks.end();
+       i++)
+    {
+      const SolvableVersion &sv = (*i).first;
+
+      switch ((*i).second)
+        {
+        case SolverTasks::taskInstall:
+          queue_push2(&job, SOLVER_INSTALL | SOLVER_SOLVABLE, sv.id);
+          break;
+        case SolverTasks::taskUninstall:
+          queue_push2(&job, SOLVER_ERASE | SOLVER_SOLVABLE, sv.id);
+          break;
+        case SolverTasks::taskReinstall:
+          // we don't know how to ask solver for this, so we just add the erase
+          // and install later
+          break;
+        default:
+          Log (LOG_PLAIN) << "unknown task " << (*i).second << endLog;
+        }
+    }
+
+  if (update)
+    queue_push2(&job, SOLVER_UPDATE | SOLVER_SOLVABLE_ALL, 0);
+
+  if (!solv)
+    solv = solver_create(pool.pool);
+
+  solver_set_flag(solv, SOLVER_FLAG_ALLOW_VENDORCHANGE, 1);
+  solver_set_flag(solv, SOLVER_FLAG_ALLOW_DOWNGRADE, 0);
+  solver_solve(solv, &job);
+  queue_free(&job);
+
+  int pcnt = solver_problem_count(solv);
+  solver_printdecisions(solv);
+
+  // get transactions for solution
+  Transaction *t = solver_create_transaction(solv);
+  transaction_order(t, 0);
+  transaction_print(t);
+
+  // massage into SolverTransactions form
+  trans.clear();
+
+  for (int i = 0; i < t->steps.count; i++)
+    {
+      Id id = t->steps.elements[i];
+      SolverTransaction::transType tt = type(t, i);
+      trans.push_back(SolverTransaction(SolvableVersion(id, pool.pool), tt));
+    }
+
+  // add install and remove tasks for anything marked as reinstall
+  for (SolverTasks::taskList::const_iterator i = tasks.tasks.begin();
+       i != tasks.tasks.end();
+       i++)
+    {
+      const SolvableVersion &sv = (*i).first;
+
+      if (((*i).second) == SolverTasks::taskReinstall)
+        {
+          trans.push_back(SolverTransaction(SolvableVersion(sv.id, pool.pool),
+                                            SolverTransaction::transErase));
+          trans.push_back(SolverTransaction(SolvableVersion(sv.id, pool.pool),
+                                            SolverTransaction::transInstall));
+        }
+    }
+
+  // if include_source mode is on, also install source for everything we are
+  // installing
+  if (include_source)
+    {
+      // (this uses indicies into the vector, as iterators might become
+      // invalidated by doing push_back)
+      size_t n = trans.size();
+      for (size_t i = 0; i < n; i++)
+        {
+          if (trans[i].type == SolverTransaction::transInstall)
+            {
+              SolvableVersion src_version = trans[i].version.sourcePackage();
+              if (src_version)
+                trans.push_back(SolverTransaction(src_version,
+                                                  SolverTransaction::transInstall));
+            }
+        }
+    }
+
+  if (trans.size())
+    {
+      Log (LOG_PLAIN) << "Augmented Transaction List:" << endLog;
+      for (SolverTransactionList::iterator i = trans.begin ();
+           i != trans.end ();
+           ++i)
+        {
+          Log (LOG_PLAIN) << std::setw(4) << std::distance(trans.begin(), i)
+                          << std::setw(8) << i->type
+                          << std::setw(48) << i->version.Name()
+                          << std::setw(20) << i->version.Canonical_version() << endLog;
+        }
+    }
+
+  transaction_free(t);
+
+  return (pcnt == 0);
+}
+
+const SolverTransactionList &
+SolverSolution::transactions() const
+{
+  return trans;
+}
+
+// Construct a string reporting the problems and solutions
+std::string
+SolverSolution::report() const
+{
+  std::string r = "";
+  int pcnt = solver_problem_count(solv);
+  for (Id problem = 1; problem <= pcnt; problem++)
+    {
+      r += "Problem " + std::to_string(problem) + "/" + std::to_string(pcnt);
+      r += "\n";
+
+      Id probr = solver_findproblemrule(solv, problem);
+      Id dep, source, target;
+      SolverRuleinfo type = solver_ruleinfo(solv, probr, &source, &target, &dep);
+      r += solver_problemruleinfo2str(solv, type, source, target, dep);
+      r += "\n";
+
+      int scnt = solver_solution_count(solv, problem);
+      for (Id solution = 1; solution <= scnt; solution++)
+        {
+          r += "Solution " + std::to_string(solution) + "/" + std::to_string(scnt);
+          r += "\n";
+
+          Id p, rp, element;
+          element = 0;
+          while ((element = solver_next_solutionelement(solv, problem, solution, element, &p, &rp)) != 0)
+            {
+              r += "  - ";
+              r += solver_solutionelement2str(solv, p, rp);
+              r += "\n";
+            }
+        }
+    }
+  return r;
+}
+
+// helper function to map transaction type
+SolverTransaction::transType
+SolverSolution::type(Transaction *trans, int pos)
+{
+  Id tt = transaction_type(trans, trans->steps.elements[pos],
+                           SOLVER_TRANSACTION_SHOW_ACTIVE);
+
+  // if active side of transaction is nothing, ask again for passive side of
+  // transaction
+  if (tt == SOLVER_TRANSACTION_IGNORE)
+    tt = transaction_type(trans, trans->steps.elements[pos], 0);
+
+  switch(tt)
+    {
+    case SOLVER_TRANSACTION_INSTALL:
+    case SOLVER_TRANSACTION_REINSTALL:
+    case SOLVER_TRANSACTION_UPGRADE:
+    case SOLVER_TRANSACTION_DOWNGRADE:
+      return SolverTransaction::transInstall;
+    case SOLVER_TRANSACTION_ERASE:
+    case SOLVER_TRANSACTION_REINSTALLED:
+    case SOLVER_TRANSACTION_UPGRADED:
+    case SOLVER_TRANSACTION_DOWNGRADED:
+      return SolverTransaction::transErase;
+    default:
+      Log (LOG_PLAIN) << "unknown transaction type " << std::hex << tt << endLog;
+    case SOLVER_TRANSACTION_IGNORE:
+      return SolverTransaction::transIgnore;
+    }
+};

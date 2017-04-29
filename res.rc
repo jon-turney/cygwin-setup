@@ -378,9 +378,9 @@ BEGIN
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     LTEXT           "Resolving Dependencies",IDC_STATIC_HEADER_TITLE
                     ,7,0,258,8,NOT WS_GROUP
-    LTEXT           "The following packages are required to satisfy "
+    LTEXT           "The following problems occured trying to satisfy "
                     "dependencies.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
-    CONTROL         "&Select required packages (RECOMMENDED)"
+    CONTROL         "&Accept default problem solutions"
                     ,IDC_PREREQ_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
                     7,167,225,14
     EDITTEXT        IDC_PREREQ_EDIT,7,41,303,124,WS_VSCROLL | WS_HSCROLL |

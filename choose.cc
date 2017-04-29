@@ -156,6 +156,8 @@ ChooserPage::createListview ()
   /* FIXME: do we need to init the desired fields ? */
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
   rbset (GetHWND (), ta, IDC_CHOOSE_CURR);
+  changeTrust (TRUST_CURR);
+
   ClearBusy ();
 }
 
@@ -368,6 +370,8 @@ ChooserPage::keepClicked()
       pkg.pick(false);
     }
   chooser->refresh();
+
+  PrereqChecker::setUpgrade(false);
 }
 
 void
@@ -376,7 +380,8 @@ ChooserPage::changeTrust(trusts aTrust)
   SetBusy ();
   chooser->defaultTrust (aTrust);
   chooser->refresh();
-  PrereqChecker::setTrust (aTrust);
+  PrereqChecker::setUpgrade(true);
+  PrereqChecker::setTestPackages(aTrust == TRUST_TEST);
   ClearBusy ();
 }
 

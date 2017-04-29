@@ -16,6 +16,7 @@
 
 #include "solv/pool.h"
 #include "solv/repo.h"
+#include "solv/solver.h"
 #include "PackageSpecification.h"
 #include "PackageTrust.h"
 #include "package_source.h"
@@ -39,6 +40,7 @@ package_type_t;
 // ---------------------------------------------------------------------------
 
 class SolverPool;
+class SolverSolution;
 
 class SolvableVersion
 {
@@ -83,6 +85,7 @@ class SolvableVersion
   Pool *pool;
 
   friend SolverPool;
+  friend SolverSolution;
 };
 
 // ---------------------------------------------------------------------------
@@ -131,6 +134,8 @@ public:
                              const addPackageData &pkgdata);
 
   void internalize(void);
+  void use_test_packages(bool use_test_packages);
+
 
 private:
   Id makedeps(Repo *repo, PackageDepends *requires);
@@ -138,7 +143,86 @@ private:
 
   typedef std::map<std::string, SolvRepo *> RepoList;
   RepoList repos;
+
+  friend SolverSolution;
 };
 
+
+// ---------------------------------------------------------------------------
+// interface to class SolverTaskQueue
+//
+// This is used to contain a set of package install/uninstall tasks selected via
+// the UI to be passed to solver
+// ---------------------------------------------------------------------------
+
+class SolverTasks
+{
+ public:
+  enum task
+  {
+    taskInstall,
+    taskUninstall,
+    taskReinstall
+  };
+  void add(const SolvableVersion &v, task t)
+  {
+    tasks.push_back(taskList::value_type(v, t));
+  };
+ private:
+  typedef std::vector<std::pair<const SolvableVersion &, task>> taskList;
+  taskList tasks;
+
+  friend SolverSolution;
+};
+
+// ---------------------------------------------------------------------------
+// SolverTransactionList
+//
+// a list of transactions output by the solver
+// ---------------------------------------------------------------------------
+
+class SolverTransaction
+{
+ public:
+  typedef enum
+  {
+    transIgnore,
+    transInstall,
+    transErase,
+  } transType;
+
+  SolverTransaction(SolvableVersion version_, transType type_) :
+  version(version_), type(type_) {};
+
+  SolvableVersion version;
+  transType type;
+};
+
+typedef std::vector<SolverTransaction> SolverTransactionList;
+
+// ---------------------------------------------------------------------------
+// interface to class SolverSolution
+//
+// A wrapper around the libsolv solver
+// ---------------------------------------------------------------------------
+
+class SolverSolution
+{
+ public:
+  SolverSolution(SolverPool &_pool) : pool(_pool), solv(NULL) {};
+  ~SolverSolution();
+
+  bool update(SolverTasks &tasks, bool update, bool use_test_packages, bool include_source);
+  std::string report() const;
+
+  const SolverTransactionList &transactions() const;
+
+ private:
+  static SolverTransaction::transType type(Transaction *trans, int pos);
+
+  SolverPool &pool;
+  Solver *solv;
+  SolverTransactionList trans;
+};
 
 #endif // LIBSOLV_H

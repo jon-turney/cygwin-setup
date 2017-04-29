@@ -90,6 +90,7 @@ public:
   static PackageDBActions task;
 
   static SolverPool solver;
+  static SolverSolution solution;
 
 private:
   static int installeddbread;	/* do we have to reread this */

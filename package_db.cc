@@ -290,6 +290,7 @@ packagedb::packagecollection packagedb::sourcePackages;
 PackageDBActions packagedb::task = PackageDB_Install;
 std::vector <packagemeta *> packagedb::dependencyOrderedPackages;
 SolverPool packagedb::solver;
+SolverSolution packagedb::solution(packagedb::solver);
 
 #include <stack>
 
