@@ -41,33 +41,22 @@ public:
 class packagesource
 {
 public:
-  packagesource ():size (0), canonical (0), base (0), filename (0), cached ()
+  packagesource ():size (0), canonical (), cached ()
   {
     memset (sha512sum, 0, sizeof sha512sum);
     sha512_isSet = false;
   };
   /* how big is the source file */
   size_t size;
-  /* The canonical name - the complete path to the source file 
+  /* The canonical name - the complete path to the source file
    * i.e. foo/bar/package-1.tar.bz2
    */
   const char *Canonical () const
   {
-    return canonical;
-  };
-  /* The basename - without extention 
-   * i.e. package-1
-   */
-  const char *Base () const
-  {
-    return base;
-  };
-  /* The basename - with extention 
-   * i.e. package-1.tar.bz2
-   */
-  const char *Filename () const
-  {
-    return filename;
+    if (!canonical.empty())
+      return canonical.c_str();
+
+    return NULL;
   };
   /* what is the cached filename, to prevent directory scanning during install */
   char const *Cached () const
@@ -77,7 +66,7 @@ public:
       return NULL;
     return cached.c_str();
   };
-  /* sets the canonical path, and parses and creates base and filename */
+  /* sets the canonical path */
   void set_canonical (char const *);
   void set_cached (const std::string& );
   unsigned char sha512sum[SHA512_DIGEST_LENGTH];
@@ -86,20 +75,8 @@ public:
   typedef std::vector <site> sitestype;
   sitestype sites;
 
-  ~packagesource ()
-  {
-    if (canonical)
-      delete []canonical;
-    if (base)
-      delete []base;
-    if (filename)
-      delete []filename;
-  };
-
 private:
-  char *canonical;
-  char *base;
-  char *filename;
+  std::string canonical;
   std::string cached;
 };
 
