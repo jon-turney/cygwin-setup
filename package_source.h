@@ -20,28 +20,11 @@
  * source as in http/ftp/disk file) operations.
  */
 
-/* required to parse this file */
 #include "sha2.h"
 #include "strings.h"
 #include "String++.h"
 #include "csu_util/MD5Sum.h"
 #include <vector>
-
-/* standard binary package metadata:
- * Name (ie mutt
- * Vendor Version (ie 2.5.1)
- * Package Version (ie 16)
- * Stability 
- * Files 
- */
-
-/* For non installed files, this class can be populated via information about
- * what is available on the net, or by parsing a specific package file.
- * for installed packages, this class should represent what is currently installed,
- * - updated by what net metadata has about it.
- * i.e. the stability of this version will change simply because the net mirrors
- * now consider it old.
- */
 
 class site
 {
@@ -68,26 +51,26 @@ public:
   /* The canonical name - the complete path to the source file 
    * i.e. foo/bar/package-1.tar.bz2
    */
-  virtual const char *Canonical () const
+  const char *Canonical () const
   {
     return canonical;
   };
   /* The basename - without extention 
    * i.e. package-1
    */
-  virtual const char *Base () const
+  const char *Base () const
   {
     return base;
   };
   /* The basename - with extention 
    * i.e. package-1.tar.bz2
    */
-  virtual const char *Filename () const
+  const char *Filename () const
   {
     return filename;
   };
   /* what is the cached filename, to prevent directory scanning during install */
-  virtual char const *Cached () const
+  char const *Cached () const
   {
     /* Pointer-coerce-to-boolean is used by many callers. */
     if (cached.empty())
@@ -95,15 +78,15 @@ public:
     return cached.c_str();
   };
   /* sets the canonical path, and parses and creates base and filename */
-  virtual void set_canonical (char const *);
-  virtual void set_cached (const std::string& );
+  void set_canonical (char const *);
+  void set_cached (const std::string& );
   unsigned char sha512sum[SHA512_DIGEST_LENGTH];
   bool sha512_isSet;
   MD5Sum md5;
   typedef std::vector <site> sitestype;
   sitestype sites;
 
-  virtual ~ packagesource ()
+  ~packagesource ()
   {
     if (canonical)
       delete []canonical;
