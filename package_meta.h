@@ -18,7 +18,6 @@
 
 class packageversion;
 class packagemeta;
-class category;
 
 /* Required to parse this completely */
 #include <set>
