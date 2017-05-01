@@ -72,41 +72,38 @@ validateCachedPackage (const std::string& fullname, packagesource & pkgsource)
 int
 check_for_cached (packagesource & pkgsource, bool mirror_mode)
 {
-  /* search algo:
-     1) is there a legacy version in the cache dir available.
-     (Note that the cache dir is represented by a mirror site of
-     file://local_dir
-   */
-
   // Already found one.
   if (pkgsource.Cached())
     return 1;
-  
+
+  /* Note that the cache dir is represented by a mirror site of file://local_dir */
   std::string prefix = "file://" + local_dir + "/";
-  /* FIXME: Nullness check can go away once packagesource is properly
-   * std::string-ified, and doesn't use overcomplex semantics. */
-  std::string fullname = prefix + 
-    (pkgsource.Canonical() ? pkgsource.Canonical() : "");
+  std::string fullname = prefix + pkgsource.Canonical();
+
   if (mirror_mode)
     {
       /* Just assume correctness of mirror. */
       pkgsource.set_cached (fullname);
       return 1;
     }
+
+  /*
+     1) is there a legacy version in the cache dir available.
+  */
   if (io_stream::exists (fullname))
     {
       if (validateCachedPackage (fullname, pkgsource))
-	pkgsource.set_cached (fullname);
+        pkgsource.set_cached (fullname);
       else
-	throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-	    "Package validation failure for " + fullname,
-	    APPERR_CORRUPT_PACKAGE);
+        throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+            "Package validation failure for " + fullname,
+            APPERR_CORRUPT_PACKAGE);
       return 1;
     }
 
   /*
      2) is there a version from one of the selected mirror sites available ?
-     */
+  */
   for (packagesource::sitestype::const_iterator n = pkgsource.sites.begin();
        n != pkgsource.sites.end(); ++n)
   {
