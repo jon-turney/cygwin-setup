@@ -273,6 +273,7 @@ inilint_SOURCES = \
 
 GITVER := $(shell cd $(srcdir) && git describe --match release_\* --abbrev=6 --dirty || "N/A")
 VER := $(subst release_,,$(GITVER))
+ARCH := @ARCH@
 
 setup_version.c : Makefile
 	@echo "Setup version: " $(VER)
@@ -301,9 +302,18 @@ strip:	all
 	$(OBJCOPY) --strip-all setup$(EXEEXT)
 	$(OBJCOPY) --add-gnu-debuglink=setup.dbg setup$(EXEEXT) setup$(EXEEXT)
 
+CLEANFILES += setup.dbg
+
 upx:	strip
 	@if [ -e `which upx` ]; then\
 		upx --best --lzma setup$(EXEEXT) ;\
 	else \
 		echo "UPX doesn't seem to be installed, cannot compress setup$(EXEEXT)." ;\
 	fi
+
+release: upx
+	cp setup.dbg setup-${VER}.${ARCH}.dbg
+	cp setup${EXEEXT} setup-${VER}.${ARCH}${EXEEXT}
+
+clean-local:
+	rm -f setup*${EXEEXT} setup*.dbg

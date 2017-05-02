@@ -74,15 +74,18 @@ dnl add portability sources to inilint
 case "$host" in
 i?86-*-mingw32)
   SETUP="setup"
+  ARCH="x86"
   ;;
 x86_64-*-mingw32)
   SETUP="setup"
+  ARCH="x86_64"
   ;;
 *)
   AC_MSG_ERROR([Cygwin Setup can only be built for Win32 or Win64 hosts])
   ;;
 esac
 AC_SUBST(SETUP)
+AC_SUBST(ARCH)
 
 AC_CONFIG_FILES([Makefile tests/Makefile])
 AC_OUTPUT
