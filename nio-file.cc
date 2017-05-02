@@ -26,6 +26,7 @@
 #include "resource.h"
 #include "msg.h"
 #include "filemanip.h"
+#include "LogSingleton.h"
 
 NetIO_File::NetIO_File (char const *Purl):
 NetIO (Purl)
@@ -39,8 +40,8 @@ NetIO (Purl)
     {
       const char *err = strerror (errno);
       if (!err)
-	err = "(unknown error)";
-      note (NULL, IDS_ERR_OPEN_READ, path, err);
+        err = "(unknown error)";
+      Log (LOG_BABBLE) << "Can't open " << path << " for reading: " << err << endLog;
     }
 }
 
