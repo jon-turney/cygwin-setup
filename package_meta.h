@@ -126,11 +126,9 @@ public:
   bool user_picked;
   /* which one is installed. */
   packageversion installed;
-  /* which one is listed as "prev" in our available packages db */
-  packageversion prev;
-  /* ditto for current - stable */
+  /* which one is listed as "current" (stable) in our available packages db */
   packageversion curr;
-  /* and finally the experimental version */
+  /* ditto for "test" (experimental) */
   packageversion exp;
   /* Now for the user stuff :] */
   /* What version does the user want ? */

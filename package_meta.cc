@@ -89,7 +89,7 @@ packagemeta::_actions::caption ()
 packagemeta::packagemeta (packagemeta const &rhs) :
   name (rhs.name), key (rhs.name),
   categories (rhs.categories), versions (rhs.versions),
-  installed (rhs.installed), prev (rhs.prev),
+  installed (rhs.installed),
   curr (rhs.curr),
   exp (rhs.exp),
   desired (rhs.desired)
@@ -593,8 +593,6 @@ packagemeta::logAllVersions () const
 std::string 
 packagemeta::trustLabel(packageversion const &aVersion) const
 {
-    if (aVersion == prev)
-	return "Prev";
     if (aVersion == curr)
 	return "Curr";
     if (aVersion == exp)
@@ -606,8 +604,7 @@ void
 packagemeta::logSelectionStatus() const
 {
   packagemeta const & pkg = *this;
-  const char *trust = ((pkg.desired == pkg.prev) ? "prev"
-               : (pkg.desired == pkg.curr) ? "curr"
+  const char *trust = ((pkg.desired == pkg.curr) ? "curr"
                : (pkg.desired == pkg.exp) ? "test" : "unknown");
   std::string action = pkg.action_caption ();
   const std::string installed =
@@ -648,7 +645,6 @@ packagemeta::ScanDownloadedFiles (bool mirror_mode)
 	  /* scan doesn't alter operator == for packageversions */
 	  bool lazy_scan = mirror_mode
 			   && (*i != pkg.installed
-			       || pkg.installed == pkg.prev
 			       || pkg.installed == pkg.curr
 			       || pkg.installed == pkg.exp);
 	  const_cast<packageversion &>(*i).scan (lazy_scan);
@@ -662,8 +658,6 @@ packagemeta::ScanDownloadedFiles (bool mirror_mode)
 	  if (!i->accessible () && !pkgsrcver.accessible ()
 	      && *i != pkg.installed)
 	    {
-	      if (pkg.prev == *i)
-		pkg.prev = packageversion ();
 	      if (pkg.curr == *i)
 		pkg.curr = packageversion ();
 	      if (pkg.exp == *i)

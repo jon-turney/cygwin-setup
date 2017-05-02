@@ -139,7 +139,6 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
       csp->versions.clear();
       csp->desired = packageversion();
       csp->installed = packageversion();
-      csp->prev = packageversion();
       csp->curr = packageversion();
       csp->exp = packageversion();
       db.sourcePackages.insert (packagedb::packagecollection::value_type(csp->name,csp));
@@ -423,9 +422,6 @@ IniDBBuilderPackage::add_correct_version()
   {
     case TRUST_CURR:
       v = &(cp->curr);
-    break;
-    case TRUST_PREV:
-      v = &(cp->prev);
     break;
     case TRUST_TEST:
       v = &(cp->exp);

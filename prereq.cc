@@ -210,7 +210,7 @@ PrereqChecker::isMet ()
       Progress.SetBar1(pos, max);
 
       // Fetch the dependencies of the package. This assumes that the
-      // dependencies of the prev, curr, and exp versions are all the same.
+      // dependencies of all versions are all the same.
       const vector <vector <PackageSpecification *> *> *deps = pack->curr.depends ();
 
       // go through the package's dependencies
