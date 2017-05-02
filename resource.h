@@ -13,7 +13,6 @@
 #define IDS_DOWNLOAD_COMPLETE             110
 #define IDS_NOLOGFILE                     111
 #define IDS_UNINSTALL_COMPLETE            112
-#define IDS_WININET                       113
 #define IDS_ERR_CHDIR                     114
 #define IDS_OLD_SETUP_VERSION             115
 #define IDS_DOWNLOAD_INCOMPLETE           116

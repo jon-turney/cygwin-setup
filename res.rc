@@ -159,7 +159,7 @@ FONT 8, "MS Shell Dlg"
 BEGIN
     CONTROL         "&Direct Connection",IDC_NET_DIRECT,"Button",
                     BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,60,55,73,10
-    CONTROL         "Use &Internet Explorer Proxy Settings",IDC_NET_IE5,"Button",
+    CONTROL         "Use &System Proxy Settings",IDC_NET_IE5,"Button",
                     BS_AUTORADIOBUTTON | WS_TABSTOP,60,70,185,10
     CONTROL         "Use HTTP/FTP &Proxy:",IDC_NET_PROXY,"Button",
                     BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,88,10
@@ -520,7 +520,6 @@ BEGIN
     IDS_DOWNLOAD_COMPLETE   "Download Complete"
     IDS_NOLOGFILE           "Cannot open log file %s for writing"
     IDS_UNINSTALL_COMPLETE  "Uninstalls complete."
-    IDS_WININET             "Unable to find or load the Internet Explorer 5 DLLs"
     IDS_ERR_CHDIR           "Could not change dir to %s: %s [%.8x]"
     IDS_OLD_SETUP_VERSION   "This setup is version %s, but setup.ini claims version %s is available.\nYou might want to upgrade to get the latest features and bug fixes."
     IDS_DOWNLOAD_INCOMPLETE "Download Incomplete.  Try again?"
