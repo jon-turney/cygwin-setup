@@ -491,8 +491,7 @@ PickView::init_headers (HDC dc)
   headers[last_col].width += total_delta_x;
 }
 
-
-PickView::PickView (Category &cat) : deftrust (TRUST_UNKNOWN),
+PickView::PickView (Category &cat) : deftrust (TRUST_CURR),
 contents (*this, cat, 0, false, true), showObsolete (false), 
 packageFilterString (), hasWindowRect (false), total_delta_x (0)
 {
