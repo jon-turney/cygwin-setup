@@ -25,14 +25,21 @@ class packageversion;
 class PackageSpecification
 {
 public:
-  PackageSpecification () : _packageName (), _operator(0) {}
+  PackageSpecification () : _packageName (), _operator(Equals) {}
   PackageSpecification (const std::string& packageName);
   ~PackageSpecification () {}
 
-  class _operators;
- 
-  const std::string& packageName() const; 
-  void setOperator (_operators const &);
+  enum _operators
+  {
+    Equals,
+    LessThan,
+    MoreThan,
+    LessThanEquals,
+    MoreThanEquals,
+  };
+
+  const std::string& packageName() const;
+  void setOperator (_operators);
   void setVersion (const std::string& );
 
   bool satisfies (packageversion const &) const;
@@ -42,33 +49,12 @@ public:
 
   friend std::ostream &operator << (std::ostream &, PackageSpecification const &);
 
-  class _operators
-    {
-    public:
-      _operators ():_value (0) {};
-      _operators (int aInt) {
-	_value = aInt;
-	if (_value < 0 ||  _value > 4)
-	  _value = 0;
-      }
-      _operators & operator ++ ();
-      bool operator == (_operators const &rhs) { return _value == rhs._value; }
-      bool operator != (_operators const &rhs) { return _value != rhs._value; }
-      const char *caption () const;
-      bool satisfies (const std::string& lhs, const std::string& rhs) const;
-    private:
-      int _value;
-    };
-  static const _operators Equals;
-  static const _operators LessThan;
-  static const _operators MoreThan;
-  static const _operators LessThanEquals;
-  static const _operators MoreThanEquals;
-
 private:
+  static char const * caption (_operators _value);
+
   std::string _packageName; /* foobar */
-  _operators const * _operator; /* >= */
-  std::string _version;       /* 1.20 */
+  _operators  _operator;    /* >= */
+  std::string _version;     /* 1.20 */
 };
 
 std::ostream &

@@ -18,7 +18,7 @@
 #include "package_version.h"
 
 PackageSpecification::PackageSpecification (const std::string& packageName)
-  : _packageName (packageName) , _operator (0), _version ()
+  : _packageName (packageName) , _operator (Equals), _version ()
 {
 }
 
@@ -29,9 +29,9 @@ PackageSpecification::packageName () const
 }
 
 void
-PackageSpecification::setOperator (_operators const &anOperator)
+PackageSpecification::setOperator (_operators anOperator)
 {
-  _operator = &anOperator;
+  _operator = anOperator;
 }
 
 void
@@ -45,9 +45,28 @@ PackageSpecification::satisfies (packageversion const &aPackage) const
 {
   if (casecompare(_packageName, aPackage.Name()) != 0)
     return false;
-  if (_operator && _version.size() 
-      && !_operator->satisfies (aPackage.Canonical_version (), _version))
-    return false;
+
+  // The default values of _operator = Equals and _version is an empty-string
+  // match any version
+  if (_version.size())
+    {
+      int comparison = casecompare(aPackage.Canonical_version (), _version);
+      switch (_operator)
+        {
+        case Equals:
+          return (comparison == 0);
+        case LessThan:
+          return (comparison < 0);
+        case MoreThan:
+          return (comparison > 0);
+        case LessThanEquals:
+          return (comparison <= 0);
+        case MoreThanEquals:
+          return (comparison >= 0);
+        default:
+          return false;
+        }
+    }
   return true;
 }
 
@@ -69,52 +88,26 @@ operator << (std::ostream &os, PackageSpecification const &spec)
 {
   os << spec._packageName;
   if (spec._operator)
-    os << " " << spec._operator->caption() << " " << spec._version;
+    os << " " << PackageSpecification::caption(spec._operator) << " " << spec._version;
   return os;
 }
 
-const PackageSpecification::_operators PackageSpecification::Equals(0);
-const PackageSpecification::_operators PackageSpecification::LessThan(1);
-const PackageSpecification::_operators PackageSpecification::MoreThan(2);
-const PackageSpecification::_operators PackageSpecification::LessThanEquals(3);
-const PackageSpecification::_operators PackageSpecification::MoreThanEquals(4);
-
 char const *
-PackageSpecification::_operators::caption () const
+PackageSpecification::caption (_operators _value)
 {
   switch (_value)
     {
-    case 0:
+    case Equals:
     return "==";
-    case 1:
+    case LessThan:
     return "<";
-    case 2:
+    case MoreThan:
     return ">";
-    case 3:
+    case LessThanEquals:
     return "<=";
-    case 4:
+    case MoreThanEquals:
     return ">=";
     }
   // Pacify GCC: (all case options are checked above)
   return "Unknown operator";
-}
-
-bool
-PackageSpecification::_operators::satisfies (const std::string& lhs,
-                                             const std::string& rhs) const
-{
-  switch (_value)
-    {
-    case 0:
-      return casecompare(lhs, rhs) == 0;
-    case 1:
-      return casecompare(lhs, rhs) < 0;
-    case 2:
-      return casecompare(lhs, rhs) > 0;
-    case 3:
-      return casecompare(lhs, rhs) <= 0;
-    case 4:
-      return casecompare(lhs, rhs) >= 0;
-    }
-  return false;
 }
