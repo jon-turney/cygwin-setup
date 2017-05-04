@@ -70,19 +70,6 @@ PackageSpecification::satisfies (packageversion const &aPackage) const
   return true;
 }
 
-std::string
-PackageSpecification::serialise () const
-{
-  return _packageName;
-}
-
-PackageSpecification &
-PackageSpecification::operator= (PackageSpecification const &rhs)
-{
-  _packageName = rhs._packageName;
-  return *this;
-}
-
 std::ostream &
 operator << (std::ostream &os, PackageSpecification const &spec)
 {

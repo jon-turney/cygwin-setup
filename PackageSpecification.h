@@ -43,9 +43,6 @@ public:
   void setVersion (const std::string& );
 
   bool satisfies (packageversion const &) const;
-  std::string serialise () const;
-
-  PackageSpecification &operator= (PackageSpecification const &);
 
   friend std::ostream &operator << (std::ostream &, PackageSpecification const &);
 
