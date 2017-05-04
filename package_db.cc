@@ -312,7 +312,7 @@ ConnectedLoopFinder::visit(packagemeta *nodeToVisit)
   nodesInStronglyConnectedComponent.push(nodeToVisit);
 
   /* walk through each node */
-  std::vector <PackageSpecification *>::const_iterator dp = nodeToVisit->installed.depends()->begin();
+  PackageDepends::const_iterator dp = nodeToVisit->installed.depends()->begin();
   while (dp != nodeToVisit->installed.depends()->end())
     {
       /* check for an installed match */

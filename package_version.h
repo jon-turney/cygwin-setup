@@ -43,6 +43,7 @@ class CategoryList;
 #include "package_source.h"
 #include "PackageSpecification.h"
 #include "PackageTrust.h"
+#include "package_depends.h"
 #include "script.h"
 #include <vector>
 
@@ -110,8 +111,8 @@ public:
   void setSourcePackageSpecification (PackageSpecification const &);
 
   /* invariant: these never return NULL */
-  std::vector <PackageSpecification *> *depends();
-  const std::vector <PackageSpecification *> *depends() const;
+  PackageDepends *depends();
+  const PackageDepends *depends() const;
 
   bool picked() const;   /* true if this version is to be installed */
   void pick(bool, packagemeta *); /* trigger an install/reinsall */
@@ -171,7 +172,7 @@ public:
   virtual PackageSpecification & sourcePackageSpecification ();
   virtual void setSourcePackageSpecification (PackageSpecification const &);
 
-  std::vector <PackageSpecification *> depends;
+  PackageDepends depends;
 
   virtual void pick(bool const &newValue) { picked = newValue;}
   bool picked;	/* non zero if this version is to be installed */
@@ -196,6 +197,6 @@ protected:
 };
 
 // not sure where this belongs :}.
-void dumpAndList (std::vector <PackageSpecification *> const *currentList, std::ostream &);
+void dumpAndList (PackageDepends const *currentList, std::ostream &);
 
 #endif /* SETUP_PACKAGE_VERSION_H */

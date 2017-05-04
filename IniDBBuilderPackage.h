@@ -72,7 +72,7 @@ private:
   packagemeta *csp;
   packageversion cspv;
   PackageSpecification *currentSpec;
-  std::vector<PackageSpecification *> *currentNodeList;
+  PackageDepends *currentNodeList;
   int trust;
   IniParseFeedback const &_feedback;
 };

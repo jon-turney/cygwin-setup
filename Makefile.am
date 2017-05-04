@@ -202,6 +202,7 @@ inilint_SOURCES = \
 	nio-http.h \
 	package_db.cc \
 	package_db.h \
+	package_depends.h \
 	package_meta.cc \
 	package_meta.h \
 	package_source.cc \

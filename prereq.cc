@@ -211,10 +211,10 @@ PrereqChecker::isMet ()
 
       // Fetch the dependencies of the package. This assumes that the
       // dependencies of all versions are all the same.
-      const std::vector <PackageSpecification *> *deps = pack->curr.depends ();
+      const PackageDepends *deps = pack->curr.depends ();
 
       // go through the package's dependencies
-      for (std::vector <PackageSpecification *>::const_iterator d =
+      for (PackageDepends::const_iterator d =
             deps->begin (); d != deps->end (); ++d)
         {
           PackageSpecification *dep_spec = *d;

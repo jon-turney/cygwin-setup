@@ -229,13 +229,13 @@ packageversion::setSourcePackageSpecification (PackageSpecification const &spec)
   data->setSourcePackageSpecification(spec);
 }
 
-vector <PackageSpecification *> *
+PackageDepends *
 packageversion::depends()
 {
   return &data->depends;
 }
 
-const vector <PackageSpecification *> *
+const PackageDepends *
 packageversion::depends() const
 {
   return &data->depends;
@@ -414,13 +414,13 @@ _packageversion::scripts()
 }
 
 void
-dumpAndList (std::vector <PackageSpecification *> const *currentList,
+dumpAndList (PackageDepends const *currentList,
              std::ostream &logger)
 {
   if (currentList)
   {
     Log (LOG_BABBLE) << "( ";
-    std::vector <PackageSpecification *>::const_iterator i = currentList->begin();
+    PackageDepends::const_iterator i = currentList->begin();
     while (true)
     {
       if (i == currentList->end()) break;
