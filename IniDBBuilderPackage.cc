@@ -333,6 +333,9 @@ IniDBBuilderPackage::buildPackageListOperatorVersion (const std::string& aVersio
 void
 IniDBBuilderPackage::add_correct_version()
 {
+  if (currentNodeList)
+    *cbpv.depends() = *currentNodeList;
+
   int merged = 0;
   for (set<packageversion>::iterator n = cp->versions.begin();
        !merged && n != cp->versions.end(); ++n)
