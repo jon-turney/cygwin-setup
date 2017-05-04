@@ -34,7 +34,7 @@
 using namespace std;
 
 IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
-cp (0), cbpv (), cspv (), currentSpec (0), currentOrList (0), currentAndList (0), trust (0), _feedback (aFeedback){}
+cp (0), cbpv (), cspv (), currentSpec (0), currentNodeList (0), trust (0), _feedback (aFeedback){}
 
 IniDBBuilderPackage::~IniDBBuilderPackage()
 {
@@ -76,8 +76,9 @@ IniDBBuilderPackage::buildPackage (const std::string& name)
       if (cbpv)
 	{
 	  Log (LOG_BABBLE) << "Version " << cbpv.Canonical_version() << endLog;
-	  Log (LOG_BABBLE) << "Depends:" << endLog;
+	  Log (LOG_BABBLE) << "Depends:";
 	  dumpAndList (cbpv.depends(), Log (LOG_BABBLE));
+	  Log (LOG_BABBLE) << endLog;
 	}
     }
 #endif
@@ -91,8 +92,7 @@ IniDBBuilderPackage::buildPackage (const std::string& name)
   cbpv = cygpackage::createInstance (name, package_binary);
   cspv = packageversion ();
   currentSpec = NULL;
-  currentOrList = NULL;
-  currentAndList = NULL;
+  currentNodeList = NULL;
   trust = TRUST_CURR;
 #if DEBUG
   Log (LOG_BABBLE) << "Created package " << name << endLog;
@@ -191,11 +191,10 @@ IniDBBuilderPackage::buildBeginDepends ()
 #if DEBUG
   Log (LOG_BABBLE) << "Beginning of a depends statement for " << cp->name
     << endLog;
-  dumpAndList (currentAndList, Log (LOG_BABBLE));
+  dumpAndList (currentNodeList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
-  currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = cbpv.depends();
+  currentNodeList = cbpv.depends();
 }
 
 void
@@ -241,11 +240,9 @@ IniDBBuilderPackage::buildBeginBuildDepends ()
 {
 #if DEBUG
   Log (LOG_BABBLE) << "Beginning of a Build-Depends statement" << endLog;
-  dumpAndList (currentAndList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
-  currentOrList = NULL; /* set by the build AndListNode */
-  currentAndList = cspv.depends ();
+  currentNodeList = NULL; /* there is currently nowhere to store Build-Depends information */
 }
 
 void
@@ -284,48 +281,16 @@ IniDBBuilderPackage::buildSourceNameVersion (const std::string& version)
 }
 
 void
-IniDBBuilderPackage::buildPackageListAndNode ()
+IniDBBuilderPackage::buildPackageListNode (const std::string & name)
 {
-  if (currentAndList)
+  if (currentNodeList)
     {
 #if DEBUG
-      Log (LOG_BABBLE) << "New AND node for a package list" << endLog;
-      if (currentOrList)
-    	{
-     	  ostream &os = Log (LOG_BABBLE);
-     	  os << "Current OR list is :";
-     	  for (vector<PackageSpecification *>::const_iterator i= currentOrList->begin();
-     	       i != currentOrList->end(); ++i)
-     	      os << endl << **i;
-     	  os << endLog;
-    	}
+      Log (LOG_BABBLE) << "New node '" << name << "' for package list" << endLog;
 #endif
-      currentSpec = NULL;
-      currentOrList = new vector<PackageSpecification *>;
-      currentAndList->push_back (currentOrList);
+      currentSpec = new PackageSpecification (name);
+      currentNodeList->push_back (currentSpec);
     }
-  else
-    _feedback.warning ((std::string ("Attempt to add And node when no AndList"
-				" present for package ")
-                        + std::string(cp->name)).c_str());
-}
-
-void
-IniDBBuilderPackage::buildPackageListOrNode (const std::string& packageName)
-{
-  if (currentOrList)
-    {
-      currentSpec = new PackageSpecification (packageName);
-      currentOrList->push_back (currentSpec);
-#if DEBUG
-      Log (LOG_BABBLE) << "New OR node in a package list refers to \"" <<
-        *currentSpec << "\"." << endLog;
-#endif
-    }
-  else
-    _feedback.warning ((std::string ("Attempt to set specification for package ")
-                        + std::string(cp->name)
-			+ " before creation of a version.").c_str());
 }
 
 void
@@ -394,8 +359,7 @@ IniDBBuilderPackage::add_correct_version()
 	  *ver.depends() = *cbpv.depends();
 	/* TODO: other package lists */
 	/* Prevent dangling references */
-	currentOrList = NULL;
-	currentAndList = NULL;
+	currentNodeList = NULL;
 	currentSpec = NULL;
         cbpv = *n;
         merged = 1;

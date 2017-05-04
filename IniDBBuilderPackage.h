@@ -49,8 +49,7 @@ public:
   void buildMessage (const std::string&, const std::string&);
   void buildSourceName (const std::string& );
   void buildSourceNameVersion (const std::string& );
-  void buildPackageListAndNode ();
-  void buildPackageListOrNode (const std::string& );
+  void buildPackageListNode (const std::string& );
   void buildPackageListOperator (PackageSpecification::_operators const &);
   void buildPackageListOperatorVersion (const std::string& );
 
@@ -73,8 +72,7 @@ private:
   packagemeta *csp;
   packageversion cspv;
   PackageSpecification *currentSpec;
-  std::vector<PackageSpecification *> *currentOrList;
-  std::vector<std::vector<PackageSpecification *> *> *currentAndList;
+  std::vector<PackageSpecification *> *currentNodeList;
   int trust;
   IniParseFeedback const &_feedback;
 };

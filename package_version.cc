@@ -229,13 +229,13 @@ packageversion::setSourcePackageSpecification (PackageSpecification const &spec)
   data->setSourcePackageSpecification(spec);
 }
 
-vector <vector <PackageSpecification *> *> *
+vector <PackageSpecification *> *
 packageversion::depends()
 {
   return &data->depends;
 }
 
-const vector <vector <PackageSpecification *> *> *
+const vector <PackageSpecification *> *
 packageversion::depends() const
 {
   return &data->depends;
@@ -414,28 +414,19 @@ _packageversion::scripts()
 }
 
 void
-dumpAndList (vector<vector <PackageSpecification *> *> const *currentAndList,
+dumpAndList (std::vector <PackageSpecification *> const *currentList,
              std::ostream &logger)
 {
-  return;
-  if (currentAndList)
+  if (currentList)
   {
-    vector<vector <PackageSpecification *> *>::const_iterator iAnd =
-      currentAndList->begin();
+    Log (LOG_BABBLE) << "( ";
+    std::vector <PackageSpecification *>::const_iterator i = currentList->begin();
     while (true)
     {
-      if ((*iAnd)->size() > 1) Log (LOG_BABBLE) << "( ";
-      vector<PackageSpecification *>::const_iterator i= (*iAnd)->begin();
-      while (true)
-      {
-        Log (LOG_BABBLE) << **i;
-        if (++i == (*iAnd)->end()) break;
-        Log (LOG_BABBLE) << " | ";
-      }
-      if ((*iAnd)->size() > 1) Log (LOG_BABBLE) << " )";
-      if (++iAnd == currentAndList->end()) break;
-      Log (LOG_BABBLE) << " & ";
+      if (i == currentList->end()) break;
+      Log (LOG_BABBLE) << **i << " ";
+      ++i;
     }
+    Log (LOG_BABBLE) << ")";
   }
 }
-

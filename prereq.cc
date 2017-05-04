@@ -211,17 +211,13 @@ PrereqChecker::isMet ()
 
       // Fetch the dependencies of the package. This assumes that the
       // dependencies of all versions are all the same.
-      const vector <vector <PackageSpecification *> *> *deps = pack->curr.depends ();
+      const std::vector <PackageSpecification *> *deps = pack->curr.depends ();
 
       // go through the package's dependencies
-      for (vector <vector <PackageSpecification *> *>::const_iterator d =
+      for (std::vector <PackageSpecification *>::const_iterator d =
             deps->begin (); d != deps->end (); ++d)
         {
-          // XXX: the following assumes that there is only a single
-          // node in each OR clause, which is currently the case.
-          // if setup is ever pushed to use AND/OR in "depends:"
-          // lines this will have to be updated
-          PackageSpecification *dep_spec = (*d)->at(0);
+          PackageSpecification *dep_spec = *d;
           packagemeta *dep = db.findBinary (*dep_spec);
 
           if (dep)

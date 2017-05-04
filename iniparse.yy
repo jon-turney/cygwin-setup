@@ -131,30 +131,28 @@ versioninfo: /* empty */
  ;
 
 versionedpackagelist /* non-empty */
- : { iniBuilder->buildPackageListAndNode(); } versionedpackageentry
- | versionedpackagelist listseparator { iniBuilder->buildPackageListAndNode(); } versionedpackageentry
+ : versionedpackageentry
+ | versionedpackagelist listseparator versionedpackageentry
  ;
 
 versionedpackagelistsp /* non-empty */
- : { iniBuilder->buildPackageListAndNode(); } versionedpackageentry
- | versionedpackagelistsp { iniBuilder->buildPackageListAndNode(); } versionedpackageentry
+ : versionedpackageentry
+ | versionedpackagelistsp versionedpackageentry
  ;
-
 
 listseparator: /* empty */
  | COMMA
  | COMMA NL
  ;
- 
+
 versionedpackageentry /* empty not allowed */
- : STRING { iniBuilder->buildPackageListOrNode($1); } versioncriteria
- | versionedpackageentry OR STRING { iniBuilder->buildPackageListOrNode($3); } versioncriteria
+ : STRING { iniBuilder->buildPackageListNode($1); } versioncriteria
  ;
 
 versioncriteria: /* empty */
  | OPENBRACE operator STRING CLOSEBRACE { iniBuilder->buildPackageListOperatorVersion ($3); }
  ;
- 
+
 operator /* non-empty */
  : EQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::Equals); }
  | LT { iniBuilder->buildPackageListOperator (PackageSpecification::LessThan); }

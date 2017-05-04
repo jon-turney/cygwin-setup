@@ -311,31 +311,27 @@ ConnectedLoopFinder::visit(packagemeta *nodeToVisit)
   size_t minimumVisitId = visited;
   nodesInStronglyConnectedComponent.push(nodeToVisit);
 
-  vector <vector <PackageSpecification *> *>::const_iterator dp = nodeToVisit->installed.depends()->begin();
-  /* walk through each and clause (a link in the graph) */
+  /* walk through each node */
+  std::vector <PackageSpecification *>::const_iterator dp = nodeToVisit->installed.depends()->begin();
   while (dp != nodeToVisit->installed.depends()->end())
     {
-      /* check each or clause for an installed match */
-      vector <PackageSpecification *>::const_iterator i = find_if ((*dp)->begin(), (*dp)->end(), checkForInstalled);
-      if (i != (*dp)->end())
+      /* check for an installed match */
+      if (checkForInstalled (*dp))
 	{
 	  /* we found an installed ok package */
 	  /* visit it if needed */
 	  /* UGLY. Need to refactor. iterators in the outer would help as we could simply
 	   * vist the iterator
 	   */
-	  const packagedb::packagecollection::iterator n = db.packages.find((*i)->packageName());
+	  const packagedb::packagecollection::iterator n = db.packages.find((*dp)->packageName());
 
 	  if (n == db.packages.end())
-	     Log (LOG_PLAIN) << "Search for package '" << (*i)->packageName() << "' failed." << endLog;
+	     Log (LOG_PLAIN) << "Search for package '" << (*dp)->packageName() << "' failed." << endLog;
 	   else
 	   {
 	       packagemeta *nodeJustVisited = n->second;
 	       minimumVisitId = std::min (minimumVisitId, visit (nodeJustVisited));
 	   }
-	  /* next and clause */
-	  ++dp;
-	  continue;
 	}
 	/* not installed or not available we ignore */
       ++dp;
@@ -492,15 +488,14 @@ packagedb::guessUserPicked()
       if (!pkgm.installed)
 	continue;
 
-      /* walk through each and clause */
-      vector <vector <PackageSpecification *> *>::const_iterator dp = pkgm.installed.depends()->begin();
+      /* walk through each node */
+      std::vector <PackageSpecification *>::const_iterator dp = pkgm.installed.depends()->begin();
       while (dp != pkgm.installed.depends()->end())
 	{
-	  /* check each or clause for an installed match */
-	  vector <PackageSpecification *>::const_iterator i = find_if ((*dp)->begin(), (*dp)->end(), checkForInstalled);
-	  if (i != (*dp)->end())
+	  /* check for an installed match */
+          if (checkForInstalled(*dp))
 	    {
-	      const packagedb::packagecollection::iterator n = packages.find((*i)->packageName());
+	      const packagedb::packagecollection::iterator n = packages.find((*dp)->packageName());
 	      if (n != packages.end())
 		{
 		  packagemeta *pkgm2 = n->second;

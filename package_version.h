@@ -110,8 +110,8 @@ public:
   void setSourcePackageSpecification (PackageSpecification const &);
 
   /* invariant: these never return NULL */
-  std::vector <std::vector <PackageSpecification *> *> *depends();
-  const std::vector <std::vector <PackageSpecification *> *> *depends() const;
+  std::vector <PackageSpecification *> *depends();
+  const std::vector <PackageSpecification *> *depends() const;
 
   bool picked() const;   /* true if this version is to be installed */
   void pick(bool, packagemeta *); /* trigger an install/reinsall */
@@ -170,9 +170,9 @@ public:
   virtual packageversion sourcePackage ();
   virtual PackageSpecification & sourcePackageSpecification ();
   virtual void setSourcePackageSpecification (PackageSpecification const &);
-  
-  std::vector <std::vector <PackageSpecification *> *> depends;
-  
+
+  std::vector <PackageSpecification *> depends;
+
   virtual void pick(bool const &newValue) { picked = newValue;}
   bool picked;	/* non zero if this version is to be installed */
 		/* This will also trigger reinstalled if it is set */
@@ -196,6 +196,6 @@ protected:
 };
 
 // not sure where this belongs :}.
-void dumpAndList (std::vector<std::vector <PackageSpecification *> *> const *currentAndList, std::ostream &);
+void dumpAndList (std::vector <PackageSpecification *> const *currentList, std::ostream &);
 
 #endif /* SETUP_PACKAGE_VERSION_H */
