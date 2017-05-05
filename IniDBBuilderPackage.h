@@ -73,7 +73,7 @@ private:
   packagemeta *csp;
   packageversion cspv;
   PackageSpecification *currentSpec;
-  PackageDepends *currentNodeList;
+  PackageDepends currentNodeList;
   int trust;
   IniParseFeedback const &_feedback;
 };

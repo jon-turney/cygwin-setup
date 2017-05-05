@@ -312,8 +312,9 @@ ConnectedLoopFinder::visit(packagemeta *nodeToVisit)
   nodesInStronglyConnectedComponent.push(nodeToVisit);
 
   /* walk through each node */
-  PackageDepends::const_iterator dp = nodeToVisit->installed.depends()->begin();
-  while (dp != nodeToVisit->installed.depends()->end())
+  const PackageDepends deps = nodeToVisit->installed.depends();
+  PackageDepends::const_iterator dp = deps.begin();
+  while (dp != deps.end())
     {
       /* check for an installed match */
       if (checkForInstalled (*dp))
@@ -501,8 +502,9 @@ packagedb::guessUserPicked()
 	continue;
 
       /* walk through each node */
-      std::vector <PackageSpecification *>::const_iterator dp = pkgm.installed.depends()->begin();
-      while (dp != pkgm.installed.depends()->end())
+      const PackageDepends deps = pkgm.installed.depends();
+      std::vector <PackageSpecification *>::const_iterator dp = deps.begin();
+      while (dp != deps.end())
 	{
 	  /* check for an installed match */
           if (checkForInstalled(*dp))

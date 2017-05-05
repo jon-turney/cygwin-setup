@@ -206,16 +206,16 @@ packageversion::setSourcePackageSpecification (PackageSpecification const &spec)
   data->setSourcePackageSpecification(spec);
 }
 
-PackageDepends *
-packageversion::depends()
+void
+packageversion::setDepends(const PackageDepends _depends)
 {
-  return &data->depends;
+  data->depends = _depends;
 }
 
-const PackageDepends *
+const PackageDepends
 packageversion::depends() const
 {
-  return &data->depends;
+  return data->depends;
 }
 
 packagesource *

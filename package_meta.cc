@@ -525,13 +525,10 @@ packagemeta::logAllVersions () const
       {
 	Log (LOG_BABBLE) << "    [" << trustLabel(*i) <<
 	  "] ver=" << i->Canonical_version() << endLog;
-	if (i->depends()->size()) 
-	{
-	  std::ostream & logger = Log (LOG_BABBLE);
-	  logger << "      depends=";
-	  dumpPackageDepends(i->depends(), logger);
-	  logger << endLog;
-	}
+        std::ostream & logger = Log (LOG_BABBLE);
+        logger << "      depends=";
+        dumpPackageDepends(i->depends(), logger);
+        logger << endLog;
       }
 #if 0
     Log (LOG_BABBLE) << "      inst=" << i->

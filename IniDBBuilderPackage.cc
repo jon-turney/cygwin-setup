@@ -34,7 +34,7 @@
 using namespace std;
 
 IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
-cp (0), cbpv (), cspv (), currentSpec (0), currentNodeList (0), trust (0), _feedback (aFeedback){}
+cp (0), cbpv (), cspv (), currentSpec (0), trust (0), _feedback (aFeedback){}
 
 IniDBBuilderPackage::~IniDBBuilderPackage()
 {
@@ -92,7 +92,7 @@ IniDBBuilderPackage::buildPackage (const std::string& name)
   cbpv = cygpackage::createInstance (name, package_binary);
   cspv = packageversion ();
   currentSpec = NULL;
-  currentNodeList = NULL;
+  currentNodeList = PackageDepends();
   trust = TRUST_CURR;
 #if DEBUG
   Log (LOG_BABBLE) << "Created package " << name << endLog;
@@ -231,12 +231,10 @@ void
 IniDBBuilderPackage::buildBeginDepends ()
 {
 #if DEBUG
-  Log (LOG_BABBLE) << "Beginning of a depends statement for " << cp->name
-    << endLog;
+  Log (LOG_BABBLE) << "Beginning of a depends statement " << endLog;
 #endif
   currentSpec = NULL;
-  cbpv.depends()->clear();
-  currentNodeList = cbpv.depends();
+  currentNodeList = PackageDepends();
 }
 
 void
@@ -246,7 +244,7 @@ IniDBBuilderPackage::buildBeginBuildDepends ()
   Log (LOG_BABBLE) << "Beginning of a Build-Depends statement" << endLog;
 #endif
   currentSpec = NULL;
-  currentNodeList = NULL; /* there is currently nowhere to store Build-Depends information */
+  currentNodeList = PackageDepends(); /* there is currently nowhere to store Build-Depends information */
 }
 
 void
@@ -287,14 +285,11 @@ IniDBBuilderPackage::buildSourceNameVersion (const std::string& version)
 void
 IniDBBuilderPackage::buildPackageListNode (const std::string & name)
 {
-  if (currentNodeList)
-    {
 #if DEBUG
-      Log (LOG_BABBLE) << "New node '" << name << "' for package list" << endLog;
+  Log (LOG_BABBLE) << "New node '" << name << "' for package list" << endLog;
 #endif
-      currentSpec = new PackageSpecification (name);
-      currentNodeList->push_back (currentSpec);
-    }
+  currentSpec = new PackageSpecification (name);
+  currentNodeList.push_back (currentSpec);
 }
 
 void
@@ -337,8 +332,7 @@ IniDBBuilderPackage::buildPackageListOperatorVersion (const std::string& aVersio
 void
 IniDBBuilderPackage::add_correct_version()
 {
-  if (currentNodeList)
-    *cbpv.depends() = *currentNodeList;
+  cbpv.setDepends(currentNodeList);
 
   int merged = 0;
   for (set<packageversion>::iterator n = cp->versions.begin();
@@ -362,11 +356,11 @@ IniDBBuilderPackage::add_correct_version()
           ver.set_sdesc (cbpv.SDesc ());
         if (cbpv.LDesc ().size() && !n->LDesc ().size())
           ver.set_ldesc (cbpv.LDesc ());
-	if (cbpv.depends()->size() && !ver.depends ()->size())
-	  *ver.depends() = *cbpv.depends();
+        if (cbpv.depends().size() && !ver.depends().size())
+          ver.setDepends(cbpv.depends());
 	/* TODO: other package lists */
 	/* Prevent dangling references */
-	currentNodeList = NULL;
+        currentNodeList = PackageDepends();
 	currentSpec = NULL;
         cbpv = *n;
         merged = 1;

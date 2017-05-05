@@ -19,6 +19,6 @@
 
 typedef std::vector <PackageSpecification *> PackageDepends;
 
-void dumpPackageDepends (PackageDepends const *currentList, std::ostream &);
+void dumpPackageDepends (PackageDepends const &currentList, std::ostream &);
 
 #endif // PACKAGE_DEPENDS_H
