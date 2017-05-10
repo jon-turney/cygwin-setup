@@ -108,14 +108,12 @@ progress (int bytes)
 static void
 getUrlToStream (const string &_url, io_stream *output)
 {
-  Log (LOG_BABBLE) << "getUrlToStream " << _url << endLog;
   is_local_install = (source == IDC_SOURCE_LOCALDIR);
   init_dialog (_url, 0);
   NetIO *n = NetIO::open (_url.c_str(), true);
   if (!n || !n->ok ())
     {
       delete n;
-      Log (LOG_BABBLE) <<  "getUrlToStream failed!" << endLog;
       throw new Exception (TOSTRING(__LINE__) " " __FILE__, "Error opening url",  APPERR_IO_ERROR);
     }
 
@@ -144,6 +142,8 @@ getUrlToStream (const string &_url, io_stream *output)
   if (n)
     delete (n);
   /* reseeking is up to the recipient if desired */
+
+  Log (LOG_BABBLE) << "Fetched URL: " << _url << endLog;
 }
 
 io_stream *
@@ -152,7 +152,6 @@ get_url_to_membuf (const string &_url, HWND owner)
   io_stream_memory *membuf = new io_stream_memory ();
   try 
     {
-      Log (LOG_BABBLE) << "get_url_to_membuf " << _url << endLog;
       getUrlToStream (_url, membuf);
       
       if (membuf->seek (0, IO_SEEK_SET))
@@ -168,7 +167,6 @@ get_url_to_membuf (const string &_url, HWND owner)
     {
       if (e->errNo() != APPERR_IO_ERROR)
 	throw e;
-      Log (LOG_BABBLE) << "get_url_to_membuf failed!" << endLog;
       delete membuf;
       return 0;
     }
@@ -217,7 +215,6 @@ get_url_to_file (const string &_url,
   if (!n || !n->ok ())
     {
       delete n;
-      Log (LOG_BABBLE) <<  "get_url_to_file failed!" << endLog;
       return 1;
     }
 

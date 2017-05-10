@@ -26,6 +26,7 @@
 #include "msg.h"
 #include "netio.h"
 #include "nio-ie5.h"
+#include "LogSingleton.h"
 
 static HINTERNET internet_direct = 0;
 static HINTERNET internet_preconfig = 0;
@@ -83,13 +84,18 @@ try_again:
 
   if (!connection)
     {
-      if (GetLastError () == ERROR_INTERNET_EXTENDED_ERROR)
+      DWORD e = GetLastError ();
+      if (e == ERROR_INTERNET_EXTENDED_ERROR)
 	{
 	  char buf[2000];
 	  DWORD e, l = sizeof (buf);
 	  InternetGetLastResponseInfo (&e, buf, &l);
 	  mbox (0, buf, "Internet Error", MB_OK);
 	}
+      else
+        {
+          Log (LOG_PLAIN) << "connection error: " << e << endLog;
+        }
     }
 
   DWORD type, type_s;
@@ -106,6 +112,9 @@ try_again:
 			 HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER,
 			 &type, &type_s, NULL))
 	{
+	  if (type != 200)
+	    Log (LOG_PLAIN) << "HTTP status " << type << " fetching " << url << endLog;
+
 	  if (type == 401)	/* authorization required */
 	    {
 	      flush_io ();
