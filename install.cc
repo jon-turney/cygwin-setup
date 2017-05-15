@@ -812,15 +812,20 @@ do_install_thread (HINSTANCE h, HWND owner)
   }
 
   /* start with uninstalls - remove files that new packages may replace */
+  Progress.SetBar2(0);
   for (vector <packagemeta *>::iterator i = uninstall_q.begin ();
        i != uninstall_q.end (); ++i)
   {
     myInstaller.preremoveOne (**i);
+    Progress.SetBar2(std::distance(uninstall_q.begin(), i) + 1, uninstall_q.size());
   }
+
+  Progress.SetBar2(0);
   for (vector <packagemeta *>::iterator i = uninstall_q.begin ();
        i != uninstall_q.end (); ++i)
   {
     myInstaller.uninstallOne (**i);
+    Progress.SetBar2(std::distance(uninstall_q.begin(), i) + 1, uninstall_q.size());
   }
 
   for (vector <packagemeta *>::iterator i = install_q.begin ();
