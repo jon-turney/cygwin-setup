@@ -196,7 +196,4 @@ protected:
   std::vector <Script> scripts_;
 };
 
-// not sure where this belongs :}.
-void dumpAndList (PackageDepends const *currentList, std::ostream &);
-
 #endif /* SETUP_PACKAGE_VERSION_H */

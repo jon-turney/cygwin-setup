@@ -203,6 +203,7 @@ inilint_SOURCES = \
 	package_db.cc \
 	package_db.h \
 	package_depends.h \
+	package_depends.cc \
 	package_meta.cc \
 	package_meta.h \
 	package_source.cc \

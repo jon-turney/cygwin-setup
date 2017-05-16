@@ -412,21 +412,3 @@ _packageversion::scripts()
 {
   return scripts_;
 }
-
-void
-dumpAndList (PackageDepends const *currentList,
-             std::ostream &logger)
-{
-  if (currentList)
-  {
-    Log (LOG_BABBLE) << "( ";
-    PackageDepends::const_iterator i = currentList->begin();
-    while (true)
-    {
-      if (i == currentList->end()) break;
-      Log (LOG_BABBLE) << **i << " ";
-      ++i;
-    }
-    Log (LOG_BABBLE) << ")";
-  }
-}

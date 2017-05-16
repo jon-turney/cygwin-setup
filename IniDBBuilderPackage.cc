@@ -77,7 +77,7 @@ IniDBBuilderPackage::buildPackage (const std::string& name)
 	{
 	  Log (LOG_BABBLE) << "Version " << cbpv.Canonical_version() << endLog;
 	  Log (LOG_BABBLE) << "Depends:";
-	  dumpAndList (cbpv.depends(), Log (LOG_BABBLE));
+	  dumpPackageDepends (cbpv.depends(), Log (LOG_BABBLE));
 	  Log (LOG_BABBLE) << endLog;
 	}
     }
@@ -191,7 +191,7 @@ IniDBBuilderPackage::buildBeginDepends ()
 #if DEBUG
   Log (LOG_BABBLE) << "Beginning of a depends statement for " << cp->name
     << endLog;
-  dumpAndList (currentNodeList, Log (LOG_BABBLE));
+  dumpPackageDepends (currentNodeList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
   currentNodeList = cbpv.depends();

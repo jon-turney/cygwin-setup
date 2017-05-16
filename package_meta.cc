@@ -564,7 +564,7 @@ packagemeta::logAllVersions () const
 	{
 	  std::ostream & logger = Log (LOG_BABBLE);
 	  logger << "      depends=";
-	  dumpAndList(i->depends(), logger);
+	  dumpPackageDepends(i->depends(), logger);
 	  logger << endLog;
 	}
       }

@@ -14,8 +14,11 @@
 #ifndef PACKAGE_DEPENDS_H
 #define PACKAGE_DEPENDS_H
 
+#include <PackageSpecification.h>
 #include <vector>
 
 typedef std::vector <PackageSpecification *> PackageDepends;
+
+void dumpPackageDepends (PackageDepends const *currentList, std::ostream &);
 
 #endif // PACKAGE_DEPENDS_H
