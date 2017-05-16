@@ -94,7 +94,7 @@ static BoolOption NoAdminOption (false, 'B', "no-admin", "Do not check for and e
 static BoolOption WaitOption (false, 'W', "wait", "When elevating, wait for elevated child process");
 static BoolOption HelpOption (false, 'h', "help", "print help");
 static StringOption SetupBaseNameOpt ("setup", 'i', "ini-basename", "Use a different basename, e.g. \"foo\", instead of \"setup\"", false);
-BoolOption UnsupportedOption (false, '0', "allow-unsupported-windows", "Allow old, unsupported Windows versions");
+BoolOption UnsupportedOption (false, '\0', "allow-unsupported-windows", "Allow old, unsupported Windows versions");
 std::string SetupBaseName;
 
 static void inline

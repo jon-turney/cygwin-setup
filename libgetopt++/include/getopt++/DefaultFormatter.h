@@ -45,8 +45,11 @@ class DefaultFormatter {
         theStream(aStream)
     {}
     void operator () (Option *anOption) {
-      theStream << s_lead << anOption->shortOption ()[0]
-		<< l_lead << anOption->longOption ()
+      if (anOption->shortOption ()[0] == '\0')
+        theStream << "   ";
+      else
+        theStream << s_lead << anOption->shortOption ()[0];
+      theStream << l_lead << anOption->longOption ()
 		<< std::string (o_len
 				- s_lead.size () - 1 - l_lead.size ()
 				- anOption->longOption ().size (), ' ');
