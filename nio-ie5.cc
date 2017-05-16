@@ -27,6 +27,11 @@
 #include "netio.h"
 #include "nio-ie5.h"
 #include "LogSingleton.h"
+#include "setup_version.h"
+#include "getopt++/StringOption.h"
+
+static StringOption UserAgent ("", '\0', "user-agent", "User agent string for HTTP requests");
+static std::string default_useragent = std::string("Cygwin-Setup/") + setup_version;
 
 static HINTERNET internet_direct = 0;
 static HINTERNET internet_preconfig = 0;
@@ -45,7 +50,27 @@ NetIO (_url)
   if (*internet == 0)
     {
       InternetAttemptConnect (0);
-      *internet = InternetOpen ("Cygwin Setup",
+
+      const char *lpszAgent = default_useragent.c_str();
+      if (UserAgent.isPresent())
+        {
+          const std::string &user_agent = UserAgent;
+          if (user_agent.length())
+            {
+              // override the default user agent string
+              lpszAgent = user_agent.c_str();
+              Log (LOG_PLAIN) << "User-Agent: header overridden to \"" << lpszAgent << "\"" << endLog;
+            }
+          else
+            {
+              // user-agent option is present, but no string is specified means
+              // don't add a user-agent header
+              lpszAgent = NULL;
+              Log (LOG_PLAIN) << "User-Agent: header suppressed " << lpszAgent << endLog;
+            }
+        }
+
+      *internet = InternetOpen (lpszAgent,
 				direct ? INTERNET_OPEN_TYPE_DIRECT : INTERNET_OPEN_TYPE_PRECONFIG,
 				NULL, NULL, 0);
     }
