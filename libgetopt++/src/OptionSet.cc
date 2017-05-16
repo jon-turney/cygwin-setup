@@ -314,9 +314,16 @@ OptionSet::Register (Option * anOption)
     options.push_back(anOption);
 }
 
+static bool
+comp_long_option(const Option *a, const Option *b)
+{
+  return (a->longOption().compare(b->longOption()) < 0);
+}
+
 void
 OptionSet::ParameterUsage (ostream &aStream)
 {
+    std::sort(options.begin(), options.end(), comp_long_option);
     for_each (options.begin(), options.end(), DefaultFormatter (aStream));
 }
 
