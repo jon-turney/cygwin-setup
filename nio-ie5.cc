@@ -98,8 +98,8 @@ try_again:
         }
     }
 
-  DWORD type, type_s;
-  type_s = sizeof (type);
+  ULONG type = 0;
+  DWORD type_s = sizeof (type);
   InternetQueryOption (connection, INTERNET_OPTION_HANDLE_TYPE,
 		       &type, &type_s);
 
@@ -137,6 +137,11 @@ try_again:
 	    }
 	}
     }
+
+  InternetQueryOption (connection, INTERNET_OPTION_REQUEST_FLAGS,
+                       &type, &type_s);
+  if (type & INTERNET_REQFLAG_FROM_CACHE)
+    Log (LOG_BABBLE) << "Request for URL " << url << " satisfied from cache" << endLog;
 }
 
 void
