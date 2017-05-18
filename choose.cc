@@ -373,8 +373,7 @@ ChooserPage::changeTrust(trusts aTrust)
   SetBusy ();
   chooser->defaultTrust (aTrust);
   chooser->refresh();
-  PrereqChecker p;
-  p.setTrust (aTrust);
+  PrereqChecker::setTrust (aTrust);
   ClearBusy ();
 }
 

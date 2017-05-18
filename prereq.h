@@ -45,7 +45,7 @@ public:
   void selectMissing ();
   
   // notes the current trust (for use in selectMissing)
-  void setTrust (trusts t) { theTrust = t; };
+  static void setTrust (trusts t) { theTrust = t; };
 
 private:
   
