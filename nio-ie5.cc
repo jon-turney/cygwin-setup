@@ -56,6 +56,8 @@ NetIO (_url)
 
   if (!cachable) {
     flags |= INTERNET_FLAG_NO_CACHE_WRITE;
+  } else {
+    flags |= INTERNET_FLAG_RESYNCHRONIZE;
   }
 
   connection = InternetOpenUrl (*internet, url, NULL, 0, flags, 0);
