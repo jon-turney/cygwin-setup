@@ -45,13 +45,9 @@
 
 #include "Exception.h"
 
-#include "getopt++/BoolOption.h"
-
 using namespace std;
 
 extern ThreeBarProgressPage Progress;
-
-BoolOption IncludeSource (false, 'I', "include-source", "Automatically install source for every package installed");
 
 // Return true if selected checks pass, false if they don't and the
 // user chooses to delete the file; otherwise throw an exception.
@@ -282,59 +278,38 @@ do_download_thread (HINSTANCE h, HWND owner)
   Progress.SetText3 ("");
 
   packagedb db;
-  /* calculate the amount needed */
-  for (packagedb::packagecollection::iterator i = db.packages.begin ();
-       i != db.packages.end (); ++i)
+  const SolverTransactionList &t = db.solution.transactions();
+
+  /* calculate the total size of the download */
+  for (SolverTransactionList::const_iterator i = t.begin (); i != t.end (); ++i)
     {
-      packagemeta & pkg = *(i->second);
-      if (pkg.desired && (pkg.picked () || pkg.srcpicked ()))
-	{
-	  packageversion version = pkg.desired;
-	  packageversion sourceversion = version.sourcePackage();
-	  try 
-	    {
-	      if (pkg.picked())
-		{
-		    if (!check_for_cached (*version.source(), owner))
-		      total_download_bytes += version.source()->size;
-		}
-	      if (pkg.srcpicked () || IncludeSource)
-		{
-		    if (!check_for_cached (*sourceversion.source(), owner))
-		      total_download_bytes += sourceversion.source()->size;
-		}
-	    }
-	  catch (Exception * e)
-	    {
-	      // We know what to do with these..
-	      if (e->errNo() == APPERR_CORRUPT_PACKAGE)
-		fatal (owner, IDS_CORRUPT_PACKAGE, pkg.name.c_str());
-	      // Unexpected exception.
-	      throw e;
-	    }
-	}
+      packageversion version = i->version;
+
+      try
+        {
+          if (!check_for_cached (*version.source(), owner))
+            total_download_bytes += version.source()->size;
+        }
+      catch (Exception * e)
+        {
+          // We know what to do with these..
+          if (e->errNo() == APPERR_CORRUPT_PACKAGE)
+            fatal (owner, IDS_CORRUPT_PACKAGE, version.Name().c_str());
+          // Unexpected exception.
+          throw e;
+        }
     }
 
   /* and do the download. FIXME: This here we assign a new name for the cached version
    * and check that above.
    */
-  for (packagedb::packagecollection::iterator i = db.packages.begin ();
-       i != db.packages.end (); ++i)
+  for (SolverTransactionList::const_iterator i = t.begin (); i != t.end (); ++i)
     {
-      packagemeta & pkg = *(i->second);
-      if (pkg.desired && (pkg.picked () || pkg.srcpicked ()))
+      packageversion version = i->version;
+
 	{
 	  int e = 0;
-	  packageversion version = pkg.desired;
-	  packageversion sourceversion = version.sourcePackage();
-	  if (pkg.picked())
-	    {
-		e += download_one (*version.source(), owner);
-	    }
-	  if (sourceversion && (pkg.srcpicked() || IncludeSource))
-	    {
-		e += download_one (*sourceversion.source (), owner);
-	    }
+          e += download_one (*version.source(), owner);
 	  errors += e;
 	  if (e)
 	    download_failures.push_back (version);
