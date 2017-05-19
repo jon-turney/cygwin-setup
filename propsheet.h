@@ -47,9 +47,8 @@ public:
   void SetHWNDFromPage (HWND h);
   void AdjustPageSize (HWND page);
 
-  virtual bool Create (const Window * Parent = NULL,
-		       DWORD Style =
-		       WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN);
+  bool Create (const Window * Parent = NULL,
+               DWORD Style = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN);
 
   void AddPage (PropertyPage * p);
 

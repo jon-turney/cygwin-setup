@@ -82,10 +82,9 @@ public:
   Window ();
   virtual ~ Window ();
 
-  virtual bool Create (Window * Parent = NULL,
-		       DWORD Style =
-		       WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN);
-  
+  bool Create (Window * Parent = NULL,
+               DWORD Style = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_CLIPCHILDREN);
+
   static void SetAppInstance (HINSTANCE h)
   {
     // This only has to be called once in the entire app, before

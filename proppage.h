@@ -115,11 +115,11 @@ public:
     IsLast = false;
   };
 
-  virtual bool Create (int TemplateID);
-  virtual bool Create (DLGPROC dlgproc, int TemplateID);
-  virtual bool Create (DLGPROC dlgproc,
-		       BOOL (*cmdproc) (HWND h, int id, HWND hwndctl,
-					UINT code), int TemplateID);
+  bool Create (int TemplateID);
+  bool Create (DLGPROC dlgproc, int TemplateID);
+  bool Create (DLGPROC dlgproc,
+               BOOL (*cmdproc) (HWND h, int id, HWND hwndctl,
+                                UINT code), int TemplateID);
 
   virtual void OnInit ()
   {
