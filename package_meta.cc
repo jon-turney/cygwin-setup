@@ -546,7 +546,7 @@ packagemeta::isBinary () const
 {
   for (set<packageversion>::iterator i=versions.begin();
        i != versions.end(); ++i)
-    if ((i->Type() == package_binary) && i->accessible())
+    if ((i->Type() == package_binary) && (i->accessible() || (*i == installed)))
       return true;
 
   return false;
