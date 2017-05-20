@@ -63,6 +63,7 @@ class packagedb
 {
 public:
   packagedb ();
+  void read();
   /* 0 on success */
   int flush ();
   void upgrade ();

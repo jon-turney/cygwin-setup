@@ -45,10 +45,15 @@ using namespace std;
 
 packagedb::packagedb ()
 {
-  io_stream *db = 0;
+}
+
+void
+packagedb::read ()
+{
   if (!installeddbread)
     {
-      /* no parameters. Read in the local installation database. */
+      /* Read in the local installation database. */
+      io_stream *db = 0;
       db = io_stream::open ("cygfile:///etc/setup/installed.db", "rt", 0);
       installeddbread = 1;
       if (!db)
