@@ -745,7 +745,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       md5sum_total_bytes += pkg.desired.source()->size;
     }
 
-    if (pkg.desired.sourcePackage ().picked())
+    if (pkg.desired.sourcePackage ().picked() || IncludeSource)
     {
       md5sum_total_bytes += pkg.desired.sourcePackage ().source()->size;
     }
