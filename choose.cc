@@ -260,7 +260,7 @@ ChooserPage::OnInit ()
       bool wanted    = pkg.isManuallyWanted();
       bool deleted   = pkg.isManuallyDeleted();
       bool basemisc  = (pkg.categories.find ("Base") != pkg.categories.end ()
-		     || pkg.categories.find ("Misc") != pkg.categories.end ());
+		     || pkg.categories.find ("Orphaned") != pkg.categories.end ());
       bool upgrade   = wanted || (!pkg.installed && basemisc)
 		     || UpgradeAlsoOption || !hasManualSelections;
       bool install   = wanted  && !deleted && !pkg.installed;

@@ -464,7 +464,7 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
     {
       if (installed
 	  || categories.find ("Base") != categories.end ()
-	  || categories.find ("Misc") != categories.end ())
+	  || categories.find ("Orphaned") != categories.end ())
 	{
 	  desired = default_version;
 	  if (desired)
@@ -688,7 +688,7 @@ packagemeta::hasNoCategories() const
 void
 packagemeta::setDefaultCategories()
 {
-  add_category ("Misc");
+  add_category ("Orphaned");
 }
 
 void

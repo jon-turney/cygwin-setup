@@ -435,7 +435,7 @@ packagedb::defaultTrust (trusts trust)
       packagemeta & pkg = *(i->second);
       if (pkg.installed
             || pkg.categories.find ("Base") != pkg.categories.end ()
-            || pkg.categories.find ("Misc") != pkg.categories.end ())
+            || pkg.categories.find ("Orphaned") != pkg.categories.end ())
         {
           pkg.desired = pkg.trustp (true, trust);
           if (pkg.desired)
