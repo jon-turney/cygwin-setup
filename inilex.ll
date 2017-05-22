@@ -141,7 +141,6 @@ B64	[a-zA-Z0-9_-]
 "<"			return LT;
 "="                     return EQUAL;
 \,			return COMMA;
-"|"			return OR;
 "@"			return AT;
 
 {STR}			{ yylval = new char [strlen(yytext) + 1];
