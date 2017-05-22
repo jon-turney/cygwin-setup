@@ -121,7 +121,7 @@ B64	[a-zA-Z0-9_-]
 
 "category:"|"Section:"	return CATEGORY;
 "requires:"		return REQUIRES;
-"Depends:"		return DEPENDS;
+[dD]"epends:"		return DEPENDS;
 
 ^{STR}":"		ignore_line ();
 

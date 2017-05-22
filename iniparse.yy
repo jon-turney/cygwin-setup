@@ -132,12 +132,12 @@ versionedpackagelistsp /* non-empty */
  | versionedpackagelistsp versionedpackageentry
  ;
 
-listseparator: /* empty */
- | COMMA
+listseparator /* non-empty */
+ : COMMA
  | COMMA NL
  ;
 
-versionedpackageentry /* empty not allowed */
+versionedpackageentry /* non-empty */
  : STRING { iniBuilder->buildPackageListNode($1); } versioncriteria
  ;
 
