@@ -104,7 +104,7 @@ singleitem /* non-empty */
  | REQUIRES { iniBuilder->buildBeginDepends(); } versionedpackagelistsp NL
  | BUILDDEPENDS { iniBuilder->buildBeginBuildDepends(); } versionedpackagelist NL
  | MESSAGE STRING STRING NL	{ iniBuilder->buildMessage ($2, $3); }
- | error 			{ yyerror (std::string("unrecognized line ") 
+ | error NL			{ yyerror (std::string("unrecognized line ")
 					  + stringify(yylineno)
 					  + " (do you have the latest setup?)");
 				}
