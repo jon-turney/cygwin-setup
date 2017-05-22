@@ -45,6 +45,7 @@ extern int yylineno;
 %token COMMA NL AT
 %token OPENBRACE CLOSEBRACE EQUAL GT LT GTEQUAL LTEQUAL 
 %token BUILDDEPENDS
+%token OBSOLETES
 %token MESSAGE
 %token ARCH RELEASE
 
@@ -103,6 +104,8 @@ singleitem /* non-empty */
  | DEPENDS { iniBuilder->buildBeginDepends(); } versionedpackagelist NL
  | REQUIRES { iniBuilder->buildBeginDepends(); } versionedpackagelistsp NL
  | BUILDDEPENDS { iniBuilder->buildBeginBuildDepends(); } versionedpackagelist NL
+ | OBSOLETES { iniBuilder->buildBeginObsoletes(); } versionedpackagelist NL
+
  | MESSAGE STRING STRING NL	{ iniBuilder->buildMessage ($2, $3); }
  | error NL			{ yyerror (std::string("unrecognized line ")
 					  + stringify(yylineno)

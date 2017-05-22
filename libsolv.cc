@@ -350,6 +350,8 @@ SolverPool::addPackage(const std::string& pkgname, const addPackageData &pkgdata
   solvable->provides = repo_addid_dep(repo, solvable->provides, pool_rel2id(pool, solvable->name, solvable->evr, REL_EQ, 1), 0);
   if (pkgdata.requires)
     solvable->requires = makedeps(repo, pkgdata.requires);
+  if (pkgdata.obsoletes)
+    solvable->obsoletes = makedeps(repo, pkgdata.obsoletes);
 
   /* a solvable can also store arbitrary attributes not needed for dependency
      resolution, if we need them */

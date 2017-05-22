@@ -113,6 +113,7 @@ packagedb::read ()
                   // we put our best guesses here...
                   data.vendor = "cygwin";
                   data.requires = NULL;
+                  data.obsoletes = NULL;
                   data.sdesc = "";
                   data.ldesc = "";
                   data.stability = TRUST_CURR; // XXX: would be nice to get this correct as it effects upgrade decisions...

@@ -51,6 +51,7 @@ public:
 
   void buildBeginDepends ();
   void buildBeginBuildDepends ();
+  void buildBeginObsoletes ();
   void buildMessage (const std::string&, const std::string&);
   void buildSourceName (const std::string& );
   void buildSourceNameVersion (const std::string& );
@@ -77,7 +78,9 @@ private:
   std::string message_id;
   std::string message_string;
   PackageSpecification *currentSpec;
-  PackageDepends currentNodeList;
+  PackageDepends *currentNodeList;
+  PackageDepends dependsNodeList;
+  PackageDepends obsoletesNodeList;
   SolverPool::addPackageData cbpv;
 
   IniParseFeedback const &_feedback;

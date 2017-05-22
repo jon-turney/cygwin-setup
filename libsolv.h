@@ -128,6 +128,7 @@ public:
     PackageSpecification spkg;
     SolvableVersion spkg_id;
     PackageDepends *requires;
+    PackageDepends *obsoletes;
   };
 
   SolvableVersion addPackage(const std::string& pkgname,
