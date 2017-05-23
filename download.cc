@@ -78,7 +78,7 @@ check_for_cached (packagesource & pkgsource, bool mirror_mode)
 
   /* Note that the cache dir is represented by a mirror site of file://local_dir */
   std::string prefix = "file://" + local_dir + "/";
-  std::string fullname = prefix + pkgsource.Canonical();
+  std::string fullname = prefix + (pkgsource.Canonical() ? pkgsource.Canonical() : "");
 
   if (mirror_mode)
     {
