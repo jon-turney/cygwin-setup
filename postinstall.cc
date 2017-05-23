@@ -190,7 +190,7 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
     {
       packagemeta & pkg = **i;
 
-      vector<Script> installed = pkg.installed.scripts();
+      vector<Script> installed = pkg.scripts();
       vector<Script> run;
       // extract non-perpetual scripts for the current stratum
       for (vector <Script>::iterator  j = installed.begin(); j != installed.end(); j++)
@@ -213,8 +213,8 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
   for (vector <packagemeta *>::iterator i = packages.begin (); i != packages.end (); ++i)
     {
        packagemeta & pkg = **i;
-       for (std::vector<Script>::const_iterator j = pkg.installed.scripts().begin();
-            j != pkg.installed.scripts().end();
+       for (std::vector<Script>::const_iterator j = pkg.scripts().begin();
+            j != pkg.scripts().end();
             j++)
          {
            std::vector<Script>::iterator p = find(scripts.begin(), scripts.end(), *j);

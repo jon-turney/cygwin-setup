@@ -54,11 +54,7 @@ public:
   void set_ldesc (const std::string& ) {}
   void uninstall (){}
   void pick(bool const &newValue){/* Ignore attempts to pick this!. Throw an exception here if you want to detect such attemtps instead */}
-  virtual void addScript(Script const &) {}
-  virtual std::vector <Script> &scripts() { scripts_.clear();  return scripts_;}
   virtual bool accessible () const {return false;}
-  private:
-    std::vector <Script> scripts_;
 };
 static _defaultversion defaultversion;
 
@@ -301,18 +297,6 @@ packageversion::scan (bool mirror_mode)
     }
 }
 
-void
-packageversion::addScript(Script const &aScript)
-{
-  return data->addScript (aScript);
-}
-
-std::vector <Script> &
-packageversion::scripts()
-{
-  return data->scripts();
-}
-
 int
 packageversion::compareVersions(const packageversion &a, const packageversion &b)
 {
@@ -399,16 +383,4 @@ _packageversion::accessible() const
     return true;
   // otherwise, not accessible
   return false;
-}
-
-void
-_packageversion::addScript(Script const &aScript)
-{
-  scripts().push_back(aScript);
-}
-
-std::vector <Script> &
-_packageversion::scripts()
-{
-  return scripts_;
 }

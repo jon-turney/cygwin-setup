@@ -492,7 +492,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
           lst->write (tmp.c_str(), tmp.size());
         }
       if (Script::isAScript (fn))
-        pkgm.desired.addScript (Script (canonicalfn));
+        pkgm.addScript (Script (canonicalfn));
 
       int iteration = 0;
       archive::extract_results extres;

@@ -44,8 +44,6 @@ class CategoryList;
 #include "PackageSpecification.h"
 #include "PackageTrust.h"
 #include "package_depends.h"
-#include "script.h"
-#include <vector>
 
 typedef enum
 {
@@ -128,9 +126,6 @@ public:
   /* ensure that the depends clause is satisfied */
   int set_requirements (trusts deftrust, size_t depth = 0);
 
-  void addScript(Script const &);
-  std::vector <Script> &scripts();
-
   /* utility function to compare package versions */
   static int compareVersions(const packageversion &a, const packageversion &b);
 
@@ -187,13 +182,10 @@ public:
      static package_meta * scan_package (io_stream *);
    */
   size_t references;
-  virtual void addScript(Script const &);
-  virtual std::vector <Script> &scripts();
 protected:
   /* only meaningful for binary packages */
   PackageSpecification _sourcePackage;
   packageversion sourceVersion;
-  std::vector <Script> scripts_;
 };
 
 #endif /* SETUP_PACKAGE_VERSION_H */

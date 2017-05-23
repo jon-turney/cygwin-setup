@@ -19,11 +19,12 @@
 class packageversion;
 class packagemeta;
 
-/* Required to parse this completely */
 #include <set>
+#include <vector>
 #include "PackageTrust.h"
 #include "package_version.h"
 #include "package_message.h"
+#include "script.h"
 
 typedef std::pair<const std::string, std::vector<packagemeta *> > Category;
 
@@ -144,10 +145,14 @@ public:
   void logSelectionStatus() const;
   void logAllVersions() const;
 
+  void addScript(Script const &);
+  std::vector <Script> &scripts();
+
 protected:
   packagemeta &operator= (packagemeta const &);
 private:
   std::string trustLabel(packageversion const &) const;
+  std::vector <Script> scripts_;
 };
 
 #endif /* SETUP_PACKAGE_META_H */

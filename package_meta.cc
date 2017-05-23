@@ -696,3 +696,15 @@ packagemeta::addToCategoryAll()
 {
   add_category ("All");
 }
+
+void
+packagemeta::addScript(Script const &aScript)
+{
+  scripts_.push_back(aScript);
+}
+
+std::vector <Script> &
+packagemeta::scripts()
+{
+  return scripts_;
+}
