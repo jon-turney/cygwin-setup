@@ -366,7 +366,14 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 
   io_stream *pkgfile = NULL;
 
-  if (!source.Cached() || !io_stream::exists (source.Cached ())
+  if (!source.Cached())
+    {
+      note (NULL, IDS_ERR_OPEN_READ, source.Canonical (), "Unknown filename");
+      ++errors;
+      return;
+    }
+
+  if (!io_stream::exists (source.Cached ())
       || !(pkgfile = io_stream::open (source.Cached (), "rb", 0)))
     {
       note (NULL, IDS_ERR_OPEN_READ, source.Cached (), "No such file");
