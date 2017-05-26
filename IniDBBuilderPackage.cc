@@ -244,8 +244,9 @@ void
 IniDBBuilderPackage::buildSourceName (const std::string& _name)
 {
   // When there is a Source: line, that names a real source package
-  cbpv.spkg = PackageSpecification(name);
-  // XXX: set cbpv.spkg_id
+  packagedb db;
+  cbpv.spkg = PackageSpecification(_name);
+  cbpv.spkg_id = db.findSourceVersion (PackageSpecification(_name, cbpv.version));
 #if DEBUG
   Log (LOG_BABBLE) << "\"" << _name << "\" is the source package for " << name << "." << endLog;
 #endif

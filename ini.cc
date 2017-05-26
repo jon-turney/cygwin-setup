@@ -359,6 +359,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
   db.read();
   db.upgrade();
   db.removeEmptyCategories();
+  db.fixup_source_package_ids();
 
   if (ini_error)
     return false;

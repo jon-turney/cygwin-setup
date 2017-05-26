@@ -159,6 +159,23 @@ SolvableVersion::SDesc () const
   return sdesc;
 }
 
+const std::string
+SolvableVersion::sourcePackageName () const
+{
+  if (!id)
+    return "";
+
+  // extract source package name
+  Solvable *solvable = pool_id2solvable(pool, id);
+  Id spkg = repo_lookup_id(solvable->repo, id, SOLVABLE_SOURCENAME);
+
+  // has no such attribute
+  if (!spkg)
+    return "";
+
+  return std::string(pool_id2str(pool, spkg));
+}
+
 SolvableVersion
 SolvableVersion::sourcePackage () const
 {
@@ -175,6 +192,16 @@ SolvableVersion::sourcePackage () const
     return SolvableVersion();
 
   return SolvableVersion(spkg_id, pool);
+}
+
+void
+SolvableVersion::fixup_spkg_id (SolvableVersion spkg_id) const
+{
+  Solvable *solvable = pool_id2solvable(pool, id);
+  Repodata *data = repo_last_repodata(solvable->repo);
+  Id handle = id;
+  Id spkg_attr = pool_str2id(pool, "solvable:sourceid", 1);
+  repodata_set_id(data, handle, spkg_attr, spkg_id.id);
 }
 
 packagesource *
@@ -395,10 +422,13 @@ SolverPool::addPackage(const std::string& pkgname, const addPackageData &pkgdata
      as evr for the moment */
 
   /* store source-package id */
-  /* XXX: this assumes we create install package after source package and so can
-     know that id */
-  Id spkg_attr = pool_str2id(pool, "solvable:sourceid", 1);
-  repodata_set_id(data, handle, spkg_attr, pkgdata.spkg_id.id);
+  /* (If the source-package hasn't been seen yet, we don't know what it's Id
+     will be.  That gets fixed up later.) */
+  if (pkgdata.spkg_id)
+    {
+      Id spkg_attr = pool_str2id(pool, "solvable:sourceid", 1);
+      repodata_set_id(data, handle, spkg_attr, pkgdata.spkg_id.id);
+    }
 
   /* we could store packagesource information as attributes ...
 

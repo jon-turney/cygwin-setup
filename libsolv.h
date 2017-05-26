@@ -63,10 +63,15 @@ class SolvableVersion
   bool accessible () const;
   package_type_t Type () const;
   package_stability_t Stability () const;
+  // the associated source package name, if this is a binary package
+  const std::string sourcePackageName () const;
   // the associated source package, if this is a binary package
   SolvableVersion sourcePackage () const;
   // where this package archive can be obtained from
   packagesource *source() const;
+
+  // fixup spkg_id
+  void fixup_spkg_id(SolvableVersion spkg_id) const;
 
   // utility function to compare package versions
   static int compareVersions(const SolvableVersion &a, const SolvableVersion &b);

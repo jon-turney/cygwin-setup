@@ -131,6 +131,7 @@ packagedb::read ()
                       data.archive = *pv.source();
                       data.stability = pv.Stability();
                       data.spkg_id = pv.sourcePackage();
+                      data.spkg = pv.sourcePackageName();
                       dep = pv.depends();
                       data.requires = &dep;
                       obs = pv.obsoletes();
@@ -347,6 +348,21 @@ packagedb::findSource (PackageSpecification const &spec) const
 	  return &pkgm;
     }
   return NULL;
+}
+
+packageversion
+packagedb::findSourceVersion (PackageSpecification const &spec) const
+{
+  packagedb::packagecollection::iterator n = sourcePackages.find(spec.packageName());
+  if (n != sourcePackages.end())
+    {
+      packagemeta & pkgm = *(n->second);
+      for (set<packageversion>::iterator i = pkgm.versions.begin();
+           i != pkgm.versions.end(); ++i)
+        if (spec.satisfies (*i))
+          return *i;
+    }
+  return packageversion();
 }
 
 /* static members */
@@ -657,5 +673,44 @@ packagedb::guessUserPicked()
 	    }
 	  ++dp;
 	}
+    }
+}
+
+void
+packagedb::fixup_source_package_ids()
+{
+  for (packagecollection::iterator i = packages.begin ();
+       i != packages.end (); ++i)
+    {
+      packagemeta &pkgm = *(i->second);
+
+      for (set<packageversion>::iterator i = pkgm.versions.begin();
+           i != pkgm.versions.end(); ++i)
+        {
+          /* If spkg_id is already known for this package, there's nothing to
+             fix. */
+          if (i->sourcePackage())
+            continue;
+
+          /* Some packages really have no source, indicated by no [sS]ource:
+             line in setup.ini, which becomes an empty source package name */
+          const std::string spkg = i->sourcePackageName();
+          if (spkg.empty())
+            continue;
+
+          /* Otherwise, we need to find the source package and fix up the source
+             package id*/
+          packageversion spkg_id = findSourceVersion(PackageSpecification(spkg,
+                                                                          i->Canonical_version()));
+
+          if (spkg_id)
+            {
+              i->fixup_spkg_id(spkg_id);
+            }
+          else
+            {
+              Log (LOG_BABBLE) << "No source package for '" << i->Name() << "' " << i->Canonical_version() << ", source package name '" << spkg << "'" << endLog;
+            }
+        }
     }
 }

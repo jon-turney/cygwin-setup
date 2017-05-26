@@ -72,8 +72,10 @@ public:
   packagemeta * findBinary (PackageSpecification const &) const;
   packageversion findBinaryVersion (PackageSpecification const &) const;
   packagemeta * findSource (PackageSpecification const &) const;
+  packageversion findSourceVersion (PackageSpecification const &spec) const;
   packagemeta * addBinary (const std::string &pkgname, const SolverPool::addPackageData &pkgdata);
   packageversion addSource (const std::string &pkgname, const SolverPool::addPackageData &pkgdata);
+  void fixup_source_package_ids();
   PackageDBConnectedIterator connectedBegin();
   PackageDBConnectedIterator connectedEnd();
   void fillMissingCategory();
