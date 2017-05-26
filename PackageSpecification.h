@@ -29,6 +29,8 @@ class PackageSpecification
 public:
   PackageSpecification () : _packageName (), _operator(Equals) {}
   PackageSpecification (const std::string& packageName);
+  PackageSpecification (const std::string& packageName,
+                        const std::string &packageVersion);
   ~PackageSpecification () {}
 
   enum _operators
