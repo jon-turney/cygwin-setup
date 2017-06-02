@@ -60,7 +60,7 @@ StringOption::Process (char const *optarg)
   return Failed;
 }
 
-StringOption::operator string () const
+StringOption::operator const string& () const
 {
   return _value;
 }

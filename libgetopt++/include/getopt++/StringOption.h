@@ -32,7 +32,7 @@ public:
   virtual std::string const shortHelp () const;
   virtual Result Process (char const *);
   virtual Argument argument () const;
-  operator std::string () const;
+  operator const std::string& () const;
 
 private:
   Argument _optional;
