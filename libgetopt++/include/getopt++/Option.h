@@ -46,8 +46,12 @@ public:
   };
   virtual Argument argument () const = 0;
 
+  void setPresent(bool _present) { present = _present; }
+  bool isPresent() { return present; }
+
 protected:
     Option ();
+    bool present;
 };
 
 #endif // _OPTION_H_

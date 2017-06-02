@@ -229,7 +229,8 @@ OptionSet::doOption(string &option, string::size_type const &pos)
 	    optionValue = value.c_str();
         }
 	break;
-    } 
+    }
+    theOption->setPresent(true);
     lastResult = theOption->Process(optionValue);
 }
 

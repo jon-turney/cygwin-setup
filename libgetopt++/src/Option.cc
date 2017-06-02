@@ -15,7 +15,7 @@
 
 #include "getopt++/Option.h"
 
-Option::Option ()
+Option::Option () : present(false)
 {
 }
 
