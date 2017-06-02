@@ -808,6 +808,9 @@ PickView::WindowProc (UINT message, WPARAM wParam, LPARAM lParam)
         lastWindowRect = windowRect;
         return 0;     
       }
+    case WM_MOUSEACTIVATE:
+      SetFocus(GetHWND());
+      return MA_ACTIVATE;
     }
   
   // default: can't handle this message
