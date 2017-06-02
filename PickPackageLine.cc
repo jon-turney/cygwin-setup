@@ -142,12 +142,20 @@ PickPackageLine::click (int const myrow, int const ClickedRow, int const x)
 	pkg.desired.sourcePackage ().pick (
 			!pkg.desired.sourcePackage ().picked (), NULL);
     }
+
   /* Unchecking binary while source is unchecked or vice versa is equivalent
      to uninstalling.  It's essential to set desired correctly, otherwise the
      package gets uninstalled without visual feedback to the user.  The package
      will not even show up in the "Pending" view! */
-  if (!pkg.desired.picked () && !pkg.desired.sourcePackage ().picked ())
-    pkg.desired = packageversion ();
+  if ((x >= theView.headers[theView.bintick_col].x - HMARGIN / 2
+      && x <= theView.headers[theView.bintick_col + 1].x - HMARGIN / 2) ||
+      (x >= theView.headers[theView.srctick_col].x - HMARGIN / 2
+       && x <= theView.headers[theView.srctick_col + 1].x - HMARGIN / 2))
+    {
+      if (!pkg.desired.picked () && !pkg.desired.sourcePackage ().picked ())
+        pkg.desired = packageversion ();
+    }
+
   return 0;
 }
 
