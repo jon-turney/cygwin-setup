@@ -264,7 +264,9 @@ load_site_list (SiteList& theSites, char *theString)
         continue;
       /* Accept only the URL schemes we can understand. */
       if (strncmp(bol, "http://", 7) == 0 ||
-	  strncmp(bol, "ftp://", 6) == 0)
+          strncmp(bol, "https://", 8) == 0 ||
+          strncmp(bol, "ftp://", 6) == 0 ||
+          strncmp(bol, "ftps://", 7) == 0)
 	{
 	  char *semi = strchr (bol, ';');
 	  char *semi2 = NULL;
@@ -306,6 +308,10 @@ load_site_list (SiteList& theSites, char *theString)
 	    //TODO: remove and remerge 
 	    *i = newsite;
 	}
+        else
+        {
+          Log (LOG_BABBLE) << "Discarding line '" << bol << "' due to unknown protocol" << endLog;
+        }
     }
 }
 
