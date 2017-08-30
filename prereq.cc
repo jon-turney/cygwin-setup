@@ -169,7 +169,8 @@ PrereqChecker::isMet ()
       packagemeta *pkg = p->second;
 
       // decode UI state to action
-      // skip and keep don't change dependency solution
+      // skip doesn't change dependency solution
+      // keep only does when we want to keep an old version
       if (pkg->installed != pkg->desired)
         {
           if (pkg->desired)
@@ -177,9 +178,13 @@ PrereqChecker::isMet ()
           else
             q.add(pkg->installed, SolverTasks::taskUninstall); // uninstall
         }
-      else
-        if (pkg->picked())
-          q.add(pkg->installed, SolverTasks::taskReinstall); // reinstall
+      else if (pkg->installed)
+        {
+          if (pkg->picked())
+            q.add(pkg->installed, SolverTasks::taskReinstall); // reinstall
+          else if (upgrade && pkg->installed < pkg->default_version)
+            q.add(pkg->installed, SolverTasks::taskKeep); // keep
+        }
 
       // only install action makes sense for source packages
       if (pkg->srcpicked())

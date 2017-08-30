@@ -131,6 +131,8 @@ public:
   packageversion curr;
   /* ditto for "test" (experimental) */
   packageversion exp;
+  /* which one is the default according to the chooser global state */
+  packageversion default_version;
   /* Now for the user stuff :] */
   /* What version does the user want ? */
   packageversion desired;

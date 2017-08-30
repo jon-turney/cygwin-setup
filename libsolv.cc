@@ -525,6 +525,9 @@ SolverSolution::update(SolverTasks &tasks, bool update, bool use_test_packages, 
           // we don't know how to ask solver for this, so we just add the erase
           // and install later
           break;
+        case SolverTasks::taskKeep:
+          queue_push2(&job, SOLVER_LOCK | SOLVER_SOLVABLE, sv.id);
+          break;
         default:
           Log (LOG_PLAIN) << "unknown task " << (*i).second << endLog;
         }

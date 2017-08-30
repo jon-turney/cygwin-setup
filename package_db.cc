@@ -505,7 +505,7 @@ packagedb::defaultTrust (trusts trust)
             || pkg.categories.find ("Base") != pkg.categories.end ()
             || pkg.categories.find ("Orphaned") != pkg.categories.end ())
         {
-          pkg.desired = pkg.trustp (true, trust);
+          pkg.desired = pkg.default_version = pkg.trustp (true, trust);
           if (pkg.desired)
             pkg.pick (pkg.desired.accessible() && pkg.desired != pkg.installed);
         }

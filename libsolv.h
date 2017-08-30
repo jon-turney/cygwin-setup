@@ -163,7 +163,8 @@ class SolverTasks
   {
     taskInstall,
     taskUninstall,
-    taskReinstall
+    taskReinstall,
+    taskKeep,
   };
   void add(const SolvableVersion &v, task t)
   {
