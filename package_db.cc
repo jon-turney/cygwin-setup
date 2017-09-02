@@ -39,6 +39,7 @@
 #include "LogSingleton.h"
 #include "resource.h"
 #include "libsolv.h"
+#include "csu_util/version_compare.h"
 
 using namespace std;
 
@@ -116,17 +117,39 @@ packagedb::read ()
                   data.obsoletes = NULL;
                   data.sdesc = "";
                   data.ldesc = "";
-                  data.stability = TRUST_CURR; // XXX: would be nice to get this correct as it effects upgrade decisions...
+                  data.stability = TRUST_UNKNOWN;
+                  data.spkg = PackageSpecification(std::string(pkgname) + "-src", f.ver);
 
-                  // supplement this with sdesc and source information from
-                  // setup.ini, if possible...
-                  packagemeta *pkgm = findBinary(PackageSpecification(pkgname));
-                  if (pkgm)
+                  // supplement this with sdesc, source, and stability
+                  // information from setup.ini, if possible...
+                  packageversion pv = findBinaryVersion(PackageSpecification(pkgname, f.ver));
+                  PackageDepends dep;
+                  PackageDepends obs;
+                  if (pv)
                     {
-                      data.sdesc = pkgm->curr.SDesc();
-                      data.archive = *pkgm->curr.source();
-                      data.spkg = std::string(pkgname) + "-src";
-                      data.spkg_id = pkgm->curr.sourcePackage();
+                      data.sdesc = pv.SDesc();
+                      data.archive = *pv.source();
+                      data.stability = pv.Stability();
+                      data.spkg_id = pv.sourcePackage();
+                      dep = pv.depends();
+                      data.requires = &dep;
+                      obs = pv.obsoletes();
+                      data.obsoletes = &obs;
+                    }
+                  else
+                    // This version is no longer available.  It could
+                    // be old, or it could be a previous test release
+                    // that has been replaced by a new test release.
+                    // Try to get some info from the packagemeta.
+                    {
+                      packagemeta *pkgm = findBinary(PackageSpecification(pkgname));
+                      if (pkgm)
+                        {
+                          data.sdesc = pkgm->curr.SDesc();
+                          if (pkgm->curr
+                              && version_compare (f.ver, pkgm->curr.Canonical_version()) > 0)
+                            data.stability = TRUST_TEST;
+                        }
                     }
 
                   packagemeta *pkg = packagedb::addBinary (pkgname, data);
@@ -264,6 +287,21 @@ packagedb::findBinary (PackageSpecification const &spec) const
 	  return &pkgm;
     }
   return NULL;
+}
+
+packageversion
+packagedb::findBinaryVersion (PackageSpecification const &spec) const
+{
+  packagedb::packagecollection::iterator n = packages.find(spec.packageName());
+  if (n != packages.end())
+    {
+      packagemeta & pkgm = *(n->second);
+      for (set<packageversion>::iterator i=pkgm.versions.begin();
+          i != pkgm.versions.end(); ++i)
+        if (spec.satisfies (*i))
+          return *i;
+    }
+  return packageversion();
 }
 
 packagemeta *

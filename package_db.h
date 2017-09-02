@@ -69,6 +69,7 @@ public:
   int flush ();
   void upgrade ();
   packagemeta * findBinary (PackageSpecification const &) const;
+  packageversion findBinaryVersion (PackageSpecification const &) const;
   packagemeta * findSource (PackageSpecification const &) const;
   packagemeta * addBinary (const std::string &pkgname, const SolverPool::addPackageData &pkgdata);
   packageversion addSource (const std::string &pkgname, const SolverPool::addPackageData &pkgdata);
