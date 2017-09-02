@@ -326,6 +326,9 @@ IniDBBuilderPackage::process ()
   pkg->set_message(message_id, message_string);
 
   // Reset for next version
+  cbpv.version = "";
+  cbpv.type = package_binary;
   cbpv.spkg = PackageSpecification();
   cbpv.spkg_id = packageversion();
+  cbpv.archive = packagesource();
 }
