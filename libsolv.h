@@ -183,7 +183,7 @@ class SolverTasks
     tasks.push_back(taskList::value_type(v, t));
   };
  private:
-  typedef std::vector<std::pair<const SolvableVersion &, task>> taskList;
+  typedef std::vector<std::pair<const SolvableVersion, task>> taskList;
   taskList tasks;
 
   friend SolverSolution;
