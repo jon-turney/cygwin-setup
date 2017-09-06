@@ -101,9 +101,16 @@ class SolvableVersion
 class SolvRepo
 {
 public:
+  typedef enum
+  {
+    priorityLow = 0,
+    priorityNormal,
+    priorityHigh,
+  } priority_t;
   Repo *repo;
   Repodata *data;
   bool test;
+  void setPriority(priority_t p) { repo->priority = p; }
 };
 
 // ---------------------------------------------------------------------------

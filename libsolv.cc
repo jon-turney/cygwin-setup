@@ -295,6 +295,9 @@ SolverPool::getRepo(const std::string &name, bool test)
   /* remember if this is a test stability repo */
   r->test = test;
 
+  /* set default priority */
+  r->repo->priority = SolvRepo::priorityNormal;
+
   repos[name] = r;
 
   return r;
@@ -338,9 +341,9 @@ SolverPool::addPackage(const std::string& pkgname, const addPackageData &pkgdata
   std::string repoName = pkgdata.reponame;
   bool test = false;
 
-  /* It's simplest to place test packages into a separate repo, and then
-     arrange for that repo to be disabled, if we don't want to consider
-     those packages */
+  /* It's simplest to place test packages into a separate repo, and
+     then arrange for that repo to have low priority, if we don't want
+     to install those packages by default */
 
   if (pkgdata.stability == TRUST_TEST)
     {
@@ -461,15 +464,15 @@ SolverPool::internalize()
 void
 SolverPool::use_test_packages(bool use_test_packages)
 {
-  // Only enable repos containing test packages if wanted
+  // Give repos containing test packages higher priority than normal
+  // if wanted, otherwise lower priority.
+  SolvRepo::priority_t p = use_test_packages ? SolvRepo::priorityNormal : SolvRepo::priorityLow;
   for (RepoList::iterator i = repos.begin();
        i != repos.end();
        i++)
     {
       if (i->second->test)
-        {
-          i->second->repo->disabled = !use_test_packages;
-        }
+        i->second->setPriority(p);
     }
 }
 
