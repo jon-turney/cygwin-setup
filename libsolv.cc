@@ -345,7 +345,7 @@ SolverPool::addPackage(const std::string& pkgname, const addPackageData &pkgdata
      then arrange for that repo to have low priority, if we don't want
      to install those packages by default */
 
-  if (pkgdata.stability == TRUST_TEST)
+  if (pkgdata.stability == TRUST_TEST && repoName != "_installed")
     {
       repoName = pkgdata.reponame + "_test_";
       test = true;
