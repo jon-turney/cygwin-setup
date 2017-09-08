@@ -229,6 +229,9 @@ class SolverSolution
   SolverSolution(SolverPool &_pool) : pool(_pool), solv(NULL) {};
   ~SolverSolution();
 
+  /* Reset package database to correspond to trans */
+  void trans2db() const;
+
   bool update(SolverTasks &tasks, bool update, bool use_test_packages, bool include_source);
   std::string report() const;
 

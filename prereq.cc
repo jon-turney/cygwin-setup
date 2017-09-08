@@ -118,6 +118,11 @@ PrereqPage::whatNext ()
 long
 PrereqPage::OnBack ()
 {
+  // Reset the package database to correspond to the solver's default
+  // solution
+  packagedb db;
+  db.solution.trans2db();
+
   return IDD_CHOOSE;
 }
 
