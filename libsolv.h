@@ -56,7 +56,10 @@ class SolvableVersion
   const std::string SDesc () const;
   // In setup-speak, 'Canonical' version means 'e:v-r', the non-decomposed version
   const std::string Canonical_version () const;
+  // Return the dependency list
   const PackageDepends depends() const;
+  // Return the obsoletes list
+  const PackageDepends obsoletes() const;
   bool accessible () const;
   package_type_t Type () const;
   package_stability_t Stability () const;
@@ -86,6 +89,8 @@ class SolvableVersion
 
   friend SolverPool;
   friend SolverSolution;
+
+  const PackageDepends deplist(Id keyname) const;
 };
 
 // ---------------------------------------------------------------------------

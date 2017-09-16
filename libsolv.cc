@@ -97,12 +97,25 @@ SolvableVersion::Type () const
 const PackageDepends
 SolvableVersion::depends() const
 {
+  return deplist(SOLVABLE_REQUIRES);
+}
+
+const PackageDepends
+SolvableVersion::obsoletes() const
+{
+  return deplist(SOLVABLE_OBSOLETES);
+}
+
+// helper function which returns the deplist for a given key, as a PackageDepends
+const PackageDepends
+SolvableVersion::deplist(Id keyname) const
+{
   Solvable *solvable = pool_id2solvable(pool, id);
 
   Queue q;
   queue_init(&q);
 
-  if (repo_lookup_idarray(solvable->repo, id, SOLVABLE_REQUIRES, &q))
+  if (repo_lookup_idarray(solvable->repo, id, keyname, &q))
     {
       // convert
       PackageDepends dep;
