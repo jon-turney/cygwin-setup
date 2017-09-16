@@ -160,41 +160,9 @@ PrereqChecker::isMet ()
   Progress.SetText2 ("");
   Progress.SetText3 ("");
 
-  // go through all packages, adding changed ones to the solver task list
+  // Create task list corresponding to current state of package database
   SolverTasks q;
-
-  for (packagedb::packagecollection::iterator p = db.packages.begin ();
-        p != db.packages.end (); ++p)
-    {
-      packagemeta *pkg = p->second;
-
-      // decode UI state to action
-      // skip doesn't change dependency solution
-      // keep only does when we want to keep an old version
-      if (pkg->installed != pkg->desired)
-        {
-          if (pkg->desired)
-            q.add(pkg->desired, SolverTasks::taskInstall); // install/upgrade
-          else
-            q.add(pkg->installed, SolverTasks::taskUninstall); // uninstall
-        }
-      else if (pkg->installed)
-        {
-          if (pkg->picked())
-            q.add(pkg->installed, SolverTasks::taskReinstall); // reinstall
-          else if (upgrade && pkg->installed < pkg->default_version)
-            q.add(pkg->installed, SolverTasks::taskKeep); // keep
-        }
-
-      // only install action makes sense for source packages
-      if (pkg->srcpicked())
-        {
-          if (pkg->desired)
-            q.add(pkg->desired.sourcePackage(), SolverTasks::taskInstall);
-          else
-            q.add(pkg->installed.sourcePackage(), SolverTasks::taskInstall);
-        }
-    }
+  q.setTasks();
 
   // apply solver to those tasks and the chooser global state (keep, curr, test)
   return db.solution.update(q, upgrade, use_test_packages, IncludeSource);
