@@ -232,6 +232,9 @@ class SolverSolution
   /* Reset package database to correspond to trans */
   void trans2db() const;
 
+  /* Reset transaction list to correspond to package database */
+  void db2trans();
+
   bool update(SolverTasks &tasks, bool update, bool use_test_packages, bool include_source);
   std::string report() const;
 

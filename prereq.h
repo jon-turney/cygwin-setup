@@ -27,7 +27,6 @@ public:
   virtual long OnNext ();
   virtual long OnBack ();
   virtual long OnUnattended ();
-  virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code);
 private:
   long whatNext ();
 };

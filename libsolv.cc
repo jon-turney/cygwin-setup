@@ -582,6 +582,35 @@ SolverSolution::trans2db() const
     }
 }
 
+void
+SolverSolution::db2trans()
+{
+  trans.clear();
+  packagedb db;
+
+  for (packagedb::packagecollection::iterator p = db.packages.begin ();
+       p != db.packages.end (); ++p)
+    {
+      packagemeta *pkg = p->second;
+      if (pkg->desired && pkg->picked()) // install/upgrade/reinstall
+        {
+          trans.push_back(SolverTransaction(pkg->desired, SolverTransaction::transInstall));
+          if (pkg->installed)
+            trans.push_back(SolverTransaction(pkg->installed, SolverTransaction::transErase));
+        }
+      else if (!pkg->desired && pkg->installed) // uninstall
+        trans.push_back(SolverTransaction(pkg->installed, SolverTransaction::transErase));
+
+      if (pkg->srcpicked())
+        {
+          if (pkg->desired)
+            trans.push_back(SolverTransaction(pkg->desired.sourcePackage(), SolverTransaction::transInstall));
+          else
+            trans.push_back(SolverTransaction(pkg->installed.sourcePackage(), SolverTransaction::transInstall));
+        }
+    }
+}
+
 static
 std::ostream &operator<<(std::ostream &stream,
                          SolverTransaction::transType type)

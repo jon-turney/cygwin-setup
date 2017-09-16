@@ -93,7 +93,25 @@ PrereqPage::OnNext ()
 
   if (!IsDlgButtonChecked (h, IDC_PREREQ_CHECK))
     {
-      return -1;
+      // breakage imminent!  danger, danger
+      int res = MessageBox (h,
+          "We strongly recommend that you accept the default solutions. "
+          "Some packages may not work properly if you don't."
+          "\r\n\r\n"
+          "Are you sure you want to proceed?",
+          "WARNING - Unsolved Problems",
+          MB_YESNO | MB_ICONEXCLAMATION | MB_DEFBUTTON2);
+      if (res == IDNO)
+        return -1;
+      else
+        {
+          Log (LOG_PLAIN) <<
+            "NOTE!  User refused the default solutions!  "
+            "Expect some packages to give errors or not function at all." << endLog;
+          // Change the solver's transaction list to reflect the user's choices.
+          packagedb db;
+          db.solution.db2trans();
+        }
     }
 
   return whatNext();
@@ -134,18 +152,6 @@ PrereqPage::OnUnattended ()
     return -1;
 
   return whatNext();
-}
-
-bool
-PrereqPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
-{
-  if ((code == BN_CLICKED) && (id == IDC_PREREQ_CHECK))
-    {
-      GetOwner ()->SetButtons (PSWIZB_BACK | (IsButtonChecked (id) ? PSWIZB_NEXT : 0));
-      return true;
-    }
-
-  return false;
 }
 
 // ---------------------------------------------------------------------------
