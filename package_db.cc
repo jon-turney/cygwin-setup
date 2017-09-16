@@ -174,6 +174,36 @@ packagedb::read ()
   solver.internalize();
 }
 
+/* Create the fictitious basepkg */
+void
+packagedb::makeBase()
+{
+  SolverPool::addPackageData data;
+  data.reponame = "_installed";
+  data.version = "0.0-0";
+  data.type = package_binary;
+  data.vendor = "cygwin";
+  data.sdesc = "Ficitious package that requires all Base packages";
+  data.ldesc = "Ficitious package that requires all Base packages";
+  data.obsoletes = NULL;
+  data.stability = TRUST_CURR;
+  // data.spkg = PackageSpecification();
+  // data.spkg_id = packageversion();
+
+  PackageDepends dep;
+  for (std::vector <packagemeta *>::const_iterator i = categories["Base"].begin();
+       i != categories["Base"].end(); i++)
+    {
+      packagemeta *pkg = *i;
+      PackageSpecification *spec = new PackageSpecification(pkg->name);
+      dep.push_back(spec);
+    }
+  data.requires = &dep;
+
+  basepkg = solver.addPackage("base", data);
+  /* We don't register this in packagemeta */
+}
+
 /* Add a package version to the packagedb */
 packagemeta *
 packagedb::addBinary (const std::string &pkgname,
@@ -327,6 +357,7 @@ packagedb::packagecollection packagedb::packages;
 packagedb::categoriesType packagedb::categories;
 packagedb::packagecollection packagedb::sourcePackages;
 PackageDBActions packagedb::task = PackageDB_Install;
+packageversion packagedb::basepkg;
 std::vector <packagemeta *> packagedb::dependencyOrderedPackages;
 SolverPool packagedb::solver;
 SolverSolution packagedb::solution(packagedb::solver);

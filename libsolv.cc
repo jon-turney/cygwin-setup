@@ -736,6 +736,7 @@ SolverSolution::transactions() const
 std::string
 SolverSolution::report() const
 {
+  packagedb db;
   std::string r = "";
   int pcnt = solver_problem_count(solv);
   for (Id problem = 1; problem <= pcnt; problem++)
@@ -746,7 +747,10 @@ SolverSolution::report() const
       Id probr = solver_findproblemrule(solv, problem);
       Id dep, source, target;
       SolverRuleinfo type = solver_ruleinfo(solv, probr, &source, &target, &dep);
-      r += solver_problemruleinfo2str(solv, type, source, target, dep);
+      if (source == db.basepkg.id)
+        r += "package " + std::string(pool_dep2str(pool.pool, dep)) + " is a Base package and is therefore required";
+      else
+        r += solver_problemruleinfo2str(solv, type, source, target, dep);
       r += "\n";
 
       int scnt = solver_solution_count(solv, problem);
@@ -760,7 +764,10 @@ SolverSolution::report() const
           while ((element = solver_next_solutionelement(solv, problem, solution, element, &p, &rp)) != 0)
             {
               r += "  - ";
-              r += solver_solutionelement2str(solv, p, rp);
+              if (p == db.basepkg.id)
+                r += "allow deinstallation of Base packages";
+              else
+                r += solver_solutionelement2str(solv, p, rp);
               r += "\n";
             }
         }

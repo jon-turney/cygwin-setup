@@ -355,6 +355,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
     ini_error = do_remote_ini (owner);
 
   packagedb db;
+  db.makeBase();
   db.read();
   db.upgrade();
   db.removeEmptyCategories();

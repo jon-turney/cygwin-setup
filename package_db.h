@@ -65,6 +65,7 @@ class packagedb
 public:
   packagedb ();
   void read();
+  void makeBase();
   /* 0 on success */
   int flush ();
   void upgrade ();
@@ -89,6 +90,8 @@ public:
   typedef std::map <std::string, std::vector <packagemeta *>, casecompare_lt_op > categoriesType;
   static categoriesType categories;
   static PackageDBActions task;
+  /* a ficitious package that requires all packages in the Base category */
+  static packageversion basepkg;
 
   static SolverPool solver;
   static SolverSolution solution;
