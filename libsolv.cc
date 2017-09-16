@@ -549,6 +549,9 @@ SolverSolution::update(SolverTasks &tasks, bool update, bool use_test_packages, 
   if (update)
     queue_push2(&job, SOLVER_UPDATE | SOLVER_SOLVABLE_ALL, 0);
 
+  // Ask solver to check dependencies of installed packages.
+  queue_push2(&job, SOLVER_VERIFY | SOLVER_SOLVABLE_ALL, 0);
+
   if (!solv)
     solv = solver_create(pool.pool);
 
