@@ -79,7 +79,9 @@ Window::FirstWindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
   else
     {
       // Should never get here.
-      fatal(NULL, IDS_WINDOW_INIT_BADMSG, uMsg);
+      Log (LOG_PLAIN) << "Warning: Unexpected windows message " << uMsg
+                      << "received early in window initialization."
+                      << endLog;
     }
 
   return wnd->WindowProc (uMsg, wParam, lParam);

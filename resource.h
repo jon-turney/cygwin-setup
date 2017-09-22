@@ -20,7 +20,6 @@
 #define IDS_REBOOT_REQUIRED               118
 #define IDS_CORRUPT_PACKAGE               119
 #define IDS_INSTALL_ERROR                 120
-#define IDS_WINDOW_INIT_BADMSG            121
 #define IDS_UNCAUGHT_EXCEPTION            122
 #define IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO 123
 #define IDS_SKIP_PACKAGE                  124
