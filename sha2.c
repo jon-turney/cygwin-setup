@@ -195,6 +195,7 @@ static const u_int32_t K256[64] = {
 	0x90befffaUL, 0xa4506cebUL, 0xbef9a3f7UL, 0xc67178f2UL
 };
 
+#if !defined(SHA2_SMALL)
 /* Initial hash value H for SHA-224: */
 static const u_int32_t sha224_initial_hash_value[8] = {
 	0xc1059ed8UL,
@@ -206,6 +207,7 @@ static const u_int32_t sha224_initial_hash_value[8] = {
 	0x64f98fa7UL,
 	0xbefa4fa4UL
 };
+#endif
 
 /* Initial hash value H for SHA-256: */
 static const u_int32_t sha256_initial_hash_value[8] = {
