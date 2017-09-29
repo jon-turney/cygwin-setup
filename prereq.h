@@ -40,11 +40,9 @@ public:
   // formats 'unmet' as a string for display
   void getUnmetString (std::string &s);
 
-  static void setUpgrade (bool u) { upgrade = u; };
   static void setTestPackages (bool t) { use_test_packages = t; };
 
 private:
-  static bool upgrade;
   static bool use_test_packages;
 };
 

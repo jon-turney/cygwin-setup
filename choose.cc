@@ -370,8 +370,6 @@ ChooserPage::keepClicked()
       pkg.pick(false);
     }
   chooser->refresh();
-
-  PrereqChecker::setUpgrade(false);
 }
 
 void
@@ -380,7 +378,6 @@ ChooserPage::changeTrust(trusts aTrust)
   SetBusy ();
   chooser->defaultTrust (aTrust);
   chooser->refresh();
-  PrereqChecker::setUpgrade(true);
   PrereqChecker::setTestPackages(aTrust == TRUST_TEST);
   ClearBusy ();
 }

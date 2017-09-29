@@ -583,20 +583,13 @@ packagedb::fillMissingCategory ()
 void
 packagedb::defaultTrust (trusts trust)
 {
-  for (packagedb::packagecollection::iterator i = packages.begin (); i != packages.end (); ++i)
-    {
-      packagemeta & pkg = *(i->second);
-      if (pkg.installed
-            || pkg.categories.find ("Base") != pkg.categories.end ()
-            || pkg.categories.find ("Orphaned") != pkg.categories.end ())
-        {
-          pkg.desired = pkg.default_version = pkg.trustp (true, trust);
-          if (pkg.desired)
-            pkg.pick (pkg.desired.accessible() && pkg.desired != pkg.installed);
-        }
-      else
-        pkg.desired = packageversion ();
-    }
+  // apply solver to an empty task list to get list of packages to upgrade (if
+  // any)
+  SolverTasks q;
+  solution.update(q, (trust >= TRUST_CURR), (trust == TRUST_TEST), FALSE);
+
+  // reflect that task list into packagedb
+  solution.trans2db();
 }
 
 void
