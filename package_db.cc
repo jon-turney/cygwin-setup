@@ -444,8 +444,11 @@ packagedb::defaultTrust (trusts trust)
       else
         pkg.desired = packageversion ();
     }
+}
 
-  // side effect, remove categories with no packages.
+void
+packagedb::removeEmptyCategories()
+{
   for (packagedb::categoriesType::iterator n = packagedb::categories.begin();
        n != packagedb::categories.end(); ++n)
     if (!n->second.size())

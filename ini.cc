@@ -354,6 +354,7 @@ do_ini_thread (HINSTANCE h, HWND owner)
 
   packagedb db;
   db.upgrade();
+  db.removeEmptyCategories();
 
   if (ini_count == 0)
     return false;

@@ -73,6 +73,8 @@ public:
   void fillMissingCategory();
   void defaultTrust (trusts trust);
   void setExistence();
+  void removeEmptyCategories();
+
   typedef std::map <std::string, packagemeta *> packagecollection;
   /* all seen binary packages */
   static packagecollection packages;
