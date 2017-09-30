@@ -220,12 +220,18 @@ SolvableVersion::source() const
 bool
 SolvableVersion::accessible () const
 {
-  // XXX: accessible if archive is locally available, or we know a mirror
+  // The 'accessible' check used to test if an archive was available locally or
+  // from a mirror.
   //
-  // (This seems utterly pointless.  Packages which aren't locally available are
-  // removed from the package list.  Packages we don't know a mirror for don't
-  // appear in the packagelist.)
-  return TRUE;
+  // This seems utterly pointless. as binary packages which aren't 'accessible'
+  // never get to appear in the package list.
+  //
+  // For source packages, it's equivalent to the bool conversion operator.)
+  //
+  if (id != 0)
+    return TRUE;
+  else
+    return FALSE;
 }
 
 package_stability_t
