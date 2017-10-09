@@ -315,8 +315,9 @@ END
 
 // Right-aligned controls.
 #define SETUP_EXP_X		(SETUP_STANDARD_DIALOG_W - SETUP_KPCE_W - 7)
-#define SETUP_CURR_X		(SETUP_EXP_X - SETUP_KPCE_W - 5)
-#define SETUP_KEEP_X		(SETUP_CURR_X - SETUP_KPCE_W - 5)
+#define SETUP_SYNC_X		(SETUP_EXP_X - SETUP_KPCE_W - 5)
+#define SETUP_BEST_X		(SETUP_SYNC_X - SETUP_KPCE_W - 5)
+#define SETUP_KEEP_X		(SETUP_BEST_X - SETUP_KPCE_W - 5)
 
 // Left-aligned controls.
 #define SETUP_VIEW_X		(7)
@@ -350,9 +351,11 @@ BEGIN
                     SETUP_CLEAR_W, 14
     CONTROL         "&Keep", IDC_CHOOSE_KEEP, "Button", BS_AUTORADIOBUTTON
                     | WS_GROUP | WS_TABSTOP, SETUP_KEEP_X, 30, SETUP_KPCE_W, 14
-    CONTROL         "C&urrent", IDC_CHOOSE_CURR, "Button", BS_AUTORADIOBUTTON,
-                    SETUP_CURR_X, 30, SETUP_KPCE_W, 14
-    CONTROL         "&Test", IDC_CHOOSE_EXP, "Button", BS_AUTORADIOBUTTON,
+    CONTROL         "&Best", IDC_CHOOSE_BEST, "Button", BS_AUTORADIOBUTTON,
+                    SETUP_BEST_X, 30, SETUP_KPCE_W, 14
+    CONTROL         "&Sync", IDC_CHOOSE_SYNC, "Button", BS_AUTORADIOBUTTON,
+                    SETUP_SYNC_X, 30, SETUP_KPCE_W, 14
+    CONTROL         "&Test", IDC_CHOOSE_EXP, "Button", BS_AUTOCHECKBOX | WS_TABSTOP,
                     SETUP_EXP_X, 30, SETUP_KPCE_W, 14
     CONTROL         "", IDC_HEADSEPARATOR, "Static", SS_BLACKFRAME | SS_SUNKEN,
                     0, 28, SETUP_STANDARD_DIALOG_W, 1
@@ -558,10 +561,11 @@ BEGIN
     IDS_TRUSTKEEP_TOOLTIP   "Sets all packages to their currently installed "
        "version.  This is equivalent to telling setup not to make any "
        "changes to any package."
-    IDS_TRUSTCURR_TOOLTIP   "Globally select the version that is currently "
-       "considered the most stable. (RECOMMENDED)"
-    IDS_TRUSTEXP_TOOLTIP    "Globally select the most recent version, even if "
-       "that version is considered experimental or for test use by the maintainer."
+    IDS_TRUSTCURR_TOOLTIP   "Sets all packages to the best version available. "
+       "(RECOMMENDED)"
+    IDS_TRUSTSYNC_TOOLTIP   "Sets all packages to the version available from the "
+       "package respository, downgrading if necessary."
+    IDS_TRUSTEXP_TOOLTIP    "Enable test packages."
     IDS_VIEWBUTTON_TOOLTIP  "Select the package view.  This determines "
        "which packages are shown below.\r\n"
        "\r\n"

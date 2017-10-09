@@ -78,7 +78,8 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
   {IDC_CHOOSE_SEARCH_LABEL, 	CP_LEFT,    CP_TOP},
   {IDC_CHOOSE_SEARCH_EDIT,	CP_LEFT,    CP_TOP},
   {IDC_CHOOSE_KEEP, 		CP_RIGHT,   CP_TOP},
-  {IDC_CHOOSE_CURR, 		CP_RIGHT,   CP_TOP},
+  {IDC_CHOOSE_BEST, 		CP_RIGHT,   CP_TOP},
+  {IDC_CHOOSE_SYNC, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_EXP, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_VIEW, 		CP_LEFT,    CP_TOP},
   {IDC_LISTVIEW_POS, 		CP_RIGHT,   CP_TOP},
@@ -153,10 +154,26 @@ ChooserPage::createListview ()
 			PickView::views::PackagePending : PickView::views::Category);
   SendMessage (GetDlgItem (IDC_CHOOSE_VIEW), CB_SETCURSEL, (WPARAM)chooser->getViewMode(), 0);
 
-  /* FIXME: do we need to init the desired fields ? */
-  static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
-  rbset (GetHWND (), ta, IDC_CHOOSE_CURR);
-  changeTrust (TRUST_CURR);
+  // set the initial update state
+  if (ForceCurrentOption)
+    {
+      update_mode_id = IDC_CHOOSE_SYNC;
+      changeTrust(update_mode_id, false);
+    }
+  else if (hasManualSelections && !UpgradeAlsoOption)
+    {
+      // if packages are added or removed on the command-line and --upgrade-also
+      // isn't used, we keep the current versions of everything else
+      update_mode_id = IDC_CHOOSE_KEEP;
+    }
+  else
+    {
+      update_mode_id = IDC_CHOOSE_BEST;
+      changeTrust (update_mode_id, false);
+    }
+
+  static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_BEST, IDC_CHOOSE_SYNC, 0 };
+  rbset (GetHWND (), ta, update_mode_id);
 
   ClearBusy ();
 }
@@ -294,7 +311,8 @@ ChooserPage::OnInit ()
   createListview ();
 
   AddTooltip (IDC_CHOOSE_KEEP, IDS_TRUSTKEEP_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_CURR, IDS_TRUSTCURR_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_BEST, IDS_TRUSTCURR_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_SYNC, IDS_TRUSTSYNC_TOOLTIP);
   AddTooltip (IDC_CHOOSE_EXP, IDS_TRUSTEXP_TOOLTIP);
   AddTooltip (IDC_CHOOSE_VIEW, IDS_VIEWBUTTON_TOOLTIP);
   AddTooltip (IDC_CHOOSE_HIDE, IDS_HIDEOBS_TOOLTIP);
@@ -361,6 +379,7 @@ ChooserPage::OnBack ()
 void
 ChooserPage::keepClicked()
 {
+  update_mode_id = IDC_CHOOSE_KEEP;
   packagedb db;
   for (packagedb::packagecollection::iterator i = db.packages.begin ();
         i != db.packages.end (); ++i)
@@ -373,12 +392,39 @@ ChooserPage::keepClicked()
 }
 
 void
-ChooserPage::changeTrust(trusts aTrust)
+ChooserPage::changeTrust(int button, bool test)
 {
   SetBusy ();
-  chooser->defaultTrust (aTrust);
+
+  update_mode_id = button;
+
+  SolverSolution::updateMode mode;
+  switch (button)
+    {
+    default:
+    case IDC_CHOOSE_KEEP:
+      mode = SolverSolution::keep;
+      break;
+
+    case IDC_CHOOSE_BEST:
+      mode = SolverSolution::updateBest;
+      break;
+
+    case IDC_CHOOSE_SYNC:
+      mode = SolverSolution::updateForce;
+      break;
+    }
+
+  packagedb db;
+  db.defaultTrust(mode, test);
+
+  // configure PickView so 'test' or 'curr' version is chosen when an
+  // uninstalled package is first clicked on.
+  chooser->defaultTrust (test ? TRUST_TEST : TRUST_CURR);
+
   chooser->refresh();
-  PrereqChecker::setTestPackages(aTrust == TRUST_TEST);
+
+  PrereqChecker::setTestPackages(test);
   ClearBusy ();
 }
 
@@ -445,14 +491,18 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
         keepClicked();
       break;
 
-    case IDC_CHOOSE_CURR:
+    case IDC_CHOOSE_BEST:
       if (IsButtonChecked (id))
-        changeTrust (TRUST_CURR);
+        changeTrust (id, IsButtonChecked(IDC_CHOOSE_EXP));
+      break;
+
+    case IDC_CHOOSE_SYNC:
+      if (IsButtonChecked (id))
+        changeTrust (id, IsButtonChecked(IDC_CHOOSE_EXP));
       break;
 
     case IDC_CHOOSE_EXP:
-      if (IsButtonChecked (id))
-        changeTrust (TRUST_TEST);
+      changeTrust(update_mode_id, IsButtonChecked (id));
       break;
 
     case IDC_CHOOSE_HIDE:

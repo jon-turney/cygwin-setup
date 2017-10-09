@@ -54,7 +54,7 @@ private:
   RECT getDefaultListViewSize();
   void getParentRect (HWND parent, HWND child, RECT * r);
   void keepClicked();
-  void changeTrust(trusts aTrust);
+  void changeTrust(int, bool);
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();
   void setPrompt(char const *aPrompt);
@@ -73,10 +73,7 @@ private:
     WINDOWPLACEMENT wp;
     UINT wpi[sizeof (WINDOWPLACEMENT) / sizeof (UINT)];
   };
-
-
-
-
+  int update_mode_id;
 };
 
 #endif /* SETUP_CHOOSE_H */
