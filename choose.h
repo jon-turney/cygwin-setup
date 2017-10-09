@@ -54,7 +54,7 @@ private:
   RECT getDefaultListViewSize();
   void getParentRect (HWND parent, HWND child, RECT * r);
   void keepClicked();
-  void changeTrust(int, bool);
+  void changeTrust(int button, bool test, bool initial);
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();
   void setPrompt(char const *aPrompt);

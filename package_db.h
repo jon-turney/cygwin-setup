@@ -79,7 +79,7 @@ public:
   PackageDBConnectedIterator connectedBegin();
   PackageDBConnectedIterator connectedEnd();
   void fillMissingCategory();
-  void defaultTrust (SolverSolution::updateMode mode, bool test);
+  void defaultTrust (SolverTasks &q, SolverSolution::updateMode mode, bool test);
   void setExistence();
   void removeEmptyCategories();
 

@@ -158,7 +158,7 @@ ChooserPage::createListview ()
   if (ForceCurrentOption)
     {
       update_mode_id = IDC_CHOOSE_SYNC;
-      changeTrust(update_mode_id, false);
+      changeTrust(update_mode_id, false, true);
     }
   else if (hasManualSelections && !UpgradeAlsoOption)
     {
@@ -169,7 +169,7 @@ ChooserPage::createListview ()
   else
     {
       update_mode_id = IDC_CHOOSE_BEST;
-      changeTrust (update_mode_id, false);
+      changeTrust (update_mode_id, false, true);
     }
 
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_BEST, IDC_CHOOSE_SYNC, 0 };
@@ -282,8 +282,7 @@ ChooserPage::OnInit ()
       bool deleted   = pkg.isManuallyDeleted();
       bool basemisc  = (pkg.categories.find ("Base") != pkg.categories.end ()
 		     || pkg.categories.find ("Orphaned") != pkg.categories.end ());
-      bool upgrade   = wanted || (!pkg.installed && basemisc)
-		     || UpgradeAlsoOption || !hasManualSelections;
+      bool upgrade   = wanted || (!pkg.installed && basemisc);
       bool install   = wanted  && !deleted && !pkg.installed;
       bool reinstall = (wanted  || basemisc) && deleted;
       bool uninstall = (!(wanted  || basemisc) && (deleted || PruneInstallOption))
@@ -294,7 +293,7 @@ ChooserPage::OnInit ()
 	pkg.set_action (packagemeta::Reinstall_action, pkg.curr);
       else if (uninstall)
 	pkg.set_action (packagemeta::Uninstall_action, packageversion ());
-      else if (PruneInstallOption || ForceCurrentOption)
+      else if (PruneInstallOption)
 	pkg.set_action (packagemeta::Default_action, pkg.curr);
       else if (upgrade)
 	pkg.set_action (packagemeta::Default_action, pkg.trustp(true, TRUST_UNKNOWN));
@@ -392,7 +391,7 @@ ChooserPage::keepClicked()
 }
 
 void
-ChooserPage::changeTrust(int button, bool test)
+ChooserPage::changeTrust(int button, bool test, bool initial)
 {
   SetBusy ();
 
@@ -416,7 +415,17 @@ ChooserPage::changeTrust(int button, bool test)
     }
 
   packagedb db;
-  db.defaultTrust(mode, test);
+  SolverTasks q;
+
+  // usually we want to apply the solver to an empty task list to get the list
+  // of packages to upgrade (if any)
+  if (initial)
+    {
+      // but initially we want a task list with any package changes caused by
+      // command line options
+      q.setTasks();
+    }
+  db.defaultTrust(q, mode, test);
 
   // configure PickView so 'test' or 'curr' version is chosen when an
   // uninstalled package is first clicked on.
@@ -493,16 +502,16 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 
     case IDC_CHOOSE_BEST:
       if (IsButtonChecked (id))
-        changeTrust (id, IsButtonChecked(IDC_CHOOSE_EXP));
+        changeTrust (id, IsButtonChecked(IDC_CHOOSE_EXP), false);
       break;
 
     case IDC_CHOOSE_SYNC:
       if (IsButtonChecked (id))
-        changeTrust (id, IsButtonChecked(IDC_CHOOSE_EXP));
+        changeTrust (id, IsButtonChecked(IDC_CHOOSE_EXP), false);
       break;
 
     case IDC_CHOOSE_EXP:
-      changeTrust(update_mode_id, IsButtonChecked (id));
+      changeTrust(update_mode_id, IsButtonChecked (id), false);
       break;
 
     case IDC_CHOOSE_HIDE:
