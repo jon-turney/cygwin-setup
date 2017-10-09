@@ -175,7 +175,7 @@ PrereqChecker::isMet ()
   q.setTasks();
 
   // apply solver to those tasks and global state (use test, include source)
-  return db.solution.update(q, FALSE, use_test_packages, IncludeSource);
+  return db.solution.update(q, SolverSolution::keep, use_test_packages, IncludeSource);
 }
 
 /* Formats problems and solutions as a string for display to the user.  */

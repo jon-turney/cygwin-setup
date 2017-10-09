@@ -581,12 +581,12 @@ packagedb::fillMissingCategory ()
 }
 
 void
-packagedb::defaultTrust (trusts trust)
+packagedb::defaultTrust (SolverSolution::updateMode mode, bool test)
 {
   // apply solver to an empty task list to get list of packages to upgrade (if
   // any)
   SolverTasks q;
-  solution.update(q, (trust >= TRUST_CURR), (trust == TRUST_TEST), FALSE);
+  solution.update(q, mode, test, FALSE);
 
   // reflect that task list into packagedb
   solution.trans2db();

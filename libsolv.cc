@@ -666,7 +666,7 @@ std::ostream &operator<<(std::ostream &stream,
 }
 
 bool
-SolverSolution::update(SolverTasks &tasks, bool update, bool use_test_packages, bool include_source)
+SolverSolution::update(SolverTasks &tasks, updateMode update, bool use_test_packages, bool include_source)
 {
   Log (LOG_PLAIN) << "solving: " << tasks.tasks.size() << " tasks," <<
     " update: " << (update ? "yes" : "no") << "," <<
@@ -705,8 +705,23 @@ SolverSolution::update(SolverTasks &tasks, bool update, bool use_test_packages, 
         }
     }
 
-  if (update)
-    queue_push2(&job, SOLVER_UPDATE | SOLVER_SOLVABLE_ALL, 0);
+  // Ask solver to update packages
+  switch (update)
+    {
+    case keep:
+      break;
+
+    case updateBest:
+      // Update to best version
+      queue_push2(&job, SOLVER_UPDATE | SOLVER_SOLVABLE_ALL, 0);
+      break;
+
+    case updateForce:
+      // Bring installed, non-orphaned packages in sync with the ones in the
+      // repository
+      queue_push2(&job, SOLVER_DISTUPGRADE | SOLVER_SOLVABLE_ALL, 0);
+      break;
+    }
 
   // Ask solver to check dependencies of installed packages.
   queue_push2(&job, SOLVER_VERIFY | SOLVER_SOLVABLE_ALL, 0);
@@ -716,6 +731,8 @@ SolverSolution::update(SolverTasks &tasks, bool update, bool use_test_packages, 
 
   solver_set_flag(solv, SOLVER_FLAG_ALLOW_VENDORCHANGE, 1);
   solver_set_flag(solv, SOLVER_FLAG_ALLOW_DOWNGRADE, 0);
+  solver_set_flag(solv, SOLVER_FLAG_DUP_ALLOW_VENDORCHANGE, 1);
+  solver_set_flag(solv, SOLVER_FLAG_DUP_ALLOW_DOWNGRADE, 1);
   solver_solve(solv, &job);
   queue_free(&job);
 
@@ -734,7 +751,8 @@ SolverSolution::update(SolverTasks &tasks, bool update, bool use_test_packages, 
     {
       Id id = t->steps.elements[i];
       SolverTransaction::transType tt = type(t, i);
-      trans.push_back(SolverTransaction(SolvableVersion(id, pool.pool), tt));
+      if (tt != SolverTransaction::transIgnore)
+        trans.push_back(SolverTransaction(SolvableVersion(id, pool.pool), tt));
     }
 
   // add install and remove tasks for anything marked as reinstall
@@ -866,6 +884,8 @@ SolverSolution::type(Transaction *trans, int pos)
       return SolverTransaction::transErase;
     default:
       Log (LOG_PLAIN) << "unknown transaction type " << std::hex << tt << endLog;
+    case SOLVER_TRANSACTION_CHANGE:
+    case SOLVER_TRANSACTION_CHANGED:
     case SOLVER_TRANSACTION_IGNORE:
       return SolverTransaction::transIgnore;
     }

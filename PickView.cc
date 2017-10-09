@@ -944,7 +944,8 @@ PickView::defaultTrust (trusts trust)
   this->deftrust = trust;
 
   packagedb db;
-  db.defaultTrust(trust);
+  db.defaultTrust((trust >= TRUST_CURR) ? SolverSolution::updateBest : SolverSolution::keep,
+                  (trust == TRUST_TEST));
 
   // force the picker to redraw
   RECT r = GetClientRect ();

@@ -240,7 +240,13 @@ class SolverSolution
   /* Reset transaction list to correspond to package database */
   void db2trans();
 
-  bool update(SolverTasks &tasks, bool update, bool use_test_packages, bool include_source);
+  enum updateMode
+  {
+    keep,        // don't update
+    updateBest,  // update to best version
+    updateForce, // distupdate: downgrade if necessary to best version in repo
+  };
+  bool update(SolverTasks &tasks, updateMode update, bool use_test_packages, bool include_source);
   std::string report() const;
 
   const SolverTransactionList &transactions() const;
