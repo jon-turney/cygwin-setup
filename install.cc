@@ -498,6 +498,8 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
       archive::extract_results extres;
       while ((extres = archive::extract_file (tarstream, prefixURL, prefixPath)) != archive::extract_ok)
         {
+          bool error_in_this_file = false;
+
           switch (extres)
             {
 	    case archive::extract_inuse: // in use
@@ -602,13 +604,13 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                 if (NoReplaceOnReboot)
                   {
                     ++errors;
-                    error_in_this_package = true;
+                    error_in_this_file = true;
                     Log (LOG_PLAIN) << "Not replacing in-use file " << prefixURL
                                     << prefixPath << fn << endLog;
                   }
                 else
                   {
-                    error_in_this_package = extract_replace_on_reboot(tarstream, prefixURL, prefixPath, fn);
+                    error_in_this_file = extract_replace_on_reboot(tarstream, prefixURL, prefixPath, fn);
                   }
               }
               break;
@@ -633,8 +635,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
                           MB_OK | MB_ICONWARNING | MB_TASKMODAL);
                   }
 
-                // don't mark this package as successfully installed
-                error_in_this_package = true;
+                error_in_this_file = true;
               }
               break;
 	    case archive::extract_ok:
@@ -642,6 +643,16 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
             }
 
           // We're done with this file
+
+          // if an error occured ...
+          if (error_in_this_file)
+            {
+              // skip to next file in archive
+              tarstream->skip_file();
+              // don't mark this package as successfully installed
+              error_in_this_package = true;
+            }
+
           break;
         }
       progress (pkgfile->tell ());
