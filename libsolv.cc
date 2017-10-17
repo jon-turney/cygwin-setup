@@ -75,6 +75,8 @@ RelId2Operator(Id id)
 const std::string
 SolvableVersion::Name () const
 {
+  if (!id)
+    return "";
   Solvable *solvable = pool_id2solvable(pool, id);
   return std::string(pool_id2str(pool, solvable->name));
 }
@@ -82,6 +84,8 @@ SolvableVersion::Name () const
 const std::string
 SolvableVersion::Canonical_version() const
 {
+  if (!id)
+    return "";
   Solvable *solvable = pool_id2solvable(pool, id);
   return std::string(pool_id2str(pool, solvable->evr));
 }
@@ -89,6 +93,8 @@ SolvableVersion::Canonical_version() const
 package_type_t
 SolvableVersion::Type () const
 {
+  if (!id)
+    return package_binary;
   Solvable *solvable = pool_id2solvable(pool, id);
   if (solvable->arch == ARCH_SRC)
     return package_source;
@@ -112,6 +118,9 @@ SolvableVersion::obsoletes() const
 const PackageDepends
 SolvableVersion::deplist(Id keyname) const
 {
+  static PackageDepends empty_package;
+  if (!id)
+    return empty_package;
   Solvable *solvable = pool_id2solvable(pool, id);
 
   Queue q;
@@ -147,13 +156,14 @@ SolvableVersion::deplist(Id keyname) const
     }
 
   // otherwise, return an empty depends list
-  static PackageDepends empty_package;
   return empty_package;
 }
 
 const std::string
 SolvableVersion::SDesc () const
 {
+  if (!id)
+    return "";
   Solvable *solvable = pool_id2solvable(pool, id);
   const char *sdesc = repo_lookup_str(solvable->repo, id, SOLVABLE_SUMMARY);
   return sdesc;
@@ -197,6 +207,8 @@ SolvableVersion::sourcePackage () const
 void
 SolvableVersion::fixup_spkg_id (SolvableVersion spkg_id) const
 {
+  if (!id)
+    return;
   Solvable *solvable = pool_id2solvable(pool, id);
   Repodata *data = repo_last_repodata(solvable->repo);
   Id handle = id;
@@ -237,6 +249,8 @@ SolvableVersion::accessible () const
 package_stability_t
 SolvableVersion::Stability () const
 {
+  if (!id)
+    return TRUST_UNKNOWN;
   Solvable *solvable = pool_id2solvable(pool, id);
   Id stability_attr = pool_str2id(pool, "solvable:stability", 1);
   return (package_stability_t)repo_lookup_num(solvable->repo, id, stability_attr, TRUST_UNKNOWN);
