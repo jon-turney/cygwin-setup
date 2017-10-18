@@ -31,10 +31,33 @@
 #include "getopt++/StringOption.h"
 
 static StringOption UserAgent ("", '\0', "user-agent", "User agent string for HTTP requests");
-static std::string default_useragent = std::string("Cygwin-Setup/") + setup_version;
 
 static HINTERNET internet_direct = 0;
 static HINTERNET internet_preconfig = 0;
+
+const std::string &
+determine_default_useragent(void)
+{
+  static std::string default_useragent;
+
+  if (!default_useragent.empty())
+    return default_useragent;
+
+  std::string token = "Unknown";
+#ifdef __x86_64__
+  token = "Win64";
+#else
+  typedef BOOL (WINAPI *PFNISWOW64PROCESS)(HANDLE, PBOOL);
+  PFNISWOW64PROCESS pfnIsWow64Process = (PFNISWOW64PROCESS)GetProcAddress(GetModuleHandle("kernel32"), "IsWow64Process");
+  if (pfnIsWow64Process) {
+    BOOL bIsWow64 = FALSE;
+    if (pfnIsWow64Process(GetCurrentProcess(), &bIsWow64))
+      token = bIsWow64 ? "WoW64" : "Win32";
+  }
+#endif
+  default_useragent = std::string("Cygwin-Setup/") + setup_version + " (" + token + ")";
+  return default_useragent;
+}
 
 NetIO_IE5::NetIO_IE5 (char const *_url, bool direct, bool cachable):
 NetIO (_url)
@@ -51,7 +74,7 @@ NetIO (_url)
     {
       InternetAttemptConnect (0);
 
-      const char *lpszAgent = default_useragent.c_str();
+      const char *lpszAgent = determine_default_useragent().c_str();
       if (UserAgent.isPresent())
         {
           const std::string &user_agent = UserAgent;
