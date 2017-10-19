@@ -526,7 +526,8 @@ SolverTasks::setTasks()
 
       // decode UI state to action
       // skip doesn't change dependency solution
-      // keep only does when we want to keep an old version
+      // keep only does when we want to keep a version different from the one
+      // chosen by the solver
       if (pkg->installed != pkg->desired)
         {
           if (pkg->desired)
@@ -538,7 +539,7 @@ SolverTasks::setTasks()
         {
           if (pkg->picked())
             add(pkg->installed, taskReinstall); // reinstall
-          else if (pkg->installed < pkg->default_version)
+          else if (pkg->installed != pkg->default_version)
             add(pkg->installed, taskKeep); // keep
         }
 
@@ -592,7 +593,7 @@ SolverSolution::trans2db() const
        i != db.packages.end(); i++)
     {
       packagemeta *pkg = i->second;
-      pkg->desired = pkg->installed;
+      pkg->desired = pkg->default_version = pkg->installed;
       pkg->pick(false);
     }
   // Now make changes according to trans.  transErase requires some
@@ -615,7 +616,7 @@ SolverSolution::trans2db() const
         case SolverTransaction::transInstall:
           if (pv.Type() == package_binary)
             {
-              pkg->desired  = pv;
+              pkg->desired = pkg->default_version = pv;
               pkg->pick(true);
             }
           else // source package
@@ -624,7 +625,7 @@ SolverSolution::trans2db() const
         case SolverTransaction::transErase:
           // Only relevant if pkg is still in its "no change" state
           if (pkg->desired == pkg->installed && !pkg->picked())
-            pkg->desired = packageversion();
+            pkg->desired = pkg->default_version = packageversion();
           break;
         default:
           break;

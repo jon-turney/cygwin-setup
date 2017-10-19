@@ -136,8 +136,7 @@ PrereqPage::whatNext ()
 long
 PrereqPage::OnBack ()
 {
-  // Reset the package database to correspond to the solver's default
-  // solution
+  // Reset the package database to correspond to the solver's solution
   packagedb db;
   db.solution.trans2db();
 
