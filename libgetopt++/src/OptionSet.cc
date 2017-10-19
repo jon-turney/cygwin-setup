@@ -122,10 +122,11 @@ OptionSet::doOption(string &option, string::size_type const &pos)
                     if (argv.size() > 1) {
                         string::size_type maybepos = argv[1].find_first_not_of("-");
 
-                        if (!isOption(maybepos))
+                        if (!isOption(maybepos)) {
                             /* not an option */
                             value = argv[1];
 			    argv.erase(argv.begin() + 1);
+                        }
                     }
                 } else {
                     /* value if present is in this argv */
@@ -156,9 +157,10 @@ OptionSet::doOption(string &option, string::size_type const &pos)
                     if (argv.size() > 1) {
                         string::size_type maybepos = argv[1].find_first_not_of("-");
 
-                        if (!isOption(maybepos))
+                        if (!isOption(maybepos)) {
                             value = argv[1];
 			    argv.erase(argv.begin() + 1);
+                        }
                     }
                 }
             }
