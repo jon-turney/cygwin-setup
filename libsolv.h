@@ -96,6 +96,7 @@ class SolvableVersion
   friend SolverSolution;
 
   const PackageDepends deplist(Id keyname) const;
+  Id name_id () const;
 };
 
 // ---------------------------------------------------------------------------
@@ -182,6 +183,7 @@ class SolverTasks
     taskUninstall,
     taskReinstall,
     taskKeep,
+    taskSkip,
   };
   void add(const SolvableVersion &v, task t)
   {

@@ -423,8 +423,8 @@ ChooserPage::changeTrust(int button, bool test, bool initial)
     {
       // but initially we want a task list with any package changes caused by
       // command line options
-      // (also note the installed version to avoid generating spurious Keep
-      // tasks)
+      // (also note the installed version to avoid generating spurious taskKeep
+      // or taskSkip tasks)
       for (packagedb::packagecollection::iterator p = db.packages.begin ();
            p != db.packages.end (); ++p)
         {

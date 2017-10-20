@@ -72,13 +72,19 @@ RelId2Operator(Id id)
 // a wrapper around a libsolv Solvable
 // ---------------------------------------------------------------------------
 
+Id
+SolvableVersion::name_id () const
+{
+  Solvable *solvable = pool_id2solvable(pool, id);
+  return solvable->name;
+}
+
 const std::string
 SolvableVersion::Name () const
 {
   if (!id)
     return "";
-  Solvable *solvable = pool_id2solvable(pool, id);
-  return std::string(pool_id2str(pool, solvable->name));
+  return pool_id2str(pool, name_id());
 }
 
 const std::string
@@ -525,9 +531,8 @@ SolverTasks::setTasks()
       packagemeta *pkg = p->second;
 
       // decode UI state to action
-      // skip doesn't change dependency solution
-      // keep only does when we want to keep a version different from the one
-      // chosen by the solver
+      // keep and skip need attention only when they differ from the
+      // solver's solution
       if (pkg->installed != pkg->desired)
         {
           if (pkg->desired)
@@ -542,6 +547,8 @@ SolverTasks::setTasks()
           else if (pkg->installed != pkg->default_version)
             add(pkg->installed, taskKeep); // keep
         }
+      else if (pkg->default_version)
+        add(pkg->default_version, taskSkip); // skip
 
       // only install action makes sense for source packages
       if (pkg->srcpicked())
@@ -714,6 +721,9 @@ SolverSolution::update(SolverTasks &tasks, updateMode update, bool use_test_pack
           break;
         case SolverTasks::taskKeep:
           queue_push2(&job, SOLVER_LOCK | SOLVER_SOLVABLE, sv.id);
+          break;
+        case SolverTasks::taskSkip:
+          queue_push2(&job, SOLVER_LOCK | SOLVER_SOLVABLE_NAME, sv.name_id());
           break;
         default:
           Log (LOG_PLAIN) << "unknown task " << (*i).second << endLog;
