@@ -29,6 +29,7 @@
 #include "LogSingleton.h"
 #include "setup_version.h"
 #include "getopt++/StringOption.h"
+#include <sstream>
 
 static StringOption UserAgent ("", '\0', "user-agent", "User agent string for HTTP requests");
 
@@ -43,19 +44,22 @@ determine_default_useragent(void)
   if (!default_useragent.empty())
     return default_useragent;
 
-  std::string token = "Unknown";
+  std::stringstream os;
+  os << "Windows NT " << OSMajorVersion() << "." << OSMinorVersion() << "." << OSBuildNumber();
+
+  std::string bitness = "Unknown";
 #ifdef __x86_64__
-  token = "Win64";
+  bitness = "Win64";
 #else
   typedef BOOL (WINAPI *PFNISWOW64PROCESS)(HANDLE, PBOOL);
   PFNISWOW64PROCESS pfnIsWow64Process = (PFNISWOW64PROCESS)GetProcAddress(GetModuleHandle("kernel32"), "IsWow64Process");
   if (pfnIsWow64Process) {
     BOOL bIsWow64 = FALSE;
     if (pfnIsWow64Process(GetCurrentProcess(), &bIsWow64))
-      token = bIsWow64 ? "WoW64" : "Win32";
+      bitness = bIsWow64 ? "WoW64" : "Win32";
   }
 #endif
-  default_useragent = std::string("Cygwin-Setup/") + setup_version + " (" + token + ")";
+  default_useragent = std::string("Cygwin-Setup/") + setup_version + " (" + os.str() + ";" + bitness + ")";
   return default_useragent;
 }
 

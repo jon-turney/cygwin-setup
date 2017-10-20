@@ -166,6 +166,7 @@ class VersionInfo
      VersionInfo ();
      DWORD major () const { return v.dwMajorVersion; }
      DWORD minor () const { return v.dwMinorVersion; }
+     DWORD buildNumber () const { return v.dwBuildNumber; }
   private:
      OSVERSIONINFO v;
 };
@@ -174,6 +175,7 @@ VersionInfo& GetVer ();
 
 #define OSMajorVersion() (GetVer ().major ())
 #define OSMinorVersion() (GetVer ().minor ())
+#define OSBuildNumber() (GetVer ().buildNumber ())
 
 static inline void
 GetDlgItemRect (HWND h, int item, LPRECT r)
