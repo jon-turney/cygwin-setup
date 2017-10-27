@@ -43,22 +43,6 @@ get_file_size (const std::string& name)
   return rv;
 }
 
-std::string 
-base (const std::string& aString)
-{
-  if (!aString.size())
-    return "";
-  const char *s = aString.c_str();
-  std::string rv = s;
-  while (*s)
-    {
-      if ((*s == '/' || *s == ':' || *s == '\\') && s[1])
-	rv = s + 1;
-      s++;
-    }
-  return rv;
-}
-
 /* returns the number of characters of path that
  * precede the extension
  */
@@ -89,7 +73,7 @@ parse_filename (const string &fn, fileparse & f)
 
   f.tail = fn.substr (n, string::npos);
 
-  p = new_cstr_char_array (base (fn.substr (0, n)));
+  p = new_cstr_char_array (fn.substr (0, n));
   char const *ext;
   /* TODO: make const and non-const trail variant. */
   if ((ext = trail (p, "-src")))

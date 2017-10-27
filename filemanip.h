@@ -30,7 +30,6 @@ struct fileparse
 };
 
 int parse_filename (const std::string& fn, fileparse & f);
-std::string base (const std::string& );
 size_t get_file_size (const std::string& );
 std::string backslash (const std::string& s);
 const char * trail (const char *, const char *);
