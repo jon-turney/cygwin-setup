@@ -30,7 +30,7 @@
 #include "find.h"
 #include "ini.h"
 
-#include "ScanFindVisitor.h"
+#include "FindVisitor.h"
 #include "IniDBBuilderPackage.h"
 #include "IniParseFeedback.h"
 
@@ -111,7 +111,6 @@ IniList found_ini_list;
 bool
 do_from_local_dir (HINSTANCE h, HWND owner, std::string &local_dir)
 {
-  // Assume we won't find the INI file.
   SetupFindVisitor found;
   // single mirror?
   Find (local_dir.c_str ()).accept (found, 1);
@@ -121,10 +120,5 @@ do_from_local_dir (HINSTANCE h, HWND owner, std::string &local_dir)
   Find (local_dir.c_str ()).accept (found, 2);
   if (found)
       return true;
-  // nope, do full scan.
-  IniParseFeedback myFeedback;
-  IniDBBuilderPackage myBuilder (myFeedback);
-  ScanFindVisitor myVisitor (myBuilder);
-  Find (local_dir.c_str ()).accept (myVisitor);
   return false;
 }

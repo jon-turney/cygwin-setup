@@ -234,8 +234,6 @@ inilint_SOURCES = \
 	resource.h \
 	root.cc \
 	root.h \
-	ScanFindVisitor.cc \
-	ScanFindVisitor.h \
 	script.cc \
 	script.h \
 	setup_version.h \

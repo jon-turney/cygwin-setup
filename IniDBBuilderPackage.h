@@ -42,12 +42,6 @@ public:
   void buildPackageSource (const std::string&, const std::string&,
                            char *, hashType);
 
-  // helpers for ScanFindVisitor
-  void buildPackageInstall (const std::string& path, const std::string& size)
-  { buildPackageInstall(path, size, NULL, hashType::none); }
-  void buildPackageSource (const std::string& path, const std::string& size)
-  { buildPackageSource(path, size, NULL, hashType::none); }
-
   void buildPackageTrust (int);
   void buildPackageCategory (const std::string& );
 
