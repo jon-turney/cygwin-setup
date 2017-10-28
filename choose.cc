@@ -267,10 +267,16 @@ ChooserPage::OnInit ()
     }
 
   SetBusy ();
+  packagedb db;
+  db.makeBase();
+  db.read();
+  db.upgrade();
+  db.removeEmptyCategories();
+  db.fixup_source_package_ids();
+
   if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_LOCALDIR)
     packagemeta::ScanDownloadedFiles (MirrorOption);
 
-  packagedb db;
   db.setExistence ();
   db.fillMissingCategory ();
 
