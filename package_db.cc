@@ -449,13 +449,22 @@ packagedb::defaultTrust (trusts trust)
 void
 packagedb::removeEmptyCategories()
 {
+  std::vector<std::string> empty;
+
   for (packagedb::categoriesType::iterator n = packagedb::categories.begin();
        n != packagedb::categories.end(); ++n)
     if (!n->second.size())
       {
-        Log (LOG_BABBLE) << "Removing empty category " << n->first << endLog;
-        packagedb::categories.erase (n++);
+        empty.push_back(n->first);
       }
+
+  for (unsigned int i = 0; i < empty.size(); ++i)
+    {
+      packagedb::categoriesType::iterator n = packagedb::categories.find(empty[i]);
+      Log (LOG_BABBLE) << "Removing empty category " << empty[i] << endLog;
+      if (n != packagedb::categories.end())
+        packagedb::categories.erase(n);
+    }
 }
 
 void
