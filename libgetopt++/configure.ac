@@ -3,16 +3,12 @@ dnl  Configuration input file for GetOpt++
 dnl
 dnl  Robert Collins, rbtcollins@hotmail.com
 dnl
-dnl  $Id$
-dnl
-dnl
 dnl
 AC_INIT(src/GetOption.cc, 0.0.2-DEVEL)
 AC_PREREQ(2.60)
 AC_CONFIG_AUX_DIR(cfgaux)
 AM_INIT_AUTOMAKE
 AC_CONFIG_HEADERS(include/autoconf.h)
-AC_REVISION($Revision$)dnl
 AC_PREFIX_DEFAULT(/usr/local)
 AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES(yes)])

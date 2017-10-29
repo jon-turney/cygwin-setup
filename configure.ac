@@ -11,8 +11,6 @@ dnl
 dnl Written by Christopher Faylor <cgf@redhat.com>
 dnl and Robert Collins  <rbtcollins@hotmail.com>
 dnl
-dnl $Id$
-dnl
 dnl Autoconf configure script for Cygwin utilities.
 dnl
 dnl Process this file with autoconf to produce a configure script.
@@ -24,7 +22,6 @@ AM_INIT_AUTOMAKE([1.12 subdir-objects foreign no-define -Wall -Wno-portability])
 dnl AM_CONFIG_HEADER(include/autoconf.h)
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES(yes)])
 AC_CONFIG_SRCDIR([Makefile.in])
-AC_REVISION($Revision$)dnl
 
 AC_MSG_CHECKING([Whether to build inilint])
 AC_ARG_ENABLE(inilint,

@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 #
-# $Id$
-#
 # Copyright (c) 2000, Red Hat, Inc.
 # Copyright (c) 2002, Robert Collins
 #
