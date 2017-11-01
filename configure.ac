@@ -48,28 +48,35 @@ AC_PROG_LIBTOOL
 AC_CHECK_TOOL(WINDRES, windres, windres)
 AC_CHECK_TOOL(OBJCOPY, objcopy, objcopy)
 
-AC_CHECK_HEADERS(alloca.h \
-		 errno.h \
-		 string \
-		 string.h )
+dnl dependencies we can check for using pkgconfig
+PKG_CHECK_MODULES(ZLIB, [zlib])
+PKG_CHECK_MODULES(LZMA, [liblzma])
+PKG_CHECK_MODULES(LIBSOLV, [libsolv])
 
-AC_CHECK_HEADER(zlib.h, , missing_deps="$missing_deps zlib")
-AC_CHECK_HEADER(bzlib.h, , missing_deps="$missing_deps libbz2")
-AC_CHECK_HEADER(lzma.h, , missing_deps="$missing_deps liblzma")
-AC_CHECK_HEADER(gcrypt.h, , missing_deps="$missing_deps libgcrypt")
-AC_CHECK_HEADER(solv/pool.h, , missing_deps="$missing_deps libsolv")
-AC_CHECK_HEADER(regex.h, , missing_deps="$missing_deps libregex")
+dnl dependencies we need to check for by hand
+export SYSROOT=$($CC --print-sysroot)/mingw
+AM_PATH_LIBGCRYPT
+unset SYSROOT
 
-if test -n "$missing_deps"; then
-	AC_MSG_ERROR([missing prerequisites: $missing_deps])
+save_LIBS=$LIBS
+LIBS="$LIBS -lbz2"
+AC_MSG_CHECKING([for bzip2])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <bzlib.h>]], [[const char *version = BZ2_bzlibVersion ();]])],[HAVE_BZ2=yes],[HAVE_BZ2=no])
+AC_MSG_RESULT($HAVE_BZ2)
+LIBS=$save_LIBS
+if test "x$HAVE_BZ2" = "xno"; then
+    AC_MSG_ERROR([bzip2 not found])
+  else
+    BZ2_LIBS="-lbz2"
 fi
+AC_SUBST(BZ2_LIBS)
 
+dnl configure in libgetopt++
 prefix=`pwd`/inst; mkdir -p "$prefix"
 exec_prefix=$prefix
 ac_configure_args="$ac_configure_args --disable-shared"
 AC_CONFIG_SUBDIRS(libgetopt++)
 
-dnl add portability sources to inilint
 case "$host" in
 i?86-*-mingw32)
   SETUP="setup"

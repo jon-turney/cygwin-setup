@@ -28,7 +28,8 @@ AM_CFLAGS = $(BASECXXFLAGS) -Wmissing-declarations -Winline \
 AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES = @WINDRES@
-AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include
+AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include \
+	       $(ZLIB_CFLAGS) $(LZMA_CFLAGS) $(LIBCRYPT_CFLAGS) $(LIBSOLV_CFLAGS)
 
 inilex_CXXFLAGS:=-Wno-sign-compare
 
@@ -97,7 +98,12 @@ inilint_SOURCES = \
 	String++.h
 
 @SETUP@_LDADD = \
-	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error -llzma -lbz2 -lz -lsolv -lregex \
+	libgetopt++/libgetopt++.la \
+	$(LIBGCRYPT_LIBS) \
+	$(LZMA_LIBS) \
+	$(BZ2_LIBS) \
+	$(ZLIB_LIBS) \
+	$(LIBSOLV_LIBS) -lregex \
 	-lshlwapi -lcomctl32 -lole32 -lpsapi -luuid -lntdll -lwininet -lws2_32 -lmingw32
 @SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 @SETUP@_SOURCES = \
