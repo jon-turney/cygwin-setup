@@ -317,6 +317,12 @@ void debug_callback(Pool *pool, void *data, int type, const char *str)
 
 SolverPool::SolverPool()
 {
+  init();
+}
+
+void
+SolverPool::init()
+{
   /* create a pool */
   pool = pool_create();
 
@@ -331,6 +337,16 @@ SolverPool::SolverPool()
   /* create the repo to hold installed packages */
   SolvRepo *installed = getRepo("_installed");
   pool_set_installed(pool, installed->repo);
+}
+
+void
+SolverPool::clear()
+{
+  repos.clear();
+  pool_free(pool);
+  pool = NULL;
+
+  init();
 }
 
 SolvRepo *
@@ -583,6 +599,12 @@ SolverPool::use_test_packages(bool use_test_packages)
 // ---------------------------------------------------------------------------
 
 SolverSolution::~SolverSolution()
+{
+  clear();
+}
+
+void
+SolverSolution::clear()
 {
   if (solv)
     {

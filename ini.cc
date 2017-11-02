@@ -347,6 +347,9 @@ do_remote_ini (HWND owner)
 static bool
 do_ini_thread (HINSTANCE h, HWND owner)
 {
+  packagedb db;
+  db.init();
+
   bool ini_error = true;
 
   if (source == IDC_SOURCE_LOCALDIR)

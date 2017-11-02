@@ -129,6 +129,7 @@ class SolverPool
 {
 public:
   SolverPool();
+  void clear();
   SolvRepo *getRepo(const std::string &name, bool test = false);
 
   // Utility class for passing arguments to addPackage()
@@ -157,6 +158,7 @@ public:
 
 
 private:
+  void init();
   Id makedeps(Repo *repo, PackageDepends *requires);
   Pool *pool;
 
@@ -235,6 +237,7 @@ class SolverSolution
  public:
   SolverSolution(SolverPool &_pool) : pool(_pool), solv(NULL) {};
   ~SolverSolution();
+  void clear();
 
   /* Reset package database to correspond to trans */
   void trans2db() const;

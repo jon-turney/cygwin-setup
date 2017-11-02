@@ -64,6 +64,7 @@ class packagedb
 {
 public:
   packagedb ();
+  void init();
   void read();
   void makeBase();
   /* 0 on success */

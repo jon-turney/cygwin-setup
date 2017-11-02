@@ -48,6 +48,20 @@ packagedb::packagedb ()
 }
 
 void
+packagedb::init ()
+{
+  installeddbread = 0;
+  installeddbver = 0;
+  packages.clear();
+  sourcePackages.clear();
+  categories.clear();
+  solver.clear();
+  solution.clear();
+  basepkg = packageversion();
+  dependencyOrderedPackages.clear();
+}
+
+void
 packagedb::read ()
 {
   if (!installeddbread)
