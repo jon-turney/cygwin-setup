@@ -63,7 +63,6 @@ static BoolOption UpgradeAlsoOption (false, 'g', "upgrade-also", "Also upgrade i
 static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", "Remove orphaned packages");
 static BoolOption ForceCurrentOption (false, 'f', "force-current", "Select the current version for all packages");
 static BoolOption PruneInstallOption (false, 'Y', "prune-install", "Prune the installation to only the requested packages");
-static BoolOption MirrorOption (false, 'm', "mirror-mode", "Skip package availability check when installing from local directory (requires local directory to be clean mirror!)");
 
 using namespace std;
 
@@ -91,7 +90,7 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
 
 ChooserPage::ChooserPage () :
   cmd_show_set (false), saved_geom (false), saw_geom_change (false),
-  timer_id (DEFAULT_TIMER_ID)
+  timer_id (DEFAULT_TIMER_ID), activated (false)
 {
   sizeProcessor.AddControlInfo (ChooserControlsInfo);
 
@@ -153,7 +152,12 @@ ChooserPage::createListview ()
   chooser->setViewMode (!is_new_install || UpgradeAlsoOption || hasManualSelections ?
 			PickView::views::PackagePending : PickView::views::Category);
   SendMessage (GetDlgItem (IDC_CHOOSE_VIEW), CB_SETCURSEL, (WPARAM)chooser->getViewMode(), 0);
+  ClearBusy ();
+}
 
+void
+ChooserPage::initialUpdateState()
+{
   // set the initial update state
   if (ForceCurrentOption)
     {
@@ -174,8 +178,6 @@ ChooserPage::createListview ()
 
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_BEST, IDC_CHOOSE_SYNC, 0 };
   rbset (GetHWND (), ta, update_mode_id);
-
-  ClearBusy ();
 }
 
 /* TODO: review ::overrides for possible consolidation */
@@ -266,20 +268,30 @@ ChooserPage::OnInit ()
       SendMessage(viewlist, CB_ADDSTRING, 0, (LPARAM)PickView::mode_caption((PickView::views)view));
     }
 
-  SetBusy ();
+  if (source == IDC_SOURCE_DOWNLOAD)
+    setPrompt("Select packages to download ");
+  else
+    setPrompt("Select packages to install ");
+
+  createListview ();
+
+  AddTooltip (IDC_CHOOSE_KEEP, IDS_TRUSTKEEP_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_BEST, IDS_TRUSTCURR_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_SYNC, IDS_TRUSTSYNC_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_EXP, IDS_TRUSTEXP_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_VIEW, IDS_VIEWBUTTON_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_HIDE, IDS_HIDEOBS_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_SEARCH_EDIT, IDS_SEARCH_TOOLTIP);
+
+  /* Set focus to search edittext control. */
+  PostMessage (GetHWND (), WM_NEXTDLGCTL,
+               (WPARAM) GetDlgItem (IDC_CHOOSE_SEARCH_EDIT), TRUE);
+}
+
+void
+ChooserPage::applyCommandLinePackageSelection()
+{
   packagedb db;
-  db.makeBase();
-  db.read();
-  db.upgrade();
-  db.removeEmptyCategories();
-  db.fixup_source_package_ids();
-
-  if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_LOCALDIR)
-    packagemeta::ScanDownloadedFiles (MirrorOption);
-
-  db.setExistence ();
-  db.fillMissingCategory ();
-
   for (packagedb::packagecollection::iterator i = db.packages.begin ();
        i != db.packages.end (); ++i)
     {
@@ -306,32 +318,29 @@ ChooserPage::OnInit ()
       else
 	pkg.set_action (packagemeta::Default_action, pkg.installed);
     }
-
-  ClearBusy ();
-
-  if (source == IDC_SOURCE_DOWNLOAD)
-    setPrompt("Select packages to download ");
-  else
-    setPrompt("Select packages to install ");
-  createListview ();
-
-  AddTooltip (IDC_CHOOSE_KEEP, IDS_TRUSTKEEP_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_BEST, IDS_TRUSTCURR_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_SYNC, IDS_TRUSTSYNC_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_EXP, IDS_TRUSTEXP_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_VIEW, IDS_VIEWBUTTON_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_HIDE, IDS_HIDEOBS_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_SEARCH_EDIT, IDS_SEARCH_TOOLTIP);
-
-  /* Set focus to search edittext control. */
-  PostMessage (GetHWND (), WM_NEXTDLGCTL,
-	       (WPARAM) GetDlgItem (IDC_CHOOSE_SEARCH_EDIT), TRUE);
 }
 
 void
 ChooserPage::OnActivate()
 {
-  chooser->refresh();;
+  SetBusy();
+
+  packagedb db;
+  db.prep();
+
+  if (!activated)
+    {
+      // Do things which should only happen once, but rely on packagedb being
+      // ready to use, so OnInit() is too early
+      applyCommandLinePackageSelection();
+      initialUpdateState();
+
+      activated = true;
+    }
+
+  ClearBusy();
+
+  chooser->refresh();
   PlaceDialog (true);
 }
 

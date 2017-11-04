@@ -40,6 +40,9 @@
 #include "resource.h"
 #include "libsolv.h"
 #include "csu_util/version_compare.h"
+#include "getopt++/BoolOption.h"
+
+static BoolOption MirrorOption (false, 'm', "mirror-mode", "Skip package availability check when installing from local directory (requires local directory to be clean mirror!)");
 
 using namespace std;
 
@@ -52,6 +55,8 @@ packagedb::init ()
 {
   installeddbread = 0;
   installeddbver = 0;
+  prepped = false;
+
   packages.clear();
   sourcePackages.clear();
   categories.clear();
@@ -383,6 +388,7 @@ packagedb::findSourceVersion (PackageSpecification const &spec) const
 
 int packagedb::installeddbread = 0;
 int packagedb::installeddbver = 0;
+bool packagedb::prepped = false;
 packagedb::packagecollection packagedb::packages;
 packagedb::categoriesType packagedb::categories;
 packagedb::packagecollection packagedb::sourcePackages;
@@ -717,4 +723,28 @@ packagedb::fixup_source_package_ids()
             }
         }
     }
+}
+
+void
+packagedb::prep()
+{
+  /* make packagedb ready for use for chooser */
+  if (prepped)
+    return;
+
+  makeBase();
+  read();
+  upgrade();
+  fixup_source_package_ids();
+  removeEmptyCategories();
+
+  /* XXX: this needs to be broken out somewhere where it can do progress
+     reporting, as it can take a long time... */
+  if (source == IDC_SOURCE_DOWNLOAD || source ==IDC_SOURCE_LOCALDIR)
+    packagemeta::ScanDownloadedFiles (MirrorOption);
+
+  setExistence ();
+  fillMissingCategory ();
+
+  prepped = true;
 }

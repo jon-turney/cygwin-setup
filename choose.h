@@ -59,6 +59,8 @@ private:
   void logResults();
   void setPrompt(char const *aPrompt);
   void PlaceDialog (bool);
+  void applyCommandLinePackageSelection();
+  void initialUpdateState();
 
   PickView *chooser;
   static HWND ins_dialog;
@@ -74,6 +76,7 @@ private:
     UINT wpi[sizeof (WINDOWPLACEMENT) / sizeof (UINT)];
   };
   int update_mode_id;
+  bool activated;
 };
 
 #endif /* SETUP_CHOOSE_H */
