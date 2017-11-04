@@ -266,21 +266,18 @@ LocalDirPage::OnNext ()
 	{
 	  if (source == IDC_SOURCE_LOCALDIR)
 	    {
-	      if (do_from_local_dir (GetInstance (), GetHWND (), local_dir))
-		{
-		  Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
-		  return IDD_INSTATUS;
-		}
-	      return IDD_CHOOSE;
+	      do_from_local_dir (GetInstance (), GetHWND (), local_dir);
+	      Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
+	      return IDD_INSTATUS;
 	    }
 	}
       else if (attr == INVALID_FILE_ATTRIBUTES
 	       && (GetLastError () == ERROR_FILE_NOT_FOUND
 		   || GetLastError () == ERROR_PATH_NOT_FOUND))
 	{
-	  if (source == IDC_SOURCE_LOCALDIR && unattended_mode)
-	    return IDD_CHOOSE;
-	  else if (source == IDC_SOURCE_LOCALDIR)
+	  if (source == IDC_SOURCE_LOCALDIR)
+	   {
+	   if (!unattended_mode)
 	    {
 	      // Check the user really wants only to uninstall.
 	      char msgText[1000];
@@ -290,8 +287,12 @@ LocalDirPage::OnNext ()
 	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str (),
 		        is_64bit ? "x86_64" : "x86");
 	      int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | MB_OKCANCEL);
-	      return (ret == IDOK) ? IDD_CHOOSE : -1;
+	      if (ret == IDCANCEL)
+                return -1;
 	    }
+	   Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
+	   return IDD_INSTATUS;
+	   }
 	  else if (offer_to_create (GetHWND (), local_dir.c_str ()))
 	    return -1;
 	  tryLocalDir = true;
@@ -322,10 +323,12 @@ LocalDirPage::OnNext ()
 	    return -1;
 	  else
 	    tryLocalDir = (ret == IDRETRY);
+	    // XXX: On IDIGNORE we drop through to IDD_NET, which is wrong in
+	    // the source == IDC_SOURCE_LOCALDIR case?
 	}
     }
 
-  return 0;
+  return 0; // IDD_NET
 }
 
 long
