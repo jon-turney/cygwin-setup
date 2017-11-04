@@ -205,10 +205,10 @@ check_ini_sig (io_stream* ini_file, io_stream* ini_sig_file,
   return ini_file;
 }
 
-static int
+static bool
 do_local_ini (HWND owner)
 {
-  size_t ini_count = 0;
+  bool ini_error = false;
   GuiParseFeedback myFeedback;
   IniDBBuilderPackage aBuilder (myFeedback);
   io_stream *ini_file, *ini_sig_file;
@@ -233,6 +233,7 @@ do_local_ini (HWND owner)
 	  // no setup found or signature invalid
 	  note (owner, IDS_SETUPINI_MISSING, SetupBaseName.c_str (),
 		"localdir");
+	  ini_error = true;
 	}
       else
 	{
@@ -245,12 +246,11 @@ do_local_ini (HWND owner)
 	    rfc1738_unescape (current_ini_name.substr (ldl, cap - ldl));
 	  ini_init (ini_file, &aBuilder, myFeedback);
 
-	  /*yydebug = 1; */
-
 	  if (yyparse () || yyerror_count > 0)
-	    myFeedback.error (yyerror_messages);
-	  else
-	    ++ini_count;
+	    {
+	      myFeedback.error (yyerror_messages);
+	      ini_error = true;
+	    }
 
 	  if (aBuilder.timestamp > setup_timestamp)
 	    {
@@ -261,13 +261,13 @@ do_local_ini (HWND owner)
 	  ini_file = NULL;
 	}
     }
-  return ini_count;
+  return ini_error;
 }
 
-static int
+static bool
 do_remote_ini (HWND owner)
 {
-  size_t ini_count = 0;
+  bool ini_error = false;
   GuiParseFeedback myFeedback;
   IniDBBuilderPackage aBuilder (myFeedback);
   io_stream *ini_file = NULL, *ini_sig_file;
@@ -303,6 +303,7 @@ do_remote_ini (HWND owner)
 	{
 	  // no setup found or signature invalid
 	  note (owner, IDS_SETUPINI_MISSING, SetupBaseName.c_str (), n->url.c_str ());
+	  ini_error = true;
 	}
       else
 	{
@@ -311,10 +312,11 @@ do_remote_ini (HWND owner)
 	  aBuilder.parse_mirror = n->url;
 	  ini_init (ini_file, &aBuilder, myFeedback);
 
-	  /*yydebug = 1; */
-
 	  if (yyparse () || yyerror_count > 0)
-	    myFeedback.error (yyerror_messages);
+	    {
+	      myFeedback.error (yyerror_messages);
+	      ini_error = true;
+	    }
 	  else
 	    {
 	      /* save known-good setup.ini locally */
@@ -329,7 +331,6 @@ do_remote_ini (HWND owner)
 		    io_stream::remove (fp);
 		  delete out;
 		}
-	      ++ini_count;
 	    }
 	  if (aBuilder.timestamp > setup_timestamp)
 	    {
@@ -340,23 +341,23 @@ do_remote_ini (HWND owner)
 	  ini_file = NULL;
 	}
     }
-  return ini_count;
+  return ini_error;
 }
 
 static bool
 do_ini_thread (HINSTANCE h, HWND owner)
 {
-  size_t ini_count = 0;
+  bool ini_error = true;
   if (source == IDC_SOURCE_LOCALDIR)
-    ini_count = do_local_ini (owner);
+    ini_error = do_local_ini (owner);
   else
-    ini_count = do_remote_ini (owner);
+    ini_error = do_remote_ini (owner);
 
   packagedb db;
   db.upgrade();
   db.removeEmptyCategories();
 
-  if (ini_count == 0)
+  if (ini_error)
     return false;
 
   if (get_root_dir ().c_str ())
