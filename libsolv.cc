@@ -172,6 +172,10 @@ SolvableVersion::SDesc () const
     return "";
   Solvable *solvable = pool_id2solvable(pool, id);
   const char *sdesc = repo_lookup_str(solvable->repo, id, SOLVABLE_SUMMARY);
+
+  if (!sdesc)
+    return "";
+
   return sdesc;
 }
 
@@ -225,14 +229,14 @@ SolvableVersion::fixup_spkg_id (SolvableVersion spkg_id) const
 packagesource *
 SolvableVersion::source() const
 {
+  static packagesource empty_source = packagesource();
   if (!id) {
-    static packagesource empty_source = packagesource();
     return &empty_source;
   }
 
   Solvable *solvable = pool_id2solvable(pool, id);
   Id psrc_attr = pool_str2id(pool, "solvable:packagesource", 1);
-  return (packagesource *)repo_lookup_num(solvable->repo, id, psrc_attr, 0);
+  return (packagesource *)repo_lookup_num(solvable->repo, id, psrc_attr, (unsigned long long)&empty_source);
 }
 
 bool
