@@ -266,11 +266,7 @@ do_download_thread (HINSTANCE h, HWND owner)
 
   if (errors)
     {
-      /* In unattended mode, all dialog boxes automatically get
-         answered with a Yes/OK/other positive response.  This
-	 means that if there's a download problem, setup will
-	 potentially retry forever if we don't take care to give
-	 up at some finite point.  */
+      // In unattended mode we retry the download, but not forever.
       static int retries = 4;
       if (unattended_mode && retries-- <= 0)
         {
@@ -282,7 +278,8 @@ do_download_thread (HINSTANCE h, HWND owner)
         {
 	  Log (LOG_PLAIN) << "download error in unattended_mode: " << retries
 	    << (retries > 1 ? " retries" : " retry") << " remaining." << endLog;
-	  return IDD_SITE;
+	  Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
+	  return IDD_INSTATUS;
 	}
       else if (yesno (owner, IDS_DOWNLOAD_INCOMPLETE) == IDYES)
 	return IDD_SITE;
