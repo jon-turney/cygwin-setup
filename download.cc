@@ -267,8 +267,8 @@ do_download_thread (HINSTANCE h, HWND owner)
   if (errors)
     {
       // In unattended mode we retry the download, but not forever.
-      static int retries = 4;
-      if (unattended_mode && retries-- <= 0)
+      static int retries = 5;
+      if (unattended_mode && --retries <= 0)
         {
 	  Log (LOG_PLAIN) << "download error in unattended_mode: out of retries" << endLog;
 	  Logger ().setExitMsg (IDS_INSTALL_INCOMPLETE);
