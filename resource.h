@@ -39,6 +39,7 @@
 #define IDS_NO_LOCALDIR			  138
 #define IDS_ELEVATED			  139
 #define IDS_INSTALLEDB_VERSION            140
+#define IDS_DOWNLOAD_INCOMPLETE_EXIT      141
 
 // Dialogs
 

@@ -288,7 +288,7 @@ do_download_thread (HINSTANCE h, HWND owner)
   if (source == IDC_SOURCE_DOWNLOAD)
     {
       if (errors)
-	Logger ().setExitMsg (IDS_DOWNLOAD_INCOMPLETE);
+	Logger ().setExitMsg (IDS_DOWNLOAD_INCOMPLETE_EXIT);
       else if (!unattended_mode)
 	Logger ().setExitMsg (IDS_DOWNLOAD_COMPLETE);
       return IDD_DESKTOP;

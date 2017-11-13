@@ -523,6 +523,7 @@ BEGIN
     IDS_ERR_CHDIR           "Could not change dir to %s: %s [%.8x]"
     IDS_OLD_SETUP_VERSION   "This setup is version %s, but setup.ini claims version %s is available.\nYou might want to upgrade to get the latest features and bug fixes."
     IDS_DOWNLOAD_INCOMPLETE "Download Incomplete.  Try again?"
+    IDS_DOWNLOAD_INCOMPLETE_EXIT  "Download incomplete.  Check %s for details"
     IDS_INSTALL_ERROR	    "Installation error (%s), Continue with other packages?"
     IDS_INSTALL_INCOMPLETE  "Installation incomplete.  Check %s for details"
     IDS_CORRUPT_PACKAGE     "Package file %s has a corrupt local copy, please remove and retry."
