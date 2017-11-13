@@ -413,6 +413,28 @@ BEGIN
 
 END
 
+IDD_DOWNLOAD_ERROR DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "Download Incomplete"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_WARNING,IDC_HEADICON,10,10
+    LTEXT           "The following package(s) had download errors:",
+                    IDC_STATIC,7,8,320,16
+    EDITTEXT        IDC_DOWNLOAD_EDIT,7,24,320,88,WS_VSCROLL |
+                    ES_LEFT | ES_MULTILINE | ES_READONLY |
+                    ES_AUTOVSCROLL
+    LTEXT           "Select 'Retry' to retry the download, "
+                    "'Back' to return to the package selection page, "
+                    "'Continue' to go on anyway (NOT RECOMMENDED), or "
+                    "'Cancel' to exit.",
+                    IDC_STATIC,7,120,320,24
+    DEFPUSHBUTTON   "&Retry",IDRETRY,45,150,50,15
+    PUSHBUTTON      "&Back",IDC_BACK,110,150,50,15
+    PUSHBUTTON      "&Continue",IDIGNORE,175,150,50,15
+    PUSHBUTTON      "Cancel",IDABORT,240,150,50,15
+END
+
 IDD_POSTINSTALL DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_W, 142
 STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE |
     WS_CAPTION | WS_SYSMENU

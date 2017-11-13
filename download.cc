@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <process.h>
+#include <vector>
 
 #include "resource.h"
 #include "msg.h"
@@ -187,8 +188,56 @@ download_one (packagesource & pkgsource, HWND owner)
     }
   if (success)
     return 0;
-  /* FIXME: Do we want to note this? if so how? */
   return 1;
+}
+
+static std::vector <packageversion> download_failures;
+static std::string download_warn_pkgs;
+
+static INT_PTR CALLBACK
+download_error_proc (HWND h, UINT message, WPARAM wParam, LPARAM lParam)
+{
+  switch (message)
+    {
+    case WM_INITDIALOG:
+      eset (h, IDC_DOWNLOAD_EDIT, download_warn_pkgs);
+      SetFocus (GetDlgItem(h, IDRETRY));
+      return FALSE;
+
+    case WM_COMMAND:
+      switch (LOWORD (wParam))
+	{
+	case IDRETRY:
+	case IDC_BACK:
+	case IDIGNORE:
+	case IDABORT:
+	  EndDialog (h, LOWORD (wParam));
+	default:
+	  // Not reached.
+	  return 0;
+	}
+
+    default:
+      // Not handled.
+      return FALSE;
+    }
+  return TRUE;
+}
+
+static int
+query_download_errors (HINSTANCE h, HWND owner)
+{
+  download_warn_pkgs = "";
+  Log (LOG_PLAIN) << "The following package(s) had download errors:" << endLog;
+  for (std::vector <packageversion>::const_iterator i = download_failures.begin (); i != download_failures.end (); i++)
+    {
+      packageversion pv = *i;
+      std::string pvs = pv.Name () + "-" + pv.Canonical_version ();
+      Log (LOG_PLAIN) << "  " << pvs << endLog;
+      download_warn_pkgs += pvs + "\r\n";
+    }
+  return DialogBox (h, MAKEINTRESOURCE (IDD_DOWNLOAD_ERROR), owner,
+		    download_error_proc);
 }
 
 static int
@@ -197,6 +246,7 @@ do_download_thread (HINSTANCE h, HWND owner)
   int errors = 0;
   total_download_bytes = 0;
   total_download_bytes_sofar = 0;
+  download_failures.clear ();
 
   Progress.SetText1 ("Checking for packages to download...");
   Progress.SetText2 ("");
@@ -257,6 +307,8 @@ do_download_thread (HINSTANCE h, HWND owner)
 		e += download_one (*sourceversion.source (), owner);
 	    }
 	  errors += e;
+	  if (e)
+	    download_failures.push_back (version);
 #if 0
 	  if (e)
 	    pkg->action = ACTION_ERROR;
@@ -268,21 +320,35 @@ do_download_thread (HINSTANCE h, HWND owner)
     {
       // In unattended mode we retry the download, but not forever.
       static int retries = 5;
+      int rc;
       if (unattended_mode && --retries <= 0)
         {
 	  Log (LOG_PLAIN) << "download error in unattended_mode: out of retries" << endLog;
-	  Logger ().setExitMsg (IDS_INSTALL_INCOMPLETE);
-	  Logger ().exit (1);
+	  rc = IDABORT;
 	}
       else if (unattended_mode)
         {
 	  Log (LOG_PLAIN) << "download error in unattended_mode: " << retries
 	    << (retries > 1 ? " retries" : " retry") << " remaining." << endLog;
+	  rc = IDRETRY;
+	}
+      else
+	rc = query_download_errors (h, owner);
+      switch (rc)
+	{
+	case IDRETRY:
 	  Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
 	  return IDD_INSTATUS;
+	case IDC_BACK:
+	  return IDD_CHOOSE;
+	case IDABORT:
+	  Logger ().setExitMsg (IDS_DOWNLOAD_INCOMPLETE_EXIT);
+	  Logger ().exit (1);
+	case IDIGNORE:
+	  break;
+	default:
+	  break;
 	}
-      else if (yesno (owner, IDS_DOWNLOAD_INCOMPLETE) == IDYES)
-	return IDD_SITE;
     }
 
   if (source == IDC_SOURCE_DOWNLOAD)
