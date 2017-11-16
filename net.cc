@@ -112,7 +112,7 @@ NetPage::OnInit ()
   std::string proxyString (ProxyOption);
 
   if (!NetIO::net_method)
-    NetIO::net_method = IDC_NET_DIRECT;
+    NetIO::net_method = IDC_NET_IE5;
 
   if (proxyString.size ())
   {
@@ -131,10 +131,10 @@ NetPage::OnInit ()
   CheckIfEnableNext();
 
   // Check to see if any radio buttons are selected. If not, select a default.
-  if (SendMessage (GetDlgItem (IDC_NET_IE5), BM_GETCHECK, 0, 0) != BST_CHECKED
+  if (SendMessage (GetDlgItem (IDC_NET_DIRECT), BM_GETCHECK, 0, 0) != BST_CHECKED
       && SendMessage (GetDlgItem (IDC_NET_PROXY), BM_GETCHECK, 0, 0) != BST_CHECKED
       && SendMessage (GetDlgItem (IDC_NET_DIRECT_LEGACY), BM_GETCHECK, 0, 0) != BST_CHECKED)
-    SendMessage (GetDlgItem (IDC_NET_DIRECT), BM_CLICK, 0, 0);
+    SendMessage (GetDlgItem (IDC_NET_IE5), BM_CLICK, 0, 0);
 }
 
 long
