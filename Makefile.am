@@ -317,8 +317,8 @@ UPLOAD_HOST=cygwin-admin@cygwin.com
 UPLOAD_PATH=/www/sourceware/htdocs/cygwin/setup
 
 upload: release
-	scp setup-${VER}-$(ARCH).exe setup-${VER}-$(ARCH).dbg ${UPLOAD_HOST}:${UPLOAD_PATH}
-	ssh ${UPLOAD_HOST} gpg --detach-sign ${UPLOAD_PATH}/setup-${VER}-$(ARCH).exe
+	scp setup-${VER}.$(ARCH).exe setup-${VER}.$(ARCH).dbg ${UPLOAD_HOST}:${UPLOAD_PATH}
+	ssh ${UPLOAD_HOST} gpg --detach-sign ${UPLOAD_PATH}/setup-${VER}.$(ARCH).exe
 
 clean-local:
 	rm -f setup*${EXEEXT} setup*.dbg
