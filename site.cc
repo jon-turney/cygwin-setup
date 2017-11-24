@@ -141,14 +141,17 @@ SiteSetting::~SiteSetting ()
     save ();
 }
 
-void
-site_list_type::init (const string &_url, const string &_servername,
-		      const string &_area, const string &_location)
+site_list_type::site_list_type (const string &_url,
+				const string &_servername,
+				const string &_area,
+				const string &_location,
+				bool _from_mirrors_lst)
 {
   url = _url;
   servername = _servername;
   area = _area;
   location = _location;
+  from_mirrors_lst = _from_mirrors_lst;
 
   /* Canonicalize URL to ensure it ends with a '/' */
   if (url.at(url.length()-1) != '/')
@@ -180,14 +183,6 @@ site_list_type::init (const string &_url, const string &_servername,
   key += url;
 }
 
-site_list_type::site_list_type (const string &_url,
-				const string &_servername,
-				const string &_area,
-				const string &_location)
-{
-  init (_url, _servername, _area, _location);
-}
-
 site_list_type::site_list_type (site_list_type const &rhs)
 {
   key = rhs.key;
@@ -195,6 +190,7 @@ site_list_type::site_list_type (site_list_type const &rhs)
   servername = rhs.servername;
   area = rhs.area;
   location = rhs.location;
+  from_mirrors_lst = rhs.from_mirrors_lst;
   displayed_url = rhs.displayed_url;
 }
 
@@ -206,6 +202,7 @@ site_list_type::operator= (site_list_type const &rhs)
   servername = rhs.servername;
   area = rhs.area;
   location = rhs.location;
+  from_mirrors_lst = rhs.from_mirrors_lst;
   displayed_url = rhs.displayed_url;
   return *this;
 }
@@ -243,6 +240,8 @@ save_dialog (HWND h)
     }
 }
 
+// This is called only for lists of mirrors that came (now or in a
+// previous setup run) from mirrors.lst.
 void
 load_site_list (SiteList& theSites, char *theString)
 {
@@ -293,7 +292,7 @@ load_site_list (SiteList& theSites, char *theString)
 	  if (!semi || !semi2 || !semi3)
 	    continue;
 
-	  site_list_type newsite (bol, semi, semi2, semi3);
+	  site_list_type newsite (bol, semi, semi2, semi3, true);
 	  SiteList::iterator i = find (theSites.begin(),
 				       theSites.end(), newsite);
 	  if (i == theSites.end())
@@ -380,7 +379,7 @@ get_site_list (HINSTANCE h, HWND owner)
 void
 SiteSetting::registerSavedSite (const char * site)
 {
-  site_list_type tempSite(site, "", "", "");
+  site_list_type tempSite(site, "", "", "", false);
   SiteList::iterator i = find (all_site_list.begin(),
 			       all_site_list.end(), tempSite);
   if (i == all_site_list.end())
@@ -399,7 +398,7 @@ SiteSetting::registerSavedSite (const char * site)
       site_list.push_back (tempSite);
     }
   else
-    site_list.push_back (tempSite);
+    site_list.push_back (*i);
 }
 
 void
@@ -510,7 +509,7 @@ int check_dropped_mirrors (HWND h)
     {
       SiteList::iterator i = find (all_site_list.begin(), all_site_list.end(),
 				   *n);
-      if (i == all_site_list.end() || !i->servername.size())
+      if (i == all_site_list.end() || !i->from_mirrors_lst)
 	{
 	  SiteList::iterator j = find (cached_site_list.begin(),
 				       cached_site_list.end(), *n);
@@ -540,7 +539,7 @@ void write_cache_list (io_stream *f, const SiteList& theSites)
   string s;
   for (SiteList::const_iterator n = theSites.begin ();
        n != theSites.end (); ++n)
-    if (n->servername.size())
+    if (n->from_mirrors_lst)
       *f << (n->url + ";" + n->servername + ";" + n->area + ";"
 	     + n->location);
 }
@@ -700,22 +699,17 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 	    std::string other_url = egetString (GetHWND (), IDC_EDIT_USER_URL);
 	    if (other_url.size())
 	    {
-	    site_list_type newsite (other_url, "", "", "");
+	    site_list_type newsite (other_url, "", "", "", false);
 	    SiteList::iterator i = find (all_site_list.begin(),
 					 all_site_list.end(), newsite);
 	    if (i == all_site_list.end())
 	      {
 		all_site_list.push_back (newsite);
 		Log (LOG_BABBLE) << "Adding site: " << other_url << endLog;
+		site_list.push_back (newsite);
 	      }
 	    else
-	      {
-		*i = newsite;
-		Log (LOG_BABBLE) << "Replacing site: " << other_url << endLog;
-	      }
-
-	    // Assume the user wants to use it and select it for him.
-	    site_list.push_back (newsite);
+	      site_list.push_back (*i);
 
 	    // Update the list box.
 	    PopulateListBox ();

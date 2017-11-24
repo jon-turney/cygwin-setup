@@ -50,17 +50,18 @@ public:
   site_list_type () : url (), displayed_url (), key () {};
   site_list_type (const site_list_type &);
   site_list_type (const std::string& , const std::string& ,
-                  const std::string& , const std::string& );
-  /* workaround for missing placement new in gcc 2.95 */
-  void init (const std::string& , const std::string& ,
-             const std::string& , const std::string& );
+                  const std::string& , const std::string&, bool);
   ~site_list_type () {};
   site_list_type &operator= (const site_list_type &);
   std::string url;
+  // provided by mirrors.lst but not used
   std::string servername;
   std::string area;
   std::string location;
+  // did this site come from mirrors.lst?
+  bool from_mirrors_lst;
   std::string displayed_url;
+  // sort key
   std::string key;
   bool operator == (const site_list_type &) const;
   bool operator != (const site_list_type &) const;
