@@ -36,7 +36,10 @@ ExtraKeysSetting::ExtraKeysSetting ():
   const char *p = UserSettings::instance().get ("extrakeys");
   if (p)
     {
+      bufsize = strlen (p) + 1;	// Include final NUL.
       keybuffer = strdup (p);
+      // Replace final NUL by LF.
+      keybuffer[bufsize - 1] = 0x0a;
       // Calling count_keys gets the count but also sizes the buffer
       // correctly, discarding any trailing non-LF-terminated data.
       bufsize = count_keys ();
@@ -46,7 +49,11 @@ ExtraKeysSetting::ExtraKeysSetting ():
 ExtraKeysSetting::~ExtraKeysSetting ()
 {
   if (keybuffer)
-    UserSettings::instance().set ("extrakeys", keybuffer);
+    {
+      // Replace final LF by NUL.
+      keybuffer[bufsize - 1] = '\0';
+      UserSettings::instance().set ("extrakeys", keybuffer);
+    }
 }
 
 void
