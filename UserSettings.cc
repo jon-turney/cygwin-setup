@@ -42,14 +42,14 @@ public:
 
 UserSettings *UserSettings::global;
 
+// '#' indicates a comment if it's the first non-whitespace character.
 static char *
 trim (char *p)
 {
   p += strspn (p, " \t");
-  char *q = strchr (p, '#');
-  if (q)
-    *q = '\0';
-  for (q = strchr (p, '\0') - 1; q >= p && (*q == ' ' || *q == '\t' || *q == '\r' || *q == '\n'); q--)
+  if (*p == '#')
+    *p = '\0';
+  for (char *q = strchr (p, '\0') - 1; q >= p && (*q == ' ' || *q == '\t' || *q == '\r' || *q == '\n'); q--)
     *q = '\0';
   return p;
 }
