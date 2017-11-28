@@ -48,7 +48,7 @@ static StringArrayOption SexprExtraKeyOption ('S', "sexpr-pubkey",
 			"Extra public key in s-expr format");
 
 static BoolOption UntrustedKeysOption (false, 'u', "untrusted-keys",
-			"Use untrusted keys from last-extrakeys");
+			"Use untrusted saved extra keys");
 static BoolOption KeepUntrustedKeysOption (false, 'U', "keep-untrusted-keys",
 			"Use untrusted keys and retain all");
 
@@ -466,9 +466,9 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
   msg ("key:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
 
-  /* Next we should extract the keys from the last-extrakeys
-  file, and flush it; we'll only return them to it if they
-  get used.  OTOH, should we do this at all?  The extrakeys
+  /* Next we should extract the keys from the extrakeys user
+  setting, and flush it; we'll only return them to it if they
+  get used.  OTOH, should we do this at all?  The user settings
   file isn't heavily protected.  So we only trust the extra
   keys if we're told to by the user.  We still read them in
   and write them back out, which canonicalises and eliminates

@@ -34,7 +34,7 @@ class ExtraKeysSetting
     size_t numkeys;
     static ExtraKeysSetting *global;
   public:
-    // Loads keys from last-extrakeys
+    // Loads keys from the "extrakeys" user setting.
     ExtraKeysSetting ();
     // Saves them back again.
     ~ExtraKeysSetting ();
