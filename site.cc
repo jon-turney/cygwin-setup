@@ -679,7 +679,9 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
     {
     case IDC_EDIT_USER_URL:
       {
-	// FIXME: Make Enter here cause an ADD, not a NEXT.
+	// Set the default pushbutton to ADD if the user is entering text.
+	if (code == EN_CHANGE)
+	  SendMessage (GetHWND (), DM_SETDEFID, (WPARAM) IDC_BUTTON_ADD_URL, 0);
 	break;
       }
     case IDC_URL_LIST:
