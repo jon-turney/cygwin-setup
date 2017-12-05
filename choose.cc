@@ -381,12 +381,38 @@ bool
 ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
 #if DEBUG
-  Log (LOG_BABBLE) << "OnMesageCmd " << id << " " << hwndctl << " " << code << endLog;
+  Log (LOG_BABBLE) << "OnMessageCmd " << id << " " << hwndctl << " " << std::hex << code << endLog;
 #endif
 
-  if (code == EN_CHANGE && id == IDC_CHOOSE_SEARCH_EDIT)
+  if (id == IDC_CHOOSE_SEARCH_EDIT)
     {
-      SetTimer(GetHWND (), timer_id, SEARCH_TIMER_DELAY, (TIMERPROC) NULL);
+      HWND nextButton = ::GetDlgItem(::GetParent(GetHWND()), 0x3024 /* ID_WIZNEXT */);
+      char buf[16];
+
+      if ((code == EN_CHANGE) ||
+          ((code == EN_SETFOCUS) && GetWindowText(GetDlgItem(IDC_CHOOSE_SEARCH_EDIT), buf, 15)))
+        {
+          // when focus arrives at this control and it has some text in it, or
+          // when we change the text in it, change the default button to one
+          // which immediately applies the search filter
+          //
+          // (we don't do this when the focus is on this control but it's empty
+          // (the initial state of the dialog) so that enter in that state moves
+          // onto the next page)
+          SendMessage(GetHWND (), DM_SETDEFID, (WPARAM) IDC_CHOOSE_DO_SEARCH, 0);
+          SendMessage(nextButton, BM_SETSTYLE, BS_PUSHBUTTON, TRUE);
+        }
+      if (code == EN_CHANGE)
+        {
+          // apply the search filter when we stop typing
+          SetTimer(GetHWND (), timer_id, SEARCH_TIMER_DELAY, (TIMERPROC) NULL);
+        }
+      else if (code == EN_KILLFOCUS)
+        {
+          // when focus leaves this control, restore the normal default button
+          SendMessage(GetHWND (), DM_SETDEFID, (WPARAM) 0x3024 /* ID_WIZNEXT */, 0);
+          SendMessage(nextButton, BM_SETSTYLE, BS_DEFPUSHBUTTON, TRUE);
+        }
       return true;
     }
   else if (code == BN_CLICKED)
@@ -400,6 +426,13 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
         chooser->SetPackageFilter (value);
         chooser->refresh ();
       }
+      break;
+
+    case IDC_CHOOSE_DO_SEARCH:
+      // invisible pushbutton which is the default pushbutton while typing into
+      // the search textbox, so that 'enter' causes the filter to be applied
+      // immediately, rather than activating the next page
+      SendMessage(GetHWND (), WM_TIMER, (WPARAM) timer_id, 0);
       break;
 
     case IDC_CHOOSE_KEEP:

@@ -177,3 +177,4 @@
 #define IDC_FILE_INUSE_HELP               592
 #define IDC_NET_DIRECT_LEGACY             593
 #define IDC_DOWNLOAD_EDIT                 594
+#define IDC_CHOOSE_DO_SEARCH              595
