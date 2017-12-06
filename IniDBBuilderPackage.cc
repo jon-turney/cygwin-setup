@@ -233,9 +233,9 @@ IniDBBuilderPackage::buildBeginDepends ()
 #if DEBUG
   Log (LOG_BABBLE) << "Beginning of a depends statement for " << cp->name
     << endLog;
-  dumpPackageDepends (currentNodeList, Log (LOG_BABBLE));
 #endif
   currentSpec = NULL;
+  cbpv.depends()->clear();
   currentNodeList = cbpv.depends();
 }
 
