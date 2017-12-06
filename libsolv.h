@@ -235,7 +235,7 @@ typedef std::vector<SolverTransaction> SolverTransactionList;
 class SolverSolution
 {
  public:
-  SolverSolution(SolverPool &_pool) : pool(_pool), solv(NULL) {};
+  SolverSolution(SolverPool &_pool);
   ~SolverSolution();
   void clear();
 
@@ -251,16 +251,24 @@ class SolverSolution
     updateBest,  // update to best version
     updateForce, // distupdate: downgrade if necessary to best version in repo
   };
-  bool update(SolverTasks &tasks, updateMode update, bool use_test_packages, bool include_source);
+  bool update(SolverTasks &tasks, updateMode update, bool use_test_packages);
+  void augmentTasks(SolverTasks &tasks);
+  void addSource(bool include_source);
+  void applyDefaultProblemSolutions();
   std::string report() const;
 
   const SolverTransactionList &transactions() const;
+  void dumpTransactionList() const;
 
  private:
   static SolverTransaction::transType type(Transaction *trans, int pos);
+  bool solve();
+  void tasksToJobs(SolverTasks &tasks, updateMode update, Queue &job);
+  void solutionToTransactionList();
 
   SolverPool &pool;
   Solver *solv;
+  Queue job;
   SolverTransactionList trans;
 };
 

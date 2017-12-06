@@ -544,6 +544,7 @@ SolverTasks::setTasks()
 {
   // go through all packages, adding changed ones to the solver task list
   packagedb db;
+  tasks.clear();
 
   for (packagedb::packagecollection::iterator p = db.packages.begin ();
        p != db.packages.end (); ++p)
@@ -602,6 +603,11 @@ SolverPool::use_test_packages(bool use_test_packages)
 // A wrapper around the libsolv solver
 // ---------------------------------------------------------------------------
 
+SolverSolution::SolverSolution(SolverPool &_pool) : pool(_pool), solv(NULL)
+{
+  queue_init(&job);
+}
+
 SolverSolution::~SolverSolution()
 {
   clear();
@@ -615,6 +621,7 @@ SolverSolution::clear()
       solver_free(solv);
       solv = NULL;
     }
+  queue_free(&job);
 }
 
 void
@@ -713,18 +720,9 @@ std::ostream &operator<<(std::ostream &stream,
   return stream;
 }
 
-bool
-SolverSolution::update(SolverTasks &tasks, updateMode update, bool use_test_packages, bool include_source)
+void
+SolverSolution::tasksToJobs(SolverTasks &tasks, updateMode update, Queue &job)
 {
-  Log (LOG_PLAIN) << "solving: " << tasks.tasks.size() << " tasks," <<
-    " update: " << (update ? "yes" : "no") << "," <<
-    " use test packages: " << (use_test_packages ? "yes" : "no") << "," <<
-    " include_source: " << (include_source ? "yes" : "no") << endLog;
-
-  pool.use_test_packages(use_test_packages);
-
-  Queue job;
-  queue_init(&job);
   // solver accepts a queue containing pairs of (cmd, id) tasks
   // cmd is job and selection flags ORed together
   for (SolverTasks::taskList::const_iterator i = tasks.tasks.begin();
@@ -776,20 +774,46 @@ SolverSolution::update(SolverTasks &tasks, updateMode update, bool use_test_pack
 
   // Ask solver to check dependencies of installed packages.
   queue_push2(&job, SOLVER_VERIFY | SOLVER_SOLVABLE_ALL, 0);
+}
+
+bool
+SolverSolution::update(SolverTasks &tasks, updateMode update, bool use_test_packages)
+{
+  Log (LOG_PLAIN) << "solving: " << tasks.tasks.size() << " tasks," <<
+    " update: " << (update ? "yes" : "no") << "," <<
+    " use test packages: " << (use_test_packages ? "yes" : "no") << endLog;
+
+  pool.use_test_packages(use_test_packages);
+
+  queue_free(&job);
+  tasksToJobs(tasks, update, job);
 
   if (!solv)
     solv = solver_create(pool.pool);
 
+  return solve();
+}
+
+bool
+SolverSolution::solve()
+{
   solver_set_flag(solv, SOLVER_FLAG_ALLOW_VENDORCHANGE, 1);
   solver_set_flag(solv, SOLVER_FLAG_ALLOW_DOWNGRADE, 0);
   solver_set_flag(solv, SOLVER_FLAG_DUP_ALLOW_VENDORCHANGE, 1);
   solver_set_flag(solv, SOLVER_FLAG_DUP_ALLOW_DOWNGRADE, 1);
   solver_solve(solv, &job);
-  queue_free(&job);
 
   int pcnt = solver_problem_count(solv);
   solver_printdecisions(solv);
 
+  solutionToTransactionList();
+
+  return (pcnt == 0);
+}
+
+void
+SolverSolution::solutionToTransactionList()
+{
   // get transactions for solution
   Transaction *t = solver_create_transaction(solv);
   transaction_order(t, 0);
@@ -797,7 +821,6 @@ SolverSolution::update(SolverTasks &tasks, updateMode update, bool use_test_pack
 
   // massage into SolverTransactions form
   trans.clear();
-
   for (int i = 0; i < t->steps.count; i++)
     {
       Id id = t->steps.elements[i];
@@ -806,6 +829,14 @@ SolverSolution::update(SolverTasks &tasks, updateMode update, bool use_test_pack
         trans.push_back(SolverTransaction(SolvableVersion(id, pool.pool), tt));
     }
 
+  transaction_free(t);
+
+  dumpTransactionList();
+}
+
+void
+SolverSolution::augmentTasks(SolverTasks &tasks)
+{
   // add install and remove tasks for anything marked as reinstall
   for (SolverTasks::taskList::const_iterator i = tasks.tasks.begin();
        i != tasks.tasks.end();
@@ -821,7 +852,11 @@ SolverSolution::update(SolverTasks &tasks, updateMode update, bool use_test_pack
                                             SolverTransaction::transInstall));
         }
     }
+}
 
+void
+SolverSolution::addSource(bool include_source)
+{
   // if include_source mode is on, also install source for everything we are
   // installing
   if (include_source)
@@ -840,11 +875,15 @@ SolverSolution::update(SolverTasks &tasks, updateMode update, bool use_test_pack
             }
         }
     }
+}
 
+void
+SolverSolution::dumpTransactionList() const
+{
   if (trans.size())
     {
       Log (LOG_PLAIN) << "Augmented Transaction List:" << endLog;
-      for (SolverTransactionList::iterator i = trans.begin ();
+      for (SolverTransactionList::const_iterator i = trans.begin ();
            i != trans.end ();
            ++i)
         {
@@ -854,10 +893,23 @@ SolverSolution::update(SolverTasks &tasks, updateMode update, bool use_test_pack
                           << std::setw(20) << i->version.Canonical_version() << endLog;
         }
     }
+  else
+    Log (LOG_PLAIN) << "Augmented Transaction List: is empty" << endLog;
+}
 
-  transaction_free(t);
+void SolverSolution::applyDefaultProblemSolutions()
+{
+  // adjust the task list with the default solutions
+  int pcnt = solver_problem_count(solv);
+  for (Id problem = 1; problem <= pcnt; problem++)
+    {
+      int scnt = solver_solution_count(solv, problem);
+      solver_take_solution(solv, problem, scnt, &job);
+    }
 
-  return (pcnt == 0);
+  // re-solve
+  if (!solve())
+    Log (LOG_PLAIN) << "default solutions did not solve all problems!" << endLog;
 }
 
 const SolverTransactionList &
@@ -891,6 +943,7 @@ SolverSolution::report() const
       for (Id solution = 1; solution <= scnt; solution++)
         {
           r += "Solution " + std::to_string(solution) + "/" + std::to_string(scnt);
+          if (solution == scnt) r += " (default)";
           r += "\n";
 
           Id p, rp, element;

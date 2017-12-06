@@ -603,7 +603,7 @@ packagedb::fillMissingCategory ()
 void
 packagedb::defaultTrust (SolverTasks &q, SolverSolution::updateMode mode, bool test)
 {
-  solution.update(q, mode, test, FALSE);
+  solution.update(q, mode, test);
 
   // reflect that task list into packagedb
   solution.trans2db();

@@ -40,10 +40,14 @@ public:
   // formats 'unmet' as a string for display
   void getUnmetString (std::string &s);
 
+  // finialize the transaction list
+  void finalize ();
+
   static void setTestPackages (bool t) { use_test_packages = t; };
 
 private:
   static bool use_test_packages;
+  static SolverTasks q;
 };
 
 #endif /* SETUP_PREREQ_H */

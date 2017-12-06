@@ -90,6 +90,7 @@ long
 PrereqPage::OnNext ()
 {
   HWND h = GetHWND ();
+  packagedb db;
 
   if (!IsDlgButtonChecked (h, IDC_PREREQ_CHECK))
     {
@@ -109,10 +110,16 @@ PrereqPage::OnNext ()
             "NOTE!  User refused the default solutions!  "
             "Expect some packages to give errors or not function at all." << endLog;
           // Change the solver's transaction list to reflect the user's choices.
-          packagedb db;
           db.solution.db2trans();
         }
     }
+  else
+    {
+      db.solution.applyDefaultProblemSolutions();
+    }
+
+  PrereqChecker p;
+  p.finalize();
 
   return whatNext();
 }
@@ -157,8 +164,9 @@ PrereqPage::OnUnattended ()
 // implements class PrereqChecker
 // ---------------------------------------------------------------------------
 
-// instantiate the static member
+// instantiate the static members
 bool PrereqChecker::use_test_packages;
+SolverTasks PrereqChecker::q;
 
 bool
 PrereqChecker::isMet ()
@@ -170,11 +178,19 @@ PrereqChecker::isMet ()
   Progress.SetText3 ("");
 
   // Create task list corresponding to current state of package database
-  SolverTasks q;
   q.setTasks();
 
-  // apply solver to those tasks and global state (use test, include source)
-  return db.solution.update(q, SolverSolution::keep, use_test_packages, IncludeSource);
+  // apply solver to those tasks and global state (use test or not)
+  return db.solution.update(q, SolverSolution::keep, use_test_packages);
+}
+
+void
+PrereqChecker::finalize ()
+{
+  packagedb db;
+  db.solution.augmentTasks(q);
+  db.solution.addSource(IncludeSource);
+  db.solution.dumpTransactionList();
 }
 
 /* Formats problems and solutions as a string for display to the user.  */
@@ -205,6 +221,8 @@ do_prereq_check_thread(HINSTANCE h, HWND owner)
 
   if (p.isMet ())
     {
+      p.finalize();
+
       if (source == IDC_SOURCE_LOCALDIR)
 	Progress.SetActivateTask (WM_APP_START_INSTALL);  // install
       else
