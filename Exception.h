@@ -36,6 +36,7 @@ private:
 #define APPERR_CORRUPT_PACKAGE	1
 #define APPERR_IO_ERROR		2
 #define APPERR_LOGIC_ERROR	3
+#define APPERR_WINDOW_ERROR	4
 
 #define TOPLEVEL_CATCH(owner, threadname)                             \
   catch (Exception *e)                                                  \

@@ -27,6 +27,7 @@
 /* For 'source' */
 #include "state.h"
 #include "LogSingleton.h"
+#include "Exception.h"
 
 using namespace std;
 
@@ -539,8 +540,9 @@ PickView::init(views _mode)
                                     HDS_HORZ, 0, 0, 0, 0, GetHWND(),
                                     (HMENU) IDC_CHOOSE_LISTHEADER, hinstance,
                                     (LPVOID) NULL)) == NULL)
-    // FIXME: throw an exception
-    exit (10);
+    throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+			 "Unable to create list header window",
+			 APPERR_WINDOW_ERROR);
 
   // Retrieve the bounding rectangle of the parent window's
   // client area, and then request size and position values
@@ -550,8 +552,9 @@ PickView::init(views _mode)
   hdl.prc = &rcParent;
   hdl.pwpos = &wp;
   if (!SendMessage (listheader, HDM_LAYOUT, 0, (LPARAM) & hdl))
-    // FIXME: throw an exception
-    exit (11);
+    throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+			 "Unable to get size and position of rectangle",
+			 APPERR_WINDOW_ERROR);
 
   // Set the font of the listheader, but don't redraw, because its not shown
   // yet.This message does not return a value, so we are not checking it as we

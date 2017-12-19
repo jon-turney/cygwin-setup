@@ -57,6 +57,8 @@
 
 #include "UserSettings.h"
 
+#include "Exception.h"
+
 #include "getopt++/BoolOption.h"
 static BoolOption UpgradeAlsoOption (false, 'g', "upgrade-also", "also upgrade installed packages");
 static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", "remove orphaned packages");
@@ -143,8 +145,9 @@ ChooserPage::createListview ()
   chooser = new PickView (cat);
   RECT r = getDefaultListViewSize();
   if (!chooser->Create(this, WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_VISIBLE,&r))
-    // TODO throw exception
-    exit (11);
+    throw new Exception (TOSTRING(__LINE__) " " __FILE__,
+			 "Unable to create chooser list window",
+			 APPERR_WINDOW_ERROR);
   chooser->init(PickView::views::Category);
   chooser->Show(SW_SHOW);
   chooser->setViewMode (!is_new_install || UpgradeAlsoOption || hasManualSelections ?
