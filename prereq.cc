@@ -364,7 +364,7 @@ do_prereq_check_reflector (void *p)
     // Tell the progress page that we're done prereq checking
     Progress.PostMessageNow (WM_APP_PREREQ_CHECK_THREAD_COMPLETE, 0, next_dialog);
   }
-  TOPLEVEL_CATCH("prereq_check");
+  TOPLEVEL_CATCH((HWND) context[1], "prereq_check");
 
   ExitThread(0);
 }

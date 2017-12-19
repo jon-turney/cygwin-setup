@@ -37,15 +37,15 @@ private:
 #define APPERR_IO_ERROR		2
 #define APPERR_LOGIC_ERROR	3
 
-#define TOPLEVEL_CATCH(threadname)                                      \
+#define TOPLEVEL_CATCH(owner, threadname)                             \
   catch (Exception *e)                                                  \
   {                                                                     \
-    fatal(NULL, IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO, (threadname),        \
+    fatal((owner), IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO, (threadname),   \
         typeid(*e).name(), e->what(), e->errNo());                      \
   }                                                                     \
   catch (std::exception *e)                                             \
   {                                                                     \
-    fatal(NULL, IDS_UNCAUGHT_EXCEPTION, (threadname),                   \
+    fatal((owner), IDS_UNCAUGHT_EXCEPTION, (threadname),              \
         typeid(*e).name(), e->what());                                  \
   }
 

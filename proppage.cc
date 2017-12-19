@@ -359,7 +359,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
       return OnMessageApp (message, wParam, lParam);
     }
   }
-  TOPLEVEL_CATCH("DialogProc");
+  TOPLEVEL_CATCH(GetHWND (), "DialogProc");
 
   // Wasn't handled
   return FALSE;

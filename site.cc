@@ -445,7 +445,7 @@ do_download_site_info_thread (void *p)
       Progress.PostMessageNow (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_SITE);
     }
   }
-  TOPLEVEL_CATCH("site");
+  TOPLEVEL_CATCH((HWND) context[1], "site");
 
   ExitThread(0);
 }

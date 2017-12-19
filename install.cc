@@ -997,7 +997,7 @@ do_install_reflector (void *p)
     // Tell the progress page that we're done downloading
     Progress.PostMessageNow (WM_APP_INSTALL_THREAD_COMPLETE);
   }
-  TOPLEVEL_CATCH("install");
+  TOPLEVEL_CATCH((HWND) context[1], "install");
 
   ExitThread (0);
 }

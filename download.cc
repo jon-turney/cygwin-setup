@@ -377,7 +377,7 @@ do_download_reflector (void *p)
     // Tell the progress page that we're done downloading
     Progress.PostMessageNow (WM_APP_DOWNLOAD_THREAD_COMPLETE, 0, next_dialog);
   }
-  TOPLEVEL_CATCH("download");
+  TOPLEVEL_CATCH((HWND) context[1], "download");
 
   ExitThread(0);
 }

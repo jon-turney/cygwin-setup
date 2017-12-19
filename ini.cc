@@ -422,7 +422,7 @@ do_ini_thread_reflector (void* p)
     // Tell the progress page that we're done downloading
     Progress.PostMessageNow (WM_APP_SETUP_INI_DOWNLOAD_COMPLETE, 0, succeeded);
   }
-  TOPLEVEL_CATCH ("ini");
+  TOPLEVEL_CATCH ((HWND) context[1], "ini");
 
   ExitThread (0);
 }

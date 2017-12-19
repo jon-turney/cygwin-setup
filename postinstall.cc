@@ -253,7 +253,7 @@ do_postinstall_reflector (void *p)
     Progress.PostMessageNow (WM_APP_POSTINSTALL_THREAD_COMPLETE, 0,
                           s.empty() ? IDD_DESKTOP : IDD_POSTINSTALL);
   }
-  TOPLEVEL_CATCH("postinstall");
+  TOPLEVEL_CATCH((HWND) context[1], "postinstall");
 
   /* Revert primary group to admins group.  This allows to create all the
      state files written by setup as admin group owned. */

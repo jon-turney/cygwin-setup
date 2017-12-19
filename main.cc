@@ -349,7 +349,7 @@ WinMain (HINSTANCE h,
 finish_up:
     ;
   }
-  TOPLEVEL_CATCH("main");
+  TOPLEVEL_CATCH(NULL, "main");
 
   // Never reached
   return 0;
