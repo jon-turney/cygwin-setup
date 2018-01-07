@@ -87,12 +87,12 @@ using namespace std;
 
 HINSTANCE hinstance;
 
-static StringOption Arch ("", 'a', "arch", "architecture to install (x86_64 or x86)", false);
+static StringOption Arch ("", 'a', "arch", "Architecture to install (x86_64 or x86)", false);
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
 static BoolOption PackageManagerOption (false, 'M', "package-manager", "Semi-attended chooser-only mode");
 static BoolOption NoAdminOption (false, 'B', "no-admin", "Do not check for and enforce running as Administrator");
 static BoolOption WaitOption (false, 'W', "wait", "When elevating, wait for elevated child process");
-static BoolOption HelpOption (false, 'h', "help", "print help");
+static BoolOption HelpOption (false, 'h', "help", "Print help");
 static StringOption SetupBaseNameOpt ("setup", 'i', "ini-basename", "Use a different basename, e.g. \"foo\", instead of \"setup\"", false);
 BoolOption UnsupportedOption (false, '\0', "allow-unsupported-windows", "Allow old, unsupported Windows versions");
 std::string SetupBaseName;
@@ -294,6 +294,7 @@ WinMain (HINSTANCE h,
 	Log (LOG_PLAIN) << "\nCommand Line Options:\n" << endLog;
 	GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN));
 	Log (LOG_PLAIN) << endLog;
+	Log (LOG_PLAIN) << "The default is to both download and install packages, unless either --download or --local-install is specified." << endLog;
 	Logger ().exit (invalid_option ? 1 : 0, false);
 	goto finish_up;
       }

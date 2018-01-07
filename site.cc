@@ -94,9 +94,9 @@ SiteList cached_site_list;
 /* Stale selected sites to warn about and add to cache */
 SiteList dropped_site_list;
 
-StringArrayOption SiteOption('s', "site", "Download site");
+StringArrayOption SiteOption('s', "site", "Download site URL");
 
-BoolOption OnlySiteOption(false, 'O', "only-site", "Ignore all sites except for -s");
+BoolOption OnlySiteOption(false, 'O', "only-site", "Do not download mirror list.  Only use sites specified with -s.");
 extern BoolOption UnsupportedOption;
 
 SiteSetting::SiteSetting (): saved (false)

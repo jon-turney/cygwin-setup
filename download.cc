@@ -52,7 +52,7 @@ using namespace std;
 
 extern ThreeBarProgressPage Progress;
 
-BoolOption IncludeSource (false, 'I', "include-source", "Automatically include source download");
+BoolOption IncludeSource (false, 'I', "include-source", "Automatically install source for every package installed");
 
 static bool
 validateCachedPackage (const std::string& fullname, packagesource & pkgsource)

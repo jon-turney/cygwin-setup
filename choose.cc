@@ -60,11 +60,11 @@
 #include "Exception.h"
 
 #include "getopt++/BoolOption.h"
-static BoolOption UpgradeAlsoOption (false, 'g', "upgrade-also", "also upgrade installed packages");
-static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", "remove orphaned packages");
-static BoolOption ForceCurrentOption (false, 'f', "force-current", "select the current version for all packages");
-static BoolOption PruneInstallOption (false, 'Y', "prune-install", "prune the installation to only the requested packages");
-static BoolOption MirrorOption (false, 'm', "mirror-mode", "Skip availability check when installing from local directory (requires local directory to be clean mirror!)");
+static BoolOption UpgradeAlsoOption (false, 'g', "upgrade-also", "Also upgrade installed packages");
+static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", "Remove orphaned packages");
+static BoolOption ForceCurrentOption (false, 'f', "force-current", "Select the current version for all packages");
+static BoolOption PruneInstallOption (false, 'Y', "prune-install", "Prune the installation to only the requested packages");
+static BoolOption MirrorOption (false, 'm', "mirror-mode", "Skip package availability check when installing from local directory (requires local directory to be clean mirror!)");
 
 using namespace std;
 
