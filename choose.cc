@@ -366,6 +366,7 @@ ChooserPage::keepClicked()
     {
       packagemeta & pkg = *(i->second);
       pkg.desired = pkg.installed;
+      pkg.pick(false);
     }
   chooser->refresh();
 }
