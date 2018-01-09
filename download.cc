@@ -54,29 +54,41 @@ extern ThreeBarProgressPage Progress;
 
 BoolOption IncludeSource (false, 'I', "include-source", "Automatically install source for every package installed");
 
+// Return true if selected checks pass, false if they don't and the
+// user chooses to delete the file; otherwise throw an exception.
 static bool
-validateCachedPackage (const std::string& fullname, packagesource & pkgsource)
+validateCachedPackage (const std::string& fullname, packagesource & pkgsource,
+		       HWND owner, bool check_hash, bool check_size)
 {
-  DWORD size = get_file_size(fullname);
-  if (size != pkgsource.size)
-  {
-    Log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
-      << " - Size mismatch: Ini-file: " << pkgsource.size
-      << " != On-disk: " << size << endLog;
-    return false;
-  }
-  return true;
+  try
+    {
+      if (check_size)
+	pkgsource.check_size_and_cache (fullname);
+      if (check_hash)
+	pkgsource.check_hash ();
+      return true;
+    }
+  catch (Exception *e)
+    {
+      pkgsource.set_cached ("");
+      const char *filename = fullname.c_str ();
+      if (strncmp (filename, "file://", 7) == 0)
+	filename += 7;
+      if (e->errNo() == APPERR_CORRUPT_PACKAGE
+	  && yesno (owner, IDS_QUERY_CORRUPT, filename) == IDYES)
+	remove (filename);
+      else
+	throw e;
+    }
+  return false;
 }
 
-/* 0 on failure
+/* 0 if not cached; may throw exception if validation fails.
  */
 int
-check_for_cached (packagesource & pkgsource, bool mirror_mode)
+check_for_cached (packagesource & pkgsource, HWND owner, bool mirror_mode,
+		  bool check_hash)
 {
-  // Already found one.
-  if (pkgsource.Cached())
-    return 1;
-
   /* Note that the cache dir is represented by a mirror site of file://local_dir */
   std::string prefix = "file://" + local_dir + "/";
   std::string fullname = prefix + (pkgsource.Canonical() ? pkgsource.Canonical() : "");
@@ -84,8 +96,19 @@ check_for_cached (packagesource & pkgsource, bool mirror_mode)
   if (mirror_mode)
     {
       /* Just assume correctness of mirror. */
-      pkgsource.set_cached (fullname);
+      if (!pkgsource.Cached())
+	pkgsource.set_cached (fullname);
       return 1;
+    }
+
+  // Already found one, which we can assume to have the right size.
+  if (pkgsource.Cached())
+    {
+      if (validateCachedPackage (pkgsource.Cached(), pkgsource, owner,
+				 check_hash, false))
+	return 1;
+      // If we get here, pkgsource.Cached() was corrupt and deleted.
+      pkgsource.set_cached ("");
     }
 
   /*
@@ -93,13 +116,11 @@ check_for_cached (packagesource & pkgsource, bool mirror_mode)
   */
   if (io_stream::exists (fullname))
     {
-      if (validateCachedPackage (fullname, pkgsource))
-        pkgsource.set_cached (fullname);
-      else
-        throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-            "Package validation failure for " + fullname,
-            APPERR_CORRUPT_PACKAGE);
-      return 1;
+      if (validateCachedPackage (fullname, pkgsource, owner, check_hash, true))
+	return 1;
+      // If we get here, fullname was corrupt and deleted, but it
+      // might have been cached.
+      pkgsource.set_cached ("");
     }
 
   /*
@@ -111,15 +132,14 @@ check_for_cached (packagesource & pkgsource, bool mirror_mode)
     std::string fullname = prefix + rfc1738_escape_part (n->key) + "/" +
       pkgsource.Canonical ();
     if (io_stream::exists(fullname))
-    {
-      if (validateCachedPackage (fullname, pkgsource))
-        pkgsource.set_cached (fullname);
-      else
-        throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-            "Package validation failure for " + fullname,
-            APPERR_CORRUPT_PACKAGE);
-      return 1;
-    }
+	{
+	  if (validateCachedPackage (fullname, pkgsource, owner, check_hash,
+				     true))
+	    return 1;
+	  // If we get here, fullname was corrupt and deleted, but it
+	  // might have been cached.
+	  pkgsource.set_cached ("");
+	}
   }
   return 0;
 }
@@ -130,7 +150,7 @@ download_one (packagesource & pkgsource, HWND owner)
 {
   try
     {
-      if (check_for_cached (pkgsource))
+      if (check_for_cached (pkgsource, owner))
         return 0;
     }
   catch (Exception * e)
@@ -163,26 +183,36 @@ download_one (packagesource & pkgsource, HWND owner)
 	}
       else
 	{
-	  size_t size = get_file_size ("file://" + local + ".tmp");
-	  if (size == pkgsource.size)
+	  try
 	    {
-	      Log (LOG_PLAIN) << "Downloaded " << local << endLog;
 	      if (_access (local.c_str(), 0) == 0)
 		remove (local.c_str());
 	      rename ((local + ".tmp").c_str(), local.c_str());
+	      pkgsource.check_size_and_cache ("file://" + local);
+	      pkgsource.check_hash ();
+	      Log (LOG_PLAIN) << "Downloaded " << local << endLog;
 	      success = 1;
-	      pkgsource.set_cached ("file://" + local);
 	      // FIXME: move the downloaded file to the 
 	      //  original locations - without the mirror site dir in the way
 	      continue;
 	    }
-	  else
+	  catch (Exception *e)
 	    {
-	      Log (LOG_PLAIN) << "Download " << local << " wrong size (" <<
-		size << " actual vs " << pkgsource.size << " expected)" << 
-		endLog;
-	      remove ((local + ".tmp").c_str());
-	      continue;
+	      remove (local.c_str());
+	      pkgsource.set_cached ("");
+	      if (e->errNo() == APPERR_CORRUPT_PACKAGE)
+		{
+		  Log (LOG_PLAIN) << "Downloaded file " << local
+				  << " is corrupt; deleting." << endLog;
+		  continue;
+		}
+	      else
+		{
+		  Log (LOG_PLAIN) << "Unexpected exception while validating "
+				  << "downloaded file " << local
+				  << "; deleting." << endLog;
+		  throw e;
+		}
 	    }
 	}
     }
@@ -266,12 +296,12 @@ do_download_thread (HINSTANCE h, HWND owner)
 	    {
 	      if (pkg.picked())
 		{
-		    if (!check_for_cached (*version.source()))
+		    if (!check_for_cached (*version.source(), owner))
 		      total_download_bytes += version.source()->size;
 		}
 	      if (pkg.srcpicked () || IncludeSource)
 		{
-		    if (!check_for_cached (*sourceversion.source()))
+		    if (!check_for_cached (*sourceversion.source(), owner))
 		      total_download_bytes += sourceversion.source()->size;
 		}
 	    }

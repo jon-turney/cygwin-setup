@@ -41,7 +41,7 @@ public:
 class packagesource
 {
 public:
-  packagesource ():size (0), canonical (), cached ()
+  packagesource ():size (0), canonical (), shortname (), cached (), validated (false)
   {
     memset (sha512sum, 0, sizeof sha512sum);
     sha512_isSet = false;
@@ -58,7 +58,12 @@ public:
 
     return NULL;
   };
-  /* what is the cached filename, to prevent directory scanning during install */
+  /* What is the cached filename, to prevent directory scanning during
+     install?  Except in mirror mode, we never set this without
+     checking the size.  The more expensive hash checking is reserved
+     for verifying the integrity of downloaded files and sources of
+     packages about to be installed.  Set the 'validated' flag to
+     avoid checking the hash twice.  */
   char const *Cached () const
   {
     /* Pointer-coerce-to-boolean is used by many callers. */
@@ -72,12 +77,20 @@ public:
   unsigned char sha512sum[SHA512_DIGEST_LENGTH];
   bool sha512_isSet;
   MD5Sum md5;
+  /* The next two functions throw exceptions on failure.  */
+  void check_size_and_cache (const std::string fullname);
+  void check_hash ();
   typedef std::vector <site> sitestype;
   sitestype sites;
 
 private:
   std::string canonical;
+  /* For progress reporting.  */
+  std::string shortname;
   std::string cached;
+  bool validated;
+  void check_sha512 (const std::string fullname) const;
+  void check_md5 (const std::string fullname) const;
 };
 
 #endif /* SETUP_PACKAGE_SOURCE_H */

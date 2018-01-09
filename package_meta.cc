@@ -606,7 +606,7 @@ packagemeta::scan (const packageversion &pkg, bool mirror_mode)
    */
   try
     {
-      if (!check_for_cached (*(pkg.source ()), mirror_mode)
+      if (!check_for_cached (*(pkg.source ()), NULL, mirror_mode, false)
 	  && ::source == IDC_SOURCE_LOCALDIR)
 	pkg.source ()->sites.clear ();
     }

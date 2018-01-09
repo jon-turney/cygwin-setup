@@ -21,7 +21,6 @@
    files in /etc/setup/\* and create the mount points. */
 
 #include "getopt++/BoolOption.h"
-#include "csu_util/MD5Sum.h"
 #include "LogFile.h"
 
 #include "win32.h"
@@ -148,7 +147,6 @@ Installer::StandardDirs[] = {
 };
 
 static int num_installs, num_uninstalls;
-static void chksum_one (const packagemeta &pkg, const packagesource& pkgsource);
 
 void
 Installer::preremoveOne (packagemeta & pkg)
@@ -841,7 +839,10 @@ do_install_thread (HINSTANCE h, HWND owner)
   }
 
   /* md5sum the packages, build lists of packages to install and uninstall
-     and calculate the total amount of data to install */
+     and calculate the total amount of data to install.
+     The hash checking is relevant only for local installs.  For a
+     net install, the hashes will have already been verified at download
+     time, and all calls to check_hash() below should instantly return.  */
   long long int md5sum_total_bytes_sofar = 0;
   for (packagedb::packagecollection::iterator i = db.packages.begin ();
        i != db.packages.end (); ++i)
@@ -852,7 +853,7 @@ do_install_thread (HINSTANCE h, HWND owner)
     {
       try
       {
-        chksum_one (pkg, *pkg.desired.source ());
+        (*pkg.desired.source ()).check_hash ();
       }
       catch (Exception *e)
       {
@@ -872,7 +873,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       bool skiprequested = false ;
       try
       {
-        chksum_one (pkg, *pkg.desired.sourcePackage ().source ());
+        (*pkg.desired.sourcePackage ().source ()).check_hash ();
       }
       catch (Exception *e)
       {
@@ -1012,134 +1013,4 @@ do_install (HINSTANCE h, HWND owner)
 
   DWORD threadID;
   CreateThread (NULL, 0, do_install_reflector, context, 0, &threadID);
-}
-
-static char *
-sha512_str (const unsigned char *in, char *buf)
-{
-  char *bp = buf;
-  for (int i = 0; i < SHA512_DIGEST_LENGTH; ++i)
-    bp += sprintf (bp, "%02x", in[i]);
-  *bp = '\0';
-  return buf;
-}
-
-static void
-sha512_one (const packagemeta &pkg, const packagesource& pkgsource)
-{
-  std::string fullname (pkgsource.Cached ());
-
-  io_stream *thefile = io_stream::open (fullname, "rb", 0);
-  if (!thefile)
-    throw new Exception (TOSTRING (__LINE__) " " __FILE__,
-			 std::string ("IO Error opening ") + fullname,
-			 APPERR_IO_ERROR);
-  SHA2_CTX ctx;
-  unsigned char sha512result[SHA512_DIGEST_LENGTH];
-  char ini_sum[SHA512_DIGEST_STRING_LENGTH],
-       disk_sum[SHA512_DIGEST_STRING_LENGTH];
-
-  SHA512Init (&ctx);
-
-  Log (LOG_BABBLE) << "Checking SHA512 for " << fullname << endLog;
-
-  Progress.SetText1 ((std::string ("Checking SHA512 for ")
-		      + pkg.name).c_str ());
-  Progress.SetText4 ("Progress:");
-  Progress.SetBar1 (0);
-
-  unsigned char buffer[64 * 1024];
-  ssize_t count;
-  while ((count = thefile->read (buffer, sizeof (buffer))) > 0)
-  {
-    SHA512Update (&ctx, buffer, count);
-    Progress.SetBar1 (thefile->tell (), thefile->get_size ());
-  }
-  delete thefile;
-  if (count < 0)
-    throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-			 "IO Error reading " + fullname,
-			 APPERR_IO_ERROR);
-
-  SHA512Final (sha512result, &ctx);
-
-  if (memcmp (pkgsource.sha512sum, sha512result, sizeof sha512result))
-    {
-      Log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
-		       << " - SHA512 mismatch: Ini-file: "
-		       << sha512_str (pkgsource.sha512sum, ini_sum)
-		       << " != On-disk: "
-		       << sha512_str (sha512result, disk_sum)
-		       << endLog;
-      throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-			   "SHA512 failure for " + fullname,
-			   APPERR_CORRUPT_PACKAGE);
-    }
-
-  Log (LOG_BABBLE) << "SHA512 verified OK: " << fullname << " "
-    <<  sha512_str (pkgsource.sha512sum, ini_sum) << endLog;
-}
-
-static void
-md5_one (const packagemeta &pkg, const packagesource& pkgsource)
-{
-  std::string fullname (pkgsource.Cached ());
-
-  io_stream *thefile = io_stream::open (fullname, "rb", 0);
-  if (!thefile)
-    throw new Exception (TOSTRING (__LINE__) " " __FILE__,
-			 std::string ("IO Error opening ") + fullname,
-			 APPERR_IO_ERROR);
-  MD5Sum tempMD5;
-  tempMD5.begin ();
-
-  Log (LOG_BABBLE) << "Checking MD5 for " << fullname << endLog;
-
-  Progress.SetText1 ((std::string ("Checking MD5 for ")
-		      + pkg.name).c_str ());
-  Progress.SetText4 ("Progress:");
-  Progress.SetBar1 (0);
-
-  unsigned char buffer[64 * 1024];
-  ssize_t count;
-  while ((count = thefile->read (buffer, sizeof (buffer))) > 0)
-    {
-      tempMD5.append (buffer, count);
-      Progress.SetBar1 (thefile->tell (), thefile->get_size ());
-    }
-  delete thefile;
-  if (count < 0)
-    throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-			 "IO Error reading " + fullname,
-			 APPERR_IO_ERROR);
-
-  tempMD5.finish ();
-
-  if (pkgsource.md5 != tempMD5)
-    {
-      Log (LOG_BABBLE) << "INVALID PACKAGE: " << fullname
-	<< " - MD5 mismatch: Ini-file: " << pkgsource.md5.str()
-	<< " != On-disk: " << tempMD5.str() << endLog;
-      throw new Exception (TOSTRING(__LINE__) " " __FILE__,
-			   "MD5 failure for " + fullname,
-			   APPERR_CORRUPT_PACKAGE);
-    }
-
-  Log (LOG_BABBLE) << "MD5 verified OK: " << fullname << " "
-    << pkgsource.md5.str() << endLog;
-}
-
-static void
-chksum_one (const packagemeta &pkg, const packagesource& pkgsource)
-{
-  if (!pkgsource.Cached ())
-    return;
-  if (pkgsource.sha512_isSet)
-    sha512_one (pkg, pkgsource);
-  else if (pkgsource.md5.isSet())
-    md5_one (pkg, pkgsource);
-  else
-    Log (LOG_BABBLE) << "No checksum recorded for " << pkg.name
-		     << ", cannot determine integrity of package!"
-		     << endLog;
 }

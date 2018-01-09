@@ -39,6 +39,7 @@
 #define IDS_ELEVATED			  139
 #define IDS_INSTALLEDB_VERSION            140
 #define IDS_DOWNLOAD_INCOMPLETE_EXIT      141
+#define IDS_QUERY_CORRUPT                 142
 
 // Dialogs
 

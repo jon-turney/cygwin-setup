@@ -16,7 +16,10 @@
 #ifndef SETUP_DOWNLOAD_H
 #define SETUP_DOWNLOAD_H
 
+#include "win32.h"
+
 class packagesource;
-int check_for_cached (packagesource & pkgsource, bool = false);
+int check_for_cached (packagesource & pkgsource, HWND owner,
+		      bool mirror_mode = false, bool check_hash = true);
 
 #endif /* SETUP_DOWNLOAD_H */
