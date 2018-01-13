@@ -959,6 +959,16 @@ SolverSolution::report() const
             }
         }
     }
+
+  // since package arch isn't set usefully at the moment, remove all ".any" from
+  // package names in the problem report string.
+  std::string any = ".any";
+  size_t pos;
+  while ((pos = r.find(any)) != std::string::npos)
+    {
+      r.replace(pos, any.length(), "");
+    }
+
   return r;
 }
 
