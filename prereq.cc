@@ -96,10 +96,9 @@ PrereqPage::OnNext ()
     {
       // breakage imminent!  danger, danger
       int res = MessageBox (h,
-          "We strongly recommend that you accept the default solutions. "
-          "Some packages may not work properly if you don't."
+          "Some packages may not work properly if you continue."
           "\r\n\r\n"
-          "Are you sure you want to proceed?",
+          "Are you sure you want to proceed (NOT RECOMMENDED)?",
           "WARNING - Unsolved Problems",
           MB_YESNO | MB_ICONEXCLAMATION | MB_DEFBUTTON2);
       if (res == IDNO)
@@ -107,7 +106,7 @@ PrereqPage::OnNext ()
       else
         {
           Log (LOG_PLAIN) <<
-            "NOTE!  User refused the default solutions!  "
+            "NOTE!  User continued with unsolved problems!  "
             "Expect some packages to give errors or not function at all." << endLog;
           // Change the solver's transaction list to reflect the user's choices.
           db.solution.db2trans();
