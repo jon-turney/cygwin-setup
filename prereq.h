@@ -43,6 +43,8 @@ public:
   // finialize the transaction list
   void finalize ();
 
+  void augment ();
+
   static void setTestPackages (bool t) { use_test_packages = t; };
 
 private:

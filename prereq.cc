@@ -142,6 +142,10 @@ PrereqPage::whatNext ()
 long
 PrereqPage::OnBack ()
 {
+  // Add reinstall tasks
+  PrereqChecker p;
+  p.augment();
+
   // Reset the package database to correspond to the solver's solution
   packagedb db;
   db.solution.trans2db();
@@ -186,10 +190,18 @@ PrereqChecker::isMet ()
 void
 PrereqChecker::finalize ()
 {
+  augment();
+
   packagedb db;
-  db.solution.augmentTasks(q);
   db.solution.addSource(IncludeSource);
   db.solution.dumpTransactionList();
+}
+
+void
+PrereqChecker::augment ()
+{
+  packagedb db;
+  db.solution.augmentTasks(q);
 }
 
 /* Formats problems and solutions as a string for display to the user.  */
