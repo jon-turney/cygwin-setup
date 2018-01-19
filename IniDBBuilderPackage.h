@@ -37,6 +37,7 @@ public:
 
   void buildTimestamp (const std::string& );
   void buildVersion (const std::string& );
+  const std::string buildMinimumVersion(const std::string &);
   void buildPackage (const std::string& );
   void buildPackageVersion (const std::string& );
   void buildPackageSDesc (const std::string& );

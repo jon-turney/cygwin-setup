@@ -65,6 +65,22 @@ IniDBBuilderPackage::buildVersion (const std::string& aVersion)
     }
 }
 
+const std::string
+IniDBBuilderPackage::buildMinimumVersion (const std::string& minimum)
+{
+  if (version_compare(setup_version, minimum) < 0)
+    {
+      char min_vers[256];
+      snprintf (min_vers, sizeof(min_vers),
+                "The current ini file requires at least version %s of setup.\n"
+                "Please download a newer version from http://www.cygwin.com/setup-%s.exe",
+                minimum.c_str(),
+                is_64bit ? "x86_64" : "x86");
+      return min_vers;
+    }
+  return "";
+}
+
 void
 IniDBBuilderPackage::buildPackage (const std::string& _name)
 {

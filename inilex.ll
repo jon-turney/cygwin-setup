@@ -107,7 +107,9 @@ B64	[a-zA-Z0-9_-]
 
 "setup-timestamp:"	return SETUP_TIMESTAMP;
 "setup-version:"	return SETUP_VERSION;
+"setup-minimum-version:"	return SETUP_MINIMUM_VERSION;
 "arch:"			return ARCH;
+
 "release:"		return RELEASE;
 "Package:"		return PACKAGENAME;
 [vV]"ersion:"		return PACKAGEVERSION;

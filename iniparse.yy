@@ -35,8 +35,15 @@ IniDBBuilderPackage *iniBuilder;
 extern int yylineno;
 %}
 
-%token STRING 
-%token SETUP_TIMESTAMP SETUP_VERSION PACKAGEVERSION INSTALL SOURCE SDESC LDESC
+%token STRING
+%token SETUP_TIMESTAMP
+%token SETUP_VERSION
+%token SETUP_MINIMUM_VERSION
+%token PACKAGEVERSION
+%token INSTALL
+%token SOURCE
+%token SDESC
+%token LDESC
 %token REPLACE_VERSIONS
 %token CATEGORY DEPENDS REQUIRES
 %token T_PREV T_CURR T_TEST T_OTHER
@@ -59,12 +66,13 @@ whole_file
 setup_headers: /* empty */
  | setup_headers header
  ;
- 
+
 header /* non-empty */
  : SETUP_TIMESTAMP STRING	{ iniBuilder->buildTimestamp ($2); } NL
  | SETUP_VERSION STRING		{ iniBuilder->buildVersion ($2); } NL
  | RELEASE STRING		{ iniBuilder->set_release ($2); } NL
- | ARCH STRING 			{ iniBuilder->set_arch ($2); } NL
+ | ARCH STRING			{ iniBuilder->set_arch ($2); } NL
+ | SETUP_MINIMUM_VERSION STRING { std::string e = iniBuilder->buildMinimumVersion ($2); if (!e.empty()) { yyerror(e); } } NL
  ;
 
 packages: /* empty */
