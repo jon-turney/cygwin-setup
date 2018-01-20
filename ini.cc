@@ -108,11 +108,11 @@ public:
     }
   virtual void warning (const std::string& message)const
     {
-      mbox (0, message.c_str (), "Warning", 0);
+      mbox (Progress.GetHWND(), message.c_str (), "Warning", 0);
     }
   virtual void error (const std::string& message)const
     {
-      mbox (0, message.c_str (), "Parse Errors", 0);
+      mbox (Progress.GetHWND(), message.c_str (), "Parse Errors", 0);
     }
   virtual ~ GuiParseFeedback ()
     {
