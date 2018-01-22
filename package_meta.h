@@ -78,6 +78,11 @@ public:
     message.set (message_id, message_string);
   }
 
+  void set_version_blacklist(std::set <std::string> &_list)
+  {
+    version_blacklist = _list;
+  }
+
   std::string action_caption () const;
   packageversion trustp (bool _default, trusts const t) const
   {
@@ -157,6 +162,9 @@ public:
   void addScript(Script const &);
   std::vector <Script> &scripts();
 
+  /* this version is undesirable */
+  bool isBlacklisted(const packageversion &version) const;
+
 protected:
   packagemeta &operator= (packagemeta const &);
 private:
@@ -166,6 +174,8 @@ private:
 
   bool _picked; /* true if desired version is to be (re)installed */
   bool _srcpicked;
+
+  std::set <std::string> version_blacklist;
 };
 
 #endif /* SETUP_PACKAGE_META_H */

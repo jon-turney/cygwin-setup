@@ -567,6 +567,15 @@ SolverTasks::setTasks()
             add(pkg->installed, taskReinstall); // reinstall
           else if (pkg->installed != pkg->default_version)
             add(pkg->installed, taskKeep); // keep
+          else
+            {
+              // if installed (with no action selected), but blacklisted, force
+              // a distupgrade of this package
+              if (pkg->isBlacklisted(pkg->installed))
+                {
+                  add(pkg->installed, taskForceDistUpgrade);
+                }
+            }
         }
       else if (pkg->default_version)
         add(pkg->default_version, taskSkip); // skip
@@ -748,6 +757,9 @@ SolverSolution::tasksToJobs(SolverTasks &tasks, updateMode update, Queue &job)
           break;
         case SolverTasks::taskSkip:
           queue_push2(&job, SOLVER_LOCK | SOLVER_SOLVABLE_NAME, sv.name_id());
+          break;
+        case SolverTasks::taskForceDistUpgrade:
+          queue_push2(&job, SOLVER_DISTUPGRADE | SOLVER_SOLVABLE, sv.id);
           break;
         default:
           Log (LOG_PLAIN) << "unknown task " << (*i).second << endLog;

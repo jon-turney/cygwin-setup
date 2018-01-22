@@ -58,6 +58,7 @@ public:
   void buildPackageListNode (const std::string& );
   void buildPackageListOperator (PackageSpecification::_operators const &);
   void buildPackageListOperatorVersion (const std::string& );
+  void buildPackageReplaceVersionsList (const std::string& );
 
   void set_arch (const std::string& a) { arch = a; }
   void set_release (const std::string& rel) { release = rel; }
@@ -82,6 +83,7 @@ private:
   PackageDepends dependsNodeList;
   PackageDepends obsoletesNodeList;
   SolverPool::addPackageData cbpv;
+  std::set <std::string> replace_versions;
 
   IniParseFeedback const &_feedback;
 };

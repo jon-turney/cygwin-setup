@@ -74,6 +74,7 @@ IniDBBuilderPackage::buildPackage (const std::string& _name)
   message_id = "";
   message_string = "";
   categories.clear();
+  replace_versions.clear();
 
   cbpv.reponame = release;
   cbpv.version = "";
@@ -302,6 +303,12 @@ IniDBBuilderPackage::buildMessage (const std::string& _message_id, const std::st
   message_string = _message_string;
 }
 
+void
+IniDBBuilderPackage::buildPackageReplaceVersionsList (const std::string& version)
+{
+  replace_versions.insert(version);
+}
+
 /* privates */
 void
 IniDBBuilderPackage::process ()
@@ -325,6 +332,7 @@ IniDBBuilderPackage::process ()
       pkg->add_category(*i);
     }
   pkg->set_message(message_id, message_string);
+  pkg->set_version_blacklist(replace_versions);
 
   // Reset for next version
   cbpv.version = "";

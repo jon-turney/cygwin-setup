@@ -188,6 +188,20 @@ packagemeta::add_version (packageversion & thepkg, const SolverPool::addPackageD
     }
 }
 
+bool
+packagemeta::isBlacklisted(const packageversion &version) const
+{
+  for (std::set<std::string>::iterator i = version_blacklist.begin();
+       i != version_blacklist.end();
+       i++)
+    {
+      if (i->compare(version.Canonical_version()) == 0)
+        return true;
+    }
+
+  return false;
+}
+
 void
 packagemeta::set_installed_version (const std::string &version)
 {

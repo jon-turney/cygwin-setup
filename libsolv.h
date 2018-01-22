@@ -186,6 +186,7 @@ class SolverTasks
     taskReinstall,
     taskKeep,
     taskSkip,
+    taskForceDistUpgrade,
   };
   void add(const SolvableVersion &v, task t)
   {
