@@ -27,8 +27,6 @@ public:
   virtual long OnNext ();
   virtual long OnBack ();
   virtual long OnUnattended ();
-private:
-  long whatNext ();
 };
 
 class PrereqChecker

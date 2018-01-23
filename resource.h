@@ -69,6 +69,7 @@
 #define IDD_POSTINSTALL                   222
 #define IDD_FILE_INUSE                    223
 #define IDD_DOWNLOAD_ERROR                224
+#define IDD_CONFIRM                       225
 
 // Bitmaps
 
@@ -181,3 +182,4 @@
 #define IDC_DOWNLOAD_EDIT                 594
 #define IDC_CHOOSE_DO_SEARCH              595
 #define IDC_CHOOSE_SYNC                   596
+#define IDC_CONFIRM_EDIT                  597

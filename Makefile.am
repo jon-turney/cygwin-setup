@@ -119,6 +119,8 @@ inilint_SOURCES = \
 	compress_gz.h \
 	compress_xz.cc \
 	compress_xz.h \
+	confirm.cc \
+	confirm.h \
 	ConnectionSetting.cc \
 	ConnectionSetting.h \
 	ControlAdjuster.cc \

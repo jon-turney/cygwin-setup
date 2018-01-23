@@ -55,6 +55,7 @@
 #include "site.h"
 #include "choose.h"
 #include "prereq.h"
+#include "confirm.h"
 #include "threebar.h"
 #include "desktop.h"
 #include "postinstallresults.h"
@@ -135,6 +136,7 @@ main_display ()
   SitePage Site;
   ChooserPage Chooser;
   PrereqPage Prereq;
+  ConfirmPage Confirm;
   DesktopSetupPage Desktop;
   PropSheet MainWindow;
 
@@ -175,6 +177,7 @@ main_display ()
   Site.Create ();
   Chooser.Create ();
   Prereq.Create ();
+  Confirm.Create ();
   Progress.Create ();
   PostInstallResults.Create ();
   Desktop.Create ();
@@ -189,6 +192,7 @@ main_display ()
   MainWindow.AddPage (&Site);
   MainWindow.AddPage (&Chooser);
   MainWindow.AddPage (&Prereq);
+  MainWindow.AddPage (&Confirm);
   MainWindow.AddPage (&Progress);
   MainWindow.AddPage (&PostInstallResults);
   MainWindow.AddPage (&Desktop);

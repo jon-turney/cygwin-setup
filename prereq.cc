@@ -13,26 +13,14 @@
  *
  */
 
-#include "win32.h"
-#include <commctrl.h>
-#include <stdio.h>
-#include <io.h>
-#include <ctype.h>
-#include <process.h>
-#include <queue>
-
 #include "prereq.h"
-#include "dialog.h"
 #include "resource.h"
 #include "state.h"
-#include "propsheet.h"
 #include "threebar.h"
-#include "Generic.h"
 #include "LogSingleton.h"
 #include "ControlAdjuster.h"
 #include "package_db.h"
-#include "package_meta.h"
-#include "msg.h"
+
 #include "Exception.h"
 #include "getopt++/BoolOption.h"
 
@@ -120,23 +108,7 @@ PrereqPage::OnNext ()
   PrereqChecker p;
   p.finalize();
 
-  return whatNext();
-}
-
-long
-PrereqPage::whatNext ()
-{
-  if (source == IDC_SOURCE_LOCALDIR)
-    {
-      // Next, install
-      Progress.SetActivateTask (WM_APP_START_INSTALL);
-    }
-  else
-    {
-      // Next, start download from internet
-      Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
-    }
-  return IDD_INSTATUS;
+  return IDD_CONFIRM;
 }
 
 long
@@ -160,7 +132,7 @@ PrereqPage::OnUnattended ()
   if (unattended_mode == chooseronly)
     return -1;
 
-  return whatNext();
+  return IDD_CONFIRM;
 }
 
 // ---------------------------------------------------------------------------
@@ -233,12 +205,7 @@ do_prereq_check_thread(HINSTANCE h, HWND owner)
   if (p.isMet ())
     {
       p.finalize();
-
-      if (source == IDC_SOURCE_LOCALDIR)
-	Progress.SetActivateTask (WM_APP_START_INSTALL);  // install
-      else
-	Progress.SetActivateTask (WM_APP_START_DOWNLOAD); // start download
-      retval = IDD_INSTATUS;
+      retval = IDD_CONFIRM;
     }
   else
     {
