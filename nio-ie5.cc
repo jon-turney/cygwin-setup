@@ -63,6 +63,57 @@ determine_default_useragent(void)
   return default_useragent;
 }
 
+
+class Proxy
+{
+  int method;
+  std::string host;
+  int port;
+  std::string hostport;  // host:port
+
+public:
+  Proxy (int method, char const *host, int port)
+    : method(method),
+      host(host ? host : ""),
+      port(port),
+      hostport(std::string(host ? host : "") + ":" + std::to_string(port))
+    {};
+
+  bool operator!= (const Proxy &o) const;
+
+  DWORD type (void) const;
+  char const *string (void) const;
+};
+
+bool Proxy::operator!= (const Proxy &o) const
+{
+    if (method != o.method) return true;
+    if (method != IDC_NET_PROXY) return false;
+    // it's only meaningful to compare host:port for method == IDC_NET_PROXY
+    if (host != o.host) return true;
+    if (port != o.port) return true;
+    return false;
+}
+
+char const *Proxy::string(void) const
+{
+  if (method == IDC_NET_PROXY)
+    return hostport.c_str();
+  else
+    return NULL;
+}
+
+DWORD Proxy::type (void) const
+{
+  switch (method)
+    {
+      case IDC_NET_PROXY: return INTERNET_OPEN_TYPE_PROXY;
+      case IDC_NET_PRECONFIG: return INTERNET_OPEN_TYPE_PRECONFIG;
+      default:
+      case IDC_NET_DIRECT: return INTERNET_OPEN_TYPE_DIRECT;
+    }
+}
+
 NetIO_IE5::NetIO_IE5 (char const *_url, bool direct, bool cachable):
 NetIO (_url)
 {
