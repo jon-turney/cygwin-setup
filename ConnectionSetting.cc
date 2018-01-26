@@ -39,7 +39,7 @@ ConnectionSetting::~ConnectionSetting ()
     case IDC_NET_DIRECT:
       UserSettings::instance().set("net-method", "Direct");
       break;
-    case IDC_NET_IE5:
+    case IDC_NET_PRECONFIG:
       UserSettings::instance().set("net-method", "IE");
       break;
     case IDC_NET_PROXY:
@@ -60,10 +60,10 @@ ConnectionSetting::typeFromString(const std::string& aType)
   if (!casecompare(aType, "Direct"))
     return IDC_NET_DIRECT;
   if (!casecompare(aType, "IE"))
-    return IDC_NET_IE5;
+    return IDC_NET_PRECONFIG;
   if (!casecompare(aType, "Proxy"))
     return IDC_NET_PROXY;
 
   /* A sanish default */
-  return IDC_NET_IE5;
+  return IDC_NET_PRECONFIG;
 }

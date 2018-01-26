@@ -37,7 +37,7 @@ extern ThreeBarProgressPage Progress;
 
 static StringOption ProxyOption ("", 'p', "proxy", "HTTP/FTP proxy (host:port)", false);
 
-static int rb[] = { IDC_NET_IE5, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
+static int rb[] = { IDC_NET_PRECONFIG, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
 static bool doing_loading = false;
 
 void
@@ -46,7 +46,7 @@ NetPage::CheckIfEnableNext ()
   int e = 0, p = 0;
   DWORD ButtonFlags = PSWIZB_BACK;
 
-  if (NetIO::net_method == IDC_NET_IE5 ||
+  if (NetIO::net_method == IDC_NET_PRECONFIG ||
       NetIO::net_method == IDC_NET_DIRECT)
     e = 1;
   else if (NetIO::net_method == IDC_NET_PROXY)
@@ -111,7 +111,7 @@ NetPage::OnInit ()
   std::string proxyString (ProxyOption);
 
   if (!NetIO::net_method)
-    NetIO::net_method = IDC_NET_IE5;
+    NetIO::net_method = IDC_NET_PRECONFIG;
 
   if (proxyString.size ())
   {
@@ -132,7 +132,7 @@ NetPage::OnInit ()
   // Check to see if any radio buttons are selected. If not, select a default.
   if (SendMessage (GetDlgItem (IDC_NET_DIRECT), BM_GETCHECK, 0, 0) != BST_CHECKED
       && SendMessage (GetDlgItem (IDC_NET_PROXY), BM_GETCHECK, 0, 0) != BST_CHECKED)
-    SendMessage (GetDlgItem (IDC_NET_IE5), BM_CLICK, 0, 0);
+    SendMessage (GetDlgItem (IDC_NET_PRECONFIG), BM_CLICK, 0, 0);
 }
 
 long
@@ -164,7 +164,7 @@ NetPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 {
   switch (id)
     {
-    case IDC_NET_IE5:
+    case IDC_NET_PRECONFIG:
     case IDC_NET_DIRECT:
     case IDC_NET_PROXY:
     case IDC_PROXY_HOST:

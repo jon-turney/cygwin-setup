@@ -100,7 +100,7 @@
 #define IDC_SITE_NEXT                     508
 #define IDC_BACK                          509
 #define IDC_OTHER_URL                     510
-#define IDC_NET_IE5                       511
+#define IDC_NET_PRECONFIG                 511
 #define IDC_NET_DIRECT                    512
 #define IDC_NET_PROXY                     513
 #define IDC_PROXY_HOST                    514

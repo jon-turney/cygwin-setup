@@ -140,7 +140,7 @@ NetIO::open (char const *url, bool cachable)
 
   if (proto == file)
     rv = new NetIO_File (url);
-  else if (net_method == IDC_NET_IE5)
+  else if (net_method == IDC_NET_PRECONFIG)
     rv = new NetIO_IE5 (url, false, cachable);
   else if (net_method == IDC_NET_PROXY)
     rv = new NetIO_HTTP (url);
@@ -280,8 +280,8 @@ NetIO::net_method_name ()
 {
   switch (net_method)
     {
-    case IDC_NET_IE5:
-      return "IE5";
+    case IDC_NET_PRECONFIG:
+      return "Preconfig";
     case IDC_NET_DIRECT:
       return "Direct";
     case IDC_NET_PROXY:
