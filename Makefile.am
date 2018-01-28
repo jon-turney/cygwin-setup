@@ -194,8 +194,6 @@ inilint_SOURCES = \
 	netio.h \
 	nio-ie5.cc \
 	nio-ie5.h \
-	nio-http.cc \
-	nio-http.h \
 	package_db.cc \
 	package_db.h \
 	package_depends.h \

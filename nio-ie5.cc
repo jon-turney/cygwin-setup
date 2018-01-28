@@ -33,9 +33,6 @@
 
 static StringOption UserAgent ("", '\0', "user-agent", "User agent string for HTTP requests");
 
-static HINTERNET internet_direct = 0;
-static HINTERNET internet_preconfig = 0;
-
 const std::string &
 determine_default_useragent(void)
 {
@@ -114,20 +111,23 @@ DWORD Proxy::type (void) const
     }
 }
 
-NetIO_IE5::NetIO_IE5 (char const *_url, bool direct, bool cachable):
+static HINTERNET internet = 0;
+static Proxy last_proxy = Proxy(-1, "", -1);
+
+NetIO_IE5::NetIO_IE5 (char const *_url, bool cachable):
 NetIO (_url)
 {
   int resend = 0;
-  HINTERNET *internet;
 
-  if (direct)
-    internet = &internet_direct;
-  else
-    internet = &internet_preconfig;
-
-  if (*internet == 0)
+  Proxy proxy = Proxy(net_method, net_proxy_host, net_proxy_port);
+  if (proxy != last_proxy)
     {
-      InternetAttemptConnect (0);
+      last_proxy = proxy;
+
+      if (internet != 0)
+        InternetCloseHandle(internet);
+      else
+        InternetAttemptConnect (0);
 
       const char *lpszAgent = determine_default_useragent().c_str();
       if (UserAgent.isPresent())
@@ -148,9 +148,7 @@ NetIO (_url)
             }
         }
 
-      *internet = InternetOpen (lpszAgent,
-				direct ? INTERNET_OPEN_TYPE_DIRECT : INTERNET_OPEN_TYPE_PRECONFIG,
-				NULL, NULL, 0);
+      internet = InternetOpen (lpszAgent, proxy.type(), proxy.string(), NULL, 0);
     }
 
   DWORD flags =
@@ -163,7 +161,7 @@ NetIO (_url)
     flags |= INTERNET_FLAG_RESYNCHRONIZE;
   }
 
-  connection = InternetOpenUrl (*internet, url, NULL, 0, flags, 0);
+  connection = InternetOpenUrl (internet, url, NULL, 0, flags, 0);
 
 try_again:
 

@@ -29,7 +29,6 @@
 #include "state.h"
 #include "msg.h"
 #include "nio-ie5.h"
-#include "nio-http.h"
 #include "dialog.h"
 
 int NetIO::net_method;
@@ -145,14 +144,7 @@ NetIO::open (char const *url, bool cachable)
       url = file_url.c_str();
     }
 
-  if (proto == file)
-    rv = new NetIO_IE5 (url, true, false);
-  else if (net_method == IDC_NET_PRECONFIG)
-    rv = new NetIO_IE5 (url, false, cachable);
-  else if (net_method == IDC_NET_PROXY)
-    rv = new NetIO_HTTP (url);
-  else if (net_method == IDC_NET_DIRECT)
-    rv = new NetIO_IE5 (url, true, cachable);
+  rv = new NetIO_IE5 (url, proto == file ? false : cachable);
 
   if (rv && !rv->ok ())
     {
