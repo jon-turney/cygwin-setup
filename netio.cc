@@ -28,7 +28,6 @@
 #include "resource.h"
 #include "state.h"
 #include "msg.h"
-#include "nio-file.h"
 #include "nio-ie5.h"
 #include "nio-http.h"
 #include "dialog.h"
@@ -124,6 +123,8 @@ NetIO *
 NetIO::open (char const *url, bool cachable)
 {
   NetIO *rv = 0;
+  std::string file_url;
+
   enum
   { http, https, ftp, ftps, file }
   proto;
@@ -135,11 +136,17 @@ NetIO::open (char const *url, bool cachable)
     proto = ftp;
   else if (strncmp (url, "ftps://", 7) == 0)
     proto = ftps;
-  else
+  else if (strncmp (url, "file://", 7) == 0)
     proto = file;
+  else
+    {
+      proto = file;
+      file_url = (std::string("file://") + url);
+      url = file_url.c_str();
+    }
 
   if (proto == file)
-    rv = new NetIO_File (url);
+    rv = new NetIO_IE5 (url, true, false);
   else if (net_method == IDC_NET_PRECONFIG)
     rv = new NetIO_IE5 (url, false, cachable);
   else if (net_method == IDC_NET_PROXY)
