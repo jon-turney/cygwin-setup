@@ -196,8 +196,6 @@ inilint_SOURCES = \
 	nio-ie5.h \
 	nio-file.cc \
 	nio-file.h \
-	nio-ftp.cc \
-	nio-ftp.h \
 	nio-http.cc \
 	nio-http.h \
 	package_db.cc \

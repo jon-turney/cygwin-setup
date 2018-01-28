@@ -31,7 +31,6 @@
 #include "nio-file.h"
 #include "nio-ie5.h"
 #include "nio-http.h"
-#include "nio-ftp.h"
 #include "dialog.h"
 
 int NetIO::net_method;
@@ -147,23 +146,6 @@ NetIO::open (char const *url, bool cachable)
     rv = new NetIO_HTTP (url);
   else if (net_method == IDC_NET_DIRECT)
     rv = new NetIO_IE5 (url, true, cachable);
-  else if (net_method == IDC_NET_DIRECT_LEGACY)
-    {
-      switch (proto)
-	{
-	case http:
-	  rv = new NetIO_HTTP (url);
-	  break;
-	case ftp:
-	  rv = new NetIO_FTP (url);
-	  break;
-	case file:
-	  rv = new NetIO_File (url);
-	  break;
-	default:
-	  mbox (NULL, "Protocol not handled by legacy URL handler", "Cygwin Setup", MB_OK);
-	}
-    }
 
   if (rv && !rv->ok ())
     {
@@ -304,8 +286,6 @@ NetIO::net_method_name ()
       return "Direct";
     case IDC_NET_PROXY:
       return "Proxy";
-    case IDC_NET_DIRECT_LEGACY:
-      return "Direct (legacy)";
     default:
       return "Unknown";
     }
