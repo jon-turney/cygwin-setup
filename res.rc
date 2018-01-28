@@ -315,8 +315,9 @@ END
 
 // Right-aligned controls.
 #define SETUP_EXP_X		(SETUP_STANDARD_DIALOG_W - SETUP_KPCE_W - 7)
-#define SETUP_CURR_X		(SETUP_EXP_X - SETUP_KPCE_W - 5)
-#define SETUP_KEEP_X		(SETUP_CURR_X - SETUP_KPCE_W - 5)
+#define SETUP_SYNC_X		(SETUP_EXP_X - SETUP_KPCE_W - 5)
+#define SETUP_BEST_X		(SETUP_SYNC_X - SETUP_KPCE_W - 5)
+#define SETUP_KEEP_X		(SETUP_BEST_X - SETUP_KPCE_W - 5)
 
 // Left-aligned controls.
 #define SETUP_VIEW_X		(7)
@@ -350,9 +351,11 @@ BEGIN
                     SETUP_CLEAR_W, 14
     CONTROL         "&Keep", IDC_CHOOSE_KEEP, "Button", BS_AUTORADIOBUTTON
                     | WS_GROUP | WS_TABSTOP, SETUP_KEEP_X, 30, SETUP_KPCE_W, 14
-    CONTROL         "C&urrent", IDC_CHOOSE_CURR, "Button", BS_AUTORADIOBUTTON,
-                    SETUP_CURR_X, 30, SETUP_KPCE_W, 14
-    CONTROL         "&Test", IDC_CHOOSE_EXP, "Button", BS_AUTORADIOBUTTON,
+    CONTROL         "&Best", IDC_CHOOSE_BEST, "Button", BS_AUTORADIOBUTTON,
+                    SETUP_BEST_X, 30, SETUP_KPCE_W, 14
+    CONTROL         "&Sync", IDC_CHOOSE_SYNC, "Button", BS_AUTORADIOBUTTON,
+                    SETUP_SYNC_X, 30, SETUP_KPCE_W, 14
+    CONTROL         "&Test", IDC_CHOOSE_EXP, "Button", BS_AUTOCHECKBOX | WS_TABSTOP,
                     SETUP_EXP_X, 30, SETUP_KPCE_W, 14
     CONTROL         "", IDC_HEADSEPARATOR, "Static", SS_BLACKFRAME | SS_SUNKEN,
                     0, 28, SETUP_STANDARD_DIALOG_W, 1
@@ -378,15 +381,31 @@ BEGIN
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     LTEXT           "Resolving Dependencies",IDC_STATIC_HEADER_TITLE
                     ,7,0,258,8,NOT WS_GROUP
-    LTEXT           "The following packages are required to satisfy "
+    LTEXT           "The following problems occured trying to satisfy "
                     "dependencies.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
-    CONTROL         "&Select required packages (RECOMMENDED)"
+    CONTROL         "&Accept default problem solutions"
                     ,IDC_PREREQ_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
                     7,167,225,14
     EDITTEXT        IDC_PREREQ_EDIT,7,41,303,124,WS_VSCROLL | WS_HSCROLL |
                     ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL |
                     ES_AUTOVSCROLL
 
+END
+
+IDD_CONFIRM DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION |
+    WS_SYSMENU
+CAPTION "Cygwin Setup - Review and confirm changes"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
+                    0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Review and confirm changes",IDC_STATIC_HEADER_TITLE
+                    ,7,0,258,8,NOT WS_GROUP
+    EDITTEXT        IDC_CONFIRM_EDIT,7,41,325,131,WS_VSCROLL | WS_HSCROLL |
+                    ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL |
+                    ES_AUTOVSCROLL
 END
 
 IDD_DROPPED DIALOG DISCARDABLE  0, 0, SETUP_STANDARD_DIALOG_W, 142
@@ -558,10 +577,11 @@ BEGIN
     IDS_TRUSTKEEP_TOOLTIP   "Sets all packages to their currently installed "
        "version.  This is equivalent to telling setup not to make any "
        "changes to any package."
-    IDS_TRUSTCURR_TOOLTIP   "Globally select the version that is currently "
-       "considered the most stable. (RECOMMENDED)"
-    IDS_TRUSTEXP_TOOLTIP    "Globally select the most recent version, even if "
-       "that version is considered experimental or for test use by the maintainer."
+    IDS_TRUSTCURR_TOOLTIP   "Sets all packages to the best version available. "
+       "(RECOMMENDED)"
+    IDS_TRUSTSYNC_TOOLTIP   "Sets all packages to the version available from the "
+       "package respository, downgrading if necessary."
+    IDS_TRUSTEXP_TOOLTIP    "Enable test packages."
     IDS_VIEWBUTTON_TOOLTIP  "Select the package view.  This determines "
        "which packages are shown below.\r\n"
        "\r\n"

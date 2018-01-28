@@ -118,10 +118,13 @@ B64	[a-zA-Z0-9_-]
 "message:"		return MESSAGE;
 "Source:"		return SOURCEPACKAGE;
 "Build-Depends:"	return BUILDDEPENDS;
+"replace-versions:"	return REPLACE_VERSIONS;
 
 "category:"|"Section:"	return CATEGORY;
 "requires:"		return REQUIRES;
 [dD]"epends:"		return DEPENDS;
+[dD]"epends2:"		return DEPENDS;
+[oO]"bsoletes:"	return OBSOLETES;
 
 ^{STR}":"		ignore_line ();
 

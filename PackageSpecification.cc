@@ -22,10 +22,28 @@ PackageSpecification::PackageSpecification (const std::string& packageName)
 {
 }
 
+PackageSpecification::PackageSpecification (const std::string& packageName,
+                                            const std::string& packageVersion)
+  : _packageName (packageName) , _operator (Equals), _version (packageVersion)
+{
+}
+
 const std::string&
 PackageSpecification::packageName () const
 {
   return _packageName;
+}
+
+const PackageSpecification::_operators
+PackageSpecification::op() const
+{
+  return _operator;
+}
+
+const std::string&
+PackageSpecification::version() const
+{
+  return _version;
 }
 
 void

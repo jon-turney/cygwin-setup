@@ -16,7 +16,6 @@
 #include "PickPackageLine.h"
 #include "PickView.h"
 #include "package_db.h"
-#include "package_version.h"
 
 void
 PickPackageLine::paint (HDC hdc, HRGN unused, int x, int y, int col_num, int show_cat)

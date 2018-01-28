@@ -98,7 +98,7 @@ inilint_SOURCES = \
 	String++.h
 
 @SETUP@_LDADD = \
-	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error -llzma -lbz2 -lz \
+	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error -llzma -lbz2 -lz -lsolv -lregex \
 	-lshlwapi -lcomctl32 -lole32 -lws2_32 -lpsapi -luuid -lntdll -lwininet -lmingw32
 @SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 @SETUP@_SOURCES = \
@@ -119,6 +119,8 @@ inilint_SOURCES = \
 	compress_gz.h \
 	compress_xz.cc \
 	compress_xz.h \
+	confirm.cc \
+	confirm.h \
 	ConnectionSetting.cc \
 	ConnectionSetting.h \
 	ControlAdjuster.cc \
@@ -126,8 +128,6 @@ inilint_SOURCES = \
 	crypto.cc \
 	crypto.h \
 	cyg-pubkey.h \
-	cygpackage.cc \
-	cygpackage.h \
 	desktop.cc \
 	desktop.h \
 	dialog.cc \
@@ -171,6 +171,8 @@ inilint_SOURCES = \
 	IOStreamProvider.h \
 	KeysSetting.cc \
 	KeysSetting.h \
+	libsolv.cc \
+	libsolv.h \
 	localdir.cc \
 	localdir.h \
 	LogFile.cc \
@@ -206,7 +208,6 @@ inilint_SOURCES = \
 	package_meta.h \
 	package_source.cc \
 	package_source.h \
-	package_version.cc \
 	package_version.h \
 	PackageSpecification.cc \
 	PackageSpecification.h \

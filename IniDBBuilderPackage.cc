@@ -22,8 +22,6 @@
 #include "IniParseFeedback.h"
 #include "package_db.h"
 #include "package_meta.h"
-#include "package_version.h"
-#include "cygpackage.h"
 #include "ini.h"
 // for strtoul
 #include <string.h>
@@ -34,7 +32,7 @@
 using namespace std;
 
 IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
-cp (0), cbpv (), cspv (), currentSpec (0), currentNodeList (0), trust (0), _feedback (aFeedback){}
+currentSpec (0), _feedback (aFeedback){}
 
 IniDBBuilderPackage::~IniDBBuilderPackage()
 {
@@ -67,33 +65,34 @@ IniDBBuilderPackage::buildVersion (const std::string& aVersion)
 }
 
 void
-IniDBBuilderPackage::buildPackage (const std::string& name)
+IniDBBuilderPackage::buildPackage (const std::string& _name)
 {
-#if DEBUG
-  if (cp)
-    {
-      Log (LOG_BABBLE) << "Finished with package " << cp->name << endLog;
-      if (cbpv)
-	{
-	  Log (LOG_BABBLE) << "Version " << cbpv.Canonical_version() << endLog;
-	  Log (LOG_BABBLE) << "Depends:";
-	  dumpPackageDepends (cbpv.depends(), Log (LOG_BABBLE));
-	  Log (LOG_BABBLE) << endLog;
-	}
-    }
-#endif
-  packagedb db;
-  cp = db.findBinary (PackageSpecification(name));
-  if (!cp)
-    {
-      cp = new packagemeta (name);
-      db.packages.insert (packagedb::packagecollection::value_type(cp->name,cp));
-    }
-  cbpv = cygpackage::createInstance (name, package_binary);
-  cspv = packageversion ();
+  process();
+
+  /* Reset for next package */
+  name = _name;
+  message_id = "";
+  message_string = "";
+  categories.clear();
+  replace_versions.clear();
+
+  cbpv.reponame = release;
+  cbpv.version = "";
+  cbpv.vendor = release;
+  cbpv.sdesc = "";
+  cbpv.ldesc = "";
+  cbpv.stability = TRUST_CURR;
+  cbpv.type = package_binary;
+  cbpv.spkg = PackageSpecification();
+  cbpv.spkg_id = packageversion();
+  cbpv.requires = NULL;
+  cbpv.obsoletes = NULL;
+  cbpv.archive = packagesource();
+
   currentSpec = NULL;
   currentNodeList = NULL;
-  trust = TRUST_CURR;
+  dependsNodeList = PackageDepends();
+  obsoletesNodeList = PackageDepends();
 #if DEBUG
   Log (LOG_BABBLE) << "Created package " << name << endLog;
 #endif
@@ -102,20 +101,19 @@ IniDBBuilderPackage::buildPackage (const std::string& name)
 void
 IniDBBuilderPackage::buildPackageVersion (const std::string& version)
 {
-  cbpv.setCanonicalVersion (version);
-  add_correct_version();
+  cbpv.version = version;
 }
 
 void
 IniDBBuilderPackage::buildPackageSDesc (const std::string& theDesc)
 {
-  cbpv.set_sdesc(theDesc);
+  cbpv.sdesc = theDesc;
 }
 
 void
 IniDBBuilderPackage::buildPackageLDesc (const std::string& theDesc)
 {
-  cbpv.set_ldesc(theDesc);
+  cbpv.ldesc = theDesc;
 }
 
 void
@@ -124,21 +122,23 @@ IniDBBuilderPackage::buildPackageInstall (const std::string& path,
                                           char *hash,
                                           hashType type)
 {
-  process_src (*cbpv.source(), path);
-  setSourceSize (*cbpv.source(), size);
+  // set archive path, size, mirror, hash
+  cbpv.archive.set_canonical(path.c_str());
+  cbpv.archive.size = atoi(size.c_str());
+  cbpv.archive.sites.push_back(site(parse_mirror));
 
   switch (type) {
   case hashType::sha512:
-    if (hash && !cbpv.source()->sha512_isSet)
+    if (hash && !cbpv.archive.sha512_isSet)
       {
-        memcpy (cbpv.source()->sha512sum, hash, sizeof(cbpv.source()->sha512sum));
-        cbpv.source()->sha512_isSet = true;
+        memcpy (cbpv.archive.sha512sum, hash, sizeof(cbpv.archive.sha512sum));
+        cbpv.archive.sha512_isSet = true;
       }
     break;
 
   case hashType::md5:
-    if (hash && !cbpv.source()->md5.isSet())
-      cbpv.source()->md5.set((unsigned char *)hash);
+    if (hash && !cbpv.archive.md5.isSet())
+      cbpv.archive.md5.set((unsigned char *)hash);
     break;
 
   case hashType::none:
@@ -152,91 +152,70 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
                                          char *hash,
                                          hashType type)
 {
-  packagedb db;
-  /* get an appropriate metadata */
-  csp = db.findSource (PackageSpecification (cbpv.Name()));
-  if (!csp)
-    {
-      /* Copy the existing meta data to a new source package */
-      csp = new packagemeta (*cp);
-      /* delete versions information */
-      csp->versions.clear();
-      csp->desired = packageversion();
-      csp->installed = packageversion();
-      csp->curr = packageversion();
-      csp->exp = packageversion();
-      db.sourcePackages.insert (packagedb::packagecollection::value_type(csp->name,csp));
-    }
-  /* create a source packageversion */
-  cspv = cygpackage::createInstance (cbpv.Name(), package_source);
-  cspv.setCanonicalVersion (cbpv.Canonical_version());
-  set<packageversion>::iterator i=find (csp->versions.begin(),
-    csp->versions.end(), cspv);
-  if (i == csp->versions.end())
-    {
-      csp->add_version (cspv);
-    }
-  else
-    cspv = *i;
+  /* When there is a source: line, we invent a package to contain the source,
+     and make it the source package for this package. */
 
-  if (!cspv.source()->Canonical())
-    cspv.source()->set_canonical (path.c_str());
-  cspv.source()->sites.push_back(site(parse_mirror));
+  /* create a source package version */
+  SolverPool::addPackageData cspv = cbpv;
+  cspv.type = package_source;
+  cspv.requires = NULL;
+  cspv.obsoletes = NULL;
 
-  /* creates the relationship between binary and source packageversions */
-  cbpv.setSourcePackageSpecification (PackageSpecification (cspv.Name()));
-  PackageSpecification &spec = cbpv.sourcePackageSpecification();
-  spec.setOperator (PackageSpecification::Equals);
-  spec.setVersion (cbpv.Canonical_version());
-
-  setSourceSize (*cspv.source(), size);
+  /* set archive path, size, mirror, hash */
+  cspv.archive = packagesource();
+  cspv.archive.set_canonical(path.c_str());
+  cspv.archive.size = atoi(size.c_str());
+  cspv.archive.sites.push_back(site(parse_mirror));
 
   switch (type) {
   case hashType::sha512:
-    if (hash && !cspv.source()->sha512_isSet)
+    if (hash && !cspv.archive.sha512_isSet)
       {
-        memcpy (cspv.source()->sha512sum, hash, sizeof(cspv.source()->sha512sum));
-        cspv.source()->sha512_isSet = true;
+        memcpy (cspv.archive.sha512sum, hash, sizeof(cspv.archive.sha512sum));
+        cspv.archive.sha512_isSet = true;
       }
     break;
 
   case hashType::md5:
-    if (hash && !cspv.source()->md5.isSet())
-      cspv.source()->md5.set((unsigned char *)hash);
+    if (hash && !cspv.archive.md5.isSet())
+      cspv.archive.md5.set((unsigned char *)hash);
     break;
 
   case hashType::none:
     break;
   }
+
+  packagedb db;
+  packageversion spkg_id = db.addSource (name + "-src", cspv);
+
+  /* create relationship between binary and source packageversions */
+  cbpv.spkg = PackageSpecification(name + "-src");
+  cbpv.spkg_id = spkg_id;
 }
 
 void
-IniDBBuilderPackage::buildPackageTrust (int newtrust)
+IniDBBuilderPackage::buildPackageTrust (trusts newtrust)
 {
-  trust = newtrust;
-  if (newtrust != TRUST_UNKNOWN)
-    {
-      cbpv = cygpackage::createInstance (cp->name, package_binary);
-      cspv = packageversion ();
-    }
+  process();
+  cbpv.stability = newtrust;
 }
 
 void
 IniDBBuilderPackage::buildPackageCategory (const std::string& name)
 {
-  cp->add_category (name);
+  categories.insert(name);
 }
 
 void
 IniDBBuilderPackage::buildBeginDepends ()
 {
 #if DEBUG
-  Log (LOG_BABBLE) << "Beginning of a depends statement for " << cp->name
-    << endLog;
+  Log (LOG_BABBLE) << "Beginning of a depends statement " << endLog;
 #endif
   currentSpec = NULL;
-  cbpv.depends()->clear();
-  currentNodeList = cbpv.depends();
+  dependsNodeList = PackageDepends();
+  currentNodeList = &dependsNodeList;
+  cbpv.requires = &dependsNodeList;
 }
 
 void
@@ -246,55 +225,49 @@ IniDBBuilderPackage::buildBeginBuildDepends ()
   Log (LOG_BABBLE) << "Beginning of a Build-Depends statement" << endLog;
 #endif
   currentSpec = NULL;
-  currentNodeList = NULL; /* there is currently nowhere to store Build-Depends information */
+  currentNodeList = NULL;
+  /* there is currently nowhere to store Build-Depends information */
 }
 
 void
-IniDBBuilderPackage::buildSourceName (const std::string& name)
+IniDBBuilderPackage::buildBeginObsoletes ()
 {
-  if (cbpv)
-    {
-      cbpv.setSourcePackageSpecification (PackageSpecification (name));
 #if DEBUG
-      Log (LOG_BABBLE) << "\"" << cbpv.sourcePackageSpecification() <<
-	"\" is the source package for " << cp->name << "." << endLog;
+  Log (LOG_BABBLE) << "Beginning of an obsoletes statement" << endLog;
 #endif
-    }
-  else
-      _feedback.warning ((std::string ("Attempt to set source for package")
-                          + std::string(cp->name)
-			  + "before creation of a version.").c_str());
+  currentSpec = NULL;
+  obsoletesNodeList = PackageDepends();
+  currentNodeList = &obsoletesNodeList;
+  cbpv.obsoletes = &obsoletesNodeList;
+}
+
+void
+IniDBBuilderPackage::buildSourceName (const std::string& _name)
+{
+  // When there is a Source: line, that names a real source package
+  packagedb db;
+  cbpv.spkg = PackageSpecification(_name);
+  cbpv.spkg_id = db.findSourceVersion (PackageSpecification(_name, cbpv.version));
+#if DEBUG
+  Log (LOG_BABBLE) << "\"" << _name << "\" is the source package for " << name << "." << endLog;
+#endif
 }
 
 void
 IniDBBuilderPackage::buildSourceNameVersion (const std::string& version)
 {
-  if (cbpv)
-    {
-      cbpv.sourcePackageSpecification().setOperator (PackageSpecification::Equals);
-      cbpv.sourcePackageSpecification().setVersion (version);
-#if DEBUG
-      Log (LOG_BABBLE) << "The source version needed for " << cp->name <<
-	" is " << version << "." << endLog;
-#endif
-    }
-  else
-      _feedback.warning ((std::string ("Attempt to set source version for package")
-                          + std::string(cp->name)
-			  + "before creation of a version.").c_str());
+  // XXX: should be stored as sourceevr
 }
 
 void
 IniDBBuilderPackage::buildPackageListNode (const std::string & name)
 {
-  if (currentNodeList)
-    {
 #if DEBUG
-      Log (LOG_BABBLE) << "New node '" << name << "' for package list" << endLog;
+  Log (LOG_BABBLE) << "New node '" << name << "' for package list" << endLog;
 #endif
-      currentSpec = new PackageSpecification (name);
-      currentNodeList->push_back (currentSpec);
-    }
+  currentSpec = new PackageSpecification (name);
+  if (currentNodeList)
+    currentNodeList->push_back (currentSpec);
 }
 
 void
@@ -308,12 +281,7 @@ IniDBBuilderPackage::buildPackageListOperator (PackageSpecification::_operators 
 	endLog;
 #endif
     }
-  else
-    _feedback.warning ((std::string ("Attempt to set an operator for package ")
-                        + std::string(cp->name)
-		       + " with no current specification.").c_str());
 }
-
 
 void
 IniDBBuilderPackage::buildPackageListOperatorVersion (const std::string& aVersion)
@@ -326,110 +294,50 @@ IniDBBuilderPackage::buildPackageListOperatorVersion (const std::string& aVersio
 	endLog;
 #endif
     }
-  else
-      _feedback.warning ((std::string ("Attempt to set an operator version for package ")
-                          + std::string(cp->name)
-			  + " with no current specification.").c_str());
+}
+
+void
+IniDBBuilderPackage::buildMessage (const std::string& _message_id, const std::string& _message_string)
+{
+  message_id = _message_id;
+  message_string = _message_string;
+}
+
+void
+IniDBBuilderPackage::buildPackageReplaceVersionsList (const std::string& version)
+{
+  replace_versions.insert(version);
 }
 
 /* privates */
-
 void
-IniDBBuilderPackage::add_correct_version()
+IniDBBuilderPackage::process ()
 {
-  if (currentNodeList)
-    *cbpv.depends() = *currentNodeList;
+  if (!name.size())
+    return;
 
-  int merged = 0;
-  for (set<packageversion>::iterator n = cp->versions.begin();
-       !merged && n != cp->versions.end(); ++n)
-    if (*n == cbpv )
-      {
-	packageversion ver = *n;
-        /* ASSUMPTIONS:
-           categories and requires are consistent for the same version across
-           all mirrors
-           */
-        /*
-          XXX: if the versions are equal but the size/md5sum are different,
-          we should alert the user, as they may not be getting what they expect...
-        */
-        /* Copy the binary mirror across if this site claims to have an install */
-        if (cbpv.source()->sites.size() )
-          ver.source()->sites.push_back(site (cbpv.source()->sites.begin()->key));
-        /* Copy the descriptions across */
-        if (cbpv.SDesc ().size() && !n->SDesc ().size())
-          ver.set_sdesc (cbpv.SDesc ());
-        if (cbpv.LDesc ().size() && !n->LDesc ().size())
-          ver.set_ldesc (cbpv.LDesc ());
-	if (cbpv.depends()->size() && !ver.depends ()->size())
-	  *ver.depends() = *cbpv.depends();
-	/* TODO: other package lists */
-	/* Prevent dangling references */
-	currentNodeList = NULL;
-	currentSpec = NULL;
-        cbpv = *n;
-        merged = 1;
 #if DEBUG
-        Log (LOG_BABBLE) << cp->name << " merged with an existing version " << cbpv.Canonical_version() << endLog;
+  Log (LOG_BABBLE) << "Finished with package " << name << endLog;
+  Log (LOG_BABBLE) << "Version " << cbpv.version << endLog;
 #endif
-      }
 
-  if (!merged)
+  /* Transfer the accumulated package information to packagedb */
+  packagedb db;
+  packagemeta *pkg = db.addBinary (name, cbpv);
+
+  // For no good historical reason, some data lives in packagemeta rather than
+  // the packageversion
+  for (auto i = categories.begin(); i != categories.end(); i++)
     {
-      cp->add_version (cbpv);
-#if DEBUG
-      Log (LOG_BABBLE) << cp->name << " version " << cbpv.Canonical_version() << " added" << endLog;
-#endif
+      pkg->add_category(*i);
     }
+  pkg->set_message(message_id, message_string);
+  pkg->set_version_blacklist(replace_versions);
 
-  /*
-    Should this version be the one selected for this package at a given
-    stability/trust setting?  After merging potentially multiple package
-    databases, we should pick the one with the highest version number.
-  */
-  packageversion *v = NULL;
-  switch (trust)
-  {
-    case TRUST_CURR:
-      v = &(cp->curr);
-    break;
-    case TRUST_TEST:
-      v = &(cp->exp);
-    break;
-  }
-
-  if (v)
-    {
-      int comparison = packageversion::compareVersions(cbpv, *v);
-
-      if ((bool)(*v))
-        Log (LOG_BABBLE) << "package " << cp->name << " comparing versions " << cbpv.Canonical_version() << " and " << v->Canonical_version() << ", result was " << comparison << endLog;
-
-      if (comparison > 0)
-        {
-          *v = cbpv;
-        }
-    }
-}
-
-void
-IniDBBuilderPackage::process_src (packagesource &src, const std::string& path)
-{
-  if (!src.Canonical())
-    src.set_canonical (path.c_str());
-  src.sites.push_back(site(parse_mirror));
-}
-
-void
-IniDBBuilderPackage::setSourceSize (packagesource &src, const std::string& size)
-{
-  if (!src.size)
-    src.size = atoi(size.c_str());
-}
-
-void
-IniDBBuilderPackage::buildMessage (const std::string& message_id, const std::string& message)
-{
-  cp->set_message (message_id, message);
+  // Reset for next version
+  cbpv.version = "";
+  cbpv.type = package_binary;
+  cbpv.spkg = PackageSpecification();
+  cbpv.spkg_id = packageversion();
+  cbpv.archive = packagesource();
 }

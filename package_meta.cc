@@ -35,11 +35,7 @@ using namespace std;
 /* this goes at the same time */
 #include "win32.h"
 
-
 #include "script.h"
-
-#include "package_version.h"
-#include "cygpackage.h"
 #include "package_db.h"
 
 #include <algorithm>
@@ -128,19 +124,98 @@ packagemeta::~packagemeta()
 }
 
 void
-packagemeta::add_version (packageversion & thepkg)
+packagemeta::add_version (packageversion & thepkg, const SolverPool::addPackageData &pkgdata)
 {
-  /* todo: check return value */
-  versions.insert (thepkg);
+  /*
+    If a packageversion for the same version number is already present,allow
+    this version to replace it.
+
+    There is a problem where multiple repos provide a package.  It's never been
+    clear which repo should win.  With this implementation, the last one added
+    will win.
+
+    We rely on this by adding packages from installed.db last.
+   */
+
+  set <packageversion>::iterator i = versions.find(thepkg);
+  if (i != versions.end())
+    {
+      versions.erase(i);
+    }
+
+  /* Add the version */
+  std::pair<std::set <packageversion>::iterator, bool> result = versions.insert (thepkg);
+
+  if (!result.second)
+    Log (LOG_PLAIN) << "Failed to add version " << thepkg.Canonical_version() << " in package " << name << endLog;
+#ifdef DEBUG
+  else
+    Log (LOG_PLAIN) << "Added version " << thepkg.Canonical_version() << " in package " << name << endLog;
+#endif
+
+  /* Record the highest version at a given stability level */
+  /* (This has to be written somewhat carefully as attributes aren't
+     internalized yet so we can't look at them) */
+  packageversion *v = NULL;
+  switch (pkgdata.stability)
+    {
+    case TRUST_CURR:
+      v = &(this->curr);
+      break;
+    case TRUST_TEST:
+      v = &(this->exp);
+      break;
+    default:
+      break;
+    }
+
+  if (v)
+    {
+      /* Any version is always greater than no version */
+      int comparison = 1;
+      if (*v)
+        comparison = SolvableVersion::compareVersions(thepkg, *v);
+
+#ifdef DEBUG
+      if ((bool)(*v))
+        Log (LOG_BABBLE) << "package " << thepkg.Name() << " comparing versions " << thepkg.Canonical_version() << " and " << v->Canonical_version() << ", result was " << comparison << endLog;
+#endif
+
+      if (comparison >= 0)
+        {
+          *v = thepkg;
+        }
+    }
 }
 
-/* assumption: package thepkg is already in the metadata list. */
-void
-packagemeta::set_installed (packageversion & thepkg)
+bool
+packagemeta::isBlacklisted(const packageversion &version) const
 {
-  set<packageversion>::const_iterator temp = versions.find (thepkg);
-  if (temp != versions.end())
-    installed = thepkg;
+  for (std::set<std::string>::iterator i = version_blacklist.begin();
+       i != version_blacklist.end();
+       i++)
+    {
+      if (i->compare(version.Canonical_version()) == 0)
+        return true;
+    }
+
+  return false;
+}
+
+void
+packagemeta::set_installed_version (const std::string &version)
+{
+  set<packageversion>::iterator i;
+  for (i = versions.begin(); i != versions.end(); i++)
+    {
+      if (version.compare(i->Canonical_version()) == 0)
+        {
+          installed = *i;
+
+          /* and mark as Keep */
+          desired = installed;
+        }
+    }
 }
 
 void
@@ -172,12 +247,6 @@ packagemeta::getReadableCategoryList () const
     visit_if (
       StringConcatenator(", "), bind1st(not_equal_to<std::string>(), "All"))
               ).visitor.result;
-}
-
-static bool
-hasSDesc(packageversion const &pkg)
-{
-  return pkg.SDesc().size();
 }
 
 static void
@@ -304,11 +373,15 @@ bool packagemeta::isManuallyDeleted() const
 const std::string
 packagemeta::SDesc () const
 {
-  set<packageversion>::iterator i = find_if (versions.begin(), versions.end(), hasSDesc);
-  if (i == versions.end())
-    return std::string();
-  return i->SDesc ();
-};
+  set<packageversion>::iterator i;
+  for (i = versions.begin(); i != versions.end(); i++)
+    {
+      if (i->SDesc().size())
+        return i->SDesc ();
+    }
+
+  return std::string();
+}
 
 /* Return an appropriate caption given the current action. */
 std::string 
@@ -525,13 +598,10 @@ packagemeta::logAllVersions () const
       {
 	Log (LOG_BABBLE) << "    [" << trustLabel(*i) <<
 	  "] ver=" << i->Canonical_version() << endLog;
-	if (i->depends()->size()) 
-	{
-	  std::ostream & logger = Log (LOG_BABBLE);
-	  logger << "      depends=";
-	  dumpPackageDepends(i->depends(), logger);
-	  logger << endLog;
-	}
+        std::ostream & logger = Log (LOG_BABBLE);
+        logger << "      depends=";
+        dumpPackageDepends(i->depends(), logger);
+        logger << endLog;
       }
 #if 0
     Log (LOG_BABBLE) << "      inst=" << i->

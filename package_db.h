@@ -57,23 +57,29 @@ typedef std::vector <packagemeta *>::iterator PackageDBConnectedIterator;
 
 */
 
+#include "libsolv.h"
 #include <PackageTrust.h>
 
 class packagedb
 {
 public:
   packagedb ();
+  void init();
   /* 0 on success */
   int flush ();
-  void upgrade ();
+  void prep();
+
   packagemeta * findBinary (PackageSpecification const &) const;
+  packageversion findBinaryVersion (PackageSpecification const &) const;
   packagemeta * findSource (PackageSpecification const &) const;
+  packageversion findSourceVersion (PackageSpecification const &spec) const;
+  packagemeta * addBinary (const std::string &pkgname, const SolverPool::addPackageData &pkgdata);
+  packageversion addSource (const std::string &pkgname, const SolverPool::addPackageData &pkgdata);
+
   PackageDBConnectedIterator connectedBegin();
   PackageDBConnectedIterator connectedEnd();
-  void fillMissingCategory();
-  void defaultTrust (trusts trust);
-  void setExistence();
-  void removeEmptyCategories();
+
+  void defaultTrust (SolverTasks &q, SolverSolution::updateMode mode, bool test);
 
   typedef std::map <std::string, packagemeta *> packagecollection;
   /* all seen binary packages */
@@ -84,12 +90,28 @@ public:
   typedef std::map <std::string, std::vector <packagemeta *>, casecompare_lt_op > categoriesType;
   static categoriesType categories;
   static PackageDBActions task;
+  /* a ficitious package that requires all packages in the Base category */
+  static packageversion basepkg;
+
+  static SolverPool solver;
+  static SolverSolution solution;
+
 private:
+  void makeBase();
+  void read();
+  void upgrade ();
+  void fixup_source_package_ids();
+  void removeEmptyCategories();
+  void fillMissingCategory();
+  void setExistence();
+  void guessUserPicked(void);
+
   static int installeddbread;	/* do we have to reread this */
   static int installeddbver;
+  static bool prepped;
+
   friend class ConnectedLoopFinder;
   static std::vector <packagemeta *> dependencyOrderedPackages;
-  void guessUserPicked(void);
 };
 
 #endif /* SETUP_PACKAGE_DB_H */

@@ -37,6 +37,7 @@ extern int yylineno;
 
 %token STRING 
 %token SETUP_TIMESTAMP SETUP_VERSION PACKAGEVERSION INSTALL SOURCE SDESC LDESC
+%token REPLACE_VERSIONS
 %token CATEGORY DEPENDS REQUIRES
 %token T_PREV T_CURR T_TEST T_OTHER
 %token MD5 SHA512
@@ -45,6 +46,7 @@ extern int yylineno;
 %token COMMA NL AT
 %token OPENBRACE CLOSEBRACE EQUAL GT LT GTEQUAL LTEQUAL 
 %token BUILDDEPENDS
+%token OBSOLETES
 %token MESSAGE
 %token ARCH RELEASE
 
@@ -103,6 +105,9 @@ singleitem /* non-empty */
  | DEPENDS { iniBuilder->buildBeginDepends(); } versionedpackagelist NL
  | REQUIRES { iniBuilder->buildBeginDepends(); } versionedpackagelistsp NL
  | BUILDDEPENDS { iniBuilder->buildBeginBuildDepends(); } versionedpackagelist NL
+ | OBSOLETES { iniBuilder->buildBeginObsoletes(); } versionedpackagelist NL
+ | REPLACE_VERSIONS versionlist NL
+
  | MESSAGE STRING STRING NL	{ iniBuilder->buildMessage ($2, $3); }
  | error NL			{ yyerror (std::string("unrecognized line ")
 					  + stringify(yylineno)
@@ -151,6 +156,10 @@ operator /* non-empty */
  | GT { iniBuilder->buildPackageListOperator (PackageSpecification::MoreThan); }
  | LTEQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::LessThanEquals); }
  | GTEQUAL { iniBuilder->buildPackageListOperator (PackageSpecification::MoreThanEquals); }
+ ;
+
+versionlist: /* empty */
+ | versionlist STRING { iniBuilder->buildPackageReplaceVersionsList ($2); }
  ;
 
 %%

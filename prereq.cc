@@ -13,27 +13,16 @@
  *
  */
 
-#include "win32.h"
-#include <commctrl.h>
-#include <stdio.h>
-#include <io.h>
-#include <ctype.h>
-#include <process.h>
-#include <queue>
-
 #include "prereq.h"
-#include "dialog.h"
 #include "resource.h"
 #include "state.h"
-#include "propsheet.h"
 #include "threebar.h"
-#include "Generic.h"
 #include "LogSingleton.h"
 #include "ControlAdjuster.h"
 #include "package_db.h"
-#include "package_meta.h"
-#include "msg.h"
+
 #include "Exception.h"
+#include "getopt++/BoolOption.h"
 
 // Sizing information.
 static ControlAdjuster::ControlInfo PrereqControlsInfo[] = {
@@ -43,6 +32,7 @@ static ControlAdjuster::ControlInfo PrereqControlsInfo[] = {
 };
 
 extern ThreeBarProgressPage Progress;
+BoolOption IncludeSource (false, 'I', "include-source", "Automatically install source for every package installed");
 
 // ---------------------------------------------------------------------------
 // implements class PrereqPage
@@ -73,7 +63,7 @@ void
 PrereqPage::OnActivate()
 {
   // if we have gotten this far, then PrereqChecker has already run isMet
-  // and found that there were missing packages; so we can just call
+  // and found that there were problems; so we can just call
   // getUnmetString to format the results and display it
 
   std::string s;
@@ -88,53 +78,50 @@ long
 PrereqPage::OnNext ()
 {
   HWND h = GetHWND ();
+  packagedb db;
 
   if (!IsDlgButtonChecked (h, IDC_PREREQ_CHECK))
     {
       // breakage imminent!  danger, danger
       int res = MessageBox (h,
-          "The listed packages are required for packages depending on them to "
-          "work.  We strongly recommend that you allow Setup to select them."
+          "Some packages may not work properly if you continue."
           "\r\n\r\n"
-          "Are you sure you want to proceed without these packages?",
-          "WARNING - Required Packages Not Selected",
+          "Are you sure you want to proceed (NOT RECOMMENDED)?",
+          "WARNING - Unsolved Problems",
           MB_YESNO | MB_ICONEXCLAMATION | MB_DEFBUTTON2);
       if (res == IDNO)
         return -1;
       else
-        Log (LOG_PLAIN) <<
-            "NOTE!  User refused suggested missing dependencies!  "
+        {
+          Log (LOG_PLAIN) <<
+            "NOTE!  User continued with unsolved problems!  "
             "Expect some packages to give errors or not function at all." << endLog;
+          // Change the solver's transaction list to reflect the user's choices.
+          db.solution.db2trans();
+        }
     }
   else
     {
-      // add the missing requirements
-      PrereqChecker p;
-      p.selectMissing ();
+      db.solution.applyDefaultProblemSolutions();
     }
 
-  return whatNext();
-}
+  PrereqChecker p;
+  p.finalize();
 
-long
-PrereqPage::whatNext ()
-{
-  if (source == IDC_SOURCE_LOCALDIR)
-    {
-      // Next, install
-      Progress.SetActivateTask (WM_APP_START_INSTALL);
-    }
-  else
-    {
-      // Next, start download from internet
-      Progress.SetActivateTask (WM_APP_START_DOWNLOAD);
-    }
-  return IDD_INSTATUS;
+  return IDD_CONFIRM;
 }
 
 long
 PrereqPage::OnBack ()
 {
+  // Add reinstall tasks
+  PrereqChecker p;
+  p.augment();
+
+  // Reset the package database to correspond to the solver's solution
+  packagedb db;
+  db.solution.trans2db();
+
   return IDD_CHOOSE;
 }
 
@@ -145,11 +132,7 @@ PrereqPage::OnUnattended ()
   if (unattended_mode == chooseronly)
     return -1;
 
-  // in unattended mode, add the missing requirements, then carry on to download/install
-  PrereqChecker p;
-  p.selectMissing ();
-
-  return whatNext();
+  return IDD_CONFIRM;
 }
 
 // ---------------------------------------------------------------------------
@@ -157,170 +140,55 @@ PrereqPage::OnUnattended ()
 // ---------------------------------------------------------------------------
 
 // instantiate the static members
-map <packagemeta *, vector <packagemeta *>, packagemeta_ltcomp> PrereqChecker::unmet;
-map <std::string, vector <packagemeta *> > PrereqChecker::notfound;
-trusts PrereqChecker::theTrust = TRUST_CURR;
+bool PrereqChecker::use_test_packages;
+SolverTasks PrereqChecker::q;
 
-/* This function builds a list of unmet dependencies to present to the user on
-   the PrereqPage propsheet.
-
-   The data is stored in two associative maps:
-     unmet[package] = vector of packages that depend on package.
-     notfound[package-name] = vector of packages that depend on package.
-*/
 bool
 PrereqChecker::isMet ()
 {
   packagedb db;
 
-  Progress.SetText1 ("Checking prerequisites...");
+  Progress.SetText1 ("Solving dependencies...");
   Progress.SetText2 ("");
   Progress.SetText3 ("");
 
-  // clear static data each time this is called
-  unmet.clear ();
-  notfound.clear ();
+  // Create task list corresponding to current state of package database
+  q.setTasks();
 
-  // packages that need to be checked for dependencies
-  queue <packagemeta *> todo;
-
-  // go through all packages, adding desired ones to the initial work list
-  for (packagedb::packagecollection::iterator p = db.packages.begin ();
-        p != db.packages.end (); ++p)
-    {
-      if (p->second->desired)
-        todo.push (p->second);
-    }
-
-  int max = todo.size();
-  int pos = 0;
-
-  // churn through the work list
-  while (!todo.empty ())
-    {
-      // get the first package off the work list
-      packagemeta *pack = todo.front ();
-      todo.pop ();
-
-      pos++;
-      Progress.SetText2 (pack->name.c_str());
-      static char buf[100];
-      sprintf(buf, "%d %%  (%d/%d)", pos * 100 / max, pos, max);
-      Progress.SetText3(buf);
-      Progress.SetBar1(pos, max);
-
-      // Fetch the dependencies of the package. This assumes that the
-      // dependencies of all versions are all the same.
-      const PackageDepends *deps = pack->curr.depends ();
-
-      // go through the package's dependencies
-      for (PackageDepends::const_iterator d =
-            deps->begin (); d != deps->end (); ++d)
-        {
-          PackageSpecification *dep_spec = *d;
-          packagemeta *dep = db.findBinary (*dep_spec);
-
-          if (dep)
-            {
-              if (!(dep->desired && dep_spec->satisfies (dep->desired)))
-                {
-                  // we've got an unmet dependency
-                  if (unmet.find (dep) == unmet.end ())
-                    {
-                      // newly found dependency: add to worklist
-                      todo.push (dep);
-                      max++;
-                    }
-                  unmet[dep].push_back (pack);
-                }
-            }
-          else
-            {
-              // dependency on a package which doesn't have any binary versions
-              // (i.e. it is source only or doesn't exist)
-              Log (LOG_PLAIN) << "package " << pack->name << " has dependency "
-                              << dep_spec->packageName() << " we can't find" << endLog;
-              notfound[dep_spec->packageName()].push_back (pack);
-            }
-        }
-    }
-
-  return unmet.empty () && notfound.empty ();
+  // apply solver to those tasks and global state (use test or not)
+  return db.solution.update(q, SolverSolution::keep, use_test_packages);
 }
 
-/* Formats 'unmet' as a string for display to the user.  */
+void
+PrereqChecker::finalize ()
+{
+  augment();
+
+  packagedb db;
+  db.solution.addSource(IncludeSource);
+  db.solution.dumpTransactionList();
+}
+
+void
+PrereqChecker::augment ()
+{
+  packagedb db;
+  db.solution.augmentTasks(q);
+}
+
+/* Formats problems and solutions as a string for display to the user.  */
 void
 PrereqChecker::getUnmetString (std::string &s)
 {
-  s = "";
-
-  {
-    map <std::string, vector <packagemeta *> >::iterator i;
-    for (i = notfound.begin(); i != notfound.end(); i++)
-      {
-        s = s + i->first
-          + "\t(not found)"
-          + "\r\n\tRequired by: ";
-        for (unsigned int j = 0; j < i->second.size(); j++)
-          {
-            s += i->second[j]->name;
-            if (j != i->second.size() - 1)
-              s += ", ";
-          }
-        s += "\r\n\r\n";
-      }
-  }
-
-  map <packagemeta *, vector <packagemeta *>, packagemeta_ltcomp>::iterator i;
-  for (i = unmet.begin(); i != unmet.end(); i++)
-    {
-      s = s + i->first->name
-	    + "\t(" + i->first->trustp (false, theTrust).Canonical_version ()
-	    + ")\r\n\t" + i->first->SDesc ()
-	    + "\r\n\tRequired by: ";
-      for (unsigned int j = 0; j < i->second.size(); j++)
-        {
-          s += i->second[j]->name;
-          if (j != i->second.size() - 1)
-            s += ", ";
-        }
-      s += "\r\n\r\n";
-    }
-}
-
-/* Takes the keys of 'unmet' and selects them, using the current trust.  */
-void
-PrereqChecker::selectMissing ()
-{
   packagedb db;
+  s = db.solution.report();
 
-  // provide a default, even though this should have been set for us
-  if (!theTrust)
-    theTrust = TRUST_CURR;
-
-  // get each of the keys of 'unmet'
-  map <packagemeta *, vector <packagemeta *>, packagemeta_ltcomp>::iterator i;
-  for (i = unmet.begin(); i != unmet.end(); i++)
+  //
+  size_t pos = 0;
+  while ((pos = s.find("\n", pos)) != std::string::npos)
     {
-      packagemeta *pkg = i->first;
-      packageversion vers = pkg->trustp (false, theTrust);
-      pkg->desired = vers;
-      pkg->srcpick (false);
-
-      if (vers == i->first->installed)
-        {
-          pkg->pick (false);
-          Log (LOG_PLAIN) << "Adding required dependency " << i->first->name <<
-               ": Selecting already-installed version " <<
-               i->first->installed.Canonical_version () << "." << endLog;
-        }
-      else
-        {
-          pkg->pick (vers.accessible ());
-          Log (LOG_PLAIN) << "Adding required dependency " << i->first->name <<
-              ": Selecting version " << vers.Canonical_version () <<
-              " for installation." << endLog;
-        }
+      s.replace(pos, 1, "\r\n");
+      pos += 2;
     }
 }
 
@@ -336,11 +204,8 @@ do_prereq_check_thread(HINSTANCE h, HWND owner)
 
   if (p.isMet ())
     {
-      if (source == IDC_SOURCE_LOCALDIR)
-	Progress.SetActivateTask (WM_APP_START_INSTALL);  // install
-      else
-	Progress.SetActivateTask (WM_APP_START_DOWNLOAD); // start download
-      retval = IDD_INSTATUS;
+      p.finalize();
+      retval = IDD_CONFIRM;
     }
   else
     {

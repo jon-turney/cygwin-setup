@@ -31,24 +31,50 @@
 #include "compress.h"
 
 #include "filemanip.h"
-
 #include "package_version.h"
-#include "cygpackage.h"
 #include "package_db.h"
 #include "package_meta.h"
 #include "Exception.h"
 #include "Generic.h"
 #include "LogSingleton.h"
 #include "resource.h"
+#include "libsolv.h"
+#include "csu_util/version_compare.h"
+#include "getopt++/BoolOption.h"
+
+static BoolOption MirrorOption (false, 'm', "mirror-mode", "Skip package availability check when installing from local directory (requires local directory to be clean mirror!)");
 
 using namespace std;
 
 packagedb::packagedb ()
 {
-  io_stream *db = 0;
+}
+
+void
+packagedb::init ()
+{
+  installeddbread = 0;
+  installeddbver = 0;
+  prepped = false;
+
+  packages.clear();
+  sourcePackages.clear();
+  categories.clear();
+  solver.clear();
+  solution.clear();
+  basepkg = packageversion();
+  dependencyOrderedPackages.clear();
+}
+
+void
+packagedb::read ()
+{
   if (!installeddbread)
     {
-      /* no parameters. Read in the local installation database. */
+      solver.internalize();
+
+      /* Read in the local installation database. */
+      io_stream *db = 0;
       db = io_stream::open ("cygfile:///etc/setup/installed.db", "rt", 0);
       installeddbread = 1;
       if (!db)
@@ -98,23 +124,61 @@ packagedb::packagedb ()
 		  if (!parseable)
 		    continue;
 
-		  packagemeta *pkg = findBinary (PackageSpecification(pkgname));
-		  if (!pkg)
-		    {
-		      pkg = new packagemeta (pkgname);
-		      packages.insert (packagedb::packagecollection::value_type(pkgname, pkg));
-		    }
+                  SolverPool::addPackageData data;
+                  data.reponame = "_installed";
+                  data.version = f.ver;
+                  data.type = package_binary;
 
-		  packageversion binary = 
-		    cygpackage::createInstance (pkgname, f.ver,
-						package_binary);
+                  // very limited information is available from installed.db, so
+                  // we put our best guesses here...
+                  data.vendor = "cygwin";
+                  data.requires = NULL;
+                  data.obsoletes = NULL;
+                  data.sdesc = "";
+                  data.ldesc = "";
+                  data.stability = TRUST_UNKNOWN;
+                  data.spkg = PackageSpecification(std::string(pkgname) + "-src", f.ver);
 
-		  pkg->add_version (binary);
-		  pkg->set_installed (binary);
-		  pkg->desired = pkg->installed;
+                  // supplement this with sdesc, source, and stability
+                  // information from setup.ini, if possible...
+                  packageversion pv = findBinaryVersion(PackageSpecification(pkgname, f.ver));
+                  PackageDepends dep;
+                  PackageDepends obs;
+                  if (pv)
+                    {
+                      data.sdesc = pv.SDesc();
+                      data.archive = *pv.source();
+                      data.stability = pv.Stability();
+                      data.spkg_id = pv.sourcePackage();
+                      data.spkg = pv.sourcePackageName();
+                      dep = pv.depends();
+                      data.requires = &dep;
+                      obs = pv.obsoletes();
+                      data.obsoletes = &obs;
+                    }
+                  else
+                    // This version is no longer available.  It could
+                    // be old, or it could be a previous test release
+                    // that has been replaced by a new test release.
+                    // Try to get some info from the packagemeta.
+                    {
+                      packagemeta *pkgm = findBinary(PackageSpecification(pkgname));
+                      if (pkgm)
+                        {
+                          data.sdesc = pkgm->curr.SDesc();
+                          if (pkgm->curr
+                              && version_compare (f.ver, pkgm->curr.Canonical_version()) > 0)
+                            data.stability = TRUST_TEST;
+                        }
+                    }
+
+                  packagemeta *pkg = packagedb::addBinary (pkgname, data);
+
+                  pkg->set_installed_version (f.ver);
 
 		  if (dbver == 3)
 		    pkg->user_picked = (user_picked & 1);
+
 		}
 	      delete db;
 	      db = 0;
@@ -127,6 +191,80 @@ packagedb::packagedb ()
 	  installeddbver = dbver;
 	}
     }
+  solver.internalize();
+}
+
+/* Create the fictitious basepkg */
+void
+packagedb::makeBase()
+{
+  SolverPool::addPackageData data;
+  data.reponame = "_installed";
+  data.version = "0.0-0";
+  data.type = package_binary;
+  data.vendor = "cygwin";
+  data.sdesc = "Ficitious package that requires all Base packages";
+  data.ldesc = "Ficitious package that requires all Base packages";
+  data.obsoletes = NULL;
+  data.stability = TRUST_CURR;
+  // data.spkg = PackageSpecification();
+  // data.spkg_id = packageversion();
+
+  PackageDepends dep;
+  for (std::vector <packagemeta *>::const_iterator i = categories["Base"].begin();
+       i != categories["Base"].end(); i++)
+    {
+      packagemeta *pkg = *i;
+      PackageSpecification *spec = new PackageSpecification(pkg->name);
+      dep.push_back(spec);
+    }
+  data.requires = &dep;
+
+  basepkg = solver.addPackage("base", data);
+  /* We don't register this in packagemeta */
+}
+
+/* Add a package version to the packagedb */
+packagemeta *
+packagedb::addBinary (const std::string &pkgname,
+                      const SolverPool::addPackageData &pkgdata)
+{
+  /* If pkgname isn't already in packagedb, add a packagemeta */
+  packagemeta *pkg = findBinary (PackageSpecification(pkgname));
+  if (!pkg)
+    {
+      pkg = new packagemeta (pkgname);
+      packages.insert (packagedb::packagecollection::value_type(pkgname, pkg));
+    }
+
+  /* Create the SolvableVersion  */
+  SolvableVersion sv = solver.addPackage(pkgname, pkgdata);
+
+  /* Register it in packagemeta */
+  pkg->add_version (sv, pkgdata);
+
+  return pkg;
+}
+
+packageversion
+packagedb::addSource (const std::string &pkgname,
+                      const SolverPool::addPackageData &pkgdata)
+{
+  /* If pkgname isn't already in packagedb, add a packagemeta */
+  packagemeta *pkg = findSource (PackageSpecification(pkgname));
+  if (!pkg)
+    {
+      pkg = new packagemeta (pkgname);
+      sourcePackages.insert (packagedb::packagecollection::value_type(pkgname, pkg));
+    }
+
+  /* Create the SolvableVersion  */
+  SolvableVersion sv = solver.addPackage(pkgname, pkgdata);
+
+  /* Register it in packagemeta */
+  pkg->add_version (sv, pkgdata);
+
+  return sv;
 }
 
 int
@@ -201,6 +339,21 @@ packagedb::findBinary (PackageSpecification const &spec) const
   return NULL;
 }
 
+packageversion
+packagedb::findBinaryVersion (PackageSpecification const &spec) const
+{
+  packagedb::packagecollection::iterator n = packages.find(spec.packageName());
+  if (n != packages.end())
+    {
+      packagemeta & pkgm = *(n->second);
+      for (set<packageversion>::iterator i=pkgm.versions.begin();
+          i != pkgm.versions.end(); ++i)
+        if (spec.satisfies (*i))
+          return *i;
+    }
+  return packageversion();
+}
+
 packagemeta *
 packagedb::findSource (PackageSpecification const &spec) const
 {
@@ -216,15 +369,34 @@ packagedb::findSource (PackageSpecification const &spec) const
   return NULL;
 }
 
+packageversion
+packagedb::findSourceVersion (PackageSpecification const &spec) const
+{
+  packagedb::packagecollection::iterator n = sourcePackages.find(spec.packageName());
+  if (n != sourcePackages.end())
+    {
+      packagemeta & pkgm = *(n->second);
+      for (set<packageversion>::iterator i = pkgm.versions.begin();
+           i != pkgm.versions.end(); ++i)
+        if (spec.satisfies (*i))
+          return *i;
+    }
+  return packageversion();
+}
+
 /* static members */
 
 int packagedb::installeddbread = 0;
 int packagedb::installeddbver = 0;
+bool packagedb::prepped = false;
 packagedb::packagecollection packagedb::packages;
 packagedb::categoriesType packagedb::categories;
 packagedb::packagecollection packagedb::sourcePackages;
 PackageDBActions packagedb::task = PackageDB_Install;
+packageversion packagedb::basepkg;
 std::vector <packagemeta *> packagedb::dependencyOrderedPackages;
+SolverPool packagedb::solver;
+SolverSolution packagedb::solution(packagedb::solver);
 
 #include <stack>
 
@@ -312,8 +484,9 @@ ConnectedLoopFinder::visit(packagemeta *nodeToVisit)
   nodesInStronglyConnectedComponent.push(nodeToVisit);
 
   /* walk through each node */
-  PackageDepends::const_iterator dp = nodeToVisit->installed.depends()->begin();
-  while (dp != nodeToVisit->installed.depends()->end())
+  const PackageDepends deps = nodeToVisit->installed.depends();
+  PackageDepends::const_iterator dp = deps.begin();
+  while (dp != deps.end())
     {
       /* check for an installed match */
       if (checkForInstalled (*dp))
@@ -428,22 +601,12 @@ packagedb::fillMissingCategory ()
 }
 
 void
-packagedb::defaultTrust (trusts trust)
+packagedb::defaultTrust (SolverTasks &q, SolverSolution::updateMode mode, bool test)
 {
-  for (packagedb::packagecollection::iterator i = packages.begin (); i != packages.end (); ++i)
-    {
-      packagemeta & pkg = *(i->second);
-      if (pkg.installed
-            || pkg.categories.find ("Base") != pkg.categories.end ()
-            || pkg.categories.find ("Orphaned") != pkg.categories.end ())
-        {
-          pkg.desired = pkg.trustp (true, trust);
-          if (pkg.desired)
-            pkg.pick (pkg.desired.accessible() && pkg.desired != pkg.installed);
-        }
-      else
-        pkg.desired = packageversion ();
-    }
+  solution.update(q, mode, test);
+
+  // reflect that task list into packagedb
+  solution.trans2db();
 }
 
 void
@@ -501,8 +664,9 @@ packagedb::guessUserPicked()
 	continue;
 
       /* walk through each node */
-      std::vector <PackageSpecification *>::const_iterator dp = pkgm.installed.depends()->begin();
-      while (dp != pkgm.installed.depends()->end())
+      const PackageDepends deps = pkgm.installed.depends();
+      std::vector <PackageSpecification *>::const_iterator dp = deps.begin();
+      while (dp != deps.end())
 	{
 	  /* check for an installed match */
           if (checkForInstalled(*dp))
@@ -520,4 +684,67 @@ packagedb::guessUserPicked()
 	  ++dp;
 	}
     }
+}
+
+void
+packagedb::fixup_source_package_ids()
+{
+  for (packagecollection::iterator i = packages.begin ();
+       i != packages.end (); ++i)
+    {
+      packagemeta &pkgm = *(i->second);
+
+      for (set<packageversion>::iterator i = pkgm.versions.begin();
+           i != pkgm.versions.end(); ++i)
+        {
+          /* If spkg_id is already known for this package, there's nothing to
+             fix. */
+          if (i->sourcePackage())
+            continue;
+
+          /* Some packages really have no source, indicated by no [sS]ource:
+             line in setup.ini, which becomes an empty source package name */
+          const std::string spkg = i->sourcePackageName();
+          if (spkg.empty())
+            continue;
+
+          /* Otherwise, we need to find the source package and fix up the source
+             package id*/
+          packageversion spkg_id = findSourceVersion(PackageSpecification(spkg,
+                                                                          i->Canonical_version()));
+
+          if (spkg_id)
+            {
+              i->fixup_spkg_id(spkg_id);
+            }
+          else
+            {
+              Log (LOG_BABBLE) << "No source package for '" << i->Name() << "' " << i->Canonical_version() << ", source package name '" << spkg << "'" << endLog;
+            }
+        }
+    }
+}
+
+void
+packagedb::prep()
+{
+  /* make packagedb ready for use for chooser */
+  if (prepped)
+    return;
+
+  makeBase();
+  read();
+  upgrade();
+  fixup_source_package_ids();
+  removeEmptyCategories();
+
+  /* XXX: this needs to be broken out somewhere where it can do progress
+     reporting, as it can take a long time... */
+  if (source == IDC_SOURCE_DOWNLOAD || source ==IDC_SOURCE_LOCALDIR)
+    packagemeta::ScanDownloadedFiles (MirrorOption);
+
+  setExistence ();
+  fillMissingCategory ();
+
+  prepped = true;
 }

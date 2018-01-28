@@ -35,7 +35,6 @@
 #include "mklink2.h"
 #include "package_db.h"
 #include "package_meta.h"
-#include "package_version.h"
 #include "filemanip.h"
 #include "io_stream.h"
 #include "getopt++/BoolOption.h"

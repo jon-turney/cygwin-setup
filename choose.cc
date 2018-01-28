@@ -48,7 +48,6 @@
 
 #include "package_db.h"
 #include "package_meta.h"
-#include "package_version.h"
 
 #include "threebar.h"
 #include "Generic.h"
@@ -64,7 +63,6 @@ static BoolOption UpgradeAlsoOption (false, 'g', "upgrade-also", "Also upgrade i
 static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", "Remove orphaned packages");
 static BoolOption ForceCurrentOption (false, 'f', "force-current", "Select the current version for all packages");
 static BoolOption PruneInstallOption (false, 'Y', "prune-install", "Prune the installation to only the requested packages");
-static BoolOption MirrorOption (false, 'm', "mirror-mode", "Skip package availability check when installing from local directory (requires local directory to be clean mirror!)");
 
 using namespace std;
 
@@ -79,7 +77,8 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
   {IDC_CHOOSE_SEARCH_LABEL, 	CP_LEFT,    CP_TOP},
   {IDC_CHOOSE_SEARCH_EDIT,	CP_LEFT,    CP_TOP},
   {IDC_CHOOSE_KEEP, 		CP_RIGHT,   CP_TOP},
-  {IDC_CHOOSE_CURR, 		CP_RIGHT,   CP_TOP},
+  {IDC_CHOOSE_BEST, 		CP_RIGHT,   CP_TOP},
+  {IDC_CHOOSE_SYNC, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_EXP, 		CP_RIGHT,   CP_TOP},
   {IDC_CHOOSE_VIEW, 		CP_LEFT,    CP_TOP},
   {IDC_LISTVIEW_POS, 		CP_RIGHT,   CP_TOP},
@@ -91,7 +90,7 @@ static ControlAdjuster::ControlInfo ChooserControlsInfo[] = {
 
 ChooserPage::ChooserPage () :
   cmd_show_set (false), saved_geom (false), saw_geom_change (false),
-  timer_id (DEFAULT_TIMER_ID)
+  timer_id (DEFAULT_TIMER_ID), activated (false)
 {
   sizeProcessor.AddControlInfo (ChooserControlsInfo);
 
@@ -153,11 +152,32 @@ ChooserPage::createListview ()
   chooser->setViewMode (!is_new_install || UpgradeAlsoOption || hasManualSelections ?
 			PickView::views::PackagePending : PickView::views::Category);
   SendMessage (GetDlgItem (IDC_CHOOSE_VIEW), CB_SETCURSEL, (WPARAM)chooser->getViewMode(), 0);
-
-  /* FIXME: do we need to init the desired fields ? */
-  static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_CURR, IDC_CHOOSE_EXP, 0 };
-  rbset (GetHWND (), ta, IDC_CHOOSE_CURR);
   ClearBusy ();
+}
+
+void
+ChooserPage::initialUpdateState()
+{
+  // set the initial update state
+  if (ForceCurrentOption)
+    {
+      update_mode_id = IDC_CHOOSE_SYNC;
+      changeTrust(update_mode_id, false, true);
+    }
+  else if (hasManualSelections && !UpgradeAlsoOption)
+    {
+      // if packages are added or removed on the command-line and --upgrade-also
+      // isn't used, we keep the current versions of everything else
+      update_mode_id = IDC_CHOOSE_KEEP;
+    }
+  else
+    {
+      update_mode_id = IDC_CHOOSE_BEST;
+      changeTrust (update_mode_id, false, true);
+    }
+
+  static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_BEST, IDC_CHOOSE_SYNC, 0 };
+  rbset (GetHWND (), ta, update_mode_id);
 }
 
 /* TODO: review ::overrides for possible consolidation */
@@ -248,14 +268,30 @@ ChooserPage::OnInit ()
       SendMessage(viewlist, CB_ADDSTRING, 0, (LPARAM)PickView::mode_caption((PickView::views)view));
     }
 
-  SetBusy ();
-  if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_LOCALDIR)
-    packagemeta::ScanDownloadedFiles (MirrorOption);
+  if (source == IDC_SOURCE_DOWNLOAD)
+    setPrompt("Select packages to download ");
+  else
+    setPrompt("Select packages to install ");
 
+  createListview ();
+
+  AddTooltip (IDC_CHOOSE_KEEP, IDS_TRUSTKEEP_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_BEST, IDS_TRUSTCURR_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_SYNC, IDS_TRUSTSYNC_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_EXP, IDS_TRUSTEXP_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_VIEW, IDS_VIEWBUTTON_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_HIDE, IDS_HIDEOBS_TOOLTIP);
+  AddTooltip (IDC_CHOOSE_SEARCH_EDIT, IDS_SEARCH_TOOLTIP);
+
+  /* Set focus to search edittext control. */
+  PostMessage (GetHWND (), WM_NEXTDLGCTL,
+               (WPARAM) GetDlgItem (IDC_CHOOSE_SEARCH_EDIT), TRUE);
+}
+
+void
+ChooserPage::applyCommandLinePackageSelection()
+{
   packagedb db;
-  db.setExistence ();
-  db.fillMissingCategory ();
-
   for (packagedb::packagecollection::iterator i = db.packages.begin ();
        i != db.packages.end (); ++i)
     {
@@ -264,8 +300,7 @@ ChooserPage::OnInit ()
       bool deleted   = pkg.isManuallyDeleted();
       bool basemisc  = (pkg.categories.find ("Base") != pkg.categories.end ()
 		     || pkg.categories.find ("Orphaned") != pkg.categories.end ());
-      bool upgrade   = wanted || (!pkg.installed && basemisc)
-		     || UpgradeAlsoOption || !hasManualSelections;
+      bool upgrade   = wanted || (!pkg.installed && basemisc);
       bool install   = wanted  && !deleted && !pkg.installed;
       bool reinstall = (wanted  || basemisc) && deleted;
       bool uninstall = (!(wanted  || basemisc) && (deleted || PruneInstallOption))
@@ -276,38 +311,36 @@ ChooserPage::OnInit ()
 	pkg.set_action (packagemeta::Reinstall_action, pkg.curr);
       else if (uninstall)
 	pkg.set_action (packagemeta::Uninstall_action, packageversion ());
-      else if (PruneInstallOption || ForceCurrentOption)
+      else if (PruneInstallOption)
 	pkg.set_action (packagemeta::Default_action, pkg.curr);
       else if (upgrade)
 	pkg.set_action (packagemeta::Default_action, pkg.trustp(true, TRUST_UNKNOWN));
       else
 	pkg.set_action (packagemeta::Default_action, pkg.installed);
     }
-
-  ClearBusy ();
-
-  if (source == IDC_SOURCE_DOWNLOAD)
-    setPrompt("Select packages to download ");
-  else
-    setPrompt("Select packages to install ");
-  createListview ();
-
-  AddTooltip (IDC_CHOOSE_KEEP, IDS_TRUSTKEEP_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_CURR, IDS_TRUSTCURR_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_EXP, IDS_TRUSTEXP_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_VIEW, IDS_VIEWBUTTON_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_HIDE, IDS_HIDEOBS_TOOLTIP);
-  AddTooltip (IDC_CHOOSE_SEARCH_EDIT, IDS_SEARCH_TOOLTIP);
-
-  /* Set focus to search edittext control. */
-  PostMessage (GetHWND (), WM_NEXTDLGCTL,
-	       (WPARAM) GetDlgItem (IDC_CHOOSE_SEARCH_EDIT), TRUE);
 }
 
 void
 ChooserPage::OnActivate()
 {
-  chooser->refresh();;
+  SetBusy();
+
+  packagedb db;
+  db.prep();
+
+  if (!activated)
+    {
+      // Do things which should only happen once, but rely on packagedb being
+      // ready to use, so OnInit() is too early
+      applyCommandLinePackageSelection();
+      initialUpdateState();
+
+      activated = true;
+    }
+
+  ClearBusy();
+
+  chooser->refresh();
   PlaceDialog (true);
 }
 
@@ -360,6 +393,7 @@ ChooserPage::OnBack ()
 void
 ChooserPage::keepClicked()
 {
+  update_mode_id = IDC_CHOOSE_KEEP;
   packagedb db;
   for (packagedb::packagecollection::iterator i = db.packages.begin ();
         i != db.packages.end (); ++i)
@@ -372,12 +406,57 @@ ChooserPage::keepClicked()
 }
 
 void
-ChooserPage::changeTrust(trusts aTrust)
+ChooserPage::changeTrust(int button, bool test, bool initial)
 {
   SetBusy ();
-  chooser->defaultTrust (aTrust);
+
+  update_mode_id = button;
+
+  SolverSolution::updateMode mode;
+  switch (button)
+    {
+    default:
+    case IDC_CHOOSE_KEEP:
+      mode = SolverSolution::keep;
+      break;
+
+    case IDC_CHOOSE_BEST:
+      mode = SolverSolution::updateBest;
+      break;
+
+    case IDC_CHOOSE_SYNC:
+      mode = SolverSolution::updateForce;
+      break;
+    }
+
+  packagedb db;
+  SolverTasks q;
+
+  // usually we want to apply the solver to an empty task list to get the list
+  // of packages to upgrade (if any)
+  if (initial)
+    {
+      // but initially we want a task list with any package changes caused by
+      // command line options
+      // (also note the installed version to avoid generating spurious taskKeep
+      // or taskSkip tasks)
+      for (packagedb::packagecollection::iterator p = db.packages.begin ();
+           p != db.packages.end (); ++p)
+        {
+          packagemeta *pkg = p->second;
+          pkg->default_version = pkg->installed;
+        }
+      q.setTasks();
+    }
+  db.defaultTrust(q, mode, test);
+
+  // configure PickView so 'test' or 'curr' version is chosen when an
+  // uninstalled package is first clicked on.
+  chooser->defaultTrust (test ? TRUST_TEST : TRUST_CURR);
+
   chooser->refresh();
-  PrereqChecker::setTrust (aTrust);
+
+  PrereqChecker::setTestPackages(test);
   ClearBusy ();
 }
 
@@ -444,14 +523,18 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
         keepClicked();
       break;
 
-    case IDC_CHOOSE_CURR:
+    case IDC_CHOOSE_BEST:
       if (IsButtonChecked (id))
-        changeTrust (TRUST_CURR);
+        changeTrust (id, IsButtonChecked(IDC_CHOOSE_EXP), false);
+      break;
+
+    case IDC_CHOOSE_SYNC:
+      if (IsButtonChecked (id))
+        changeTrust (id, IsButtonChecked(IDC_CHOOSE_EXP), false);
       break;
 
     case IDC_CHOOSE_EXP:
-      if (IsButtonChecked (id))
-        changeTrust (TRUST_TEST);
+      changeTrust(update_mode_id, IsButtonChecked (id), false);
       break;
 
     case IDC_CHOOSE_HIDE:

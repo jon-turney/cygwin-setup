@@ -21,7 +21,6 @@
 #include "PickPackageLine.h"
 #include "PickCategoryLine.h"
 #include "package_db.h"
-#include "package_version.h"
 #include "dialog.h"
 #include "resource.h"
 /* For 'source' */
@@ -943,9 +942,6 @@ void
 PickView::defaultTrust (trusts trust)
 {
   this->deftrust = trust;
-
-  packagedb db;
-  db.defaultTrust(trust);
 
   // force the picker to redraw
   RECT r = GetClientRect ();

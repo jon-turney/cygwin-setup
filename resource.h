@@ -40,6 +40,7 @@
 #define IDS_INSTALLEDB_VERSION            140
 #define IDS_DOWNLOAD_INCOMPLETE_EXIT      141
 #define IDS_QUERY_CORRUPT                 142
+#define IDS_TRUSTSYNC_TOOLTIP             143
 
 // Dialogs
 
@@ -68,6 +69,7 @@
 #define IDD_POSTINSTALL                   222
 #define IDD_FILE_INUSE                    223
 #define IDD_DOWNLOAD_ERROR                224
+#define IDD_CONFIRM                       225
 
 // Bitmaps
 
@@ -120,7 +122,7 @@
 #define IDC_LISTVIEW_POS                  530
 #define IDC_CHOOSE_VIEW                   531
 #define IDC_CHOOSE_EXP                    532
-#define IDC_CHOOSE_CURR                   533
+#define IDC_CHOOSE_BEST                   533
 #define IDC_CHOOSE_LIST                   535
 #define IDC_INS_ACTION                    536
 #define IDC_ROOT_DESKTOP                  537
@@ -179,3 +181,5 @@
 #define IDC_NET_DIRECT_LEGACY             593
 #define IDC_DOWNLOAD_EDIT                 594
 #define IDC_CHOOSE_DO_SEARCH              595
+#define IDC_CHOOSE_SYNC                   596
+#define IDC_CONFIRM_EDIT                  597

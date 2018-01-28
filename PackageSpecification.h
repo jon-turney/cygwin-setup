@@ -18,7 +18,9 @@
 
 #include <iosfwd>
 #include "String++.h"
-class packageversion;
+
+class SolvableVersion;
+typedef SolvableVersion packageversion;
 
 /* Describe a package - i.e. we need version 5 of apt */
 
@@ -27,6 +29,8 @@ class PackageSpecification
 public:
   PackageSpecification () : _packageName (), _operator(Equals) {}
   PackageSpecification (const std::string& packageName);
+  PackageSpecification (const std::string& packageName,
+                        const std::string &packageVersion);
   ~PackageSpecification () {}
 
   enum _operators
@@ -39,6 +43,9 @@ public:
   };
 
   const std::string& packageName() const;
+  const _operators op() const;
+  const std::string& version() const;
+
   void setOperator (_operators);
   void setVersion (const std::string& );
 

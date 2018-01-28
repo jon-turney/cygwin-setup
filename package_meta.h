@@ -16,7 +16,8 @@
 #ifndef SETUP_PACKAGE_META_H
 #define SETUP_PACKAGE_META_H
 
-class packageversion;
+class SolvableVersion;
+typedef SolvableVersion packageversion;
 class packagemeta;
 
 #include <set>
@@ -28,7 +29,7 @@ class packagemeta;
 
 typedef std::pair<const std::string, std::vector<packagemeta *> > Category;
 
-/* NOTE: A packagemeta without 1 packageversion is invalid! */
+/* NOTE: A packagemeta without 1 version is invalid! */
 class packagemeta
 {
 public:
@@ -42,8 +43,8 @@ public:
 
   ~packagemeta ();
 
-  void add_version (packageversion &);
-  void set_installed (packageversion &);
+  void add_version (packageversion &, const SolverPool::addPackageData &);
+  void set_installed_version (const std::string &);
   void addToCategoryBase();
   bool hasNoCategories() const;
   void setDefaultCategories();
@@ -75,6 +76,11 @@ public:
   void set_message (const std::string& message_id, const std::string& message_string)
   {
     message.set (message_id, message_string);
+  }
+
+  void set_version_blacklist(std::set <std::string> &_list)
+  {
+    version_blacklist = _list;
   }
 
   std::string action_caption () const;
@@ -130,6 +136,8 @@ public:
   packageversion curr;
   /* ditto for "test" (experimental) */
   packageversion exp;
+  /* which one is the default according to the solver */
+  packageversion default_version;
   /* Now for the user stuff :] */
   /* What version does the user want ? */
   packageversion desired;
@@ -154,6 +162,9 @@ public:
   void addScript(Script const &);
   std::vector <Script> &scripts();
 
+  /* this version is undesirable */
+  bool isBlacklisted(const packageversion &version) const;
+
 protected:
   packagemeta &operator= (packagemeta const &);
 private:
@@ -163,6 +174,8 @@ private:
 
   bool _picked; /* true if desired version is to be (re)installed */
   bool _srcpicked;
+
+  std::set <std::string> version_blacklist;
 };
 
 #endif /* SETUP_PACKAGE_META_H */

@@ -15,19 +15,16 @@
 #include <LogSingleton.h>
 
 void
-dumpPackageDepends (PackageDepends const *currentList,
+dumpPackageDepends (PackageDepends const &currentList,
                     std::ostream &logger)
 {
-  if (currentList)
+  Log (LOG_BABBLE) << "( ";
+  PackageDepends::const_iterator i = currentList.begin();
+  while (true)
     {
-      Log (LOG_BABBLE) << "( ";
-      PackageDepends::const_iterator i = currentList->begin();
-      while (true)
-        {
-          if (i == currentList->end()) break;
-          Log (LOG_BABBLE) << **i << " ";
-          ++i;
-        }
-      Log (LOG_BABBLE) << ")";
+      if (i == currentList.end()) break;
+      Log (LOG_BABBLE) << **i << " ";
+      ++i;
     }
+  Log (LOG_BABBLE) << ")";
 }

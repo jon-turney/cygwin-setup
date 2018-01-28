@@ -27,32 +27,27 @@ public:
   virtual long OnNext ();
   virtual long OnBack ();
   virtual long OnUnattended ();
-private:
-  long whatNext ();
 };
 
 class PrereqChecker
 {
 public:
-  // checks all dependecies, populates 'unmet'
-  // returns true if unsatisfied dependencies exist
+  // returns true if no dependency problems exist
   bool isMet ();
-  
+
   // formats 'unmet' as a string for display
   void getUnmetString (std::string &s);
-  
-  // selects/picks the needed packages that were missing
-  void selectMissing ();
-  
-  // notes the current trust (for use in selectMissing)
-  static void setTrust (trusts t) { theTrust = t; };
+
+  // finialize the transaction list
+  void finalize ();
+
+  void augment ();
+
+  static void setTestPackages (bool t) { use_test_packages = t; };
 
 private:
-  
-  // this is the actual hash_map that does all the work
-  static map <packagemeta *, vector <packagemeta *>, packagemeta_ltcomp> unmet;
-  static map <std::string, vector <packagemeta *> > notfound;
-  static trusts theTrust;
+  static bool use_test_packages;
+  static SolverTasks q;
 };
 
 #endif /* SETUP_PREREQ_H */
