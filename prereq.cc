@@ -69,6 +69,7 @@ PrereqPage::OnActivate()
   std::string s;
   PrereqChecker p;
   p.getUnmetString (s);
+  Log (LOG_PLAIN) << s << endLog;
   SetDlgItemText (GetHWND (), IDC_PREREQ_EDIT, s.c_str ());
 
   SetFocus (GetDlgItem (IDC_PREREQ_CHECK));
@@ -131,6 +132,12 @@ PrereqPage::OnUnattended ()
   // in chooser-only mode, show this page so the user can choose to fix dependency problems or not
   if (unattended_mode == chooseronly)
     return -1;
+
+  packagedb db;
+  db.solution.applyDefaultProblemSolutions();
+
+  PrereqChecker p;
+  p.finalize();
 
   return IDD_CONFIRM;
 }
