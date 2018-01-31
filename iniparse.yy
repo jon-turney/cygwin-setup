@@ -127,8 +127,8 @@ versioninfo: /* empty */
  | OPENBRACE STRING CLOSEBRACE { iniBuilder->buildSourceNameVersion ($2); }
  ;
 
-versionedpackagelist /* non-empty */
- : versionedpackageentry
+versionedpackagelist: /* empty */
+ | versionedpackageentry
  | versionedpackagelist listseparator versionedpackageentry
  ;
 
