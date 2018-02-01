@@ -1,0 +1,29 @@
+version: '{build}'
+environment:
+  CYGWIN_ROOT: C:\cygwin
+  CYGWIN_MIRROR: http://cygwin.mirror.constant.com
+  CYGWIN_CACHE: C:\cache
+  matrix:
+  - HOST: i686-w64-mingw32
+  - HOST: x86_64-w64-mingw32
+install:
+- cmd: |-
+    if "%HOST%"=="i686-w64-mingw32" set PKGARCH="mingw64-i686"
+    if "%HOST%"=="x86_64-w64-mingw32" set PKGARCH="mingw64-x86_64"
+    if NOT DEFINED PKGARCH exit 1
+    set SETUP=setup-x86.exe
+    echo Updating Cygwin and installing build prerequisites
+    %CYGWIN_ROOT%\%SETUP% -qnNdO -R "%CYGWIN_ROOT%" -s "%CYGWIN_MIRROR%" -l "%CYGWIN_CACHE%" -g -P "autoconf,automake,bison,flex,libtool,make,%PKGARCH%-headers,%PKGARCH%-gcc-g++,%PKGARCH%-libgcrypt,%PKGARCH%-libsolv,%PKGARCH%-bzip2,%PKGARCH%-xz,%PKGARCH%-zlib,pkg-config,upx"
+cache: C:\cache
+build_script:
+- cmd: |-
+    echo Bootstrap running...
+    %CYGWIN_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; ./bootstrap.sh --host=%HOST%"
+    echo Make running...
+    %CYGWIN_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; make"
+    echo Strip/UPX running...
+    %CYGWIN_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; make strip upx"
+test: off
+deploy: off
+artifacts:
+- path: setup.exe
