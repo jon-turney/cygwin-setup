@@ -36,6 +36,7 @@ currentSpec (0), _feedback (aFeedback){}
 
 IniDBBuilderPackage::~IniDBBuilderPackage()
 {
+  process();
 }
 
 void
