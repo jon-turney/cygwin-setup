@@ -580,7 +580,7 @@ BEGIN
     IDS_TRUSTCURR_TOOLTIP   "Sets all packages to the best version available. "
        "(RECOMMENDED)"
     IDS_TRUSTSYNC_TOOLTIP   "Sets all packages to the version available from the "
-       "package respository, downgrading if necessary."
+       "package repository, downgrading if necessary."
     IDS_TRUSTEXP_TOOLTIP    "Enable test packages."
     IDS_VIEWBUTTON_TOOLTIP  "Select the package view.  This determines "
        "which packages are shown below.\r\n"
