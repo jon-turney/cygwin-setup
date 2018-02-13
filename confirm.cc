@@ -73,7 +73,7 @@ ConfirmPage::OnActivate()
               s += i->version.Name();
               s += " ";
               s += i->version.Canonical_version();
-              if (pkg->desired)
+              if (pkg && pkg->desired)
                 s += " (automatically added)";
               s += "\r\n";
             }
@@ -96,7 +96,9 @@ ConfirmPage::OnActivate()
             s += i->version.Name();
             s += " ";
             s += i->version.Canonical_version();
-            if (!pkg->desired)
+            if (i->version.Type() == package_source)
+              s += " (source)";
+            else if (pkg && !pkg->desired)
               s += " (automatically added)";
             s += "\r\n";
           }
