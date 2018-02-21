@@ -881,7 +881,8 @@ do_install_thread (HINSTANCE h, HWND owner)
        i != uninstall_q.end (); ++i)
   {
     packagemeta *pkgm = db.findBinary (PackageSpecification(i->Name()));
-    myInstaller.preremoveOne (*pkgm);
+    if (pkgm)
+      myInstaller.preremoveOne (*pkgm);
     Progress.SetBar2(std::distance(uninstall_q.begin(), i) + 1, uninstall_q.size());
   }
 
@@ -890,7 +891,8 @@ do_install_thread (HINSTANCE h, HWND owner)
        i != uninstall_q.end (); ++i)
   {
     packagemeta *pkgm = db.findBinary (PackageSpecification(i->Name()));
-    myInstaller.uninstallOne (*pkgm);
+    if (pkgm)
+      myInstaller.uninstallOne (*pkgm);
     Progress.SetBar2(std::distance(uninstall_q.begin(), i) + 1, uninstall_q.size());
   }
 
