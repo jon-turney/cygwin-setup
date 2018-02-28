@@ -24,8 +24,6 @@
 class NetIO
 {
 protected:
-  NetIO (char const *url);
-  void set_url (char const *url);
   BOOL ftp_auth;
 
   static char *net_user;
@@ -39,13 +37,8 @@ protected:
 public:
   /* if nonzero, this is the estimated total file size */
   int file_size;
-  /* broken down url FYI */
-  char *url;
-  char *proto;
-  char *host;
-  int port;
-  char *path;
-    virtual ~ NetIO ();
+
+  virtual ~ NetIO () {};
 
   /* The user calls this function to create a suitable accessor for
      the given URL.  It uses the network setup state in state.h.  If

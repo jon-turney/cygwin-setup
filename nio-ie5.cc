@@ -114,8 +114,7 @@ DWORD Proxy::type (void) const
 static HINTERNET internet = 0;
 static Proxy last_proxy = Proxy(-1, "", -1);
 
-NetIO_IE5::NetIO_IE5 (char const *_url, bool cachable):
-NetIO (_url)
+NetIO_IE5::NetIO_IE5 (char const *url, bool cachable)
 {
   int resend = 0;
 
