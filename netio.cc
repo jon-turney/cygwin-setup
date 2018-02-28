@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <shlwapi.h>
+
 #include "resource.h"
 #include "state.h"
 #include "msg.h"
@@ -72,11 +74,25 @@ NetIO::open (char const *url, bool cachable)
   else if (strncmp (url, "ftps://", 7) == 0)
     proto = ftps;
   else if (strncmp (url, "file://", 7) == 0)
-    proto = file;
-  else
     {
       proto = file;
-      file_url = (std::string("file://") + url);
+
+      // WinInet expects a 'legacy' file:// URL
+      // (i.e. a windows path with "file://" prepended)
+      // https://blogs.msdn.microsoft.com/freeassociations/2005/05/19/the-bizarre-and-unhappy-story-of-file-urls/
+      char path[MAX_PATH];
+      DWORD len = MAX_PATH;
+      if (S_OK == PathCreateFromUrl(url, path, &len, 0))
+        {
+          file_url = std::string("file://") + path;
+          url = file_url.c_str();
+        }
+    }
+  else
+    // treat everything else as a windows path
+    {
+      proto = file;
+      file_url = std::string("file://") + url;
       url = file_url.c_str();
     }
 
