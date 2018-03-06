@@ -170,7 +170,7 @@ protected:
 private:
   std::string trustLabel(packageversion const &) const;
   std::vector <Script> scripts_;
-  static void scan (const packageversion &pkg, bool mirror_mode);
+  static bool scan (const packageversion &pkg, bool mirror_mode);
 
   bool _picked; /* true if desired version is to be (re)installed */
   bool _srcpicked;

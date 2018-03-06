@@ -664,33 +664,30 @@ packagemeta::logSelectionStatus() const
 }
 
 /* scan for local copies of package */
-void
+bool
 packagemeta::scan (const packageversion &pkg, bool mirror_mode)
 {
-  /* Already have something */
+  /* empty version */
   if (!pkg)
-    return;
+    return false;
 
-  /* Remove mirror sites.
-   * FIXME: This is a bit of a hack.
-   */
   try
     {
       if (!check_for_cached (*(pkg.source ()), NULL, mirror_mode, false)
-	  && ::source == IDC_SOURCE_LOCALDIR)
-	pkg.source ()->sites.clear ();
+          && ::source == IDC_SOURCE_LOCALDIR)
+        return false;
     }
   catch (Exception * e)
     {
       // We can ignore these, since we're clearing the source list anyway
       if (e->errNo () == APPERR_CORRUPT_PACKAGE)
-	{
-	  pkg.source ()->sites.clear ();
-	  return;
-	}
+        return false;
+
       // Unexpected exception.
       throw e;
     }
+
+  return true;
 }
 
 void
@@ -712,15 +709,15 @@ packagemeta::ScanDownloadedFiles (bool mirror_mode)
 			   && (*i != pkg.installed
 			       || pkg.installed == pkg.curr
 			       || pkg.installed == pkg.exp);
-	  scan (*i, lazy_scan);
+	  bool accessible = scan (*i, lazy_scan);
 	  packageversion foo = *i;
 	  packageversion pkgsrcver = foo.sourcePackage ();
-	  scan (pkgsrcver, lazy_scan);
+	  bool src_accessible = scan (pkgsrcver, lazy_scan);
 
 	  /* For local installs, if there is no src and no bin, the version
 	   * is unavailable
 	   */
-	  if (!i->accessible () && !pkgsrcver.accessible ()
+	  if (!accessible && !src_accessible
 	      && *i != pkg.installed)
 	    {
 	      if (pkg.curr == *i)
