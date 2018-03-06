@@ -137,11 +137,8 @@ ChooserPage::createListview ()
 {
   SetBusy ();
   static std::vector<packagemeta *> empty_cat;
-  static Category dummy_cat (std::string ("No packages found."), empty_cat);
-  packagedb db;
-  packagedb::categoriesType::iterator it = db.categories.find("All");
-  Category &cat = (it == db.categories.end ()) ? dummy_cat : *it;
-  chooser = new PickView (cat);
+  static Category dummy_cat (std::string ("All"), empty_cat);
+  chooser = new PickView (dummy_cat);
   RECT r = getDefaultListViewSize();
   if (!chooser->Create(this, WS_CHILD | WS_HSCROLL | WS_VSCROLL | WS_VISIBLE,&r))
     throw new Exception (TOSTRING(__LINE__) " " __FILE__,
