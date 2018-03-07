@@ -44,7 +44,7 @@ SplashPage::Create ()
 void
 SplashPage::OnInit ()
 {
-  std::string ver = "Setup.exe version ";
+  std::string ver = "Setup version ";
   ver += (setup_version[0] ? setup_version : "[unknown]");
   ver += is_64bit ? " (64 bit)" : " (32 bit)";
   SetDlgItemFont(IDC_VERSION, "Arial", 10, FW_BOLD);

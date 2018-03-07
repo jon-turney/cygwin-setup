@@ -94,6 +94,7 @@ static BoolOption PackageManagerOption (false, 'M', "package-manager", "Semi-att
 static BoolOption NoAdminOption (false, 'B', "no-admin", "Do not check for and enforce running as Administrator");
 static BoolOption WaitOption (false, 'W', "wait", "When elevating, wait for elevated child process");
 static BoolOption HelpOption (false, 'h', "help", "Print help");
+static BoolOption VersionOption (false, 'V', "version", "Show version");
 static StringOption SetupBaseNameOpt ("setup", 'i', "ini-basename", "Use a different basename, e.g. \"foo\", instead of \"setup\"", false);
 BoolOption UnsupportedOption (false, '\0', "allow-unsupported-windows", "Allow old, unsupported Windows versions");
 std::string SetupBaseName;
@@ -262,7 +263,9 @@ WinMain (HINSTANCE h,
     unattended_mode = PackageManagerOption ? chooseronly
 			: (UnattendedOption ? unattended : attended);
 
-    if (unattended_mode || help_option)
+    bool output_only = help_option || VersionOption;
+
+    if (unattended_mode || output_only)
       set_cout ();
 
     SetupBaseName = SetupBaseNameOpt;
@@ -273,7 +276,7 @@ WinMain (HINSTANCE h,
        supposed to elevate. */
     nt_sec.initialiseWellKnownSIDs ();
     /* Check if we have to elevate. */
-    bool elevate = !help_option && OSMajorVersion () >= 6
+    bool elevate = !output_only && OSMajorVersion () >= 6
 		   && !NoAdminOption && !nt_sec.isRunAsAdmin ();
 
     /* Start logging only if we don't elevate.  Same for setting default
@@ -281,8 +284,8 @@ WinMain (HINSTANCE h,
     LogSingleton::SetInstance (*LogFile::createLogFile ());
     const char *sep = isdirsep (local_dir[local_dir.size () - 1])
 				? "" : "\\";
-    /* Don't create log files for help output only. */
-    if (!elevate && !help_option)
+    /* Don't create log files for help or version output only. */
+    if (!elevate && !output_only)
       {
 	Logger ().setFile (LOG_BABBLE, local_dir + sep + "setup.log.full",
 			   false);
@@ -294,13 +297,21 @@ WinMain (HINSTANCE h,
     if (help_option)
       {
 	if (invalid_option)
-	  Log (LOG_PLAIN) << "\nError during option processing." << endLog;
+	  Log (LOG_PLAIN) << "\nError during option processing.\n" << endLog;
+        Log (LOG_PLAIN) << "Cygwin setup " << setup_version << endLog;
 	Log (LOG_PLAIN) << "\nCommand Line Options:\n" << endLog;
 	GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN));
 	Log (LOG_PLAIN) << endLog;
 	Log (LOG_PLAIN) << "The default is to both download and install packages, unless either --download or --local-install is specified." << endLog;
 	Logger ().exit (invalid_option ? 1 : 0, false);
 	goto finish_up;
+      }
+
+    if (VersionOption)
+      {
+        Log (LOG_PLAIN) << "Cygwin setup " << setup_version << endLog;
+        Logger ().exit (0, false);
+        goto finish_up;
       }
 
     /* Check if Cygwin works on this Windows version */
