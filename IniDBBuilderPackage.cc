@@ -105,6 +105,7 @@ IniDBBuilderPackage::buildPackage (const std::string& _name)
   cbpv.requires = NULL;
   cbpv.obsoletes = NULL;
   cbpv.provides = NULL;
+  cbpv.conflicts = NULL;
   cbpv.archive = packagesource();
 
   currentSpec = NULL;
@@ -112,6 +113,7 @@ IniDBBuilderPackage::buildPackage (const std::string& _name)
   dependsNodeList = PackageDepends();
   obsoletesNodeList = PackageDepends();
   providesNodeList = PackageDepends();
+  conflictsNodeList = PackageDepends();
 #if DEBUG
   Log (LOG_BABBLE) << "Created package " << name << endLog;
 #endif
@@ -180,6 +182,7 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
   cspv.requires = NULL;
   cspv.obsoletes = NULL;
   cspv.provides = NULL;
+  cspv.conflicts = NULL;
 
   /* set archive path, size, mirror, hash */
   cspv.archive = packagesource();
@@ -271,6 +274,18 @@ IniDBBuilderPackage::buildBeginProvides ()
   providesNodeList = PackageDepends();
   currentNodeList = &providesNodeList;
   cbpv.provides = &providesNodeList;
+}
+
+void
+IniDBBuilderPackage::buildBeginConflicts ()
+{
+#if DEBUG
+  Log (LOG_BABBLE) << "Beginning of a conflicts statement" << endLog;
+#endif
+  currentSpec = NULL;
+  conflictsNodeList = PackageDepends();
+  currentNodeList = &conflictsNodeList;
+  cbpv.conflicts = &conflictsNodeList;
 }
 
 void
@@ -374,4 +389,5 @@ IniDBBuilderPackage::process ()
   cbpv.archive = packagesource();
   obsoletesNodeList = PackageDepends();
   providesNodeList = PackageDepends();
+  conflictsNodeList = PackageDepends();
 }

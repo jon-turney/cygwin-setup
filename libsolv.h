@@ -149,6 +149,7 @@ public:
     PackageDepends *requires;
     PackageDepends *obsoletes;
     PackageDepends *provides;
+    PackageDepends *conflicts;
   };
 
   SolvableVersion addPackage(const std::string& pkgname,

@@ -449,6 +449,8 @@ SolverPool::addPackage(const std::string& pkgname, const addPackageData &pkgdata
     solvable->requires = makedeps(repo, pkgdata.requires);
   if (pkgdata.obsoletes)
     solvable->obsoletes = makedeps(repo, pkgdata.obsoletes);
+  if (pkgdata.conflicts)
+    solvable->conflicts = makedeps(repo, pkgdata.conflicts);
 
   /* a solvable can also store arbitrary attributes not needed for dependency
      resolution, if we need them */

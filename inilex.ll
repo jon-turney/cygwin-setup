@@ -128,6 +128,7 @@ B64	[a-zA-Z0-9_-]
 [dD]"epends2:"		return DEPENDS;
 [oO]"bsoletes:"	return OBSOLETES;
 [pP]"rovides:"		return PROVIDES;
+[cC]"onflicts:"	return CONFLICTS;
 
 ^{STR}":"		ignore_line ();
 

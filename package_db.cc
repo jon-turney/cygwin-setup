@@ -135,6 +135,7 @@ packagedb::read ()
                   data.requires = NULL;
                   data.obsoletes = NULL;
                   data.provides = NULL;
+                  data.conflicts = NULL;
                   data.sdesc = "";
                   data.ldesc = "";
                   data.stability = TRUST_UNKNOWN;
@@ -208,6 +209,7 @@ packagedb::makeBase()
   data.ldesc = "Ficitious package that requires all Base packages";
   data.obsoletes = NULL;
   data.provides = NULL;
+  data.conflicts = NULL;
   data.stability = TRUST_CURR;
   // data.spkg = PackageSpecification();
   // data.spkg_id = packageversion();
