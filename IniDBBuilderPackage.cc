@@ -104,12 +104,14 @@ IniDBBuilderPackage::buildPackage (const std::string& _name)
   cbpv.spkg_id = packageversion();
   cbpv.requires = NULL;
   cbpv.obsoletes = NULL;
+  cbpv.provides = NULL;
   cbpv.archive = packagesource();
 
   currentSpec = NULL;
   currentNodeList = NULL;
   dependsNodeList = PackageDepends();
   obsoletesNodeList = PackageDepends();
+  providesNodeList = PackageDepends();
 #if DEBUG
   Log (LOG_BABBLE) << "Created package " << name << endLog;
 #endif
@@ -177,6 +179,7 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
   cspv.type = package_source;
   cspv.requires = NULL;
   cspv.obsoletes = NULL;
+  cspv.provides = NULL;
 
   /* set archive path, size, mirror, hash */
   cspv.archive = packagesource();
@@ -256,6 +259,18 @@ IniDBBuilderPackage::buildBeginObsoletes ()
   obsoletesNodeList = PackageDepends();
   currentNodeList = &obsoletesNodeList;
   cbpv.obsoletes = &obsoletesNodeList;
+}
+
+void
+IniDBBuilderPackage::buildBeginProvides ()
+{
+#if DEBUG
+  Log (LOG_BABBLE) << "Beginning of a provides statement" << endLog;
+#endif
+  currentSpec = NULL;
+  providesNodeList = PackageDepends();
+  currentNodeList = &providesNodeList;
+  cbpv.provides = &providesNodeList;
 }
 
 void
@@ -357,4 +372,6 @@ IniDBBuilderPackage::process ()
   cbpv.spkg = PackageSpecification();
   cbpv.spkg_id = packageversion();
   cbpv.archive = packagesource();
+  obsoletesNodeList = PackageDepends();
+  providesNodeList = PackageDepends();
 }

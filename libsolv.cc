@@ -438,8 +438,10 @@ SolverPool::addPackage(const std::string& pkgname, const addPackageData &pkgdata
   solvable->arch = (pkgdata.type == package_binary) ? ARCH_ANY : ARCH_SRC;
   solvable->evr = pool_str2id(repo->pool, pkgdata.version.c_str(), 1);
   solvable->vendor = pool_str2id(repo->pool, pkgdata.vendor.c_str(), 1);
+  if (pkgdata.provides)
+    solvable->provides = makedeps(repo, pkgdata.provides);
   /* in the absence of specific provides, we provide what we obsolete */
-  if (pkgdata.obsoletes)
+  else if (pkgdata.obsoletes)
     solvable->provides = makedeps(repo, pkgdata.obsoletes);
   /* we always provide ourselves */
   solvable->provides = repo_addid_dep(repo, solvable->provides, pool_rel2id(pool, solvable->name, solvable->evr, REL_EQ, 1), 0);

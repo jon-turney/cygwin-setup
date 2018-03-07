@@ -134,6 +134,7 @@ packagedb::read ()
                   data.vendor = "cygwin";
                   data.requires = NULL;
                   data.obsoletes = NULL;
+                  data.provides = NULL;
                   data.sdesc = "";
                   data.ldesc = "";
                   data.stability = TRUST_UNKNOWN;
@@ -206,6 +207,7 @@ packagedb::makeBase()
   data.sdesc = "Ficitious package that requires all Base packages";
   data.ldesc = "Ficitious package that requires all Base packages";
   data.obsoletes = NULL;
+  data.provides = NULL;
   data.stability = TRUST_CURR;
   // data.spkg = PackageSpecification();
   // data.spkg_id = packageversion();

@@ -53,6 +53,7 @@ public:
   void buildBeginDepends ();
   void buildBeginBuildDepends ();
   void buildBeginObsoletes ();
+  void buildBeginProvides ();
   void buildMessage (const std::string&, const std::string&);
   void buildSourceName (const std::string& );
   void buildSourceNameVersion (const std::string& );
@@ -83,6 +84,7 @@ private:
   PackageDepends *currentNodeList;
   PackageDepends dependsNodeList;
   PackageDepends obsoletesNodeList;
+  PackageDepends providesNodeList;
   SolverPool::addPackageData cbpv;
   std::set <std::string> replace_versions;
 

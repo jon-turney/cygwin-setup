@@ -45,7 +45,10 @@ extern int yylineno;
 %token SDESC
 %token LDESC
 %token REPLACE_VERSIONS
-%token CATEGORY DEPENDS REQUIRES
+%token CATEGORY
+%token DEPENDS
+%token REQUIRES
+%token PROVIDES
 %token T_PREV T_CURR T_TEST T_OTHER
 %token MD5 SHA512
 %token SOURCEPACKAGE
@@ -114,6 +117,7 @@ singleitem /* non-empty */
  | REQUIRES { iniBuilder->buildBeginDepends(); } versionedpackagelistsp NL
  | BUILDDEPENDS { iniBuilder->buildBeginBuildDepends(); } versionedpackagelist NL
  | OBSOLETES { iniBuilder->buildBeginObsoletes(); } versionedpackagelist NL
+ | PROVIDES { iniBuilder->buildBeginProvides(); } versionedpackagelist NL
  | REPLACE_VERSIONS versionlist NL
 
  | MESSAGE STRING STRING NL	{ iniBuilder->buildMessage ($2, $3); }
