@@ -14,6 +14,7 @@
 #include "libsolv.h"
 #include "package_db.h"
 #include "package_meta.h"
+#include "resource.h"
 
 #include "solv/solver.h"
 #include "solv/solverdebug.h"
@@ -242,18 +243,20 @@ SolvableVersion::source() const
 bool
 SolvableVersion::accessible () const
 {
-  // The 'accessible' check used to test if an archive was available locally or
-  // from a mirror.
+  // empty packages are never accessible
+  if (id == 0)
+    return false;
+
+  // If we're doing a local re-install, is there an archive available?
   //
-  // This seems utterly pointless. as binary packages which aren't 'accessible'
-  // never get to appear in the package list.
-  //
-  // For source packages, it's equivalent to the bool conversion operator.)
-  //
-  if (id != 0)
-    return TRUE;
-  else
-    return FALSE;
+  // (This assumes that packagemeta::ScanDownloadedFiles() has already been
+  // called to check for presence in the package cache, which would have removed
+  // the version if not available, unless it is already installed)
+  if (::source == IDC_SOURCE_LOCALDIR)
+    return source ()->Cached ();
+
+  // Otherwise, package is (presumably) retrievable
+  return true;
 }
 
 package_stability_t
