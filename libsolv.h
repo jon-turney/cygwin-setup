@@ -88,6 +88,8 @@ class SolvableVersion
   bool operator > (SolvableVersion const &) const;
   bool operator >= (SolvableVersion const &) const;
 
+  void remove() const;
+
  private:
   Id id;
   Pool *pool;

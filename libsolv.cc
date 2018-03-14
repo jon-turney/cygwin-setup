@@ -304,6 +304,16 @@ SolvableVersion::compareVersions(const SolvableVersion &a,
   return pool_evrcmp(pool, evra, evrb, EVRCMP_COMPARE);
 }
 
+void
+SolvableVersion::remove() const
+{
+  if (!id)
+    return;
+
+  Solvable *solvable = pool_id2solvable(pool, id);
+  repo_free_solvable(solvable->repo, id, 0);
+}
+
 // ---------------------------------------------------------------------------
 // implements class SolverPool
 //

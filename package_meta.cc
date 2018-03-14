@@ -724,7 +724,10 @@ packagemeta::ScanDownloadedFiles (bool mirror_mode)
 		pkg.curr = packageversion ();
 	      if (pkg.exp == *i)
 		pkg.exp = packageversion ();
+
+	      i->remove();
 	      pkg.versions.erase (i++);
+
 	      /* For now, leave the source version alone */
 	    }
 	  else
