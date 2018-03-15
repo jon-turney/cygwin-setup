@@ -64,6 +64,10 @@ ConnectionSetting::typeFromString(const std::string& aType)
   if (!casecompare(aType, "Proxy"))
     return IDC_NET_PROXY;
 
+  /* Migrate the removed direct(legacy) to direct */
+  if (!casecompare(aType, "Legacy"))
+    return IDC_NET_DIRECT;
+
   /* A sanish default */
   return IDC_NET_PRECONFIG;
 }
