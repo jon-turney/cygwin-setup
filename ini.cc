@@ -209,13 +209,13 @@ static bool
 do_local_ini (HWND owner)
 {
   bool ini_error = false;
-  GuiParseFeedback myFeedback;
-  IniDBBuilderPackage aBuilder (myFeedback);
   io_stream *ini_file, *ini_sig_file;
   // iterate over all setup files found in do_from_local_dir
   for (IniList::const_iterator n = found_ini_list.begin ();
        n != found_ini_list.end (); ++n)
     {
+      GuiParseFeedback myFeedback;
+      IniDBBuilderPackage aBuilder (myFeedback);
       bool sig_fail = false;
       std::string current_ini_ext, current_ini_name, current_ini_sig_name;
 
@@ -268,8 +268,6 @@ static bool
 do_remote_ini (HWND owner)
 {
   bool ini_error = false;
-  GuiParseFeedback myFeedback;
-  IniDBBuilderPackage aBuilder (myFeedback);
   io_stream *ini_file = NULL, *ini_sig_file;
 
   /* FIXME: Get rid of this io_stream pointer travesty.  The need to
@@ -279,6 +277,8 @@ do_remote_ini (HWND owner)
   for (SiteList::const_iterator n = site_list.begin ();
        n != site_list.end (); ++n)
     {
+      GuiParseFeedback myFeedback;
+      IniDBBuilderPackage aBuilder (myFeedback);
       bool sig_fail = false;
       std::string current_ini_ext, current_ini_name, current_ini_sig_name;
       // iterate over known extensions for setup
