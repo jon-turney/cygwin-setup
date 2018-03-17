@@ -71,8 +71,6 @@ packagedb::read ()
 {
   if (!installeddbread)
     {
-      solver.internalize();
-
       /* Read in the local installation database. */
       io_stream *db = 0;
       db = io_stream::open ("cygfile:///etc/setup/installed.db", "rt", 0);

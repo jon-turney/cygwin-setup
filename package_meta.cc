@@ -154,8 +154,6 @@ packagemeta::add_version (packageversion & thepkg, const SolverPool::addPackageD
 #endif
 
   /* Record the highest version at a given stability level */
-  /* (This has to be written somewhat carefully as attributes aren't
-     internalized yet so we can't look at them) */
   packageversion *v = NULL;
   switch (pkgdata.stability)
     {

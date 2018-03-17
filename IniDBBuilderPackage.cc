@@ -37,6 +37,8 @@ IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
 IniDBBuilderPackage::~IniDBBuilderPackage()
 {
   process();
+  packagedb db;
+  db.solver.internalize();
 }
 
 void
