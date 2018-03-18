@@ -19,6 +19,8 @@
 #include "package_db.h"
 #include "package_meta.h"
 
+#include <algorithm>
+
 extern ThreeBarProgressPage Progress;
 
 // Sizing information.
@@ -61,26 +63,34 @@ ConfirmPage::OnActivate()
   // first list things we will erase
   if (source != IDC_SOURCE_DOWNLOAD)
     {
+      std::vector<std::string> erase;
       for (SolverTransactionList::const_iterator i = trans.begin ();
            i != trans.end (); i++)
         {
           if (i->type == SolverTransaction::transErase)
             {
+              std::string line;
               packageversion pv = i->version;
               packagemeta *pkg = db.findBinary (PackageSpecification (pv.Name ()));
 
-              s += "Uninstall ";
-              s += i->version.Name();
-              s += " ";
-              s += i->version.Canonical_version();
+              line += "Uninstall ";
+              line += i->version.Name();
+              line += " ";
+              line += i->version.Canonical_version();
               if (pkg && pkg->desired)
-                s += " (automatically added)";
-              s += "\r\n";
+                line += " (automatically added)";
+              line += "\r\n";
+              erase.push_back (line);
             }
         }
+      sort (erase.begin(), erase.end());
+      for (std::vector<std::string>::const_iterator i = erase.begin ();
+           i != erase.end(); i++)
+        s += *i;
     }
 
   // then list things downloaded or installed
+  std::vector<std::string> install;
   for (SolverTransactionList::const_iterator i = trans.begin ();
        i != trans.end (); i++)
     {
@@ -89,20 +99,26 @@ ConfirmPage::OnActivate()
 
       if (i->type == SolverTransaction::transInstall)
           {
+            std::string line;
             if (source != IDC_SOURCE_DOWNLOAD)
-              s += "Install ";
+              line += "Install ";
             else
-              s += "Download ";
-            s += i->version.Name();
-            s += " ";
-            s += i->version.Canonical_version();
+              line += "Download ";
+            line += i->version.Name();
+            line += " ";
+            line += i->version.Canonical_version();
             if (i->version.Type() == package_source)
-              s += " (source)";
+              line += " (source)";
             else if (pkg && !pkg->desired)
-              s += " (automatically added)";
-            s += "\r\n";
+              line += " (automatically added)";
+            line += "\r\n";
+            install.push_back (line);
           }
     }
+  sort (install.begin(), install.end());
+  for (std::vector<std::string>::const_iterator i = install.begin ();
+       i != install.end(); i++)
+    s += *i;
 
   // be explicit about doing nothing
   if (s.empty())
