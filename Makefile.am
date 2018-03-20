@@ -99,7 +99,7 @@ inilint_SOURCES = \
 
 @SETUP@_LDADD = \
 	libgetopt++/libgetopt++.la -lgcrypt -lgpg-error -llzma -lbz2 -lz -lsolv -lregex \
-	-lshlwapi -lcomctl32 -lole32 -lpsapi -luuid -lntdll -lwininet -lmingw32
+	-lshlwapi -lcomctl32 -lole32 -lpsapi -luuid -lntdll -lwininet -lws2_32 -lmingw32
 @SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 @SETUP@_SOURCES = \
 	AntiVirus.cc \
