@@ -60,6 +60,10 @@ class SolvableVersion
   const PackageDepends depends() const;
   // Return the obsoletes list
   const PackageDepends obsoletes() const;
+  // Return the provides list
+  const PackageDepends provides() const;
+  // Return the conflicts list
+  const PackageDepends conflicts() const;
   bool accessible () const;
   package_type_t Type () const;
   package_stability_t Stability () const;

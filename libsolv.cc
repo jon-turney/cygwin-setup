@@ -121,6 +121,18 @@ SolvableVersion::obsoletes() const
   return deplist(SOLVABLE_OBSOLETES);
 }
 
+const PackageDepends
+SolvableVersion::provides() const
+{
+  return deplist(SOLVABLE_PROVIDES);
+}
+
+const PackageDepends
+SolvableVersion::conflicts() const
+{
+  return deplist(SOLVABLE_CONFLICTS);
+}
+
 // helper function which returns the deplist for a given key, as a PackageDepends
 const PackageDepends
 SolvableVersion::deplist(Id keyname) const

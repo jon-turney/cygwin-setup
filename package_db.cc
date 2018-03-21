@@ -146,6 +146,8 @@ packagedb::read ()
                   packageversion pv = findBinaryVersion(PackageSpecification(pkgname, f.ver));
                   PackageDepends dep;
                   PackageDepends obs;
+                  PackageDepends prov;
+                  PackageDepends conf;
                   if (pv)
                     {
                       data.sdesc = pv.SDesc();
@@ -157,6 +159,10 @@ packagedb::read ()
                       data.requires = &dep;
                       obs = pv.obsoletes();
                       data.obsoletes = &obs;
+                      prov = pv.provides();
+                      data.provides = &prov;
+                      conf = pv.conflicts();
+                      data.conflicts = &conf;
                     }
                   else
                     // This version is no longer available.  It could
