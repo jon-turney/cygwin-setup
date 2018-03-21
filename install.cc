@@ -850,7 +850,15 @@ do_install_thread (HINSTANCE h, HWND owner)
       }
       catch (Exception *e)
       {
-        yesno (owner, IDS_SKIP_PACKAGE, e->what());
+	// We used to give the user a yes/no option to skip this
+	// package (with "no" meaning install it even though the
+	// archive is corrupt), but both options could damage the
+	// user's system.  In the absence of a safe way to recover, we
+	// just bail out.
+	if (e->errNo() == APPERR_CORRUPT_PACKAGE)
+	  fatal (owner, IDS_CORRUPT_PACKAGE, version.Name().c_str());
+	// Unexpected exception.
+	throw e;
       }
       {
         md5sum_total_bytes_sofar += version.source()->size;
