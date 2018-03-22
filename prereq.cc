@@ -70,6 +70,14 @@ PrereqPage::OnActivate()
   PrereqChecker p;
   p.getUnmetString (s);
   Log (LOG_PLAIN) << s << endLog;
+
+  // convert to CRLF line endings for Windows text box
+  size_t pos = 0;
+  while ((pos = s.find("\n", pos)) != std::string::npos)
+    {
+      s.replace(pos, 1, "\r\n");
+      pos += 2;
+    }
   SetDlgItemText (GetHWND (), IDC_PREREQ_EDIT, s.c_str ());
 
   SetFocus (GetDlgItem (IDC_PREREQ_CHECK));
@@ -189,14 +197,6 @@ PrereqChecker::getUnmetString (std::string &s)
 {
   packagedb db;
   s = db.solution.report();
-
-  //
-  size_t pos = 0;
-  while ((pos = s.find("\n", pos)) != std::string::npos)
-    {
-      s.replace(pos, 1, "\r\n");
-      pos += 2;
-    }
 }
 
 // ---------------------------------------------------------------------------
