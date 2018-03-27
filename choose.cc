@@ -295,13 +295,13 @@ ChooserPage::applyCommandLinePackageSelection()
       packagemeta &pkg = *(i->second);
       bool wanted    = pkg.isManuallyWanted();
       bool deleted   = pkg.isManuallyDeleted();
-      bool basemisc  = (pkg.categories.find ("Base") != pkg.categories.end ()
-		     || pkg.categories.find ("Orphaned") != pkg.categories.end ());
-      bool upgrade   = wanted || (!pkg.installed && basemisc);
+      bool base      = pkg.categories.find ("Base") != pkg.categories.end ();
+      bool orphaned  = pkg.categories.find ("Orphaned") != pkg.categories.end ();
+      bool upgrade   = wanted || (!pkg.installed && base);
       bool install   = wanted  && !deleted && !pkg.installed;
-      bool reinstall = (wanted  || basemisc) && deleted;
-      bool uninstall = (!(wanted  || basemisc) && (deleted || PruneInstallOption))
-		     || (!pkg.curr && CleanOrphansOption);
+      bool reinstall = (wanted  || base) && deleted;
+      bool uninstall = (!(wanted  || base) && (deleted || PruneInstallOption))
+		     || (orphaned && CleanOrphansOption);
       if (install)
 	pkg.set_action (packagemeta::Install_action, pkg.curr);
       else if (reinstall)
