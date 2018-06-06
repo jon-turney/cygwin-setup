@@ -363,6 +363,9 @@ IniDBBuilderPackage::process ()
   if (!name.size())
     return;
 
+  if (cbpv.version.empty())
+    return;
+
 #if DEBUG
   Log (LOG_BABBLE) << "Finished with package " << name << endLog;
   Log (LOG_BABBLE) << "Version " << cbpv.version << endLog;
