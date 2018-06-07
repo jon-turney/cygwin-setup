@@ -752,3 +752,15 @@ packagedb::prep()
 
   prepped = true;
 }
+
+void
+packagedb::noChanges ()
+{
+  for (packagecollection::iterator i = packages.begin();
+       i != packages.end(); i++)
+    {
+      packagemeta *pkg = i->second;
+      pkg->desired = pkg->default_version = pkg->installed;
+      pkg->pick(false);
+    }
+}

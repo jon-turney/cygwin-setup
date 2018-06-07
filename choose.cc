@@ -329,6 +329,7 @@ ChooserPage::OnActivate()
     {
       // Do things which should only happen once, but rely on packagedb being
       // ready to use, so OnInit() is too early
+      db.noChanges();
       applyCommandLinePackageSelection();
       initialUpdateState();
 
@@ -392,13 +393,7 @@ ChooserPage::keepClicked()
 {
   update_mode_id = IDC_CHOOSE_KEEP;
   packagedb db;
-  for (packagedb::packagecollection::iterator i = db.packages.begin ();
-        i != db.packages.end (); ++i)
-    {
-      packagemeta & pkg = *(i->second);
-      pkg.desired = pkg.installed;
-      pkg.pick(false);
-    }
+  db.noChanges();
   chooser->refresh();
 }
 
@@ -431,20 +426,11 @@ ChooserPage::changeTrust(int button, bool test, bool initial)
 
   // usually we want to apply the solver to an empty task list to get the list
   // of packages to upgrade (if any)
+  // but initially we want a task list with any package changes caused by
+  // command line options
   if (initial)
-    {
-      // but initially we want a task list with any package changes caused by
-      // command line options
-      // (also note the installed version to avoid generating spurious taskKeep
-      // or taskSkip tasks)
-      for (packagedb::packagecollection::iterator p = db.packages.begin ();
-           p != db.packages.end (); ++p)
-        {
-          packagemeta *pkg = p->second;
-          pkg->default_version = pkg->installed;
-        }
-      q.setTasks();
-    }
+    q.setTasks();
+
   db.defaultTrust(q, mode, test);
 
   // configure PickView so 'test' or 'curr' version is chosen when an

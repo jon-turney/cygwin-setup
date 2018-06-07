@@ -658,14 +658,9 @@ void
 SolverSolution::trans2db() const
 {
   packagedb db;
-  // First reset all packages to the "no change" state
-  for (packagedb::packagecollection::iterator i = db.packages.begin();
-       i != db.packages.end(); i++)
-    {
-      packagemeta *pkg = i->second;
-      pkg->desired = pkg->default_version = pkg->installed;
-      pkg->pick(false);
-    }
+  // First reset all packages to the "no changes" state
+  db.noChanges ();
+
   // Now make changes according to trans.  transErase requires some
   // care; it could either be a "plain" uninstall, or it could be
   // paired with a transInstall for an upgrade/downgrade or reinstall.

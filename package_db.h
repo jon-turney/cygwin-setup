@@ -68,6 +68,8 @@ public:
   /* 0 on success */
   int flush ();
   void prep();
+  /* Set the database to a "no changes requested" state.  */
+  void noChanges ();
 
   packagemeta * findBinary (PackageSpecification const &) const;
   packageversion findBinaryVersion (PackageSpecification const &) const;
