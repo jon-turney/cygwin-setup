@@ -109,7 +109,7 @@ ConfirmPage::OnActivate()
             line += i->version.Canonical_version();
             if (i->version.Type() == package_source)
               line += " (source)";
-            else if (pkg && !pkg->desired)
+            else if (pkg && pkg->desired != pv)
               line += " (automatically added)";
             line += "\r\n";
             install.push_back (line);
