@@ -137,7 +137,7 @@ save_dialog (HWND h)
   *passwd = eget (h, IDC_NET_PASSWD, *passwd);
   if (! *passwd) {
     *passwd = new char[1];
-    passwd[0] = '\0';
+    (*passwd)[0] = '\0';
   }
 }
 
