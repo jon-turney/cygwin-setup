@@ -49,5 +49,5 @@ SplashPage::OnInit ()
   ver += is_64bit ? " (64 bit)" : " (32 bit)";
   SetDlgItemFont(IDC_VERSION, "Arial", 10, FW_BOLD);
   ::SetWindowText (GetDlgItem (IDC_VERSION), ver.c_str());
-  makeClickable (IDC_SPLASH_URL, "http://www.cygwin.com");
+  makeClickable (IDC_SPLASH_URL, "https://cygwin.com");
 }
