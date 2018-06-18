@@ -42,8 +42,8 @@ required packages and their dependencies installed:
   - mingw${arch}-gcc-c++
   - mingw${arch}-zlib-static
   - mingw${arch}-libgcrypt-static
-  - mingw${arch}-libgnurx-static (*)
-  - mingw${arch}-libsolv-static
+  - mingw${arch}-libgnurx-static
+  - mingw${arch}-libsolv-static (*)
   - mingw${arch}-bzip2-static
   - mingw${arch}-xz-libs-static
   - mingw${arch}-winpthreads-static
