@@ -62,6 +62,7 @@ IniList setup_ext_list (setup_exts,
 			setup_exts + (sizeof(setup_exts) / sizeof(*setup_exts)));
 
 static BoolOption NoVerifyOption (false, 'X', "no-verify", "Don't verify setup.ini signatures");
+static BoolOption NoVersionCheckOption (false, '\0', "no-version-check", "Suppress checking if a newer version of setup is available");
 
 extern int yyparse ();
 
@@ -401,7 +402,8 @@ do_ini_thread (HINSTANCE h, HWND owner)
        setup_version);
   if (ini_setup_version.size ())
     {
-      if (version_compare (setup_version, ini_setup_version) < 0)
+      if ((version_compare (setup_version, ini_setup_version) < 0)
+          && !NoVersionCheckOption)
 	note (owner, IDS_OLD_SETUP_VERSION, setup_version,
 	      ini_setup_version.c_str ());
     }
