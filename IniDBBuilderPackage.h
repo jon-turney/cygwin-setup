@@ -91,6 +91,7 @@ private:
   std::set <std::string> replace_versions;
 
   IniParseFeedback const &_feedback;
+  bool minimum_version_checked;
 };
 
 #endif /* SETUP_INIDBBUILDERPACKAGE_H */

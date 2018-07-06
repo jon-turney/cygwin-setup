@@ -32,7 +32,7 @@
 using namespace std;
 
 IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
-currentSpec (0), _feedback (aFeedback){}
+  currentSpec (0), _feedback (aFeedback), minimum_version_checked(FALSE) {}
 
 IniDBBuilderPackage::~IniDBBuilderPackage()
 {
@@ -49,6 +49,15 @@ void
 IniDBBuilderPackage::buildVersion (const std::string& aVersion)
 {
   version = aVersion;
+
+  /* We shouldn't need to warn about potential setup.ini parse problems if we
+     exceed the version in setup-minimum-version: (we will still advise about a
+     possible setup upgrade in do_ini_thread()).  If we don't exceed
+     setup-minimum-version:, we've already encountered a fatal error, so no need
+     to warn as well. */
+  if (minimum_version_checked)
+    return;
+
   if (version.size())
     {
       if (version_compare(setup_version, version) < 0)
@@ -68,6 +77,7 @@ IniDBBuilderPackage::buildVersion (const std::string& aVersion)
 const std::string
 IniDBBuilderPackage::buildMinimumVersion (const std::string& minimum)
 {
+  minimum_version_checked = TRUE;
   if (version_compare(setup_version, minimum) < 0)
     {
       char min_vers[256];
