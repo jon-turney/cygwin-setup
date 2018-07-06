@@ -159,9 +159,9 @@ SolvableVersion::deplist(Id keyname) const
           const char *name = pool_id2str(pool, q.elements[i]);
           PackageSpecification *spec = new PackageSpecification (name);
 
-          if (ISRELDEP(id))
+          if (ISRELDEP(q.elements[i]))
             {
-              Reldep *rd = GETRELDEP(pool, id);
+              Reldep *rd = GETRELDEP(pool, q.elements[i]);
               spec->setOperator(RelId2Operator(rd->flags));
               spec->setVersion(pool_id2str(pool, rd->evr));
             }
