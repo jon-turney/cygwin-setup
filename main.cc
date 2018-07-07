@@ -343,12 +343,16 @@ WinMain (HINSTANCE h,
 
 	if (ShellExecuteEx(&sei))
 	  {
+	    DWORD exitcode = 0;
 	    /* Wait until child process is finished. */
 	    if (WaitOption && sei.hProcess != NULL)
-	      WaitForSingleObject (sei.hProcess, INFINITE);
+	      if (!WaitForSingleObject (sei.hProcess, INFINITE))
+	        GetExitCodeProcess (sei.hProcess, &exitcode);
+	    Logger ().setExitMsg (IDS_ELEVATED);
+	    Logger ().exit (exitcode, false);
 	  }
-	Logger ().setExitMsg (IDS_ELEVATED);
-	Logger ().exit (0, false);
+	Log (LOG_PLAIN) << "Starting elevated child process failed" << endLog;
+	Logger ().exit (1, false);
       }
     else
       {
