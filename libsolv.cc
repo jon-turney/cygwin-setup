@@ -209,6 +209,23 @@ SolvableVersion::sourcePackageName () const
   return std::string(pool_id2str(pool, spkg));
 }
 
+const std::string
+SolvableVersion::Vendor () const
+{
+  if (!id)
+    return "";
+
+  // extract vendor
+  Solvable *solvable = pool_id2solvable(pool, id);
+  Id vendor = repo_lookup_id(solvable->repo, id, SOLVABLE_VENDOR);
+
+  // has no such attribute
+  if (!vendor)
+    return "";
+
+  return std::string(pool_id2str(pool, vendor));
+}
+
 SolvableVersion
 SolvableVersion::sourcePackage () const
 {

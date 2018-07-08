@@ -73,6 +73,7 @@ class SolvableVersion
   SolvableVersion sourcePackage () const;
   // where this package archive can be obtained from
   packagesource *source() const;
+  const std::string Vendor () const;
 
   // fixup spkg_id
   void fixup_spkg_id(SolvableVersion spkg_id) const;
