@@ -245,11 +245,8 @@ packagedb::addBinary (const std::string &pkgname,
       packages.insert (packagedb::packagecollection::value_type(pkgname, pkg));
     }
 
-  /* Create the SolvableVersion  */
-  SolvableVersion sv = solver.addPackage(pkgname, pkgdata);
-
-  /* Register it in packagemeta */
-  pkg->add_version (sv, pkgdata);
+  /* Create the SolvableVersion and register it in packagemeta */
+  pkg->add_version (pkgdata);
 
   return pkg;
 }
@@ -266,11 +263,8 @@ packagedb::addSource (const std::string &pkgname,
       sourcePackages.insert (packagedb::packagecollection::value_type(pkgname, pkg));
     }
 
-  /* Create the SolvableVersion  */
-  SolvableVersion sv = solver.addPackage(pkgname, pkgdata);
-
-  /* Register it in packagemeta */
-  pkg->add_version (sv, pkgdata);
+  /* Create the SolvableVersion and register it in packagemeta */
+  SolvableVersion sv = pkg->add_version (pkgdata);
 
   return sv;
 }

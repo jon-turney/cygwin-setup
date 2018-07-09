@@ -123,37 +123,11 @@ packagemeta::~packagemeta()
   versions.clear ();
 }
 
-void
-packagemeta::add_version (packageversion & thepkg, const SolverPool::addPackageData &pkgdata)
+SolvableVersion
+packagemeta::add_version (const SolverPool::addPackageData &inpkgdata)
 {
-  /*
-    If a packageversion for the same version number is already present,allow
-    this version to replace it.
+  SolverPool::addPackageData pkgdata = inpkgdata;
 
-    There is a problem where multiple repos provide a package.  It's never been
-    clear which repo should win.  With this implementation, the last one added
-    will win.
-
-    We rely on this by adding packages from installed.db last.
-   */
-
-  set <packageversion>::iterator i = versions.find(thepkg);
-  if (i != versions.end())
-    {
-      versions.erase(i);
-    }
-
-  /* Add the version */
-  std::pair<std::set <packageversion>::iterator, bool> result = versions.insert (thepkg);
-
-  if (!result.second)
-    Log (LOG_PLAIN) << "Failed to add version " << thepkg.Canonical_version() << " in package " << name << endLog;
-#ifdef DEBUG
-  else
-    Log (LOG_PLAIN) << "Added version " << thepkg.Canonical_version() << " in package " << name << endLog;
-#endif
-
-  /* Record the highest version at a given stability level */
   packageversion *v = NULL;
   switch (pkgdata.stability)
     {
@@ -167,6 +141,74 @@ packagemeta::add_version (packageversion & thepkg, const SolverPool::addPackageD
       break;
     }
 
+  /*
+    If a packageversion for the same version number is already present, allow
+    this version to replace it.
+
+    There is a problem where multiple repos provide a package.  It's never been
+    clear which repo should win.  With this implementation, the last one added
+    will win.
+
+    We rely on this by adding packages from installed.db last.
+   */
+
+  for (set <packageversion>::iterator i = versions.begin();
+       i != versions.end();
+       i++)
+    {
+      if (i->Canonical_version() != pkgdata.version)
+        continue;
+
+      if (pkgdata.vendor == i->Vendor())
+        {
+          /* Merge the site-list from any existing packageversion with the same
+             repository 'release:' label */
+          pkgdata.archive.sites.insert(pkgdata.archive.sites.end(),
+                                       i->source()->sites.begin(),
+                                       i->source()->sites.end());
+
+          /* Installed packages do not supersede repo packages */
+          if (pkgdata.reponame != "_installed")
+            {
+              /* Ensure a stability level doesn't point to a version we're about
+                 to remove */
+              if (v && (*v == *i))
+                *v = packageversion();
+
+              i->remove();
+            }
+        }
+      else
+        {
+          /* Otherwise... if we had a way to set repo priorities, that could be
+             used to control which packageversion the solver picks. For the
+             moment, just warn that you might not be getting what you think you
+             should... */
+          Log (LOG_PLAIN) << "Version " << pkgdata.version << " of package " <<
+            name << " is present in releases labelled " << pkgdata.vendor <<
+            " and " << i->Vendor() << endLog;
+        }
+
+      versions.erase(i);
+
+      break;
+    }
+
+  /* Create the SolvableVersion  */
+  packagedb db;
+  SolvableVersion thepkg = db.solver.addPackage(name, pkgdata);
+
+  /* Add the version */
+  std::pair<std::set <packageversion>::iterator, bool> result = versions.insert (thepkg);
+
+  if (!result.second)
+    Log (LOG_PLAIN) << "Failed to add version " << thepkg.Canonical_version() << " in package " << name << endLog;
+#ifdef DEBUG
+  else
+    Log (LOG_PLAIN) << "Added version " << thepkg.Canonical_version() << " in package " << name << endLog;
+#endif
+
+  /* Record the highest version at a given stability level */
   if (v)
     {
       /* Any version is always greater than no version */
@@ -184,6 +226,8 @@ packagemeta::add_version (packageversion & thepkg, const SolverPool::addPackageD
           *v = thepkg;
         }
     }
+
+  return thepkg;
 }
 
 bool

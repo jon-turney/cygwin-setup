@@ -43,7 +43,7 @@ public:
 
   ~packagemeta ();
 
-  void add_version (packageversion &, const SolverPool::addPackageData &);
+  SolvableVersion add_version (const SolverPool::addPackageData &);
   void set_installed_version (const std::string &);
   void addToCategoryBase();
   bool hasNoCategories() const;
