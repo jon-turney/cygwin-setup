@@ -38,6 +38,7 @@ public:
   /* if nonzero, this is the estimated total file size */
   int file_size;
 
+  NetIO () : file_size(0) {};
   virtual ~ NetIO () {};
 
   /* The user calls this function to create a suitable accessor for
