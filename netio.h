@@ -24,8 +24,6 @@
 class NetIO
 {
 protected:
-  BOOL ftp_auth;
-
   static char *net_user;
   static char *net_passwd;
   static char *net_proxy_user;

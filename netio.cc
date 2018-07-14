@@ -219,8 +219,6 @@ NetIO::get_ftp_auth (HWND owner)
       delete[] net_ftp_passwd;
       net_ftp_passwd = NULL;
     }
-  if (!ftp_auth)
-    return IDCANCEL;
   user = &net_ftp_user;
   passwd = &net_ftp_passwd;
   return auth_common (hinstance, IDD_FTP_AUTH, owner);
