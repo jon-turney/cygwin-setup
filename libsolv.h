@@ -54,6 +54,7 @@ class SolvableVersion
 
   const std::string Name () const;
   const std::string SDesc () const;
+  const std::string LDesc () const;
   // In setup-speak, 'Canonical' version means 'e:v-r', the non-decomposed version
   const std::string Canonical_version () const;
   // Return the dependency list
