@@ -50,26 +50,15 @@ public:
   void setDefaultCategories();
   void addToCategoryAll();
 
-  class _actions
-  {
-  public:
-    _actions ():_value (0) {};
-    _actions (int aInt) {
-    _value = aInt;
-    if (_value < 0 ||  _value > 3)
-      _value = 0;
-    }
-    _actions & operator ++ ();
-    bool operator == (_actions const &rhs) { return _value == rhs._value; }
-    bool operator != (_actions const &rhs) { return _value != rhs._value; }
-    const char *caption ();
-  private:
-    int _value;
-  };
-  static const _actions Default_action;
-  static const _actions Install_action;
-  static const _actions Reinstall_action;
-  static const _actions Uninstall_action;
+  enum _actions
+    {
+     Default_action,
+     Install_action,
+     Reinstall_action,
+     Uninstall_action,
+    };
+  static const char *action_caption (_actions value);
+
   void set_action (trusts const t);
   void set_action (_actions, packageversion const & default_version);
 

@@ -55,7 +55,8 @@ PickCategoryLine::paint (HDC hdc, HRGN hUpdRgn, int x, int y, int row, int show_
       
       // draw the caption ('Default', 'Install', etc)
       TextOut (hdc, spin_x + SPIN_WIDTH + ICON_MARGIN, r, 
-               current_default.caption (), strlen (current_default.caption ()));
+               packagemeta::action_caption (current_default),
+               strlen (packagemeta::action_caption (current_default)));
       row++;
     }
   if (collapsed)
@@ -110,8 +111,7 @@ PickCategoryLine::click (int const myrow, int const ClickedRow, int const x)
     {
       if ((size_t) x >= spin_x)
 	{
-	  ++current_default;
-	  
+	  current_default = (packagemeta::_actions)((current_default + 1) % 4);
 	  return set_action (current_default);
 	}
       else

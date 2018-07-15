@@ -51,35 +51,22 @@ bool hasManualSelections = 0;
 
 /*****************/
 
-const
-  packagemeta::_actions
-packagemeta::Default_action (0);
-const
-  packagemeta::_actions
-packagemeta::Install_action (1);
-const
-  packagemeta::_actions
-packagemeta::Reinstall_action (2);
-const
-  packagemeta::_actions
-packagemeta::Uninstall_action (3);
-
 char const *
-packagemeta::_actions::caption ()
+packagemeta::action_caption (_actions _value)
 {
   switch (_value)
     {
-    case 0:
+    case Default_action:
       return "Default";
-    case 1:
+    case Install_action:
       return "Install";
-    case 2:
+    case Reinstall_action:
       return "Reinstall";
-    case 3:
+    case Uninstall_action:
       return "Uninstall";
     }
-  // Pacify GCC: (all case options are checked above)
-  return 0;
+
+  return "Unknown";
 }
 
 packagemeta::packagemeta (packagemeta const &rhs) :
@@ -91,14 +78,6 @@ packagemeta::packagemeta (packagemeta const &rhs) :
   desired (rhs.desired)
 {
 
-}
-
-packagemeta::_actions & packagemeta::_actions::operator++ ()
-{
-  ++_value;
-  if (_value > 3)
-    _value = 0;
-  return *this;
 }
 
 template<class T> struct removeCategory : public std::unary_function<T, void>
