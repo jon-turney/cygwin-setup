@@ -23,8 +23,9 @@
 class PickCategoryLine: public ListViewLine
 {
 public:
-  PickCategoryLine (PickView & aView, CategoryTree * _tree) :
+  PickCategoryLine (PickView & aView, CategoryTree * _tree, int _pkgcount) :
     cat_tree (_tree),
+    pkgcount(_pkgcount),
     theView (aView)
   {
   };
@@ -38,6 +39,7 @@ public:
 
 private:
   CategoryTree * cat_tree;
+  int pkgcount;
   PickView & theView;
 };
 

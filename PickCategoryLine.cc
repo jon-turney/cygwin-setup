@@ -18,14 +18,18 @@
 #include "PickView.h"
 #include "window.h"
 #include "package_meta.h"
+#include <sstream>
 
 const std::string
 PickCategoryLine::get_text (int col_num) const
 {
   if (col_num == pkgname_col)
     {
-      std::string s = (cat_tree->collapsed() ? "[+] " : "[-] ") + cat_tree->category().first;
-      return s;
+      std::ostringstream s;
+      s << (cat_tree->collapsed() ? "[+] " : "[-] ") << cat_tree->category().first;
+      if (pkgcount)
+        s << " (" << pkgcount << ")";
+      return s.str();
     }
   else if (col_num == new_col)
     {

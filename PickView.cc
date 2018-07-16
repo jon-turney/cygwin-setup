@@ -169,12 +169,12 @@ PickView::insert_category (CategoryTree *cat_tree)
     return;
 
   // if it's not the "All" category
+  int packageCount = 0;
   bool hasContents = false;
   bool isAll = casecompare(cat->first, "All") == 0;
   if (!isAll)
     {
       // count the number of packages in this category
-      int packageCount = 0;
       for (std::vector <packagemeta *>::const_iterator i = cat->second.begin ();
            i != cat->second.end () ; ++i)
         {
@@ -197,7 +197,7 @@ PickView::insert_category (CategoryTree *cat_tree)
     return;
 
   // insert line for the category
-  contents.push_back(new PickCategoryLine(*this, cat_tree));
+  contents.push_back(new PickCategoryLine(*this, cat_tree, packageCount));
 
   // if not collapsed
   if (!cat_tree->collapsed())
