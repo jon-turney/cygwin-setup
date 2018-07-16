@@ -45,7 +45,6 @@ EXTRA_DIST = \
 	check-na.bmp \
 	check-no.bmp \
 	check-yes.bmp \
-	choose-rtarrow.bmp \
 	choose-spin.bmp \
 	cygwin.ico \
 	cygwin-setup.ico \
