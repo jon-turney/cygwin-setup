@@ -26,7 +26,7 @@ PickCategoryLine::get_text (int col_num) const
   if (col_num == pkgname_col)
     {
       std::ostringstream s;
-      s << (cat_tree->collapsed() ? "[+] " : "[-] ") << cat_tree->category().first;
+      s << cat_tree->category().first;
       if (pkgcount)
         s << " (" << pkgcount << ")";
       return s.str();
@@ -69,4 +69,10 @@ PickCategoryLine::get_actions(int col) const
   al->add("Uninstall", (int)packagemeta::Uninstall_action, (current_default == packagemeta::Uninstall_action), TRUE);
 
   return al;
+}
+
+ListViewLine::State
+PickCategoryLine::get_state() const
+{
+  return cat_tree->collapsed() ? State::collapsed : State::expanded;
 }

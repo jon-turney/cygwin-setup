@@ -519,6 +519,8 @@ CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "setup.exe.manifest"
 IDI_CYGWIN_SETUP        ICON    DISCARDABLE     "cygwin-setup.ico"
 IDI_CYGWIN              ICON    DISCARDABLE     "cygwin.ico"
 IDI_CYGWIN_TERMINAL     ICON    DISCARDABLE     "cygwin-terminal.ico"
+IDI_TREE_PLUS           ICON    DISCARDABLE     "tree-plus.ico"
+IDI_TREE_MINUS          ICON    DISCARDABLE     "tree-minus.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

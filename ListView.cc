@@ -13,6 +13,7 @@
 
 #include "ListView.h"
 #include "LogSingleton.h"
+#include "resource.h"
 
 #include <commctrl.h>
 
@@ -54,6 +55,15 @@ ListView::init(HWND parent, int id, HeaderList headers)
 
   // populate with columns
   initColumns(headers);
+
+  // create a small icon imagelist and assign to listview control
+  // (the order of images matches ListViewLine::State enum)
+  HIMAGELIST hImgList = ImageList_Create(GetSystemMetrics(SM_CXSMICON),
+                                         GetSystemMetrics(SM_CYSMICON),
+                                         ILC_COLOR32, 2, 0);
+  ImageList_AddIcon(hImgList, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_TREE_PLUS)));
+  ImageList_AddIcon(hImgList, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_TREE_MINUS)));
+  ListView_SetImageList(hWndListView, hImgList, LVSIL_SMALL);
 }
 
 void
@@ -179,10 +189,11 @@ ListView::setContents(ListViewContents *_contents)
   for (i = 0; i < contents->size();  i++)
     {
       LVITEM lvi;
-      lvi.mask = LVIF_TEXT;
+      lvi.mask = LVIF_TEXT | LVIF_IMAGE;
       lvi.iItem = i;
       lvi.iSubItem = 0;
       lvi.pszText = LPSTR_TEXTCALLBACK;
+      lvi.iImage = I_IMAGECALLBACK;
 
       ListView_InsertItem(hWndListView, &lvi);
     }
@@ -247,6 +258,11 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
           static StringCache s;
           s = (*contents)[iRow]->get_text(iCol);
           pNmLvDispInfo->item.pszText = s;
+
+          if (pNmLvDispInfo->item.iSubItem == 0)
+            {
+              pNmLvDispInfo->item.iImage = (int)((*contents)[pNmLvDispInfo->item.iItem]->get_state());
+            }
         }
 
       return true;

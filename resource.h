@@ -76,6 +76,8 @@
 #define IDI_CYGWIN_SETUP                  401
 #define IDI_CYGWIN                        402
 #define IDI_CYGWIN_TERMINAL               403
+#define IDI_TREE_PLUS                     404
+#define IDI_TREE_MINUS                    405
 
 // controls
 

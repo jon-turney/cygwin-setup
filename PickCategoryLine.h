@@ -34,6 +34,7 @@ public:
   }
 
   const std::string get_text(int col) const;
+  State get_state() const;
   ActionList *get_actions(int col) const;
   int do_action(int col, int action_id);
 

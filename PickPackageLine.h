@@ -30,6 +30,7 @@ public:
   {
   };
   const std::string get_text(int col) const;
+  State get_state() const { return State::nothing; }
   ActionList *get_actions(int col_num) const;
   int do_action(int col, int action_id);
 private:

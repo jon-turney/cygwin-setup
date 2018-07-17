@@ -27,8 +27,11 @@
 class ListViewLine
 {
  public:
+  enum class State { collapsed, expanded, nothing=-1 };
+
   virtual ~ListViewLine() {};
   virtual const std::string get_text(int col) const = 0;
+  virtual State get_state() const = 0;
   virtual ActionList *get_actions(int col) const = 0;
   virtual int do_action(int col, int id) = 0;
 };

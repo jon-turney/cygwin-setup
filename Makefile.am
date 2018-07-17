@@ -47,7 +47,9 @@ EXTRA_DIST = \
 	cygwin-setup.ico \
 	cygwin-terminal.ico \
 	setup.exe.manifest \
-	setup64.exe.manifest
+	setup64.exe.manifest \
+	tree-minus.ico \
+	tree-plus.ico
 
 # iniparse.hh is generated from iniparse.yy via bison -d, so it needs to be
 # included here for proper tracking (but not iniparse.cc, since automake
