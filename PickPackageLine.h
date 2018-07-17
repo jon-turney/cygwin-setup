@@ -24,18 +24,21 @@ class PickView;
 class PickPackageLine: public ListViewLine
 {
 public:
-  PickPackageLine (PickView &aView, packagemeta & apkg) :
+  PickPackageLine (PickView &aView, packagemeta & apkg, int aindent) :
     pkg (apkg),
-    theView (aView)
+    theView (aView),
+    indent (aindent)
   {
   };
   const std::string get_text(int col) const;
   State get_state() const { return State::nothing; }
+  int get_indent() const;
   ActionList *get_actions(int col_num) const;
   int do_action(int col, int action_id);
 private:
   packagemeta & pkg;
   PickView & theView;
+  int indent;
 };
 
 #endif /* SETUP_PICKPACKAGELINE_H */

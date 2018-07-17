@@ -143,3 +143,9 @@ PickPackageLine::get_actions(int col_num) const
 
   return NULL;
 }
+
+int
+PickPackageLine::get_indent() const
+{
+  return indent;
+}

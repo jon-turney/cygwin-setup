@@ -67,7 +67,7 @@ private:
   CategoryTree *cat_tree_root;
   Window *parent;
 
-  void insert_pkg (packagemeta &);
+  void insert_pkg (packagemeta &, int indent = 0);
   void insert_category (CategoryTree *);
 };
 

@@ -56,14 +56,17 @@ ListView::init(HWND parent, int id, HeaderList headers)
   // populate with columns
   initColumns(headers);
 
-  // create a small icon imagelist and assign to listview control
+  // create a small icon imagelist
   // (the order of images matches ListViewLine::State enum)
-  HIMAGELIST hImgList = ImageList_Create(GetSystemMetrics(SM_CXSMICON),
-                                         GetSystemMetrics(SM_CYSMICON),
-                                         ILC_COLOR32, 2, 0);
+  hImgList = ImageList_Create(GetSystemMetrics(SM_CXSMICON),
+                              GetSystemMetrics(SM_CYSMICON),
+                              ILC_COLOR32, 2, 0);
   ImageList_AddIcon(hImgList, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_TREE_PLUS)));
   ImageList_AddIcon(hImgList, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_TREE_MINUS)));
-  ListView_SetImageList(hWndListView, hImgList, LVSIL_SMALL);
+
+  // create an empty imagelist, used to reset the indent
+  hEmptyImgList = ImageList_Create(1, 1,
+                                   ILC_COLOR32, 2, 0);
 }
 
 void
@@ -172,7 +175,7 @@ ListView::resizeColumns(void)
 }
 
 void
-ListView::setContents(ListViewContents *_contents)
+ListView::setContents(ListViewContents *_contents, bool tree)
 {
   contents = _contents;
 
@@ -185,15 +188,25 @@ ListView::setContents(ListViewContents *_contents)
 
   empty();
 
+  // assign imagelist to listview control (this also sets the size for indents)
+  if (tree)
+    ListView_SetImageList(hWndListView, hImgList, LVSIL_SMALL);
+  else
+    ListView_SetImageList(hWndListView, hEmptyImgList, LVSIL_SMALL);
+
   size_t i;
   for (i = 0; i < contents->size();  i++)
     {
       LVITEM lvi;
-      lvi.mask = LVIF_TEXT | LVIF_IMAGE;
+      lvi.mask = LVIF_TEXT | (tree ? LVIF_IMAGE | LVIF_INDENT : 0);
       lvi.iItem = i;
       lvi.iSubItem = 0;
       lvi.pszText = LPSTR_TEXTCALLBACK;
-      lvi.iImage = I_IMAGECALLBACK;
+      if (tree)
+        {
+          lvi.iImage = I_IMAGECALLBACK;
+          lvi.iIndent = (*contents)[i]->get_indent();
+        }
 
       ListView_InsertItem(hWndListView, &lvi);
     }

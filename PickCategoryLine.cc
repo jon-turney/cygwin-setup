@@ -76,3 +76,9 @@ PickCategoryLine::get_state() const
 {
   return cat_tree->collapsed() ? State::collapsed : State::expanded;
 }
+
+int
+PickCategoryLine::get_indent() const
+{
+  return indent;
+}

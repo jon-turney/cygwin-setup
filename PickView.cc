@@ -87,7 +87,7 @@ PickView::setViewMode (views mode)
         }
     }
 
-  listview->setContents(&contents);
+  listview->setContents(&contents, view_mode == PickView::views::Category);
 }
 
 PickView::views
@@ -148,12 +148,12 @@ PickView::setObsolete (bool doit)
 }
 
 void
-PickView::insert_pkg (packagemeta & pkg)
+PickView::insert_pkg (packagemeta & pkg, int indent)
 {
   if (!showObsolete && isObsolete (pkg.categories))
     return;
 
-  contents.push_back(new PickPackageLine(*this, pkg));
+  contents.push_back(new PickPackageLine(*this, pkg, indent));
 }
 
 void
@@ -197,7 +197,7 @@ PickView::insert_category (CategoryTree *cat_tree)
     return;
 
   // insert line for the category
-  contents.push_back(new PickCategoryLine(*this, cat_tree, packageCount));
+  contents.push_back(new PickCategoryLine(*this, cat_tree, packageCount, isAll ? 0 : 1));
 
   // if not collapsed
   if (!cat_tree->collapsed())
@@ -212,7 +212,7 @@ PickView::insert_category (CategoryTree *cat_tree)
                   || (*i
                       && StrStrI ((*i)->name.c_str (), packageFilterString.c_str ())))
                 {
-                  insert_pkg(**i);
+                  insert_pkg(**i, 2);
                 }
             }
         }

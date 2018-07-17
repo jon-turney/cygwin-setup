@@ -23,10 +23,11 @@
 class PickCategoryLine: public ListViewLine
 {
 public:
-  PickCategoryLine (PickView & aView, CategoryTree * _tree, int _pkgcount) :
+  PickCategoryLine (PickView & aView, CategoryTree * _tree, int _pkgcount, int _indent) :
     cat_tree (_tree),
     pkgcount(_pkgcount),
-    theView (aView)
+    theView (aView),
+    indent(_indent)
   {
   };
   ~PickCategoryLine ()
@@ -35,6 +36,7 @@ public:
 
   const std::string get_text(int col) const;
   State get_state() const;
+  int get_indent() const;
   ActionList *get_actions(int col) const;
   int do_action(int col, int action_id);
 
@@ -42,6 +44,7 @@ private:
   CategoryTree * cat_tree;
   int pkgcount;
   PickView & theView;
+  int indent;
 };
 
 #endif /* SETUP_PICKCATEGORYLINE_H */

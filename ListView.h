@@ -16,6 +16,7 @@
 
 #include "ActionList.h"
 #include "win32.h"
+#include <commctrl.h>
 #include <vector>
 
 // ---------------------------------------------------------------------------
@@ -32,6 +33,7 @@ class ListViewLine
   virtual ~ListViewLine() {};
   virtual const std::string get_text(int col) const = 0;
   virtual State get_state() const = 0;
+  virtual int get_indent() const = 0;
   virtual ActionList *get_actions(int col) const = 0;
   virtual int do_action(int col, int id) = 0;
 };
@@ -66,7 +68,7 @@ class ListView
   void noteColumnWidthEnd();
   void resizeColumns(void);
 
-  void setContents(ListViewContents *contents);
+  void setContents(ListViewContents *contents, bool tree = false);
   void setEmptyText(const char *text);
 
   bool OnNotify (NMHDR *pNmHdr, LRESULT *pResult);
@@ -75,6 +77,9 @@ class ListView
   HWND hWndParent;
   HWND hWndListView;
   HDC dc;
+  HIMAGELIST hImgList;
+  HIMAGELIST hEmptyImgList;
+
   ListViewContents *contents;
   HeaderList headers;
   const char *empty_list_text;
