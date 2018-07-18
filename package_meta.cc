@@ -406,6 +406,21 @@ packagemeta::SDesc () const
   return std::string();
 }
 
+static bool
+hasLDesc(packageversion const &pkg)
+{
+  return pkg.LDesc().size();
+}
+
+const std::string
+packagemeta::LDesc () const
+{
+  std::set<packageversion>::iterator i = find_if (versions.begin(), versions.end(), hasLDesc);
+  if (i == versions.end())
+    return std::string();
+  return i->LDesc ();
+};
+
 /* Return an appropriate caption given the current action. */
 std::string
 packagemeta::action_caption () const

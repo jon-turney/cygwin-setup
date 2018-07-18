@@ -108,9 +108,10 @@ public:
   bool isManuallyWanted() const;
   /* true if package was deleted on command-line. */
   bool isManuallyDeleted() const;
-  /* SDesc is global in theory, across all package versions. 
-     LDesc is not: it can be different per version */
+
   const std::string SDesc () const;
+  const std::string LDesc () const;
+
   /* what categories does this package belong in. Note that if multiple versions
    * of a package disagree.... the first one read in will take precedence.
    */
