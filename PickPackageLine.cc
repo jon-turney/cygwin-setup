@@ -99,6 +99,17 @@ PickPackageLine::get_text(int col_num) const
   return "unknown";
 }
 
+const std::string
+PickPackageLine::get_tooltip(int col_num) const
+{
+  if (col_num == pkg_col)
+    {
+      return pkg.LDesc();
+    }
+
+  return "";
+}
+
 int
 PickPackageLine::do_action(int col_num, int action_id)
 {

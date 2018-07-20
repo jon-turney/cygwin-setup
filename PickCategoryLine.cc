@@ -82,3 +82,9 @@ PickCategoryLine::get_indent() const
 {
   return indent;
 }
+
+const std::string
+PickCategoryLine::get_tooltip(int col_num) const
+{
+  return "";
+}

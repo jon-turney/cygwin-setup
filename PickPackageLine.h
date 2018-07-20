@@ -32,6 +32,7 @@ public:
   };
   const std::string get_text(int col) const;
   State get_state() const { return State::nothing; }
+  const std::string get_tooltip(int col) const;
   int get_indent() const;
   ActionList *get_actions(int col_num) const;
   int do_action(int col, int action_id);

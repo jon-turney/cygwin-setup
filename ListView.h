@@ -33,6 +33,7 @@ class ListViewLine
   virtual ~ListViewLine() {};
   virtual const std::string get_text(int col) const = 0;
   virtual State get_state() const = 0;
+  virtual const std::string get_tooltip(int col) const = 0;
   virtual int get_indent() const = 0;
   virtual ActionList *get_actions(int col) const = 0;
   virtual int do_action(int col, int id) = 0;
@@ -76,6 +77,7 @@ class ListView
  private:
   HWND hWndParent;
   HWND hWndListView;
+  HWND hWndTip;
   HDC dc;
   HIMAGELIST hImgList;
   HIMAGELIST hEmptyImgList;
@@ -83,6 +85,8 @@ class ListView
   ListViewContents *contents;
   HeaderList headers;
   const char *empty_list_text;
+  int iRow_track;
+  int iCol_track;
 
   void initColumns(HeaderList hl);
   void empty(void);

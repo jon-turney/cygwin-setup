@@ -67,6 +67,34 @@ ListView::init(HWND parent, int id, HeaderList headers)
   // create an empty imagelist, used to reset the indent
   hEmptyImgList = ImageList_Create(1, 1,
                                    ILC_COLOR32, 2, 0);
+
+  // LVS_EX_INFOTIP/LVN_GETINFOTIP doesn't work for subitems, so we have to do
+  // our own tooltip handling
+  hWndTip = CreateWindowEx (0,
+                            (LPCTSTR) TOOLTIPS_CLASS,
+                            NULL,
+                            WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP,
+                            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                            hWndParent,
+                            (HMENU) 0,
+                            GetModuleHandle(NULL),
+                            NULL);
+  // must be topmost so that tooltips will display on top
+  SetWindowPos(hWndTip, HWND_TOPMOST,0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+
+  TOOLINFO ti;
+  memset ((void *)&ti, 0, sizeof(ti));
+  ti.cbSize = sizeof(ti);
+  ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
+  ti.hwnd = hWndParent;
+  ti.uId = (UINT_PTR)hWndListView;
+  ti.lpszText =  LPSTR_TEXTCALLBACK; // use TTN_GETDISPINFO
+  SendMessage(hWndTip, TTM_ADDTOOL, 0, (LPARAM)&ti);
+
+  // match long delay for tooltip to disappear used elsewhere (30s)
+  SendMessage(hWndTip, TTM_SETDELAYTIME, TTDT_AUTOPOP, (LPARAM) MAKELONG (30000, 0));
+  // match tip width used elsewhere
+  SendMessage(hWndTip, TTM_SETMAXTIPWIDTH, 0, 450);
 }
 
 void
@@ -429,6 +457,72 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
           }
         }
     }
+    break;
+
+  case LVN_HOTTRACK:
+    {
+      NMLISTVIEW *pNmListView = (NMLISTVIEW *)pNmHdr;
+      int iRow = pNmListView->iItem;
+      int iCol = pNmListView->iSubItem;
+#if DEBUG
+      Log (LOG_BABBLE) << "LVN_HOTTRACK " << iRow << " " << iCol << endLog;
+#endif
+      if (iRow < 0)
+        return true;
+
+      // if we've tracked off to a different cell
+      if ((iRow != iRow_track) || (iCol != iCol_track))
+        {
+#if DEBUG
+          Log (LOG_BABBLE) << "LVN_HOTTRACK changed cell" << endLog;
+#endif
+
+          // if the tooltip for previous cell is displayed, remove it
+          // restart the tooltip AUTOPOP timer for this cell
+          SendMessage(hWndTip, TTM_ACTIVATE, FALSE, 0);
+          SendMessage(hWndTip, TTM_ACTIVATE, TRUE, 0);
+
+          iRow_track = iRow;
+          iCol_track = iCol;
+        }
+
+      return true;
+    }
+    break;
+
+  case TTN_GETDISPINFO:
+    {
+      // convert mouse position to item/subitem
+      LVHITTESTINFO lvHitTestInfo;
+      lvHitTestInfo.flags = LVHT_ONITEM;
+      GetCursorPos(&lvHitTestInfo.pt);
+      ::ScreenToClient(hWndListView, &lvHitTestInfo.pt);
+      ListView_SubItemHitTest(hWndListView, &lvHitTestInfo);
+
+      int iRow = lvHitTestInfo.iItem;
+      int iCol = lvHitTestInfo.iSubItem;
+      if (iRow < 0)
+        return false;
+
+#if DEBUG
+      Log (LOG_BABBLE) << "TTN_GETDISPINFO " << iRow << " " << iCol << endLog;
+#endif
+
+      // get the tooltip text for that item/subitem
+      static StringCache tooltip;
+      tooltip = "";
+      if (contents)
+        tooltip = (*contents)[iRow]->get_tooltip(iCol);
+
+      // set the tooltip text
+      NMTTDISPINFO *pNmTTDispInfo = (NMTTDISPINFO *)pNmHdr;
+      pNmTTDispInfo->lpszText = tooltip;
+      pNmTTDispInfo->hinst = NULL;
+      pNmTTDispInfo->uFlags = 0;
+
+      return true;
+    }
+    break;
   }
 
   // We don't care.
