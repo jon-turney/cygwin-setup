@@ -501,6 +501,42 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
     }
     break;
 
+  case LVN_KEYDOWN:
+    {
+      NMLVKEYDOWN *pNmLvKeyDown = (NMLVKEYDOWN *)pNmHdr;
+      int iRow = ListView_GetSelectionMark(hWndListView);
+#if DEBUG
+      Log (LOG_PLAIN) << "LVN_KEYDOWN vkey " << pNmLvKeyDown->wVKey << " on row " << iRow << endLog;
+#endif
+
+      if (contents && iRow >= 0)
+        {
+          int col_num;
+          int action_id;
+          if ((*contents)[iRow]->map_key_to_action(pNmLvKeyDown->wVKey, &col_num, &action_id))
+            {
+              int update;
+              if (action_id >= 0)
+                update = (*contents)[iRow]->do_action(col_num, action_id);
+              else
+                {
+                  POINT p;
+                  RECT r;
+                  ListView_GetSubItemRect(hWndListView, iRow, col_num, LVIR_BOUNDS, &r);
+                  p.x = r.left;
+                  p.y = r.top;
+                  ClientToScreen(hWndListView, &p);
+
+                  update = popup_menu(iRow, col_num, p);
+                }
+
+              if (update > 0)
+                ListView_RedrawItems(hWndListView, iRow, iRow + update -1);
+            }
+        }
+    }
+    break;
+
   case TTN_GETDISPINFO:
     {
       // convert mouse position to item/subitem

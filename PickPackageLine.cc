@@ -160,3 +160,18 @@ PickPackageLine::get_indent() const
 {
   return indent;
 }
+
+bool
+PickPackageLine::map_key_to_action(WORD vkey, int *col_num, int *action_id) const
+{
+  switch (vkey)
+    {
+    case VK_SPACE:
+    case VK_APPS:
+      *col_num = new_col;
+      *action_id = -1;
+      return true;
+    }
+
+  return false;
+}

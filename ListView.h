@@ -37,6 +37,7 @@ class ListViewLine
   virtual int get_indent() const = 0;
   virtual ActionList *get_actions(int col) const = 0;
   virtual int do_action(int col, int id) = 0;
+  virtual bool map_key_to_action(WORD vkey, int *col_num, int *action_id) const = 0;
 };
 
 typedef std::vector<ListViewLine *> ListViewContents;
