@@ -31,6 +31,10 @@
 #include "getopt++/StringOption.h"
 #include <sstream>
 
+#ifndef IMAGE_FILE_MACHINE_ARM64
+#define IMAGE_FILE_MACHINE_ARM64 0xAA64
+#endif
+
 static StringOption UserAgent ("", '\0', "user-agent", "User agent string for HTTP requests");
 
 const std::string &
@@ -48,9 +52,30 @@ determine_default_useragent(void)
 #ifdef __x86_64__
   bitness = "Win64";
 #else
+  typedef BOOL (WINAPI *PFNISWOW64PROCESS2)(HANDLE, USHORT *, USHORT *);
+  PFNISWOW64PROCESS2 pfnIsWow64Process2 = (PFNISWOW64PROCESS2)GetProcAddress(GetModuleHandle("kernel32"), "IsWow64Process2");
+
   typedef BOOL (WINAPI *PFNISWOW64PROCESS)(HANDLE, PBOOL);
   PFNISWOW64PROCESS pfnIsWow64Process = (PFNISWOW64PROCESS)GetProcAddress(GetModuleHandle("kernel32"), "IsWow64Process");
-  if (pfnIsWow64Process) {
+
+  std::stringstream native_desc;
+
+  USHORT processMachine, nativeMachine;
+  if ((pfnIsWow64Process2) &&
+      (pfnIsWow64Process2(GetCurrentProcess(), &processMachine, &nativeMachine))) {
+    switch (nativeMachine)
+      {
+      case IMAGE_FILE_MACHINE_AMD64:
+        bitness = "WoW64";
+        break;
+      case IMAGE_FILE_MACHINE_ARM64:
+        bitness = "WoW64-ARM64";
+        break;
+      default:
+        native_desc << "WoW64-" << std::hex << nativeMachine;
+        bitness = native_desc.str();
+      }
+  } else if (pfnIsWow64Process) {
     BOOL bIsWow64 = FALSE;
     if (pfnIsWow64Process(GetCurrentProcess(), &bIsWow64))
       bitness = bIsWow64 ? "WoW64" : "Win32";
