@@ -65,6 +65,9 @@ determine_default_useragent(void)
       (pfnIsWow64Process2(GetCurrentProcess(), &processMachine, &nativeMachine))) {
     switch (nativeMachine)
       {
+      case IMAGE_FILE_MACHINE_I386:
+        bitness = "Win32";
+        break;
       case IMAGE_FILE_MACHINE_AMD64:
         bitness = "WoW64";
         break;
