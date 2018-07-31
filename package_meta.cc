@@ -183,10 +183,17 @@ packagemeta::add_version (const SolverPool::addPackageData &inpkgdata)
           /* Otherwise... if we had a way to set repo priorities, that could be
              used to control which packageversion the solver picks. For the
              moment, just warn that you might not be getting what you think you
-             should... */
-          Log (LOG_PLAIN) << "Version " << pkgdata.version << " of package " <<
-            name << " is present in releases labelled " << pkgdata.vendor <<
-            " and " << i->Vendor() << endLog;
+             should...
+
+             (suppress this for installed packages, as we are only guessing the
+             vendor, currently)
+          */
+          if (pkgdata.reponame != "_installed")
+            {
+              Log (LOG_PLAIN) << "Version " << pkgdata.version << " of package " <<
+                name << " is present in releases labelled " << pkgdata.vendor <<
+                " and " << i->Vendor() << endLog;
+            }
         }
 
       versions.erase(i);
