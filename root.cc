@@ -38,8 +38,6 @@
 
 #include "getopt++/StringOption.h"
 
-using namespace std;
-
 StringOption RootOption ("", 'R', "root", "Root installation directory", false);
 
 static ControlAdjuster::ControlInfo RootControlsInfo[] = {
@@ -58,7 +56,7 @@ static ControlAdjuster::ControlInfo RootControlsInfo[] = {
 
 static int su[] = { IDC_ROOT_SYSTEM, IDC_ROOT_USER, 0 };
 
-static string orig_root_dir;
+static std::string orig_root_dir;
 
 void
 RootPage::check_if_enable_next (HWND h)
@@ -262,8 +260,8 @@ RootPage::Create ()
 void
 RootPage::OnInit ()
 {
-  if (((string)RootOption).size()) 
-    set_root_dir((string)RootOption);
+  if (((std::string)RootOption).size())
+    set_root_dir((std::string)RootOption);
   if (!get_root_dir ().size())
     read_mounts (std::string ());
   orig_root_dir = get_root_dir();

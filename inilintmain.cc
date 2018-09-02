@@ -16,17 +16,16 @@
 #include "getopt++/GetOption.h"
 #include <iostream>
 #include <sstream>
-using namespace std;
 
 extern int yylineno;
 
-static ostringstream error_buf;
+static std::ostringstream error_buf;
 static int error_count = 0;
 
 extern int
 yyerror (const std::string& s)
 {
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "setup.ini line " << yylineno << ": ";
   buf << s << endl;
   cout << buf;

@@ -27,8 +27,6 @@
 #include "IOStreamProvider.h"
 #include "LogSingleton.h"
 
-using namespace std;
-
 /* completely private iostream registration class */
 class FileProvider : public IOStreamProvider
 {

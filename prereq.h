@@ -6,8 +6,6 @@
 #include "PackageTrust.h"
 #include "package_meta.h"
 
-using namespace std;
-
 // keeps the map sorted by name
 struct packagemeta_ltcomp
 {

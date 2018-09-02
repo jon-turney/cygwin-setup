@@ -64,8 +64,6 @@ static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", "Remove orph
 static BoolOption ForceCurrentOption (false, 'f', "force-current", "Select the current version for all packages");
 static BoolOption PruneInstallOption (false, 'Y', "prune-install", "Prune the installation to only the requested packages");
 
-using namespace std;
-
 extern ThreeBarProgressPage Progress;
 
 HWND ChooserPage::ins_dialog;

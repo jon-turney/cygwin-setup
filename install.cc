@@ -60,8 +60,6 @@
 #include "Exception.h"
 #include "processlist.h"
 
-using namespace std;
-
 extern ThreeBarProgressPage Progress;
 
 static long long int total_bytes = 0;
@@ -185,7 +183,7 @@ Installer::uninstallOne (packagemeta & pkg)
 
       /* Insert the paths of all parent directories of line into dirs. */
       size_t idx = line.length();
-      while ((idx = line.find_last_of('/', idx-1)) != string::npos)
+      while ((idx = line.find_last_of('/', idx-1)) != std::string::npos)
       {
         std::string dir_path = line.substr(0, idx);
         bool was_new = dirs.insert(dir_path).second;
@@ -225,7 +223,7 @@ Installer::uninstallOne (packagemeta & pkg)
 
   /* An STL set maintains itself in sorted order. Thus, iterating over it
    * in reverse order will ensure we process directories depth-first. */
-  set<string>::const_iterator it = dirs.end();
+  std::set<std::string>::const_iterator it = dirs.end();
   while (it != dirs.begin())
   {
     it--;
@@ -814,7 +812,7 @@ do_install_thread (HINSTANCE h, HWND owner)
   /* Writes Cygwin/setup/rootdir registry value */
   create_install_root ();
 
-  vector <packageversion> install_q, uninstall_q, sourceinstall_q;
+  std::vector <packageversion> install_q, uninstall_q, sourceinstall_q;
 
   packagedb db;
   const SolverTransactionList &t = db.solution.transactions();
@@ -885,7 +883,7 @@ do_install_thread (HINSTANCE h, HWND owner)
 
   /* start with uninstalls - remove files that new packages may replace */
   Progress.SetBar2(0);
-  for (vector <packageversion>::iterator i = uninstall_q.begin ();
+  for (std::vector <packageversion>::iterator i = uninstall_q.begin ();
        i != uninstall_q.end (); ++i)
   {
     packagemeta *pkgm = db.findBinary (PackageSpecification(i->Name()));
@@ -895,7 +893,7 @@ do_install_thread (HINSTANCE h, HWND owner)
   }
 
   Progress.SetBar2(0);
-  for (vector <packageversion>::iterator i = uninstall_q.begin ();
+  for (std::vector <packageversion>::iterator i = uninstall_q.begin ();
        i != uninstall_q.end (); ++i)
   {
     packagemeta *pkgm = db.findBinary (PackageSpecification(i->Name()));
@@ -904,7 +902,7 @@ do_install_thread (HINSTANCE h, HWND owner)
     Progress.SetBar2(std::distance(uninstall_q.begin(), i) + 1, uninstall_q.size());
   }
 
-  for (vector <packageversion>::iterator i = install_q.begin ();
+  for (std::vector <packageversion>::iterator i = install_q.begin ();
        i != install_q.end (); ++i)
   {
     packageversion & pkg = *i;
@@ -914,7 +912,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       myInstaller.installOne (*pkgm, pkg, *pkg.source(),
                               "cygfile://", "/", owner);
     }
-    catch (exception *e)
+    catch (std::exception *e)
     {
       if (yesno (owner, IDS_INSTALL_ERROR, e->what()) != IDYES)
       {
@@ -926,7 +924,7 @@ do_install_thread (HINSTANCE h, HWND owner)
     }
   }
 
-  for (vector <packageversion>::iterator i = sourceinstall_q.begin ();
+  for (std::vector <packageversion>::iterator i = sourceinstall_q.begin ();
        i != sourceinstall_q.end (); ++i)
   {
     packagemeta *pkgm = db.findSource (PackageSpecification(i->Name()));

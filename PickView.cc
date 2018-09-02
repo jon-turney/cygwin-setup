@@ -28,8 +28,6 @@
 #include "LogSingleton.h"
 #include "Exception.h"
 
-using namespace std;
-
 static PickView::Header pkg_headers[] = {
   {"Current", 0, 0, true},
   {"New", 0, 0, true},
@@ -248,9 +246,9 @@ PickView::mode_caption (views mode)
 
 /* meant to be called on packagemeta::categories */
 bool
-isObsolete (set <std::string, casecompare_lt_op> &categories)
+isObsolete (std::set <std::string, casecompare_lt_op> &categories)
 {
-  set <std::string, casecompare_lt_op>::const_iterator i;
+  std::set <std::string, casecompare_lt_op>::const_iterator i;
   
   for (i = categories.begin (); i != categories.end (); ++i)
     if (isObsolete (*i))
@@ -295,7 +293,7 @@ PickView::insert_category (Category *cat, bool collapsed)
     return;
   PickCategoryLine & catline = *new PickCategoryLine (*this, *cat, 1, collapsed);
   int packageCount = 0;
-  for (vector <packagemeta *>::iterator i = cat->second.begin ();
+  for (std::vector <packagemeta *>::iterator i = cat->second.begin ();
        i != cat->second.end () ; ++i)
     {
       if (packageFilterString.empty () \
@@ -439,7 +437,7 @@ PickView::init_headers (HDC dc)
       if (pkg.installed)
         note_width (headers, dc, pkg.installed.Canonical_version (),
                     HMARGIN, current_col);
-      for (set<packageversion>::iterator i = pkg.versions.begin ();
+      for (std::set<packageversion>::iterator i = pkg.versions.begin ();
 	   i != pkg.versions.end (); ++i)
 	{
           if (*i != pkg.installed)

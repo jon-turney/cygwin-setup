@@ -21,7 +21,7 @@
 #include "LogSingleton.h"
 
 #include <stdexcept>
-using namespace std;
+
 #include <errno.h>
 #include <memory.h>
 #include <malloc.h>
@@ -227,7 +227,7 @@ compress_xz::read (void *buffer, size_t len)
 ssize_t
 compress_xz::write (const void *buffer, size_t len)
 {
-  throw new logic_error("compress_xz::write is not implemented");
+  throw new std::logic_error("compress_xz::write is not implemented");
 }
 
 ssize_t
@@ -261,13 +261,13 @@ compress_xz::peek (void *buffer, size_t len)
 long
 compress_xz::tell ()
 {
-  throw new logic_error("compress_xz::tell is not implemented");
+  throw new std::logic_error("compress_xz::tell is not implemented");
 }
 
 int
 compress_xz::seek (long where, io_stream_seek_t whence)
 {
-  throw new logic_error("compress_xz::seek is not implemented");
+  throw new std::logic_error("compress_xz::seek is not implemented");
 }
 
 int

@@ -17,7 +17,6 @@
 
 #include <string>
 #include <set>
-using namespace std;
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,8 +42,6 @@ using namespace std;
 #include "download.h"
 #include "Exception.h"
 #include "resource.h"
-
-using namespace std;
 
 static StringArrayOption DeletePackageOption ('x', "remove-packages", "Specify packages to uninstall");
 static StringArrayOption DeleteCategoryOption ('c', "remove-categories", "Specify categories to uninstall");
@@ -93,7 +90,7 @@ packagemeta::packagemeta (packagemeta const &rhs) :
   exp (rhs.exp),
   desired (rhs.desired)
 {
-  
+
 }
 
 packagemeta::_actions & packagemeta::_actions::operator++ ()
@@ -104,12 +101,12 @@ packagemeta::_actions & packagemeta::_actions::operator++ ()
   return *this;
 }
 
-template<class T> struct removeCategory : public unary_function<T, void>
+template<class T> struct removeCategory : public std::unary_function<T, void>
 {
   removeCategory(packagemeta *pkg) : _pkg (pkg) {}
-  void operator() (T x) 
+  void operator() (T x)
     {
-      vector <packagemeta *> &aList = packagedb::categories[x]; 
+      std::vector <packagemeta *> &aList = packagedb::categories[x];
       aList.erase (find (aList.begin(), aList.end(), _pkg));
     }
   packagemeta *_pkg;
@@ -152,7 +149,7 @@ packagemeta::add_version (const SolverPool::addPackageData &inpkgdata)
     We rely on this by adding packages from installed.db last.
    */
 
-  for (set <packageversion>::iterator i = versions.begin();
+  for (std::set <packageversion>::iterator i = versions.begin();
        i != versions.end();
        i++)
     {
@@ -254,8 +251,7 @@ packagemeta::isBlacklisted(const packageversion &version) const
 void
 packagemeta::set_installed_version (const std::string &version)
 {
-  set<packageversion>::iterator i;
-  for (i = versions.begin(); i != versions.end(); i++)
+  for (std::set<packageversion>::iterator i = versions.begin(); i != versions.end(); i++)
     {
       if (version.compare(i->Canonical_version()) == 0)
         {
@@ -277,9 +273,9 @@ packagemeta::add_category (const std::string& cat)
   categories.insert (cat);
 }
 
-struct StringConcatenator : public unary_function<const std::string, void>{
+struct StringConcatenator : public std::unary_function<const std::string, void>{
     StringConcatenator(std::string aString) : gap(aString){}
-    void operator()(const std::string& aString) 
+    void operator()(const std::string& aString)
     {
       if (result.size() != 0)
         result += gap;
@@ -292,20 +288,20 @@ struct StringConcatenator : public unary_function<const std::string, void>{
 const std::string
 packagemeta::getReadableCategoryList () const
 {
-  return for_each(categories.begin(), categories.end(), 
+  return for_each(categories.begin(), categories.end(),
     visit_if (
-      StringConcatenator(", "), bind1st(not_equal_to<std::string>(), "All"))
+      StringConcatenator(", "), bind1st(std::not_equal_to<std::string>(), "All"))
               ).visitor.result;
 }
 
 static void
-parseNames (std::set<string> &parsed, std::string &option)
+parseNames (std::set<std::string> &parsed, std::string &option)
 {
-  string tname;
+  std::string tname;
 
   /* Split up the packages listed in the option.  */
-  string::size_type loc = option.find (",", 0);
-  while (loc != string::npos)
+  std::string::size_type loc = option.find (",", 0);
+  while (loc != std::string::npos)
     {
       tname = option.substr (0, loc);
       option = option.substr (loc + 1);
@@ -322,24 +318,24 @@ parseNames (std::set<string> &parsed, std::string &option)
 bool packagemeta::isManuallyWanted() const
 {
   static bool parsed_yet = false;
-  static std::set<string> parsed_names;
+  static std::set<std::string> parsed_names;
   hasManualSelections |= parsed_names.size ();
-  static std::set<string> parsed_categories;
+  static std::set<std::string> parsed_categories;
   hasManualSelections |= parsed_categories.size ();
   bool bReturn = false;
 
-  /* First time through, we parse all the names out from the 
+  /* First time through, we parse all the names out from the
     option string and store them away in an STL set.  */
   if (!parsed_yet)
   {
-    vector<string> packages_options = PackageOption;
-    vector<string> categories_options = CategoryOption;
-    for (vector<string>::iterator n = packages_options.begin ();
+    std::vector<std::string> packages_options = PackageOption;
+    std::vector<std::string> categories_options = CategoryOption;
+    for (std::vector<std::string>::iterator n = packages_options.begin ();
 		n != packages_options.end (); ++n)
       {
 	parseNames (parsed_names, *n);
       }
-    for (vector<string>::iterator n = categories_options.begin ();
+    for (std::vector<std::string>::iterator n = categories_options.begin ();
 		n != categories_options.end (); ++n)
       {
 	parseNames (parsed_categories, *n);
@@ -351,7 +347,7 @@ bool packagemeta::isManuallyWanted() const
     a lookup in the cache of already-parsed names.  */
   bReturn = parsed_names.find(name) != parsed_names.end();
 
-  /* If we didn't select the package manually, did we select any 
+  /* If we didn't select the package manually, did we select any
      of the categories it is in? */
   if (!bReturn && parsed_categories.size ())
     {
@@ -363,7 +359,7 @@ bool packagemeta::isManuallyWanted() const
 	    bReturn = true;
 	  }
     }
-  
+
   if (bReturn)
     Log (LOG_BABBLE) << "Added manual package " << name << endLog;
   return bReturn;
@@ -372,9 +368,9 @@ bool packagemeta::isManuallyWanted() const
 bool packagemeta::isManuallyDeleted() const
 {
   static bool parsed_yet = false;
-  static std::set<string> parsed_delete;
+  static std::set<std::string> parsed_delete;
   hasManualSelections |= parsed_delete.size ();
-  static std::set<string> parsed_delete_categories;
+  static std::set<std::string> parsed_delete_categories;
   hasManualSelections |= parsed_delete_categories.size ();
   bool bReturn = false;
 
@@ -382,14 +378,14 @@ bool packagemeta::isManuallyDeleted() const
     option string and store them away in an STL set.  */
   if (!parsed_yet)
   {
-    vector<string> delete_options   = DeletePackageOption;
-    vector<string> categories_options = DeleteCategoryOption;
-    for (vector<string>::iterator n = delete_options.begin ();
+    std::vector<std::string> delete_options   = DeletePackageOption;
+    std::vector<std::string> categories_options = DeleteCategoryOption;
+    for (std::vector<std::string>::iterator n = delete_options.begin ();
 		n != delete_options.end (); ++n)
       {
 	parseNames (parsed_delete, *n);
       }
-    for (vector<string>::iterator n = categories_options.begin ();
+    for (std::vector<std::string>::iterator n = categories_options.begin ();
 		n != categories_options.end (); ++n)
       {
 	parseNames (parsed_delete_categories, *n);
@@ -422,8 +418,7 @@ bool packagemeta::isManuallyDeleted() const
 const std::string
 packagemeta::SDesc () const
 {
-  set<packageversion>::iterator i;
-  for (i = versions.begin(); i != versions.end(); i++)
+  for (std::set<packageversion>::iterator i = versions.begin(); i != versions.end(); i++)
     {
       if (i->SDesc().size())
         return i->SDesc ();
@@ -433,7 +428,7 @@ packagemeta::SDesc () const
 }
 
 /* Return an appropriate caption given the current action. */
-std::string 
+std::string
 packagemeta::action_caption () const
 {
   if (!desired && installed)
@@ -455,7 +450,7 @@ packagemeta::action_caption () const
 void
 packagemeta::set_action (trusts const trust)
 {
-  set<packageversion>::iterator i;
+  std::set<packageversion>::iterator i;
 
   /* Keep the picked settings of the former desired version, if any, and make
      sure at least one of them is picked.  If both are unpicked, pick the
@@ -607,7 +602,7 @@ packagemeta::srcpick (bool picked)
 bool
 packagemeta::accessible () const
 {
-  for (set<packageversion>::iterator i=versions.begin();
+  for (std::set<packageversion>::iterator i=versions.begin();
        i != versions.end(); ++i)
     if (i->accessible())
       return true;
@@ -617,7 +612,7 @@ packagemeta::accessible () const
 bool
 packagemeta::sourceAccessible () const
 {
-  for (set<packageversion>::iterator i=versions.begin();
+  for (std::set<packageversion>::iterator i=versions.begin();
        i != versions.end(); ++i)
     {
       packageversion bin=*i;
@@ -631,7 +626,7 @@ packagemeta::sourceAccessible () const
 bool
 packagemeta::isBinary () const
 {
-  for (set<packageversion>::iterator i=versions.begin();
+  for (std::set<packageversion>::iterator i=versions.begin();
        i != versions.end(); ++i)
     if ((i->Type() == package_binary) && (i->accessible() || (*i == installed)))
       return true;
@@ -642,8 +637,8 @@ packagemeta::isBinary () const
 void
 packagemeta::logAllVersions () const
 {
-    for (set<packageversion>::iterator i = versions.begin();
-	 i != versions.end(); ++i) 
+    for (std::set<packageversion>::iterator i = versions.begin();
+	 i != versions.end(); ++i)
       {
 	Log (LOG_BABBLE) << "    [" << trustLabel(*i) <<
 	  "] ver=" << i->Canonical_version() << endLog;
@@ -674,7 +669,7 @@ packagemeta::logAllVersions () const
 #endif
 }
 
-std::string 
+std::string
 packagemeta::trustLabel(packageversion const &aVersion) const
 {
     if (aVersion == curr)
@@ -750,7 +745,7 @@ packagemeta::ScanDownloadedFiles (bool mirror_mode)
        n != db.packages.end (); ++n)
     {
       packagemeta & pkg = *(n->second);
-      set<packageversion>::iterator i = pkg.versions.begin ();
+      std::set<packageversion>::iterator i = pkg.versions.begin ();
       while (i != pkg.versions.end ())
 	{
 	  /* scan doesn't alter operator == for packageversions */
@@ -787,8 +782,8 @@ packagemeta::ScanDownloadedFiles (bool mirror_mode)
        referenced are unselectable anyway.  */
 }
 
-void 
-packagemeta::addToCategoryBase() 
+void
+packagemeta::addToCategoryBase()
 {
   add_category ("Base");
 }

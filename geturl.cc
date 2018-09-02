@@ -44,8 +44,6 @@
 
 #include "LogSingleton.h"
 
-using namespace std;
-
 extern ThreeBarProgressPage Progress;
 
 static int max_bytes = 0;
@@ -57,12 +55,12 @@ long long int total_download_bytes_sofar = 0;
 static DWORD start_tics;
 
 static void
-init_dialog (const string &url, int length)
+init_dialog (const std::string &url, int length)
 {
   if (is_local_install)
     return;
 
-  string::size_type divide = url.find_last_of('/');
+  std::string::size_type divide = url.find_last_of('/');
   max_bytes = length;
   Progress.SetText1("Downloading...");
   Progress.SetText2((url.substr(divide + 1) + " from "
@@ -106,7 +104,7 @@ progress (int bytes)
 }
 
 static void
-getUrlToStream (const string &_url, io_stream *output)
+getUrlToStream (const std::string &_url, io_stream *output)
 {
   is_local_install = (source == IDC_SOURCE_LOCALDIR);
   init_dialog (_url, 0);
@@ -147,7 +145,7 @@ getUrlToStream (const string &_url, io_stream *output)
 }
 
 io_stream *
-get_url_to_membuf (const string &_url, HWND owner)
+get_url_to_membuf (const std::string &_url, HWND owner)
 {
   io_stream_memory *membuf = new io_stream_memory ();
   try 
@@ -173,31 +171,31 @@ get_url_to_membuf (const string &_url, HWND owner)
 }
 
 // predicate: url has no '\0''s in it.
-string
-get_url_to_string (const string &_url, HWND owner)
+std::string
+get_url_to_string (const std::string &_url, HWND owner)
 {
   io_stream *stream = get_url_to_membuf (_url, owner);
   if (!stream)
-    return string();
+    return std::string();
   size_t bytes = stream->get_size ();
   if (!bytes)
     {
       /* zero length, or error retrieving length */
       delete stream;
       Log (LOG_BABBLE) << "get_url_to_string(): couldn't retrieve buffer size, or zero length buffer" << endLog;
-      return string();
+      return std::string();
     }
   char temp [bytes + 1];
   /* membufs are quite safe */
   stream->read (temp, bytes);
   temp [bytes] = '\0';
   delete stream;
-  return string(temp);
+  return std::string(temp);
 }
 
 int
-get_url_to_file (const string &_url,
-                 const string &_filename,
+get_url_to_file (const std::string &_url,
+                 const std::string &_filename,
                  int expected_length,
 		 HWND owner)
 {

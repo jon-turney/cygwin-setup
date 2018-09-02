@@ -34,8 +34,6 @@ static const char *cvsid =
 #include "UserSetting.h"
 #include "UserSettings.h"
 
-using namespace std;
-
 int
 main (int argc, char **argv)
 {

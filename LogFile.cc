@@ -36,8 +36,6 @@
 static BoolOption VerboseOutput (false, 'v', "verbose",
                                  "Verbose output");
 
-using namespace std;
-
 /* private helper class */
 class filedef
 {
@@ -71,9 +69,9 @@ static LogEnt *currEnt = 0;
 
 int LogFile::exit_msg = 0;
 
-typedef set<filedef> FileSet;
+typedef std::set<filedef> FileSet;
 static FileSet files;
-static stringbuf *theStream;
+static std::stringbuf *theStream;
 
 LogFile *
 LogFile::createLogFile()
@@ -198,11 +196,11 @@ LogFile::log_save (int babble, const std::string& filename, bool append)
   been_here = 0;
 }
 
-ostream &
+std::ostream &
 LogFile::operator() (log_level theLevel)
 {
   if (theLevel < 1 || theLevel > 2)
-    throw new invalid_argument("Invalid log_level");
+    throw new std::invalid_argument("Invalid log_level");
   if (!theStream)
     theStream = new std::stringbuf;
   rdbuf (theStream);
@@ -215,12 +213,12 @@ LogFile::operator() (log_level theLevel)
 void
 LogFile::endEntry()
 {
-  string buf = theStream->str();
+  std::string buf = theStream->str();
   delete theStream;
 
   /* also write to stdout */
   if ((currEnt->level >= LOG_PLAIN) || VerboseOutput)
-    cout << buf << endl;
+    std::cout << buf << std::endl;
 
   if (!currEnt)
     {

@@ -29,8 +29,6 @@
 #include "PackageSpecification.h"
 #include <algorithm>
 
-using namespace std;
-
 IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
   currentSpec (0), _feedback (aFeedback), minimum_version_checked(FALSE) {}
 

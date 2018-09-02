@@ -19,7 +19,7 @@
 #include "compress_bz.h"
 
 #include <stdexcept>
-using namespace std;
+
 #include <errno.h>
 #include <string.h>
 
@@ -142,7 +142,7 @@ compress_bz::read (void *buffer, size_t len)
 
 ssize_t compress_bz::write (const void *buffer, size_t len)
 {
-  throw new logic_error ("compress_bz::write is not implemented");
+  throw new std::logic_error ("compress_bz::write is not implemented");
 }
 
 ssize_t compress_bz::peek (void *buffer, size_t len)
@@ -186,15 +186,15 @@ long
 compress_bz::tell ()
 {
   if (writing)
-    throw new logic_error ("compress_bz::tell is not implemented "
-                           "in writing mode");
+    throw new std::logic_error ("compress_bz::tell is not implemented "
+                                "in writing mode");
   return position;
 }
 
 int
 compress_bz::seek (long where, io_stream_seek_t whence)
 {
-  throw new logic_error ("compress_bz::seek is not implemented");
+  throw new std::logic_error ("compress_bz::seek is not implemented");
 }
 
 int

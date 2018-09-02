@@ -44,8 +44,6 @@
 
 static BoolOption MirrorOption (false, 'm', "mirror-mode", "Skip package availability check when installing from local directory (requires local directory to be clean mirror!)");
 
-using namespace std;
-
 packagedb::packagedb ()
 {
 }
@@ -333,7 +331,7 @@ packagedb::findBinary (PackageSpecification const &spec) const
   if (n != packages.end())
     {
       packagemeta & pkgm = *(n->second);
-      for (set<packageversion>::iterator i=pkgm.versions.begin();
+      for (std::set<packageversion>::iterator i=pkgm.versions.begin();
 	  i != pkgm.versions.end(); ++i)
 	if (spec.satisfies (*i))
 	  return &pkgm;
@@ -348,7 +346,7 @@ packagedb::findBinaryVersion (PackageSpecification const &spec) const
   if (n != packages.end())
     {
       packagemeta & pkgm = *(n->second);
-      for (set<packageversion>::iterator i=pkgm.versions.begin();
+      for (std::set<packageversion>::iterator i=pkgm.versions.begin();
           i != pkgm.versions.end(); ++i)
         if (spec.satisfies (*i))
           return *i;
@@ -363,7 +361,7 @@ packagedb::findSource (PackageSpecification const &spec) const
   if (n != sourcePackages.end())
     {
       packagemeta & pkgm = *(n->second);
-      for (set<packageversion>::iterator i = pkgm.versions.begin();
+      for (std::set<packageversion>::iterator i = pkgm.versions.begin();
 	   i != pkgm.versions.end(); ++i)
 	if (spec.satisfies (*i))
 	  return &pkgm;
@@ -378,7 +376,7 @@ packagedb::findSourceVersion (PackageSpecification const &spec) const
   if (n != sourcePackages.end())
     {
       packagemeta & pkgm = *(n->second);
-      for (set<packageversion>::iterator i = pkgm.versions.begin();
+      for (std::set<packageversion>::iterator i = pkgm.versions.begin();
            i != pkgm.versions.end(); ++i)
         if (spec.satisfies (*i))
           return *i;
@@ -696,7 +694,7 @@ packagedb::fixup_source_package_ids()
     {
       packagemeta &pkgm = *(i->second);
 
-      for (set<packageversion>::iterator i = pkgm.versions.begin();
+      for (std::set<packageversion>::iterator i = pkgm.versions.begin();
            i != pkgm.versions.end(); ++i)
         {
           /* If spkg_id is already known for this package, there's nothing to

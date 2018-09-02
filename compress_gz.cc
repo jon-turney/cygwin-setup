@@ -21,7 +21,7 @@
 #include "compress_gz.h"
 
 #include <stdexcept>
-using namespace std;
+
 #include <errno.h>
 #include <memory.h>
 #include <malloc.h>
@@ -31,7 +31,6 @@ using namespace std;
 #define ORIG_NAME    0x08	/* bit 3 set: original file name present */
 #define COMMENT      0x10	/* bit 4 set: file comment present */
 #define RESERVED     0xE0	/* bits 5..7: reserved */
-
 
 /* TODO make this a static member and federate the magic logic */
 static int gz_magic[2] = { 0x1f, 0x8b };	/* gzip magic header */
@@ -408,13 +407,13 @@ compress_gz::peek (void *buffer, size_t len)
 long
 compress_gz::tell ()
 {
-  throw new logic_error("compress_gz::tell is not implemented");
+  throw new std::logic_error("compress_gz::tell is not implemented");
 }
 
 int
 compress_gz::seek (long where, io_stream_seek_t whence)
 {
-  throw new logic_error("compress_gz::seek is not implemented");
+  throw new std::logic_error("compress_gz::seek is not implemented");
 }
 
 int

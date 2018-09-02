@@ -24,8 +24,6 @@
 #include "FindVisitor.h"
 #include <stdexcept>
 
-using namespace std;
-
 Find::Find(const std::string& starting_dir)
   : h(INVALID_HANDLE_VALUE)
 {

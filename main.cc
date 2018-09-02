@@ -84,8 +84,6 @@ bool is_new_install = false;
 std::string SetupArch;
 std::string SetupIniDir;
 
-using namespace std;
-
 HINSTANCE hinstance;
 
 static StringOption Arch ("", 'a', "arch", "Architecture to install (x86_64 or x86)", false);
@@ -108,9 +106,9 @@ set_cout ()
 
   if (AttachConsole ((DWORD) -1))
     {
-      ofstream *conout = new ofstream ("conout$");
-      cout.rdbuf (conout->rdbuf ());
-      cout.flush ();
+      std::ofstream *conout = new std::ofstream ("conout$");
+      std::cout.rdbuf (conout->rdbuf ());
+      std::cout.flush ();
     }
 }
 
@@ -237,7 +235,7 @@ WinMain (HINSTANCE h,
     else if (HelpOption)
       help_option = true;
 
-    if (!((string) Arch).size ())
+    if (!((std::string) Arch).size ())
       {
 #ifdef __x86_64__
 	is_64bit = true;
@@ -245,16 +243,16 @@ WinMain (HINSTANCE h,
 	is_64bit = false;
 #endif
       }
-    else if (((string) Arch).find ("64") != string::npos)
+    else if (((std::string) Arch).find ("64") != std::string::npos)
       is_64bit = true;
-    else if (((string) Arch).find ("32") != string::npos
-	     || ((string) Arch).find ("x86") != string::npos)
+    else if (((std::string) Arch).find ("32") != std::string::npos
+	     || ((std::string) Arch).find ("x86") != std::string::npos)
       is_64bit = false;
     else
       {
-	char buff[80 + ((string) Arch).size ()];
+	char buff[80 + ((std::string) Arch).size ()];
 	sprintf (buff, "Invalid option for --arch:  \"%s\"",
-		 ((string) Arch).c_str ());
+		 ((std::string) Arch).c_str ());
 	fprintf (stderr, "*** %s\n", buff);
 	mbox (NULL, buff, "Invalid option", MB_ICONEXCLAMATION | MB_OK);
 	exit (1);

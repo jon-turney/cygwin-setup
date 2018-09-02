@@ -14,8 +14,6 @@
 
 #include "version_compare.h"
 
-using namespace std;
-
 static inline bool isdigit(char c) { return (c >= '0' && c <= '9'); }
 
 /* Sort two version numbers, comparing equivalently seperated strings of
@@ -27,7 +25,7 @@ static inline bool isdigit(char c) { return (c >= '0' && c <= '9'); }
  *
  * Inspired but not equivalent to rpmvercmp().
  */
-int version_compare (string a, string b)
+int version_compare (std::string a, std::string b)
 {
   if (a == b) return 0;
 
@@ -89,7 +87,6 @@ int version_compare (string a, string b)
 
 #include <iostream>
 #include <iomanip>
-using namespace std;
 
 struct version_pair
 {

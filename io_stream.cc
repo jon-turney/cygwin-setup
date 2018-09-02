@@ -28,9 +28,7 @@
 #include <map>
 #include "String++.h"
 
-using namespace std;
-
-typedef map <std::string, IOStreamProvider *, casecompare_lt_op> providersType;
+typedef std::map <std::string, IOStreamProvider *, casecompare_lt_op> providersType;
 static providersType *providers;
 static size_t longestPrefix = 0;
 static int inited = 0;
@@ -46,7 +44,7 @@ io_stream::registerProvider (IOStreamProvider &theProvider,
     }
   theProvider.key = urlPrefix;
   if (providers->find (urlPrefix) != providers->end())
-    throw new invalid_argument ("urlPrefix already registered!");
+    throw new std::invalid_argument ("urlPrefix already registered!");
   (*providers)[urlPrefix] = &theProvider;
   if (urlPrefix.size() > longestPrefix)
     longestPrefix = urlPrefix.size();
@@ -83,7 +81,7 @@ io_stream::factory (io_stream * parent)
 }
 
 #define url_scheme_not_registered(name) \
-    throw new invalid_argument ((std::string("URL Scheme for '")+ \
+    throw new std::invalid_argument ((std::string("URL Scheme for '")+ \
 				  name+"' not registered!").c_str())
 
 io_stream *
@@ -131,7 +129,7 @@ io_stream::mklink (const std::string& from, const std::string& to,
   if (!top)
     url_scheme_not_registered (to);
   if (fromp != top)
-    throw new invalid_argument ("Attempt to link across url providers.");
+    throw new std::invalid_argument ("Attempt to link across url providers.");
   return fromp->mklink (&from.c_str()[fromp->key.size()], 
     			&to.c_str()[top->key.size()], linktype);
 }

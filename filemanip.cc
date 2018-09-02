@@ -27,8 +27,6 @@
 #include "io.h"
 #include "fcntl.h"
 
-using namespace std;
-
 /* legacy wrapper.
  * Clients should use io_stream.get_size() */
 size_t
@@ -60,7 +58,7 @@ find_tar_ext (const char *path)
 
 /* Parse a filename into package, version, and extension components. */
 int
-parse_filename (const string &fn, fileparse & f)
+parse_filename (const std::string &fn, fileparse & f)
 {
   char *p, *ver;
   int n;
@@ -71,7 +69,7 @@ parse_filename (const string &fn, fileparse & f)
   f.pkg = "";
   f.what = "";
 
-  f.tail = fn.substr (n, string::npos);
+  f.tail = fn.substr (n, std::string::npos);
 
   p = new_cstr_char_array (fn.substr (0, n));
   char const *ext;

@@ -32,8 +32,6 @@
 #include <algorithm>
 #include <sstream>
 
-using namespace std;
-
 extern ThreeBarProgressPage Progress;
 extern PostInstallResultsPage PostInstallResults;
 
@@ -44,7 +42,7 @@ extern PostInstallResultsPage PostInstallResults;
 class RunFindVisitor : public FindVisitor
 {
 public:
-  RunFindVisitor (vector<Script> *scripts, const std::string& stratum = "")
+  RunFindVisitor (std::vector<Script> *scripts, const std::string& stratum = "")
     : _scripts(scripts),
       stratum(stratum)
   {}
@@ -61,14 +59,14 @@ protected:
   RunFindVisitor (RunFindVisitor const &);
   RunFindVisitor & operator= (RunFindVisitor const &);
 private:
-  vector<Script> *_scripts;
+  std::vector<Script> *_scripts;
   const std::string stratum;
 };
 
 class PerpetualFindVisitor : public FindVisitor
 {
 public:
-  PerpetualFindVisitor (vector<Script> *scripts, const string& stratum)
+  PerpetualFindVisitor (std::vector<Script> *scripts, const std::string& stratum)
     : _scripts(scripts),
       stratum(stratum)
   {}
@@ -85,7 +83,7 @@ protected:
   PerpetualFindVisitor (PerpetualFindVisitor const &);
   PerpetualFindVisitor & operator= (PerpetualFindVisitor const &);
 private:
-  vector<Script> *_scripts;
+  std::vector<Script> *_scripts;
   const std::string stratum;
 };
 
@@ -96,7 +94,7 @@ private:
 class RunScript
 {
 public:
-  RunScript(const std::string& name, const vector<Script> &scripts) : _name(name), _scripts(scripts), _cnt(0)
+  RunScript(const std::string& name, const std::vector<Script> &scripts) : _name(name), _scripts(scripts), _cnt(0)
     {
       Progress.SetText2 (name.c_str());
       Progress.SetBar1 (0, _scripts.size());
@@ -140,7 +138,7 @@ public:
   }
 private:
   std::string _name;
-  const vector<Script> &_scripts;
+  const std::vector<Script> &_scripts;
   int _cnt;
 };
 
@@ -154,7 +152,7 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
   Progress.SetBar2 (0, 1);
 
   packagedb db;
-  vector<packagemeta*> packages;
+  std::vector<packagemeta*> packages;
   PackageDBConnectedIterator i = db.connectedBegin ();
   while (i != db.connectedEnd ())
     {
@@ -172,7 +170,7 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
     {
       const std::string sit(1, *it);
   // Look for any scripts in /etc/postinstall which should always be run
-  vector<Script> perpetual;
+  std::vector<Script> perpetual;
   PerpetualFindVisitor myPerpetualVisitor (&perpetual, sit);
   Find (postinst).accept (myPerpetualVisitor);
   // sort the list alphabetically, assumes ASCII names only
@@ -186,14 +184,14 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
   // run those scripts now
   int numpkg = packages.size() + 1;
   int k = 0;
-  for (vector <packagemeta *>::iterator  i = packages.begin (); i != packages.end (); ++i)
+  for (std::vector <packagemeta *>::iterator  i = packages.begin (); i != packages.end (); ++i)
     {
       packagemeta & pkg = **i;
 
-      vector<Script> installed = pkg.scripts();
-      vector<Script> run;
+      std::vector<Script> installed = pkg.scripts();
+      std::vector<Script> run;
       // extract non-perpetual scripts for the current stratum
-      for (vector <Script>::iterator  j = installed.begin(); j != installed.end(); j++)
+      for (std::vector <Script>::iterator  j = installed.begin(); j != installed.end(); j++)
 	{
 	  if ((*j).not_p(sit))
 	    run.push_back(*j);
@@ -206,11 +204,11 @@ do_postinstall_thread (HINSTANCE h, HWND owner)
     }
   // Look for runnable non-perpetual scripts in /etc/postinstall.
   // This happens when a script from a previous install failed to run.
-  vector<Script> scripts;
+  std::vector<Script> scripts;
   RunFindVisitor myVisitor (&scripts, sit);
   Find (postinst).accept (myVisitor);
   // Remove anything which we just tried to run (so we don't try twice)
-  for (vector <packagemeta *>::iterator i = packages.begin (); i != packages.end (); ++i)
+  for (std::vector <packagemeta *>::iterator i = packages.begin (); i != packages.end (); ++i)
     {
        packagemeta & pkg = **i;
        for (std::vector<Script>::const_iterator j = pkg.scripts().begin();

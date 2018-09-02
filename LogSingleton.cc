@@ -17,12 +17,10 @@
 #include <stdexcept>
 #include <stdarg.h>
 
-using namespace std;
-
 /* Helper functions */
 
 /* End of a Log comment */
-ostream& endLog(ostream& outs)
+std::ostream& endLog(std::ostream& outs)
 {
   /* Doesn't seem to be any way around this */
   dynamic_cast<LogSingleton &>(outs).endEntry();
@@ -33,9 +31,9 @@ ostream& endLog(ostream& outs)
 
 LogSingleton * LogSingleton::theInstance(0);
 
-LogSingleton::LogSingleton(std::streambuf* aStream) : ios (aStream), ostream (aStream)
+LogSingleton::LogSingleton(std::streambuf* aStream) : std::ios (aStream), std::ostream (aStream)
 {
-    ios::init (aStream);
+    std::ios::init (aStream);
 }
 LogSingleton::~LogSingleton(){}
 
@@ -43,7 +41,7 @@ LogSingleton &
 LogSingleton::GetInstance()
 {
   if (!theInstance)
-    throw new invalid_argument ("No instance has been set!");
+    throw new std::invalid_argument ("No instance has been set!");
   return *theInstance;
 }
 
@@ -55,7 +53,7 @@ LogSingleton::SetInstance(LogSingleton &newInstance)
 
 #if 0
 // Logging class. Default logging level is PLAIN.
-class LogSingleton : public ostream
+class LogSingleton : public std::ostream
 {
 public:
   // Singleton support

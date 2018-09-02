@@ -15,12 +15,10 @@
 
 #include <getopt++/BoolOption.h>
 
-using namespace std;
-
-BoolOption::BoolOption(bool const defaultvalue, char shortopt, 
-		       char const *longopt, string const &shorthelp, 
-		       OptionSet &owner) : _value (defaultvalue) , 
-		       _ovalue (defaultvalue), _shortopt(shortopt), 
+BoolOption::BoolOption(bool const defaultvalue, char shortopt,
+		       char const *longopt, std::string const &shorthelp,
+		       OptionSet &owner) : _value (defaultvalue) ,
+		       _ovalue (defaultvalue), _shortopt(shortopt),
 		       _longopt (longopt), _shorthelp (shorthelp)
 {
   owner.Register (this);
@@ -28,25 +26,25 @@ BoolOption::BoolOption(bool const defaultvalue, char shortopt,
 
 BoolOption::~ BoolOption () {};
 
-string const 
+std::string const
 BoolOption::shortOption () const
 {
-  return string() + _shortopt;
+  return std::string() + _shortopt;
 }
 
-string const  
+std::string const
 BoolOption::longOption () const
 {
   return _longopt;
 }
 
-string const 
+std::string const
 BoolOption::shortHelp () const
 {
   return _shorthelp;
 }
 
-Option::Result 
+Option::Result
 BoolOption::Process (char const *)
 {
   _value = !_ovalue;

@@ -45,8 +45,6 @@
 
 #include "Exception.h"
 
-using namespace std;
-
 extern ThreeBarProgressPage Progress;
 
 // Return true if selected checks pass, false if they don't and the

@@ -41,10 +41,7 @@
 #include "Exception.h"
 #include "String++.h"
 
-using namespace std;
-
 extern ThreeBarProgressPage Progress;
-
 
 /*
   What to do if dropped mirrors are selected.
@@ -76,11 +73,9 @@ SitePage::SitePage ()
 #include "getopt++/BoolOption.h"
 #include "UserSettings.h"
 
-using namespace std;
-
 bool cache_is_usable;
 bool cache_needs_writing;
-string cache_warn_urls;
+std::string cache_warn_urls;
 
 /* Selected sites */
 SiteList site_list;
@@ -101,10 +96,10 @@ extern BoolOption UnsupportedOption;
 
 SiteSetting::SiteSetting (): saved (false)
 {
-  vector<string> SiteOptionStrings = SiteOption;
+  std::vector<std::string> SiteOptionStrings = SiteOption;
   if (SiteOptionStrings.size())
     {
-      for (vector<string>::const_iterator n = SiteOptionStrings.begin ();
+      for (std::vector<std::string>::const_iterator n = SiteOptionStrings.begin ();
 	   n != SiteOptionStrings.end (); ++n)
 	registerSavedSite (n->c_str ());
     }
@@ -141,10 +136,10 @@ SiteSetting::~SiteSetting ()
     save ();
 }
 
-site_list_type::site_list_type (const string &_url,
-				const string &_servername,
-				const string &_area,
-				const string &_location,
+site_list_type::site_list_type (const std::string &_url,
+				const std::string &_servername,
+				const std::string &_area,
+				const std::string &_location,
 				bool _from_mirrors_lst)
 {
   url = _url;
@@ -158,14 +153,14 @@ site_list_type::site_list_type (const string &_url,
     url.append("/");
 
   /* displayed_url is protocol and site name part of url */
-  string::size_type path_offset = url.find ("/", url.find ("//") + 2);
+  std::string::size_type path_offset = url.find ("/", url.find ("//") + 2);
   displayed_url = url.substr(0, path_offset);
 
   /* the sorting key is hostname components in reverse order (to sort by country code)
      plus the url (to ensure uniqueness) */
-  key = string();
-  string::size_type last_idx = displayed_url.length () - 1;
-  string::size_type idx = url.find_last_of("./", last_idx);
+  key = std::string();
+  std::string::size_type last_idx = displayed_url.length () - 1;
+  std::string::size_type idx = url.find_last_of("./", last_idx);
   if (last_idx - idx == 3)
   {
     /* Sort non-country TLDs (.com, .net, ...) together. */
@@ -177,7 +172,7 @@ site_list_type::site_list_type (const string &_url,
     key += " ";
     last_idx = idx - 1;
     idx = url.find_last_of("./", last_idx);
-    if (idx == string::npos)
+    if (idx == std::string::npos)
       idx = 0;
   } while (idx > 0);
   key += url;
@@ -340,7 +335,7 @@ get_site_list (HINSTANCE h, HWND owner)
   if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
     return 1;
 
-  string mirrors = OnlySiteOption ? string ("") : get_url_to_string (mirror_url, owner);
+  std::string mirrors = OnlySiteOption ? std::string ("") : get_url_to_string (mirror_url, owner);
   if (mirrors.size())
     cache_needs_writing = true;
   else
@@ -536,7 +531,6 @@ int check_dropped_mirrors (HWND h)
 
 void write_cache_list (io_stream *f, const SiteList& theSites)
 {
-  string s;
   for (SiteList::const_iterator n = theSites.begin ();
        n != theSites.end (); ++n)
     if (n->from_mirrors_lst)
@@ -546,7 +540,6 @@ void write_cache_list (io_stream *f, const SiteList& theSites)
 
 void save_cache_file (int cache_action)
 {
-  string s;
   io_stream *f = UserSettings::instance().open ("mirrors-lst");
   if (f)
     {

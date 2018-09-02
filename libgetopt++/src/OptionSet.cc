@@ -24,10 +24,8 @@
 #include <iostream>
 #include <algorithm>
 
-using namespace std;
-
 bool
-OptionSet::isOption(string::size_type pos) const
+OptionSet::isOption(std::string::size_type pos) const
 {
     return pos == 1 || pos == 2;
 }
@@ -35,8 +33,8 @@ OptionSet::isOption(string::size_type pos) const
 void
 OptionSet::processOne()
 {
-    string &option (argv[0]);
-    string::size_type pos = option.find_first_not_of("-");
+    std::string &option (argv[0]);
+    std::string::size_type pos = option.find_first_not_of("-");
 
     if (!isOption(pos)) {
         /* Push the non option into storage */
@@ -52,7 +50,7 @@ OptionSet::processOne()
 }
 
 Option *
-OptionSet::findOption(string &option, string::size_type const &pos) const
+OptionSet::findOption(std::string &option, std::string::size_type const &pos) const
 {
     Option *theOption = NULL;
 
@@ -87,7 +85,7 @@ OptionSet::doNoArgumentOption(std::string &option, std::string::size_type const 
     }
     
     if (pos == 2) {
-	if (option.find("=") != string::npos)
+	if (option.find("=") != std::string::npos)
 	    /* How best to provide failure state ? */
 	    return false;
     }
@@ -96,13 +94,13 @@ OptionSet::doNoArgumentOption(std::string &option, std::string::size_type const 
 
 /* TODO: factor this better */
 void
-OptionSet::doOption(string &option, string::size_type const &pos)
+OptionSet::doOption(std::string &option, std::string::size_type const &pos)
 {
     lastResult = Option::Failed;
     option.erase(0, pos);
     Option *theOption = findOption(option, pos);
     char const *optionValue = NULL;
-    string value;
+    std::string value;
 
     if (theOption == NULL)
 	return;
@@ -120,7 +118,7 @@ OptionSet::doOption(string &option, string::size_type const &pos)
                     /* Value in next argv */
 
                     if (argv.size() > 1) {
-                        string::size_type maybepos = argv[1].find_first_not_of("-");
+                        std::string::size_type maybepos = argv[1].find_first_not_of("-");
 
                         if (!isOption(maybepos)) {
                             /* not an option */
@@ -141,9 +139,9 @@ OptionSet::doOption(string &option, string::size_type const &pos)
             }
 
             if (pos == 2) {
-                string::size_type vpos = option.find("=");
+                std::string::size_type vpos = option.find("=");
 
-                if (vpos != string::npos) {
+                if (vpos != std::string::npos) {
                     /* How best to provide failure state ? */
 
                     if (vpos == option.size() - 1)
@@ -155,7 +153,7 @@ OptionSet::doOption(string &option, string::size_type const &pos)
                     /* Value in next argv */
 
                     if (argv.size() > 1) {
-                        string::size_type maybepos = argv[1].find_first_not_of("-");
+                        std::string::size_type maybepos = argv[1].find_first_not_of("-");
 
                         if (!isOption(maybepos)) {
                             value = argv[1];
@@ -181,7 +179,7 @@ OptionSet::doOption(string &option, string::size_type const &pos)
                         /* but there aren't any */
 			return;
 
-                    string::size_type maybepos = argv[1].find_first_not_of("-");
+                    std::string::size_type maybepos = argv[1].find_first_not_of("-");
 
                     if (isOption(maybepos))
                         /* The next argv is an option */
@@ -201,9 +199,9 @@ OptionSet::doOption(string &option, string::size_type const &pos)
             }
 
             if (pos == 2) {
-                string::size_type vpos = option.find("=");
+                std::string::size_type vpos = option.find("=");
 
-                if (vpos != string::npos) {
+                if (vpos != std::string::npos) {
                     /* How best to provide failure state ? */
 
                     if (vpos == option.size() - 1)
@@ -217,7 +215,7 @@ OptionSet::doOption(string &option, string::size_type const &pos)
                         /* but there aren't any */
 			return;
 
-                    string::size_type maybepos = argv[1].find_first_not_of("-");
+                    std::string::size_type maybepos = argv[1].find_first_not_of("-");
 
                     if (isOption(maybepos))
                         /* The next argv is an option */
@@ -245,9 +243,9 @@ void
 OptionSet::Init()
 {
     options       = std::vector<Option *> ();
-    argv          = std::vector<string> ();
-    nonoptions    = std::vector<string> ();
-    remainingargv = std::vector<string> ();
+    argv          = std::vector<std::string> ();
+    nonoptions    = std::vector<std::string> ();
+    remainingargv = std::vector<std::string> ();
     nonOptionHandler = NULL;
 }
 
@@ -272,7 +270,7 @@ OptionSet::process (Option *aNonOptionHandler)
         case Option::Stop:
 	    if (argv.size() > 1) {
 		// dies: copy(argv.begin() + 1, argv.end(), remainingargv.begin()); 
-		for (std::vector<string>::iterator i = argv.begin() + 1; i != argv.end(); ++i)
+		for (std::vector<std::string>::iterator i = argv.begin() + 1; i != argv.end(); ++i)
 		    remainingargv.push_back(*i);
 	    }
             return true;
@@ -294,7 +292,7 @@ OptionSet::Process (int argc, char **argV, Option *nonOptionHandler)
     remainingargv.clear();
 
     for (int counter = 1; counter < argc; ++counter)
-        argv.push_back(string(argV[counter]));
+        argv.push_back(std::string(argV[counter]));
 
     return process(nonOptionHandler);
 }
@@ -324,7 +322,7 @@ comp_long_option(const Option *a, const Option *b)
 }
 
 void
-OptionSet::ParameterUsage (ostream &aStream)
+OptionSet::ParameterUsage (std::ostream &aStream)
 {
     std::sort(options.begin(), options.end(), comp_long_option);
     for_each (options.begin(), options.end(), DefaultFormatter (aStream));
@@ -336,13 +334,13 @@ OptionSet::optionsInSet() const
     return options;
 }
 
-std::vector<string> const &
+std::vector<std::string> const &
 OptionSet::nonOptions() const
 {
     return nonoptions;
 }
 
-std::vector<string> const &
+std::vector<std::string> const &
 OptionSet::remainingArgv() const
 {
     return remainingargv;
