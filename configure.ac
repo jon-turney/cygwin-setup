@@ -51,6 +51,7 @@ AC_CHECK_TOOL(OBJCOPY, objcopy, objcopy)
 dnl dependencies we can check for using pkgconfig
 PKG_CHECK_MODULES(ZLIB, [zlib])
 PKG_CHECK_MODULES(LZMA, [liblzma])
+PKG_CHECK_MODULES(ZSTD, [libzstd])
 PKG_CHECK_MODULES(LIBSOLV, [libsolv])
 
 dnl dependencies we need to check for by hand

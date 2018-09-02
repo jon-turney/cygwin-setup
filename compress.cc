@@ -17,6 +17,7 @@
 #include "compress_gz.h"
 #include "compress_bz.h"
 #include "compress_xz.h"
+#include "compress_zstd.h"
 #include <string.h>
 
 /* In case you are wondering why the file magic is not in one place:
@@ -28,7 +29,7 @@
  * the class could test itself. 
  */
 
-#define longest_magic 14 /* lzma_alone */
+#define longest_magic 18 /* ZStandard longest frame header (magic is only 4 bytes) */
 
 io_stream *
 compress::decompress (io_stream * original)
@@ -42,6 +43,16 @@ compress::decompress (io_stream * original)
 	{
 	  /* tar */
 	  compress_gz *rv = new compress_gz (original);
+	  if (!rv->error ())
+	    return rv;
+	  /* else */
+	  rv->release_original();
+	  delete rv;
+	  return NULL;
+	}
+      else if (compress_zstd::is_zstd (magic, 18))
+	{
+	  compress_zstd *rv = new compress_zstd (original);
 	  if (!rv->error ())
 	    return rv;
 	  /* else */

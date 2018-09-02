@@ -29,7 +29,7 @@ AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES = @WINDRES@
 AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include \
-	       $(ZLIB_CFLAGS) $(LZMA_CFLAGS) $(LIBCRYPT_CFLAGS) $(LIBSOLV_CFLAGS)
+	       $(ZLIB_CFLAGS) $(LZMA_CFLAGS) $(ZSTD_CFLAGS) $(LIBCRYPT_CFLAGS) $(LIBSOLV_CFLAGS)
 
 inilex_CXXFLAGS:=-Wno-sign-compare
 
@@ -100,6 +100,7 @@ inilint_SOURCES = \
 @SETUP@_LDADD = \
 	libgetopt++/libgetopt++.la \
 	$(LIBGCRYPT_LIBS) \
+	$(ZSTD_LIBS) \
 	$(LZMA_LIBS) \
 	$(BZ2_LIBS) \
 	$(ZLIB_LIBS) \
@@ -124,6 +125,8 @@ inilint_SOURCES = \
 	compress_gz.h \
 	compress_xz.cc \
 	compress_xz.h \
+	compress_zstd.cc \
+	compress_zstd.h \
 	confirm.cc \
 	confirm.h \
 	ConnectionSetting.cc \

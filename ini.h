@@ -22,7 +22,7 @@ class io_stream;
 
 typedef std::vector <std::string> IniList;
 extern IniList found_ini_list, setup_ext_list;
-const std::string setup_exts[] = { "xz", "bz2", "ini" };
+const std::string setup_exts[] = { "zst", "xz", "bz2", "ini" };
 extern bool is_64bit;
 extern bool is_new_install;
 extern std::string SetupArch;
