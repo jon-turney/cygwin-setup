@@ -26,6 +26,18 @@ if [ ! -f main.cc ]; then
   exit 1
 fi
 
+if hash i686-w64-mingw32-g++ 2> /dev/null; then
+	host="i686-w64-mingw32"
+elif hash i686-pc-mingw32-g++ 2> /dev/null; then
+	host="i686-pc-mingw32"
+elif hash x86_64-w64-mingw32-g++ 2> /dev/null; then
+	host="x86_64-w64-mingw32"
+else
+	echo "mingw32 or mingw64 target g++ required for building setup"
+	exit 1
+fi
+
+export ACLOCAL_PATH=$($host-g++ --print-sysroot)/mingw/share/aclocal
 
 # Make sure cfgaux exists
 mkdir -p cfgaux
@@ -50,17 +62,6 @@ fi
 cd "$builddir"
 
 build=`$srcdir/cfgaux/config.guess`
-
-if hash i686-w64-mingw32-g++ 2> /dev/null; then
-	host="i686-w64-mingw32"
-elif hash i686-pc-mingw32-g++ 2> /dev/null; then
-	host="i686-pc-mingw32"
-elif hash x86_64-w64-mingw32-g++ 2> /dev/null; then
-	host="x86_64-w64-mingw32"
-else
-	echo "mingw32 or mingw64 target g++ required for building setup"
-	exit 1
-fi
 
 echo "running configure"
 $srcdir/configure -C --build=$build --host=$host "$@"

@@ -54,9 +54,8 @@ PKG_CHECK_MODULES(LZMA, [liblzma])
 PKG_CHECK_MODULES(LIBSOLV, [libsolv])
 
 dnl dependencies we need to check for by hand
-export SYSROOT=$($CC --print-sysroot)/mingw
+export LIBGCRYPT_CONFIG=$($CC --print-sysroot)/mingw/bin/libgcrypt-config
 AM_PATH_LIBGCRYPT
-unset SYSROOT
 
 save_LIBS=$LIBS
 LIBS="$LIBS -lbz2"
