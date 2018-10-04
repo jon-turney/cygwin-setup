@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 # Used to setup the configure.in, autoheader and Makefile.in's if configure
 # has not been generated. This script is only needed for developers when
 # configure has not been run, or if a Makefile.am in a non-configured directory
@@ -26,7 +26,9 @@ if [ ! -f main.cc ]; then
   exit 1
 fi
 
-if hash i686-w64-mingw32-g++ 2> /dev/null; then
+if [[ "$1" =~ "--host=" ]]; then
+	host="${1#--host=}"
+elif hash i686-w64-mingw32-g++ 2> /dev/null; then
 	host="i686-w64-mingw32"
 elif hash i686-pc-mingw32-g++ 2> /dev/null; then
 	host="i686-pc-mingw32"
