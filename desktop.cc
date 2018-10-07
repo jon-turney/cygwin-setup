@@ -107,7 +107,7 @@ start_menu (const std::string& title, const std::string& target,
 			      issystem ? CSIDL_COMMON_PROGRAMS :
 			      CSIDL_PROGRAMS, &id);
   SHGetPathFromIDList (id, path);
-  strncat (path, "/Cygwin", MAX_PATH);
+  strncat (path, "/Cygwin", MAX_PATH - strlen(path) - 1);
   LogBabblePrintf ("Program directory for program link: %s", path);
   make_link (path, title, target, arg, iconpath);
 }
