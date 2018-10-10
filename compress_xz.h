@@ -16,9 +16,6 @@
 #ifndef SETUP_COMPRESS_XZ_H
 #define SETUP_COMPRESS_XZ_H
 
-/* this is the parent class for all compress IO operations. 
- */
-
 #include "compress.h"
 #include <lzma.h>
 

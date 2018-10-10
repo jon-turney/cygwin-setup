@@ -16,10 +16,6 @@
 #ifndef SETUP_COMPRESS_GZ_H
 #define SETUP_COMPRESS_GZ_H
 
-/* this is the parent class for all compress IO operations. 
- * It 
- */
-
 #include "compress.h"
 #include <zlib.h>
 
