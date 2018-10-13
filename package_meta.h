@@ -26,6 +26,7 @@ class packagemeta;
 #include "package_version.h"
 #include "package_message.h"
 #include "script.h"
+#include "ActionList.h"
 
 typedef std::pair<const std::string, std::vector<packagemeta *> > Category;
 
@@ -50,28 +51,18 @@ public:
   void setDefaultCategories();
   void addToCategoryAll();
 
-  class _actions
-  {
-  public:
-    _actions ():_value (0) {};
-    _actions (int aInt) {
-    _value = aInt;
-    if (_value < 0 ||  _value > 3)
-      _value = 0;
-    }
-    _actions & operator ++ ();
-    bool operator == (_actions const &rhs) { return _value == rhs._value; }
-    bool operator != (_actions const &rhs) { return _value != rhs._value; }
-    const char *caption ();
-  private:
-    int _value;
-  };
-  static const _actions Default_action;
-  static const _actions Install_action;
-  static const _actions Reinstall_action;
-  static const _actions Uninstall_action;
-  void set_action (trusts const t);
+  enum _actions
+    {
+     Default_action = 1,
+     Install_action,
+     Reinstall_action,
+     Uninstall_action,
+    };
+  static const char *action_caption (_actions value);
+
   void set_action (_actions, packageversion const & default_version);
+  ActionList *list_actions(trusts const trust);
+  void select_action (int id, trusts const deftrust);
 
   void set_message (const std::string& message_id, const std::string& message_string)
   {
@@ -117,9 +108,10 @@ public:
   bool isManuallyWanted() const;
   /* true if package was deleted on command-line. */
   bool isManuallyDeleted() const;
-  /* SDesc is global in theory, across all package versions. 
-     LDesc is not: it can be different per version */
+
   const std::string SDesc () const;
+  const std::string LDesc () const;
+
   /* what categories does this package belong in. Note that if multiple versions
    * of a package disagree.... the first one read in will take precedence.
    */

@@ -17,32 +17,29 @@
 #define SETUP_PICKPACKAGELINE_H
 
 class PickView;
-#include "package_meta.h"
-#include "PickLine.h"
 
-class PickPackageLine:public PickLine
+#include "package_meta.h"
+#include "ListView.h"
+
+class PickPackageLine: public ListViewLine
 {
 public:
-  PickPackageLine (PickView &aView, packagemeta & apkg):PickLine (apkg.key), pkg (apkg), theView (aView)
+  PickPackageLine (PickView &aView, packagemeta & apkg, int aindent) :
+    pkg (apkg),
+    theView (aView),
+    indent (aindent)
   {
   };
-  virtual void paint (HDC hdc, HRGN unused, int x, int y, int col_num, int show_cat);
-  virtual int click (int const myrow, int const ClickedRow, int const x);
-  virtual int itemcount () const
-  {
-    return 1;
-  }
-  virtual bool IsContainer (void) const
-  {
-    return false;
-  }
-  virtual void insert (PickLine &)
-  {
-  };
-  virtual int set_action (packagemeta::_actions);
+  const std::string get_text(int col) const;
+  State get_state() const { return State::nothing; }
+  const std::string get_tooltip(int col) const;
+  int get_indent() const;
+  ActionList *get_actions(int col_num) const;
+  int do_action(int col, int action_id);
 private:
   packagemeta & pkg;
   PickView & theView;
+  int indent;
 };
 
 #endif /* SETUP_PICKPACKAGELINE_H */

@@ -51,35 +51,22 @@ bool hasManualSelections = 0;
 
 /*****************/
 
-const
-  packagemeta::_actions
-packagemeta::Default_action (0);
-const
-  packagemeta::_actions
-packagemeta::Install_action (1);
-const
-  packagemeta::_actions
-packagemeta::Reinstall_action (2);
-const
-  packagemeta::_actions
-packagemeta::Uninstall_action (3);
-
 char const *
-packagemeta::_actions::caption ()
+packagemeta::action_caption (_actions _value)
 {
   switch (_value)
     {
-    case 0:
+    case Default_action:
       return "Default";
-    case 1:
+    case Install_action:
       return "Install";
-    case 2:
+    case Reinstall_action:
       return "Reinstall";
-    case 3:
+    case Uninstall_action:
       return "Uninstall";
     }
-  // Pacify GCC: (all case options are checked above)
-  return 0;
+
+  return "Unknown";
 }
 
 packagemeta::packagemeta (packagemeta const &rhs) :
@@ -91,14 +78,6 @@ packagemeta::packagemeta (packagemeta const &rhs) :
   desired (rhs.desired)
 {
 
-}
-
-packagemeta::_actions & packagemeta::_actions::operator++ ()
-{
-  ++_value;
-  if (_value > 3)
-    _value = 0;
-  return *this;
 }
 
 template<class T> struct removeCategory : public std::unary_function<T, void>
@@ -427,6 +406,21 @@ packagemeta::SDesc () const
   return std::string();
 }
 
+static bool
+hasLDesc(packageversion const &pkg)
+{
+  return pkg.LDesc().size();
+}
+
+const std::string
+packagemeta::LDesc () const
+{
+  std::set<packageversion>::iterator i = find_if (versions.begin(), versions.end(), hasLDesc);
+  if (i == versions.end())
+    return std::string();
+  return i->LDesc ();
+};
+
 /* Return an appropriate caption given the current action. */
 std::string
 packagemeta::action_caption () const
@@ -446,68 +440,73 @@ packagemeta::action_caption () const
     return desired.Canonical_version ();
 }
 
-/* Set the next action given a current action.  */
 void
-packagemeta::set_action (trusts const trust)
+packagemeta::select_action (int id, trusts const deftrust)
 {
-  std::set<packageversion>::iterator i;
-
-  /* Keep the picked settings of the former desired version, if any, and make
-     sure at least one of them is picked.  If both are unpicked, pick the
-     binary version. */
-  bool source_picked = desired && srcpicked ();
-  bool binary_picked = !desired || picked () || !source_picked;
-
-  /* If we're on "Keep" on the installed version, and the version is available,
-     switch to "Reinstall". */
-  if (desired && desired == installed && !picked ()
-      && desired.accessible ())
+  if (id <= 0)
     {
-      pick (true);
-      return;
+      // Install a specific version
+      std::set<packageversion>::iterator i = versions.begin ();
+      for (int j = -id; j > 0; j--)
+        i++;
+
+      set_action(Install_action, *i);
     }
-
-  if (!desired)
+  else
     {
-      /* From "Uninstall" switch to the first version.  From "Skip" switch to
-         the first version as well, unless the user picks for the first time.
-	 In that case switch to the trustp version immediately. */
-      if (installed || user_picked)
-	i = versions.begin ();
+      if (id == packagemeta::Default_action)
+        set_action((packagemeta::_actions)id, installed);
       else
-	for (i = versions.begin ();
-	     i != versions.end () && *i != trustp (false, trust);
-	     ++i)
-	  ;
-    }
-  else
-    {
-      /* Otherwise switch to the next version. */
-      for (i = versions.begin (); i != versions.end () && *i != desired; ++i)
-	;
-      ++i;
-    }
-  /* If there's another version in the list, switch to it, otherwise
-     switch to "Uninstall". */
-  if (i != versions.end ())
-    {
-      desired = *i;
-      /* If the next version is the installed version, unpick it.  This will
-	 have the desired effect to show the package in "Keep" mode.  See also
-	 above for the code switching to "Reinstall". */
-      pick (desired != installed && binary_picked);
-      srcpick (desired.sourcePackage().accessible () && source_picked);
-    }
-  else
-    {
-      desired = packageversion ();
-      pick(false);
-      srcpick(false);
+        set_action((packagemeta::_actions)id, trustp (true, deftrust));
     }
 
   /* Memorize the fact that the user picked at least once. */
   if (!installed)
     user_picked = true;
+}
+
+ActionList *
+packagemeta::list_actions(trusts const trust)
+{
+  // first work out the current action, so we can indicate that
+  _actions action;
+
+  if (!desired && installed)
+    action = Uninstall_action;
+  else if (!desired)
+    action = Default_action; // skip
+  else if (desired == installed && picked())
+    action = Reinstall_action;
+  else if (desired == installed)
+    action = Default_action; // keep
+  else
+    action = Install_action;
+
+  // now build the list of possible actions
+  ActionList *al = new ActionList();
+
+  al->add("Uninstall", (int)Uninstall_action, (action == Uninstall_action), bool(installed));
+  al->add("Skip", (int)Default_action, (action == Default_action) && !installed, !installed);
+
+  std::set<packageversion>::iterator i;
+  for (i = versions.begin (); i != versions.end (); ++i)
+    {
+      if (*i == installed)
+        {
+          al->add("Keep", (int)Default_action, (action == Default_action), TRUE);
+          al->add(packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve",
+                  (int)Reinstall_action, (action == Reinstall_action), TRUE);
+        }
+      else
+        {
+          al->add(i->Canonical_version().c_str(),
+                  -std::distance(versions.begin (), i),
+                  (action == Install_action) && (*i == desired),
+                  TRUE);
+        }
+    }
+
+  return al;
 }
 
 // Set a particular type of action.

@@ -147,6 +147,7 @@ packagedb::read ()
                   if (pv)
                     {
                       data.sdesc = pv.SDesc();
+                      data.ldesc = pv.LDesc();
                       data.archive = *pv.source();
                       data.stability = pv.Stability();
                       data.spkg_id = pv.sourcePackage();
@@ -170,6 +171,7 @@ packagedb::read ()
                       if (pkgm)
                         {
                           data.sdesc = pkgm->curr.SDesc();
+                          data.ldesc = pkgm->curr.LDesc();
                           if (pkgm->curr
                               && version_compare (f.ver, pkgm->curr.Canonical_version()) > 0)
                             data.stability = TRUST_TEST;

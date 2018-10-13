@@ -20,6 +20,7 @@
 #include "proppage.h"
 #include "package_meta.h"
 #include "PickView.h"
+#include "ListView.h"
 
 #define DEFAULT_TIMER_ID   5   //value doesn't matter, as long as it's unique
 #define SEARCH_TIMER_DELAY 500 //in milliseconds
@@ -33,8 +34,7 @@ public:
   ~ChooserPage ();
 
   virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code);
-  virtual INT_PTR CALLBACK OnMouseWheel (UINT message, WPARAM wParam,
-					 LPARAM lParam);
+  virtual bool OnNotify (NMHDR *pNmHdr, LRESULT *pResult);
   virtual INT_PTR CALLBACK OnTimerMessage (UINT message, WPARAM wParam,
 										   LPARAM lparam);
 
@@ -51,7 +51,6 @@ public:
   }
 private:
   void createListview ();
-  RECT getDefaultListViewSize();
   void getParentRect (HWND parent, HWND child, RECT * r);
   void keepClicked();
   void changeTrust(int button, bool test, bool initial);
@@ -63,6 +62,7 @@ private:
   void initialUpdateState();
 
   PickView *chooser;
+  ListView *listview;
   static HWND ins_dialog;
   bool cmd_show_set;
   bool saved_geom;

@@ -193,6 +193,20 @@ SolvableVersion::SDesc () const
 }
 
 const std::string
+SolvableVersion::LDesc () const
+{
+  if (!id)
+    return "";
+  Solvable *solvable = pool_id2solvable(pool, id);
+  const char *ldesc = repo_lookup_str(solvable->repo, id, SOLVABLE_DESCRIPTION);
+
+  if (!ldesc)
+    return "";
+
+  return ldesc;
+}
+
+const std::string
 SolvableVersion::sourcePackageName () const
 {
   if (!id)

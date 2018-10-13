@@ -140,7 +140,18 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
           return TRUE;
         }
       case WM_NOTIFY:
-        switch (((NMHDR FAR *) lParam)->code)
+        {
+        NMHDR *pNmHdr = (NMHDR *) lParam;
+
+        // offer to subclass first
+        LRESULT result = 0;
+        if (OnNotify (pNmHdr, &result))
+          {
+            SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, result);
+            return TRUE;
+          }
+
+        switch (pNmHdr->code)
         {
           case PSN_APPLY:
             {
@@ -260,6 +271,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
               // Unrecognized notification
               return FALSE;
             }
+        }
         }
         break;
       case WM_COMMAND:
