@@ -10,26 +10,24 @@ Cygwin
 Setup should build out-of-the-box on any Cygwin environment that has all the
 required packages and their dependencies installed:
 
+  - autoconf
+  - automake
+  - bison
+  - flex
+  - libtool
   - make
-  - mingw64-${arch}-headers
+  - mingw64-${arch}-bzip2
   - mingw64-${arch}-gcc-g++
+  - mingw64-${arch}-headers
   - mingw64-${arch}-libgcrypt
   - mingw64-${arch}-libsolv
-  - mingw64-${arch}-bzip2
   - mingw64-${arch}-xz
   - mingw64-${arch}-zlib
+  - mingw64-${arch}-zstd
   - upx (optional)
 
 The ${arch} needs to be replaced with either "i686" or "x86_64"
-depending on the target architecture to build for.  The following
-additional packages are required if building from Git, or if you want
-to make changes to the build system.
-
-  - autoconf
-  - automake
-  - libtool
-  - flex
-  - bison
+depending on the target architecture to build for.
 
 Fedora
 ------
@@ -37,26 +35,31 @@ Fedora
 Setup should also build out-of-the-box in a Fedora environment that has all the
 required packages and their dependencies installed:
 
-  - make
+  - automake
+  - bison
+  - flex
   - libtool
+  - make
+  - mingw${arch}-bzip2-static
   - mingw${arch}-gcc-c++
-  - mingw${arch}-zlib-static
   - mingw${arch}-libgcrypt-static
   - mingw${arch}-libgnurx-static
   - mingw${arch}-libsolv-static (*)
-  - mingw${arch}-bzip2-static
-  - mingw${arch}-xz-libs-static
+  - mingw${arch}-libzstd-static (**)
   - mingw${arch}-winpthreads-static
+  - mingw${arch}-xz-libs-static
+  - mingw${arch}-zlib-static
   - upx (optional)
 
 The ${arch} needs to be replaced with either "32" or "64"
 depending on the target architecture to build for.
 
 (*) Requires 'dnf copr enable jturney/mingw-libsolv'
+(**) Requires 'dnf copr enable jturney/mingw-zstd'
 
 Build commands:
 
-0) If building from git, obtain this project's code:
+0) Obtain this project's source code:
    $ git clone git://sourceware.org/git/cygwin-apps/setup.git
    $ cd setup
 
