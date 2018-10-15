@@ -159,6 +159,12 @@ ListView::noteColumnWidth(int col_num, const std::string& string)
 
   int width = addend + s.cx;
 
+  // allow for width of dropdown button in popup columns
+  if (headers[col_num].type == ListView::ControlType::popup)
+    {
+      width += GetSystemMetrics(SM_CXVSCROLL);
+    }
+
   if (width > headers[col_num].width)
     headers[col_num].width = width;
 }
