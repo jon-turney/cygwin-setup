@@ -414,7 +414,12 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
                   // erase and draw a checkbox
                   RECT r;
                   ListView_GetSubItemRect(hWndListView, iRow, iCol, LVIR_BOUNDS, &r);
-                  HBRUSH hBrush = CreateSolidBrush(ListView_GetBkColor(hWndListView));
+                  DWORD bkg_color;
+                  if (pNmLvCustomDraw->nmcd.uItemState & CDIS_SELECTED)
+                    bkg_color = GetSysColor(COLOR_HIGHLIGHT);
+                  else
+                    bkg_color = ListView_GetBkColor(hWndListView);
+                  HBRUSH hBrush = CreateSolidBrush(bkg_color);
                   FillRect(pNmLvCustomDraw->nmcd.hdc, &r, hBrush);
                   DeleteObject(hBrush);
                   DrawFrameControl(pNmLvCustomDraw->nmcd.hdc, &r, DFC_BUTTON, state);
