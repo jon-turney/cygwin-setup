@@ -165,7 +165,7 @@ public:
 
   void internalize(void);
   void use_test_packages(bool use_test_packages);
-
+  bool is_test_package(SolvableVersion id);
 
 private:
   void init();

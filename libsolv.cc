@@ -603,6 +603,22 @@ SolverPool::internalize()
     }
 }
 
+bool
+SolverPool::is_test_package(SolvableVersion sv)
+{
+  Solvable *solvable = pool_id2solvable(pool, sv.id);
+
+  for (RepoList::iterator i = repos.begin();
+       i != repos.end();
+       i++)
+    {
+      if (solvable->repo == i->second->repo)
+        return i->second->test;
+    }
+
+  return false;
+}
+
 void
 SolverTasks::setTasks()
 {

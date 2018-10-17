@@ -499,7 +499,10 @@ packagemeta::list_actions(trusts const trust)
         }
       else
         {
-          al->add(i->Canonical_version().c_str(),
+          std::string label = i->Canonical_version().c_str();
+          if (packagedb::solver.is_test_package(*i))
+            label += " (Test)";
+          al->add(label,
                   -std::distance(versions.begin (), i),
                   (action == Install_action) && (*i == desired),
                   TRUE);
