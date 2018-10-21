@@ -918,7 +918,9 @@ SolverSolution::solutionToTransactionList()
 
   transaction_free(t);
 
+#if DEBUG
   dumpTransactionList();
+#endif
 }
 
 void
