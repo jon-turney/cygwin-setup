@@ -216,15 +216,24 @@ try_again:
     {
       DWORD e = GetLastError ();
       if (e == ERROR_INTERNET_EXTENDED_ERROR)
-	{
-	  char buf[2000];
-	  DWORD e, l = sizeof (buf);
-	  InternetGetLastResponseInfo (&e, buf, &l);
-	  mbox (0, buf, "Internet Error", MB_OK);
-	}
+        {
+          char buf[2000];
+          DWORD e, l = sizeof (buf);
+          InternetGetLastResponseInfo (&e, buf, &l);
+
+          // show errors apart from file-not-found (e doesn't contain the
+          // response code so we have to resort to looking at the message)
+          if (strncmp("550", buf, 3) != 0)
+            mbox (0, buf, "Internet Error", MB_OK);
+
+          for (unsigned int i = 0; i < l; i++)
+            if (buf[i] == '\n' or buf[i] == '\r')
+              buf[i] = ' ';
+          Log (LOG_PLAIN) << "connection error: " << buf << " fetching " << url << endLog;
+        }
       else
         {
-          Log (LOG_PLAIN) << "connection error: " << e << endLog;
+          Log (LOG_PLAIN) << "connection error: " << e << " fetching " << url << endLog;
         }
     }
 
