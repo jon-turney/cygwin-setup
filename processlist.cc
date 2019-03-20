@@ -91,7 +91,7 @@ Process::kill (int force)
         break;
      }
 
-  std::string kill_cmd = backslash (cygpath ("/bin/kill.exe")) + " " + signame + " " + stringify (processID);
+  std::string kill_cmd = backslash (cygpath ("/bin/kill.exe")) + " " + signame + " -W " + stringify (processID);
   ::run (kill_cmd.c_str ());
 }
 
