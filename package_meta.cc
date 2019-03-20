@@ -465,6 +465,27 @@ packagemeta::select_action (int id, trusts const deftrust)
     user_picked = true;
 }
 
+// toggle between the currently installed version (or uninstalled, if not
+// installed), and the naively preferred version (the highest non-test version)
+void
+packagemeta::toggle_action ()
+{
+  if (desired != installed)
+    {
+      set_action(Default_action, installed);
+    }
+  else
+    {
+      packageversion naively_preferred;
+      std::set<packageversion>::iterator i = versions.begin ();
+      for (i = versions.begin (); i != versions.end (); ++i)
+        if (!packagedb::solver.is_test_package(*i))
+          naively_preferred = *i;
+
+      set_action(Install_action, naively_preferred);
+    }
+}
+
 ActionList *
 packagemeta::list_actions(trusts const trust)
 {

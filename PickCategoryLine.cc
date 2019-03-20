@@ -56,6 +56,12 @@ PickCategoryLine::do_action(int col_num, int action_id)
   return 1;
 }
 
+int
+PickCategoryLine::do_default_action(int col_num)
+{
+  return 0;
+}
+
 ActionList *
 PickCategoryLine::get_actions(int col) const
 {

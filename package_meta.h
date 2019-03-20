@@ -63,6 +63,7 @@ public:
   void set_action (_actions, packageversion const & default_version);
   ActionList *list_actions(trusts const trust);
   void select_action (int id, trusts const deftrust);
+  void toggle_action ();
 
   void set_message (const std::string& message_id, const std::string& message_string)
   {

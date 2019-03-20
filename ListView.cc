@@ -345,9 +345,19 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
       if (headers[iCol].type == ListView::ControlType::popup)
         {
           POINT p;
-          // position pop-up menu at the location of the click
           GetCursorPos(&p);
 
+          RECT r;
+          ListView_GetSubItemRect(hWndListView, iRow, iCol, LVIR_BOUNDS, &r);
+          POINT cp = p;
+          ::ScreenToClient(hWndListView, &cp);
+
+          // if the click isn't over the pop-up button, do nothing yet (but this
+          // might be followed by a NM_DBLCLK)
+          if (cp.x < r.right - GetSystemMetrics(SM_CXVSCROLL))
+            return true;
+
+          // position pop-up menu at the location of the click
           update = popup_menu(iRow, iCol, p);
         }
       else
@@ -355,6 +365,32 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
           // Inform the item of the click
           update = (*contents)[iRow]->do_action(iCol, 0);
         }
+
+      // Update items, if needed
+      if (update > 0)
+        {
+          ListView_RedrawItems(hWndListView, iRow, iRow + update -1);
+        }
+
+      return true;
+    }
+    break;
+
+  case NM_DBLCLK:
+    {
+      NMITEMACTIVATE *pNmItemAct = (NMITEMACTIVATE *) pNmHdr;
+#if DEBUG
+      Log (LOG_BABBLE) << "NM_DBLCLICK: pnmitem->iItem " << pNmItemAct->iItem << " pNmItemAct->iSubItem " << pNmItemAct->iSubItem << endLog;
+#endif
+      int iRow = pNmItemAct->iItem;
+      int iCol = pNmItemAct->iSubItem;
+      if (iRow < 0)
+        return false;
+
+      int update = 0;
+
+      // Inform the item of the double-click
+      update = (*contents)[iRow]->do_default_action(iCol );
 
       // Update items, if needed
       if (update > 0)

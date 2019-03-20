@@ -144,6 +144,17 @@ PickPackageLine::do_action(int col_num, int action_id)
   return 0;
 }
 
+int
+PickPackageLine::do_default_action(int col_num)
+{
+  if (col_num == new_col)
+    {
+      pkg.toggle_action();
+      return 1;
+    }
+  return 0;
+}
+
 ActionList *
 PickPackageLine::get_actions(int col_num) const
 {
