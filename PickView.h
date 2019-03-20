@@ -136,7 +136,10 @@ public:
              i != _bucket.end();
              i++)
           {
-            // recurse for all contained categories
+            // recurse for all contained non-obsolete categories
+            if (isObsolete((*i)->_cat.first))
+              continue;
+
             int l = (*i)->do_action(action_id, deftrust);
 
             if (!_collapsed)
