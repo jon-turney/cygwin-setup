@@ -140,8 +140,6 @@ public:
   bool srcpicked() const;   /* true if source for desired version is to be installed */
   void srcpick(bool);
 
-  packagemessage message;
-
   /* can one or more versions be installed? */
   bool accessible () const;
   bool sourceAccessible() const;
@@ -167,6 +165,7 @@ private:
   bool _picked; /* true if desired version is to be (re)installed */
   bool _srcpicked;
 
+  packagemessage message;
   std::set <std::string> version_blacklist;
 };
 
