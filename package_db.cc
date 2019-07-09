@@ -758,7 +758,7 @@ packagedb::noChanges ()
        i != packages.end(); i++)
     {
       packagemeta *pkg = i->second;
-      pkg->desired = pkg->default_version = pkg->installed;
-      pkg->pick(false);
+      pkg->set_action(packagemeta::NoChange_action, pkg->installed);
+      pkg->default_version = pkg->installed;
     }
 }

@@ -740,16 +740,19 @@ SolverSolution::trans2db() const
         case SolverTransaction::transInstall:
           if (pv.Type() == package_binary)
             {
-              pkg->desired = pkg->default_version = pv;
-              pkg->pick(true);
+              pkg->set_action(packagemeta::Install_action, pv);
+              pkg->default_version = pv;
             }
           else // source package
             pkg->srcpick(true);
           break;
         case SolverTransaction::transErase:
           // Only relevant if pkg is still in its "no change" state
-          if (pkg->desired == pkg->installed && !pkg->picked())
-            pkg->desired = pkg->default_version = packageversion();
+          if (pkg->get_action() == packagemeta::NoChange_action)
+            {
+              pkg->set_action(packagemeta::Uninstall_action, packageversion());
+              pkg->default_version = packageversion();
+            }
           break;
         default:
           break;
@@ -767,13 +770,14 @@ SolverSolution::db2trans()
        p != db.packages.end (); ++p)
     {
       packagemeta *pkg = p->second;
-      if (pkg->desired && pkg->picked()) // install/upgrade/reinstall
+      if ((pkg->get_action() == packagemeta::Install_action) ||
+          (pkg->get_action() == packagemeta::Reinstall_action))
         {
           trans.push_back(SolverTransaction(pkg->desired, SolverTransaction::transInstall));
           if (pkg->installed)
             trans.push_back(SolverTransaction(pkg->installed, SolverTransaction::transErase));
         }
-      else if (!pkg->desired && pkg->installed) // uninstall
+      else if (pkg->get_action() == packagemeta::Uninstall_action)
         trans.push_back(SolverTransaction(pkg->installed, SolverTransaction::transErase));
 
       if (pkg->srcpicked())

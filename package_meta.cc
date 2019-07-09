@@ -553,8 +553,11 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
 	    }
 	}
       else
-        // else, if not installed, skip
-	desired = packageversion ();
+        {
+          // else, if not installed, skip
+          desired = packageversion ();
+          pick(false);
+        }
     }
   else if (action == Install_action)
     {
