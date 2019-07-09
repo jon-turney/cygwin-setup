@@ -426,19 +426,23 @@ packagemeta::LDesc () const
 std::string
 packagemeta::action_caption () const
 {
-  if (!desired && installed)
-    return "Uninstall";
-  else if (!desired)
-    return "Skip";
-  else if (desired == installed && picked())
-    return packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve";
-  else if (desired == installed && desired.sourcePackage() && srcpicked())
-    /* FIXME: Redo source should come up if the tarball is already present locally */
-    return "Source";
-  else if (desired == installed)	/* and neither src nor bin */
-    return "Keep";
-  else
-    return desired.Canonical_version ();
+  switch (_action)
+    {
+    case Uninstall_action:
+      return "Uninstall";
+    case NoChange_action:
+      if (!desired)
+        return "Skip";
+      if (desired.sourcePackage() && srcpicked())
+        /* FIXME: Redo source should come up if the tarball is already present locally */
+        return "Source";
+      return "Keep";
+    case Reinstall_action:
+      return packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve";
+    case Install_action:
+      return desired.Canonical_version ();
+    }
+  return "Unknown";
 }
 
 void
