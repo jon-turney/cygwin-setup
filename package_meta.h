@@ -37,7 +37,7 @@ public:
   static void ScanDownloadedFiles (bool);
   packagemeta (packagemeta const &);
   packagemeta (const std::string& pkgname)
-    : name (pkgname), key(pkgname), user_picked (false),
+    : name (pkgname), user_picked (false),
     _picked(false), _srcpicked(false)
   {
   }
@@ -103,7 +103,6 @@ public:
   }
 
   std::string name;			/* package name, like "cygwin" */
-  std::string key;
 
   /* true if package was selected on command-line. */
   bool isManuallyWanted() const;

@@ -70,7 +70,7 @@ packagemeta::action_caption (_actions _value)
 }
 
 packagemeta::packagemeta (packagemeta const &rhs) :
-  name (rhs.name), key (rhs.name),
+  name (rhs.name),
   categories (rhs.categories), versions (rhs.versions),
   installed (rhs.installed),
   curr (rhs.curr),
