@@ -307,7 +307,7 @@ ChooserPage::applyCommandLinePackageSelection()
       else if (PruneInstallOption)
 	pkg.set_action (packagemeta::NoChange_action, pkg.curr);
       else if (upgrade)
-	pkg.set_action (packagemeta::NoChange_action, pkg.trustp(true, TRUST_UNKNOWN));
+	pkg.set_action (packagemeta::Install_action, pkg.trustp(true, TRUST_UNKNOWN));
       else
 	pkg.set_action (packagemeta::NoChange_action, pkg.installed);
     }

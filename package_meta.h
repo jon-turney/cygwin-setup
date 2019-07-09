@@ -38,7 +38,7 @@ public:
   packagemeta (packagemeta const &);
   packagemeta (const std::string& pkgname)
     : name (pkgname), user_picked (false),
-    _picked(false), _srcpicked(false)
+      _action(NoChange_action), _picked(false), _srcpicked(false)
   {
   }
 
@@ -64,6 +64,7 @@ public:
   ActionList *list_actions(trusts const trust);
   void select_action (int id, trusts const deftrust);
   void toggle_action ();
+  _actions get_action () { return _action; }
 
   void set_message (const std::string& message_id, const std::string& message_string)
   {
@@ -161,6 +162,8 @@ private:
   std::string trustLabel(packageversion const &) const;
   std::vector <Script> scripts_;
   static bool scan (const packageversion &pkg, bool mirror_mode);
+
+  _actions _action;
 
   bool _picked; /* true if desired version is to be (re)installed */
   bool _srcpicked;

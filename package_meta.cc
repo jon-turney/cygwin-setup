@@ -555,7 +555,6 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
       else
         // else, if not installed, skip
 	desired = packageversion ();
-      return;
     }
   else if (action == Install_action)
     {
@@ -576,11 +575,11 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
 	      }
 	  else
 	    {
+	      action = NoChange_action;
 	      pick (false);
 	      srcpick (false);
 	    }
 	}
-      return;
     }
   else if (action == Reinstall_action)
     {
@@ -595,6 +594,8 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
     {
       desired = packageversion ();
     }
+
+  _action = action;
 }
 
 bool
