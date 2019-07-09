@@ -631,34 +631,39 @@ SolverTasks::setTasks()
     {
       packagemeta *pkg = p->second;
 
-      // decode UI state to action
-      // keep and skip need attention only when they differ from the
-      // solver's solution
-      if (pkg->installed != pkg->desired)
+      switch (pkg->get_action())
         {
-          if (pkg->desired)
-            add(pkg->desired, taskInstall); // install/upgrade
-          else
-            add(pkg->installed, taskUninstall); // uninstall
-        }
-      else if (pkg->installed)
-        {
-          if (pkg->picked())
-            add(pkg->installed, taskReinstall); // reinstall
-          else if (pkg->installed != pkg->default_version)
-            add(pkg->installed, taskKeep); // keep
-          else
+        case packagemeta::NoChange_action: // skip/keep
+          // keep and skip need attention only when they differ from the
+          // solver's solution
+          if (pkg->installed)
             {
-              // if installed (with no action selected), but blacklisted, force
-              // a distupgrade of this package
-              if (pkg->isBlacklisted(pkg->installed))
+              if (!pkg->picked() && pkg->installed != pkg->default_version)
+                add(pkg->installed, taskKeep); // keep
+              else if (pkg->isBlacklisted(pkg->installed))
                 {
+                  // if installed (with no action selected), but blacklisted,
+                  // force a distupgrade of this package
                   add(pkg->installed, taskForceDistUpgrade);
                 }
             }
+          else if (pkg->default_version)
+             add(pkg->default_version, taskSkip); // skip
+
+          break;
+
+        case packagemeta::Install_action:
+          add(pkg->desired, taskInstall); // install/upgrade
+          break;
+
+        case packagemeta::Uninstall_action:
+          add(pkg->installed, taskUninstall); // uninstall
+          break;
+
+        case packagemeta::Reinstall_action:
+          add(pkg->installed, taskReinstall); // reinstall
+          break;
         }
-      else if (pkg->default_version)
-        add(pkg->default_version, taskSkip); // skip
 
       // only install action makes sense for source packages
       if (pkg->srcpicked())
