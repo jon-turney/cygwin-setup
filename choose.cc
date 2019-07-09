@@ -299,7 +299,7 @@ ChooserPage::applyCommandLinePackageSelection()
       bool uninstall = (!(wanted  || base) && (deleted || PruneInstallOption))
 		     || (orphaned && CleanOrphansOption);
       if (install)
-	pkg.set_action (packagemeta::Install_action, pkg.curr);
+	pkg.set_action (packagemeta::Install_action, UpgradeAlsoOption ? packageversion () : pkg.curr);
       else if (reinstall)
 	pkg.set_action (packagemeta::Reinstall_action, pkg.curr);
       else if (uninstall)

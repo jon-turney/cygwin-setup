@@ -653,7 +653,10 @@ SolverTasks::setTasks()
           break;
 
         case packagemeta::Install_action:
-          add(pkg->desired, taskInstall); // install/upgrade
+          if (pkg->desired)
+            add(pkg->desired, taskInstall); // install/upgrade
+          else
+            add(pkg->curr, taskInstallAny); // install
           break;
 
         case packagemeta::Uninstall_action:
@@ -828,6 +831,9 @@ SolverSolution::tasksToJobs(SolverTasks &tasks, updateMode update, Queue &job)
         {
         case SolverTasks::taskInstall:
           queue_push2(&job, SOLVER_INSTALL | SOLVER_SOLVABLE, sv.id);
+          break;
+        case SolverTasks::taskInstallAny:
+          queue_push2(&job, SOLVER_INSTALL | SOLVER_SOLVABLE_PROVIDES, sv.name_id());
           break;
         case SolverTasks::taskUninstall:
           queue_push2(&job, SOLVER_ERASE | SOLVER_SOLVABLE, sv.id);
