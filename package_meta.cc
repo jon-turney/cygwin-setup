@@ -490,34 +490,20 @@ packagemeta::toggle_action ()
 ActionList *
 packagemeta::list_actions(trusts const trust)
 {
-  // first work out the current action, so we can indicate that
-  _actions action;
-
-  if (!desired && installed)
-    action = Uninstall_action;
-  else if (!desired)
-    action = NoChange_action; // skip
-  else if (desired == installed && picked())
-    action = Reinstall_action;
-  else if (desired == installed)
-    action = NoChange_action; // keep
-  else
-    action = Install_action;
-
-  // now build the list of possible actions
+  // build the list of possible actions
   ActionList *al = new ActionList();
 
-  al->add("Uninstall", (int)Uninstall_action, (action == Uninstall_action), bool(installed));
-  al->add("Skip", (int)NoChange_action, (action == NoChange_action) && !installed, !installed);
+  al->add("Uninstall", (int)Uninstall_action, (_action == Uninstall_action), bool(installed));
+  al->add("Skip", (int)NoChange_action, (_action == NoChange_action) && !installed, !installed);
 
   std::set<packageversion>::iterator i;
   for (i = versions.begin (); i != versions.end (); ++i)
     {
       if (*i == installed)
         {
-          al->add("Keep", (int)NoChange_action, (action == NoChange_action), TRUE);
+          al->add("Keep", (int)NoChange_action, (_action == NoChange_action), TRUE);
           al->add(packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve",
-                  (int)Reinstall_action, (action == Reinstall_action), TRUE);
+                  (int)Reinstall_action, (_action == Reinstall_action), TRUE);
         }
       else
         {
@@ -526,7 +512,7 @@ packagemeta::list_actions(trusts const trust)
             label += " (Test)";
           al->add(label,
                   -std::distance(versions.begin (), i),
-                  (action == Install_action) && (*i == desired),
+                  (_action == Install_action) && (*i == desired),
                   TRUE);
         }
     }
