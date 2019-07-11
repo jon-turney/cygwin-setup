@@ -60,7 +60,8 @@ public:
     };
   static const char *action_caption (_actions value);
 
-  void set_action (_actions, packageversion const & default_version);
+  void set_action (_actions, packageversion const & default_version,
+                   bool useraction = false);
   ActionList *list_actions(trusts const trust);
   void select_action (int id, trusts const deftrust);
   void toggle_action ();

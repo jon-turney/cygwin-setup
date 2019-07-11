@@ -462,12 +462,8 @@ packagemeta::select_action (int id, trusts const deftrust)
       if (id == packagemeta::NoChange_action)
         set_action((packagemeta::_actions)id, installed);
       else
-        set_action((packagemeta::_actions)id, trustp (true, deftrust));
+        set_action((packagemeta::_actions)id, trustp (true, deftrust), true);
     }
-
-  /* Memorize the fact that the user picked at least once. */
-  if (!installed)
-    user_picked = true;
 }
 
 // toggle between the currently installed version (or uninstalled, if not
@@ -526,7 +522,8 @@ packagemeta::list_actions(trusts const trust)
 
 // Set a particular type of action.
 void
-packagemeta::set_action (_actions action, packageversion const &default_version)
+packagemeta::set_action (_actions action, packageversion const &default_version,
+                         bool useraction)
 {
   if (action == NoChange_action)
     {
@@ -557,7 +554,10 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
 	  if (desired != installed)
 	    if (desired.accessible ())
 	      {
-		user_picked = true;
+		/* Memorize the fact that the user picked to install this package at least once. */
+		if (useraction)
+		  user_picked = true;
+
 		pick (true);
 		srcpick (false);
 	      }
