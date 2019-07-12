@@ -71,16 +71,16 @@ private:
   void insert_category (CategoryTree *);
 };
 
+// column numbers, must match index into pkg_headers[]
 enum
 {
  pkgname_col = 0, // package/category name
  current_col = 1,
  new_col = 2,     // action
- bintick_col = 3,
- srctick_col = 4,
- cat_col = 5,
- size_col = 6,
- pkg_col = 7,     // desc
+ srctick_col = 3,
+ cat_col = 4,
+ size_col = 5,
+ pkg_col = 6     // desc
 };
 
 bool isObsolete (std::set <std::string, casecompare_lt_op> &categories);

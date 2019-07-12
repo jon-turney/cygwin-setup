@@ -32,20 +32,6 @@ PickPackageLine::get_text(int col_num) const
     {
       return pkg.action_caption ();
     }
-  else if (col_num == bintick_col)
-    {
-      const char *bintick = "?";
-      if (/* uninstall or skip */ !pkg.desired ||
-          /* current version */ pkg.desired == pkg.installed ||
-          /* no source */ !pkg.desired.accessible())
-        bintick = "n/a";
-      else if (pkg.picked())
-        bintick = "yes";
-      else
-        bintick = "no";
-
-      return bintick;
-    }
   else if (col_num == srctick_col)
     {
       const char *srctick = "?";
@@ -118,25 +104,11 @@ PickPackageLine::do_action(int col_num, int action_id)
       pkg.select_action(action_id, theView.deftrust);
       return 1;
     }
-  if (col_num == bintick_col)
-    {
-      if (pkg.desired.accessible ())
-        pkg.pick (!pkg.picked ());
-    }
-  else if (col_num == srctick_col)
+
+  if (col_num == srctick_col)
     {
       if (pkg.desired.sourcePackage ().accessible ())
         pkg.srcpick (!pkg.srcpicked ());
-    }
-
-  /* Unchecking binary while source is unchecked or vice versa is equivalent to
-     uninstalling.  It's essential to set desired correctly, otherwise the
-     package gets uninstalled without visual feedback to the user.  The package
-     will not even show up in the "Pending" view! */
-  if ((col_num == bintick_col) || (col_num == srctick_col))
-    {
-      if (!pkg.picked () && !pkg.srcpicked ())
-        pkg.desired = packageversion ();
 
       return 1;
     }

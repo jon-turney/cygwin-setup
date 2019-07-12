@@ -236,9 +236,8 @@ PickView::init_headers (void)
 {
   listview->noteColumnWidthStart();
 
-  // widths of the 'bin' and 'src' checkbox columns just need to accommodate the
+  // width of the 'src' checkbox column just needs to accommodate the
   // column name
-  listview->noteColumnWidth (bintick_col, "");
   listview->noteColumnWidth (srctick_col, "");
 
   // (In category view) accommodate the width of each category name
