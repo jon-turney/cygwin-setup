@@ -68,7 +68,7 @@ PickCategoryLine::get_actions(int col) const
   ActionList *al = new ActionList();
   packagemeta::_actions current_default = cat_tree->action();
 
-  al->add("Default", (int)packagemeta::Default_action, (current_default == packagemeta::Default_action), TRUE);
+  al->add("Default", (int)packagemeta::NoChange_action, (current_default == packagemeta::NoChange_action), TRUE);
   al->add("Install", (int)packagemeta::Install_action, (current_default == packagemeta::Install_action), TRUE);
   al->add(packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve",
           (int)packagemeta::Reinstall_action, (current_default == packagemeta::Reinstall_action), TRUE);

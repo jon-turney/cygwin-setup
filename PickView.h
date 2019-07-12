@@ -97,7 +97,7 @@ public:
   CategoryTree(Category & cat, bool collapsed) :
     _cat (cat),
     _collapsed(collapsed),
-    _action (packagemeta::Default_action)
+    _action (packagemeta::NoChange_action)
   {
   }
 

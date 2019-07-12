@@ -51,12 +51,13 @@ bool hasManualSelections = 0;
 
 /*****************/
 
+/* Return an appropriate category caption given the action */
 char const *
 packagemeta::action_caption (_actions _value)
 {
   switch (_value)
     {
-    case Default_action:
+    case NoChange_action:
       return "Default";
     case Install_action:
       return "Install";
@@ -454,7 +455,7 @@ packagemeta::select_action (int id, trusts const deftrust)
     }
   else
     {
-      if (id == packagemeta::Default_action)
+      if (id == packagemeta::NoChange_action)
         set_action((packagemeta::_actions)id, installed);
       else
         set_action((packagemeta::_actions)id, trustp (true, deftrust));
@@ -472,7 +473,7 @@ packagemeta::toggle_action ()
 {
   if (desired != installed)
     {
-      set_action(Default_action, installed);
+      set_action(NoChange_action, installed);
     }
   else
     {
@@ -495,11 +496,11 @@ packagemeta::list_actions(trusts const trust)
   if (!desired && installed)
     action = Uninstall_action;
   else if (!desired)
-    action = Default_action; // skip
+    action = NoChange_action; // skip
   else if (desired == installed && picked())
     action = Reinstall_action;
   else if (desired == installed)
-    action = Default_action; // keep
+    action = NoChange_action; // keep
   else
     action = Install_action;
 
@@ -507,14 +508,14 @@ packagemeta::list_actions(trusts const trust)
   ActionList *al = new ActionList();
 
   al->add("Uninstall", (int)Uninstall_action, (action == Uninstall_action), bool(installed));
-  al->add("Skip", (int)Default_action, (action == Default_action) && !installed, !installed);
+  al->add("Skip", (int)NoChange_action, (action == NoChange_action) && !installed, !installed);
 
   std::set<packageversion>::iterator i;
   for (i = versions.begin (); i != versions.end (); ++i)
     {
       if (*i == installed)
         {
-          al->add("Keep", (int)Default_action, (action == Default_action), TRUE);
+          al->add("Keep", (int)NoChange_action, (action == NoChange_action), TRUE);
           al->add(packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve",
                   (int)Reinstall_action, (action == Reinstall_action), TRUE);
         }
@@ -537,8 +538,9 @@ packagemeta::list_actions(trusts const trust)
 void
 packagemeta::set_action (_actions action, packageversion const &default_version)
 {
-  if (action == Default_action)
+  if (action == NoChange_action)
     {
+      // if installed, keep
       if (installed
 	  || categories.find ("Base") != categories.end ()
 	  || categories.find ("Orphaned") != categories.end ())
@@ -551,6 +553,7 @@ packagemeta::set_action (_actions action, packageversion const &default_version)
 	    }
 	}
       else
+        // else, if not installed, skip
 	desired = packageversion ();
       return;
     }

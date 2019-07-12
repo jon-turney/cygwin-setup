@@ -305,11 +305,11 @@ ChooserPage::applyCommandLinePackageSelection()
       else if (uninstall)
 	pkg.set_action (packagemeta::Uninstall_action, packageversion ());
       else if (PruneInstallOption)
-	pkg.set_action (packagemeta::Default_action, pkg.curr);
+	pkg.set_action (packagemeta::NoChange_action, pkg.curr);
       else if (upgrade)
-	pkg.set_action (packagemeta::Default_action, pkg.trustp(true, TRUST_UNKNOWN));
+	pkg.set_action (packagemeta::NoChange_action, pkg.trustp(true, TRUST_UNKNOWN));
       else
-	pkg.set_action (packagemeta::Default_action, pkg.installed);
+	pkg.set_action (packagemeta::NoChange_action, pkg.installed);
     }
 }
 

@@ -53,7 +53,7 @@ public:
 
   enum _actions
     {
-     Default_action = 1,
+     NoChange_action = 1,  // keep if installed, skip if not installed
      Install_action,
      Reinstall_action,
      Uninstall_action,
