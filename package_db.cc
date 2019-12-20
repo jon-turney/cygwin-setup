@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <strings.h>
 #include <algorithm>
+#include <sstream>
 #if HAVE_ERRNO_H
 #include <errno.h>
 #endif
@@ -229,6 +230,30 @@ packagedb::makeBase()
   data.requires = &dep;
 
   basepkg = solver.addPackage("base", data);
+  /* We don't register this in packagemeta */
+}
+
+/* Create the fictitious windows package */
+void
+packagedb::makeWindows()
+{
+  std::stringstream v;
+  v << OSMajorVersion() << "." << OSMinorVersion() << "." << OSBuildNumber();
+
+  SolverPool::addPackageData data;
+  data.reponame = "_installed";
+  data.version = v.str();
+  data.type = package_binary;
+  data.vendor = "cygwin";
+  data.sdesc = "Ficitious package indicating Windows version";
+  data.ldesc = "Ficitious package indicating Windows version";
+  data.requires = NULL;
+  data.obsoletes = NULL;
+  data.provides = NULL;
+  data.conflicts = NULL;
+  data.stability = TRUST_CURR;
+
+  solver.addPackage("_windows", data);
   /* We don't register this in packagemeta */
 }
 
@@ -735,6 +760,7 @@ packagedb::prep()
     return;
 
   makeBase();
+  makeWindows();
   read();
   upgrade();
   fixup_source_package_ids();

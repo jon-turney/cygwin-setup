@@ -100,6 +100,7 @@ public:
 
 private:
   void makeBase();
+  void makeWindows();
   void read();
   void upgrade ();
   void fixup_source_package_ids();
