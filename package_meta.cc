@@ -582,6 +582,12 @@ packagemeta::set_action (_actions action, packageversion const &default_version,
 	  pick (true);
 	  srcpick (false);
 	}
+      else
+      {
+        action = NoChange_action;
+        pick (false);
+        srcpick (false);
+      }
     }
   else if (action == Uninstall_action)
     {

@@ -949,7 +949,7 @@ SolverSolution::augmentTasks(SolverTasks &tasks)
     {
       const SolvableVersion &sv = (*i).first;
 
-      if (((*i).second) == SolverTasks::taskReinstall)
+      if (sv && (((*i).second) == SolverTasks::taskReinstall))
         {
           trans.push_back(SolverTransaction(SolvableVersion(sv.id, pool.pool),
                                             SolverTransaction::transErase));
