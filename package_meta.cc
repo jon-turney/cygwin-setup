@@ -549,31 +549,30 @@ packagemeta::set_action (_actions action, packageversion const &default_version,
   else if (action == Install_action)
     {
       desired = default_version;
-      if (desired != installed)
-        if (desired.accessible ())
-          {
-            /* Memorize the fact that the user picked to install this package at least once. */
-            if (useraction)
-              user_picked = true;
+      if (desired)
+	{
+	  if (desired != installed)
+	    if (desired.accessible ())
+	      {
+		/* Memorize the fact that the user picked to install this package at least once. */
+		if (useraction)
+		  user_picked = true;
 
-            pick (true);
-            srcpick (false);
-
-            /* Install no version is Uninstall */
-            if (!desired)
-              action = Uninstall_action;
-          }
-        else
-          {
-            pick (false);
-            srcpick (true);
-          }
-      else
-        {
-          action = NoChange_action;
-          pick (false);
-          srcpick (false);
-        }
+		pick (true);
+		srcpick (false);
+	      }
+	    else
+	      {
+		pick (false);
+		srcpick (true);
+	      }
+	  else
+	    {
+	      action = NoChange_action;
+	      pick (false);
+	      srcpick (false);
+	    }
+	}
     }
   else if (action == Reinstall_action)
     {
