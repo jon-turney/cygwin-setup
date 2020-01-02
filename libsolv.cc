@@ -655,7 +655,7 @@ SolverTasks::setTasks()
         case packagemeta::Install_action:
           if (pkg->desired)
             add(pkg->desired, taskInstall); // install/upgrade
-          else
+          else if (pkg->curr)
             add(pkg->curr, taskInstallAny); // install
           break;
 
