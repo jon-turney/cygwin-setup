@@ -21,7 +21,8 @@
 #include "solv/evr.h"
 
 #include "LogSingleton.h"
-#include  <iomanip>
+#include <iomanip>
+#include <algorithm>
 
 // ---------------------------------------------------------------------------
 // Utility functions for mapping between Operators and Relation Ids
@@ -986,15 +987,27 @@ SolverSolution::dumpTransactionList() const
 {
   if (trans.size())
     {
+      size_t width_name = 0;
+      size_t width_version = 0;
+
+      for (SolverTransactionList::const_iterator i = trans.begin ();
+           i != trans.end ();
+           ++i)
+        {
+          width_name = std::max(width_name, i->version.Name().length()+1);
+          width_version = std::max(width_version, i->version.Canonical_version().length()+1);
+        }
+
       Log (LOG_PLAIN) << "Augmented Transaction List:" << endLog;
       for (SolverTransactionList::const_iterator i = trans.begin ();
            i != trans.end ();
            ++i)
         {
           Log (LOG_PLAIN) << std::setw(4) << std::distance(trans.begin(), i)
-                          << std::setw(8) << i->type
-                          << std::setw(48) << i->version.Name()
-                          << std::setw(20) << i->version.Canonical_version() << endLog;
+                          << std::setw(8) << i->type << " "
+                          << std::left
+                          << std::setw(width_name) << i->version.Name()
+                          << std::setw(width_version) << i->version.Canonical_version() << endLog;
         }
     }
   else
