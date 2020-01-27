@@ -341,7 +341,11 @@ get_site_list (HINSTANCE h, HWND owner)
   else
     {
       if (!cached_mirrors[0])
-	Log (LOG_BABBLE) << "Defaulting to empty mirror list" << endLog;
+        {
+          if (!OnlySiteOption)
+            note(owner, IDS_NO_MIRROR_LST);
+          Log (LOG_BABBLE) << "Defaulting to empty mirror list" << endLog;
+        }
       else
 	{
 	  mirrors = cached_mirrors;

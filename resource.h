@@ -41,6 +41,7 @@
 #define IDS_DOWNLOAD_INCOMPLETE_EXIT      141
 #define IDS_QUERY_CORRUPT                 142
 #define IDS_TRUSTSYNC_TOOLTIP             143
+#define IDS_NO_MIRROR_LST                 144
 
 // Dialogs
 

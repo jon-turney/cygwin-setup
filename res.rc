@@ -608,4 +608,5 @@ BEGIN
       "will be nothing to install.\n\nPress OK if that's what you wanted\nor Cancel to choose a different directory."
     IDS_ELEVATED       "Hand installation over to elevated child process."
     IDS_INSTALLEDB_VERSION "Unknown INSTALLED.DB version"
+    IDS_NO_MIRROR_LST  "Could not download mirror sites list"
 END
