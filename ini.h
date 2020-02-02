@@ -42,15 +42,6 @@ void ini_init (io_stream *, IniDBBuilderPackage *, IniParseFeedback &);
    packages (the chosen "install" field).  install.cc installs
    selected packages. */
 
-/* The following three vars are used to facilitate error handling between the
-   parser/lexer and its callers, namely ini.cc:do_remote_ini() and
-   IniParseFindVisitor::visitFile().  */
-
-extern std::string current_ini_name;  /* current filename/URL being parsed */
-extern std::string current_ini_sig_name;  /* current filename/URL for sig file */
-extern std::string yyerror_messages;  /* textual parse error messages */
-extern int yyerror_count;             /* number of parse errors */
-
 /* The following definitions are used in the parser implementation */
 
 #define hexnibble(val)  ('\xff' & (val > '9') ? val - 'a' + 10 : val - '0')

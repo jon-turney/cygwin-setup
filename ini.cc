@@ -66,8 +66,6 @@ static BoolOption NoVersionCheckOption (false, '\0', "no-version-check", "Suppre
 
 extern int yyparse ();
 
-/*extern int yydebug;*/
-
 class GuiParseFeedback : public IniParseFeedback
 {
 public:
@@ -76,6 +74,9 @@ public:
       Progress.SetText2 ("");
       Progress.SetText3 ("");
       Progress.SetText4 ("Progress:");
+
+      yyerror_count = 0;
+      yyerror_messages.clear ();
     }
   virtual void progress (unsigned long const pos, unsigned long const max)
     {
@@ -102,6 +103,7 @@ public:
       Progress.SetText1 ("Parsing...");
       Progress.SetText2 (name.c_str ());
       Progress.SetText3 ("");
+      filename = name;
     }
   virtual void babble (const std::string& message)const
     {
@@ -111,9 +113,26 @@ public:
     {
       mbox (Progress.GetHWND(), message.c_str (), "Warning", 0);
     }
-  virtual void error (const std::string& message)const
+  virtual void note_error(int lineno, const std::string &error)
     {
-      mbox (Progress.GetHWND(), message.c_str (), "Parse Errors", 0);
+      char tmp[16];
+      sprintf (tmp, "%d", lineno);
+
+      std::string e = filename + " line " + tmp + ": " + error;
+
+      if (!yyerror_messages.empty ())
+        yyerror_messages += "\n";
+
+      yyerror_messages += e;
+      yyerror_count++;
+    }
+  virtual bool has_errors () const
+    {
+      return (yyerror_count > 0);
+    }
+  virtual void show_errors () const
+    {
+      mbox (Progress.GetHWND(), yyerror_messages.c_str (), "Parse Errors", 0);
     }
   virtual ~ GuiParseFeedback ()
     {
@@ -121,10 +140,13 @@ public:
     }
 private:
   unsigned int lastpct;
+  std::string filename;
+  std::string yyerror_messages;
+  int yyerror_count;
 };
 
 static io_stream*
-decompress_ini (io_stream *ini_file)
+decompress_ini (io_stream *ini_file, std::string &current_ini_name)
 {
   // Replace the current compressed setup stream with its decompressed
   // version.  Which decompressor to use is determined by file magic.
@@ -228,7 +250,7 @@ do_local_ini (HWND owner)
       ini_file = check_ini_sig (ini_file, ini_sig_file, sig_fail,
 				"localdir", current_ini_sig_name.c_str (), owner);
       if (ini_file)
-	ini_file = decompress_ini (ini_file);
+	ini_file = decompress_ini (ini_file, current_ini_name);
       if (!ini_file || sig_fail)
 	{
 	  // no setup found or signature invalid
@@ -247,9 +269,9 @@ do_local_ini (HWND owner)
 	    rfc1738_unescape (current_ini_name.substr (ldl, cap - ldl));
 	  ini_init (ini_file, &aBuilder, myFeedback);
 
-	  if (yyparse () || yyerror_count > 0)
+	  if (yyparse () || myFeedback.has_errors())
 	    {
-	      myFeedback.error (yyerror_messages);
+	      myFeedback.show_errors ();
 	      ini_error = true;
 	    }
 
@@ -299,7 +321,7 @@ do_remote_ini (HWND owner)
 	    break;
 	}
       if (ini_file)
-	ini_file = decompress_ini (ini_file);
+	ini_file = decompress_ini (ini_file, current_ini_name);
       if (!ini_file || sig_fail)
 	{
 	  // no setup found or signature invalid
@@ -313,9 +335,9 @@ do_remote_ini (HWND owner)
 	  aBuilder.parse_mirror = n->url;
 	  ini_init (ini_file, &aBuilder, myFeedback);
 
-	  if (yyparse () || yyerror_count > 0)
+	  if (yyparse () || myFeedback.has_errors())
 	    {
-	      myFeedback.error (yyerror_messages);
+	      myFeedback.show_errors ();
 	      ini_error = true;
 	    }
 	  else

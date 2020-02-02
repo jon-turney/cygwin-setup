@@ -26,12 +26,13 @@
 class IniParseFeedback
 {
 public:
-  virtual void progress (unsigned long const, unsigned long const);
-  virtual void iniName (const std::string& );
-  virtual void babble (const std::string& ) const;
-  virtual void warning (const std::string& ) const;
-  virtual void error (const std::string& ) const;
-  virtual ~ IniParseFeedback ();
+  virtual void progress (unsigned long const, unsigned long const) = 0;
+  virtual void iniName (const std::string& ) = 0;
+  virtual void babble (const std::string& ) const = 0;
+  virtual void warning (const std::string& ) const = 0;
+  virtual void show_errors () const = 0;
+  virtual void note_error(int lineno, const std::string &error) = 0;
+  virtual bool has_errors () const = 0;
 };
 
 #endif /* SETUP_INIPARSEFEEDBACK_H */

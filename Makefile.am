@@ -75,7 +75,6 @@ inilint_SOURCES = \
 	inilintmain.cc \
 	inilex.ll \
 	iniparse.yy \
-	IniParseFeedback.cc \
 	IniParseFeedback.h \
 	io_stream.h \
 	io_stream.cc \
@@ -162,7 +161,6 @@ inilint_SOURCES = \
 	IniDBBuilderPackage.h \
 	inilex.ll \
 	iniparse.yy \
-	IniParseFeedback.cc \
 	IniParseFeedback.h \
 	install.cc \
 	io_stream.cc \
