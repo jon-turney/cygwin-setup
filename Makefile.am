@@ -33,10 +33,7 @@ AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include \
 
 inilex_CXXFLAGS:=-Wno-sign-compare
 
-noinst_PROGRAMS = @SETUP@$(EXEEXT) @INILINT@
-
-EXTRA_PROGRAMS = inilint
-## noinst_PROGRAMS +=inilint
+noinst_PROGRAMS = @SETUP@$(EXEEXT) inilint
 
 EXTRA_DIST = \
 	CHANGES \
@@ -62,34 +59,17 @@ CLEANFILES = setup_version.c
 
 inilint_LDADD = \
 	libgetopt++/libgetopt++.la
+
 inilint_SOURCES = \
 	CliParseFeedback.cc \
 	CliParseFeedback.h \
-	filemanip.cc \
-	filemanip.h \
-	find.cc \
-	find.h \
-	FindVisitor.cc \
-	FindVisitor.h \
 	LogSingleton.cc \
 	LogSingleton.h \
 	IniDBBuilder.h \
 	inilintmain.cc \
 	inilex.ll \
 	iniparse.yy \
-	io_stream.h \
-	io_stream.cc \
-	io_stream_file.h \
-	io_stream_file.cc \
-	IOStreamProvider.h \
-	mkdir.cc \
-	mkdir.h \
-	mklink2.cc \
-	PackageSpecification.cc \
-	PackageSpecification.h \
 	PackageTrust.h \
-	csu_util/rfc1738.cc \
-	csu_util/rfc1738.h \
 	String++.cc \
 	String++.h
 

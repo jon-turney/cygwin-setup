@@ -23,19 +23,6 @@ dnl AM_CONFIG_HEADER(include/autoconf.h)
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES(yes)])
 AC_CONFIG_SRCDIR([Makefile.in])
 
-AC_MSG_CHECKING([Whether to build inilint])
-AC_ARG_ENABLE(inilint,
-	    AC_HELP_STRING([--enable-inilint],
-			   [Build the inilint tool]),
-	    ac_cv_enable_inilint=$enableval, ac_cv_enable_inilint=no)
-AC_MSG_RESULT([$ac_cv_enable_inilint])
-if test $ac_cv_enable_inilint = yes; then
-  INILINT="inilint\$(EXEEXT)"
-else
-  INILINT=
-fi
-AC_SUBST(INILINT)
-
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AM_PROG_CC_C_O
