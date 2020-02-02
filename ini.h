@@ -42,13 +42,6 @@ void ini_init (io_stream *, IniDBBuilderPackage *, IniParseFeedback &);
    packages (the chosen "install" field).  install.cc installs
    selected packages. */
 
-typedef enum
-{
-  EXCLUDE_NONE = 0,
-  EXCLUDE_BY_SETUP,
-  EXCLUDE_NOT_FOUND
-} excludes;
-
 /* The following three vars are used to facilitate error handling between the
    parser/lexer and its callers, namely ini.cc:do_remote_ini() and
    IniParseFindVisitor::visitFile().  */
