@@ -16,20 +16,18 @@
 #ifndef SETUP_INIDBBUILDERPACKAGE_H
 #define SETUP_INIDBBUILDERPACKAGE_H
 
+#include "IniDBBuilder.h"
 #include <vector>
 #include <set>
 
 #include "package_message.h"
-#include "PackageTrust.h"
 #include "String++.h"
 #include "libsolv.h"
 
 class IniParseFeedback;
 class packagesource;
 
-enum class hashType { none, md5, sha512 };
-
-class IniDBBuilderPackage
+class IniDBBuilderPackage:public IniDBBuilder
 {
 public:
   IniDBBuilderPackage (IniParseFeedback const &);

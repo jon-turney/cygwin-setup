@@ -166,11 +166,11 @@ B64	[a-zA-Z0-9_-]
 #include "io_stream.h"
 
 static io_stream *input_stream = 0;
-extern IniDBBuilderPackage *iniBuilder;
+extern IniDBBuilder *iniBuilder;
 static IniParseFeedback *iniFeedback;
 
 void
-ini_init(io_stream *stream, IniDBBuilderPackage *aBuilder, IniParseFeedback &aFeedback)
+ini_init(io_stream *stream, IniDBBuilder *aBuilder, IniParseFeedback &aFeedback)
 {
   input_stream = stream;
   iniBuilder = aBuilder;
