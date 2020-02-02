@@ -42,6 +42,8 @@ void ini_init (io_stream *, IniDBBuilder *, IniParseFeedback &);
    packages (the chosen "install" field).  install.cc installs
    selected packages. */
 
+extern int yyparse ();
+
 /* The following definitions are used in the parser implementation */
 
 #define hexnibble(val)  ('\xff' & (val > '9') ? val - 'a' + 10 : val - '0')

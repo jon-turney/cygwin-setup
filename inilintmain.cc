@@ -13,23 +13,46 @@
  *
  */
 
-#include "getopt++/GetOption.h"
+#include "io_stream.h"
+#include "IniDBBuilderLint.h"
+#include "CliParseFeedback.h"
+#include "ini.h"
 #include <iostream>
+#include <sstream>
+#include "LogSingleton.h"
 
 void
 show_help()
 {
-  std::cout << "inilint checks cygwin setup.ini files and reports any errors with" << std::endl;
-  std::cout << "diagnostics" << std::endl;
+  std::cout << "inilint checks cygwin setup.ini files and reports any errors" << std::endl;
 }
 
 int
 main (int argc, char **argv)
 {
-  if (!GetOption::GetInstance().Process (argc,argv,NULL))
+  if (argc != 2)
     {
       show_help();
       return 1;
     }
+
+  std::string inifilename = argv[1];
+
+  // Note: this only accepts absolute pathnames
+  io_stream *ini_file = io_stream::open ("file://" + inifilename, "rb", 0);
+  if (!ini_file)
+    {
+      std::cerr << "could not open " << inifilename << std::endl;
+      return 1;
+    }
+
+  CliParseFeedback feedback;
+  IniDBBuilderLint builder;
+  ini_init(ini_file, &builder, feedback);
+
+  // Note: unrecognized lines are ignored by ignore_line(), so this is currently
+  // only useful for finding where recognized lines don't fit the grammar.
+  yyparse();
+
   return 0;
 }

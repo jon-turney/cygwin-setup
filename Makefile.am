@@ -58,9 +58,12 @@ BUILT_SOURCES = \
 CLEANFILES = setup_version.c
 
 inilint_LDADD = \
-	libgetopt++/libgetopt++.la
+	libgetopt++/libgetopt++.la \
+	-lntdll -luuid
 
 inilint_SOURCES = \
+	filemanip.cc \
+	filemanip.h \
 	CliParseFeedback.cc \
 	CliParseFeedback.h \
 	LogSingleton.cc \
@@ -69,9 +72,19 @@ inilint_SOURCES = \
 	inilintmain.cc \
 	inilex.ll \
 	iniparse.yy \
+	io_stream.cc \
+	io_stream.h \
+	io_stream_file.cc \
+	io_stream_file.h \
+	mkdir.cc \
+	mkdir.h \
+	mklink2.cc \
+	mklink2.h \
 	PackageTrust.h \
 	String++.cc \
-	String++.h
+	String++.h \
+	win32.cc \
+	win32.h
 
 @SETUP@_LDADD = \
 	libgetopt++/libgetopt++.la \

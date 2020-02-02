@@ -64,8 +64,6 @@ IniList setup_ext_list (setup_exts,
 static BoolOption NoVerifyOption (false, 'X', "no-verify", "Don't verify setup.ini signatures");
 static BoolOption NoVersionCheckOption (false, '\0', "no-version-check", "Suppress checking if a newer version of setup is available");
 
-extern int yyparse ();
-
 class GuiParseFeedback : public IniParseFeedback
 {
 public:
