@@ -18,7 +18,6 @@
 #include <malloc.h>
 #include "LogFile.h"
 #include "resource.h"
-#include "state.h"
 #include "ini.h"
 #include <sys/stat.h>
 
@@ -308,7 +307,7 @@ NTSecurity::setAdminGroup ()
 }
 
 void
-NTSecurity::setDefaultSecurity ()
+NTSecurity::setDefaultSecurity (bool isAdmin)
 {
   /* Get the processes access token. */
   if (!OpenProcessToken (GetCurrentProcess (),
@@ -359,7 +358,7 @@ NTSecurity::setDefaultSecurity ()
   /* Try to set the primary group to the Administrators group, but only if
      "Install for all users" has been chosen.  If it doesn't work, we're
      no admin and that's all there's to say about it. */
-  if (root_scope == IDC_ROOT_SYSTEM)
+  if (isAdmin)
     setAdminGroup ();
 }
 

@@ -355,7 +355,7 @@ WinMain (HINSTANCE h,
     else
       {
 	/* Set default DACL and Group. */
-	nt_sec.setDefaultSecurity ();
+	nt_sec.setDefaultSecurity ((root_scope == IDC_ROOT_SYSTEM));
 
 	UserSettings Settings (local_dir);
 	main_display ();
