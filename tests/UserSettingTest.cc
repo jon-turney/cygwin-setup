@@ -13,11 +13,6 @@
  *
  */
 
-#if 0
-static const char *cvsid =
-  "\n%%% $Id$\n";
-#endif
-
 #include "site.h"
 #include "win32.h"
 #include <stdio.h>

@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 #
-# $Id$
-#
 # Copyright (c) 2002, Robert Collins
 #
 #     This program is free software; you can redistribute it and/or modify
