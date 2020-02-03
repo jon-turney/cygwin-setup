@@ -357,7 +357,8 @@ WinMain (HINSTANCE h,
 	/* Set default DACL and Group. */
 	nt_sec.setDefaultSecurity ((root_scope == IDC_ROOT_SYSTEM));
 
-	UserSettings Settings (local_dir);
+	UserSettings Settings;
+        UserSettings::instance().load (local_dir);
 	main_display ();
 	Settings.save ();	// Clean exit.. save user options.
 	if (rebootneeded)

@@ -31,14 +31,15 @@ private:
 
 public:
   static class UserSettings *global;
-  UserSettings (std::string);
+  UserSettings ();
   static UserSettings& instance() {return *global;}
 
   const char *get (const char *);
   unsigned int get_index (const char *key);
-  io_stream *open (const char *);
+  io_stream *open (const char *); // opens an iostream you can write to set the value of key
   const char *set (const char *, const char *);
   const char *set (const char *key, const std::string val) {return set (key, val.c_str ());}
+  void load (std::string local_dir);
   void save ();
 
 private:

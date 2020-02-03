@@ -82,11 +82,17 @@ UserSettings::open_settings (const char *filename, std::string &pathname)
   return f;
 }
 
-UserSettings::UserSettings (std::string local_dir)
-  : table (NULL), table_len (-1), cwd (local_dir)
+UserSettings::UserSettings ()
+   : table (NULL), table_len (-1)
 {
   global = this;
   extend_table (0);
+}
+
+void
+UserSettings::load (std::string local_dir)
+{
+  cwd = local_dir;
   io_stream *f = open_settings ("setup.rc", filename);
 
   if (!f)

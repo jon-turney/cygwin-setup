@@ -18,6 +18,7 @@
 #include "getopt++/StringOption.h"
 
 #include <iostream>
+#include <string.h>
 
 class StringCollector : public Option
 {

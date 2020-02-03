@@ -13,26 +13,17 @@
  *
  */
 
-#include "site.h"
-#include "win32.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <process.h>
-#include <algorithm>
-
-#include "LogSingleton.h"
-#include "io_stream.h"
-
-#include "port.h"
-#include "Exception.h"
-#include "UserSetting.h"
 #include "UserSettings.h"
+
+#include <assert.h>
+#include <string.h>
 
 int
 main (int argc, char **argv)
 {
-  UserSettings::Instance().loadAllSettings();
-  UserSettings::Instance().saveAllSettings();
+  UserSettings settings;
+  UserSettings& i = UserSettings::instance();
+  i.set("key", "value");
+  assert(strcmp(i.get("key"), "value") == 0);
   return 0;
 }

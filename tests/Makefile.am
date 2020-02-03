@@ -14,35 +14,25 @@
 #
 # Makefile for Cygwin installer tests
 
-AUTOMAKE_OPTIONS = dist-bzip2 subdir-objects 1.6 foreign
-
 # We would like to use -Winline for C++ as well, but some STL code triggers
 # this warning. (Bug verified present in gcc-3.3)
 AM_CXXFLAGS	= -Werror -Wall -Wpointer-arith -Wcomments \
-  -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes
-AM_CFLAGS	= $(AM_CXXFLAGS) -Wmissing-declarations -Winline
+  -Wcast-align -Wwrite-strings
+AM_CFLAGS	= $(AM_CXXFLAGS) -Wmissing-declarations -Winline \
+  -Wstrict-prototypes -Wmissing-prototypes
 
 AM_CPPFLAGS = -I. -I$(srcdir) -I$(top_srcdir)
 
 check_PROGRAMS = \
-	UserSettingTest \
 	UserSettingsTest
-	
+
 TESTS = \
-	UserSettingTest \
 	UserSettingsTest
-	
-UserSettingTest_SOURCES = UserSettingTest.cc
-UserSettingTest_CXXFLAGS = -DASTEST
-UserSettingTest_LDADD = \
-	$(top_builddir)/Exception.o \
-	$(top_builddir)/UserSetting.o \
-	$(top_builddir)/UserSettings.o \
-	$(top_builddir)/String++.o
-	
-UserSettingsTest_SOURCES = UserSettingsTest.cc UserSettingTest.cc
+
+UserSettingsTest_SOURCES = UserSettingsTest.cc
 UserSettingsTest_LDADD = \
 	$(top_builddir)/Exception.o \
-	$(top_builddir)/UserSetting.o \
 	$(top_builddir)/UserSettings.o \
-	$(top_builddir)/String++.o
+	$(top_builddir)/String++.o \
+	$(top_builddir)/io_stream.o \
+	$(top_builddir)/LogSingleton.o

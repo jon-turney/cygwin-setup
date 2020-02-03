@@ -18,6 +18,7 @@
 #include "getopt++/BoolOption.h"
 
 #include <iostream>
+#include <string.h>
 
 static BoolOption testoption (false, 't', "testoption", "Tests the use of boolean options");
 int
