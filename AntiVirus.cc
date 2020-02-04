@@ -16,8 +16,7 @@
 #include "AntiVirus.h"
 
 #include "getopt++/BoolOption.h"
-
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 #include "win32.h"
 #include <stdio.h>
@@ -77,6 +76,7 @@ bool
 AntiVirusPage::Create ()
 {
     detect();
+    Logger().atexit(AntiVirus::AtExit);
     return PropertyPage::Create (NULL, dialog_cmd, IDD_VIRUS);
 }
 

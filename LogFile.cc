@@ -28,7 +28,6 @@
 #include <time.h>
 #include <string>
 #include <stdexcept>
-#include "AntiVirus.h"
 #include "filemanip.h"
 #include "String++.h"
 #include "getopt++/BoolOption.h"
@@ -116,11 +115,20 @@ LogFile::getFileName (int level) const
 }
 
 void
+LogFile::atexit(void (*func)(void))
+{
+  exit_fns.push_back(func);
+}
+
+void
 LogFile::exit (int exit_code, bool show_end_install_msg)
 {
-  AntiVirus::AtExit();
+  /* Execute any functions we want to run at exit (we don't use stdlib atexit()
+     because we want to allow them to potentially write to the log) */
+  for (auto i = exit_fns.rbegin(); i != exit_fns.rend(); ++i)
+      (*i)();
+
   static int been_here = 0;
-  /* Exitcode -1 is special... */
   if (been_here)
     ::exit (exit_code);
   been_here = 1;
@@ -132,8 +140,8 @@ LogFile::exit (int exit_code, bool show_end_install_msg)
       Log (LOG_PLAIN) << "note: " << wstring_to_string(buf) << endLog;
     }
 
-  /* ... in that it skips the boring log messages.  Exit code -1 is used when
-     just printing the help output and when we're self-elevating. */
+  /* Skip the log messages when just printing the help/version output, and when
+     we're self-elevating. */
   if (show_end_install_msg)
     Log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
 
