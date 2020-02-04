@@ -53,7 +53,7 @@
 #include "root.h"
 #include "localdir.h"
 #include "net.h"
-#include "site.h"
+#include "gui/SitePage.h"
 #include "choose.h"
 #include "prereq.h"
 #include "confirm.h"
@@ -74,6 +74,7 @@
 #include "SourceSetting.h"
 #include "ConnectionSetting.h"
 #include "KeysSetting.h"
+#include "SiteSetting.h"
 
 #include <wincon.h>
 #include <fstream>

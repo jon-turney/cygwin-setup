@@ -13,45 +13,31 @@
  *
  */
 
-#ifndef SETUP_SITE_H
-#define SETUP_SITE_H
+#ifndef SETUP_SITESETTING_H
+#define SETUP_SITESETTING_H
 
-#include <string>
 #include <vector>
 
-#include "proppage.h"
-
-class SitePage : public PropertyPage
+class SiteSetting
 {
-public:
-  SitePage ();
-  virtual ~ SitePage ()
-  {
-  };
-
-  bool Create ();
-
-  virtual void OnInit ();
-  virtual void OnActivate ();
-  virtual long OnNext ();
-  virtual long OnBack ();
-  virtual long OnUnattended ();
-
-  virtual bool OnMessageCmd (int id, HWND hwndctl, UINT code);
-
-  void PopulateListBox();
-  void CheckControlsAndDisableAccordingly () const;
+  public:
+    SiteSetting ();
+    void save ();
+    ~SiteSetting ();
+  private:
+    bool saved;
+    void getSavedSites();
+    void registerSavedSite(char const *);
+    const char *lastMirrorKey();
 };
-
-void do_download_site_info (HINSTANCE h, HWND owner);
 
 class site_list_type
 {
 public:
   site_list_type () : url (), displayed_url (), key () {};
   site_list_type (const std::string& , const std::string& ,
-                  const std::string& , const std::string&, bool, bool,
-                  const std::string &);
+                  const std::string& , const std::string&, bool, bool = false,
+                  const std::string& = "");
   ~site_list_type () {};
   std::string url;
   // provided by mirrors.lst but not used
@@ -78,22 +64,11 @@ public:
 
 typedef std::vector <site_list_type> SiteList;
 
+void site_list_insert(SiteList &site_list, site_list_type newsite);
+
 /* user chosen sites */
 extern SiteList site_list;
 /* potential sites */
 extern SiteList all_site_list;
 
-class SiteSetting
-{
-  public:
-    SiteSetting ();
-    void save ();
-    ~SiteSetting ();
-  private:
-    bool saved;
-    void getSavedSites();
-    void registerSavedSite(char const *);
-    const char *lastMirrorKey();
-};
-
-#endif /* SETUP_SITE_H */
+#endif /* SETUP_SITESETTING_H */

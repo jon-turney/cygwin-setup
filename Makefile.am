@@ -269,8 +269,10 @@ endif
 	setup_version.c \
 	sha2.h \
 	sha2.c \
-	site.cc \
-	site.h \
+	gui/SitePage.cc \
+	gui/SitePage.h \
+	SiteSetting.cc \
+	SiteSetting.h \
 	source.cc \
 	source.h \
 	SourceSetting.cc \

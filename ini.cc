@@ -36,7 +36,7 @@
 #include "geturl.h"
 #include "dialog.h"
 #include "mount.h"
-#include "site.h"
+#include "SiteSetting.h"
 #include "find.h"
 #include "IniParseFeedback.h"
 

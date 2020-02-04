@@ -23,7 +23,7 @@
 #include "resource.h"
 
 #include "dialog.h"
-#include "site.h"
+#include "gui/SitePage.h"
 
 #include "propsheet.h"
 #include "threebar.h"
