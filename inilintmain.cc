@@ -27,8 +27,8 @@ yyerror (const std::string& s)
 {
   std::ostringstream buf;
   buf << "setup.ini line " << yylineno << ": ";
-  buf << s << endl;
-  cout << buf;
+  buf << s << std::endl;
+  std::cout << buf;
   error_buf << buf; 
   error_count++;
   /* TODO: is return 0 correct? */
@@ -38,8 +38,8 @@ yyerror (const std::string& s)
 void
 show_help()
 {
-  cout << "inilint checks cygwin setup.ini files and reports any errors with" << endl;
-  cout << "diagnostics" << endl;
+  std::cout << "inilint checks cygwin setup.ini files and reports any errors with" << std::endl;
+  std::cout << "diagnostics" << std::endl;
 }
 
 int
