@@ -16,6 +16,7 @@
 #ifndef SETUP_INI_H
 #define SETUP_INI_H
 
+#include "win32.h"
 #include <string>
 #include <vector>
 
@@ -30,6 +31,7 @@ class io_stream;
 class IniDBBuilder;
 class IniParseFeedback;
 void ini_init (io_stream *, IniDBBuilder *, IniParseFeedback &);
+bool do_ini_thread (HINSTANCE h, HWND owner, IniParseFeedback &feedback);
 
 #define YYSTYPE char *
 

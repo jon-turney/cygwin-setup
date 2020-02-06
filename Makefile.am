@@ -183,6 +183,7 @@ endif
 	geturl.h \
 	gpg-packet.cc \
 	gpg-packet.h \
+	gui/GuiParseFeedback.cc \
 	ini.cc \
 	ini.h \
 	IniDBBuilder.h \

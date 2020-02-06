@@ -33,7 +33,6 @@
 #include <process.h>
 
 #include "resource.h"
-#include "state.h"
 #include "geturl.h"
 #include "dialog.h"
 #include "mount.h"
@@ -44,17 +43,13 @@
 #include "io_stream.h"
 #include "io_stream_memory.h"
 
-#include "threebar.h"
-
 #include "getopt++/BoolOption.h"
 #include "getopt++/StringOption.h"
 #include "IniDBBuilderPackage.h"
 #include "compress.h"
-#include "Exception.h"
+#include "msg.h"
 #include "crypto.h"
 #include "package_db.h"
-
-extern ThreeBarProgressPage Progress;
 
 unsigned int setup_timestamp = 0;
 std::string ini_setup_version;
@@ -67,87 +62,6 @@ static StringOption SetupBaseNameOption ("setup", 'i', "ini-basename", IDS_HELPT
 static BoolOption NoVerifyOption (false, 'X', "no-verify", IDS_HELPTEXT_NO_VERIFY);
 static BoolOption NoVersionCheckOption (false, '\0', "no-version-check", IDS_HELPTEXT_NO_VERSION_CHECK);
 
-class GuiParseFeedback : public IniParseFeedback
-{
-public:
-  GuiParseFeedback () : lastpct (0)
-    {
-      Progress.SetText1 (IDS_PROGRESS_PARSING);
-      Progress.SetText2 ("");
-      Progress.SetText3 ("");
-      Progress.SetText4 (IDS_PROGRESS_PROGRESS);
-
-      yyerror_count = 0;
-      yyerror_messages.clear ();
-    }
-  virtual void progress (unsigned long const pos, unsigned long const max)
-    {
-      if (!max)
-	/* length not known or eof */
-	return;
-      if (lastpct == 100)
-	/* rounding down should mean this only ever fires once */
-	lastpct = 0;
-      if (pos * 100 / max > lastpct)
-	{
-	  lastpct = pos * 100 / max;
-	  /* Log (LOG_BABBLE) << lastpct << "% (" << pos << " of " << max
-	    << " bytes of ini file read)" << endLog; */
-	}
-      Progress.SetBar1 (pos, max);
-
-      static char buf[100];
-      sprintf (buf, "%d %%  (%ldk/%ldk)", lastpct, pos/1000, max/1000);
-      Progress.SetText3 (buf);
-    }
-  virtual void iniName (const std::string& name)
-    {
-      Progress.SetText2 (name.c_str ());
-      Progress.SetText3 ("");
-      filename = name;
-    }
-  virtual void babble (const std::string& message)const
-    {
-      Log (LOG_BABBLE) << message << endLog;
-    }
-  virtual void warning (const std::string& message)const
-    {
-      mbox (Progress.GetHWND(), message.c_str (), "Warning", 0);
-    }
-  virtual void note_error(int lineno, const std::string &error)
-    {
-      char tmp[16];
-      sprintf (tmp, "%d", lineno);
-
-      std::string e = filename + " line " + tmp + ": " + error;
-
-      if (!yyerror_messages.empty ())
-        yyerror_messages += "\n";
-
-      yyerror_messages += e;
-      yyerror_count++;
-    }
-  virtual bool has_errors () const
-    {
-      return (yyerror_count > 0);
-    }
-  virtual void show_errors () const
-    {
-      mbox (Progress.GetHWND(), yyerror_messages.c_str (), "Parse Errors", 0);
-    }
-  virtual ~ GuiParseFeedback ()
-    {
-      Progress.SetText2 ("");
-      Progress.SetText3 ("");
-      Progress.SetText4 (IDS_PROGRESS_PACKAGE);
-      Progress.SetBar1 (0);
-    }
-private:
-  unsigned int lastpct;
-  std::string filename;
-  std::string yyerror_messages;
-  int yyerror_count;
-};
 
 std::string SetupArch()
 {
@@ -243,7 +157,7 @@ check_ini_sig (io_stream* ini_file, io_stream* ini_sig_file,
 }
 
 static bool
-do_local_ini (HWND owner)
+do_local_ini (HWND owner, IniParseFeedback &myFeedback)
 {
   bool ini_error = false;
   io_stream *ini_file, *ini_sig_file;
@@ -251,7 +165,6 @@ do_local_ini (HWND owner)
   for (IniList::const_iterator n = found_ini_list.begin ();
        n != found_ini_list.end (); ++n)
     {
-      GuiParseFeedback myFeedback;
       IniDBBuilderPackage aBuilder (myFeedback);
       bool sig_fail = false;
       std::string current_ini_ext, current_ini_name, current_ini_sig_name;
@@ -302,7 +215,7 @@ do_local_ini (HWND owner)
 }
 
 static bool
-do_remote_ini (HWND owner)
+do_remote_ini (HWND owner, IniParseFeedback &myFeedback)
 {
   bool ini_error = false;
   io_stream *ini_file = NULL, *ini_sig_file;
@@ -314,7 +227,6 @@ do_remote_ini (HWND owner)
   for (SiteList::const_iterator n = site_list.begin ();
        n != site_list.end (); ++n)
     {
-      GuiParseFeedback myFeedback;
       IniDBBuilderPackage aBuilder (myFeedback);
       bool sig_fail = false;
       std::string current_ini_ext, current_ini_name, current_ini_sig_name;
@@ -381,8 +293,8 @@ do_remote_ini (HWND owner)
   return ini_error;
 }
 
-static bool
-do_ini_thread (HINSTANCE h, HWND owner)
+bool
+do_ini_thread (HINSTANCE h, HWND owner, IniParseFeedback &feedback)
 {
   packagedb db;
   db.init();
@@ -390,9 +302,9 @@ do_ini_thread (HINSTANCE h, HWND owner)
   bool ini_error = true;
 
   if (source == IDC_SOURCE_LOCALDIR)
-    ini_error = do_local_ini (owner);
+    ini_error = do_local_ini (owner, feedback);
   else
-    ini_error = do_remote_ini (owner);
+    ini_error = do_remote_ini (owner, feedback);
 
   if (ini_error)
     return false;
@@ -445,36 +357,4 @@ do_ini_thread (HINSTANCE h, HWND owner)
     }
 
   return true;
-}
-
-static DWORD WINAPI
-do_ini_thread_reflector (void* p)
-{
-  HANDLE *context;
-  context = (HANDLE*)p;
-
-  SetThreadUILanguage(langid);
-
-  try
-  {
-    bool succeeded = do_ini_thread ((HINSTANCE)context[0], (HWND)context[1]);
-
-    // Tell the progress page that we're done downloading
-    Progress.PostMessageNow (WM_APP_SETUP_INI_DOWNLOAD_COMPLETE, 0, succeeded);
-  }
-  TOPLEVEL_CATCH ((HWND) context[1], "ini");
-
-  ExitThread (0);
-}
-
-static HANDLE context[2];
-
-void
-do_ini (HINSTANCE h, HWND owner)
-{
-  context[0] = h;
-  context[1] = owner;
-
-  DWORD threadID;
-  CreateThread (NULL, 0, do_ini_thread_reflector, context, 0, &threadID);
 }
