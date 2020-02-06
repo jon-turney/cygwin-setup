@@ -82,7 +82,6 @@
 extern char **_argv;
 #endif
 
-bool is_64bit;
 bool is_new_install = false;
 std::string SetupArch;
 std::string SetupIniDir;
@@ -262,26 +261,21 @@ WinMain (HINSTANCE h,
     else if (HelpOption)
       help_option = true;
 
-    if (!((std::string) Arch).size ())
+    if (((std::string) Arch).size ())
       {
-#ifdef __x86_64__
-	is_64bit = true;
-#else
-	is_64bit = false;
-#endif
-      }
-    else if (((std::string) Arch).find ("64") != std::string::npos)
-      is_64bit = true;
-    else if (((std::string) Arch).find ("32") != std::string::npos
-	     || ((std::string) Arch).find ("x86") != std::string::npos)
-      is_64bit = false;
-    else
-      {
-	char buff[80 + ((std::string) Arch).size ()];
-	sprintf (buff, "Invalid option for --arch:  \"%s\"",
-		 ((std::string) Arch).c_str ());
-	fprintf (stderr, "*** %s\n", buff);
-	exit (1);
+        if (((std::string) Arch).find ("64") != std::string::npos)
+          is_64bit = true;
+        else if (((std::string) Arch).find ("32") != std::string::npos
+                 || ((std::string) Arch).find ("x86") != std::string::npos)
+          is_64bit = false;
+        else
+          {
+            char buff[80 + ((std::string) Arch).size ()];
+            sprintf (buff, "Invalid option for --arch:  \"%s\"",
+                     ((std::string) Arch).c_str ());
+            fprintf (stderr, "*** %s\n", buff);
+            exit (1);
+          }
       }
 
     if (GuiLangOption.isPresent())

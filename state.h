@@ -48,4 +48,6 @@ extern int root_desktop;
 
 extern LANGID langid;
 
+extern bool is_64bit;
+
 #endif /* SETUP_STATE_H */
