@@ -15,25 +15,6 @@
 
 #include "getopt++/GetOption.h"
 #include <iostream>
-#include <sstream>
-
-extern int yylineno;
-
-static std::ostringstream error_buf;
-static int error_count = 0;
-
-extern int
-yyerror (const std::string& s)
-{
-  std::ostringstream buf;
-  buf << "setup.ini line " << yylineno << ": ";
-  buf << s << std::endl;
-  std::cout << buf;
-  error_buf << buf; 
-  error_count++;
-  /* TODO: is return 0 correct? */
-  return 0;
-}
 
 void
 show_help()

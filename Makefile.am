@@ -63,6 +63,8 @@ CLEANFILES = setup_version.c
 inilint_LDADD = \
 	libgetopt++/libgetopt++.la
 inilint_SOURCES = \
+	CliParseFeedback.cc \
+	CliParseFeedback.h \
 	filemanip.cc \
 	filemanip.h \
 	find.cc \
@@ -75,7 +77,6 @@ inilint_SOURCES = \
 	inilintmain.cc \
 	inilex.ll \
 	iniparse.yy \
-	IniParseFeedback.h \
 	io_stream.h \
 	io_stream.cc \
 	io_stream_file.h \
