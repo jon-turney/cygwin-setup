@@ -59,6 +59,7 @@ extern ThreeBarProgressPage Progress;
 unsigned int setup_timestamp = 0;
 std::string ini_setup_version;
 // TODO: use C++11x initializer lists instead and drop the literal array
+static const std::string setup_exts[] = { "zst", "xz", "bz2", "ini" };
 IniList setup_ext_list (setup_exts,
 			setup_exts + (sizeof(setup_exts) / sizeof(*setup_exts)));
 
