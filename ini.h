@@ -16,7 +16,6 @@
 #ifndef SETUP_INI_H
 #define SETUP_INI_H
 
-class io_stream;
 #include <string>
 #include <vector>
 
@@ -27,10 +26,11 @@ extern bool is_new_install;
 std::string SetupArch();
 std::string SetupBaseName();
 
-class IniState;
+class io_stream;
 class IniDBBuilder;
 class IniParseFeedback;
 void ini_init (io_stream *, IniDBBuilder *, IniParseFeedback &);
+
 #define YYSTYPE char *
 
 /* When setup.ini is parsed, the information is stored according to
