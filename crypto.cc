@@ -431,17 +431,23 @@ add_key_from_sexpr (gcry_sexp_t key)
 bool
 verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 {
-  /*  DSA public key in s-expr format.  */
-  gcry_sexp_t dsa_key;
-
   /*  Data returned from packet walker.  */
   struct sig_data sigdat;
 
-  /*  Vector of extra keys to use.  */
-  std::vector<gcry_sexp_t> keys_to_try;
+  /*  Vector of keys to use.  */
+  struct key_info
+  {
+    key_info(std::string _name, bool _builtin, gcry_sexp_t _key, bool _owned=true) :
+      name(_name), builtin(_builtin), key(_key), owned(_owned)
+    {
+    }
 
-  /*  Vector of cached extra keys from last run.  */
-  static std::vector<gcry_sexp_t> input_keys;
+    std::string name;
+    bool builtin;  // if true, we don't need to retain this key with add_key_from_sexpr()
+    gcry_sexp_t key;
+    bool owned;    // if true, we own this key and should use gcry_sexp_release() on it
+  };
+  std::vector<struct key_info> keys_to_try;
 
   /*  Overall status of signature.  */
   bool sig_ok = false;
@@ -454,10 +460,15 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
   gcry_check_version (NULL);
 
   /* So first build the built-in key.  */
+  gcry_sexp_t dsa_key;
   rv = gcry_sexp_new (&dsa_key, cygwin_pubkey_sexpr, strlen (cygwin_pubkey_sexpr), 1);
   if (rv != GPG_ERR_NO_ERROR)
     {
       ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating pubkey s-expr.");
+    }
+  else
+    {
+      keys_to_try.push_back (key_info("cygwin", true, dsa_key));
     }
 
 #if CRYPTODEBUGGING
@@ -465,6 +476,9 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
   n = gcry_sexp_sprint (dsa_key, GCRYSEXP_FMT_ADVANCED, sexprbuf, GPG_KEY_SEXPR_BUF_SIZE);
   msg ("key:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
+
+  /*  Vector of cached extra keys from last run.  */
+  static std::vector<gcry_sexp_t> input_keys;
 
   /* Next we should extract the keys from the extrakeys user
   setting, and flush it; we'll only return them to it if they
@@ -504,6 +518,15 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 	}
     }
 
+  // We only use the untrusted keys if told to.
+  if (KeepUntrustedKeysOption || UntrustedKeysOption)
+    for (std::vector<gcry_sexp_t>::const_iterator it = input_keys.begin ();
+         it < input_keys.end ();
+         ++it)
+      {
+        keys_to_try.push_back (key_info ("saved key", false, *it, false));
+      }
+
   /* Next, there may have been command-line options. */
   std::vector<std::string> SexprExtraKeyStrings = SexprExtraKeyOption;
   for (std::vector<std::string>::const_iterator it
@@ -527,7 +550,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 	  ExtraKeysSetting::instance().add_key (sexprbuf);
 	  msg ("key2:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
-	  keys_to_try.push_back (dsa_key2);
+	  keys_to_try.push_back (key_info ("from command-line option --sexpr-pubkey", false, dsa_key2));
 	}
       else
 	{
@@ -562,7 +585,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 	      ExtraKeysSetting::instance().add_key (sexprbuf);
 	      msg ("key3:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
-	      keys_to_try.push_back (kdat.keys.back ());
+	      keys_to_try.push_back (key_info ("from command-line option --pubkey", false, kdat.keys.back ()));
 	      kdat.keys.pop_back ();
 	    }
 	}
@@ -626,40 +649,22 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
       msg ("hash:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
 
-      // Well, we're actually there!  Try it against the main key.
-      rv = gcry_pk_verify (dsa_sig, dsa_hash, dsa_key);
-      // If not that, try any supplied on the commandline.
-      if (rv != GPG_ERR_NO_ERROR)
-	{
-	  std::vector<gcry_sexp_t>::iterator it;
-	  for (it = keys_to_try.begin (); it < keys_to_try.end (); ++it)
-	    {
-	      MESSAGE ("Testing a key to try\n");
-	      rv = gcry_pk_verify (dsa_sig, dsa_hash, *it);
-	      if (rv != GPG_ERR_NO_ERROR)
-		continue;
-	      // Found it!  This key gets kept!
-	      add_key_from_sexpr (*it);
-	      break;
-	    }
+      // Well, we're actually there!
+      // Try it against each key in turn
 
-	  // We only use the untrusted keys if told to.
-	  it = ((rv != GPG_ERR_NO_ERROR) 
-	    && (KeepUntrustedKeysOption || UntrustedKeysOption))
-		? input_keys.begin ()
-		: input_keys.end ();
-	  for ( ; it < input_keys.end (); ++it)
-	    {
-	      MESSAGE ("Testing an input key\n");
-	      rv = gcry_pk_verify (dsa_sig, dsa_hash, *it);
-	      if (rv != GPG_ERR_NO_ERROR)
-		continue;
-	      // Found it!  This key gets kept!
-	      add_key_from_sexpr (*it);
-	      break;
-	    }
-	}
-
+      std::vector<key_info>::iterator it;
+      for (it = keys_to_try.begin (); it < keys_to_try.end (); ++it)
+        {
+          MESSAGE ("Trying key %s\n", it->name.c_str());
+          rv = gcry_pk_verify (dsa_sig, dsa_hash, it->key);
+          if (rv != GPG_ERR_NO_ERROR)
+            continue;
+          // Found it!  This key gets kept!
+          LogBabblePrintf("Valid signature by key %s", it->name.c_str());
+          if (!it->builtin)
+            add_key_from_sexpr (it->key);
+          break;
+        }
       sig_ok = (rv == GPG_ERR_NO_ERROR);
 
 #if CRYPTODEBUGGING
@@ -676,7 +681,6 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
     }
 
   // Discard the temp data then.
-  gcry_sexp_release (dsa_key);
   if (sigdat.dsa_mpi_r)
     gcry_mpi_release (sigdat.dsa_mpi_r);
   if (sigdat.dsa_mpi_s)
@@ -685,10 +689,10 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
     gcry_md_close (sigdat.md);
   while (keys_to_try.size ())
     {
-      gcry_sexp_release (keys_to_try.back ());
+      if (keys_to_try.back ().owned)
+        gcry_sexp_release (keys_to_try.back ().key);
       keys_to_try.pop_back ();
     }
 
   return sig_ok;
 }
-
