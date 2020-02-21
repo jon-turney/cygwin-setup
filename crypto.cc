@@ -52,10 +52,16 @@ static BoolOption UntrustedKeysOption (false, 'u', "untrusted-keys",
 			"Use untrusted saved extra keys");
 static BoolOption KeepUntrustedKeysOption (false, 'U', "keep-untrusted-keys",
 			"Use untrusted keys and retain all");
+static BoolOption DisableOldKeysOption (false, '\0', "disable-old-keys",
+                                        "Disable old cygwin.com keys");
 
 /*  Embedded public half of Cygwin signing key.  */
-static const char *cygwin_pubkey_sexpr = 
+static const char *cygwin_pubkey_sexpr =
 #include "cyg-pubkey.h"
+;
+
+static const char *cygwin_old_pubkey_sexpr =
+#include "cyg-old-pubkey.h"
 ;
 
 /*  S-expr template for DSA pubkey.  */
@@ -676,23 +682,37 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
     }
 
   /* So first build the built-in key.  */
-  gcry_sexp_t dsa_key;
-  rv = gcry_sexp_new (&dsa_key, cygwin_pubkey_sexpr, strlen (cygwin_pubkey_sexpr), 1);
+  gcry_sexp_t cygwin_key;
+  rv = gcry_sexp_new (&cygwin_key, cygwin_pubkey_sexpr, strlen (cygwin_pubkey_sexpr), 1);
   if (rv != GPG_ERR_NO_ERROR)
     {
       ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating pubkey s-expr.");
     }
   else
     {
-      keys_to_try.push_back (key_info("cygwin", true, dsa_key));
+      keys_to_try.push_back (key_info("cygwin", true, cygwin_key));
     }
 
 #if CRYPTODEBUGGING
   char sexprbuf[GPG_KEY_SEXPR_BUF_SIZE];
-  n = gcry_sexp_sprint (dsa_key, GCRYSEXP_FMT_ADVANCED, sexprbuf, GPG_KEY_SEXPR_BUF_SIZE);
+  n = gcry_sexp_sprint (cygwin_key, GCRYSEXP_FMT_ADVANCED, sexprbuf, GPG_KEY_SEXPR_BUF_SIZE);
   LogBabblePrintf ("key:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
 
+  /* If not disabled, also try the old built-in key */
+  gcry_sexp_t cygwin_old_key;
+  if (!DisableOldKeysOption)
+    {
+      rv = gcry_sexp_new (&cygwin_old_key, cygwin_old_pubkey_sexpr, strlen (cygwin_old_pubkey_sexpr), 1);
+      if (rv != GPG_ERR_NO_ERROR)
+        {
+          ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating old pubkey s-expr.");
+        }
+      else
+        {
+          keys_to_try.push_back (key_info ("cygwin-old", TRUE, cygwin_old_key));
+        }
+    }
   /*  Vector of cached extra keys from last run.  */
   static std::vector<gcry_sexp_t> input_keys;
 
