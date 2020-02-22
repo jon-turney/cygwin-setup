@@ -13,7 +13,7 @@
 # Written by Dave Korn <dave.korn.cygwin@gmail.com>
 #
 #
-# Converts a gpg dsa pub key file to a text s-expr for
+# Converts a gpg pub key file to a text s-expr for
 # building into setup.exe's signature verification.
 # Relies on having pgpdump installed.
 #
@@ -28,11 +28,10 @@
 # output on a single line.  Only one option should be
 # specified or the behaviour is undefined.
 
-
-# Usage: find_a_line DSACOEFFICIENT PGPDUMPFILE
-# Returns the hex data for the named DSA coefficeint..
+# Usage: find_a_line ALG COEFFICIENT PGPDUMPFILE
+# Returns the hex data for the named coefficient..
 function find_a_line() {
-  grep "DSA $1([0-9]* bits) -" < "$2" \
+  grep -m1 "$1 $2([0-9]* bits) -" < "$3" \
     | sed -e 's/^.*- //g' | tr -d ' '
 }
 
@@ -105,17 +104,36 @@ pgpdump -milpu "$1" >"$TMPFILE" || exit 1
 # bunch of bashes, greps and seds.  No, I don't care.  Don't bug
 # me about it until we have to run this script a million times a day!
 
-dsa_p=`find_a_line p $TMPFILE`
-dsa_q=`find_a_line q $TMPFILE`
-dsa_g=`find_a_line g $TMPFILE`
-dsa_y=`find_a_line y $TMPFILE`
+alg=`grep -m1 "Pub alg" $TMPFILE | sed -E -e 's/^.*pub (.*)\)/\1/g'`
 
-dsa_p=`line_to_sexpr "$dsa_p"`
-dsa_q=`line_to_sexpr "$dsa_q"`
-dsa_g=`line_to_sexpr "$dsa_g"`
-dsa_y=`line_to_sexpr "$dsa_y"`
+case $alg in
+    1)
+    rsa_n=`find_a_line RSA n $TMPFILE`
+    rsa_e=`find_a_line RSA e $TMPFILE`
 
-echo -e $header$quotes"(public-key $escapes$nl\
+    rsa_n=`line_to_sexpr "$rsa_n"`
+    rsa_e=`line_to_sexpr "$rsa_e"`
+
+    echo -e $header$quotes"(public-key $escapes$nl\
+$starts$ind$mid(rsa $escapes$nl\
+$starts$ind$ind$mid(n $rsa_n) $escapes$nl\
+$starts$ind$ind$mid(e $rsa_e) $escapes$nl\
+$starts$ind$mid)$escapes$nl\
+$starts$mid)$quotes$nl";
+    ;;
+
+    17)
+    dsa_p=`find_a_line DSA p $TMPFILE`
+    dsa_q=`find_a_line DSA q $TMPFILE`
+    dsa_g=`find_a_line DSA g $TMPFILE`
+    dsa_y=`find_a_line DSA y $TMPFILE`
+
+    dsa_p=`line_to_sexpr "$dsa_p"`
+    dsa_q=`line_to_sexpr "$dsa_q"`
+    dsa_g=`line_to_sexpr "$dsa_g"`
+    dsa_y=`line_to_sexpr "$dsa_y"`
+
+    echo -e $header$quotes"(public-key $escapes$nl\
 $starts$ind$mid(dsa $escapes$nl\
 $starts$ind$ind$mid(p $dsa_p) $escapes$nl\
 $starts$ind$ind$mid(q $dsa_q) $escapes$nl\
@@ -123,5 +141,8 @@ $starts$ind$ind$mid(g $dsa_g) $escapes$nl\
 $starts$ind$ind$mid(y $dsa_y)$escapes$nl\
 $starts$ind$mid)$escapes$nl\
 $starts$mid)$quotes$nl";
+
+    ;;
+esac
 
 rm "$TMPFILE"
