@@ -30,15 +30,16 @@
 #include "gpg-packet.h"
 #include "geturl.h"
 
+#ifndef CRYPTODEBUGGING
 #define CRYPTODEBUGGING         (0)
+#endif
 
-#if CRYPTODEBUGGING
-#define ERRKIND __asm__ __volatile__ (".byte 0xcc"); note
-#define MESSAGE LogBabblePrintf
-#else  /* !CRYPTODEBUGGING */
 #define ERRKIND note
+#if CRYPTODEBUGGING
+#define MESSAGE LogBabblePrintf
+#else
 #define MESSAGE while (0) LogBabblePrintf
-#endif /* CRYPTODEBUGGING */
+#endif
 
 /*  Command-line options for specifying and controlling extra keys.  */
 static StringArrayOption ExtraKeyOption ('K', "pubkey",
@@ -339,8 +340,8 @@ pkt_cb_resp sig_file_walker (struct packet_walker *wlk, unsigned char tag,
       sigdat->hash_alg = pkt_getch (wlk->pfile);
     }
 
-  MESSAGE ("sig type %d, pk_alg %d, hash_alg %d\n", sigdat->sig_type,
-						sigdat->pk_alg, sigdat->hash_alg);
+  LogBabblePrintf("signature: sig_type %d, pk_alg %d, hash_alg %d\n",
+                  sigdat->sig_type, sigdat->pk_alg, sigdat->hash_alg);
 
   // We only handle binary file signatures
   if (sigdat->sig_type != RFC4880_ST_BINARY)
@@ -397,8 +398,7 @@ pkt_cb_resp sig_file_walker (struct packet_walker *wlk, unsigned char tag,
   // Both formats now have 16 bits of the hash value.
   int hash_first = pkt_getword (wlk->pfile);
 
-  MESSAGE ("sig type %d, pk_alg %d, hash_alg %d - first $%04x\n", sigdat->sig_type,
-			sigdat->pk_alg, sigdat->hash_alg, hash_first);
+  MESSAGE ("signature: hash leftmost 2 bytes 0x%04x\n", hash_first);
 
   /*  Algorithm-Specific Fields for signatures:
 
@@ -476,6 +476,46 @@ add_key_from_sexpr (gcry_sexp_t key)
   delete [] sexprbuf;
 }
 
+#if CRYPTODEBUGGING
+static void
+gcrypt_log_adaptor(void *priv, int level, const char *fmt, va_list args)
+{
+  static std::string collected;
+
+  char buf[GPG_KEY_SEXPR_BUF_SIZE];
+  vsnprintf (buf, GPG_KEY_SEXPR_BUF_SIZE, fmt, args);
+
+  char *start = buf;
+  char *end;
+
+  do
+    {
+      if (collected.length() == 0)
+        {
+          collected = "gcrypt: ";
+        }
+
+      end = strchr(start, '\n');
+      if (end)
+        *end = '\0';
+
+      collected += start;
+
+      if (end)
+        {
+          if (level == GCRY_LOG_DEBUG)
+            Log (LOG_BABBLE) << collected << endLog;
+          else
+            Log (LOG_PLAIN) << collected << endLog;
+
+          collected.clear();
+          start = end + 1;
+        }
+    }
+  while (end);
+}
+#endif
+
 /*  Verify the signature on an ini file.  Takes care of all key-handling.  */
 bool
 verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
@@ -506,7 +546,16 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
   size_t n;
 
   /* Initialise the library.  */
-  gcry_check_version (NULL);
+  static bool gcrypt_init = false;
+  if (!gcrypt_init)
+    {
+#if CRYPTODEBUGGING
+      gcry_set_log_handler (gcrypt_log_adaptor, NULL);
+      gcry_control (GCRYCTL_SET_DEBUG_FLAGS, 1);
+#endif
+      gcry_check_version (NULL);
+      gcrypt_init = true;
+    }
 
   /* So first build the built-in key.  */
   gcry_sexp_t dsa_key;
