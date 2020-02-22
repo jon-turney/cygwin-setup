@@ -161,7 +161,7 @@ pkt_cb_resp key_file_walker (struct packet_walker *wlk, unsigned char tag,
       char sexprbuf[GPG_KEY_SEXPR_BUF_SIZE];
       n = gcry_sexp_sprint (new_key, GCRYSEXP_FMT_ADVANCED, sexprbuf,
 							GPG_KEY_SEXPR_BUF_SIZE);
-      msg ("key:%d\n'%s'", n, sexprbuf);
+      LogBabblePrintf ("key:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
 
       // Return it to caller in the vector.
@@ -474,7 +474,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 #if CRYPTODEBUGGING
   char sexprbuf[GPG_KEY_SEXPR_BUF_SIZE];
   n = gcry_sexp_sprint (dsa_key, GCRYSEXP_FMT_ADVANCED, sexprbuf, GPG_KEY_SEXPR_BUF_SIZE);
-  msg ("key:%d\n'%s'", n, sexprbuf);
+  LogBabblePrintf ("key:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
 
   /*  Vector of cached extra keys from last run.  */
@@ -548,7 +548,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 	  // +1 because we want to include the nul-terminator.
 	  n = fold_lfs_and_spaces (sexprbuf, n + 1);
 	  ExtraKeysSetting::instance().add_key (sexprbuf);
-	  msg ("key2:%d\n'%s'", n, sexprbuf);
+	  LogBabblePrintf ("key2:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
 	  keys_to_try.push_back (key_info ("from command-line option --sexpr-pubkey", false, dsa_key2));
 	}
@@ -583,7 +583,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 	      // +1 because we want to include the nul-terminator.
 	      n = fold_lfs_and_spaces (sexprbuf, n + 1);
 	      ExtraKeysSetting::instance().add_key (sexprbuf);
-	      msg ("key3:%d\n'%s'", n, sexprbuf);
+	      LogBabblePrintf ("key3:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
 	      keys_to_try.push_back (key_info ("from command-line option --pubkey", false, kdat.keys.back ()));
 	      kdat.keys.pop_back ();
@@ -643,10 +643,10 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 #if CRYPTODEBUGGING
       n = gcry_sexp_sprint (dsa_sig, GCRYSEXP_FMT_ADVANCED, sexprbuf,
 							GPG_KEY_SEXPR_BUF_SIZE);
-      msg ("sig:%d\n'%s'", n, sexprbuf);
+      LogBabblePrintf ("sig:%d\n'%s'", n, sexprbuf);
       n = gcry_sexp_sprint (dsa_hash, GCRYSEXP_FMT_ADVANCED, sexprbuf,
 							GPG_KEY_SEXPR_BUF_SIZE);
-      msg ("hash:%d\n'%s'", n, sexprbuf);
+      LogBabblePrintf ("hash:%d\n'%s'", n, sexprbuf);
 #endif /* CRYPTODEBUGGING */
 
       // Well, we're actually there!
@@ -672,7 +672,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
       gcry_err_source_t src;
       code = gcry_err_code (rv);
       src = gcry_err_source (rv);
-      msg ("Well, pk verify returned $%08x - code %d src %d\n", rv, code, src);
+      LogBabblePrintf ("Well, pk verify returned $%08x - code %d src %d\n", rv, code, src);
 #endif /* CRYPTODEBUGGING */
 
       gcry_mpi_release (dsa_mpi_hash);
