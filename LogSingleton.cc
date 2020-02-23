@@ -81,10 +81,10 @@ void
 LogBabblePrintf(const char *fmt, ...)
 {
   int len;
-  char buf[2000];
+  char buf[8192];
   va_list args;
   va_start (args, fmt);
-  len = vsnprintf (buf, 2000, fmt, args);
+  len = vsnprintf (buf, 8192, fmt, args);
   if ((len > 0) && (buf[len-1] == '\n'))
     buf[len-1] = 0;
   Log (LOG_BABBLE) << buf << endLog;
@@ -94,10 +94,10 @@ void
 LogPlainPrintf(const char *fmt, ...)
 {
   int len;
-  char buf[2000];
+  char buf[8192];
   va_list args;
   va_start (args, fmt);
-  len = vsnprintf (buf, 2000, fmt, args);
+  len = vsnprintf (buf, 8192, fmt, args);
   if ((len > 0) && (buf[len-1] == '\n'))
     buf[len-1] = 0;
   Log (LOG_PLAIN) << buf << endLog;
