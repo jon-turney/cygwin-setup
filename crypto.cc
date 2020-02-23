@@ -42,10 +42,10 @@
 
 /*  Command-line options for specifying and controlling extra keys.  */
 static StringArrayOption ExtraKeyOption ('K', "pubkey",
-			"URL of extra public key file (gpg format)");
+                                         "URL or absolute path of extra public key file (RFC4880 format)");
 
 static StringArrayOption SexprExtraKeyOption ('S', "sexpr-pubkey",
-			"Extra public key in s-expr format");
+                                              "Extra DSA public key in s-expr format");
 
 static BoolOption UntrustedKeysOption (false, 'u', "untrusted-keys",
 			"Use untrusted saved extra keys");
@@ -59,6 +59,9 @@ static const char *cygwin_pubkey_sexpr =
 
 /*  S-expr template for DSA pubkey.  */
 static const char *dsa_pubkey_templ = "(public-key (dsa (p %m) (q %m) (g %m) (y %m)))";
+
+/*  S-expr template for RSA pubkey.  */
+static const char *rsa_pubkey_templ = "(public-key (rsa (n %m) (e %m)))";
 
 /*  S-expr template for DSA signature.  */
 static const char *dsa_sig_templ = "(sig-val (dsa (r %m) (s %m)))";
@@ -104,17 +107,17 @@ struct key_data
 };
 
 /*  Callback hook for walking packets in gpg key file.  Extracts
-  the DSA coefficients from any public key packets encountered and 
+  the key coefficients from any public key packets encountered and
   converts them into s-expr pubkey format, returning the public
   keys thus found to the caller in a vector in the userdata context.  */
 static enum
 pkt_cb_resp key_file_walker (struct packet_walker *wlk, unsigned char tag,
-						size_t packetsize, size_t hdrpos)
+                             size_t packetsize, size_t hdrpos)
 {
   struct key_data *kdat = (struct key_data *)(wlk->userdata);
 
   MESSAGE ("key packet %d size %d at offs $%04x kdat $%08x\n", tag,
-						packetsize, hdrpos, kdat);
+           packetsize, hdrpos, kdat);
 
   if (tag != RFC4880_PT_PUBLIC_KEY)
     return pktCONTINUE;
@@ -136,54 +139,77 @@ pkt_cb_resp key_file_walker (struct packet_walker *wlk, unsigned char tag,
     }
 
   char pkalg = pkt_getch (wlk->pfile);
-  if (pkalg != RFC4880_PK_DSA)
+  if ((pkalg != RFC4880_PK_DSA) && (pkalg != RFC4880_PK_RSA))
     {
       ERRKIND (wlk->owner, IDS_CRYPTO_ERROR, pkalg, "unsupported key alg.");
       return pktCONTINUE;
     }
 
-  // Next, the four MPIs should be present.  Read them out,
-  // convert to an s-expr and add that to the list.
-  gcry_mpi_t p, q, g, y;
-  p = q = g = y = 0;
+  // Next, the key coefficient MPIs should be present.  Read them out, convert
+  // to an s-expr and add that to the list of keys.
+  size_t erroff;
+  gcry_sexp_t new_key;
 
-  if ((pkt_get_mpi (&p, wlk->pfile) >= 0)
-	&& (pkt_get_mpi (&q, wlk->pfile) >= 0)
-	&& (pkt_get_mpi (&g, wlk->pfile) >= 0)
-	&& (pkt_get_mpi (&y, wlk->pfile) >= 0))
+  if (pkalg == RFC4880_PK_DSA)
     {
-      // Convert to s-expr.
-      gcry_sexp_t new_key;
-      size_t n;
+      gcry_mpi_t p, q, g, y;
+      p = q = g = y = 0;
 
-      gcry_error_t rv = gcry_sexp_build (&new_key, &n, dsa_pubkey_templ, p, q, g, y);
-      if (rv != GPG_ERR_NO_ERROR)
-	{
-	  ERRKIND (wlk->owner, IDS_CRYPTO_ERROR, rv, "while creating sig s-expr.");
-	  return pktCONTINUE;
-	}
+      if ((pkt_get_mpi (&p, wlk->pfile) >= 0)
+            && (pkt_get_mpi (&q, wlk->pfile) >= 0)
+            && (pkt_get_mpi (&g, wlk->pfile) >= 0)
+            && (pkt_get_mpi (&y, wlk->pfile) >= 0))
+        {
+          gcry_error_t rv = gcry_sexp_build (&new_key, &erroff, dsa_pubkey_templ, p, q, g, y);
+          if (rv != GPG_ERR_NO_ERROR)
+            {
+              ERRKIND (wlk->owner, IDS_CRYPTO_ERROR, rv, "while creating sig s-expr.");
+              return pktCONTINUE;
+            }
+        }
 
-#if CRYPTODEBUGGING
-      // Debugging
-      char sexprbuf[GPG_KEY_SEXPR_BUF_SIZE];
-      n = gcry_sexp_sprint (new_key, GCRYSEXP_FMT_ADVANCED, sexprbuf,
-							GPG_KEY_SEXPR_BUF_SIZE);
-      LogBabblePrintf ("key:%d\n'%s'", n, sexprbuf);
-#endif /* CRYPTODEBUGGING */
+      // Release temps and continue.
+      if (p)
+        gcry_mpi_release (p);
+      if (q)
+        gcry_mpi_release (q);
+      if (g)
+        gcry_mpi_release (g);
+      if (y)
+        gcry_mpi_release (y);
+    }
+  else if (pkalg == RFC4880_PK_RSA)
+    {
+      gcry_mpi_t n, e;
+      n = e = 0;
 
-      // Return it to caller in the vector.
-      kdat->keys.push_back (new_key);
+      if ((pkt_get_mpi (&n, wlk->pfile) >= 0)
+          && (pkt_get_mpi (&e, wlk->pfile) >= 0))
+        {
+          gcry_error_t rv = gcry_sexp_build (&new_key, &erroff, rsa_pubkey_templ, n, e);
+          if (rv != GPG_ERR_NO_ERROR)
+            {
+              ERRKIND (wlk->owner, IDS_CRYPTO_ERROR, rv, "while creating sig s-expr.");
+              return pktCONTINUE;
+            }
+        }
+
+      if (n)
+        gcry_mpi_release (n);
+      if (e)
+        gcry_mpi_release (e);
     }
 
-  // Release temps and continue.
-  if (p)
-    gcry_mpi_release (p);
-  if (q)
-    gcry_mpi_release (q);
-  if (g)
-    gcry_mpi_release (g);
-  if (y)
-    gcry_mpi_release (y);
+#if CRYPTODEBUGGING
+  // Debugging
+  char sexprbuf[GPG_KEY_SEXPR_BUF_SIZE];
+  n = gcry_sexp_sprint (new_key, GCRYSEXP_FMT_ADVANCED, sexprbuf,
+                        GPG_KEY_SEXPR_BUF_SIZE);
+  LogBabblePrintf ("key:%d\n'%s'", n, sexprbuf);
+#endif /* CRYPTODEBUGGING */
+
+  // Return it to caller in the vector.
+  kdat->keys.push_back (new_key);
 
   return pktCONTINUE;
 }
