@@ -263,9 +263,6 @@ WinMain (HINSTANCE h,
 
     bool output_only = help_option || VersionOption;
 
-    if (unattended_mode || output_only)
-      set_cout ();
-
     SetupBaseName = SetupBaseNameOpt;
     SetupArch = is_64bit ? "x86_64" : "x86";
     SetupIniDir = SetupArch+"/";
@@ -276,6 +273,9 @@ WinMain (HINSTANCE h,
     /* Check if we have to elevate. */
     bool elevate = !output_only && OSMajorVersion () >= 6
 		   && !NoAdminOption && !nt_sec.isRunAsAdmin ();
+
+    if (unattended_mode || output_only || !elevate)
+      set_cout ();
 
     /* Start logging only if we don't elevate.  Same for setting default
        security settings. */
