@@ -71,7 +71,7 @@ static const char *dsa_sig_templ = "(sig-val (dsa (r %m) (s %m)))";
 static const char *rsa_sig_templ = "(sig-val (rsa (s %m)))";
 
 /*  S-expr template for DSA data block to be signed.  */
-static const char *dsa_data_hash_templ = "(data (flags raw) (value %m))";
+static const char *dsa_data_hash_templ = "(data (flags raw) (hash %s %b))";
 
 /*  S-expr template for RSA data block to be signed.  */
 static const char *rsa_data_hash_templ = "(data (flags pkcs1) (hash %s %b))";
@@ -724,25 +724,15 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
               return false;
             }
 
-          // Make a temp mpi from the hash output, then an s-expr from that.
-          gcry_mpi_t mpi_hash = 0;
-          unsigned char *tmpbuf = gcry_md_read (sigdat.md, 0);
-          size_t dlen = gcry_md_get_algo_dlen (sigdat.algo);
-          rv = gcry_mpi_scan (&mpi_hash, GCRYMPI_FMT_USG, tmpbuf, dlen, 0UL);
-          if (rv != GPG_ERR_NO_ERROR)
-            {
-              ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating hash MPI.");
-              return false;
-            }
-
-          rv = gcry_sexp_build (&hash, &n, dsa_data_hash_templ, mpi_hash);
+          rv = gcry_sexp_build (&hash, &n, dsa_data_hash_templ,
+                                gcry_md_algo_name(sigdat.algo),
+                                gcry_md_get_algo_dlen (sigdat.algo),
+                                gcry_md_read (sigdat.md, 0));
           if (rv != GPG_ERR_NO_ERROR)
             {
               ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating hash s-expr.");
               return false;
             }
-
-          gcry_mpi_release (mpi_hash);
         }
       else if (sigdat.pk_alg == RFC4880_PK_RSA)
         {
