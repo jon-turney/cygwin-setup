@@ -76,6 +76,20 @@ static const char *dsa_data_hash_templ = "(data (flags raw) (hash %s %b))";
 /*  S-expr template for RSA data block to be signed.  */
 static const char *rsa_data_hash_templ = "(data (flags pkcs1) (hash %s %b))";
 
+/*  Information on a key to try */
+struct key_info
+{
+  key_info(std::string _name, bool _builtin, gcry_sexp_t _key, bool _owned=true) :
+    name(_name), builtin(_builtin), key(_key), owned(_owned)
+  {
+  }
+
+  std::string name;
+  bool builtin;  // if true, we don't need to retain this key with add_key_from_sexpr()
+  gcry_sexp_t key;
+  bool owned;    // if true, we own this key and should use gcry_sexp_release() on it
+};
+
 /*  User context data for sig packet walk.  */
 struct sig_data
 {
@@ -97,8 +111,11 @@ struct sig_data
   /*  Converted algo code.  */
   int algo;
 
+  /* Keys */
+  std::vector<struct key_info> *keys_to_try;
+
   /*  Final status.  */
-  bool complete;
+  bool valid;
 };
 
 /*  User context data for key packet walk.  */
@@ -264,6 +281,114 @@ fold_lfs_and_spaces (char *buf, size_t n)
   return ptr2 - buf;
 }
 
+/*  Size and allocate a temp buffer to print a representation
+  of a public key s-expr into, then add that to the extra keys
+  setting so it persists for the next run.  */
+static void
+add_key_from_sexpr (gcry_sexp_t key)
+{
+  size_t n = gcry_sexp_sprint (key, GCRYSEXP_FMT_ADVANCED, 0, ~0);
+  char *sexprbuf = new char[n];
+  n = gcry_sexp_sprint (key, GCRYSEXP_FMT_ADVANCED, sexprbuf, n);
+  // +1 because we want to include the nul-terminator.
+  n = fold_lfs_and_spaces (sexprbuf, n + 1);
+  ExtraKeysSetting::instance().add_key (sexprbuf);
+  MESSAGE ("keep:%d\n'%s'", n, sexprbuf);
+  delete [] sexprbuf;
+}
+
+static bool
+verify_sig(struct sig_data *sigdat, HWND owner)
+{
+  gcry_error_t rv;
+  size_t n;
+  {
+      /*  sig coefficients in s-expr format.  */
+      gcry_sexp_t sig;
+
+      /*  signature hash data in s-expr format.  */
+      gcry_sexp_t hash;
+
+      /* Build everything into s-exprs, and call the libgcrypt verification
+         routine. */
+
+      if (sigdat->pk_alg == RFC4880_PK_DSA)
+        {
+          rv = gcry_sexp_build (&sig, &n, dsa_sig_templ, sigdat->dsa_mpi_r,
+                                sigdat->dsa_mpi_s);
+          if (rv != GPG_ERR_NO_ERROR)
+            {
+              ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating sig s-expr.");
+              return false;
+            }
+
+          rv = gcry_sexp_build (&hash, &n, dsa_data_hash_templ,
+                                gcry_md_algo_name(sigdat->algo),
+                                gcry_md_get_algo_dlen (sigdat->algo),
+                                gcry_md_read (sigdat->md, 0));
+          if (rv != GPG_ERR_NO_ERROR)
+            {
+              ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating hash s-expr.");
+              return false;
+            }
+        }
+      else if (sigdat->pk_alg == RFC4880_PK_RSA)
+        {
+          rv = gcry_sexp_build (&sig, &n, rsa_sig_templ, sigdat->rsa_mpi_s);
+          if (rv != GPG_ERR_NO_ERROR)
+            {
+              ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating sig s-expr.");
+              return false;
+            }
+
+          rv = gcry_sexp_build (&hash, &n, rsa_data_hash_templ,
+                                gcry_md_algo_name(sigdat->algo),
+                                gcry_md_get_algo_dlen (sigdat->algo),
+                                gcry_md_read (sigdat->md, 0));
+          if (rv != GPG_ERR_NO_ERROR)
+            {
+              ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating hash s-expr.");
+              return false;
+            }
+        }
+
+#if CRYPTODEBUGGING
+      n = gcry_sexp_sprint (sig, GCRYSEXP_FMT_ADVANCED, sexprbuf,
+                            GPG_KEY_SEXPR_BUF_SIZE);
+      LogBabblePrintf ("sig:%d\n'%s'", n, sexprbuf);
+      n = gcry_sexp_sprint (hash, GCRYSEXP_FMT_ADVANCED, sexprbuf,
+                            GPG_KEY_SEXPR_BUF_SIZE);
+      LogBabblePrintf ("hash:%d\n'%s'", n, sexprbuf);
+#endif /* CRYPTODEBUGGING */
+
+      // Well, we're actually there!
+      // Try it against each key in turn
+
+      std::vector<key_info>::iterator it;
+      for (it = sigdat->keys_to_try->begin ();
+           it < sigdat->keys_to_try->end ();
+           ++it)
+        {
+          rv = gcry_pk_verify (sig, hash, it->key);
+
+          LogBabblePrintf("signature: tried key %s, returned 0x%08x %s\n",
+                          it->name.c_str(), rv, gcry_strerror(rv));
+
+          if (rv != GPG_ERR_NO_ERROR)
+            continue;
+          // Found it!  This key gets kept!
+          if (!it->builtin)
+            add_key_from_sexpr (it->key);
+          break;
+        }
+
+      gcry_sexp_release (sig);
+      gcry_sexp_release (hash);
+    }
+
+  return (rv == GPG_ERR_NO_ERROR);
+}
+
 /*  Do-nothing stubs called by the sig file walker to
   walk over the embedded subpackets.  In the event, we don't
   actually need to do this as we aren't inspecting them.  */
@@ -292,7 +417,6 @@ pkt_cb_resp sig_file_walker (struct packet_walker *wlk, unsigned char tag,
 						size_t packetsize, size_t hdrpos)
 {
   struct sig_data *sigdat = (struct sig_data *)(wlk->userdata);
-  sigdat->complete = false;
 
   if (tag != RFC4880_PT_SIGNATURE)
     return pktCONTINUE;
@@ -366,6 +490,7 @@ pkt_cb_resp sig_file_walker (struct packet_walker *wlk, unsigned char tag,
     }
 
   // Now we know hash algo, we can create md context.
+  sigdat->md = 0;
   gcry_error_t rv = gcry_md_open (&sigdat->md, sigdat->algo, 0);
   if (rv != GPG_ERR_NO_ERROR)
     {
@@ -412,6 +537,8 @@ pkt_cb_resp sig_file_walker (struct packet_walker *wlk, unsigned char tag,
       for RSA:
       - MPI of RSA value m^d mod n (aka s)
   */
+  sigdat->dsa_mpi_r = sigdat->dsa_mpi_s = 0;
+  sigdat->rsa_mpi_s = 0;
 
   if (sigdat->pk_alg == RFC4880_PK_DSA)
     {
@@ -454,26 +581,29 @@ pkt_cb_resp sig_file_walker (struct packet_walker *wlk, unsigned char tag,
       gcry_md_putc (sigdat->md, nbytes & 0xff);
     }
 
-  // Hooray, succeeded!
-  sigdat->complete = true; 
+  // finalize the hash
+  gcry_md_final (sigdat->md);
+  MESSAGE("digest length is %d\n",gcry_md_get_algo_dlen (sigdat->algo));
 
-  return pktHALT;
-}
+  // we have hashed all the data, and found the sig coefficients.
+  // heck this signature
+  if (verify_sig (sigdat, wlk->owner))
+      sigdat->valid = true;
 
-/*  Size and allocate a temp buffer to print a representation
-  of a public key s-expr into, then add that to the extra keys
-  setting so it persists for the next run.  */
-void
-add_key_from_sexpr (gcry_sexp_t key)
-{
-  size_t n = gcry_sexp_sprint (key, GCRYSEXP_FMT_ADVANCED, 0, ~0);
-  char *sexprbuf = new char[n];
-  n = gcry_sexp_sprint (key, GCRYSEXP_FMT_ADVANCED, sexprbuf, n);
-  // +1 because we want to include the nul-terminator.
-  n = fold_lfs_and_spaces (sexprbuf, n + 1);
-  ExtraKeysSetting::instance().add_key (sexprbuf);
-  MESSAGE ("keep:%d\n'%s'", n, sexprbuf);
-  delete [] sexprbuf;
+  // discard hash
+  if (sigdat->md)
+    gcry_md_close (sigdat->md);
+
+  // discard sig coefffcients
+  if (sigdat->dsa_mpi_r)
+    gcry_mpi_release (sigdat->dsa_mpi_r);
+  if (sigdat->dsa_mpi_s)
+    gcry_mpi_release (sigdat->dsa_mpi_s);
+  if (sigdat->rsa_mpi_s)
+    gcry_mpi_release (sigdat->rsa_mpi_s);
+
+  // we can stop immediately if we found a good signature
+  return sigdat->valid ? pktHALT : pktCONTINUE;
 }
 
 #if CRYPTODEBUGGING
@@ -524,18 +654,6 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
   struct sig_data sigdat;
 
   /*  Vector of keys to use.  */
-  struct key_info
-  {
-    key_info(std::string _name, bool _builtin, gcry_sexp_t _key, bool _owned=true) :
-      name(_name), builtin(_builtin), key(_key), owned(_owned)
-    {
-    }
-
-    std::string name;
-    bool builtin;  // if true, we don't need to retain this key with add_key_from_sexpr()
-    gcry_sexp_t key;
-    bool owned;    // if true, we own this key and should use gcry_sexp_release() on it
-  };
   std::vector<struct key_info> keys_to_try;
 
   /*  Overall status of signature.  */
@@ -692,110 +810,15 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
   // We pass in a pointer to the ini file in the user context data,
   // which the packet walker callback uses to create a new hash
   // context preloaded with all the signature-covered data.
-  sigdat.complete = false;
+  sigdat.valid = false;
   sigdat.sign_data = ini_file;
-  sigdat.dsa_mpi_r = sigdat.dsa_mpi_s = 0;
-  sigdat.rsa_mpi_s = 0;
-  sigdat.md = 0;
+  sigdat.keys_to_try = &keys_to_try;
+
   pkt_walk_packets (ini_sig_file, sig_file_walker, owner, 0,
-				ini_sig_file->get_size (), &sigdat);
-  if (sigdat.complete)
-    {
-      /*  sig coefficients in s-expr format.  */
-      gcry_sexp_t sig;
+                    ini_sig_file->get_size (), &sigdat);
 
-      /*  signature hash data in s-expr format.  */
-      gcry_sexp_t hash;
+  sig_ok = sigdat.valid;
 
-      /* So, we have hashed all the data, and found the sig coefficients.
-        Next stages are to finalise the hash, build everything into
-        s-exprs, and call the libgcrypt verification routine.  */
-
-      gcry_md_final (sigdat.md);
-      MESSAGE("digest length is %d\n",gcry_md_get_algo_dlen (sigdat.algo));
-
-      if (sigdat.pk_alg == RFC4880_PK_DSA)
-        {
-          rv = gcry_sexp_build (&sig, &n, dsa_sig_templ, sigdat.dsa_mpi_r,
-                                sigdat.dsa_mpi_s);
-          if (rv != GPG_ERR_NO_ERROR)
-            {
-              ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating sig s-expr.");
-              return false;
-            }
-
-          rv = gcry_sexp_build (&hash, &n, dsa_data_hash_templ,
-                                gcry_md_algo_name(sigdat.algo),
-                                gcry_md_get_algo_dlen (sigdat.algo),
-                                gcry_md_read (sigdat.md, 0));
-          if (rv != GPG_ERR_NO_ERROR)
-            {
-              ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating hash s-expr.");
-              return false;
-            }
-        }
-      else if (sigdat.pk_alg == RFC4880_PK_RSA)
-        {
-          rv = gcry_sexp_build (&sig, &n, rsa_sig_templ, sigdat.rsa_mpi_s);
-          if (rv != GPG_ERR_NO_ERROR)
-            {
-              ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating sig s-expr.");
-              return false;
-            }
-
-          rv = gcry_sexp_build (&hash, &n, rsa_data_hash_templ,
-                                gcry_md_algo_name(sigdat.algo),
-                                gcry_md_get_algo_dlen (sigdat.algo),
-                                gcry_md_read (sigdat.md, 0));
-          if (rv != GPG_ERR_NO_ERROR)
-            {
-              ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating hash s-expr.");
-              return false;
-            }
-        }
-
-#if CRYPTODEBUGGING
-      n = gcry_sexp_sprint (sig, GCRYSEXP_FMT_ADVANCED, sexprbuf,
-                            GPG_KEY_SEXPR_BUF_SIZE);
-      LogBabblePrintf ("sig:%d\n'%s'", n, sexprbuf);
-      n = gcry_sexp_sprint (hash, GCRYSEXP_FMT_ADVANCED, sexprbuf,
-                            GPG_KEY_SEXPR_BUF_SIZE);
-      LogBabblePrintf ("hash:%d\n'%s'", n, sexprbuf);
-#endif /* CRYPTODEBUGGING */
-
-      // Well, we're actually there!
-      // Try it against each key in turn
-
-      std::vector<key_info>::iterator it;
-      for (it = keys_to_try.begin (); it < keys_to_try.end (); ++it)
-        {
-          rv = gcry_pk_verify (sig, hash, it->key);
-
-          LogBabblePrintf("signature: tried key %s, returned 0x%08x %s\n",
-                          it->name.c_str(), rv, gcry_strerror(rv));
-
-          if (rv != GPG_ERR_NO_ERROR)
-            continue;
-          // Found it!  This key gets kept!
-          if (!it->builtin)
-            add_key_from_sexpr (it->key);
-          break;
-        }
-      sig_ok = (rv == GPG_ERR_NO_ERROR);
-
-      gcry_sexp_release (sig);
-      gcry_sexp_release (hash);
-    }
-
-  // Discard the temp data then.
-  if (sigdat.dsa_mpi_r)
-    gcry_mpi_release (sigdat.dsa_mpi_r);
-  if (sigdat.dsa_mpi_s)
-    gcry_mpi_release (sigdat.dsa_mpi_s);
-  if (sigdat.rsa_mpi_s)
-    gcry_mpi_release (sigdat.rsa_mpi_s);
-  if (sigdat.md)
-    gcry_md_close (sigdat.md);
   while (keys_to_try.size ())
     {
       if (keys_to_try.back ().owned)
