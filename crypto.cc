@@ -227,9 +227,9 @@ pkt_cb_resp key_file_walker (struct packet_walker *wlk, unsigned char tag,
 #if CRYPTODEBUGGING
   // Debugging
   char sexprbuf[GPG_KEY_SEXPR_BUF_SIZE];
-  n = gcry_sexp_sprint (new_key, GCRYSEXP_FMT_ADVANCED, sexprbuf,
-                        GPG_KEY_SEXPR_BUF_SIZE);
-  LogBabblePrintf ("key:%d\n'%s'", n, sexprbuf);
+  erroff = gcry_sexp_sprint (new_key, GCRYSEXP_FMT_ADVANCED, sexprbuf,
+                             GPG_KEY_SEXPR_BUF_SIZE);
+  LogBabblePrintf ("key:%d\n'%s'", erroff, sexprbuf);
 #endif /* CRYPTODEBUGGING */
 
   // Return it to caller in the vector.
@@ -359,6 +359,7 @@ verify_sig(struct sig_data *sigdat, HWND owner)
         }
 
 #if CRYPTODEBUGGING
+      char sexprbuf[GPG_KEY_SEXPR_BUF_SIZE];
       n = gcry_sexp_sprint (sig, GCRYSEXP_FMT_ADVANCED, sexprbuf,
                             GPG_KEY_SEXPR_BUF_SIZE);
       LogBabblePrintf ("sig:%d\n'%s'", n, sexprbuf);
