@@ -29,15 +29,17 @@
 #include "LogSingleton.h"
 #include "resource.h"
 
-#define CRYPTODEBUGGING         (0)
+#ifndef RFC4880DEBUGGING
+#define RFC4880DEBUGGING         (0)
+#endif
 
-#if CRYPTODEBUGGING
+#if RFC4880DEBUGGING
 #define ERRKIND __asm__ __volatile__ (".byte 0xcc"); note
 #define MESSAGE LogBabblePrintf
-#else  /* !CRYPTODEBUGGING */
+#else  /* !RFC4880DEBUGGING */
 #define ERRKIND note
 #define MESSAGE while (0) LogBabblePrintf
-#endif /* CRYPTODEBUGGING */
+#endif /* RFC4880DEBUGGING */
 
 #ifndef ARRAYSIZE
 #define ARRAYSIZE(_ar) (sizeof (_ar) / sizeof (_ar[0]))
