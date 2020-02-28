@@ -676,9 +676,15 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
     {
 #if CRYPTODEBUGGING
       gcry_set_log_handler (gcrypt_log_adaptor, NULL);
-      gcry_control (GCRYCTL_SET_DEBUG_FLAGS, 1);
 #endif
       gcry_check_version (NULL);
+
+      if ((rv = gcry_control (GCRYCTL_SELFTEST)) != GPG_ERR_NO_ERROR)
+        ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "libgcrypt selftest failed");
+
+#if CRYPTODEBUGGING
+      gcry_control (GCRYCTL_SET_DEBUG_FLAGS, 1);
+#endif
       gcrypt_init = true;
     }
 
