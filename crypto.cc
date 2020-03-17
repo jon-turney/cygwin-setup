@@ -52,8 +52,9 @@ static BoolOption UntrustedKeysOption (false, 'u', "untrusted-keys",
 			"Use untrusted saved extra keys");
 static BoolOption KeepUntrustedKeysOption (false, 'U', "keep-untrusted-keys",
 			"Use untrusted keys and retain all");
-static BoolOption DisableOldKeysOption (false, '\0', "disable-old-keys",
-                                        "Disable old cygwin.com keys");
+static BoolOption EnableOldKeysOption (false, '\0', "old-keys",
+                                       "Enable old cygwin.com keys",
+                                       BoolOption::BoolOptionType::pairedAble);
 
 /*  Embedded public half of Cygwin signing key.  */
 static const char *cygwin_pubkey_sexpr =
@@ -708,7 +709,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 
   /* If not disabled, also try the old built-in key */
   gcry_sexp_t cygwin_old_key;
-  if (!DisableOldKeysOption)
+  if (EnableOldKeysOption)
     {
       rv = gcry_sexp_new (&cygwin_old_key, cygwin_old_pubkey_sexpr, strlen (cygwin_old_pubkey_sexpr), 1);
       if (rv != GPG_ERR_NO_ERROR)
