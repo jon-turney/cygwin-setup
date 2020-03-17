@@ -16,10 +16,10 @@
 #include <getopt++/BoolOption.h>
 
 BoolOption::BoolOption(bool const defaultvalue, char shortopt,
-		       char const *longopt, std::string const &shorthelp,
-		       OptionSet &owner) : _value (defaultvalue) ,
-		       _ovalue (defaultvalue), _shortopt(shortopt),
-		       _longopt (longopt), _shorthelp (shorthelp)
+                       char const *longopt, std::string const &shorthelp,
+                       BoolOptionType type, OptionSet &owner) :
+  _value (defaultvalue), _ovalue (defaultvalue), _shortopt(shortopt),
+  _longopt (longopt), _shorthelp (shorthelp), _type(type)
 {
   owner.Register (this);
 };
@@ -38,6 +38,24 @@ BoolOption::longOption () const
   return _longopt;
 }
 
+std::vector<std::string> const &
+BoolOption::longOptionPrefixes () const
+{
+  switch (_type)
+    {
+    default:
+    case BoolOption::BoolOptionType::simple:
+      static std::vector<std::string> simple = {""};
+      return simple;
+    case BoolOption::BoolOptionType::pairedAble:
+      static std::vector<std::string> able = {"enable-", "disable-"};
+      return able;
+    case BoolOption::BoolOptionType::pairedNo:
+      static std::vector<std::string> no = {"", "no-"};
+      return no;
+    }
+}
+
 std::string const
 BoolOption::shortHelp () const
 {
@@ -45,9 +63,19 @@ BoolOption::shortHelp () const
 }
 
 Option::Result
-BoolOption::Process (char const *)
+BoolOption::Process (char const *, int prefixIndex)
 {
-  _value = !_ovalue;
+  switch (_type)
+    {
+    default:
+    case BoolOption::BoolOptionType::simple:
+      _value = !_ovalue;
+    case BoolOption::BoolOptionType::pairedAble:
+      _value = (prefixIndex == 0);
+    case BoolOption::BoolOptionType::pairedNo:
+      _value = (prefixIndex == 0);
+    }
+
   return Ok;
 }
 

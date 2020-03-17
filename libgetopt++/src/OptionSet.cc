@@ -38,37 +38,47 @@ OptionSet::processOne()
 
     if (!isOption(pos)) {
         /* Push the non option into storage */
-	if (nonOptionHandler) {
-	    lastResult = nonOptionHandler->Process(option.c_str());
-	} else {
-	    nonoptions.push_back(option);
-	    lastResult = Option::Ok;
-	}
+      if (nonOptionHandler) {
+        lastResult = nonOptionHandler->Process(option.c_str(), 0);
+      } else {
+        nonoptions.push_back(option);
+        lastResult = Option::Ok;
+      }
     } else {
-	doOption(option, pos);
+      doOption(option, pos);
     }
 }
 
-Option *
-OptionSet::findOption(std::string &option, std::string::size_type const &pos) const
+void
+OptionSet::findOption(std::string &option, std::string::size_type const &pos,
+                      Option *&theOption, int & prefixIndex) const
 {
-    Option *theOption = NULL;
+    theOption = NULL;
+    prefixIndex = 0;
 
     for (std::vector<Option *>::const_iterator i = options.begin(); i != options.end(); 
             ++i) {
         if (pos == 1) {
             if (option[0] == (*i)->shortOption()[0]) {
                 theOption = (*i);
+                return;
             }
         } else {
-            /* pos == 2 : todo - prefix matches */
-
-            if (option.find((*i)->longOption()) == 0) {
+          /* pos == 2 */
+          std::vector<std::string> prefixes = (*i)->longOptionPrefixes();
+          for (std::vector<std::string>::const_iterator j = prefixes.begin();
+               j != prefixes.end();
+               j++)
+            {
+              std::string prefixedOption = *j + (*i)->longOption();
+              if (option.find(prefixedOption) == 0) {
                 theOption = (*i);
+                prefixIndex = j - prefixes.begin();
+                return;
+              }
             }
         }
     }
-    return theOption;
 }
 
 bool
@@ -98,7 +108,9 @@ OptionSet::doOption(std::string &option, std::string::size_type const &pos)
 {
     lastResult = Option::Failed;
     option.erase(0, pos);
-    Option *theOption = findOption(option, pos);
+    Option *theOption = NULL;
+    int prefixIndex = 0;
+    findOption(option, pos, theOption, prefixIndex);
     char const *optionValue = NULL;
     std::string value;
 
@@ -108,9 +120,9 @@ OptionSet::doOption(std::string &option, std::string::size_type const &pos)
     switch (theOption->argument()) {
 
     case Option::None:
-        if (!doNoArgumentOption (option, pos))
-	    return;
-	break;
+      if (!doNoArgumentOption (option, pos))
+        return;
+      break;
 
     case Option::Optional: {
             if (pos == 1) {
@@ -231,7 +243,7 @@ OptionSet::doOption(std::string &option, std::string::size_type const &pos)
 	break;
     }
     theOption->setPresent(true);
-    lastResult = theOption->Process(optionValue);
+    lastResult = theOption->Process(optionValue, prefixIndex);
 }
 
 OptionSet::OptionSet () {}

@@ -36,7 +36,7 @@ class StringCollector : public Option
        {
 	 return "";
        }
-     virtual Option::Result Process(const char * value);
+     virtual Option::Result Process(const char * value, int index);
      virtual Option::Argument argument() const
        {
 	 return Required;
@@ -46,7 +46,7 @@ class StringCollector : public Option
 };
 
 Option::Result
-StringCollector::Process(const char * value)
+StringCollector::Process(const char * value, int index)
 {
     values.push_back(value);
     if (values.size() == 1)

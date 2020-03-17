@@ -22,3 +22,10 @@ Option::Option () : present(false)
 Option::~Option ()
 {
 }
+
+std::vector<std::string> const &
+Option::longOptionPrefixes () const
+{
+  static std::vector<std::string> noprefix = {""};
+  return noprefix;
+}

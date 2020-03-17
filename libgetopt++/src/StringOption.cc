@@ -49,7 +49,7 @@ StringOption::shortHelp () const
 }
 
 Option::Result
-StringOption::Process (char const *optarg)
+StringOption::Process (char const *optarg, int prefixIndex)
 {
   if (optarg)
     _value = optarg;

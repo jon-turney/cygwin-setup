@@ -44,7 +44,7 @@ StringArrayOption::shortHelp () const
 }
 
 Option::Result
-StringArrayOption::Process (char const *optarg)
+StringArrayOption::Process (char const *optarg, int prefixIndex)
 {
   if (optarg)
     {

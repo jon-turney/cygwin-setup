@@ -30,7 +30,7 @@ public:
   virtual std::string const shortOption () const;
   virtual std::string const longOption () const;
   virtual std::string const shortHelp () const;
-  virtual Result Process (char const *);
+  virtual Result Process (char const *, int);
   virtual Argument argument () const;
   operator const std::string& () const;
 
