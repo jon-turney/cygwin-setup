@@ -95,6 +95,14 @@ make_link (const std::string& linkpath,
 	       icon.c_str(), fname.c_str());
 }
 
+static const char *startmenudir()
+{
+  if (!is_64bit && (WowNativeMachine() != IMAGE_FILE_MACHINE_I386))
+    return "/Cygwin (32-bit)";
+  else
+    return "/Cygwin";
+}
+
 static void
 start_menu (const std::string& title, const std::string& target,
 	    const std::string& arg, const std::string& iconpath)
@@ -107,7 +115,7 @@ start_menu (const std::string& title, const std::string& target,
 			      issystem ? CSIDL_COMMON_PROGRAMS :
 			      CSIDL_PROGRAMS, &id);
   SHGetPathFromIDList (id, path);
-  strncat (path, "/Cygwin", MAX_PATH - strlen(path) - 1);
+  strncat (path, startmenudir(), MAX_PATH - strlen(path) - 1);
   LogBabblePrintf ("Program directory for program link: %s", path);
   make_link (path, title, target, arg, iconpath);
 }
@@ -194,7 +202,6 @@ save_icon (std::string &iconpath, const char *resource_name)
 #define TERMINALICON	"/Cygwin-Terminal.ico"
 #define TERMINALTITLE	(is_64bit ? "Cygwin64 Terminal" \
 				  : "Cygwin Terminal")
-#define STARTMENUDIR	"/Cygwin"
 
 static void
 do_desktop_setup ()
@@ -300,7 +307,7 @@ check_startmenu (const std::string title, const std::string target)
 			      CSIDL_PROGRAMS, &id);
   SHGetPathFromIDList (id, path);
   LogBabblePrintf ("Program directory for program link: %s", path);
-  strcat (path, STARTMENUDIR);
+  strcat (path, startmenudir());
   std::string fname = std::string(path) + "/" + title + ".lnk";
 
   if (_access (fname.c_str(), 0) == 0)
