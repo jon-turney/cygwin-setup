@@ -393,3 +393,29 @@ VersionInfo& GetVer ()
   static VersionInfo *vi = new VersionInfo ();
   return *vi;
 }
+
+/* Identify native machine arch if we are running under WoW */
+USHORT
+WowNativeMachine ()
+{
+#ifdef __x86_64__
+  return IMAGE_FILE_MACHINE_AMD64;
+#else
+  typedef BOOL (WINAPI *PFNISWOW64PROCESS2)(HANDLE, USHORT *, USHORT *);
+  PFNISWOW64PROCESS2 pfnIsWow64Process2 = (PFNISWOW64PROCESS2)GetProcAddress(GetModuleHandle("kernel32"), "IsWow64Process2");
+
+  typedef BOOL (WINAPI *PFNISWOW64PROCESS)(HANDLE, PBOOL);
+  PFNISWOW64PROCESS pfnIsWow64Process = (PFNISWOW64PROCESS)GetProcAddress(GetModuleHandle("kernel32"), "IsWow64Process");
+
+  USHORT processMachine, nativeMachine;
+  if ((pfnIsWow64Process2) &&
+      (pfnIsWow64Process2(GetCurrentProcess(), &processMachine, &nativeMachine)))
+    return nativeMachine;
+  else if (pfnIsWow64Process) {
+    BOOL bIsWow64 = FALSE;
+    if (pfnIsWow64Process(GetCurrentProcess(), &bIsWow64))
+      return bIsWow64 ? IMAGE_FILE_MACHINE_AMD64 : IMAGE_FILE_MACHINE_I386;
+  }
+  return IMAGE_FILE_MACHINE_I386;
+#endif
+}

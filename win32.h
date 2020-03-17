@@ -177,6 +177,8 @@ VersionInfo& GetVer ();
 #define OSMinorVersion() (GetVer ().minor ())
 #define OSBuildNumber() (GetVer ().buildNumber ())
 
+USHORT WowNativeMachine ();
+
 static inline void
 GetDlgItemRect (HWND h, int item, LPRECT r)
 {

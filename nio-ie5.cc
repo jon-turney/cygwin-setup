@@ -52,37 +52,24 @@ determine_default_useragent(void)
 #ifdef __x86_64__
   bitness = "Win64";
 #else
-  typedef BOOL (WINAPI *PFNISWOW64PROCESS2)(HANDLE, USHORT *, USHORT *);
-  PFNISWOW64PROCESS2 pfnIsWow64Process2 = (PFNISWOW64PROCESS2)GetProcAddress(GetModuleHandle("kernel32"), "IsWow64Process2");
-
-  typedef BOOL (WINAPI *PFNISWOW64PROCESS)(HANDLE, PBOOL);
-  PFNISWOW64PROCESS pfnIsWow64Process = (PFNISWOW64PROCESS)GetProcAddress(GetModuleHandle("kernel32"), "IsWow64Process");
-
+  USHORT nativeMachine = WowNativeMachine();
   std::stringstream native_desc;
 
-  USHORT processMachine, nativeMachine;
-  if ((pfnIsWow64Process2) &&
-      (pfnIsWow64Process2(GetCurrentProcess(), &processMachine, &nativeMachine))) {
-    switch (nativeMachine)
-      {
-      case IMAGE_FILE_MACHINE_I386:
-        bitness = "Win32";
-        break;
-      case IMAGE_FILE_MACHINE_AMD64:
-        bitness = "WoW64";
-        break;
-      case IMAGE_FILE_MACHINE_ARM64:
-        bitness = "WoW64-ARM64";
-        break;
-      default:
-        native_desc << "WoW64-" << std::hex << nativeMachine;
-        bitness = native_desc.str();
-      }
-  } else if (pfnIsWow64Process) {
-    BOOL bIsWow64 = FALSE;
-    if (pfnIsWow64Process(GetCurrentProcess(), &bIsWow64))
-      bitness = bIsWow64 ? "WoW64" : "Win32";
-  }
+  switch (nativeMachine)
+    {
+    case IMAGE_FILE_MACHINE_I386:
+      bitness = "Win32";
+      break;
+    case IMAGE_FILE_MACHINE_AMD64:
+      bitness = "WoW64";
+      break;
+    case IMAGE_FILE_MACHINE_ARM64:
+      bitness = "WoW64-ARM64";
+      break;
+    default:
+      native_desc << "WoW64-" << std::hex << nativeMachine;
+      bitness = native_desc.str();
+    }
 #endif
   default_useragent = std::string("Cygwin-Setup/") + setup_version + " (" + os.str() + ";" + bitness + ")";
   return default_useragent;
