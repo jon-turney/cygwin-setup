@@ -173,7 +173,7 @@ archive::extract_file (archive * source, const std::string& prefixURL,
 	  break;
 	case ARCHIVE_FILE_DIRECTORY:
 	  {
-	    char *path = (char *) alloca (destfilename.size());
+	    char *path = (char *) alloca (destfilename.size() + 1);
 	    strcpy (path, destfilename.c_str());
 	    while (path[0] && path[strlen (path) - 1] == '/')
 	      path[strlen (path) - 1] = 0;
