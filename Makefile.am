@@ -44,7 +44,6 @@ EXTRA_DIST = \
 	cygwin-setup.ico \
 	cygwin-terminal.ico \
 	setup.exe.manifest \
-	setup64.exe.manifest \
 	tree-minus.ico \
 	tree-plus.ico
 
@@ -272,7 +271,7 @@ setup_version.c : Makefile
 	mv version.tmp setup_version.c
 
 # setup.exe.manifest is included in res.rc
-res.o: @SETUP@.exe.manifest
+res.o: setup.exe.manifest
 
 .rc.o:
 	$(AM_V_GEN)$(WINDRES) --include-dir $(srcdir) -o $@ $<

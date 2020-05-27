@@ -503,11 +503,7 @@ END
 // Manifest
 //
 
-#ifdef __x86_64__
-CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "setup64.exe.manifest"
-#else
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "setup.exe.manifest"
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 //
