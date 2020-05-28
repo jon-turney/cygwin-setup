@@ -49,10 +49,14 @@ class DefaultFormatter {
         theStream << "   ";
       else
         theStream << s_lead << anOption->shortOption ()[0];
-      theStream << l_lead << anOption->longOption ()
+
+      std::string longOption = anOption->longOptionPrefixes ()[0] +
+        anOption->longOption ();
+
+      theStream << l_lead << longOption
 		<< std::string (o_len
 				- s_lead.size () - 1 - l_lead.size ()
-				- anOption->longOption ().size (), ' ');
+				- longOption.size (), ' ');
       std::string helpmsg = anOption->shortHelp();
       while (helpmsg.size() > h_len)
 	{
