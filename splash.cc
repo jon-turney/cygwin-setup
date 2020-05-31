@@ -23,7 +23,7 @@
 
 static ControlAdjuster::ControlInfo SplashControlsInfo[] = {
   { IDC_SPLASH_TEXT,        CP_STRETCH,   CP_STRETCH },
-  { IDC_SPLASH_ICON,        CP_LEFT,      CP_BOTTOM },
+  { IDC_SPLASH_ICON,        CP_LEFT,      CP_TOP },
   { IDC_VERSION,            CP_LEFT,      CP_BOTTOM },
   { IDC_SPLASH_COPYR,       CP_LEFT,      CP_BOTTOM },
   { IDC_SPLASH_URL,         CP_LEFT,      CP_BOTTOM },
