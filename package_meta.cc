@@ -455,7 +455,7 @@ packagemeta::select_action (int id, trusts const deftrust)
       for (int j = -id; j > 0; j--)
         i++;
 
-      set_action(Install_action, *i);
+      set_action(Install_action, *i, true);
     }
   else
     {
@@ -483,7 +483,7 @@ packagemeta::toggle_action ()
         if (!packagedb::solver.is_test_package(*i))
           naively_preferred = *i;
 
-      set_action(Install_action, naively_preferred);
+      set_action(Install_action, naively_preferred, true);
     }
 }
 
