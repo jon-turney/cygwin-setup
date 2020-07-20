@@ -320,6 +320,35 @@ load_site_list (SiteList& theSites, char *theString)
     }
 }
 
+static void
+migrate_selected_site_list()
+{
+  const std::string http = "http://";
+
+  for (SiteList::iterator i = site_list.begin();
+       i != site_list.end();
+       ++i)
+    {
+      /* If the saved selected site URL starts with "http://", and the same URL,
+         but starting with "https://" appears in the mirror list, migrate to
+         "https://" */
+      if (strnicmp(i->url.c_str(), http.c_str(), strlen(http.c_str())) == 0)
+        {
+          std::string migrated_site = "https://";
+          migrated_site.append(i->url.substr(http.length()));
+
+          site_list_type migrate(migrated_site, "", "", "", false);
+          SiteList::iterator j = find (all_site_list.begin(),
+                                       all_site_list.end(), migrate);
+          if (j != all_site_list.end())
+            {
+              Log (LOG_PLAIN) << "Migrated " << i->url << " to " << migrated_site  << endLog;
+              *i = migrate;
+            }
+        }
+    }
+}
+
 static int
 get_site_list (HINSTANCE h, HWND owner)
 {
@@ -370,9 +399,11 @@ get_site_list (HINSTANCE h, HWND owner)
 
   load_site_list (all_site_list, theMirrorString);
   load_site_list (cached_site_list, theCachedString);
-  
+
   delete[] theMirrorString;
   delete[] theCachedString;
+
+  migrate_selected_site_list();
 
   return 0;
 }
