@@ -424,8 +424,7 @@ do_download_site_info_thread (void *p)
   {
     hinst = (HINSTANCE) (context[0]);
     h = (HWND) (context[1]);
-    static bool downloaded = false;
-    if (!downloaded && get_site_list (hinst, h))
+    if (get_site_list (hinst, h))
     {
       // Error: Couldn't download the site info.
       // Go back to the Net setup page.
@@ -436,9 +435,8 @@ do_download_site_info_thread (void *p)
       // Tell the progress page that we're done downloading
       Progress.PostMessageNow (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_NET);
     }
-    else 
+    else
     {
-      downloaded = true;
       // Everything worked, go to the site select page
       // Tell the progress page that we're done downloading
       Progress.PostMessageNow (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_SITE);
