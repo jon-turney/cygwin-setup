@@ -214,6 +214,29 @@ site_list_type::operator < (site_list_type const &rhs) const
   return stricmp (key.c_str(), rhs.key.c_str()) < 0; 
 }
 
+/*
+  A SiteList is maintained as an in-order std::vector of site_list_type, by
+  replacing it with a new object with the new item inserted in the correct
+  place.
+
+  Yes, we could just use an ordered container, instead.
+*/
+static void
+site_list_insert(SiteList &site_list, site_list_type newsite)
+{
+  SiteList::iterator i = find (site_list.begin(), site_list.end(), newsite);
+  if (i == site_list.end())
+    {
+      SiteList result;
+      merge (site_list.begin(), site_list.end(),
+             &newsite, &newsite + 1,
+             inserter (result, result.begin()));
+      site_list = result;
+    }
+  else
+    *i = newsite;
+}
+
 static void
 save_dialog (HWND h)
 {
@@ -288,19 +311,7 @@ load_site_list (SiteList& theSites, char *theString)
 	    continue;
 
 	  site_list_type newsite (bol, semi, semi2, semi3, true);
-	  SiteList::iterator i = find (theSites.begin(),
-				       theSites.end(), newsite);
-	  if (i == theSites.end())
-	    {
-	      SiteList result;
-	      merge (theSites.begin(), theSites.end(),
-		     &newsite, &newsite + 1,
-		     inserter (result, result.begin()));
-	      theSites = result;
-	    }
-	  else
-	    //TODO: remove and remerge 
-	    *i = newsite;
+	  site_list_insert (theSites, newsite);
 	}
         else
         {
@@ -379,25 +390,16 @@ void
 SiteSetting::registerSavedSite (const char * site)
 {
   site_list_type tempSite(site, "", "", "", false);
-  SiteList::iterator i = find (all_site_list.begin(),
-			       all_site_list.end(), tempSite);
-  if (i == all_site_list.end())
-    {
-      /* Don't default to certain machines if they suffer
-	 from bandwidth limitations. */
-      if (strnicmp (site, NOSAVE1, NOSAVE1_LEN) == 0
-	  || strnicmp (site, NOSAVE2, NOSAVE2_LEN) == 0
-	  || strnicmp (site, NOSAVE3, NOSAVE3_LEN) == 0)
-	return;
-      SiteList result;
-      merge (all_site_list.begin(), all_site_list.end(),
-	     &tempSite, &tempSite + 1,
-	     inserter (result, result.begin()));
-      all_site_list = result;
-      site_list.push_back (tempSite);
-    }
-  else
-    site_list.push_back (*i);
+
+  /* Don't default to certain machines if they suffer from bandwidth
+     limitations. */
+  if (strnicmp (site, NOSAVE1, NOSAVE1_LEN) == 0
+      || strnicmp (site, NOSAVE2, NOSAVE2_LEN) == 0
+      || strnicmp (site, NOSAVE3, NOSAVE3_LEN) == 0)
+    return;
+
+  site_list_insert (all_site_list, tempSite);
+  site_list.push_back (tempSite);
 }
 
 void
