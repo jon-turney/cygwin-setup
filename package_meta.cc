@@ -295,6 +295,21 @@ parseNames (std::set<std::string> &parsed, std::string &option)
     parsed.insert (option);
 }
 
+static void
+validatePackageNames (std::set<std::string> &names)
+{
+  packagedb db;
+  for (std::set<std::string>::iterator n = names.begin();
+       n != names.end();
+       ++n)
+    {
+      if (db.packages.find(*n) == db.packages.end())
+        {
+          Log(LOG_PLAIN) << "Package '" << *n << "' not found." << endLog;
+        }
+    }
+}
+
 bool packagemeta::isManuallyWanted() const
 {
   static bool parsed_yet = false;
@@ -315,6 +330,7 @@ bool packagemeta::isManuallyWanted() const
       {
 	parseNames (parsed_names, *n);
       }
+    validatePackageNames (parsed_names);
     for (std::vector<std::string>::iterator n = categories_options.begin ();
 		n != categories_options.end (); ++n)
       {
@@ -365,6 +381,7 @@ bool packagemeta::isManuallyDeleted() const
       {
 	parseNames (parsed_delete, *n);
       }
+    validatePackageNames (parsed_delete);
     for (std::vector<std::string>::iterator n = categories_options.begin ();
 		n != categories_options.end (); ++n)
       {
