@@ -163,7 +163,7 @@ detect ()
     SCM = OpenSCManager (NULL, NULL, SC_MANAGER_ALL_ACCESS);
 
     if (!SCM) {
-	Log (LOG_PLAIN) << "Could not open Service control manager" << endLog;
+	Log (LOG_BABBLE) << "Could not open Service control manager" << endLog;
 	return;
     }
 
@@ -174,7 +174,7 @@ detect ()
 	SERVICE_QUERY_STATUS| SERVICE_STOP| SERVICE_START);
 
     if (!McAfeeService) {
-	Log (LOG_PLAIN) << "Could not open service McShield for query, start and stop. McAfee may not be installed, or we don't have access." << endLog;
+	Log (LOG_BABBLE) << "Could not open service McShield for query, start and stop. McAfee may not be installed, or we don't have access." << endLog;
 	CloseServiceHandle(SCM);
 	return;
     }
