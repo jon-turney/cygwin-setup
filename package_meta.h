@@ -107,7 +107,7 @@ public:
   std::string name;			/* package name, like "cygwin" */
 
   /* true if package was selected on command-line. */
-  bool isManuallyWanted() const;
+  bool isManuallyWanted(packageversion &version) const;
   /* true if package was deleted on command-line. */
   bool isManuallyDeleted() const;
 
@@ -163,6 +163,7 @@ private:
   std::string trustLabel(packageversion const &) const;
   std::vector <Script> scripts_;
   static bool scan (const packageversion &pkg, bool mirror_mode);
+  const packageversion * findVersion(std::string &version) const;
 
   _actions _action;
 

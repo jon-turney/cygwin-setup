@@ -214,6 +214,20 @@ packagemeta::add_version (const SolverPool::addPackageData &inpkgdata)
   return thepkg;
 }
 
+const packageversion *
+packagemeta::findVersion(std::string &version) const
+{
+  for (std::set <packageversion>::iterator i = versions.begin();
+       i != versions.end();
+       i++)
+    {
+      if (i->Canonical_version() == version)
+        return &(*i);
+    }
+
+  return NULL;
+}
+
 bool
 packagemeta::isBlacklisted(const packageversion &version) const
 {
@@ -310,10 +324,10 @@ validatePackageNames (std::set<std::string> &names)
     }
 }
 
-bool packagemeta::isManuallyWanted() const
+bool packagemeta::isManuallyWanted(packageversion &version) const
 {
   static bool parsed_yet = false;
-  static std::set<std::string> parsed_names;
+  static std::map<std::string, std::string> parsed_names;
   hasManualSelections |= parsed_names.size ();
   static std::set<std::string> parsed_categories;
   hasManualSelections |= parsed_categories.size ();
@@ -325,12 +339,40 @@ bool packagemeta::isManuallyWanted() const
   {
     std::vector<std::string> packages_options = PackageOption;
     std::vector<std::string> categories_options = CategoryOption;
+
+    std::set<std::string> items;
     for (std::vector<std::string>::iterator n = packages_options.begin ();
 		n != packages_options.end (); ++n)
       {
-	parseNames (parsed_names, *n);
+	parseNames (items, *n);
       }
-    validatePackageNames (parsed_names);
+
+    std::set<std::string> packages;
+    /* Separate any 'package=version' into package and version parts */
+    for (std::set<std::string>::iterator n = items.begin();
+         n != items.end();
+         ++n)
+      {
+        std::string package;
+        std::string version;
+        std::string::size_type loc = n->find ("=", 0);
+        if (loc != std::string::npos)
+          {
+            package = n->substr(0, loc);
+            version = n->substr(loc+1);
+          }
+        else
+          {
+            package = *n;
+            version = "";
+          }
+        Log (LOG_BABBLE) << "package: " << package << " version: " << version << endLog;
+        parsed_names[package] = version;
+        packages.insert(package);
+      }
+
+    validatePackageNames (packages);
+
     for (std::vector<std::string>::iterator n = categories_options.begin ();
 		n != categories_options.end (); ++n)
       {
@@ -341,7 +383,25 @@ bool packagemeta::isManuallyWanted() const
 
   /* Once we've already parsed the option string, just do
     a lookup in the cache of already-parsed names.  */
-  bReturn = parsed_names.find(name) != parsed_names.end();
+  std::map<std::string, std::string>::iterator i = parsed_names.find(name);
+  if (i != parsed_names.end())
+    {
+      bReturn = true;
+
+      /* Wanted version is unspecified */
+      version = packageversion();
+
+      /* ... unless a version was explicitly specified */
+      std::string v = i->second;
+      if (!v.empty())
+        {
+          const packageversion *pv = findVersion(v);
+          if (pv)
+            version = *pv;
+          else
+            Log (LOG_PLAIN) << "package: " << name << " version: " << v << " not found" << endLog;
+        }
+    }
 
   /* If we didn't select the package manually, did we select any
      of the categories it is in? */
@@ -352,6 +412,7 @@ bool packagemeta::isManuallyWanted() const
 	if (parsed_categories.find (*curcat) != parsed_categories.end ())
 	  {
 	    Log (LOG_BABBLE) << "Found category " << *curcat << " in package " << name << endLog;
+	    version = packageversion();
 	    bReturn = true;
 	  }
     }

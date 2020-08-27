@@ -289,7 +289,8 @@ ChooserPage::applyCommandLinePackageSelection()
        i != db.packages.end (); ++i)
     {
       packagemeta &pkg = *(i->second);
-      bool wanted    = pkg.isManuallyWanted();
+      packageversion wanted_version;
+      bool wanted    = pkg.isManuallyWanted(wanted_version);
       bool deleted   = pkg.isManuallyDeleted();
       bool base      = pkg.categories.find ("Base") != pkg.categories.end ();
       bool orphaned  = pkg.categories.find ("Orphaned") != pkg.categories.end ();
@@ -299,15 +300,15 @@ ChooserPage::applyCommandLinePackageSelection()
       bool uninstall = (!(wanted  || base) && (deleted || PruneInstallOption))
 		     || (orphaned && CleanOrphansOption);
       if (install)
-        pkg.set_action (packagemeta::Install_action, UpgradeAlsoOption ? packageversion () : pkg.curr, true);
+        pkg.set_action (packagemeta::Install_action, UpgradeAlsoOption ? packageversion () : wanted_version, true);
       else if (reinstall)
-	pkg.set_action (packagemeta::Reinstall_action, pkg.curr);
+	pkg.set_action (packagemeta::Reinstall_action, !wanted ? pkg.curr : wanted_version);
       else if (uninstall)
 	pkg.set_action (packagemeta::Uninstall_action, packageversion ());
       else if (PruneInstallOption)
 	pkg.set_action (packagemeta::NoChange_action, pkg.curr);
       else if (upgrade)
-	pkg.set_action (packagemeta::Install_action, pkg.trustp(true, TRUST_UNKNOWN));
+	pkg.set_action (packagemeta::Install_action, !wanted ? packageversion () : wanted_version);
       else
 	pkg.set_action (packagemeta::NoChange_action, pkg.installed);
     }
