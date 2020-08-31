@@ -259,7 +259,7 @@ inilint_SOURCES = \
 	csu_util/version_compare.cc \
 	csu_util/version_compare.h
 
-GITVER := $(shell cd $(srcdir) && git describe --match release_\* --abbrev=6 --dirty || "N/A")
+GITVER := $(shell cd $(srcdir) && git describe --match release_\* --abbrev=6 --dirty || echo "N/A")
 VER := $(subst release_,,$(GITVER))
 ARCH := @ARCH@
 
