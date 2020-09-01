@@ -148,7 +148,7 @@ static int num_installs, num_uninstalls;
 void
 Installer::preremoveOne (packagemeta & pkg)
 {
-  Progress.SetText1 ("Running preremove script...");
+  Progress.SetText1 (IDS_PROGRESS_PREREMOVE);
   Progress.SetText2 (pkg.name.c_str());
   Log (LOG_BABBLE) << "Running preremove script for " << pkg.name << endLog;
   const unsigned numexts = 4;
@@ -163,7 +163,7 @@ Installer::uninstallOne (packagemeta & pkg)
   if (!pkg.installed)
     return;
 
-  Progress.SetText1 ("Uninstalling...");
+  Progress.SetText1 (IDS_PROGRESS_UNINSTALL);
   Progress.SetText2 (pkg.name.c_str());
   Log (LOG_PLAIN) << "Uninstalling " << pkg.name << endLog;
 
@@ -427,7 +427,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
 {
   if (!source.Canonical())
     return;
-  Progress.SetText1 ("Installing");
+  Progress.SetText1 (IDS_PROGRESS_INSTALL);
   Progress.SetText2 ((pkgm.name + "-" + ver.Canonical_version()).c_str());
 
   io_stream *pkgfile = NULL;
@@ -818,7 +818,7 @@ do_install_thread (HINSTANCE h, HWND owner)
   const SolverTransactionList &t = db.solution.transactions();
 
   /* Calculate the amount of data to md5sum */
-  Progress.SetText1("Calculating...");
+  Progress.SetText1(IDS_PROGRESS_CALCULATING);
   long long int md5sum_total_bytes = 0;
   for (SolverTransactionList::const_iterator i = t.begin (); i != t.end (); ++i)
   {

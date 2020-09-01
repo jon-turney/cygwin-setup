@@ -278,7 +278,7 @@ do_download_thread (HINSTANCE h, HWND owner)
   total_download_bytes_sofar = 0;
   download_failures.clear ();
 
-  Progress.SetText1 ("Checking for packages to download...");
+  Progress.SetText1 (IDS_PROGRESS_CHECKING);
   Progress.SetText2 ("");
   Progress.SetText3 ("");
 

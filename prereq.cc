@@ -163,7 +163,7 @@ PrereqChecker::isMet ()
 {
   packagedb db;
 
-  Progress.SetText1 ("Solving dependencies...");
+  Progress.SetText1 (IDS_PROGRESS_SOLVING);
   Progress.SetText2 ("");
   Progress.SetText3 ("");
 

@@ -35,13 +35,25 @@
 #define IDS_LOCAL_DIR_INSTALL             135
 #define IDS_MAYBE_MKDIR                   136
 #define IDS_CANT_MKDIR                    137
-#define IDS_NO_LOCALDIR			  138
-#define IDS_ELEVATED			  139
+#define IDS_NO_LOCALDIR                   138
+#define IDS_ELEVATED                      139
 #define IDS_INSTALLEDB_VERSION            140
 #define IDS_DOWNLOAD_INCOMPLETE_EXIT      141
 #define IDS_QUERY_CORRUPT                 142
 #define IDS_TRUSTSYNC_TOOLTIP             143
 #define IDS_NO_MIRROR_LST                 144
+#define IDS_PROGRESS_PROGRESS             145
+#define IDS_PROGRESS_PACKAGE              146
+#define IDS_PROGRESS_CONNECTING           147
+#define IDS_PROGRESS_CHECKING             148
+#define IDS_PROGRESS_DOWNLOADING          149
+#define IDS_PROGRESS_PARSING              150
+#define IDS_PROGRESS_PREREMOVE            151
+#define IDS_PROGRESS_UNINSTALL            152
+#define IDS_PROGRESS_INSTALL              153
+#define IDS_PROGRESS_CALCULATING          154
+#define IDS_PROGRESS_POSTINSTALL          155
+#define IDS_PROGRESS_SOLVING              156
 
 // Dialogs
 

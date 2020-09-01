@@ -71,7 +71,7 @@ public:
     {
       Progress.SetText2 ("");
       Progress.SetText3 ("");
-      Progress.SetText4 ("Progress:");
+      Progress.SetText4 (IDS_PROGRESS_PARSING);
 
       yyerror_count = 0;
       yyerror_messages.clear ();
@@ -98,7 +98,7 @@ public:
     }
   virtual void iniName (const std::string& name)
     {
-      Progress.SetText1 ("Parsing...");
+      Progress.SetText1 (IDS_PROGRESS_PARSING);
       Progress.SetText2 (name.c_str ());
       Progress.SetText3 ("");
       filename = name;
@@ -134,7 +134,7 @@ public:
     }
   virtual ~ GuiParseFeedback ()
     {
-      Progress.SetText4 ("Package:");
+      Progress.SetText4 (IDS_PROGRESS_PACKAGE);
     }
 private:
   unsigned int lastpct;

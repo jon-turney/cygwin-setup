@@ -145,7 +145,7 @@ private:
 static std::string
 do_postinstall_thread (HINSTANCE h, HWND owner)
 {
-  Progress.SetText1 ("Running...");
+  Progress.SetText1 (IDS_PROGRESS_POSTINSTALL);
   Progress.SetText2 ("");
   Progress.SetText3 ("");
   Progress.SetBar1 (0, 1);

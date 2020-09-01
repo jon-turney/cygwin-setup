@@ -25,6 +25,7 @@
 #include "Exception.h"
 #include "filemanip.h"
 #include "io_stream.h"
+#include "resource.h"
 
 extern ThreeBarProgressPage Progress;
 
@@ -113,7 +114,7 @@ packagesource::check_sha512 (const std::string fullname) const
   Log (LOG_BABBLE) << "Checking SHA512 for " << fullname << endLog;
 
   Progress.SetText1 (("Checking SHA512 for " + shortname).c_str ());
-  Progress.SetText4 ("Progress:");
+  Progress.SetText4 (IDS_PROGRESS_PROGRESS);
   Progress.SetBar1 (0);
 
   unsigned char buffer[64 * 1024];
@@ -162,7 +163,7 @@ packagesource::check_md5 (const std::string fullname) const
   Log (LOG_BABBLE) << "Checking MD5 for " << fullname << endLog;
 
   Progress.SetText1 (("Checking MD5 for " + shortname).c_str ());
-  Progress.SetText4 ("Progress:");
+  Progress.SetText4 (IDS_PROGRESS_PROGRESS);
   Progress.SetBar1 (0);
 
   unsigned char buffer[64 * 1024];
