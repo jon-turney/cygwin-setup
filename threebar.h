@@ -74,6 +74,11 @@ public:
   void SetText3 (const TCHAR * t);
   void SetText4 (const TCHAR * t);
 
+  void SetText1 (unsigned int id);
+  void SetText2 (unsigned int id);
+  void SetText3 (unsigned int id);
+  void SetText4 (unsigned int id);
+
   void SetBar1 (long progress, long max = 100);
   void SetBar2 (long long progress, long long max = 100);
   void SetBar3 (long progress, long max = 100);

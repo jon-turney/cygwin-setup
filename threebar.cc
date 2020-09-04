@@ -100,6 +100,30 @@ ThreeBarProgressPage::SetText4 (const TCHAR * t)
 }
 
 void
+ThreeBarProgressPage::SetText1 (unsigned int id)
+{
+  ::SetWindowTextW (ins_action, LoadStringW(id).c_str());
+}
+
+void
+ThreeBarProgressPage::SetText2 (unsigned int id)
+{
+  ::SetWindowTextW (ins_pkgname, LoadStringW(id).c_str());
+}
+
+void
+ThreeBarProgressPage::SetText3 (unsigned int id)
+{
+  ::SetWindowTextW (ins_filename, LoadStringW(id).c_str());
+}
+
+void
+ThreeBarProgressPage::SetText4 (unsigned int id)
+{
+  ::SetWindowTextW (ins_bl_package, LoadStringW(id).c_str());
+}
+
+void
 ThreeBarProgressPage::SetBar1 (long progress, long max)
 {
   int percent = (int) (100.0 * ((double) progress) / (double) max);
