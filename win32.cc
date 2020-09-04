@@ -419,3 +419,15 @@ WowNativeMachine ()
   return IMAGE_FILE_MACHINE_I386;
 #endif
 }
+
+const std::wstring
+LoadStringW(unsigned int uID)
+{
+  wchar_t *buf;
+
+  int len = ::LoadStringW(GetModuleHandle(NULL), uID, (LPWSTR)&buf, 0);
+  if (len > 0)
+    return std::wstring(buf, len);
+
+  return L"";
+}

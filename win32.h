@@ -193,4 +193,6 @@ SetDlgItemRect (HWND h, int item, LPRECT r)
 	      r->right - r->left, r->bottom - r->top, TRUE);
 }
 
+const std::wstring LoadStringW(unsigned int uID);
+
 #endif /* SETUP_WIN32_H */
