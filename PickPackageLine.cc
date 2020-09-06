@@ -17,16 +17,16 @@
 #include "PickView.h"
 #include "package_db.h"
 
-const std::string
+const std::wstring
 PickPackageLine::get_text(int col_num) const
 {
   if (col_num == pkgname_col)
     {
-      return pkg.name;
+      return string_to_wstring(pkg.name);
     }
   else if (col_num == current_col)
     {
-      return pkg.installed.Canonical_version ();
+      return string_to_wstring(pkg.installed.Canonical_version());
     }
   else if (col_num == new_col)
     {
@@ -44,11 +44,11 @@ PickPackageLine::get_text(int col_num) const
       else
         srctick = "no";
 
-      return srctick;
+      return string_to_wstring(srctick);
     }
   else if (col_num == cat_col)
     {
-      return pkg.getReadableCategoryList();
+      return string_to_wstring(pkg.getReadableCategoryList());
     }
   else if (col_num == size_col)
     {
@@ -75,14 +75,14 @@ PickPackageLine::get_text(int col_num) const
       /* If size still 0, size must be unknown.  */
       std::string size = (sz == 0) ? "?" : format_1000s((sz+1023)/1024) + "k";
 
-      return size;
+      return string_to_wstring(size);
     }
   else if (col_num == pkg_col)
     {
-      return pkg.SDesc();
+      return string_to_wstring(pkg.SDesc());
     }
 
-  return "unknown";
+  return L"unknown";
 }
 
 const std::string

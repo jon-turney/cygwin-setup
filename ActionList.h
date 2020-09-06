@@ -16,6 +16,7 @@
 
 #include <string>
 #include <vector>
+#include "win32.h"
 
 // ---------------------------------------------------------------------------
 // interface to class ActionList
@@ -26,14 +27,14 @@
 class Action
 {
  public:
-  Action(const std::string &_name, int _id, bool _selected, bool _enabled) :
+  Action(const std::wstring &_name, int _id, bool _selected, bool _enabled) :
     name(_name),
     id(_id),
     selected(_selected),
     enabled(_enabled)
   { };
 
-  std::string name;
+  std::wstring name;
   int id;
   bool selected;
   bool enabled;
@@ -44,10 +45,15 @@ typedef std::vector<Action> Actions;
 class ActionList
 {
  public:
-  void add(const std::string &name, int id, bool selected, bool enabled)
+  void add(const std::wstring &name, int id, bool selected, bool enabled)
   {
     Action act(name, id, selected, enabled);
     list.push_back(act);
+  };
+  void add(unsigned int name_res, int id, bool selected, bool enabled)
+  {
+    const std::wstring name = LoadStringW(name_res);
+    add(name, id, selected, enabled);
   };
   Actions list;
 };

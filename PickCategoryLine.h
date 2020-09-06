@@ -34,7 +34,7 @@ public:
   {
   }
 
-  const std::string get_text(int col) const;
+  const std::wstring get_text(int col) const;
   State get_state() const;
   const std::string get_tooltip(int col) const;
   int get_indent() const;

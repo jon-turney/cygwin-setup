@@ -52,22 +52,22 @@ bool hasManualSelections = 0;
 /*****************/
 
 /* Return an appropriate category caption given the action */
-char const *
+unsigned int
 packagemeta::action_caption (_actions _value)
 {
   switch (_value)
     {
     case NoChange_action:
-      return "Default";
+      return IDS_ACTION_DEFAULT;
     case Install_action:
-      return "Install";
+      return IDS_ACTION_INSTALL;
     case Reinstall_action:
-      return "Reinstall";
+      return IDS_ACTION_REINSTALL;
     case Uninstall_action:
-      return "Uninstall";
+      return IDS_ACTION_UNINSTALL;
     }
 
-  return "Unknown";
+  return IDS_ACTION_UNKNOWN;
 }
 
 packagemeta::packagemeta (packagemeta const &rhs) :
@@ -440,26 +440,26 @@ packagemeta::LDesc () const
 };
 
 /* Return an appropriate caption given the current action. */
-std::string
+std::wstring
 packagemeta::action_caption () const
 {
   switch (_action)
     {
     case Uninstall_action:
-      return "Uninstall";
+      return LoadStringW(IDS_ACTION_UNINSTALL);
     case NoChange_action:
       if (!desired)
-        return "Skip";
+        return LoadStringW(IDS_ACTION_SKIP);
       if (desired.sourcePackage() && srcpicked())
         /* FIXME: Redo source should come up if the tarball is already present locally */
-        return "Source";
-      return "Keep";
+        return LoadStringW(IDS_ACTION_SOURCE);
+      return LoadStringW(IDS_ACTION_KEEP);
     case Reinstall_action:
-      return packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve";
+      return LoadStringW(packagedb::task == PackageDB_Install ? IDS_ACTION_REINSTALL : IDS_ACTION_RETRIEVE);
     case Install_action:
-      return desired.Canonical_version ();
+      return string_to_wstring(desired.Canonical_version());
     }
-  return "Unknown";
+  return LoadStringW(IDS_ACTION_UNKNOWN);
 }
 
 void
@@ -510,23 +510,23 @@ packagemeta::list_actions(trusts const trust)
   // build the list of possible actions
   ActionList *al = new ActionList();
 
-  al->add("Uninstall", (int)Uninstall_action, (_action == Uninstall_action), bool(installed));
-  al->add("Skip", (int)NoChange_action, (_action == NoChange_action) && !installed, !installed);
+  al->add(IDS_ACTION_UNINSTALL, (int)Uninstall_action, (_action == Uninstall_action), bool(installed));
+  al->add(IDS_ACTION_SKIP, (int)NoChange_action, (_action == NoChange_action) && !installed, !installed);
 
   std::set<packageversion>::iterator i;
   for (i = versions.begin (); i != versions.end (); ++i)
     {
       if (*i == installed)
         {
-          al->add("Keep", (int)NoChange_action, (_action == NoChange_action), TRUE);
-          al->add(packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve",
+          al->add(IDS_ACTION_KEEP, (int)NoChange_action, (_action == NoChange_action), TRUE);
+          al->add(packagedb::task == PackageDB_Install ? IDS_ACTION_REINSTALL : IDS_ACTION_RETRIEVE,
                   (int)Reinstall_action, (_action == Reinstall_action), TRUE);
         }
       else
         {
-          std::string label = i->Canonical_version().c_str();
+          std::wstring label = string_to_wstring(i->Canonical_version());
           if (packagedb::solver.is_test_package(*i))
-            label += " (Test)";
+            label += L" (Test)";
           al->add(label,
                   -std::distance(versions.begin (), i),
                   (_action == Install_action) && (*i == desired),
@@ -728,11 +728,10 @@ packagemeta::logSelectionStatus() const
   packagemeta const & pkg = *this;
   const char *trust = ((pkg.desired == pkg.curr) ? "curr"
                : (pkg.desired == pkg.exp) ? "test" : "unknown");
-  std::string action = pkg.action_caption ();
   const std::string installed =
    pkg.installed ? pkg.installed.Canonical_version () : "none";
 
-  Log (LOG_BABBLE) << "[" << pkg.name << "] action=" << action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && srcpicked() ? "yes" : "no") << endLog;
+  Log (LOG_BABBLE) << "[" << pkg.name << "] action=" << _action << " trust=" << trust << " installed=" << installed << " src?=" << (pkg.desired && srcpicked() ? "yes" : "no") << endLog;
   if (pkg.categories.size ())
     Log (LOG_BABBLE) << "     categories=" << for_each(pkg.categories.begin(), pkg.categories.end(), StringConcatenator(", ")).result << endLog;
 #if 0

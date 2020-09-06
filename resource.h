@@ -54,6 +54,15 @@
 #define IDS_PROGRESS_CALCULATING          154
 #define IDS_PROGRESS_POSTINSTALL          155
 #define IDS_PROGRESS_SOLVING              156
+#define IDS_ACTION_DEFAULT                157
+#define IDS_ACTION_SKIP                   158
+#define IDS_ACTION_KEEP                   159
+#define IDS_ACTION_INSTALL                160
+#define IDS_ACTION_UNINSTALL              161
+#define IDS_ACTION_REINSTALL              162
+#define IDS_ACTION_RETRIEVE               163
+#define IDS_ACTION_UNKNOWN                164
+#define IDS_ACTION_SOURCE                 165
 
 // Dialogs
 

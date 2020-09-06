@@ -14,6 +14,7 @@
 #include "ListView.h"
 #include "LogSingleton.h"
 #include "resource.h"
+#include "String++.h"
 
 #include <commctrl.h>
 
@@ -95,6 +96,9 @@ ListView::init(HWND parent, int id, HeaderList headers)
   SendMessage(hWndTip, TTM_SETDELAYTIME, TTDT_AUTOPOP, (LPARAM) MAKELONG (30000, 0));
   // match tip width used elsewhere
   SendMessage(hWndTip, TTM_SETMAXTIPWIDTH, 0, 450);
+
+  // switch to using wide-char WM_NOTIFY messages
+  ListView_SetUnicodeFormat(hWndListView, TRUE);
 }
 
 void
@@ -256,29 +260,30 @@ ListView::setContents(ListViewContents *_contents, bool tree)
   RedrawWindow(hWndListView, NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
 }
 
-// Helper class: The char * pointer we hand back needs to remain valid for some
-// time after OnNotify returns, when the std::string we have retrieved has gone
-// out of scope, so a static instance of this class maintains a local cache.
-class StringCache
+// Helper class: The pointer we hand back needs to remain valid for some time
+// after OnNotify returns, when the string object we have retrieved has gone out
+// of scope, so a static instance of this class maintains a local cache.
+template <class T> class StringCache
 {
+  typedef typename T::traits_type::char_type char_type;
 public:
   StringCache() : cache(NULL), cache_size(0) { }
-  StringCache & operator = (const std::string & s)
+  StringCache & operator = (const T & s)
   {
     if ((s.length() + 1) > cache_size)
       {
         cache_size = s.length() + 1;
-        cache = (char *)realloc(cache, cache_size);
+        cache = (char_type *)realloc(cache, cache_size * sizeof(char_type));
       }
-    strcpy(cache, s.c_str());
+    memcpy(cache, s.c_str(), cache_size * sizeof(char_type));
     return *this;
   }
-  operator char *() const
+  operator char_type *() const
   {
     return cache;
   }
 private:
-  char *cache;
+  char_type *cache;
   size_t cache_size;
 };
 
@@ -291,9 +296,9 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
 
   switch (pNmHdr->code)
   {
-  case LVN_GETDISPINFO:
+  case LVN_GETDISPINFOW:
     {
-      NMLVDISPINFO *pNmLvDispInfo = (NMLVDISPINFO *)pNmHdr;
+      NMLVDISPINFOW *pNmLvDispInfo = (NMLVDISPINFOW *)pNmHdr;
 #if DEBUG
       Log (LOG_BABBLE) << "LVN_GETDISPINFO " << pNmLvDispInfo->item.iItem << endLog;
 #endif
@@ -302,7 +307,7 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
           int iRow = pNmLvDispInfo->item.iItem;
           int iCol = pNmLvDispInfo->item.iSubItem;
 
-          static StringCache s;
+          static StringCache<std::wstring> s;
           s = (*contents)[iRow]->get_text(iCol);
           pNmLvDispInfo->item.pszText = s;
 
@@ -429,7 +434,7 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
 
               case ListView::ControlType::checkbox:
                 {
-                  // get the subitem text
+                  // get the subitem text (as ASCII)
                   char buf[3];
                   ListView_GetItemText(hWndListView, iRow, iCol, buf, _countof(buf));
 
@@ -592,7 +597,7 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
 #endif
 
       // get the tooltip text for that item/subitem
-      static StringCache tooltip;
+      static StringCache<std::string> tooltip;
       tooltip = "";
       if (contents)
         tooltip = (*contents)[iRow]->get_tooltip(iCol);
@@ -631,7 +636,7 @@ ListView::popup_menu(int iRow, int iCol, POINT p)
   // construct menu
   HMENU hMenu = CreatePopupMenu();
 
-  MENUITEMINFO mii;
+  MENUITEMINFOW mii;
   memset(&mii, 0, sizeof(mii));
   mii.cbSize = sizeof(mii);
   mii.fMask = MIIM_FTYPE | MIIM_STATE | MIIM_STRING | MIIM_ID;
@@ -644,12 +649,12 @@ ListView::popup_menu(int iRow, int iCol, POINT p)
   for (i = al->list.begin (); i != al->list.end (); ++i, ++j)
     {
       BOOL res;
-      mii.dwTypeData = (char *)i->name.c_str();
+      mii.dwTypeData = const_cast <wchar_t *> (i->name.c_str());
       mii.fState = (i->selected ? MFS_CHECKED : MFS_UNCHECKED |
                     i->enabled ? MFS_ENABLED : MFS_DISABLED);
       mii.wID = j;
 
-      res = InsertMenuItem(hMenu, -1, TRUE, &mii);
+      res = InsertMenuItemW(hMenu, -1, TRUE, &mii);
       if (!res) Log (LOG_BABBLE) << "InsertMenuItem failed " << endLog;
     }
 

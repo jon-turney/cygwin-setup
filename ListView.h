@@ -31,7 +31,7 @@ class ListViewLine
   enum class State { collapsed, expanded, nothing=-1 };
 
   virtual ~ListViewLine() {};
-  virtual const std::string get_text(int col) const = 0;
+  virtual const std::wstring get_text(int col) const = 0;
   virtual State get_state() const = 0;
   virtual const std::string get_tooltip(int col) const = 0;
   virtual int get_indent() const = 0;

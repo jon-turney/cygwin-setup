@@ -18,9 +18,10 @@
 #include "PickView.h"
 #include "window.h"
 #include "package_meta.h"
+#include "resource.h"
 #include <sstream>
 
-const std::string
+const std::wstring
 PickCategoryLine::get_text (int col_num) const
 {
   if (col_num == pkgname_col)
@@ -29,13 +30,13 @@ PickCategoryLine::get_text (int col_num) const
       s << cat_tree->category().first;
       if (pkgcount)
         s << " (" << pkgcount << ")";
-      return s.str();
+      return string_to_wstring(s.str());
     }
   else if (col_num == new_col)
     {
-      return packagemeta::action_caption (cat_tree->action());
+      return LoadStringW(packagemeta::action_caption (cat_tree->action()));
     }
-  return "";
+  return L"";
 }
 
 int
@@ -68,11 +69,11 @@ PickCategoryLine::get_actions(int col) const
   ActionList *al = new ActionList();
   packagemeta::_actions current_default = cat_tree->action();
 
-  al->add("Default", (int)packagemeta::NoChange_action, (current_default == packagemeta::NoChange_action), TRUE);
-  al->add("Install", (int)packagemeta::Install_action, (current_default == packagemeta::Install_action), TRUE);
-  al->add(packagedb::task == PackageDB_Install ? "Reinstall" : "Retrieve",
+  al->add(IDS_ACTION_DEFAULT, (int)packagemeta::NoChange_action, (current_default == packagemeta::NoChange_action), TRUE);
+  al->add(IDS_ACTION_INSTALL, (int)packagemeta::Install_action, (current_default == packagemeta::Install_action), TRUE);
+  al->add(packagedb::task == PackageDB_Install ? IDS_ACTION_REINSTALL : IDS_ACTION_RETRIEVE,
           (int)packagemeta::Reinstall_action, (current_default == packagemeta::Reinstall_action), TRUE);
-  al->add("Uninstall", (int)packagemeta::Uninstall_action, (current_default == packagemeta::Uninstall_action), TRUE);
+  al->add(IDS_ACTION_UNINSTALL, (int)packagemeta::Uninstall_action, (current_default == packagemeta::Uninstall_action), TRUE);
 
   return al;
 }

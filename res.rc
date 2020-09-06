@@ -619,4 +619,13 @@ BEGIN
     IDS_PROGRESS_CALCULATING "Calculating..."
     IDS_PROGRESS_POSTINSTALL "Running..."
     IDS_PROGRESS_SOLVING "Solving dependencies..."
+    IDS_ACTION_DEFAULT "Default"
+    IDS_ACTION_INSTALL "Install"
+    IDS_ACTION_UNINSTALL "Uninstall"
+    IDS_ACTION_SKIP "Skip"
+    IDS_ACTION_KEEP "Keep"
+    IDS_ACTION_REINSTALL "Reinstall"
+    IDS_ACTION_RETRIEVE "Retrieve"
+    IDS_ACTION_UNKNOWN "Unknown"
+    IDS_ACTION_SOURCE "Source"
 END

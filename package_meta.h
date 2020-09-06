@@ -58,7 +58,7 @@ public:
      Reinstall_action,
      Uninstall_action,
     };
-  static const char *action_caption (_actions value);
+  static unsigned int action_caption (_actions value);
 
   void set_action (_actions, packageversion const & default_version,
                    bool useraction = false);
@@ -77,7 +77,7 @@ public:
     version_blacklist = _list;
   }
 
-  std::string action_caption () const;
+  std::wstring action_caption () const;
   packageversion trustp (bool _default, trusts const t) const
   {
     /* If the user chose "test" and a "test" version is available, return it. */
