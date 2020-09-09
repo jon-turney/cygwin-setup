@@ -1,0 +1,13 @@
+#!
+
+case $1 in
+    fr)
+        lang="LANG_FRENCH"
+        sublang="SUBLANG_FRENCH"
+        ;;
+    *)
+        echo "Don't know how to map locale '$1' to LANG/SUBLANG" 1>&2
+        exit 1
+esac
+
+echo "--lang=$lang --sublang=$sublang"

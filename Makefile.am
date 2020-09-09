@@ -274,8 +274,29 @@ setup_version.c : Makefile
 	echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp && \
 	mv version.tmp setup_version.c
 
+# rules for translation maintenance
+.PHONY: pot rc2po po2rc
+
+pot:
+	cd $(srcdir) && rc2po -P res/en/res.rc res.pot
+
+LINGUAS=fr
+
+rc2po:
+	cd $(srcdir) && \
+	for l in $(LINGUAS) ; do \
+		rc2po -t res/en/res.rc --charset=utf-8 res/$$l/res.rc po/$$l/ ; \
+	done
+
+po2rc:
+	cd $(srcdir) && \
+	for l in $(LINGUAS) ; do \
+		po2rc -t res/en/res.rc --charset-output=utf-8 $$(./langopts $$l) po/$$l/ res/$$l && \
+		d2u -q res/$$l/res.rc ; \
+	done
+
 # files included by res.rc
-res.o: setup.exe.manifest res/fr/res.rc
+res.o: setup.exe.manifest res/en/res.rc $(foreach l,$(LINGUAS),res/$l/res.rc)
 
 .rc.o:
 	$(AM_V_GEN)$(WINDRES) --codepage 65001 --include-dir $(srcdir) -o $@ $<

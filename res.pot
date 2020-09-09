@@ -1,0 +1,1136 @@
+#. extracted from res/en/res.rc
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-14 13:10+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Accelerator-Marker: &\n"
+"X-Generator: Translate Toolkit 3.6.2\n"
+"X-Merge-On: location\n"
+
+#: DIALOG.IDD_SOURCE.CAPTION
+msgid "Cygwin Setup - Choose Installation Type"
+msgstr ""
+
+#: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_NETINST
+msgid ""
+"&Install from Internet\n"
+"(downloaded files will be kept for future re-use)"
+msgstr ""
+
+#: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_DOWNLOAD
+msgid "&Download Without Installing"
+msgstr ""
+
+#: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_LOCALDIR
+msgid "Install from &Local Directory"
+msgstr ""
+
+#: DIALOG.IDD_SOURCE.LTEXT.IDC_STATIC_HEADER_TITLE
+msgid "Choose A Download Source"
+msgstr ""
+
+#: DIALOG.IDD_SOURCE.LTEXT.IDC_SOURCE_SUBTEXT
+msgid ""
+"Choose whether to install or download from the internet, or install from "
+"files in a local directory."
+msgstr ""
+
+#: DIALOG.IDD_VIRUS.CAPTION
+msgid "Cygwin Setup - Disable Virus Scanner?"
+msgstr ""
+
+#: DIALOG.IDD_VIRUS.CONTROL.IDC_DISABLE_AV
+msgid "&Disable Virus scanner"
+msgstr ""
+
+#: DIALOG.IDD_VIRUS.CONTROL.IDC_LEAVE_AV
+msgid "&Leave Virus scanner alone"
+msgstr ""
+
+#: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC_HEADER_TITLE
+msgid "Choose whether to disable your virus scanner while installing."
+msgstr ""
+
+#: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
+msgid ""
+"Some Antivirus programs, notably McAfee, cause a blue screen on Windows XP "
+"computers during installation of Cygwin."
+msgstr ""
+
+#: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
+msgid ""
+"One that may be a problem has been detected. Cygwin setup can disable this "
+"during the installation process, and re-enable it when the install is "
+"complete."
+msgstr ""
+
+#: DIALOG.IDD_LOCAL_DIR.CAPTION
+msgid "Cygwin Setup - Select Local Package Directory"
+msgstr ""
+
+#: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_STATIC_HEADER_TITLE
+msgid "Select Local Package Directory"
+msgstr ""
+
+#: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_DOWNLOAD_DESC
+msgid ""
+"Select a directory where you want Setup to store the installation files it "
+"downloads.  The directory will be created if it does not already exist."
+msgstr ""
+
+#: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
+msgid ""
+"Select a directory where Setup should look for downloaded installation files."
+msgstr ""
+
+#: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
+msgid "Local Package Directory"
+msgstr ""
+
+#: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
+msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
+msgid "B&rowse..."
+msgstr ""
+
+#: DIALOG.IDD_ROOT.CAPTION
+msgid "Cygwin Setup - Choose Installation Directory"
+msgstr ""
+
+#: DIALOG.IDD_ROOT.LTEXT.IDC_STATIC_HEADER_TITLE
+msgid "Select Root Install Directory"
+msgstr ""
+
+#: DIALOG.IDD_ROOT.LTEXT.IDC_ROOTDIR_SUBTEXT
+msgid ""
+"Select the directory where you want to install Cygwin.  Also choose a few "
+"installation parameters."
+msgstr ""
+
+#: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
+msgid "Root Directory"
+msgstr ""
+
+#: DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE
+msgctxt "DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE"
+msgid "B&rowse..."
+msgstr ""
+
+#: DIALOG.IDD_ROOT.GROUPBOX.IDC_INSTALLFOR_GRP
+msgid "Install For"
+msgstr ""
+
+#: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_SYSTEM
+msgid "&All Users (RECOMMENDED)"
+msgstr ""
+
+#: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
+msgid "Just &Me"
+msgstr ""
+
+#: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
+msgid "Cygwin will be available to all users of the system."
+msgstr ""
+
+#: DIALOG.IDD_ROOT.LTEXT.IDC_JUSTME_TEXT
+msgid ""
+"Cygwin will still be available to all users, but Desktop Icons, Cygwin Menu "
+"Entries, and important Installer information are only available to the "
+"current user.  Only select this if you lack Administrator privileges or if "
+"you have specific needs."
+msgstr ""
+
+#: DIALOG.IDD_SITE.CAPTION
+msgid "Cygwin Setup - Choose Download Site(s)"
+msgstr ""
+
+#: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
+msgid "Available Download Sites:"
+msgstr ""
+
+#: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
+msgid "Choose a site from this list, or add your own sites to the list"
+msgstr ""
+
+#: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
+msgid "Choose A Download Site"
+msgstr ""
+
+#: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
+msgid "User URL:"
+msgstr ""
+
+#: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
+msgid "Add"
+msgstr ""
+
+#: DIALOG.IDD_NET.CAPTION
+msgid "Cygwin Setup - Select Connection Type"
+msgstr ""
+
+#: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
+msgid "Use &System Proxy Settings"
+msgstr ""
+
+#: DIALOG.IDD_NET.CONTROL.IDC_NET_DIRECT
+msgid "&Direct Connection"
+msgstr ""
+
+#: DIALOG.IDD_NET.CONTROL.IDC_NET_PROXY
+msgid "Use HTTP/FTP &Proxy:"
+msgstr ""
+
+#: DIALOG.IDD_NET.RTEXT.IDC_STATIC
+msgid "Proxy &Host"
+msgstr ""
+
+#: DIALOG.IDD_NET.RTEXT.IDC_STATIC
+msgid "Por&t"
+msgstr ""
+
+#: DIALOG.IDD_NET.LTEXT.IDC_STATIC
+msgid ""
+"Setup needs to know how you want it to connect to the internet.  Choose the "
+"appropriate settings below."
+msgstr ""
+
+#: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
+msgid "Select Your Internet Connection"
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.CAPTION
+msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
+"DIALOG.IDD_INSTATUS.CAPTION"
+msgid "Cygwin Setup"
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
+msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
+msgid "Installing..."
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_PKG
+msgid "(PKG)"
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_FILE
+msgid "(FILE)"
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+msgid "Progress1"
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS"
+msgid "Progress1"
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS"
+msgid "Progress1"
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE
+msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE"
+msgid "Package:"
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_TOTAL
+msgid "Total:"
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_DISK
+msgid "Disk:"
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC
+msgid "This page displays the progress of the download or installation."
+msgstr ""
+
+#: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC_HEADER_TITLE
+msgid "Progress"
+msgstr ""
+
+#: DIALOG.IDD_PROXY_AUTH.CAPTION
+msgid "Proxy Authentication required"
+msgstr ""
+
+#: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
+msgid "Proxy &User ID"
+msgstr ""
+
+#: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
+msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgid "&Password"
+msgstr ""
+
+#: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
+msgid "Proxy Authorization Required"
+msgstr ""
+
+#: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
+msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+msgid "&OK"
+msgstr ""
+
+#: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
+msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgid "Cancel"
+msgstr ""
+
+#: DIALOG.IDD_NET_AUTH.CAPTION
+msgid "Server Authentication required"
+msgstr ""
+
+#: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
+msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
+msgid "&User ID"
+msgstr ""
+
+#: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
+msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
+msgid "&Password"
+msgstr ""
+
+#: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
+msgid "Server Authorization Required"
+msgstr ""
+
+#: DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK
+msgctxt "DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK"
+msgid "&OK"
+msgstr ""
+
+#: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
+msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
+msgid "Cancel"
+msgstr ""
+
+#: DIALOG.IDD_SPLASH.CAPTION
+msgctxt "DIALOG.IDD_SPLASH.CAPTION"
+msgid "Cygwin Setup"
+msgstr ""
+
+#: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
+msgid "Cygwin Net Release Setup Program"
+msgstr ""
+
+#: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TEXT
+msgid ""
+"This setup program is used for the initial installation of the Cygwin "
+"environment as well as all subsequent updates. The pages that follow will "
+"guide you through the installation.\r\n"
+"\r\n"
+"Please note that we only install a base set of packages by default.  Cygwin "
+"provides a large number of packages spanning a wide variety of purposes.\r\n"
+"\r\n"
+"You can always run this program at any time in the future to add, remove, or "
+"upgrade packages as necessary."
+msgstr ""
+
+#: DIALOG.IDD_DESKTOP.CAPTION
+msgid "Cygwin Setup - Installation Status and Create Icons"
+msgstr ""
+
+#: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
+msgid "Create icon on &Desktop"
+msgstr ""
+
+#: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
+msgid "Add icon to &Start Menu"
+msgstr ""
+
+#: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_INSTALL
+msgid ""
+"Tell setup if you want it to create a few icons for convenient access to the "
+"Cygwin environment."
+msgstr ""
+
+#: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_INSTALL
+msgid "Create Icons"
+msgstr ""
+
+#: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
+msgid "Shows installation status in download-only mode."
+msgstr ""
+
+#: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
+msgid "Installation complete"
+msgstr ""
+
+#: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS_HEADER
+msgid "Installation Status"
+msgstr ""
+
+#: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS
+msgid "Cygwin installation completed successfully."
+msgstr ""
+
+#: DIALOG.IDD_FTP_AUTH.CAPTION
+msgid "FTP Authentication required"
+msgstr ""
+
+#: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
+msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
+msgid "&User ID"
+msgstr ""
+
+#: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
+msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
+msgid "&Password"
+msgstr ""
+
+#: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
+msgid "FTP Authorization Required"
+msgstr ""
+
+#: DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK
+msgctxt "DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK"
+msgid "&OK"
+msgstr ""
+
+#: DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL
+msgctxt "DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL"
+msgid "Cancel"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.CAPTION
+msgid "Cygwin Setup - Select Packages"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
+msgid "&View"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.RTEXT.IDC_STATIC
+msgid "&Search"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_DO_SEARCH
+msgid "Search "
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.PUSHBUTTON.IDC_CHOOSE_CLEAR_SEARCH
+msgid "&Clear"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_KEEP
+msgid "&Keep"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_BEST
+msgid "&Best"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_SYNC
+msgid "&Sync"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
+msgid "&Test"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
+msgid "&Hide obsolete packages"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
+msgid "Select packages to download"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_INSTALL
+msgid "Select packages to install"
+msgstr ""
+
+#: DIALOG.IDD_CHOOSE.LTEXT.IDC_STATIC_HEADER_TITLE
+msgid "Select Packages"
+msgstr ""
+
+#: DIALOG.IDD_PREREQ.CAPTION
+msgid "Cygwin Setup - Resolving Dependencies"
+msgstr ""
+
+#: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC_HEADER_TITLE
+msgid "Resolving Dependencies"
+msgstr ""
+
+#: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC
+msgid "The following problems occured trying to satisfy dependencies."
+msgstr ""
+
+#: DIALOG.IDD_PREREQ.CONTROL.IDC_PREREQ_CHECK
+msgid "&Accept default problem solutions"
+msgstr ""
+
+#: DIALOG.IDD_CONFIRM.CAPTION
+msgid "Cygwin Setup - Review and confirm changes"
+msgstr ""
+
+#: DIALOG.IDD_CONFIRM.LTEXT.IDC_STATIC_HEADER_TITLE
+msgid "Review and confirm changes"
+msgstr ""
+
+#: DIALOG.IDD_DROPPED.CAPTION
+msgid "Cygwin Setup - Use dropped mirrors?"
+msgstr ""
+
+#: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
+msgid "Warning:"
+msgstr ""
+
+#: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
+msgid ""
+"One or more mirrors you have selected is/are not on the list of official "
+"Cygwin mirrors any more. It/They may be out of date or missing some packages."
+"\n"
+"This affects the following mirror(s):"
+msgstr ""
+
+#: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
+msgid ""
+"If you experience installation problems consider trying official mirrors "
+"only.\n"
+"\n"
+"Do you want to continue, using this/these mirror(s)?"
+msgstr ""
+
+#: DIALOG.IDD_DROPPED.CONTROL.IDC_DROP_NOWARN
+msgid "&Don't warn me about this/these mirror(s) again"
+msgstr ""
+
+#: DIALOG.IDD_DROPPED.PUSHBUTTON.IDYES
+msgid "&Yes"
+msgstr ""
+
+#: DIALOG.IDD_DROPPED.DEFPUSHBUTTON.IDNO
+msgid "&No"
+msgstr ""
+
+#: DIALOG.IDD_DOWNLOAD_ERROR.CAPTION
+msgid "Download Incomplete"
+msgstr ""
+
+#: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
+msgid "The following package(s) had download errors:"
+msgstr ""
+
+#: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
+msgid ""
+"Select 'Retry' to retry the download, 'Back' to return to the package "
+"selection page, 'Continue' to go on anyway (NOT RECOMMENDED), or 'Cancel' to "
+"exit."
+msgstr ""
+
+#: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
+msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
+msgid "&Retry"
+msgstr ""
+
+#: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
+msgid "&Back"
+msgstr ""
+
+#: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE
+msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE"
+msgid "&Continue"
+msgstr ""
+
+#: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT
+msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT"
+msgid "Cancel"
+msgstr ""
+
+#: DIALOG.IDD_POSTINSTALL.CAPTION
+msgid "Cygwin Setup - Running postinstall scripts"
+msgstr ""
+
+#: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
+msgid "Postinstall script errors"
+msgstr ""
+
+#: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC
+msgid ""
+"These do not necessarily mean that affected packages will fail to function "
+"properly, but please check /var/log/setup.log.full and report any problems."
+msgstr ""
+
+#: DIALOG.IDD_FILE_INUSE.CAPTION
+msgid "In-use file detected"
+msgstr ""
+
+#: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG
+msgctxt "DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG"
+msgid "Unable to extract"
+msgstr ""
+
+#: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_STATIC
+msgid "The file is in use by the following processes:"
+msgstr ""
+
+#: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_0
+msgid ""
+"Select 'Retry' to retry, select 'Stop' to stop processes and retry, or "
+"select 'Continue' to go on anyway (the file will be updated after a reboot)."
+msgstr ""
+
+#: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_1
+msgid ""
+"Select 'Retry' to retry, select 'Kill' to kill processes and retry, or "
+"select 'Continue' to go on anyway (the file will be updated after a reboot)."
+msgstr ""
+
+#: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_2
+msgid ""
+"Select 'Retry' to retry, select 'Kill' to forcibly kill all processes and "
+"retry, or select 'Continue' to go on anyway (the file will be updated after "
+"a reboot)."
+msgstr ""
+
+#: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE
+msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE"
+msgid "&Retry"
+msgstr ""
+
+#: DIALOG.IDD_FILE_INUSE.DEFPUSHBUTTON.IDRETRY
+msgid "&Stop Processes"
+msgstr ""
+
+#: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE
+msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE"
+msgid "&Continue"
+msgstr ""
+
+#: STRINGTABLE.IDS_ROOT_SLASH
+msgid ""
+"Warning: we recommend you do not use the root of your hard drive as the "
+"cygwin root, to prevent possible conflicts with other programs.  Proceed "
+"anyway?"
+msgstr ""
+
+#: STRINGTABLE.IDS_ROOT_SPACE
+msgid ""
+"You should not choose a root path that include spaces in directory names.  "
+"Proceed anyway?"
+msgstr ""
+
+#: STRINGTABLE.IDS_ERR_OPEN_WRITE
+msgid "Can't open %s for writing: %s"
+msgstr ""
+
+#: STRINGTABLE.IDS_SETUPINI_MISSING
+msgid "Unable to get %s from <%s>"
+msgstr ""
+
+#: STRINGTABLE.IDS_OLD_SETUPINI
+msgid ""
+"This setup.ini is older than the one you used last time you installed "
+"cygwin.  Proceed anyway?"
+msgstr ""
+
+#: STRINGTABLE.IDS_NOTHING_INSTALLED
+msgid "Nothing needed to be installed"
+msgstr ""
+
+#: STRINGTABLE.IDS_INSTALL_COMPLETE
+msgid "Installation Complete"
+msgstr ""
+
+#: STRINGTABLE.IDS_REBOOT_REQUIRED
+msgid ""
+"In-use files have been replaced. You need to reboot as soon as possible to "
+"activate the new versions. Cygwin may operate incorrectly until you reboot."
+msgstr ""
+
+#: STRINGTABLE.IDS_ERR_OPEN_READ
+msgid "Can't open %s for reading: %s"
+msgstr ""
+
+#: STRINGTABLE.IDS_ROOT_ABSOLUTE
+msgid ""
+"The install directory must be absolute, with both a drive letter and leading "
+"slash, like C:\\Cygwin"
+msgstr ""
+
+#: STRINGTABLE.IDS_DOWNLOAD_COMPLETE
+msgid "Download Complete"
+msgstr ""
+
+#: STRINGTABLE.IDS_NOLOGFILE
+msgid "Cannot open log file %s for writing"
+msgstr ""
+
+#: STRINGTABLE.IDS_UNINSTALL_COMPLETE
+msgid "Uninstalls complete."
+msgstr ""
+
+#: STRINGTABLE.IDS_ERR_CHDIR
+msgid "Could not change dir to %s: %s [%.8x]"
+msgstr ""
+
+#: STRINGTABLE.IDS_OLD_SETUP_VERSION
+msgid ""
+"This setup is version %s, but setup.ini claims version %s is available.\n"
+"You might want to upgrade to get the latest features and bug fixes."
+msgstr ""
+
+#: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE
+msgid "Download Incomplete.  Try again?"
+msgstr ""
+
+#: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE_EXIT
+msgid "Download incomplete.  Check %s for details"
+msgstr ""
+
+#: STRINGTABLE.IDS_INSTALL_ERROR
+msgid "Installation error (%s), Continue with other packages?"
+msgstr ""
+
+#: STRINGTABLE.IDS_INSTALL_INCOMPLETE
+msgid "Installation incomplete.  Check %s for details"
+msgstr ""
+
+#: STRINGTABLE.IDS_CORRUPT_PACKAGE
+msgid "Package %s has a corrupt local copy, please remove and retry."
+msgstr ""
+
+#: STRINGTABLE.IDS_QUERY_CORRUPT
+msgid "The file %s is corrupt.  Delete it and download again?"
+msgstr ""
+
+#: STRINGTABLE.IDS_SKIP_PACKAGE
+msgid ""
+"%s\n"
+"Do you want to skip this package ?"
+msgstr ""
+
+#: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION
+msgid ""
+"Fatal Error: Uncaught Exception\n"
+"Thread: %s\n"
+"Type: %s\n"
+"Message: %s"
+msgstr ""
+
+#: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
+msgid ""
+"Fatal Error: Uncaught Exception\n"
+"Thread: %s\n"
+"Type: %s\n"
+"Message: %s\n"
+"AppErrNo: %d"
+msgstr ""
+
+#: STRINGTABLE.IDS_TRUSTKEEP_TOOLTIP
+msgid ""
+"Sets all packages to their currently installed version.  This is equivalent "
+"to telling setup not to make any changes to any package."
+msgstr ""
+
+#: STRINGTABLE.IDS_TRUSTCURR_TOOLTIP
+msgid "Sets all packages to the best version available. (RECOMMENDED)"
+msgstr ""
+
+#: STRINGTABLE.IDS_TRUSTSYNC_TOOLTIP
+msgid ""
+"Sets all packages to the version available from the package repository, "
+"downgrading if necessary."
+msgstr ""
+
+#: STRINGTABLE.IDS_TRUSTEXP_TOOLTIP
+msgid "Enable test packages."
+msgstr ""
+
+#: STRINGTABLE.IDS_VIEWBUTTON_TOOLTIP
+msgid ""
+"Select the package view.  This determines which packages are shown below.\r\n"
+"\r\n"
+"Category: Group by package category.  Click on '+' to expand.\r\n"
+"\r\n"
+"Full: Show all packages.\r\n"
+"\r\n"
+"Pending: Show only packages that are about to be installed, removed, or "
+"upgraded.  This tells you what is going to change when you press 'Next'.\r\n"
+"\r\n"
+"Up To Date: Show installed packages that need no action because they are at "
+"the desired version already.\r\n"
+"\r\n"
+"Not installed: Show packages that are are not currently installed and "
+"haven't been selected for installation.\r\n"
+"\r\n"
+"Picked: Show installed packages that were selected, not installed as a "
+"dependency."
+msgstr ""
+
+#: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
+msgid ""
+"If selected, setup will hide packages in categories with names that begin "
+"with '_'.  Such packages are usually empty placeholders for packages that "
+"have been removed or renamed, or are infrastructure packages that are "
+"handled automatically."
+msgstr ""
+
+#: STRINGTABLE.IDS_SIG_INVALID
+msgid ""
+"Mirror Error:  Setup.ini signature %s from %s failed to verify.\n"
+"Possible corrupt mirror?  Setup.ini rejected."
+msgstr ""
+
+#: STRINGTABLE.IDS_CRYPTO_ERROR
+msgid "Internal Error:  gcrypt library error %d %s"
+msgstr ""
+
+#: STRINGTABLE.IDS_SEARCH_TOOLTIP
+msgid "Search for this string in package names."
+msgstr ""
+
+#: STRINGTABLE.IDS_MAYBE_MKDIR
+msgid "Directory %s does not exist, would you like me to create it?"
+msgstr ""
+
+#: STRINGTABLE.IDS_CANT_MKDIR
+msgid "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
+msgstr ""
+
+#: STRINGTABLE.IDS_NO_LOCALDIR
+msgid ""
+"Local package directory %s not found.\n"
+"You can still remove installed\n"
+"packages, but there will be nothing to install.\n"
+"\n"
+"Press OK if that's what you wanted\n"
+"or Cancel to choose a different directory."
+msgstr ""
+
+#: STRINGTABLE.IDS_ELEVATED
+msgid "Hand installation over to elevated child process."
+msgstr ""
+
+#: STRINGTABLE.IDS_INSTALLEDB_VERSION
+msgid "Unknown INSTALLED.DB version"
+msgstr ""
+
+#: STRINGTABLE.IDS_NO_MIRROR_LST
+msgid "Could not download mirror sites list"
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_PROGRESS
+msgid "Progress:"
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_PACKAGE
+msgctxt "STRINGTABLE.IDS_PROGRESS_PACKAGE"
+msgid "Package:"
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_CONNECTING
+msgid "Connecting..."
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_CHECKING
+msgid "Checking for packages to download..."
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_DOWNLOADING
+msgid "Downloading..."
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_PARSING
+msgid "Parsing..."
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_PREREMOVE
+msgid "Running preremove script..."
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_UNINSTALL
+msgid "Uninstalling..."
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_INSTALL
+msgctxt "STRINGTABLE.IDS_PROGRESS_INSTALL"
+msgid "Installing..."
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_CALCULATING
+msgid "Calculating..."
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_POSTINSTALL
+msgid "Running..."
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_SOLVING
+msgid "Solving dependencies..."
+msgstr ""
+
+#: STRINGTABLE.IDS_ACTION_DEFAULT
+msgid "Default"
+msgstr ""
+
+#: STRINGTABLE.IDS_ACTION_INSTALL
+msgctxt "STRINGTABLE.IDS_ACTION_INSTALL"
+msgid "Install"
+msgstr ""
+
+#: STRINGTABLE.IDS_ACTION_UNINSTALL
+msgctxt "STRINGTABLE.IDS_ACTION_UNINSTALL"
+msgid "Uninstall"
+msgstr ""
+
+#: STRINGTABLE.IDS_ACTION_SKIP
+msgid "Skip"
+msgstr ""
+
+#: STRINGTABLE.IDS_ACTION_KEEP
+msgid "Keep"
+msgstr ""
+
+#: STRINGTABLE.IDS_ACTION_REINSTALL
+msgid "Reinstall"
+msgstr ""
+
+#: STRINGTABLE.IDS_ACTION_RETRIEVE
+msgid "Retrieve"
+msgstr ""
+
+#: STRINGTABLE.IDS_ACTION_UNKNOWN
+msgid "Unknown"
+msgstr ""
+
+#: STRINGTABLE.IDS_ACTION_SOURCE
+msgid "Source"
+msgstr ""
+
+#: STRINGTABLE.IDS_VIEW_FULL
+msgid "Full"
+msgstr ""
+
+#: STRINGTABLE.IDS_VIEW_PENDING
+msgid "Pending"
+msgstr ""
+
+#: STRINGTABLE.IDS_VIEW_UPTODATE
+msgid "Up To Date"
+msgstr ""
+
+#: STRINGTABLE.IDS_VIEW_NOTINSTALLED
+msgid "Not Installed"
+msgstr ""
+
+#: STRINGTABLE.IDS_VIEW_PICKED
+msgid "Picked"
+msgstr ""
+
+#: STRINGTABLE.IDS_VIEW_CATEGORY
+msgid "Category"
+msgstr ""
+
+#: STRINGTABLE.IDS_COLUMN_PACKAGE
+msgid "Package"
+msgstr ""
+
+#: STRINGTABLE.IDS_COLUMN_CURRENT
+msgid "Current"
+msgstr ""
+
+#: STRINGTABLE.IDS_COLUMN_NEW
+msgid "New"
+msgstr ""
+
+#: STRINGTABLE.IDS_COLUMN_SOURCE
+msgid "Src?"
+msgstr ""
+
+#: STRINGTABLE.IDS_COLUMN_CATEGORIES
+msgid "Categories"
+msgstr ""
+
+#: STRINGTABLE.IDS_COLUMN_SIZE
+msgid "Size"
+msgstr ""
+
+#: STRINGTABLE.IDS_COLUMN_DESCR
+msgid "Description"
+msgstr ""
+
+#: STRINGTABLE.IDS_MBOX_CAPTION
+msgctxt "STRINGTABLE.IDS_MBOX_CAPTION"
+msgid "Cygwin Setup"
+msgstr ""
+
+#: STRINGTABLE.IDS_EXTRACTION_FAILED
+msgid "Unable to extract /%s -- corrupt package?"
+msgstr ""
+
+#: STRINGTABLE.IDS_EXTRACTION_INUSE
+msgid ""
+"Unable to extract /%s -- error writing file\r\n"
+"\r\n"
+"The file is in use or some other error occurred.\r\n"
+"\r\n"
+"Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
+"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\r\n"
+msgstr ""
+
+#: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
+msgid ""
+"An old version of cygwin1.dll was found here:\r\n"
+"%s\r\n"
+"Delete?"
+msgstr ""
+
+#: STRINGTABLE.IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
+msgid ""
+"Couldn't delete file %s.\r\n"
+"Is the DLL in use by another application?\r\n"
+"You should delete the old version of cygwin1.dll at your earliest "
+"convenience."
+msgstr ""
+
+#: STRINGTABLE.IDS_SHELLLINK_FAILED
+msgid ""
+"CoCreateInstance failed with error 0x%x.\n"
+"Setup will not be able to create Cygwin Icons in the Start Menu or on the "
+"Desktop."
+msgstr ""
+
+#: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_VERSION
+msgid "Cygwin is not supported on this Windows version"
+msgstr ""
+
+#: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
+msgid ""
+"Cygwin support for this Windows version is deprecated, and will be removed "
+"in the next major version"
+msgstr ""
+
+#: STRINGTABLE.IDS_DEPRECATED_WINDOWS_ARCH
+msgid ""
+"Cygwin support for 32-bit Windows is deprecated, and will be removed in the "
+"next major version"
+msgstr ""
+
+#: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
+msgid "Couldn't create registry key to store installation path"
+msgstr ""
+
+#: STRINGTABLE.IDS_NIO_ERROR
+msgid "Internet Error: %s"
+msgstr ""
+
+#: STRINGTABLE.IDS_PREREQ_UNSOLVED_PROBLEMS
+msgid ""
+"WARNING - Unsolved Problems\r\n"
+"\r\n"
+"Some packages may not work properly if you continue.\r\n"
+"\r\n"
+"Are you sure you want to proceed (NOT RECOMMENDED)?"
+msgstr ""
+
+#: STRINGTABLE.IDS_MIXED_BITNESS_ERROR
+msgid ""
+"Target CPU mismatch\r\n"
+"\r\n"
+"You're trying to install a %s bit version of Cygwin into a directory "
+"containing a %s bit version of Cygwin.  Continuing to do so would break the "
+"existing installation.\r\n"
+"\r\n"
+"Either run setup-%s.exe to update your existing %s bit installation of "
+"Cygwin, or choose another directory for your %s bit installation."
+msgstr ""
+
+#: STRINGTABLE.IDS_GET_SITELIST_ERROR
+msgid ""
+"Can't get list of download sites.\r\n"
+"Make sure your network settings are correct and try again."
+msgstr ""
+
+#: STRINGTABLE.IDS_CONFIRM_EXIT
+msgid ""
+"Are you sure you want to exit setup? Any current download or installation "
+"will be aborted."
+msgstr ""
+
+#: STRINGTABLE.IDS_CONTINUE
+msgid "Continue"
+msgstr ""
+
+#: STRINGTABLE.IDS_CHOOSER_EMPTY_NO_PACKAGES
+msgid "No packages found."
+msgstr ""
+
+#: STRINGTABLE.IDS_CHOOSER_EMPTY_DOWNLOAD
+msgid "Nothing to download."
+msgstr ""
+
+#: STRINGTABLE.IDS_CHOOSER_EMPTY_INSTALL
+msgid "Nothing to install or update."
+msgstr ""
+
+#: STRINGTABLE.IDS_ROOT_BROWSE_TITLE
+msgid "Select an installation root directory"
+msgstr ""
+
+#: STRINGTABLE.IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE
+msgid "Select download directory"
+msgstr ""
+
+#: STRINGTABLE.IDS_LOCALDIR_BROWSE_PACKAGE_TITLE
+msgid "Select local package directory"
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_CHECKING_HASH
+msgid "Checking %s for %s"
+msgstr ""
+
+#: STRINGTABLE.IDS_PROGRESS_DOWNLOADING_FROM
+msgid "%s from %s"
+msgstr ""
+
+#: STRINGTABLE.IDS_CONFIRM_UNINSTALL
+msgctxt "STRINGTABLE.IDS_CONFIRM_UNINSTALL"
+msgid "Uninstall"
+msgstr ""
+
+#: STRINGTABLE.IDS_CONFIRM_INSTALL
+msgctxt "STRINGTABLE.IDS_CONFIRM_INSTALL"
+msgid "Install"
+msgstr ""
+
+#: STRINGTABLE.IDS_CONFIRM_DOWNLOAD
+msgid "Download"
+msgstr ""
+
+#: STRINGTABLE.IDS_CONFIRM_NOTHING
+msgid "No changes"
+msgstr ""
+
+#: STRINGTABLE.IDS_CONFIRM_AUTO_ADD
+msgid "(automatically added)"
+msgstr ""
+
+#: STRINGTABLE.IDS_CONFIRM_SOURCE
+msgid "(source)"
+msgstr ""
+
+#: STRINGTABLE.IDS_FILE_INUSE_KILL
+msgid "&Kill Processes"
+msgstr ""
+
+#: STRINGTABLE.IDS_FILE_INUSE_MSG
+msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
+msgid "Unable to extract"
+msgstr ""
