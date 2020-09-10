@@ -129,7 +129,7 @@ LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam) {
 int
 mbox(HWND owner, unsigned int format_id, int mb_type, ...)
 {
-  std::wstring fmt = LoadStringW(format_id);
+  std::wstring fmt = LoadStringWEx(format_id, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
   if (fmt.empty())
     fmt = L"Internal error: format string resource not found";
 
@@ -138,11 +138,19 @@ mbox(HWND owner, unsigned int format_id, int mb_type, ...)
   std::wstring buf = vformat(fmt, args);
   va_end(args);
 
-  // write to log as UTF8
+  // write unlocalized to log as UTF8
   Log (LOG_PLAIN) << "mbox " << ": " << wstring_to_string(buf) << endLog;
 
   if (unattended_mode)
     return unattended_result(mb_type);
+
+  fmt = LoadStringW(format_id);
+  if (fmt.empty())
+    fmt = L"Internal error: format string resource not found";
+
+  va_start(args, mb_type);
+  buf = vformat(fmt, args);
+  va_end(args);
 
   bool retry_continue = (mb_type & MB_TYPEMASK) == MB_RETRYCONTINUE;
   if (retry_continue) {

@@ -463,6 +463,38 @@ WowNativeMachine ()
 }
 
 const std::wstring
+LoadStringWEx(UINT uID, UINT langId)
+{
+  HINSTANCE hInstance = GetModuleHandle(NULL);
+
+  // Convert the string ID into a bundle number
+  LPCSTR bundle = MAKEINTRESOURCE(uID / 16 + 1);
+  HRSRC hRes = ::FindResourceEx(hInstance, RT_STRING, bundle, langId);
+  if (hRes)
+    {
+      HGLOBAL h = ::LoadResource(hInstance, hRes);
+      if (h)
+        {
+          HGLOBAL hGlob = ::LockResource(h);
+
+          // walk string bundle
+          wchar_t *buf = (wchar_t *)hGlob;
+          for (unsigned int i = 0; i < (uID & 15); i++)
+            {
+              buf += 1 + (UINT)*buf;
+            }
+
+          int len = *buf;
+          return std::wstring(buf + 1, len);
+        }
+    }
+  // N.B.: Due to the way string bundles are encoded, there's no difference
+  // between an absent string resource whose bundle is present, and a string
+  // resource containing the null string.
+  return L"";
+}
+
+const std::wstring
 LoadStringW(unsigned int uID)
 {
   wchar_t *buf;
