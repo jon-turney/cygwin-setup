@@ -30,6 +30,7 @@
 #include "setup_version.h"
 #include "getopt++/StringOption.h"
 #include <sstream>
+#include <iomanip>
 
 static StringOption UserAgent ("", '\0', "user-agent", "User agent string for HTTP requests");
 
@@ -79,8 +80,18 @@ determine_default_useragent(void)
   else
     bitness = machine_name(processMachine);
 
-  default_useragent = std::string("Cygwin-Setup/") + setup_version + " (" + os.str() + ";" + bitness + ")";
-  Log(LOG_BABBLE) << "User-Agent: default is \"" << default_useragent << "\"" << endLog;
+  typedef LANGID (WINAPI *PFNGETTHREADUILANGUAGE)();
+  PFNGETTHREADUILANGUAGE pfnGetThreadUILanguage = (PFNGETTHREADUILANGUAGE)GetProcAddress(GetModuleHandle("kernel32"), "GetThreadUILanguage");
+  std::stringstream langid;
+  if (pfnGetThreadUILanguage)
+    {
+      LANGID l = pfnGetThreadUILanguage();
+      langid << std::hex << std::setw(4) << std::setfill('0') << l;
+    }
+
+  default_useragent = std::string("Cygwin-Setup/") + setup_version + " (" + os.str() + ";" + bitness + ";" + langid.str() + ")";
+  Log (LOG_BABBLE) << "User-Agent: default is \"" << default_useragent << "\"" << endLog;
+
   return default_useragent;
 }
 
