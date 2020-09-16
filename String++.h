@@ -42,4 +42,6 @@ class casecompare_lt_op
 inline std::string operator+ (const char *a, const std::string& b)
 { return std::string(a) + b; }
 
+std::wstring string_to_wstring(const std::string &s);
+
 #endif /* SETUP_STRING___H */

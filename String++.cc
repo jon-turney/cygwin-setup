@@ -11,6 +11,7 @@
  */
 
 #include "String++.h"
+#include "win32.h"
 #include <string.h>
 #include <sstream>
 #include <algorithm>
@@ -95,4 +96,21 @@ replace(const std::string& haystack, const std::string& needle,
     rv.replace(pos, n_len, replacement);
     search_start = pos + r_len;
   }
+}
+
+// convert a UTF-8 string to a UTF-16 wstring
+std::wstring string_to_wstring(const std::string &s)
+{
+  int n = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, NULL, 0);
+
+  if (n <= 0)
+    return L"conversion failed";
+
+  wchar_t *buf = new wchar_t[n+1];
+  MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, buf, n);
+
+  std::wstring w(buf);
+  delete[] buf;
+
+  return w;
 }
