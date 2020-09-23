@@ -158,7 +158,7 @@ archive_tar::next_file_name ()
   else if (state.have_longname)
     state.have_longname = 0;
 
-  sscanf (state.tar_header.size, "%Io", &state.file_length);
+  sscanf (state.tar_header.size, "%zo", &state.file_length);
   state.file_offset = 0;
 
   if (_tar_verbose)
@@ -178,7 +178,7 @@ archive_tar::next_file_name ()
                           CYG_PATH_MAX);
 	  err++;
 	  state.parent->read (&state.tar_header, 512);
-	  sscanf (state.tar_header.size, "%Io", &state.file_length);
+	  sscanf (state.tar_header.size, "%zo", &state.file_length);
 	  state.file_offset = 0;
 	  skip_file ();
 	  return next_file_name ();
