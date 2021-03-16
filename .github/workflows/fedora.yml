@@ -1,0 +1,24 @@
+name: Fedora
+
+on: push
+
+jobs:
+  fedora-build:
+    name: Fedora
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+    # install git, so checkout uses git to fetch repository, so 'git describe' works
+    - name: Install git
+      run: dnf install -y git
+
+    # fetch all history for all tags for 'git describe'
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Install build prerequisites
+      run: packaging-scripts/fedora-prereqs-install.sh
+
+    - name: Build
+      run: packaging-scripts/conf.sh upx
