@@ -28,7 +28,8 @@ AM_CFLAGS = $(BASECXXFLAGS) -Wmissing-declarations -Winline \
 AM_YFLAGS = -d
 AM_LFLAGS = -8
 WINDRES = @WINDRES@
-AM_CPPFLAGS = -DLZMA_API_STATIC -I$(srcdir)/libgetopt++/include \
+AM_CPPFLAGS = -D__USE_MINGW_ANSI_STDIO=1 -DLZMA_API_STATIC\
+	       -I$(srcdir)/libgetopt++/include \
 	       $(ZLIB_CFLAGS) $(LZMA_CFLAGS) $(ZSTD_CFLAGS) $(LIBCRYPT_CFLAGS) $(LIBSOLV_CFLAGS)
 
 inilex_CXXFLAGS:=-Wno-sign-compare
