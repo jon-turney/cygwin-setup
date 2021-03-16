@@ -94,7 +94,8 @@ inilint_SOURCES = \
 	$(BZ2_LIBS) \
 	$(ZLIB_LIBS) \
 	$(LIBSOLV_LIBS) -lregex \
-	-lshlwapi -lcomctl32 -lole32 -lpsapi -luuid -lntdll -lwininet -lws2_32 -lmingw32
+	-lshlwapi -lcomctl32 -lole32 -lpsapi -luuid -lntdll -lwininet -lws2_32 \
+	-lmingw32 -lssp
 @SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 @SETUP@_SOURCES = \
 	actionlist.h \
