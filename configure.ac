@@ -80,5 +80,19 @@ esac
 AC_SUBST(SETUP)
 AC_SUBST(ARCH)
 
+dnl check exception personality
+AC_MSG_CHECKING([compiler exception personality])
+AC_LANG([C++])
+AC_COMPILE_IFELSE(
+  [AC_LANG_SOURCE([
+#ifdef _X86_
+#ifndef __USING_SJLJ_EXCEPTIONS__
+#error not using sjlj exceptions
+#endif
+#endif
+  ])],
+  [AC_MSG_RESULT([ok])],
+  [AC_MSG_FAILURE([Must not be built with a compiler which uses dwarf2 exception handling])])
+
 AC_CONFIG_FILES([Makefile tests/Makefile])
 AC_OUTPUT
