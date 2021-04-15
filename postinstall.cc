@@ -240,6 +240,8 @@ do_postinstall_reflector (void *p)
   HANDLE *context;
   context = (HANDLE *) p;
 
+  SetThreadUILanguage(langid);
+
   try
   {
     std::string s = do_postinstall_thread ((HINSTANCE) context[0], (HWND) context[1]);
@@ -280,4 +282,3 @@ do_postinstall (HINSTANCE h, HWND owner)
   DWORD threadID;
   CreateThread (NULL, 0, do_postinstall_reflector, context, 0, &threadID);
 }
-

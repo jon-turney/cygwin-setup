@@ -954,6 +954,8 @@ do_install_reflector (void *p)
   HANDLE *context;
   context = (HANDLE *) p;
 
+  SetThreadUILanguage(langid);
+
   try
   {
     do_install_thread ((HINSTANCE) context[0], (HWND) context[1]);

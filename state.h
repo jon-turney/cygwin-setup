@@ -16,6 +16,8 @@
 #ifndef SETUP_STATE_H
 #define SETUP_STATE_H
 
+#include "win32.h"
+
 /* The purpose of this file is to contain all the global variables
    that define the "state" of the install, that is, all the
    information that the user has provided so far.  These are set by
@@ -43,5 +45,7 @@ extern int root_text;
 extern int root_scope;
 extern int root_menu;
 extern int root_desktop;
+
+extern LANGID langid;
 
 #endif /* SETUP_STATE_H */

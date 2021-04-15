@@ -450,6 +450,8 @@ do_download_site_info_thread (void *p)
   HWND h;
   context = (HANDLE *) p;
 
+  SetThreadUILanguage(langid);
+
   try
   {
     hinst = (HINSTANCE) (context[0]);

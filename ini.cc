@@ -437,6 +437,8 @@ do_ini_thread_reflector (void* p)
   HANDLE *context;
   context = (HANDLE*)p;
 
+  SetThreadUILanguage(langid);
+
   try
   {
     bool succeeded = do_ini_thread ((HINSTANCE)context[0], (HWND)context[1]);

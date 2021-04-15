@@ -105,6 +105,7 @@ static BoolOption VersionOption (false, 'V', "version", "Show version");
 static StringOption SetupBaseNameOpt ("setup", 'i', "ini-basename", "Use a different basename, e.g. \"foo\", instead of \"setup\"", false);
 BoolOption UnsupportedOption (false, '\0', "allow-unsupported-windows", "Allow old, unsupported Windows versions");
 static StringChoiceOption SymlinkTypeOption(symlink_types, '\0', "symlink-type", "Symlink type (lnk, native, sys, wsl)", false, SymlinkTypeMagic);
+static StringOption GuiLangOption ("", '\0', "lang", "Specify GUI language langid");
 
 std::string SetupBaseName;
 
@@ -262,6 +263,15 @@ WinMain (HINSTANCE h,
 		 ((std::string) Arch).c_str ());
 	fprintf (stderr, "*** %s\n", buff);
 	exit (1);
+      }
+
+    if (GuiLangOption.isPresent())
+      {
+        // If option's value isn't numeric, perhaps we should try to interpret
+        // it as a locale name?
+        int rc = sscanf(((std::string)GuiLangOption).c_str(), "%hx", &langid);
+        if (rc > 0)
+          SetThreadUILanguage(langid);
       }
 
     unattended_mode = PackageManagerOption ? chooseronly

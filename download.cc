@@ -382,6 +382,8 @@ do_download_reflector (void *p)
   HANDLE *context;
   context = (HANDLE *) p;
 
+  SetThreadUILanguage(langid);
+
   try
   {
     int next_dialog =

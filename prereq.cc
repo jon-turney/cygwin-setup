@@ -225,6 +225,8 @@ do_prereq_check_reflector (void *p)
   HANDLE *context;
   context = (HANDLE *) p;
 
+  SetThreadUILanguage(langid);
+
   try
   {
     int next_dialog = do_prereq_check_thread ((HINSTANCE) context[0], (HWND) context[1]);
