@@ -278,7 +278,7 @@ setup_version.c : Makefile
 res.o: setup.exe.manifest
 
 .rc.o:
-	$(AM_V_GEN)$(WINDRES) --include-dir $(srcdir) -o $@ $<
+	$(AM_V_GEN)$(WINDRES) --codepage 65001 --include-dir $(srcdir) -o $@ $<
 
 setup-src:
 	@ver=setup-$(VER);\
