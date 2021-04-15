@@ -31,11 +31,28 @@
 #include "getopt++/StringOption.h"
 #include <sstream>
 
-#ifndef IMAGE_FILE_MACHINE_ARM64
-#define IMAGE_FILE_MACHINE_ARM64 0xAA64
-#endif
-
 static StringOption UserAgent ("", '\0', "user-agent", "User agent string for HTTP requests");
+
+static const std::string
+machine_name(USHORT machine)
+{
+  switch (machine)
+    {
+    case IMAGE_FILE_MACHINE_I386:
+      return "Win32";
+      break;
+    case IMAGE_FILE_MACHINE_AMD64:
+      return "Win64";
+      break;
+    case IMAGE_FILE_MACHINE_ARM64:
+      return "ARM64";
+      break;
+    default:
+      std::stringstream machine_desc;
+      machine_desc << std::hex << machine;
+      return machine_desc.str();
+    }
+}
 
 const std::string &
 determine_default_useragent(void)
@@ -48,30 +65,22 @@ determine_default_useragent(void)
   std::stringstream os;
   os << "Windows NT " << OSMajorVersion() << "." << OSMinorVersion() << "." << OSBuildNumber();
 
-  std::string bitness = "Unknown";
 #ifdef __x86_64__
-  bitness = "Win64";
+  USHORT processMachine = IMAGE_FILE_MACHINE_AMD64;
 #else
-  USHORT nativeMachine = WowNativeMachine();
-  std::stringstream native_desc;
-
-  switch (nativeMachine)
-    {
-    case IMAGE_FILE_MACHINE_I386:
-      bitness = "Win32";
-      break;
-    case IMAGE_FILE_MACHINE_AMD64:
-      bitness = "WoW64";
-      break;
-    case IMAGE_FILE_MACHINE_ARM64:
-      bitness = "WoW64-ARM64";
-      break;
-    default:
-      native_desc << "WoW64-" << std::hex << nativeMachine;
-      bitness = native_desc.str();
-    }
+  USHORT processMachine = IMAGE_FILE_MACHINE_I386;
 #endif
+
+  USHORT nativeMachine = WowNativeMachine();
+
+  std::string bitness;
+  if (processMachine != nativeMachine)
+    bitness = machine_name(processMachine) + "-on-" + machine_name(nativeMachine);
+  else
+    bitness = machine_name(processMachine);
+
   default_useragent = std::string("Cygwin-Setup/") + setup_version + " (" + os.str() + ";" + bitness + ")";
+  Log(LOG_BABBLE) << "User-Agent: default is \"" << default_useragent << "\"" << endLog;
   return default_useragent;
 }
 

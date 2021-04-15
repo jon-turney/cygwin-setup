@@ -398,9 +398,6 @@ VersionInfo& GetVer ()
 USHORT
 WowNativeMachine ()
 {
-#ifdef __x86_64__
-  return IMAGE_FILE_MACHINE_AMD64;
-#else
   typedef BOOL (WINAPI *PFNISWOW64PROCESS2)(HANDLE, USHORT *, USHORT *);
   PFNISWOW64PROCESS2 pfnIsWow64Process2 = (PFNISWOW64PROCESS2)GetProcAddress(GetModuleHandle("kernel32"), "IsWow64Process2");
 
@@ -416,6 +413,9 @@ WowNativeMachine ()
     if (pfnIsWow64Process(GetCurrentProcess(), &bIsWow64))
       return bIsWow64 ? IMAGE_FILE_MACHINE_AMD64 : IMAGE_FILE_MACHINE_I386;
   }
+#ifdef __x86_64__
+  return IMAGE_FILE_MACHINE_AMD64;
+#else
   return IMAGE_FILE_MACHINE_I386;
 #endif
 }
