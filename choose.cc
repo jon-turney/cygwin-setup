@@ -63,6 +63,7 @@ static BoolOption UpgradeAlsoOption (false, 'g', "upgrade-also", "Also upgrade i
 static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", "Remove orphaned packages");
 static BoolOption ForceCurrentOption (false, 'f', "force-current", "Select the current version for all packages");
 static BoolOption PruneInstallOption (false, 'Y', "prune-install", "Prune the installation to only the requested packages");
+static BoolOption AllowTestOption (false, 't', "allow-test-packages", "Consider package versions marked test");
 
 extern ThreeBarProgressPage Progress;
 
@@ -165,7 +166,7 @@ ChooserPage::initialUpdateState()
   if (ForceCurrentOption)
     {
       update_mode_id = IDC_CHOOSE_SYNC;
-      changeTrust(update_mode_id, false, true);
+      changeTrust(update_mode_id, AllowTestOption, true);
     }
   else if (hasManualSelections && !UpgradeAlsoOption)
     {
@@ -176,7 +177,7 @@ ChooserPage::initialUpdateState()
   else
     {
       update_mode_id = IDC_CHOOSE_BEST;
-      changeTrust (update_mode_id, false, true);
+      changeTrust (update_mode_id, AllowTestOption, true);
     }
 
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_BEST, IDC_CHOOSE_SYNC, 0 };
@@ -250,6 +251,9 @@ void
 ChooserPage::OnInit ()
 {
   CheckDlgButton (GetHWND (), IDC_CHOOSE_HIDE, BST_CHECKED);
+
+  if (AllowTestOption)
+    CheckDlgButton (GetHWND (), IDC_CHOOSE_EXP, BST_CHECKED);
 
   /* Populate view dropdown list with choices */
   HWND viewlist = GetDlgItem (IDC_CHOOSE_VIEW);
