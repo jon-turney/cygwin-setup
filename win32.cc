@@ -409,10 +409,13 @@ WowNativeMachine ()
       (pfnIsWow64Process2(GetCurrentProcess(), &processMachine, &nativeMachine)))
     return nativeMachine;
   else if (pfnIsWow64Process) {
+#ifdef _X86_
     BOOL bIsWow64 = FALSE;
     if (pfnIsWow64Process(GetCurrentProcess(), &bIsWow64))
       return bIsWow64 ? IMAGE_FILE_MACHINE_AMD64 : IMAGE_FILE_MACHINE_I386;
+#endif
   }
+
 #ifdef __x86_64__
   return IMAGE_FILE_MACHINE_AMD64;
 #else
