@@ -284,8 +284,7 @@ LocalDirPage::OnNext ()
 	      LoadString (hinstance, IDS_NO_LOCALDIR, msgText,
 			  sizeof (msgText));
 	      char msg[1000 + local_dir.size ()];
-	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str (),
-		        is_64bit ? "x86_64" : "x86");
+	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str ());
 	      int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | MB_OKCANCEL);
 	      if (ret == IDCANCEL)
                 return -1;
