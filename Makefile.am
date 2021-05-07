@@ -274,8 +274,8 @@ setup_version.c : Makefile
 	echo 'const char *setup_version = version_store + sizeof (VERSION_PREFIX);') > version.tmp && \
 	mv version.tmp setup_version.c
 
-# setup.exe.manifest is included in res.rc
-res.o: setup.exe.manifest
+# files included by res.rc
+res.o: setup.exe.manifest res/fr/res.rc
 
 .rc.o:
 	$(AM_V_GEN)$(WINDRES) --codepage 65001 --include-dir $(srcdir) -o $@ $<

@@ -15,6 +15,11 @@
 
 #define SETUP_HEADICON_X		(SETUP_STANDARD_DIALOG_W - 27)
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// English (en_US) resources
+//
+
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 /////////////////////////////////////////////////////////////////////////////
@@ -684,3 +689,9 @@ BEGIN
     IDS_CONFIRM_EXIT "Are you sure you want to exit setup? Any current download or installation will be aborted."
     IDS_CONTINUE "Continue"
 END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Translations
+
+#include "res/fr/res.rc"
