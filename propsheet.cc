@@ -162,7 +162,7 @@ static LRESULT CALLBACK PropSheetWndProc (HWND hwnd, UINT uMsg,
     areyousure:
       if (MessageBox(hwnd,
 		     "Are you sure you want to exit setup? Any current download or installation will be aborted.",
-		     "Exit Cygwin Setup?", MB_YESNO) == IDNO)
+		     "Cygwin Setup", MB_YESNO) == IDNO)
 	return 0;
       break;
     case WM_SIZE:
@@ -302,23 +302,9 @@ PropSheet::Create (const Window * Parent, DWORD Style)
   p.phpage = PageHandles;
   p.pfnCallback = PropSheetProc;
 
-
   // The winmain event loop actually resides in here.
   PropertySheet (&p);
 
-  // Do a modeless property sheet...
-  //SetHWND((HWND)PropertySheet(&p));
-  /*Show(SW_SHOWNORMAL);
-
-     // ...but pretend it's modal
-     MessageLoop();
-     MessageBox(NULL, "DONE", NULL, MB_OK);
-
-     // FIXME: Enable the parent before destroying this window to prevent another window
-     // from becoming the foreground window
-     // ala: EnableWindow(<parent_hwnd>, TRUE);
-     //DestroyWindow(WindowHandle);
-   */
   SetHWND (NULL);
 
 

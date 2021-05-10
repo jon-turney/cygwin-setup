@@ -130,7 +130,7 @@ offer_to_create (HWND h, const char *dirname)
       LoadString (hinstance, IDS_MAYBE_MKDIR, fmtString, sizeof fmtString);
       snprintf (msgText, sizeof msgText, fmtString, dirname);
 
-      ret = MessageBox (h, msgText, 0, MB_ICONSTOP | MB_YESNO);
+      ret = MessageBox (h, msgText, "Cygwin Setup", MB_ICONSTOP | MB_YESNO);
       if (ret == IDNO)
 	return -1;
     }
@@ -285,7 +285,7 @@ LocalDirPage::OnNext ()
 			  sizeof (msgText));
 	      char msg[1000 + local_dir.size ()];
 	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str ());
-	      int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | MB_OKCANCEL);
+	      int ret = MessageBox (h, msg, "Cygwin Setup", MB_ICONEXCLAMATION | MB_OKCANCEL);
 	      if (ret == IDCANCEL)
                 return -1;
 	    }
@@ -315,17 +315,16 @@ LocalDirPage::OnNext ()
 	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str(), 
 	        "(unknown error)", err);
 	  Log (LOG_PLAIN) << msg << endLog;
-	  int ret = MessageBox (h, msg, 0, MB_ICONEXCLAMATION | 
-	    MB_ABORTRETRYIGNORE);
-	  
-	  if ((ret == IDABORT) || (ret == IDCANCEL))
+	  int ret = MessageBox (h, msg, "Cygwin Setup", MB_ICONEXCLAMATION | MB_ABORTRETRYIGNORE);
+	  if (ret == IDABORT)
 	    return -1;
 	  else
 	    tryLocalDir = (ret == IDRETRY);
-	    // XXX: On IDIGNORE we drop through to IDD_NET, which is wrong in
-	    // the source == IDC_SOURCE_LOCALDIR case?
 	}
     }
+
+  if (source == IDC_SOURCE_LOCALDIR)
+    return IDD_INSTATUS;
 
   return 0; // IDD_NET
 }

@@ -33,12 +33,12 @@ public:
   {
     if (unattended_mode || !id.length () || UserSettings::instance().get (id.c_str ()))
       /* No message or already seen */;
-    else if (MessageBox (NULL, message.c_str (), "Setup Alert",
-			 MB_OKCANCEL | MB_ICONSTOP | MB_SETFOREGROUND
-			 | MB_TOPMOST) != IDCANCEL)
-      UserSettings::instance().set (id.c_str (), "1");
     else
-      exit (1);
+      {
+        MessageBox (NULL, message.c_str (), "Cygwin Setup",
+                    MB_OK | MB_ICONSTOP | MB_SETFOREGROUND | MB_TOPMOST);
+        UserSettings::instance().set (id.c_str (), "1");
+      }
   }
 };
 
