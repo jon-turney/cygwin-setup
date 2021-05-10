@@ -96,25 +96,25 @@ PickView::getViewMode ()
   return view_mode;
 }
 
-const char *
+unsigned int
 PickView::mode_caption (views mode)
 {
   switch (mode)
     {
     case views::PackageFull:
-      return "Full";
+      return IDS_VIEW_FULL;
     case views::PackagePending:
-      return "Pending";
+      return IDS_VIEW_PENDING;
     case views::PackageKeeps:
-      return "Up To Date";
+      return IDS_VIEW_UPTODATE;
     case views::PackageSkips:
-      return "Not Installed";
+      return IDS_VIEW_NOTINSTALLED;
     case views::PackageUserPicked:
-      return "Picked";
+      return IDS_VIEW_PICKED;
     case views::Category:
-      return "Category";
+      return IDS_VIEW_CATEGORY;
     default:
-      return "";
+      return 0;
     }
 }
 
