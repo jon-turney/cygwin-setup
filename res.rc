@@ -645,4 +645,5 @@ BEGIN
     IDS_COLUMN_CATEGORIES "Categories"
     IDS_COLUMN_SIZE "Size"
     IDS_COLUMN_DESCR "Description"
+    IDS_MBOX_CAPTION "Cygwin Setup"
 END

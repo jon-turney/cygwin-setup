@@ -76,6 +76,7 @@
 #define IDS_COLUMN_CATEGORIES             176
 #define IDS_COLUMN_SIZE                   177
 #define IDS_COLUMN_DESCR                  178
+#define IDS_MBOX_CAPTION                  179
 
 // Dialogs
 

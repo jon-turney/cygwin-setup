@@ -25,37 +25,49 @@
 #include <stdarg.h>
 #include "dialog.h"
 #include "state.h"
+#include "String++.h"
+#include "resource.h"
+
+static int
+unattended_result(int mb_type)
+{
+  // Return some default values.
+  Log (LOG_PLAIN) << "unattended_mode is set at mbox: returning default value" << endLog;
+
+  switch (mb_type & MB_TYPEMASK)
+    {
+    case MB_OK:
+    case MB_OKCANCEL:
+      return IDOK;
+      break;
+    case MB_YESNO:
+    case MB_YESNOCANCEL:
+      return IDYES;
+      break;
+    case MB_ABORTRETRYIGNORE:
+      return IDIGNORE;
+      break;
+    case MB_RETRYCANCEL:
+      return IDCANCEL;
+      break;
+    default:
+      Log (LOG_PLAIN) << "unattended_mode failed for " << (mb_type & MB_TYPEMASK) << endLog;
+      return 0;
+    }
+}
 
 int
 mbox (HWND owner, const char *buf, const char *name, int type)
 {
+  // 'name' is not the mbox caption, just some text written to the log
   Log (LOG_PLAIN) << "mbox " << name << ": " << buf << endLog;
   if (unattended_mode)
-    {
-      // Return some default values.
-      Log (LOG_PLAIN) << "unattended_mode is set at mbox: returning default value" << endLog;
-      switch (type & MB_TYPEMASK)
-	{
-	  case MB_OK:
-	  case MB_OKCANCEL:
-	    return IDOK;
-	    break;
-	  case MB_YESNO:
-	  case MB_YESNOCANCEL:
-	    return IDYES;
-	    break;
-	  case MB_ABORTRETRYIGNORE:
-	    return IDIGNORE;
-	    break;
-	  case MB_RETRYCANCEL:
-	    return IDCANCEL;
-	    break;
-	  default:
-	    Log (LOG_PLAIN) << "unattended_mode failed for " << (type & MB_TYPEMASK) << endLog;
-	    return 0;
-	}
-    }
-  return MessageBox (owner, buf, "Cygwin Setup", type);
+      return unattended_result(type);
+
+  char caption[32];
+  LoadString (hinstance, IDS_MBOX_CAPTION, caption, sizeof (caption));
+
+  return MessageBox (owner, buf, caption, type);
 }
 
 static int
@@ -93,4 +105,26 @@ yesno (HWND owner, int id, ...)
   va_list args;
   va_start (args, id);
   return mbox (owner, "yesno", MB_YESNO, id, args);
+}
+
+int
+mbox(HWND owner, unsigned int format_id, int mb_type, ...)
+{
+  std::wstring fmt = LoadStringW(format_id);
+  if (fmt.empty())
+    fmt = L"Internal error: format string resource not found";
+
+  va_list args;
+  va_start(args, mb_type);
+  std::wstring buf = vformat(fmt, args);
+  va_end(args);
+
+  // write to log as UTF8
+  Log (LOG_PLAIN) << "mbox " << ": " << wstring_to_string(buf) << endLog;
+
+  if (unattended_mode)
+    return unattended_result(mb_type);
+
+  std::wstring caption = LoadStringW(IDS_MBOX_CAPTION);
+  return MessageBoxW(owner, buf.c_str(), caption.c_str(), mb_type);
 }

@@ -114,3 +114,37 @@ std::wstring string_to_wstring(const std::string &s)
 
   return w;
 }
+
+// convert a UTF-16 wstring to a UTF-8 string
+std::string wstring_to_string(const std::wstring &w)
+{
+  int n = WideCharToMultiByte(CP_UTF8, 0, w.c_str(), -1, NULL, 0, NULL, NULL);
+
+  if (n <= 0)
+    return "conversion failed";
+
+  char *buf = new char[n+1];
+  WideCharToMultiByte(CP_UTF8, 0, w.c_str(), -1, buf, n, NULL, NULL);
+
+  std::string s(buf);
+  delete[] buf;
+
+  return s;
+}
+
+std::wstring
+vformat(const std::wstring &fmt, va_list ap)
+{
+  va_list apc;
+  va_copy(apc, ap);
+
+  int n = vsnwprintf(NULL, 0, fmt.c_str(), ap);
+
+  std::wstring str;
+  str.resize(n+1);
+  vsnwprintf(&str[0], n+1, fmt.c_str(), apc);
+
+  va_end(apc);
+
+  return str;
+}
