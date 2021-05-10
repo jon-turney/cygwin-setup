@@ -67,7 +67,8 @@ class ListView
   void init(HWND parent, int id, HeaderList headers);
 
   void noteColumnWidthStart();
-  void noteColumnWidth(int col_num, const std::string& string);
+  template <typename T>
+  void noteColumnWidth(int col_num, const T& string);
   void noteColumnWidthEnd();
   void resizeColumns(void);
 

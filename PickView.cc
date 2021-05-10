@@ -238,7 +238,7 @@ PickView::init_headers (void)
 
   // width of the 'src' checkbox column just needs to accommodate the
   // column name
-  listview->noteColumnWidth (srctick_col, "");
+  listview->noteColumnWidth (srctick_col, std::string(""));
 
   // (In category view) accommodate the width of each category name
   packagedb db;
@@ -295,11 +295,14 @@ PickView::init_headers (void)
         }
     }
 
-  // ensure that the new_col is wide enough for all the labels
-  const char *captions[] = { "Uninstall", "Skip", "Reinstall", "Retrieve",
-                             "Source", "Keep", NULL };
+  // also ensure that new_col is wide enough for all the action labels
+  unsigned int captions[] = {
+    IDS_ACTION_UNINSTALL, IDS_ACTION_SKIP, IDS_ACTION_REINSTALL,
+    IDS_ACTION_RETRIEVE, IDS_ACTION_SOURCE, IDS_ACTION_KEEP,
+    IDS_ACTION_UNKNOWN, 0
+  };
   for (int i = 0; captions[i]; i++)
-    listview->noteColumnWidth (new_col, captions[i]);
+    listview->noteColumnWidth (new_col, LoadStringW(captions[i]));
 
   listview->noteColumnWidthEnd();
   listview->resizeColumns();
