@@ -77,6 +77,17 @@
 #define IDS_COLUMN_SIZE                   177
 #define IDS_COLUMN_DESCR                  178
 #define IDS_MBOX_CAPTION                  179
+#define IDS_EXTRACTION_FAILED             180
+#define IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED 181
+#define IDS_INSTALL_OLD_CYGWIN            182
+#define IDS_SHELLLINK_FAILED              183
+#define IDS_UNSUPPORTED_WINDOWS_VERSION   184
+#define IDS_MOUNT_REGISTRY_KEY_FAILED     185
+#define IDS_NIO_ERROR                     186
+#define IDS_PREREQ_UNSOLVED_PROBLEMS      187
+#define IDS_MIXED_BITNESS_ERROR           188
+#define IDS_GET_SITELIST_ERROR            189
+#define IDS_CONFIRM_EXIT                  190
 
 // Dialogs
 

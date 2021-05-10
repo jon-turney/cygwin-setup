@@ -92,14 +92,8 @@ PrereqPage::OnNext ()
   if (!IsDlgButtonChecked (h, IDC_PREREQ_CHECK))
     {
       // breakage imminent!  danger, danger
-      int res = mbox (h,
-          "WARNING - Unsolved Problems"
-          "\r\n\r\n"
-          "Some packages may not work properly if you continue."
-          "\r\n\r\n"
-          "Are you sure you want to proceed (NOT RECOMMENDED)?",
-          "Cygwin Setup",
-          MB_YESNO | MB_ICONEXCLAMATION | MB_DEFBUTTON2);
+      int res = mbox (h, IDS_PREREQ_UNSOLVED_PROBLEMS,
+                      MB_YESNO | MB_ICONEXCLAMATION | MB_DEFBUTTON2);
       if (res == IDNO)
         return -1;
       else

@@ -167,11 +167,7 @@ main_display ()
 				  (LPVOID *) & sl);
   if (res)
     {
-      char buf[256];
-      sprintf (buf, "CoCreateInstance failed with error 0x%x.\n"
-		    "Setup will not be able to create Cygwin Icons\n"
-		    "in the Start Menu or on the Desktop.", (int) res);
-      mbox (NULL, buf, "Cygwin Setup", MB_OK);
+      mbox (NULL, IDS_SHELLLINK_FAILED, MB_OK, res);
     }
 
   // Init window class lib
@@ -326,8 +322,8 @@ WinMain (HINSTANCE h,
     /* Check if Cygwin works on this Windows version */
     if (!UnsupportedOption && (OSMajorVersion () < 6))
       {
-	mbox (NULL, "Cygwin is not supported on this Windows version",
-	      "Cygwin Setup", MB_ICONEXCLAMATION | MB_OK);
+	mbox (NULL, IDS_UNSUPPORTED_WINDOWS_VERSION,
+              MB_ICONEXCLAMATION | MB_OK);
 	Logger ().exit (1, false);
       }
 

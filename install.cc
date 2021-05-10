@@ -729,11 +729,6 @@ Installer::_installOne (packagemeta &pkgm,
               {
                 if (!ignoreExtractErrors)
                   {
-                    char msg[fn.size() + 300];
-                    sprintf (msg,
-                             "Unable to extract /%s -- corrupt package?\r\n",
-                             fn.c_str());
-
                     // XXX: We should offer the option to retry,
                     // continue without extracting this particular archive,
                     // or ignore all extraction errors.
@@ -742,8 +737,9 @@ Installer::_installOne (packagemeta &pkgm,
                     // and ignore all errors is mis-implemented at present
                     // to only apply to errors arising from a single archive,
                     // so we degenerate to the continue option.
-                    mbox (owner, msg, "File extraction error",
-                          MB_OK | MB_ICONWARNING | MB_TASKMODAL);
+                    mbox (owner, IDS_EXTRACTION_FAILED,
+                          MB_OK | MB_ICONWARNING | MB_TASKMODAL,
+                          fn.c_str());
                   }
 
                 error_in_this_file = true;
@@ -784,23 +780,17 @@ check_for_old_cygwin (HWND owner)
   if (_access (buf, 0) != 0)
     return;
 
-  char msg[sizeof (buf) + 132];
-  sprintf (msg,
-	   "An old version of cygwin1.dll was found here:\r\n%s\r\nDelete?",
-	   buf);
-  switch (mbox(owner, msg, "Cygwin Setup",
-               MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL))
+  switch (mbox(owner, IDS_INSTALL_OLD_CYGWIN,
+               MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL,
+               buf))
     {
     case IDYES:
       if (!DeleteFile (buf))
-	{
-	  sprintf (msg, "Couldn't delete file %s.\r\n"
-		   "Is the DLL in use by another application?\r\n"
-		   "You should delete the old version of cygwin1.dll\r\n"
-		   "at your earliest convenience.", buf);
-	  mbox (owner, buf, "Couldn't delete file",
-                MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
-	}
+        {
+          mbox (owner, IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED,
+                MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL,
+                buf);
+        }
       break;
     default:
       break;

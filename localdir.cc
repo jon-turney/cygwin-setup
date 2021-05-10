@@ -123,14 +123,8 @@ offer_to_create (HWND h, const char *dirname)
 
   if (!unattended_mode)
     {
-      char msgText[MAX_PATH + 100];
-      char fmtString[100];
       DWORD ret;
-
-      LoadString (hinstance, IDS_MAYBE_MKDIR, fmtString, sizeof fmtString);
-      snprintf (msgText, sizeof msgText, fmtString, dirname);
-
-      ret = MessageBox (h, msgText, "Cygwin Setup", MB_ICONSTOP | MB_YESNO);
+      ret = mbox (h, IDS_MAYBE_MKDIR, MB_ICONSTOP | MB_YESNO, dirname);
       if (ret == IDNO)
 	return -1;
     }
@@ -280,12 +274,9 @@ LocalDirPage::OnNext ()
 	   if (!unattended_mode)
 	    {
 	      // Check the user really wants only to uninstall.
-	      char msgText[1000];
-	      LoadString (hinstance, IDS_NO_LOCALDIR, msgText,
-			  sizeof (msgText));
-	      char msg[1000 + local_dir.size ()];
-	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str ());
-	      int ret = MessageBox (h, msg, "Cygwin Setup", MB_ICONEXCLAMATION | MB_OKCANCEL);
+	      int ret = mbox(h, IDS_NO_LOCALDIR,
+                             MB_ICONEXCLAMATION | MB_OKCANCEL,
+                             local_dir.c_str ());
 	      if (ret == IDCANCEL)
                 return -1;
 	    }
@@ -299,22 +290,19 @@ LocalDirPage::OnNext ()
       else
 	{
 	  DWORD err = GetLastError ();
-	  char msgText[1000];
-	  LoadString (hinstance, IDS_ERR_CHDIR, msgText, sizeof (msgText));
-	  char* buf;
-	  char msg[1000];
-	  if (FormatMessage (FORMAT_MESSAGE_FROM_SYSTEM | 
-	    FORMAT_MESSAGE_ALLOCATE_BUFFER, 0, err, LANG_NEUTRAL,
-	    (LPSTR)&buf, 0, 0) != 0)
+          char* buf;
+          char msg[1000];
+	  if (FormatMessage (FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER,
+                             0, err, LANG_NEUTRAL, (LPSTR)&buf, 0, 0) != 0)
 	    {
-	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str(), 
-	        buf, err);
+              snprintf (msg, sizeof (msg), "%s", buf);
 	      LocalFree (buf);
-	    }
-	    else
-	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str(), 
-	        "(unknown error)", err);
-	  int ret = mbox (h, msg, "Cygwin Setup", MB_ICONEXCLAMATION | MB_ABORTRETRYIGNORE);
+            }
+          else
+            snprintf (msg, sizeof (msg), "%s", "(unknown error)");
+	  int ret = mbox (h, IDS_ERR_CHDIR,
+                          MB_ICONEXCLAMATION | MB_ABORTRETRYIGNORE,
+                          local_dir.c_str(), msg, err);
 	  if (ret == IDABORT)
 	    return -1;
 	  else

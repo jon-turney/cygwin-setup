@@ -152,7 +152,6 @@ static int
 directory_contains_wrong_version (HWND h)
 {
   HANDLE fh;
-  char text[512];
   std::string cygwin_dll = get_root_dir() + "\\bin\\cygwin1.dll";
 
   /* Check if we have a cygwin1.dll.  If not, this is a new install.
@@ -211,17 +210,8 @@ directory_contains_wrong_version (HWND h)
   /* Forestall mixing. */
   const char *setup_ver = is_64bit ? "64" : "32";
   const char *inst_ver = is_64bit ? "32" : "64";
-  snprintf (text, sizeof text,
-	"You're trying to install a %s bit version of Cygwin into a directory\n"
-	"containing a %s bit version of Cygwin.  Continuing to do so would\n"
-	"break the existing installation.\n\n"
-	"Either run http://cygwin.com/setup-%s.exe to update your\n"
-	"existing %s bit installation of Cygwin, or choose another directory\n"
-	"for your %s bit installation.",
-	setup_ver, inst_ver,
-	is_64bit ? "x86" : "x86_64",
-	inst_ver, setup_ver);
-  mbox (h, text, "Target CPU mismatch", MB_OK);
+  mbox (h, IDS_MIXED_BITNESS_ERROR, MB_OK,
+        setup_ver, inst_ver, is_64bit ? "x86" : "x86_64", inst_ver, setup_ver);
   return 1;
 }
 

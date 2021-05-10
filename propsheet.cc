@@ -24,6 +24,7 @@
 #include "RECTWrapper.h"
 #include "ControlAdjuster.h"
 #include "choose.h"
+#include "msg.h"
 
 // Sort of a "hidden" Windows structure.  Used in the PropSheetCallback.
 #include <pshpack1.h>
@@ -160,9 +161,7 @@ static LRESULT CALLBACK PropSheetWndProc (HWND hwnd, UINT uMsg,
       if (wParam != 2)
 	break;
     areyousure:
-      if (MessageBox(hwnd,
-		     "Are you sure you want to exit setup? Any current download or installation will be aborted.",
-		     "Cygwin Setup", MB_YESNO) == IDNO)
+      if (mbox(hwnd, IDS_CONFIRM_EXIT, MB_YESNO) == IDNO)
 	return 0;
       break;
     case WM_SIZE:

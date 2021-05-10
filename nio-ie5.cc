@@ -241,7 +241,7 @@ try_again:
           // show errors apart from file-not-found (e doesn't contain the
           // response code so we have to resort to looking at the message)
           if (strncmp("550", buf, 3) != 0)
-            mbox (0, buf, "Internet Error", MB_OK);
+            mbox (0, IDS_NIO_ERROR, MB_OK, buf);
 
           for (unsigned int i = 0; i < l; i++)
             if (buf[i] == '\n' or buf[i] == '\r')

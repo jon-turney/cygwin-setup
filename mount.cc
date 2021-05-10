@@ -132,9 +132,7 @@ create_install_root ()
       }
     while (rv == ERROR_ACCESS_DENIED);
   if (rv != ERROR_SUCCESS)
-    mbox (NULL, "Couldn't create registry key\n"
-		      "to store installation path",
-		"Cygwin Setup", MB_OK | MB_ICONWARNING);
+    mbox (NULL, IDS_MOUNT_REGISTRY_KEY_FAILED, MB_OK | MB_ICONWARNING);
   RegCloseKey (key);
 
   // The mount table is already in the right shape at this point.
