@@ -63,6 +63,12 @@
 #define IDS_ACTION_RETRIEVE               163
 #define IDS_ACTION_UNKNOWN                164
 #define IDS_ACTION_SOURCE                 165
+#define IDS_VIEW_FULL                     166
+#define IDS_VIEW_PENDING                  167
+#define IDS_VIEW_UPTODATE                 168
+#define IDS_VIEW_NOTINSTALLED             169
+#define IDS_VIEW_PICKED                   170
+#define IDS_VIEW_CATEGORY                 171
 
 // Dialogs
 

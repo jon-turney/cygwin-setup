@@ -628,4 +628,10 @@ BEGIN
     IDS_ACTION_RETRIEVE "Retrieve"
     IDS_ACTION_UNKNOWN "Unknown"
     IDS_ACTION_SOURCE "Source"
+    IDS_VIEW_FULL "Full"
+    IDS_VIEW_PENDING "Pending"
+    IDS_VIEW_UPTODATE "Up To Date"
+    IDS_VIEW_NOTINSTALLED "Not Installed"
+    IDS_VIEW_PICKED "Picked"
+    IDS_VIEW_CATEGORY "Category"
 END

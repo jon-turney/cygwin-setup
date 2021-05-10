@@ -262,7 +262,8 @@ ChooserPage::OnInit ()
        view <= (int)PickView::views::Category;
        view++)
     {
-      SendMessage(viewlist, CB_ADDSTRING, 0, (LPARAM)PickView::mode_caption((PickView::views)view));
+      std::wstring mode = LoadStringW(PickView::mode_caption((PickView::views)view));
+      SendMessageW(viewlist, CB_ADDSTRING, 0, (LPARAM)mode.c_str());
     }
 
   if (source == IDC_SOURCE_DOWNLOAD)

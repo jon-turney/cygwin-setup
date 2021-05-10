@@ -46,7 +46,7 @@ public:
   views getViewMode ();
   void init(views _mode, ListView *_listview, Window *parent);
   void build_category_tree();
-  static const char *mode_caption (views mode);
+  static unsigned int mode_caption (views mode);
   void setObsolete (bool doit);
   void refresh();
   void init_headers ();
