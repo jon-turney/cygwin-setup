@@ -149,8 +149,23 @@ ListView::noteColumnWidthStart()
     }
 }
 
+// wrappers to help instantiations of the noteColumnWidth() template call the
+// right version of GetTextExtentPoint32
+#undef GetTextExtentPoint32
+
+static BOOL GetTextExtentPoint32(HDC hdc, LPCSTR lpString, int c, LPSIZE psizl)
+{
+  return GetTextExtentPoint32A(hdc, lpString, c, psizl);
+}
+
+static BOOL GetTextExtentPoint32(HDC hdc, LPCWSTR lpString, int c, LPSIZE psizl)
+{
+  return GetTextExtentPoint32W(hdc, lpString, c, psizl);
+}
+
+template <typename T>
 void
-ListView::noteColumnWidth(int col_num, const std::string& string)
+ListView::noteColumnWidth(int col_num, const T& string)
 {
   SIZE s = { 0, 0 };
 
@@ -172,6 +187,10 @@ ListView::noteColumnWidth(int col_num, const std::string& string)
   if (width > headers[col_num].width)
     headers[col_num].width = width;
 }
+
+// explicit instantiation
+template void ListView::noteColumnWidth(int col_num, const std::string& string);
+template void ListView::noteColumnWidth(int col_num, const std::wstring& wstring);
 
 void
 ListView::noteColumnWidthEnd()
