@@ -69,6 +69,13 @@
 #define IDS_VIEW_NOTINSTALLED             169
 #define IDS_VIEW_PICKED                   170
 #define IDS_VIEW_CATEGORY                 171
+#define IDS_COLUMN_PACKAGE                172
+#define IDS_COLUMN_CURRENT                173
+#define IDS_COLUMN_NEW                    174
+#define IDS_COLUMN_SOURCE                 175
+#define IDS_COLUMN_CATEGORIES             176
+#define IDS_COLUMN_SIZE                   177
+#define IDS_COLUMN_DESCR                  178
 
 // Dialogs
 

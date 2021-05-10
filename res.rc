@@ -634,4 +634,11 @@ BEGIN
     IDS_VIEW_NOTINSTALLED "Not Installed"
     IDS_VIEW_PICKED "Picked"
     IDS_VIEW_CATEGORY "Category"
+    IDS_COLUMN_PACKAGE "Package"
+    IDS_COLUMN_CURRENT "Current"
+    IDS_COLUMN_NEW "New"
+    IDS_COLUMN_SOURCE "Src?"
+    IDS_COLUMN_CATEGORIES "Categories"
+    IDS_COLUMN_SIZE "Size"
+    IDS_COLUMN_DESCR "Description"
 END
