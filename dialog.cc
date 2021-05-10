@@ -20,7 +20,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "dialog.h"
-#include "msg.h"
 #include "LogFile.h"
 #include "mount.h"
 
@@ -94,17 +93,4 @@ rbset (HWND h, int *ids, int id)
   int i;
   for (i = 0; ids[i]; i++)
     CheckDlgButton (h, ids[i], id == ids[i] ? BST_CHECKED : BST_UNCHECKED);
-}
-
-void
-fatal (const char *msg, DWORD err)
-{
-  DWORD e = (err != ERROR_SUCCESS) ? err : GetLastError();
-  char *buf;
-  FormatMessage (FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-		 0, e, 0, (CHAR *) & buf, 0, 0);
-  mbox (0, buf, msg, MB_OK);
-  Logger ().exit (1);
-  // Keep gcc happy - some sort of bug!
-  exit (1);
 }

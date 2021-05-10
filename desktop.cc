@@ -172,8 +172,10 @@ save_icon (std::string &iconpath, const char *resource_name)
   HRSRC rsrc = FindResource (NULL, resource_name, "FILE");
   if (rsrc == NULL)
     {
-      fatal ("FindResource failed");
+      Log (LOG_PLAIN) << "FindResource failed" << GetLastError() << endLog;
+      return;
     }
+
   HGLOBAL res = LoadResource (NULL, rsrc);
   char *data = (char *) LockResource (res);
   int len = SizeofResource (NULL, rsrc);

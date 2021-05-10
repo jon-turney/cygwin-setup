@@ -221,7 +221,7 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 	  }
 	else
 	  {
-	    fatal("Unexpected fallthrough from the download thread", NO_ERROR);
+	    Log (LOG_PLAIN) << "Unexpected fallthrough from the download thread" << endLog;
 	  }
 	break;
       }
