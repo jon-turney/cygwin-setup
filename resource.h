@@ -160,7 +160,7 @@
 #define IDC_DLS_PROGRESS_TEXT             543
 #define IDC_DLS_PPROGRESS_TEXT            544
 #define IDC_DLS_IPROGRESS_TEXT            545
-#define IDC_CHOOSE_INST_TEXT              546
+#define IDC_CHOOSE_INST_TEXT_DOWNLOAD     546
 #define IDC_CHOOSE_VIEWCAPTION            547
 #define IDC_INS_BL_PACKAGE                549
 #define IDC_INS_BL_TOTAL                  550
@@ -207,3 +207,4 @@
 #define IDC_CHOOSE_DO_SEARCH              595
 #define IDC_CHOOSE_SYNC                   596
 #define IDC_CONFIRM_EDIT                  597
+#define IDC_CHOOSE_INST_TEXT_INSTALL      598

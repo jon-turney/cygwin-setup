@@ -365,8 +365,10 @@ BEGIN
     CONTROL         "&Hide obsolete packages", IDC_CHOOSE_HIDE,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 167, 160, 14
     ICON            IDI_CYGWIN, IDC_HEADICON, SETUP_HEADICON_X, 0, 21, 20
-    LTEXT           "Select the packages you want setup to install.",
-                    IDC_CHOOSE_INST_TEXT, 21, 9, 239, 16, NOT WS_GROUP
+    LTEXT           "Select packages to download",
+                    IDC_CHOOSE_INST_TEXT_DOWNLOAD, 21, 9, 239, 16, NOT WS_GROUP
+    LTEXT           "Select packages to install",
+                    IDC_CHOOSE_INST_TEXT_INSTALL, 21, 9, 239, 16, NOT WS_GROUP
     LTEXT           "Select Packages", IDC_STATIC_HEADER_TITLE, 7, 0, 258, 8,
                     NOT WS_GROUP
 END

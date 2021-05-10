@@ -56,7 +56,6 @@ private:
   void changeTrust(int button, bool test, bool initial);
   void logOnePackageResult(packagemeta const *aPkg);
   void logResults();
-  void setPrompt(char const *aPrompt);
   void PlaceDialog (bool);
   void applyCommandLinePackageSelection();
   void initialUpdateState();

@@ -242,12 +242,6 @@ ChooserPage::Create ()
 }
 
 void
-ChooserPage::setPrompt(char const *aString)
-{
-  ::SetWindowText (GetDlgItem (IDC_CHOOSE_INST_TEXT), aString);
-}
-
-void
 ChooserPage::OnInit ()
 {
   CheckDlgButton (GetHWND (), IDC_CHOOSE_HIDE, BST_CHECKED);
@@ -266,10 +260,11 @@ ChooserPage::OnInit ()
       SendMessageW(viewlist, CB_ADDSTRING, 0, (LPARAM)mode.c_str());
     }
 
-  if (source == IDC_SOURCE_DOWNLOAD)
-    setPrompt("Select packages to download ");
-  else
-    setPrompt("Select packages to install ");
+  /* Only show text appropriate to download/install mode */
+  ShowWindow(GetDlgItem (IDC_CHOOSE_INST_TEXT_DOWNLOAD),
+             (source == IDC_SOURCE_DOWNLOAD) ? SW_SHOW : SW_HIDE);
+  ShowWindow(GetDlgItem (IDC_CHOOSE_INST_TEXT_INSTALL),
+             (source != IDC_SOURCE_DOWNLOAD) ? SW_SHOW : SW_HIDE);
 
   createListview ();
 
