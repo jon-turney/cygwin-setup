@@ -108,18 +108,20 @@ ListView::initColumns(HeaderList headers_)
   headers = headers_;
 
   // create the columns
-  LVCOLUMN lvc;
+  LVCOLUMNW lvc;
   lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 
   int i;
   for (i = 0; headers[i].text != 0; i++)
     {
+      std::wstring h = LoadStringW(headers[i].text);
+
       lvc.iSubItem = i;
-      lvc.pszText = const_cast <char *> (headers[i].text);
+      lvc.pszText = const_cast <wchar_t *> (h.c_str());
       lvc.cx = 100;
       lvc.fmt = headers[i].fmt;
 
-      ListView_InsertColumn(hWndListView, i, &lvc);
+      SendMessage(hWndListView, LVM_INSERTCOLUMNW, i, (LPARAM)&lvc);
     }
 
   // now do some width calculations

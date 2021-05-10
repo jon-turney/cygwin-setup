@@ -56,7 +56,7 @@ class ListView
   class Header
   {
   public:
-    const char *text;
+    unsigned int text; // resource id of header text
     int fmt;
     ControlType type;
     int width;
