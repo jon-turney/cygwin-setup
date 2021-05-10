@@ -243,8 +243,6 @@ set_status (HWND h)
     }
 }
 
-static char *header_string = NULL;
-static char *message_string = NULL;
 static void
 load_dialog (HWND h)
 {
@@ -253,21 +251,19 @@ load_dialog (HWND h)
       // Don't need the checkboxes
       EnableWindow (GetDlgItem (h, IDC_ROOT_DESKTOP), FALSE);
       EnableWindow (GetDlgItem (h, IDC_ROOT_MENU), FALSE);
-      if (header_string == NULL)
-        header_string = eget (h, IDC_STATIC_HEADER_TITLE, header_string);
-      if (message_string == NULL) 
-        message_string = eget (h, IDC_STATIC_HEADER, message_string);
-      eset (h, IDC_STATIC_HEADER_TITLE, "Installation complete");
-      eset (h, IDC_STATIC_HEADER, "Shows installation status in download-only mode.");
-    }
+      ShowWindow (GetDlgItem(h, IDC_DESKTOP_HEADER_DOWNLOAD), SW_SHOW);
+      ShowWindow (GetDlgItem(h, IDC_DESKTOP_HEADER_TITLE_DOWNLOAD), SW_SHOW);
+      ShowWindow (GetDlgItem(h, IDC_DESKTOP_HEADER_INSTALL), SW_HIDE);
+      ShowWindow (GetDlgItem(h, IDC_DESKTOP_HEADER_TITLE_INSTALL), SW_HIDE);
+     }
   else
     {
       EnableWindow (GetDlgItem (h, IDC_ROOT_DESKTOP), TRUE);
       EnableWindow (GetDlgItem (h, IDC_ROOT_MENU), TRUE);
-      if (header_string != NULL)
-        eset (h, IDC_STATIC_HEADER_TITLE, header_string);
-      if (message_string != NULL)
-        eset (h, IDC_STATIC_HEADER, message_string);
+      ShowWindow (GetDlgItem(h, IDC_DESKTOP_HEADER_DOWNLOAD), SW_HIDE);
+      ShowWindow (GetDlgItem(h, IDC_DESKTOP_HEADER_TITLE_DOWNLOAD), SW_HIDE);
+      ShowWindow (GetDlgItem(h, IDC_DESKTOP_HEADER_INSTALL), SW_SHOW);
+      ShowWindow (GetDlgItem(h, IDC_DESKTOP_HEADER_TITLE_INSTALL), SW_SHOW);
       rbset (h, da, root_desktop);
       rbset (h, ma, root_menu);
     }

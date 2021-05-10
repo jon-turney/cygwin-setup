@@ -284,9 +284,11 @@ BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
                     SETUP_STANDARD_DIALOG_W,1
     LTEXT           "Tell setup if you want it to create a few icons for convenient access to the Cygwin environment.",
-                    IDC_STATIC_HEADER,21,9,239,16,NOT WS_GROUP
-    LTEXT           "Create Icons",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT 
-                    WS_GROUP
+                    IDC_DESKTOP_HEADER_INSTALL,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Create Icons",IDC_DESKTOP_HEADER_TITLE_INSTALL,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Shows installation status in download-only mode.",
+                    IDC_DESKTOP_HEADER_DOWNLOAD,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Installation complete",IDC_DESKTOP_HEADER_TITLE_DOWNLOAD,7,0,258,8,NOT WS_GROUP
     CONTROL         "",IDC_DESKTOP_SEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
                     0,135,SETUP_STANDARD_DIALOG_W,1
     LTEXT           "Installation Status",IDC_STATUS_HEADER,7,140,258,8,NOT WS_GROUP
