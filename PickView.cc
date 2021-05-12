@@ -299,7 +299,7 @@ PickView::init_headers (void)
   const char *captions[] = { "Uninstall", "Skip", "Reinstall", "Retrieve",
                              "Source", "Keep", NULL };
   for (int i = 0; captions[i]; i++)
-    listview->noteColumnWidth (cat_col, captions[i]);
+    listview->noteColumnWidth (new_col, captions[i]);
 
   listview->noteColumnWidthEnd();
   listview->resizeColumns();
