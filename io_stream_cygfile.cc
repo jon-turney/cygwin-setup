@@ -18,6 +18,9 @@
 #include "filemanip.h"
 #include "mkdir.h"
 #include "mount.h"
+#include "compactos.h"
+
+#include "getopt++/StringOption.h"
 
 #include <stdlib.h>
 #include <errno.h>
@@ -27,6 +30,45 @@
 #include "IOStreamProvider.h"
 #include "LogSingleton.h"
 
+/* Option '--compact-os ALGORITHM' */
+class CompactOsStringOption : public StringOption
+{
+public:
+  CompactOsStringOption ();
+  virtual Result Process (char const *optarg, int prefixIndex) /* override */;
+  operator int () const { return intval; }
+private:
+  int intval;
+};
+
+CompactOsStringOption::CompactOsStringOption ()
+: StringOption ("", '\0', "compact-os",
+    "Compress installed files with Compact OS "
+    "(xpress4k, xpress8k, xpress16k, lzx)", false),
+  intval (-1)
+{
+}
+
+Option::Result CompactOsStringOption::Process (char const *optarg, int prefixIndex)
+{
+  Result res = StringOption::Process (optarg, prefixIndex);
+  if (res != Ok)
+    return res;
+  const std::string& strval = *this;
+  if (strval == "xpress4k")
+    intval = FILE_PROVIDER_COMPRESSION_XPRESS4K;
+  else if (strval == "xpress8k")
+    intval = FILE_PROVIDER_COMPRESSION_XPRESS8K;
+  else if (strval == "xpress16k")
+    intval = FILE_PROVIDER_COMPRESSION_XPRESS16K;
+  else if (strval == "lzx")
+    intval = FILE_PROVIDER_COMPRESSION_LZX;
+  else
+    return Failed;
+  return Ok;
+}
+
+static CompactOsStringOption CompactOsOption;
 
 /* completely private iostream registration class */
 class CygFileProvider : public IOStreamProvider
@@ -59,7 +101,8 @@ CygFileProvider CygFileProvider::theInstance = CygFileProvider();
 
 
 std::string io_stream_cygfile::cwd("/");
-  
+bool io_stream_cygfile::compact_os_is_available = (OSMajorVersion () >= 10);
+
 // Normalise a unix style path relative to 
 // cwd.
 std::string
@@ -120,7 +163,27 @@ get_root_dir_now ()
   read_mounts (std::string ());
 }
 
-io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string& mode, mode_t perms) : fp(), lasterr (0), fname(), wname (NULL)
+static bool
+compactos_is_useless (const std::string& name)
+{
+  const char * const p = name.c_str();
+  if (!(!strncmp (p, "/bin/", 5) || !strncmp (p, "/sbin/", 6) || !strncmp (p, "/usr/", 5)))
+    return true; /* File is not in R/O tree. */
+  const size_t len = name.size(); /* >= 5 */
+  if (!strcmp (p + (len - 4), ".dll") || !strcmp (p + (len - 3), ".so")) {
+    if ((len >= 5 + 11 && !strcmp (p + (len - 11), "cygwin1.dll"))
+	|| strstr (p + 5, "/sys-root/mingw/"))
+      return false; /* Ignored by rebase. */
+    return true; /* Rebase will open file for writing which uncompresses the file. */
+  }
+  if (!strcmp (p + (len - 4), ".bz2") || !strcmp (p + (len - 3), ".gz")
+      || !strcmp (p + (len - 3), ".xz"))
+    return true; /* File is already compressed. */
+  return false;
+}
+
+io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string& mode, mode_t perms)
+: fp(), lasterr (0), fname(), wname (NULL), compact_os_algorithm(-1)
 {
   errno = 0;
   if (!name.size())
@@ -153,6 +216,10 @@ io_stream_cygfile::io_stream_cygfile (const std::string& name, const std::string
 	Log (LOG_TIMESTAMP) << "io_stream_cygfile: fopen(" << name << ") failed " << errno << " "
 	  << strerror(errno) << endLog;
       }
+
+      if (mode[0] == 'w' && compact_os_is_available && CompactOsOption >= 0
+	  && !compactos_is_useless (name))
+	compact_os_algorithm = CompactOsOption;
     }
 }
 
@@ -367,6 +434,24 @@ io_stream_cygfile::set_mtime (time_t mtime)
 		   FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, 0);
   if (h == INVALID_HANDLE_VALUE)
     return 1;
+
+  if (compact_os_algorithm >= 0)
+    {
+      /* Compact OS must be applied after last WriteFile()
+	 and before SetFileTime(). */
+      int rc = CompactOsCompressFile (h, compact_os_algorithm);
+      if (rc < 0)
+	{
+	  DWORD err = GetLastError();
+	  Log (LOG_TIMESTAMP) << "Compact OS disabled after error " << err
+			      << " on " << fname << endLog;
+	  compact_os_is_available = false;
+	}
+      else
+	Log (LOG_BABBLE) << "Compact OS algorithm " << compact_os_algorithm
+			 << (rc == 0 ? " not" : "") << " applied to " << fname << endLog;
+    }
+
   SetFileTime (h, 0, 0, &ftime);
   CloseHandle (h);
   return 0;

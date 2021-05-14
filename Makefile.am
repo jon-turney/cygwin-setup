@@ -108,6 +108,8 @@ inilint_SOURCES = \
 	archive_tar_file.cc \
 	choose.cc \
 	choose.h \
+	compactos.cc \
+	compactos.h \
 	compress.cc \
 	compress.h \
 	compress_bz.cc \

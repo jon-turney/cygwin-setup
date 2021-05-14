@@ -61,7 +61,9 @@ private:
   std::string fname;
   wchar_t *wname;
   wchar_t *w_str ();
+  int compact_os_algorithm;
   static std::string cwd;
+  static bool compact_os_is_available;
 };
 
 #endif /* SETUP_IO_STREAM_CYGFILE_H */
