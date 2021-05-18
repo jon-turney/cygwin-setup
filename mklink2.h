@@ -17,4 +17,14 @@ extern "C"
 };
 #endif
 
+typedef enum
+{
+  SymlinkTypeMagic,
+  SymlinkTypeShortcut,
+  SymlinkTypeNative,
+  SymlinkTypeWsl,
+} SymlinkTypeEnum;
+
+extern SymlinkTypeEnum symlinkType;
+
 #endif /* SETUP_MKLINK2_H */

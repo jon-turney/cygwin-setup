@@ -56,3 +56,10 @@ main (int argc, char **argv)
 
   return 0;
 }
+
+const std::string &
+get_root_dir ()
+{
+  static std::string empty;
+  return empty;
+}
