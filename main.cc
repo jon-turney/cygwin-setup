@@ -63,6 +63,8 @@
 #include "getopt++/GetOption.h"
 #include "getopt++/BoolOption.h"
 #include "getopt++/StringOption.h"
+#include "getopt++/StringChoiceOption.h"
+#include "mklink2.h"
 
 #include "Exception.h"
 #include <stdexcept>
@@ -86,6 +88,13 @@ std::string SetupIniDir;
 
 HINSTANCE hinstance;
 
+static StringChoiceOption::StringChoices symlink_types({
+    {"native", SymlinkTypeNative},
+    {"lnk", SymlinkTypeShortcut},
+    {"sys", SymlinkTypeMagic},
+    {"wsl", SymlinkTypeWsl},
+  });
+
 static StringOption Arch ("", 'a', "arch", "Architecture to install (x86_64 or x86)", false);
 static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
 static BoolOption PackageManagerOption (false, 'M', "package-manager", "Semi-attended chooser-only mode");
@@ -95,6 +104,8 @@ static BoolOption HelpOption (false, 'h', "help", "Print help");
 static BoolOption VersionOption (false, 'V', "version", "Show version");
 static StringOption SetupBaseNameOpt ("setup", 'i', "ini-basename", "Use a different basename, e.g. \"foo\", instead of \"setup\"", false);
 BoolOption UnsupportedOption (false, '\0', "allow-unsupported-windows", "Allow old, unsupported Windows versions");
+static StringChoiceOption SymlinkTypeOption(symlink_types, '\0', "symlink-type", "Symlink type (lnk, native, sys, wsl)", false, SymlinkTypeMagic);
+
 std::string SetupBaseName;
 
 static void inline
@@ -320,6 +331,34 @@ WinMain (HINSTANCE h,
 	Logger ().exit (1, false);
       }
 
+    /* Set default DACL and Group. */
+    nt_sec.setDefaultSecurity ((root_scope == IDC_ROOT_SYSTEM));
+
+    symlinkType = (SymlinkTypeEnum)(int)SymlinkTypeOption;
+    if (symlinkType == SymlinkTypeWsl)
+      {
+        VersionInfo v = GetVer();
+        if ((v.major() < 10) ||
+            ((v.major() == 10) && (v.buildNumber() < 14393)))
+          {
+            fprintf (stderr, "*** --symlink-type wsl requires Windows 10 1607 or later\n");
+            exit(1);
+          }
+      }
+    else if (symlinkType == SymlinkTypeNative)
+      {
+        if (!(elevate || is_developer_mode() || nt_sec.hasSymlinkCreationRights()))
+          {
+            fprintf (stderr, "*** --symlink-type native requires SeCreateSymbolicLink privilege or 'Developer Mode'\n");
+            exit(1);
+          }
+      }
+    else if (symlinkType == SymlinkTypeShortcut)
+      {
+        fprintf (stderr, "*** --symlink-type lnk is not implemented\n");
+        exit(1);
+      }
+
     if (elevate)
       {
 	char exe_path[MAX_PATH];
@@ -354,9 +393,6 @@ WinMain (HINSTANCE h,
       }
     else
       {
-	/* Set default DACL and Group. */
-	nt_sec.setDefaultSecurity ((root_scope == IDC_ROOT_SYSTEM));
-
 	UserSettings Settings;
         UserSettings::instance().load (local_dir);
 	main_display ();
