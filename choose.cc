@@ -501,6 +501,7 @@ ChooserPage::OnMessageCmd (int id, HWND hwndctl, UINT code)
       {
         std::string value;
         eset (GetHWND (), IDC_CHOOSE_SEARCH_EDIT, value);
+        KillTimer (GetHWND (), timer_id);
         chooser->SetPackageFilter (value);
         chooser->refresh ();
       }
