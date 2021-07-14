@@ -275,7 +275,7 @@ public:
         cache_size = s.length() + 1;
         cache = (char_type *)realloc(cache, cache_size * sizeof(char_type));
       }
-    memcpy(cache, s.c_str(), cache_size * sizeof(char_type));
+    memcpy(cache, s.c_str(), (s.length() + 1) * sizeof(char_type));
     return *this;
   }
   operator char_type *() const
