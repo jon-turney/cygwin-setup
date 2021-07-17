@@ -6,7 +6,7 @@ jobs:
   fedora-build:
     name: Fedora
     runs-on: ubuntu-latest
-    container: fedora:31
+    container: fedora:latest
     steps:
     # install git, so checkout uses git to fetch repository, so 'git describe' works
     - name: Install git
@@ -21,4 +21,4 @@ jobs:
       run: packaging-scripts/fedora-prereqs-install.sh
 
     - name: Build
-      run: packaging-scripts/conf.sh upx
+      run: packaging-scripts/conf.sh upx x86_64

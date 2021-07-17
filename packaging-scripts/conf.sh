@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 TARGET=${1:-upx}
+ARCHES=${2:-i686 x86_64}
 
 function arch() {
 cpu=$1
@@ -16,6 +17,6 @@ make ${TARGET}
 cd ..
 }
 
-for ARCH in i686 x86_64 ; do
+for ARCH in ${ARCHES} ; do
     arch ${ARCH}
 done
