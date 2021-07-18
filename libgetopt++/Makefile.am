@@ -26,7 +26,7 @@ TESTS = tests/OptionSet tests/optioniterator tests/BoolOptionTest
 
 libgetopt___la_SOURCES = src/GetOption.cc src/Option.cc src/BoolOption.cc \
 	src/OptionSet.cc \
-	src/StringArrayOption.cc src/StringOption.cc
+	src/StringArrayOption.cc src/StringChoiceOption.cc src/StringOption.cc
 
 libgetopt___la_LDFLAGS = -version-info 1:1:0 -no-undefined
 
@@ -36,6 +36,7 @@ getoptinclude_HEADERS = include/getopt++/Option.h \
   include/getopt++/GetOption.h \
   include/getopt++/OptionSet.h \
   include/getopt++/StringArrayOption.h \
+  include/getopt++/StringChoiceOption.h \
   include/getopt++/StringOption.h
 
 tests_testoption_SOURCES = tests/testoption.cc

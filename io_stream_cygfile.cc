@@ -20,7 +20,7 @@
 #include "mount.h"
 #include "compactos.h"
 
-#include "getopt++/StringOption.h"
+#include "getopt++/StringChoiceOption.h"
 
 #include <stdlib.h>
 #include <errno.h>
@@ -30,45 +30,17 @@
 #include "IOStreamProvider.h"
 #include "LogSingleton.h"
 
-/* Option '--compact-os ALGORITHM' */
-class CompactOsStringOption : public StringOption
-{
-public:
-  CompactOsStringOption ();
-  virtual Result Process (char const *optarg, int prefixIndex) /* override */;
-  operator int () const { return intval; }
-private:
-  int intval;
-};
+static StringChoiceOption::StringChoices algs({
+    {"xpress4k", FILE_PROVIDER_COMPRESSION_XPRESS4K},
+    {"xpress8k", FILE_PROVIDER_COMPRESSION_XPRESS8K},
+    {"xpress16k", FILE_PROVIDER_COMPRESSION_XPRESS16K},
+    {"lzx", FILE_PROVIDER_COMPRESSION_LZX},
+  });
 
-CompactOsStringOption::CompactOsStringOption ()
-: StringOption ("", '\0', "compact-os",
-    "Compress installed files with Compact OS "
-    "(xpress4k, xpress8k, xpress16k, lzx)", false),
-  intval (-1)
-{
-}
-
-Option::Result CompactOsStringOption::Process (char const *optarg, int prefixIndex)
-{
-  Result res = StringOption::Process (optarg, prefixIndex);
-  if (res != Ok)
-    return res;
-  const std::string& strval = *this;
-  if (strval == "xpress4k")
-    intval = FILE_PROVIDER_COMPRESSION_XPRESS4K;
-  else if (strval == "xpress8k")
-    intval = FILE_PROVIDER_COMPRESSION_XPRESS8K;
-  else if (strval == "xpress16k")
-    intval = FILE_PROVIDER_COMPRESSION_XPRESS16K;
-  else if (strval == "lzx")
-    intval = FILE_PROVIDER_COMPRESSION_LZX;
-  else
-    return Failed;
-  return Ok;
-}
-
-static CompactOsStringOption CompactOsOption;
+static StringChoiceOption CompactOsOption(algs,
+    '\0', "compact-os",
+    "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)",
+    true, -1, FILE_PROVIDER_COMPRESSION_LZX);
 
 /* completely private iostream registration class */
 class CygFileProvider : public IOStreamProvider
