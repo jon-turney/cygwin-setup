@@ -247,6 +247,33 @@ mklongpath (wchar_t *tgt, const char *src, size_t len)
   return 0;
 }
 
+int
+mklongrelpath (wchar_t *tgt, const char *src, size_t len)
+{
+  wchar_t *tp;
+  size_t n;
+  mbstate_t mb;
+
+  tp = tgt;
+  memset (&mb, 0, sizeof mb);
+
+  while (len > 0)
+    {
+      n = mbrtowc (tp, src, 6, &mb);
+      if (n == (size_t) -1 || n == (size_t) -2)
+        return -1;
+      if (n == 0)
+        break;
+      src += n;
+      /* Transform char according to Cygwin rules. */
+      if (*tp < 128)
+        *tp = tfx_chars[*tp];
+      ++tp;
+      --len;
+    }
+  return 0;
+}
+
 /* Replacement functions for Win32 API functions.  The joke here is that the
    replacement functions always use the FILE_OPEN_FOR_BACKUP_INTENT flag. */
 

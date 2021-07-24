@@ -196,12 +196,125 @@ mkwslsymlink (const char *from, const char *to)
   return NT_SUCCESS (status) ? 0 : 1;
 }
 
+static int
+mknativesymlink (const char *from, const char *to)
+{
+  /* Construct the absolute Windows path of 'to' ... */
+  std::string absto;
+  if (to[0] == '/')
+    {
+      absto = get_root_dir();
+      absto.append(to);
+    }
+  else
+    {
+      /* 'from' is already absolute */
+      absto.append(from);
+      /* remove the last pathname component */
+      size_t i = absto.rfind('/');
+      if (i != std::string::npos)
+        absto.resize(i);
+      /* ... and add relative path 'to'. */
+      absto.append("/");
+      absto.append(to);
+    }
+
+  /* ... so we can discover if it's a file or directory (if it already exists) */
+  size_t abstlen = strlen (absto.c_str()) + 7;
+  wchar_t wabsto[abstlen];
+  mklongpath (wabsto, absto.c_str(), abstlen);
+  wabsto[1] = '?';
+
+  bool isdir = FALSE;
+  bool isdir_known = FALSE;
+  HANDLE fh;
+  NTSTATUS status;
+  UNICODE_STRING uto;
+  OBJECT_ATTRIBUTES attr;
+  IO_STATUS_BLOCK io;
+  RtlInitUnicodeString (&uto, wabsto);
+  InitializeObjectAttributes (&attr, &uto, OBJ_CASE_INSENSITIVE, NULL, NULL);
+  status = NtOpenFile (&fh, FILE_READ_ATTRIBUTES, &attr, &io, FILE_SHARE_VALID_FLAGS,
+                       FILE_OPEN_FOR_BACKUP_INTENT | FILE_OPEN_REPARSE_POINT);
+  if (NT_SUCCESS (status))
+    {
+      FILE_BASIC_INFORMATION fi;
+      status = NtQueryInformationFile(fh, &io, &fi, sizeof(fi), FileBasicInformation);
+      if (!NT_SUCCESS (status))
+        Log (LOG_BABBLE) << "Querying " << absto << " failed " << std::hex << status << endLog;
+      else
+        {
+          isdir = fi.FileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+          isdir_known = TRUE;
+          Log (LOG_BABBLE) << "Querying " << absto << " isdir is " << isdir << endLog;
+        }
+      NtClose(fh);
+    }
+  else
+    {
+      Log (LOG_BABBLE) << "Opening " << absto << " failed " << std::hex << status << endLog;
+    }
+
+  /*
+    Fail, if we failed to determine if the symlink target is a directory
+    (probably because it doesn't exist (yet))
+
+    (We could guess that it's a file, since that works for Cygwin (and WSL),
+    which don't care if the directory flag in the symlink is wrong (when the
+    target comes into existence), but native tools will fail.
+  */
+
+  if (!isdir_known)
+    return 1;
+
+  /* Try to create the native symlink. */
+  const size_t flen = strlen (from) + 7;
+  WCHAR wfrom[flen];
+  mklongpath (wfrom, from, flen);
+  wfrom[1] = '?';
+
+  size_t tlen = strlen (to) + 7;
+  wchar_t wto[tlen];
+  if (to[0] == '/')
+    {
+      absto = get_root_dir();
+      absto.append(to);
+      mklongpath (wto, to, tlen);
+      wto[1] = '?';
+    }
+  else
+    {
+      mklongrelpath (wto, to, tlen);
+    }
+
+  DWORD flags = isdir ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0;
+  /* Windows 10 1703 and later allow unprivileged symlink creation when
+     'Developer Mode' is on.*/
+  VersionInfo v = GetVer();
+  if ((v.major() > 10) ||
+      ((v.major() == 10) && (v.buildNumber() >= 15063)))
+    flags |= SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE;
+
+  status = CreateSymbolicLinkW (wfrom, wto, flags);
+
+  if (!status)
+    Log (LOG_PLAIN) << "Linking " << from << " to " << to << " failed " << std::hex << GetLastError() << endLog;
+
+  return !status;
+}
+
 int
 mkcygsymlink (const char *from, const char *to)
 {
   if (symlinkType == SymlinkTypeWsl)
     {
       if (!mkwslsymlink (from, to))
+        return 0;
+    }
+
+  if (symlinkType == SymlinkTypeNative)
+    {
+      if (!mknativesymlink (from, to))
         return 0;
     }
 
