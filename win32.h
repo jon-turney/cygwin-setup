@@ -195,5 +195,6 @@ SetDlgItemRect (HWND h, int item, LPRECT r)
 }
 
 const std::wstring LoadStringW(unsigned int uID);
+bool is_developer_mode(void);
 
 #endif /* SETUP_WIN32_H */

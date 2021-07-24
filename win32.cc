@@ -473,3 +473,21 @@ LoadStringW(unsigned int uID)
 
   return L"";
 }
+
+bool
+is_developer_mode(void)
+{
+  HKEY hKey;
+  LSTATUS err = RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock", 0, KEY_READ, &hKey);
+  if (err != ERROR_SUCCESS)
+    return false;
+
+  DWORD value;
+  DWORD size = sizeof(DWORD);
+  err = RegQueryValueExW(hKey, L"AllowDevelopmentWithoutDevLicense", NULL, NULL, reinterpret_cast<LPBYTE>(&value), &size);
+  RegCloseKey(hKey);
+  if (err != ERROR_SUCCESS)
+    return false;
+
+  return value != 0;
+}

@@ -89,7 +89,17 @@ determine_default_useragent(void)
       langid << std::hex << std::setw(4) << std::setfill('0') << l;
     }
 
-  default_useragent = std::string("Cygwin-Setup/") + setup_version + " (" + os.str() + ";" + bitness + ";" + langid.str() + ")";
+  std::string symlinks = "";
+  if (nt_sec.hasSymlinkCreationRights())
+    symlinks.append("SymLinkPriv");
+  if (is_developer_mode())
+    {
+      if (!symlinks.empty())
+        symlinks.append("+");
+      symlinks.append("UnprivilegedSymLink");
+    }
+
+  default_useragent = std::string("Cygwin-Setup/") + setup_version + " (" + os.str() + ";" + bitness + ";" + langid.str() + ";" + symlinks + ")";
   Log (LOG_BABBLE) << "User-Agent: default is \"" << default_useragent << "\"" << endLog;
 
   return default_useragent;
