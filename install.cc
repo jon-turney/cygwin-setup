@@ -93,7 +93,13 @@ class Installer
   private:
     bool extract_replace_on_reboot(archive *, const std::string&,
                                    const std::string&, std::string);
-
+    bool _installOne (packagemeta &pkgm,
+                      const std::string& prefixURL,
+                      const std::string& prefixPath,
+                      HWND owner,
+                      io_stream *pkgfile,
+                      archive *tarstream,
+                      io_stream *lst);
 };
 
 Installer::Installer() : errors(0)
@@ -529,12 +535,38 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
         }
     }
 
+  package_bytes = source.size;
+  Log (LOG_PLAIN) << "Extracting from " << source.Cached () << endLog;
+
+  bool error_in_this_package = _installOne(pkgm, prefixURL, prefixPath, owner,
+                                           pkgfile, tarstream, lst);
+
+  if (lst)
+    delete lst;
+  delete tarstream;
+
+  total_bytes_sofar += package_bytes;
+  progress (0);
+
+  int df = diskfull (get_root_dir ().c_str ());
+  Progress.SetBar3 (df);
+
+  if (ver.Type () == package_binary && !error_in_this_package)
+    pkgm.installed = ver;
+}
+
+bool
+Installer::_installOne (packagemeta &pkgm,
+                        const std::string& prefixURL,
+                        const std::string& prefixPath,
+                        HWND owner,
+                        io_stream *pkgfile,
+                        archive *tarstream,
+                        io_stream *lst)
+{
   bool error_in_this_package = false;
   bool ignoreInUseErrors = false;
   bool ignoreExtractErrors = unattended_mode;
-
-  package_bytes = source.size;
-  Log (LOG_PLAIN) << "Extracting from " << source.Cached () << endLog;
 
   std::string fn;
   while ((fn = tarstream->next_file_name ()).size ())
@@ -725,18 +757,7 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
       num_installs++;
     }
 
-  if (lst)
-    delete lst;
-  delete tarstream;
-
-  total_bytes_sofar += package_bytes;
-  progress (0);
-
-  int df = diskfull (get_root_dir ().c_str ());
-  Progress.SetBar3 (df);
-
-  if (ver.Type () == package_binary && !error_in_this_package)
-    pkgm.installed = ver;
+  return error_in_this_package;
 }
 
 static void
