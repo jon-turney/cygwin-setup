@@ -45,7 +45,6 @@
  * offset 257     string  ustar\040\040\0
  */
 
-
 #define longest_magic 265
 
 archive *
@@ -65,15 +64,6 @@ archive::extract (io_stream * original)
 	    return rv;
 	  return NULL;
 	}
-#if 0
-      else if (memcmp (magic, "BZh", 3) == 0)
-	{
-	  archive_bz *rv = new archive_bz (original);
-	  if (!rv->error ())
-	    return rv;
-	  return NULL;
-	}
-#endif
     }
   return NULL;
 }
@@ -194,45 +184,3 @@ out:
 }
 
 archive::~archive () {};
-
-#if 0
-ssize_t archive::read (void *buffer, size_t len)
-{
-  Log (LOG_TIMESTAMP, "archive::read called");
-  return 0;
-}
-
-ssize_t archive::write (void *buffer, size_t len)
-{
-  Log (LOG_TIMESTAMP, "archive::write called");
-  return 0;
-}
-
-ssize_t archive::peek (void *buffer, size_t len)
-{
-  Log (LOG_TIMESTAMP, "archive::peek called");
-  return 0;
-}
-
-long
-archive::tell ()
-{
-  Log (LOG_TIMESTAMP, "bz::tell called");
-  return 0;
-}
-
-int
-archive::error ()
-{
-  Log (LOG_TIMESTAMP, "archive::error called");
-  return 0;
-}
-
-const char *
-archive::next_file_name ()
-{
-  Log (LOG_TIMESTAMP, "archive::next_file_name called");
-  return NULL;
-}
-
-#endif

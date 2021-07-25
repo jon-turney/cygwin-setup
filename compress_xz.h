@@ -27,7 +27,7 @@ public:
   virtual ssize_t write (const void *buffer, size_t len); /* not implemented */
   virtual ssize_t peek (void *buffer, size_t len);
   virtual long tell (); /* not implemented */
-  virtual int seek (long where, io_stream_seek_t whence); /* not implemented */
+  virtual int seek (long where, io_stream_seek_t whence);
   virtual int error ();
   virtual const char *next_file_name () { return NULL; };
   virtual int set_mtime (time_t);
@@ -49,6 +49,7 @@ private:
   char peekbuf[512];
   size_t peeklen;
   int lasterr;
+  void create ();
   void destroy ();
 
   struct private_data {

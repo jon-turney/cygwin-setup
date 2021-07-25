@@ -67,6 +67,7 @@ private:
   char buf[4096];
   int writing;
   size_t position;
+  void init_state(void);
 };
 
 #endif /* SETUP_COMPRESS_BZ_H */

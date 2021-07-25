@@ -35,7 +35,12 @@ compress_bz::compress_bz (io_stream * parent) : peeklen (0), position (0)
     }
   original = parent;
   owns_original = true;
+  init_state();
+}
 
+void
+compress_bz::init_state(void)
+{
   initialisedOk = 0;
   endReached = 0;
   writing = 0;
@@ -194,6 +199,13 @@ compress_bz::tell ()
 int
 compress_bz::seek (long where, io_stream_seek_t whence)
 {
+  if ((whence == IO_SEEK_SET) && (where == 0))
+    {
+      int result = original->seek(where, whence);
+      init_state();
+      return result;
+    }
+
   throw new std::logic_error ("compress_bz::seek is not implemented");
 }
 

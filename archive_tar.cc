@@ -100,11 +100,15 @@ archive_tar::tell ()
 int
 archive_tar::seek (long where, io_stream_seek_t whence)
 {
-  /* seeking in the parent archive doesn't make sense. although we could
-     map to files ? 
-     Also, seeking might make sense for rewing..?? 
-     */
-  return -1; 
+  /* Because the parent stream is compressed, we can only easily support
+     seek()-ing to rewind to the start */
+  if ((whence == IO_SEEK_SET) && (where == 0))
+    {
+      state.header_read = 0;
+      return state.parent->seek(where, whence);
+    }
+
+  return -1;
 }
 
 int

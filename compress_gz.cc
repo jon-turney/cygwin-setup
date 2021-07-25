@@ -41,19 +41,23 @@ static int gz_magic[2] = { 0x1f, 0x8b };	/* gzip magic header */
  */
 compress_gz::compress_gz (io_stream * parent)
 {
-  construct (parent, "r");
+  original = parent;
+  owns_original = true;
+  openmode = "r";
+  construct ();
 }
 
-compress_gz::compress_gz (io_stream * parent, const char *openmode)
-{
-  construct (parent, openmode);
-}
-
-void
-compress_gz::construct (io_stream * parent, const char *openmode)
+compress_gz::compress_gz (io_stream * parent, const char *_openmode)
 {
   original = parent;
   owns_original = true;
+  openmode = _openmode;
+  construct ();
+}
+
+void
+compress_gz::construct ()
+{
   peeklen = 0;
   int err;
   int level = Z_DEFAULT_COMPRESSION;	/* compression level */
@@ -76,7 +80,7 @@ compress_gz::construct (io_stream * parent, const char *openmode)
 
   mode = '\0';
 
-  if (!parent)
+  if (!original)
     {
       z_err = Z_STREAM_ERROR;
       return;
@@ -413,6 +417,14 @@ compress_gz::tell ()
 int
 compress_gz::seek (long where, io_stream_seek_t whence)
 {
+  if ((whence == IO_SEEK_SET) && (where == 0))
+    {
+      int result = original->seek(where, whence);
+      destroy();
+      construct();
+      return result;
+    }
+
   throw new std::logic_error("compress_gz::seek is not implemented");
 }
 
@@ -458,7 +470,11 @@ void
 compress_gz::destroy ()
 {
   if (msg)
-    free (msg);
+    {
+      free (msg);
+      msg = NULL;
+    }
+
   if (stream.state != NULL)
     {
       if (mode == 'w')
@@ -472,12 +488,15 @@ compress_gz::destroy ()
     }
 
   if (inbuf)
-
-    free (inbuf);
+    {
+      free (inbuf);
+      inbuf = NULL;
+    }
   if (outbuf)
-    free (outbuf);
-  if (original && owns_original)
-    delete original;
+    {
+      free (outbuf);
+      outbuf = NULL;
+    }
 }
 
 compress_gz::~compress_gz ()
@@ -485,16 +504,15 @@ compress_gz::~compress_gz ()
   if (mode == 'w')
     {
       z_err = do_flush (Z_FINISH);
-      if (z_err != Z_OK)
-	{
-	  destroy ();
-	  return;
-	}
-
-      putLong (crc);
-      putLong (stream.total_in);
+      if (z_err == Z_OK)
+        {
+          putLong (crc);
+          putLong (stream.total_in);
+        }
     }
   destroy ();
+  if (original && owns_original)
+    delete original;
 }
 
 int
@@ -534,11 +552,6 @@ compress_gz::do_flush (int flush)
   return z_err == Z_STREAM_END ? Z_OK : z_err;
 }
 
-
-#if 0
-
-gzclose (lst);
-#endif
 /* ===========================================================================
  *  Read a byte from a gz_stream; update next_in and avail_in. Return EOF
  *  for end of file.

@@ -69,14 +69,9 @@ public:
   /* read data - not valid for archives (duh!) 
    * Could be made valid via the read-child-directly model 
    */
-//  virtual ssize_t read(void *buffer, size_t len) {return -1;};
-  /* provide data to (double duh!) */
-//  virtual ssize_t write(void *buffer, size_t len) { return -1;};
-  /* read data without removing it from the class's internal buffer */
-//  virtual ssize_t peek(void *buffer, size_t len);
-//  virtual long tell ();
-  /* try guessing this one */
-//  virtual int error ();
+
+  virtual int seek (long offset, io_stream_seek_t whence) = 0;
+
   /* Find out the next stream name -
    * ie for foo.tar.gz, at offset 0, next_file_name = foo.tar
    * for foobar that is an compress, next_file_name is the next
@@ -88,14 +83,11 @@ public:
   virtual archive_file_t next_file_type () = 0;
   virtual const std::string linktarget () = 0;
   virtual int skip_file () = 0;
-  /* if you are still needing these hints... give up now! */
   virtual ~archive() = 0;
 protected:
   void operator= (const archive &);
   archive () {};
   archive (const archive &);
-private:
-//  archive () {};
 };
 
 #endif /* SETUP_ARCHIVE_H */

@@ -35,7 +35,12 @@ compress_zstd::compress_zstd (io_stream * parent)
       return;
     }
   original = parent;
+  create();
+}
 
+void
+compress_zstd::create (void)
+{
   state = (struct private_data *)calloc(sizeof(*state), 1);
   if (state == NULL)
     {
@@ -179,6 +184,14 @@ compress_zstd::tell ()
 int
 compress_zstd::seek (long where, io_stream_seek_t whence)
 {
+  if ((whence == IO_SEEK_SET) && (where == 0))
+    {
+      int result = original->seek(where, whence);
+      destroy();
+      create();
+      return result;
+    }
+
   throw new std::logic_error("compress_zstd::seek is not implemented");
 }
 
@@ -240,14 +253,14 @@ compress_zstd::destroy ()
       free(state);
       state = NULL;
     }
-
-  if (original && owns_original)
-    delete original;
 }
 
 compress_zstd::~compress_zstd ()
 {
   destroy ();
+
+  if (original && owns_original)
+    delete original;
 }
 
 bool

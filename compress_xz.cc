@@ -51,9 +51,6 @@ compress_xz::compress_xz (io_stream * parent)
   lasterr(0),
   compression_type (COMPRESSION_UNKNOWN)
 {
-  unsigned char * out_block = NULL;
-  unsigned char * in_block = NULL;
-
   /* read only */
   if (!parent || parent->error())
     {
@@ -61,6 +58,16 @@ compress_xz::compress_xz (io_stream * parent)
       return;
     }
   original = parent;
+
+  create ();
+  init_decoder ();
+}
+
+void
+compress_xz::create ()
+{
+  unsigned char * out_block = NULL;
+  unsigned char * in_block = NULL;
 
   state = (struct private_data *)calloc(sizeof(*state), 1);
   out_block = (unsigned char *)malloc(out_block_size);
@@ -79,12 +86,10 @@ compress_xz::compress_xz (io_stream * parent)
   state->out_block = out_block;
   state->in_block_size = in_block_size;
   state->in_block = in_block;
-  state->out_p = out_block;
+  state->out_p = state->out_block;
   state->stream.avail_in = 0;
   state->stream.next_out = state->out_block;
   state->stream.avail_out = state->out_block_size;
-
-  init_decoder ();
 }
 
 ssize_t
@@ -267,6 +272,17 @@ compress_xz::tell ()
 int
 compress_xz::seek (long where, io_stream_seek_t whence)
 {
+  if ((whence == IO_SEEK_SET) && (where == 0))
+    {
+      int result = original->seek(where, whence);
+      destroy ();
+      peeklen = 0;
+      lasterr = 0;
+      create ();
+      init_decoder ();
+      return result;
+    }
+
   throw new std::logic_error("compress_xz::seek is not implemented");
 }
 
@@ -334,14 +350,14 @@ compress_xz::destroy ()
 
       compression_type = COMPRESSION_UNKNOWN;
     }
-
-  if (original && owns_original)
-    delete original;
 }
 
 compress_xz::~compress_xz ()
 {
   destroy ();
+
+  if (original && owns_original)
+    delete original;
 }
 
 /* ===========================================================================

@@ -60,7 +60,7 @@ private:
   };
   char peekbuf[512];
   size_t peeklen;
-  void construct (io_stream *, const char *);
+  void construct ();
   void check_header ();
   int get_byte ();
   unsigned long getLong ();
@@ -69,6 +69,7 @@ private:
   int do_flush (int);
   io_stream *original;
   bool owns_original;
+  const char *openmode;
   /* from zlib */
   z_stream stream;
   int z_err;			/* error code for last stream operation */
