@@ -99,7 +99,8 @@ class Installer
                       HWND owner,
                       io_stream *pkgfile,
                       archive *tarstream,
-                      io_stream *lst);
+                      io_stream *lst,
+                      bool symlink_phase);
 };
 
 Installer::Installer() : errors(0)
@@ -539,7 +540,12 @@ Installer::installOne (packagemeta &pkgm, const packageversion &ver,
   Log (LOG_PLAIN) << "Extracting from " << source.Cached () << endLog;
 
   bool error_in_this_package = _installOne(pkgm, prefixURL, prefixPath, owner,
-                                           pkgfile, tarstream, lst);
+                                           pkgfile, tarstream, lst, false);
+  if (tarstream->seek(0, IO_SEEK_SET) == -1)
+    Log (LOG_PLAIN) << "Error rewinding to extract symlinks" << source.Cached () << endLog;
+
+  error_in_this_package |= _installOne(pkgm, prefixURL, prefixPath, owner,
+                                       pkgfile, tarstream, lst, true);
 
   if (lst)
     delete lst;
@@ -562,7 +568,8 @@ Installer::_installOne (packagemeta &pkgm,
                         HWND owner,
                         io_stream *pkgfile,
                         archive *tarstream,
-                        io_stream *lst)
+                        io_stream *lst,
+                        bool symlink_phase)
 {
   bool error_in_this_package = false;
   bool ignoreInUseErrors = false;
@@ -571,6 +578,12 @@ Installer::_installOne (packagemeta &pkgm,
   std::string fn;
   while ((fn = tarstream->next_file_name ()).size ())
     {
+      if (symlink_phase != (tarstream->next_file_type () == ARCHIVE_FILE_SYMLINK))
+        {
+          tarstream->skip_file();
+          continue;
+        }
+
       std::string canonicalfn = prefixPath + fn;
 
       // pathnames starting "." (i.e. dotfiles in the root directory) are
