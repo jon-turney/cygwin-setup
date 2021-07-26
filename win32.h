@@ -132,6 +132,7 @@ public:
   void initialiseWellKnownSIDs ();
   void setDefaultSecurity(bool isAdmin);
   bool isRunAsAdmin ();
+  bool hasSymlinkCreationRights ();
 private:
   void NoteFailedAPI (const std::string &);
   bool wellKnownSIDsinitialized () const { return _wellKnownSIDsinitialized; }

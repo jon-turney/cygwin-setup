@@ -321,6 +321,12 @@ NTSecurity::setDefaultSecurity (bool isAdmin)
   /* Set backup and restore privileges if available. */
   setBackupPrivileges ();
 
+  /* Log if symlink creation privilege is available. */
+  if (hasSymlinkCreationRights())
+    Log (LOG_TIMESTAMP) << "User has NO symlink creation right" << endLog;
+  else
+    Log (LOG_TIMESTAMP) << "User has symlink creation right" << endLog;
+
   /* If initializing the well-known SIDs didn't work, we're finished here. */
   if (!wellKnownSIDsinitialized ())
     return;
@@ -371,6 +377,39 @@ NTSecurity::isRunAsAdmin ()
   return (is_run_as_admin == TRUE);
 }
 
+bool
+NTSecurity::hasSymlinkCreationRights ()
+{
+  LUID symlink;
+  if (!LookupPrivilegeValue (NULL, SE_CREATE_SYMBOLIC_LINK_NAME, &symlink))
+    {
+      NoteFailedAPI ("LookupPrivilegeValue");
+      return FALSE;
+    }
+
+  DWORD size;
+  GetTokenInformation (token.theHANDLE (), TokenPrivileges, NULL, 0, &size);
+  /* Will fail ERROR_INSUFFICIENT_BUFFER, but updates size */
+
+  TOKEN_PRIVILEGES *privileges = (TOKEN_PRIVILEGES *)alloca(size);
+  if (!GetTokenInformation (token.theHANDLE (), TokenPrivileges, privileges,
+                            size, &size))
+    {
+      NoteFailedAPI ("GetTokenInformation(privileges)");
+      return FALSE;
+    }
+
+  unsigned int i;
+  for (i = 0; i < privileges->PrivilegeCount; i++)
+    {
+      if (memcmp(&privileges->Privileges[i].Luid, &symlink, sizeof(LUID)) == 0)
+        {
+          return (privileges->Privileges[i].Attributes & SE_PRIVILEGE_ENABLED);
+        }
+    }
+
+  return FALSE;
+}
 
 VersionInfo::VersionInfo ()
 {
