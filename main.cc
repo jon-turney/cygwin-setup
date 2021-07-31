@@ -284,6 +284,7 @@ WinMain (HINSTANCE h,
     /* Check if we have to elevate. */
     bool elevate = !output_only && OSMajorVersion () >= 6
 		   && !NoAdminOption && !nt_sec.isRunAsAdmin ();
+    std::string elevate_extra_args;
 
     if (unattended_mode || output_only || !elevate)
       set_cout ();
@@ -334,7 +335,46 @@ WinMain (HINSTANCE h,
     /* Set default DACL and Group. */
     nt_sec.setDefaultSecurity ((root_scope == IDC_ROOT_SYSTEM));
 
-    symlinkType = (SymlinkTypeEnum)(int)SymlinkTypeOption;
+    /*
+       If --symlink-type option isn't given, look for winsymlinks in CYGWIN
+       env var for a default
+
+       Since the current environment doesn't get passed to the process started
+       with with ShellExecuteEx, we need to convert the env var into an option
+       for that elevated instance.
+    */
+    if (!SymlinkTypeOption.isPresent()) {
+      std::string cygwin;
+      DWORD len = GetEnvironmentVariable ("CYGWIN", &cygwin[0], 0);
+      cygwin.resize(len);
+      GetEnvironmentVariable ("CYGWIN", &cygwin[0], len);
+
+      if (cygwin.find("winsymlinks:native") != std::string::npos)
+        {
+          symlinkType = SymlinkTypeNative;
+          elevate_extra_args.append("--symlink-type native");
+        }
+      else if (cygwin.find("winsymlinks:wsl") != std::string::npos)
+        {
+          symlinkType = SymlinkTypeWsl;
+          elevate_extra_args.append("--symlink-type wsl");
+        }
+      else if (cygwin.find("winsymlinks:sys") != std::string::npos)
+        {
+          symlinkType = SymlinkTypeMagic;
+          elevate_extra_args.append("--symlink-type sys");
+        }
+      else if (cygwin.find("winsymlinks:lnk") != std::string::npos)
+        {
+          symlinkType = SymlinkTypeShortcut;
+          elevate_extra_args.append("--symlink-type lnk");
+        }
+      }
+    else
+      {
+        symlinkType = (SymlinkTypeEnum)(int)SymlinkTypeOption;
+      }
+
     if (symlinkType == SymlinkTypeWsl)
       {
         VersionInfo v = GetVer();
@@ -376,6 +416,8 @@ WinMain (HINSTANCE h,
 	std::string command_line_cs (command_line);
 	command_line_cs += " -";
 	command_line_cs += NoAdminOption.shortOption();
+	command_line_cs += " ";
+	command_line_cs += elevate_extra_args;
 	sei.lpParameters = command_line_cs.c_str ();
 
 	if (ShellExecuteEx(&sei))
