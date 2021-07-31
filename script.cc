@@ -36,6 +36,7 @@
 #define alloca __builtin_alloca
 #endif
 #endif
+#include "mklink2.h"
 
 static std::string sh, dash;
 static const char *cmd;
@@ -71,6 +72,40 @@ sanitize_PATH ()
   SetEnvironmentVariable ("PATH", newpath.c_str());
 }
 
+static void
+modify_CYGWIN ()
+{
+  std::string cygwin;
+  DWORD len = GetEnvironmentVariable ("CYGWIN", &cygwin[0], 0);
+  if (len > 0)
+    {
+      cygwin.resize(len);
+      GetEnvironmentVariable ("CYGWIN", &cygwin[0], len);
+      cygwin.resize(len-1); // trim terminating null
+      cygwin.append(" ");
+    }
+
+  switch (symlinkType)
+    {
+    case SymlinkTypeNative:
+      cygwin.append("winsymlinks:native");
+      break;
+
+    case SymlinkTypeWsl:
+      cygwin.append("winsymlinks:wsl");
+      break;
+
+    case SymlinkTypeMagic:
+      cygwin.append("winsymlinks:sys");
+      break;
+
+    case SymlinkTypeShortcut: /* not yet implemented */
+    default:
+      break;
+    }
+
+  SetEnvironmentVariable ("CYGWIN", cygwin.c_str());
+}
 
 void
 init_run_script ()
@@ -100,6 +135,7 @@ init_run_script ()
       FreeEnvironmentStrings (env);
     }
 
+  modify_CYGWIN();
   SetEnvironmentVariable ("CYGWINROOT", get_root_dir ().c_str());
   SetEnvironmentVariable ("CYGWINFORALL",
                           (root_scope == IDC_ROOT_SYSTEM) ? "-A" : NULL);
