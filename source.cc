@@ -91,9 +91,9 @@ SourcePage::OnActivate ()
     source = IDC_SOURCE_DOWNLOAD;
   else if (LocalOption)
     source = IDC_SOURCE_LOCALDIR;
-  else if (!source)
-    //only default to IDC_SOURCE_NETINST if
-    //source not already set:
+  else if ((unattended_mode == unattended) || (!source))
+    // default to IDC_SOURCE_NETINST if unattended, or source not already set
+    // (i.e. first run)
     source = IDC_SOURCE_NETINST;
 
   load_dialog (GetHWND ());
