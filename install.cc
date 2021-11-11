@@ -788,9 +788,8 @@ check_for_old_cygwin (HWND owner)
   sprintf (msg,
 	   "An old version of cygwin1.dll was found here:\r\n%s\r\nDelete?",
 	   buf);
-  switch (MessageBox
-	  (owner, msg, "Cygwin Setup",
-	   MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL))
+  switch (mbox(owner, msg, "Cygwin Setup",
+               MB_YESNO | MB_ICONQUESTION | MB_TASKMODAL))
     {
     case IDYES:
       if (!DeleteFile (buf))

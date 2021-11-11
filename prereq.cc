@@ -92,7 +92,7 @@ PrereqPage::OnNext ()
   if (!IsDlgButtonChecked (h, IDC_PREREQ_CHECK))
     {
       // breakage imminent!  danger, danger
-      int res = MessageBox (h,
+      int res = mbox (h,
           "WARNING - Unsolved Problems"
           "\r\n\r\n"
           "Some packages may not work properly if you continue."

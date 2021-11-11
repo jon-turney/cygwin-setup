@@ -15,8 +15,8 @@
 
 #include "UserSettings.h"
 #include "state.h"
+#include "msg.h"
 #include <stdlib.h>
-#include "win32.h"
 
 class packagemessage
 {
@@ -35,7 +35,7 @@ public:
       /* No message or already seen */;
     else
       {
-        MessageBox (NULL, message.c_str (), "Cygwin Setup",
+        mbox (NULL, message.c_str (), "Cygwin Setup",
                     MB_OK | MB_ICONSTOP | MB_SETFOREGROUND | MB_TOPMOST);
         UserSettings::instance().set (id.c_str (), "1");
       }
@@ -43,4 +43,3 @@ public:
 };
 
 #endif /* SETUP_PACKAGE_MESSAGE_H */
-

@@ -314,8 +314,7 @@ LocalDirPage::OnNext ()
 	    else
 	      snprintf (msg, sizeof (msg), msgText, local_dir.c_str(), 
 	        "(unknown error)", err);
-	  Log (LOG_PLAIN) << msg << endLog;
-	  int ret = MessageBox (h, msg, "Cygwin Setup", MB_ICONEXCLAMATION | MB_ABORTRETRYIGNORE);
+	  int ret = mbox (h, msg, "Cygwin Setup", MB_ICONEXCLAMATION | MB_ABORTRETRYIGNORE);
 	  if (ret == IDABORT)
 	    return -1;
 	  else
