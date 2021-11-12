@@ -265,7 +265,6 @@ WinMain (HINSTANCE h,
 	sprintf (buff, "Invalid option for --arch:  \"%s\"",
 		 ((std::string) Arch).c_str ());
 	fprintf (stderr, "*** %s\n", buff);
-	mbox (NULL, buff, "Invalid option", MB_ICONEXCLAMATION | MB_OK);
 	exit (1);
       }
 
