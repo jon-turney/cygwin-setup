@@ -647,6 +647,11 @@ BEGIN
     IDS_COLUMN_DESCR "Description"
     IDS_MBOX_CAPTION "Cygwin Setup"
     IDS_EXTRACTION_FAILED "Unable to extract /%s -- corrupt package?"
+    IDS_EXTRACTION_INUSE
+        "Unable to extract /%s -- error writing file\r\n\r\n"
+        "The file is in use or some other error occurred.\r\n\r\n"
+        "Please stop all Cygwin processes and select ""Retry"", or "
+        "select ""Continue"" to go on anyway (the file will be updated after a reboot).\r\n"
     IDS_INSTALL_OLD_CYGWIN "An old version of cygwin1.dll was found here:\r\n%s\r\nDelete?"
     IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED "Couldn't delete file %s.\r\n"
                    "Is the DLL in use by another application?\r\n"
@@ -678,4 +683,5 @@ BEGIN
           "Can't get list of download sites.\r\n"
           "Make sure your network settings are correct and try again."
     IDS_CONFIRM_EXIT "Are you sure you want to exit setup? Any current download or installation will be aborted."
+    IDS_CONTINUE "Continue"
 END

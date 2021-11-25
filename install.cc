@@ -266,44 +266,6 @@ Installer::replaceOnRebootSucceeded (const std::string& fn, bool &rebootneeded)
   rebootneeded = true;
 }
 
-#define MB_RETRYCONTINUE 7
-#if !defined(IDCONTINUE)
-#define IDCONTINUE IDCANCEL
-#endif
-
-static HHOOK hMsgBoxHook;
-LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  HWND hWnd;
-  switch (nCode) {
-    case HCBT_ACTIVATE:
-      hWnd = (HWND)wParam;
-      if (GetDlgItem(hWnd, IDCANCEL) != NULL)
-         SetDlgItemText(hWnd, IDCANCEL, "Continue");
-      UnhookWindowsHookEx(hMsgBoxHook);
-  }
-  return CallNextHookEx(hMsgBoxHook, nCode, wParam, lParam);
-}
-
-int _custom_MessageBox(HWND hWnd, LPCTSTR szText, LPCTSTR szCaption, UINT uType) {
-  int retval;
-  bool retry_continue = (uType & MB_TYPEMASK) == MB_RETRYCONTINUE;
-  if (retry_continue) {
-    uType &= ~MB_TYPEMASK; uType |= MB_RETRYCANCEL;
-    // Install a window hook, so we can intercept the message-box
-    // creation, and customize it
-    // Only install for THIS thread!!!
-    hMsgBoxHook = SetWindowsHookEx(WH_CBT, CBTProc, NULL, GetCurrentThreadId());
-  }
-  retval = MessageBox(hWnd, szText, szCaption, uType);
-  // Intercept the return value for less confusing results
-  if (retry_continue && retval == IDCANCEL)
-    return IDCONTINUE;
-  return retval;
-}
-
-#undef MessageBox
-#define MessageBox _custom_MessageBox
-
 typedef struct
 {
   const char *msg;
@@ -660,16 +622,9 @@ Installer::_installOne (packagemeta &pkgm,
                             // policy) prevents us from listing those processes.
                             // All we can offer the user is a generic "retry or ignore" choice and a chance
                             // to fix the problem themselves
-                            char msg[fn.size() + 300];
-                            sprintf (msg,
-                                     "Unable to extract /%s\r\n\r\n"
-                                     "The file is in use or some other error occurred.\r\n\r\n"
-                                     "Please stop all Cygwin processes and select \"Retry\", or "
-                                     "select \"Continue\" to go on anyway (the file will be updated after a reboot).\r\n",
-                                     fn.c_str());
-
-                            rc = MessageBox (owner, msg, "Error writing file",
-                                             MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL);
+                            rc = mbox (owner, IDS_EXTRACTION_INUSE,
+                                       MB_RETRYCONTINUE | MB_ICONWARNING | MB_TASKMODAL,
+                                       fn.c_str());
                           }
                       }
 

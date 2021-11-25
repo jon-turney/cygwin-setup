@@ -107,6 +107,25 @@ yesno (HWND owner, int id, ...)
   return mbox (owner, "yesno", MB_YESNO, id, args);
 }
 
+static HHOOK hMsgBoxHook;
+
+LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam) {
+  HWND hWnd;
+  switch (nCode) {
+    case HCBT_ACTIVATE:
+      hWnd = (HWND)wParam;
+      if (GetDlgItem(hWnd, IDCANCEL) != NULL)
+        {
+          // XXX: ideally we'd discover the text used for 'Continue' buttons in
+          // MessageBoxes, rather than having our own translation.
+          std::wstring cont = LoadStringW(IDS_CONTINUE);
+          SetDlgItemTextW(hWnd, IDCANCEL, cont.c_str());
+        }
+      UnhookWindowsHookEx(hMsgBoxHook);
+  }
+  return CallNextHookEx(hMsgBoxHook, nCode, wParam, lParam);
+}
+
 int
 mbox(HWND owner, unsigned int format_id, int mb_type, ...)
 {
@@ -125,6 +144,23 @@ mbox(HWND owner, unsigned int format_id, int mb_type, ...)
   if (unattended_mode)
     return unattended_result(mb_type);
 
+  bool retry_continue = (mb_type & MB_TYPEMASK) == MB_RETRYCONTINUE;
+  if (retry_continue) {
+    mb_type &= ~MB_TYPEMASK;
+    mb_type |= MB_RETRYCANCEL;
+    // Install a window hook, so we can intercept the message-box creation, and
+    // customize it (replacing the text on the 'cancel' button with 'continue')
+    // Only install for THIS thread!!!
+    hMsgBoxHook = SetWindowsHookEx(WH_CBT, CBTProc, NULL, GetCurrentThreadId());
+  }
+
   std::wstring caption = LoadStringW(IDS_MBOX_CAPTION);
-  return MessageBoxW(owner, buf.c_str(), caption.c_str(), mb_type);
+  int retval = MessageBoxW(owner, buf.c_str(), caption.c_str(), mb_type);
+
+  // When the the retry_continue customization is active, adjust the return
+  // value for less confusing results
+  if (retry_continue && retval == IDCANCEL)
+    retval = IDCONTINUE;
+
+  return retval;
 }

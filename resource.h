@@ -88,6 +88,8 @@
 #define IDS_MIXED_BITNESS_ERROR           188
 #define IDS_GET_SITELIST_ERROR            189
 #define IDS_CONFIRM_EXIT                  190
+#define IDS_EXTRACTION_INUSE              191
+#define IDS_CONTINUE                      192
 
 // Dialogs
 

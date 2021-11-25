@@ -37,4 +37,6 @@ int mbox (HWND owner, const char *buf, const char *name, int type);
 /* MessageBox() wrapper which understands format string and unattended mode */
 int mbox(HWND owner, unsigned int format_id, int mb_type, ...);
 
+#define MB_RETRYCONTINUE 7
+
 #endif /* SETUP_MSG_H */
