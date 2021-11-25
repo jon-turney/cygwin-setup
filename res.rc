@@ -265,9 +265,9 @@ BEGIN
                     "the future to add, remove, or upgrade packages as "
                     "necessary.",IDC_SPLASH_TEXT,115,25,195,90
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
-    LTEXT           "Version (unknown)",IDC_VERSION,115,127,195,10
-    LTEXT           "Copyright 2000-2021",IDC_SPLASH_COPYR,115,140,195,8
-    LTEXT           "https://cygwin.com/",IDC_SPLASH_URL,115,152,90,8
+    LTEXT           "",IDC_VERSION,115,127,195,10
+    LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
+    LTEXT           "",IDC_SPLASH_URL,115,152,90,8
 END
 
 IDD_DESKTOP DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
@@ -542,7 +542,6 @@ STRINGTABLE
 BEGIN
     IDS_ROOT_SLASH          "Warning: we recommend you do not use the root of your hard drive as the cygwin root, to prevent possible conflicts with other programs.  Proceed anyway?"
     IDS_ROOT_SPACE          "You should not choose a root path that include spaces in directory names.  Proceed anyway?"
-    IDS_MIRROR_LST          "https://cygwin.com/mirrors.lst"
     IDS_ERR_OPEN_WRITE      "Can't open %s for writing: %s"
     IDS_SETUPINI_MISSING    "Unable to get %s from <%s>"
     IDS_OLD_SETUPINI        "This setup.ini is older than the one you used last time you installed cygwin.  Proceed anyway?"

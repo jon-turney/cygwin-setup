@@ -41,6 +41,8 @@
 #include "Exception.h"
 #include "String++.h"
 
+#define MIRROR_LIST_URL "https://cygwin.com/mirrors.lst"
+
 extern ThreeBarProgressPage Progress;
 
 /*
@@ -352,8 +354,6 @@ migrate_selected_site_list()
 static int
 get_site_list (HINSTANCE h, HWND owner)
 {
-  char mirror_url[1000];
-
   char *theMirrorString, *theCachedString;
 
   if (UnsupportedOption)
@@ -372,10 +372,7 @@ get_site_list (HINSTANCE h, HWND owner)
       cached_mirrors = "";
     }
 
-  if (LoadString (h, IDS_MIRROR_LST, mirror_url, sizeof (mirror_url)) <= 0)
-    return 1;
-
-  std::string mirrors = OnlySiteOption ? std::string ("") : get_url_to_string (mirror_url, owner);
+  std::string mirrors = OnlySiteOption ? std::string ("") : get_url_to_string (MIRROR_LIST_URL, owner);
   if (mirrors.size())
     cache_needs_writing = true;
   else

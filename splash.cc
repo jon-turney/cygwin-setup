@@ -21,6 +21,9 @@
 #include "splash.h"
 #include "ini.h"
 
+#define SPLASH_URL "https://cygwin.com"
+#define SPLASH_COPYRIGHT "Copyright 2000-2021"
+
 static ControlAdjuster::ControlInfo SplashControlsInfo[] = {
   { IDC_SPLASH_TEXT,        CP_STRETCH,   CP_STRETCH },
   { IDC_SPLASH_ICON,        CP_LEFT,      CP_TOP },
@@ -49,5 +52,7 @@ SplashPage::OnInit ()
   ver += is_64bit ? " (64 bit)" : " (32 bit)";
   SetDlgItemFont(IDC_VERSION, "Arial", 10, FW_BOLD);
   ::SetWindowText (GetDlgItem (IDC_VERSION), ver.c_str());
-  makeClickable (IDC_SPLASH_URL, "https://cygwin.com");
+  ::SetWindowText (GetDlgItem (IDC_SPLASH_COPYR), SPLASH_COPYRIGHT);
+  ::SetWindowText (GetDlgItem (IDC_SPLASH_URL), SPLASH_URL);
+  makeClickable (IDC_SPLASH_URL, SPLASH_URL);
 }
