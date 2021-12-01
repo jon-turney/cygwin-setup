@@ -54,7 +54,6 @@ private:
 
 /* End of a Log comment */
 extern std::ostream& endLog(std::ostream& outs);
-//extern ostream& endLog(ostream& outs);
 
 #define Log(X) (LogSingleton::GetInstance ()(X))
 

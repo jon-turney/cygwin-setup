@@ -51,31 +51,6 @@ LogSingleton::SetInstance(LogSingleton &newInstance)
   theInstance = &newInstance;
 }
 
-#if 0
-// Logging class. Default logging level is PLAIN.
-class LogSingleton : public std::ostream
-{
-public:
-  // Singleton support
-  /* Some platforms don't call destructors. So this call exists
-   * which guarantees to flush any log data...
-   * but doesn't call generic C++ destructors
-   */
-  virtual void exit (int const exit_code) __attribute__ ((noreturn));
-  // get a specific verbosity stream.
-  virtual ostream &operator() (enum log_level level);
-
-  friend ostream& endLog(ostream& outs);
-  
-protected:
-  LogSingleton (LogSingleton const &); // no copy constructor
-  LogSingleton &operator = (LogSingleton const&); // no assignment operator
-  void endEntry(); // the current in-progress entry is complete.
-private:
-  static LogSingleton *theInstance;
-};
-#endif
-
 // Log adapators for printf-style output
 void
 LogBabblePrintf(const char *fmt, ...)

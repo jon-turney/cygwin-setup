@@ -237,9 +237,6 @@ LogFile::endEntry()
       strftime (b, 1000, "%Y/%m/%d %H:%M:%S ", tm);
       currEnt->msg = b;
     }
-  /* What follows is a hack to get around an (apparent) bug in libg++-3 with
-   * non-0 memory on alloc
-   */
   currEnt->msg += buf;
 
   /* reset for next use */
