@@ -30,8 +30,6 @@
 #define IDS_SIG_INVALID                   131
 #define IDS_CRYPTO_ERROR                  132
 #define IDS_SEARCH_TOOLTIP                133
-#define IDS_LOCAL_DIR_DOWNLOAD            134
-#define IDS_LOCAL_DIR_INSTALL             135
 #define IDS_MAYBE_MKDIR                   136
 #define IDS_CANT_MKDIR                    137
 #define IDS_NO_LOCALDIR                   138
@@ -211,7 +209,6 @@
 #define IDC_CHOOSE_SEARCH_EDIT            585
 #define IDC_CHOOSE_SEARCH_LABEL           586
 #define IDC_CHOOSE_CLEAR_SEARCH           587
-#define IDC_LOCAL_DIR_DESC                588
 #define IDC_POSTINSTALL_EDIT              589
 #define IDC_FILE_INUSE_EDIT               590
 #define IDC_FILE_INUSE_MSG                591
@@ -225,3 +222,5 @@
 #define IDC_DESKTOP_HEADER_TITLE_DOWNLOAD 600
 #define IDC_DESKTOP_HEADER_INSTALL        601
 #define IDC_DESKTOP_HEADER_TITLE_INSTALL  602
+#define IDC_LOCAL_DIR_DOWNLOAD_DESC       603
+#define IDC_LOCAL_DIR_INSTALL_DESC        604

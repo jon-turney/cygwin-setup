@@ -94,16 +94,16 @@ check_if_enable_next (HWND h)
 static void
 load_dialog (HWND h)
 {
-  char descText[1000];
   if (source != IDC_SOURCE_LOCALDIR)
     {
-      LoadString (hinstance, IDS_LOCAL_DIR_DOWNLOAD, descText, sizeof (descText));
+      ShowWindow (GetDlgItem(h, IDC_LOCAL_DIR_DOWNLOAD_DESC), SW_SHOW);
+      ShowWindow (GetDlgItem(h, IDC_LOCAL_DIR_INSTALL_DESC), SW_HIDE);
     }
   else
     {
-      LoadString (hinstance, IDS_LOCAL_DIR_INSTALL, descText, sizeof (descText));
+      ShowWindow (GetDlgItem(h, IDC_LOCAL_DIR_DOWNLOAD_DESC), SW_HIDE);
+      ShowWindow (GetDlgItem(h, IDC_LOCAL_DIR_INSTALL_DESC), SW_SHOW);
     }
-  eset (h, IDC_LOCAL_DIR_DESC, descText);
   eset (h, IDC_LOCAL_DIR, local_dir);
   check_if_enable_next (h);
 }

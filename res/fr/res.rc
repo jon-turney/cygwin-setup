@@ -64,7 +64,12 @@ FONT 8, "MS Shell Dlg"
 BEGIN
     LTEXT           "Sélection du dossier local des paquets",IDC_STATIC_HEADER_TITLE,
                     7,0,258,8,NOT WS_GROUP
-    LTEXT           "",IDC_LOCAL_DIR_DESC,21,9,248,16,NOT WS_GROUP
+    LTEXT           "Choisir un dossier pour enregistrer les fichiers "
+                    "téléchargés. Ce dossier sera créé s'il n'existe pas.",
+                    IDC_LOCAL_DIR_DOWNLOAD_DESC,21,9,248,16,NOT WS_GROUP
+    LTEXT           "Choisir un dossier où l'assistant ira chercher les "
+                    "fichiers téléchargés.",
+                    IDC_LOCAL_DIR_INSTALL_DESC,21,9,248,16,NOT WS_GROUP
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
                     SETUP_STANDARD_DIALOG_W,1
@@ -518,10 +523,6 @@ BEGIN
     IDS_SIG_INVALID    "Erreur pour le miroir :  la signature de Setup.ini %s de %s est impossible à vérifier.\nLe miroir est peut-être corrompu ?  Setup.ini rejeté."
     IDS_CRYPTO_ERROR   "Erreur interne :  erreur %d %s de la librairie gcrypt"
     IDS_SEARCH_TOOLTIP "Chercher cette valeur dans les noms des paquets."
-    IDS_LOCAL_DIR_DOWNLOAD "Choisir un dossier pour enregistrer les fichiers "
-       "téléchargés. Ce dossier sera créé s'il n'existe pas."
-    IDS_LOCAL_DIR_INSTALL "Choisir un dossier où l'assistant ira chercher les "
-       "fichiers téléchargés."
     IDS_MAYBE_MKDIR    "Dossier %s absent, voulez-vous le créer ?"
     IDS_CANT_MKDIR     "Impossible de créer le dossier %s, désolé.  (Disque plein ou uniquement en lecture ?)"
     IDS_NO_LOCALDIR    "Dossier local des paquets %s absent.\nVoulez-vous efface les paquets, \n"

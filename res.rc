@@ -90,7 +90,13 @@ FONT 8, "MS Shell Dlg"
 BEGIN
     LTEXT           "Select Local Package Directory",IDC_STATIC_HEADER_TITLE,
                     7,0,258,8,NOT WS_GROUP
-    LTEXT           "",IDC_LOCAL_DIR_DESC,21,9,248,16,NOT WS_GROUP
+    LTEXT           "Select a directory where you want Setup to store "
+                    "the installation files it downloads.  The directory will be "
+                    "created if it does not already exist.",
+                    IDC_LOCAL_DIR_DOWNLOAD_DESC,21,9,248,16,NOT WS_GROUP
+    LTEXT           "Select a directory where Setup should look for "
+                    "downloaded installation files.",
+                    IDC_LOCAL_DIR_INSTALL_DESC,21,9,248,16,NOT WS_GROUP
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
                     SETUP_STANDARD_DIALOG_W,1
@@ -603,11 +609,6 @@ BEGIN
     IDS_SIG_INVALID    "Mirror Error:  Setup.ini signature %s from %s failed to verify.\nPossible corrupt mirror?  Setup.ini rejected."
     IDS_CRYPTO_ERROR   "Internal Error:  gcrypt library error %d %s"
     IDS_SEARCH_TOOLTIP "Search for this string in package names."
-    IDS_LOCAL_DIR_DOWNLOAD "Select a directory where you want Setup to store "
-       "the installation files it downloads.  The directory will be "
-       "created if it does not already exist."
-    IDS_LOCAL_DIR_INSTALL "Select a directory where Setup should look for "
-       "downloaded installation files."
     IDS_MAYBE_MKDIR    "Directory %s does not exist, would you like me to create it?"
     IDS_CANT_MKDIR     "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
     IDS_NO_LOCALDIR    "Local package directory %s not found.\nYou can still remove installed\npackages, but there "
