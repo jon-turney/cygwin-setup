@@ -76,9 +76,9 @@ ThreeBarProgressPage::OnInit ()
 }
 
 void
-ThreeBarProgressPage::SetText1 (const TCHAR * t)
+ThreeBarProgressPage::SetText1 (const wchar_t * t)
 {
-  ::SetWindowText (ins_action, t);
+  ::SetWindowTextW (ins_action, t);
 }
 
 void

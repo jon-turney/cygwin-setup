@@ -69,7 +69,7 @@ public:
     return -1;
   };
 
-  void SetText1 (const TCHAR * t);
+  void SetText1 (const wchar_t * t);
   void SetText2 (const TCHAR * t);
   void SetText3 (const TCHAR * t);
   void SetText4 (const TCHAR * t);

@@ -695,6 +695,7 @@ BEGIN
     IDS_ROOT_BROWSE_TITLE "Select an installation root directory"
     IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE "Select download directory"
     IDS_LOCALDIR_BROWSE_PACKAGE_TITLE "Select local package directory"
+    IDS_PROGRESS_CHECKING_HASH "Checking %s for %s"
 END
 
 /////////////////////////////////////////////////////////////////////////////

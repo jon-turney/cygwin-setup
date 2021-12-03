@@ -609,4 +609,5 @@ BEGIN
     IDS_ROOT_BROWSE_TITLE "Choisissez le dossier racine de l'installation"
     // IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE "XXX: missing translation"
     // IDS_LOCALDIR_BROWSE_PACKAGE_TITLE  "XXX: missing translation"
+    IDS_PROGRESS_CHECKING_HASH "Vérification %s pour %s"
 END

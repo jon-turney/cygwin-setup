@@ -113,7 +113,9 @@ packagesource::check_sha512 (const std::string fullname) const
 
   Log (LOG_BABBLE) << "Checking SHA512 for " << fullname << endLog;
 
-  Progress.SetText1 (("Checking SHA512 for " + shortname).c_str ());
+  std::wstring fmt = LoadStringW(IDS_PROGRESS_CHECKING_HASH);
+  std::wstring s = format(fmt, "SHA512", shortname.c_str());
+  Progress.SetText1 (s.c_str());
   Progress.SetText4 (IDS_PROGRESS_PROGRESS);
   Progress.SetBar1 (0);
 
@@ -162,7 +164,9 @@ packagesource::check_md5 (const std::string fullname) const
 
   Log (LOG_BABBLE) << "Checking MD5 for " << fullname << endLog;
 
-  Progress.SetText1 (("Checking MD5 for " + shortname).c_str ());
+  std::wstring fmt = LoadStringW(IDS_PROGRESS_CHECKING_HASH);
+  std::wstring s = format(fmt, "MD5", shortname);
+  Progress.SetText1 (s.c_str());
   Progress.SetText4 (IDS_PROGRESS_PROGRESS);
   Progress.SetBar1 (0);
 
