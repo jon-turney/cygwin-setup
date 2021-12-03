@@ -73,7 +73,7 @@ class ListView
   void resizeColumns(void);
 
   void setContents(ListViewContents *contents, bool tree = false);
-  void setEmptyText(const char *text);
+  void setEmptyText(unsigned int text);
 
   bool OnNotify (NMHDR *pNmHdr, LRESULT *pResult);
 
@@ -87,7 +87,7 @@ class ListView
 
   ListViewContents *contents;
   HeaderList headers;
-  const char *empty_list_text;
+  std::wstring empty_list_text;
   int iRow_track;
   int iCol_track;
 

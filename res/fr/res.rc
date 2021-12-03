@@ -603,4 +603,7 @@ BEGIN
         "Vérifiez que vos paramètres réseau sont corrects et réessayez."
     IDS_CONFIRM_EXIT "Voulez-vous vraiment quitter l'assistant ? Les téléchargements ou installations en cours seront annulés."
     IDS_CONTINUE "Continuer"
+    IDS_CHOOSER_EMPTY_NO_PACKAGES "Pas de paquet trouvé."
+    IDS_CHOOSER_EMPTY_DOWNLOAD "Rien à télécharger."
+    IDS_CHOOSER_EMPTY_INSTALL "Rien à installer ou mettre à jour."
 END

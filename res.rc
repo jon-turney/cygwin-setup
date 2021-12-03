@@ -689,6 +689,9 @@ BEGIN
           "Make sure your network settings are correct and try again."
     IDS_CONFIRM_EXIT "Are you sure you want to exit setup? Any current download or installation will be aborted."
     IDS_CONTINUE "Continue"
+    IDS_CHOOSER_EMPTY_NO_PACKAGES "No packages found."
+    IDS_CHOOSER_EMPTY_DOWNLOAD "Nothing to download."
+    IDS_CHOOSER_EMPTY_INSTALL "Nothing to install or update."
 END
 
 /////////////////////////////////////////////////////////////////////////////

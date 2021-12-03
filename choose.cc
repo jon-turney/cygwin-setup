@@ -335,11 +335,12 @@ ChooserPage::OnActivate()
 
   packagedb::categoriesType::iterator it = db.categories.find("All");
   if (it == db.categories.end ())
-    listview->setEmptyText("No packages found.");
+    listview->setEmptyText(IDS_CHOOSER_EMPTY_NO_PACKAGES);
+
   if (source == IDC_SOURCE_DOWNLOAD)
-    listview->setEmptyText("Nothing to download.");
+    listview->setEmptyText(IDS_CHOOSER_EMPTY_DOWNLOAD);
   else
-    listview->setEmptyText("Nothing to install or update.");
+    listview->setEmptyText(IDS_CHOOSER_EMPTY_INSTALL);
 
   chooser->build_category_tree();
   chooser->init_headers();

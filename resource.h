@@ -87,6 +87,9 @@
 #define IDS_CONFIRM_EXIT                  190
 #define IDS_EXTRACTION_INUSE              191
 #define IDS_CONTINUE                      192
+#define IDS_CHOOSER_EMPTY_NO_PACKAGES     193
+#define IDS_CHOOSER_EMPTY_DOWNLOAD        194
+#define IDS_CHOOSER_EMPTY_INSTALL         195
 
 // Dialogs
 

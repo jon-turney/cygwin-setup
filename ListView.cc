@@ -345,11 +345,7 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
   case LVN_GETEMPTYMARKUP:
     {
       NMLVEMPTYMARKUP *pNmMarkup = (NMLVEMPTYMARKUP*) pNmHdr;
-
-      MultiByteToWideChar(CP_UTF8, 0,
-                          empty_list_text, -1,
-                          pNmMarkup->szMarkup, L_MAX_URL_LENGTH);
-
+      wcsncpy(pNmMarkup->szMarkup, empty_list_text.c_str(), L_MAX_URL_LENGTH);
       *pResult = true;
       return true;
     }
@@ -645,9 +641,9 @@ ListView::empty(void)
 }
 
 void
-ListView::setEmptyText(const char *text)
+ListView::setEmptyText(unsigned int text)
 {
-  empty_list_text = text;
+  empty_list_text = LoadStringW(text);
 }
 
 int
