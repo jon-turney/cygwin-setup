@@ -90,6 +90,7 @@
 #define IDS_CHOOSER_EMPTY_NO_PACKAGES     193
 #define IDS_CHOOSER_EMPTY_DOWNLOAD        194
 #define IDS_CHOOSER_EMPTY_INSTALL         195
+#define IDS_ROOT_BROWSE_TITLE             196
 
 // Dialogs
 

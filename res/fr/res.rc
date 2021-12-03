@@ -606,4 +606,5 @@ BEGIN
     IDS_CHOOSER_EMPTY_NO_PACKAGES "Pas de paquet trouvé."
     IDS_CHOOSER_EMPTY_DOWNLOAD "Rien à télécharger."
     IDS_CHOOSER_EMPTY_INSTALL "Rien à installer ou mettre à jour."
+    IDS_ROOT_BROWSE_TITLE "Choisissez le dossier racine de l'installation"
 END

@@ -98,19 +98,23 @@ browse_cb (HWND h, UINT msg, LPARAM lp, LPARAM data)
 static void
 browse (HWND h)
 {
-  BROWSEINFO bi;
-  /* SHGetPathFromIDList doesn't handle path length > MAX_PATH. */
-  CHAR name[MAX_PATH];
-  LPITEMIDLIST pidl;
+  std::wstring title = LoadStringW(IDS_ROOT_BROWSE_TITLE);
+
+  wchar_t wname[MAX_PATH];
+  BROWSEINFOW bi;
   memset (&bi, 0, sizeof (bi));
   bi.hwndOwner = h;
-  bi.pszDisplayName = name;
-  bi.lpszTitle = "Select an installation root directory";
+  bi.pszDisplayName = wname;
+  bi.lpszTitle = title.c_str();
   bi.ulFlags = BIF_RETURNONLYFSDIRS;
   bi.lpfn = browse_cb;
-  pidl = SHBrowseForFolder (&bi);
+
+  /* SHGetPathFromIDList doesn't handle path length > MAX_PATH. */
+  LPITEMIDLIST pidl;
+  pidl = SHBrowseForFolderW (&bi);
   if (pidl)
     {
+      CHAR name[MAX_PATH];
       if (SHGetPathFromIDList (pidl, name))
 	eset (h, IDC_ROOT_DIR, name);
     }

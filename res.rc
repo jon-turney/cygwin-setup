@@ -692,6 +692,7 @@ BEGIN
     IDS_CHOOSER_EMPTY_NO_PACKAGES "No packages found."
     IDS_CHOOSER_EMPTY_DOWNLOAD "Nothing to download."
     IDS_CHOOSER_EMPTY_INSTALL "Nothing to install or update."
+    IDS_ROOT_BROWSE_TITLE "Select an installation root directory"
 END
 
 /////////////////////////////////////////////////////////////////////////////
