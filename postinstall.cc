@@ -249,16 +249,16 @@ do_postinstall_reflector (void *p)
     // Tell the postinstall results page the results string
     PostInstallResults.SetResultsString(s);
 
+    /* Revert primary group to admins group.  This allows to create all the
+       state files written by setup as admin group owned. */
+    if (root_scope == IDC_ROOT_SYSTEM)
+      nt_sec.setAdminGroup ();
+
     // Tell the progress page that we're done running scripts
     Progress.PostMessageNow (WM_APP_POSTINSTALL_THREAD_COMPLETE, 0,
                           s.empty() ? IDD_DESKTOP : IDD_POSTINSTALL);
   }
   TOPLEVEL_CATCH((HWND) context[1], "postinstall");
-
-  /* Revert primary group to admins group.  This allows to create all the
-     state files written by setup as admin group owned. */
-  if (root_scope == IDC_ROOT_SYSTEM)
-    nt_sec.setAdminGroup ();
 
   ExitThread(0);
 }
