@@ -693,6 +693,8 @@ BEGIN
     IDS_CHOOSER_EMPTY_DOWNLOAD "Nothing to download."
     IDS_CHOOSER_EMPTY_INSTALL "Nothing to install or update."
     IDS_ROOT_BROWSE_TITLE "Select an installation root directory"
+    IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE "Select download directory"
+    IDS_LOCALDIR_BROWSE_PACKAGE_TITLE "Select local package directory"
 END
 
 /////////////////////////////////////////////////////////////////////////////

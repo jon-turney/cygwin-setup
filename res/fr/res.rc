@@ -607,4 +607,6 @@ BEGIN
     IDS_CHOOSER_EMPTY_DOWNLOAD "Rien à télécharger."
     IDS_CHOOSER_EMPTY_INSTALL "Rien à installer ou mettre à jour."
     IDS_ROOT_BROWSE_TITLE "Choisissez le dossier racine de l'installation"
+    // IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE "XXX: missing translation"
+    // IDS_LOCALDIR_BROWSE_PACKAGE_TITLE  "XXX: missing translation"
 END

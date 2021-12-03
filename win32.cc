@@ -503,7 +503,8 @@ LoadStringW(unsigned int uID)
   if (len > 0)
     return std::wstring(buf, len);
 
-  return L"";
+  // if empty or absent, fallback to the untranslated string
+  return LoadStringWEx(uID, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
 }
 
 bool
