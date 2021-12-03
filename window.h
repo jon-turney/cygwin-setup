@@ -156,7 +156,7 @@ public:
   bool MoveWindow(const RECTWrapper &r, bool Repaint = true);
 
   // Set the title of the window.
-  void SetWindowText (const std::string& s);
+  void SetWindowText (const std::wstring& s);
 
   RECT ScreenToClient(const RECT &r) const;
   void ActivateTooltips ();

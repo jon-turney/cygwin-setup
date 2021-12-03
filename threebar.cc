@@ -135,8 +135,10 @@ ThreeBarProgressPage::SetBar2 (long long progress, long long max)
 {
   int percent = (int) (100.0 * ((double) progress) / (double) max);
   SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) percent, 0);
-  std::string s = stringify(percent);
-  s += "% - Cygwin Setup";
+
+  // also update window title to show progress
+  std::wstring caption = LoadStringW(IDS_MBOX_CAPTION);
+  std::wstring s = format(L"%d%% - %ls", percent, caption.c_str());
   GetOwner ()->SetWindowText (s.c_str());
 }
 

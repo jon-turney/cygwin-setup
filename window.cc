@@ -347,9 +347,9 @@ Window::SetDlgItemFont (int id, const TCHAR * fontname, int Pointsize,
 }
 
 void
-Window::SetWindowText (const std::string& s)
+Window::SetWindowText (const std::wstring& s)
 {
-  ::SetWindowText (WindowHandle, s.c_str ());
+  ::SetWindowTextW (WindowHandle, s.c_str ());
 }
 
 RECT
