@@ -125,17 +125,14 @@ LogFile::exit (int exit_code, bool show_end_install_msg)
   if (been_here)
     ::exit (exit_code);
   been_here = 1;
-  
+
   if (exit_msg)
     {
-      char buf[1000], fmt[1000];
-      if (LoadString (hinstance, exit_msg, fmt, sizeof (fmt)) > 0)
-        {
-          snprintf (buf, 1000, fmt, backslash(getFileName(LOG_BABBLE)).c_str());
-          Log (LOG_PLAIN) << "note: " << buf << endLog;
-        }
+      std::wstring fmt = LoadStringWEx(exit_msg, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
+      std::wstring buf = format(fmt, backslash(getFileName(LOG_BABBLE)).c_str());
+      Log (LOG_PLAIN) << "note: " << wstring_to_string(buf) << endLog;
     }
-  
+
   /* ... in that it skips the boring log messages.  Exit code -1 is used when
      just printing the help output and when we're self-elevating. */
   if (show_end_install_msg)

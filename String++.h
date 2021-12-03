@@ -47,5 +47,6 @@ std::string wstring_to_string(const std::wstring &w);
 
 // produce a std::string using formatting like sprintf
 std::wstring vformat(const std::wstring &fmt, va_list ap);
+std::wstring format(const std::wstring &fmt, ...);
 
 #endif /* SETUP_STRING___H */

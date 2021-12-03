@@ -59,6 +59,7 @@ int eget (HWND h, int id);
 
 void eset (HWND h, int id, const char *var);
 void eset (HWND h, int id, const std::string);
+void eset (HWND h, int id, const std::wstring &);
 void eset (HWND h, int id, int var);
 
 /* RadioButtons.  ids is a null-terminated list of IDs.  Get

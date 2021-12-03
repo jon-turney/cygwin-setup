@@ -72,6 +72,12 @@ eset (HWND h, int id, const std::string aString)
 }
 
 void
+eset (HWND h, int id, const std::wstring &aString)
+{
+  SetDlgItemTextW (h, id, aString.c_str());
+}
+
+void
 eset (HWND h, int id, int val)
 {
   SetDlgItemInt (h, id, (UINT) val, TRUE);

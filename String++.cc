@@ -152,3 +152,13 @@ vformat(const std::wstring &fmt, va_list ap)
 
   return str;
 }
+
+std::wstring
+format(const std::wstring &fmt, ...)
+{
+  va_list ap;
+  va_start(ap, fmt);
+  std::wstring res = vformat(fmt, ap);
+  va_end(ap);
+  return res;
+}

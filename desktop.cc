@@ -236,13 +236,9 @@ check_if_enable_next (HWND h)
 static void
 set_status (HWND h)
 {
-  char buf[1000], fmt[1000];
-  if (LoadString (hinstance, Logger ().getExitMsg (), fmt, sizeof (fmt)) > 0)
-    {
-      snprintf (buf, 1000, fmt,
-      		backslash (Logger ().getFileName (LOG_BABBLE)).c_str ());
-      eset (h, IDC_STATUS, buf);
-    }
+  std::wstring fmt = LoadStringW(Logger ().getExitMsg ());
+  std::wstring buf = format(fmt, backslash (Logger ().getFileName (LOG_BABBLE)).c_str ());
+  eset (h, IDC_STATUS, buf);
 }
 
 static void
