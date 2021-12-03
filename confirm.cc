@@ -55,7 +55,7 @@ void
 ConfirmPage::OnActivate()
 {
   // generate a report on actions we're going to take
-  std::string s = "";
+  std::wstring s = L"";
 
   packagedb db;
   const SolverTransactionList & trans = db.solution.transactions ();
@@ -63,34 +63,36 @@ ConfirmPage::OnActivate()
   // first list things we will erase
   if (source != IDC_SOURCE_DOWNLOAD)
     {
-      std::vector<std::string> erase;
+      std::vector<std::wstring> erase;
       for (SolverTransactionList::const_iterator i = trans.begin ();
            i != trans.end (); i++)
         {
           if (i->type == SolverTransaction::transErase)
             {
-              std::string line;
               packageversion pv = i->version;
               packagemeta *pkg = db.findBinary (PackageSpecification (pv.Name ()));
 
-              line += "Uninstall ";
-              line += i->version.Name();
-              line += " ";
-              line += i->version.Canonical_version();
+              std::wstring action = LoadStringW(IDS_CONFIRM_UNINSTALL);
+              std::wstring line = format(L"%ls %s %s", action.c_str(),
+                                         i->version.Name().c_str(),
+                                         i->version.Canonical_version().c_str());
               if (pkg && pkg->desired)
-                line += " (automatically added)";
-              line += "\r\n";
+                {
+                  line += L" ";
+                  line += LoadStringW(IDS_CONFIRM_AUTO_ADD);
+                }
+              line += L"\r\n";
               erase.push_back (line);
             }
         }
       sort (erase.begin(), erase.end());
-      for (std::vector<std::string>::const_iterator i = erase.begin ();
+      for (std::vector<std::wstring>::const_iterator i = erase.begin ();
            i != erase.end(); i++)
         s += *i;
     }
 
   // then list things downloaded or installed
-  std::vector<std::string> install;
+  std::vector<std::wstring> install;
   for (SolverTransactionList::const_iterator i = trans.begin ();
        i != trans.end (); i++)
     {
@@ -99,32 +101,40 @@ ConfirmPage::OnActivate()
 
       if (i->type == SolverTransaction::transInstall)
           {
-            std::string line;
+            std::wstring action;
             if (source != IDC_SOURCE_DOWNLOAD)
-              line += "Install ";
+              action = LoadStringW(IDS_CONFIRM_INSTALL);
             else
-              line += "Download ";
-            line += i->version.Name();
-            line += " ";
-            line += i->version.Canonical_version();
+              action = LoadStringW(IDS_CONFIRM_DOWNLOAD);
+
+            std::wstring line = format(L"%ls %s %s", action.c_str(),
+                                       i->version.Name().c_str(),
+                                       i->version.Canonical_version().c_str());
+
             if (i->version.Type() == package_source)
-              line += " (source)";
+              {
+                line += L" ";
+                line += LoadStringW(IDS_CONFIRM_SOURCE);
+              }
             else if (pkg && pkg->desired != pv)
-              line += " (automatically added)";
-            line += "\r\n";
+              {
+                line += L" ";
+                line += LoadStringW(IDS_CONFIRM_AUTO_ADD);
+              }
+            line += L"\r\n";
             install.push_back (line);
           }
     }
   sort (install.begin(), install.end());
-  for (std::vector<std::string>::const_iterator i = install.begin ();
+  for (std::vector<std::wstring>::const_iterator i = install.begin ();
        i != install.end(); i++)
     s += *i;
 
   // be explicit about doing nothing
   if (s.empty())
-    s += "No changes";
+    s += LoadStringW(IDS_CONFIRM_NOTHING);
 
-  SetDlgItemText (GetHWND (), IDC_CONFIRM_EDIT, s.c_str ());
+  SetDlgItemTextW (GetHWND (), IDC_CONFIRM_EDIT, s.c_str ());
 
   // move focus to 'next' button, so enter doesn't get eaten by edit control
   HWND nextButton = ::GetDlgItem(::GetParent(GetHWND()), 0x3024 /* ID_WIZNEXT */);

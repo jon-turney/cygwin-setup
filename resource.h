@@ -94,6 +94,12 @@
 #define IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE 197
 #define IDS_LOCALDIR_BROWSE_PACKAGE_TITLE  198
 #define IDS_PROGRESS_CHECKING_HASH        199
+#define IDS_CONFIRM_UNINSTALL            1200
+#define IDS_CONFIRM_INSTALL              1201
+#define IDS_CONFIRM_DOWNLOAD             1202
+#define IDS_CONFIRM_NOTHING              1203
+#define IDS_CONFIRM_AUTO_ADD             1204
+#define IDS_CONFIRM_SOURCE               1205
 
 // Dialogs
 

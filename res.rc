@@ -696,6 +696,12 @@ BEGIN
     IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE "Select download directory"
     IDS_LOCALDIR_BROWSE_PACKAGE_TITLE "Select local package directory"
     IDS_PROGRESS_CHECKING_HASH "Checking %s for %s"
+    IDS_CONFIRM_UNINSTALL "Uninstall"
+    IDS_CONFIRM_INSTALL "Install"
+    IDS_CONFIRM_DOWNLOAD "Download"
+    IDS_CONFIRM_NOTHING "No changes"
+    IDS_CONFIRM_AUTO_ADD "(automatically added)"
+    IDS_CONFIRM_SOURCE "(source)"
 END
 
 /////////////////////////////////////////////////////////////////////////////
