@@ -82,6 +82,12 @@ ThreeBarProgressPage::SetText1 (const wchar_t * t)
 }
 
 void
+ThreeBarProgressPage::SetText2 (const wchar_t * t)
+{
+  ::SetWindowTextW (ins_pkgname, t);
+}
+
+void
 ThreeBarProgressPage::SetText2 (const TCHAR * t)
 {
   ::SetWindowText (ins_pkgname, t);

@@ -610,6 +610,7 @@ BEGIN
     // IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE "XXX: missing translation"
     // IDS_LOCALDIR_BROWSE_PACKAGE_TITLE  "XXX: missing translation"
     IDS_PROGRESS_CHECKING_HASH "Vérification %s pour %s"
+    IDS_PROGRESS_DOWNLOADING_FROM "%s depuis %s"
     IDS_CONFIRM_UNINSTALL "Désinstalle"
     IDS_CONFIRM_INSTALL "Installe"
     IDS_CONFIRM_DOWNLOAD "Télécharge"

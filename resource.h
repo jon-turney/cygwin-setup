@@ -100,6 +100,7 @@
 #define IDS_CONFIRM_NOTHING              1203
 #define IDS_CONFIRM_AUTO_ADD             1204
 #define IDS_CONFIRM_SOURCE               1205
+#define IDS_PROGRESS_DOWNLOADING_FROM    1206
 
 // Dialogs
 

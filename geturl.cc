@@ -63,8 +63,11 @@ init_dialog (const std::string &url, int length)
   std::string::size_type divide = url.find_last_of('/');
   max_bytes = length;
   Progress.SetText1(IDS_PROGRESS_DOWNLOADING);
-  Progress.SetText2((url.substr(divide + 1) + " from "
-                     + url.substr(0, divide)).c_str());
+  std::wstring fmt = LoadStringW(IDS_PROGRESS_DOWNLOADING_FROM);
+  std::wstring s = format(fmt,
+                          url.substr(divide + 1).c_str(),
+                          url.substr(0, divide).c_str());
+  Progress.SetText2(s.c_str());
   Progress.SetText3(IDS_PROGRESS_CONNECTING);
   Progress.SetBar1(0);
   start_tics = GetTickCount ();
