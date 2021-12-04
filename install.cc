@@ -268,7 +268,7 @@ Installer::replaceOnRebootSucceeded (const std::string& fn, bool &rebootneeded)
 
 typedef struct
 {
-  const char *msg;
+  const wchar_t *msg;
   const char *processlist;
   int iteration;
 } FileInuseDlgData;
@@ -282,29 +282,30 @@ FileInuseDlgProc (HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
       {
         FileInuseDlgData *dlg_data = (FileInuseDlgData *)lParam;
 
-        SetDlgItemText (hwndDlg, IDC_FILE_INUSE_MSG, dlg_data->msg);
+        SetDlgItemTextW (hwndDlg, IDC_FILE_INUSE_MSG, dlg_data->msg);
         SetDlgItemText (hwndDlg, IDC_FILE_INUSE_EDIT, dlg_data->processlist);
 
         switch (dlg_data->iteration)
           {
           case 0:
-            break; // show the dialog the way it is in the resource
+            ShowWindow (GetDlgItem(hwndDlg, IDC_FILE_INUSE_HELP_0), SW_SHOW);
+            ShowWindow (GetDlgItem(hwndDlg, IDC_FILE_INUSE_HELP_1), SW_HIDE);
+            ShowWindow (GetDlgItem(hwndDlg, IDC_FILE_INUSE_HELP_2), SW_HIDE);
+            break;
 
           case 1:
-            SetDlgItemText (hwndDlg, IDRETRY, "&Kill Processes");
-            SetDlgItemText (hwndDlg, IDC_FILE_INUSE_HELP,
-                            "Select 'Retry' to retry, "
-                            "Select 'Kill' to kill processes and retry, or "
-                            "select 'Continue' to go on anyway (the file will be updated after a reboot).");
+            ShowWindow (GetDlgItem(hwndDlg, IDC_FILE_INUSE_HELP_0), SW_HIDE);
+            ShowWindow (GetDlgItem(hwndDlg, IDC_FILE_INUSE_HELP_1), SW_SHOW);
+            ShowWindow (GetDlgItem(hwndDlg, IDC_FILE_INUSE_HELP_2), SW_HIDE);
+            SetDlgItemTextW (hwndDlg, IDRETRY, LoadStringW(IDS_FILE_INUSE_KILL).c_str());
             break;
 
           default:
           case 2:
-            SetDlgItemText (hwndDlg, IDRETRY, "&Kill Processes");
-            SetDlgItemText (hwndDlg, IDC_FILE_INUSE_HELP,
-                            "Select 'Retry' to retry, "
-                            "select 'Kill' to forcibly kill all processes and retry, or "
-                            "select 'Continue' to go on anyway (the file will be updated after a reboot).");
+            ShowWindow (GetDlgItem(hwndDlg, IDC_FILE_INUSE_HELP_0), SW_HIDE);
+            ShowWindow (GetDlgItem(hwndDlg, IDC_FILE_INUSE_HELP_1), SW_HIDE);
+            ShowWindow (GetDlgItem(hwndDlg, IDC_FILE_INUSE_HELP_2), SW_SHOW);
+            SetDlgItemTextW (hwndDlg, IDRETRY, LoadStringW(IDS_FILE_INUSE_KILL).c_str());
           }
       }
       return TRUE; // automatically set focus, please
@@ -608,7 +609,7 @@ Installer::_installOne (packagemeta &pkgm,
                             // listed processes, or just ignore the problem and schedule the file to be
                             // replaced after a reboot
                             FileInuseDlgData dlg_data;
-                            std::string msg = "Unable to extract /" + fn;
+                            std::wstring msg = LoadStringW(IDS_FILE_INUSE_MSG) + L" /" + string_to_wstring(fn);
                             dlg_data.msg = msg.c_str ();
                             dlg_data.processlist = plm.c_str ();
                             dlg_data.iteration = iteration;

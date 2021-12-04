@@ -499,7 +499,7 @@ CAPTION "In-use file detected"
 FONT 8, "MS Shell Dlg"
 BEGIN
     ICON            IDI_WARNING,IDC_HEADICON,10,10
-    LTEXT           "Unable to extract %s",
+    LTEXT           "Unable to extract",
                     IDC_FILE_INUSE_MSG,33,10,234,8,SS_PATHELLIPSIS
     LTEXT           "The file is in use by the following processes:",
                     IDC_STATIC,33,28,234,8
@@ -509,7 +509,15 @@ BEGIN
     LTEXT           "Select 'Retry' to retry, "
                     "select 'Stop' to stop processes and retry, or "
                     "select 'Continue' to go on anyway (the file will be updated after a reboot).",
-                    IDC_FILE_INUSE_HELP,33,80,234,24,NOT WS_GROUP
+                    IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Select 'Retry' to retry, "
+                    "select 'Kill' to kill processes and retry, or "
+                    "select 'Continue' to go on anyway (the file will be updated after a reboot).",
+                    IDC_FILE_INUSE_HELP_1,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Select 'Retry' to retry, "
+                    "select 'Kill' to forcibly kill all processes and retry, or "
+                    "select 'Continue' to go on anyway (the file will be updated after a reboot).",
+                    IDC_FILE_INUSE_HELP_2,33,80,234,24,NOT WS_GROUP
     PUSHBUTTON      "&Retry",IDIGNORE,45,112,55,15
     DEFPUSHBUTTON   "&Stop Processes",IDRETRY,111,112,55,15
     PUSHBUTTON      "&Continue",IDCONTINUE,177,112,55,15
@@ -703,6 +711,8 @@ BEGIN
     IDS_CONFIRM_NOTHING "No changes"
     IDS_CONFIRM_AUTO_ADD "(automatically added)"
     IDS_CONFIRM_SOURCE "(source)"
+    IDS_FILE_INUSE_KILL "&Kill Processes"
+    IDS_FILE_INUSE_MSG "Unable to extract"
 END
 
 /////////////////////////////////////////////////////////////////////////////

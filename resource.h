@@ -101,6 +101,8 @@
 #define IDS_CONFIRM_AUTO_ADD             1204
 #define IDS_CONFIRM_SOURCE               1205
 #define IDS_PROGRESS_DOWNLOADING_FROM    1206
+#define IDS_FILE_INUSE_KILL              1207
+#define IDS_FILE_INUSE_MSG               1208
 
 // Dialogs
 
@@ -226,7 +228,6 @@
 #define IDC_POSTINSTALL_EDIT              589
 #define IDC_FILE_INUSE_EDIT               590
 #define IDC_FILE_INUSE_MSG                591
-#define IDC_FILE_INUSE_HELP               592
 #define IDC_DOWNLOAD_EDIT                 594
 #define IDC_CHOOSE_DO_SEARCH              595
 #define IDC_CHOOSE_SYNC                   596
@@ -238,3 +239,6 @@
 #define IDC_DESKTOP_HEADER_TITLE_INSTALL  602
 #define IDC_LOCAL_DIR_DOWNLOAD_DESC       603
 #define IDC_LOCAL_DIR_INSTALL_DESC        604
+#define IDC_FILE_INUSE_HELP_0             605
+#define IDC_FILE_INUSE_HELP_1             606
+#define IDC_FILE_INUSE_HELP_2             607

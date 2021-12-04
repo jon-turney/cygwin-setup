@@ -443,17 +443,25 @@ CAPTION "Détection d'un fichier en cours d'utilisation"
 FONT 8, "MS Shell Dlg"
 BEGIN
     ICON            IDI_WARNING,IDC_HEADICON,10,10
-    LTEXT           "Impossible d'extraire %s",
+    LTEXT           "Impossible d'extraire",
                     IDC_FILE_INUSE_MSG,33,10,234,8,SS_PATHELLIPSIS
     LTEXT           "Ce fichier est en cours d'utilisation par : ",
                     IDC_STATIC,33,28,234,8
     EDITTEXT        IDC_FILE_INUSE_EDIT,33,40,234,32,WS_VSCROLL |
                     ES_LEFT | ES_MULTILINE | ES_READONLY |
                     ES_AUTOVSCROLL | NOT WS_TABSTOP
-    LTEXT           "Choisir 'Recommencer' pour recommencer, "
-                    "Choisir 'Stop' pour arrêter les process et recommencer, ou "
-                    "Choisir 'Continuer' pour procéder (un reboot sera nécessaire).",
-                    IDC_FILE_INUSE_HELP,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Choisir «Recommencer» pour recommencer, "
+                    "choisir «Stop» pour arrêter les process et recommencer, ou "
+                    "choisir «Continuer» pour procéder (un reboot sera nécessaire).",
+                    IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Choisir «Recommencer» pour ré-essayer, "
+                    "choisir «Tuer» pour tuer les processus et ré-essayer, ou "
+                    "choisir «Continuer» pour poursuivre (le fichier sera mis à jour après un redémarrage).",
+                    IDC_FILE_INUSE_HELP_1,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Choisir «Recommencer» pour ré-essayer, "
+                    "choisir «Tuer» pour forcer la fin des processus et ré-essayer, ou "
+                    "choisir «Continuer» pour poursuivre (le fichier sera mis à jour après un redémarrage).",
+                    IDC_FILE_INUSE_HELP_2,33,80,234,24,NOT WS_GROUP
     PUSHBUTTON      "&Recommencer",IDIGNORE,45,112,55,15
     DEFPUSHBUTTON   "&Stop",IDRETRY,111,112,55,15
     PUSHBUTTON      "&Continuer",IDCONTINUE,177,112,55,15
@@ -617,4 +625,6 @@ BEGIN
     IDS_CONFIRM_NOTHING "Pas de changement"
     IDS_CONFIRM_AUTO_ADD "(ajouté automatiquement)"
     IDS_CONFIRM_SOURCE "(source)"
+    IDS_FILE_INUSE_KILL "&Tuer les processus"
+    IDS_FILE_INUSE_MSG "Incapable d'extraire"
 END
