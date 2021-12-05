@@ -146,5 +146,9 @@ vformat(const std::wstring &fmt, va_list ap)
 
   va_end(apc);
 
+  // discard terminating null written by vsnwprintf from std::string
+  if (str[n] == 0)
+    str.resize(n);
+
   return str;
 }
