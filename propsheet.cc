@@ -161,6 +161,8 @@ static LRESULT CALLBACK PropSheetWndProc (HWND hwnd, UINT uMsg,
       if (wParam != 2)
 	break;
     areyousure:
+      if (unattended_mode == unattended)
+        return 0;
       if (mbox(hwnd, IDS_CONFIRM_EXIT, MB_YESNO) == IDNO)
 	return 0;
       break;
