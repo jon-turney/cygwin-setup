@@ -322,7 +322,7 @@ NTSecurity::setDefaultSecurity (bool isAdmin)
   setBackupPrivileges ();
 
   /* Log if symlink creation privilege is available. */
-  if (hasSymlinkCreationRights())
+  if (!hasSymlinkCreationRights())
     Log (LOG_TIMESTAMP) << "User has NO symlink creation right" << endLog;
   else
     Log (LOG_TIMESTAMP) << "User has symlink creation right" << endLog;
