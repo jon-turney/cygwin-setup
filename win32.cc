@@ -404,7 +404,7 @@ NTSecurity::hasSymlinkCreationRights ()
     {
       if (memcmp(&privileges->Privileges[i].Luid, &symlink, sizeof(LUID)) == 0)
         {
-          return (privileges->Privileges[i].Attributes & SE_PRIVILEGE_ENABLED);
+          return TRUE;
         }
     }
 
