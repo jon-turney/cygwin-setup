@@ -22,7 +22,7 @@
 #include "ini.h"
 
 #define SPLASH_URL "https://cygwin.com"
-#define SPLASH_COPYRIGHT "Copyright 2000-2021"
+#define SPLASH_COPYRIGHT "Copyright 2000-2022"
 
 static ControlAdjuster::ControlInfo SplashControlsInfo[] = {
   { IDC_SPLASH_TEXT,        CP_STRETCH,   CP_STRETCH },
