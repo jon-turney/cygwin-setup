@@ -274,17 +274,16 @@ mknativesymlink (const char *from, const char *to)
   wfrom[1] = '?';
 
   size_t tlen = strlen (to) + 7;
-  wchar_t wto[tlen];
+  wchar_t wrelto[tlen];
+  wchar_t *wto;
   if (to[0] == '/')
     {
-      absto = get_root_dir();
-      absto.append(to);
-      mklongpath (wto, to, tlen);
-      wto[1] = '?';
+      wto = wabsto;
     }
   else
     {
-      mklongrelpath (wto, to, tlen);
+      mklongrelpath (wrelto, to, tlen);
+      wto = wrelto;
     }
 
   DWORD flags = isdir ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0;
