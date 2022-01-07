@@ -279,6 +279,9 @@ mknativesymlink (const char *from, const char *to)
   if (to[0] == '/')
     {
       wto = wabsto;
+      // convert back from nt namespace to win32 file namespace to use with
+      // CreateSymbolicLinkW()
+      wabsto[1] = '\\';
     }
   else
     {
