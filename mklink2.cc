@@ -282,6 +282,11 @@ mknativesymlink (const char *from, const char *to)
       // convert back from nt namespace to win32 file namespace to use with
       // CreateSymbolicLinkW()
       wabsto[1] = '\\';
+      // Some parts of Windows don't correctly handle a win32 file namespace
+      // prefix in the symlink target. So, for maximum interoperability, we use
+      // a short path instead, if the target path will be less than MAX_PATH.
+      if (wcslen(wabsto) < (MAX_PATH + 4))
+        wto = wabsto + 4;
     }
   else
     {
