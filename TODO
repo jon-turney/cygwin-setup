@@ -1,0 +1,8 @@
+TODO
+----
+
+* store all information for a package in installed.db
+* install build-depends for a package
+* detect duplicate filenames in multiple packages
+* Improve mirror selection UI
+
