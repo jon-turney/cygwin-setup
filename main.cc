@@ -104,6 +104,7 @@ static BoolOption HelpOption (false, 'h', "help", "Print help");
 static BoolOption VersionOption (false, 'V', "version", "Show version");
 static StringOption SetupBaseNameOpt ("setup", 'i', "ini-basename", "Use a different basename, e.g. \"foo\", instead of \"setup\"", false);
 BoolOption UnsupportedOption (false, '\0', "allow-unsupported-windows", "Allow old, unsupported Windows versions");
+static BoolOption DeprecatedOption (false, 'w', "no-warn-deprecated-windows", "Warn about deprecated Windows versions");
 static StringChoiceOption SymlinkTypeOption(symlink_types, '\0', "symlink-type", "Symlink type (lnk, native, sys, wsl)", false, SymlinkTypeMagic);
 static StringOption GuiLangOption ("", '\0', "lang", "Specify GUI language langid");
 
@@ -335,6 +336,22 @@ WinMain (HINSTANCE h,
 	mbox (NULL, IDS_UNSUPPORTED_WINDOWS_VERSION,
               MB_ICONEXCLAMATION | MB_OK);
 	Logger ().exit (1, false);
+      }
+
+    /* Warn if Windows version is deprecated for Cygwin */
+    if (!DeprecatedOption)
+      {
+        if
+#ifdef _X86_
+          (TRUE)
+#else
+          (!is_64bit)
+#endif
+          mbox (NULL, IDS_DEPRECATED_WINDOWS_ARCH,
+                MB_ICONEXCLAMATION | MB_OK);
+        else if ((OSMajorVersion () == 6) && (OSMinorVersion() < 1))
+          mbox (NULL, IDS_DEPRECATED_WINDOWS_VERSION,
+                MB_ICONEXCLAMATION | MB_OK);
       }
 
     /* Set default DACL and Group. */
