@@ -16,21 +16,21 @@ dnl
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT([setup], [0], [cygwin-apps@cygwin.com])
-AC_PREREQ(2.60)
+AC_PREREQ(2.70)
 AC_CONFIG_AUX_DIR([cfgaux])
 AM_INIT_AUTOMAKE([1.12 subdir-objects foreign no-define -Wall -Wno-portability])
 dnl AM_CONFIG_HEADER(include/autoconf.h)
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES(yes)])
 AC_CONFIG_SRCDIR([Makefile.in])
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 AC_PROG_CXX
 AM_PROG_CC_C_O
-AM_PROG_LEX
+AC_PROG_LEX([noyywrap])
 AC_PROG_YACC
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
-AC_PROG_LIBTOOL
+LT_INIT
 
 AC_CHECK_TOOL(WINDRES, windres, windres)
 AC_CHECK_TOOL(OBJCOPY, objcopy, objcopy)
