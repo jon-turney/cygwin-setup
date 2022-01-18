@@ -388,8 +388,9 @@ WinMain (HINSTANCE h,
         }
       else if (cygwin.find("winsymlinks:lnk") != std::string::npos)
         {
-          symlinkType = SymlinkTypeShortcut;
-          elevate_extra_args.append("--symlink-type lnk");
+          // Ignore CYGWIN=winsymlinks:lnk, as '--symlink-type lnk' is not implemented
+          // symlinkType = SymlinkTypeShortcut;
+          // elevate_extra_args.append("--symlink-type lnk");
         }
       }
     else
