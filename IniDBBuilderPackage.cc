@@ -376,6 +376,10 @@ IniDBBuilderPackage::process ()
   if (cbpv.version.empty())
     return;
 
+  // no install: line, no package
+  if (!cbpv.archive.Canonical())
+    return;
+
 #if DEBUG
   Log (LOG_BABBLE) << "Finished with package " << name << endLog;
   Log (LOG_BABBLE) << "Version " << cbpv.version << endLog;
