@@ -20,6 +20,7 @@
 
 #include "LogFile.h"
 #include "win32.h"
+#include <shlwapi.h>
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -32,8 +33,6 @@ static int
 unattended_result(int mb_type)
 {
   // Return some default values.
-  Log (LOG_PLAIN) << "unattended_mode is set at mbox: returning default value" << endLog;
-
   switch (mb_type & MB_TYPEMASK)
     {
     case MB_OK:
@@ -62,7 +61,10 @@ mbox (HWND owner, const char *buf, const char *name, int type)
   // 'name' is not the mbox caption, just some text written to the log
   Log (LOG_PLAIN) << "mbox " << name << ": " << buf << endLog;
   if (unattended_mode)
+    {
+      Log (LOG_PLAIN) << "unattended_mode is set at mbox: returning default value" << endLog;
       return unattended_result(type);
+    }
 
   char caption[32];
   LoadString (hinstance, IDS_MBOX_CAPTION, caption, sizeof (caption));
@@ -126,6 +128,9 @@ LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam) {
   return CallNextHookEx(hMsgBoxHook, nCode, wParam, lParam);
 }
 
+// registry key to store "don't show this again" state, made unique by including a GUID
+static const char *regkey = "Cygwin-Setup-d975d7b8-8c44-44a1-915a-7cf44b79cd88";
+
 int
 mbox(HWND owner, unsigned int format_id, int mb_type, ...)
 {
@@ -163,7 +168,16 @@ mbox(HWND owner, unsigned int format_id, int mb_type, ...)
   }
 
   std::wstring caption = LoadStringW(IDS_MBOX_CAPTION);
-  int retval = MessageBoxW(owner, buf.c_str(), caption.c_str(), mb_type);
+  int retval;
+  if (mb_type & MB_DSA_CHECKBOX)
+    {
+      mb_type &= ~MB_DSA_CHECKBOX;
+      std::wstring regkey_msg = format(L"%s-%d", regkey, format_id);
+      retval = SHMessageBoxCheckW(owner, buf.c_str(), caption.c_str(), mb_type,
+                                  unattended_result(mb_type), regkey_msg.c_str());
+    }
+  else
+    retval = MessageBoxW(owner, buf.c_str(), caption.c_str(), mb_type);
 
   // When the the retry_continue customization is active, adjust the return
   // value for less confusing results

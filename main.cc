@@ -348,10 +348,10 @@ WinMain (HINSTANCE h,
           (!is_64bit)
 #endif
           mbox (NULL, IDS_DEPRECATED_WINDOWS_ARCH,
-                MB_ICONEXCLAMATION | MB_OK);
+                MB_ICONEXCLAMATION | MB_OK | MB_DSA_CHECKBOX);
         else if ((OSMajorVersion () == 6) && (OSMinorVersion() < 1))
           mbox (NULL, IDS_DEPRECATED_WINDOWS_VERSION,
-                MB_ICONEXCLAMATION | MB_OK);
+                MB_ICONEXCLAMATION | MB_OK | MB_DSA_CHECKBOX);
       }
 
     /* Set default DACL and Group. */

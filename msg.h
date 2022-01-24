@@ -38,5 +38,6 @@ int mbox (HWND owner, const char *buf, const char *name, int type);
 int mbox(HWND owner, unsigned int format_id, int mb_type, ...);
 
 #define MB_RETRYCONTINUE 7
+#define MB_DSA_CHECKBOX 0x80000000 // with a "Dont Show Me This Dialog Again" checkbox
 
 #endif /* SETUP_MSG_H */
