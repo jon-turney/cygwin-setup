@@ -339,7 +339,7 @@ WinMain (HINSTANCE h,
       }
 
     /* Warn if Windows version is deprecated for Cygwin */
-    if (!DeprecatedOption)
+    if (!DeprecatedOption && !elevate)
       {
         if
 #ifdef _X86_
