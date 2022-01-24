@@ -29,6 +29,11 @@
 #include "String++.h"
 #include "resource.h"
 
+// no prototype in shlwapi.h until MinGW64 headers 9.0.0
+#if __MINGW64_VERSION_MAJOR < 9
+extern "C" int WINAPI SHMessageBoxCheckW(HWND hwnd, LPCWSTR pszText, LPCWSTR pszCaption, UINT uType, int iDefault, LPCWSTR pszRegVal);
+#endif
+
 static int
 unattended_result(int mb_type)
 {
