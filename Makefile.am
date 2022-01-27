@@ -313,7 +313,7 @@ SIGN_KEYS="--enable-dsa2 --personal-digest-preferences=sha256 -u 676041BA -u 1A6
 
 upload: release
 	scp setup-${VER}.$(ARCH).exe setup-${VER}.$(ARCH).dbg ${UPLOAD_HOST}:${UPLOAD_PATH}
-	ssh ${UPLOAD_HOST} gpg ${SIGN_KEYS} --detach-sign ${UPLOAD_PATH}/setup-${VER}.$(ARCH).exe
+	ssh ${UPLOAD_HOST} gpg --batch ${SIGN_KEYS} --detach-sign ${UPLOAD_PATH}/setup-${VER}.$(ARCH).exe
 
 clean-local:
 	rm -f setup*${EXEEXT} setup*.dbg
