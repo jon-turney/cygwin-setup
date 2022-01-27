@@ -724,11 +724,6 @@ packagedb::fixup_source_package_ids()
       for (std::set<packageversion>::iterator i = pkgm.versions.begin();
            i != pkgm.versions.end(); ++i)
         {
-          /* If spkg_id is already known for this package, there's nothing to
-             fix. */
-          if (i->sourcePackage())
-            continue;
-
           /* Some packages really have no source, indicated by no [sS]ource:
              line in setup.ini, which becomes an empty source package name */
           const std::string spkg = i->sourcePackageName();
@@ -742,7 +737,8 @@ packagedb::fixup_source_package_ids()
 
           if (spkg_id)
             {
-              i->fixup_spkg_id(spkg_id);
+              if (i->sourcePackage() != spkg_id)
+                i->fixup_spkg_id(spkg_id);
             }
           else
             {
@@ -750,6 +746,8 @@ packagedb::fixup_source_package_ids()
             }
         }
     }
+
+  solver.internalize();
 }
 
 void
