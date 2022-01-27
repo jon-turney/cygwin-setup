@@ -69,9 +69,10 @@ class GuiParseFeedback : public IniParseFeedback
 public:
   GuiParseFeedback () : lastpct (0)
     {
+      Progress.SetText1 (IDS_PROGRESS_PARSING);
       Progress.SetText2 ("");
       Progress.SetText3 ("");
-      Progress.SetText4 (IDS_PROGRESS_PARSING);
+      Progress.SetText4 (IDS_PROGRESS_PROGRESS);
 
       yyerror_count = 0;
       yyerror_messages.clear ();
@@ -98,7 +99,6 @@ public:
     }
   virtual void iniName (const std::string& name)
     {
-      Progress.SetText1 (IDS_PROGRESS_PARSING);
       Progress.SetText2 (name.c_str ());
       Progress.SetText3 ("");
       filename = name;
@@ -134,7 +134,10 @@ public:
     }
   virtual ~ GuiParseFeedback ()
     {
+      Progress.SetText2 ("");
+      Progress.SetText3 ("");
       Progress.SetText4 (IDS_PROGRESS_PACKAGE);
+      Progress.SetBar1 (0);
     }
 private:
   unsigned int lastpct;
