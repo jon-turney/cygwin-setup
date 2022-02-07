@@ -256,6 +256,7 @@ get_url_to_file (const std::string &_url,
       int df = diskfull (get_root_dir ().c_str());
 	  Progress.SetBar3(df);
     }
+  Progress.SetText3("");
 
   return 0;
 }
