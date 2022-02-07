@@ -524,7 +524,9 @@ compress_xz::bid_xz (void * buffer, size_t len)
     return 0;
   bits_checked += 8;
 
+#ifdef DEBUG
   LogBabblePrintf ("compress_xz::bid_xz: success: %d\n", bits_checked);
+#endif
   return (bits_checked);
 }
 
@@ -632,8 +634,8 @@ compress_xz::bid_lzma (void * buffer, size_t len)
 
   /* TODO: The above test is still very weak.  It would be
    * good to do better. */
+#ifdef DEBUG
   LogBabblePrintf ("compress_xz::bid_lzma: success: %d\n", bits_checked);
+#endif
   return (bits_checked);
 }
-
-
