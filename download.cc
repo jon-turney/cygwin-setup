@@ -305,6 +305,7 @@ do_download_thread (HINSTANCE h, HWND owner)
           // Unexpected exception.
           throw e;
         }
+      Progress.SetBar2(std::distance(t.begin(), i) + 1, t.size());
     }
 
   /* and do the download. FIXME: This here we assign a new name for the cached version
