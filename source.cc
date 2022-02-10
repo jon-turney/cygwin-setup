@@ -33,8 +33,8 @@
 
 #include "getopt++/BoolOption.h"
 
-static BoolOption DownloadOption (false, 'D', "download", "Download packages from internet only");
-static BoolOption LocalOption (false, 'L', "local-install", "Install packages from local directory only");
+static BoolOption DownloadOption (false, 'D', "download", "Download packages from internet");
+static BoolOption LocalOption (false, 'L', "local-install", "Install packages from local directory");
 
 static int rb[] =
   { IDC_SOURCE_NETINST, IDC_SOURCE_DOWNLOAD, IDC_SOURCE_LOCALDIR, 0 };
@@ -91,7 +91,7 @@ SourcePage::OnActivate ()
     source = IDC_SOURCE_DOWNLOAD;
   else if (LocalOption)
     source = IDC_SOURCE_LOCALDIR;
-  else if ((unattended_mode == unattended) || (!source))
+  else if ((unattended_mode != attended) || (!source))
     // default to IDC_SOURCE_NETINST if unattended, or source not already set
     // (i.e. first run)
     source = IDC_SOURCE_NETINST;
