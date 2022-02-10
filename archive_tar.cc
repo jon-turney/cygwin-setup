@@ -21,9 +21,7 @@
 #include <sys/fcntl.h>
 #include <errno.h>
 
-//#include "zlib/zlib.h"
 #include "io_stream.h"
-//#include "compress.h"
 #include "win32.h"
 #include "archive.h"
 #include "archive_tar.h"
@@ -31,14 +29,7 @@
 #include "LogFile.h"
 #include "filemanip.h"
 
-#if 0
-#undef _WIN32
-#include "bzlib.h"
-
-#define SYMLINK_COOKIE "!<symlink>"
-#endif
 static int err;
-
 static char buf[512];
 
 int _tar_verbose = 0;
@@ -154,13 +145,26 @@ archive_tar::next_file_name ()
   if (n == 0)
     return std::string();
 
-  if (!state.have_longname && state.tar_header.typeflag != 'L')
+  if (!state.have_longname)
     {
       memcpy (state.filename, state.tar_header.name, 100);
       state.filename[100] = 0;
     }
-  else if (state.have_longname)
-    state.have_longname = 0;
+
+  if (!state.have_longlink)
+    {
+      memcpy (state.linkname, state.tar_header.linkname, 100);
+      state.linkname[100] = 0;
+    }
+
+  /* typeflag for any 'real' file consumes the longname/longlink state from
+     previous blocks */
+  if ((state.tar_header.typeflag != 'K') &&
+      (state.tar_header.typeflag != 'L'))
+    {
+      state.have_longname = 0;
+      state.have_longlink = 0;
+    }
 
   sscanf (state.tar_header.size, "%zo", &state.file_length);
   state.file_offset = 0;
@@ -171,9 +175,13 @@ archive_tar::next_file_name ()
 
   switch (state.tar_header.typeflag)
     {
+    case 'K':			/* GNU tar long link extension */
     case 'L':			/* GNU tar long name extension */
-      /* we read the 'file' into the long filename, then call back into here
-       * to find out if the actual file is a real file, or a special file..
+      if (strcmp(state.tar_header.name, "././@LongLink") != 0)
+        LogBabblePrintf("tar: unexpected filename %s in file type %c header\n", state.tar_header.name, state.tar_header.typeflag);
+
+      /* we read the 'file' into the long filename/linkname, then recursively
+       * call ourselves to handle the following block.
        */
       if (state.file_length > CYG_PATH_MAX)
 	{
@@ -187,7 +195,18 @@ archive_tar::next_file_name ()
 	  skip_file ();
 	  return next_file_name ();
 	}
-      c = state.filename;
+
+      if (state.tar_header.typeflag == 'L')
+        {
+          c = state.filename;
+          state.have_longname = 1;
+        }
+      else
+        {
+          c = state.linkname;
+          state.have_longlink = 1;
+        }
+
       /* FIXME: this should be a single read() call */
       while (state.file_length > state.file_offset)
 	{
@@ -195,17 +214,16 @@ archive_tar::next_file_name ()
 	    state.file_length - state.file_offset >
 	    512 ? 512 : state.file_length - state.file_offset;
 	  if (state.parent->read (buf, 512) < 512)
-	    // FIXME: What's up with the "0"? It's probably a mistake, and
-	    // should be "". It used to be written as 0, and was subject to a
-	    // bizarre implicit conversion by the unwise String(int)
-	    // constructor.
-	    return "0";
+            {
+              LogPlainPrintf( "error: error reading long name\n");
+              return "";
+            }
 	  memcpy (c, buf, need);
 	  c += need;
 	  state.file_offset += need;
 	}
       *c = 0;
-      state.have_longname = 1;
+
       return next_file_name ();
 
     case '3':			/* char */
@@ -297,7 +315,7 @@ archive_tar::linktarget ()
   /* TODO: consider .. path traversal issues */
   if (next_file_type () == ARCHIVE_FILE_SYMLINK ||
       next_file_type () == ARCHIVE_FILE_HARDLINK)
-    return state.tar_header.linkname;
+    return state.linkname;
   return std::string();
 }
 

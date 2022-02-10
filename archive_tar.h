@@ -66,12 +66,14 @@ public:
   int lasterr;
   int eocf;
   char have_longname;
+  bool have_longlink;
   /* where in the current file are we? */
   size_t file_offset;
   size_t file_length;
   int header_read;
   tar_header_type tar_header;
   char filename[CYG_PATH_MAX + 512];
+  char linkname[CYG_PATH_MAX + 512];
   tar_map_result_type *tar_map_result;
 };
 
