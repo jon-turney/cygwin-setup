@@ -395,8 +395,8 @@ BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
                     0,28,SETUP_STANDARD_DIALOG_W,1
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
-    LTEXT           "Resolving Dependencies",IDC_STATIC_HEADER_TITLE
-                    ,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Resolving Dependencies",IDC_STATIC_HEADER_TITLE,
+                    7,0,258,8,NOT WS_GROUP
     LTEXT           "The following problems occured trying to satisfy "
                     "dependencies.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
     CONTROL         "&Accept default problem solutions"
@@ -417,8 +417,8 @@ BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
                     0,28,SETUP_STANDARD_DIALOG_W,1
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
-    LTEXT           "Review and confirm changes",IDC_STATIC_HEADER_TITLE
-                    ,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Review and confirm changes",IDC_STATIC_HEADER_TITLE,
+                    7,0,258,8,NOT WS_GROUP
     EDITTEXT        IDC_CONFIRM_EDIT,7,41,325,131,WS_VSCROLL | WS_HSCROLL |
                     ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL |
                     ES_AUTOVSCROLL
@@ -481,8 +481,8 @@ BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
                     0,28,SETUP_STANDARD_DIALOG_W,1
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
-    LTEXT           "Postinstall script errors",IDC_STATIC_HEADER_TITLE
-                    ,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Postinstall script errors",IDC_STATIC_HEADER_TITLE,
+                    7,0,258,8,NOT WS_GROUP
     LTEXT           "These do not necessarily mean that affected packages "
                     "will fail to function properly, but please check "
                     "/var/log/setup.log.full and report any problems.",

@@ -340,8 +340,8 @@ BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
                     0,28,SETUP_STANDARD_DIALOG_W,1
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
-    LTEXT           "Résolution des dépendances",IDC_STATIC_HEADER_TITLE
-                    ,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Résolution des dépendances",IDC_STATIC_HEADER_TITLE,
+                    7,0,258,8,NOT WS_GROUP
     LTEXT           "Les problèmes suivants apparaissent lors de la résolution "
                     "des dépendances",IDC_STATIC,21,9,239,16,NOT WS_GROUP
     CONTROL         "&Accepter la solution par défaut"
@@ -362,8 +362,8 @@ BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
                     0,28,SETUP_STANDARD_DIALOG_W,1
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
-    LTEXT           "Revoir et confirmer les changements",IDC_STATIC_HEADER_TITLE
-                    ,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Revoir et confirmer les changements",IDC_STATIC_HEADER_TITLE,
+                    7,0,258,8,NOT WS_GROUP
     EDITTEXT        IDC_CONFIRM_EDIT,7,41,325,131,WS_VSCROLL | WS_HSCROLL |
                     ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL |
                     ES_AUTOVSCROLL
@@ -426,8 +426,8 @@ BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
                     0,28,SETUP_STANDARD_DIALOG_W,1
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
-    LTEXT           "Erreurs dans les scripts",IDC_STATIC_HEADER_TITLE
-                    ,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Erreurs dans les scripts",IDC_STATIC_HEADER_TITLE,
+                    7,0,258,8,NOT WS_GROUP
     LTEXT           "Ceci n'indique pas forcément que les paquets concernés"
                     "ne fonctionneront pas, mais consultez "
                     "/var/log/setup.log.full avant de reporter un problème.",
