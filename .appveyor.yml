@@ -1,6 +1,6 @@
 version: '{build}'
 environment:
-  CYGWIN_ROOT: C:\cygwin
+  CYGWIN_ROOT: C:\cygwin64
   CYGWIN_MIRROR: http://cygwin.mirror.constant.com
   CYGWIN_CACHE: C:\cache
   matrix:
@@ -10,7 +10,8 @@ install:
  - if "%HOST%"=="i686-w64-mingw32" set PKGARCH="mingw64-i686"
  - if "%HOST%"=="x86_64-w64-mingw32" set PKGARCH="mingw64-x86_64"
  - if NOT DEFINED PKGARCH exit 1
- - set SETUP=setup-x86.exe
+ - set SETUP=setup-x86_64.exe
+ - appveyor DownloadFile http://cygwin.com/%SETUP% -FileName %CYGWIN_ROOT%\%SETUP%
  - echo Updating Cygwin and installing build prerequisites
  - "%CYGWIN_ROOT%\\%SETUP% -qnNdO -R %CYGWIN_ROOT% -s %CYGWIN_MIRROR% -l %CYGWIN_CACHE% -g -P \
 autoconf,\
