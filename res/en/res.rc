@@ -1,0 +1,646 @@
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+// Throughout, we use the font "MS Shell Dlg". This seems to be necessary to
+// work around some not-fully-understood issues with PropertySheets. Hopefully,
+// using this font will cause things to 'just work'. Further information on
+// this topic is at:
+//   http://sources.redhat.com/ml/cygwin-apps/2003-05/msg00177.html
+
+IDD_SOURCE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup - Choose Installation Type"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "&Install from Internet\n(downloaded files will be kept for future re-use)",
+                    IDC_SOURCE_NETINST, "Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP | BS_MULTILINE
+                    | BS_TOP,
+                    71, 60, 200, 20
+
+    CONTROL         "&Download Without Installing",
+                    IDC_SOURCE_DOWNLOAD, "Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,
+                    71, 90, 200, 10
+
+    CONTROL         "Install from &Local Directory",IDC_SOURCE_LOCALDIR,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,
+                    71,120,200,10
+
+    ICON            IDI_CYGWIN, IDC_HEADICON, SETUP_HEADICON_X, 0, 21, 20
+    CONTROL         "", IDC_HEADSEPARATOR, "Static", SS_BLACKFRAME | SS_SUNKEN,
+                    0, 28, SETUP_STANDARD_DIALOG_W, 1
+    LTEXT           "Choose A Download Source", IDC_STATIC_HEADER_TITLE,
+                    7, 0, 258, 8, NOT WS_GROUP
+    LTEXT           "Choose whether to install or download from the internet, or install from files in a local directory.",
+                    IDC_SOURCE_SUBTEXT,
+                    21, 9, 239, 16, NOT WS_GROUP
+END
+
+IDD_VIRUS DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup - Disable Virus Scanner?"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "&Disable Virus scanner",IDC_DISABLE_AV,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,101,69,115,10
+    CONTROL         "&Leave Virus scanner alone",IDC_LEAVE_AV,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,101,84,115,10
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
+                    SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Choose whether to disable your virus scanner while installing.",IDC_STATIC_HEADER_TITLE,7,0,
+                    258,8,NOT WS_GROUP
+    LTEXT           "Some Antivirus programs, notably McAfee, cause a blue screen on Windows XP computers during installation of Cygwin.", 
+                    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "One that may be a problem has been detected. Cygwin setup can disable this during the installation process, and re-enable it when the install is complete.",
+                    IDC_STATIC,21,32,239,24,NOT WS_GROUP
+END
+
+IDD_LOCAL_DIR DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup - Select Local Package Directory"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Select Local Package Directory",IDC_STATIC_HEADER_TITLE,
+                    7,0,258,8,NOT WS_GROUP
+    LTEXT           "Select a directory where you want Setup to store "
+                    "the installation files it downloads.  The directory will be "
+                    "created if it does not already exist.",
+                    IDC_LOCAL_DIR_DOWNLOAD_DESC,21,9,248,16,NOT WS_GROUP
+    LTEXT           "Select a directory where Setup should look for "
+                    "downloaded installation files.",
+                    IDC_LOCAL_DIR_INSTALL_DESC,21,9,248,16,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
+                    SETUP_STANDARD_DIALOG_W,1
+
+    GROUPBOX        "Local Package Directory",IDC_LOCALDIR_GRP,5,35,330,35
+    EDITTEXT        IDC_LOCAL_DIR,13,47,270,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "B&rowse...",IDC_LOCAL_DIR_BROWSE,285,47,44,14,WS_TABSTOP
+END
+
+IDD_ROOT DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup - Choose Installation Directory"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Select Root Install Directory",IDC_STATIC_HEADER_TITLE,
+                    7,0,258,8,NOT WS_GROUP
+    LTEXT           "Select the directory where you want to install Cygwin.  "
+                    "Also choose a few installation parameters.",
+                    IDC_ROOTDIR_SUBTEXT,21,9,239,16,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
+                    SETUP_STANDARD_DIALOG_W,1
+
+    GROUPBOX        "Root Directory",IDC_ROOTDIR_GRP,5,35,330,35
+    EDITTEXT        IDC_ROOT_DIR,13,47,270,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "B&rowse...",IDC_ROOT_BROWSE,285,47,44,14,WS_TABSTOP
+
+    GROUPBOX        "Install For",IDC_INSTALLFOR_GRP,5,76,330,101
+    CONTROL         "&All Users (RECOMMENDED)",IDC_ROOT_SYSTEM,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP | WS_GROUP,13,89,130,8
+    CONTROL         "Just &Me",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON | 
+                    WS_TABSTOP,13,130,130,8
+    LTEXT           "Cygwin will be available to all users of the system.",
+                    IDC_ALLUSERS_TEXT,25,101,300,28
+    LTEXT           "Cygwin will still be available to all users, but "
+                    "Desktop Icons, Cygwin Menu Entries, and important "
+                    "Installer information are only available to the current "
+                    "user.  Only select this if you lack Administrator "
+                    "privileges or if you have specific needs.",
+                    IDC_JUSTME_TEXT,25,140,300,32
+END
+
+IDD_SITE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTROLPARENT
+CAPTION "Cygwin Setup - Choose Download Site(s)"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LISTBOX         IDC_URL_LIST,66,45,185,110,LBS_NOINTEGRALHEIGHT | 
+                    LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_GROUP | 
+                    WS_TABSTOP
+    LTEXT           "Available Download Sites:",IDC_STATIC,66,34,183,8,NOT 
+                    WS_GROUP
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
+                    SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Choose a site from this list, or add your own sites to the list",
+                    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Choose A Download Site",IDC_STATIC_HEADER_TITLE,7,0,258,
+                    8,NOT WS_GROUP
+    EDITTEXT        IDC_EDIT_USER_URL,65,160,185,14,ES_AUTOHSCROLL | 
+                    WS_GROUP
+    LTEXT           "User URL:",IDC_SITE_USERURL,15,162,45,8,NOT WS_GROUP
+    PUSHBUTTON      "Add",IDC_BUTTON_ADD_URL,255,160,50,14
+END
+
+IDD_NET DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup - Select Connection Type"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "Use &System Proxy Settings",IDC_NET_PRECONFIG,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,60,55,185,10
+    CONTROL         "&Direct Connection",IDC_NET_DIRECT,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,60,70,73,10
+    CONTROL         "Use HTTP/FTP &Proxy:",IDC_NET_PROXY,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,88,10
+    EDITTEXT        IDC_PROXY_HOST,120,105,120,12,ES_AUTOHSCROLL | 
+                    WS_DISABLED | WS_GROUP
+    EDITTEXT        IDC_PROXY_PORT,120,125,30,12,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    GROUPBOX        "",IDC_STATIC,60,95,185,50
+    RTEXT           "Proxy &Host",IDC_STATIC,65,105,50,12,SS_CENTERIMAGE | 
+                    NOT WS_GROUP
+    RTEXT           "Por&t",IDC_STATIC,85,125,30,12,SS_CENTERIMAGE | NOT 
+                    WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
+                    SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Setup needs to know how you want it to connect to the internet.  Choose the appropriate settings below.",
+                    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Select Your Internet Connection",
+                    IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+END
+
+IDD_INSTATUS DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Cygwin Setup"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Installing...",IDC_INS_ACTION,45,55,205,8,SS_ENDELLIPSIS
+    LTEXT           "(PKG)",IDC_INS_PKG,45,70,205,8,SS_ENDELLIPSIS
+    LTEXT           "(FILE)",IDC_INS_FILE,45,85,205,8,SS_ENDELLIPSIS
+    CONTROL         "Progress1",IDC_INS_DISKFULL,"msctls_progress32",
+                    PBS_SMOOTH | WS_BORDER,95,130,155,10
+    CONTROL         "Progress1",IDC_INS_IPROGRESS,"msctls_progress32",
+                    PBS_SMOOTH | WS_BORDER,95,115,155,10
+    CONTROL         "Progress1",IDC_INS_PPROGRESS,"msctls_progress32",
+                    PBS_SMOOTH | WS_BORDER,95,100,155,10
+    LTEXT           "Package:",IDC_INS_BL_PACKAGE,45,100,47,8,NOT WS_GROUP
+    LTEXT           "Total:",IDC_INS_BL_TOTAL,45,115,48,8,NOT WS_GROUP
+    LTEXT           "Disk:",IDC_INS_BL_DISK,45,130,47,8,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
+                    SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "This page displays the progress of the download or installation.",
+                    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Progress",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT 
+                    WS_GROUP
+END
+
+IDD_PROXY_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Proxy Authentication required"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "Proxy &User ID",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,
+                    WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Password",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,
+                    WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "Proxy Authorization Required",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&OK",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+END
+
+IDD_NET_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Server Authentication required"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "&User ID",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,
+                    WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Password",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,
+                    WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "Server Authorization Required",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&OK",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+END
+
+IDD_SPLASH DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Cygwin Net Release Setup Program",
+                    IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "This setup program is used for the initial installation "
+                    "of the Cygwin environment as well as all subsequent "
+                    "updates. "
+                    "The pages that follow will guide you through the "
+                    "installation."
+                    "\r\n\r\n"
+                    "Please note that we only install a base set of packages by "
+                    "default.  Cygwin provides a large number of packages "
+                    "spanning a wide variety of purposes."
+                    "\r\n\r\n"
+                    "You can always run this program at any time in "
+                    "the future to add, remove, or upgrade packages as "
+                    "necessary.",IDC_SPLASH_TEXT,115,25,195,90
+    ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
+    LTEXT           "",IDC_VERSION,115,127,195,10
+    LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
+    LTEXT           "",IDC_SPLASH_URL,115,152,90,8
+END
+
+IDD_DESKTOP DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup - Installation Status and Create Icons"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "Create icon on &Desktop",IDC_ROOT_DESKTOP,"Button",
+                    BS_AUTOCHECKBOX,108,78,100,8
+    CONTROL         "Add icon to &Start Menu",IDC_ROOT_MENU,"Button",
+                    BS_AUTOCHECKBOX,108,93,100,8
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
+                    SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Tell setup if you want it to create a few icons for convenient access to the Cygwin environment.",
+                    IDC_DESKTOP_HEADER_INSTALL,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Create Icons",IDC_DESKTOP_HEADER_TITLE_INSTALL,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Shows installation status in download-only mode.",
+                    IDC_DESKTOP_HEADER_DOWNLOAD,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Installation complete",IDC_DESKTOP_HEADER_TITLE_DOWNLOAD,7,0,258,8,NOT WS_GROUP
+    CONTROL         "",IDC_DESKTOP_SEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
+                    0,135,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Installation Status",IDC_STATUS_HEADER,7,140,258,8,NOT WS_GROUP
+    LTEXT           "Cygwin installation completed successfully.",IDC_STATUS,
+                    21,149,279,36,NOT WS_GROUP
+END
+
+IDD_FTP_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "FTP Authentication required"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "&User ID",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,
+                    WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Password",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,
+                    WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "FTP Authorization Required",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&OK",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cancel",IDCANCEL,165,75,45,15
+END
+
+IDD_CHOOSE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Cygwin Setup - Select Packages"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "&View", IDC_CHOOSE_VIEWCAPTION, SETUP_VIEW_X, 33,
+                    SETUP_VIEW_W, 10
+    COMBOBOX        IDC_CHOOSE_VIEW, SETUP_VIEWLIST_X, 30, SETUP_VIEWLIST_W, 84,
+                    CBS_DROPDOWNLIST | WS_TABSTOP
+    RTEXT           "&Search", IDC_STATIC, SETUP_SEARCH_X, 33, SETUP_SEARCH_W,
+                    10, SS_CENTERIMAGE, WS_EX_RIGHT
+    CONTROL         "Search ", IDC_CHOOSE_DO_SEARCH, "Button", BS_PUSHBUTTON | NOT
+                    WS_VISIBLE, SETUP_SEARCH_X, 33, SETUP_SEARCH_W, 14
+    EDITTEXT        IDC_CHOOSE_SEARCH_EDIT, SETUP_SEARCHTEXT_X, 30,
+                    SETUP_SEARCHTEXT_W, 14, ES_AUTOHSCROLL
+    PUSHBUTTON      "&Clear", IDC_CHOOSE_CLEAR_SEARCH, SETUP_CLEAR_X, 30,
+                    SETUP_CLEAR_W, 14
+    CONTROL         "&Keep", IDC_CHOOSE_KEEP, "Button", BS_AUTORADIOBUTTON
+                    | WS_GROUP | WS_TABSTOP, SETUP_KEEP_X, 30, SETUP_KPCE_W, 14
+    CONTROL         "&Best", IDC_CHOOSE_BEST, "Button", BS_AUTORADIOBUTTON,
+                    SETUP_BEST_X, 30, SETUP_KPCE_W, 14
+    CONTROL         "&Sync", IDC_CHOOSE_SYNC, "Button", BS_AUTORADIOBUTTON,
+                    SETUP_SYNC_X, 30, SETUP_KPCE_W, 14
+    CONTROL         "&Test", IDC_CHOOSE_EXP, "Button", BS_AUTOCHECKBOX | WS_TABSTOP,
+                    SETUP_EXP_X, 30, SETUP_KPCE_W, 14
+    CONTROL         "", IDC_HEADSEPARATOR, "Static", SS_BLACKFRAME | SS_SUNKEN,
+                    0, 28, SETUP_STANDARD_DIALOG_W, 1
+    CONTROL         "", IDC_CHOOSE_LIST, WC_LISTVIEW, LVS_NOSORTHEADER | LVS_REPORT | LVS_SINGLESEL | WS_TABSTOP,
+                    7, 47, SETUP_STANDARD_DIALOG_W - 14, 120, WS_EX_CLIENTEDGE
+    CONTROL         "&Hide obsolete packages", IDC_CHOOSE_HIDE,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 167, 160, 14
+    ICON            IDI_CYGWIN, IDC_HEADICON, SETUP_HEADICON_X, 0, 21, 20
+    LTEXT           "Select packages to download",
+                    IDC_CHOOSE_INST_TEXT_DOWNLOAD, 21, 9, 239, 16, NOT WS_GROUP
+    LTEXT           "Select packages to install",
+                    IDC_CHOOSE_INST_TEXT_INSTALL, 21, 9, 239, 16, NOT WS_GROUP
+    LTEXT           "Select Packages", IDC_STATIC_HEADER_TITLE, 7, 0, 258, 8,
+                    NOT WS_GROUP
+END
+
+IDD_PREREQ DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Cygwin Setup - Resolving Dependencies"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
+                    0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Resolving Dependencies",IDC_STATIC_HEADER_TITLE,
+                    7,0,258,8,NOT WS_GROUP
+    LTEXT           "The following problems occured trying to satisfy "
+                    "dependencies.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    CONTROL         "&Accept default problem solutions"
+                    ,IDC_PREREQ_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    7,167,225,14
+    EDITTEXT        IDC_PREREQ_EDIT,7,41,303,124,WS_VSCROLL | WS_HSCROLL |
+                    ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL |
+                    ES_AUTOVSCROLL
+
+END
+
+IDD_CONFIRM DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION |
+    WS_SYSMENU
+CAPTION "Cygwin Setup - Review and confirm changes"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
+                    0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Review and confirm changes",IDC_STATIC_HEADER_TITLE,
+                    7,0,258,8,NOT WS_GROUP
+    EDITTEXT        IDC_CONFIRM_EDIT,7,41,325,131,WS_VSCROLL | WS_HSCROLL |
+                    ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL |
+                    ES_AUTOVSCROLL
+END
+
+IDD_DROPPED DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup - Use dropped mirrors?"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Warning:",IDC_STATIC,7,8,40,8
+    LTEXT           "One or more mirrors you have selected is/are not on the "
+                    "list of official Cygwin mirrors any more. "
+                    "It/They may be out of date or missing some packages.\n"
+                    "This affects the following mirror(s):",
+                    IDC_STATIC,47,8,263,32
+    EDITTEXT        IDC_DROP_MIRRORS,7,40,303,40,WS_VSCROLL | WS_HSCROLL |
+                    ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL |
+                    ES_AUTOVSCROLL
+    LTEXT           "If you experience installation problems consider trying "
+                    "official mirrors only.\n\n"
+                    "Do you want to continue, using this/these mirror(s)?",
+                    IDC_STATIC,7,88,303,24
+    CONTROL         "&Don't warn me about this/these mirror(s) again",
+                    IDC_DROP_NOWARN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    7,120,213,15
+    PUSHBUTTON      "&Yes",IDYES,220,120,45,15
+    DEFPUSHBUTTON   "&No",IDNO,265,120,45,15
+
+END
+
+IDD_DOWNLOAD_ERROR DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "Download Incomplete"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_WARNING,IDC_HEADICON,10,10
+    LTEXT           "The following package(s) had download errors:",
+                    IDC_STATIC,7,8,320,16
+    EDITTEXT        IDC_DOWNLOAD_EDIT,7,24,320,88,WS_VSCROLL |
+                    ES_LEFT | ES_MULTILINE | ES_READONLY |
+                    ES_AUTOVSCROLL
+    LTEXT           "Select 'Retry' to retry the download, "
+                    "'Back' to return to the package selection page, "
+                    "'Continue' to go on anyway (NOT RECOMMENDED), or "
+                    "'Cancel' to exit.",
+                    IDC_STATIC,7,120,320,24
+    DEFPUSHBUTTON   "&Retry",IDRETRY,45,150,50,15
+    PUSHBUTTON      "&Back",IDC_BACK,110,150,50,15
+    PUSHBUTTON      "&Continue",IDIGNORE,175,150,50,15
+    PUSHBUTTON      "Cancel",IDABORT,240,150,50,15
+END
+
+IDD_POSTINSTALL DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE |
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Setup - Running postinstall scripts"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,
+                    0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Postinstall script errors",IDC_STATIC_HEADER_TITLE,
+                    7,0,258,8,NOT WS_GROUP
+    LTEXT           "These do not necessarily mean that affected packages "
+                    "will fail to function properly, but please check "
+                    "/var/log/setup.log.full and report any problems.",
+                    IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    EDITTEXT        IDC_POSTINSTALL_EDIT,7,41,303,112,WS_VSCROLL | WS_HSCROLL |
+                    ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL |
+                    ES_AUTOVSCROLL
+
+END
+
+IDD_FILE_INUSE DIALOG 0, 0, SETUP_MEDIUM_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "In-use file detected"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_WARNING,IDC_HEADICON,10,10
+    LTEXT           "Unable to extract",
+                    IDC_FILE_INUSE_MSG,33,10,234,8,SS_PATHELLIPSIS
+    LTEXT           "The file is in use by the following processes:",
+                    IDC_STATIC,33,28,234,8
+    EDITTEXT        IDC_FILE_INUSE_EDIT,33,40,234,32,WS_VSCROLL |
+                    ES_LEFT | ES_MULTILINE | ES_READONLY |
+                    ES_AUTOVSCROLL | NOT WS_TABSTOP
+    LTEXT           "Select 'Retry' to retry, "
+                    "select 'Stop' to stop processes and retry, or "
+                    "select 'Continue' to go on anyway (the file will be updated after a reboot).",
+                    IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Select 'Retry' to retry, "
+                    "select 'Kill' to kill processes and retry, or "
+                    "select 'Continue' to go on anyway (the file will be updated after a reboot).",
+                    IDC_FILE_INUSE_HELP_1,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Select 'Retry' to retry, "
+                    "select 'Kill' to forcibly kill all processes and retry, or "
+                    "select 'Continue' to go on anyway (the file will be updated after a reboot).",
+                    IDC_FILE_INUSE_HELP_2,33,80,234,24,NOT WS_GROUP
+    PUSHBUTTON      "&Retry",IDIGNORE,45,112,55,15
+    DEFPUSHBUTTON   "&Stop Processes",IDRETRY,111,112,55,15
+    PUSHBUTTON      "&Continue",IDCONTINUE,177,112,55,15
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_ROOT_SLASH          "Warning: we recommend you do not use the root of your hard drive as the cygwin root, to prevent possible conflicts with other programs.  Proceed anyway?"
+    IDS_ROOT_SPACE          "You should not choose a root path that include spaces in directory names.  Proceed anyway?"
+    IDS_ERR_OPEN_WRITE      "Can't open %s for writing: %s"
+    IDS_SETUPINI_MISSING    "Unable to get %s from <%s>"
+    IDS_OLD_SETUPINI        "This setup.ini is older than the one you used last time you installed cygwin.  Proceed anyway?"
+    IDS_NOTHING_INSTALLED   "Nothing needed to be installed"
+    IDS_INSTALL_COMPLETE    "Installation Complete"
+    IDS_REBOOT_REQUIRED     "In-use files have been replaced. You need to reboot as soon as possible to activate the new versions. Cygwin may operate incorrectly until you reboot."
+    IDS_ERR_OPEN_READ       "Can't open %s for reading: %s"
+    IDS_ROOT_ABSOLUTE       "The install directory must be absolute, with both a drive letter and leading slash, like C:\\Cygwin"
+    IDS_DOWNLOAD_COMPLETE   "Download Complete"
+    IDS_NOLOGFILE           "Cannot open log file %s for writing"
+    IDS_UNINSTALL_COMPLETE  "Uninstalls complete."
+    IDS_ERR_CHDIR           "Could not change dir to %s: %s [%.8x]"
+    IDS_OLD_SETUP_VERSION   "This setup is version %s, but setup.ini claims version %s is available.\nYou might want to upgrade to get the latest features and bug fixes."
+    IDS_DOWNLOAD_INCOMPLETE "Download Incomplete.  Try again?"
+    IDS_DOWNLOAD_INCOMPLETE_EXIT  "Download incomplete.  Check %s for details"
+    IDS_INSTALL_ERROR       "Installation error (%s), Continue with other packages?"
+    IDS_INSTALL_INCOMPLETE  "Installation incomplete.  Check %s for details"
+    IDS_CORRUPT_PACKAGE     "Package %s has a corrupt local copy, please remove and retry."
+    IDS_QUERY_CORRUPT       "The file %s is corrupt.  Delete it and download again?"
+    IDS_SKIP_PACKAGE        "%s\nDo you want to skip this package ?"
+    IDS_UNCAUGHT_EXCEPTION  "Fatal Error: Uncaught Exception\nThread: %s\nType: %s\nMessage: %s"
+    IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO  "Fatal Error: Uncaught Exception\nThread: %s\nType: %s\nMessage: %s\nAppErrNo: %d"
+    IDS_TRUSTKEEP_TOOLTIP   "Sets all packages to their currently installed "
+       "version.  This is equivalent to telling setup not to make any "
+       "changes to any package."
+    IDS_TRUSTCURR_TOOLTIP   "Sets all packages to the best version available. "
+       "(RECOMMENDED)"
+    IDS_TRUSTSYNC_TOOLTIP   "Sets all packages to the version available from the "
+       "package repository, downgrading if necessary."
+    IDS_TRUSTEXP_TOOLTIP    "Enable test packages."
+    IDS_VIEWBUTTON_TOOLTIP  "Select the package view.  This determines "
+       "which packages are shown below.\r\n"
+       "\r\n"
+       "Category: Group by package category.  Click on '+' to expand.\r\n"
+       "\r\n"
+       "Full: Show all packages.\r\n"
+       "\r\n"
+       "Pending: Show only packages that are about to be installed, removed, "
+       "or upgraded.  This tells you what is going to change when you press "
+       "'Next'.\r\n"
+       "\r\n"
+       "Up To Date: Show installed packages that need no action because they "
+       "are at the desired version already.\r\n"
+       "\r\n"
+       "Not installed: Show packages that are are not currently installed "
+       "and haven't been selected for installation.\r\n"
+       "\r\n"
+       "Picked: Show installed packages that were selected, not installed "
+       "as a dependency."
+    IDS_HIDEOBS_TOOLTIP     "If selected, setup will hide packages in categories "
+       "with names that begin with '_'.  Such packages are usually empty "
+       "placeholders for packages that have been removed or renamed, or are "
+       "infrastructure packages that are handled automatically."
+    IDS_SIG_INVALID    "Mirror Error:  Setup.ini signature %s from %s failed to verify.\nPossible corrupt mirror?  Setup.ini rejected."
+    IDS_CRYPTO_ERROR   "Internal Error:  gcrypt library error %d %s"
+    IDS_SEARCH_TOOLTIP "Search for this string in package names."
+    IDS_MAYBE_MKDIR    "Directory %s does not exist, would you like me to create it?"
+    IDS_CANT_MKDIR     "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
+    IDS_NO_LOCALDIR    "Local package directory %s not found.\nYou can still remove installed\npackages, but there "
+      "will be nothing to install.\n\nPress OK if that's what you wanted\nor Cancel to choose a different directory."
+    IDS_ELEVATED       "Hand installation over to elevated child process."
+    IDS_INSTALLEDB_VERSION "Unknown INSTALLED.DB version"
+    IDS_NO_MIRROR_LST  "Could not download mirror sites list"
+    IDS_PROGRESS_PROGRESS "Progress:"
+    IDS_PROGRESS_PACKAGE "Package:"
+    IDS_PROGRESS_CONNECTING "Connecting..."
+    IDS_PROGRESS_CHECKING "Checking for packages to download..."
+    IDS_PROGRESS_DOWNLOADING "Downloading..."
+    IDS_PROGRESS_PARSING "Parsing..."
+    IDS_PROGRESS_PREREMOVE "Running preremove script..."
+    IDS_PROGRESS_UNINSTALL "Uninstalling..."
+    IDS_PROGRESS_INSTALL "Installing..."
+    IDS_PROGRESS_CALCULATING "Calculating..."
+    IDS_PROGRESS_POSTINSTALL "Running..."
+    IDS_PROGRESS_SOLVING "Solving dependencies..."
+    IDS_ACTION_DEFAULT "Default"
+    IDS_ACTION_INSTALL "Install"
+    IDS_ACTION_UNINSTALL "Uninstall"
+    IDS_ACTION_SKIP "Skip"
+    IDS_ACTION_KEEP "Keep"
+    IDS_ACTION_REINSTALL "Reinstall"
+    IDS_ACTION_RETRIEVE "Retrieve"
+    IDS_ACTION_UNKNOWN "Unknown"
+    IDS_ACTION_SOURCE "Source"
+    IDS_VIEW_FULL "Full"
+    IDS_VIEW_PENDING "Pending"
+    IDS_VIEW_UPTODATE "Up To Date"
+    IDS_VIEW_NOTINSTALLED "Not Installed"
+    IDS_VIEW_PICKED "Picked"
+    IDS_VIEW_CATEGORY "Category"
+    IDS_COLUMN_PACKAGE "Package"
+    IDS_COLUMN_CURRENT "Current"
+    IDS_COLUMN_NEW "New"
+    IDS_COLUMN_SOURCE "Src?"
+    IDS_COLUMN_CATEGORIES "Categories"
+    IDS_COLUMN_SIZE "Size"
+    IDS_COLUMN_DESCR "Description"
+    IDS_MBOX_CAPTION "Cygwin Setup"
+    IDS_EXTRACTION_FAILED "Unable to extract /%s -- corrupt package?"
+    IDS_EXTRACTION_INUSE
+        "Unable to extract /%s -- error writing file\r\n\r\n"
+        "The file is in use or some other error occurred.\r\n\r\n"
+        "Please stop all Cygwin processes and select ""Retry"", or "
+        "select ""Continue"" to go on anyway (the file will be updated after a reboot).\r\n"
+    IDS_INSTALL_OLD_CYGWIN "An old version of cygwin1.dll was found here:\r\n%s\r\nDelete?"
+    IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED "Couldn't delete file %s.\r\n"
+                   "Is the DLL in use by another application?\r\n"
+                   "You should delete the old version of cygwin1.dll "
+                   "at your earliest convenience."
+    IDS_SHELLLINK_FAILED
+                    "CoCreateInstance failed with error 0x%x.\n"
+                    "Setup will not be able to create Cygwin Icons "
+                    "in the Start Menu or on the Desktop."
+    IDS_UNSUPPORTED_WINDOWS_VERSION "Cygwin is not supported on this Windows version"
+    IDS_DEPRECATED_WINDOWS_VERSION "Cygwin support for this Windows version is deprecated, and will be removed in the next major version"
+    IDS_DEPRECATED_WINDOWS_ARCH "Cygwin support for 32-bit Windows is deprecated, and will be removed in the next major version"
+    IDS_MOUNT_REGISTRY_KEY_FAILED "Couldn't create registry key to store installation path"
+    IDS_NIO_ERROR "Internet Error: %s"
+    IDS_PREREQ_UNSOLVED_PROBLEMS
+          "WARNING - Unsolved Problems"
+          "\r\n\r\n"
+          "Some packages may not work properly if you continue."
+          "\r\n\r\n"
+          "Are you sure you want to proceed (NOT RECOMMENDED)?"
+    IDS_MIXED_BITNESS_ERROR
+        "Target CPU mismatch"
+        "\r\n\r\n"
+        "You're trying to install a %s bit version of Cygwin into a directory "
+        "containing a %s bit version of Cygwin.  Continuing to do so would "
+        "break the existing installation."
+        "\r\n\r\n"
+        "Either run setup-%s.exe to update your existing %s bit installation of Cygwin, "
+        "or choose another directory for your %s bit installation."
+    IDS_GET_SITELIST_ERROR
+          "Can't get list of download sites.\r\n"
+          "Make sure your network settings are correct and try again."
+    IDS_CONFIRM_EXIT "Are you sure you want to exit setup? Any current download or installation will be aborted."
+    IDS_CONTINUE "Continue"
+    IDS_CHOOSER_EMPTY_NO_PACKAGES "No packages found."
+    IDS_CHOOSER_EMPTY_DOWNLOAD "Nothing to download."
+    IDS_CHOOSER_EMPTY_INSTALL "Nothing to install or update."
+    IDS_ROOT_BROWSE_TITLE "Select an installation root directory"
+    IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE "Select download directory"
+    IDS_LOCALDIR_BROWSE_PACKAGE_TITLE "Select local package directory"
+    IDS_PROGRESS_CHECKING_HASH "Checking %s for %s"
+    IDS_PROGRESS_DOWNLOADING_FROM "%s from %s"
+    IDS_CONFIRM_UNINSTALL "Uninstall"
+    IDS_CONFIRM_INSTALL "Install"
+    IDS_CONFIRM_DOWNLOAD "Download"
+    IDS_CONFIRM_NOTHING "No changes"
+    IDS_CONFIRM_AUTO_ADD "(automatically added)"
+    IDS_CONFIRM_SOURCE "(source)"
+    IDS_FILE_INUSE_KILL "&Kill Processes"
+    IDS_FILE_INUSE_MSG "Unable to extract"
+END
