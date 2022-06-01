@@ -104,7 +104,7 @@ BEGIN
     LTEXT           "Cygwin sera disponible pour tous les utilisateurs",
                     IDC_ALLUSERS_TEXT,25,101,300,28
     LTEXT           "Cygwin sera disponible pour tous les utilisateurs "
-                    "mais les icones et les menus uniquement pour l'utilisateur "
+                    "mais les icônes et les menus uniquement pour l'utilisateur "
                     "en cours. Ne sélectionner que si vous n'avez pas les droits "
                     "administrateur ou en cas de besoin spécifique.",
                     IDC_JUSTME_TEXT,25,140,300,32
@@ -195,7 +195,7 @@ CAPTION "Authentification proxy requise"
 FONT 8, "MS Shell Dlg"
 BEGIN
     ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
-    LTEXT           "ID &Utilisateur",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,
+    LTEXT           "&Identifiant proxy",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,
                     WS_EX_RIGHT
     EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
     LTEXT           "&Mot de passe",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,
@@ -232,7 +232,7 @@ BEGIN
     LTEXT           "Programme Assistant Cygwin",
                     IDC_STATIC_WELCOME_TITLE,115,1,195,24
     LTEXT           "Cet assistant est utilisé pour l'installation initiale "
-		    "de l'environnement Cygwin ainsi que pour ses mises à jour."
+		    "de l'environnement Cygwin ainsi que pour ses mises à jour. "
 		    "Les pages suivantes vont vous guider durant l'installation. "
                     "\r\n\r\n"
 		    "Notez que Cygwin inclus un grand nombre de paquets "
@@ -279,7 +279,7 @@ CAPTION "Authentification FTP requise"
 FONT 8, "MS Shell Dlg"
 BEGIN
     ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
-    LTEXT           "ID &Utilisateur",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,
+    LTEXT           "&Identifiant",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,
                     WS_EX_RIGHT
     EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
     LTEXT           "&Mot de passe",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,
@@ -320,7 +320,7 @@ BEGIN
                     0, 28, SETUP_STANDARD_DIALOG_W, 1
     CONTROL         "", IDC_CHOOSE_LIST, WC_LISTVIEW, LVS_NOSORTHEADER | LVS_REPORT | LVS_SINGLESEL | WS_TABSTOP,
                      7, 47, SETUP_STANDARD_DIALOG_W - 14, 120, WS_EX_CLIENTEDGE
-    CONTROL         "&Cache les paquets obsolètes", IDC_CHOOSE_HIDE,
+    CONTROL         "&Cacher les paquets obsolètes", IDC_CHOOSE_HIDE,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 167, 160, 14
     ICON            IDI_CYGWIN, IDC_HEADICON, SETUP_HEADICON_X, 0, 21, 20
     LTEXT           "Sélectionnez les paquets à télécharger",
@@ -401,13 +401,13 @@ CAPTION "Téléchargement Incomplet"
 FONT 8, "MS Shell Dlg"
 BEGIN
     ICON            IDI_WARNING,IDC_HEADICON,10,10
-    LTEXT           "Les paquets suivants ont eu des erreurs de téléchargement :",
+    LTEXT           "Les paquets suivants ont des erreurs de téléchargement :",
                     IDC_STATIC,7,8,320,16
     EDITTEXT        IDC_DOWNLOAD_EDIT,7,24,320,88,WS_VSCROLL |
                     ES_LEFT | ES_MULTILINE | ES_READONLY |
                     ES_AUTOVSCROLL
     LTEXT           "Choisissez 'Recommencer' pour relancer le téléchargement, "
-                    "'Précédent' pour revenir à la page de selection des paquets, "
+                    "'Précédent' pour revenir à la page de sélection des paquets, "
                     "'Continuer' pour forcer la suite (NON RECOMMANDÉ), ou "
                     "'Annuler' pour quitter.",
                     IDC_STATIC,7,120,320,24
@@ -450,17 +450,17 @@ BEGIN
     EDITTEXT        IDC_FILE_INUSE_EDIT,33,40,234,32,WS_VSCROLL |
                     ES_LEFT | ES_MULTILINE | ES_READONLY |
                     ES_AUTOVSCROLL | NOT WS_TABSTOP
-    LTEXT           "Choisir «Recommencer» pour recommencer, "
-                    "choisir «Stop» pour arrêter les process et recommencer, ou "
-                    "choisir «Continuer» pour procéder (un reboot sera nécessaire).",
+    LTEXT           "Choisir 'Recommencer' pour recommencer, "
+                    "choisir 'Stop' pour arrêter les process et recommencer, ou "
+                    "choisir 'Continuer' pour procéder (le fichier sera mis à jour après un redémarrage).",
                     IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
-    LTEXT           "Choisir «Recommencer» pour ré-essayer, "
-                    "choisir «Tuer» pour tuer les processus et ré-essayer, ou "
-                    "choisir «Continuer» pour poursuivre (le fichier sera mis à jour après un redémarrage).",
+    LTEXT           "Choisir 'Recommencer' pour ré-essayer, "
+                    "choisir 'Tuer' pour tuer les processus et ré-essayer, ou "
+                    "choisir 'Continuer' pour poursuivre (le fichier sera mis à jour après un redémarrage).",
                     IDC_FILE_INUSE_HELP_1,33,80,234,24,NOT WS_GROUP
-    LTEXT           "Choisir «Recommencer» pour ré-essayer, "
-                    "choisir «Tuer» pour forcer la fin des processus et ré-essayer, ou "
-                    "choisir «Continuer» pour poursuivre (le fichier sera mis à jour après un redémarrage).",
+    LTEXT           "Choisir 'Recommencer' pour ré-essayer, "
+                    "choisir 'Tuer' pour forcer la fin des processus et ré-essayer, ou "
+                    "choisir 'Continuer' pour poursuivre (le fichier sera mis à jour après un redémarrage).",
                     IDC_FILE_INUSE_HELP_2,33,80,234,24,NOT WS_GROUP
     PUSHBUTTON      "&Recommencer",IDIGNORE,45,112,55,15
     DEFPUSHBUTTON   "&Stop",IDRETRY,111,112,55,15
@@ -540,7 +540,7 @@ BEGIN
     IDS_NO_MIRROR_LST  "Impossible de télécharger la liste des sites miroirs"
     IDS_PROGRESS_PROGRESS "Progression :"
     IDS_PROGRESS_PACKAGE "Paquet :"
-    IDS_PROGRESS_CONNECTING "Connection..."
+    IDS_PROGRESS_CONNECTING "Connexion..."
     IDS_PROGRESS_CHECKING "Recherche de paquets à télécharger..."
     IDS_PROGRESS_DOWNLOADING "Télécharge..."
     IDS_PROGRESS_PARSING "Analyse..."
@@ -549,8 +549,8 @@ BEGIN
     IDS_PROGRESS_INSTALL "Installe..."
     IDS_PROGRESS_CALCULATING "Calcul..."
     IDS_PROGRESS_POSTINSTALL "Exécution..."
-    IDS_PROGRESS_SOLVING "Résolution des dépendences..."
-    IDS_ACTION_DEFAULT "Default"
+    IDS_PROGRESS_SOLVING "Résolution des dépendances..."
+    IDS_ACTION_DEFAULT "Par défaut"
     IDS_ACTION_INSTALL "Installe"
     IDS_ACTION_UNINSTALL "Désinstalle"
     IDS_ACTION_SKIP "Passe"
@@ -563,7 +563,7 @@ BEGIN
     IDS_VIEW_PENDING "En attente"
     IDS_VIEW_UPTODATE "À jour"
     IDS_VIEW_NOTINSTALLED "Non installé"
-    IDS_VIEW_PICKED "Choisi"
+    IDS_VIEW_PICKED "Sélectionné"
     IDS_VIEW_CATEGORY  "Catégorie"
     IDS_COLUMN_PACKAGE "Paquet"
     IDS_COLUMN_CURRENT "Actuel"
@@ -589,6 +589,8 @@ BEGIN
         "L'assistant ne sera pas capable de créer les icônes "
         "Cygwin dans le menu Démarrer ou sur le bureau."
     IDS_UNSUPPORTED_WINDOWS_VERSION "Cygwin n'est pas supporté pour cette version de Windows"
+    IDS_DEPRECATED_WINDOWS_VERSION "Cygwin n'est plus supporté pour cette version de Windows, et sera enlevé dans la prochaine version majeure"
+    IDS_DEPRECATED_WINDOWS_ARCH "Cygwin n'est plus supporté pour Windows 32-bits, et sera enlevé dans la prochaine version majeure"
     IDS_MOUNT_REGISTRY_KEY_FAILED "Impossible de créer la clé de registre pour enregistrer le chemin d'installation"
     IDS_NIO_ERROR "Erreur Internet: %s"
     IDS_PREREQ_UNSOLVED_PROBLEMS
@@ -615,8 +617,8 @@ BEGIN
     IDS_CHOOSER_EMPTY_DOWNLOAD "Rien à télécharger."
     IDS_CHOOSER_EMPTY_INSTALL "Rien à installer ou mettre à jour."
     IDS_ROOT_BROWSE_TITLE "Choisissez le dossier racine de l'installation"
-    // IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE "XXX: missing translation"
-    // IDS_LOCALDIR_BROWSE_PACKAGE_TITLE  "XXX: missing translation"
+    IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE "Choisissez le dossier pour le téléchargement"
+    IDS_LOCALDIR_BROWSE_PACKAGE_TITLE  "Choisissez le dossier local"
     IDS_PROGRESS_CHECKING_HASH "Vérification %s pour %s"
     IDS_PROGRESS_DOWNLOADING_FROM "%s depuis %s"
     IDS_CONFIRM_UNINSTALL "Désinstalle"
