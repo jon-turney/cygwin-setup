@@ -20,7 +20,7 @@ BEGIN
                     IDC_SOURCE_NETINST, "Button",
                     BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP | BS_MULTILINE
                     | BS_TOP,
-                    71, 60, 200, 20
+                    71, 60, 200, 30
 
     CONTROL         "&Download Without Installing",
                     IDC_SOURCE_DOWNLOAD, "Button",
