@@ -35,6 +35,8 @@
 #define SETUP_SEARCHTEXT_W	(60)
 #define SETUP_CLEAR_X		(SETUP_SEARCHTEXT_X + SETUP_SEARCHTEXT_W + 2)
 #define SETUP_CLEAR_W		(30)
+#define SETUP_CHOOSE_X          (7)
+#define SETUP_CHOOSE_W          (SETUP_STANDARD_DIALOG_W - 2*SETUP_CHOOSE_X)
 
 /////////////////////////////////////////////////////////////////////////////
 //
