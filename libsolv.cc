@@ -656,8 +656,17 @@ SolverTasks::setTasks()
         case packagemeta::Install_action:
           if (pkg->desired)
             add(pkg->desired, taskInstall); // install/upgrade
-          else if (pkg->curr)
-            add(pkg->curr, taskInstallAny); // install
+          else
+            {
+              // install
+              //
+              // empty desired means "any version", it doesn't matter which one
+              // we use as taskInstallAny only match on the provides name
+              if (pkg->curr)
+                add(pkg->curr, taskInstallAny);
+              else if (pkg->exp)
+                add(pkg->exp, taskInstallAny);
+            }
           break;
 
         case packagemeta::Uninstall_action:

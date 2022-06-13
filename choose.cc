@@ -166,7 +166,6 @@ ChooserPage::initialUpdateState()
   if (ForceCurrentOption)
     {
       update_mode_id = IDC_CHOOSE_SYNC;
-      changeTrust(update_mode_id, AllowTestOption, true);
     }
   else if (hasManualSelections && !UpgradeAlsoOption)
     {
@@ -177,8 +176,8 @@ ChooserPage::initialUpdateState()
   else
     {
       update_mode_id = IDC_CHOOSE_BEST;
-      changeTrust (update_mode_id, AllowTestOption, true);
     }
+  changeTrust(update_mode_id, AllowTestOption, true);
 
   static int ta[] = { IDC_CHOOSE_KEEP, IDC_CHOOSE_BEST, IDC_CHOOSE_SYNC, 0 };
   rbset (GetHWND (), ta, update_mode_id);
