@@ -132,7 +132,7 @@ BEGIN
                     WS_GROUP
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
                     SETUP_STANDARD_DIALOG_W,1
-    LTEXT           "Choose a site from this list, or add your own sites to the list",
+    LTEXT           "Choose a site from this list, or add your own sites to the list.",
                     IDC_STATIC,21,9,239,16,NOT WS_GROUP
     LTEXT           "Choose A Download Site",IDC_STATIC_HEADER_TITLE,7,0,258,
                     8,NOT WS_GROUP
@@ -335,9 +335,9 @@ BEGIN
     CONTROL         "&Hide obsolete packages", IDC_CHOOSE_HIDE,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 167, 160, 14
     ICON            IDI_CYGWIN, IDC_HEADICON, SETUP_HEADICON_X, 0, 21, 20
-    LTEXT           "Select packages to download",
+    LTEXT           "Select packages to download.",
                     IDC_CHOOSE_INST_TEXT_DOWNLOAD, 21, 9, 239, 16, NOT WS_GROUP
-    LTEXT           "Select packages to install",
+    LTEXT           "Select packages to install.",
                     IDC_CHOOSE_INST_TEXT_INSTALL, 21, 9, 239, 16, NOT WS_GROUP
     LTEXT           "Select Packages", IDC_STATIC_HEADER_TITLE, 7, 0, 258, 8,
                     NOT WS_GROUP
@@ -514,8 +514,8 @@ BEGIN
     IDS_TRUSTKEEP_TOOLTIP   "Sets all packages to their currently installed "
        "version.  This is equivalent to telling setup not to make any "
        "changes to any package."
-    IDS_TRUSTCURR_TOOLTIP   "Sets all packages to the best version available. "
-       "(RECOMMENDED)"
+    IDS_TRUSTCURR_TOOLTIP   "Sets all packages to the best version available "
+       "(RECOMMENDED)."
     IDS_TRUSTSYNC_TOOLTIP   "Sets all packages to the version available from the "
        "package repository, downgrading if necessary."
     IDS_TRUSTEXP_TOOLTIP    "Enable test packages."

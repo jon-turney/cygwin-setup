@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-06 19:04+0100\n"
+"POT-Creation-Date: 2022-06-15 15:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -150,7 +150,7 @@ msgstr "Juste &Moi"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
 msgid "Cygwin will be available to all users of the system."
-msgstr "Cygwin sera disponible pour tous les utilisateurs"
+msgstr "Cygwin sera disponible pour tous les utilisateurs."
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_JUSTME_TEXT
 msgid ""
@@ -172,7 +172,7 @@ msgid "Available Download Sites:"
 msgstr "Sites disponibles :"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
-msgid "Choose a site from this list, or add your own sites to the list"
+msgid "Choose a site from this list, or add your own sites to the list."
 msgstr ""
 "Choisissez un site dans cette liste, ou ajoutez vos propres sites à la liste."
 
@@ -480,12 +480,12 @@ msgid "&Hide obsolete packages"
 msgstr "&Cacher les paquets obsolètes"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
-msgid "Select packages to download"
-msgstr "Sélectionnez les paquets à télécharger"
+msgid "Select packages to download."
+msgstr "Sélectionnez les paquets à télécharger."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_INSTALL
-msgid "Select packages to install"
-msgstr "Sélectionnez les paquets à installer"
+msgid "Select packages to install."
+msgstr "Sélectionnez les paquets à installer."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Packages"
@@ -502,7 +502,7 @@ msgstr "Résolution des dépendances"
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC
 msgid "The following problems occured trying to satisfy dependencies."
 msgstr ""
-"Les problèmes suivants apparaissent lors de la résolution des dépendances"
+"Les problèmes suivants apparaissent lors de la résolution des dépendances."
 
 #: DIALOG.IDD_PREREQ.CONTROL.IDC_PREREQ_CHECK
 msgid "&Accept default problem solutions"
@@ -740,7 +740,7 @@ msgstr "Impossible d'ouvrir le fichier de trace %s en écriture"
 
 #: STRINGTABLE.IDS_UNINSTALL_COMPLETE
 msgid "Uninstalls complete."
-msgstr "Désinstallation terminée"
+msgstr "Désinstallation terminée."
 
 #: STRINGTABLE.IDS_ERR_CHDIR
 msgid "Could not change dir to %s: %s [%.8x]"
@@ -825,7 +825,7 @@ msgstr ""
 "demander à l'assistant de ne faire aucun changement aux paquets."
 
 #: STRINGTABLE.IDS_TRUSTCURR_TOOLTIP
-msgid "Sets all packages to the best version available. (RECOMMENDED)"
+msgid "Sets all packages to the best version available (RECOMMENDED)."
 msgstr ""
 "Sélectionne globalement la version qui est actuellement considérée comme la "
 "meilleure (RECOMMANDÉ)."

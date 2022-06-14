@@ -101,7 +101,7 @@ BEGIN
                     BS_AUTORADIOBUTTON | WS_TABSTOP | WS_GROUP,13,89,130,8
     CONTROL         "Juste &Moi",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON |
                     WS_TABSTOP,13,130,130,8
-    LTEXT           "Cygwin sera disponible pour tous les utilisateurs",
+    LTEXT           "Cygwin sera disponible pour tous les utilisateurs.",
                     IDC_ALLUSERS_TEXT,25,101,300,28
     LTEXT           "Cygwin sera disponible pour tous les utilisateurs "
                     "mais les icônes et les menus uniquement pour l'utilisateur "
@@ -323,9 +323,9 @@ BEGIN
     CONTROL         "&Cacher les paquets obsolètes", IDC_CHOOSE_HIDE,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 167, 160, 14
     ICON            IDI_CYGWIN, IDC_HEADICON, SETUP_HEADICON_X, 0, 21, 20
-    LTEXT           "Sélectionnez les paquets à télécharger",
+    LTEXT           "Sélectionnez les paquets à télécharger.",
                     IDC_CHOOSE_INST_TEXT_DOWNLOAD, 21, 9, 239, 16, NOT WS_GROUP
-    LTEXT           "Sélectionnez les paquets à installer",
+    LTEXT           "Sélectionnez les paquets à installer.",
                     IDC_CHOOSE_INST_TEXT_INSTALL, 21, 9, 239, 16, NOT WS_GROUP
     LTEXT           "Sélection des paquets",IDC_STATIC_HEADER_TITLE,7,0,258,8,
                     NOT WS_GROUP
@@ -343,7 +343,7 @@ BEGIN
     LTEXT           "Résolution des dépendances",IDC_STATIC_HEADER_TITLE,
                     7,0,258,8,NOT WS_GROUP
     LTEXT           "Les problèmes suivants apparaissent lors de la résolution "
-                    "des dépendances",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+                    "des dépendances.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
     CONTROL         "&Accepter la solution par défaut"
                     ,IDC_PREREQ_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
                     7,167,225,14
@@ -486,7 +486,7 @@ BEGIN
     IDS_ROOT_ABSOLUTE       "Le dossier d'installation doit être absolu, avec à la fois un identificateur de lecteur et une barre oblique au début : C:\\Cygwin"
     IDS_DOWNLOAD_COMPLETE   "Téléchargement terminé"
     IDS_NOLOGFILE           "Impossible d'ouvrir le fichier de trace %s en écriture"
-    IDS_UNINSTALL_COMPLETE  "Désinstallation terminée"
+    IDS_UNINSTALL_COMPLETE  "Désinstallation terminée."
     IDS_ERR_CHDIR           "Impossible de changer le dossier vers %s : %s [%.8x]"
     IDS_OLD_SETUP_VERSION   "Cet assistant est en version %s, mais setup.ini indique que la version %s est disponible.\nVous devriez le mettre à jour pour avoir les dernière fonctionnalités et corrections de bogues."
     IDS_DOWNLOAD_INCOMPLETE "Téléchargement incomplet. Recommencer ?"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-14 13:10+0100\n"
+"POT-Creation-Date: 2022-06-15 15:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,7 +155,7 @@ msgid "Available Download Sites:"
 msgstr ""
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
-msgid "Choose a site from this list, or add your own sites to the list"
+msgid "Choose a site from this list, or add your own sites to the list."
 msgstr ""
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
@@ -448,11 +448,11 @@ msgid "&Hide obsolete packages"
 msgstr ""
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
-msgid "Select packages to download"
+msgid "Select packages to download."
 msgstr ""
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_INSTALL
-msgid "Select packages to install"
+msgid "Select packages to install."
 msgstr ""
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_STATIC_HEADER_TITLE
@@ -740,7 +740,7 @@ msgid ""
 msgstr ""
 
 #: STRINGTABLE.IDS_TRUSTCURR_TOOLTIP
-msgid "Sets all packages to the best version available. (RECOMMENDED)"
+msgid "Sets all packages to the best version available (RECOMMENDED)."
 msgstr ""
 
 #: STRINGTABLE.IDS_TRUSTSYNC_TOOLTIP
