@@ -623,7 +623,7 @@ msgstr "Impossible d'extraire"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_STATIC
 msgid "The file is in use by the following processes:"
-msgstr "Ce fichier est en cours d'utilisation par : "
+msgstr "Ce fichier est en cours d'utilisation par :"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_0
 msgid ""
@@ -813,7 +813,7 @@ msgstr ""
 "Erreur Fatale : exception non traitée\n"
 "Thread : %s\n"
 "Type : %s\n"
-"Message: %s\n"
+"Message : %s\n"
 "AppErrNo : %d"
 
 #: STRINGTABLE.IDS_TRUSTKEEP_TOOLTIP
@@ -1096,7 +1096,7 @@ msgstr "Assistant Cygwin"
 
 #: STRINGTABLE.IDS_EXTRACTION_FAILED
 msgid "Unable to extract /%s -- corrupt package?"
-msgstr "Impossible d'extraire /%s -- paquet corrompu ?\r\n"
+msgstr "Impossible d'extraire /%s -- paquet corrompu ?"
 
 #: STRINGTABLE.IDS_EXTRACTION_INUSE
 msgid ""
@@ -1171,7 +1171,7 @@ msgstr ""
 
 #: STRINGTABLE.IDS_NIO_ERROR
 msgid "Internet Error: %s"
-msgstr "Erreur Internet: %s"
+msgstr "Erreur Internet : %s"
 
 #: STRINGTABLE.IDS_PREREQ_UNSOLVED_PROBLEMS
 msgid ""

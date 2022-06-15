@@ -445,7 +445,7 @@ BEGIN
     ICON            IDI_WARNING,IDC_HEADICON,10,10
     LTEXT           "Impossible d'extraire",
                     IDC_FILE_INUSE_MSG,33,10,234,8,SS_PATHELLIPSIS
-    LTEXT           "Ce fichier est en cours d'utilisation par : ",
+    LTEXT           "Ce fichier est en cours d'utilisation par :",
                     IDC_STATIC,33,28,234,8
     EDITTEXT        IDC_FILE_INUSE_EDIT,33,40,234,32,WS_VSCROLL |
                     ES_LEFT | ES_MULTILINE | ES_READONLY |
@@ -497,7 +497,7 @@ BEGIN
     IDS_QUERY_CORRUPT       "Le fichier %s est corrompu. Effacer et re-télécharger ?"
     IDS_SKIP_PACKAGE	    "%s\nVoulez-vous passer ce paquet ?"
     IDS_UNCAUGHT_EXCEPTION  "Erreur Fatale : exception non traitée\nThread : %s\nType : %s\nMessage : %s"
-    IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO  "Erreur Fatale : exception non traitée\nThread : %s\nType : %s\nMessage: %s\nAppErrNo : %d"
+    IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO  "Erreur Fatale : exception non traitée\nThread : %s\nType : %s\nMessage : %s\nAppErrNo : %d"
     IDS_TRUSTKEEP_TOOLTIP   "Garde tous les paquets à la version installée. "
        "Ceci est équivalent à demander à l'assistant de ne faire aucun "
 	   "changement aux paquets."
@@ -573,7 +573,7 @@ BEGIN
     IDS_COLUMN_SIZE "Taille"
     IDS_COLUMN_DESCR "Description"
     IDS_MBOX_CAPTION "Assistant Cygwin"
-    IDS_EXTRACTION_FAILED "Impossible d'extraire /%s -- paquet corrompu ?\r\n"
+    IDS_EXTRACTION_FAILED "Impossible d'extraire /%s -- paquet corrompu ?"
     IDS_EXTRACTION_INUSE
         "Incapable d'extraire /%s -- erreur à l'écriture du fichier\r\n"
         "Le fichier est utilisé ou une autre erreur est survenue.\r\n"
@@ -592,7 +592,7 @@ BEGIN
     IDS_DEPRECATED_WINDOWS_VERSION "Cygwin n'est plus supporté pour cette version de Windows, et sera enlevé dans la prochaine version majeure"
     IDS_DEPRECATED_WINDOWS_ARCH "Cygwin n'est plus supporté pour Windows 32-bits, et sera enlevé dans la prochaine version majeure"
     IDS_MOUNT_REGISTRY_KEY_FAILED "Impossible de créer la clé de registre pour enregistrer le chemin d'installation"
-    IDS_NIO_ERROR "Erreur Internet: %s"
+    IDS_NIO_ERROR "Erreur Internet : %s"
     IDS_PREREQ_UNSOLVED_PROBLEMS
         "ATTENTION - Problèmes non résolus"
         "\r\n\r\n"
