@@ -95,18 +95,18 @@ static StringChoiceOption::StringChoices symlink_types({
     {"wsl", SymlinkTypeWsl},
   });
 
-static StringOption Arch ("", 'a', "arch", "Architecture to install (x86_64 or x86)", false);
-static BoolOption UnattendedOption (false, 'q', "quiet-mode", "Unattended setup mode");
-static BoolOption PackageManagerOption (false, 'M', "package-manager", "Semi-attended chooser-only mode");
-static BoolOption NoAdminOption (false, 'B', "no-admin", "Do not check for and enforce running as Administrator");
-static BoolOption WaitOption (false, 'W', "wait", "When elevating, wait for elevated child process");
-static BoolOption HelpOption (false, 'h', "help", "Print help");
-static BoolOption VersionOption (false, 'V', "version", "Show version");
-static StringOption SetupBaseNameOpt ("setup", 'i', "ini-basename", "Use a different basename, e.g. \"foo\", instead of \"setup\"", false);
-BoolOption UnsupportedOption (false, '\0', "allow-unsupported-windows", "Allow old, unsupported Windows versions");
-static BoolOption DeprecatedOption (false, 'w', "no-warn-deprecated-windows", "Warn about deprecated Windows versions");
-static StringChoiceOption SymlinkTypeOption(symlink_types, '\0', "symlink-type", "Symlink type (lnk, native, sys, wsl)", false, SymlinkTypeMagic);
-static StringOption GuiLangOption ("", '\0', "lang", "Specify GUI language langid");
+static StringOption Arch ("", 'a', "arch", IDS_HELPTEXT_ARCH, false);
+static BoolOption UnattendedOption (false, 'q', "quiet-mode", IDS_HELPTEXT_QUIET_MODE);
+static BoolOption PackageManagerOption (false, 'M', "package-manager", IDS_HELPTEXT_PACKAGE_MANAGER);
+static BoolOption NoAdminOption (false, 'B', "no-admin", IDS_HELPTEXT_NO_ADMIN);
+static BoolOption WaitOption (false, 'W', "wait", IDS_HELPTEXT_WAIT);
+static BoolOption HelpOption (false, 'h', "help", IDS_HELPTEXT_HELP);
+static BoolOption VersionOption (false, 'V', "version", IDS_HELPTEXT_VERSION);
+static StringOption SetupBaseNameOpt ("setup", 'i', "ini-basename", IDS_HELPTEXT_INI_BASENAME, false);
+BoolOption UnsupportedOption (false, '\0', "allow-unsupported-windows", IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS);
+static BoolOption DeprecatedOption (false, 'w', "no-warn-deprecated-windows", IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS);
+static StringChoiceOption SymlinkTypeOption(symlink_types, '\0', "symlink-type", IDS_HELPTEXT_SYMLINK_TYPE, false, SymlinkTypeMagic);
+static StringOption GuiLangOption ("", '\0', "lang", IDS_HELPTEXT_LANG);
 
 std::string SetupBaseName;
 
@@ -316,7 +316,7 @@ WinMain (HINSTANCE h,
 	  Log (LOG_PLAIN) << "\nError during option processing.\n" << endLog;
         Log (LOG_PLAIN) << "Cygwin setup " << setup_version << endLog;
 	Log (LOG_PLAIN) << "\nCommand Line Options:\n" << endLog;
-	GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN));
+	GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN), LoadStringUtf8);
 	Log (LOG_PLAIN) << endLog;
 	Log (LOG_PLAIN) << "The default is to both download and install packages, unless either --download or --local-install is specified." << endLog;
 	Logger ().exit (invalid_option ? 1 : 0, false);

@@ -15,7 +15,7 @@
 #include <getopt++/StringArrayOption.h>
 
 StringArrayOption::StringArrayOption(char shortopt,
-		       char const *longopt, std::string const &shorthelp,
+		       char const *longopt, unsigned int shorthelp,
 		       OptionSet &owner) :
 		       _optional(Required), _shortopt(shortopt),
 		       _longopt (longopt), _shorthelp (shorthelp)
@@ -37,7 +37,7 @@ StringArrayOption::longOption () const
   return _longopt;
 }
 
-std::string const
+unsigned int
 StringArrayOption::shortHelp () const
 {
   return _shorthelp;

@@ -20,6 +20,7 @@
 #include "resource.h"
 #include "ini.h"
 #include <sys/stat.h>
+#include "String++.h"
 
 NTSecurity nt_sec;
 
@@ -505,6 +506,12 @@ LoadStringW(unsigned int uID)
 
   // if empty or absent, fallback to the untranslated string
   return LoadStringWEx(uID, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
+}
+
+const std::string
+LoadStringUtf8(unsigned int uID)
+{
+  return wstring_to_string(LoadStringW(uID));
 }
 
 bool

@@ -61,8 +61,8 @@ std::string ini_setup_version;
 IniList setup_ext_list (setup_exts,
 			setup_exts + (sizeof(setup_exts) / sizeof(*setup_exts)));
 
-static BoolOption NoVerifyOption (false, 'X', "no-verify", "Don't verify setup.ini signatures");
-static BoolOption NoVersionCheckOption (false, '\0', "no-version-check", "Suppress checking if a newer version of setup is available");
+static BoolOption NoVerifyOption (false, 'X', "no-verify", IDS_HELPTEXT_NO_VERIFY);
+static BoolOption NoVersionCheckOption (false, '\0', "no-version-check", IDS_HELPTEXT_NO_VERSION_CHECK);
 
 class GuiParseFeedback : public IniParseFeedback
 {

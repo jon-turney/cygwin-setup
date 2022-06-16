@@ -24,12 +24,12 @@ class StringOption : public Option
 {
 public:
   StringOption(std::string const defaultvalue, char shortopt, char const *longopt = 0,
-	     std::string const &shorthelp = std::string(), bool const optional = true,
-	     OptionSet &owner=GetOption::GetInstance());
+               unsigned int shorthelp = 0, bool const optional = true,
+               OptionSet &owner=GetOption::GetInstance());
   virtual ~ StringOption ();
   virtual std::string const shortOption () const;
   virtual std::string const longOption () const;
-  virtual std::string const shortHelp () const;
+  virtual unsigned int shortHelp () const;
   virtual Result Process (char const *, int);
   virtual Argument argument () const;
   operator const std::string& () const;
@@ -39,7 +39,7 @@ private:
   std::string _value;
   char _shortopt;
   char const *_longopt;
-  std::string _shorthelp;
+  unsigned int _shorthelp;
 };
 
 #endif // _STRINGOPTION_H_

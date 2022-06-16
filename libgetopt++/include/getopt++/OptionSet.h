@@ -21,6 +21,8 @@
 #include <vector>
 #include "getopt++/Option.h"
 
+typedef const std::string (*StrLookup)(unsigned int);
+
 class OptionSet
 {
 public:
@@ -30,7 +32,7 @@ public:
   virtual bool Process (int argc, char **argv, Option *nonOptionHandler);
   virtual bool Process (std::vector<std::string> const &parms, Option *nonOptionHandler);
   virtual bool process (Option *nonOptionHandler);
-  virtual void ParameterUsage (std::ostream &);
+  virtual void ParameterUsage (std::ostream &, StrLookup strLookup);
   virtual std::vector<Option *> const &optionsInSet() const;
   virtual std::vector<std::string> const &nonOptions() const;
   virtual std::vector<std::string> const &remainingArgv() const;

@@ -31,14 +31,14 @@ public:
     };
 
   BoolOption(bool const defaultvalue, char shortopt, char const *longopt = 0,
-             std::string const &shorthelp = std::string(),
+             unsigned int shorthelp = 0,
              BoolOptionType type = BoolOptionType::simple,
              OptionSet &owner=GetOption::GetInstance());
   virtual ~ BoolOption ();
   virtual std::string const shortOption () const;
   virtual std::string const longOption () const;
   virtual std::vector<std::string> const & longOptionPrefixes () const;
-  virtual std::string const shortHelp () const;
+  virtual unsigned int shortHelp () const;
   virtual Result Process (char const *, int);
   virtual Argument argument () const;
   operator bool () const;
@@ -48,7 +48,7 @@ private:
   bool _ovalue;
   char _shortopt;
   char const *_longopt;
-  std::string _shorthelp;
+  unsigned int _shorthelp;
   BoolOptionType _type;
 };
 

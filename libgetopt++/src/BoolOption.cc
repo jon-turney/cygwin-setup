@@ -16,7 +16,7 @@
 #include <getopt++/BoolOption.h>
 
 BoolOption::BoolOption(bool const defaultvalue, char shortopt,
-                       char const *longopt, std::string const &shorthelp,
+                       char const *longopt, unsigned int shorthelp,
                        BoolOptionType type, OptionSet &owner) :
   _value (defaultvalue), _ovalue (defaultvalue), _shortopt(shortopt),
   _longopt (longopt), _shorthelp (shorthelp), _type(type)
@@ -56,7 +56,7 @@ BoolOption::longOptionPrefixes () const
     }
 }
 
-std::string const
+unsigned int
 BoolOption::shortHelp () const
 {
   return _shorthelp;

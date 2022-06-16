@@ -16,7 +16,7 @@
 #include <getopt++/StringOption.h>
 
 StringOption::StringOption(std::string const defaultvalue, char shortopt,
-		       char const *longopt, std::string const &shorthelp,
+		       char const *longopt, unsigned int shorthelp,
 		       bool const optional, OptionSet &owner) :
 		       _value (defaultvalue) , _shortopt(shortopt),
 		       _longopt (longopt), _shorthelp (shorthelp)
@@ -42,7 +42,7 @@ StringOption::longOption () const
   return _longopt;
 }
 
-std::string const
+unsigned int
 StringOption::shortHelp () const
 {
   return _shorthelp;

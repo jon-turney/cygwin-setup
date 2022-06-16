@@ -32,7 +32,7 @@
 #include <sstream>
 #include <iomanip>
 
-static StringOption UserAgent ("", '\0', "user-agent", "User agent string for HTTP requests");
+static StringOption UserAgent ("", '\0', "user-agent", IDS_HELPTEXT_USER_AGENT);
 
 static const std::string
 machine_name(USHORT machine)

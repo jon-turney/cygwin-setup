@@ -59,11 +59,11 @@
 #include "Exception.h"
 
 #include "getopt++/BoolOption.h"
-static BoolOption UpgradeAlsoOption (false, 'g', "upgrade-also", "Also upgrade installed packages");
-static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", "Remove orphaned packages");
-static BoolOption ForceCurrentOption (false, 'f', "force-current", "Select the current version for all packages");
-static BoolOption PruneInstallOption (false, 'Y', "prune-install", "Prune the installation to only the requested packages");
-static BoolOption AllowTestOption (false, 't', "allow-test-packages", "Consider package versions marked test");
+static BoolOption UpgradeAlsoOption (false, 'g', "upgrade-also", IDS_HELPTEXT_UPGRADE_ALSO);
+static BoolOption CleanOrphansOption (false, 'o', "delete-orphans", IDS_HELPTEXT_DELETE_ORPHANS);
+static BoolOption ForceCurrentOption (false, 'f', "force-current", IDS_HELPTEXT_FORCE_CURRENT);
+static BoolOption PruneInstallOption (false, 'Y', "prune-install", IDS_HELPTEXT_PRUNE_INSTALL);
+static BoolOption AllowTestOption (false, 't', "allow-test-packages", IDS_HELPTEXT_ALLOW_TEST);
 
 extern ThreeBarProgressPage Progress;
 

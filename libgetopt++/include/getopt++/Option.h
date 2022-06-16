@@ -34,7 +34,7 @@ public:
   virtual std::string const shortOption () const = 0;
   virtual std::string const longOption () const = 0;
   virtual std::vector<std::string> const & longOptionPrefixes () const;
-  virtual std::string const shortHelp () const = 0;
+  virtual unsigned int shortHelp () const = 0;
   enum Result {
       Failed,
       Ok,

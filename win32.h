@@ -194,6 +194,7 @@ SetDlgItemRect (HWND h, int item, LPRECT r)
 	      r->right - r->left, r->bottom - r->top, TRUE);
 }
 
+const std::string LoadStringUtf8(unsigned int uID);
 const std::wstring LoadStringW(unsigned int uID);
 const std::wstring LoadStringWEx(UINT uID, UINT langId);
 

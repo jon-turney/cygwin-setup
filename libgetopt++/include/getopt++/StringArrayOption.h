@@ -23,12 +23,12 @@ class StringArrayOption : public Option
 {
 public:
   StringArrayOption(char shortopt, char const *longopt = 0,
-	     std::string const &shorthelp = std::string(),
-	     OptionSet &owner=GetOption::GetInstance());
+                    unsigned int shorthelp = 0,
+                    OptionSet &owner=GetOption::GetInstance());
   virtual ~ StringArrayOption ();
   virtual std::string const shortOption () const;
   virtual std::string const longOption () const;
-  virtual std::string const shortHelp () const;
+  virtual unsigned int shortHelp () const;
   virtual Result Process (char const *, int);
   virtual Argument argument () const;
   operator std::vector<std::string> () const;
@@ -38,7 +38,7 @@ private:
   std::vector<std::string> _value;
   char _shortopt;
   char const *_longopt;
-  std::string _shorthelp;
+  unsigned int _shorthelp;
 };
 
 #endif // _STRINGARRAYOPTION_H_

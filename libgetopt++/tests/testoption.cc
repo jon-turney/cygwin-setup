@@ -19,8 +19,15 @@
 
 #include <iostream>
 
-static BoolOption testoption (false, 't', "testoption", "Tests the use of boolean options");
-static BoolOption helpoption (false, 'h', "help", "Tests the use of help output.");
+static BoolOption testoption (false, 't', "testoption");
+static BoolOption helpoption (false, 'h', "help");
+
+static
+const std::string lookup(unsigned int)
+{
+  return "";
+}
+
 int
 main (int argc, char **argv)
 {
@@ -31,7 +38,7 @@ main (int argc, char **argv)
     }
   if (helpoption)
     {
-      GetOption::GetInstance().ParameterUsage(std::cout);
+      GetOption::GetInstance().ParameterUsage(std::cout, lookup);
     }
   if (testoption)
     {

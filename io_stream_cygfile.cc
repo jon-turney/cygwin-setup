@@ -29,6 +29,7 @@
 #include "io_stream_cygfile.h"
 #include "IOStreamProvider.h"
 #include "LogSingleton.h"
+#include "resource.h"
 
 static StringChoiceOption::StringChoices algs({
     {"xpress4k", FILE_PROVIDER_COMPRESSION_XPRESS4K},
@@ -38,8 +39,7 @@ static StringChoiceOption::StringChoices algs({
   });
 
 static StringChoiceOption CompactOsOption(algs,
-    '\0', "compact-os",
-    "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)",
+   '\0', "compact-os", IDS_HELPTEXT_COMPACTOS,
     true, -1, FILE_PROVIDER_COMPRESSION_LZX);
 
 /* completely private iostream registration class */

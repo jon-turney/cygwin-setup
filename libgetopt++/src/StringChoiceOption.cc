@@ -14,7 +14,7 @@
 StringChoiceOption::StringChoiceOption (StringChoices _choices,
                                         char shortopt,
                                         char const *longopt,
-                                        std::string const &shorthelp,
+                                        unsigned int shorthelp,
                                         bool const optional,
                                         int const defaultvalue,
                                         int const impliedvalue) :

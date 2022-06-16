@@ -38,7 +38,7 @@
 
 #include "getopt++/StringOption.h"
 
-StringOption RootOption ("", 'R', "root", "Root installation directory", false);
+StringOption RootOption ("", 'R', "root", IDS_HELPTEXT_ROOT, false);
 
 static ControlAdjuster::ControlInfo RootControlsInfo[] = {
   { IDC_ROOTDIR_GRP,              CP_STRETCH,           CP_TOP      },

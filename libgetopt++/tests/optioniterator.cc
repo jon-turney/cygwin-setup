@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-static BoolOption testoption (false, 't', "testoption", "Tests the use of boolean options");
+static BoolOption testoption (false, 't', "testoption");
 int
 main (int argc, char **argv)
 {

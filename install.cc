@@ -66,9 +66,7 @@ static long long int total_bytes = 0;
 static long long int total_bytes_sofar = 0;
 static int package_bytes = 0;
 
-static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot",
-				     "Disable replacing in-use files on next "
-				     "reboot.");
+static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot", IDS_HELPTEXT_NO_REPLACEONREBOOT);
 
 struct std_dirs_t {
   const char *name;

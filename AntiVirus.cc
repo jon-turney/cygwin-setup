@@ -31,7 +31,7 @@
 /* XXX: Split this into observer and model classes */
 
 /* Default is to leave well enough alone */
-static BoolOption DisableVirusOption (false, 'A', "disable-buggy-antivirus", "Disable known or suspected buggy anti virus software packages during execution.");
+static BoolOption DisableVirusOption (false, 'A', "disable-buggy-antivirus", IDS_HELPTEXT_DISABLE_ANTIVIRUS);
 
 static bool KnownAVIsPresent = false;
 static bool AVRunning = true;

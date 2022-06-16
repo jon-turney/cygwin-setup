@@ -334,10 +334,10 @@ comp_long_option(const Option *a, const Option *b)
 }
 
 void
-OptionSet::ParameterUsage (std::ostream &aStream)
+OptionSet::ParameterUsage (std::ostream &aStream, StrLookup strLookup)
 {
     std::sort(options.begin(), options.end(), comp_long_option);
-    for_each (options.begin(), options.end(), DefaultFormatter (aStream));
+    for_each (options.begin(), options.end(), DefaultFormatter (aStream, strLookup));
 }
 
 std::vector<Option *> const &

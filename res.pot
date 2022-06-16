@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-15 15:01+0100\n"
+"POT-Creation-Date: 2022-06-17 10:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1133,4 +1133,189 @@ msgstr ""
 #: STRINGTABLE.IDS_FILE_INUSE_MSG
 msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
 msgid "Unable to extract"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_ALLOW_TEST
+msgid "Consider package versions marked test"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
+msgid "Allow old, unsupported Windows versions"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_ARCH
+msgid "Architecture to install (x86_64 or x86)"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
+msgid "Specify entire categories to install"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
+msgid ""
+"Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
+msgid "Remove orphaned packages"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_DISABLE_ANTIVIRUS
+msgid ""
+"Disable known or suspected buggy anti virus software packages during "
+"execution"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_DOWNLOAD
+msgid "Download packages from internet"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_FORCE_CURRENT
+msgid "Select the current version for all packages"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_HELP
+msgid "Print help"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_INCLUDE_SOURCE
+msgid "Automatically install source for every package installed"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
+msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
+msgid "Use untrusted keys and retain all"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_LANG
+msgid "Specify GUI language langid"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_LOCAL_INSTALL
+msgid "Install packages from local directory"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_LOCAL_PACKAGE_DIR
+msgid "Local package directory"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
+msgid ""
+"Skip package availability check when installing from local directory ("
+"requires local directory to be clean mirror!)"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
+msgid "Do not check for and enforce running as Administrator"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_DESKTOP
+msgid "Disable creation of desktop shortcut"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_REPLACEONREBOOT
+msgid "Disable replacing in-use files on next reboot"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_SHORTCUTS
+msgid "Disable creation of desktop and start menu shortcuts"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_STARTMENU
+msgid "Disable creation of start menu shortcut"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_VERIFY
+msgid "Don't verify setup.ini signatures"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_VERSION_CHECK
+msgid "Suppress checking if a newer version of setup is available"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
+msgid "Warn about deprecated Windows versions"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_OLD_KEYS
+msgid "Enable old cygwin.com keys"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_ONLY_SITE
+msgid "Do not download mirror list.  Only use sites specified with -s."
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_PACKAGES
+msgid "Specify packages to install"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_PACKAGE_MANAGER
+msgid "Semi-attended chooser-only mode"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_PROXY
+msgid "HTTP/FTP proxy (host:port)"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_PRUNE_INSTALL
+msgid "Prune the installation to only the requested packages"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_PUBKEY
+msgid "URL or absolute path of extra public key file (RFC4880 format)"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
+msgid "Unattended setup mode"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
+msgid "Specify categories to uninstall"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_REMOVE_PACKAGES
+msgid "Specify packages to uninstall"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_ROOT
+msgid "Root installation directory"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_SEXPR_PUBKEY
+msgid "Extra DSA public key in s-expr format"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_SITE
+msgid "Download site URL"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
+msgid "Symlink type (lnk, native, sys, wsl)"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_UNTRUSTED_KEYS
+msgid "Use untrusted saved extra keys"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_UPGRADE_ALSO
+msgid "Also upgrade installed packages"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_USER_AGENT
+msgid "User agent string for HTTP requests"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_VERBOSE
+msgid "Verbose output"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_VERSION
+msgid "Show version"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_WAIT
+msgid "When elevating, wait for elevated child process"
 msgstr ""

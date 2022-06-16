@@ -31,18 +31,20 @@ class DefaultFormatter {
     const unsigned int h_len;
     const std::string s_lead;
     const std::string l_lead;
+    std::ostream &theStream;
+    StrLookup strLookup;
   public:
-    DefaultFormatter (std::ostream &aStream)
+    DefaultFormatter (std::ostream &aStream, StrLookup aLookup)
       : o_len(35), h_len(45),
         s_lead(" -"), l_lead(" --"),
-        theStream(aStream)
+        theStream(aStream), strLookup(aLookup)
     {}
-    DefaultFormatter (std::ostream &aStream,
+    DefaultFormatter (std::ostream &aStream, StrLookup aLookup,
 		      unsigned int o_len, unsigned int h_len,
 		      std::string s_lead, std::string l_lead)
       : o_len(o_len), h_len(h_len),
         s_lead(s_lead), l_lead(l_lead),
-        theStream(aStream)
+        theStream(aStream), strLookup(aLookup)
     {}
     void operator () (Option *anOption) {
       if (anOption->shortOption ()[0] == '\0')
@@ -57,7 +59,7 @@ class DefaultFormatter {
 		<< std::string (o_len
 				- s_lead.size () - 1 - l_lead.size ()
 				- longOption.size (), ' ');
-      std::string helpmsg = anOption->shortHelp();
+      std::string helpmsg = strLookup(anOption->shortHelp());
       while (helpmsg.size() > h_len)
 	{
 	  // TODO: consider using a line breaking strategy here.
@@ -68,7 +70,6 @@ class DefaultFormatter {
 	}
       theStream << helpmsg << std::endl;
     }
-    std::ostream &theStream;
 };
 
 #endif // _GETOPT___DEFAULTFORMATTER_H_

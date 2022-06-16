@@ -23,9 +23,9 @@
 int
 main (int anargc, char **anargv)
 {
-  BoolOption helpoption (false, 'h', "help", "Tests the use of help output.");
-  BoolOption helpoption2 (false, 'o', "help2", "Tests the use of help output.");
-  BoolOption ableoption (false, '\0', "foo", "Tests the use of paired option.", BoolOption::BoolOptionType::pairedAble);
+  BoolOption helpoption (false, 'h', "help");
+  BoolOption helpoption2 (false, 'o', "help2");
+  BoolOption ableoption (false, '\0', "foo", 0, BoolOption::BoolOptionType::pairedAble);
 
   int argc=2;
   char *argv[4];

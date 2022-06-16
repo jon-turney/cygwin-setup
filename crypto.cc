@@ -42,18 +42,11 @@
 #endif
 
 /*  Command-line options for specifying and controlling extra keys.  */
-static StringArrayOption ExtraKeyOption ('K', "pubkey",
-                                         "URL or absolute path of extra public key file (RFC4880 format)");
-
-static StringArrayOption SexprExtraKeyOption ('S', "sexpr-pubkey",
-                                              "Extra DSA public key in s-expr format");
-
-static BoolOption UntrustedKeysOption (false, 'u', "untrusted-keys",
-			"Use untrusted saved extra keys");
-static BoolOption KeepUntrustedKeysOption (false, 'U', "keep-untrusted-keys",
-			"Use untrusted keys and retain all");
-static BoolOption EnableOldKeysOption (false, '\0', "old-keys",
-                                       "Enable old cygwin.com keys",
+static StringArrayOption ExtraKeyOption ('K', "pubkey", IDS_HELPTEXT_PUBKEY);
+static StringArrayOption SexprExtraKeyOption ('S', "sexpr-pubkey", IDS_HELPTEXT_SEXPR_PUBKEY);
+static BoolOption UntrustedKeysOption (false, 'u', "untrusted-keys", IDS_HELPTEXT_UNTRUSTED_KEYS);
+static BoolOption KeepUntrustedKeysOption (false, 'U', "keep-untrusted-keys", IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS);
+static BoolOption EnableOldKeysOption (false, '\0', "old-keys", IDS_HELPTEXT_OLD_KEYS,
                                        BoolOption::BoolOptionType::pairedAble);
 
 /*  Embedded public half of Cygwin signing key.  */

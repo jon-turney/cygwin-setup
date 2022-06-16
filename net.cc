@@ -35,7 +35,7 @@
 #include "ConnectionSetting.h"
 extern ThreeBarProgressPage Progress;
 
-static StringOption ProxyOption ("", 'p', "proxy", "HTTP/FTP proxy (host:port)", false);
+static StringOption ProxyOption ("", 'p', "proxy", IDS_HELPTEXT_PROXY, false);
 
 static int rb[] = { IDC_NET_PRECONFIG, IDC_NET_DIRECT, IDC_NET_PROXY, 0 };
 static bool doing_loading = false;

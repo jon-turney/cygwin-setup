@@ -23,7 +23,7 @@ public:
 
   StringChoiceOption(StringChoices choices,
                      char shortopt, char const *longopt = 0,
-                     std::string const &shorthelp = std::string(),
+                     unsigned int shorthelp = 0,
                      bool const optional = true,   // option without choice string is permitted
                      int const defaultvalue = -1,  // value when option is absent
                      int const impliedvalue = -1); // value when option is present without choice string

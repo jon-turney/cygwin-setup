@@ -46,7 +46,7 @@
 #include "threebar.h"
 extern ThreeBarProgressPage Progress;
 
-static StringOption LocalDirOption ("", 'l', "local-package-dir", "Local package directory", false);
+static StringOption LocalDirOption ("", 'l', "local-package-dir", IDS_HELPTEXT_LOCAL_PACKAGE_DIR, false);
 
 static ControlAdjuster::ControlInfo LocaldirControlsInfo[] = {
   { IDC_LOCALDIR_GRP,       CP_STRETCH,   CP_TOP },

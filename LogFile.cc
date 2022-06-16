@@ -33,8 +33,7 @@
 #include "String++.h"
 #include "getopt++/BoolOption.h"
 
-static BoolOption VerboseOutput (false, 'v', "verbose",
-                                 "Verbose output");
+static BoolOption VerboseOutput (false, 'v', "verbose", IDS_HELPTEXT_VERBOSE);
 
 /* private helper class */
 class filedef

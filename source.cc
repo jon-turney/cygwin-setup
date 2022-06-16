@@ -33,8 +33,8 @@
 
 #include "getopt++/BoolOption.h"
 
-static BoolOption DownloadOption (false, 'D', "download", "Download packages from internet");
-static BoolOption LocalOption (false, 'L', "local-install", "Install packages from local directory");
+static BoolOption DownloadOption (false, 'D', "download", IDS_HELPTEXT_DOWNLOAD);
+static BoolOption LocalOption (false, 'L', "local-install", IDS_HELPTEXT_LOCAL_INSTALL);
 
 static int rb[] =
   { IDC_SOURCE_NETINST, IDC_SOURCE_DOWNLOAD, IDC_SOURCE_LOCALDIR, 0 };

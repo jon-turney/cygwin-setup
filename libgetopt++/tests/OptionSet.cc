@@ -32,9 +32,9 @@ class StringCollector : public Option
        {
 	 return "";
        }
-     virtual const std::string shortHelp() const
+     virtual unsigned int shortHelp() const
        {
-	 return "";
+	 return 0;
        }
      virtual Option::Result Process(const char * value, int index);
      virtual Option::Argument argument() const
@@ -71,7 +71,7 @@ main (int anargc, char **anargv)
 	    std::cout << "Processed ok with no options and no default." << std::endl;
 	    return 1;
 	}
-	BoolOption testoption (false, 't', "testoption", "dummy for testing OptionSet behaviour");
+	BoolOption testoption (false, 't', "testoption");
 	if (!GetOption::GetInstance().Process(argc, argv, NULL)) {
 	    std::cout << "Failed to processed with options and only nonoption arguments." << std::endl;
 	    return 1;
@@ -114,7 +114,7 @@ main (int anargc, char **anargv)
 	    std::cout << "Processed with a value to a valueless=argument." << std::endl;
 	    return 1;
 	}
-	StringOption testrequiredstring ("default", 's', "string", "A string with required parameter", false);
+	StringOption testrequiredstring ("default", 's', "string", 0, false);
 	free (argv[argc - 1]);
 	argv[argc - 1] = strdup ("-st");
 	if (GetOption::GetInstance().Process(argc, argv, NULL)) {
@@ -152,7 +152,7 @@ main (int anargc, char **anargv)
 	    return 1;
 	}
 	
-	StringOption testoptionalstring ("default", 'o', "optional", "A string with optional parameter", true);
+	StringOption testoptionalstring ("default", 'o', "optional", 0, true);
 	argv[argc] = strdup ("-ot");
 	++argc;
 	if (!GetOption::GetInstance().Process(argc, argv, NULL)) {

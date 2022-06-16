@@ -40,9 +40,9 @@
 #include "getopt++/BoolOption.h"
 #include "LogFile.h"
 
-static BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", "Disable creation of desktop and start menu shortcuts");
-static BoolOption NoStartMenuOption (false, 'N', "no-startmenu", "Disable creation of start menu shortcut");
-static BoolOption NoDesktopOption (false, 'd', "no-desktop", "Disable creation of desktop shortcut");
+static BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", IDS_HELPTEXT_NO_SHORTCUTS);
+static BoolOption NoStartMenuOption (false, 'N', "no-startmenu", IDS_HELPTEXT_NO_STARTMENU);
+static BoolOption NoDesktopOption (false, 'd', "no-desktop", IDS_HELPTEXT_NO_DESKTOP);
 
 /* Lines starting with '@' are conditionals - include 'N' for NT,
    '5' for Win95, '8' for Win98, '*' for all, like this:

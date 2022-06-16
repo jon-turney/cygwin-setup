@@ -32,7 +32,7 @@ static ControlAdjuster::ControlInfo PrereqControlsInfo[] = {
 };
 
 extern ThreeBarProgressPage Progress;
-BoolOption IncludeSource (false, 'I', "include-source", "Automatically install source for every package installed");
+BoolOption IncludeSource (false, 'I', "include-source", IDS_HELPTEXT_INCLUDE_SOURCE);
 
 // ---------------------------------------------------------------------------
 // implements class PrereqPage

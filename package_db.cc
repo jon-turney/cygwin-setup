@@ -43,7 +43,7 @@
 #include "csu_util/version_compare.h"
 #include "getopt++/BoolOption.h"
 
-static BoolOption MirrorOption (false, 'm', "mirror-mode", "Skip package availability check when installing from local directory (requires local directory to be clean mirror!)");
+static BoolOption MirrorOption (false, 'm', "mirror-mode", IDS_HELPTEXT_MIRROR_MODE);
 
 packagedb::packagedb ()
 {

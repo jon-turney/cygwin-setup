@@ -43,10 +43,10 @@
 #include "Exception.h"
 #include "resource.h"
 
-static StringArrayOption DeletePackageOption ('x', "remove-packages", "Specify packages to uninstall");
-static StringArrayOption DeleteCategoryOption ('c', "remove-categories", "Specify categories to uninstall");
-static StringArrayOption PackageOption ('P', "packages", "Specify packages to install");
-static StringArrayOption CategoryOption ('C', "categories", "Specify entire categories to install");
+static StringArrayOption DeletePackageOption ('x', "remove-packages", IDS_HELPTEXT_REMOVE_PACKAGES);
+static StringArrayOption DeleteCategoryOption ('c', "remove-categories", IDS_HELPTEXT_REMOVE_CATEGORIES);
+static StringArrayOption PackageOption ('P', "packages", IDS_HELPTEXT_PACKAGES);
+static StringArrayOption CategoryOption ('C', "categories", IDS_HELPTEXT_CATEGORIES);
 bool hasManualSelections = 0;
 
 /*****************/
