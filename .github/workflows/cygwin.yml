@@ -1,0 +1,53 @@
+name: Cygwin
+
+on: push
+
+jobs:
+  cygwin-build:
+    name: Cygwin
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - pkgarch: i686
+        - pkgarch: x86_64
+
+    steps:
+    - run: git config --global core.autocrlf input
+
+    # fetch all history for all tags for 'git describe'
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install Cygwin
+      uses: cygwin/cygwin-install-action@master
+      with:
+        packages: >-
+          autoconf,
+          automake,
+          bison,
+          flex,
+          libtool,
+          make,
+          mingw64-${{ matrix.pkgarch }}-bzip2,
+          mingw64-${{ matrix.pkgarch }}-gcc-g++,
+          mingw64-${{ matrix.pkgarch }}-headers,
+          mingw64-${{ matrix.pkgarch }}-libgcrypt,
+          mingw64-${{ matrix.pkgarch }}-libsolv,
+          mingw64-${{ matrix.pkgarch }}-xz,
+          mingw64-${{ matrix.pkgarch }}-zlib,
+          mingw64-${{ matrix.pkgarch }}-zstd,
+          upx
+
+    - name: Build
+      run: packaging-scripts/conf.sh upx ${{ matrix.pkgarch }}
+      shell: bash --noprofile --norc -eo pipefail '{0}'
+
+    - name: Test
+      run: >-
+        export PATH=/usr/${{ matrix.pkgarch }}-w64-mingw32/sys-root/mingw/bin/:${PATH} &&
+        make -C ${{ matrix.pkgarch }} check
+      shell: bash --noprofile --norc -eo pipefail '{0}'
