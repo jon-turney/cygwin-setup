@@ -11,7 +11,6 @@
  */
 
 #include "String++.h"
-#include "win32.h"
 #include <string.h>
 #include <sstream>
 #include <algorithm>
@@ -116,15 +115,15 @@ std::wstring string_to_wstring(const std::string &s)
 }
 
 // convert a UTF-16 wstring to a UTF-8 string
-std::string wstring_to_string(const std::wstring &w)
+std::string wstring_to_string(const std::wstring &w, unsigned int encoding)
 {
-  int n = WideCharToMultiByte(CP_UTF8, 0, w.c_str(), -1, NULL, 0, NULL, NULL);
+  int n = WideCharToMultiByte(encoding, 0, w.c_str(), -1, NULL, 0, NULL, NULL);
 
   if (n <= 0)
     return "conversion failed";
 
   char *buf = new char[n+1];
-  WideCharToMultiByte(CP_UTF8, 0, w.c_str(), -1, buf, n, NULL, NULL);
+  WideCharToMultiByte(encoding, 0, w.c_str(), -1, buf, n, NULL, NULL);
 
   std::string s(buf);
   delete[] buf;

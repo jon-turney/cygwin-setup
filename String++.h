@@ -14,6 +14,7 @@
 #define SETUP_STRING___H
 
 #include <string>
+#include "win32.h"
 
 char *new_cstr_char_array (const std::string& s);
 
@@ -43,7 +44,7 @@ inline std::string operator+ (const char *a, const std::string& b)
 { return std::string(a) + b; }
 
 std::wstring string_to_wstring(const std::string &s);
-std::string wstring_to_string(const std::wstring &w);
+std::string wstring_to_string(const std::wstring &w, unsigned int encoding = CP_UTF8);
 
 // produce a std::string using formatting like sprintf
 std::wstring vformat(const std::wstring &fmt, va_list ap);

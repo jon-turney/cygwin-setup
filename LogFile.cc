@@ -214,7 +214,27 @@ LogFile::endEntry()
 
   /* also write to stdout */
   if ((currEnt->level >= LOG_PLAIN) || VerboseOutput)
-    std::cout << buf << std::endl;
+    {
+      /*
+        The log message is UTF-8 encoded. Re-encode this in the console output
+        codepage (so it can be correctly decoded by a Windows terminal).
+        Unfortunately there's no API for direct multibyte re-encoding, so we
+        must do it in two steps UTF-8 -> UTF-16 -> CP_COCP.
+
+        If the console output codepage is UTF-8, we already have the log message
+        in the correct encoding, so we can avoid doing all that work.
+
+        If the output is not a console, GetConsoleOutputCP() returns 0.
+        Possibly it's a Cygwin pty?
+      */
+      std::string cpbuf = buf;
+
+      unsigned int ocp = GetConsoleOutputCP();
+      if ((ocp != 0 ) && (ocp != 65001))
+        cpbuf = wstring_to_string(string_to_wstring(buf), ocp);
+
+      std::cout << cpbuf << std::endl;
+    }
 
   if (!currEnt)
     {
