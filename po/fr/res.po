@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-15 15:03+0100\n"
+"POT-Creation-Date: 2022-06-17 10:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1293,3 +1293,194 @@ msgstr "&Tuer les processus"
 msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
 msgid "Unable to extract"
 msgstr "Incapable d'extraire"
+
+#: STRINGTABLE.IDS_HELPTEXT_ALLOW_TEST
+msgid "Consider package versions marked test"
+msgstr "Prendre en compte les paquets marqués test"
+
+#: STRINGTABLE.IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
+msgid "Allow old, unsupported Windows versions"
+msgstr "Autoriser les vieilles versions de Windows"
+
+#: STRINGTABLE.IDS_HELPTEXT_ARCH
+msgid "Architecture to install (x86_64 or x86)"
+msgstr "Architecture à installer (x86_64 ou x86)"
+
+#: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
+msgid "Specify categories to install"
+msgstr "Spécifie les catégories à installer"
+
+#: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
+msgid ""
+"Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
+msgid "Remove orphaned packages"
+msgstr "Supprimer les paquets orphelins"
+
+#: STRINGTABLE.IDS_HELPTEXT_DISABLE_ANTIVIRUS
+msgid ""
+"Disable known or suspected buggy anti virus software packages during "
+"execution"
+msgstr "Inhibe les anti-virus buggés à l'exécution"
+
+#: STRINGTABLE.IDS_HELPTEXT_DOWNLOAD
+msgid "Download packages from internet"
+msgstr "Télécharger depuis internet"
+
+#: STRINGTABLE.IDS_HELPTEXT_FORCE_CURRENT
+msgid "Select the current version for all packages"
+msgstr "Choisir la version courante pour tous les paquets"
+
+#: STRINGTABLE.IDS_HELPTEXT_HELP
+msgid "Print help"
+msgstr "Afficher l'aide"
+
+#: STRINGTABLE.IDS_HELPTEXT_INCLUDE_SOURCE
+msgid "Automatically install source for every package installed"
+msgstr "Ajouter automatiquement les sources de chaque paquet installé"
+
+#: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
+msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
+msgstr "Utiliser un nom de base différent, p.ex. «toto», au lieu de «setup»"
+
+#: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
+msgid "Use untrusted keys and retain all"
+msgstr "Utiliser les clés non-fiables et les garder"
+
+#: STRINGTABLE.IDS_HELPTEXT_LANG
+msgid "Specify GUI language langid"
+msgstr "Choisir la langue de l'IHM"
+
+#: STRINGTABLE.IDS_HELPTEXT_LOCAL_INSTALL
+msgid "Install packages from local directory"
+msgstr "Installer depuis un répertoire local"
+
+#: STRINGTABLE.IDS_HELPTEXT_LOCAL_PACKAGE_DIR
+msgid "Local package directory"
+msgstr "Dossier local pour les paquets"
+
+#: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
+msgid ""
+"Skip package availability check when installing from local directory ("
+"requires local directory to be clean mirror!)"
+msgstr ""
+"Ne pas vérifier la présence d'un paquet depuis un dossier local (celui-ci "
+"doit être un miroir propre !)"
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
+msgid "Do not check for and enforce running as Administrator"
+msgstr "Ne pas vérifier et forcer à installer en tant qu'administrateur"
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_DESKTOP
+msgid "Disable creation of desktop shortcut"
+msgstr "Pas de création de raccourci de bureau"
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_REPLACEONREBOOT
+msgid "Disable replacing in-use files on next reboot"
+msgstr ""
+"Inhibe le remplacement des fichiers en cours d'utilisation au prochain "
+"redémarrage"
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_SHORTCUTS
+msgid "Disable creation of desktop and start menu shortcuts"
+msgstr "Pas de création de raccourcis de bureau et de menu"
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_STARTMENU
+msgid "Disable creation of start menu shortcut"
+msgstr "Pas de création de raccourci de menu"
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_VERIFY
+msgid "Don't verify setup.ini signatures"
+msgstr "Ne pas vérifier les signatures de setup.ini"
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_VERSION_CHECK
+msgid "Suppress checking if a newer version of setup is available"
+msgstr ""
+"Ne pas vérifier si une version plus récente de l'assistant est disponible"
+
+#: STRINGTABLE.IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
+msgid "Don't warn about deprecated Windows versions"
+msgstr "Ne pas avertir pour les vieilles versions de Windows"
+
+#: STRINGTABLE.IDS_HELPTEXT_OLD_KEYS
+msgid "Enable old cygwin.com keys"
+msgstr "Utiliser les anciennes clés de cygwin.com"
+
+#: STRINGTABLE.IDS_HELPTEXT_ONLY_SITE
+msgid "Do not download mirror list.  Only use sites specified with -s."
+msgstr "Ignorer tous les sites sauf ceux spécifiés par -s"
+
+#: STRINGTABLE.IDS_HELPTEXT_PACKAGES
+msgid "Specify packages to install"
+msgstr "Spécifie les paquets à installer"
+
+#: STRINGTABLE.IDS_HELPTEXT_PACKAGE_MANAGER
+msgid "Semi-attended chooser-only mode"
+msgstr "Mode assistant sélection seulement"
+
+#: STRINGTABLE.IDS_HELPTEXT_PROXY
+msgid "HTTP/FTP proxy (host:port)"
+msgstr "Proxy HTTP/FTP (serveur:port)"
+
+#: STRINGTABLE.IDS_HELPTEXT_PRUNE_INSTALL
+msgid "Prune the installation to only the requested packages"
+msgstr "Purger l'installation pour n'avoir que les paquets demandés"
+
+#: STRINGTABLE.IDS_HELPTEXT_PUBKEY
+msgid "URL or absolute path of extra public key file (RFC4880 format)"
+msgstr ""
+"URL ou chemin complet d'une clé publique supplémentaire (format RFC4880)"
+
+#: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
+msgid "Unattended setup mode"
+msgstr "Assistant sans messages"
+
+#: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
+msgid "Specify categories to uninstall"
+msgstr "Spécifie les catégories à désinstaller"
+
+#: STRINGTABLE.IDS_HELPTEXT_REMOVE_PACKAGES
+msgid "Specify packages to uninstall"
+msgstr "Spécifie les paquets à désinstaller"
+
+#: STRINGTABLE.IDS_HELPTEXT_ROOT
+msgid "Root installation directory"
+msgstr "Dossier racine de l'installation"
+
+#: STRINGTABLE.IDS_HELPTEXT_SEXPR_PUBKEY
+msgid "Extra DSA public key in s-expr format"
+msgstr "Clé publique DSA supplémentaire au format s-expr"
+
+#: STRINGTABLE.IDS_HELPTEXT_SITE
+msgid "Download site URL"
+msgstr "URL du site de téléchargement"
+
+#: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
+msgid "Symlink type (lnk, native, sys, wsl)"
+msgstr "Type de lien symbolique (lnk, native, sys, wsl)"
+
+#: STRINGTABLE.IDS_HELPTEXT_UNTRUSTED_KEYS
+msgid "Use untrusted saved extra keys"
+msgstr "Utiliser les clés non-fiables enregistrées"
+
+#: STRINGTABLE.IDS_HELPTEXT_UPGRADE_ALSO
+msgid "Also upgrade installed packages"
+msgstr "Mettre à jour les paquets installés"
+
+#: STRINGTABLE.IDS_HELPTEXT_USER_AGENT
+msgid "User agent string for HTTP requests"
+msgstr "« User agent » pour les requêtes HTTP"
+
+#: STRINGTABLE.IDS_HELPTEXT_VERBOSE
+msgid "Verbose output"
+msgstr "Affichages verbeux"
+
+#: STRINGTABLE.IDS_HELPTEXT_VERSION
+msgid "Show version"
+msgstr "Montrer la version"
+
+#: STRINGTABLE.IDS_HELPTEXT_WAIT
+msgid "When elevating, wait for elevated child process"
+msgstr "Attendre le process fils en mode élévation"

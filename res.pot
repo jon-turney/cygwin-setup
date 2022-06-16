@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-17 10:38+0100\n"
+"POT-Creation-Date: 2022-06-17 10:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1148,7 +1148,7 @@ msgid "Architecture to install (x86_64 or x86)"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
-msgid "Specify entire categories to install"
+msgid "Specify categories to install"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
@@ -1237,7 +1237,7 @@ msgid "Suppress checking if a newer version of setup is available"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
-msgid "Warn about deprecated Windows versions"
+msgid "Don't warn about deprecated Windows versions"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_OLD_KEYS
