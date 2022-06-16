@@ -99,6 +99,19 @@ Follow the general directions given in the Cygwin contributions document:
    https://cygwin.com/contrib.html
 
 The appropriate mailing list for this project is cygwin-apps
-(rather than cygwin-patches). Thus, the appropriate final command would be:
+(rather than cygwin-patches). Thus an appropriate configuration is:
 
-   $ git send-email --to="cygwin-apps@cygwin.com"
+   $ git config --local format.subjectprefix "PATCH setup"
+   $ git config --local sendemail.to "cygwin-apps@cygwin.com"
+
+Before sending patches with:
+
+   $ git format-patch [--cover-letter]
+   $ git send-email *.patch
+
+
+TRANSLATIONS
+------------
+
+Translations of the gettext template res.pot can be made using PO file tools, or
+online at https://hosted.weblate.org/projects/cygwin-setup/cygwin-setup/
