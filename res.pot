@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-17 10:40+0100\n"
+"POT-Creation-Date: 2022-06-17 10:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1133,6 +1133,20 @@ msgstr ""
 #: STRINGTABLE.IDS_FILE_INUSE_MSG
 msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
 msgid "Unable to extract"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_ERROR
+msgid "Error during option processing."
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_HEADER
+msgid "Command Line Options:"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_FOOTER
+msgid ""
+"The default is to both download and install packages, unless either --"
+"download or --local-install is specified."
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_TEST

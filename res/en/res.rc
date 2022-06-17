@@ -651,6 +651,9 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_HELPTEXT_ERROR "Error during option processing."
+    IDS_HELPTEXT_HEADER "Command Line Options:"
+    IDS_HELPTEXT_FOOTER "The default is to both download and install packages, unless either --download or --local-install is specified."
     IDS_HELPTEXT_ALLOW_TEST "Consider package versions marked test"
     IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS "Allow old, unsupported Windows versions"
     IDS_HELPTEXT_ARCH "Architecture to install (x86_64 or x86)"

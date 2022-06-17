@@ -637,6 +637,9 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_HELPTEXT_ERROR "Erreur pendant l'analyse des options."
+    IDS_HELPTEXT_HEADER "Options de la ligne de commandes :"
+    IDS_HELPTEXT_FOOTER "Par défault téléchargement et installation des paquets, sauf si --download ou --local-install sont spécifiés."
     IDS_HELPTEXT_ALLOW_TEST "Prendre en compte les paquets marqués test"
     IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS "Autoriser les vieilles versions de Windows"
     IDS_HELPTEXT_ARCH "Architecture à installer (x86_64 ou x86)"

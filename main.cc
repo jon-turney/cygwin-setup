@@ -310,15 +310,19 @@ WinMain (HINSTANCE h,
 			<< setup_version << endLog;
       }
 
+    /* Some confusion of interfaces here: Normally we try to write un-localized
+       strings to the log. However, if output_only is true, then we know that
+       Log() is only outputting to console, not a logfile, so using localized
+       text is ok. */
     if (help_option)
       {
-	if (invalid_option)
-	  Log (LOG_PLAIN) << "\nError during option processing.\n" << endLog;
+        if (invalid_option)
+          Log (LOG_PLAIN) << "\n" << LoadStringUtf8(IDS_HELPTEXT_ERROR) << "\n" << endLog;
         Log (LOG_PLAIN) << "Cygwin setup " << setup_version << endLog;
-	Log (LOG_PLAIN) << "\nCommand Line Options:\n" << endLog;
+        Log (LOG_PLAIN) << "\n" << LoadStringUtf8(IDS_HELPTEXT_HEADER) << "\n" << endLog;
 	GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN), LoadStringUtf8);
 	Log (LOG_PLAIN) << endLog;
-	Log (LOG_PLAIN) << "The default is to both download and install packages, unless either --download or --local-install is specified." << endLog;
+        Log (LOG_PLAIN) << LoadStringUtf8(IDS_HELPTEXT_FOOTER) << endLog;
 	Logger ().exit (invalid_option ? 1 : 0, false);
 	goto finish_up;
       }

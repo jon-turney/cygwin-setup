@@ -151,6 +151,9 @@
 #define IDS_HELPTEXT_DOWNLOAD            1542
 #define IDS_HELPTEXT_LOCAL_INSTALL       1543
 #define IDS_HELPTEXT_ROOT                1544
+#define IDS_HELPTEXT_ERROR               1545
+#define IDS_HELPTEXT_HEADER              1546
+#define IDS_HELPTEXT_FOOTER              1547
 
 // Dialogs
 
