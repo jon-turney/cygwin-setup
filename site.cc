@@ -141,13 +141,15 @@ site_list_type::site_list_type (const std::string &_url,
 				const std::string &_servername,
 				const std::string &_area,
 				const std::string &_location,
-				bool _from_mirrors_lst)
+				bool _from_mirrors_lst,
+                                bool _noshow = false)
 {
   url = _url;
   servername = _servername;
   area = _area;
   location = _location;
   from_mirrors_lst = _from_mirrors_lst;
+  noshow = _noshow;
 
   /* Canonicalize URL to ensure it ends with a '/' */
   if (url.at(url.length()-1) != '/')
@@ -177,30 +179,6 @@ site_list_type::site_list_type (const std::string &_url,
       idx = 0;
   } while (idx > 0);
   key += url;
-}
-
-site_list_type::site_list_type (site_list_type const &rhs)
-{
-  key = rhs.key;
-  url = rhs.url;
-  servername = rhs.servername;
-  area = rhs.area;
-  location = rhs.location;
-  from_mirrors_lst = rhs.from_mirrors_lst;
-  displayed_url = rhs.displayed_url;
-}
-
-site_list_type &
-site_list_type::operator= (site_list_type const &rhs)
-{
-  key = rhs.key;
-  url = rhs.url;
-  servername = rhs.servername;
-  area = rhs.area;
-  location = rhs.location;
-  from_mirrors_lst = rhs.from_mirrors_lst;
-  displayed_url = rhs.displayed_url;
-  return *this;
 }
 
 bool
@@ -285,35 +263,34 @@ load_site_list (SiteList& theSites, char *theString)
           strncmp(bol, "https://", 8) == 0 ||
           strncmp(bol, "ftp://", 6) == 0 ||
           strncmp(bol, "ftps://", 7) == 0)
-	{
-	  char *semi = strchr (bol, ';');
-	  char *semi2 = NULL;
-	  char *semi3 = NULL;
-	  if (semi)
-	    {
-	      *semi = 0;
-	      semi++;
-	      semi2 = strchr (semi, ';');
-	      if (semi2)
-	        {
-		  *semi2 = 0;
-		  semi2++;
-		  semi3 = strchr (semi2, ';');
-		  if (semi3)
-		    {
-		      *semi3 = 0;
-		      semi3++;
-		    }
-		}
-	    }
+        {
+          int i;
+          char *semi[4];
 
-	  /* Ignore malformed lines */
-	  if (!semi || !semi2 || !semi3)
-	    continue;
+          /* split into up to 4 semicolon-delimited parts */
+          for (i = 0; i < 4; i++)
+            semi[i] = 0;
 
-	  site_list_type newsite (bol, semi, semi2, semi3, true);
-	  site_list_insert (theSites, newsite);
-	}
+          char *p = bol;
+          for (i = 0; i < 4; i++)
+            {
+              semi[i] = strchr (p, ';');
+              if (!semi[i])
+                break;
+
+              *semi[i] = 0;
+              p = ++semi[i];
+            }
+
+          /* Ignore malformed lines */
+          if (!semi[0] || !semi[1] || !semi[2])
+            continue;
+
+          bool noshow = semi[3] && (strncmp(semi[3], "noshow", 6) == 0);
+
+          site_list_type newsite (bol, semi[0], semi[1], semi[2], true, noshow);
+          site_list_insert (theSites, newsite);
+        }
         else
         {
           Log (LOG_BABBLE) << "Discarding line '" << bol << "' due to unknown protocol" << endLog;
@@ -668,7 +645,7 @@ SitePage::CheckControlsAndDisableAccordingly () const
 void
 SitePage::PopulateListBox ()
 {
-  int j;
+  std::vector <int> sel_indicies;
   HWND listbox = GetDlgItem (IDC_URL_LIST);
 
   // Populate the list box with the URLs.
@@ -676,26 +653,36 @@ SitePage::PopulateListBox ()
   for (SiteList::const_iterator i = all_site_list.begin ();
        i != all_site_list.end (); ++i)
     {
-      j = SendMessage (listbox, LB_ADDSTRING, 0,
-		       (LPARAM) i->displayed_url.c_str());
-      SendMessage (listbox, LB_SETITEMDATA, j, j);
+      // If selected, always show
+      SiteList::iterator f = find (site_list.begin(), site_list.end(), *i);
+      if (f == site_list.end())
+        {
+          // Otherwise, hide redundant legacy URLs:
+          if (i->noshow)
+            continue;
+        }
+
+      int j = SendMessage (listbox, LB_ADDSTRING, 0,
+                           (LPARAM) i->displayed_url.c_str());
+      // Set the ListBox item data to the index into all_site_list
+      SendMessage (listbox, LB_SETITEMDATA, j, (i - all_site_list.begin()));
+
+      // For every selected item, remember the index
+      if (f != site_list.end())
+        {
+          sel_indicies.push_back(j);
+        }
     }
 
   // Select the selected ones.
-  for (SiteList::const_iterator n = site_list.begin ();
-       n != site_list.end (); ++n)
+  for (std::vector <int>::const_iterator n = sel_indicies.begin ();
+       n != sel_indicies.end (); ++n)
     {
-      SiteList::iterator i = find (all_site_list.begin(),
-                                   all_site_list.end(), *n);
-      if (i != all_site_list.end())
-        {
-          int index = i - all_site_list.begin();
-
-	  // Highlight the selected item
-	  SendMessage (listbox, LB_SELITEMRANGE, TRUE, (index << 16) | index);
-	  // Make sure it's fully visible
-	  SendMessage (listbox, LB_SETCARETINDEX, index, FALSE);
-	}
+      int index = *n;
+      // Highlight the selected item
+      SendMessage (listbox, LB_SELITEMRANGE, TRUE, (index << 16) | index);
+      // Make sure it's fully visible
+      SendMessage (listbox, LB_SETCARETINDEX, index, FALSE);
     }
 }
 

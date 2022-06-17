@@ -48,11 +48,9 @@ class site_list_type
 {
 public:
   site_list_type () : url (), displayed_url (), key () {};
-  site_list_type (const site_list_type &);
   site_list_type (const std::string& , const std::string& ,
-                  const std::string& , const std::string&, bool);
+                  const std::string& , const std::string&, bool, bool);
   ~site_list_type () {};
-  site_list_type &operator= (const site_list_type &);
   std::string url;
   // provided by mirrors.lst but not used
   std::string servername;
@@ -60,6 +58,8 @@ public:
   std::string location;
   // did this site come from mirrors.lst?
   bool from_mirrors_lst;
+  // marked as "noshow"
+  bool noshow;
   std::string displayed_url;
   // sort key
   std::string key;
