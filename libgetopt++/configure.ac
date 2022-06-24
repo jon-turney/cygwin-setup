@@ -5,7 +5,7 @@ dnl  Robert Collins, rbtcollins@hotmail.com
 dnl
 dnl
 AC_INIT(src/GetOption.cc, 0.0.2-DEVEL)
-AC_PREREQ(2.70)
+AC_PREREQ(2.69)
 AC_CONFIG_AUX_DIR(cfgaux)
 AM_INIT_AUTOMAKE
 AC_CONFIG_HEADERS(include/autoconf.h)

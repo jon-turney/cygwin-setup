@@ -16,7 +16,7 @@ dnl
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT([setup], [0], [cygwin-apps@cygwin.com])
-AC_PREREQ(2.70)
+AC_PREREQ(2.69)
 AC_CONFIG_AUX_DIR([cfgaux])
 AM_INIT_AUTOMAKE([1.12 subdir-objects foreign no-define -Wall -Wno-portability])
 dnl AM_CONFIG_HEADER(include/autoconf.h)
