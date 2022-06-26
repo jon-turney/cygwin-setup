@@ -33,6 +33,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <process.h>
+#include <algorithm>
 
 #include "ini.h"
 #include "resource.h"
@@ -50,6 +51,8 @@
 #include "archive.h"
 #include "archive_tar.h"
 #include "script.h"
+#include "find.h"
+#include "FindVisitor.h"
 
 #include "package_db.h"
 #include "package_meta.h"
@@ -73,6 +76,28 @@ struct std_dirs_t {
   mode_t mode;
 };
 
+class Perpetual0RemoveFindVisitor : public FindVisitor
+{
+public:
+  explicit Perpetual0RemoveFindVisitor (std::vector<Script> *scripts)
+    : _scripts(scripts)
+  {}
+  virtual void visitFile(const std::string& basePath,
+                         const WIN32_FIND_DATA *theFile)
+    {
+      std::string fn = std::string("/etc/preremove/") + theFile->cFileName;
+      Script script(fn);
+      if (script.is_p("0"))
+	  _scripts->push_back(Script (fn));
+    }
+  virtual ~ Perpetual0RemoveFindVisitor () {}
+protected:
+  Perpetual0RemoveFindVisitor (Perpetual0RemoveFindVisitor const &);
+  Perpetual0RemoveFindVisitor & operator= (Perpetual0RemoveFindVisitor const &);
+private:
+  std::vector<Script> *_scripts;
+};
+
 class Installer
 {
   public:
@@ -80,6 +105,7 @@ class Installer
     Installer();
     void initDialog();
     void progress (int bytes);
+    void preremovePerpetual0 ();
     void preremoveOne (packagemeta &);
     void uninstallOne (packagemeta &);
     void replaceOnRebootFailed (const std::string& fn);
@@ -149,6 +175,24 @@ Installer::StandardDirs[] = {
 };
 
 static int num_installs, num_uninstalls;
+
+void
+Installer::preremovePerpetual0 ()
+{
+  std::vector<Script> perpetual;
+  Perpetual0RemoveFindVisitor visitor (&perpetual);
+  Find (cygpath ("/etc/preremove")).accept (visitor);
+  if (perpetual.empty())
+    return;
+
+  Progress.SetText1 (IDS_PROGRESS_PREREMOVE);
+  Progress.SetText2 ("0/Perpetual");
+  std::sort (perpetual.begin(), perpetual.end());
+  for (std::vector<Script>::iterator i = perpetual.begin (); i != perpetual.end (); ++i) {
+    Progress.SetText3 (i->fullName ().c_str());
+    i->run();
+  }
+}
 
 void
 Installer::preremoveOne (packagemeta & pkg)
@@ -859,6 +903,9 @@ do_install_thread (HINSTANCE h, HWND owner)
   }
 
   /* start with uninstalls - remove files that new packages may replace */
+  Progress.SetBar2(0);
+  myInstaller.preremovePerpetual0 ();
+
   Progress.SetBar2(0);
   for (std::vector <packageversion>::iterator i = uninstall_q.begin ();
        i != uninstall_q.end (); ++i)
