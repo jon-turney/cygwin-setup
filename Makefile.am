@@ -33,6 +33,7 @@ AM_CPPFLAGS = -D__USE_MINGW_ANSI_STDIO=1 -DLZMA_API_STATIC\
 	       $(ZLIB_CFLAGS) $(LZMA_CFLAGS) $(ZSTD_CFLAGS) $(LIBCRYPT_CFLAGS) $(LIBSOLV_CFLAGS)
 
 inilex_CXXFLAGS:=-Wno-sign-compare
+iniparse_CXXFLAGS:=-Wno-free-nonheap-object
 
 noinst_PROGRAMS = @SETUP@$(EXEEXT) inilint
 
