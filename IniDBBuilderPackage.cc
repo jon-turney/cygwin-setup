@@ -322,7 +322,12 @@ IniDBBuilderPackage::buildPackageListNode (const std::string & name)
 #if DEBUG
   Log (LOG_BABBLE) << "New node '" << name << "' for package list" << endLog;
 #endif
-  currentSpec = new PackageSpecification (name);
+
+  std::string actual_name = name;
+  if (name == "_self-destruct")
+    actual_name = "libsolv-self-destruct-pkg()";
+
+  currentSpec = new PackageSpecification (actual_name);
   if (currentNodeList)
     currentNodeList->push_back (currentSpec);
 }
