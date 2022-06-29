@@ -194,6 +194,7 @@ Installer::preremovePerpetual (const std::string& stratum)
     Progress.SetText3 (i->fullName ().c_str());
     i->run();
   }
+  Progress.SetText3 ("");
 }
 
 void
