@@ -76,26 +76,28 @@ struct std_dirs_t {
   mode_t mode;
 };
 
-class Perpetual0RemoveFindVisitor : public FindVisitor
+class PerpetualRemoveFindVisitor : public FindVisitor
 {
 public:
-  explicit Perpetual0RemoveFindVisitor (std::vector<Script> *scripts)
-    : _scripts(scripts)
+  PerpetualRemoveFindVisitor (std::vector<Script> *scripts, const std::string& stratum)
+    : _scripts(scripts),
+      stratum(stratum)
   {}
   virtual void visitFile(const std::string& basePath,
                          const WIN32_FIND_DATA *theFile)
     {
       std::string fn = std::string("/etc/preremove/") + theFile->cFileName;
       Script script(fn);
-      if (script.is_p("0"))
+      if (script.is_p(stratum))
 	  _scripts->push_back(Script (fn));
     }
-  virtual ~ Perpetual0RemoveFindVisitor () {}
+  virtual ~ PerpetualRemoveFindVisitor () {}
 protected:
-  Perpetual0RemoveFindVisitor (Perpetual0RemoveFindVisitor const &);
-  Perpetual0RemoveFindVisitor & operator= (Perpetual0RemoveFindVisitor const &);
+  PerpetualRemoveFindVisitor (PerpetualRemoveFindVisitor const &);
+  PerpetualRemoveFindVisitor & operator= (PerpetualRemoveFindVisitor const &);
 private:
   std::vector<Script> *_scripts;
+  const std::string stratum;
 };
 
 class Installer
@@ -105,7 +107,7 @@ class Installer
     Installer();
     void initDialog();
     void progress (int bytes);
-    void preremovePerpetual0 ();
+    void preremovePerpetual (const std::string& stratum);
     void preremoveOne (packagemeta &);
     void uninstallOne (packagemeta &);
     void replaceOnRebootFailed (const std::string& fn);
@@ -177,16 +179,16 @@ Installer::StandardDirs[] = {
 static int num_installs, num_uninstalls;
 
 void
-Installer::preremovePerpetual0 ()
+Installer::preremovePerpetual (const std::string& stratum)
 {
   std::vector<Script> perpetual;
-  Perpetual0RemoveFindVisitor visitor (&perpetual);
+  PerpetualRemoveFindVisitor visitor (&perpetual, stratum);
   Find (cygpath ("/etc/preremove")).accept (visitor);
   if (perpetual.empty())
     return;
 
   Progress.SetText1 (IDS_PROGRESS_PREREMOVE);
-  Progress.SetText2 ("0/Perpetual");
+  Progress.SetText2 ((stratum + "/Perpetual").c_str ());
   std::sort (perpetual.begin(), perpetual.end());
   for (std::vector<Script>::iterator i = perpetual.begin (); i != perpetual.end (); ++i) {
     Progress.SetText3 (i->fullName ().c_str());
@@ -904,7 +906,7 @@ do_install_thread (HINSTANCE h, HWND owner)
 
   /* start with uninstalls - remove files that new packages may replace */
   Progress.SetBar2(0);
-  myInstaller.preremovePerpetual0 ();
+  myInstaller.preremovePerpetual ("0");
 
   Progress.SetBar2(0);
   for (std::vector <packageversion>::iterator i = uninstall_q.begin ();
@@ -915,6 +917,9 @@ do_install_thread (HINSTANCE h, HWND owner)
       myInstaller.preremoveOne (*pkgm);
     Progress.SetBar2(std::distance(uninstall_q.begin(), i) + 1, uninstall_q.size());
   }
+
+  Progress.SetBar2(0);
+  myInstaller.preremovePerpetual ("z");
 
   Progress.SetBar2(0);
   for (std::vector <packageversion>::iterator i = uninstall_q.begin ();
