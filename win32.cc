@@ -308,7 +308,7 @@ NTSecurity::setAdminGroup ()
 }
 
 void
-NTSecurity::setDefaultSecurity (bool isAdmin)
+NTSecurity::setDefaultSecurity ()
 {
   /* Get the processes access token. */
   if (!OpenProcessToken (GetCurrentProcess (),
@@ -358,11 +358,6 @@ NTSecurity::setDefaultSecurity (bool isAdmin)
       primaryGroupSID.pgrp.PrimaryGroup = (PSID) NULL;
     }
   groupSID = primaryGroupSID.pgrp.PrimaryGroup;
-  /* Try to set the primary group to the Administrators group, but only if
-     "Install for all users" has been chosen.  If it doesn't work, we're
-     no admin and that's all there's to say about it. */
-  if (isAdmin)
-    setAdminGroup ();
 }
 
 bool
