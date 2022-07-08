@@ -130,7 +130,7 @@ public:
   void resetPrimaryGroup();
   void setAdminGroup ();
   void initialiseWellKnownSIDs ();
-  void setDefaultSecurity(bool isAdmin);
+  void setDefaultSecurity ();
   bool isRunAsAdmin ();
   bool hasSymlinkCreationRights ();
 private:
