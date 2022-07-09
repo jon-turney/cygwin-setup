@@ -135,6 +135,12 @@ create_install_root ()
     mbox (NULL, IDS_MOUNT_REGISTRY_KEY_FAILED, MB_OK | MB_ICONWARNING);
   RegCloseKey (key);
 
+  Log (LOG_TIMESTAMP) << "Registry value set: HKEY_"
+		      << (root_scope == IDC_ROOT_USER ? "CURRENT_USER\\"
+						      : "LOCAL_MACHINE\\")
+		      << buf << "\\rootdir = \"" << get_root_dir () << "\""
+		      << endLog;
+
   // The mount table is already in the right shape at this point.
   // Reading it again is not necessary.
   //read_mounts (std::string ());
