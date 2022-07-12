@@ -70,6 +70,7 @@ static long long int total_bytes_sofar = 0;
 static int package_bytes = 0;
 
 static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot", IDS_HELPTEXT_NO_REPLACEONREBOOT);
+static BoolOption NoWriteRegistry (false, '\0', "no-write-registry", IDS_HELPTEXT_NO_WRITE_REGISTRY);
 
 struct std_dirs_t {
   const char *name;
@@ -833,8 +834,9 @@ do_install_thread (HINSTANCE h, HWND owner)
   int df = diskfull (get_root_dir ().c_str());
   Progress.SetBar3 (df);
 
-  /* Writes Cygwin/setup/rootdir registry value */
-  create_install_root ();
+  if (!NoWriteRegistry)
+    /* Writes Cygwin/setup/rootdir registry value */
+    create_install_root ();
 
   std::vector <packageversion> install_q, uninstall_q, sourceinstall_q;
 

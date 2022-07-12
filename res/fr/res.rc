@@ -665,6 +665,7 @@ BEGIN
     IDS_HELPTEXT_NO_VERIFY "Ne pas vérifier les signatures de setup.ini"
     IDS_HELPTEXT_NO_VERSION_CHECK "Ne pas vérifier si une version plus récente de l'assistant est disponible"
     IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS "Ne pas avertir pour les vieilles versions de Windows"
+    // IDS_HELPTEXT_NO_WRITE_REGISTRY "XXX: missing translation"
     IDS_HELPTEXT_OLD_KEYS "Utiliser les anciennes clés de cygwin.com"
     IDS_HELPTEXT_ONLY_SITE "Ignorer tous les sites sauf ceux spécifiés par -s"
     IDS_HELPTEXT_PACKAGES "Spécifie les paquets à installer"

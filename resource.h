@@ -154,6 +154,7 @@
 #define IDS_HELPTEXT_ERROR               1545
 #define IDS_HELPTEXT_HEADER              1546
 #define IDS_HELPTEXT_FOOTER              1547
+#define IDS_HELPTEXT_NO_WRITE_REGISTRY   1548
 
 // Dialogs
 
