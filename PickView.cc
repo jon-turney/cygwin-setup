@@ -17,6 +17,7 @@
 #include "PickPackageLine.h"
 #include "PickCategoryLine.h"
 #include <algorithm>
+#include <set>
 #include <limits.h>
 #include <shlwapi.h>
 
@@ -27,6 +28,39 @@
 #include "state.h"
 #include "LogSingleton.h"
 #include "Exception.h"
+
+// Scan desired packages and collect the names of packages which provide the
+// dependencies of other desired packages or are member of category "Base".
+static void FindNeededPackages (const packagedb & db, std::set<std::string> & needed)
+{
+  std::map<std::string, std::string> providedBy;
+  for (const auto & p : db.packages)
+    {
+      const packagemeta & pkg = *p.second;
+      if (!pkg.isBinary ())
+        continue;
+      if (!pkg.desired)
+        continue;
+      for (const PackageSpecification *s : pkg.desired.provides ())
+        providedBy.insert ({s->packageName (), pkg.name});
+    }
+  for (const auto & p : db.packages)
+    {
+      const packagemeta & pkg = *p.second;
+      if (!pkg.isBinary ())
+        continue;
+      if (pkg.categories.count ("Base"))
+        needed.insert (pkg.name);
+      if (!pkg.desired)
+        continue;
+      for (const PackageSpecification *s : pkg.desired.depends ()) {
+        const auto i = providedBy.find (s->packageName ());
+        if (i == providedBy.end ())
+          continue;
+        needed.insert (i->second);
+      }
+    }
+}
 
 void
 PickView::setViewMode (views mode)
@@ -47,6 +81,11 @@ PickView::setViewMode (views mode)
     }
   else
     {
+      std::set<std::string> needed;
+      if (view_mode == PickView::views::PackageRemovable
+          || view_mode == PickView::views::PackageUnneeded)
+        FindNeededPackages (db, needed);
+
       // iterate through every package
       for (packagedb::packagecollection::iterator i = db.packages.begin ();
             i != db.packages.end (); ++i)
@@ -77,7 +116,15 @@ PickView::setViewMode (views mode)
 
               // "UserPick" : installed packages that were picked by user
               || (view_mode == PickView::views::PackageUserPicked &&
-                  (pkg.installed && pkg.user_picked)))
+                  (pkg.installed && pkg.user_picked))
+
+              // "Removable" : user picked packages that could be safely removed
+              || (view_mode == PickView::views::PackageRemovable &&
+                  (pkg.installed && pkg.user_picked && !needed.count (pkg.name)))
+
+              // "Unneeded" : auto installed packages that could be safely removed
+              || (view_mode == PickView::views::PackageUnneeded &&
+                  (pkg.installed && !pkg.user_picked && !needed.count (pkg.name))))
             {
               // Filter by package name
               if (packageFilterString.empty ()
@@ -111,6 +158,10 @@ PickView::mode_caption (views mode)
       return IDS_VIEW_NOTINSTALLED;
     case views::PackageUserPicked:
       return IDS_VIEW_PICKED;
+    case views::PackageRemovable:
+      return IDS_VIEW_REMOVABLE;
+    case views::PackageUnneeded:
+      return IDS_VIEW_UNNEEDED;
     case views::Category:
       return IDS_VIEW_CATEGORY;
     default:

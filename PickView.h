@@ -36,6 +36,8 @@ public:
     PackageKeeps,
     PackageSkips,
     PackageUserPicked,
+    PackageRemovable,
+    PackageUnneeded,
     Category,
   };
 
