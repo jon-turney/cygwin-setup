@@ -9,7 +9,7 @@ rm -rf $cpu
 mkdir $cpu
 cd $cpu
 
-NOCONFIGURE=1 ../bootstrap.sh
+NOCONFIGURE=1 ../bootstrap.sh --host=$cpu-w64-mingw32
 ../configure --host=$cpu-w64-mingw32 --target=$cpu-w64-mingw32
 
 make ${TARGET}
