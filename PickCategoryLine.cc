@@ -96,20 +96,19 @@ PickCategoryLine::get_tooltip(int col_num) const
   return "";
 }
 
-bool
-PickCategoryLine::map_key_to_action(WORD vkey, int *col_num, int *action_id) const
+int
+PickCategoryLine::map_key_to_action(WORD vkey, int modkeys, int & col_num,
+                                    int & action_id) const
 {
   switch (vkey)
     {
-    case VK_SPACE:
-      *col_num = pkgname_col;
-      *action_id = 0;
-      return true;
-    case VK_APPS:
-      *col_num = new_col;
-      *action_id = -1;
-      return true;
+    case VK_SPACE: // expand <> collapse category
+      col_num = pkgname_col;
+      return Action::Direct;
+    case VK_APPS: // install/reinstall/uninstall context menu for category
+      col_num = new_col;
+      return Action::PopUp;
     }
 
-  return false;
+  return Action::None;
 }

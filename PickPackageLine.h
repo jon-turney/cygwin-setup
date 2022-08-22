@@ -37,7 +37,7 @@ public:
   ActionList *get_actions(int col_num) const;
   int do_action(int col, int action_id);
   int do_default_action(int col);
-  bool map_key_to_action(WORD vkey, int *col_num, int *action_id) const;
+  int map_key_to_action(WORD vkey, int modkeys, int & col_num, int & action_id) const;
 private:
   packagemeta & pkg;
   PickView & theView;

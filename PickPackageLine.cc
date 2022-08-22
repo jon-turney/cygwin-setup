@@ -144,17 +144,30 @@ PickPackageLine::get_indent() const
   return indent;
 }
 
-bool
-PickPackageLine::map_key_to_action(WORD vkey, int *col_num, int *action_id) const
+int
+PickPackageLine::map_key_to_action(WORD vkey, int modkeys, int & col_num,
+                                   int & action_id) const
 {
   switch (vkey)
     {
-    case VK_SPACE:
+    case VK_SPACE: // install/reinstall/uninstall context menu for package
     case VK_APPS:
-      *col_num = new_col;
-      *action_id = -1;
-      return true;
+      col_num = new_col;
+      return Action::PopUp;
+    case 'I': // Ctrl+I: select install default version and move to next row
+    case 'R': // Ctrl+R: select reinstall and move to next row
+    case 'U': // Ctrl+U: select uninstall and move to next row
+      if (modkeys != ModifierKeys::Control)
+        break;
+      col_num = new_col;
+      switch (vkey)
+        {
+        case 'I': action_id = packagemeta::Install_action; break;
+        case 'R': action_id = packagemeta::Reinstall_action; break;
+        default:  action_id = packagemeta::Uninstall_action; break;
+        }
+      return Action::Direct | Action::NextRow;
     }
 
-  return false;
+  return Action::None;
 }

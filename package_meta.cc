@@ -651,6 +651,13 @@ packagemeta::set_action (_actions action, packageversion const &default_version,
 	      srcpick (false);
 	    }
 	}
+      else
+	{
+	  action = NoChange_action;
+	  desired = installed;
+	  pick (false);
+	  srcpick (false);
+	}
     }
   else if (action == Reinstall_action)
     {
@@ -670,6 +677,10 @@ packagemeta::set_action (_actions action, packageversion const &default_version,
   else if (action == Uninstall_action)
     {
       desired = packageversion ();
+      pick (false);
+      srcpick (false);
+      if (!installed)
+	action = NoChange_action;
     }
 
   _action = action;

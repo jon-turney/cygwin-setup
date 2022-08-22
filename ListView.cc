@@ -24,6 +24,18 @@
 // ListView Common Control
 // ---------------------------------------------------------------------------
 
+int ModifierKeys::get()
+{
+  int keys = 0;
+  if (GetKeyState(VK_SHIFT) & 0x8000)
+    keys |= Shift;
+  if (GetKeyState(VK_CONTROL) & 0x8000)
+    keys |= Control;
+  if (GetKeyState(VK_MENU) & 0x8000)
+    keys |= Alt;
+  return keys;
+}
+
 void
 ListView::init(HWND parent, int id, HeaderList headers)
 {
@@ -563,33 +575,47 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
     {
       NMLVKEYDOWN *pNmLvKeyDown = (NMLVKEYDOWN *)pNmHdr;
       int iRow = ListView_GetSelectionMark(hWndListView);
+      int modkeys = ModifierKeys::get();
 #if DEBUG
-      Log (LOG_PLAIN) << "LVN_KEYDOWN vkey " << pNmLvKeyDown->wVKey << " on row " << iRow << endLog;
+      Log (LOG_PLAIN) << "LVN_KEYDOWN vkey " << pNmLvKeyDown->wVKey << " on row " << iRow
+                      << " Shift:" << !!(modkeys & ModifierKeys::Shift)
+                      << " Ctrl:" << !!(modkeys & ModifierKeys::Control)
+                      << " Alt:" << !!(modkeys & ModifierKeys::Alt) << endLog;
 #endif
 
       if (contents && iRow >= 0)
         {
-          int col_num;
-          int action_id;
-          if ((*contents)[iRow]->map_key_to_action(pNmLvKeyDown->wVKey, &col_num, &action_id))
+          int col_num = 0;
+          int action_id = 0;
+          int todo = (*contents)[iRow]->map_key_to_action(pNmLvKeyDown->wVKey, modkeys,
+                                                          col_num, action_id);
+          int update = 0;
+          if (todo & ListViewLine::Action::Direct)
+            update = (*contents)[iRow]->do_action(col_num, action_id);
+          else if (todo & ListViewLine::Action::PopUp)
             {
-              int update;
-              if (action_id >= 0)
-                update = (*contents)[iRow]->do_action(col_num, action_id);
-              else
-                {
-                  POINT p;
-                  RECT r;
-                  ListView_GetSubItemRect(hWndListView, iRow, col_num, LVIR_BOUNDS, &r);
-                  p.x = r.left;
-                  p.y = r.top;
-                  ClientToScreen(hWndListView, &p);
+              POINT p;
+              RECT r;
+              ListView_GetSubItemRect(hWndListView, iRow, col_num, LVIR_BOUNDS, &r);
+              p.x = r.left;
+              p.y = r.top;
+              ClientToScreen(hWndListView, &p);
 
-                  update = popup_menu(iRow, col_num, p);
-                }
+              update = popup_menu(iRow, col_num, p);
+            }
 
-              if (update > 0)
-                ListView_RedrawItems(hWndListView, iRow, iRow + update -1);
+          if (update > 0)
+            ListView_RedrawItems(hWndListView, iRow, iRow + update -1);
+
+          if ((todo & ListViewLine::Action::NextRow)
+              && iRow + 1 < ListView_GetItemCount(hWndListView))
+            {
+              // move selection to next row
+              ListView_SetItemState(hWndListView, -1, 0, LVIS_SELECTED | LVIS_FOCUSED);
+              ListView_SetItemState(hWndListView, iRow + 1, LVIS_SELECTED | LVIS_FOCUSED,
+                                    LVIS_SELECTED | LVIS_FOCUSED);
+              ListView_SetSelectionMark(hWndListView, iRow + 1);
+              ListView_EnsureVisible(hWndListView, iRow + 1, false);
             }
         }
     }

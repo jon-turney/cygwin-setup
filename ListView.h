@@ -25,10 +25,17 @@
 // ListView Common Control
 // ---------------------------------------------------------------------------
 
+struct ModifierKeys
+{
+  enum { Shift = 0x01, Control = 0x02, Alt = 0x04 };
+  static int get(); // get bitmask of currently pressed keys
+};
+
 class ListViewLine
 {
  public:
   enum class State { collapsed, expanded, nothing=-1 };
+  enum Action { None = 0x00, Direct = 0x01, PopUp = 0x02, NextRow = 0x04 };
 
   virtual ~ListViewLine() {};
   virtual const std::wstring get_text(int col) const = 0;
@@ -38,7 +45,8 @@ class ListViewLine
   virtual ActionList *get_actions(int col) const = 0;
   virtual int do_action(int col, int id) = 0;
   virtual int do_default_action(int col) = 0;
-  virtual bool map_key_to_action(WORD vkey, int *col_num, int *action_id) const = 0;
+  virtual int map_key_to_action(WORD vkey, int modkeys, int & col_num,
+                                int & action_id) const = 0;
 };
 
 typedef std::vector<ListViewLine *> ListViewContents;

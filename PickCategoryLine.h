@@ -41,7 +41,7 @@ public:
   ActionList *get_actions(int col) const;
   int do_action(int col, int action_id);
   int do_default_action(int col);
-  bool map_key_to_action(WORD vkey, int *col_num, int *action_id) const;
+  int map_key_to_action(WORD vkey, int modkeys, int & col_num, int & action_id) const;
 
 private:
   CategoryTree * cat_tree;
