@@ -691,7 +691,7 @@ BEGIN
     IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS "Don't warn about deprecated Windows versions"
     IDS_HELPTEXT_NO_WRITE_REGISTRY "Don't write root installation directory to registry"
     IDS_HELPTEXT_OLD_KEYS "Enable old cygwin.com keys"
-    IDS_HELPTEXT_ONLY_SITE "Do not download mirror list.  Only use sites specified with -s."
+    IDS_HELPTEXT_ONLY_SITE "Do not download mirror list.  Only use sites specified with -s"
     IDS_HELPTEXT_PACKAGES "Specify packages to install"
     IDS_HELPTEXT_PACKAGE_MANAGER "Semi-attended chooser-only mode"
     IDS_HELPTEXT_PROXY "HTTP/FTP proxy (host:port)"

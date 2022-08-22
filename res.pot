@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-16 14:28+0100\n"
+"POT-Creation-Date: 2022-08-27 12:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -771,7 +771,14 @@ msgid ""
 "haven't been selected for installation.\n"
 "\n"
 "Picked: Show installed packages that were selected, not installed as a "
-"dependency."
+"dependency.\n"
+"\n"
+"Removable: Show installed packages that were selected and could be safely "
+"removed.  No other installed or selected packages depend on these packages.\n"
+"\n"
+"Unneeded: Show automatically installed packages that could now be safely "
+"removed.  Other installed or selected packages no longer depend on these "
+"packages."
 msgstr ""
 
 #: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
@@ -932,6 +939,14 @@ msgstr ""
 
 #: STRINGTABLE.IDS_VIEW_PICKED
 msgid "Picked"
+msgstr ""
+
+#: STRINGTABLE.IDS_VIEW_REMOVABLE
+msgid "Removable"
+msgstr ""
+
+#: STRINGTABLE.IDS_VIEW_UNNEEDED
+msgid "Unneeded"
 msgstr ""
 
 #: STRINGTABLE.IDS_VIEW_CATEGORY
@@ -1263,7 +1278,7 @@ msgid "Enable old cygwin.com keys"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_ONLY_SITE
-msgid "Do not download mirror list.  Only use sites specified with -s."
+msgid "Do not download mirror list.  Only use sites specified with -s"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGES
