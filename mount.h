@@ -15,11 +15,6 @@
 
 #ifndef SETUP_MOUNT_H
 #define SETUP_MOUNT_H
-
-/* Finds the existing root mount, or returns NULL.  istext is set to
-   nonzero if the existing mount is a text mount, else zero for
-   binary. */
-
 #include <string>
 #include "String++.h"
 
@@ -27,9 +22,7 @@
 
 void create_install_root ();
 void read_mounts (const std::string);
-
-/* Sets the cygdrive flags.  Used to make the automounted drives' binary/text
-mode consistent with the standard Cygwin mounts. */
+void set_default_root_scope();
 
 std::string cygpath (const std::string&);
 void set_root_dir (const std::string);

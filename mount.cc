@@ -140,10 +140,6 @@ create_install_root ()
 						      : "LOCAL_MACHINE\\")
 		      << buf << "\\rootdir = \"" << get_root_dir () << "\""
 		      << endLog;
-
-  // The mount table is already in the right shape at this point.
-  // Reading it again is not necessary.
-  //read_mounts (std::string ());
 }
 
 inline char *
@@ -316,8 +312,6 @@ read_mounts (const std::string val)
     }
   got_usr_bin = got_usr_lib = false;
 
-  root_scope = (nt_sec.isRunAsAdmin ())? IDC_ROOT_SYSTEM : IDC_ROOT_USER;
-
   if (val.size ())
     {
       /* Cygwin rootdir always < MAX_PATH. */
@@ -353,7 +347,6 @@ read_mounts (const std::string val)
 	    {
 	      m->native = std::string (aBuffer);
 	      m->posix = "/";
-	      root_scope = isuser ? IDC_ROOT_USER : IDC_ROOT_SYSTEM;
 	      root_here = m++;
 	      from_fstab (m, root_here->native);
 	      add_usr_mnts (m);
@@ -373,6 +366,29 @@ read_mounts (const std::string val)
       m->posix = "/";
       root_here = m;
       add_usr_mnts (++m);
+    }
+}
+
+// set default root_scope: USER if only HKEY_CURRENT_USER registry key exists,
+// otherwise SYSTEM.
+void set_default_root_scope()
+{
+  root_scope = IDC_ROOT_SYSTEM;
+
+  char buf[10000];
+  for (int isuser = 0; isuser <= 1; isuser++)
+    {
+      snprintf (buf, sizeof(buf), "Software\\%s\\%s",
+                CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
+                CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME);
+      HKEY key = isuser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
+      if (RegOpenKeyEx (key, buf, 0, KEY_ALL_ACCESS | SETUP_KEY_WOW64,
+                        &key) == ERROR_SUCCESS)
+        {
+          RegCloseKey (key);
+          root_scope = isuser ? IDC_ROOT_USER : IDC_ROOT_SYSTEM;
+          break;
+        }
     }
 }
 
