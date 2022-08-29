@@ -648,7 +648,7 @@ BEGIN
     IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS "Autoriser les vieilles versions de Windows"
     IDS_HELPTEXT_ARCH "Architecture à installer (x86_64 ou x86)"
     IDS_HELPTEXT_CATEGORIES "Spécifie les catégories à installer"
-    // IDS_HELPTEXT_COMPACTOS "XXX: missing translation"
+    IDS_HELPTEXT_COMPACTOS  "Compresser les fichiers installés avec Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
     IDS_HELPTEXT_DELETE_ORPHANS "Supprimer les paquets orphelins"
     IDS_HELPTEXT_DISABLE_ANTIVIRUS "Inhibe les anti-virus buggés à l'exécution"
     IDS_HELPTEXT_DOWNLOAD "Télécharger depuis internet"
@@ -669,7 +669,8 @@ BEGIN
     IDS_HELPTEXT_NO_VERIFY "Ne pas vérifier les signatures de setup.ini"
     IDS_HELPTEXT_NO_VERSION_CHECK "Ne pas vérifier si une version plus récente de l'assistant est disponible"
     IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS "Ne pas avertir pour les vieilles versions de Windows"
-    // IDS_HELPTEXT_NO_WRITE_REGISTRY "XXX: missing translation"
+    IDS_HELPTEXT_NO_WRITE_REGISTRY
+                            "Ne pas écrire le répertoire d'installation racine dans le registre"
     IDS_HELPTEXT_OLD_KEYS "Utiliser les anciennes clés de cygwin.com"
     IDS_HELPTEXT_ONLY_SITE "Ignorer tous les sites sauf ceux spécifiés par -s"
     IDS_HELPTEXT_PACKAGES "Spécifie les paquets à installer"

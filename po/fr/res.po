@@ -1333,6 +1333,8 @@ msgstr "Spécifie les catégories à installer"
 msgid ""
 "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
 msgstr ""
+"Compresser les fichiers installés avec Compact OS (xpress4k, xpress8k, "
+"xpress16k, lzx)"
 
 #: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
 msgid "Remove orphaned packages"
@@ -1425,7 +1427,7 @@ msgstr "Ne pas avertir pour les vieilles versions de Windows"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WRITE_REGISTRY
 msgid "Don't write root installation directory to registry"
-msgstr ""
+msgstr "Ne pas écrire le répertoire d'installation racine dans le registre"
 
 #: STRINGTABLE.IDS_HELPTEXT_OLD_KEYS
 msgid "Enable old cygwin.com keys"
