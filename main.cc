@@ -414,6 +414,13 @@ WinMain (HINSTANCE h,
       }
     else if (symlinkType == SymlinkTypeNative)
       {
+        VersionInfo v = GetVer();
+        if (v.major() < 6)
+          {
+            fprintf (stderr, "*** --symlink-type native requires Windows 6.0 or later\n");
+            exit(1);
+          }
+
         if (!(elevate || is_developer_mode() || nt_sec.hasSymlinkCreationRights()))
           {
             fprintf (stderr, "*** --symlink-type native requires SeCreateSymbolicLink privilege or 'Developer Mode'\n");

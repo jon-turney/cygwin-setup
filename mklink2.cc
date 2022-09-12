@@ -302,7 +302,19 @@ mknativesymlink (const char *from, const char *to)
       ((v.major() == 10) && (v.buildNumber() >= 15063)))
     flags |= SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE;
 
-  status = CreateSymbolicLinkW (wfrom, wto, flags);
+  typedef BOOLEAN (WINAPI *PFNCREATESYMBOLICLINKW)(LPCWSTR, LPCWSTR, DWORD);
+  static PFNCREATESYMBOLICLINKW pfnCreateSymbolicLinkW = 0;
+  static bool doOnce = FALSE;
+
+  if (!doOnce)
+    {
+      doOnce = TRUE;
+      pfnCreateSymbolicLinkW = (PFNCREATESYMBOLICLINKW)GetProcAddress(GetModuleHandle("kernel32"), "CreateSymbolicLinkW");
+    }
+
+  status = 0;
+  if (pfnCreateSymbolicLinkW)
+      status = pfnCreateSymbolicLinkW (wfrom, wto, flags);
 
   if (!status)
     Log (LOG_PLAIN) << "Linking " << from << " to " << to << " failed " << std::hex << GetLastError() << endLog;
