@@ -20,7 +20,6 @@
 
 #include "LogFile.h"
 #include "win32.h"
-#include <shlwapi.h>
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -28,11 +27,6 @@
 #include "state.h"
 #include "String++.h"
 #include "resource.h"
-
-// no prototype in shlwapi.h until MinGW64 headers 9.0.0
-#if __MINGW64_VERSION_MAJOR < 9
-extern "C" int WINAPI SHMessageBoxCheckW(HWND hwnd, LPCWSTR pszText, LPCWSTR pszCaption, UINT uType, int iDefault, LPCWSTR pszRegVal);
-#endif
 
 static int
 unattended_result(int mb_type)
@@ -172,14 +166,24 @@ mbox(HWND owner, unsigned int format_id, int mb_type, ...)
     hMsgBoxHook = SetWindowsHookEx(WH_CBT, CBTProc, NULL, GetCurrentThreadId());
   }
 
+  typedef int (WINAPI *PFNSHMESSAGEBOXCHECKW)(HWND, LPCWSTR, LPCWSTR, UINT, int, LPCWSTR);
+  static PFNSHMESSAGEBOXCHECKW pfnSHMessageBoxCheckW = 0;
+  static bool doOnce = FALSE;
+
+  if (!doOnce)
+    {
+      doOnce = TRUE;
+      pfnSHMessageBoxCheckW = (PFNSHMESSAGEBOXCHECKW)GetProcAddress(GetModuleHandle("shlwapi.dll"), "SHMessageBoxCheckW");
+    }
+
   std::wstring caption = LoadStringW(IDS_MBOX_CAPTION);
   int retval;
-  if (mb_type & MB_DSA_CHECKBOX)
+  if (pfnSHMessageBoxCheckW && (mb_type & MB_DSA_CHECKBOX))
     {
       mb_type &= ~MB_DSA_CHECKBOX;
       std::wstring regkey_msg = format(L"%s-%d", regkey, format_id);
-      retval = SHMessageBoxCheckW(owner, buf.c_str(), caption.c_str(), mb_type,
-                                  unattended_result(mb_type), regkey_msg.c_str());
+      retval = pfnSHMessageBoxCheckW(owner, buf.c_str(), caption.c_str(), mb_type,
+                                     unattended_result(mb_type), regkey_msg.c_str());
     }
   else
     retval = MessageBoxW(owner, buf.c_str(), caption.c_str(), mb_type);
