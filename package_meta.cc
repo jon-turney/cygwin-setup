@@ -539,6 +539,17 @@ packagemeta::select_action (int id, trusts const deftrust)
     {
       if (id == packagemeta::NoChange_action)
         set_action((packagemeta::_actions)id, installed);
+      else if (id == packagemeta::Install_action)
+        {
+          // Ignore install request if the default version is not accessible.
+          // This assumes that all available versions are already known.
+          // This is not always the case when set_action is called directly.
+          packageversion v = trustp (true, deftrust);
+          if (v.accessible ())
+            set_action(Install_action, v, true);
+          else
+            set_action(NoChange_action, installed);
+        }
       else
         set_action((packagemeta::_actions)id, trustp (true, deftrust), true);
     }
@@ -627,6 +638,7 @@ packagemeta::set_action (_actions action, packageversion const &default_version,
   else if (action == Install_action)
     {
       desired = default_version;
+      // If desired is empty, it will be set to the solver's preferred version later.
       if (desired)
 	{
 	  if (desired != installed)
