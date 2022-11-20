@@ -297,11 +297,6 @@ RootPage::OnNext ()
   Log (LOG_PLAIN) << "root: " << get_root_dir ()
     << (root_scope == IDC_ROOT_USER ? " user" : " system") << endLog;
 
-  if (root_scope == IDC_ROOT_SYSTEM)
-    nt_sec.setAdminGroup ();
-  else
-    nt_sec.resetPrimaryGroup ();
-
   return 0;
 }
 

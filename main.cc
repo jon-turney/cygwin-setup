@@ -359,7 +359,7 @@ WinMain (HINSTANCE h,
       }
 
     /* Set default DACL and Group. */
-    nt_sec.setDefaultSecurity ();
+    nt_sec.setDefaultSecurity ((root_scope == IDC_ROOT_SYSTEM));
 
     /*
        If --symlink-type option isn't given, look for winsymlinks in CYGWIN
