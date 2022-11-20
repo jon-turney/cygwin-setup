@@ -259,18 +259,6 @@ RootPage::OnInit ()
   if (!get_root_dir ().size())
     read_mounts (std::string ());
   orig_root_dir = get_root_dir();
-
-  if (!nt_sec.isRunAsAdmin())
-    {
-      // disable IDC_ROOT_SYSTEM if not running as admin
-      EnableWindow(GetDlgItem(IDC_ROOT_SYSTEM), FALSE);
-      root_scope = IDC_ROOT_USER;
-    }
-  else
-    {
-      set_default_root_scope();
-    }
-
   load_dialog (GetHWND ());
 }
 
