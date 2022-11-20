@@ -332,7 +332,7 @@ release: upx
 
 UPLOAD_HOST=cygwin-admin@cygwin.com
 UPLOAD_PATH=/www/sourceware/htdocs/cygwin/setup
-SIGN_KEYS="--enable-dsa2 --personal-digest-preferences=sha256 -u 676041BA -u 1A698DE9E2E56300"
+SIGN_KEYS="--enable-dsa2 --personal-digest-preferences=sha256 -u 1A698DE9E2E56300"
 
 upload: release
 	scp setup-${VER}.$(ARCH).exe setup-${VER}.$(ARCH).dbg ${UPLOAD_HOST}:${UPLOAD_PATH}
