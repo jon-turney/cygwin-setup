@@ -350,7 +350,11 @@ NTSecurity::setDefaultSecurity (bool isAdmin)
       NoteFailedAPI ("SetTokenInformation(owner)");
       return;
     }
-  /* Get original primary group */
+  /* Get original primary group.  The token's primary group will be reset
+     to the original group right before we call the postinstall scripts.
+     This is necessary, otherwise, if the installing user is a domain user,
+     the group information created by the postinstall calls to `mkpasswd -c,
+     mkgroup -c' will be plain wrong. */
   if (!GetTokenInformation (token.theHANDLE (), TokenPrimaryGroup,
 			    &primaryGroupSID, sizeof primaryGroupSID, &size))
     {
