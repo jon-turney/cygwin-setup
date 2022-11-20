@@ -191,7 +191,7 @@ mkwslsymlink (const char *from, const char *to)
       Log (LOG_PLAIN) << "FSCTL_SET_REPARSE_POINT status " << std::hex << status << endLog;
     }
 
-  delete rpl;
+  delete[] rpl;
   NtClose(fh);
   return NT_SUCCESS (status) ? 0 : 1;
 }
