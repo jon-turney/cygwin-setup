@@ -38,6 +38,8 @@
 #include "package_db.h"
 
 #include <algorithm>
+#include <functional>
+
 #include "Generic.h"
 #include "download.h"
 #include "Exception.h"
@@ -284,8 +286,9 @@ packagemeta::getReadableCategoryList () const
 {
   return for_each(categories.begin(), categories.end(),
     visit_if (
-      StringConcatenator(", "), bind1st(std::not_equal_to<std::string>(), "All"))
-              ).visitor.result;
+      StringConcatenator(", "),
+      std::bind(std::not_equal_to<std::string>(), "All", std::placeholders::_1))
+                  ).visitor.result;
 }
 
 static void
