@@ -83,7 +83,7 @@ packagemeta::packagemeta (packagemeta const &rhs) :
 
 }
 
-template<class T> struct removeCategory : public std::unary_function<T, void>
+template<class T> struct removeCategory
 {
   removeCategory(packagemeta *pkg) : _pkg (pkg) {}
   void operator() (T x)
@@ -269,7 +269,7 @@ packagemeta::add_category (const std::string& cat)
   categories.insert (cat);
 }
 
-struct StringConcatenator : public std::unary_function<const std::string, void>{
+struct StringConcatenator {
     StringConcatenator(std::string aString) : gap(aString){}
     void operator()(const std::string& aString)
     {
@@ -279,6 +279,8 @@ struct StringConcatenator : public std::unary_function<const std::string, void>{
     }
     std::string result;
     std::string gap;
+
+    typedef const std::string argument_type;
 };
 
 const std::string
