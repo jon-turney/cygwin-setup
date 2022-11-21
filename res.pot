@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-27 12:54+0100\n"
+"POT-Creation-Date: 2022-11-21 13:56+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Translate Toolkit 3.7.0\n"
+"X-Generator: Translate Toolkit 3.7.3\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -1026,16 +1026,14 @@ msgstr ""
 msgid "Cygwin is not supported on this Windows version"
 msgstr ""
 
+#: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
+msgid "Cygwin is not supported on 32-bit Windows"
+msgstr ""
+
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
 "Cygwin support for this Windows version is deprecated, and will be removed "
 "in the next major version"
-msgstr ""
-
-#: STRINGTABLE.IDS_DEPRECATED_WINDOWS_ARCH
-msgid ""
-"Cygwin support for 32-bit Windows is deprecated, and will be removed in the "
-"next major version"
 msgstr ""
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED

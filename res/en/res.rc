@@ -613,8 +613,8 @@ BEGIN
                     "Setup will not be able to create Cygwin Icons "
                     "in the Start Menu or on the Desktop."
     IDS_UNSUPPORTED_WINDOWS_VERSION "Cygwin is not supported on this Windows version"
+    IDS_UNSUPPORTED_WINDOWS_ARCH "Cygwin is not supported on 32-bit Windows"
     IDS_DEPRECATED_WINDOWS_VERSION "Cygwin support for this Windows version is deprecated, and will be removed in the next major version"
-    IDS_DEPRECATED_WINDOWS_ARCH "Cygwin support for 32-bit Windows is deprecated, and will be removed in the next major version"
     IDS_MOUNT_REGISTRY_KEY_FAILED "Couldn't create registry key to store installation path"
     IDS_NIO_ERROR "Internet Error: %s"
     IDS_PREREQ_UNSOLVED_PROBLEMS

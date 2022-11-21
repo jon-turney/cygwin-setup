@@ -334,16 +334,8 @@ WinMain (HINSTANCE h,
         goto finish_up;
       }
 
-    /* Check if Cygwin works on this Windows version */
-    if (!UnsupportedOption && (OSMajorVersion () < 6))
-      {
-	mbox (NULL, IDS_UNSUPPORTED_WINDOWS_VERSION,
-              MB_ICONEXCLAMATION | MB_OK);
-	Logger ().exit (1, false);
-      }
-
-    /* Warn if Windows version is deprecated for Cygwin */
-    if (!DeprecatedOption && !elevate)
+    /* Check if Cygwin works on this Windows architecture/version */
+    if (!UnsupportedOption)
       {
         if
 #ifdef _X86_
@@ -351,12 +343,31 @@ WinMain (HINSTANCE h,
 #else
           (!is_64bit)
 #endif
-          mbox (NULL, IDS_DEPRECATED_WINDOWS_ARCH,
-                MB_ICONEXCLAMATION | MB_OK | MB_DSA_CHECKBOX);
-        else if ((OSMajorVersion () == 6) && (OSMinorVersion() < 1))
+        {
+          mbox (NULL, IDS_UNSUPPORTED_WINDOWS_ARCH,
+                MB_ICONEXCLAMATION | MB_OK);
+          Logger ().exit (1, false);
+        }
+        else if ((OSMajorVersion () < 6) ||
+                 ((OSMajorVersion () == 6) && (OSMinorVersion() < 1)))
+          {
+            mbox (NULL, IDS_UNSUPPORTED_WINDOWS_VERSION,
+                  MB_ICONEXCLAMATION | MB_OK);
+            Logger ().exit (1, false);
+          }
+      }
+
+    /* Plans are to deprecate Windows 7 & 8 sometime during the Cygwin DLL 3.4
+       lifetime */
+#if 0
+    /* Warn if Windows version is deprecated for Cygwin */
+    if (!DeprecatedOption && !elevate)
+      {
+        else if ((OSMajorVersion () == 6) && (OSMinorVersion() < 3))
           mbox (NULL, IDS_DEPRECATED_WINDOWS_VERSION,
                 MB_ICONEXCLAMATION | MB_OK | MB_DSA_CHECKBOX);
       }
+#endif
 
     /* Set default DACL and Group. */
     nt_sec.setDefaultSecurity ((root_scope == IDC_ROOT_SYSTEM));

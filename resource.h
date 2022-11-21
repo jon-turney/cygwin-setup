@@ -104,9 +104,9 @@
 #define IDS_FILE_INUSE_KILL              1207
 #define IDS_FILE_INUSE_MSG               1208
 #define IDS_DEPRECATED_WINDOWS_VERSION   1209
-#define IDS_DEPRECATED_WINDOWS_ARCH      1210
 #define IDS_VIEW_REMOVABLE               1211
 #define IDS_VIEW_UNNEEDED                1212
+#define IDS_UNSUPPORTED_WINDOWS_ARCH     1213
 
 #define IDS_HELPTEXT_COMPACTOS           1500
 #define IDS_HELPTEXT_PUBKEY              1501

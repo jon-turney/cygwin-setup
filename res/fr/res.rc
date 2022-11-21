@@ -593,8 +593,8 @@ BEGIN
         "L'assistant ne sera pas capable de créer les icônes "
         "Cygwin dans le menu Démarrer ou sur le bureau."
     IDS_UNSUPPORTED_WINDOWS_VERSION "Cygwin n'est pas supporté pour cette version de Windows"
+    // IDS_UNSUPPORTED_WINDOWS_ARCH "XXX: Missing translation"
     IDS_DEPRECATED_WINDOWS_VERSION "Cygwin n'est plus supporté pour cette version de Windows, et sera enlevé dans la prochaine version majeure"
-    IDS_DEPRECATED_WINDOWS_ARCH "Cygwin n'est plus supporté pour Windows 32-bits, et sera enlevé dans la prochaine version majeure"
     IDS_MOUNT_REGISTRY_KEY_FAILED "Impossible de créer la clé de registre pour enregistrer le chemin d'installation"
     IDS_NIO_ERROR "Erreur Internet : %s"
     IDS_PREREQ_UNSOLVED_PROBLEMS
