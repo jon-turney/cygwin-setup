@@ -672,7 +672,7 @@ packagemeta::set_action (_actions action, packageversion const &default_version,
   else if (action == Reinstall_action)
     {
       desired = installed;
-      if (desired)
+      if (desired.accessible ())
 	{
 	  pick (true);
 	  srcpick (false);
