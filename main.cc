@@ -355,19 +355,18 @@ WinMain (HINSTANCE h,
                   MB_ICONEXCLAMATION | MB_OK);
             Logger ().exit (1, false);
           }
-      }
 
-    /* Plans are to deprecate Windows 7 & 8 sometime during the Cygwin DLL 3.4
-       lifetime */
-#if 0
-    /* Warn if Windows version is deprecated for Cygwin */
-    if (!DeprecatedOption && !elevate)
-      {
-        else if ((OSMajorVersion () == 6) && (OSMinorVersion() < 3))
-          mbox (NULL, IDS_DEPRECATED_WINDOWS_VERSION,
-                MB_ICONEXCLAMATION | MB_OK | MB_DSA_CHECKBOX);
+        /*
+          Warn if Windows version is deprecated for Cygwin: Current plans are to
+          deprecate Windows 7 & 8 sometime during the Cygwin DLL 3.4 lifetime
+        */
+        if (!DeprecatedOption && !elevate)
+          {
+            if ((OSMajorVersion () == 6) && (OSMinorVersion() < 3))
+              mbox (NULL, IDS_DEPRECATED_WINDOWS_VERSION,
+                    MB_ICONEXCLAMATION | MB_OK | MB_DSA_CHECKBOX);
+          }
       }
-#endif
 
     /* Set default DACL and Group. */
     nt_sec.setDefaultSecurity ((root_scope == IDC_ROOT_SYSTEM));
