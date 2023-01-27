@@ -126,6 +126,7 @@ init_run_script ()
 	  if (strcasecmp (p, "comspec") != 0
 	      && strcasecmp (p, "cygwin") != 0
 	      && strcasecmp (p, "path") != 0
+              && strcasecmp (p, "programdata") != 0
 	      && strncasecmp (p, "system", 7) != 0
 	      && strncasecmp (p, "user", 4) != 0
 	      && strcasecmp (p, "windir") != 0)
