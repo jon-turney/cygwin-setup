@@ -37,6 +37,7 @@
 #endif
 #endif
 #include "mklink2.h"
+#include "desktop.h"
 
 static std::string sh, dash;
 static const char *cmd;
@@ -140,6 +141,11 @@ init_run_script ()
   SetEnvironmentVariable ("CYGWINROOT", get_root_dir ().c_str());
   SetEnvironmentVariable ("CYGWINFORALL",
                           (root_scope == IDC_ROOT_SYSTEM) ? "-A" : NULL);
+
+  const char *sms = startmenusuffix();
+  if (strlen(sms) > 0)
+    SetEnvironmentVariable ("CYGWIN_START_MENU_SUFFIX", sms);
+
   sanitize_PATH ();
   SetEnvironmentVariable ("SHELL", "/bin/bash");
   SetEnvironmentVariable ("TEMP", backslash (cygpath ("/tmp")).c_str ());

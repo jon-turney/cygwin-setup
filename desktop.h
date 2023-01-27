@@ -42,4 +42,6 @@ public:
   virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 
+const char *startmenusuffix();
+
 #endif /* SETUP_DESKTOP_H */
