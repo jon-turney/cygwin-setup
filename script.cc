@@ -146,6 +146,9 @@ init_run_script ()
   if (strlen(sms) > 0)
     SetEnvironmentVariable ("CYGWIN_START_MENU_SUFFIX", sms);
 
+  if (NoStartMenuOption || NoShortcutsOption)
+    SetEnvironmentVariable ("CYGWIN_SETUP_OPTIONS", "no-startmenu");
+
   sanitize_PATH ();
   SetEnvironmentVariable ("SHELL", "/bin/bash");
   SetEnvironmentVariable ("TEMP", backslash (cygpath ("/tmp")).c_str ());

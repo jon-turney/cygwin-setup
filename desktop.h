@@ -20,6 +20,7 @@
 // of "create desktop icon" and "add to start menu".
 
 #include "proppage.h"
+#include "getopt++/BoolOption.h"
 
 // WM_APP through WM_APP+7: see threebar.h
 #define WM_APP_UNATTENDED_FINISH WM_APP+8
@@ -43,5 +44,8 @@ public:
 };
 
 const char *startmenusuffix();
+
+extern BoolOption NoShortcutsOption;
+extern BoolOption NoStartMenuOption;
 
 #endif /* SETUP_DESKTOP_H */

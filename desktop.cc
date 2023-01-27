@@ -40,8 +40,8 @@
 #include "getopt++/BoolOption.h"
 #include "LogFile.h"
 
-static BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", IDS_HELPTEXT_NO_SHORTCUTS);
-static BoolOption NoStartMenuOption (false, 'N', "no-startmenu", IDS_HELPTEXT_NO_STARTMENU);
+BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", IDS_HELPTEXT_NO_SHORTCUTS);
+BoolOption NoStartMenuOption (false, 'N', "no-startmenu", IDS_HELPTEXT_NO_STARTMENU);
 static BoolOption NoDesktopOption (false, 'd', "no-desktop", IDS_HELPTEXT_NO_DESKTOP);
 
 /* Lines starting with '@' are conditionals - include 'N' for NT,
