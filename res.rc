@@ -79,3 +79,4 @@ CYGWIN-TERMINAL.ICON    FILE    "cygwin-terminal.ico"
 // Translations
 
 #include "res/fr/res.rc"
+#include "res/zh_Hans/res.rc"
