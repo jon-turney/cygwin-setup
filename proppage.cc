@@ -67,12 +67,12 @@ PropertyPage::Create (DLGPROC dlgproc,
 			BOOL (*cproc) (HWND h, int id, HWND hwndctl,
 				       UINT code), int TemplateID)
 {
-  memset(&psp, 0, sizeof (PROPSHEETPAGE));
-  psp.dwSize = sizeof (PROPSHEETPAGE);
+  memset(&psp, 0, sizeof (PROPSHEETPAGEW));
+  psp.dwSize = sizeof (PROPSHEETPAGEW);
   psp.dwFlags = 0;
   psp.hInstance = GetInstance ();
   psp.pfnDlgProc = FirstDialogProcReflector;
-  psp.pszTemplate = MAKEINTRESOURCE(TemplateID);
+  psp.pszTemplate = MAKEINTRESOURCEW(TemplateID);
   psp.lParam = (LPARAM) this;
   psp.pfnCallback = NULL;
 
@@ -95,7 +95,7 @@ PropertyPage::FirstDialogProcReflector (HWND hwnd, UINT message,
       return FALSE;
     }
 
-  This = (PropertyPage *) (((PROPSHEETPAGE *) lParam)->lParam);
+  This = (PropertyPage *) (((LPPROPSHEETPAGEW) lParam)->lParam);
 
   SetWindowLongPtr (hwnd, DWLP_USER, (LONG_PTR) This);
   SetWindowLongPtr (hwnd, DWLP_DLGPROC, (LONG_PTR) DialogProcReflector);

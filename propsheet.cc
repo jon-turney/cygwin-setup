@@ -69,7 +69,7 @@ PropSheet::CreatePages ()
   for (i = 0; i < PropertyPages.size(); i++)
     {
       retarray[i] =
-	CreatePropertySheetPage (PropertyPages[i]->GetPROPSHEETPAGEPtr ());
+	CreatePropertySheetPageW (PropertyPages[i]->GetPROPSHEETPAGEPtr ());
 
       // Set position info
       if (i == 0)
@@ -281,11 +281,11 @@ PropSheetProc (HWND hwndDlg, UINT uMsg, LPARAM lParam)
 bool
 PropSheet::Create (const Window * Parent, DWORD Style)
 {
-  PROPSHEETHEADER p;
+  PROPSHEETHEADERW p;
 
   PageHandles = CreatePages ();
 
-  p.dwSize = sizeof (PROPSHEETHEADER);
+  p.dwSize = sizeof (PROPSHEETHEADERW);
   p.dwFlags = PSH_NOAPPLYNOW | PSH_WIZARD | PSH_USECALLBACK
     /*| PSH_MODELESS */ | PSH_USEICONID;
   if (Parent != NULL)
@@ -298,13 +298,13 @@ PropSheet::Create (const Window * Parent, DWORD Style)
     }
   p.hInstance = GetInstance ();
   p.nPages = PropertyPages.size();
-  p.pszIcon = MAKEINTRESOURCE(IDI_CYGWIN);
+  p.pszIcon = MAKEINTRESOURCEW(IDI_CYGWIN);
   p.nStartPage = 0;
   p.phpage = PageHandles;
   p.pfnCallback = PropSheetProc;
 
   // The winmain event loop actually resides in here.
-  PropertySheet (&p);
+  PropertySheetW (&p);
 
   SetHWND (NULL);
 

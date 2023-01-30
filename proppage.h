@@ -32,7 +32,7 @@ class PropSheet;
 class PropertyPage:public Window
 {
   static bool DoOnceForSheet;
-  PROPSHEETPAGE psp;
+  PROPSHEETPAGEW psp;
   DLGPROC proc;
     BOOL (*cmdproc) (HWND h, int id, HWND hwndctl, UINT code);
 
@@ -89,7 +89,7 @@ public:
     PropertyPage ();
     virtual ~ PropertyPage ();
 
-  PROPSHEETPAGE *GetPROPSHEETPAGEPtr ()
+  LPPROPSHEETPAGEW GetPROPSHEETPAGEPtr ()
   {
     return &psp;
   };
