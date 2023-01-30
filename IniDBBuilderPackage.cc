@@ -177,14 +177,21 @@ IniDBBuilderPackage::buildPackageInstall (const std::string& path,
   }
 }
 
+const std::string src_suffix = "-src";
+
 void
 IniDBBuilderPackage::buildPackageSource (const std::string& path,
                                          const std::string& size,
                                          char *hash,
                                          hashType type)
 {
-  /* When there is a source: line, we invent a package to contain the source,
-     and make it the source package for this package. */
+  /* When there is a source: line along with an install: line, we invent a
+     package to contain the source, and make it the source package for this
+     package.
+
+     When there's just a source: line, this is really a source package, which
+     will be referred to by a Source: line in other package(s).
+  */
 
   /* create a source package version */
   SolverPool::addPackageData cspv = cbpv;
@@ -218,11 +225,21 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
     break;
   }
 
+  /* We make the source package name by appending '-src', unless it's already
+     there.  This handles both cases above (assuming source package don't have
+     any install: lines, which should be true!) */
+  std::string source_name;
+  int pos = name.size() - src_suffix.size();
+  if ((pos > 0) && (name.compare(pos, src_suffix.size(), src_suffix) == 0))
+    source_name = name;
+  else
+    source_name = name + src_suffix;
+
   packagedb db;
-  packageversion spkg_id = db.addSource (name + "-src", cspv);
+  packageversion spkg_id = db.addSource (source_name, cspv);
 
   /* create relationship between binary and source packageversions */
-  cbpv.spkg = PackageSpecification(name + "-src");
+  cbpv.spkg = PackageSpecification(source_name);
   cbpv.spkg_id = spkg_id;
 }
 
