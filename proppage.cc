@@ -98,7 +98,7 @@ PropertyPage::FirstDialogProcReflector (HWND hwnd, UINT message,
   This = (PropertyPage *) (((LPPROPSHEETPAGEW) lParam)->lParam);
 
   SetWindowLongPtr (hwnd, DWLP_USER, (LONG_PTR) This);
-  SetWindowLongPtr (hwnd, DWLP_DLGPROC, (LONG_PTR) DialogProcReflector);
+  SetWindowLongPtrW (hwnd, DWLP_DLGPROC, (LONG_PTR) DialogProcReflector);
 
   This->SetHWND (hwnd);
   return This->DialogProc (message, wParam, lParam);

@@ -267,10 +267,15 @@ PropSheetProc (HWND hwndDlg, UINT uMsg, LPARAM lParam)
 	  Hook into the window proc.
 	  We need to catch some messages for resizing.
 	 */
-	PropSheetData::Instance().oldWndProc =
-	  (WNDPROC)GetWindowLongPtr (hwndDlg, GWLP_WNDPROC);
-	SetWindowLongPtr (hwndDlg, GWLP_WNDPROC,
-	  (LONG_PTR)&PropSheetWndProc);
+        PropSheetData::Instance().oldWndProc = (WNDPROC)GetWindowLongPtrW (hwndDlg, GWLP_WNDPROC);
+        SetWindowLongPtrW (hwndDlg, GWLP_WNDPROC, (LONG_PTR)&PropSheetWndProc);
+        /*
+          Store the PropSheet HWND in the Chooser, for use in resizing
+
+          (XXX: this is just silly: The PropSheet HWND is the parent of the
+          PropPage HWND, so chooser has access to that HWND as GetParent()
+          anyhow... )
+         */
 	ChooserPage::SetHwndDialog (hwndDlg);
       }
       return TRUE;
