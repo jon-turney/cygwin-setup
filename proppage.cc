@@ -262,7 +262,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
               SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, FALSE);
               return TRUE;
             }
-          case TTN_GETDISPINFO:
+          case TTN_GETDISPINFOW:
             {
               return TooltipNotificationHandler (lParam);
             }

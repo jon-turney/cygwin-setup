@@ -462,7 +462,7 @@ BOOL
 Window::TooltipNotificationHandler (LPARAM lParam)
 // this is the handler for TTN_GETDISPINFO notifications
 {
-  NMTTDISPINFO *dispinfo = (NMTTDISPINFO *)lParam;
+  NMTTDISPINFOW *dispinfo = (NMTTDISPINFOW *)lParam;
   int ctrlID;
   std::map<int, int>::iterator findID;
 
@@ -477,9 +477,9 @@ Window::TooltipNotificationHandler (LPARAM lParam)
     // the tooltip length still can't exceed 80 chars.  So, we fetch the
     // resource into our own buffer and use that
 
-    TCHAR buf[2048];
-    LoadString (GetInstance (), findID->second, (LPTSTR)buf,
-	(sizeof (buf) / sizeof (TCHAR)));
+    WCHAR buf[2048];
+    LoadStringW (GetInstance (), findID->second, (LPWSTR)buf,
+                 (sizeof (buf) / sizeof (WCHAR)));
 
     dispinfo->lpszText = buf;
 

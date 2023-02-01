@@ -621,7 +621,7 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
     }
     break;
 
-  case TTN_GETDISPINFO:
+  case TTN_GETDISPINFOW:
     {
       // convert mouse position to item/subitem
       LVHITTESTINFO lvHitTestInfo;
@@ -640,14 +640,16 @@ ListView::OnNotify (NMHDR *pNmHdr, LRESULT *pResult)
 #endif
 
       // get the tooltip text for that item/subitem
-      static StringCache<std::string> tooltip;
-      tooltip = "";
+      static StringCache<std::wstring> wtooltip;
+      std::string tooltip = "";
       if (contents)
         tooltip = (*contents)[iRow]->get_tooltip(iCol);
 
+      wtooltip = string_to_wstring(tooltip);
+
       // set the tooltip text
-      NMTTDISPINFO *pNmTTDispInfo = (NMTTDISPINFO *)pNmHdr;
-      pNmTTDispInfo->lpszText = tooltip;
+      NMTTDISPINFOW *pNmTTDispInfo = (NMTTDISPINFOW *)pNmHdr;
+      pNmTTDispInfo->lpszText = wtooltip;
       pNmTTDispInfo->hinst = NULL;
       pNmTTDispInfo->uFlags = 0;
 
