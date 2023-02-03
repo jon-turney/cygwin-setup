@@ -36,7 +36,7 @@ BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
     LTEXT           "选择是否在安装时禁用病毒扫描程序。",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
     LTEXT           "某些防病毒程序（尤其是 McAfee）会在安装 Cygwin 期间导致 Windows XP 计算机出现蓝屏。",IDC_STATIC,21,9,239,16,NOT WS_GROUP
-    LTEXT           "已检测到可能存在问题的一个。 Cygwin 安装程序可以在安装过程中禁用它，并在安装完成后重新启用它。",IDC_STATIC,21,32,239,24,NOT WS_GROUP
+    LTEXT           "已检测到一个可能存在的问题。 Cygwin 安装程序可以在安装过程中禁用它，并在安装完成后重新启用它。",IDC_STATIC,21,32,239,24,NOT WS_GROUP
 END
 
 IDD_LOCAL_DIR DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
@@ -68,7 +68,7 @@ BEGIN
     PUSHBUTTON      "浏览(&R)...",IDC_ROOT_BROWSE,285,47,44,14,WS_TABSTOP
     GROUPBOX        "为以下用户安装",IDC_INSTALLFOR_GRP,5,76,330,101
     CONTROL         "所有用户（推荐）(&A)",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP | WS_GROUP,13,89,130,8
-    CONTROL         "仅为我安装(&M)",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,13,130,130,8
+    CONTROL         "仅自己(&M)",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,13,130,130,8
     LTEXT           "Cygwin 将可供系统的所有用户使用。",IDC_ALLUSERS_TEXT,25,101,300,28
     LTEXT           "Cygwin仍将对所有用户可用，但桌面图标，Cygwin菜单条目和重要的安装程序信息仅对当前用户可用。 仅当您缺少管理员权限或有特定需求时，才选择此选项。",IDC_JUSTME_TEXT,25,140,300,32
 END
@@ -77,7 +77,7 @@ IDD_SITE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
     WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_CONTROLPARENT
-CAPTION "Cygwin 设置 - 选择下载站点"
+CAPTION "Cygwin 安装程序 - 选择下载站点"
 FONT 8, "MS Shell Dlg"
 BEGIN
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
@@ -119,9 +119,9 @@ BEGIN
     LTEXT           "正在安装...",IDC_INS_ACTION,45,55,205,8,SS_ENDELLIPSIS
     LTEXT           "（软件包）",IDC_INS_PKG,45,70,205,8,SS_ENDELLIPSIS
     LTEXT           "（文件）",IDC_INS_FILE,45,85,205,8,SS_ENDELLIPSIS
-    CONTROL         "第一阶段",IDC_INS_DISKFULL,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,130,155,10
-    CONTROL         "第一阶段",IDC_INS_IPROGRESS,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,115,155,10
-    CONTROL         "第一阶段",IDC_INS_PPROGRESS,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,100,155,10
+    CONTROL         "进度一",IDC_INS_DISKFULL,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,130,155,10
+    CONTROL         "进度一",IDC_INS_IPROGRESS,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,115,155,10
+    CONTROL         "进度一",IDC_INS_PPROGRESS,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,100,155,10
     LTEXT           "软件包：",IDC_INS_BL_PACKAGE,45,100,47,8,NOT WS_GROUP
     LTEXT           "总计：",IDC_INS_BL_TOTAL,45,115,48,8,NOT WS_GROUP
     LTEXT           "磁盘：",IDC_INS_BL_DISK,45,130,47,8,NOT WS_GROUP
@@ -167,8 +167,8 @@ STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE |
 CAPTION "Cygwin 安装程序"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "Cygwin 网络发行版安装程序",IDC_STATIC_WELCOME_TITLE,115,1,195,24
-    LTEXT           "此安装程序用于 Cygwin 环境的初始安装以及所有后续更新。以下页面将指导您完成安装。\n\n请注意，默认情况下，我们只安装一组基本的软件包。Cygwin 提供了大量涵盖各种用途的软件包。\n\n将来可以随时运行此程序，以根据需要添加、删除或升级软件包。",IDC_SPLASH_TEXT,115,25,195,90
+    LTEXT           "Cygwin 网络版安装程序",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "此安装程序用于 Cygwin 环境的初始安装以及所有后续更新。以下页面将指导您完成安装。\n\n请注意，默认情况下，我们只安装一组基本的软件包。Cygwin 提供了大量涵盖各种用途的软件包。\n\n您将来可以随时运行此程序，以根据需要添加、删除或升级软件包。\n\n",IDC_SPLASH_TEXT,115,25,195,90
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10
     LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
@@ -262,7 +262,7 @@ END
 
 IDD_DROPPED DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin 安装程序 - 使用齐用的镜像？"
+CAPTION "Cygwin 安装程序 - 使用非官方镜像？"
 FONT 8, "MS Shell Dlg"
 BEGIN
     LTEXT           "警告：",IDC_STATIC,7,8,40,8
@@ -292,12 +292,12 @@ END
 IDD_POSTINSTALL DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142
 STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE |
     WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin 安装程序 - 运行安装后脚本"
+CAPTION "Cygwin 安装程序 - 执行安装后操作"
 FONT 8, "MS Shell Dlg"
 BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
-    LTEXT           "安装后脚本错误",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "安装后操作错误",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
     LTEXT           "这些并不一定意味着受影响的软件包将无法正常运行，但请检查 /var/log/setup.log.full 并报告任何问题。",IDC_STATIC,21,9,239,16,NOT WS_GROUP
     EDITTEXT        IDC_POSTINSTALL_EDIT,7,41,303,112,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
 END
@@ -311,11 +311,11 @@ BEGIN
     LTEXT           "无法解压缩",IDC_FILE_INUSE_MSG,33,10,234,8,SS_PATHELLIPSIS
     LTEXT           "以下进程正在使用该文件：",IDC_STATIC,33,28,234,8
     EDITTEXT        IDC_FILE_INUSE_EDIT,33,40,234,32,WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL | NOT WS_TABSTOP
-    LTEXT           "选择“重试”以重试，选择“停止”以停止进程并重试，或选择“继续”以继续（文件将在重启后更新）。",IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
+    LTEXT           "选择“重试”以重试，选择“结束”以停止进程并重试，或选择“继续”以继续（文件将在重启后更新）。",IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
     LTEXT           "选择“重试”以重试，选择“终止”以终止进程并重试，或选择“继续”以继续（文件将在重新启动后更新）。",IDC_FILE_INUSE_HELP_1,33,80,234,24,NOT WS_GROUP
     LTEXT           "选择“重试”以重试，选择“终止”以强制终止所有进程并重试，或选择“继续”以继续（文件将在重启后更新）。",IDC_FILE_INUSE_HELP_2,33,80,234,24,NOT WS_GROUP
     PUSHBUTTON      "重试(&R)",IDIGNORE,45,112,55,15
-    DEFPUSHBUTTON   "停止进程(&S)",IDRETRY,111,112,55,15
+    DEFPUSHBUTTON   "结束进程(&S)",IDRETRY,111,112,55,15
     PUSHBUTTON      "继续(&C)",IDCONTINUE,177,112,55,15
 END
 
@@ -326,11 +326,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ROOT_SLASH          "警告：我们建议您不要将硬盘驱动器的根用作 cygwin 根目录，以防止与其他程序发生冲突。 继续吗？"
-    IDS_ROOT_SPACE          "不应选择在目录名称中包含空格的根路径。 还是继续？"
+    IDS_ROOT_SLASH          "警告：我们强烈建议您不要将硬盘驱动器的根目录用作 cygwin 根目录，以防止与其他程序发生冲突。是否继续？"
+    IDS_ROOT_SPACE          "不应选择在目录名称中包含空格的根路径。是否继续？"
     IDS_ERR_OPEN_WRITE      "无法打开 %s 进行写入： %s"
     IDS_SETUPINI_MISSING    "无法从 %s 获取 <%s>"
-    IDS_OLD_SETUPINI        "这个 setup.ini 比你上次安装 cygwin 时使用的旧。仍要继续？"
+    IDS_OLD_SETUPINI        "这个 setup.ini 比你上次安装 cygwin 时使用的旧。是否继续？"
     IDS_NOTHING_INSTALLED   "无需安装"
     IDS_INSTALL_COMPLETE    "安装完成"
     IDS_REBOOT_REQUIRED     "正在使用的文件已被替换。您需要尽快重新启动才能激活新版本。Cygwin 可能会错误地运行，直到您重新启动。"
@@ -356,7 +356,7 @@ BEGIN
     IDS_TRUSTCURR_TOOLTIP   "将所有软件包设置为可用的最佳版本（推荐）。"
     IDS_TRUSTSYNC_TOOLTIP   "将所有软件包设置为软件包存储库中可用的版本，必要时降级。"
     IDS_TRUSTEXP_TOOLTIP    "启用测试软件包。"
-    IDS_VIEWBUTTON_TOOLTIP  "选择软件包视图。 这决定了下面显示哪些包。\n\n类别：按软件包类别分组。 单击“+”展开。\n\n完整：显示所有软件包。\n\n挂起：仅显示即将安装、删除或升级的包。 这告诉您按“下一步”时将发生什么变化。\n\n最新：显示不需要执行任何操作的已安装软件包，因为它们已经处于所需版本。\n\n未安装：显示当前未安装且尚未选择安装的包。\n\n已选取：显示已选择的已安装包，但未作为依赖项安装。\n\n可移动：显示已选择且可以安全删除的已安装软件包。 没有其他已安装或选定的软件包依赖于这些软件包。\n\n不需要：显示现在可以安全删除的自动安装的软件包。 其他已安装或选定的软件包不再依赖于这些软件包。"
+    IDS_VIEWBUTTON_TOOLTIP  "选择软件包视图。 这决定了下面显示哪些包。\n\n类别：按软件包类别分组。 单击“+”展开。\n\n完整：显示所有软件包。\n\n待定：仅显示即将安装、删除或升级的包。 这告诉您按“下一步”时将发生什么变化。\n\n最新：显示不需要执行任何操作的已安装软件包，因为它们已经处于所需版本。\n\n未安装：显示当前未安装且尚未选择安装的包。\n\n已选择：显示已选择的已安装包，但未作为依赖项安装。\n\n可卸载的：显示已选择且可以安全删除的已安装软件包。 没有其他已安装或选定的软件包依赖于这些软件包。\n\n不需要的：显示现在可以安全删除的自动安装的软件包。 其他已安装或选定的软件包不再依赖于这些软件包。"
     IDS_HIDEOBS_TOOLTIP     "如果选中，安装程序将隐藏名称以“_”开头的类别中的软件包。 此类软件包通常是已删除或重命名的软件包的空占位符，或者是自动处理的基础结构软件包。"
     IDS_SIG_INVALID         "镜像错误：来自 %s 的 Setup.ini 签名 %s 验证失败。\n可能损坏镜像？ Setup.ini 被拒绝。"
     IDS_CRYPTO_ERROR        "内部错误： gcrypt 库错误 %d %s"
@@ -374,13 +374,13 @@ BEGIN
     IDS_PROGRESS_DOWNLOADING
                             "正在下载..."
     IDS_PROGRESS_PARSING    "正在解析..."
-    IDS_PROGRESS_PREREMOVE  "正在运行预卸载脚本..."
+    IDS_PROGRESS_PREREMOVE  "正在执行卸载前操作..."
     IDS_PROGRESS_UNINSTALL  "正在卸载..."
     IDS_PROGRESS_INSTALL    "正在安装..."
     IDS_PROGRESS_CALCULATING
                             "正在计算..."
     IDS_PROGRESS_POSTINSTALL
-                            "正在运行..."
+                            "正在执行..."
     IDS_PROGRESS_SOLVING    "正在解决依赖关系..."
     IDS_ACTION_DEFAULT      "默认"
     IDS_ACTION_INSTALL      "安装"
@@ -396,13 +396,13 @@ BEGIN
     IDS_VIEW_UPTODATE       "最新"
     IDS_VIEW_NOTINSTALLED   "未安装"
     IDS_VIEW_PICKED         "已选择"
-    IDS_VIEW_REMOVABLE      "可卸载"
+    IDS_VIEW_REMOVABLE      "可卸载的"
     IDS_VIEW_UNNEEDED       "不需要的"
     IDS_VIEW_CATEGORY       "类别"
     IDS_COLUMN_PACKAGE      "软件包"
     IDS_COLUMN_CURRENT      "当前"
     IDS_COLUMN_NEW          "新增"
-    IDS_COLUMN_SOURCE       "源？"
+    IDS_COLUMN_SOURCE       "源代码？"
     IDS_COLUMN_CATEGORIES   "类别"
     IDS_COLUMN_SIZE         "大小"
     IDS_COLUMN_DESCR        "描述"
@@ -448,7 +448,7 @@ BEGIN
     IDS_CONFIRM_DOWNLOAD    "下载"
     IDS_CONFIRM_NOTHING     "没有变化"
     IDS_CONFIRM_AUTO_ADD    "（自动添加）"
-    IDS_CONFIRM_SOURCE      "（来源）"
+    IDS_CONFIRM_SOURCE      "（源代码）"
     IDS_FILE_INUSE_KILL     "终止进程(&K)"
     IDS_FILE_INUSE_MSG      "无法解压缩"
 END
@@ -469,7 +469,7 @@ BEGIN
     IDS_HELPTEXT_CATEGORIES "指定要安装的类别"
     IDS_HELPTEXT_COMPACTOS  "使用 Compact OS（xpress4k、xpress8k、xpress16k、lzx）压缩已安装的文件"
     IDS_HELPTEXT_DELETE_ORPHANS
-                            "删除孤立包"
+                            "删除孤立的软件包"
     IDS_HELPTEXT_DISABLE_ANTIVIRUS
                             "在执行过程中禁用已知或可疑的有缺陷的防病毒软件包"
     IDS_HELPTEXT_DOWNLOAD   "从互联网下载软件包"
@@ -511,7 +511,7 @@ BEGIN
                             "半有人值守仅选择器模式"
     IDS_HELPTEXT_PROXY      "HTTP/FTP 代理（主机名:端口号）"
     IDS_HELPTEXT_PRUNE_INSTALL
-                            "仅将安装删剪为请求的软件包"
+                            "删减安装，只保留所需的软件包"
     IDS_HELPTEXT_PUBKEY     "额外公钥文件的 URL 或绝对路径（RFC4880 格式）"
     IDS_HELPTEXT_QUIET_MODE "无人值守安装模式"
     IDS_HELPTEXT_REMOVE_CATEGORIES

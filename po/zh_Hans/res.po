@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-27 12:54+0100\n"
-"PO-Revision-Date: 2022-12-10 14:47+0000\n"
+"PO-Revision-Date: 2023-03-24 22:37+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.17-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -75,7 +75,7 @@ msgid ""
 "One that may be a problem has been detected. Cygwin setup can disable this "
 "during the installation process, and re-enable it when the install is "
 "complete."
-msgstr "已检测到可能存在问题的一个。 Cygwin "
+msgstr "已检测到一个可能存在的问题。 Cygwin "
 "安装程序可以在安装过程中禁用它，并在安装完成后重新启用它。"
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
@@ -140,7 +140,7 @@ msgstr "所有用户（推荐）(&A)"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
 msgid "Just &Me"
-msgstr "仅为我安装(&M)"
+msgstr "仅自己(&M)"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
 msgid "Cygwin will be available to all users of the system."
@@ -158,7 +158,7 @@ msgstr ""
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
-msgstr "Cygwin 设置 - 选择下载站点"
+msgstr "Cygwin 安装程序 - 选择下载站点"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Available Download Sites:"
@@ -237,17 +237,17 @@ msgstr "（文件）"
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
-msgstr "第一阶段"
+msgstr "进度一"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS"
 msgid "Progress1"
-msgstr "第一阶段"
+msgstr "进度一"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS"
 msgid "Progress1"
-msgstr "第一阶段"
+msgstr "进度一"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE"
@@ -336,7 +336,7 @@ msgstr "Cygwin 安装程序"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
-msgstr "Cygwin 网络发行版安装程序"
+msgstr "Cygwin 网络版安装程序"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TEXT
 msgid ""
@@ -356,7 +356,8 @@ msgstr ""
 "请注意，默认情况下，我们只安装一组基本的软件包。Cygwin "
 "提供了大量涵盖各种用途的软件包。\n"
 "\n"
-"将来可以随时运行此程序，以根据需要添加、删除或升级软件包。"
+"您将来可以随时运行此程序，以根据需要添加、删除或升级软件包。\n"
+"\n"
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
@@ -502,7 +503,7 @@ msgstr "查看并确认更改"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
-msgstr "Cygwin 安装程序 - 使用齐用的镜像？"
+msgstr "Cygwin 安装程序 - 使用非官方镜像？"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
@@ -579,11 +580,11 @@ msgstr "取消"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
-msgstr "Cygwin 安装程序 - 运行安装后脚本"
+msgstr "Cygwin 安装程序 - 执行安装后操作"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Postinstall script errors"
-msgstr "安装后脚本错误"
+msgstr "安装后操作错误"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC
 msgid ""
@@ -609,7 +610,7 @@ msgstr "以下进程正在使用该文件："
 msgid ""
 "Select 'Retry' to retry, select 'Stop' to stop processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
-msgstr "选择“重试”以重试，选择“停止”以停止进程并重试，或选择“继续”以继续（文件将在重"
+msgstr "选择“重试”以重试，选择“结束”以停止进程并重试，或选择“继续”以继续（文件将在重"
 "启后更新）。"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_1
@@ -634,7 +635,7 @@ msgstr "重试(&R)"
 
 #: DIALOG.IDD_FILE_INUSE.DEFPUSHBUTTON.IDRETRY
 msgid "&Stop Processes"
-msgstr "停止进程(&S)"
+msgstr "结束进程(&S)"
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE"
@@ -646,14 +647,14 @@ msgid ""
 "Warning: we recommend you do not use the root of your hard drive as the "
 "cygwin root, to prevent possible conflicts with other programs.  Proceed "
 "anyway?"
-msgstr "警告：我们建议您不要将硬盘驱动器的根用作 cygwin "
-"根目录，以防止与其他程序发生冲突。 继续吗？"
+msgstr "警告：我们强烈建议您不要将硬盘驱动器的根目录用作 cygwin "
+"根目录，以防止与其他程序发生冲突。是否继续？"
 
 #: STRINGTABLE.IDS_ROOT_SPACE
 msgid ""
 "You should not choose a root path that include spaces in directory names.  "
 "Proceed anyway?"
-msgstr "不应选择在目录名称中包含空格的根路径。 还是继续？"
+msgstr "不应选择在目录名称中包含空格的根路径。是否继续？"
 
 #: STRINGTABLE.IDS_ERR_OPEN_WRITE
 msgid "Can't open %s for writing: %s"
@@ -667,7 +668,7 @@ msgstr "无法从 %s 获取 <%s>"
 msgid ""
 "This setup.ini is older than the one you used last time you installed "
 "cygwin.  Proceed anyway?"
-msgstr "这个 setup.ini 比你上次安装 cygwin 时使用的旧。仍要继续？"
+msgstr "这个 setup.ini 比你上次安装 cygwin 时使用的旧。是否继续？"
 
 #: STRINGTABLE.IDS_NOTHING_INSTALLED
 msgid "Nothing needed to be installed"
@@ -830,18 +831,18 @@ msgstr ""
 "\n"
 "完整：显示所有软件包。\n"
 "\n"
-"挂起：仅显示即将安装、删除或升级的包。 这告诉您按“下一步”时将发生什么变化。\n"
+"待定：仅显示即将安装、删除或升级的包。 这告诉您按“下一步”时将发生什么变化。\n"
 "\n"
 "最新：显示不需要执行任何操作的已安装软件包，因为它们已经处于所需版本。\n"
 "\n"
 "未安装：显示当前未安装且尚未选择安装的包。\n"
 "\n"
-"已选取：显示已选择的已安装包，但未作为依赖项安装。\n"
+"已选择：显示已选择的已安装包，但未作为依赖项安装。\n"
 "\n"
-"可移动：显示已选择且可以安全删除的已安装软件包。 "
+"可卸载的：显示已选择且可以安全删除的已安装软件包。 "
 "没有其他已安装或选定的软件包依赖于这些软件包。\n"
 "\n"
-"不需要：显示现在可以安全删除的自动安装的软件包。 "
+"不需要的：显示现在可以安全删除的自动安装的软件包。 "
 "其他已安装或选定的软件包不再依赖于这些软件包。"
 
 #: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
@@ -932,7 +933,7 @@ msgstr "正在解析..."
 
 #: STRINGTABLE.IDS_PROGRESS_PREREMOVE
 msgid "Running preremove script..."
-msgstr "正在运行预卸载脚本..."
+msgstr "正在执行卸载前操作..."
 
 #: STRINGTABLE.IDS_PROGRESS_UNINSTALL
 msgid "Uninstalling..."
@@ -949,7 +950,7 @@ msgstr "正在计算..."
 
 #: STRINGTABLE.IDS_PROGRESS_POSTINSTALL
 msgid "Running..."
-msgstr "正在运行..."
+msgstr "正在执行..."
 
 #: STRINGTABLE.IDS_PROGRESS_SOLVING
 msgid "Solving dependencies..."
@@ -1015,7 +1016,7 @@ msgstr "已选择"
 
 #: STRINGTABLE.IDS_VIEW_REMOVABLE
 msgid "Removable"
-msgstr "可卸载"
+msgstr "可卸载的"
 
 #: STRINGTABLE.IDS_VIEW_UNNEEDED
 msgid "Unneeded"
@@ -1039,7 +1040,7 @@ msgstr "新增"
 
 #: STRINGTABLE.IDS_COLUMN_SOURCE
 msgid "Src?"
-msgstr "源？"
+msgstr "源代码？"
 
 #: STRINGTABLE.IDS_COLUMN_CATEGORIES
 msgid "Categories"
@@ -1239,7 +1240,7 @@ msgstr "（自动添加）"
 
 #: STRINGTABLE.IDS_CONFIRM_SOURCE
 msgid "(source)"
-msgstr "（来源）"
+msgstr "（源代码）"
 
 #: STRINGTABLE.IDS_FILE_INUSE_KILL
 msgid "&Kill Processes"
@@ -1287,7 +1288,7 @@ msgstr "使用 Compact OS（xpress4k、xpress8k、xpress16k、lzx）压缩已安
 
 #: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
 msgid "Remove orphaned packages"
-msgstr "删除孤立包"
+msgstr "删除孤立的软件包"
 
 #: STRINGTABLE.IDS_HELPTEXT_DISABLE_ANTIVIRUS
 msgid ""
@@ -1395,7 +1396,7 @@ msgstr "HTTP/FTP 代理（主机名:端口号）"
 
 #: STRINGTABLE.IDS_HELPTEXT_PRUNE_INSTALL
 msgid "Prune the installation to only the requested packages"
-msgstr "仅将安装删剪为请求的软件包"
+msgstr "删减安装，只保留所需的软件包"
 
 #: STRINGTABLE.IDS_HELPTEXT_PUBKEY
 msgid "URL or absolute path of extra public key file (RFC4880 format)"
