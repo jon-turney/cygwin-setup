@@ -1,3 +1,4 @@
+.deps
 .dirstamp
 .libs
 aclocal.m4
@@ -17,3 +18,10 @@ inilex.cc
 iniparse.cc
 iniparse.hh
 setup_version.c
+
+tags
+
+*~
+*.swp
+*.Po
+*.Plo
