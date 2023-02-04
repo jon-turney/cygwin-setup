@@ -409,18 +409,18 @@ compress_gz::peek (void *buffer, size_t len)
     }
 }
 
-long
+off_t
 compress_gz::tell ()
 {
   throw new std::logic_error("compress_gz::tell is not implemented");
 }
 
-int
-compress_gz::seek (long where, io_stream_seek_t whence)
+off_t
+compress_gz::seek (off_t where, io_stream_seek_t whence)
 {
   if ((whence == IO_SEEK_SET) && (where == 0))
     {
-      int result = original->seek(where, whence);
+      off_t result = original->seek(where, whence);
       destroy();
       construct();
       return result;

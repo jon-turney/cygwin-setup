@@ -130,14 +130,14 @@ ThreeBarProgressPage::SetText4 (unsigned int id)
 }
 
 void
-ThreeBarProgressPage::SetBar1 (long progress, long max)
+ThreeBarProgressPage::SetBar1 (off_t progress, off_t max)
 {
   int percent = (int) (100.0 * ((double) progress) / (double) max);
   SendMessage (ins_pprogress, PBM_SETPOS, (WPARAM) percent, 0);
 }
 
 void
-ThreeBarProgressPage::SetBar2 (long long progress, long long max)
+ThreeBarProgressPage::SetBar2 (off_t progress, off_t max)
 {
   int percent = (int) (100.0 * ((double) progress) / (double) max);
   SendMessage (ins_iprogress, PBM_SETPOS, (WPARAM) percent, 0);
@@ -149,7 +149,7 @@ ThreeBarProgressPage::SetBar2 (long long progress, long long max)
 }
 
 void
-ThreeBarProgressPage::SetBar3 (long progress, long max)
+ThreeBarProgressPage::SetBar3 (off_t progress, off_t max)
 {
   int percent = (int) (100.0 * ((double) progress) / (double) max);
   SendMessage (ins_diskfull, PBM_SETPOS, (WPARAM) percent, 0);

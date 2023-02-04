@@ -68,8 +68,8 @@ public:
   char have_longname;
   bool have_longlink;
   /* where in the current file are we? */
-  size_t file_offset;
-  size_t file_length;
+  off_t file_offset;
+  off_t file_length;
   int header_read;
   tar_header_type tar_header;
   char filename[CYG_PATH_MAX + 512];
@@ -88,8 +88,8 @@ public:
   virtual ssize_t write (const void *buffer, size_t len);
   /* read data without removing it from the class's internal buffer */
   virtual ssize_t peek (void *buffer, size_t len);
-  virtual long tell ();
-  virtual int seek (long where, io_stream_seek_t whence);
+  virtual off_t tell ();
+  virtual off_t seek (off_t where, io_stream_seek_t whence);
   /* try guessing this one */
   virtual int error ();
   virtual time_t get_mtime ();
@@ -112,8 +112,8 @@ public:
   virtual ssize_t write (const void *buffer, size_t len);
   /* read data without removing it from the class's internal buffer */
   virtual ssize_t peek (void *buffer, size_t len);
-  virtual long tell ();
-  virtual int seek (long where, io_stream_seek_t whence);
+  virtual off_t tell ();
+  virtual off_t seek (off_t where, io_stream_seek_t whence);
   /* try guessing this one */
   virtual int error ();
   /* Find out the next stream name -

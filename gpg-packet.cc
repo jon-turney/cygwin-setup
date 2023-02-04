@@ -215,7 +215,7 @@ walk_packets_1 (struct packet_walker *wlk)
       char packet_type;
       long packet_len;
       enum pkt_cb_resp rv;
-      size_t newstartpos;
+      off_t newstartpos;
 
       wlk->pfile->seek (wlk->startpos, IO_SEEK_SET);
 

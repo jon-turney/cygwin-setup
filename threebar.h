@@ -80,9 +80,9 @@ public:
   void SetText3 (unsigned int id);
   void SetText4 (unsigned int id);
 
-  void SetBar1 (long progress, long max = 100);
-  void SetBar2 (long long progress, long long max = 100);
-  void SetBar3 (long progress, long max = 100);
+  void SetBar1 (off_t progress, off_t max = 100);
+  void SetBar2 (off_t progress, off_t max = 100);
+  void SetBar3 (off_t progress, off_t max = 100);
 
   void SetActivateTask (int t)
   {

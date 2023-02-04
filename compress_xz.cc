@@ -266,18 +266,18 @@ compress_xz::peek (void *buffer, size_t len)
   return 0;
 }
 
-long
+off_t
 compress_xz::tell ()
 {
   throw new std::logic_error("compress_xz::tell is not implemented");
 }
 
-int
-compress_xz::seek (long where, io_stream_seek_t whence)
+off_t
+compress_xz::seek (off_t where, io_stream_seek_t whence)
 {
   if ((whence == IO_SEEK_SET) && (where == 0))
     {
-      int result = original->seek(where, whence);
+      off_t result = original->seek(where, whence);
       destroy ();
       peeklen = 0;
       lasterr = 0;

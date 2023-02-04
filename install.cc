@@ -65,9 +65,9 @@
 
 extern ThreeBarProgressPage Progress;
 
-static long long int total_bytes = 0;
-static long long int total_bytes_sofar = 0;
-static int package_bytes = 0;
+static off_t total_bytes = 0;
+static off_t total_bytes_sofar = 0;
+static off_t package_bytes = 0;
 
 static BoolOption NoReplaceOnReboot (false, 'r', "no-replaceonreboot", IDS_HELPTEXT_NO_REPLACEONREBOOT);
 static BoolOption NoWriteRegistry (false, '\0', "no-write-registry", IDS_HELPTEXT_NO_WRITE_REGISTRY);
@@ -107,7 +107,7 @@ class Installer
     static std_dirs_t StandardDirs[];
     Installer();
     void initDialog();
-    void progress (int bytes);
+    void progress (off_t bytes);
     void preremovePerpetual (const std::string& stratum);
     void preremoveOne (packagemeta &);
     void uninstallOne (packagemeta &);
@@ -142,7 +142,7 @@ Installer::initDialog()
 }
 
 void
-Installer::progress (int bytes)
+Installer::progress (off_t bytes)
 {
   if (package_bytes > 0)
       Progress.SetBar1 (bytes, package_bytes);

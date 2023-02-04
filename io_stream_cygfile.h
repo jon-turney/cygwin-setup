@@ -39,8 +39,8 @@ public:
   virtual ssize_t write (const void *buffer, size_t len);
   /* read data without removing it from the class's internal buffer */
   virtual ssize_t peek (void *buffer, size_t len);
-  virtual long tell ();
-  virtual int seek (long where, io_stream_seek_t whence);
+  virtual off_t tell ();
+  virtual off_t seek (off_t where, io_stream_seek_t whence);
   /* can't guess, oh well */
   virtual int error ();
   virtual int set_mtime (time_t);

@@ -38,7 +38,7 @@ ssize_t archive_tar_file::read (void *buffer, size_t len)
 {
   /* how many bytes do we want to give the user */
   int
-    want = std::min (len, state.file_length - state.file_offset);
+    want = std::min ((off_t) len, state.file_length - state.file_offset);
   /* how many do we need to read after that to line up the file pointer */
   int
     roundup = (512 - (want % 512)) % 512;
@@ -95,7 +95,7 @@ ssize_t archive_tar_file::write (const void *buffer, size_t len)
 ssize_t archive_tar_file::peek (void *buffer, size_t len)
 {
   int
-    want = std::min (len, state.file_length - state.file_offset);
+    want = std::min ((off_t) len, state.file_length - state.file_offset);
   if (want)
     {
       ssize_t
@@ -115,14 +115,14 @@ ssize_t archive_tar_file::peek (void *buffer, size_t len)
   return 0;
 }
 
-long
+off_t
 archive_tar_file::tell ()
 {
   return state.file_offset;
 }
 
-int
-archive_tar_file::seek (long where, io_stream_seek_t whence)
+off_t
+archive_tar_file::seek (off_t where, io_stream_seek_t whence)
 {
   /* nothing needs seeking here yet. Implement when needed 
    */

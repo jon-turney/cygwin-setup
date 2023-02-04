@@ -137,8 +137,8 @@ public:
   /* read data without removing it from the class's internal buffer */
   virtual ssize_t peek (void *buffer, size_t len) = 0;
   /* ever read the f* functions from libc ? */
-  virtual long tell () = 0;
-  virtual int seek (long, io_stream_seek_t) = 0;
+  virtual off_t tell () = 0;
+  virtual off_t seek (off_t, io_stream_seek_t) = 0;
   /* try guessing this one */
   virtual int error () = 0;
   /* hmm, yet another for the guessing books */

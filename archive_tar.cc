@@ -82,14 +82,14 @@ archive_tar::error ()
   return state.lasterr;
 }
 
-long
+off_t
 archive_tar::tell ()
 {
   return state.file_offset;
 }
 
-int
-archive_tar::seek (long where, io_stream_seek_t whence)
+off_t
+archive_tar::seek (off_t where, io_stream_seek_t whence)
 {
   /* Because the parent stream is compressed, we can only easily support
      seek()-ing to rewind to the start */
@@ -166,7 +166,7 @@ archive_tar::next_file_name ()
       state.have_longlink = 0;
     }
 
-  sscanf (state.tar_header.size, "%zo", &state.file_length);
+  state.file_length = strtoll (state.tar_header.size, NULL, 8);
   state.file_offset = 0;
 
   if (_tar_verbose)
@@ -190,7 +190,7 @@ archive_tar::next_file_name ()
                           CYG_PATH_MAX);
 	  err++;
 	  state.parent->read (&state.tar_header, 512);
-	  sscanf (state.tar_header.size, "%zo", &state.file_length);
+	  state.file_length = strtoll (state.tar_header.size, NULL, 8);
 	  state.file_offset = 0;
 	  skip_file ();
 	  return next_file_name ();

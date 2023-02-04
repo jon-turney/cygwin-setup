@@ -37,7 +37,7 @@ public:
   virtual ssize_t write (const void *buffer, size_t len) = 0;
   /* read data without removing it from the class's internal buffer */
   virtual ssize_t peek (void *buffer, size_t len) = 0;
-  virtual long tell () = 0;
+  virtual off_t tell () = 0;
   /* try guessing this one */
   virtual int error () = 0;
   /* Find out the next stream name -

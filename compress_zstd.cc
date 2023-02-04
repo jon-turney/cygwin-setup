@@ -175,18 +175,18 @@ compress_zstd::peek (void *buffer, size_t len)
   return got;
 }
 
-long
+off_t
 compress_zstd::tell ()
 {
   throw new std::logic_error("compress_zstd::tell is not implemented");
 }
 
-int
-compress_zstd::seek (long where, io_stream_seek_t whence)
+off_t
+compress_zstd::seek (off_t where, io_stream_seek_t whence)
 {
   if ((whence == IO_SEEK_SET) && (where == 0))
     {
-      int result = original->seek(where, whence);
+      off_t result = original->seek(where, whence);
       destroy();
       create();
       return result;

@@ -199,31 +199,29 @@ io_stream_file::peek (void *buffer, size_t len)
 {
   if (fp)
     {
-      int pos = ftell (fp);
+      off_t pos = ftello (fp);
       ssize_t rv = fread (buffer, 1, len, fp);
-      fseek (fp, pos, SEEK_SET);
+      fseeko (fp, pos, SEEK_SET);
       return rv;
     }
   return 0;
 }
 
-long
+off_t
 io_stream_file::tell ()
 {
   if (fp)
-    {
-      return ftell (fp);
-    }
+    return ftello (fp);
+
   return 0;
 }
 
-int
-io_stream_file::seek (long where, io_stream_seek_t whence)
+off_t
+io_stream_file::seek (off_t where, io_stream_seek_t whence)
 {
   if (fp)
-    {
-      return fseek (fp, where, (int) whence);
-    }
+    return fseeko (fp, where, (int) whence);
+
   lasterr = EBADF;
   return -1;
 }

@@ -47,7 +47,7 @@ io_stream_memory::read (void *buffer, size_t len)
   unsigned char *to = (unsigned char *) buffer;
   unsigned char *end = to + len;
   ssize_t count = 0;
-  while (to < end && pos < length)
+  while (to < end && pos < (off_t) length)
     {
       *to++ = pos_block->data[pos_block_offset++];
       count++;

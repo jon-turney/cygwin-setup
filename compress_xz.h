@@ -26,8 +26,8 @@ public:
   virtual ssize_t read (void *buffer, size_t len);
   virtual ssize_t write (const void *buffer, size_t len); /* not implemented */
   virtual ssize_t peek (void *buffer, size_t len);
-  virtual long tell (); /* not implemented */
-  virtual int seek (long where, io_stream_seek_t whence);
+  virtual off_t tell (); /* not implemented */
+  virtual off_t seek (off_t where, io_stream_seek_t whence);
   virtual int error ();
   virtual const char *next_file_name () { return NULL; };
   virtual int set_mtime (time_t);

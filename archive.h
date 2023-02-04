@@ -70,7 +70,7 @@ public:
    * Could be made valid via the read-child-directly model 
    */
 
-  virtual int seek (long offset, io_stream_seek_t whence) = 0;
+  virtual off_t seek (off_t offset, io_stream_seek_t whence) = 0;
 
   /* Find out the next stream name -
    * ie for foo.tar.gz, at offset 0, next_file_name = foo.tar

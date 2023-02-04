@@ -187,7 +187,7 @@ ssize_t compress_bz::peek (void *buffer, size_t len)
   return 0;
 }
 
-long
+off_t
 compress_bz::tell ()
 {
   if (writing)
@@ -196,12 +196,12 @@ compress_bz::tell ()
   return position;
 }
 
-int
-compress_bz::seek (long where, io_stream_seek_t whence)
+off_t
+compress_bz::seek (off_t where, io_stream_seek_t whence)
 {
   if ((whence == IO_SEEK_SET) && (where == 0))
     {
-      int result = original->seek(where, whence);
+      off_t result = original->seek(where, whence);
       init_state();
       return result;
     }
