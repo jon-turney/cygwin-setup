@@ -155,6 +155,9 @@ compress_xz::read (void *buffer, size_t len)
         {
 	  /* no compressed data ready; read some more */
           state->in_size = (size_t) this->original->read(state->in_block, state->in_block_size);
+	  /* We don't care for error vs EOF */
+	  if (state->in_size < 0)
+	    state->in_size = 0;
           state->in_pos = 0;
         }
 

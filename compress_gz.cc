@@ -282,11 +282,12 @@ compress_gz::read (void *buffer, size_t len)
 
 	  errno = 0;
 	  stream.avail_in = original->read (inbuf, 16384);
-	  if (stream.avail_in == 0)
+	  if (stream.avail_in <= 0)
 	    {
 	      z_eof = 1;
 	      if (original->error ())
 		{
+		  stream.avail_in = 0;
 		  z_err = Z_ERRNO;
 		  break;
 		}
@@ -566,11 +567,12 @@ compress_gz::get_byte ()
     {
       errno = 0;
       stream.avail_in = original->read (inbuf, 16384);
-      if (stream.avail_in == 0)
+      if (stream.avail_in <= 0)
 	{
 	  z_eof = 1;
 	  if (original->error ())
 	    z_err = Z_ERRNO;
+	  stream.avail_in = 0;
 	  return EOF;
 	}
       stream.next_in = inbuf;

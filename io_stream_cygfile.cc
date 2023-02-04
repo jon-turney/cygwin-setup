@@ -321,17 +321,41 @@ io_stream_cygfile::mklink (const std::string& _from, const std::string& _to,
 ssize_t
 io_stream_cygfile::read (void *buffer, size_t len)
 {
-  if (fp)
-    return fread (buffer, 1, len, fp);
-  return 0;
+  ssize_t ret = 0;
+
+  if (len && fp && !feof (fp))
+    {
+      clearerr (fp);
+      size_t fret = fread (buffer, 1, len, fp);
+      if (fret < len && ferror (fp))
+	{
+	  lasterr = errno;
+	  ret = -1;
+	}
+      else
+	ret = (ssize_t) fret;
+    }
+  return ret;
 }
 
 ssize_t
 io_stream_cygfile::write (const void *buffer, size_t len)
 {
-  if (fp)
-    return fwrite (buffer, 1, len, fp);
-  return 0;
+  ssize_t ret = 0;
+
+  if (len && fp)
+    {
+      clearerr (fp);
+      size_t fret = fwrite (buffer, 1, len, fp);
+      if (fret < len && ferror (fp))
+	{
+	  lasterr = errno;
+	  ret = -1;
+	}
+      else
+	ret = (ssize_t) fret;
+    }
+  return ret;
 }
 
 ssize_t
