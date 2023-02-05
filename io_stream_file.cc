@@ -200,7 +200,7 @@ io_stream_file::peek (void *buffer, size_t len)
   if (fp)
     {
       off_t pos = ftello (fp);
-      ssize_t rv = fread (buffer, 1, len, fp);
+      ssize_t rv = read (buffer, len);
       fseeko (fp, pos, SEEK_SET);
       return rv;
     }
