@@ -758,7 +758,11 @@ SolverSolution::trans2db() const
         case SolverTransaction::transInstall:
           if (pv.Type() == package_binary)
             {
-              pkg->set_action(packagemeta::Install_action, pv);
+              if (pkg->get_action() == packagemeta::Uninstall_action)
+                pkg->set_action(packagemeta::Reinstall_action, pv);
+              else
+                pkg->set_action(packagemeta::Install_action, pv);
+
               pkg->default_version = pv;
             }
           else // source package

@@ -631,6 +631,7 @@ void
 packagedb::defaultTrust (SolverTasks &q, SolverSolution::updateMode mode, bool test)
 {
   solution.update(q, mode, test);
+  solution.augmentTasks(q);
 
   // reflect that task list into packagedb
   solution.trans2db();
