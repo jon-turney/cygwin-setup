@@ -1,0 +1,535 @@
+LANGUAGE LANG_TURKISH, SUBLANG_DEFAULT
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+// Throughout, we use the font "MS Shell Dlg". This seems to be necessary to
+// work around some not-fully-understood issues with PropertySheets. Hopefully,
+// using this font will cause things to 'just work'. Further information on
+// this topic is at:
+//   http://sources.redhat.com/ml/cygwin-apps/2003-05/msg00177.html
+
+IDD_SOURCE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Kurucu - Kurulum Türünü Seç"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "&İnternetten Kur\n(indirilen dosyalar ileride tekrar kullanmak için saklanacaktır)",IDC_SOURCE_NETINST,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP | BS_MULTILINE | BS_TOP,71,60,200,30
+    CONTROL         "&Kurmadan İndir",IDC_SOURCE_DOWNLOAD,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,90,200,10
+    CONTROL         "&Yerel Dizinden Kur",IDC_SOURCE_LOCALDIR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,120,200,10
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "İndirme Kaynağı Seç",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "İnternetten kurmayı veya indirmeyi, ya da yerel bir dizindeki dosyalardan kurmayı seçin.",IDC_SOURCE_SUBTEXT,21,9,239,16,NOT WS_GROUP
+END
+
+IDD_VIRUS DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Kurucu - Virüs Tarayıcıyı Devre Dışı Bırak?"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "Virüs tarayıcıyı &devre dışı bırak",IDC_DISABLE_AV,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,101,69,115,10
+    CONTROL         "&Virüs tarayıcıyı olduğu gibi bırak",IDC_LEAVE_AV,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,101,84,115,10
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Kurulum sırasında virüs tarayıcınızı devre dışı bırakıp bırakmayacağınızı seçin.",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Başta McAfee olmak üzere bazı Antivirüs programları Cygwin kurulumu sırasında Windows XP bilgisayarlarda mavi ekrana neden olmaktadır.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Sorun olabilecek bir tanesi tespit edildi. Cygwin kurucu bunu kurulum işlemi sırasında devre dışı bırakabilir ve kurulum tamamlandığında yeniden etkinleştirebilir.",IDC_STATIC,21,32,239,24,NOT WS_GROUP
+END
+
+IDD_LOCAL_DIR DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Kurucu - Yerel Paket Dizinini Seç"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Yerel Paket Dizinini Seç",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Kurucunun indirdiği kurulum dosyalarını saklamasını istediğiniz bir dizin seçin.  Dizin zaten mevcut değilse oluşturulacaktır.",IDC_LOCAL_DIR_DOWNLOAD_DESC,21,9,248,16,NOT WS_GROUP
+    LTEXT           "Kurucunun indirilen kurulum dosyalarını araması gereken bir dizin seçin.",IDC_LOCAL_DIR_INSTALL_DESC,21,9,248,16,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    GROUPBOX        "Yerel Paket Dizini",IDC_LOCALDIR_GRP,5,35,330,35
+    EDITTEXT        IDC_LOCAL_DIR,13,47,270,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Göz at...",IDC_LOCAL_DIR_BROWSE,285,47,44,14,WS_TABSTOP
+END
+
+IDD_ROOT DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Kurucu - Kurulum Dizinini Seç"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Kök Kurulum Dizinini Seç",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Cygwin'i kurmak istediğiniz dizini seçin.  Ayrıca birkaç kurulum parametresi seçin.",IDC_ROOTDIR_SUBTEXT,21,9,239,16,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    GROUPBOX        "Kök Dizin",IDC_ROOTDIR_GRP,5,35,330,35
+    EDITTEXT        IDC_ROOT_DIR,13,47,270,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Göz at...",IDC_ROOT_BROWSE,285,47,44,14,WS_TABSTOP
+    GROUPBOX        "Şunun İçin Kur",IDC_INSTALLFOR_GRP,5,76,330,101
+    CONTROL         "&Tüm Kullanıcılar (TAVSİYE EDİLEN)",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP | WS_GROUP,13,89,130,8
+    CONTROL         "Yalnızca &Ben",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,13,130,130,8
+    LTEXT           "Cygwin, sistemin tüm kullanıcıları tarafından kullanılabilir olacaktır.",IDC_ALLUSERS_TEXT,25,101,300,28
+    LTEXT           "Cygwin yine de tüm kullanıcılar tarafından kullanılabilir olacak, ancak masaüstü simgeleri, Cygwin menü girdileri ve önemli kurucu bilgileri yalnızca geçerli kullanıcı tarafından kullanılabilir olacaktır.  Bunu yalnızca yönetici ayrıcalıklarına sahip değilseniz veya özel ihtiyaçlarınız varsa seçin.",IDC_JUSTME_TEXT,25,140,300,32
+END
+
+IDD_SITE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTROLPARENT
+CAPTION "Cygwin Kurucu - İndirme Site(ler)ini Seç"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LISTBOX         IDC_URL_LIST,66,45,185,110,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_GROUP | WS_TABSTOP
+    LTEXT           "Kullanılabilir İndirme Siteleri:",IDC_STATIC,66,34,183,8,NOT WS_GROUP
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Bu listeden bir site seçin veya kendi sitelerinizi listeye ekleyin.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Bir İndirme Sitesi Seç",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    EDITTEXT        IDC_EDIT_USER_URL,65,160,185,14,ES_AUTOHSCROLL | WS_GROUP
+    LTEXT           "Kullanıcı URL'si:",IDC_SITE_USERURL,15,162,45,8,NOT WS_GROUP
+    PUSHBUTTON      "Ekle",IDC_BUTTON_ADD_URL,255,160,50,14
+END
+
+IDD_NET DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Kurucu - Bağlantı Türünü Seç"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "&Sistem Vekil Ayarlarını Kullan",IDC_NET_PRECONFIG,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,60,55,185,10
+    CONTROL         "&Direct Bağlantı",IDC_NET_DIRECT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,70,73,10
+    CONTROL         "HTTP/FTP &Vekili Kullan:",IDC_NET_PROXY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,88,10
+    EDITTEXT        IDC_PROXY_HOST,120,105,120,12,ES_AUTOHSCROLL | WS_DISABLED | WS_GROUP
+    EDITTEXT        IDC_PROXY_PORT,120,125,30,12,ES_AUTOHSCROLL | WS_DISABLED
+    GROUPBOX        "",IDC_STATIC,60,95,185,50
+    RTEXT           "Vekil &Sunucu",IDC_STATIC,65,105,50,12,SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT           "&Bağlantı Noktası",IDC_STATIC,85,125,30,12,SS_CENTERIMAGE | NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Kurucunun internete nasıl bağlanmasını istediğinizi bilmesi gerekiyor.  Aşağıda uygun ayarları seçin.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "İnternet Bağlantınızı Seçin",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+END
+
+IDD_INSTATUS DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Cygwin Kurucu"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Kuruluyor...",IDC_INS_ACTION,45,55,205,8,SS_ENDELLIPSIS
+    LTEXT           "(PAKET)",IDC_INS_PKG,45,70,205,8,SS_ENDELLIPSIS
+    LTEXT           "(DOSYA)",IDC_INS_FILE,45,85,205,8,SS_ENDELLIPSIS
+    CONTROL         "İlerleme1",IDC_INS_DISKFULL,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,130,155,10
+    CONTROL         "İlerleme1",IDC_INS_IPROGRESS,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,115,155,10
+    CONTROL         "İlerleme1",IDC_INS_PPROGRESS,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,100,155,10
+    LTEXT           "Paket:",IDC_INS_BL_PACKAGE,45,100,47,8,NOT WS_GROUP
+    LTEXT           "Toplam:",IDC_INS_BL_TOTAL,45,115,48,8,NOT WS_GROUP
+    LTEXT           "Disk:",IDC_INS_BL_DISK,45,130,47,8,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Bu sayfa indirme veya kurulumun ilerleme durumunu gösterir.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "İlerleme",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+END
+
+IDD_PROXY_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Vekil Kimlik Doğrulaması Gerekli"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "Vekil &Kullanıcı Kimliği",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Parola",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "Vekil Yetkilendirmesi Gerekli",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&Tamam",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "İptal",IDCANCEL,165,75,45,15
+END
+
+IDD_NET_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Sunucu Kimlik Doğrulaması Gerekli"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "&Kullanıcı Kimliği",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Parola",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "Sunucu Yetkilendirmesi Gerekli",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&Tamam",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "İptal",IDCANCEL,165,75,45,15
+END
+
+IDD_SPLASH DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Kurucu"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Cygwin Kurucu Programı",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "Bu kurucu program Cygwin ortamının ilk kurulumu ve sonraki tüm güncellemeler için kullanılır. Takip eden sayfalar kurulum boyunca size rehberlik edecektir.\n\nÖntanımlı olarak yalnızca temel bir paket kümesi kurduğumuzu lütfen unutmayın.  Cygwin, çok çeşitli amaçları kapsayan çok sayıda paket sağlar.\n\nGerektiğinde paket eklemek, kaldırmak veya yükseltmek için bu programı istediğiniz zaman çalıştırabilirsiniz.",IDC_SPLASH_TEXT,115,25,195,90
+    ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
+    LTEXT           "",IDC_VERSION,115,127,195,10
+    LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
+    LTEXT           "",IDC_SPLASH_URL,115,152,90,8
+END
+
+IDD_DESKTOP DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Kurucu - Kurulum Durumu ve Simge Oluşturulması"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "&Masaüstü Simgesi Oluştur",IDC_ROOT_DESKTOP,"Button",BS_AUTOCHECKBOX,108,78,100,8
+    CONTROL         "&Başlat Menüsüne Simge Ekle",IDC_ROOT_MENU,"Button",BS_AUTOCHECKBOX,108,93,100,8
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Cygwin ortamına kolay erişim için birkaç simge oluşturulmasını isteyip istemediğinizi belirtin.",IDC_DESKTOP_HEADER_INSTALL,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Simgeler Oluştur",IDC_DESKTOP_HEADER_TITLE_INSTALL,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Yalnızca indirme modunda kurulum durumunu gösterir.",IDC_DESKTOP_HEADER_DOWNLOAD,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Kurulum tamamlandı",IDC_DESKTOP_HEADER_TITLE_DOWNLOAD,7,0,258,8,NOT WS_GROUP
+    CONTROL         "",IDC_DESKTOP_SEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,135,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Kurulum Durumu",IDC_STATUS_HEADER,7,140,258,8,NOT WS_GROUP
+    LTEXT           "Cygwin kurulumu başarıyla tamamlandı.",IDC_STATUS,21,149,279,36,NOT WS_GROUP
+END
+
+IDD_FTP_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "FTP Kimlik Doğrulaması Gerekli"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "&Kullanıcı Kimliği",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Parola",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "FTP Yetkilendirmesi Gerekli",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&Tamam",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "İptal",IDCANCEL,165,75,45,15
+END
+
+IDD_CHOOSE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Cygwin Kurucu - Paket Seç"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "&Görüntüle",IDC_CHOOSE_VIEWCAPTION,SETUP_VIEW_X,33,SETUP_VIEW_W,10
+    COMBOBOX        IDC_CHOOSE_VIEW,SETUP_VIEWLIST_X,30,SETUP_VIEWLIST_W,84,CBS_DROPDOWNLIST | WS_TABSTOP
+    RTEXT           "&Ara",IDC_STATIC,SETUP_SEARCH_X,33,SETUP_SEARCH_W,10,SS_CENTERIMAGE,WS_EX_RIGHT
+    CONTROL         "Ara ",IDC_CHOOSE_DO_SEARCH,"Button",BS_PUSHBUTTON | NOT WS_VISIBLE,SETUP_SEARCH_X,33,SETUP_SEARCH_W,14
+    EDITTEXT        IDC_CHOOSE_SEARCH_EDIT,SETUP_SEARCHTEXT_X,30,SETUP_SEARCHTEXT_W,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Temiz&le",IDC_CHOOSE_CLEAR_SEARCH,SETUP_CLEAR_X,30,SETUP_CLEAR_W,14
+    CONTROL         "&Sakla",IDC_CHOOSE_KEEP,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,SETUP_KEEP_X,30,SETUP_KPCE_W,14
+    CONTROL         "En &iyi",IDC_CHOOSE_BEST,"Button",BS_AUTORADIOBUTTON,SETUP_BEST_X,30,SETUP_KPCE_W,14
+    CONTROL         "&Eşzamanla",IDC_CHOOSE_SYNC,"Button",BS_AUTORADIOBUTTON,SETUP_SYNC_X,30,SETUP_KPCE_W,14
+    CONTROL         "&Test et",IDC_CHOOSE_EXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,SETUP_EXP_X,30,SETUP_KPCE_W,14
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    CONTROL         "",IDC_CHOOSE_LIST,WC_LISTVIEW,LVS_NOSORTHEADER | LVS_REPORT | LVS_SINGLESEL | WS_TABSTOP,SETUP_CHOOSE_X,47,SETUP_CHOOSE_W,120,WS_EX_CLIENTEDGE
+    CONTROL         "Eski paketleri &gizle",IDC_CHOOSE_HIDE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,167,160,14
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "İndirilecek paketleri seçin.",IDC_CHOOSE_INST_TEXT_DOWNLOAD,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Kurulacak paketleri seçin.",IDC_CHOOSE_INST_TEXT_INSTALL,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Paket Seç",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+END
+
+IDD_PREREQ DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Cygwin Kurucu - Bağımlılıkları Çözümle"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Bağımlılıkları Çözümle",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Bağımlılıklar karşılanmaya çalışılırken şu sorunlar oluştu.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    CONTROL         "Öntanımlı sorun çözümlerini &kabul et",IDC_PREREQ_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,167,225,14
+    EDITTEXT        IDC_PREREQ_EDIT,7,41,303,124,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+END
+
+IDD_CONFIRM DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_CHILD | WS_VISIBLE | WS_CAPTION |
+    WS_SYSMENU
+CAPTION "Cygwin Kurucu - Değişiklikleri gözden geçirin ve onaylayın"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Değişiklikleri gözden geçirin ve onaylayın",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    EDITTEXT        IDC_CONFIRM_EDIT,7,41,325,131,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+END
+
+IDD_DROPPED DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Kurucu - Kaldırılan yansılar kullanılsın mı?"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Uyarı:",IDC_STATIC,7,8,40,8
+    LTEXT           "Seçtiğiniz bir veya daha fazla yansı artık resmi Cygwin yansıları listesinde değil. Bunlar güncel olmayabilir veya bazı paketleri eksik olabilir.\nBu şu yansı(lar)ı etkilemektedir:",IDC_STATIC,47,8,263,32
+    EDITTEXT        IDC_DROP_MIRRORS,7,40,303,40,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+    LTEXT           "Kurulum sorunları yaşarsanız, yalnızca resmi yansıları denemeyi düşünün.\n\nBu yansı(lar)ı kullanarak devam etmek istiyor musunuz?",IDC_STATIC,7,88,303,24
+    CONTROL         "Beni bu yansı(lar) hakkında bir &daha uyarma",IDC_DROP_NOWARN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,120,213,15
+    PUSHBUTTON      "&Evet",IDYES,220,120,45,15
+    DEFPUSHBUTTON   "&Hayır",IDNO,265,120,45,15
+END
+
+IDD_DOWNLOAD_ERROR DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "İndirme Tamamlanmadı"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_WARNING,IDC_HEADICON,10,10
+    LTEXT           "Şu paket(ler)de indirme hataları oluştu:",IDC_STATIC,7,8,320,16
+    EDITTEXT        IDC_DOWNLOAD_EDIT,7,24,320,88,WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL
+    LTEXT           "İndirmeyi yeniden denemek için 'Yeniden dene', paket seçim sayfasına dönmek için 'Geri', yine de devam etmek için 'Devam et' (TAVSİYE EDİLMEZ), çıkmak için 'İptal' seçeneğini seçin.",IDC_STATIC,7,120,320,24
+    DEFPUSHBUTTON   "&Yeniden dene",IDRETRY,45,150,50,15
+    PUSHBUTTON      "&Geri",IDC_BACK,110,150,50,15
+    PUSHBUTTON      "&Devam et",IDIGNORE,175,150,50,15
+    PUSHBUTTON      "İptal",IDABORT,240,150,50,15
+END
+
+IDD_POSTINSTALL DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE |
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Cygwin Kurucu - Kurulum sonrası betiklerini çalıştır"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Kurulum sonrası betik hataları",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Bunlar, etkilenen paketlerin düzgün çalışmayacağı anlamına gelmez, ancak lütfen /var/log/setup.log.full dosyasını gözden geçirin ve varsa sorunları bildirin.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    EDITTEXT        IDC_POSTINSTALL_EDIT,7,41,303,112,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+END
+
+IDD_FILE_INUSE DIALOG 0, 0, SETUP_MEDIUM_DIALOG_DIMS
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "Kullanımda olan dosya tespit edildi"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_WARNING,IDC_HEADICON,10,10
+    LTEXT           "Çıkarılamıyor",IDC_FILE_INUSE_MSG,33,10,234,8,SS_PATHELLIPSIS
+    LTEXT           "Dosya şu işlemler tarafından kullanılıyor:",IDC_STATIC,33,28,234,8
+    EDITTEXT        IDC_FILE_INUSE_EDIT,33,40,234,32,WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL | NOT WS_TABSTOP
+    LTEXT           "Yeniden denemek için 'Yeniden dene', işlemleri durdurmak ve yeniden denemek için 'Durdur', yine de devam etmek için 'Devam et' seçeneğini seçin (dosya yeniden başlatıldıktan sonra güncellenecektir).",IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Yeniden denemek için 'Yeniden dene', işlemleri sonlandırmak ve yeniden denemek için 'Sonlandır', yine de devam etmek için 'Devam et' seçeneğini seçin (dosya yeniden başlatıldıktan sonra güncellenecektir).",IDC_FILE_INUSE_HELP_1,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Yeniden denemek için 'Yeniden dene', tüm işlemleri zorla sonlandırmak ve yeniden denemek için 'Sonlandır', yine de devam etmek için 'Devam et' seçeneğini seçin (dosya yeniden başlatıldıktan sonra güncellenecektir).",IDC_FILE_INUSE_HELP_2,33,80,234,24,NOT WS_GROUP
+    PUSHBUTTON      "&Yeniden dene",IDIGNORE,45,112,55,15
+    DEFPUSHBUTTON   "&İşlemleri durdur",IDRETRY,111,112,55,15
+    PUSHBUTTON      "&Devam et",IDCONTINUE,177,112,55,15
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_ROOT_SLASH          "Uyarı: Diğer programlarla olası çakışmaları önlemek için sabit diskinizin kök dizinini cygwin kök dizini olarak kullanmamanızı tavsiye ederiz.  Yine de devam edilsin mi?"
+    IDS_ROOT_SPACE          "Dizin adlarında boşluk içeren bir kök yolu seçmemelisiniz.  Yine de devam edilsin mi?"
+    IDS_ERR_OPEN_WRITE      "%s yazmak için açılamıyor: %s"
+    IDS_SETUPINI_MISSING    "%s, <%s>den alınamıyor"
+    IDS_OLD_SETUPINI        "Bu setup.ini, cygwin'i son kurduğunuzda kullandığınızdan daha eski.  Yine de devam edilsin mi?"
+    IDS_NOTHING_INSTALLED   "Kurulması gereken bir şey yok"
+    IDS_INSTALL_COMPLETE    "Kurulum Tamamlandı"
+    IDS_REBOOT_REQUIRED     "Kullanımda olan dosyalar değiştirildi. Yeni sürümleri etkinleştirmek için en kısa zamanda sisteminizi yeniden başlatmanız gerekir. Cygwin siz yeniden başlatana kadar hatalı çalışabilir."
+    IDS_ERR_OPEN_READ       "%s okumak için açılamıyor: %s"
+    IDS_ROOT_ABSOLUTE       "Kurulum dizini, hem disk harfi hem de baştaki eğik çizgi ile birlikte mutlak olmalıdır, örneğin C:\\Cygwin"
+    IDS_DOWNLOAD_COMPLETE   "İndirme Tamamlandı"
+    IDS_NOLOGFILE           "%s günlük dosyası yazmak için açılamıyor"
+    IDS_UNINSTALL_COMPLETE  "Kaldırma işlemleri tamamlandı."
+    IDS_ERR_CHDIR           "Dizin %s olarak değiştirilemedi: %s [%.8x]"
+    IDS_OLD_SETUP_VERSION   "Bu kurucu %s sürümüdür, ancak setup.ini %s sürümünün var olduğunu belirtiyor.\nEn son özellikleri ve hata düzeltmelerini almak için yükseltmek isteyebilirsiniz."
+    IDS_DOWNLOAD_INCOMPLETE "İndirme tamamlanmadı.  Tekrar denensin mi?"
+    IDS_DOWNLOAD_INCOMPLETE_EXIT
+                            "İndirme tamamlanmadı.  Ayrıntılar için bakın: %s"
+    IDS_INSTALL_ERROR       "Kurulum hatası (%s). Diğer paketlerle devam edilsin mi?"
+    IDS_INSTALL_INCOMPLETE  "Kurulum tamamlanmadı.  Ayrıntılar için bakın: %s"
+    IDS_CORRUPT_PACKAGE     "%s paketinin bozuk bir yerel kopyası var, lütfen kaldırın ve yeniden deneyin."
+    IDS_QUERY_CORRUPT       "%s dosyası bozuk.  Silinsin ve tekrar indirilsin mi?"
+    IDS_SKIP_PACKAGE        "%s\nBu paketi atlamak ister misiniz?"
+    IDS_UNCAUGHT_EXCEPTION  "Önemli Hata: Yakalanmayan İstisna\nİş Parçacığı: %s\nTür: %s\nMesaj: %s"
+    IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
+                            "Önemli Hata: Yakalanmayan İstisna\nİş Parçacığı: %s\nTür: %s\nMesaj: %s\nAppErrNo: %d"
+    IDS_TRUSTKEEP_TOOLTIP   "Tüm paketleri şu anda kurulu olan sürümlerine ayarlar.  Bu, kurucuya herhangi bir pakette değişiklik yapmamasını söylemekle aynıdır."
+    IDS_TRUSTCURR_TOOLTIP   "Tüm paketleri kullanılabilir en iyi sürüme ayarlar (TAVSİYE EDİLEN)."
+    IDS_TRUSTSYNC_TOOLTIP   "Tüm paketleri paket deposunda bulunan sürüme ayarlar, gerekirse sürüm düşürür."
+    IDS_TRUSTEXP_TOOLTIP    "Test paketlerini etkinleştir."
+    IDS_VIEWBUTTON_TOOLTIP  "Paket görünümünü seçin.  Bu, aşağıda hangi paketlerin gösterileceğini belirler.\n\nKategori: Paket kategorisine göre grupla.  Genişletmek için '+' üzerine tıklayın.\n\nTam: Tüm paketleri göster.\n\nBekliyor: Yalnızca kurulmak, kaldırılmak veya yükseltilmek üzere olan paketleri göster.  Bu, 'İleri' düğmesine bastığınızda nelerin değişeceğini size söyler.\n\nGüncel: Zaten istenen sürümde oldukları için herhangi bir işlem yapılmasına gerek olmayan kurulu paketleri göster.\n\nKurulu değil: Şu anda kurulu olmayan ve kurulum için seçilmeyen paketleri göster.\n\nSeçildi: Bağımlılık olarak kurulmayan, seçilen kurulu paketleri göster.\n\nKaldırılabilir: Seçilen ve güvenli bir şekilde kaldırılabilecek kurulu paketleri göster.  Başka hiçbir kurulu veya seçili paket bu paketlere bağımlı değildir.\n\nGereksiz: Artık güvenli bir şekilde kaldırılabilecek otomatik olarak kurulan paketleri göster.  Diğer kurulu veya seçili paketler artık bu paketlere bağımlı değildir."
+    IDS_HIDEOBS_TOOLTIP     "Seçilirse, kurulum '_' ile başlayan adlara sahip kategorilerdeki paketleri gizleyecektir.  Bu tür paketler genellikle kaldırılan veya yeniden adlandırılan paketler için boş yer tutuculardır veya otomatik olarak işlenen sistem paketleridir."
+    IDS_SIG_INVALID         "Yansı Hatası:  Setup.ini imzası (%s, %s) doğrulanamadı.\nYansı bozuk olabilir mi?  Setup.ini reddedildi."
+    IDS_CRYPTO_ERROR        "Dahili Hata:  gcrypt kütüphane hatası %d %s"
+    IDS_SEARCH_TOOLTIP      "Paket adlarında bu dizgeyi ara."
+    IDS_MAYBE_MKDIR         "%s dizini mevcut değil, oluşturulmasını ister misiniz?"
+    IDS_CANT_MKDIR          "%s dizini oluşturulamadı, üzgünüm.  (Disk dolu veya salt okunur mu?)"
+    IDS_NO_LOCALDIR         "Yerel paket dizini %s bulunamadı.\nYine de kurulu paketleri kaldırabilirsiniz,\nancak kurulacak bir şey olmayacak.\n\nİstediğiniz buysa Tamam, farklı bir dizin\nseçmek için İptal düğmesine basın."
+    IDS_ELEVATED            "Kurulumu yetkilendirilen alt işleme devret."
+    IDS_INSTALLEDB_VERSION  "Bilinmeyen INSTALLED.DB sürümü"
+    IDS_NO_MIRROR_LST       "Yansı siteleri listesi indirilemedi"
+    IDS_PROGRESS_PROGRESS   "İlerleme:"
+    IDS_PROGRESS_PACKAGE    "Paket:"
+    IDS_PROGRESS_CONNECTING "Bağlanıyor..."
+    IDS_PROGRESS_CHECKING   "İndirilecek paketler denetleniyor..."
+    IDS_PROGRESS_DOWNLOADING
+                            "İndiriliyor..."
+    IDS_PROGRESS_PARSING    "İşleniyor..."
+    IDS_PROGRESS_PREREMOVE  "Kaldırma öncesi betiği çalıştırılıyor..."
+    IDS_PROGRESS_UNINSTALL  "Kaldırılıyor..."
+    IDS_PROGRESS_INSTALL    "Kuruluyor..."
+    IDS_PROGRESS_CALCULATING
+                            "Hesaplanıyor..."
+    IDS_PROGRESS_POSTINSTALL
+                            "Çalıştırılıyor..."
+    IDS_PROGRESS_SOLVING    "Bağımlılıklar çözümleniyor..."
+    IDS_ACTION_DEFAULT      "Öntanımlı"
+    IDS_ACTION_INSTALL      "Kur"
+    IDS_ACTION_UNINSTALL    "Kaldır"
+    IDS_ACTION_SKIP         "Atla"
+    IDS_ACTION_KEEP         "Tut"
+    IDS_ACTION_REINSTALL    "Yeniden Kur"
+    IDS_ACTION_RETRIEVE     "Al"
+    IDS_ACTION_UNKNOWN      "Bilinmiyor"
+    IDS_ACTION_SOURCE       "Kaynak"
+    IDS_VIEW_FULL           "Tam"
+    IDS_VIEW_PENDING        "Bekliyor"
+    IDS_VIEW_UPTODATE       "Güncel"
+    IDS_VIEW_NOTINSTALLED   "Kurulu Değil"
+    IDS_VIEW_PICKED         "Seçildi"
+    IDS_VIEW_REMOVABLE      "Kaldırılabilir"
+    IDS_VIEW_UNNEEDED       "Gereksiz"
+    IDS_VIEW_CATEGORY       "Kategori"
+    IDS_COLUMN_PACKAGE      "Paket"
+    IDS_COLUMN_CURRENT      "Geçerli"
+    IDS_COLUMN_NEW          "Yeni"
+    IDS_COLUMN_SOURCE       "Kaynak?"
+    IDS_COLUMN_CATEGORIES   "Kategoriler"
+    IDS_COLUMN_SIZE         "Boyut"
+    IDS_COLUMN_DESCR        "Açıklama"
+    IDS_MBOX_CAPTION        "Cygwin Kurucu"
+    IDS_EXTRACTION_FAILED   "/%s çıkarılamıyor -- paket bozuk mu?"
+    IDS_EXTRACTION_INUSE    "/%s çıkarılamıyor -- dosya yazılırken hata oluştu\n\nDosya kullanımda veya başka bir hata oluştu.\n\nLütfen tüm Cygwin işlemlerini durdurun ve ""Yeniden dene"" veya devam etmek için ""Devam et"" seçeneğini seçin (dosya yeniden başlatıldıktan sonra güncellenecektir).\n"
+    IDS_INSTALL_OLD_CYGWIN  "Eski bir cygwin1.dll sürümü bulundu:\n%s\nSilinsin mi?"
+    IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
+                            "%s dosyası silinemedi.\nDLL başka bir uygulama tarafından mı kullanılıyor?\nEski cygwin1.dll sürümünü en kısa sürede silmelisiniz."
+    IDS_SHELLLINK_FAILED    "CoCreateInstance 0x%x hatası ile başarısız oldu.\nKurucu, başlat menüsünde veya masaüstünde Cygwin simgeleri oluşturamayacak."
+    IDS_UNSUPPORTED_WINDOWS_VERSION
+                            "Cygwin bu Windows sürümünde desteklenmiyor"
+    IDS_UNSUPPORTED_WINDOWS_ARCH
+                            "Cygwin is not supported on 32-bit Windows"
+    IDS_DEPRECATED_WINDOWS_VERSION
+                            "Bu Windows sürümü için Cygwin desteği sonlandırıldı ve bir sonraki ana sürümde kaldırılacak"
+    IDS_MOUNT_REGISTRY_KEY_FAILED
+                            "Kurulum yolunu saklamak için kayıt defteri anahtarı oluşturulamadı"
+    IDS_NIO_ERROR           "İnternet Hatası: %s"
+    IDS_PREREQ_UNSOLVED_PROBLEMS
+                            "UYARI - Çözülmeyen Sorunlar\n\nDevam ederseniz bazı paketler düzgün çalışmayabilir.\n\nDevam etmek istediğinizden emin misiniz (TAVSİYE EDİLMEZ)?"
+    IDS_MIXED_BITNESS_ERROR "Hedef CPU uyuşmazlığı\n\n%s bit Cygwin sürümünü, %s bit Cygwin sürümü içeren bir dizine kurmaya çalışıyorsunuz.  Bunu yapmaya devam etmek var olan kurulumu bozacaktır.\n\nVar olan %s bit Cygwin kurulumunu güncellemek için setup-%s.exe dosyasını çalıştırın ya da %s bit kurulumunuz için başka bir dizin seçin."
+    IDS_GET_SITELIST_ERROR  "İndirme sitelerinin listesi alınamıyor.\nAğ ayarlarınızın doğru olduğundan emin olun ve tekrar deneyin."
+    IDS_CONFIRM_EXIT        "Kurucudan çıkmak istediğinizden emin misiniz? Var olan herhangi bir indirme veya kurulum işlemi iptal edilecektir."
+    IDS_CONTINUE            "Devam et"
+    IDS_CHOOSER_EMPTY_NO_PACKAGES
+                            "Paket bulunamadı."
+    IDS_CHOOSER_EMPTY_DOWNLOAD
+                            "İndirilecek bir şey yok."
+    IDS_CHOOSER_EMPTY_INSTALL
+                            "Kurulacak veya güncellenecek bir şey yok."
+    IDS_ROOT_BROWSE_TITLE   "Kurulum kök dizini seç"
+    IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE
+                            "İndirme dizini seç"
+    IDS_LOCALDIR_BROWSE_PACKAGE_TITLE
+                            "Yerel paket dizini seç"
+    IDS_PROGRESS_CHECKING_HASH
+                            "%s için %s denetleniyor"
+    IDS_PROGRESS_DOWNLOADING_FROM
+                            "%s, %s"
+    IDS_CONFIRM_UNINSTALL   "Kaldır"
+    IDS_CONFIRM_INSTALL     "Kur"
+    IDS_CONFIRM_DOWNLOAD    "İndir"
+    IDS_CONFIRM_NOTHING     "Değişiklik yok"
+    IDS_CONFIRM_AUTO_ADD    "(otomatik olarak eklendi)"
+    IDS_CONFIRM_SOURCE      "(kaynak)"
+    IDS_FILE_INUSE_KILL     "İşlemleri &Sonlandır"
+    IDS_FILE_INUSE_MSG      "Çıkarılamıyor"
+END
+
+//
+// Option Helptext String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_HELPTEXT_ERROR      "Seçenek işleme sırasında hata oluştu."
+    IDS_HELPTEXT_HEADER     "Komut Satırı Seçenekleri:"
+    IDS_HELPTEXT_FOOTER     "--download ya da --local-install seçeneklerinden biri belirtilmediği sürece öntanımlı olarak paketler hem indirilir hem de kurulur."
+    IDS_HELPTEXT_ALLOW_TEST "Test olarak işaretlenen paket sürümlerini dikkate al"
+    IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
+                            "Eski, desteklenmeyen Windows sürümlerine izin ver"
+    IDS_HELPTEXT_ARCH       "Kurulacak mimari (x86_64 veya x86)"
+    IDS_HELPTEXT_CATEGORIES "Kurulacak kategorileri belirt"
+    IDS_HELPTEXT_COMPACTOS  "Kurulan dosyaları Compact OS ile sıkıştır (xpress4k, xpress8k, xpress16k, lzx)"
+    IDS_HELPTEXT_DELETE_ORPHANS
+                            "Sahipsiz paketleri kaldır"
+    IDS_HELPTEXT_DISABLE_ANTIVIRUS
+                            "Bilinen veya şüphelenilen hatalı anti virüs yazılım paketlerini çalıştırma sırasında devre dışı bırak"
+    IDS_HELPTEXT_DOWNLOAD   "Paketleri internetten indir"
+    IDS_HELPTEXT_FORCE_CURRENT
+                            "Tüm paketler için geçerli sürümü seç"
+    IDS_HELPTEXT_HELP       "Yardım metnini yazdır"
+    IDS_HELPTEXT_INCLUDE_SOURCE
+                            "Kurulan her paket için kaynağı otomatik olarak kur"
+    IDS_HELPTEXT_INI_BASENAME
+                            "Farklı bir taban adı kullan, örneğin ""setup"" yerine ""foo"""
+    IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
+                            "Güvenilmeyen anahtarları kullan ve tümünü sakla"
+    IDS_HELPTEXT_LANG       "Grafiksel arayüz dilini seç"
+    IDS_HELPTEXT_LOCAL_INSTALL
+                            "Paketleri yerel dizinden kur"
+    IDS_HELPTEXT_LOCAL_PACKAGE_DIR
+                            "Yerel paket dizini"
+    IDS_HELPTEXT_MIRROR_MODE
+                            "Yerel dizinden kurarken paket kullanılabilirlik denetimini atla (yerel dizinin temiz bir yansı olmasını gerektirir!)"
+    IDS_HELPTEXT_NO_ADMIN   "Yönetici olarak çalıştırmayı denetleme ve zorlama"
+    IDS_HELPTEXT_NO_DESKTOP "Masaüstü kısayolu oluşturmayı devre dışı bırak"
+    IDS_HELPTEXT_NO_REPLACEONREBOOT
+                            "Kullanımda olan dosyaların bir sonraki yeniden başlatmada değiştirilmesini devre dışı bırak"
+    IDS_HELPTEXT_NO_SHORTCUTS
+                            "Masaüstü ve başlat menüsü kısayolları oluşturmayı devre dışı bırak"
+    IDS_HELPTEXT_NO_STARTMENU
+                            "Başlat menüsü kısayolu oluşturmayı devre dışı bırak"
+    IDS_HELPTEXT_NO_VERIFY  "setup.ini imzalarını doğrulama"
+    IDS_HELPTEXT_NO_VERSION_CHECK
+                            "Kurucunun daha yeni bir sürümünün olup olmadığını denetlemeyi engelle"
+    IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
+                            "Desteği sonlandırılan Windows sürümleri hakkında uyarma"
+    IDS_HELPTEXT_NO_WRITE_REGISTRY
+                            "Kök kurulum dizinini kayıt defterine yazma"
+    IDS_HELPTEXT_OLD_KEYS   "Eski cygwin.com anahtarlarını etkinleştir"
+    IDS_HELPTEXT_ONLY_SITE  "Yansı listesini indirme.  Yalnızca -s ile belirtilen siteleri kullan"
+    IDS_HELPTEXT_PACKAGES   "Kurulacak paketleri belirt"
+    IDS_HELPTEXT_PACKAGE_MANAGER
+                            "Yarı etkileşimli yalnızca seçici modu"
+    IDS_HELPTEXT_PROXY      "HTTP/FTP vekili (sunucu:bağlantınoktası)"
+    IDS_HELPTEXT_PRUNE_INSTALL
+                            "Kurulumu yalnızca istenen paketlerle sınırla"
+    IDS_HELPTEXT_PUBKEY     "Ek ortak anahtar dosyasının URL'si veya mutlak yolu (RFC4880 biçimi)"
+    IDS_HELPTEXT_QUIET_MODE "Etkileşimsiz kurulum modu"
+    IDS_HELPTEXT_REMOVE_CATEGORIES
+                            "Kurulacak kategorileri belirt"
+    IDS_HELPTEXT_REMOVE_PACKAGES
+                            "Kaldırılacak paketleri belirt"
+    IDS_HELPTEXT_ROOT       "Kök kurulum dizini"
+    IDS_HELPTEXT_SEXPR_PUBKEY
+                            "s-expr biçiminde ek DSA ortak anahtarı"
+    IDS_HELPTEXT_SITE       "İndirme sitesi URL'si"
+    IDS_HELPTEXT_SYMLINK_TYPE
+                            "Sembolik bağlantı türü (lnk, yerel, sys, wsl)"
+    IDS_HELPTEXT_UNTRUSTED_KEYS
+                            "Güvenilmeyen kaydedilmiş ek anahtarlar kullan"
+    IDS_HELPTEXT_UPGRADE_ALSO
+                            "Ayrıca kurulu paketleri yükselt"
+    IDS_HELPTEXT_USER_AGENT "HTTP istekleri için kullanıcı aracısı dizgesi"
+    IDS_HELPTEXT_VERBOSE    "Ayrıntılı çıktı"
+    IDS_HELPTEXT_VERSION    "Sürümü göster"
+    IDS_HELPTEXT_WAIT       "Yetkilendirirken, yetkilendirilen alt işlemi bekle"
+END

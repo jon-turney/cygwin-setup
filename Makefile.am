@@ -282,7 +282,7 @@ setup_version.c : Makefile
 pot:
 	cd $(srcdir) && rc2po -P res/en/res.rc res.pot
 
-LINGUAS=fr zh_Hans
+LINGUAS=fr tr zh_Hans
 
 rc2po:
 	cd $(srcdir) && \
@@ -294,6 +294,7 @@ po2rc:
 	cd $(srcdir) && \
 	for l in $(LINGUAS) ; do \
 		./langopts $$l >/dev/null && \
+		mkdir -p res/$$l/ && \
 		po2rc -t res/en/res.rc --charset-output=utf-8 $$(./langopts $$l) po/$$l/res.po res/$$l/res.rc && \
 		d2u -q res/$$l/res.rc ; \
 	done

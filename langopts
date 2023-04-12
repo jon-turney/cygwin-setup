@@ -1,11 +1,15 @@
 #!
 
 case $1 in
-    fr)
+    fr)       # 040c
         lang="LANG_FRENCH"
         sublang="SUBLANG_FRENCH"
         ;;
-    zh_Hans)
+    tr)       # 041f
+        lang="LANG_TURKISH"
+        sublang="SUBLANG_DEFAULT"
+        ;;
+    zh_Hans)  # 0804
         lang="LANG_CHINESE"
         sublang="SUBLANG_CHINESE_SIMPLIFIED"
         ;;
