@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-27 12:54+0100\n"
-"PO-Revision-Date: 2023-04-11 10:48+0000\n"
+"PO-Revision-Date: 2023-04-13 04:47+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -26,8 +26,8 @@ msgid ""
 "&Install from Internet\n"
 "(downloaded files will be kept for future re-use)"
 msgstr ""
-"从互联网安装\n"
-"（下载的文件将保留以备将来重复使用）(&I)"
+"从互联网安装(&I)\n"
+"（下载的文件将保留以备将来重复使用）"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_DOWNLOAD
 msgid "&Download Without Installing"
@@ -92,8 +92,7 @@ msgstr "选择本地软件包目录"
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
-msgstr ""
-"选择希望安装程序存储其下载的安装文件的目录。 如果该目录尚不存在，则将创建该目"
+msgstr "选择希望安装程序存储其下载的安装文件的目录。如果该目录尚不存在，则将创建该目"
 "录。"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
@@ -156,8 +155,8 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
-"Cygwin仍将对所有用户可用，但桌面图标，Cygwin菜单条目和重要的安装程序信息仅对"
-"当前用户可用。 仅当您缺少管理员权限或有特定需求时，才选择此选项。"
+"Cygwin 仍将对所有用户可用，但桌面图标，Cygwin 菜单条目和重要的安装程序信息仅"
+"对当前用户可用。仅当您缺少管理员权限或有特定需求时，才选择此选项。"
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
@@ -169,7 +168,7 @@ msgstr "可用的下载站点："
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Choose a site from this list, or add your own sites to the list."
-msgstr "从此列表中选择一个网站，或将您自己的网站添加到列表中。"
+msgstr "从此列表中选择一个站点，或将您自己的站点添加到列表中。"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Site"
@@ -177,7 +176,7 @@ msgstr "选择下载站点"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
 msgid "User URL:"
-msgstr "用户网址："
+msgstr "用户站点："
 
 #: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
 msgid "Add"
@@ -211,7 +210,7 @@ msgstr "端口(&T)"
 msgid ""
 "Setup needs to know how you want it to connect to the internet.  Choose the "
 "appropriate settings below."
-msgstr "安装程序需要知道您希望它如何连接到互联网。 在下面选择适当的设置。"
+msgstr "安装程序需要知道您希望它如何连接到互联网。请在下面选择适当的设置。"
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Your Internet Connection"
@@ -259,11 +258,11 @@ msgstr "软件包："
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_TOTAL
 msgid "Total:"
-msgstr "总计："
+msgstr "总进度："
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_DISK
 msgid "Disk:"
-msgstr "磁盘："
+msgstr "磁盘用量："
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC
 msgid "This page displays the progress of the download or installation."
@@ -303,7 +302,7 @@ msgctxt ""
 "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON."
 "IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "取消"
+msgstr "取消(&C)"
 
 #: DIALOG.IDD_NET_AUTH.CAPTION
 msgid "Server Authentication required"
@@ -331,7 +330,7 @@ msgstr "确定(&O)"
 #: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "取消"
+msgstr "取消(&C)"
 
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
@@ -429,7 +428,7 @@ msgstr "确定(&O)"
 #: DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "取消"
+msgstr "取消(&C)"
 
 #: DIALOG.IDD_CHOOSE.CAPTION
 msgid "Cygwin Setup - Select Packages"
@@ -583,7 +582,7 @@ msgstr "继续(&C)"
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT"
 msgid "Cancel"
-msgstr "取消"
+msgstr "取消(&C)"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
