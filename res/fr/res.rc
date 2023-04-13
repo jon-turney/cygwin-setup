@@ -242,9 +242,10 @@ BEGIN
 		    "Redémarrez ce programme ultérieurement pour ajouter, enlever ou "
 		    "mettre à jour des paquets si nécessaire.",IDC_SPLASH_TEXT,115,25,195,90
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
-    LTEXT           "",IDC_VERSION,115,117,195,10
-    LTEXT           "",IDC_SPLASH_COPYR,115,130,195,8
-    LTEXT           "",IDC_SPLASH_URL,115,142,90,8
+    LTEXT           "",IDC_VERSION,115,127,195,10
+    LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
+    LTEXT           "",IDC_SPLASH_URL,115,152,90,8
+    LTEXT           "Contribute to translations of this program.",IDC_SPLASH_TRANSLATE,115,164,195,8
 END
 
 IDD_DESKTOP DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS

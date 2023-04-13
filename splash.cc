@@ -23,6 +23,7 @@
 
 #define SPLASH_URL "https://cygwin.com"
 #define SPLASH_COPYRIGHT "Copyright 2000-2023"
+#define SPLASH_TRANSLATE_URL "https://cygwin.com/setup/translate"
 
 static ControlAdjuster::ControlInfo SplashControlsInfo[] = {
   { IDC_SPLASH_TEXT,        CP_STRETCH,   CP_STRETCH },
@@ -30,6 +31,7 @@ static ControlAdjuster::ControlInfo SplashControlsInfo[] = {
   { IDC_VERSION,            CP_LEFT,      CP_BOTTOM },
   { IDC_SPLASH_COPYR,       CP_LEFT,      CP_BOTTOM },
   { IDC_SPLASH_URL,         CP_LEFT,      CP_BOTTOM },
+  { IDC_SPLASH_TRANSLATE,   CP_LEFT,      CP_BOTTOM },
   {0, CP_LEFT, CP_TOP}
 };
 
@@ -55,4 +57,5 @@ SplashPage::OnInit ()
   ::SetWindowText (GetDlgItem (IDC_SPLASH_COPYR), SPLASH_COPYRIGHT);
   ::SetWindowText (GetDlgItem (IDC_SPLASH_URL), SPLASH_URL);
   makeClickable (IDC_SPLASH_URL, SPLASH_URL);
+  makeClickable (IDC_SPLASH_TRANSLATE, SPLASH_TRANSLATE_URL);
 }

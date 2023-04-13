@@ -167,6 +167,7 @@ BEGIN
     LTEXT           "",IDC_VERSION,115,127,195,10
     LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
     LTEXT           "",IDC_SPLASH_URL,115,152,90,8
+    LTEXT           "Contribute to translations of this program.",IDC_SPLASH_TRANSLATE,115,164,195,8
 END
 
 IDD_DESKTOP DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS

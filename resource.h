@@ -296,3 +296,4 @@
 #define IDC_FILE_INUSE_HELP_0             605
 #define IDC_FILE_INUSE_HELP_1             606
 #define IDC_FILE_INUSE_HELP_2             607
+#define IDC_SPLASH_TRANSLATE              608
