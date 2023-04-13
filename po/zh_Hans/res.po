@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-27 12:54+0100\n"
+"POT-Creation-Date: 2022-11-21 13:56+0100\n"
 "PO-Revision-Date: 2023-04-13 04:47+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -92,7 +92,8 @@ msgstr "选择本地软件包目录"
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
-msgstr "选择希望安装程序存储其下载的安装文件的目录。如果该目录尚不存在，则将创建该目"
+msgstr ""
+"选择希望安装程序存储其下载的安装文件的目录。如果该目录尚不存在，则将创建该目"
 "录。"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
@@ -353,16 +354,16 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
-"此安装程序用于 Cygwin "
-"环境的初始安装以及所有后续更新。以下页面将指导您完成安装。\n"
+"此安装程序用于 Cygwin 环境的初始安装以及所有后续更新。以下页面将指导您完成安"
+"装。\n"
 "\n"
-"请注意，默认情况下，我们只安装一组基本的软件包。Cygwin "
-"提供了大量涵盖各种用途的软件包。\n"
+"请注意，默认情况下，我们只安装一组基本的软件包。Cygwin 提供了大量涵盖各种用途"
+"的软件包。\n"
 "\n"
 "您将来可以随时运行此程序，以根据需要添加、删除或升级软件包。\n"
 "\n"
-"您可在 https://hosted.weblate.org/projects/cygwin-setup/cygwin-setup/zh_Hans/"
-" 贡献此安装程序的翻译。"
+"您可在 https://hosted.weblate.org/projects/cygwin-setup/cygwin-setup/"
+"zh_Hans/ 贡献此安装程序的翻译。"
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
@@ -1127,17 +1128,17 @@ msgstr ""
 msgid "Cygwin is not supported on this Windows version"
 msgstr "Cygwin 在此 Windows 版本上不受支持"
 
+#: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
+#, fuzzy
+#| msgid "Cygwin is not supported on this Windows version"
+msgid "Cygwin is not supported on 32-bit Windows"
+msgstr "Cygwin 在此 Windows 版本上不受支持"
+
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
 "Cygwin support for this Windows version is deprecated, and will be removed "
 "in the next major version"
 msgstr "Cygwin 对此 Windows 版本的支持已被弃用，并将在下一个主要版本中删除"
-
-#: STRINGTABLE.IDS_DEPRECATED_WINDOWS_ARCH
-msgid ""
-"Cygwin support for 32-bit Windows is deprecated, and will be removed in the "
-"next major version"
-msgstr "Cygwin 对 32 位 Windows 的支持已弃用，并将在下一个主要版本中删除"
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
 msgid "Couldn't create registry key to store installation path"
@@ -1467,3 +1468,8 @@ msgstr "显示版本"
 #: STRINGTABLE.IDS_HELPTEXT_WAIT
 msgid "When elevating, wait for elevated child process"
 msgstr "提升时，等待提升的子进程"
+
+#~ msgid ""
+#~ "Cygwin support for 32-bit Windows is deprecated, and will be removed in "
+#~ "the next major version"
+#~ msgstr "Cygwin 对 32 位 Windows 的支持已弃用，并将在下一个主要版本中删除"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-29 12:53+0100\n"
+"POT-Creation-Date: 2022-11-21 13:56+0100\n"
 "PO-Revision-Date: 2022-07-08 10:18+0000\n"
 "Last-Translator: Marcel Hecko <maco@blava.net>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -212,8 +212,7 @@ msgid "Select Your Internet Connection"
 msgstr ""
 
 #: DIALOG.IDD_INSTATUS.CAPTION
-msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
-"DIALOG.IDD_INSTATUS.CAPTION"
+msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
 msgstr ""
 
@@ -231,8 +230,9 @@ msgid "(FILE)"
 msgstr ""
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+msgctxt ""
+"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL."
+"IDC_INS_DISKFULL"
 msgid "Progress1"
 msgstr ""
 
@@ -276,8 +276,8 @@ msgid "Proxy &User ID"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr ""
 
@@ -286,15 +286,16 @@ msgid "Proxy Authorization Required"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON."
+"IDOK"
 msgid "&OK"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON."
+"IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
 msgstr ""
 
@@ -501,8 +502,8 @@ msgstr ""
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "One or more mirrors you have selected is/are not on the list of official "
-"Cygwin mirrors any more. It/They may be out of date or missing some packages."
-"\n"
+"Cygwin mirrors any more. It/They may be out of date or missing some "
+"packages.\n"
 "This affects the following mirror(s):"
 msgstr ""
 
@@ -778,7 +779,14 @@ msgid ""
 "haven't been selected for installation.\n"
 "\n"
 "Picked: Show installed packages that were selected, not installed as a "
-"dependency."
+"dependency.\n"
+"\n"
+"Removable: Show installed packages that were selected and could be safely "
+"removed.  No other installed or selected packages depend on these packages.\n"
+"\n"
+"Unneeded: Show automatically installed packages that could now be safely "
+"removed.  Other installed or selected packages no longer depend on these "
+"packages."
 msgstr ""
 
 #: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
@@ -941,6 +949,14 @@ msgstr ""
 msgid "Picked"
 msgstr ""
 
+#: STRINGTABLE.IDS_VIEW_REMOVABLE
+msgid "Removable"
+msgstr ""
+
+#: STRINGTABLE.IDS_VIEW_UNNEEDED
+msgid "Unneeded"
+msgstr ""
+
 #: STRINGTABLE.IDS_VIEW_CATEGORY
 msgid "Category"
 msgstr ""
@@ -988,8 +1004,8 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
-"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
+"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
@@ -1018,16 +1034,14 @@ msgstr ""
 msgid "Cygwin is not supported on this Windows version"
 msgstr ""
 
+#: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
+msgid "Cygwin is not supported on 32-bit Windows"
+msgstr ""
+
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
 "Cygwin support for this Windows version is deprecated, and will be removed "
 "in the next major version"
-msgstr ""
-
-#: STRINGTABLE.IDS_DEPRECATED_WINDOWS_ARCH
-msgid ""
-"Cygwin support for 32-bit Windows is deprecated, and will be removed in the "
-"next major version"
 msgstr ""
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
@@ -1225,8 +1239,8 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
-"Skip package availability check when installing from local directory ("
-"requires local directory to be clean mirror!)"
+"Skip package availability check when installing from local directory "
+"(requires local directory to be clean mirror!)"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
@@ -1261,12 +1275,16 @@ msgstr ""
 msgid "Don't warn about deprecated Windows versions"
 msgstr ""
 
+#: STRINGTABLE.IDS_HELPTEXT_NO_WRITE_REGISTRY
+msgid "Don't write root installation directory to registry"
+msgstr ""
+
 #: STRINGTABLE.IDS_HELPTEXT_OLD_KEYS
 msgid "Enable old cygwin.com keys"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_ONLY_SITE
-msgid "Do not download mirror list.  Only use sites specified with -s."
+msgid "Do not download mirror list.  Only use sites specified with -s"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGES
