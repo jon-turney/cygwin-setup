@@ -107,6 +107,7 @@
 #define IDS_VIEW_REMOVABLE               1211
 #define IDS_VIEW_UNNEEDED                1212
 #define IDS_UNSUPPORTED_WINDOWS_ARCH     1213
+#define IDS_USER_URL_TOOLTIP             1214
 
 #define IDS_HELPTEXT_COMPACTOS           1500
 #define IDS_HELPTEXT_PUBKEY              1501

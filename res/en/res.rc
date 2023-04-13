@@ -648,6 +648,7 @@ BEGIN
     IDS_CONFIRM_SOURCE "(source)"
     IDS_FILE_INUSE_KILL "&Kill Processes"
     IDS_FILE_INUSE_MSG "Unable to extract"
+    IDS_USER_URL_TOOLTIP "Additional site URL, path or UNC path"
 END
 
 //
@@ -697,7 +698,7 @@ BEGIN
     IDS_HELPTEXT_REMOVE_PACKAGES "Specify packages to uninstall"
     IDS_HELPTEXT_ROOT "Root installation directory"
     IDS_HELPTEXT_SEXPR_PUBKEY "Extra DSA public key in s-expr format"
-    IDS_HELPTEXT_SITE "Download site URL"
+    IDS_HELPTEXT_SITE "Download site URL, path or UNC path"
     IDS_HELPTEXT_SYMLINK_TYPE "Symlink type (lnk, native, sys, wsl)"
     IDS_HELPTEXT_UNTRUSTED_KEYS "Use untrusted saved extra keys"
     IDS_HELPTEXT_UPGRADE_ALSO "Also upgrade installed packages"

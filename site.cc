@@ -570,6 +570,12 @@ bool SitePage::Create ()
   return PropertyPage::Create (IDD_SITE);
 }
 
+void
+SitePage::OnInit ()
+{
+    AddTooltip (IDC_EDIT_USER_URL, IDS_USER_URL_TOOLTIP);
+}
+
 long
 SitePage::OnNext ()
 {
