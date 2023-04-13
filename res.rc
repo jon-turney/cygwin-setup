@@ -72,6 +72,12 @@ CYGWIN-TERMINAL.ICON    FILE    "cygwin-terminal.ico"
 // English (en_US) resources
 //
 
+// Throughout, we use the font "MS Shell Dlg". This seems to be necessary to
+// work around some not-fully-understood issues with PropertySheets. Hopefully,
+// using this font will cause things to 'just work'. Further information on
+// this topic is at:
+//   http://sources.redhat.com/ml/cygwin-apps/2003-05/msg00177.html
+
 #include "res/en/res.rc"
 
 /////////////////////////////////////////////////////////////////////////////

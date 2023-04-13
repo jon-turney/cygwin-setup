@@ -5,12 +5,6 @@ LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 // Dialog
 //
 
-// Throughout, we use the font "MS Shell Dlg". This seems to be necessary to
-// work around some not-fully-understood issues with PropertySheets. Hopefully,
-// using this font will cause things to 'just work'. Further information on
-// this topic is at:
-//   http://sources.redhat.com/ml/cygwin-apps/2003-05/msg00177.html
-
 IDD_SOURCE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | WS_CHILD | WS_CAPTION | WS_SYSMENU
 CAPTION "Cygwin 安装程序 - 选择安装类型"
