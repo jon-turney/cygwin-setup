@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-21 13:56+0100\n"
-"PO-Revision-Date: 2023-04-14 09:07+0000\n"
+"PO-Revision-Date: 2023-04-14 15:43+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -465,7 +465,7 @@ msgstr "同步(&S)"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
 msgid "&Test"
-msgstr "测试(&T)"
+msgstr "测试版(&T)"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
 msgid "&Hide obsolete packages"
