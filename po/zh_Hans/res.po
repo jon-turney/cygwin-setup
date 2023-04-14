@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-21 13:56+0100\n"
-"PO-Revision-Date: 2023-04-13 04:47+0000\n"
+"PO-Revision-Date: 2023-04-14 09:07+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -1129,10 +1129,8 @@ msgid "Cygwin is not supported on this Windows version"
 msgstr "Cygwin 在此 Windows 版本上不受支持"
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
-#, fuzzy
-#| msgid "Cygwin is not supported on this Windows version"
 msgid "Cygwin is not supported on 32-bit Windows"
-msgstr "Cygwin 在此 Windows 版本上不受支持"
+msgstr "Cygwin 在 32 位 Windows 上不受支持"
 
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
