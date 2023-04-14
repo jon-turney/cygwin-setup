@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2022-11-26 12:48+0000\n"
+"PO-Revision-Date: 2023-04-18 04:49+0000\n"
 "Last-Translator: Oğuz Ersen <oguz@ersen.moe>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/tr/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.17\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -380,7 +380,7 @@ msgstr ""
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr ""
+msgstr "Bu programın çevirilerine katkıda bulunun."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
@@ -1177,10 +1177,8 @@ msgid "Cygwin is not supported on this Windows version"
 msgstr "Cygwin bu Windows sürümünde desteklenmiyor"
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
-#, fuzzy
-#| msgid "Cygwin is not supported on this Windows version"
 msgid "Cygwin is not supported on 32-bit Windows"
-msgstr "Cygwin bu Windows sürümünde desteklenmiyor"
+msgstr "Cygwin 32 bit Windows'ta desteklenmiyor"
 
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
@@ -1320,7 +1318,7 @@ msgstr "Çıkarılamıyor"
 
 #: STRINGTABLE.IDS_USER_URL_TOOLTIP
 msgid "Additional site URL, path or UNC path"
-msgstr ""
+msgstr "Ek site URL'si, yol veya UNC yolu"
 
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
@@ -1504,10 +1502,8 @@ msgid "Extra DSA public key in s-expr format"
 msgstr "s-expr biçiminde ek DSA ortak anahtarı"
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
-#, fuzzy
-#| msgid "Download site URL"
 msgid "Download site URL, path or UNC path"
-msgstr "İndirme sitesi URL'si"
+msgstr "İndirme sitesi URL'si, yol veya UNC yolu"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
