@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-21 13:56+0100\n"
+"POT-Creation-Date: 2023-04-14 13:51+0100\n"
 "PO-Revision-Date: 2023-03-20 19:37+0000\n"
 "Last-Translator: Fernando Lopes <fefehex12@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
@@ -355,6 +355,10 @@ msgid ""
 "\n"
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
+msgstr ""
+
+#: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
+msgid "Contribute to translations of this program."
 msgstr ""
 
 #: DIALOG.IDD_DESKTOP.CAPTION
@@ -1164,6 +1168,10 @@ msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
 msgid "Unable to extract"
 msgstr ""
 
+#: STRINGTABLE.IDS_USER_URL_TOOLTIP
+msgid "Additional site URL, path or UNC path"
+msgstr ""
+
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
 msgstr ""
@@ -1336,7 +1344,7 @@ msgid "Extra DSA public key in s-expr format"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
-msgid "Download site URL"
+msgid "Download site URL, path or UNC path"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
