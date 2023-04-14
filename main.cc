@@ -36,6 +36,7 @@
 #include "resource.h"
 #include "dialog.h"
 #include "state.h"
+#include "quiet.h"
 #include "msg.h"
 #include "find.h"
 #include "mount.h"
@@ -95,8 +96,14 @@ static StringChoiceOption::StringChoices symlink_types({
     {"wsl", SymlinkTypeWsl},
   });
 
+static StringChoiceOption::StringChoices quiet_types({
+    {"unattended", QuietUnattended},
+    {"noinput", QuietNoInput},
+    {"hidden", QuietHidden},
+  });
+
 static StringOption Arch ("", 'a', "arch", IDS_HELPTEXT_ARCH, false);
-static BoolOption UnattendedOption (false, 'q', "quiet-mode", IDS_HELPTEXT_QUIET_MODE);
+StringChoiceOption UnattendedOption (quiet_types, 'q', "quiet-mode", IDS_HELPTEXT_QUIET_MODE, true, -1, QuietUnattended);
 static BoolOption PackageManagerOption (false, 'M', "package-manager", IDS_HELPTEXT_PACKAGE_MANAGER);
 static BoolOption NoAdminOption (false, 'B', "no-admin", IDS_HELPTEXT_NO_ADMIN);
 static BoolOption WaitOption (false, 'W', "wait", IDS_HELPTEXT_WAIT);
@@ -275,8 +282,13 @@ WinMain (HINSTANCE h,
           SetThreadUILanguage(langid);
       }
 
-    unattended_mode = PackageManagerOption ? chooseronly
-			: (UnattendedOption ? unattended : attended);
+    if (PackageManagerOption)
+      unattended_mode = chooseronly;
+    else
+      if (UnattendedOption < 0)
+        unattended_mode = attended;
+      else
+        unattended_mode = unattended;
 
     bool output_only = help_option || VersionOption;
 

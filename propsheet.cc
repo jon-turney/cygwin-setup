@@ -25,6 +25,7 @@
 #include "ControlAdjuster.h"
 #include "choose.h"
 #include "msg.h"
+#include "quiet.h"
 
 // Sort of a "hidden" Windows structure.  Used in the PropSheetCallback.
 #include <pshpack1.h>
@@ -243,16 +244,28 @@ PropSheetProc (HWND hwndDlg, UINT uMsg, LPARAM lParam)
     {
     case PSCB_PRECREATE:
       {
-	LONG additionalStyle =
-	  (WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME);
+        LONG additionalStyle = (WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME);
+
+        // 'noinput' quiet mode adds WS_DISABLE to prevent user interaction
+        // with the propsheet
+        if (UnattendedOption == QuietNoInput)
+          additionalStyle |= WS_DISABLED;
+
+        // 'hidden' quiet mode totally hides the propsheet window
+        LONG forbiddenStyle = 0;
+        if (UnattendedOption == QuietHidden)
+          forbiddenStyle |= WS_VISIBLE;
+
 	// Add a minimize box to the sheet/wizard.
 	if (((LPDLGTEMPLATEEX) lParam)->signature == 0xFFFF)
 	  {
 	    ((LPDLGTEMPLATEEX) lParam)->style |= additionalStyle;
+            ((LPDLGTEMPLATEEX) lParam)->style &= ~forbiddenStyle;
 	  }
 	else
 	  {
 	    ((LPDLGTEMPLATE) lParam)->style |= additionalStyle;
+            ((LPDLGTEMPLATE) lParam)->style &= ~forbiddenStyle;
 	  }
       }
       return TRUE;
