@@ -4,34 +4,38 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-04-18 04:49+0000\n"
+"Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/cygwin-setup/"
+"cygwin-setup/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Translate Toolkit 3.7.3\n"
+"X-Generator: Weblate 4.17\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
 msgid "Cygwin Setup - Choose Installation Type"
-msgstr ""
+msgstr "Cygwin セットアップ - インストール タイプの選択"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_NETINST
 msgid ""
 "&Install from Internet\n"
 "(downloaded files will be kept for future re-use)"
 msgstr ""
+"インターネットからインストール(&I)\n"
+"(ダウンロードしたファイルは、将来の再利用のために保持されます)"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_DOWNLOAD
 msgid "&Download Without Installing"
-msgstr ""
+msgstr "インストールせずにダウンロード(&D)"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_LOCALDIR
 msgid "Install from &Local Directory"
-msgstr ""
+msgstr "ローカルディレクトリからインストール(&L)"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Source"
