@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-04-14 15:43+0000\n"
+"PO-Revision-Date: 2023-04-18 04:49+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.17-dev\n"
+"X-Generator: Weblate 4.17\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -354,20 +354,17 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
-"此安装程序用于 Cygwin 环境的初始安装以及所有后续更新。以下页面将指导您完成安"
-"装。\n"
+"本安装程序用于 Cygwin "
+"环境的初始安装以及所有后续更新。以下页面将指导您完成安装。\n"
 "\n"
-"请注意，默认情况下，我们只安装一组基本的软件包。Cygwin 提供了大量涵盖各种用途"
-"的软件包。\n"
+"请注意，默认情况下，我们只安装一组基本的软件包。Cygwin "
+"提供了大量涵盖各种用途的软件包。\n"
 "\n"
-"您将来可以随时运行此程序，以根据需要添加、删除或升级软件包。\n"
-"\n"
-"您可在 https://hosted.weblate.org/projects/cygwin-setup/cygwin-setup/"
-"zh_Hans/ 贡献此安装程序的翻译。"
+"您将来可以随时运行此程序，以根据需要添加、删除或升级软件包。"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr ""
+msgstr "为该计划的翻译工作做出贡献。"
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
@@ -915,7 +912,7 @@ msgstr ""
 
 #: STRINGTABLE.IDS_ELEVATED
 msgid "Hand installation over to elevated child process."
-msgstr "将安装移交给提升的子进程。"
+msgstr "将安装移交给提权的子进程。"
 
 #: STRINGTABLE.IDS_INSTALLEDB_VERSION
 msgid "Unknown INSTALLED.DB version"
@@ -1270,7 +1267,7 @@ msgstr "无法解压缩"
 
 #: STRINGTABLE.IDS_USER_URL_TOOLTIP
 msgid "Additional site URL, path or UNC path"
-msgstr ""
+msgstr "其他站点地址、路径或 UNC 路径"
 
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
@@ -1335,7 +1332,7 @@ msgstr "为每个安装的软件包自动安装源代码"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
 msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
-msgstr "使用不同的基本名称，例如“foo”，而不是“setup”"
+msgstr "使用不同的基本名称，例如\"\"foo\"\"，而非\"\"setup\"\""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"
@@ -1444,10 +1441,8 @@ msgid "Extra DSA public key in s-expr format"
 msgstr "s-expr 格式的额外 DSA 公钥"
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
-#, fuzzy
-#| msgid "Download site URL"
 msgid "Download site URL, path or UNC path"
-msgstr "下载网址"
+msgstr "下载站点地址、路径或 UNC 路径"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
@@ -1475,7 +1470,7 @@ msgstr "显示版本"
 
 #: STRINGTABLE.IDS_HELPTEXT_WAIT
 msgid "When elevating, wait for elevated child process"
-msgstr "提升时，等待提升的子进程"
+msgstr "在提权时，等待提权的子进程"
 
 #~ msgid ""
 #~ "Cygwin support for 32-bit Windows is deprecated, and will be removed in "
