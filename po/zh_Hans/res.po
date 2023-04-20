@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-04-18 04:49+0000\n"
+"PO-Revision-Date: 2023-04-22 14:48+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 4.18-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -364,7 +364,7 @@ msgstr ""
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr "为该计划的翻译工作做出贡献。"
+msgstr "为本程序的翻译工作做出贡献。"
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
@@ -675,7 +675,7 @@ msgstr "无法打开 %s 进行写入： %s"
 
 #: STRINGTABLE.IDS_SETUPINI_MISSING
 msgid "Unable to get %s from <%s>"
-msgstr "无法从 %s 获取 <%s>"
+msgstr "无法从 <%2$s> 获取 %1$s"
 
 #: STRINGTABLE.IDS_OLD_SETUPINI
 msgid ""
@@ -840,13 +840,13 @@ msgid ""
 "removed.  Other installed or selected packages no longer depend on these "
 "packages."
 msgstr ""
-"选择软件包视图。 这决定了下面显示哪些包。\n"
+"选择软件包视图。 这决定了下面显示哪些软件包。\n"
 "\n"
-"类别：按软件包类别分组。 单击“+”展开。\n"
+"类别：按软件包类别分组。单击“+”展开。\n"
 "\n"
 "完整：显示所有软件包。\n"
 "\n"
-"待定：仅显示即将安装、删除或升级的包。 这告诉您按“下一步”时将发生什么变化。\n"
+"待定：仅显示即将安装、删除或升级的包。这告诉您按“下一步”时将发生什么变化。\n"
 "\n"
 "最新：显示不需要执行任何操作的已安装软件包，因为它们已经处于所需版本。\n"
 "\n"
@@ -854,10 +854,10 @@ msgstr ""
 "\n"
 "已选择：显示已选择的已安装包，但未作为依赖项安装。\n"
 "\n"
-"可卸载的：显示已选择且可以安全删除的已安装软件包。 没有其他已安装或选定的软件"
+"可卸载的：显示已选择且可以安全删除的已安装软件包。没有其他已安装或选定的软件"
 "包依赖于这些软件包。\n"
 "\n"
-"不需要的：显示现在可以安全删除的自动安装的软件包。 其他已安装或选定的软件包不"
+"不需要的：显示现在可以安全删除的自动安装的软件包。其他已安装或选定的软件包不"
 "再依赖于这些软件包。"
 
 #: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
@@ -1224,7 +1224,7 @@ msgstr "选择本地软件包目录"
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING_HASH
 msgid "Checking %s for %s"
-msgstr "正在检查 %s 的 %s"
+msgstr "正在检查 %2$s 的 %1$s"
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING_FROM
 msgid "%s from %s"
