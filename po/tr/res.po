@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-27 12:54+0100\n"
-"PO-Revision-Date: 2022-11-26 12:48+0000\n"
+"POT-Creation-Date: 2023-04-14 13:51+0100\n"
+"PO-Revision-Date: 2023-04-18 04:49+0000\n"
 "Last-Translator: Oğuz Ersen <oguz@ersen.moe>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/tr/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.17\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -155,7 +155,8 @@ msgstr "Yalnızca &Ben"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
 msgid "Cygwin will be available to all users of the system."
-msgstr "Cygwin, sistemin tüm kullanıcıları tarafından kullanılabilir olacaktır."
+msgstr ""
+"Cygwin, sistemin tüm kullanıcıları tarafından kullanılabilir olacaktır."
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_JUSTME_TEXT
 msgid ""
@@ -231,8 +232,7 @@ msgid "Select Your Internet Connection"
 msgstr "İnternet Bağlantınızı Seçin"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
-msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
-"DIALOG.IDD_INSTATUS.CAPTION"
+msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
 msgstr "Cygwin Kurucu"
 
@@ -250,8 +250,9 @@ msgid "(FILE)"
 msgstr "(DOSYA)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+msgctxt ""
+"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL."
+"IDC_INS_DISKFULL"
 msgid "Progress1"
 msgstr "İlerleme1"
 
@@ -295,8 +296,8 @@ msgid "Proxy &User ID"
 msgstr "Vekil &Kullanıcı Kimliği"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "&Parola"
 
@@ -305,15 +306,16 @@ msgid "Proxy Authorization Required"
 msgstr "Vekil Yetkilendirmesi Gerekli"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON."
+"IDOK"
 msgid "&OK"
 msgstr "&Tamam"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON."
+"IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
 msgstr "İptal"
 
@@ -375,6 +377,10 @@ msgstr ""
 "\n"
 "Gerektiğinde paket eklemek, kaldırmak veya yükseltmek için bu programı "
 "istediğiniz zaman çalıştırabilirsiniz."
+
+#: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
+msgid "Contribute to translations of this program."
+msgstr "Bu programın çevirilerine katkıda bulunun."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
@@ -531,8 +537,8 @@ msgstr "Uyarı:"
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "One or more mirrors you have selected is/are not on the list of official "
-"Cygwin mirrors any more. It/They may be out of date or missing some packages."
-"\n"
+"Cygwin mirrors any more. It/They may be out of date or missing some "
+"packages.\n"
 "This affects the following mirror(s):"
 msgstr ""
 "Seçtiğiniz bir veya daha fazla yansı artık resmi Cygwin yansıları listesinde "
@@ -755,8 +761,8 @@ msgid ""
 "This setup is version %s, but setup.ini claims version %s is available.\n"
 "You might want to upgrade to get the latest features and bug fixes."
 msgstr ""
-"Bu kurucu %s sürümüdür, ancak setup.ini %s sürümünün var olduğunu belirtiyor."
-"\n"
+"Bu kurucu %s sürümüdür, ancak setup.ini %s sürümünün var olduğunu "
+"belirtiyor.\n"
 "En son özellikleri ve hata düzeltmelerini almak için yükseltmek "
 "isteyebilirsiniz."
 
@@ -1125,8 +1131,8 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
-"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
+"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 "/%s çıkarılamıyor -- dosya yazılırken hata oluştu\n"
 "\n"
@@ -1170,6 +1176,10 @@ msgstr ""
 msgid "Cygwin is not supported on this Windows version"
 msgstr "Cygwin bu Windows sürümünde desteklenmiyor"
 
+#: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
+msgid "Cygwin is not supported on 32-bit Windows"
+msgstr "Cygwin 32 bit Windows'ta desteklenmiyor"
+
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
 "Cygwin support for this Windows version is deprecated, and will be removed "
@@ -1177,14 +1187,6 @@ msgid ""
 msgstr ""
 "Bu Windows sürümü için Cygwin desteği sonlandırıldı ve bir sonraki ana "
 "sürümde kaldırılacak"
-
-#: STRINGTABLE.IDS_DEPRECATED_WINDOWS_ARCH
-msgid ""
-"Cygwin support for 32-bit Windows is deprecated, and will be removed in the "
-"next major version"
-msgstr ""
-"32-bit Windows için Cygwin desteği sonlandırıldı ve bir sonraki ana sürümde "
-"kaldırılacak"
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
 msgid "Couldn't create registry key to store installation path"
@@ -1314,6 +1316,10 @@ msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
 msgid "Unable to extract"
 msgstr "Çıkarılamıyor"
 
+#: STRINGTABLE.IDS_USER_URL_TOOLTIP
+msgid "Additional site URL, path or UNC path"
+msgstr "Ek site URL'si, yol veya UNC yolu"
+
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
 msgstr "Seçenek işleme sırasında hata oluştu."
@@ -1403,8 +1409,8 @@ msgstr "Yerel paket dizini"
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
-"Skip package availability check when installing from local directory ("
-"requires local directory to be clean mirror!)"
+"Skip package availability check when installing from local directory "
+"(requires local directory to be clean mirror!)"
 msgstr ""
 "Yerel dizinden kurarken paket kullanılabilirlik denetimini atla (yerel "
 "dizinin temiz bir yansı olmasını gerektirir!)"
@@ -1496,8 +1502,8 @@ msgid "Extra DSA public key in s-expr format"
 msgstr "s-expr biçiminde ek DSA ortak anahtarı"
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
-msgid "Download site URL"
-msgstr "İndirme sitesi URL'si"
+msgid "Download site URL, path or UNC path"
+msgstr "İndirme sitesi URL'si, yol veya UNC yolu"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
@@ -1526,3 +1532,10 @@ msgstr "Sürümü göster"
 #: STRINGTABLE.IDS_HELPTEXT_WAIT
 msgid "When elevating, wait for elevated child process"
 msgstr "Yetkilendirirken, yetkilendirilen alt işlemi bekle"
+
+#~ msgid ""
+#~ "Cygwin support for 32-bit Windows is deprecated, and will be removed in "
+#~ "the next major version"
+#~ msgstr ""
+#~ "32-bit Windows için Cygwin desteği sonlandırıldı ve bir sonraki ana "
+#~ "sürümde kaldırılacak"

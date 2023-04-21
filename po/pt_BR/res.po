@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-21 13:56+0100\n"
+"POT-Creation-Date: 2023-04-14 13:51+0100\n"
 "PO-Revision-Date: 2023-03-20 19:37+0000\n"
 "Last-Translator: Fernando Lopes <fefehex12@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
@@ -220,8 +220,7 @@ msgid "Select Your Internet Connection"
 msgstr ""
 
 #: DIALOG.IDD_INSTATUS.CAPTION
-msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
-"DIALOG.IDD_INSTATUS.CAPTION"
+msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
 msgstr ""
 
@@ -239,8 +238,9 @@ msgid "(FILE)"
 msgstr ""
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+msgctxt ""
+"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL."
+"IDC_INS_DISKFULL"
 msgid "Progress1"
 msgstr ""
 
@@ -284,8 +284,8 @@ msgid "Proxy &User ID"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr ""
 
@@ -294,15 +294,16 @@ msgid "Proxy Authorization Required"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON."
+"IDOK"
 msgid "&OK"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON."
+"IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
 msgstr ""
 
@@ -354,6 +355,10 @@ msgid ""
 "\n"
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
+msgstr ""
+
+#: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
+msgid "Contribute to translations of this program."
 msgstr ""
 
 #: DIALOG.IDD_DESKTOP.CAPTION
@@ -509,8 +514,8 @@ msgstr ""
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "One or more mirrors you have selected is/are not on the list of official "
-"Cygwin mirrors any more. It/They may be out of date or missing some packages."
-"\n"
+"Cygwin mirrors any more. It/They may be out of date or missing some "
+"packages.\n"
 "This affects the following mirror(s):"
 msgstr ""
 
@@ -1011,8 +1016,8 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
-"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
+"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
@@ -1163,6 +1168,10 @@ msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
 msgid "Unable to extract"
 msgstr ""
 
+#: STRINGTABLE.IDS_USER_URL_TOOLTIP
+msgid "Additional site URL, path or UNC path"
+msgstr ""
+
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
 msgstr ""
@@ -1246,8 +1255,8 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
-"Skip package availability check when installing from local directory ("
-"requires local directory to be clean mirror!)"
+"Skip package availability check when installing from local directory "
+"(requires local directory to be clean mirror!)"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
@@ -1335,7 +1344,7 @@ msgid "Extra DSA public key in s-expr format"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
-msgid "Download site URL"
+msgid "Download site URL, path or UNC path"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
