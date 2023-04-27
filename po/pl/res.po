@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-04-20 13:48+0000\n"
+"PO-Revision-Date: 2023-04-29 11:48+0000\n"
 "Last-Translator: WaldiS <sto@tutanota.de>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/pl/>\n"
@@ -115,7 +115,7 @@ msgstr "Lokalny katalog pakietów"
 #: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
 msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "Przeglądaj..."
 
 #: DIALOG.IDD_ROOT.CAPTION
 msgid "Cygwin Setup - Choose Installation Directory"
@@ -140,7 +140,7 @@ msgstr "Katalog główny"
 #: DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE
 msgctxt "DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "Przeglądaj..."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_INSTALLFOR_GRP
 msgid "Install For"
@@ -165,14 +165,18 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
+"Program Cygwin będzie nadal dostępny dla wszystkich użytkowników, ale ikony "
+"pulpitu, pozycje menu Cygwin i ważne informacje instalatora będą dostępne "
+"tylko dla bieżącego użytkownika.  Wybierz tę opcję tylko wtedy, gdy nie masz "
+"uprawnień administratora lub gdy masz określone potrzeby."
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
-msgstr ""
+msgstr "Konfiguracja Cygwin - wybierz stronę(y) pobierania"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Available Download Sites:"
-msgstr ""
+msgstr "Dostępne strony do pobrania:"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Choose a site from this list, or add your own sites to the list."
@@ -184,15 +188,15 @@ msgstr "Wybierz witrynę pobierania"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
 msgid "User URL:"
-msgstr ""
+msgstr "URL użytkownika:"
 
 #: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
 msgid "Add"
-msgstr ""
+msgstr "Dodawać"
 
 #: DIALOG.IDD_NET.CAPTION
 msgid "Cygwin Setup - Select Connection Type"
-msgstr ""
+msgstr "Konfiguracja Cygwin - Wybierz typ połączenia"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
 msgid "Use &System Proxy Settings"
@@ -200,15 +204,15 @@ msgstr ""
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_DIRECT
 msgid "&Direct Connection"
-msgstr ""
+msgstr "&Bezpośrednie połączenie"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PROXY
 msgid "Use HTTP/FTP &Proxy:"
-msgstr ""
+msgstr "Użyj protokołu HTTP/FTP &Proxy:"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Proxy &Host"
-msgstr ""
+msgstr "Proxy i Host"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Por&t"
@@ -219,10 +223,12 @@ msgid ""
 "Setup needs to know how you want it to connect to the internet.  Choose the "
 "appropriate settings below."
 msgstr ""
+"Instalator musi wiedzieć, w jaki sposób ma łączyć się z Internetem.  Wybierz "
+"odpowiednie ustawienia poniżej."
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Your Internet Connection"
-msgstr ""
+msgstr "Wybierz swoje połączenie internetowe"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
 msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
@@ -232,57 +238,57 @@ msgstr ""
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
 msgid "Installing..."
-msgstr ""
+msgstr "Instalowanie..."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_PKG
 msgid "(PKG)"
-msgstr ""
+msgstr "(PKG)"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_FILE
 msgid "(FILE)"
-msgstr ""
+msgstr "(PLIK)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
 msgctxt ""
 "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL."
 "IDC_INS_DISKFULL"
 msgid "Progress1"
-msgstr ""
+msgstr "Postęp1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS"
 msgid "Progress1"
-msgstr ""
+msgstr "Postęp1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS"
 msgid "Progress1"
-msgstr ""
+msgstr "Postęp1"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE"
 msgid "Package:"
-msgstr ""
+msgstr "Pakiet:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_TOTAL
 msgid "Total:"
-msgstr ""
+msgstr "Razem:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_DISK
 msgid "Disk:"
-msgstr ""
+msgstr "Dysk:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC
 msgid "This page displays the progress of the download or installation."
-msgstr ""
+msgstr "Na tej stronie wyświetlany jest postęp pobierania lub instalacji."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Progress"
-msgstr ""
+msgstr "Postęp"
 
 #: DIALOG.IDD_PROXY_AUTH.CAPTION
 msgid "Proxy Authentication required"
-msgstr ""
+msgstr "Wymagane uwierzytelnienie proxy"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy &User ID"
@@ -292,7 +298,7 @@ msgstr ""
 msgctxt ""
 "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "Hasło"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy Authorization Required"
@@ -303,18 +309,18 @@ msgctxt ""
 "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON."
 "IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "OK"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt ""
 "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON."
 "IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Anuluj"
 
 #: DIALOG.IDD_NET_AUTH.CAPTION
 msgid "Server Authentication required"
-msgstr ""
+msgstr "Wymagane uwierzytelnienie serwera"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
@@ -328,7 +334,7 @@ msgstr ""
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgid "Server Authorization Required"
-msgstr ""
+msgstr "Wymagana autoryzacja serwera"
 
 #: DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK"
@@ -338,7 +344,7 @@ msgstr ""
 #: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Anuluj"
 
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
@@ -347,7 +353,7 @@ msgstr ""
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
-msgstr ""
+msgstr "Program instalacyjny Cygwin Net Release"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TEXT
 msgid ""
@@ -361,10 +367,19 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
+"Ten program instalacyjny jest używany do początkowej instalacji środowiska "
+"Cygwin, jak również wszystkich późniejszych aktualizacji. Kolejne strony "
+"poprowadzą Cię przez instalację.\n"
+"\n"
+"Proszę zauważyć, że domyślnie instalujemy tylko podstawowy zestaw pakietów.  "
+"Cygwin dostarcza dużą liczbę pakietów o różnym przeznaczeniu.\n"
+"\n"
+"Zawsze możesz uruchomić ten program w dowolnym momencie w przyszłości, aby "
+"dodać, usunąć lub uaktualnić pakiety w razie potrzeby."
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr ""
+msgstr "Przyczyniaj się do tłumaczeń tego programu."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
