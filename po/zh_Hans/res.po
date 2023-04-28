@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-04-22 14:48+0000\n"
+"PO-Revision-Date: 2023-04-29 11:48+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -122,7 +122,7 @@ msgstr "选择根安装目录"
 msgid ""
 "Select the directory where you want to install Cygwin.  Also choose a few "
 "installation parameters."
-msgstr "选择要安装 Cygwin 的目录。还需要选择几个安装参数。"
+msgstr "选择要安装 Cygwin 的目录。以及一些安装参数。"
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
 msgid "Root Directory"
@@ -438,7 +438,7 @@ msgstr "Cygwin 安装程序 - 选择软件包"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
 msgid "&View"
-msgstr "查看(&V)"
+msgstr "视图(&V)"
 
 #: DIALOG.IDD_CHOOSE.RTEXT.IDC_STATIC
 msgid "&Search"
@@ -502,11 +502,11 @@ msgstr "接受默认问题解决方案(&A)"
 
 #: DIALOG.IDD_CONFIRM.CAPTION
 msgid "Cygwin Setup - Review and confirm changes"
-msgstr "Cygwin 安装程序 - 查看并确认更改"
+msgstr "Cygwin 安装程序 - 审查并确认更改"
 
 #: DIALOG.IDD_CONFIRM.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Review and confirm changes"
-msgstr "查看并确认更改"
+msgstr "审查并确认更改"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
@@ -659,15 +659,14 @@ msgid ""
 "Warning: we recommend you do not use the root of your hard drive as the "
 "cygwin root, to prevent possible conflicts with other programs.  Proceed "
 "anyway?"
-msgstr ""
-"警告：我们强烈建议您不要将硬盘驱动器的根目录用作 cygwin 根目录，以防止与其他"
-"程序发生冲突。是否继续？"
+msgstr "警告：我们强烈建议您不要将硬盘驱动器的根目录用作 Cygwin "
+"根目录，以防止与其他程序发生冲突。是否继续？"
 
 #: STRINGTABLE.IDS_ROOT_SPACE
 msgid ""
 "You should not choose a root path that include spaces in directory names.  "
 "Proceed anyway?"
-msgstr "不应选择在目录名称中包含空格的根路径。是否继续？"
+msgstr "不应在目录名称中包含空格。是否继续？"
 
 #: STRINGTABLE.IDS_ERR_OPEN_WRITE
 msgid "Can't open %s for writing: %s"
@@ -675,7 +674,7 @@ msgstr "无法打开 %s 进行写入： %s"
 
 #: STRINGTABLE.IDS_SETUPINI_MISSING
 msgid "Unable to get %s from <%s>"
-msgstr "无法从 <%2$s> 获取 %1$s"
+msgstr "无法获取 %s（从 <%s>）"
 
 #: STRINGTABLE.IDS_OLD_SETUPINI
 msgid ""
@@ -811,7 +810,7 @@ msgstr "将所有软件包设置为软件包存储库中可用的版本，必要
 
 #: STRINGTABLE.IDS_TRUSTEXP_TOOLTIP
 msgid "Enable test packages."
-msgstr "启用测试软件包。"
+msgstr "启用测试版软件包。"
 
 #: STRINGTABLE.IDS_VIEWBUTTON_TOOLTIP
 msgid ""
@@ -840,7 +839,7 @@ msgid ""
 "removed.  Other installed or selected packages no longer depend on these "
 "packages."
 msgstr ""
-"选择软件包视图。 这决定了下面显示哪些软件包。\n"
+"选择软件包视图。这决定了下面显示哪些软件包。\n"
 "\n"
 "类别：按软件包类别分组。单击“+”展开。\n"
 "\n"
@@ -852,7 +851,7 @@ msgstr ""
 "\n"
 "未安装：显示当前未安装且尚未选择安装的包。\n"
 "\n"
-"已选择：显示已选择的已安装包，但未作为依赖项安装。\n"
+"已选择：显示已选择的已安装软件包，但未作为依赖项安装。\n"
 "\n"
 "可卸载的：显示已选择且可以安全删除的已安装软件包。没有其他已安装或选定的软件"
 "包依赖于这些软件包。\n"
@@ -875,8 +874,8 @@ msgid ""
 "Mirror Error:  Setup.ini signature %s from %s failed to verify.\n"
 "Possible corrupt mirror?  Setup.ini rejected."
 msgstr ""
-"镜像错误：来自 %s 的 Setup.ini 签名 %s 验证失败。\n"
-"可能损坏镜像？ Setup.ini 被拒绝。"
+"镜像错误：Setup.ini 签名 %s（来自 %s）验证失败。\n"
+"镜像可能已损坏？ Setup.ini 被拒绝。"
 
 #: STRINGTABLE.IDS_CRYPTO_ERROR
 msgid "Internal Error:  gcrypt library error %d %s"
@@ -1092,8 +1091,8 @@ msgstr ""
 "\n"
 "文件正在使用中或发生了其他错误。\n"
 "\n"
-"请停止所有 Cygwin 进程并选择“重试”，或选择“继续”以继续（文件将在重新启动后更"
-"新）。\n"
+"请结束所有 Cygwin 进程并选择\"\"重试\"\"，或选择\"\"继续\"\"以继续"
+"（文件将在重启后更新）。\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
 msgid ""
@@ -1224,7 +1223,7 @@ msgstr "选择本地软件包目录"
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING_HASH
 msgid "Checking %s for %s"
-msgstr "正在检查 %2$s 的 %1$s"
+msgstr "正在检查 %s（文件：%s）"
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING_FROM
 msgid "%s from %s"
@@ -1285,7 +1284,7 @@ msgstr "默认设置是下载和安装软件包，除非指定了 --download 或
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_TEST
 msgid "Consider package versions marked test"
-msgstr "考虑标记为测试的软件包版本"
+msgstr "考虑标记为测试版的软件包版本"
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
 msgid "Allow old, unsupported Windows versions"
@@ -1340,7 +1339,7 @@ msgstr "使用不受信任的密钥并保留所有密钥"
 
 #: STRINGTABLE.IDS_HELPTEXT_LANG
 msgid "Specify GUI language langid"
-msgstr "指定 GUI 语言语言 langid"
+msgstr "指定 GUI 语言的 langid"
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_INSTALL
 msgid "Install packages from local directory"
