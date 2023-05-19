@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-04-29 11:48+0000\n"
+"PO-Revision-Date: 2023-05-20 18:48+0000\n"
 "Last-Translator: WaldiS <sto@tutanota.de>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/pl/>\n"
@@ -199,8 +199,9 @@ msgid "Cygwin Setup - Select Connection Type"
 msgstr "Konfiguracja Cygwin - Wybierz typ połączenia"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
+#, fuzzy
 msgid "Use &System Proxy Settings"
-msgstr ""
+msgstr "Użyj &Systemowych ustawień serwera proxy"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_DIRECT
 msgid "&Direct Connection"
@@ -233,7 +234,7 @@ msgstr "Wybierz swoje połączenie internetowe"
 #: DIALOG.IDD_INSTATUS.CAPTION
 msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
-msgstr ""
+msgstr "Konfiguracja Cygwin"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
@@ -301,8 +302,9 @@ msgid "&Password"
 msgstr "Hasło"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
+#, fuzzy
 msgid "Proxy Authorization Required"
-msgstr ""
+msgstr "Wymagana autoryzacja serwera proxy"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt ""
@@ -330,7 +332,7 @@ msgstr ""
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Hasło"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgid "Server Authorization Required"
@@ -339,7 +341,7 @@ msgstr "Wymagana autoryzacja serwera"
 #: DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&OK"
 
 #: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
@@ -349,7 +351,7 @@ msgstr "Anuluj"
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
 msgid "Cygwin Setup"
-msgstr ""
+msgstr "Konfiguracja Cygwin"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
@@ -383,7 +385,7 @@ msgstr "Przyczyniaj się do tłumaczeń tego programu."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
-msgstr ""
+msgstr "Cygwin Setup - Status instalacji i tworzenie ikon"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
 msgid "Create icon on &Desktop"
@@ -391,101 +393,103 @@ msgstr ""
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
 msgid "Add icon to &Start Menu"
-msgstr ""
+msgstr "Dodaj ikonę do &Menu Start"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_INSTALL
 msgid ""
 "Tell setup if you want it to create a few icons for convenient access to the "
 "Cygwin environment."
 msgstr ""
+"Powiedz instalatorowi, czy chcesz, aby utworzył kilka ikon dla wygodnego "
+"dostępu do środowiska Cygwin."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_INSTALL
 msgid "Create Icons"
-msgstr ""
+msgstr "Tworzenie ikon"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
 msgid "Shows installation status in download-only mode."
-msgstr ""
+msgstr "Pokazuje stan instalacji w trybie tylko do pobrania."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
 msgid "Installation complete"
-msgstr ""
+msgstr "Instalacja zakończona"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS_HEADER
 msgid "Installation Status"
-msgstr ""
+msgstr "Stan instalacji"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS
 msgid "Cygwin installation completed successfully."
-msgstr ""
+msgstr "Instalacja Cygwin zakończyła się pomyślnie."
 
 #: DIALOG.IDD_FTP_AUTH.CAPTION
 msgid "FTP Authentication required"
-msgstr ""
+msgstr "Wymagane uwierzytelnienie FTP"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&ID użytkownika"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Hasło"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgid "FTP Authorization Required"
-msgstr ""
+msgstr "Wymagana autoryzacja FTP"
 
 #: DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&OK"
 
 #: DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Anuluj"
 
 #: DIALOG.IDD_CHOOSE.CAPTION
 msgid "Cygwin Setup - Select Packages"
-msgstr ""
+msgstr "Konfiguracja Cygwin - wybór pakietów"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
 msgid "&View"
-msgstr ""
+msgstr "&Podgląd"
 
 #: DIALOG.IDD_CHOOSE.RTEXT.IDC_STATIC
 msgid "&Search"
-msgstr ""
+msgstr "&Szukaj"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_DO_SEARCH
 msgid "Search "
-msgstr ""
+msgstr "Szukaj "
 
 #: DIALOG.IDD_CHOOSE.PUSHBUTTON.IDC_CHOOSE_CLEAR_SEARCH
 msgid "&Clear"
-msgstr ""
+msgstr "&Wyczyść"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_KEEP
 msgid "&Keep"
-msgstr ""
+msgstr "&Zachowaj"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_BEST
 msgid "&Best"
-msgstr ""
+msgstr "&Najlepszy"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_SYNC
 msgid "&Sync"
-msgstr ""
+msgstr "&Synchronizuj"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
 msgid "&Test"
-msgstr ""
+msgstr "&Test"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
 msgid "&Hide obsolete packages"
-msgstr ""
+msgstr "&Ukryj przestarzałe pakiety"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
 msgid "Select packages to download."
