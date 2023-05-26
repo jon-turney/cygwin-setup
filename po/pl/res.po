@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-05-20 18:48+0000\n"
+"PO-Revision-Date: 2023-05-27 18:49+0000\n"
 "Last-Translator: WaldiS <sto@tutanota.de>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/pl/>\n"
@@ -199,7 +199,6 @@ msgid "Cygwin Setup - Select Connection Type"
 msgstr "Konfiguracja Cygwin - Wybierz typ połączenia"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
-#, fuzzy
 msgid "Use &System Proxy Settings"
 msgstr "Użyj &Systemowych ustawień serwera proxy"
 
