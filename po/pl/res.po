@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-05-27 18:49+0000\n"
+"PO-Revision-Date: 2023-06-14 17:51+0000\n"
 "Last-Translator: WaldiS <sto@tutanota.de>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/pl/>\n"
@@ -216,7 +216,7 @@ msgstr "Proxy i Host"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Por&t"
-msgstr ""
+msgstr "Por&t"
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC
 msgid ""
@@ -301,7 +301,6 @@ msgid "&Password"
 msgstr "Hasło"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-#, fuzzy
 msgid "Proxy Authorization Required"
 msgstr "Wymagana autoryzacja serwera proxy"
 
@@ -326,7 +325,7 @@ msgstr "Wymagane uwierzytelnienie serwera"
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&ID użytkownika"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
@@ -388,7 +387,7 @@ msgstr "Cygwin Setup - Status instalacji i tworzenie ikon"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
 msgid "Create icon on &Desktop"
-msgstr ""
+msgstr "Utwórz ikonę na &Pulpicie"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
 msgid "Add icon to &Start Menu"
