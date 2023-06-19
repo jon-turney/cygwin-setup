@@ -4,8 +4,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-05-15 15:48+0000\n"
-"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
+"PO-Revision-Date: 2023-06-20 13:50+0000\n"
+"Last-Translator: Luis Mengel <mail@lmengel.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/de/>\n"
 "Language: de\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 4.18.1\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -186,7 +186,7 @@ msgstr ""
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Site"
-msgstr ""
+msgstr "Wählen Sie eine Download-Site"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
 msgid "User URL:"
@@ -225,6 +225,8 @@ msgid ""
 "Setup needs to know how you want it to connect to the internet.  Choose the "
 "appropriate settings below."
 msgstr ""
+"Das Setup muss wissen, wie Sie es mit dem Internet verbinden wollen.   "
+"Wählen Sie unten die entsprechenden Einstellungen aus."
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Your Internet Connection"
@@ -355,7 +357,7 @@ msgstr "Cygwin-Einrichtung"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
-msgstr ""
+msgstr "Cygwin Net Release Setup-Programm"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TEXT
 msgid ""
@@ -369,6 +371,16 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
+"Dieses Setup-Programm wird für die Erstinstallation der Cygwin-Umgebung "
+"sowie für alle nachfolgenden Updates verwendet.  Die folgenden Seiten führen "
+"Sie durch die Installation.\n"
+"\n"
+" Bitte beachten Sie, dass wir standardmäßig nur einen Basissatz von Paketen "
+"installieren.   Cygwin bietet eine große Anzahl von Paketen für eine "
+"Vielzahl von Zwecken an.\n"
+"\n"
+" Sie können dieses Programm jederzeit in der Zukunft ausführen, um je nach "
+"Bedarf Pakete hinzuzufügen, zu entfernen oder zu aktualisieren."
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
@@ -398,7 +410,7 @@ msgstr "Symbole erstellen"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
 msgid "Shows installation status in download-only mode."
-msgstr ""
+msgstr "Zeigt den Installationsstatus im Nur-Download-Modus an."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
 msgid "Installation complete"
@@ -419,7 +431,7 @@ msgstr "FTP-Authentifizierung erforderlich"
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&Benutzer-ID"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
@@ -519,7 +531,7 @@ msgstr "Änderungen überprüfen und bestätigen"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
-msgstr ""
+msgstr "Cygwin Setup - Veraltete Mirror-Server verwenden?"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
@@ -532,6 +544,10 @@ msgid ""
 "packages.\n"
 "This affects the following mirror(s):"
 msgstr ""
+"Ein oder mehrere Mirror-Server, die Sie ausgewählt haben, stehen nicht mehr "
+"auf der Liste der offiziellen Cygwin Mirror-Server. Es/Sie kann/können "
+"veraltet sein oder einige Pakete fehlen.  Dies betrifft die folgenden Mirror-"
+"Server:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -540,10 +556,14 @@ msgid ""
 "\n"
 "Do you want to continue, using this/these mirror(s)?"
 msgstr ""
+"Wenn Sie Probleme mit der Installation haben, sollten Sie nur offizielle "
+"Mirror-Server ausprobieren.\n"
+"\n"
+" Möchten Sie fortfahren, indem Sie diesen/diese Mirror-Server verwenden?"
 
 #: DIALOG.IDD_DROPPED.CONTROL.IDC_DROP_NOWARN
 msgid "&Don't warn me about this/these mirror(s) again"
-msgstr ""
+msgstr "&Mich nicht mehr vor diesem/den Mirror-Server(n) warnen"
 
 #: DIALOG.IDD_DROPPED.PUSHBUTTON.IDYES
 msgid "&Yes"
@@ -559,7 +579,7 @@ msgstr "Herunterladen unvollständig"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid "The following package(s) had download errors:"
-msgstr ""
+msgstr "Die folgenden Pakete hatten Download-Fehler:"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid ""
@@ -567,6 +587,9 @@ msgid ""
 "selection page, 'Continue' to go on anyway (NOT RECOMMENDED), or 'Cancel' to "
 "exit."
 msgstr ""
+"Wählen Sie 'Wiederholen', um den Download erneut zu starten, 'Zurück', um "
+"zur Paketauswahl-Seite zurückzukehren, 'Weiter', um trotzdem fortzufahren ("
+"NICHT EMPFOHLEN) oder 'Abbrechen', um zu beenden."
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
@@ -593,13 +616,16 @@ msgstr "Cygwin-Einrichtung - Ausführen von Nachinstallationsskripten"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Postinstall script errors"
-msgstr ""
+msgstr "Nachinstallations-Skriptfehler"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC
 msgid ""
 "These do not necessarily mean that affected packages will fail to function "
 "properly, but please check /var/log/setup.log.full and report any problems."
 msgstr ""
+"Dies bedeutet nicht unbedingt, dass die betroffenen Pakete nicht richtig "
+"funktionieren, aber bitte überprüfen Sie /var/log/setup.log.full und melden "
+"Sie alle Probleme."
 
 #: DIALOG.IDD_FILE_INUSE.CAPTION
 msgid "In-use file detected"
@@ -608,7 +634,7 @@ msgstr "Datei in Verwendung entdeckt"
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG
 msgctxt "DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr ""
+msgstr "Kann nicht extrahiert werden"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_STATIC
 msgid "The file is in use by the following processes:"
@@ -619,12 +645,19 @@ msgid ""
 "Select 'Retry' to retry, select 'Stop' to stop processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
+"Wählen Sie 'Wiederholen' zum erneuten Versuch, 'Stop' zum Beenden von "
+"Prozessen und zum erneuten Versuch oder 'Weiter', um trotzdem fortzufahren ("
+"die Datei wird nach einem Neustart aktualisiert)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_1
 msgid ""
 "Select 'Retry' to retry, select 'Kill' to kill processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
+"Wählen Sie 'Erneut versuchen' um es erneut zu versuchen, wählen Sie "
+"'Beenden', um Prozesse zu beenden und erneut zu versuchen, oder wählen Sie "
+"'Fortfahren', um trotzdem fortzufahren (die Datei wird nach einem Neustart "
+"aktualisiert)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_2
 msgid ""
