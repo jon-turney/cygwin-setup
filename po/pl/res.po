@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-06-14 17:51+0000\n"
+"PO-Revision-Date: 2023-06-24 16:49+0000\n"
 "Last-Translator: WaldiS <sto@tutanota.de>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/pl/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 4.18.1\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -292,7 +292,7 @@ msgstr "Wymagane uwierzytelnienie proxy"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy &User ID"
-msgstr ""
+msgstr "Proxy i identyfikator użytkownika"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgctxt ""
@@ -491,39 +491,39 @@ msgstr "&Ukryj przestarzałe pakiety"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
 msgid "Select packages to download."
-msgstr ""
+msgstr "Wybrane pakiety do pobrania."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_INSTALL
 msgid "Select packages to install."
-msgstr ""
+msgstr "Wybrane pakiety do instalowania."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Packages"
-msgstr ""
+msgstr "Wybierz pakiety"
 
 #: DIALOG.IDD_PREREQ.CAPTION
 msgid "Cygwin Setup - Resolving Dependencies"
-msgstr ""
+msgstr "Konfiguracja Cygwin - rozwiązywanie zależności"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Resolving Dependencies"
-msgstr ""
+msgstr "Rozwiązywanie zależności"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC
 msgid "The following problems occured trying to satisfy dependencies."
-msgstr ""
+msgstr "Wystąpiły następujące problemy podczas próby spełnienia zależności."
 
 #: DIALOG.IDD_PREREQ.CONTROL.IDC_PREREQ_CHECK
 msgid "&Accept default problem solutions"
-msgstr ""
+msgstr "&Zaakceptuj domyślne rozwiązania problemów"
 
 #: DIALOG.IDD_CONFIRM.CAPTION
 msgid "Cygwin Setup - Review and confirm changes"
-msgstr ""
+msgstr "Konfiguracja Cygwin - przejrzyj i potwierdź zmiany"
 
 #: DIALOG.IDD_CONFIRM.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Review and confirm changes"
-msgstr ""
+msgstr "Przejrzyj i potwierdź zmiany"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
@@ -531,7 +531,7 @@ msgstr ""
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
-msgstr ""
+msgstr "Ostrzeżenie:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -540,6 +540,10 @@ msgid ""
 "packages.\n"
 "This affects the following mirror(s):"
 msgstr ""
+"Jeden lub więcej wybranych serwerów lustrzanych nie znajduje się już na "
+"liście oficjalnych serwerów lustrzanych Cygwin. Może być nieaktualny lub "
+"może brakować w nim niektórych pakietów.\n"
+"Dotyczy to następujących serwerów lustrzanych:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -548,26 +552,30 @@ msgid ""
 "\n"
 "Do you want to continue, using this/these mirror(s)?"
 msgstr ""
+"W przypadku problemów z instalacją warto rozważyć wypróbowanie wyłącznie "
+"oficjalnych serwerów lustrzanych.\n"
+"\n"
+"Czy chcesz kontynuować korzystanie z tego serwera lustrzanego?"
 
 #: DIALOG.IDD_DROPPED.CONTROL.IDC_DROP_NOWARN
 msgid "&Don't warn me about this/these mirror(s) again"
-msgstr ""
+msgstr "&Nie ostrzegaj mnie ponownie o tym/tych serwerach lustrzanych"
 
 #: DIALOG.IDD_DROPPED.PUSHBUTTON.IDYES
 msgid "&Yes"
-msgstr ""
+msgstr "&Tak"
 
 #: DIALOG.IDD_DROPPED.DEFPUSHBUTTON.IDNO
 msgid "&No"
-msgstr ""
+msgstr "&Nie"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.CAPTION
 msgid "Download Incomplete"
-msgstr ""
+msgstr "Pobieranie zakończone"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid "The following package(s) had download errors:"
-msgstr ""
+msgstr "Wystąpiły błędy pobierania następujących pakietów:"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid ""
@@ -575,64 +583,76 @@ msgid ""
 "selection page, 'Continue' to go on anyway (NOT RECOMMENDED), or 'Cancel' to "
 "exit."
 msgstr ""
+"Wybierz \"Ponów próbę\", aby ponowić próbę pobrania, \"Wstecz\", aby "
+"powrócić do strony wyboru pakietu, \"Kontynuuj\", aby kontynuować "
+"(NIEZALECANE) lub \"Anuluj\", aby wyjść."
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
 msgid "&Retry"
-msgstr ""
+msgstr "&Ponów"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
 msgid "&Back"
-msgstr ""
+msgstr "&Wstecz"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE"
 msgid "&Continue"
-msgstr ""
+msgstr "&Kontynuuj"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT"
 msgid "Cancel"
-msgstr ""
+msgstr "Anuluj"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
-msgstr ""
+msgstr "Konfiguracja Cygwin - uruchamianie skryptów poinstalacyjnych"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Postinstall script errors"
-msgstr ""
+msgstr "Błędy skryptu poinstalacyjnego"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC
 msgid ""
 "These do not necessarily mean that affected packages will fail to function "
 "properly, but please check /var/log/setup.log.full and report any problems."
 msgstr ""
+"Nie musi to oznaczać, że pakiety, których dotyczy problem, nie będą działać "
+"poprawnie, ale prosimy o sprawdzenie /var/log/setup.log.full i zgłoszenie "
+"wszelkich problemów."
 
 #: DIALOG.IDD_FILE_INUSE.CAPTION
 msgid "In-use file detected"
-msgstr ""
+msgstr "Wykryto plik w użyciu"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG
 msgctxt "DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr ""
+msgstr "Nie można wyodrębnić"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_STATIC
 msgid "The file is in use by the following processes:"
-msgstr ""
+msgstr "Plik jest używany przez następujące procesy:"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_0
 msgid ""
 "Select 'Retry' to retry, select 'Stop' to stop processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
+"Wybierz \"Ponów próbę\", aby ponowić próbę, wybierz \"Zatrzymaj\", aby "
+"zatrzymać procesy i spróbuj ponownie, lub wybierz \"Kontynuuj\", aby mimo to "
+"kontynuować (plik zostanie zaktualizowany po ponownym uruchomieniu)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_1
 msgid ""
 "Select 'Retry' to retry, select 'Kill' to kill processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
+"Wybierz \"Ponów próbę\", aby ponowić próbę, wybierz \"Zabij\", aby zabić "
+"procesy i spróbuj ponownie, lub wybierz \"Kontynuuj\", aby mimo to "
+"kontynuować (plik zostanie zaktualizowany po ponownym uruchomieniu)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_2
 msgid ""
@@ -640,20 +660,23 @@ msgid ""
 "retry, or select 'Continue' to go on anyway (the file will be updated after "
 "a reboot)."
 msgstr ""
+"Wybierz \"Ponów próbę\", aby ponowić próbę, wybierz \"Zabij\", aby wymusić "
+"zabicie wszystkich procesów i ponów próbę, lub wybierz \"Kontynuuj\", aby "
+"kontynuować (plik zostanie zaktualizowany po ponownym uruchomieniu)."
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE"
 msgid "&Retry"
-msgstr ""
+msgstr "&Ponów"
 
 #: DIALOG.IDD_FILE_INUSE.DEFPUSHBUTTON.IDRETRY
 msgid "&Stop Processes"
-msgstr ""
+msgstr "&Zatrzymaj procesy"
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE"
 msgid "&Continue"
-msgstr ""
+msgstr "&Kontynuuj"
 
 #: STRINGTABLE.IDS_ROOT_SLASH
 msgid ""
@@ -661,102 +684,121 @@ msgid ""
 "cygwin root, to prevent possible conflicts with other programs.  Proceed "
 "anyway?"
 msgstr ""
+"Ostrzeżenie: zalecamy, aby nie używać katalogu głównego dysku twardego jako "
+"katalogu głównego cygwin, aby zapobiec możliwym konfliktom z innymi "
+"programami.  Kontynuować?"
 
 #: STRINGTABLE.IDS_ROOT_SPACE
 msgid ""
 "You should not choose a root path that include spaces in directory names.  "
 "Proceed anyway?"
 msgstr ""
+"Nie należy wybierać ścieżki katalogu głównego, która zawiera spacje w "
+"nazwach katalogów.  Kontynuować?"
 
 #: STRINGTABLE.IDS_ERR_OPEN_WRITE
 msgid "Can't open %s for writing: %s"
-msgstr ""
+msgstr "Nie można otworzyć %s do zapisu: %s"
 
 #: STRINGTABLE.IDS_SETUPINI_MISSING
 msgid "Unable to get %s from <%s>"
-msgstr ""
+msgstr "Nie można pobrać %s z <%s>"
 
 #: STRINGTABLE.IDS_OLD_SETUPINI
 msgid ""
 "This setup.ini is older than the one you used last time you installed "
 "cygwin.  Proceed anyway?"
 msgstr ""
+"Plik setup.ini jest starszy niż ten, którego użyłeś podczas ostatniej "
+"instalacji cygwin.  Kontynuować mimo to?"
 
 #: STRINGTABLE.IDS_NOTHING_INSTALLED
 msgid "Nothing needed to be installed"
-msgstr ""
+msgstr "Nic nie wymagało zainstalowania"
 
 #: STRINGTABLE.IDS_INSTALL_COMPLETE
 msgid "Installation Complete"
-msgstr ""
+msgstr "Instalacja zakończona"
 
 #: STRINGTABLE.IDS_REBOOT_REQUIRED
 msgid ""
 "In-use files have been replaced. You need to reboot as soon as possible to "
 "activate the new versions. Cygwin may operate incorrectly until you reboot."
 msgstr ""
+"Używane pliki zostały zastąpione. Musisz jak najszybciej ponownie uruchomić "
+"komputer, aby aktywować nowe wersje. Cygwin może działać niepoprawnie do "
+"momentu ponownego uruchomienia komputera."
 
 #: STRINGTABLE.IDS_ERR_OPEN_READ
 msgid "Can't open %s for reading: %s"
-msgstr ""
+msgstr "Nie można otworzyć %s do odczytu: %s"
 
 #: STRINGTABLE.IDS_ROOT_ABSOLUTE
 msgid ""
 "The install directory must be absolute, with both a drive letter and leading "
 "slash, like C:\\Cygwin"
 msgstr ""
+"Katalog instalacyjny musi być katalogiem bezwzględnym, zawierającym zarówno "
+"literę dysku, jak i wiodący ukośnik, na przykład C:\\Cygwin"
 
 #: STRINGTABLE.IDS_DOWNLOAD_COMPLETE
 msgid "Download Complete"
-msgstr ""
+msgstr "Pobieranie zakończone"
 
 #: STRINGTABLE.IDS_NOLOGFILE
 msgid "Cannot open log file %s for writing"
-msgstr ""
+msgstr "Nie można otworzyć pliku dziennika %s do zapisu"
 
 #: STRINGTABLE.IDS_UNINSTALL_COMPLETE
 msgid "Uninstalls complete."
-msgstr ""
+msgstr "Odinstalowywanie zostało zakończone."
 
 #: STRINGTABLE.IDS_ERR_CHDIR
 msgid "Could not change dir to %s: %s [%.8x]"
-msgstr ""
+msgstr "Nie można zmienić katalogu na %s: %s [%.8x]"
 
 #: STRINGTABLE.IDS_OLD_SETUP_VERSION
 msgid ""
 "This setup is version %s, but setup.ini claims version %s is available.\n"
 "You might want to upgrade to get the latest features and bug fixes."
 msgstr ""
+"Ta konfiguracja jest w wersji %s, ale plik setup.ini twierdzi, że wersja %s "
+"jest dostępna.\n"
+"Możesz chcieć uaktualnić, aby uzyskać najnowsze funkcje i poprawki błędów."
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE
 msgid "Download Incomplete.  Try again?"
-msgstr ""
+msgstr "Pobieranie niekompletne.  Spróbować ponownie?"
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE_EXIT
 msgid "Download incomplete.  Check %s for details"
 msgstr ""
+"Pobieranie jest niekompletne.  Sprawdź %s, aby uzyskać szczegółowe informacje"
 
 #: STRINGTABLE.IDS_INSTALL_ERROR
 msgid "Installation error (%s), Continue with other packages?"
-msgstr ""
+msgstr "Błąd instalacji (%s), kontynuować z innymi pakietami?"
 
 #: STRINGTABLE.IDS_INSTALL_INCOMPLETE
 msgid "Installation incomplete.  Check %s for details"
 msgstr ""
+"Instalacja niekompletna.  Sprawdź %s, aby uzyskać szczegółowe informacje"
 
 #: STRINGTABLE.IDS_CORRUPT_PACKAGE
 msgid "Package %s has a corrupt local copy, please remove and retry."
-msgstr ""
+msgstr "Pakiet %s ma uszkodzoną kopię lokalną, usuń ją i spróbuj ponownie."
 
 #: STRINGTABLE.IDS_QUERY_CORRUPT
 msgid "The file %s is corrupt.  Delete it and download again?"
-msgstr ""
+msgstr "Plik %s jest uszkodzony. Usunąć go i pobrać ponownie?"
 
 #: STRINGTABLE.IDS_SKIP_PACKAGE
 msgid ""
 "%s\n"
 "Do you want to skip this package ?"
 msgstr ""
+"%S\n"
+"Czy chcesz pominąć ten pakiet?"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION
 msgid ""
@@ -765,6 +807,10 @@ msgid ""
 "Type: %s\n"
 "Message: %s"
 msgstr ""
+"Błąd krytyczny: Niewykryty wyjątek\n"
+"Wątek: %s\n"
+"Typ: %s\n"
+"Wiadomość: %s"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
 msgid ""
@@ -774,26 +820,36 @@ msgid ""
 "Message: %s\n"
 "AppErrNo: %d"
 msgstr ""
+"Błąd krytyczny: Niewykryty wyjątek\n"
+"Wątek: %s\n"
+"Typ: %s\n"
+"Wiadomość: %s\n"
+"Nr błędu aplikacji: %d"
 
 #: STRINGTABLE.IDS_TRUSTKEEP_TOOLTIP
 msgid ""
 "Sets all packages to their currently installed version.  This is equivalent "
 "to telling setup not to make any changes to any package."
 msgstr ""
+"Ustawia wszystkie pakiety na ich aktualnie zainstalowaną wersję. Jest to "
+"równoznaczne z poinformowaniem instalatora, aby nie wprowadzał żadnych zmian "
+"w żadnym pakiecie."
 
 #: STRINGTABLE.IDS_TRUSTCURR_TOOLTIP
 msgid "Sets all packages to the best version available (RECOMMENDED)."
-msgstr ""
+msgstr "Ustawia wszystkie pakiety na najlepszą dostępną wersję (ZALECANE)."
 
 #: STRINGTABLE.IDS_TRUSTSYNC_TOOLTIP
 msgid ""
 "Sets all packages to the version available from the package repository, "
 "downgrading if necessary."
 msgstr ""
+"Ustawia wszystkie pakiety na wersję dostępną z repozytorium pakietów, w "
+"razie potrzeby obniżając ich wersję."
 
 #: STRINGTABLE.IDS_TRUSTEXP_TOOLTIP
 msgid "Enable test packages."
-msgstr ""
+msgstr "Włącz pakiety testowe."
 
 #: STRINGTABLE.IDS_VIEWBUTTON_TOOLTIP
 msgid ""
@@ -822,6 +878,31 @@ msgid ""
 "removed.  Other installed or selected packages no longer depend on these "
 "packages."
 msgstr ""
+"Wybierz widok pakietu. Określa to, które pakiety są pokazane poniżej.\n"
+"\n"
+"Kategoria: Grupa według kategorii pakietu. Kliknij \"+\", aby rozwinąć.\n"
+"\n"
+"Pełny: Pokaż wszystkie pakiety.\n"
+"\n"
+"Oczekujące: Pokaż tylko pakiety, które mają zostać zainstalowane, usunięte "
+"lub uaktualnione. To powie ci, co się zmieni po naciśnięciu \"Dalej\".\n"
+"\n"
+"Aktualne: Pokaż zainstalowane pakiety, które nie wymagają żadnych działań, "
+"ponieważ są już w żądanej wersji.\n"
+"\n"
+"Niezainstalowane: Pokaż pakiety, które nie są aktualnie zainstalowane i nie "
+"zostały wybrane do instalacji.\n"
+"\n"
+"Wybrane: Pokaż zainstalowane pakiety, które zostały wybrane, a nie "
+"zainstalowane jako zależność.\n"
+"\n"
+"Usuwalne: Pokaż zainstalowane pakiety, które zostały wybrane i można je "
+"bezpiecznie usunąć. Żadne inne zainstalowane lub wybrane pakiety nie zależą "
+"od tych pakietów.\n"
+"\n"
+"Niepotrzebne: Pokaż automatycznie zainstalowane pakiety, które można teraz "
+"bezpiecznie usunąć. Inne zainstalowane lub wybrane pakiety nie są już "
+"zależne od tych pakietów."
 
 #: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
 msgid ""
@@ -830,20 +911,28 @@ msgid ""
 "have been removed or renamed, or are infrastructure packages that are "
 "handled automatically."
 msgstr ""
+"Jeśli ta opcja jest zaznaczona, instalator ukryje pakiety w kategoriach o "
+"nazwach zaczynających się od \"_\". Takie pakiety są zwykle pustymi "
+"symbolami zastępczymi dla pakietów, które zostały usunięte lub których nazwy "
+"zostały zmienione, lub są pakietami infrastruktury, które są obsługiwane "
+"automatycznie."
 
 #: STRINGTABLE.IDS_SIG_INVALID
 msgid ""
 "Mirror Error:  Setup.ini signature %s from %s failed to verify.\n"
 "Possible corrupt mirror?  Setup.ini rejected."
 msgstr ""
+"Błąd kopii lustrzanej: nie udało się zweryfikować podpisu Setup.ini %s z %s."
+"\n"
+"Możliwe uszkodzenie kopii lustrzanej? Plik Setup.ini został odrzucony."
 
 #: STRINGTABLE.IDS_CRYPTO_ERROR
 msgid "Internal Error:  gcrypt library error %d %s"
-msgstr ""
+msgstr "Błąd wewnętrzny: błąd biblioteki gcrypt %d %s"
 
 #: STRINGTABLE.IDS_SEARCH_TOOLTIP
 msgid "Search for this string in package names."
-msgstr ""
+msgstr "Wyszukaj ten ciąg w nazwach pakietów."
 
 #: STRINGTABLE.IDS_MAYBE_MKDIR
 msgid "Directory %s does not exist, would you like me to create it?"
