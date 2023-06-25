@@ -4,15 +4,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2023-06-25 18:40+0000\n"
+"Last-Translator: Vincent Dawans <dawansv@gmail.com>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/cygwin-setup/"
+"cygwin-setup/fr/>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Translate Toolkit 3.7.3\n"
+"X-Generator: Weblate 4.18.1\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -375,7 +377,7 @@ msgstr ""
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr ""
+msgstr "Contribuer à la traduction de ce programme."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
@@ -849,26 +851,6 @@ msgid "Enable test packages."
 msgstr "Autoriser les versions de test."
 
 #: STRINGTABLE.IDS_VIEWBUTTON_TOOLTIP
-#, fuzzy
-#| msgid ""
-#| "Select the package view.  This determines which packages are shown "
-#| "below.\n"
-#| "\n"
-#| "Category: Group by package category.  Click on '+' to expand.\n"
-#| "\n"
-#| "Full: Show all packages.\n"
-#| "\n"
-#| "Pending: Show only packages that are about to be installed, removed, or "
-#| "upgraded.  This tells you what is going to change when you press 'Next'.\n"
-#| "\n"
-#| "Up To Date: Show installed packages that need no action because they are "
-#| "at the desired version already.\n"
-#| "\n"
-#| "Not installed: Show packages that are are not currently installed and "
-#| "haven't been selected for installation.\n"
-#| "\n"
-#| "Picked: Show installed packages that were selected, not installed as a "
-#| "dependency."
 msgid ""
 "Select the package view.  This determines which packages are shown below.\n"
 "\n"
@@ -898,22 +880,30 @@ msgstr ""
 "Itérer les différentes vues des paquets.  Ceci détermine quels paquets "
 "seront montrés dans la vue ci-dessous.\n"
 "\n"
-"Catégorie : regroupe par catégorie de paquets. Cliquez sur '+' pour "
-"étendre.\n"
+"Catégorie : regroupe par catégorie de paquets. Cliquez sur '+' pour étendre."
+"\n"
 "\n"
 "Tout : montre tous les paquets.\n"
 "\n"
-"En attente : montre uniquement les paquets à ajouter, enlever ou mettre à "
-"jour. Ceci montre ce que l'assistant est sur le point de modifier lors de "
-"l'appui sur 'Suivant'.\n"
+"En attente : montre uniquement les paquets en attente d'ajou, retrait ou "
+"mise à jour. Ceci montre ce que l'assistant est sur le point de modifier "
+"lors de l'appui sur 'Suivant'.\n"
 "\n"
 "À jour : montre les paquets installés qui ne nécessitent pas d'action.\n"
 "\n"
 "Non installé : montre les paquets non installés ou qui ne sont pas "
 "sélectionnés pour installation.\n"
 "\n"
-"Choisi : montre les paquets installés qui ont été sélectionnés, et non "
-"installés pour résoudre une dépendance."
+"Choisi : montre les paquets installés qui ont été sélectionnés, et non pas "
+"installés pour résoudre une dépendance.\n"
+"\n"
+"Supprimable : montre les paquets installés qui ont été sélectionnés et "
+"peuvent être supprimer en toute sécurité.  Aucun autre paquet installé ou "
+"sélectionné ne dépend de ces paquets.\n"
+"\n"
+"Superflu : montre les paquets installés automatiquement qui peuvent "
+"maintenant être supprimer en toute sécurité.  Les autres paquets installés "
+"ou sélectionnés ne dépendent plus de ces paquets."
 
 #: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
 msgid ""
@@ -1092,11 +1082,11 @@ msgstr "Sélectionné"
 
 #: STRINGTABLE.IDS_VIEW_REMOVABLE
 msgid "Removable"
-msgstr ""
+msgstr "Supprimable"
 
 #: STRINGTABLE.IDS_VIEW_UNNEEDED
 msgid "Unneeded"
-msgstr ""
+msgstr "Superflu"
 
 #: STRINGTABLE.IDS_VIEW_CATEGORY
 msgid "Category"
@@ -1194,7 +1184,7 @@ msgstr "Cygwin n'est pas supporté pour cette version de Windows"
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
 msgid "Cygwin is not supported on 32-bit Windows"
-msgstr ""
+msgstr "Cygwin n'est pas disponible sous Windows 32 bits"
 
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
@@ -1337,7 +1327,7 @@ msgstr "Incapable d'extraire"
 
 #: STRINGTABLE.IDS_USER_URL_TOOLTIP
 msgid "Additional site URL, path or UNC path"
-msgstr ""
+msgstr "URL de site, chemin d’accès ou chemin UNC supplémentaires"
 
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
@@ -1521,10 +1511,8 @@ msgid "Extra DSA public key in s-expr format"
 msgstr "Clé publique DSA supplémentaire au format s-expr"
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
-#, fuzzy
-#| msgid "Download site URL"
 msgid "Download site URL, path or UNC path"
-msgstr "URL du site de téléchargement"
+msgstr "URL, chemin d’accès ou chemin UNC du site de téléchargement"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
