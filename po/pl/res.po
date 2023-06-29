@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-06-24 16:49+0000\n"
+"PO-Revision-Date: 2023-06-30 18:50+0000\n"
 "Last-Translator: WaldiS <sto@tutanota.de>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/pl/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.18.1\n"
+"X-Generator: Weblate 5.0-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -527,7 +527,7 @@ msgstr "Przejrzyj i potwierdź zmiany"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
-msgstr ""
+msgstr "Cygwin Setup - Używasz zrzuconych serwerów lustrzanych?"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
@@ -936,11 +936,13 @@ msgstr "Wyszukaj ten ciąg w nazwach pakietów."
 
 #: STRINGTABLE.IDS_MAYBE_MKDIR
 msgid "Directory %s does not exist, would you like me to create it?"
-msgstr ""
+msgstr "Katalog %s nie istnieje, czy mam go utworzyć?"
 
 #: STRINGTABLE.IDS_CANT_MKDIR
 msgid "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
 msgstr ""
+"Nie można utworzyć katalogu %s, przepraszamy.  (Dysk jest pełny lub tylko do "
+"odczytu?)"
 
 #: STRINGTABLE.IDS_NO_LOCALDIR
 msgid ""
@@ -951,175 +953,182 @@ msgid ""
 "Press OK if that's what you wanted\n"
 "or Cancel to choose a different directory."
 msgstr ""
+"Nie znaleziono lokalnego katalogu pakietów %s.\n"
+"Nadal można usunąć zainstalowane\n"
+"pakiety, ale nie będzie nic do zainstalowania.\n"
+"\n"
+"Naciśnij OK, jeśli tego chcesz\n"
+"lub Anuluj, aby wybrać inny katalog."
 
 #: STRINGTABLE.IDS_ELEVATED
 msgid "Hand installation over to elevated child process."
 msgstr ""
+"Przekaż instalację procesowi potomnemu z podwyższonym poziomem uprawnień."
 
 #: STRINGTABLE.IDS_INSTALLEDB_VERSION
 msgid "Unknown INSTALLED.DB version"
-msgstr ""
+msgstr "Nieznana wersja INSTALLED.DB"
 
 #: STRINGTABLE.IDS_NO_MIRROR_LST
 msgid "Could not download mirror sites list"
-msgstr ""
+msgstr "Nie można pobrać listy witryn lustrzanych"
 
 #: STRINGTABLE.IDS_PROGRESS_PROGRESS
 msgid "Progress:"
-msgstr ""
+msgstr "Postęp:"
 
 #: STRINGTABLE.IDS_PROGRESS_PACKAGE
 msgctxt "STRINGTABLE.IDS_PROGRESS_PACKAGE"
 msgid "Package:"
-msgstr ""
+msgstr "Pakiet:"
 
 #: STRINGTABLE.IDS_PROGRESS_CONNECTING
 msgid "Connecting..."
-msgstr ""
+msgstr "Łączenie..."
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING
 msgid "Checking for packages to download..."
-msgstr ""
+msgstr "Sprawdzanie pakietów do pobrania..."
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING
 msgid "Downloading..."
-msgstr ""
+msgstr "Pobieranie..."
 
 #: STRINGTABLE.IDS_PROGRESS_PARSING
 msgid "Parsing..."
-msgstr ""
+msgstr "Analizowanie..."
 
 #: STRINGTABLE.IDS_PROGRESS_PREREMOVE
 msgid "Running preremove script..."
-msgstr ""
+msgstr "Uruchamiam skrypt preremove..."
 
 #: STRINGTABLE.IDS_PROGRESS_UNINSTALL
 msgid "Uninstalling..."
-msgstr ""
+msgstr "Odinstalowywanie..."
 
 #: STRINGTABLE.IDS_PROGRESS_INSTALL
 msgctxt "STRINGTABLE.IDS_PROGRESS_INSTALL"
 msgid "Installing..."
-msgstr ""
+msgstr "Instalacja..."
 
 #: STRINGTABLE.IDS_PROGRESS_CALCULATING
 msgid "Calculating..."
-msgstr ""
+msgstr "Obliczanie..."
 
 #: STRINGTABLE.IDS_PROGRESS_POSTINSTALL
 msgid "Running..."
-msgstr ""
+msgstr "Uruchamianie..."
 
 #: STRINGTABLE.IDS_PROGRESS_SOLVING
 msgid "Solving dependencies..."
-msgstr ""
+msgstr "Rozwiązywanie zależności..."
 
 #: STRINGTABLE.IDS_ACTION_DEFAULT
 msgid "Default"
-msgstr ""
+msgstr "Domyślnie"
 
 #: STRINGTABLE.IDS_ACTION_INSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_INSTALL"
 msgid "Install"
-msgstr ""
+msgstr "Instaluj"
 
 #: STRINGTABLE.IDS_ACTION_UNINSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_UNINSTALL"
 msgid "Uninstall"
-msgstr ""
+msgstr "Odinstaluj"
 
 #: STRINGTABLE.IDS_ACTION_SKIP
 msgid "Skip"
-msgstr ""
+msgstr "Pomiń"
 
 #: STRINGTABLE.IDS_ACTION_KEEP
 msgid "Keep"
-msgstr ""
+msgstr "Zachowaj"
 
 #: STRINGTABLE.IDS_ACTION_REINSTALL
 msgid "Reinstall"
-msgstr ""
+msgstr "Zainstaluj ponownie"
 
 #: STRINGTABLE.IDS_ACTION_RETRIEVE
 msgid "Retrieve"
-msgstr ""
+msgstr "Odzyskiwanie"
 
 #: STRINGTABLE.IDS_ACTION_UNKNOWN
 msgid "Unknown"
-msgstr ""
+msgstr "Nieznany"
 
 #: STRINGTABLE.IDS_ACTION_SOURCE
 msgid "Source"
-msgstr ""
+msgstr "Źródło"
 
 #: STRINGTABLE.IDS_VIEW_FULL
 msgid "Full"
-msgstr ""
+msgstr "Pełny"
 
 #: STRINGTABLE.IDS_VIEW_PENDING
 msgid "Pending"
-msgstr ""
+msgstr "Oczekujące"
 
 #: STRINGTABLE.IDS_VIEW_UPTODATE
 msgid "Up To Date"
-msgstr ""
+msgstr "Aktualne"
 
 #: STRINGTABLE.IDS_VIEW_NOTINSTALLED
 msgid "Not Installed"
-msgstr ""
+msgstr "Nie zainstalowany"
 
 #: STRINGTABLE.IDS_VIEW_PICKED
 msgid "Picked"
-msgstr ""
+msgstr "Wybrany"
 
 #: STRINGTABLE.IDS_VIEW_REMOVABLE
 msgid "Removable"
-msgstr ""
+msgstr "Usuwany"
 
 #: STRINGTABLE.IDS_VIEW_UNNEEDED
 msgid "Unneeded"
-msgstr ""
+msgstr "Niepotrzebne"
 
 #: STRINGTABLE.IDS_VIEW_CATEGORY
 msgid "Category"
-msgstr ""
+msgstr "Kategoria"
 
 #: STRINGTABLE.IDS_COLUMN_PACKAGE
 msgid "Package"
-msgstr ""
+msgstr "Pakiet"
 
 #: STRINGTABLE.IDS_COLUMN_CURRENT
 msgid "Current"
-msgstr ""
+msgstr "Aktualny"
 
 #: STRINGTABLE.IDS_COLUMN_NEW
 msgid "New"
-msgstr ""
+msgstr "Nowy"
 
 #: STRINGTABLE.IDS_COLUMN_SOURCE
 msgid "Src?"
-msgstr ""
+msgstr "Src?"
 
 #: STRINGTABLE.IDS_COLUMN_CATEGORIES
 msgid "Categories"
-msgstr ""
+msgstr "Kategorie"
 
 #: STRINGTABLE.IDS_COLUMN_SIZE
 msgid "Size"
-msgstr ""
+msgstr "Rozmiar"
 
 #: STRINGTABLE.IDS_COLUMN_DESCR
 msgid "Description"
-msgstr ""
+msgstr "Opis"
 
 #: STRINGTABLE.IDS_MBOX_CAPTION
 msgctxt "STRINGTABLE.IDS_MBOX_CAPTION"
 msgid "Cygwin Setup"
-msgstr ""
+msgstr "Konfiguracja Cygwin"
 
 #: STRINGTABLE.IDS_EXTRACTION_FAILED
 msgid "Unable to extract /%s -- corrupt package?"
-msgstr ""
+msgstr "Nie można wyodrębnić /%s -- uszkodzonego pakietu?"
 
 #: STRINGTABLE.IDS_EXTRACTION_INUSE
 msgid ""
@@ -1130,6 +1139,13 @@ msgid ""
 "Please stop all Cygwin processes and select \"\"Retry\"\", or select "
 "\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
+"Nie można wyodrębnić /%s -- błąd podczas zapisywania pliku\n"
+"\n"
+"Plik jest używany lub wystąpił inny błąd.\n"
+"\n"
+"Zatrzymaj wszystkie procesy Cygwin i wybierz \"Ponów próbę\" lub wybierz "
+"\"Kontynuuj\", aby kontynuować (plik zostanie zaktualizowany po ponownym "
+"uruchomieniu).\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
 msgid ""
@@ -1137,6 +1153,9 @@ msgid ""
 "%s\n"
 "Delete?"
 msgstr ""
+"Znaleziono starą wersję cygwin1.dll tutaj:\n"
+"%s\n"
+"Usunąć?"
 
 #: STRINGTABLE.IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
 msgid ""
@@ -1145,6 +1164,9 @@ msgid ""
 "You should delete the old version of cygwin1.dll at your earliest "
 "convenience."
 msgstr ""
+"Nie można usunąć pliku %s.\n"
+"Czy biblioteka DLL jest używana przez inną aplikację?\n"
+"Powinieneś jak najszybciej usunąć starą wersję cygwin1.dll."
 
 #: STRINGTABLE.IDS_SHELLLINK_FAILED
 msgid ""
@@ -1152,28 +1174,32 @@ msgid ""
 "Setup will not be able to create Cygwin Icons in the Start Menu or on the "
 "Desktop."
 msgstr ""
+"CoCreateInstance nie powiodło się z powodu błędu 0x%x.\n"
+"Instalator nie będzie mógł tworzyć ikon Cygwin w menu Start ani na pulpicie."
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_VERSION
 msgid "Cygwin is not supported on this Windows version"
-msgstr ""
+msgstr "Cygwin nie jest obsługiwany w tej wersji systemu Windows"
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
 msgid "Cygwin is not supported on 32-bit Windows"
-msgstr ""
+msgstr "Cygwin nie jest obsługiwany w 32-bitowym systemie Windows"
 
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
 "Cygwin support for this Windows version is deprecated, and will be removed "
 "in the next major version"
 msgstr ""
+"Obsługa Cygwin dla tej wersji systemu Windows jest przestarzała i zostanie "
+"usunięta w następnej głównej wersji"
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
 msgid "Couldn't create registry key to store installation path"
-msgstr ""
+msgstr "Nie można utworzyć klucza rejestru do przechowywania ścieżki instalacji"
 
 #: STRINGTABLE.IDS_NIO_ERROR
 msgid "Internet Error: %s"
-msgstr ""
+msgstr "Błąd internetowy: %s"
 
 #: STRINGTABLE.IDS_PREREQ_UNSOLVED_PROBLEMS
 msgid ""
@@ -1183,6 +1209,11 @@ msgid ""
 "\n"
 "Are you sure you want to proceed (NOT RECOMMENDED)?"
 msgstr ""
+"OSTRZEŻENIE — nierozwiązane problemy\n"
+"\n"
+"Niektóre pakiety mogą nie działać poprawnie, jeśli będziesz kontynuować.\n"
+"\n"
+"Czy na pewno chcesz kontynuować (NIEZALECANE)?"
 
 #: STRINGTABLE.IDS_MIXED_BITNESS_ERROR
 msgid ""
@@ -1195,293 +1226,321 @@ msgid ""
 "Either run setup-%s.exe to update your existing %s bit installation of "
 "Cygwin, or choose another directory for your %s bit installation."
 msgstr ""
+"Niezgodność procesora\n"
+"\n"
+"Próbujesz zainstalować %s bitową wersję Cygwina w katalogu zawierającym %s "
+"bitową wersję Cygwina. Kontynuowanie tego spowodowałoby uszkodzenie "
+"istniejącej instalacji.\n"
+"\n"
+"Uruchom setup-%s.exe, aby zaktualizować istniejącą %s-bitową instalację "
+"Cygwin, lub wybierz inny katalog dla swojej %s-bitowej instalacji."
 
 #: STRINGTABLE.IDS_GET_SITELIST_ERROR
 msgid ""
 "Can't get list of download sites.\n"
 "Make sure your network settings are correct and try again."
 msgstr ""
+"Nie można uzyskać listy witryn pobierania.\n"
+"Upewnij się, że ustawienia sieciowe są poprawne i spróbuj ponownie."
 
 #: STRINGTABLE.IDS_CONFIRM_EXIT
 msgid ""
 "Are you sure you want to exit setup? Any current download or installation "
 "will be aborted."
 msgstr ""
+"Czy na pewno chcesz wyjść z konfiguracji? Bieżące pobieranie lub instalacja "
+"zostanie przerwana."
 
 #: STRINGTABLE.IDS_CONTINUE
 msgid "Continue"
-msgstr ""
+msgstr "Kontynuuj"
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_NO_PACKAGES
 msgid "No packages found."
-msgstr ""
+msgstr "Nie znaleziono pakietów."
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_DOWNLOAD
 msgid "Nothing to download."
-msgstr ""
+msgstr "Nie ma nic do pobrania."
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_INSTALL
 msgid "Nothing to install or update."
-msgstr ""
+msgstr "Nie trzeba nic instalować ani aktualizować."
 
 #: STRINGTABLE.IDS_ROOT_BROWSE_TITLE
 msgid "Select an installation root directory"
-msgstr ""
+msgstr "Wybierz katalog główny instalacji"
 
 #: STRINGTABLE.IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE
 msgid "Select download directory"
-msgstr ""
+msgstr "Wybierz katalog pobierania"
 
 #: STRINGTABLE.IDS_LOCALDIR_BROWSE_PACKAGE_TITLE
 msgid "Select local package directory"
-msgstr ""
+msgstr "Wybrany lokalny katalog pakietów"
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING_HASH
 msgid "Checking %s for %s"
-msgstr ""
+msgstr "Sprawdzanie %s dla %s"
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING_FROM
 msgid "%s from %s"
-msgstr ""
+msgstr "%s z %s"
 
 #: STRINGTABLE.IDS_CONFIRM_UNINSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_UNINSTALL"
 msgid "Uninstall"
-msgstr ""
+msgstr "Odinstaluj"
 
 #: STRINGTABLE.IDS_CONFIRM_INSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_INSTALL"
 msgid "Install"
-msgstr ""
+msgstr "Instaluj"
 
 #: STRINGTABLE.IDS_CONFIRM_DOWNLOAD
 msgid "Download"
-msgstr ""
+msgstr "Pobierz"
 
 #: STRINGTABLE.IDS_CONFIRM_NOTHING
 msgid "No changes"
-msgstr ""
+msgstr "Bez zmian"
 
 #: STRINGTABLE.IDS_CONFIRM_AUTO_ADD
 msgid "(automatically added)"
-msgstr ""
+msgstr "(dodane automatycznie)"
 
 #: STRINGTABLE.IDS_CONFIRM_SOURCE
 msgid "(source)"
-msgstr ""
+msgstr "(źródło)"
 
 #: STRINGTABLE.IDS_FILE_INUSE_KILL
 msgid "&Kill Processes"
-msgstr ""
+msgstr "&Zabij procesy"
 
 #: STRINGTABLE.IDS_FILE_INUSE_MSG
 msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr ""
+msgstr "Nie można wyodrębnić"
 
 #: STRINGTABLE.IDS_USER_URL_TOOLTIP
 msgid "Additional site URL, path or UNC path"
-msgstr ""
+msgstr "Dodatkowy adres URL witryny, ścieżka lub ścieżka UNC"
 
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
-msgstr ""
+msgstr "Błąd podczas przetwarzania opcji."
 
 #: STRINGTABLE.IDS_HELPTEXT_HEADER
 msgid "Command Line Options:"
-msgstr ""
+msgstr "Opcje wiersza poleceń:"
 
 #: STRINGTABLE.IDS_HELPTEXT_FOOTER
 msgid ""
 "The default is to both download and install packages, unless either --"
 "download or --local-install is specified."
 msgstr ""
+"Domyślnie pobierane i instalowane są pakiety, chyba że określono to w "
+"opcjach --download lub --local-install."
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_TEST
 msgid "Consider package versions marked test"
-msgstr ""
+msgstr "Rozważ wersje pakietu oznaczone jako testowe"
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
 msgid "Allow old, unsupported Windows versions"
-msgstr ""
+msgstr "Zezwalaj na stare, nieobsługiwane wersje systemu Windows"
 
 #: STRINGTABLE.IDS_HELPTEXT_ARCH
 msgid "Architecture to install (x86_64 or x86)"
-msgstr ""
+msgstr "Architektura do zainstalowania (x86_64 lub x86)"
 
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
 msgid "Specify categories to install"
-msgstr ""
+msgstr "Określanie kategorii do zainstalowania"
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""
 "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
 msgstr ""
+"Kompresuj zainstalowane pliki za pomocą Compact OS (xpress4k, xpress8k, "
+"xpress16k, lzx)"
 
 #: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
 msgid "Remove orphaned packages"
-msgstr ""
+msgstr "Usuń osierocone pakiety"
 
 #: STRINGTABLE.IDS_HELPTEXT_DISABLE_ANTIVIRUS
 msgid ""
 "Disable known or suspected buggy anti virus software packages during "
 "execution"
 msgstr ""
+"Wyłącz znane lub podejrzewane pakiety oprogramowania antywirusowego z "
+"błędami podczas wykonywania"
 
 #: STRINGTABLE.IDS_HELPTEXT_DOWNLOAD
 msgid "Download packages from internet"
-msgstr ""
+msgstr "Pobierz pakiety z internetu"
 
 #: STRINGTABLE.IDS_HELPTEXT_FORCE_CURRENT
 msgid "Select the current version for all packages"
-msgstr ""
+msgstr "Wybierz aktualną wersję dla wszystkich pakietów"
 
 #: STRINGTABLE.IDS_HELPTEXT_HELP
 msgid "Print help"
-msgstr ""
+msgstr "Drukuj pomoc"
 
 #: STRINGTABLE.IDS_HELPTEXT_INCLUDE_SOURCE
 msgid "Automatically install source for every package installed"
-msgstr ""
+msgstr "Automatycznie instaluj źródła dla każdego zainstalowanego pakietu"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
 msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
-msgstr ""
+msgstr "Użyj innej nazwy bazowej, np. \"\"foo\"\", zamiast \"\"konfiguracja\"\""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"
-msgstr ""
+msgstr "Używaj niezaufanych kluczy i zachowaj wszystkie"
 
 #: STRINGTABLE.IDS_HELPTEXT_LANG
 msgid "Specify GUI language langid"
-msgstr ""
+msgstr "Określ język GUI langid"
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_INSTALL
 msgid "Install packages from local directory"
-msgstr ""
+msgstr "Zainstaluj pakiety z katalogu lokalnego"
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_PACKAGE_DIR
 msgid "Local package directory"
-msgstr ""
+msgstr "Lokalny katalog pakietów"
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
 "Skip package availability check when installing from local directory "
 "(requires local directory to be clean mirror!)"
 msgstr ""
+"Pomiń sprawdzanie dostępności pakietu podczas instalacji z katalogu "
+"lokalnego (wymaga, aby katalog lokalny był czystą kopią lustrzaną!)"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
 msgid "Do not check for and enforce running as Administrator"
-msgstr ""
+msgstr "Nie sprawdzaj i nie wymuszaj uruchamiania jako administrator"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_DESKTOP
 msgid "Disable creation of desktop shortcut"
-msgstr ""
+msgstr "Wyłącz tworzenie skrótu na pulpicie"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_REPLACEONREBOOT
 msgid "Disable replacing in-use files on next reboot"
 msgstr ""
+"Wyłącz zastępowanie plików w użyciu przy następnym ponownym uruchomieniu "
+"komputera"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_SHORTCUTS
 msgid "Disable creation of desktop and start menu shortcuts"
-msgstr ""
+msgstr "Wyłącz tworzenie skrótów na pulpicie i menu Start"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_STARTMENU
 msgid "Disable creation of start menu shortcut"
-msgstr ""
+msgstr "Wyłącz tworzenie skrótów w menu Start"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_VERIFY
 msgid "Don't verify setup.ini signatures"
-msgstr ""
+msgstr "Nie weryfikuj podpisów pliku setup.ini"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_VERSION_CHECK
 msgid "Suppress checking if a newer version of setup is available"
-msgstr ""
+msgstr "Pomiń sprawdzanie, czy dostępna jest nowsza wersja instalacji"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
 msgid "Don't warn about deprecated Windows versions"
-msgstr ""
+msgstr "Nie ostrzegaj o przestarzałych wersjach systemu Windows"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WRITE_REGISTRY
 msgid "Don't write root installation directory to registry"
-msgstr ""
+msgstr "Nie zapisuj głównego katalogu instalacyjnego w rejestrze"
 
 #: STRINGTABLE.IDS_HELPTEXT_OLD_KEYS
 msgid "Enable old cygwin.com keys"
-msgstr ""
+msgstr "Włącz stare klucze cygwin.com"
 
 #: STRINGTABLE.IDS_HELPTEXT_ONLY_SITE
 msgid "Do not download mirror list.  Only use sites specified with -s"
 msgstr ""
+"Nie pobieraj listy serwerów lustrzanych. Używaj tylko witryn określonych za "
+"pomocą -s"
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGES
 msgid "Specify packages to install"
-msgstr ""
+msgstr "Określ pakiety do zainstalowania"
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGE_MANAGER
 msgid "Semi-attended chooser-only mode"
-msgstr ""
+msgstr "Tryb wyboru tylko częściowo nadzorowanego"
 
 #: STRINGTABLE.IDS_HELPTEXT_PROXY
 msgid "HTTP/FTP proxy (host:port)"
-msgstr ""
+msgstr "Serwer proxy HTTP/FTP (host:port)"
 
 #: STRINGTABLE.IDS_HELPTEXT_PRUNE_INSTALL
 msgid "Prune the installation to only the requested packages"
-msgstr ""
+msgstr "Ogranicz instalację tylko do wymaganych pakietów"
 
 #: STRINGTABLE.IDS_HELPTEXT_PUBKEY
 msgid "URL or absolute path of extra public key file (RFC4880 format)"
 msgstr ""
+"Adres URL lub bezwzględna ścieżka dodatkowego pliku klucza publicznego ("
+"format RFC4880)"
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
 msgid "Unattended setup mode"
-msgstr ""
+msgstr "Tryb instalacji nienadzorowanej"
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
 msgid "Specify categories to uninstall"
-msgstr ""
+msgstr "Określ kategorie do odinstalowania"
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_PACKAGES
 msgid "Specify packages to uninstall"
-msgstr ""
+msgstr "Określ pakiety do odinstalowania"
 
 #: STRINGTABLE.IDS_HELPTEXT_ROOT
 msgid "Root installation directory"
-msgstr ""
+msgstr "Główny katalog instalacyjny"
 
 #: STRINGTABLE.IDS_HELPTEXT_SEXPR_PUBKEY
 msgid "Extra DSA public key in s-expr format"
-msgstr ""
+msgstr "Dodatkowy klucz publiczny DSA w formacie s-expr"
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
 msgid "Download site URL, path or UNC path"
-msgstr ""
+msgstr "Pobierz adres URL witryny, ścieżkę lub ścieżkę UNC"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
-msgstr ""
+msgstr "Typ dowiązania symbolicznego (lnk, native, sys, wsl)"
 
 #: STRINGTABLE.IDS_HELPTEXT_UNTRUSTED_KEYS
 msgid "Use untrusted saved extra keys"
-msgstr ""
+msgstr "Użyj niezaufanych zapisanych dodatkowych kluczy"
 
 #: STRINGTABLE.IDS_HELPTEXT_UPGRADE_ALSO
 msgid "Also upgrade installed packages"
-msgstr ""
+msgstr "Zaktualizuj również zainstalowane pakiety"
 
 #: STRINGTABLE.IDS_HELPTEXT_USER_AGENT
 msgid "User agent string for HTTP requests"
-msgstr ""
+msgstr "Ciąg agenta użytkownika dla żądań HTTP"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERBOSE
 msgid "Verbose output"
-msgstr ""
+msgstr "Pełne dane wyjściowe"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERSION
 msgid "Show version"
-msgstr ""
+msgstr "Pokaż wersję"
 
 #: STRINGTABLE.IDS_HELPTEXT_WAIT
 msgid "When elevating, wait for elevated child process"
 msgstr ""
+"Po podniesieniu uprawnień należy poczekać na podniesienie uprawnień procesu "
+"potomnego"
