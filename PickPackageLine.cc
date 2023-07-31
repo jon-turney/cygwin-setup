@@ -155,6 +155,7 @@ PickPackageLine::map_key_to_action(WORD vkey, int modkeys, int & col_num,
       col_num = new_col;
       return Action::PopUp;
     case 'I': // Ctrl+I: select install default version and move to next row
+    case 'K': // Ctrl+K: select keep or skip package and move to next row
     case 'R': // Ctrl+R: select reinstall and move to next row
     case 'U': // Ctrl+U: select uninstall and move to next row
       if (modkeys != ModifierKeys::Control)
@@ -163,8 +164,9 @@ PickPackageLine::map_key_to_action(WORD vkey, int modkeys, int & col_num,
       switch (vkey)
         {
         case 'I': action_id = packagemeta::Install_action; break;
+        default:  action_id = packagemeta::NoChange_action; break;
         case 'R': action_id = packagemeta::Reinstall_action; break;
-        default:  action_id = packagemeta::Uninstall_action; break;
+        case 'U': action_id = packagemeta::Uninstall_action; break;
         }
       return Action::Direct | Action::NextRow;
     }
