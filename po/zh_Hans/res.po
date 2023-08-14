@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-04-29 11:48+0000\n"
+"PO-Revision-Date: 2023-08-16 01:46+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.0-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -340,7 +340,7 @@ msgstr "Cygwin 安装程序"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
-msgstr "Cygwin 网络版安装程序"
+msgstr "Cygwin 在线安装程序"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TEXT
 msgid ""
@@ -1047,11 +1047,11 @@ msgstr "软件包"
 
 #: STRINGTABLE.IDS_COLUMN_CURRENT
 msgid "Current"
-msgstr "当前"
+msgstr "当前状态"
 
 #: STRINGTABLE.IDS_COLUMN_NEW
 msgid "New"
-msgstr "新建"
+msgstr "操作"
 
 #: STRINGTABLE.IDS_COLUMN_SOURCE
 msgid "Src?"
@@ -1191,7 +1191,7 @@ msgstr ""
 msgid ""
 "Are you sure you want to exit setup? Any current download or installation "
 "will be aborted."
-msgstr "是否确实要退出安装程序？任何当前的下载或安装都将中止。"
+msgstr "是否确实要退出安装程序？任何当前的下载或安装操作都将被中止。"
 
 #: STRINGTABLE.IDS_CONTINUE
 msgid "Continue"
@@ -1245,7 +1245,7 @@ msgstr "下载"
 
 #: STRINGTABLE.IDS_CONFIRM_NOTHING
 msgid "No changes"
-msgstr "没有变化"
+msgstr "不更改"
 
 #: STRINGTABLE.IDS_CONFIRM_AUTO_ADD
 msgid "(automatically added)"
