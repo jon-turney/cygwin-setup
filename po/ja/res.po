@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-04-18 04:49+0000\n"
+"PO-Revision-Date: 2023-09-04 13:50+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/ja/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 5.0.1-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -39,35 +39,38 @@ msgstr "ローカルディレクトリからインストール(&L)"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Source"
-msgstr ""
+msgstr "ダウンロードソースを選択"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_SOURCE_SUBTEXT
 msgid ""
 "Choose whether to install or download from the internet, or install from "
 "files in a local directory."
-msgstr ""
+msgstr "インターネットからインストールまたはダウンロードするか、ローカルディレクトリ"
+"内のファイルからインストールするかを選択します。"
 
 #: DIALOG.IDD_VIRUS.CAPTION
 msgid "Cygwin Setup - Disable Virus Scanner?"
-msgstr ""
+msgstr "Cygwinのセットアップ - ウイルススキャナを無効にしますか?"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_DISABLE_AV
 msgid "&Disable Virus scanner"
-msgstr ""
+msgstr "ウイルススキャナを無効にする(&D)"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_LEAVE_AV
 msgid "&Leave Virus scanner alone"
-msgstr ""
+msgstr "ウイルススキャナを保持する(&L)"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose whether to disable your virus scanner while installing."
-msgstr ""
+msgstr "インストール中にウイルススキャナを無効にするかどうかを選択します。"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
 "Some Antivirus programs, notably McAfee, cause a blue screen on Windows XP "
 "computers during installation of Cygwin."
 msgstr ""
+"一部のウイルス対策プログラム、特にマカフィーは、Cygwin のインストール中に "
+"Windows XP コンピューターでブルースクリーンを引き起こします。"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
@@ -75,34 +78,39 @@ msgid ""
 "during the installation process, and re-enable it when the install is "
 "complete."
 msgstr ""
+"問題である可能性のあるものが検出されました。Cygwin セットアップは、インストー"
+"ルプロセス中にこれを無効にし、インストールが完了したら再度有効にすることがで"
+"きます。"
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
 msgid "Cygwin Setup - Select Local Package Directory"
-msgstr ""
+msgstr "Cygwin セットアップ - ローカルパッケージディレクトリの選択"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Local Package Directory"
-msgstr ""
+msgstr "ローカルパッケージディレクトリの選択"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_DOWNLOAD_DESC
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
-msgstr ""
+msgstr "セットアップがダウンロードするインストール ファイルを保存するディレクトリを選"
+"択します。ディレクトリが存在しない場合は作成されます。"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
 msgid ""
 "Select a directory where Setup should look for downloaded installation files."
-msgstr ""
+msgstr "セットアップでダウンロードされたインストール "
+"ファイルを検索するディレクトリを選択します。"
 
 #: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
 msgid "Local Package Directory"
-msgstr ""
+msgstr "ローカルパッケージディレクトリ"
 
 #: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
 msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "ブラウズ..."
 
 #: DIALOG.IDD_ROOT.CAPTION
 msgid "Cygwin Setup - Choose Installation Directory"
