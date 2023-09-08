@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-08-16 01:46+0000\n"
+"PO-Revision-Date: 2023-09-09 14:58+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 5.0-dev\n"
+"X-Generator: Weblate 5.0.1-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -1007,7 +1007,7 @@ msgstr "未知"
 
 #: STRINGTABLE.IDS_ACTION_SOURCE
 msgid "Source"
-msgstr "源"
+msgstr "源代码"
 
 #: STRINGTABLE.IDS_VIEW_FULL
 msgid "Full"
@@ -1266,7 +1266,7 @@ msgstr "无法解压缩"
 
 #: STRINGTABLE.IDS_USER_URL_TOOLTIP
 msgid "Additional site URL, path or UNC path"
-msgstr "其他站点地址、路径或 UNC 路径"
+msgstr "其他站点的网址、路径或 UNC 路径"
 
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
@@ -1441,7 +1441,7 @@ msgstr "s-expr 格式的额外 DSA 公钥"
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
 msgid "Download site URL, path or UNC path"
-msgstr "下载站点地址、路径或 UNC 路径"
+msgstr "下载站点的网址、路径或 UNC 路径"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
@@ -1457,7 +1457,7 @@ msgstr "同时升级已安装的软件包"
 
 #: STRINGTABLE.IDS_HELPTEXT_USER_AGENT
 msgid "User agent string for HTTP requests"
-msgstr "用于 HTTP 请求的用户代理字符串"
+msgstr "用于 HTTP 请求的用户代理（User Agent）字符串"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERBOSE
 msgid "Verbose output"
