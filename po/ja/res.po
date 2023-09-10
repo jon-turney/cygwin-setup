@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-09-04 13:50+0000\n"
+"PO-Revision-Date: 2023-09-12 04:54+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/ja/>\n"
@@ -114,42 +114,43 @@ msgstr "ブラウズ..."
 
 #: DIALOG.IDD_ROOT.CAPTION
 msgid "Cygwin Setup - Choose Installation Directory"
-msgstr ""
+msgstr "Cygwin セットアップ - インストールディレクトリの選択"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Root Install Directory"
-msgstr ""
+msgstr "ルートインストールディレクトリの選択"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ROOTDIR_SUBTEXT
 msgid ""
 "Select the directory where you want to install Cygwin.  Also choose a few "
 "installation parameters."
-msgstr ""
+msgstr "Cygwin をインストールするディレクトリを、いくつかのインストールパラメータとと"
+"もに選択します。"
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
 msgid "Root Directory"
-msgstr ""
+msgstr "ルートディレクトリ"
 
 #: DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE
 msgctxt "DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "ブラウズ..."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_INSTALLFOR_GRP
 msgid "Install For"
-msgstr ""
+msgstr "インストール対象"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_SYSTEM
 msgid "&All Users (RECOMMENDED)"
-msgstr ""
+msgstr "すべてのユーザー (推奨)(&A)"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
 msgid "Just &Me"
-msgstr ""
+msgstr "現在のユーザー(&M)"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
 msgid "Cygwin will be available to all users of the system."
-msgstr ""
+msgstr "Cygwin は、システムのすべてのユーザーが利用できるようになります。"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_JUSTME_TEXT
 msgid ""
@@ -158,46 +159,50 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
+"Cygwin は引き続きすべてのユーザーが使用できますが、デスクトップアイコン、"
+"Cygwin メニューエントリ、および重要なインストーラー情報は現在のユーザーのみが"
+"利用できます。管理者権限がない場合、または特定のニーズがある場合にのみ、これ"
+"を選択してください。"
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
-msgstr ""
+msgstr "Cygwin のセットアップ - ダウンロードサイトを選択"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Available Download Sites:"
-msgstr ""
+msgstr "利用可能なダウンロードサイト:"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Choose a site from this list, or add your own sites to the list."
-msgstr ""
+msgstr "このリストからサイトを選択するか、独自のサイトをリストに追加します。"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Site"
-msgstr ""
+msgstr "ダウンロードサイトを選択"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
 msgid "User URL:"
-msgstr ""
+msgstr "ユーザーサイト:"
 
 #: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
 msgid "Add"
-msgstr ""
+msgstr "追加"
 
 #: DIALOG.IDD_NET.CAPTION
 msgid "Cygwin Setup - Select Connection Type"
-msgstr ""
+msgstr "Cygwinセットアップ - インターネット接続タイプの選択"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
 msgid "Use &System Proxy Settings"
-msgstr ""
+msgstr "システム プロキシ設定を使用する"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_DIRECT
 msgid "&Direct Connection"
-msgstr ""
+msgstr "プロキシなし"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PROXY
 msgid "Use HTTP/FTP &Proxy:"
-msgstr ""
+msgstr "HTTP/FTP プロキシを使用する:"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Proxy &Host"
