@@ -4,8 +4,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-03-20 19:37+0000\n"
-"Last-Translator: Fernando Lopes <fefehex12@gmail.com>\n"
+"PO-Revision-Date: 2023-10-04 12:10+0000\n"
+"Last-Translator: Lucas Haniel <luc45han@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.16.2-dev\n"
+"X-Generator: Weblate 5.1-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -104,54 +104,58 @@ msgstr ""
 msgid ""
 "Select a directory where Setup should look for downloaded installation files."
 msgstr ""
+"Selecione um diretório onde a Instalação deverá procurar os arquivos de "
+"instalação baixados."
 
 #: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
 msgid "Local Package Directory"
-msgstr ""
+msgstr "Diretório de pacotes locais"
 
 #: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
 msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "Navegar..."
 
 #: DIALOG.IDD_ROOT.CAPTION
 msgid "Cygwin Setup - Choose Installation Directory"
-msgstr ""
+msgstr "Configuração do Cygwin - Escolha o diretório de instalação"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Root Install Directory"
-msgstr ""
+msgstr "Selecione o diretório de instalação do root"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ROOTDIR_SUBTEXT
 msgid ""
 "Select the directory where you want to install Cygwin.  Also choose a few "
 "installation parameters."
 msgstr ""
+"Selecione o diretório onde deseja instalar o Cygwin. Escolha também alguns "
+"parâmetros de instalação."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
 msgid "Root Directory"
-msgstr ""
+msgstr "Diretório Root"
 
 #: DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE
 msgctxt "DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "Navegar..."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_INSTALLFOR_GRP
 msgid "Install For"
-msgstr ""
+msgstr "Instalar para"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_SYSTEM
 msgid "&All Users (RECOMMENDED)"
-msgstr ""
+msgstr "Todos os usuários (RECOMENDADO)"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
 msgid "Just &Me"
-msgstr ""
+msgstr "Apenas eu"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
 msgid "Cygwin will be available to all users of the system."
-msgstr ""
+msgstr "Cygwin estará disponível para todos os usuários do sistema."
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_JUSTME_TEXT
 msgid ""
@@ -160,34 +164,39 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
+"O Cygwin ainda estará disponível para todos os usuários, mas os ícones da "
+"área de trabalho, as entradas do menu Cygwin e informações importantes do "
+"instalador estão disponíveis apenas para o usuário atual. Selecione esta "
+"opção apenas se você não tiver privilégios de administrador ou se tiver "
+"necessidades específicas."
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
-msgstr ""
+msgstr "Configuração do Cygwin - Escolha o(s) site(s) de download"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Available Download Sites:"
-msgstr ""
+msgstr "Sites de download disponíveis:"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Choose a site from this list, or add your own sites to the list."
-msgstr ""
+msgstr "Escolha um site nesta lista ou adicione seus próprios sites à lista."
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Site"
-msgstr ""
+msgstr "Escolha um site de download"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
 msgid "User URL:"
-msgstr ""
+msgstr "URL do usuário:"
 
 #: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 #: DIALOG.IDD_NET.CAPTION
 msgid "Cygwin Setup - Select Connection Type"
-msgstr ""
+msgstr "Configuração do Cygwin - Selecione o tipo de conexão"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
 msgid "Use &System Proxy Settings"
