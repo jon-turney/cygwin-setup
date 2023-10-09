@@ -32,7 +32,7 @@ public:
   ssize_t read (void *buffer, size_t len) {return 0;}
   ssize_t write (const void *buffer, size_t len) {return 0;}
   ssize_t peek (void *buffer, size_t len) {return 0;}
-  long tell () {return 0;}
+  off_t tell () {return 0;}
   off_t seek (off_t, io_stream_seek_t) {return 0;}
   int error () {return 0;}
   void operator << (std::string);
