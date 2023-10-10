@@ -1,9 +1,17 @@
 #!
 
 case $1 in
+    de)       # 0407
+        lang="LANG_GERMAN"
+        sublang="SUBLANG_GERMAN"
+        ;;
     fr)       # 040c
         lang="LANG_FRENCH"
         sublang="SUBLANG_FRENCH"
+        ;;
+    pl)       # 0415
+        lang="LANG_POLISH"
+        sublang="SUBLANG_DEFAULT"  # SUBLANG_POLISH_POLAND (equivalent) requires WINVER >= 0x0600
         ;;
     tr)       # 041f
         lang="LANG_TURKISH"
