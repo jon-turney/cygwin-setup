@@ -146,7 +146,7 @@ BEGIN
     CONTROL         "&Direct Connection",IDC_NET_DIRECT,"Button",
                     BS_AUTORADIOBUTTON | WS_TABSTOP,60,70,73,10
     CONTROL         "Use HTTP/FTP &Proxy:",IDC_NET_PROXY,"Button",
-                    BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,88,10
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,110,10
     EDITTEXT        IDC_PROXY_HOST,120,105,120,12,ES_AUTOHSCROLL | 
                     WS_DISABLED | WS_GROUP
     EDITTEXT        IDC_PROXY_PORT,120,125,30,12,ES_AUTOHSCROLL | 
@@ -261,9 +261,9 @@ CAPTION "Cygwin Setup - Installation Status and Create Icons"
 FONT 8, "MS Shell Dlg"
 BEGIN
     CONTROL         "Create icon on &Desktop",IDC_ROOT_DESKTOP,"Button",
-                    BS_AUTOCHECKBOX,108,78,100,8
+                    BS_AUTOCHECKBOX,108,78,110,8
     CONTROL         "Add icon to &Start Menu",IDC_ROOT_MENU,"Button",
-                    BS_AUTOCHECKBOX,108,93,100,8
+                    BS_AUTOCHECKBOX,108,93,140,8
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,
                     SETUP_STANDARD_DIALOG_W,1

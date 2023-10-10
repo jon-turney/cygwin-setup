@@ -92,7 +92,7 @@ FONT 8, "MS Shell Dlg"
 BEGIN
     CONTROL         "&Sistem Vekil Ayarlarını Kullan",IDC_NET_PRECONFIG,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,60,55,185,10
     CONTROL         "&Direct Bağlantı",IDC_NET_DIRECT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,70,73,10
-    CONTROL         "HTTP/FTP &Vekili Kullan:",IDC_NET_PROXY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,88,10
+    CONTROL         "HTTP/FTP &Vekili Kullan:",IDC_NET_PROXY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,110,10
     EDITTEXT        IDC_PROXY_HOST,120,105,120,12,ES_AUTOHSCROLL | WS_DISABLED | WS_GROUP
     EDITTEXT        IDC_PROXY_PORT,120,125,30,12,ES_AUTOHSCROLL | WS_DISABLED
     GROUPBOX        "",IDC_STATIC,60,95,185,50
@@ -167,7 +167,7 @@ BEGIN
     LTEXT           "",IDC_VERSION,115,127,195,10
     LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
     LTEXT           "",IDC_SPLASH_URL,115,152,90,8
-    LTEXT           "Contribute to translations of this program.",IDC_SPLASH_TRANSLATE,115,164,195,8
+    LTEXT           "Bu programın çevirilerine katkıda bulunun.",IDC_SPLASH_TRANSLATE,115,164,195,8
 END
 
 IDD_DESKTOP DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
@@ -176,8 +176,8 @@ STYLE DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_CHILD | WS_VISIBLE |
 CAPTION "Cygwin Kurucu - Kurulum Durumu ve Simge Oluşturulması"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    CONTROL         "&Masaüstü Simgesi Oluştur",IDC_ROOT_DESKTOP,"Button",BS_AUTOCHECKBOX,108,78,100,8
-    CONTROL         "&Başlat Menüsüne Simge Ekle",IDC_ROOT_MENU,"Button",BS_AUTOCHECKBOX,108,93,100,8
+    CONTROL         "&Masaüstü Simgesi Oluştur",IDC_ROOT_DESKTOP,"Button",BS_AUTOCHECKBOX,108,78,110,8
+    CONTROL         "&Başlat Menüsüne Simge Ekle",IDC_ROOT_MENU,"Button",BS_AUTOCHECKBOX,108,93,140,8
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
     LTEXT           "Cygwin ortamına kolay erişim için birkaç simge oluşturulmasını isteyip istemediğinizi belirtin.",IDC_DESKTOP_HEADER_INSTALL,21,9,239,16,NOT WS_GROUP
@@ -411,7 +411,7 @@ BEGIN
     IDS_UNSUPPORTED_WINDOWS_VERSION
                             "Cygwin bu Windows sürümünde desteklenmiyor"
     IDS_UNSUPPORTED_WINDOWS_ARCH
-                            "Cygwin is not supported on 32-bit Windows"
+                            "Cygwin 32 bit Windows'ta desteklenmiyor"
     IDS_DEPRECATED_WINDOWS_VERSION
                             "Bu Windows sürümü için Cygwin desteği sonlandırıldı ve bir sonraki ana sürümde kaldırılacak"
     IDS_MOUNT_REGISTRY_KEY_FAILED
@@ -446,6 +446,7 @@ BEGIN
     IDS_CONFIRM_SOURCE      "(kaynak)"
     IDS_FILE_INUSE_KILL     "İşlemleri &Sonlandır"
     IDS_FILE_INUSE_MSG      "Çıkarılamıyor"
+    IDS_USER_URL_TOOLTIP    "Ek site URL'si, yol veya UNC yolu"
 END
 
 //
@@ -516,7 +517,7 @@ BEGIN
     IDS_HELPTEXT_ROOT       "Kök kurulum dizini"
     IDS_HELPTEXT_SEXPR_PUBKEY
                             "s-expr biçiminde ek DSA ortak anahtarı"
-    IDS_HELPTEXT_SITE       "İndirme sitesi URL'si"
+    IDS_HELPTEXT_SITE       "İndirme sitesi URL'si, yol veya UNC yolu"
     IDS_HELPTEXT_SYMLINK_TYPE
                             "Sembolik bağlantı türü (lnk, yerel, sys, wsl)"
     IDS_HELPTEXT_UNTRUSTED_KEYS
