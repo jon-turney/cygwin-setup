@@ -375,11 +375,11 @@ msgstr ""
 "sowie für alle nachfolgenden Updates verwendet.  Die folgenden Seiten führen "
 "Sie durch die Installation.\n"
 "\n"
-" Bitte beachten Sie, dass wir standardmäßig nur einen Basissatz von Paketen "
+"Bitte beachten Sie, dass wir standardmäßig nur einen Basissatz von Paketen "
 "installieren.   Cygwin bietet eine große Anzahl von Paketen für eine "
 "Vielzahl von Zwecken an.\n"
 "\n"
-" Sie können dieses Programm jederzeit in der Zukunft ausführen, um je nach "
+"Sie können dieses Programm jederzeit in der Zukunft ausführen, um je nach "
 "Bedarf Pakete hinzuzufügen, zu entfernen oder zu aktualisieren."
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE

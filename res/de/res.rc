@@ -44,8 +44,8 @@ BEGIN
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
     GROUPBOX        "Lokales Paketverzeichnis",IDC_LOCALDIR_GRP,5,35,330,35
-    EDITTEXT        IDC_LOCAL_DIR,13,47,270,14,ES_AUTOHSCROLL | WS_TABSTOP
-    PUSHBUTTON      "Durchsuchen...",IDC_LOCAL_DIR_BROWSE,285,47,44,14,WS_TABSTOP
+    EDITTEXT        IDC_LOCAL_DIR,13,47,262,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Durchsuchen...",IDC_LOCAL_DIR_BROWSE,277,47,52,14,WS_TABSTOP
 END
 
 IDD_ROOT DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
@@ -58,8 +58,8 @@ BEGIN
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
     GROUPBOX        "Root Directory",IDC_ROOTDIR_GRP,5,35,330,35
-    EDITTEXT        IDC_ROOT_DIR,13,47,270,14,ES_AUTOHSCROLL | WS_TABSTOP
-    PUSHBUTTON      "Durchsuchen...",IDC_ROOT_BROWSE,285,47,44,14,WS_TABSTOP
+    EDITTEXT        IDC_ROOT_DIR,13,47,262,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Durchsuchen...",IDC_ROOT_BROWSE,277,47,52,14,WS_TABSTOP
     GROUPBOX        "Installieren für",IDC_INSTALLFOR_GRP,5,76,330,101
     CONTROL         "&Alle Benutzer (EMPFOHLEN)",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP | WS_GROUP,13,89,130,8
     CONTROL         "Nur für &Mich",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,13,130,130,8
@@ -91,8 +91,8 @@ CAPTION "Cygwin-Einrichtung - Verbindungsart auswählen"
 FONT 8, "MS Shell Dlg"
 BEGIN
     CONTROL         "&System-Proxy-Einstellungen verwenden",IDC_NET_PRECONFIG,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,60,55,185,10
-    CONTROL         "&Direkte Verbindung",IDC_NET_DIRECT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,70,73,10
-    CONTROL         "HTTP/FTP-&Proxy verwenden:",IDC_NET_PROXY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,110,10
+    CONTROL         "&Direkte Verbindung",IDC_NET_DIRECT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,70,185,10
+    CONTROL         "HTTP/FTP-&Proxy verwenden:",IDC_NET_PROXY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,185,10
     EDITTEXT        IDC_PROXY_HOST,120,105,120,12,ES_AUTOHSCROLL | WS_DISABLED | WS_GROUP
     EDITTEXT        IDC_PROXY_PORT,120,125,30,12,ES_AUTOHSCROLL | WS_DISABLED
     GROUPBOX        "",IDC_STATIC,60,95,185,50
@@ -162,7 +162,7 @@ CAPTION "Cygwin-Einrichtung"
 FONT 8, "MS Shell Dlg"
 BEGIN
     LTEXT           "Cygwin Net Release Setup-Programm",IDC_STATIC_WELCOME_TITLE,115,1,195,24
-    LTEXT           "Dieses Setup-Programm wird für die Erstinstallation der Cygwin-Umgebung sowie für alle nachfolgenden Updates verwendet.  Die folgenden Seiten führen Sie durch die Installation.\n\n Bitte beachten Sie, dass wir standardmäßig nur einen Basissatz von Paketen installieren.   Cygwin bietet eine große Anzahl von Paketen für eine Vielzahl von Zwecken an.\n\n Sie können dieses Programm jederzeit in der Zukunft ausführen, um je nach Bedarf Pakete hinzuzufügen, zu entfernen oder zu aktualisieren.",IDC_SPLASH_TEXT,115,25,195,90
+    LTEXT           "Dieses Setup-Programm wird für die Erstinstallation der Cygwin-Umgebung sowie für alle nachfolgenden Updates verwendet.  Die folgenden Seiten führen Sie durch die Installation.\n\nBitte beachten Sie, dass wir standardmäßig nur einen Basissatz von Paketen installieren.   Cygwin bietet eine große Anzahl von Paketen für eine Vielzahl von Zwecken an.\n\nSie können dieses Programm jederzeit in der Zukunft ausführen, um je nach Bedarf Pakete hinzuzufügen, zu entfernen oder zu aktualisieren.",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10
     LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8

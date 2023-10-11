@@ -74,8 +74,8 @@ BEGIN
                     SETUP_STANDARD_DIALOG_W,1
 
     GROUPBOX        "Local Package Directory",IDC_LOCALDIR_GRP,5,35,330,35
-    EDITTEXT        IDC_LOCAL_DIR,13,47,270,14,ES_AUTOHSCROLL | WS_TABSTOP
-    PUSHBUTTON      "B&rowse...",IDC_LOCAL_DIR_BROWSE,285,47,44,14,WS_TABSTOP
+    EDITTEXT        IDC_LOCAL_DIR,13,47,262,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "B&rowse...",IDC_LOCAL_DIR_BROWSE,277,47,52,14,WS_TABSTOP
 END
 
 IDD_ROOT DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
@@ -93,8 +93,8 @@ BEGIN
                     SETUP_STANDARD_DIALOG_W,1
 
     GROUPBOX        "Root Directory",IDC_ROOTDIR_GRP,5,35,330,35
-    EDITTEXT        IDC_ROOT_DIR,13,47,270,14,ES_AUTOHSCROLL | WS_TABSTOP
-    PUSHBUTTON      "B&rowse...",IDC_ROOT_BROWSE,285,47,44,14,WS_TABSTOP
+    EDITTEXT        IDC_ROOT_DIR,13,47,262,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "B&rowse...",IDC_ROOT_BROWSE,277,47,52,14,WS_TABSTOP
 
     GROUPBOX        "Install For",IDC_INSTALLFOR_GRP,5,76,330,101
     CONTROL         "&All Users (RECOMMENDED)",IDC_ROOT_SYSTEM,"Button",
@@ -144,9 +144,9 @@ BEGIN
     CONTROL         "Use &System Proxy Settings",IDC_NET_PRECONFIG,"Button",
                     BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,60,55,185,10
     CONTROL         "&Direct Connection",IDC_NET_DIRECT,"Button",
-                    BS_AUTORADIOBUTTON | WS_TABSTOP,60,70,73,10
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,60,70,185,10
     CONTROL         "Use HTTP/FTP &Proxy:",IDC_NET_PROXY,"Button",
-                    BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,110,10
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,185,10
     EDITTEXT        IDC_PROXY_HOST,120,105,120,12,ES_AUTOHSCROLL | 
                     WS_DISABLED | WS_GROUP
     EDITTEXT        IDC_PROXY_PORT,120,125,30,12,ES_AUTOHSCROLL | 
@@ -246,7 +246,7 @@ BEGIN
                     "\n\n"
                     "You can always run this program at any time in "
                     "the future to add, remove, or upgrade packages as "
-                    "necessary.",IDC_SPLASH_TEXT,115,25,195,90
+                    "necessary.",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10
     LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
