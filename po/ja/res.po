@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 13:51+0100\n"
+"POT-Creation-Date: 2023-10-11 16:30+0100\n"
 "PO-Revision-Date: 2023-09-12 04:54+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -45,7 +45,8 @@ msgstr "ダウンロードソースを選択"
 msgid ""
 "Choose whether to install or download from the internet, or install from "
 "files in a local directory."
-msgstr "インターネットからインストールまたはダウンロードするか、ローカルディレクトリ"
+msgstr ""
+"インターネットからインストールまたはダウンロードするか、ローカルディレクトリ"
 "内のファイルからインストールするかを選択します。"
 
 #: DIALOG.IDD_VIRUS.CAPTION
@@ -94,14 +95,16 @@ msgstr "ローカルパッケージディレクトリの選択"
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
-msgstr "セットアップがダウンロードするインストール ファイルを保存するディレクトリを選"
+msgstr ""
+"セットアップがダウンロードするインストール ファイルを保存するディレクトリを選"
 "択します。ディレクトリが存在しない場合は作成されます。"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
 msgid ""
 "Select a directory where Setup should look for downloaded installation files."
-msgstr "セットアップでダウンロードされたインストール "
-"ファイルを検索するディレクトリを選択します。"
+msgstr ""
+"セットアップでダウンロードされたインストール ファイルを検索するディレクトリを"
+"選択します。"
 
 #: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
 msgid "Local Package Directory"
@@ -124,7 +127,8 @@ msgstr "ルートインストールディレクトリの選択"
 msgid ""
 "Select the directory where you want to install Cygwin.  Also choose a few "
 "installation parameters."
-msgstr "Cygwin をインストールするディレクトリを、いくつかのインストールパラメータとと"
+msgstr ""
+"Cygwin をインストールするディレクトリを、いくつかのインストールパラメータとと"
 "もに選択します。"
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
@@ -223,8 +227,7 @@ msgid "Select Your Internet Connection"
 msgstr ""
 
 #: DIALOG.IDD_INSTATUS.CAPTION
-msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
-"DIALOG.IDD_INSTATUS.CAPTION"
+msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
 msgstr ""
 
@@ -242,8 +245,9 @@ msgid "(FILE)"
 msgstr ""
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+msgctxt ""
+"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL."
+"IDC_INS_DISKFULL"
 msgid "Progress1"
 msgstr ""
 
@@ -287,8 +291,8 @@ msgid "Proxy &User ID"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr ""
 
@@ -297,15 +301,16 @@ msgid "Proxy Authorization Required"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON."
+"IDOK"
 msgid "&OK"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt ""
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON."
+"IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
 msgstr ""
 
@@ -516,8 +521,8 @@ msgstr ""
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "One or more mirrors you have selected is/are not on the list of official "
-"Cygwin mirrors any more. It/They may be out of date or missing some packages."
-"\n"
+"Cygwin mirrors any more. It/They may be out of date or missing some "
+"packages.\n"
 "This affects the following mirror(s):"
 msgstr ""
 
@@ -1018,8 +1023,8 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
-"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
+"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
@@ -1257,8 +1262,8 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
-"Skip package availability check when installing from local directory ("
-"requires local directory to be clean mirror!)"
+"Skip package availability check when installing from local directory "
+"(requires local directory to be clean mirror!)"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
@@ -1326,7 +1331,7 @@ msgid "URL or absolute path of extra public key file (RFC4880 format)"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
-msgid "Unattended setup mode"
+msgid "Unattended setup mode (unattended, noinput, hidden)"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES

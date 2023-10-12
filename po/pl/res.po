@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 13:51+0100\n"
+"POT-Creation-Date: 2023-10-11 16:30+0100\n"
 "PO-Revision-Date: 2023-06-30 18:50+0000\n"
 "Last-Translator: WaldiS <sto@tutanota.de>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -922,8 +922,8 @@ msgid ""
 "Mirror Error:  Setup.ini signature %s from %s failed to verify.\n"
 "Possible corrupt mirror?  Setup.ini rejected."
 msgstr ""
-"Błąd kopii lustrzanej: nie udało się zweryfikować podpisu Setup.ini %s z %s."
-"\n"
+"Błąd kopii lustrzanej: nie udało się zweryfikować podpisu Setup.ini %s z "
+"%s.\n"
 "Możliwe uszkodzenie kopii lustrzanej? Plik Setup.ini został odrzucony."
 
 #: STRINGTABLE.IDS_CRYPTO_ERROR
@@ -1195,7 +1195,8 @@ msgstr ""
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
 msgid "Couldn't create registry key to store installation path"
-msgstr "Nie można utworzyć klucza rejestru do przechowywania ścieżki instalacji"
+msgstr ""
+"Nie można utworzyć klucza rejestru do przechowywania ścieżki instalacji"
 
 #: STRINGTABLE.IDS_NIO_ERROR
 msgid "Internet Error: %s"
@@ -1395,7 +1396,8 @@ msgstr "Automatycznie instaluj źródła dla każdego zainstalowanego pakietu"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
 msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
-msgstr "Użyj innej nazwy bazowej, np. \"\"foo\"\", zamiast \"\"konfiguracja\"\""
+msgstr ""
+"Użyj innej nazwy bazowej, np. \"\"foo\"\", zamiast \"\"konfiguracja\"\""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"
@@ -1488,12 +1490,12 @@ msgstr "Ogranicz instalację tylko do wymaganych pakietów"
 #: STRINGTABLE.IDS_HELPTEXT_PUBKEY
 msgid "URL or absolute path of extra public key file (RFC4880 format)"
 msgstr ""
-"Adres URL lub bezwzględna ścieżka dodatkowego pliku klucza publicznego ("
-"format RFC4880)"
+"Adres URL lub bezwzględna ścieżka dodatkowego pliku klucza publicznego "
+"(format RFC4880)"
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
-msgid "Unattended setup mode"
-msgstr "Tryb instalacji nienadzorowanej"
+msgid "Unattended setup mode (unattended, noinput, hidden)"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
 msgid "Specify categories to uninstall"
@@ -1544,3 +1546,6 @@ msgid "When elevating, wait for elevated child process"
 msgstr ""
 "Po podniesieniu uprawnień należy poczekać na podniesienie uprawnień procesu "
 "potomnego"
+
+#~ msgid "Unattended setup mode"
+#~ msgstr "Tryb instalacji nienadzorowanej"

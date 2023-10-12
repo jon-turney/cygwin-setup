@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 13:51+0100\n"
+"POT-Creation-Date: 2023-10-11 16:30+0100\n"
 "PO-Revision-Date: 2023-04-18 04:49+0000\n"
 "Last-Translator: Oğuz Ersen <oguz@ersen.moe>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -1482,8 +1482,8 @@ msgid "URL or absolute path of extra public key file (RFC4880 format)"
 msgstr "Ek ortak anahtar dosyasının URL'si veya mutlak yolu (RFC4880 biçimi)"
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
-msgid "Unattended setup mode"
-msgstr "Etkileşimsiz kurulum modu"
+msgid "Unattended setup mode (unattended, noinput, hidden)"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
 msgid "Specify categories to uninstall"
@@ -1532,6 +1532,9 @@ msgstr "Sürümü göster"
 #: STRINGTABLE.IDS_HELPTEXT_WAIT
 msgid "When elevating, wait for elevated child process"
 msgstr "Yetkilendirirken, yetkilendirilen alt işlemi bekle"
+
+#~ msgid "Unattended setup mode"
+#~ msgstr "Etkileşimsiz kurulum modu"
 
 #~ msgid ""
 #~ "Cygwin support for 32-bit Windows is deprecated, and will be removed in "

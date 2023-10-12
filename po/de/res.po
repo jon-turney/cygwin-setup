@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-14 13:51+0100\n"
+"POT-Creation-Date: 2023-10-11 16:30+0100\n"
 "PO-Revision-Date: 2023-06-20 13:50+0000\n"
 "Last-Translator: Luis Mengel <mail@lmengel.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -588,8 +588,8 @@ msgid ""
 "exit."
 msgstr ""
 "Wählen Sie 'Wiederholen', um den Download erneut zu starten, 'Zurück', um "
-"zur Paketauswahl-Seite zurückzukehren, 'Weiter', um trotzdem fortzufahren ("
-"NICHT EMPFOHLEN) oder 'Abbrechen', um zu beenden."
+"zur Paketauswahl-Seite zurückzukehren, 'Weiter', um trotzdem fortzufahren "
+"(NICHT EMPFOHLEN) oder 'Abbrechen', um zu beenden."
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
@@ -646,8 +646,8 @@ msgid ""
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
 "Wählen Sie 'Wiederholen' zum erneuten Versuch, 'Stop' zum Beenden von "
-"Prozessen und zum erneuten Versuch oder 'Weiter', um trotzdem fortzufahren ("
-"die Datei wird nach einem Neustart aktualisiert)."
+"Prozessen und zum erneuten Versuch oder 'Weiter', um trotzdem fortzufahren "
+"(die Datei wird nach einem Neustart aktualisiert)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_1
 msgid ""
@@ -1375,7 +1375,7 @@ msgid "URL or absolute path of extra public key file (RFC4880 format)"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
-msgid "Unattended setup mode"
+msgid "Unattended setup mode (unattended, noinput, hidden)"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
