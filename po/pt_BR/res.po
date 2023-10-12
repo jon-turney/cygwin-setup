@@ -4,8 +4,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-14 13:51+0100\n"
-"PO-Revision-Date: 2023-10-04 12:10+0000\n"
-"Last-Translator: Lucas Haniel <luc45han@gmail.com>\n"
+"PO-Revision-Date: 2023-10-12 16:04+0000\n"
+"Last-Translator: Jon Turney <jon.turney@dronecode.org.uk>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -147,7 +147,7 @@ msgstr "Instalar para"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_SYSTEM
 msgid "&All Users (RECOMMENDED)"
-msgstr "Todos os usuários (RECOMENDADO)"
+msgstr "&Todos os usuários (RECOMENDADO)"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
 msgid "Just &Me"
