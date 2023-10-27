@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2023-10-26 15:02+0000\n"
+"PO-Revision-Date: 2023-10-29 05:18+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 5.1.1\n"
+"X-Generator: Weblate 5.2-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -730,7 +730,7 @@ msgid ""
 "This setup is version %s, but setup.ini claims version %s is available.\n"
 "You might want to upgrade to get the latest features and bug fixes."
 msgstr ""
-"此安装程序是版本 %s，但 setup.ini 声称版本 %s 可用。\n"
+"此安装程序的版本是 %s，但 setup.ini 声称版本 %s 已经可用。\n"
 "您可能想要升级以获得最新的功能和错误修复。"
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE
@@ -880,7 +880,7 @@ msgstr ""
 
 #: STRINGTABLE.IDS_CRYPTO_ERROR
 msgid "Internal Error:  gcrypt library error %d %s"
-msgstr "内部错误： gcrypt 库错误 %d %s"
+msgstr "内部错误：gcrypt 库错误 %d %s"
 
 #: STRINGTABLE.IDS_SEARCH_TOOLTIP
 msgid "Search for this string in package names."
@@ -916,7 +916,7 @@ msgstr "将安装移交给提权的子进程。"
 
 #: STRINGTABLE.IDS_INSTALLEDB_VERSION
 msgid "Unknown INSTALLED.DB version"
-msgstr "未知的 INSTALLED.DB 版本"
+msgstr "INSTALLED.DB 版本未知"
 
 #: STRINGTABLE.IDS_NO_MIRROR_LST
 msgid "Could not download mirror sites list"
@@ -1101,7 +1101,7 @@ msgid ""
 "%s\n"
 "Delete?"
 msgstr ""
-"在这里发现了旧版本的 cygwin1.dll：\n"
+"在此处发现了旧版 cygwin1.dll：\n"
 "%s\n"
 "是否删除？"
 
@@ -1293,7 +1293,7 @@ msgstr "允许旧的、不受支持的 Windows 版本"
 
 #: STRINGTABLE.IDS_HELPTEXT_ARCH
 msgid "Architecture to install (x86_64 or x86)"
-msgstr "要安装的体系结构（x86_64 或 x86）"
+msgstr "要安装的体系结构（选项：x86_64 或 x86）"
 
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
 msgid "Specify categories to install"
@@ -1302,7 +1302,7 @@ msgstr "指定要安装的类别"
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""
 "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
-msgstr "使用 Compact OS（xpress4k、xpress8k、xpress16k、lzx）压缩已安装的文件"
+msgstr "使用 Compact OS 压缩已安装的文件（选项：xpress4k、xpress8k、xpress16k、lzx）"
 
 #: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
 msgid "Remove orphaned packages"
@@ -1358,7 +1358,7 @@ msgstr "从本地目录安装时跳过包可用性检查（要求本地目录是
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
 msgid "Do not check for and enforce running as Administrator"
-msgstr "不检查并强制以管理员身份运行"
+msgstr "不检查也不强制以管理员身份运行"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_DESKTOP
 msgid "Disable creation of desktop shortcut"
@@ -1422,7 +1422,7 @@ msgstr "额外公钥文件的 URL 或绝对路径（RFC4880 格式）"
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
 msgid "Unattended setup mode (unattended, noinput, hidden)"
-msgstr "无人值守安装模式（unattended, noinput, hidden）"
+msgstr "无人值守安装模式（选项：unattended, noinput, hidden）"
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
 msgid "Specify categories to uninstall"
@@ -1446,7 +1446,7 @@ msgstr "下载站点的网址、路径或 UNC 路径"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
-msgstr "符号链接类型（lnk，本机，系统，wsl）"
+msgstr "符号链接类型（选项：lnk，native，sys，wsl）"
 
 #: STRINGTABLE.IDS_HELPTEXT_UNTRUSTED_KEYS
 msgid "Use untrusted saved extra keys"
