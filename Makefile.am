@@ -294,7 +294,7 @@ po2rc:
 	cd $(srcdir) && \
 	for l in $(LINGUAS) ; do \
 		./langopts $$l >/dev/null && \
-		mkdir -p res/$$l/ && \
+		$(MKDIR_P) res/$$l/ && \
 		po2rc -t res/en/res.rc --charset-output=utf-8 $$(./langopts $$l) po/$$l/res.po res/$$l/res.rc && \
 		d2u -q res/$$l/res.rc ; \
 	done
@@ -312,33 +312,38 @@ setup-src:
 	echo $$ver-src.tar.xz; exec rm -f $$ver
 
 # optional: strip and compress executable
-.PHONY:	strip upx
+.PHONY:	strip upx release upload
 
 strip:	all
-	$(OBJCOPY) --add-gnu-debuglink=/dev/null --only-keep-debug setup$(EXEEXT) setup.dbg
-	$(OBJCOPY) --strip-all setup$(EXEEXT)
-	$(OBJCOPY) --add-gnu-debuglink=setup.dbg setup$(EXEEXT) setup$(EXEEXT)
+	@$(MKDIR_P) stripped
+	$(OBJCOPY) --add-gnu-debuglink=/dev/null --only-keep-debug setup$(EXEEXT) stripped/setup.dbg
+	$(OBJCOPY) --strip-all setup$(EXEEXT) stripped/setup$(EXEEXT)
+	$(OBJCOPY) --add-gnu-debuglink=stripped/setup.dbg stripped/setup$(EXEEXT) stripped/setup$(EXEEXT)
 
 CLEANFILES += setup.dbg
 
 upx:	strip
 	@if [ -e `which upx` ]; then\
-		upx --best --lzma setup$(EXEEXT) ;\
+		$(MKDIR_P) upx ;\
+		rm -f upx/setup$(EXEEXT) ;\
+		upx --best --lzma stripped/setup$(EXEEXT) -o upx/setup$(EXEEXT) ;\
 	else \
 		echo "UPX doesn't seem to be installed, cannot compress setup$(EXEEXT)." ;\
 	fi
 
 release: upx
-	cp setup.dbg setup-${VER}.${ARCH}.dbg
-	cp setup${EXEEXT} setup-${VER}.${ARCH}${EXEEXT}
+	@$(MKDIR_P) release
+	cp stripped/setup.dbg release/setup-${VER}.${ARCH}.dbg
+	cp stripped/setup${EXEEXT} release/setup-uncompressed-${VER}.${ARCH}${EXEEXT}
+	cp upx/setup${EXEEXT} release/setup-${VER}.${ARCH}${EXEEXT}
 
 UPLOAD_HOST=cygwin-admin@cygwin.com
 UPLOAD_PATH=/www/sourceware/htdocs/cygwin/setup
 SIGN_KEYS="--enable-dsa2 --personal-digest-preferences=sha256 -u 1A698DE9E2E56300"
 
 upload: release
-	scp setup-${VER}.$(ARCH).exe setup-${VER}.$(ARCH).dbg ${UPLOAD_HOST}:${UPLOAD_PATH}
+	cd release ; scp setup-${VER}.$(ARCH).exe setup-${VER}.$(ARCH).dbg setup-uncompressed-${VER}.${ARCH}${EXEEXT} ${UPLOAD_HOST}:${UPLOAD_PATH}
 	ssh ${UPLOAD_HOST} gpg --batch ${SIGN_KEYS} --detach-sign ${UPLOAD_PATH}/setup-${VER}.$(ARCH).exe
 
 clean-local:
-	rm -f setup*${EXEEXT} setup*.dbg
+	rm -rf stripped upx release
