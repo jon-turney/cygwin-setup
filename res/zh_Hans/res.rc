@@ -306,9 +306,9 @@ BEGIN
     LTEXT           "无法解压缩",IDC_FILE_INUSE_MSG,33,10,234,8,SS_PATHELLIPSIS
     LTEXT           "以下进程正在使用该文件：",IDC_STATIC,33,28,234,8
     EDITTEXT        IDC_FILE_INUSE_EDIT,33,40,234,32,WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL | NOT WS_TABSTOP
-    LTEXT           "选择“重试”以重试，选择“结束”以停止进程并重试，或选择“继续”以继续（文件将在重启后更新）。",IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
-    LTEXT           "选择“重试”以重试，选择“终止”以终止进程并重试，或选择“继续”以继续（文件将在重新启动后更新）。",IDC_FILE_INUSE_HELP_1,33,80,234,24,NOT WS_GROUP
-    LTEXT           "选择“重试”以重试，选择“终止”以强制终止所有进程并重试，或选择“继续”以继续（文件将在重启后更新）。",IDC_FILE_INUSE_HELP_2,33,80,234,24,NOT WS_GROUP
+    LTEXT           "选择“重试”以重试，选择“结束进程”以结束进程并重试，或选择“继续”以继续（文件将在重启后更新）。",IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
+    LTEXT           "选择“重试”以重试，选择“终止进程”以终止进程并重试，或选择“继续”以继续（文件将在重启后更新）。",IDC_FILE_INUSE_HELP_1,33,80,234,24,NOT WS_GROUP
+    LTEXT           "选择“重试”以重试，选择“终止进程”以强制终止所有进程并重试，或选择“继续”以继续（文件将在重启后更新）。",IDC_FILE_INUSE_HELP_2,33,80,234,24,NOT WS_GROUP
     PUSHBUTTON      "重试(&R)",IDIGNORE,45,112,55,15
     DEFPUSHBUTTON   "结束进程(&S)",IDRETRY,111,112,55,15
     PUSHBUTTON      "继续(&C)",IDCONTINUE,177,112,55,15
@@ -335,7 +335,7 @@ BEGIN
     IDS_NOLOGFILE           "无法打开日志文件 %s 进行写入"
     IDS_UNINSTALL_COMPLETE  "卸载完成。"
     IDS_ERR_CHDIR           "无法将目录更改为 %s： %s [%.8x]"
-    IDS_OLD_SETUP_VERSION   "此安装程序是版本 %s，但 setup.ini 声称版本 %s 可用。\n您可能想要升级以获得最新的功能和错误修复。"
+    IDS_OLD_SETUP_VERSION   "此安装程序的版本是 %s，但 setup.ini 声称版本 %s 已经可用。\n您可能想要升级以获得最新的功能和错误修复。"
     IDS_DOWNLOAD_INCOMPLETE "下载不完整。是否重试？"
     IDS_DOWNLOAD_INCOMPLETE_EXIT
                             "下载不完整。 查看 %s 以了解详细信息"
@@ -343,7 +343,7 @@ BEGIN
     IDS_INSTALL_INCOMPLETE  "安装未完成。查看 %s 以了解详细信息"
     IDS_CORRUPT_PACKAGE     "软件包 %s 具有损坏的本地副本，请删除并重试。"
     IDS_QUERY_CORRUPT       "文件 %s 已损坏。是否删除它并再次下载？"
-    IDS_SKIP_PACKAGE        "%s\n您想跳过这个软件包吗？"
+    IDS_SKIP_PACKAGE        "%s\n是否跳过此软件包？"
     IDS_UNCAUGHT_EXCEPTION  "致命错误：未捕获的异常\n线程： %s\n类型： %s\n消息： %s"
     IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
                             "致命错误：未捕获的异常\n线程： %s\n类型： %s\n消息： %s\n应用错误编号： %d"
@@ -351,16 +351,16 @@ BEGIN
     IDS_TRUSTCURR_TOOLTIP   "将所有软件包设置为可用的最佳版本（推荐）。"
     IDS_TRUSTSYNC_TOOLTIP   "将所有软件包设置为软件包存储库中可用的版本，必要时降级。"
     IDS_TRUSTEXP_TOOLTIP    "启用测试版软件包。"
-    IDS_VIEWBUTTON_TOOLTIP  "选择软件包视图。这决定了下面显示哪些软件包。\n\n类别：按软件包类别分组。单击“+”展开。\n\n完整：显示所有软件包。\n\n待定：仅显示即将安装、删除或升级的包。这告诉您按“下一步”时将发生什么变化。\n\n最新：显示不需要执行任何操作的已安装软件包，因为它们已经处于所需版本。\n\n未安装：显示当前未安装且尚未选择安装的包。\n\n已选择：显示已选择的已安装软件包，但未作为依赖项安装。\n\n可卸载的：显示已选择且可以安全删除的已安装软件包。没有其他已安装或选定的软件包依赖于这些软件包。\n\n不需要的：显示现在可以安全删除的自动安装的软件包。其他已安装或选定的软件包不再依赖于这些软件包。"
+    IDS_VIEWBUTTON_TOOLTIP  "选择软件包视图。这决定了下面显示哪些软件包。\n\n类别：按软件包类别分组。单击“+”展开。\n\n完整：显示所有软件包。\n\n待定：仅显示即将安装、删除或升级的软件包。这告诉您按“下一步”时将发生什么变化。\n\n最新：显示不需要执行任何操作的已安装软件包，因为它们已经处于所需版本。\n\n未安装：显示当前未安装且尚未选择安装的软件包。\n\n已选择：显示已选择的，但未作为依赖项安装已安装软件包。\n\n可卸载的：显示已选择且可以安全卸载的已安装软件包。其他已安装或选定的软件包不再依赖于这些软件包。\n\n不需要的：显示现在可以安全卸载的自动安装的软件包。其他已安装或选定的软件包不再依赖于这些软件包。"
     IDS_HIDEOBS_TOOLTIP     "如果选中，安装程序将隐藏名称以“_”开头的类别中的软件包。 此类软件包通常是已删除或重命名的软件包的空占位符，或者是自动处理的基础结构软件包。"
     IDS_SIG_INVALID         "镜像错误：Setup.ini 签名 %s（来自 %s）验证失败。\n镜像可能已损坏？ Setup.ini 被拒绝。"
-    IDS_CRYPTO_ERROR        "内部错误： gcrypt 库错误 %d %s"
+    IDS_CRYPTO_ERROR        "内部错误：gcrypt 库错误 %d %s"
     IDS_SEARCH_TOOLTIP      "在软件包名称中搜索此字符串。"
     IDS_MAYBE_MKDIR         "目录 %s 不存在，是否创建它？"
     IDS_CANT_MKDIR          "无法创建目录 %s，抱歉。（驱动器是已满还是只读？）"
     IDS_NO_LOCALDIR         "找不到本地软件包目录 %s。\n您仍然可以删除已安装的\n软件包，但不会有任何要安装的内容。\n\n点击“确定”，如果这是你想要的\n或“取消”以选择其他目录。"
     IDS_ELEVATED            "将安装移交给提权的子进程。"
-    IDS_INSTALLEDB_VERSION  "未知的 INSTALLED.DB 版本"
+    IDS_INSTALLEDB_VERSION  "INSTALLED.DB 版本未知"
     IDS_NO_MIRROR_LST       "无法下载镜像站点列表"
     IDS_PROGRESS_PROGRESS   "进度："
     IDS_PROGRESS_PACKAGE    "软件包："
@@ -404,7 +404,7 @@ BEGIN
     IDS_MBOX_CAPTION        "Cygwin 安装程序"
     IDS_EXTRACTION_FAILED   "无法解压缩 /%s -- 损坏的软件包？"
     IDS_EXTRACTION_INUSE    "无法解压缩 /%s -- 写入文件时出错\n\n文件正在使用中或发生了其他错误。\n\n请结束所有 Cygwin 进程并选择""重试""，或选择""继续""以继续（文件将在重启后更新）。\n"
-    IDS_INSTALL_OLD_CYGWIN  "在这里发现了旧版本的 cygwin1.dll：\n%s\n是否删除？"
+    IDS_INSTALL_OLD_CYGWIN  "在此处发现了旧版 cygwin1.dll：\n%s\n是否删除？"
     IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
                             "无法删除文件 %s。\nDLL 是否正由另一个应用程序使用？\n您应该尽早删除旧版本的 cygwin1.dll。"
     IDS_SHELLLINK_FAILED    "CoCreateInstance 失败，错误为 0x%x。\n安装程序将无法在“开始”菜单或桌面上创建 Cygwin 图标。"
@@ -461,9 +461,9 @@ BEGIN
     IDS_HELPTEXT_ALLOW_TEST "考虑标记为测试版的软件包版本"
     IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
                             "允许旧的、不受支持的 Windows 版本"
-    IDS_HELPTEXT_ARCH       "要安装的体系结构（x86_64 或 x86）"
+    IDS_HELPTEXT_ARCH       "要安装的体系结构（选项：x86_64 或 x86）"
     IDS_HELPTEXT_CATEGORIES "指定要安装的类别"
-    IDS_HELPTEXT_COMPACTOS  "使用 Compact OS（xpress4k、xpress8k、xpress16k、lzx）压缩已安装的文件"
+    IDS_HELPTEXT_COMPACTOS  "使用 Compact OS 压缩已安装的文件（选项：xpress4k、xpress8k、xpress16k、lzx）"
     IDS_HELPTEXT_DELETE_ORPHANS
                             "删除孤立的软件包"
     IDS_HELPTEXT_DISABLE_ANTIVIRUS
@@ -485,7 +485,7 @@ BEGIN
                             "本地软件包目录"
     IDS_HELPTEXT_MIRROR_MODE
                             "从本地目录安装时跳过包可用性检查（要求本地目录是干净的镜像！）"
-    IDS_HELPTEXT_NO_ADMIN   "不检查并强制以管理员身份运行"
+    IDS_HELPTEXT_NO_ADMIN   "不检查也不强制以管理员身份运行"
     IDS_HELPTEXT_NO_DESKTOP "禁用桌面快捷方式的创建"
     IDS_HELPTEXT_NO_REPLACEONREBOOT
                             "禁用在下次重新启动时替换正在使用的文件"
@@ -509,7 +509,7 @@ BEGIN
     IDS_HELPTEXT_PRUNE_INSTALL
                             "删减安装，只保留所需的软件包"
     IDS_HELPTEXT_PUBKEY     "额外公钥文件的 URL 或绝对路径（RFC4880 格式）"
-    IDS_HELPTEXT_QUIET_MODE "无人值守安装模式"
+    IDS_HELPTEXT_QUIET_MODE "无人值守安装模式（选项：unattended、noinput、hidden）"
     IDS_HELPTEXT_REMOVE_CATEGORIES
                             "指定要卸载的类别"
     IDS_HELPTEXT_REMOVE_PACKAGES
@@ -519,7 +519,7 @@ BEGIN
                             "s-expr 格式的额外 DSA 公钥"
     IDS_HELPTEXT_SITE       "下载站点的网址、路径或 UNC 路径"
     IDS_HELPTEXT_SYMLINK_TYPE
-                            "符号链接类型（lnk，本机，系统，wsl）"
+                            "符号链接类型（选项：lnk、native、sys、wsl）"
     IDS_HELPTEXT_UNTRUSTED_KEYS
                             "使用不受信任的已保存额外密钥"
     IDS_HELPTEXT_UPGRADE_ALSO

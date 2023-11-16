@@ -509,9 +509,9 @@ BEGIN
     IDS_HELPTEXT_PRUNE_INSTALL
                             "Kurulumu yalnızca istenen paketlerle sınırla"
     IDS_HELPTEXT_PUBKEY     "Ek ortak anahtar dosyasının URL'si veya mutlak yolu (RFC4880 biçimi)"
-    IDS_HELPTEXT_QUIET_MODE "Etkileşimsiz kurulum modu"
+    IDS_HELPTEXT_QUIET_MODE "Etkileşimsiz kurulum modu (etkileşimsiz, girdi yok, gizli)"
     IDS_HELPTEXT_REMOVE_CATEGORIES
-                            "Kurulacak kategorileri belirt"
+                            "Kaldırılacak kategorileri belirt"
     IDS_HELPTEXT_REMOVE_PACKAGES
                             "Kaldırılacak paketleri belirt"
     IDS_HELPTEXT_ROOT       "Kök kurulum dizini"

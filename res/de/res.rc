@@ -509,7 +509,7 @@ BEGIN
     IDS_HELPTEXT_PRUNE_INSTALL
                             "Prune the installation to only the requested packages"
     IDS_HELPTEXT_PUBKEY     "URL or absolute path of extra public key file (RFC4880 format)"
-    IDS_HELPTEXT_QUIET_MODE "Unattended setup mode"
+    IDS_HELPTEXT_QUIET_MODE "Unattended setup mode (unattended, noinput, hidden)"
     IDS_HELPTEXT_REMOVE_CATEGORIES
                             "Zu deinstallierende Kategorien angeben"
     IDS_HELPTEXT_REMOVE_PACKAGES
