@@ -482,7 +482,7 @@ msgstr "&Beste"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_SYNC
 msgid "&Sync"
-msgstr "&Synchronisieren"
+msgstr "&Synchr."
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
 msgid "&Test"
