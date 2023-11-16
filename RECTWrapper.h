@@ -35,7 +35,7 @@ struct RECTWrapper : public RECT
   int width() const { return right - left; };
   int height() const { return bottom - top; };
   POINT center() const;
-  
+
   // Do interesting things to the RECT/RECTWrapper
   RECTWrapper& operator=(const RECT & r);
   void move(int x, int y);

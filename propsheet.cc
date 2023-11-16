@@ -26,6 +26,7 @@
 #include "choose.h"
 #include "msg.h"
 #include "quiet.h"
+#include "windowsx.h"
 
 // Sort of a "hidden" Windows structure.  Used in the PropSheetCallback.
 #include <pshpack1.h>
@@ -148,6 +149,14 @@ BOOL CALLBACK EnumPages (HWND hwnd, LPARAM lParam)
   return TRUE;
 }
 
+static void
+GetSizeGripRect(HWND hwnd, LPRECT rect)
+{
+  GetClientRect(hwnd, rect);
+  rect->left = rect->right - GetSystemMetrics(SM_CXHSCROLL);
+  rect->top = rect->bottom - GetSystemMetrics(SM_CYVSCROLL);
+}
+
 static LRESULT CALLBACK PropSheetWndProc (HWND hwnd, UINT uMsg,
   WPARAM wParam, LPARAM lParam)
 {
@@ -229,6 +238,41 @@ static LRESULT CALLBACK PropSheetWndProc (HWND hwnd, UINT uMsg,
 	    mmi->ptMinTrackSize.x = psd.minRect.width ();
 	    mmi->ptMinTrackSize.y = psd.minRect.height ();
 	  }
+      }
+      break;
+    case WM_PAINT:
+      {
+        RECT rect;
+        GetSizeGripRect(hwnd, &rect);
+
+        // draw size grip
+        HDC dc = GetDC(hwnd);
+        DrawFrameControl(dc, &rect, DFC_SCROLL, DFCS_SCROLLSIZEGRIP);
+        ReleaseDC(hwnd, dc);
+      }
+      break;
+    case WM_NCHITTEST:
+      {
+        RECT rect;
+        GetSizeGripRect(hwnd, &rect);
+        MapWindowPoints(hwnd, NULL, reinterpret_cast<POINT *>(&rect), 2);
+
+        // when over the size grip, pretend to be over bottom-right corner of
+        // the sizing border
+        POINT point = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+        if (PtInRect(&rect, point))
+            return HTBOTTOMRIGHT;
+
+        // otherwise, fall through...
+      }
+      break;
+    case WM_SIZING:
+      {
+        // invalidate the area containing the size grip when the window is
+        // resized, so it's redrawn
+        RECT rect;
+        GetSizeGripRect(hwnd, &rect);
+        InvalidateRect(hwnd, &rect, FALSE);
       }
       break;
     }
