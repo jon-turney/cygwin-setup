@@ -334,7 +334,7 @@ upx:	strip
 release: upx
 	@$(MKDIR_P) release
 	cp stripped/setup.dbg release/setup-${VER}.${ARCH}.dbg
-	cp stripped/setup${EXEEXT} release/setup-uncompressed-${VER}.${ARCH}${EXEEXT}
+	cp stripped/setup${EXEEXT} release/setup-${VER}-uncompressed.${ARCH}${EXEEXT}
 	cp upx/setup${EXEEXT} release/setup-${VER}.${ARCH}${EXEEXT}
 
 UPLOAD_HOST=cygwin-admin@cygwin.com
@@ -342,8 +342,10 @@ UPLOAD_PATH=/www/sourceware/htdocs/cygwin/setup
 SIGN_KEYS="--enable-dsa2 --personal-digest-preferences=sha256 -u 1A698DE9E2E56300"
 
 upload: release
-	cd release ; scp setup-${VER}.$(ARCH).exe setup-${VER}.$(ARCH).dbg setup-uncompressed-${VER}.${ARCH}${EXEEXT} ${UPLOAD_HOST}:${UPLOAD_PATH}
+	cd release ; scp setup-${VER}.$(ARCH).exe setup-${VER}.$(ARCH).dbg setup-${VER}-uncompressed.${ARCH}${EXEEXT} ${UPLOAD_HOST}:${UPLOAD_PATH}
 	ssh ${UPLOAD_HOST} gpg --batch ${SIGN_KEYS} --detach-sign ${UPLOAD_PATH}/setup-${VER}.$(ARCH).exe
+	ssh ${UPLOAD_HOST} gpg --batch ${SIGN_KEYS} --detach-sign ${UPLOAD_PATH}/setup-${VER}-uncompressed.$(ARCH).exe
+	ssh ${UPLOAD_HOST} "cd ${UPLOAD_PATH} && sha512sum *.exe > sha512.sum"
 
 clean-local:
 	rm -rf stripped upx release
