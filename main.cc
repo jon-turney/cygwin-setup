@@ -361,23 +361,24 @@ WinMain (HINSTANCE h,
           Logger ().exit (1, false);
         }
         else if ((OSMajorVersion () < 6) ||
-                 ((OSMajorVersion () == 6) && (OSMinorVersion() < 1)))
+                 ((OSMajorVersion () == 6) && (OSMinorVersion() < 3)))
           {
             mbox (NULL, IDS_UNSUPPORTED_WINDOWS_VERSION,
                   MB_ICONEXCLAMATION | MB_OK);
             Logger ().exit (1, false);
           }
 
+#if 0
         /*
-          Warn if Windows version is deprecated for Cygwin: Current plans are to
-          deprecate Windows 7 & 8 sometime during the Cygwin DLL 3.4 lifetime
+          Warn if Windows version is deprecated for Cygwin
         */
         if (!DeprecatedOption && !elevate)
           {
-            if ((OSMajorVersion () == 6) && (OSMinorVersion() < 3))
+            if ((OSMajorVersion () == 6) && (OSMinorVersion() < 4))
               mbox (NULL, IDS_DEPRECATED_WINDOWS_VERSION,
                     MB_ICONEXCLAMATION | MB_OK | MB_DSA_CHECKBOX);
           }
+#endif
       }
 
     /* Set default DACL and Group. */
