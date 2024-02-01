@@ -45,10 +45,10 @@ required packages and their dependencies installed:
   - mingw${arch}-libgcrypt-static
   - mingw${arch}-libgnurx-static
   - mingw${arch}-libsolv-static (*)
-  - mingw${arch}-libzstd-static (**)
   - mingw${arch}-winpthreads-static
   - mingw${arch}-xz-libs-static
   - mingw${arch}-zlib-static
+  - mingw${arch}-zstd-static (**)
   - upx (optional)
 
 The ${arch} needs to be replaced with either "32" or "64"

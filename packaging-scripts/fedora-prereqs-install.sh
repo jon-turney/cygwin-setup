@@ -8,4 +8,4 @@ sudo dnf -y copr enable jturney/mingw-libsolv
 sudo dnf -y install mingw32-libsolv-static mingw64-libsolv-static
 sudo dnf -y install mingw32-libgnurx-static mingw64-libgnurx-static
 sudo dnf -y copr enable jturney/mingw-zstd
-sudo dnf -y install mingw32-libzstd-static mingw64-libzstd-static
+sudo dnf -y install mingw32-zstd-static mingw64-zstd-static
