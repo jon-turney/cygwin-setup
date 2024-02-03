@@ -27,7 +27,6 @@ private:
   ssize_t table_len;
 
   std::string filename;
-  std::string cwd;
 
 public:
   static class UserSettings *global;
@@ -44,8 +43,7 @@ public:
 
 private:
   void extend_table (ssize_t);
-  io_stream *open_settings (const char *, std::string&);
-
+  io_stream *open_settings (const char *, std::string &, std::string&);
 };
 
 #endif // SETUP_USERSETTINGS_H

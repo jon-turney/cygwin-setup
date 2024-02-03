@@ -65,14 +65,17 @@ UserSettings::extend_table (ssize_t i)
 }
 
 io_stream *
-UserSettings::open_settings (const char *filename, std::string &pathname)
+UserSettings::open_settings (const char *filename, std::string &dir, std::string &pathname)
 {
+  // first look for a settings file in specified dir
   pathname = "file://";
-  pathname += cwd;
-  if (!isdirsep (cwd[cwd.size () - 1]) && !isdirsep (filename[0]))
+  pathname += dir;
+  if (!isdirsep (dir[dir.size () - 1]) && !isdirsep (filename[0]))
     pathname += "/";
   pathname += filename;
   io_stream *f = io_stream::open(pathname, "rt", 0);
+
+  // if not found, look in cygwin installation
   if (!f)
     {
       pathname = "cygfile:///etc/setup/";
@@ -92,8 +95,7 @@ UserSettings::UserSettings ()
 void
 UserSettings::load (std::string local_dir)
 {
-  cwd = local_dir;
-  io_stream *f = open_settings ("setup.rc", filename);
+  io_stream *f = open_settings ("setup.rc", local_dir, filename);
 
   if (!f)
     return;
