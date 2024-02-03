@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <vector>
 #include "io_stream.h"
+#include "win32.h"
 #include "crypto.h"
 #include "compress.h"
 #include "gcrypt.h"
@@ -29,6 +30,7 @@
 #include "KeysSetting.h"
 #include "gpg-packet.h"
 #include "geturl.h"
+#include "Feedback.h"
 
 #ifndef CRYPTODEBUGGING
 #define CRYPTODEBUGGING         (0)
@@ -649,7 +651,7 @@ gcrypt_log_adaptor(void *priv, int level, const char *fmt, va_list args)
 
 /*  Verify the signature on an ini file.  Takes care of all key-handling.  */
 bool
-verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
+verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, Feedback &feedback)
 {
   /*  Data returned from packet walker.  */
   struct sig_data sigdat;
@@ -674,7 +676,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
       gcry_check_version (NULL);
 
       if ((rv = gcry_control (GCRYCTL_SELFTEST)) != GPG_ERR_NO_ERROR)
-        ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "libgcrypt selftest failed");
+        ERRKIND (feedback.owner(), IDS_CRYPTO_ERROR, rv, "libgcrypt selftest failed");
 
 #if CRYPTODEBUGGING
       gcry_control (GCRYCTL_SET_DEBUG_FLAGS, 1);
@@ -687,7 +689,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
   rv = gcry_sexp_new (&cygwin_key, cygwin_pubkey_sexpr, strlen (cygwin_pubkey_sexpr), 1);
   if (rv != GPG_ERR_NO_ERROR)
     {
-      ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating pubkey s-expr.");
+      ERRKIND (feedback.owner(), IDS_CRYPTO_ERROR, rv, "while creating pubkey s-expr.");
     }
   else
     {
@@ -707,7 +709,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
       rv = gcry_sexp_new (&cygwin_old_key, cygwin_old_pubkey_sexpr, strlen (cygwin_old_pubkey_sexpr), 1);
       if (rv != GPG_ERR_NO_ERROR)
         {
-          ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "while creating old pubkey s-expr.");
+          ERRKIND (feedback.owner(), IDS_CRYPTO_ERROR, rv, "while creating old pubkey s-expr.");
         }
       else
         {
@@ -791,7 +793,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 	}
       else
 	{
-	  ERRKIND (owner, IDS_CRYPTO_ERROR, rv, "invalid command-line pubkey s-expr.");
+	  ERRKIND (feedback.owner(), IDS_CRYPTO_ERROR, rv, "invalid command-line pubkey s-expr.");
 	}
     }
 
@@ -801,11 +803,11 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
 					= ExtraKeysFiles.begin ();
 		it != ExtraKeysFiles.end (); ++it)
     {
-      io_stream *keys = get_url_to_membuf (*it, owner);
+      io_stream *keys = get_url_to_membuf (*it, feedback);
       if (keys)
 	{
 	  struct key_data kdat;
-	  pkt_walk_packets (keys, key_file_walker, owner, 0, keys->get_size (), &kdat);
+	  pkt_walk_packets (keys, key_file_walker, feedback.owner(), 0, keys->get_size (), &kdat);
 	  // We now have a vector of (some/any?) keys returned from
 	  // the walker; add them to the list to try.
 	  while (!kdat.keys.empty ())
@@ -835,7 +837,7 @@ verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner)
   sigdat.sign_data = ini_file;
   sigdat.keys_to_try = &keys_to_try;
 
-  pkt_walk_packets (ini_sig_file, sig_file_walker, owner, 0,
+  pkt_walk_packets (ini_sig_file, sig_file_walker, feedback.owner(), 0,
                     ini_sig_file->get_size (), &sigdat);
 
   sig_ok = sigdat.valid;

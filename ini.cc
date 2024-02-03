@@ -38,7 +38,7 @@
 #include "mount.h"
 #include "SiteSetting.h"
 #include "find.h"
-#include "IniParseFeedback.h"
+#include "Feedback.h"
 
 #include "io_stream.h"
 #include "io_stream_memory.h"
@@ -123,7 +123,7 @@ decompress_ini (io_stream *ini_file, std::string &current_ini_name)
 
 static io_stream*
 check_ini_sig (io_stream* ini_file, io_stream* ini_sig_file,
-	       bool& sig_fail, const char* site, const char* sig_name, HWND owner)
+	       bool& sig_fail, const char* site, const char* sig_name, Feedback &feedback)
 {
   /* Unless the NoVerifyOption is set, check the signature for the
      current setup and record the result.  On a failed signature check
@@ -137,15 +137,15 @@ check_ini_sig (io_stream* ini_file, io_stream* ini_sig_file,
 	// TODO: download the ini + signature file instead
 	if (casecompare (site, "localdir"))
 	  {
-	    note (owner, IDS_SETUPINI_MISSING, sig_name, site);
+	    note (feedback.owner(), IDS_SETUPINI_MISSING, sig_name, site);
 	    delete ini_file;
 	    ini_file = NULL;
 	    sig_fail = true;
 	  }
       }
-      else if (!verify_ini_file_sig (ini_file, ini_sig_file, owner))
+      else if (!verify_ini_file_sig (ini_file, ini_sig_file, feedback))
 	{
-	  note (owner, IDS_SIG_INVALID, sig_name, site);
+	  note (feedback.owner(), IDS_SIG_INVALID, sig_name, site);
 	  delete ini_sig_file;
 	  ini_sig_file = NULL;
 	  delete ini_file;
@@ -157,7 +157,7 @@ check_ini_sig (io_stream* ini_file, io_stream* ini_sig_file,
 }
 
 static bool
-do_local_ini (HWND owner, IniParseFeedback &myFeedback)
+do_local_ini (Feedback &myFeedback)
 {
   bool ini_error = false;
   io_stream *ini_file, *ini_sig_file;
@@ -175,13 +175,13 @@ do_local_ini (HWND owner, IniParseFeedback &myFeedback)
       ini_sig_file = io_stream::open ("file://" + current_ini_sig_name, "rb", 0);
       ini_file = io_stream::open ("file://" + current_ini_name, "rb", 0);
       ini_file = check_ini_sig (ini_file, ini_sig_file, sig_fail,
-				"localdir", current_ini_sig_name.c_str (), owner);
+				"localdir", current_ini_sig_name.c_str (), myFeedback);
       if (ini_file)
 	ini_file = decompress_ini (ini_file, current_ini_name);
       if (!ini_file || sig_fail)
 	{
 	  // no setup found or signature invalid
-	  note (owner, IDS_SETUPINI_MISSING, SetupBaseName().c_str (),
+	  note (myFeedback.owner(), IDS_SETUPINI_MISSING, SetupBaseName().c_str (),
 		"localdir");
 	  ini_error = true;
 	}
@@ -215,7 +215,7 @@ do_local_ini (HWND owner, IniParseFeedback &myFeedback)
 }
 
 static bool
-do_remote_ini (HWND owner, IniParseFeedback &myFeedback)
+do_remote_ini (Feedback &myFeedback)
 {
   bool ini_error = false;
   io_stream *ini_file = NULL, *ini_sig_file;
@@ -238,10 +238,10 @@ do_remote_ini (HWND owner, IniParseFeedback &myFeedback)
 	  current_ini_ext = *ext;
 	  current_ini_name = n->url + SetupArch() + "/" + SetupBaseName() + "." + current_ini_ext;
 	  current_ini_sig_name = current_ini_name + ".sig";
-	  ini_sig_file = get_url_to_membuf (current_ini_sig_name, owner);
-	  ini_file = get_url_to_membuf (current_ini_name, owner);
+	  ini_sig_file = get_url_to_membuf (current_ini_sig_name, myFeedback);
+	  ini_file = get_url_to_membuf (current_ini_name, myFeedback);
 	  ini_file = check_ini_sig (ini_file, ini_sig_file, sig_fail,
-				    n->url.c_str (), current_ini_sig_name.c_str (), owner);
+				    n->url.c_str (), current_ini_sig_name.c_str (), myFeedback);
 	  // stop searching as soon as we find a setup file
 	  if (ini_file)
 	    break;
@@ -251,7 +251,7 @@ do_remote_ini (HWND owner, IniParseFeedback &myFeedback)
       if (!ini_file || sig_fail)
 	{
 	  // no setup found or signature invalid
-	  note (owner, IDS_SETUPINI_MISSING, SetupBaseName().c_str (), n->url.c_str ());
+	  note (myFeedback.owner(), IDS_SETUPINI_MISSING, SetupBaseName().c_str (), n->url.c_str ());
 	  ini_error = true;
 	}
       else
@@ -294,7 +294,7 @@ do_remote_ini (HWND owner, IniParseFeedback &myFeedback)
 }
 
 bool
-do_ini_thread (HINSTANCE h, HWND owner, IniParseFeedback &feedback)
+do_ini_thread (Feedback &feedback)
 {
   packagedb db;
   db.init();
@@ -302,9 +302,9 @@ do_ini_thread (HINSTANCE h, HWND owner, IniParseFeedback &feedback)
   bool ini_error = true;
 
   if (source == IDC_SOURCE_LOCALDIR)
-    ini_error = do_local_ini (owner, feedback);
+    ini_error = do_local_ini (feedback);
   else
-    ini_error = do_remote_ini (owner, feedback);
+    ini_error = do_remote_ini (feedback);
 
   if (ini_error)
     return false;
@@ -326,7 +326,7 @@ do_ini_thread (HINSTANCE h, HWND owner, IniParseFeedback &feedback)
 	  if (old_timestamp && setup_timestamp
 	      && (old_timestamp > setup_timestamp))
 	    {
-	      int yn = yesno (owner, IDS_OLD_SETUPINI);
+	      int yn = yesno (feedback.owner(), IDS_OLD_SETUPINI);
 	      if (yn == IDNO)
 		Logger ().exit (1);
 	    }
@@ -352,7 +352,7 @@ do_ini_thread (HINSTANCE h, HWND owner, IniParseFeedback &feedback)
     {
       if ((version_compare (setup_version, ini_setup_version) < 0)
           && !NoVersionCheckOption)
-	note (owner, IDS_OLD_SETUP_VERSION, setup_version,
+	note (feedback.owner(), IDS_OLD_SETUP_VERSION, setup_version,
 	      ini_setup_version.c_str ());
     }
 

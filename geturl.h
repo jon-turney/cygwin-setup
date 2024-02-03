@@ -16,19 +16,16 @@
 #ifndef SETUP_GETURL_H
 #define SETUP_GETURL_H
 
-/* Download files from the Internet.  These pop up a progress dialog;
-   don't forget to dismiss it when you're done downloading for a while */
+/* Download files from the Internet. */
 
 #include <string>
 
-extern long long int total_download_bytes;
-extern long long int total_download_bytes_sofar;
-
 class io_stream;
+class Feedback;
 
-io_stream *get_url_to_membuf (const std::string &_url, HWND owner);
-std::string get_url_to_string (const std::string &_url, HWND owner);
+io_stream *get_url_to_membuf (const std::string &_url, Feedback &feedback);
+std::string get_url_to_string (const std::string &_url, Feedback &feedback);
 int get_url_to_file (const std::string &_url, const std::string &_filename,
-                     int expected_size, HWND owner);
+                     int expected_size, Feedback &feedback);
 
 #endif /* SETUP_GETURL_H */

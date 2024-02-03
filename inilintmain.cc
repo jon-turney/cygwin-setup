@@ -15,7 +15,7 @@
 
 #include "io_stream.h"
 #include "IniDBBuilderLint.h"
-#include "CliParseFeedback.h"
+#include "cli/CliFeedback.h"
 #include "ini.h"
 #include <iostream>
 #include <sstream>
@@ -46,7 +46,7 @@ main (int argc, char **argv)
       return 1;
     }
 
-  CliParseFeedback feedback;
+  CliFeedback feedback;
   IniDBBuilderLint builder;
   ini_init(ini_file, &builder, feedback);
 
@@ -62,4 +62,10 @@ get_root_dir ()
 {
   static std::string empty;
   return empty;
+}
+
+void
+fatal (HWND owner, int id, ...)
+{
+  exit(1);
 }

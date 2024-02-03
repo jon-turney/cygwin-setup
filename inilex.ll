@@ -25,7 +25,7 @@
 #include "ini.h"
 #include "iniparse.hh"
 #include "String++.h"
-#include "IniParseFeedback.h"
+#include "Feedback.h"
 #include "sha2.h"
 
 #define YY_READ_BUF_SIZE 65536
@@ -167,10 +167,10 @@ B64	[a-zA-Z0-9_-]
 
 static io_stream *input_stream = 0;
 extern IniDBBuilder *iniBuilder;
-static IniParseFeedback *iniFeedback;
+static Feedback *iniFeedback;
 
 void
-ini_init(io_stream *stream, IniDBBuilder *aBuilder, IniParseFeedback &aFeedback)
+ini_init(io_stream *stream, IniDBBuilder *aBuilder, Feedback &aFeedback)
 {
   input_stream = stream;
   iniBuilder = aBuilder;

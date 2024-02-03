@@ -66,8 +66,9 @@ inilint_LDADD = \
 inilint_SOURCES = \
 	filemanip.cc \
 	filemanip.h \
-	CliParseFeedback.cc \
-	CliParseFeedback.h \
+	cli/CliParseFeedback.cc \
+	cli/CliGetUrlFeedback.cc \
+	cli/CliFeedback.h \
 	LogSingleton.cc \
 	LogSingleton.h \
 	IniDBBuilder.h \
@@ -184,6 +185,8 @@ endif
 	gpg-packet.cc \
 	gpg-packet.h \
 	gui/GuiParseFeedback.cc \
+	gui/GuiGetUrlFeedback.cc \
+	gui/GuiFeedback.h \
 	ini.cc \
 	ini.h \
 	IniDBBuilder.h \
@@ -191,7 +194,7 @@ endif
 	IniDBBuilderPackage.h \
 	inilex.ll \
 	iniparse.yy \
-	IniParseFeedback.h \
+	Feedback.h \
 	install.cc \
 	io_stream.cc \
 	io_stream.h \

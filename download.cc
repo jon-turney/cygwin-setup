@@ -42,6 +42,7 @@
 #include "package_source.h"
 
 #include "threebar.h"
+#include "gui/GuiFeedback.h"
 
 #include "Exception.h"
 
@@ -146,11 +147,11 @@ check_for_cached (packagesource & pkgsource, HWND owner, bool mirror_mode,
 
 /* download a file from a mirror site to the local cache. */
 static int
-download_one (packagesource & pkgsource, HWND owner)
+download_one (packagesource & pkgsource, Feedback &feedback)
 {
   try
     {
-      if (check_for_cached (pkgsource, owner))
+      if (check_for_cached (pkgsource, feedback.owner()))
         return 0;
     }
   catch (Exception * e)
@@ -158,7 +159,7 @@ download_one (packagesource & pkgsource, HWND owner)
       // We know what to do with these..
       if (e->errNo() == APPERR_CORRUPT_PACKAGE)
 	{
-	  fatal (owner, IDS_CORRUPT_PACKAGE, pkgsource.Canonical());
+	  fatal (feedback.owner(), IDS_CORRUPT_PACKAGE, pkgsource.Canonical());
     	  return 1;
 	}
       // Unexpected exception.
@@ -176,7 +177,7 @@ download_one (packagesource & pkgsource, HWND owner)
       io_stream::mkpath_p (PATH_TO_FILE, "file://" + local, 0);
 
       if (get_url_to_file(n->key + pkgsource.Canonical (),
-			  local + ".tmp", pkgsource.size, owner))
+			  local + ".tmp", pkgsource.size, feedback))
 	{
 	  /* FIXME: note new source ? */
 	  continue;
@@ -274,8 +275,6 @@ static int
 do_download_thread (HINSTANCE h, HWND owner)
 {
   int errors = 0;
-  total_download_bytes = 0;
-  total_download_bytes_sofar = 0;
   download_failures.clear ();
 
   Progress.SetText1 (IDS_PROGRESS_CHECKING);
@@ -286,6 +285,7 @@ do_download_thread (HINSTANCE h, HWND owner)
   const SolverTransactionList &t = db.solution.transactions();
 
   /* calculate the total size of the download */
+  long long int total_download_bytes = 0;
   for (SolverTransactionList::const_iterator i = t.begin (); i != t.end (); ++i)
     {
       if (i->type != SolverTransaction::transInstall)
@@ -308,6 +308,9 @@ do_download_thread (HINSTANCE h, HWND owner)
       Progress.SetBar2(std::distance(t.begin(), i) + 1, t.size());
     }
 
+  GuiFeedback feedback(owner);
+  feedback.fetch_set_total_length(total_download_bytes);
+
   /* and do the download. FIXME: This here we assign a new name for the cached version
    * and check that above.
    */
@@ -319,7 +322,7 @@ do_download_thread (HINSTANCE h, HWND owner)
 
 	{
 	  int e = 0;
-          e += download_one (*version.source(), owner);
+          e += download_one (*version.source(), feedback);
 	  errors += e;
 	  if (e)
 	    download_failures.push_back (version);

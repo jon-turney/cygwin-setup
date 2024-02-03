@@ -11,35 +11,45 @@
  *
  */
 
-#include "CliParseFeedback.h"
+#include "cli/CliFeedback.h"
 #include "LogSingleton.h"
 #include <sstream>
 #include <iostream>
 
-void CliParseFeedback::progress (unsigned long const pos, unsigned long const max)
-{
-  std::cout << pos << "/" << max << std::endl;
-}
-
-void CliParseFeedback::iniName (const std::string& name)
+void
+CliFeedback::parse_init()
 {
 }
 
-void CliParseFeedback::babble (const std::string& message) const
+void
+CliFeedback::parse_finish()
+{
+}
+
+void CliFeedback::progress (unsigned long const pos, unsigned long const max)
+{
+  std::cout << pos << "/" << max << "\r";
+}
+
+void CliFeedback::iniName (const std::string& name)
+{
+}
+
+void CliFeedback::babble (const std::string& message) const
 {
   Log (LOG_BABBLE) << message << endLog;
 }
 
-void CliParseFeedback::warning (const std::string& message) const
+void CliFeedback::warning (const std::string& message) const
 {
   std::cout << "Warning: " << message << std::endl;
 }
 
-void CliParseFeedback::show_errors () const
+void CliFeedback::show_errors () const
 {
 }
 
-void CliParseFeedback::note_error(int lineno, const std::string &s)
+void CliFeedback::note_error(int lineno, const std::string &s)
 {
   std::ostringstream buf;
   buf << "line " << lineno << ": ";
@@ -48,7 +58,7 @@ void CliParseFeedback::note_error(int lineno, const std::string &s)
   error_count++;
 }
 
-bool CliParseFeedback::has_errors () const
+bool CliFeedback::has_errors () const
 {
   return (error_count > 0);
 }

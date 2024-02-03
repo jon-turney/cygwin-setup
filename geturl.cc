@@ -15,12 +15,10 @@
  *
  */
 
-/* The purpose of this file is to act as a pretty interface to
-   netio.cc.  We add a progress dialog and some convenience functions
-   (like collect to string or file */
+/* The purpose of this file is to act as a pretty interface to netio.cc.  We add
+   a progress reporting and some convenience functions (like collect to string
+   or file) */
 
-#include "win32.h"
-#include "commctrl.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,87 +28,24 @@
 #include "geturl.h"
 #include "resource.h"
 #include "netio.h"
-#include "msg.h"
 #include "io_stream.h"
 #include "io_stream_memory.h"
 #include "state.h"
-#include "diskfull.h"
-#include "mount.h"
 #include "filemanip.h"
-
-#include "threebar.h"
+#include "String++.h"
 
 #include "Exception.h"
 
 #include "LogSingleton.h"
-
-extern ThreeBarProgressPage Progress;
-
-static int max_bytes = 0;
-static int is_local_install = 0;
-
-long long int total_download_bytes = 0;
-long long int total_download_bytes_sofar = 0;
-
-static DWORD start_tics;
+#include "Feedback.h"
 
 static void
-init_dialog (const std::string &url, int length)
+getUrlToStream (const std::string &_url, io_stream *output, Feedback &feedback)
 {
-  if (is_local_install)
-    return;
+  // we turn off this feedback for local files
+  feedback.fetch_progress_disable((source == IDC_SOURCE_LOCALDIR));
 
-  std::string::size_type divide = url.find_last_of('/');
-  max_bytes = length;
-  Progress.SetText1(IDS_PROGRESS_DOWNLOADING);
-  std::wstring fmt = LoadStringW(IDS_PROGRESS_DOWNLOADING_FROM);
-  std::wstring s = format(fmt,
-                          url.substr(divide + 1).c_str(),
-                          url.substr(0, divide).c_str());
-  Progress.SetText2(s.c_str());
-  Progress.SetText3(IDS_PROGRESS_CONNECTING);
-  Progress.SetBar1(0);
-  start_tics = GetTickCount ();
-}
-
-
-static void
-progress (int bytes)
-{
-  if (is_local_install)
-    return;
-  static char buf[100];
-  double kbps;
-  static unsigned int last_tics = 0;
-  DWORD tics = GetTickCount ();
-  if (tics == start_tics)	// to prevent division by zero
-    return;
-  if (tics < last_tics + 200)	// to prevent flickering updates
-    return;
-  last_tics = tics;
-
-  kbps = ((double)bytes) / (double)(tics - start_tics);
-  if (max_bytes > 0)
-    {
-      int perc = (int)(100.0 * ((double)bytes) / (double)max_bytes);
-      Progress.SetBar1(bytes, max_bytes);
-      sprintf (buf, "%d %%  (%dk/%dk)  %03.1f kB/s",
-	       perc, bytes / 1000, max_bytes / 1000, kbps);
-      if (total_download_bytes > 0)
-     	  Progress.SetBar2(total_download_bytes_sofar + bytes,
-			   total_download_bytes);
-    }
-  else
-    sprintf (buf, "%d  %2.1f kB/s", bytes, kbps);
-
-  Progress.SetText3(buf);
-}
-
-static void
-getUrlToStream (const std::string &_url, io_stream *output)
-{
-  is_local_install = (source == IDC_SOURCE_LOCALDIR);
-  init_dialog (_url, 0);
+  feedback.fetch_init (_url, 0);
   NetIO *n = NetIO::open (_url.c_str(), true);
   if (!n || !n->ok ())
     {
@@ -119,10 +54,10 @@ getUrlToStream (const std::string &_url, io_stream *output)
     }
 
   if (n->file_size)
-    max_bytes = n->file_size;
+    feedback.fetch_set_length(n->file_size);
 
   int total_bytes = 0;
-  progress (0);
+  feedback.fetch_progress (0);
   while (1)
     {
       char buf[2048];
@@ -135,7 +70,7 @@ getUrlToStream (const std::string &_url, io_stream *output)
 	    /* FIXME: Show an error message */
 	    break;
 	  total_bytes += rlen;
-	  progress (total_bytes);
+	  feedback.fetch_progress (total_bytes);
 	}
       else
 	break;
@@ -148,13 +83,13 @@ getUrlToStream (const std::string &_url, io_stream *output)
 }
 
 io_stream *
-get_url_to_membuf (const std::string &_url, HWND owner)
+get_url_to_membuf (const std::string &_url, Feedback &feedback)
 {
   io_stream_memory *membuf = new io_stream_memory ();
-  try 
+  try
     {
-      getUrlToStream (_url, membuf);
-      
+      getUrlToStream (_url, membuf, feedback);
+
       if (membuf->seek (0, IO_SEEK_SET))
     	{
     	  if (membuf)
@@ -175,9 +110,9 @@ get_url_to_membuf (const std::string &_url, HWND owner)
 
 // predicate: url has no '\0''s in it.
 std::string
-get_url_to_string (const std::string &_url, HWND owner)
+get_url_to_string (const std::string &_url, Feedback &feedback)
 {
-  io_stream *stream = get_url_to_membuf (_url, owner);
+  io_stream *stream = get_url_to_membuf (_url, feedback);
   if (!stream)
     return std::string();
   size_t bytes = stream->get_size ();
@@ -200,15 +135,11 @@ int
 get_url_to_file (const std::string &_url,
                  const std::string &_filename,
                  int expected_length,
-		 HWND owner)
+                 Feedback &feedback)
 {
   Log (LOG_BABBLE) << "get_url_to_file " << _url << " " << _filename << endLog;
-  if (total_download_bytes > 0)
-    {
-      int df = diskfull (get_root_dir ().c_str());
-      Progress.SetBar3(df);
-    }
-  init_dialog (_url, expected_length);
+  feedback.fetch_total_progress();
+  feedback.fetch_init(_url, expected_length);
 
   remove (_filename.c_str());		/* but ignore errors */
 
@@ -225,14 +156,14 @@ get_url_to_file (const std::string &_url,
       const char *err = strerror (errno);
       if (!err)
 	err = "(unknown error)";
-      fatal (owner, IDS_ERR_OPEN_WRITE, _filename.c_str(), err);
+      feedback.fetch_fatal (_filename.c_str(), err);
     }
 
   if (n->file_size)
-    max_bytes = n->file_size;
+    feedback.fetch_set_length(n->file_size);
 
   int total_bytes = 0;
-  progress (0);
+  feedback.fetch_progress(0);
   while (1)
     {
       char buf[8192];
@@ -242,22 +173,15 @@ get_url_to_file (const std::string &_url,
 	break;
       fwrite (buf, 1, count, f);
       total_bytes += count;
-      progress (total_bytes);
+      feedback.fetch_progress (total_bytes);
     }
-
-  total_download_bytes_sofar += total_bytes;
 
   fclose (f);
   if (n)
     delete n;
 
-  if (total_download_bytes > 0)
-    {
-      int df = diskfull (get_root_dir ().c_str());
-	  Progress.SetBar3(df);
-    }
-  Progress.SetText3("");
+  feedback.fetch_total_progress();
+  feedback.fetch_finish(total_bytes);
 
   return 0;
 }
-

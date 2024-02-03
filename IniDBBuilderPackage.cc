@@ -19,7 +19,7 @@
 
 #include "setup_version.h"
 
-#include "IniParseFeedback.h"
+#include "Feedback.h"
 #include "package_db.h"
 #include "package_meta.h"
 #include "ini.h"
@@ -29,7 +29,7 @@
 #include "PackageSpecification.h"
 #include <algorithm>
 
-IniDBBuilderPackage::IniDBBuilderPackage (IniParseFeedback const &aFeedback) :
+IniDBBuilderPackage::IniDBBuilderPackage (Feedback const &aFeedback) :
   currentSpec (0), _feedback (aFeedback), minimum_version_checked(FALSE) {}
 
 IniDBBuilderPackage::~IniDBBuilderPackage()

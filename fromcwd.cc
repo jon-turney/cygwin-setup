@@ -32,7 +32,6 @@
 
 #include "FindVisitor.h"
 #include "IniDBBuilderPackage.h"
-#include "IniParseFeedback.h"
 
 class SetupFindVisitor : public FindVisitor
 {

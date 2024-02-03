@@ -39,6 +39,7 @@
 #include "ControlAdjuster.h"
 #include "Exception.h"
 #include "String++.h"
+#include "gui/GuiFeedback.h"
 
 #define MIRROR_LIST_URL "https://cygwin.com/mirrors.lst"
 
@@ -232,7 +233,7 @@ migrate_selected_site_list()
 }
 
 static int
-get_site_list (HINSTANCE h, HWND owner)
+get_site_list (Feedback &feedback)
 {
   char *theMirrorString, *theCachedString;
 
@@ -252,7 +253,7 @@ get_site_list (HINSTANCE h, HWND owner)
       cached_mirrors = "";
     }
 
-  std::string mirrors = OnlySiteOption ? std::string ("") : get_url_to_string (MIRROR_LIST_URL, owner);
+  std::string mirrors = OnlySiteOption ? std::string ("") : get_url_to_string (MIRROR_LIST_URL, feedback);
   if (mirrors.size())
     cache_needs_writing = true;
   else
@@ -260,7 +261,7 @@ get_site_list (HINSTANCE h, HWND owner)
       if (!cached_mirrors[0])
         {
           if (!OnlySiteOption)
-            note(owner, IDS_NO_MIRROR_LST);
+            note(feedback.owner(), IDS_NO_MIRROR_LST);
           Log (LOG_BABBLE) << "Defaulting to empty mirror list" << endLog;
         }
       else
@@ -289,27 +290,25 @@ static DWORD WINAPI
 do_download_site_info_thread (void *p)
 {
   HANDLE *context;
-  HINSTANCE hinst;
-  HWND h;
   context = (HANDLE *) p;
 
   SetThreadUILanguage(langid);
 
   try
   {
-    hinst = (HINSTANCE) (context[0]);
-    h = (HWND) (context[1]);
+    GuiFeedback feedback((HWND)(context[1]));
+
     static bool downloaded = false;
-    if (!downloaded && get_site_list (hinst, h))
+    if (!downloaded && get_site_list(feedback))
     {
       // Error: Couldn't download the site info.
       // Go back to the Net setup page.
-      mbox (h, IDS_GET_SITELIST_ERROR, MB_OK);
+      mbox (feedback.owner(), IDS_GET_SITELIST_ERROR, MB_OK);
 
       // Tell the progress page that we're done downloading
       Progress.PostMessageNow (WM_APP_SITE_INFO_DOWNLOAD_COMPLETE, 0, IDD_NET);
     }
-    else 
+    else
     {
       downloaded = true;
       // Everything worked, go to the site select page

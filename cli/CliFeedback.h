@@ -11,11 +11,14 @@
  *
  */
 
-#include "IniParseFeedback.h"
+#include "Feedback.h"
 
-class CliParseFeedback : public IniParseFeedback
+class CliFeedback : public Feedback
 {
+  // ini parse
 public:
+  virtual void parse_init ();
+  virtual void parse_finish ();
   virtual void progress (unsigned long const pos, unsigned long const max);
   virtual void iniName (const std::string& name);
   virtual void babble (const std::string& message) const;
@@ -25,4 +28,28 @@ public:
   virtual bool has_errors () const;
 private:
   int error_count = 0;
+
+  // URL fetch
+public:
+  void fetch_progress_disable (bool);
+  void fetch_init (const std::string &url, int length);
+  void fetch_set_length(int length);
+  void fetch_set_total_length(long long int total_length);
+  void fetch_progress (int bytes);
+  void fetch_total_progress ();
+  void fetch_finish (int total_bytes);
+  void fetch_fatal (const char *filename, const char *err);
+
+private:
+  int max_bytes;
+  long long int total_download_bytes = 0; // meaning ???
+  long long int total_download_bytes_sofar = 0;
+
+  unsigned int last_tics;
+  unsigned int start_tics;
+
+  // owner
+public:
+  HWND owner () { return NULL; }
+
 };

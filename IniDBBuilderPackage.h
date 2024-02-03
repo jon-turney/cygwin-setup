@@ -24,13 +24,13 @@
 #include "String++.h"
 #include "libsolv.h"
 
-class IniParseFeedback;
+class Feedback;
 class packagesource;
 
 class IniDBBuilderPackage:public IniDBBuilder
 {
 public:
-  IniDBBuilderPackage (IniParseFeedback const &);
+  IniDBBuilderPackage (Feedback const &);
   ~IniDBBuilderPackage ();
 
   void buildTimestamp (const std::string& );
@@ -89,7 +89,7 @@ private:
   SolverPool::addPackageData cbpv;
   std::set <std::string> replace_versions;
 
-  IniParseFeedback const &_feedback;
+  Feedback const &_feedback;
   bool minimum_version_checked;
 };
 

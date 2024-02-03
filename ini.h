@@ -29,9 +29,10 @@ std::string SetupBaseName();
 
 class io_stream;
 class IniDBBuilder;
-class IniParseFeedback;
-void ini_init (io_stream *, IniDBBuilder *, IniParseFeedback &);
-bool do_ini_thread (HINSTANCE h, HWND owner, IniParseFeedback &feedback);
+class Feedback;
+
+void ini_init (io_stream *, IniDBBuilder *, Feedback &);
+bool do_ini_thread (Feedback &feedback);
 
 #define YYSTYPE char *
 

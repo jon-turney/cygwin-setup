@@ -17,20 +17,19 @@
 #define SETUP_CRYPTO_H
 
 /* This module uses libgcrypt functionality to verify signatures
- * on downloaded setup.ini or setup.bz2 files.
+ * on downloaded (compressed) setup.ini files.
  */
 
-/* for HWND */
-#include "win32.h" 
+class Feedback;
 class io_stream;
 
 /*  This is currently the only public API exported by the module; it
-  takes the contents of setup.ini or setup.bz2 in one (memory-based,
+  takes the contents of (compressed) setup.ini in one (memory-based,
   for preference) io_stream, and the contents of the related signature
   file in another.  It is called from ini.cc/do_remote_ini() and returns
   true if the signature verified OK; if it returns false, you MUST NOT
   use the failed ini file - doubly so if it's a compressed stream!  */
-extern bool verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, HWND owner);
+bool verify_ini_file_sig (io_stream *ini_file, io_stream *ini_sig_file, Feedback &feedback);
 
 /*
 5.2.2.  Version 3 Signature Packet Format
