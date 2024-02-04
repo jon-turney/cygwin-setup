@@ -16,6 +16,7 @@
 
 #include "compress.h"
 #include <zstd.h>
+#include <stdint.h>
 
 class compress_zstd:public compress
 {
