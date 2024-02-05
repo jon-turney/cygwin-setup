@@ -225,8 +225,10 @@ int WINAPI
 WinMain (HINSTANCE h,
 	 HINSTANCE hPrevInstance, LPSTR command_line, int cmd_show)
 {
-
   hinstance = h;
+
+  // Make sure Windows DLLs only delay-load further DLLs from System32
+  SetDefaultDllDirectories (LOAD_LIBRARY_SEARCH_SYSTEM32);
 
   // Make sure the C runtime functions use the same codepage as the GUI
   char locale[12];
