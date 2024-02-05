@@ -87,6 +87,23 @@ inilint_SOURCES = \
 	win32.cc \
 	win32.h
 
+# Do not link directly with wininet, as it's vulnerable to sideloading/dll
+# hijacking. Instead we make and link with a delay-loading stub lib, so it's
+# actually loaded after we've had a chance to call SetDefaultDllDirectories().
+#
+# (The voodoo here is to grovel over the libwininet.a we would link with to
+# generate the .def file, rather than having to keep our own copy around)
+wininet-delaylib.a:
+	$(AM_V_at)IMPLIB=$(shell $(CC) -print-file-name=libwininet.a) && \
+	echo "LIBRARY" $$($(DLLTOOL) --identify $$IMPLIB) >wininet.def && \
+	echo "EXPORTS" >> wininet.def && \
+	$(NM) -g --defined-only $$IMPLIB | grep ' T ' | cut -d' ' -f3 >>wininet.def
+	$(AM_V_GEN)$(DLLTOOL) --no-leading-underscore --input-def wininet.def --output-delaylib $@
+
+CLEANFILES += wininet-delaylib.a
+
+EXTRA_@SETUP@_DEPENDENCIES=wininet-delaylib.a
+
 @SETUP@_LDADD = \
 	libgetopt++/libgetopt++.la \
 	$(LIBGCRYPT_LIBS) \
@@ -96,7 +113,7 @@ inilint_SOURCES = \
 	$(ZLIB_LIBS) \
 	$(LIBSOLV_LIBS) -lregex \
 	-lmingwex \
-	-lshlwapi -lcomctl32 -lole32 -lpsapi -luuid -lntdll -lwininet -lws2_32 \
+	-lshlwapi -lcomctl32 -lole32 -lpsapi -luuid -lntdll wininet-delaylib.a -lws2_32 \
 	-lmingw32 -lssp
 @SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 @SETUP@_SOURCES = \
