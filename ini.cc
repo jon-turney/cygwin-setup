@@ -47,6 +47,7 @@
 #include "threebar.h"
 
 #include "getopt++/BoolOption.h"
+#include "getopt++/StringOption.h"
 #include "IniDBBuilderPackage.h"
 #include "compress.h"
 #include "Exception.h"
@@ -61,6 +62,7 @@ std::string ini_setup_version;
 IniList setup_ext_list (setup_exts,
 			setup_exts + (sizeof(setup_exts) / sizeof(*setup_exts)));
 
+static StringOption SetupBaseNameOption ("setup", 'i', "ini-basename", IDS_HELPTEXT_INI_BASENAME, false);
 static BoolOption NoVerifyOption (false, 'X', "no-verify", IDS_HELPTEXT_NO_VERIFY);
 static BoolOption NoVersionCheckOption (false, '\0', "no-version-check", IDS_HELPTEXT_NO_VERSION_CHECK);
 
@@ -145,6 +147,16 @@ private:
   std::string yyerror_messages;
   int yyerror_count;
 };
+
+std::string SetupArch()
+{
+  return is_64bit ? "x86_64" : "x86";
+}
+
+std::string SetupBaseName()
+{
+  return SetupBaseNameOption;
+}
 
 static io_stream*
 decompress_ini (io_stream *ini_file, std::string &current_ini_name)
@@ -255,7 +267,7 @@ do_local_ini (HWND owner)
       if (!ini_file || sig_fail)
 	{
 	  // no setup found or signature invalid
-	  note (owner, IDS_SETUPINI_MISSING, SetupBaseName.c_str (),
+	  note (owner, IDS_SETUPINI_MISSING, SetupBaseName().c_str (),
 		"localdir");
 	  ini_error = true;
 	}
@@ -265,7 +277,7 @@ do_local_ini (HWND owner)
 	  myFeedback.babble ("Found ini file - " + current_ini_name);
 	  myFeedback.iniName (current_ini_name);
 	  int ldl = local_dir.length () + 1;
-	  int cap = current_ini_name.rfind ("/" + SetupArch);
+	  int cap = current_ini_name.rfind ("/" + SetupArch());
 	  aBuilder.parse_mirror =
 	    rfc1738_unescape (current_ini_name.substr (ldl, cap - ldl));
 	  ini_init (ini_file, &aBuilder, myFeedback);
@@ -311,7 +323,7 @@ do_remote_ini (HWND owner)
 	   ext++)
 	{
 	  current_ini_ext = *ext;
-	  current_ini_name = n->url + SetupIniDir + SetupBaseName + "." + current_ini_ext;
+	  current_ini_name = n->url + SetupArch() + "/" + SetupBaseName() + "." + current_ini_ext;
 	  current_ini_sig_name = current_ini_name + ".sig";
 	  ini_sig_file = get_url_to_membuf (current_ini_sig_name, owner);
 	  ini_file = get_url_to_membuf (current_ini_name, owner);
@@ -326,7 +338,7 @@ do_remote_ini (HWND owner)
       if (!ini_file || sig_fail)
 	{
 	  // no setup found or signature invalid
-	  note (owner, IDS_SETUPINI_MISSING, SetupBaseName.c_str (), n->url.c_str ());
+	  note (owner, IDS_SETUPINI_MISSING, SetupBaseName().c_str (), n->url.c_str ());
 	  ini_error = true;
 	}
       else
@@ -346,7 +358,7 @@ do_remote_ini (HWND owner)
 	      /* save known-good setup.ini locally */
 	      const std::string fp = "file://" + local_dir + "/" +
 				      rfc1738_escape_part (n->url) +
-				      "/" + SetupIniDir + SetupBaseName + ".ini";
+				      "/" + SetupArch() + "/" + SetupBaseName() + ".ini";
 	      io_stream::mkpath_p (PATH_TO_FILE, fp, 0);
 	      if (io_stream *out = io_stream::open (fp, "wb", 0))
 		{

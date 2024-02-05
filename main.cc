@@ -83,7 +83,6 @@ extern char **_argv;
 #endif
 
 bool is_new_install = false;
-std::string SetupArch;
 std::string SetupIniDir;
 
 HINSTANCE hinstance;
@@ -108,13 +107,10 @@ static BoolOption NoAdminOption (false, 'B', "no-admin", IDS_HELPTEXT_NO_ADMIN);
 static BoolOption WaitOption (false, 'W', "wait", IDS_HELPTEXT_WAIT);
 static BoolOption HelpOption (false, 'h', "help", IDS_HELPTEXT_HELP);
 static BoolOption VersionOption (false, 'V', "version", IDS_HELPTEXT_VERSION);
-static StringOption SetupBaseNameOpt ("setup", 'i', "ini-basename", IDS_HELPTEXT_INI_BASENAME, false);
 BoolOption UnsupportedOption (false, '\0', "allow-unsupported-windows", IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS);
 static BoolOption DeprecatedOption (false, 'w', "no-warn-deprecated-windows", IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS);
 static StringChoiceOption SymlinkTypeOption(symlink_types, '\0', "symlink-type", IDS_HELPTEXT_SYMLINK_TYPE, false, SymlinkTypeMagic);
 static StringOption GuiLangOption ("", '\0', "lang", IDS_HELPTEXT_LANG);
-
-std::string SetupBaseName;
 
 static void inline
 set_cout ()
@@ -296,10 +292,6 @@ WinMain (HINSTANCE h,
         unattended_mode = unattended;
 
     bool output_only = help_option || VersionOption;
-
-    SetupBaseName = SetupBaseNameOpt;
-    SetupArch = is_64bit ? "x86_64" : "x86";
-    SetupIniDir = SetupArch+"/";
 
     /* Initialize well known SIDs.  We need the admin SID to test if we're
        supposed to elevate. */

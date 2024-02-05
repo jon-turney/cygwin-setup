@@ -53,7 +53,7 @@ public:
 	     ext != setup_ext_list.end ();
 	     ext++, fi++)
 	  {
-	    if (!casecompare (SetupBaseName + "." + *ext,  theFile->cFileName))
+	    if (!casecompare (SetupBaseName() + "." + *ext,  theFile->cFileName))
 	      *fi = true;
 	  }
       }
@@ -63,7 +63,7 @@ public:
   {
     if (level <= 0)
       return;
-    inidir = !casecompare (SetupArch, aDir->cFileName);
+    inidir = !casecompare (SetupArch(), aDir->cFileName);
     if (level == 1 && !inidir)
       return;
     Find aFinder (basePath + aDir->cFileName);
@@ -75,8 +75,8 @@ public:
 	  {
 	    if (*fi)
 	      {
-		found_ini_list.push_back (basePath + SetupArch + "/"
-					  + SetupBaseName + "." + *ext);
+		found_ini_list.push_back (basePath + SetupArch() + "/"
+					  + SetupBaseName() + "." + *ext);
 		/* 
 		 * Terminate the search after the first setup file
 		 * found, which shadows any setup files with
