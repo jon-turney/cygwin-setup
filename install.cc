@@ -660,7 +660,7 @@ Installer::_installOne (packagemeta &pkgm,
                             dlg_data.processlist = plm.c_str ();
                             dlg_data.iteration = iteration;
 
-                            rc = DialogBoxParam(hinstance, MAKEINTRESOURCE (IDD_FILE_INUSE), owner, FileInuseDlgProc, (LPARAM)&dlg_data);
+                            rc = DialogBoxParam(NULL, MAKEINTRESOURCE (IDD_FILE_INUSE), owner, FileInuseDlgProc, (LPARAM)&dlg_data);
                           }
                         else
                           {

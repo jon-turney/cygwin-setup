@@ -86,8 +86,6 @@ extern char **_argv;
 bool is_new_install = false;
 std::string SetupIniDir;
 
-HINSTANCE hinstance;
-
 static StringChoiceOption::StringChoices symlink_types({
     {"native", SymlinkTypeNative},
     {"lnk", SymlinkTypeShortcut},
@@ -186,7 +184,7 @@ main_display ()
     }
 
   // Init window class lib
-  Window::SetAppInstance (hinstance);
+  Window::SetAppInstance (GetModuleHandle(NULL));
 
   // Create pages
   Splash.Create ();
@@ -231,7 +229,6 @@ int WINAPI
 WinMain (HINSTANCE h,
 	 HINSTANCE hPrevInstance, LPSTR command_line, int cmd_show)
 {
-  hinstance = h;
 
   // Make sure Windows DLLs only delay-load further DLLs from System32
   typedef BOOL (WINAPI *PFNSETDEFAULTDLLDIRECTORIES)(DWORD);

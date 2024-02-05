@@ -20,9 +20,6 @@
 
 #include "win32.h"
 
-/* global instance for the application; set in main.cc */
-extern HINSTANCE hinstance;
-
 /* used by main.cc to select the next do_* function */
 extern int next_dialog;
 

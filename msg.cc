@@ -23,7 +23,6 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include "dialog.h"
 #include "state.h"
 #include "String++.h"
 #include "resource.h"
@@ -66,7 +65,7 @@ mbox (HWND owner, const char *buf, const char *name, int type)
     }
 
   char caption[32];
-  LoadString (hinstance, IDS_MBOX_CAPTION, caption, sizeof (caption));
+  LoadString (GetModuleHandle(NULL), IDS_MBOX_CAPTION, caption, sizeof (caption));
 
   return MessageBox (owner, buf, caption, type);
 }
@@ -76,7 +75,7 @@ mbox (HWND owner, const char *name, int type, int id, va_list args)
 {
   char buf[1000], fmt[1000];
 
-  if (LoadString (hinstance, id, fmt, sizeof (fmt)) <= 0)
+  if (LoadString (GetModuleHandle(NULL), id, fmt, sizeof (fmt)) <= 0)
     ExitProcess (0);
 
   vsnprintf (buf, 1000, fmt, args);

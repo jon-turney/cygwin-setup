@@ -399,8 +399,7 @@ int check_dropped_mirrors (HWND h)
     {
       if (unattended_mode)
 	return CACHE_ACCEPT_WARN;
-      return DialogBox (hinstance, MAKEINTRESOURCE (IDD_DROPPED), h,
-			drop_proc);
+      return DialogBox (NULL, MAKEINTRESOURCE (IDD_DROPPED), h, drop_proc);
     }
   return CACHE_ACCEPT_NOWARN;
 }
