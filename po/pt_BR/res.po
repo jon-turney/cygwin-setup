@@ -4,8 +4,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2023-10-12 16:04+0000\n"
-"Last-Translator: Jon Turney <jon.turney@dronecode.org.uk>\n"
+"PO-Revision-Date: 2024-02-07 19:01+0000\n"
+"Last-Translator: Iago Emanuel <iagoemanuel@live.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 5.1-dev\n"
+"X-Generator: Weblate 5.4-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -204,7 +204,7 @@ msgstr ""
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_DIRECT
 msgid "&Direct Connection"
-msgstr ""
+msgstr "&Conexão direta"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PROXY
 msgid "Use HTTP/FTP &Proxy:"
@@ -226,7 +226,7 @@ msgstr ""
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Your Internet Connection"
-msgstr ""
+msgstr "Escolha sua conexão de internet"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
 msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
@@ -236,57 +236,57 @@ msgstr ""
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
 msgid "Installing..."
-msgstr ""
+msgstr "Instalando..."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_PKG
 msgid "(PKG)"
-msgstr ""
+msgstr "(PKG)"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_FILE
 msgid "(FILE)"
-msgstr ""
+msgstr "(ARQUIVO)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
 msgctxt ""
 "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL."
 "IDC_INS_DISKFULL"
 msgid "Progress1"
-msgstr ""
+msgstr "Progresso1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS"
 msgid "Progress1"
-msgstr ""
+msgstr "Progresso1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS"
 msgid "Progress1"
-msgstr ""
+msgstr "Progresso1"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE"
 msgid "Package:"
-msgstr ""
+msgstr "Pacote:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_TOTAL
 msgid "Total:"
-msgstr ""
+msgstr "Total:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_DISK
 msgid "Disk:"
-msgstr ""
+msgstr "Disco:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC
 msgid "This page displays the progress of the download or installation."
-msgstr ""
+msgstr "Esta página exibe o progresso de download ou instalação."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Progress"
-msgstr ""
+msgstr "Progresso"
 
 #: DIALOG.IDD_PROXY_AUTH.CAPTION
 msgid "Proxy Authentication required"
-msgstr ""
+msgstr "Requer proxy de autenticação"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy &User ID"
@@ -296,53 +296,53 @@ msgstr ""
 msgctxt ""
 "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Senha"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy Authorization Required"
-msgstr ""
+msgstr "Requer proxy de autorização"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt ""
 "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON."
 "IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&OK"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt ""
 "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON."
 "IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: DIALOG.IDD_NET_AUTH.CAPTION
 msgid "Server Authentication required"
-msgstr ""
+msgstr "Requer servidor de autenticação"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&ID de usuário"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Senha"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgid "Server Authorization Required"
-msgstr ""
+msgstr "Requer servidor de autorização"
 
 #: DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&OK"
 
 #: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
@@ -368,7 +368,7 @@ msgstr ""
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr ""
+msgstr "Contribua para as traduções deste programa."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
@@ -376,11 +376,11 @@ msgstr ""
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
 msgid "Create icon on &Desktop"
-msgstr ""
+msgstr "Criar ícone na &Área de trabalho"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
 msgid "Add icon to &Start Menu"
-msgstr ""
+msgstr "Adicionar ícone ao &Menu Iniciar"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_INSTALL
 msgid ""
@@ -390,127 +390,127 @@ msgstr ""
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_INSTALL
 msgid "Create Icons"
-msgstr ""
+msgstr "Criar ícones"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
 msgid "Shows installation status in download-only mode."
-msgstr ""
+msgstr "Exibir o estado da instalação no modo apenas-download."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
 msgid "Installation complete"
-msgstr ""
+msgstr "Instalação concluída"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS_HEADER
 msgid "Installation Status"
-msgstr ""
+msgstr "Configuração de instalação"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS
 msgid "Cygwin installation completed successfully."
-msgstr ""
+msgstr "Instalação de Cygwin concluída com sucesso."
 
 #: DIALOG.IDD_FTP_AUTH.CAPTION
 msgid "FTP Authentication required"
-msgstr ""
+msgstr "Requer autenticação FTP"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&ID de usuário"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Senha"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgid "FTP Authorization Required"
-msgstr ""
+msgstr "Requer autorização FTP"
 
 #: DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&OK"
 
 #: DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: DIALOG.IDD_CHOOSE.CAPTION
 msgid "Cygwin Setup - Select Packages"
-msgstr ""
+msgstr "Configuração de Cygwin - Escolher pacotes"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
 msgid "&View"
-msgstr ""
+msgstr "&Ver"
 
 #: DIALOG.IDD_CHOOSE.RTEXT.IDC_STATIC
 msgid "&Search"
-msgstr ""
+msgstr "&Buscar"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_DO_SEARCH
 msgid "Search "
-msgstr ""
+msgstr "Buscar "
 
 #: DIALOG.IDD_CHOOSE.PUSHBUTTON.IDC_CHOOSE_CLEAR_SEARCH
 msgid "&Clear"
-msgstr ""
+msgstr "&Limpar"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_KEEP
 msgid "&Keep"
-msgstr ""
+msgstr "&Manter"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_BEST
 msgid "&Best"
-msgstr ""
+msgstr "&Melhor"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_SYNC
 msgid "&Sync"
-msgstr ""
+msgstr "&Sincronização"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
 msgid "&Test"
-msgstr ""
+msgstr "&Teste"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
 msgid "&Hide obsolete packages"
-msgstr ""
+msgstr "&Ocultar pacotes obsoletos"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
 msgid "Select packages to download."
-msgstr ""
+msgstr "Escolher pacotes para baixar."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_INSTALL
 msgid "Select packages to install."
-msgstr ""
+msgstr "Escolher pacotes para instalar."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Packages"
-msgstr ""
+msgstr "Escolher pacotes"
 
 #: DIALOG.IDD_PREREQ.CAPTION
 msgid "Cygwin Setup - Resolving Dependencies"
-msgstr ""
+msgstr "Configuração de Cygwin - Resolvendo dependências"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Resolving Dependencies"
-msgstr ""
+msgstr "Resolvendo dependências"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC
 msgid "The following problems occured trying to satisfy dependencies."
-msgstr ""
+msgstr "Os seguintes problemas aconteceram ao tentar satisfazer dependências."
 
 #: DIALOG.IDD_PREREQ.CONTROL.IDC_PREREQ_CHECK
 msgid "&Accept default problem solutions"
-msgstr ""
+msgstr "&Aceitar soluções de problemas padrões"
 
 #: DIALOG.IDD_CONFIRM.CAPTION
 msgid "Cygwin Setup - Review and confirm changes"
-msgstr ""
+msgstr "Configuração de Cygwin - Revisão e confirmar alterações"
 
 #: DIALOG.IDD_CONFIRM.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Review and confirm changes"
-msgstr ""
+msgstr "Revisar e confirmar alterações"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
@@ -518,7 +518,7 @@ msgstr ""
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
-msgstr ""
+msgstr "Alerta:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -542,19 +542,19 @@ msgstr ""
 
 #: DIALOG.IDD_DROPPED.PUSHBUTTON.IDYES
 msgid "&Yes"
-msgstr ""
+msgstr "&Sim"
 
 #: DIALOG.IDD_DROPPED.DEFPUSHBUTTON.IDNO
 msgid "&No"
-msgstr ""
+msgstr "&Não"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.CAPTION
 msgid "Download Incomplete"
-msgstr ""
+msgstr "Download incompleto"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid "The following package(s) had download errors:"
-msgstr ""
+msgstr "O(s) seguinte(s) pacote(s) tinha(m) erros ao baixar:"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid ""
@@ -562,25 +562,28 @@ msgid ""
 "selection page, 'Continue' to go on anyway (NOT RECOMMENDED), or 'Cancel' to "
 "exit."
 msgstr ""
+"Selecione 'Repetir' para baixar novamente, 'Voltar' para retornar à página "
+"de seleção de pacote, 'Continuar' para prosseguir de qualquer jeito (NÃO "
+"RECOMENDADO) ou 'Cancelar' para sair."
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
 msgid "&Retry"
-msgstr ""
+msgstr "&Repetir"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
 msgid "&Back"
-msgstr ""
+msgstr "&Voltar"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE"
 msgid "&Continue"
-msgstr ""
+msgstr "&Continuar"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT"
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
@@ -631,16 +634,16 @@ msgstr ""
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE"
 msgid "&Retry"
-msgstr ""
+msgstr "&Repetir"
 
 #: DIALOG.IDD_FILE_INUSE.DEFPUSHBUTTON.IDRETRY
 msgid "&Stop Processes"
-msgstr ""
+msgstr "&Interromper progressos"
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE"
 msgid "&Continue"
-msgstr ""
+msgstr "&Continuar"
 
 #: STRINGTABLE.IDS_ROOT_SLASH
 msgid ""
