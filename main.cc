@@ -228,7 +228,16 @@ WinMain (HINSTANCE h,
   hinstance = h;
 
   // Make sure Windows DLLs only delay-load further DLLs from System32
-  SetDefaultDllDirectories (LOAD_LIBRARY_SEARCH_SYSTEM32);
+  typedef BOOL (WINAPI *PFNSETDEFAULTDLLDIRECTORIES)(DWORD);
+  PFNSETDEFAULTDLLDIRECTORIES pfnSetDefaultDllDirectories = 0;
+  pfnSetDefaultDllDirectories = (PFNSETDEFAULTDLLDIRECTORIES)GetProcAddress(GetModuleHandle("kernel32.dll"), "SetDefaultDllDirectories");
+  if (pfnSetDefaultDllDirectories)
+    pfnSetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_SYSTEM32);
+
+  // If we can't do that to remove the application directory from the search
+  // path, at least remove the current directory from the default DLL search
+  // order.
+  SetDllDirectory("");
 
   // Make sure the C runtime functions use the same codepage as the GUI
   char locale[12];
