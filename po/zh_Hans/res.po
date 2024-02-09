@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2023-10-31 15:00+0000\n"
+"PO-Revision-Date: 2024-02-09 10:41+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 5.2-dev\n"
+"X-Generator: Weblate 5.4-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -368,25 +368,25 @@ msgstr "为本程序的翻译工作做出贡献。"
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
-msgstr "Cygwin 安装程序 - 安装状态和创建图标"
+msgstr "Cygwin 安装程序 - 安装状态和创建快捷方式"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
 msgid "Create icon on &Desktop"
-msgstr "在桌面上创建图标(&D)"
+msgstr "在桌面上创建快捷方式(&D)"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
 msgid "Add icon to &Start Menu"
-msgstr "将图标添加到“开始”菜单(&S)"
+msgstr "将快捷方式添加到“开始”菜单(&S)"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_INSTALL
 msgid ""
 "Tell setup if you want it to create a few icons for convenient access to the "
 "Cygwin environment."
-msgstr "告诉安装程序您是否希望它创建一些图标以便于访问 Cygwin 环境。"
+msgstr "告诉安装程序您是否希望它创建一些快捷方式以便于访问 Cygwin 环境。"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_INSTALL
 msgid "Create Icons"
-msgstr "创建图标"
+msgstr "创建快捷方式"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
 msgid "Shows installation status in download-only mode."
@@ -846,11 +846,11 @@ msgstr ""
 "待定：仅显示即将安装、删除或升级的软件包。这告诉您按“下一步”时将发生什么变化"
 "。\n"
 "\n"
-"最新：显示不需要执行任何操作的已安装软件包，因为它们已经处于所需版本。\n"
+"最新的：显示不需要执行任何操作的已安装软件包，因为它们已经处于所需版本。\n"
 "\n"
-"未安装：显示当前未安装且尚未选择安装的软件包。\n"
+"未安装的：显示当前未安装且尚未选择安装的软件包。\n"
 "\n"
-"已选择：显示已选择的，但未作为依赖项安装已安装软件包。\n"
+"已选择的：显示已选择的，但未作为依赖项安装已安装软件包。\n"
 "\n"
 "可卸载的：显示已选择且可以安全卸载的已安装软件包。其他已安装或选定的软件包不"
 "再依赖于这些软件包。\n"
@@ -886,7 +886,7 @@ msgstr "在软件包名称中搜索此字符串。"
 
 #: STRINGTABLE.IDS_MAYBE_MKDIR
 msgid "Directory %s does not exist, would you like me to create it?"
-msgstr "目录 %s 不存在，是否创建它？"
+msgstr "目录 %s 不存在，是否创建该目录？"
 
 #: STRINGTABLE.IDS_CANT_MKDIR
 msgid "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
@@ -1018,15 +1018,15 @@ msgstr "待定"
 
 #: STRINGTABLE.IDS_VIEW_UPTODATE
 msgid "Up To Date"
-msgstr "最新"
+msgstr "最新的"
 
 #: STRINGTABLE.IDS_VIEW_NOTINSTALLED
 msgid "Not Installed"
-msgstr "未安装"
+msgstr "未安装的"
 
 #: STRINGTABLE.IDS_VIEW_PICKED
 msgid "Picked"
-msgstr "已选择"
+msgstr "已选择的"
 
 #: STRINGTABLE.IDS_VIEW_REMOVABLE
 msgid "Removable"
@@ -1046,7 +1046,7 @@ msgstr "软件包"
 
 #: STRINGTABLE.IDS_COLUMN_CURRENT
 msgid "Current"
-msgstr "当前状态"
+msgstr "当前版本"
 
 #: STRINGTABLE.IDS_COLUMN_NEW
 msgid "New"
@@ -1054,7 +1054,7 @@ msgstr "操作"
 
 #: STRINGTABLE.IDS_COLUMN_SOURCE
 msgid "Src?"
-msgstr "源代码？"
+msgstr "下载源代码？"
 
 #: STRINGTABLE.IDS_COLUMN_CATEGORIES
 msgid "Categories"
@@ -1075,7 +1075,7 @@ msgstr "Cygwin 安装程序"
 
 #: STRINGTABLE.IDS_EXTRACTION_FAILED
 msgid "Unable to extract /%s -- corrupt package?"
-msgstr "无法解压缩 /%s -- 损坏的软件包？"
+msgstr "无法解压缩 /%s -- 软件包已损坏？"
 
 #: STRINGTABLE.IDS_EXTRACTION_INUSE
 msgid ""
@@ -1125,11 +1125,11 @@ msgstr ""
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_VERSION
 msgid "Cygwin is not supported on this Windows version"
-msgstr "Cygwin 在此 Windows 版本上不受支持"
+msgstr "当前 Windows 版本不支持运行 Cygwin"
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
 msgid "Cygwin is not supported on 32-bit Windows"
-msgstr "Cygwin 在 32 位 Windows 上不受支持"
+msgstr "32 位 Windows 不支持运行 Cygwin"
 
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
@@ -1157,7 +1157,7 @@ msgstr ""
 "\n"
 "如果继续，某些软件包可能无法正常工作。\n"
 "\n"
-"您确定要继续（不推荐）吗？"
+"是否确定要继续（不推荐）？"
 
 #: STRINGTABLE.IDS_MIXED_BITNESS_ERROR
 msgid ""
