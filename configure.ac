@@ -79,6 +79,7 @@ x86_64-*-mingw32)
 esac
 AC_SUBST(SETUP)
 AC_SUBST(ARCH)
+AM_CONDITIONAL(ARCH_X86, [test "x$ARCH" = "xx86"])
 
 dnl check exception personality
 AC_MSG_CHECKING([compiler exception personality])

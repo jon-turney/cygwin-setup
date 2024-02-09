@@ -102,7 +102,17 @@ wininet-delaylib.a:
 
 CLEANFILES += wininet-delaylib.a
 
+# Unfortunately, the delay-loading stub lib doesn't work properly on 32-bit
+# currently, so don't bother (since we're probably going to stop building that
+# fairly soon)
+#
+# (See https://sourceware.org/bugzilla/show_bug.cgi?id=14339)
+if ARCH_X86
+WININET=-lwininet
+else
+WININET=wininet-delaylib.a
 EXTRA_@SETUP@_DEPENDENCIES=wininet-delaylib.a
+endif
 
 @SETUP@_LDADD = \
 	libgetopt++/libgetopt++.la \
@@ -113,7 +123,7 @@ EXTRA_@SETUP@_DEPENDENCIES=wininet-delaylib.a
 	$(ZLIB_LIBS) \
 	$(LIBSOLV_LIBS) -lregex \
 	-lmingwex \
-	-lshlwapi -lcomctl32 -lole32 -lpsapi -luuid -lntdll wininet-delaylib.a -lws2_32 \
+	-lshlwapi -lcomctl32 -lole32 -lpsapi -luuid -lntdll $(WININET) -lws2_32 \
 	-lmingw32 -lssp
 @SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
 @SETUP@_SOURCES = \
