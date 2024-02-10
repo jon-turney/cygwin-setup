@@ -509,7 +509,7 @@ BEGIN
     IDS_HELPTEXT_PRUNE_INSTALL
                             "Ogranicz instalację tylko do wymaganych pakietów"
     IDS_HELPTEXT_PUBKEY     "Adres URL lub bezwzględna ścieżka dodatkowego pliku klucza publicznego (format RFC4880)"
-    IDS_HELPTEXT_QUIET_MODE "Tryb instalacji nienadzorowanej"
+    IDS_HELPTEXT_QUIET_MODE "Tryb konfiguracji nienadzorowanej (bez nadzoru, bez wejścia, ukryty)"
     IDS_HELPTEXT_REMOVE_CATEGORIES
                             "Określ kategorie do odinstalowania"
     IDS_HELPTEXT_REMOVE_PACKAGES
