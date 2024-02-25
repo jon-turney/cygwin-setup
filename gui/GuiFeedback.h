@@ -55,6 +55,11 @@ private:
   long long int total_download_bytes_sofar = 0;
   DWORD start_tics;
 
+  // hash checking
+public:
+  void hash_init (const char *hashalg, const std::string &url);
+  void hash_progress (int bytes, int total_bytes);
+
 public:
   // owner
   HWND owner () { return owner_window; }

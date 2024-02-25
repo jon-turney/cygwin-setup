@@ -21,13 +21,10 @@
 #include "sha2.h"
 #include "csu_util/MD5Sum.h"
 #include "LogFile.h"
-#include "threebar.h"
 #include "Exception.h"
 #include "filemanip.h"
 #include "io_stream.h"
-#include "resource.h"
-
-extern ThreeBarProgressPage Progress;
+#include "Feedback.h"
 
 site::site (const std::string& newkey) : key(newkey)
 {
@@ -65,19 +62,19 @@ packagesource::check_size_and_cache (const std::string fullname)
 }
 
 void
-packagesource::check_hash ()
+packagesource::check_hash (Feedback &feedback)
 {
   if (validated || cached.empty ())
     return;
 
   if (sha512_isSet)
     {
-      check_sha512 (cached);
+      check_sha512 (cached, feedback);
       validated = true;
     }
   else if (md5.isSet())
     {
-      check_md5 (cached);
+      check_md5 (cached, feedback);
       validated = true;
     }
   else
@@ -97,7 +94,7 @@ sha512_str (const unsigned char *in, char *buf)
 }
 
 void
-packagesource::check_sha512 (const std::string fullname) const
+packagesource::check_sha512 (const std::string fullname, Feedback &feedback) const
 {
   io_stream *thefile = io_stream::open (fullname, "rb", 0);
   if (!thefile)
@@ -112,19 +109,14 @@ packagesource::check_sha512 (const std::string fullname) const
   SHA512Init (&ctx);
 
   Log (LOG_BABBLE) << "Checking SHA512 for " << fullname << endLog;
-
-  std::wstring fmt = LoadStringW(IDS_PROGRESS_CHECKING_HASH);
-  std::wstring s = format(fmt, "SHA512", shortname.c_str());
-  Progress.SetText1 (s.c_str());
-  Progress.SetText4 (IDS_PROGRESS_PROGRESS);
-  Progress.SetBar1 (0);
+  feedback.hash_init("SHA512", shortname);
 
   unsigned char buffer[64 * 1024];
   ssize_t count;
   while ((count = thefile->read (buffer, sizeof (buffer))) > 0)
   {
     SHA512Update (&ctx, buffer, count);
-    Progress.SetBar1 (thefile->tell (), thefile->get_size ());
+    feedback.hash_progress(thefile->tell (), thefile->get_size ());
   }
   delete thefile;
   if (count < 0)
@@ -152,7 +144,7 @@ packagesource::check_sha512 (const std::string fullname) const
 }
 
 void
-packagesource::check_md5 (const std::string fullname) const
+packagesource::check_md5 (const std::string fullname, Feedback &feedback) const
 {
   io_stream *thefile = io_stream::open (fullname, "rb", 0);
   if (!thefile)
@@ -163,19 +155,14 @@ packagesource::check_md5 (const std::string fullname) const
   tempMD5.begin ();
 
   Log (LOG_BABBLE) << "Checking MD5 for " << fullname << endLog;
-
-  std::wstring fmt = LoadStringW(IDS_PROGRESS_CHECKING_HASH);
-  std::wstring s = format(fmt, "MD5", shortname);
-  Progress.SetText1 (s.c_str());
-  Progress.SetText4 (IDS_PROGRESS_PROGRESS);
-  Progress.SetBar1 (0);
+  feedback.hash_init("MD5", shortname);
 
   unsigned char buffer[64 * 1024];
   ssize_t count;
   while ((count = thefile->read (buffer, sizeof (buffer))) > 0)
     {
       tempMD5.append (buffer, count);
-      Progress.SetBar1 (thefile->tell (), thefile->get_size ());
+      feedback.hash_progress(thefile->tell (), thefile->get_size ());
     }
   delete thefile;
   if (count < 0)

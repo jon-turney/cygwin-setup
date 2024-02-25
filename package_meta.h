@@ -19,6 +19,7 @@
 class SolvableVersion;
 typedef SolvableVersion packageversion;
 class packagemeta;
+class Feedback;
 
 #include <set>
 #include <vector>
@@ -34,7 +35,7 @@ typedef std::pair<const std::string, std::vector<packagemeta *> > Category;
 class packagemeta
 {
 public:
-  static void ScanDownloadedFiles (bool);
+  static void ScanDownloadedFiles (bool, Feedback&);
   packagemeta (packagemeta const &);
   packagemeta (const std::string& pkgname)
     : name (pkgname), user_picked (false),
@@ -160,7 +161,7 @@ protected:
 private:
   std::string trustLabel(packageversion const &) const;
   std::vector <Script> scripts_;
-  static bool scan (const packageversion &pkg, bool mirror_mode);
+  static bool scan (const packageversion &pkg, bool mirror_mode, Feedback &feedback);
 
   _actions _action;
 

@@ -642,7 +642,7 @@ packagemeta::logSelectionStatus() const
 
 /* scan for local copies of package */
 bool
-packagemeta::scan (const packageversion &pkg, bool mirror_mode)
+packagemeta::scan (const packageversion &pkg, bool mirror_mode, Feedback &feedback)
 {
   /* empty version */
   if (!pkg)
@@ -650,7 +650,7 @@ packagemeta::scan (const packageversion &pkg, bool mirror_mode)
 
   try
     {
-      if (!check_for_cached (*(pkg.source ()), NULL, mirror_mode, false)
+      if (!check_for_cached (*(pkg.source ()), feedback, mirror_mode, false)
           && ::source == IDC_SOURCE_LOCALDIR)
         return false;
     }
@@ -668,7 +668,7 @@ packagemeta::scan (const packageversion &pkg, bool mirror_mode)
 }
 
 void
-packagemeta::ScanDownloadedFiles (bool mirror_mode)
+packagemeta::ScanDownloadedFiles (bool mirror_mode, Feedback &feedback)
 {
   /* Look at every known package, in all the known mirror dirs,
    * and fill in the Cached attribute if it exists.
@@ -686,10 +686,10 @@ packagemeta::ScanDownloadedFiles (bool mirror_mode)
 			   && (*i != pkg.installed
 			       || pkg.installed == pkg.curr
 			       || pkg.installed == pkg.exp);
-	  bool accessible = scan (*i, lazy_scan);
+	  bool accessible = scan (*i, lazy_scan, feedback);
 	  packageversion foo = *i;
 	  packageversion pkgsrcver = foo.sourcePackage ();
-	  bool src_accessible = scan (pkgsrcver, lazy_scan);
+	  bool src_accessible = scan (pkgsrcver, lazy_scan, feedback);
 
 	  /* For local installs, if there is no src and no bin, the version
 	   * is unavailable

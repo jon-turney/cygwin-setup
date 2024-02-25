@@ -47,6 +47,10 @@ public:
   virtual void fetch_finish (int total_bytes) = 0;
   virtual void fetch_fatal (const char *filename, const char *err) = 0;
 
+  // hash checking
+  virtual void hash_init (const char *hashalg, const std::string &url) = 0;
+  virtual void hash_progress (int bytes, int total_bytes) = 0;
+
   //
   virtual HWND owner () = 0;
 };

@@ -68,6 +68,7 @@ inilint_SOURCES = \
 	filemanip.h \
 	cli/CliParseFeedback.cc \
 	cli/CliGetUrlFeedback.cc \
+	cli/CliHashCheckFeedback.cc \
 	cli/CliFeedback.h \
 	LogSingleton.cc \
 	LogSingleton.h \
@@ -189,6 +190,7 @@ endif
 	gui/GuiGetNetAuth.h \
 	gui/GuiGetUrlFeedback.cc \
 	gui/GuiFeedback.h \
+	gui/GuiHashCheckFeedback.cc \
 	ini.cc \
 	ini.h \
 	IniDBBuilder.h \

@@ -52,14 +52,14 @@ extern ThreeBarProgressPage Progress;
 // user chooses to delete the file; otherwise throw an exception.
 static bool
 validateCachedPackage (const std::string& fullname, packagesource & pkgsource,
-		       HWND owner, bool check_hash, bool check_size)
+                       Feedback &feedback, bool check_hash, bool check_size)
 {
   try
     {
       if (check_size)
 	pkgsource.check_size_and_cache (fullname);
       if (check_hash)
-	pkgsource.check_hash ();
+	pkgsource.check_hash (feedback);
       return true;
     }
   catch (Exception *e)
@@ -69,7 +69,7 @@ validateCachedPackage (const std::string& fullname, packagesource & pkgsource,
       if (strncmp (filename, "file://", 7) == 0)
 	filename += 7;
       if (e->errNo() == APPERR_CORRUPT_PACKAGE
-	  && yesno (owner, IDS_QUERY_CORRUPT, filename) == IDYES)
+	  && yesno (feedback.owner(), IDS_QUERY_CORRUPT, filename) == IDYES)
 	remove (filename);
       else
 	throw e;
@@ -80,8 +80,8 @@ validateCachedPackage (const std::string& fullname, packagesource & pkgsource,
 /* 0 if not cached; may throw exception if validation fails.
  */
 int
-check_for_cached (packagesource & pkgsource, HWND owner, bool mirror_mode,
-		  bool check_hash)
+check_for_cached (packagesource & pkgsource, Feedback &feedback,
+                  bool mirror_mode, bool check_hash)
 {
   /* If the packagesource doesn't have a filename, it can't possibly be in the
      cache */
@@ -105,7 +105,7 @@ check_for_cached (packagesource & pkgsource, HWND owner, bool mirror_mode,
   // Already found one, which we can assume to have the right size.
   if (pkgsource.Cached())
     {
-      if (validateCachedPackage (pkgsource.Cached(), pkgsource, owner,
+      if (validateCachedPackage (pkgsource.Cached(), pkgsource, feedback,
 				 check_hash, false))
 	return 1;
       // If we get here, pkgsource.Cached() was corrupt and deleted.
@@ -117,7 +117,7 @@ check_for_cached (packagesource & pkgsource, HWND owner, bool mirror_mode,
   */
   if (io_stream::exists (fullname))
     {
-      if (validateCachedPackage (fullname, pkgsource, owner, check_hash, true))
+      if (validateCachedPackage (fullname, pkgsource, feedback, check_hash, true))
 	return 1;
       // If we get here, fullname was corrupt and deleted, but it
       // might have been cached.
@@ -134,7 +134,7 @@ check_for_cached (packagesource & pkgsource, HWND owner, bool mirror_mode,
       pkgsource.Canonical ();
     if (io_stream::exists(fullname))
 	{
-	  if (validateCachedPackage (fullname, pkgsource, owner, check_hash,
+	  if (validateCachedPackage (fullname, pkgsource, feedback, check_hash,
 				     true))
 	    return 1;
 	  // If we get here, fullname was corrupt and deleted, but it
@@ -151,7 +151,7 @@ download_one (packagesource & pkgsource, Feedback &feedback)
 {
   try
     {
-      if (check_for_cached (pkgsource, feedback.owner()))
+      if (check_for_cached (pkgsource, feedback))
         return 0;
     }
   catch (Exception * e)
@@ -190,7 +190,7 @@ download_one (packagesource & pkgsource, Feedback &feedback)
 		remove (local.c_str());
 	      rename ((local + ".tmp").c_str(), local.c_str());
 	      pkgsource.check_size_and_cache ("file://" + local);
-	      pkgsource.check_hash ();
+	      pkgsource.check_hash (feedback);
 	      Log (LOG_PLAIN) << "Downloaded " << local << endLog;
 	      success = 1;
 	      // FIXME: move the downloaded file to the 
@@ -277,6 +277,7 @@ do_download_thread (HINSTANCE h, HWND owner)
   int errors = 0;
   download_failures.clear ();
 
+  GuiFeedback feedback(owner);
   Progress.SetText1 (IDS_PROGRESS_CHECKING);
   Progress.SetText2 ("");
   Progress.SetText3 ("");
@@ -294,7 +295,7 @@ do_download_thread (HINSTANCE h, HWND owner)
 
       try
         {
-          if (!check_for_cached (*version.source(), owner))
+          if (!check_for_cached (*version.source(), feedback))
             total_download_bytes += version.source()->size;
         }
       catch (Exception * e)
@@ -308,7 +309,6 @@ do_download_thread (HINSTANCE h, HWND owner)
       Progress.SetBar2(std::distance(t.begin(), i) + 1, t.size());
     }
 
-  GuiFeedback feedback(owner);
   feedback.fetch_set_total_length(total_download_bytes);
 
   /* and do the download. FIXME: This here we assign a new name for the cached version

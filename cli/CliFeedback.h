@@ -48,6 +48,11 @@ private:
   unsigned int last_tics;
   unsigned int start_tics;
 
+  // hash checking
+public:
+  void hash_init (const char *hashalg, const std::string &url);
+  void hash_progress (int bytes, int total_bytes);
+
   // owner
 public:
   HWND owner () { return NULL; }

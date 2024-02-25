@@ -52,6 +52,7 @@
 #include "choose_cli.h"
 
 #include "threebar.h"
+#include "gui/GuiFeedback.h"
 #include "Generic.h"
 #include "ControlAdjuster.h"
 #include "prereq.h"
@@ -349,9 +350,10 @@ void
 ChooserPage::OnActivate()
 {
   SetBusy();
+  GuiFeedback feedback(GetHWND());
 
   packagedb db;
-  db.prep();
+  db.prep(feedback);
 
   if (!activated)
     {

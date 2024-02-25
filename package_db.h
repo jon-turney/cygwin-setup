@@ -23,6 +23,7 @@
 class packagemeta;
 class io_stream;
 class PackageSpecification;
+class Feedback;
 
 typedef enum {
   PackageDB_Install,
@@ -67,7 +68,7 @@ public:
   void init();
   /* 0 on success */
   int flush ();
-  void prep();
+  void prep(Feedback &);
   /* Set the database to a "no changes requested" state.  */
   void noChanges ();
 

@@ -62,6 +62,7 @@
 #include "threebar.h"
 #include "Exception.h"
 #include "processlist.h"
+#include "gui/GuiFeedback.h"
 
 extern ThreeBarProgressPage Progress;
 
@@ -805,6 +806,7 @@ static void
 do_install_thread (HINSTANCE h, HWND owner)
 {
   int i;
+  GuiFeedback feedback(owner);
 
   num_installs = 0, num_uninstalls = 0;
   rebootneeded = false;
@@ -870,7 +872,7 @@ do_install_thread (HINSTANCE h, HWND owner)
     {
       try
       {
-        (*version.source ()).check_hash ();
+        (*version.source ()).check_hash (feedback);
       }
       catch (Exception *e)
       {

@@ -755,7 +755,7 @@ packagedb::fixup_source_package_ids()
 }
 
 void
-packagedb::prep()
+packagedb::prep(Feedback &feedback)
 {
   /* make packagedb ready for use for chooser */
   if (prepped)
@@ -770,8 +770,8 @@ packagedb::prep()
 
   /* XXX: this needs to be broken out somewhere where it can do progress
      reporting, as it can take a long time... */
-  if (source == IDC_SOURCE_DOWNLOAD || source ==IDC_SOURCE_LOCALDIR)
-    packagemeta::ScanDownloadedFiles (MirrorOption);
+  if (source == IDC_SOURCE_DOWNLOAD || source == IDC_SOURCE_LOCALDIR)
+    packagemeta::ScanDownloadedFiles (MirrorOption, feedback);
 
   setExistence ();
   fillMissingCategory ();

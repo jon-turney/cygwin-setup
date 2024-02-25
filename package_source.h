@@ -26,6 +26,8 @@
 #include "csu_util/MD5Sum.h"
 #include <vector>
 
+class Feedback;
+
 class site
 {
 public:
@@ -79,7 +81,7 @@ public:
   MD5Sum md5;
   /* The next two functions throw exceptions on failure.  */
   void check_size_and_cache (const std::string fullname);
-  void check_hash ();
+  void check_hash (Feedback &feedback);
   typedef std::vector <site> sitestype;
   sitestype sites;
 
@@ -89,8 +91,8 @@ private:
   std::string shortname;
   std::string cached;
   bool validated;
-  void check_sha512 (const std::string fullname) const;
-  void check_md5 (const std::string fullname) const;
+  void check_sha512 (const std::string fullname, Feedback &feedback) const;
+  void check_md5 (const std::string fullname, Feedback &feedback) const;
 };
 
 #endif /* SETUP_PACKAGE_SOURCE_H */
