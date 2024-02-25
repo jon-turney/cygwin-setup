@@ -33,6 +33,8 @@
 #include "propsheet.h"
 #include "threebar.h"
 #include "ConnectionSetting.h"
+#include "gui/GuiGetNetAuth.h"
+
 extern ThreeBarProgressPage Progress;
 
 static StringOption ProxyOption ("", 'p', "proxy", IDS_HELPTEXT_PROXY, false);
@@ -112,6 +114,9 @@ NetPage::OnInit ()
 
   if (!NetIO::net_method)
     NetIO::net_method = IDC_NET_PRECONFIG;
+
+  // install the interactive network auth getter
+  NetIO::auth_getter = new GuiGetNetAuth(GetHWND());
 
   if (proxyString.size ())
   {

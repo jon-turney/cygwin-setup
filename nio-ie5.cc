@@ -253,14 +253,14 @@ try_again:
 	  if (type == 401)	/* authorization required */
 	    {
 	      flush_io ();
-	      get_auth (NULL);
+	      auth_getter->get_auth ();
 	      resend = 1;
 	      goto try_again;
 	    }
 	  else if (type == 407)	/* proxy authorization required */
 	    {
 	      flush_io ();
-	      get_proxy_auth (NULL);
+	      auth_getter->get_proxy_auth ();
 	      resend = 1;
 	      goto try_again;
 	    }

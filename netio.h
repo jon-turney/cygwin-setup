@@ -16,23 +16,22 @@
 #ifndef SETUP_NETIO_H
 #define SETUP_NETIO_H
 
-#include "win32.h"
+#include "GetNetAuth.h"
 
 /* This is the parent class for all the access methods known to setup
    (i.e. ways to download files from the internet or other sources */
 
 class NetIO
 {
-protected:
+public:
   static char *net_user;
   static char *net_passwd;
   static char *net_proxy_user;
   static char *net_proxy_passwd;
   static char *net_ftp_user;
   static char *net_ftp_passwd;
+  static GetNetAuth *auth_getter;
 
-
-public:
   /* if nonzero, this is the estimated total file size */
   int file_size;
 
@@ -40,9 +39,8 @@ public:
   virtual ~ NetIO () {};
 
   /* The user calls this function to create a suitable accessor for
-     the given URL.  It uses the network setup state in state.h.  If
-     anything fails, either the return values is NULL or the returned
-     object is !ok() */
+     the given URL. If anything fails, either the return values is NULL
+     or the returned object is !ok() */
   static NetIO *open (char const *url, bool cachable);
 
   /* If !ok() that means the transfer isn't happening. */
@@ -57,13 +55,6 @@ public:
   static int net_proxy_port;
 
   static const char *net_method_name();
-
-  /* Helper functions for http/ftp protocols.  Both return nonzero for
-     "cancel", zero for "ok".  They set net_proxy_user, etc, in
-     state.h */
-  int get_auth (HWND owner);
-  int get_proxy_auth (HWND owner);
-  int get_ftp_auth (HWND owner);
 };
 
 #endif /* SETUP_NETIO_H */

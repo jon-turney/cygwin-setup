@@ -185,6 +185,8 @@ endif
 	gpg-packet.cc \
 	gpg-packet.h \
 	gui/GuiParseFeedback.cc \
+	gui/GuiGetNetAuth.cc \
+	gui/GuiGetNetAuth.h \
 	gui/GuiGetUrlFeedback.cc \
 	gui/GuiFeedback.h \
 	ini.cc \
