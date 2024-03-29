@@ -62,8 +62,11 @@ class DefaultFormatter {
       std::string helpmsg = strLookup(anOption->shortHelp());
       while (helpmsg.size() > h_len)
 	{
-	  // TODO: consider using a line breaking strategy here.
-	  int pos = helpmsg.substr(0,h_len).find_last_of(" ");
+          size_t pos = helpmsg.substr(0,h_len).find_last_of(" ");
+          // if there's no space character, working out where to line-break
+          // composing UTF-8 characters is hard, so don't bother trying...
+          if (pos == std::string::npos)
+            break;
 	  theStream << helpmsg.substr(0,pos)
 		    << std::endl << std::string (o_len, ' ');
 	  helpmsg.erase (0,pos+1);
