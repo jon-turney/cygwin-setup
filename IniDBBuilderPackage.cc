@@ -45,6 +45,12 @@ IniDBBuilderPackage::buildTimestamp (const std::string& time)
   timestamp = strtoul (time.c_str(), 0, 0);
 }
 
+static std::string
+setup_dl_url()
+{
+  return "https://cygwin.com/setup-" + machine_name(WindowsProcessMachine()) +".exe";
+}
+
 void
 IniDBBuilderPackage::buildVersion (const std::string& aVersion)
 {
@@ -64,11 +70,9 @@ IniDBBuilderPackage::buildVersion (const std::string& aVersion)
 	{
 	  char old_vers[256];
 	  snprintf (old_vers, sizeof old_vers,
-	    "The current ini file is from a newer version of setup-%s.exe. "
-	    "If you have any trouble installing, please download a fresh "
-	    "version from https://cygwin.com/setup-%s.exe",
-	    is_64bit ? "x86_64" : "x86",
-	    is_64bit ? "x86_64" : "x86");
+                    "A newer version of setup is available. "
+                    "If you have any trouble installing, please download the latest "
+                    "version from %s", setup_dl_url().c_str());
 	  _feedback.warning(old_vers);
 	}
     }
@@ -82,10 +86,9 @@ IniDBBuilderPackage::buildMinimumVersion (const std::string& minimum)
     {
       char min_vers[256];
       snprintf (min_vers, sizeof(min_vers),
-                "The current ini file requires at least version %s of setup.\n"
-                "Please download a newer version from https://cygwin.com/setup-%s.exe",
-                minimum.c_str(),
-                is_64bit ? "x86_64" : "x86");
+                "At least version %s of setup is required.\n"
+                "Please download a newer version from %s",
+                minimum.c_str(), setup_dl_url().c_str());
       return min_vers;
     }
   return "";
