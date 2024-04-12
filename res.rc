@@ -76,7 +76,14 @@ CYGWIN-TERMINAL.ICON    FILE    "cygwin-terminal.ico"
 // work around some not-fully-understood issues with PropertySheets. Hopefully,
 // using this font will cause things to 'just work'. Further information on
 // this topic is at:
-//   http://sources.redhat.com/ml/cygwin-apps/2003-05/msg00177.html
+//   https://sourceware.org/legacy-ml/cygwin-apps/2003-05/msg00177.html
+//
+// The issue alluded to here seems to be a bug in propsheet, in that the DLU for
+// each page is determined using the font of the property sheet frame, not that
+// specified in the propsheet dialog. Allegedly, the DS_SHELLFONT style
+// indicates that you don't want compatibility with that buggy behaviour, but
+// that the DLU should be correctly computed based on the propsheet font
+// instead.
 
 #include "res/en/res.rc"
 
