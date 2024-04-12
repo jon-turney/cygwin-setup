@@ -179,6 +179,8 @@ VersionInfo& GetVer ();
 #define OSBuildNumber() (GetVer ().buildNumber ())
 
 USHORT WowNativeMachine ();
+USHORT WindowsProcessMachine ();
+const std::string machine_name(USHORT machine);
 
 static inline void
 GetDlgItemRect (HWND h, int item, LPRECT r)

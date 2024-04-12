@@ -34,27 +34,6 @@
 
 static StringOption UserAgent ("", '\0', "user-agent", IDS_HELPTEXT_USER_AGENT);
 
-static const std::string
-machine_name(USHORT machine)
-{
-  switch (machine)
-    {
-    case IMAGE_FILE_MACHINE_I386:
-      return "Win32";
-      break;
-    case IMAGE_FILE_MACHINE_AMD64:
-      return "Win64";
-      break;
-    case IMAGE_FILE_MACHINE_ARM64:
-      return "ARM64";
-      break;
-    default:
-      std::stringstream machine_desc;
-      machine_desc << std::hex << machine;
-      return machine_desc.str();
-    }
-}
-
 const std::string &
 determine_default_useragent(void)
 {

@@ -454,6 +454,44 @@ WowNativeMachine ()
 #endif
 }
 
+/* Identify machine arch for the current process */
+USHORT
+WindowsProcessMachine ()
+{
+#if defined(__x86_64__)
+  USHORT processMachine = IMAGE_FILE_MACHINE_AMD64;
+#elif defined(__i386__)
+  USHORT processMachine = IMAGE_FILE_MACHINE_I386;
+#elif defined(__aarch64__)
+  USHORT processMachine = IMAGE_FILE_MACHINE_ARM64;
+#else
+  #error "Unknown architecture"
+#endif
+  return processMachine;
+}
+
+/* Convert a machine arch identifier to a string */
+const std::string
+machine_name(USHORT machine)
+{
+  switch (machine)
+    {
+    case IMAGE_FILE_MACHINE_I386:
+      return "x86";
+      break;
+    case IMAGE_FILE_MACHINE_AMD64:
+      return "x86_64";
+      break;
+    case IMAGE_FILE_MACHINE_ARM64:
+      return "ARM64";
+      break;
+    default:
+      std::stringstream machine_desc;
+      machine_desc << std::hex << machine;
+      return machine_desc.str();
+    }
+}
+
 const std::wstring
 LoadStringWEx(UINT uID, UINT langId)
 {
