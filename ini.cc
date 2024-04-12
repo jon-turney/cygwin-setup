@@ -150,7 +150,7 @@ private:
 
 std::string SetupArch()
 {
-  return is_64bit ? "x86_64" : "x86";
+  return machine_name(installArch);
 }
 
 std::string SetupBaseName()

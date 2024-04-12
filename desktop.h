@@ -43,7 +43,7 @@ public:
   virtual bool OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 
-const char *startmenusuffix();
+const std::string startmenusuffix();
 
 extern BoolOption NoShortcutsOption;
 extern BoolOption NoStartMenuOption;

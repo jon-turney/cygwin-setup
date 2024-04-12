@@ -152,70 +152,70 @@ directory_has_spaces ()
   return 0;
 }
 
-static int
-directory_contains_wrong_version (HWND h)
+static USHORT
+read_fileheader_machine_type(std::string fn)
 {
   HANDLE fh;
-  std::string cygwin_dll = get_root_dir() + "\\bin\\cygwin1.dll";
-
-  /* Check if we have a cygwin1.dll.  If not, this is a new install.
-     If yes, check if the target machine type of this setup version is the
-     same as the machine type of the install Cygwin DLL.  If yes, just go
-     ahead.  If not, show a message and indicate this to the caller.
-
-     If anything goes wrong reading the header of cygwin1.dll, we check
-     cygcheck.exe's binary type.  This also covers the situation that the
-     installed cygwin1.dll is broken for some reason. */
-  fh = CreateFileA (cygwin_dll.c_str (), GENERIC_READ, FILE_SHARE_VALID_FLAGS,
-		    NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
+  fh = CreateFileA (fn.c_str (), GENERIC_READ, FILE_SHARE_VALID_FLAGS,
+                    NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
   if (fh != INVALID_HANDLE_VALUE)
     {
       DWORD read = 0;
       struct {
-	LONG dos_header[32];
-	IMAGE_NT_HEADERS32 nt_header;
+        LONG dos_header[32];
+        IMAGE_NT_HEADERS32 nt_header;
       } hdr;
 
       ReadFile (fh, &hdr, sizeof hdr, &read, NULL);
       CloseHandle (fh);
-      if (read != sizeof hdr)
-	fh = INVALID_HANDLE_VALUE;
-      else
-	{
-	  /* 32 bit setup and 32 bit inst? */
-	  if (hdr.nt_header.FileHeader.Machine == IMAGE_FILE_MACHINE_I386
-	      && !is_64bit)
-	    return 0;
-	  /* 64 bit setup and 64 bit inst? */
-	  if (hdr.nt_header.FileHeader.Machine == IMAGE_FILE_MACHINE_AMD64
-	      && is_64bit)
-	    return 0;
-	}
-    }
-  if (fh == INVALID_HANDLE_VALUE)
-    {
-      DWORD type;
-      std::string cygcheck_exe = get_root_dir() + "\\bin\\cygcheck.exe";
-
-      /* Probably new installation */
-      if (!GetBinaryType (cygcheck_exe.c_str (), &type))
+      if (read == sizeof hdr)
         {
+          return hdr.nt_header.FileHeader.Machine;
+        }
+    }
+  return IMAGE_FILE_MACHINE_UNKNOWN;
+}
+
+static int
+directory_contains_wrong_version (HWND h)
+{
+  /*
+    Check if we have a cygwin1.dll.  If not, this is a new install.
+
+    If yes, check if the target machine type for setup is the same as the
+    machine type of the installed Cygwin DLL.  If yes, just go ahead.  If not,
+    show a message and indicate this to the caller.
+
+    If anything goes wrong reading the header of cygwin1.dll, we check
+    cygcheck.exe's binary type.  This also covers the situation that the
+    installed cygwin1.dll is broken for some reason.
+  */
+
+  std::string cygwin_dll = get_root_dir() + "\\bin\\cygwin1.dll";
+  USHORT headerArch = read_fileheader_machine_type(cygwin_dll);
+
+  if (headerArch == IMAGE_FILE_MACHINE_UNKNOWN)
+    {
+      std::string cygcheck_exe = get_root_dir() + "\\bin\\cygcheck.exe";
+      headerArch = read_fileheader_machine_type(cygcheck_exe);
+
+      if (headerArch == IMAGE_FILE_MACHINE_UNKNOWN)
+        {
+          /* No cygcheck either, probably a new installation */
           is_new_install = true;
           return 0;
         }
-      /* 64 bit setup and 64 bit inst? */
-      if (type == SCS_32BIT_BINARY && !is_64bit)
-	return 0;
-      /* 32 bit setup and 32 bit inst? */
-      if (type == SCS_64BIT_BINARY && is_64bit)
-	return 0;
     }
 
+  /* machine type matches */
+  if (headerArch == installArch)
+    return 0;
+
   /* Forestall mixing. */
-  const char *setup_ver = is_64bit ? "64" : "32";
-  const char *inst_ver = is_64bit ? "32" : "64";
-  mbox (h, IDS_MIXED_BITNESS_ERROR, MB_OK,
-        setup_ver, inst_ver, is_64bit ? "x86" : "x86_64", inst_ver, setup_ver);
+  const char *setup_ver = machine_name(installArch).c_str();
+  const char *inst_ver = machine_name(headerArch).c_str();
+  mbox (h, IDS_MIXED_BITNESS_ERROR, MB_OK, setup_ver, inst_ver, inst_ver,
+        inst_ver, setup_ver);
   return 1;
 }
 

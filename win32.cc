@@ -21,6 +21,7 @@
 #include "ini.h"
 #include <sys/stat.h>
 #include "String++.h"
+#include <iomanip>
 
 NTSecurity nt_sec;
 
@@ -483,11 +484,11 @@ machine_name(USHORT machine)
       return "x86_64";
       break;
     case IMAGE_FILE_MACHINE_ARM64:
-      return "ARM64";
+      return "arm64";
       break;
     default:
       std::stringstream machine_desc;
-      machine_desc << std::hex << machine;
+      machine_desc << std::hex << std::setw(4) << std::setfill('0') << machine;
       return machine_desc.str();
     }
 }

@@ -95,14 +95,13 @@ make_link (const std::string& linkpath,
 	       icon.c_str(), fname.c_str());
 }
 
-const char *startmenusuffix()
+const std::string
+startmenusuffix()
 {
-  if (!is_64bit && (WowNativeMachine() != IMAGE_FILE_MACHINE_I386))
+  if ((installArch == IMAGE_FILE_MACHINE_I386) && (WowNativeMachine() != IMAGE_FILE_MACHINE_I386))
     return " (32-bit)";
-#ifdef __x86_64__
-  if (WowNativeMachine() != IMAGE_FILE_MACHINE_AMD64)
-    return " (x86_64)";
-#endif
+  if (WowNativeMachine() != installArch)
+    return " (" + machine_name(installArch) + ")";
   else
     return "";
 }
@@ -125,7 +124,7 @@ start_menu (const std::string& title, const std::string& target,
 			      CSIDL_PROGRAMS, &id);
   SHGetPathFromIDList (id, path);
   strncat (path, startmenudir(), MAX_PATH - strlen(path) - 1);
-  strncat (path, startmenusuffix(), MAX_PATH - strlen(path) - 1);
+  strncat (path, startmenusuffix().c_str(), MAX_PATH - strlen(path) - 1);
   LogBabblePrintf ("Program directory for program link: %s", path);
   make_link (path, title, target, arg, iconpath);
 }
@@ -212,8 +211,30 @@ save_icon (std::string &iconpath, const char *resource_name)
 #define TARGET		"/bin/mintty"
 #define DEFAULTICON	"/Cygwin.ico"
 #define TERMINALICON	"/Cygwin-Terminal.ico"
-#define TERMINALTITLE	(is_64bit ? "Cygwin64 Terminal" \
-				  : "Cygwin Terminal")
+#define TERMINALTITLE   terminaltitle()
+
+static const std::string
+terminaltitle()
+{
+  /* The x86_64 terminal is always called "Cygwin64 Terminal" */
+  if (installArch == IMAGE_FILE_MACHINE_AMD64)
+    return "Cygwin64 Terminal";
+
+  /* Otherwise, just use the plain name when arches match  */
+  if (WowNativeMachine() == installArch)
+    return "Cygwin Terminal";
+
+  /* Likewise, the x86 terminal is called just "Cygwin Terminal" on x86_64 */
+  if (installArch == IMAGE_FILE_MACHINE_I386)
+    {
+      if (WowNativeMachine() == IMAGE_FILE_MACHINE_AMD64)
+        return "Cygwin Terminal";
+      else
+        return "Cygwin32 Terminal";
+    }
+
+  return "Cygwin Terminal (" + machine_name(installArch) + ")";
+}
 
 static void
 do_desktop_setup ()
@@ -312,7 +333,7 @@ check_startmenu (const std::string title, const std::string target)
   SHGetPathFromIDList (id, path);
   LogBabblePrintf ("Program directory for program link: %s", path);
   strcat (path, startmenudir());
-  strcat (path, startmenusuffix());
+  strcat (path, startmenusuffix().c_str());
   std::string fname = std::string(path) + "/" + title + ".lnk";
 
   if (_access (fname.c_str(), 0) == 0)

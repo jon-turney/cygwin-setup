@@ -100,7 +100,17 @@ static StringChoiceOption::StringChoices quiet_types({
     {"hidden", QuietHidden},
   });
 
-static StringOption Arch ("", 'a', "arch", IDS_HELPTEXT_ARCH, false);
+static StringChoiceOption::StringChoices arch_choices({
+    {"64", IMAGE_FILE_MACHINE_AMD64},
+    {"x86_64", IMAGE_FILE_MACHINE_AMD64},
+    {"amd64", IMAGE_FILE_MACHINE_AMD64},
+    {"32", IMAGE_FILE_MACHINE_I386},
+    {"x86", IMAGE_FILE_MACHINE_I386},
+    {"aarch64", IMAGE_FILE_MACHINE_ARM64},
+    {"arm64", IMAGE_FILE_MACHINE_ARM64},
+  });
+
+static StringChoiceOption Arch (arch_choices, 'a', "arch", IDS_HELPTEXT_ARCH, false);
 StringChoiceOption UnattendedOption (quiet_types, 'q', "quiet-mode", IDS_HELPTEXT_QUIET_MODE, true, -1, QuietUnattended);
 static BoolOption PackageManagerOption (false, 'M', "package-manager", IDS_HELPTEXT_PACKAGE_MANAGER);
 static BoolOption NoAdminOption (false, 'B', "no-admin", IDS_HELPTEXT_NO_ADMIN);
@@ -257,22 +267,10 @@ WinMain (HINSTANCE h,
     else if (HelpOption)
       help_option = true;
 
-    if (((std::string) Arch).size ())
-      {
-        if (((std::string) Arch).find ("64") != std::string::npos)
-          is_64bit = true;
-        else if (((std::string) Arch).find ("32") != std::string::npos
-                 || ((std::string) Arch).find ("x86") != std::string::npos)
-          is_64bit = false;
-        else
-          {
-            char buff[80 + ((std::string) Arch).size ()];
-            sprintf (buff, "Invalid option for --arch:  \"%s\"",
-                     ((std::string) Arch).c_str ());
-            fprintf (stderr, "*** %s\n", buff);
-            exit (1);
-          }
-      }
+    if (Arch.isPresent())
+      installArch = Arch;
+    else
+      installArch = WindowsProcessMachine();
 
     if (GuiLangOption.isPresent())
       {
@@ -350,7 +348,7 @@ WinMain (HINSTANCE h,
 #ifdef _X86_
           (TRUE)
 #else
-          (!is_64bit)
+          (installArch == IMAGE_FILE_MACHINE_I386)
 #endif
         {
           mbox (NULL, IDS_UNSUPPORTED_WINDOWS_ARCH,

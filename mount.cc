@@ -356,13 +356,34 @@ read_mounts (const std::string val)
 	}
     }
 
+  /*
+    The default root directory: for historical reasons (you could already have a
+    x86 install in cygwin), it's always cygwin64 for an x86_64 install.
+
+    It isn't critical that these are unique by arch, as we'll later check and
+    warn if it already contains a cygwin install for a different arch.
+  */
   if (!root_here)
     {
       /* Affected path always < MAX_PATH. */
       char windir[MAX_PATH];
       GetSystemWindowsDirectory (windir, sizeof (windir));
       windir[2] = 0;
-      m->native = std::string (windir) + (is_64bit ? "\\cygwin64" : "\\cygwin");
+
+      std::string rootdir;
+      if (installArch == IMAGE_FILE_MACHINE_AMD64)
+        rootdir = "\\cygwin64";
+      else if (WowNativeMachine() == installArch)
+        rootdir = "\\cygwin";
+      else if (installArch == IMAGE_FILE_MACHINE_I386)
+          if (WowNativeMachine() == IMAGE_FILE_MACHINE_AMD64)
+            rootdir = "\\cygwin";
+          else
+            rootdir = "\\cygwin32";
+      else
+        rootdir = "\\cygwin_" + machine_name(installArch);
+
+      m->native = std::string (windir) + rootdir;
       m->posix = "/";
       root_here = m;
       add_usr_mnts (++m);

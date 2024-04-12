@@ -613,12 +613,12 @@ BEGIN
     IDS_MIXED_BITNESS_ERROR
         "Target CPU mismatch"
         "\n\n"
-        "You're trying to install a %s bit version of Cygwin into a directory "
-        "containing a %s bit version of Cygwin.  Continuing to do so would "
+        "You're trying to install the %s version of Cygwin into a directory "
+        "containing the %s version of Cygwin.  Continuing to do so would "
         "break the existing installation."
         "\n\n"
-        "Either run setup-%s.exe to update your existing %s bit installation of Cygwin, "
-        "or choose another directory for your %s bit installation."
+        "Either run setup-%s.exe to update your existing %s installation of Cygwin, "
+        "or choose another directory for your %s installation."
     IDS_GET_SITELIST_ERROR
           "Can't get list of download sites.\n"
           "Make sure your network settings are correct and try again."

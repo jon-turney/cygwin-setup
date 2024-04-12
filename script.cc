@@ -142,7 +142,7 @@ init_run_script ()
   SetEnvironmentVariable ("CYGWINFORALL",
                           (root_scope == IDC_ROOT_SYSTEM) ? "-A" : NULL);
 
-  const char *sms = startmenusuffix();
+  const char *sms = startmenusuffix().c_str();
   if (strlen(sms) > 0)
     SetEnvironmentVariable ("CYGWIN_START_MENU_SUFFIX", sms);
 

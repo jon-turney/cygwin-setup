@@ -30,8 +30,4 @@ int root_desktop;
 
 LANGID langid;
 
-#ifdef __x86_64__
-bool is_64bit = true;
-#else
-bool is_64bit = false;
-#endif
+USHORT installArch;

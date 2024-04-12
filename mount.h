@@ -18,7 +18,7 @@
 #include <string>
 #include "String++.h"
 
-#define SETUP_KEY_WOW64 (is_64bit ? KEY_WOW64_64KEY : KEY_WOW64_32KEY)
+#define SETUP_KEY_WOW64 ((installArch != IMAGE_FILE_MACHINE_I386) ? KEY_WOW64_64KEY : KEY_WOW64_32KEY)
 
 void create_install_root ();
 void read_mounts (const std::string);
