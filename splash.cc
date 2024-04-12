@@ -19,7 +19,6 @@
 #include "setup_version.h"
 #include "resource.h"
 #include "splash.h"
-#include "ini.h"
 
 #define SPLASH_URL "https://cygwin.com"
 #define SPLASH_COPYRIGHT L"Copyright © 2000-2024"
@@ -49,10 +48,13 @@ SplashPage::Create ()
 void
 SplashPage::OnInit ()
 {
-  std::string ver = "Setup version ";
-  ver += (setup_version[0] ? setup_version : "[unknown]");
-  ver += is_64bit ? " (64 bit)" : " (32 bit)";
-  SetDlgItemFont(IDC_VERSION, "Arial", 10, FW_BOLD);
+  std::string ver;
+  if (setup_version[0])
+    {
+      ver = setup_version;
+      ver += " (" + machine_name(WindowsProcessMachine()) + ")";
+    }
+
   ::SetWindowText (GetDlgItem (IDC_VERSION), ver.c_str());
   ::SetWindowTextW (GetDlgItem (IDC_SPLASH_COPYR), SPLASH_COPYRIGHT);
   ::SetWindowText (GetDlgItem (IDC_SPLASH_URL), SPLASH_URL);
