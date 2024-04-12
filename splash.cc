@@ -22,7 +22,7 @@
 #include "ini.h"
 
 #define SPLASH_URL "https://cygwin.com"
-#define SPLASH_COPYRIGHT "Copyright 2000-2023"
+#define SPLASH_COPYRIGHT L"Copyright © 2000-2024"
 #define SPLASH_TRANSLATE_URL "https://cygwin.com/setup/translate"
 
 static ControlAdjuster::ControlInfo SplashControlsInfo[] = {
@@ -54,7 +54,7 @@ SplashPage::OnInit ()
   ver += is_64bit ? " (64 bit)" : " (32 bit)";
   SetDlgItemFont(IDC_VERSION, "Arial", 10, FW_BOLD);
   ::SetWindowText (GetDlgItem (IDC_VERSION), ver.c_str());
-  ::SetWindowText (GetDlgItem (IDC_SPLASH_COPYR), SPLASH_COPYRIGHT);
+  ::SetWindowTextW (GetDlgItem (IDC_SPLASH_COPYR), SPLASH_COPYRIGHT);
   ::SetWindowText (GetDlgItem (IDC_SPLASH_URL), SPLASH_URL);
   makeClickable (IDC_SPLASH_URL, SPLASH_URL);
   makeClickable (IDC_SPLASH_TRANSLATE, SPLASH_TRANSLATE_URL);
