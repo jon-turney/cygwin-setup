@@ -1,0 +1,8 @@
+#!
+# post-process the generated rc file
+
+case $1 in
+    zh_Hans)  # 0804
+        sed -i 's#FONT 8, "MS Shell Dlg"#FONT 9, "Microsoft YaHei UI"#' $2
+        ;;
+esac

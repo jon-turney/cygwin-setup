@@ -323,7 +323,8 @@ po2rc:
 		./langopts $$l >/dev/null && \
 		$(MKDIR_P) res/$$l/ && \
 		po2rc -t res/en/res.rc --charset-output=utf-8 $$(./langopts $$l) po/$$l/res.po res/$$l/res.rc && \
-		d2u -q res/$$l/res.rc ; \
+		d2u -q res/$$l/res.rc && \
+		./rc-postprocess $$l res/$$l/res.rc ; \
 	done
 
 # files included by res.rc
