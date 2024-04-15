@@ -72,7 +72,7 @@ Window::FirstWindowProcReflector (HWND hwnd, UINT uMsg, WPARAM wParam,
       // We could instead simply do the contents of Window::WindowProcReflector
       // in the 'else' clause below, but this way we eliminate an unnecessary 'if/else' on
       // every message.  Yeah, it's probably not worth the trouble.
-      SetWindowLongPtr (hwnd, GWLP_WNDPROC, (LONG_PTR) & Window::WindowProcReflector);
+      SetWindowLongPtrW (hwnd, GWLP_WNDPROC, (LONG_PTR) & Window::WindowProcReflector);
       // Finally, store the window handle in the class.
       wnd->WindowHandle = hwnd;
     }
