@@ -418,7 +418,7 @@ PropertyPage::makeClickable (int id, std::string link)
   c.url = link;
   c.font = NULL;      // these will be created as needed
   c.brush = NULL;
-  if ((c.origWinProc = reinterpret_cast<WNDPROC>(SetWindowLongPtr (hctl, 
+  if ((c.origWinProc = reinterpret_cast<WNDPROC>(SetWindowLongPtrW (hctl,
           GWLP_WNDPROC, (LONG_PTR) & PropertyPage::urlWinProc))) == 0)
     return;           // failure
     
