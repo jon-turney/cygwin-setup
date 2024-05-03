@@ -4,52 +4,58 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-05-04 10:07+0000\n"
+"Last-Translator: Ricky Tigg <ricky.tigg@gmail.com>\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/cygwin-setup/"
+"cygwin-setup/fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Translate Toolkit 3.7.3\n"
+"X-Generator: Weblate 5.5.3\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
 msgid "Cygwin Setup - Choose Installation Type"
-msgstr ""
+msgstr "Cygwin-asennus – Valitse asennustyyppi"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_NETINST
 msgid ""
 "&Install from Internet\n"
 "(downloaded files will be kept for future re-use)"
 msgstr ""
+"&Asenna Internetistä\n"
+"(ladatut tiedostot säilytetään myöhempää käyttöä varten)"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_DOWNLOAD
 msgid "&Download Without Installing"
-msgstr ""
+msgstr "&Lataa ilman asennusta"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_LOCALDIR
 msgid "Install from &Local Directory"
-msgstr ""
+msgstr "Asenna &paikallisesta hakemistosta"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Source"
-msgstr ""
+msgstr "Valitse latauslähde"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_SOURCE_SUBTEXT
 msgid ""
 "Choose whether to install or download from the internet, or install from "
 "files in a local directory."
 msgstr ""
+"Valitse, asennetaanko vai ladataanko Internetistä vai asennetaanko "
+"tiedostoista paikallisessa hakemistossa."
 
 #: DIALOG.IDD_VIRUS.CAPTION
 msgid "Cygwin Setup - Disable Virus Scanner?"
-msgstr ""
+msgstr "Cygwin-asennus - Poistetaanko virustarkistus käytöstä?"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_DISABLE_AV
 msgid "&Disable Virus scanner"
-msgstr ""
+msgstr "&Poista virustarkistus käytöstä"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_LEAVE_AV
 msgid "&Leave Virus scanner alone"
@@ -57,7 +63,7 @@ msgstr ""
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose whether to disable your virus scanner while installing."
-msgstr ""
+msgstr "Valitse, poistetaanko virustarkistus käytöstä asennuksen aikana."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
@@ -71,73 +77,82 @@ msgid ""
 "during the installation process, and re-enable it when the install is "
 "complete."
 msgstr ""
+"Yksi, joka saattaa olla ongelma, on havaittu. Cygwin-asennus voi poistaa "
+"tämän käytöstä asennuksen aikana ja ottaa sen uudelleen käyttöön, kun "
+"asennus on valmis."
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
 msgid "Cygwin Setup - Select Local Package Directory"
-msgstr ""
+msgstr "Cygwin-asennus - Valitse paikallinen pakettihakemisto"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Local Package Directory"
-msgstr ""
+msgstr "Valitse paikallinen pakettihakemisto"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_DOWNLOAD_DESC
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
 msgstr ""
+"Valitse hakemisto, johon haluat asennusohjelman tallentavan lataamansa "
+"asennustiedostot. Hakemisto luodaan, jos sitä ei vielä ole olemassa."
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
 msgid ""
 "Select a directory where Setup should look for downloaded installation files."
 msgstr ""
+"Valitse hakemisto, josta asennusohjelman tulee etsiä ladattuja "
+"asennustiedostoja."
 
 #: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
 msgid "Local Package Directory"
-msgstr ""
+msgstr "Paikallinen pakettihakemisto"
 
 #: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
 msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "Selaa..."
 
 #: DIALOG.IDD_ROOT.CAPTION
 msgid "Cygwin Setup - Choose Installation Directory"
-msgstr ""
+msgstr "Cygwin-asennus - Valitse asennushakemisto"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Root Install Directory"
-msgstr ""
+msgstr "Valitse juuriasennushakemisto"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ROOTDIR_SUBTEXT
 msgid ""
 "Select the directory where you want to install Cygwin.  Also choose a few "
 "installation parameters."
 msgstr ""
+"Valitse hakemisto, johon haluat asentaa Cygwinin. Valitse myös muutama "
+"asennusparametri."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
 msgid "Root Directory"
-msgstr ""
+msgstr "Juurihakemisto"
 
 #: DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE
 msgctxt "DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "Selaa..."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_INSTALLFOR_GRP
 msgid "Install For"
-msgstr ""
+msgstr "Asenna tälle"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_SYSTEM
 msgid "&All Users (RECOMMENDED)"
-msgstr ""
+msgstr "&Kaikki käyttäjät (suositus)"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
 msgid "Just &Me"
-msgstr ""
+msgstr "Vain &minä"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
 msgid "Cygwin will be available to all users of the system."
-msgstr ""
+msgstr "Cygwin tulee olemaan kaikkien järjestelmän käyttäjien käytettävissä."
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_JUSTME_TEXT
 msgid ""
@@ -146,83 +161,89 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
+"Cygwin tulee edelleen olemaan kaikkien käyttäjien käytettävissä, mutta "
+"työpöytäkuvakkeet, Cygwin-valikkomerkinnät ja tärkeät asennustiedot ovat "
+"vain nykyisen käyttäjän saatavilla. Valitse tämä vain, jos sinulla ei ole "
+"järjestelmänvalvojan oikeuksia tai jos sinulla on erityistarpeita."
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
-msgstr ""
+msgstr "Cygwin-asennus - Valitse lataussivusto(t)"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Available Download Sites:"
-msgstr ""
+msgstr "Käytettävissä olevat lataussivustot:"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Choose a site from this list, or add your own sites to the list."
-msgstr ""
+msgstr "Valitse sivusto tästä luettelosta tai lisää omat sivustosi luetteloon."
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Site"
-msgstr ""
+msgstr "Valitse lataussivusto"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
 msgid "User URL:"
-msgstr ""
+msgstr "Käyttäjän URL-osoite:"
 
 #: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
 msgid "Add"
-msgstr ""
+msgstr "Lisää"
 
 #: DIALOG.IDD_NET.CAPTION
 msgid "Cygwin Setup - Select Connection Type"
-msgstr ""
+msgstr "Cygwin-asennus - Valitse yhteystyyppi"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
 msgid "Use &System Proxy Settings"
-msgstr ""
+msgstr "Käytä &järjestelmän välityspalvelinasetuksia"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_DIRECT
 msgid "&Direct Connection"
-msgstr ""
+msgstr "&Suora yhteys"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PROXY
 msgid "Use HTTP/FTP &Proxy:"
-msgstr ""
+msgstr "Käytä HTTP/FTP -&välityspalvelinta:"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Proxy &Host"
-msgstr ""
+msgstr "Välityspalvelin&isäntä"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Por&t"
-msgstr ""
+msgstr "&Portti"
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC
 msgid ""
 "Setup needs to know how you want it to connect to the internet.  Choose the "
 "appropriate settings below."
 msgstr ""
+"Asennusohjelman on tiedettävä, kuinka haluat sen muodostavan yhteyden "
+"Internetiin. Valitse sopivat asetukset alta."
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Your Internet Connection"
-msgstr ""
+msgstr "Valitse Internet-yhteytesi"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
 msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
 "DIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
-msgstr ""
+msgstr "Cygwin-asennus"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
 msgid "Installing..."
-msgstr ""
+msgstr "Asennetaan..."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_PKG
 msgid "(PKG)"
-msgstr ""
+msgstr "(Paketti)"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_FILE
 msgid "(FILE)"
-msgstr ""
+msgstr "(Tiedosto)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
@@ -243,91 +264,91 @@ msgstr ""
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE"
 msgid "Package:"
-msgstr ""
+msgstr "Paketti:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_TOTAL
 msgid "Total:"
-msgstr ""
+msgstr "Kaikki yhteensä:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_DISK
 msgid "Disk:"
-msgstr ""
+msgstr "Levy:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC
 msgid "This page displays the progress of the download or installation."
-msgstr ""
+msgstr "Tämä sivu näyttää latauksen tai asennuksen edistymisen."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Progress"
-msgstr ""
+msgstr "Edistyminen"
 
 #: DIALOG.IDD_PROXY_AUTH.CAPTION
 msgid "Proxy Authentication required"
-msgstr ""
+msgstr "Välityspalvelimen todennus vaaditaan"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy &User ID"
-msgstr ""
+msgstr "Välityspalvelimen &käyttäjätunnus"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Salasana"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy Authorization Required"
-msgstr ""
+msgstr "Välityspalvelimen valtuutus vaaditaan"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&Selvä"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Peruuta"
 
 #: DIALOG.IDD_NET_AUTH.CAPTION
 msgid "Server Authentication required"
-msgstr ""
+msgstr "Palvelimen todennus vaaditaan"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&Käyttäjätunnus"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Salasana"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgid "Server Authorization Required"
-msgstr ""
+msgstr "Palvelimen valtuutus vaaditaan"
 
 #: DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&Selvä"
 
 #: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Peruuta"
 
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
 msgid "Cygwin Setup"
-msgstr ""
+msgstr "Cygwin-asennus"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
-msgstr ""
+msgstr "Cygwin-verkkojulkaisun asennusohjelma"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TEXT
 msgid ""
@@ -341,160 +362,171 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
+"Tätä asennusohjelmaa käytetään Cygwin-ympäristön alkuasennukseen sekä "
+"kaikkiin myöhempiin päivityksiin. Seuraavat sivut opastavat sinua asennuksen "
+"läpi.\n"
+"\n"
+"Huomaa, että asennamme oletuksena vain perusjoukon paketteja. Cygwin tarjoaa "
+"suuren määrän paketteja monenlaisiin tarkoituksiin.\n"
+"\n"
+"Voit aina suorittaa tämän ohjelman milloin tahansa tulevaisuudessa "
+"lisätäksesi, poistaaksesi tai päivittääksesi paketteja tarpeen mukaan."
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr ""
+msgstr "Osallistu tämän ohjelman käännöksiin."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
-msgstr ""
+msgstr "Cygwin-asennus - Asennuksen tila ja kuvakkeiden luominen"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
 msgid "Create icon on &Desktop"
-msgstr ""
+msgstr "Luo kuvake &työpöydälle"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
 msgid "Add icon to &Start Menu"
-msgstr ""
+msgstr "Lisää kuvake &Käynnistä-valikkoon"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_INSTALL
 msgid ""
 "Tell setup if you want it to create a few icons for convenient access to the "
 "Cygwin environment."
 msgstr ""
+"Kerro asennusohjelmalle, jos haluat sen luovan muutamia kuvakkeita, jotta "
+"Cygwin-ympäristöön pääsee kätevästi."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_INSTALL
 msgid "Create Icons"
-msgstr ""
+msgstr "Luo kuvakkeita"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
 msgid "Shows installation status in download-only mode."
-msgstr ""
+msgstr "Näyttää asennuksen tilan vain lataus -tilassa."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
 msgid "Installation complete"
-msgstr ""
+msgstr "Asennus valmis"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS_HEADER
 msgid "Installation Status"
-msgstr ""
+msgstr "Asennuksen tila"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS
 msgid "Cygwin installation completed successfully."
-msgstr ""
+msgstr "Cygwin-asennus on suoritettu onnistuneesti."
 
 #: DIALOG.IDD_FTP_AUTH.CAPTION
 msgid "FTP Authentication required"
-msgstr ""
+msgstr "FTP-todennus vaaditaan"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&Käyttäjätunnus"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Salasana"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgid "FTP Authorization Required"
-msgstr ""
+msgstr "FTP-valtuutus vaaditaan"
 
 #: DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&Selvä"
 
 #: DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Peruuta"
 
 #: DIALOG.IDD_CHOOSE.CAPTION
 msgid "Cygwin Setup - Select Packages"
-msgstr ""
+msgstr "Cygwin-asennus - Valitse paketit"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
 msgid "&View"
-msgstr ""
+msgstr "&Näytä"
 
 #: DIALOG.IDD_CHOOSE.RTEXT.IDC_STATIC
 msgid "&Search"
-msgstr ""
+msgstr "&Hae"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_DO_SEARCH
 msgid "Search "
-msgstr ""
+msgstr "Hae "
 
 #: DIALOG.IDD_CHOOSE.PUSHBUTTON.IDC_CHOOSE_CLEAR_SEARCH
 msgid "&Clear"
-msgstr ""
+msgstr "&Tyhjennä"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_KEEP
 msgid "&Keep"
-msgstr ""
+msgstr "&Säilytä"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_BEST
 msgid "&Best"
-msgstr ""
+msgstr "&Paras"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_SYNC
 msgid "&Sync"
-msgstr ""
+msgstr "&Synkronoi"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
 msgid "&Test"
-msgstr ""
+msgstr "&Testaa"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
 msgid "&Hide obsolete packages"
-msgstr ""
+msgstr "&Piilota vanhentuneet paketit"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
 msgid "Select packages to download."
-msgstr ""
+msgstr "Valitse ladattavat paketit."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_INSTALL
 msgid "Select packages to install."
-msgstr ""
+msgstr "Valitse asennettavat paketit."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Packages"
-msgstr ""
+msgstr "Valitse paketit"
 
 #: DIALOG.IDD_PREREQ.CAPTION
 msgid "Cygwin Setup - Resolving Dependencies"
-msgstr ""
+msgstr "Cygwin-asennus - Riippuvuuksien selvittäminen"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Resolving Dependencies"
-msgstr ""
+msgstr "Riippuvuuksien selvittäminen"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC
 msgid "The following problems occured trying to satisfy dependencies."
-msgstr ""
+msgstr "Seuraavat ongelmat ilmenivät yritettäessä tyydyttää riippuvuuksia."
 
 #: DIALOG.IDD_PREREQ.CONTROL.IDC_PREREQ_CHECK
 msgid "&Accept default problem solutions"
-msgstr ""
+msgstr "&Hyväksy oletusongelmaratkaisut"
 
 #: DIALOG.IDD_CONFIRM.CAPTION
 msgid "Cygwin Setup - Review and confirm changes"
-msgstr ""
+msgstr "Cygwin-asennus – Tarkista ja vahvista muutokset"
 
 #: DIALOG.IDD_CONFIRM.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Review and confirm changes"
-msgstr ""
+msgstr "Tarkista ja vahvista muutokset"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
-msgstr ""
+msgstr "Cygwin-asennus - Käytätkö pudonneita peilejä?"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
-msgstr ""
+msgstr "Varoitus:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -503,6 +535,10 @@ msgid ""
 "\n"
 "This affects the following mirror(s):"
 msgstr ""
+"Yksi tai useampi valitsemasi peili on/ei ole enää virallisten Cygwin-peilien "
+"luettelossa. Se/ne voivat olla vanhentuneita tai puuttua joitakin paketteja."
+"\n"
+"Tämä vaikuttaa seuraaviin peileihin:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -511,26 +547,30 @@ msgid ""
 "\n"
 "Do you want to continue, using this/these mirror(s)?"
 msgstr ""
+"Jos kohtaat asennusongelmia, harkitse vain virallisten peilien kokeilemista."
+"\n"
+"\n"
+"Haluatko jatkaa käyttämällä näitä peilejä?"
 
 #: DIALOG.IDD_DROPPED.CONTROL.IDC_DROP_NOWARN
 msgid "&Don't warn me about this/these mirror(s) again"
-msgstr ""
+msgstr "&Älä varoita minua enää näistä peileistä"
 
 #: DIALOG.IDD_DROPPED.PUSHBUTTON.IDYES
 msgid "&Yes"
-msgstr ""
+msgstr "&Kyllä"
 
 #: DIALOG.IDD_DROPPED.DEFPUSHBUTTON.IDNO
 msgid "&No"
-msgstr ""
+msgstr "&Ei"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.CAPTION
 msgid "Download Incomplete"
-msgstr ""
+msgstr "Lataus keskeneräinen"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid "The following package(s) had download errors:"
-msgstr ""
+msgstr "Seuraavissa paketeissa oli latausvirheitä:"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid ""
@@ -538,64 +578,76 @@ msgid ""
 "selection page, 'Continue' to go on anyway (NOT RECOMMENDED), or 'Cancel' to "
 "exit."
 msgstr ""
+"Valitse 'Yritä uudelleen' yrittääksesi latausta uudelleen, 'Takaisin' "
+"palataksesi paketin valintasivulle, 'Jatka' jatkaaksesi joka tapauksessa (ei "
+"suositella) tai 'Peruuta' poistuaksesi."
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
 msgid "&Retry"
-msgstr ""
+msgstr "&Yritä uudelleen"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
 msgid "&Back"
-msgstr ""
+msgstr "&Takaisin"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE"
 msgid "&Continue"
-msgstr ""
+msgstr "&Jatka"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT"
 msgid "Cancel"
-msgstr ""
+msgstr "&Peruuta"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
-msgstr ""
+msgstr "Cygwin-asennus – Asennuksen jälkeisten komentosarjojen suorittaminen"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Postinstall script errors"
-msgstr ""
+msgstr "Asennuksen jälkeiset komentosarjavirheet"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC
 msgid ""
 "These do not necessarily mean that affected packages will fail to function "
 "properly, but please check /var/log/setup.log.full and report any problems."
 msgstr ""
+"Nämä eivät välttämättä tarkoita, että ongelmalliset paketit eivät toimi "
+"kunnolla, mutta tarkista /var/log/setup.log.full ja ilmoita mahdollisista "
+"ongelmista."
 
 #: DIALOG.IDD_FILE_INUSE.CAPTION
 msgid "In-use file detected"
-msgstr ""
+msgstr "Käytössä oleva tiedosto havaittu"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG
 msgctxt "DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr ""
+msgstr "Ei voida purkaa"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_STATIC
 msgid "The file is in use by the following processes:"
-msgstr ""
+msgstr "Tiedostoa käyttävät seuraavat prosessit:"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_0
 msgid ""
 "Select 'Retry' to retry, select 'Stop' to stop processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
+"Yritä uudelleen valitsemalla \"Yritä uudelleen\", pysäytä prosessit ja yritä "
+"uudelleen valitsemalla \"Pysäytä\" tai jatka silti valitsemalla \"Jatka\" ("
+"tiedosto päivitetään uudelleenkäynnistyksen jälkeen)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_1
 msgid ""
 "Select 'Retry' to retry, select 'Kill' to kill processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
+"Valitse 'Yritä uudelleen' yrittääksesi uudelleen, valitse Tapa lopettaaksesi "
+"prosessit ja yritä uudelleen tai valitsemalla Jatka jatkaaksesi joka "
+"tapauksessa (tiedosto päivitetään uudelleenkäynnistyksen jälkeen)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_2
 msgid ""
@@ -603,20 +655,24 @@ msgid ""
 "retry, or select 'Continue' to go on anyway (the file will be updated after "
 "a reboot)."
 msgstr ""
+"Valitse \"Yritä uudelleen\" yrittääksesi uudelleen, valitse \"Kill\", jos "
+"haluat pakottaa kaikki prosessit ja yritä uudelleen, tai valitse \"Jatka\" "
+"jatkaaksesi joka tapauksessa (tiedosto päivitetään uudelleenkäynnistyksen "
+"jälkeen)."
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE"
 msgid "&Retry"
-msgstr ""
+msgstr "&Yritä uudelleen"
 
 #: DIALOG.IDD_FILE_INUSE.DEFPUSHBUTTON.IDRETRY
 msgid "&Stop Processes"
-msgstr ""
+msgstr "&Pysäytä prosessit"
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE"
 msgid "&Continue"
-msgstr ""
+msgstr "&Jatka"
 
 #: STRINGTABLE.IDS_ROOT_SLASH
 msgid ""
@@ -624,62 +680,74 @@ msgid ""
 "cygwin root, to prevent possible conflicts with other programs.  Proceed "
 "anyway?"
 msgstr ""
+"Varoitus: suosittelemme, että et käytä kiintolevyn juuria cygwin-juurena "
+"mahdollisten ristiriitojen estämiseksi muiden ohjelmien kanssa. Jatketaanko "
+"siitä huolimatta?"
 
 #: STRINGTABLE.IDS_ROOT_SPACE
 msgid ""
 "You should not choose a root path that include spaces in directory names.  "
 "Proceed anyway?"
 msgstr ""
+"Sinun ei pitäisi valita juuripolkua, joka sisältää välilyönnit hakemistojen "
+"nimissä. Jatketaanko siitä huolimatta?"
 
 #: STRINGTABLE.IDS_ERR_OPEN_WRITE
 msgid "Can't open %s for writing: %s"
-msgstr ""
+msgstr "%s:a ei voi avata kirjoittamista varten: %s"
 
 #: STRINGTABLE.IDS_SETUPINI_MISSING
 msgid "Unable to get %s from <%s>"
-msgstr ""
+msgstr "%s:a ei voi hakea <%s>:sta"
 
 #: STRINGTABLE.IDS_OLD_SETUPINI
 msgid ""
 "This setup.ini is older than the one you used last time you installed "
 "cygwin.  Proceed anyway?"
 msgstr ""
+"Tämä setup.ini on vanhempi kuin se, jota käytit viimeksi, kun asensit "
+"cygwinin. Jatketaanko siitä huolimatta?"
 
 #: STRINGTABLE.IDS_NOTHING_INSTALLED
 msgid "Nothing needed to be installed"
-msgstr ""
+msgstr "Mitään ei tarvinnut asentaa"
 
 #: STRINGTABLE.IDS_INSTALL_COMPLETE
 msgid "Installation Complete"
-msgstr ""
+msgstr "Asennus valmis"
 
 #: STRINGTABLE.IDS_REBOOT_REQUIRED
 msgid ""
 "In-use files have been replaced. You need to reboot as soon as possible to "
 "activate the new versions. Cygwin may operate incorrectly until you reboot."
 msgstr ""
+"Käytössä olevat tiedostot on korvattu. Sinun on käynnistettävä uudelleen "
+"niin pian kuin mahdollista aktivoidaksesi uudet versiot. Cygwin saattaa "
+"toimia väärin, kunnes käynnistät sen uudelleen."
 
 #: STRINGTABLE.IDS_ERR_OPEN_READ
 msgid "Can't open %s for reading: %s"
-msgstr ""
+msgstr "%s:a ei voi avata lukemista varten: %s"
 
 #: STRINGTABLE.IDS_ROOT_ABSOLUTE
 msgid ""
 "The install directory must be absolute, with both a drive letter and leading "
 "slash, like C:\\Cygwin"
 msgstr ""
+"Asennushakemiston on oltava absoluuttinen, ja siinä on oltava sekä "
+"asemakirjain että kauttaviiva, kuten 'C:\\Cygwin'"
 
 #: STRINGTABLE.IDS_DOWNLOAD_COMPLETE
 msgid "Download Complete"
-msgstr ""
+msgstr "Lataus valmis"
 
 #: STRINGTABLE.IDS_NOLOGFILE
 msgid "Cannot open log file %s for writing"
-msgstr ""
+msgstr "Lokitiedostoa %s ei voi avata kirjoittamista varten"
 
 #: STRINGTABLE.IDS_UNINSTALL_COMPLETE
 msgid "Uninstalls complete."
-msgstr ""
+msgstr "Asennusten poistot valmiit."
 
 #: STRINGTABLE.IDS_ERR_CHDIR
 msgid "Could not change dir to %s: %s [%.8x]"
@@ -690,36 +758,43 @@ msgid ""
 "This setup is version %s, but setup.ini claims version %s is available.\n"
 "You might want to upgrade to get the latest features and bug fixes."
 msgstr ""
+"Tämä asennus on versio %s, mutta setup.ini väittää version %s olevan "
+"saatavilla.\n"
+"Sinun kannattaa ehkä päivittää saadaksesi uusimmat ominaisuudet ja "
+"virheenkorjaukset."
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE
 msgid "Download Incomplete.  Try again?"
-msgstr ""
+msgstr "Lataus keskeneräinen. Yritätkö uudelleen?"
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE_EXIT
 msgid "Download incomplete.  Check %s for details"
-msgstr ""
+msgstr "Lataus keskeneräinen. Katso %s:sta lisätietoja"
 
 #: STRINGTABLE.IDS_INSTALL_ERROR
 msgid "Installation error (%s), Continue with other packages?"
-msgstr ""
+msgstr "Asennusvirhe (%s). Jatketaanko muilla paketeilla?"
 
 #: STRINGTABLE.IDS_INSTALL_INCOMPLETE
 msgid "Installation incomplete.  Check %s for details"
-msgstr ""
+msgstr "Asennus keskeneräinen. Katso %s:sta lisätietoja"
 
 #: STRINGTABLE.IDS_CORRUPT_PACKAGE
 msgid "Package %s has a corrupt local copy, please remove and retry."
 msgstr ""
+"Paketissa %s on vioittunut paikallinen kopio, poista ja yritä uudelleen."
 
 #: STRINGTABLE.IDS_QUERY_CORRUPT
 msgid "The file %s is corrupt.  Delete it and download again?"
-msgstr ""
+msgstr "Tiedosto %s on vioittunut. Poistetaanko se ja ladataanko se uudelleen?"
 
 #: STRINGTABLE.IDS_SKIP_PACKAGE
 msgid ""
 "%s\n"
 "Do you want to skip this package ?"
 msgstr ""
+"%s\n"
+"Haluatko ohittaa tämän paketin?"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION
 msgid ""
@@ -728,6 +803,10 @@ msgid ""
 "Type: %s\n"
 "Message: %s"
 msgstr ""
+"Kohtalokas virhe: huomaamaton poikkeus\n"
+"Säie: %s\n"
+"Tyyppi: %s\n"
+"Viesti: %s"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
 msgid ""
@@ -737,26 +816,36 @@ msgid ""
 "Message: %s\n"
 "AppErrNo: %d"
 msgstr ""
+"Kohtalokas virhe: huomaamaton poikkeus\n"
+"Säie: %s\n"
+"Tyyppi: %s\n"
+"Viesti: %s\n"
+"Sovelluksen virhenumero: %d"
 
 #: STRINGTABLE.IDS_TRUSTKEEP_TOOLTIP
 msgid ""
 "Sets all packages to their currently installed version.  This is equivalent "
 "to telling setup not to make any changes to any package."
 msgstr ""
+"Asettaa kaikki paketit niiden nykyiseen asennettuun versioon. Tämä vastaa "
+"sitä, että asennusohjelma ei tee muutoksia mihinkään pakettiin."
 
 #: STRINGTABLE.IDS_TRUSTCURR_TOOLTIP
 msgid "Sets all packages to the best version available (RECOMMENDED)."
 msgstr ""
+"Asettaa kaikki paketit parhaaseen saatavilla olevaan versioon (suositus)."
 
 #: STRINGTABLE.IDS_TRUSTSYNC_TOOLTIP
 msgid ""
 "Sets all packages to the version available from the package repository, "
 "downgrading if necessary."
 msgstr ""
+"Asettaa kaikki paketit siihen versioon, joka on saatavilla "
+"pakettivarastosta, päivittämällä alaspäin tarvittaessa."
 
 #: STRINGTABLE.IDS_TRUSTEXP_TOOLTIP
 msgid "Enable test packages."
-msgstr ""
+msgstr "Ota testipaketit käyttöön."
 
 #: STRINGTABLE.IDS_VIEWBUTTON_TOOLTIP
 msgid ""
@@ -785,6 +874,32 @@ msgid ""
 "removed.  Other installed or selected packages no longer depend on these "
 "packages."
 msgstr ""
+"Valitse pakettinäkymä. Tämä määrittää, mitkä paketit näytetään alla.\n"
+"\n"
+"Luokka: Ryhmittele pakettiluokan mukaan. Laajenna napsauttamalla "
+"'+'-painiketta.\n"
+"\n"
+"Täysi: Näytä kaikki paketit.\n"
+"\n"
+"Odottava tila: Näytä vain paketit, jotka asennetaan, poistetaan tai "
+"päivitetään. Tämä kertoo, mikä muuttuu, kun painat 'Seuraava'.\n"
+"\n"
+"Ajantasainen: Näytä asennetut paketit, jotka eivät vaadi toimia, koska ne "
+"ovat jo halutussa versiossa.\n"
+"\n"
+"Ei asennettu: Näytä paketit, joita ei ole tällä hetkellä asennettu ja joita "
+"ei ole valittu asennettavaksi.\n"
+"\n"
+"Poimittu: Näytä asennetut paketit, jotka on valittu, ei asennettu "
+"riippuvuutena.\n"
+"\n"
+"Irrotettava: Näytä asennetut paketit, jotka on valittu ja jotka voitiin "
+"poistaa turvallisesti. Muut asennetut tai valitut paketit eivät ole "
+"riippuvaisia näistä paketeista.\n"
+"\n"
+"Tarpeeton: Näytä automaattisesti asennetut paketit, jotka voidaan nyt "
+"poistaa turvallisesti. Muut asennetut tai valitut paketit eivät enää ole "
+"riippuvaisia näistä paketeista."
 
 #: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
 msgid ""
@@ -793,28 +908,35 @@ msgid ""
 "have been removed or renamed, or are infrastructure packages that are "
 "handled automatically."
 msgstr ""
+"Jos tämä valitaan, asennusohjelma piilottaa paketit, jotka ovat luokissa, "
+"joiden nimet alkavat kirjaimella '_'. Tällaiset paketit ovat yleensä tyhjiä "
+"paikkamerkkejä paketeille, jotka on poistettu tai nimetty uudelleen, tai "
+"infrastruktuuripaketteja, joita käsitellään automaattisesti."
 
 #: STRINGTABLE.IDS_SIG_INVALID
 msgid ""
 "Mirror Error:  Setup.ini signature %s from %s failed to verify.\n"
 "Possible corrupt mirror?  Setup.ini rejected."
 msgstr ""
+"Peilivirhe: Setup.ini-allekirjoitusta %s %s:lta ei voitu vahvistaa.\n"
+"Mahdollinen korruptoitunut peili? Setup.ini hylätty."
 
 #: STRINGTABLE.IDS_CRYPTO_ERROR
 msgid "Internal Error:  gcrypt library error %d %s"
-msgstr ""
+msgstr "Sisäinen virhe: gcrypt-kirjastovirhe %d %s"
 
 #: STRINGTABLE.IDS_SEARCH_TOOLTIP
 msgid "Search for this string in package names."
-msgstr ""
+msgstr "Hae tätä merkkijonoa pakettien nimistä."
 
 #: STRINGTABLE.IDS_MAYBE_MKDIR
 msgid "Directory %s does not exist, would you like me to create it?"
-msgstr ""
+msgstr "Hakemistoa %s ei ole olemassa, haluatko minun luovan sen?"
 
 #: STRINGTABLE.IDS_CANT_MKDIR
 msgid "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
 msgstr ""
+"Hakemistoa %s ei voitu luoda, anteeksi. (Onko asema täynnä vai vain-luku?)"
 
 #: STRINGTABLE.IDS_NO_LOCALDIR
 msgid ""
@@ -825,6 +947,12 @@ msgid ""
 "Press OK if that's what you wanted\n"
 "or Cancel to choose a different directory."
 msgstr ""
+"Paikallista pakettihakemistoa %s ei löydy.\n"
+"Voit silti poistaa asennettuja paketteja,\n"
+"mutta mitään asennettavaa ei tule olemaan.\n"
+"\n"
+"Paina Selvä, jos se on sitä mitä halusit,\n"
+"tai Peruuta valitaksesi eri hakemiston."
 
 #: STRINGTABLE.IDS_ELEVATED
 msgid "Hand installation over to elevated child process."
