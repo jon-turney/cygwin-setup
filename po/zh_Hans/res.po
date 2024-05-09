@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2024-02-09 10:41+0000\n"
+"PO-Revision-Date: 2024-05-09 15:07+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "cygwin-setup/cygwin-setup/zh_Hans/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 5.4-dev\n"
+"X-Generator: Weblate 5.5.4-rc\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -156,8 +156,8 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
-"Cygwin 仍将对所有用户可用，但桌面图标，Cygwin 菜单条目和重要的安装程序信息仅"
-"对当前用户可用。仅当您缺少管理员权限或有特定需求时，才选择此选项。"
+"Cygwin 仍将对所有用户可用，但桌面快捷方式，Cygwin 菜单条目和重要的安装程序信"
+"息仅对当前用户可用。仅当您缺少管理员权限或有特定需求时，才应选择此选项。"
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
@@ -201,11 +201,11 @@ msgstr "使用 HTTP/FTP 代理(&P)："
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Proxy &Host"
-msgstr "代理主机(&H)"
+msgstr "代理主机名(&H)"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Por&t"
-msgstr "端口(&T)"
+msgstr "端口号(&T)"
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC
 msgid ""
@@ -354,13 +354,13 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
-"本安装程序用于 Cygwin 环境的初始安装以及所有后续更新。以下页面将指导您完成安"
-"装。\n"
+"本安装程序用于 Cygwin "
+"环境的初始安装以及所有后续更新操作。以下页面将指导您完成安装。\n"
 "\n"
-"请注意，默认情况下，我们只安装一组基本的软件包。Cygwin 提供了大量涵盖各种用途"
-"的软件包。\n"
+"请注意，默认情况下，我们只安装一组基本的软件包。Cygwin "
+"提供了大量涵盖各种用途的软件包。\n"
 "\n"
-"您将来可以随时运行此程序，以根据需要添加、删除或升级软件包。"
+"您将来可以随时运行本程序，以根据需要添加、卸载或升级软件包。"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
@@ -682,7 +682,7 @@ msgstr "这个 setup.ini 比你上次安装 cygwin 时使用的旧。是否继�
 
 #: STRINGTABLE.IDS_NOTHING_INSTALLED
 msgid "Nothing needed to be installed"
-msgstr "无需安装"
+msgstr "无需执行安装"
 
 #: STRINGTABLE.IDS_INSTALL_COMPLETE
 msgid "Installation Complete"
@@ -736,7 +736,7 @@ msgstr "下载不完整。是否重试？"
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE_EXIT
 msgid "Download incomplete.  Check %s for details"
-msgstr "下载不完整。 查看 %s 以了解详细信息"
+msgstr "下载不完整。检查 %s 以了解详细信息"
 
 #: STRINGTABLE.IDS_INSTALL_ERROR
 msgid "Installation error (%s), Continue with other packages?"
@@ -744,7 +744,7 @@ msgstr "安装错误 (%s)，是否继续安装其他软件包？"
 
 #: STRINGTABLE.IDS_INSTALL_INCOMPLETE
 msgid "Installation incomplete.  Check %s for details"
-msgstr "安装未完成。查看 %s 以了解详细信息"
+msgstr "安装未完成。检查 %s 以了解详细信息"
 
 #: STRINGTABLE.IDS_CORRUPT_PACKAGE
 msgid "Package %s has a corrupt local copy, please remove and retry."
@@ -770,9 +770,9 @@ msgid ""
 "Message: %s"
 msgstr ""
 "致命错误：未捕获的异常\n"
-"线程： %s\n"
-"类型： %s\n"
-"消息： %s"
+"线程：%s\n"
+"类型：%s\n"
+"消息：%s"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
 msgid ""
@@ -783,17 +783,16 @@ msgid ""
 "AppErrNo: %d"
 msgstr ""
 "致命错误：未捕获的异常\n"
-"线程： %s\n"
-"类型： %s\n"
-"消息： %s\n"
-"应用错误编号： %d"
+"线程：%s\n"
+"类型：%s\n"
+"消息：%s\n"
+"应用错误编号：%d"
 
 #: STRINGTABLE.IDS_TRUSTKEEP_TOOLTIP
 msgid ""
 "Sets all packages to their currently installed version.  This is equivalent "
 "to telling setup not to make any changes to any package."
-msgstr ""
-"将所有软件包设置为其当前安装的版本。 这相当于告诉安装程序不要对任何软件包进行"
+msgstr "将所有软件包设置为其当前安装的版本。这相当于告诉安装程序不要对任何软件包进行"
 "任何更改。"
 
 #: STRINGTABLE.IDS_TRUSTCURR_TOOLTIP
@@ -873,7 +872,7 @@ msgid ""
 "Mirror Error:  Setup.ini signature %s from %s failed to verify.\n"
 "Possible corrupt mirror?  Setup.ini rejected."
 msgstr ""
-"镜像错误：Setup.ini 签名 %s（来自 %s）验证失败。\n"
+"镜像错误：Setup.ini 的签名 %s（来自 %s）验证失败。\n"
 "镜像可能已损坏？ Setup.ini 被拒绝。"
 
 #: STRINGTABLE.IDS_CRYPTO_ERROR
@@ -901,12 +900,12 @@ msgid ""
 "Press OK if that's what you wanted\n"
 "or Cancel to choose a different directory."
 msgstr ""
-"找不到本地软件包目录 %s。\n"
-"您仍然可以删除已安装的\n"
-"软件包，但不会有任何要安装的内容。\n"
+"未找到本地软件包目录 %s。\n"
+"您仍然可以卸载已安装的\n"
+"软件包，但不会执行任何安装操作。\n"
 "\n"
-"点击“确定”，如果这是你想要的\n"
-"或“取消”以选择其他目录。"
+"如果这是你希望的，请点击“确定”\n"
+"或点击“取消”以选择其他目录。"
 
 #: STRINGTABLE.IDS_ELEVATED
 msgid "Hand installation over to elevated child process."
@@ -1121,7 +1120,7 @@ msgid ""
 "Desktop."
 msgstr ""
 "CoCreateInstance 失败，错误为 0x%x。\n"
-"安装程序将无法在“开始”菜单或桌面上创建 Cygwin 图标。"
+"安装程序将无法在“开始”菜单或桌面上创建 Cygwin 快捷方式。"
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_VERSION
 msgid "Cygwin is not supported on this Windows version"
@@ -1172,11 +1171,11 @@ msgid ""
 msgstr ""
 "目标 CPU 不匹配\n"
 "\n"
-"您正在尝试将 %s 位版本的 Cygwin 安装到包含 %s 位版本的 Cygwin 的目录中。 继续"
-"这样做会破坏现有安装。\n"
+"您正在尝试将 %s 位版本的 Cygwin 安装到包含 %s 位版本的 Cygwin "
+"的目录中。继续这样做会破坏现有的安装。\n"
 "\n"
-"运行 setup-%s.exe 以更新 Cygwin 的现有 %s 位安装，或为 %s 位安装选择其他目"
-"录。"
+"运行 setup-%s.exe 以更新 Cygwin 的现有 %s 位安装，或为 %s "
+"位安装选择其他目录。"
 
 #: STRINGTABLE.IDS_GET_SITELIST_ERROR
 msgid ""
@@ -1198,7 +1197,7 @@ msgstr "继续"
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_NO_PACKAGES
 msgid "No packages found."
-msgstr "未发现软件包。"
+msgstr "未找到软件包。"
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_DOWNLOAD
 msgid "Nothing to download."
@@ -1248,7 +1247,7 @@ msgstr "不更改"
 
 #: STRINGTABLE.IDS_CONFIRM_AUTO_ADD
 msgid "(automatically added)"
-msgstr "（自动添加）"
+msgstr "（自动添加的）"
 
 #: STRINGTABLE.IDS_CONFIRM_SOURCE
 msgid "(source)"
