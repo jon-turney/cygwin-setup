@@ -50,7 +50,8 @@ class site_list_type
 public:
   site_list_type () : url (), displayed_url (), key () {};
   site_list_type (const std::string& , const std::string& ,
-                  const std::string& , const std::string&, bool, bool);
+                  const std::string& , const std::string&, bool, bool,
+                  const std::string &);
   ~site_list_type () {};
   std::string url;
   // provided by mirrors.lst but not used
@@ -61,6 +62,9 @@ public:
   bool from_mirrors_lst;
   // marked as "noshow"
   bool noshow;
+  // url to redirect to
+  std::string redir;
+
   std::string displayed_url;
   // sort key
   std::string key;

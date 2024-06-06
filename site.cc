@@ -142,7 +142,8 @@ site_list_type::site_list_type (const std::string &_url,
 				const std::string &_area,
 				const std::string &_location,
 				bool _from_mirrors_lst,
-                                bool _noshow = false)
+                                bool _noshow = false,
+                                const std::string &_redir = "")
 {
   url = _url;
   servername = _servername;
@@ -150,6 +151,7 @@ site_list_type::site_list_type (const std::string &_url,
   location = _location;
   from_mirrors_lst = _from_mirrors_lst;
   noshow = _noshow;
+  redir = _redir;
 
   /* Canonicalize URL to ensure it ends with a '/' */
   if (url.at(url.length()-1) != '/')
@@ -286,9 +288,25 @@ load_site_list (SiteList& theSites, char *theString)
           if (!semi[0] || !semi[1] || !semi[2])
             continue;
 
-          bool noshow = semi[3] && (strncmp(semi[3], "noshow", 6) == 0);
+          /* fourth part is an optional, comma-delimited set of flags */
+          bool noshow = FALSE;
+          const char *redir = "";
 
-          site_list_type newsite (bol, semi[0], semi[1], semi[2], true, noshow);
+          char *flag = semi[3];
+          while (flag)
+            {
+              if (strncmp(flag, "noshow", 6) == 0)
+                noshow = TRUE;
+              else if (strncmp(flag, "redir=", 6) == 0)
+                redir = flag+6;
+
+              flag = strchr (flag, ',');
+              if (flag)
+                *flag++ = 0;
+            }
+
+          /* add site to list */
+          site_list_type newsite (bol, semi[0], semi[1], semi[2], true, noshow, redir);
           site_list_insert (theSites, newsite);
         }
         else
@@ -324,6 +342,23 @@ migrate_selected_site_list()
               *i = migrate;
             }
         }
+
+      /* If the saved selected site URL appears in the site list with a redir
+         flag, replace with the redirected URL */
+      {
+        SiteList::iterator j = find (all_site_list.begin(),
+                                     all_site_list.end(), *i);
+
+        if (j != all_site_list.end())
+          {
+            if (!j->redir.empty())
+              {
+                site_list_type migrate(j->redir, "", "", "", false);
+                Log (LOG_PLAIN) << "Migrated " << i->url << " to " << j->redir  << endLog;
+                *i = migrate;
+              }
+          }
+      }
     }
 }
 
