@@ -4,15 +4,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-06-11 09:09+0000\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <https://hosted.weblate.org/projects/cygwin-setup/"
+"cygwin-setup/ka/>\n"
 "Language: ka\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Translate Toolkit 3.7.3\n"
+"X-Generator: Weblate 5.6-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -98,7 +100,7 @@ msgstr ""
 #: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
 msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "არჩე&ვა..."
 
 #: DIALOG.IDD_ROOT.CAPTION
 msgid "Cygwin Setup - Choose Installation Directory"
@@ -116,12 +118,12 @@ msgstr ""
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
 msgid "Root Directory"
-msgstr ""
+msgstr "Root საქაღალდე"
 
 #: DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE
 msgctxt "DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "არჩე&ვა..."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_INSTALLFOR_GRP
 msgid "Install For"
@@ -169,7 +171,7 @@ msgstr ""
 
 #: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
 msgid "Add"
-msgstr ""
+msgstr "დამატება"
 
 #: DIALOG.IDD_NET.CAPTION
 msgid "Cygwin Setup - Select Connection Type"
@@ -193,7 +195,7 @@ msgstr ""
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Por&t"
-msgstr ""
+msgstr "&პორტი"
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC
 msgid ""
@@ -214,7 +216,7 @@ msgstr ""
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
 msgid "Installing..."
-msgstr ""
+msgstr "დაყენება..."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_PKG
 msgid "(PKG)"
@@ -243,15 +245,15 @@ msgstr ""
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE"
 msgid "Package:"
-msgstr ""
+msgstr "პაკეტი:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_TOTAL
 msgid "Total:"
-msgstr ""
+msgstr "სულ:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_DISK
 msgid "Disk:"
-msgstr ""
+msgstr "დისკი:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC
 msgid "This page displays the progress of the download or installation."
@@ -259,7 +261,7 @@ msgstr ""
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Progress"
-msgstr ""
+msgstr "მიმდინარეობა"
 
 #: DIALOG.IDD_PROXY_AUTH.CAPTION
 msgid "Proxy Authentication required"
@@ -273,7 +275,7 @@ msgstr ""
 msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&პაროლი"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy Authorization Required"
@@ -283,14 +285,14 @@ msgstr ""
 msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&დიახ"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "გაუქმება"
 
 #: DIALOG.IDD_NET_AUTH.CAPTION
 msgid "Server Authentication required"
@@ -299,12 +301,12 @@ msgstr ""
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&მომხმარებლის ID"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&პაროლი"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgid "Server Authorization Required"
@@ -313,12 +315,12 @@ msgstr ""
 #: DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&დიახ"
 
 #: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "გაუქმება"
 
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
@@ -374,7 +376,7 @@ msgstr ""
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
 msgid "Installation complete"
-msgstr ""
+msgstr "დაყენება დასრულებულია"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS_HEADER
 msgid "Installation Status"
@@ -391,12 +393,12 @@ msgstr ""
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&მომხმარებლის ID"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&პაროლი"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgid "FTP Authorization Required"
@@ -405,12 +407,12 @@ msgstr ""
 #: DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&დიახ"
 
 #: DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "გაუქმება"
 
 #: DIALOG.IDD_CHOOSE.CAPTION
 msgid "Cygwin Setup - Select Packages"
@@ -418,7 +420,7 @@ msgstr ""
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
 msgid "&View"
-msgstr ""
+msgstr "&ნახვა"
 
 #: DIALOG.IDD_CHOOSE.RTEXT.IDC_STATIC
 msgid "&Search"
@@ -426,15 +428,15 @@ msgstr ""
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_DO_SEARCH
 msgid "Search "
-msgstr ""
+msgstr "ძებნა "
 
 #: DIALOG.IDD_CHOOSE.PUSHBUTTON.IDC_CHOOSE_CLEAR_SEARCH
 msgid "&Clear"
-msgstr ""
+msgstr "&გასუფთავება"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_KEEP
 msgid "&Keep"
-msgstr ""
+msgstr "&შენარჩუნება"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_BEST
 msgid "&Best"
@@ -446,7 +448,7 @@ msgstr ""
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
 msgid "&Test"
-msgstr ""
+msgstr "შემო&წმება"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
 msgid "&Hide obsolete packages"
@@ -494,7 +496,7 @@ msgstr ""
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
-msgstr ""
+msgstr "გაფრთხილება:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -518,11 +520,11 @@ msgstr ""
 
 #: DIALOG.IDD_DROPPED.PUSHBUTTON.IDYES
 msgid "&Yes"
-msgstr ""
+msgstr "&დიახ"
 
 #: DIALOG.IDD_DROPPED.DEFPUSHBUTTON.IDNO
 msgid "&No"
-msgstr ""
+msgstr "&არა"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.CAPTION
 msgid "Download Incomplete"
@@ -542,21 +544,21 @@ msgstr ""
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
 msgid "&Retry"
-msgstr ""
+msgstr "თვიდან &ცდა"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
 msgid "&Back"
-msgstr ""
+msgstr "&უკან"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE"
 msgid "&Continue"
-msgstr ""
+msgstr "&გაგრძელება"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT"
 msgid "Cancel"
-msgstr ""
+msgstr "გაუქმება"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
@@ -607,7 +609,7 @@ msgstr ""
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE"
 msgid "&Retry"
-msgstr ""
+msgstr "თვიდან &ცდა"
 
 #: DIALOG.IDD_FILE_INUSE.DEFPUSHBUTTON.IDRETRY
 msgid "&Stop Processes"
@@ -616,7 +618,7 @@ msgstr ""
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE"
 msgid "&Continue"
-msgstr ""
+msgstr "&გაგრძელება"
 
 #: STRINGTABLE.IDS_ROOT_SLASH
 msgid ""
@@ -651,7 +653,7 @@ msgstr ""
 
 #: STRINGTABLE.IDS_INSTALL_COMPLETE
 msgid "Installation Complete"
-msgstr ""
+msgstr "დაყენება დასრულებულია"
 
 #: STRINGTABLE.IDS_REBOOT_REQUIRED
 msgid ""
@@ -671,7 +673,7 @@ msgstr ""
 
 #: STRINGTABLE.IDS_DOWNLOAD_COMPLETE
 msgid "Download Complete"
-msgstr ""
+msgstr "გადმოწერა დასრულებულია"
 
 #: STRINGTABLE.IDS_NOLOGFILE
 msgid "Cannot open log file %s for writing"
@@ -840,16 +842,16 @@ msgstr ""
 
 #: STRINGTABLE.IDS_PROGRESS_PROGRESS
 msgid "Progress:"
-msgstr ""
+msgstr "მიმდინარეობა:"
 
 #: STRINGTABLE.IDS_PROGRESS_PACKAGE
 msgctxt "STRINGTABLE.IDS_PROGRESS_PACKAGE"
 msgid "Package:"
-msgstr ""
+msgstr "პაკეტი:"
 
 #: STRINGTABLE.IDS_PROGRESS_CONNECTING
 msgid "Connecting..."
-msgstr ""
+msgstr "დაკავშირება..."
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING
 msgid "Checking for packages to download..."
@@ -857,11 +859,11 @@ msgstr ""
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING
 msgid "Downloading..."
-msgstr ""
+msgstr "გადმოწერა..."
 
 #: STRINGTABLE.IDS_PROGRESS_PARSING
 msgid "Parsing..."
-msgstr ""
+msgstr "დამუშავება..."
 
 #: STRINGTABLE.IDS_PROGRESS_PREREMOVE
 msgid "Running preremove script..."
@@ -869,20 +871,20 @@ msgstr ""
 
 #: STRINGTABLE.IDS_PROGRESS_UNINSTALL
 msgid "Uninstalling..."
-msgstr ""
+msgstr "წაშლა..."
 
 #: STRINGTABLE.IDS_PROGRESS_INSTALL
 msgctxt "STRINGTABLE.IDS_PROGRESS_INSTALL"
 msgid "Installing..."
-msgstr ""
+msgstr "დაყენება..."
 
 #: STRINGTABLE.IDS_PROGRESS_CALCULATING
 msgid "Calculating..."
-msgstr ""
+msgstr "გამოთვლა..."
 
 #: STRINGTABLE.IDS_PROGRESS_POSTINSTALL
 msgid "Running..."
-msgstr ""
+msgstr "გაშვებულია..."
 
 #: STRINGTABLE.IDS_PROGRESS_SOLVING
 msgid "Solving dependencies..."
@@ -890,85 +892,85 @@ msgstr ""
 
 #: STRINGTABLE.IDS_ACTION_DEFAULT
 msgid "Default"
-msgstr ""
+msgstr "ნაგულისხმევი"
 
 #: STRINGTABLE.IDS_ACTION_INSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_INSTALL"
 msgid "Install"
-msgstr ""
+msgstr "დაყენება"
 
 #: STRINGTABLE.IDS_ACTION_UNINSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_UNINSTALL"
 msgid "Uninstall"
-msgstr ""
+msgstr "პროგრამის წაშლა"
 
 #: STRINGTABLE.IDS_ACTION_SKIP
 msgid "Skip"
-msgstr ""
+msgstr "გამოტოვება"
 
 #: STRINGTABLE.IDS_ACTION_KEEP
 msgid "Keep"
-msgstr ""
+msgstr "დატოვება"
 
 #: STRINGTABLE.IDS_ACTION_REINSTALL
 msgid "Reinstall"
-msgstr ""
+msgstr "გადაყენება"
 
 #: STRINGTABLE.IDS_ACTION_RETRIEVE
 msgid "Retrieve"
-msgstr ""
+msgstr "გამოთხოვა"
 
 #: STRINGTABLE.IDS_ACTION_UNKNOWN
 msgid "Unknown"
-msgstr ""
+msgstr "უცნობ"
 
 #: STRINGTABLE.IDS_ACTION_SOURCE
 msgid "Source"
-msgstr ""
+msgstr "წყარო"
 
 #: STRINGTABLE.IDS_VIEW_FULL
 msgid "Full"
-msgstr ""
+msgstr "სრული"
 
 #: STRINGTABLE.IDS_VIEW_PENDING
 msgid "Pending"
-msgstr ""
+msgstr "დარჩენილი"
 
 #: STRINGTABLE.IDS_VIEW_UPTODATE
 msgid "Up To Date"
-msgstr ""
+msgstr "განახლებულია"
 
 #: STRINGTABLE.IDS_VIEW_NOTINSTALLED
 msgid "Not Installed"
-msgstr ""
+msgstr "დაყენებული არაა"
 
 #: STRINGTABLE.IDS_VIEW_PICKED
 msgid "Picked"
-msgstr ""
+msgstr "არჩეულია"
 
 #: STRINGTABLE.IDS_VIEW_REMOVABLE
 msgid "Removable"
-msgstr ""
+msgstr "მოხსნადი"
 
 #: STRINGTABLE.IDS_VIEW_UNNEEDED
 msgid "Unneeded"
-msgstr ""
+msgstr "არასაჭირო"
 
 #: STRINGTABLE.IDS_VIEW_CATEGORY
 msgid "Category"
-msgstr ""
+msgstr "კატეგორია"
 
 #: STRINGTABLE.IDS_COLUMN_PACKAGE
 msgid "Package"
-msgstr ""
+msgstr "პაკეტები"
 
 #: STRINGTABLE.IDS_COLUMN_CURRENT
 msgid "Current"
-msgstr ""
+msgstr "მიმდინარე"
 
 #: STRINGTABLE.IDS_COLUMN_NEW
 msgid "New"
-msgstr ""
+msgstr "ახალი"
 
 #: STRINGTABLE.IDS_COLUMN_SOURCE
 msgid "Src?"
@@ -976,15 +978,15 @@ msgstr ""
 
 #: STRINGTABLE.IDS_COLUMN_CATEGORIES
 msgid "Categories"
-msgstr ""
+msgstr "კატეგორიები"
 
 #: STRINGTABLE.IDS_COLUMN_SIZE
 msgid "Size"
-msgstr ""
+msgstr "ზომა"
 
 #: STRINGTABLE.IDS_COLUMN_DESCR
 msgid "Description"
-msgstr ""
+msgstr "_აღწერილობა"
 
 #: STRINGTABLE.IDS_MBOX_CAPTION
 msgctxt "STRINGTABLE.IDS_MBOX_CAPTION"
@@ -1084,7 +1086,7 @@ msgstr ""
 
 #: STRINGTABLE.IDS_CONTINUE
 msgid "Continue"
-msgstr ""
+msgstr "გაგრძელება"
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_NO_PACKAGES
 msgid "No packages found."
@@ -1092,7 +1094,7 @@ msgstr ""
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_DOWNLOAD
 msgid "Nothing to download."
-msgstr ""
+msgstr "გადმოსაწერი არაფერია."
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_INSTALL
 msgid "Nothing to install or update."
@@ -1116,25 +1118,25 @@ msgstr ""
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING_FROM
 msgid "%s from %s"
-msgstr ""
+msgstr "%s -ი %s-სგან"
 
 #: STRINGTABLE.IDS_CONFIRM_UNINSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_UNINSTALL"
 msgid "Uninstall"
-msgstr ""
+msgstr "პროგრამის წაშლა"
 
 #: STRINGTABLE.IDS_CONFIRM_INSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_INSTALL"
 msgid "Install"
-msgstr ""
+msgstr "დაყენება"
 
 #: STRINGTABLE.IDS_CONFIRM_DOWNLOAD
 msgid "Download"
-msgstr ""
+msgstr "გადმოწერა"
 
 #: STRINGTABLE.IDS_CONFIRM_NOTHING
 msgid "No changes"
-msgstr ""
+msgstr "ცვლილებების გარეშე"
 
 #: STRINGTABLE.IDS_CONFIRM_AUTO_ADD
 msgid "(automatically added)"
@@ -1212,7 +1214,7 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_HELP
 msgid "Print help"
-msgstr ""
+msgstr "დახმარების გამოტანა"
 
 #: STRINGTABLE.IDS_HELPTEXT_INCLUDE_SOURCE
 msgid "Automatically install source for every package installed"
@@ -1350,11 +1352,11 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_VERBOSE
 msgid "Verbose output"
-msgstr ""
+msgstr "უფრო მეტის ჩვენება"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERSION
 msgid "Show version"
-msgstr ""
+msgstr "ვერსიის ჩვენება"
 
 #: STRINGTABLE.IDS_HELPTEXT_WAIT
 msgid "When elevating, wait for elevated child process"
