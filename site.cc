@@ -665,8 +665,9 @@ SitePage::OnUnattended ()
 {
   if (SendMessage (GetDlgItem (IDC_URL_LIST), LB_GETSELCOUNT, 0, 0) > 0)
     return OnNext ();
-  else
-    return -2;
+
+  Log (LOG_PLAIN) << "No package repository site(s) specified" << endLog;
+  return -2;
 }
 
 void

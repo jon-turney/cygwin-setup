@@ -25,7 +25,7 @@
 
 #include "getopt++/BoolOption.h"
 #include "Exception.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 bool PropertyPage::DoOnceForSheet = true;
 
@@ -196,17 +196,17 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 
               OnActivate ();
 
-              if (unattended_mode) 
+              if (unattended_mode)
               {
-                // -2 == disable unattended mode, display page
+                // -2 == cannot continue in unattended mode
                 // -1 == display page but stay in unattended mode (progress bars)
                 // 0 == skip to next page (in propsheet sequence)
                 // IDD_* == skip to specified page
                 long nextwindow = OnUnattended();
                 if (nextwindow == -2)
                 {
-                  unattended_mode = attended;
-                  SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, 0);
+                  Log (LOG_PLAIN) << "Unable to continue" << endLog;
+                  Logger ().exit (1);
                   return TRUE;
                 }
                 else if (nextwindow == -1)
@@ -224,8 +224,8 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
                   SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, nextwindow);
                   return TRUE;
                 }
-              } 
-              else 
+              }
+              else
               {
                 // 0 == Accept activation, -1 = Don't accept
                 ::SetWindowLongPtr (GetHWND (), DWLP_MSGRESULT, 0);
