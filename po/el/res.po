@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2024-07-15 20:09+0000\n"
+"PO-Revision-Date: 2024-07-23 13:09+0000\n"
 "Last-Translator: \"Λευτέρης Τ.\" <lefteris592@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/el/>\n"
@@ -26,18 +26,20 @@ msgid ""
 "&Install from Internet\n"
 "(downloaded files will be kept for future re-use)"
 msgstr ""
+"&Εγκατάσταση από το Ίντερνετ\n"
+"(Τα κατεβασμένα αρχεία θα διατηρηθούν για επόμενη χρήση)"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_DOWNLOAD
 msgid "&Download Without Installing"
-msgstr ""
+msgstr "&Λήψη χωρίς εγκατάσταση"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_LOCALDIR
 msgid "Install from &Local Directory"
-msgstr ""
+msgstr "Εγκατάσταση από &Τοπικό Κατάλογο"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Source"
-msgstr ""
+msgstr "Επιλέξτε μια Πηγή Λήψης"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_SOURCE_SUBTEXT
 msgid ""
