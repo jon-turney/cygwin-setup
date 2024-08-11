@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2024-07-23 13:09+0000\n"
+"PO-Revision-Date: 2024-08-12 09:09+0000\n"
 "Last-Translator: \"Λευτέρης Τ.\" <lefteris592@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/el/>\n"
@@ -46,14 +46,16 @@ msgid ""
 "Choose whether to install or download from the internet, or install from "
 "files in a local directory."
 msgstr ""
+"Επιλέξτε αν θα εγακταστήσετε ή κατεβάσετε από το ίντερνετ ή θα εγκαταστήσετε "
+"από αρχεία σε τοπικό κατάλογο."
 
 #: DIALOG.IDD_VIRUS.CAPTION
 msgid "Cygwin Setup - Disable Virus Scanner?"
-msgstr ""
+msgstr "Ρύθμιση Cygwin - Απενεργοποίηση Ανιχνευτή Ιών;"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_DISABLE_AV
 msgid "&Disable Virus scanner"
-msgstr ""
+msgstr "&Απενεργοποίηση ανιχνευτή Ιών"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_LEAVE_AV
 msgid "&Leave Virus scanner alone"
