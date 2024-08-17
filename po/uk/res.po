@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2024-08-17 19:47+0000\n"
+"PO-Revision-Date: 2024-08-18 20:09+0000\n"
 "Last-Translator: Nick Felenko <0991remanon@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/uk/>\n"
@@ -459,75 +459,75 @@ msgstr "&Пошук"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_DO_SEARCH
 msgid "Search "
-msgstr ""
+msgstr "Пошук "
 
 #: DIALOG.IDD_CHOOSE.PUSHBUTTON.IDC_CHOOSE_CLEAR_SEARCH
 msgid "&Clear"
-msgstr ""
+msgstr "&Очистити"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_KEEP
 msgid "&Keep"
-msgstr ""
+msgstr "&Не чіпати"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_BEST
 msgid "&Best"
-msgstr ""
+msgstr "&Найкраще"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_SYNC
 msgid "&Sync"
-msgstr ""
+msgstr "&Синхронізувати"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
 msgid "&Test"
-msgstr ""
+msgstr "&Тест"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
 msgid "&Hide obsolete packages"
-msgstr ""
+msgstr "&Приховати застарілі пакети"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
 msgid "Select packages to download."
-msgstr ""
+msgstr "Оберіть пакети для завантаження."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_INSTALL
 msgid "Select packages to install."
-msgstr ""
+msgstr "Оберіть пакети для встановлення."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Packages"
-msgstr ""
+msgstr "Обрати пакети"
 
 #: DIALOG.IDD_PREREQ.CAPTION
 msgid "Cygwin Setup - Resolving Dependencies"
-msgstr ""
+msgstr "Cygwin Setup - Розбір залежностей"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Resolving Dependencies"
-msgstr ""
+msgstr "Розбір залежностей"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC
 msgid "The following problems occured trying to satisfy dependencies."
-msgstr ""
+msgstr "Наведені нижче проблеми виникли під час розбору залежностей."
 
 #: DIALOG.IDD_PREREQ.CONTROL.IDC_PREREQ_CHECK
 msgid "&Accept default problem solutions"
-msgstr ""
+msgstr "&Прийняти стандартні рішення проблем"
 
 #: DIALOG.IDD_CONFIRM.CAPTION
 msgid "Cygwin Setup - Review and confirm changes"
-msgstr ""
+msgstr "Cygwin Setup - Перегляньте та підтвердьте зміни"
 
 #: DIALOG.IDD_CONFIRM.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Review and confirm changes"
-msgstr ""
+msgstr "Перегляньте та підтвердьте зміни"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
-msgstr ""
+msgstr "Cygwin Setup - Користуватися доданими дзеркалами?"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
-msgstr ""
+msgstr "Увага:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -536,6 +536,10 @@ msgid ""
 "\n"
 "This affects the following mirror(s):"
 msgstr ""
+"Одне або більше дзеркал, які ви обрали, більше не входять до списку "
+"офіційних дзеркал Cygwin. Воно/вони можуть бути застарілими або не вмістити "
+"деякі пакети.\n"
+"Мова йде про такі дзеркала:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -544,26 +548,30 @@ msgid ""
 "\n"
 "Do you want to continue, using this/these mirror(s)?"
 msgstr ""
+"Якщо у вас виникають проблеми зі встановленням, спробуйте лише офіційні "
+"дзеркала.\n"
+"\n"
+"Ви бажаєте продовжити, використовуючи це/ці дзеркало(а)?"
 
 #: DIALOG.IDD_DROPPED.CONTROL.IDC_DROP_NOWARN
 msgid "&Don't warn me about this/these mirror(s) again"
-msgstr ""
+msgstr "&Більше не попереджати мене про це/ці дзеркала"
 
 #: DIALOG.IDD_DROPPED.PUSHBUTTON.IDYES
 msgid "&Yes"
-msgstr ""
+msgstr "&Так"
 
 #: DIALOG.IDD_DROPPED.DEFPUSHBUTTON.IDNO
 msgid "&No"
-msgstr ""
+msgstr "&Ні"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.CAPTION
 msgid "Download Incomplete"
-msgstr ""
+msgstr "Завантаження не завершено"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid "The following package(s) had download errors:"
-msgstr ""
+msgstr "Наступні пакети мали помилки завантаження:"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid ""
@@ -571,64 +579,76 @@ msgid ""
 "selection page, 'Continue' to go on anyway (NOT RECOMMENDED), or 'Cancel' to "
 "exit."
 msgstr ""
+"Оберіть «Повторити», щоб повторити спробу завантаження, «Назад», щоб "
+"повернутися до сторінки вибору пакета, «Продовжити», щоб усе одно продовжити "
+"(НЕ РЕКОМЕНДОВАНО), або «Скасувати», щоб вийти."
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
 msgid "&Retry"
-msgstr ""
+msgstr "&Повторити"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
 msgid "&Back"
-msgstr ""
+msgstr "&Назад"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE"
 msgid "&Continue"
-msgstr ""
+msgstr "&Продовжити"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT"
 msgid "Cancel"
-msgstr ""
+msgstr "Скасувати"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
-msgstr ""
+msgstr "Cygwin Setup - Запуск сценаріїв після встановлення"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Postinstall script errors"
-msgstr ""
+msgstr "Помилки сценарію після встановлення"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC
 msgid ""
 "These do not necessarily mean that affected packages will fail to function "
 "properly, but please check /var/log/setup.log.full and report any problems."
 msgstr ""
+"Це не обов’язково означає, що уражені пакунки не працюватимуть належним "
+"чином, але перевірте /var/log/setup.log.full і повідомте про будь-які "
+"проблеми."
 
 #: DIALOG.IDD_FILE_INUSE.CAPTION
 msgid "In-use file detected"
-msgstr ""
+msgstr "Виявлено файл, який використовується"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG
 msgctxt "DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr ""
+msgstr "Не вдалося розпакувати"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_STATIC
 msgid "The file is in use by the following processes:"
-msgstr ""
+msgstr "Файл використовується такими процесами:"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_0
 msgid ""
 "Select 'Retry' to retry, select 'Stop' to stop processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
+"Оберіть «Повторити», щоб повторити спробу, оберіть «Зупинити», щоб зупинити "
+"процеси та повторити спробу, або виберіть «Продовжити», щоб все одно "
+"продовжити (файл буде оновлено після перезавантаження)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_1
 msgid ""
 "Select 'Retry' to retry, select 'Kill' to kill processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
+"оберіть «Повторити», щоб повторити спробу, виберіть «Знищити», щоб припинити "
+"процеси та повторити спробу, або оберіть «Продовжити», щоб все одно "
+"продовжити (файл буде оновлено після перезавантаження)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_2
 msgid ""
@@ -636,6 +656,9 @@ msgid ""
 "retry, or select 'Continue' to go on anyway (the file will be updated after "
 "a reboot)."
 msgstr ""
+"Оберіть «Повторити», щоб повторити спробу, виберіть «Знищити», щоб примусово "
+"припинити всі процеси та повторити спробу, або оберіть «Продовжити», щоб "
+"продовжити все одно (файл буде оновлено після перезавантаження)."
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE"
@@ -1363,31 +1386,31 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
 msgid "Download site URL, path or UNC path"
-msgstr ""
+msgstr "URL-адреса сайту завантаження, локальний шлях або UNC-шлях"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
-msgstr ""
+msgstr "Тип символічного посилання (lnk, native, sys, wsl)"
 
 #: STRINGTABLE.IDS_HELPTEXT_UNTRUSTED_KEYS
 msgid "Use untrusted saved extra keys"
-msgstr ""
+msgstr "Використовувати ненадійні збережені додаткові ключі"
 
 #: STRINGTABLE.IDS_HELPTEXT_UPGRADE_ALSO
 msgid "Also upgrade installed packages"
-msgstr ""
+msgstr "Також оновити встановлені пакети"
 
 #: STRINGTABLE.IDS_HELPTEXT_USER_AGENT
 msgid "User agent string for HTTP requests"
-msgstr ""
+msgstr "User agent для запитів HTTP"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERBOSE
 msgid "Verbose output"
-msgstr ""
+msgstr "Детальне виведення"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERSION
 msgid "Show version"
-msgstr ""
+msgstr "Показати версію"
 
 #: STRINGTABLE.IDS_HELPTEXT_WAIT
 msgid "When elevating, wait for elevated child process"
