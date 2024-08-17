@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2024-08-08 12:09+0000\n"
+"PO-Revision-Date: 2024-08-17 19:47+0000\n"
 "Last-Translator: Nick Felenko <0991remanon@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/uk/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -50,25 +50,27 @@ msgstr ""
 
 #: DIALOG.IDD_VIRUS.CAPTION
 msgid "Cygwin Setup - Disable Virus Scanner?"
-msgstr ""
+msgstr "Cygwin Setup - Вимкнути сканер вірусів?"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_DISABLE_AV
 msgid "&Disable Virus scanner"
-msgstr ""
+msgstr "&Вимкнути сканер вірусів"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_LEAVE_AV
 msgid "&Leave Virus scanner alone"
-msgstr ""
+msgstr "&Не чіпати сканер вірусів"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose whether to disable your virus scanner while installing."
-msgstr ""
+msgstr "Оберіть, чи вимкнути сканер вірусів під час встановлення."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
 "Some Antivirus programs, notably McAfee, cause a blue screen on Windows XP "
 "computers during installation of Cygwin."
 msgstr ""
+"Деякі антивірусні програми, зокрема McAfee, викликають синій екран на комп’"
+"ютерах з Windows XP під час встановлення Cygwin."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
@@ -76,73 +78,82 @@ msgid ""
 "during the installation process, and re-enable it when the install is "
 "complete."
 msgstr ""
+"Було виявлено один, який може бути проблемою. Параметри Cygwin можуть "
+"вимкнути його під час процесу інсталяції та повторно ввімкнути, коли "
+"інсталяція завершиться."
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
 msgid "Cygwin Setup - Select Local Package Directory"
-msgstr ""
+msgstr "Оберіть локальний каталог для пакетів"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Local Package Directory"
-msgstr ""
+msgstr "Оберіть локальний каталог для пакетів"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_DOWNLOAD_DESC
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
 msgstr ""
+"Оберіть каталог, у якому програма встановлення має зберігати завантажені "
+"файли встановлення.  Каталог буде створено, якщо він ще не існує."
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
 msgid ""
 "Select a directory where Setup should look for downloaded installation files."
 msgstr ""
+"Оберіть каталог, у якому програма встановлення має шукати завантажені "
+"інсталяційні файли."
 
 #: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
 msgid "Local Package Directory"
-msgstr ""
+msgstr "Локальний каталог пакетів"
 
 #: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
 msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "П&ереглянути.."
 
 #: DIALOG.IDD_ROOT.CAPTION
 msgid "Cygwin Setup - Choose Installation Directory"
-msgstr ""
+msgstr "Оберіть каталог встановлення"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Root Install Directory"
-msgstr ""
+msgstr "Оберіть початковий каталог встановлення"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ROOTDIR_SUBTEXT
 msgid ""
 "Select the directory where you want to install Cygwin.  Also choose a few "
 "installation parameters."
 msgstr ""
+"Оберіть каталог, куди ви хочете встановити Cygwin.  Також оберіть кілька "
+"параметрів установки."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
 msgid "Root Directory"
-msgstr ""
+msgstr "Початковий каталог"
 
 #: DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE
 msgctxt "DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "П&ерегляд..."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_INSTALLFOR_GRP
 msgid "Install For"
-msgstr ""
+msgstr "Встановити для"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_SYSTEM
 msgid "&All Users (RECOMMENDED)"
-msgstr ""
+msgstr "&Усі користувачі (РЕКОМЕНДОВАНО)"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
 msgid "Just &Me"
-msgstr ""
+msgstr "Тільки для &мене"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
 msgid "Cygwin will be available to all users of the system."
-msgstr ""
+msgstr "Cygwin буде доступний для всіх користувачів системи."
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_JUSTME_TEXT
 msgid ""
@@ -151,188 +162,194 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
+"Cygwin все ще буде доступний для всіх користувачів, але значки на робочому "
+"столі, пункти меню Cygwin і важлива інформація інсталятора доступні лише для "
+"поточного користувача. Виберіть це, лише якщо у вас немає прав "
+"адміністратора або якщо у вас є особливі потреби."
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
-msgstr ""
+msgstr "Оберіть сайт(и) для завантаження"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Available Download Sites:"
-msgstr ""
+msgstr "Доступні сайти для завантаження:"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Choose a site from this list, or add your own sites to the list."
-msgstr ""
+msgstr "Виберіть сайт із цього списку або додайте власні сайти до списку."
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Site"
-msgstr ""
+msgstr "Оберіть сайт для завантаження"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
 msgid "User URL:"
-msgstr ""
+msgstr "URL користувача:"
 
 #: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
 msgid "Add"
-msgstr ""
+msgstr "Додати"
 
 #: DIALOG.IDD_NET.CAPTION
 msgid "Cygwin Setup - Select Connection Type"
-msgstr ""
+msgstr "Cygwin Setup - Виберіть тип підключення"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
 msgid "Use &System Proxy Settings"
-msgstr ""
+msgstr "Використати параметри &системного проксі-сервера"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_DIRECT
 msgid "&Direct Connection"
-msgstr ""
+msgstr "&Пряме підключення"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PROXY
 msgid "Use HTTP/FTP &Proxy:"
-msgstr ""
+msgstr "Використовувати HTTP/FTP &проксі:"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Proxy &Host"
-msgstr ""
+msgstr "Проксі &хост"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Por&t"
-msgstr ""
+msgstr "Пор&т"
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC
 msgid ""
 "Setup needs to know how you want it to connect to the internet.  Choose the "
 "appropriate settings below."
 msgstr ""
+"Інсталятор повинен знати, як ви хочете підключитися до Інтернету.  Оберіть "
+"відповідні налаштування нижче."
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Your Internet Connection"
-msgstr ""
+msgstr "Оберіть підключення до Інтернету"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
 msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
 "DIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
-msgstr ""
+msgstr "Cygwin Setup"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
 msgid "Installing..."
-msgstr ""
+msgstr "Встановлення..."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_PKG
 msgid "(PKG)"
-msgstr ""
+msgstr "(PKG)"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_FILE
 msgid "(FILE)"
-msgstr ""
+msgstr "(FILE)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
-msgstr ""
+msgstr "Прогрес1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS"
 msgid "Progress1"
-msgstr ""
+msgstr "Прогрес1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS"
 msgid "Progress1"
-msgstr ""
+msgstr "Прогрес1"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE"
 msgid "Package:"
-msgstr ""
+msgstr "Пакет:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_TOTAL
 msgid "Total:"
-msgstr ""
+msgstr "Всього:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_DISK
 msgid "Disk:"
-msgstr ""
+msgstr "Накопичувач:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC
 msgid "This page displays the progress of the download or installation."
-msgstr ""
+msgstr "На цій сторінці відображається хід завантаження або встановлення."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Progress"
-msgstr ""
+msgstr "Прогрес"
 
 #: DIALOG.IDD_PROXY_AUTH.CAPTION
 msgid "Proxy Authentication required"
-msgstr ""
+msgstr "Потрібна автентифікація проксі"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy &User ID"
-msgstr ""
+msgstr "Проксі &ідентифікатор користувача"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Пароль"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy Authorization Required"
-msgstr ""
+msgstr "Потрібна авторизація проксі"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&Добре"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Відміна"
 
 #: DIALOG.IDD_NET_AUTH.CAPTION
 msgid "Server Authentication required"
-msgstr ""
+msgstr "Потрібна автентифікація сервера"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&Ідентифікатор користувача"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Пароль"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgid "Server Authorization Required"
-msgstr ""
+msgstr "Потрібна авторизація сервера"
 
 #: DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&Добре"
 
 #: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Відміна"
 
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
 msgid "Cygwin Setup"
-msgstr ""
+msgstr "Cygwin Setup"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
-msgstr ""
+msgstr "Програма налаштування Cygwin Net Release"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TEXT
 msgid ""
@@ -346,88 +363,99 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
+"Ця програма встановлення використовується для початкової інсталяції "
+"середовища Cygwin, а також для всіх наступних оновлень. Наступні сторінки "
+"допоможуть вам виконати інсталяцію.\n"
+"\n"
+"Зауважте, що за замовчуванням ми встановлюємо лише базовий набір пакетів.  "
+"Cygwin надає велику кількість пакетів для різноманітних цілей.\n"
+"\n"
+"Ви завжди можете запустити цю програму в будь-який час у майбутньому, щоб за "
+"потреби додавати, видаляти чи оновлювати пакети."
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr ""
+msgstr "Сприяйте перекладам цієї програми."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
-msgstr ""
+msgstr "Cygwin Setup - Статус встановлення та створення значків"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
 msgid "Create icon on &Desktop"
-msgstr ""
+msgstr "Створити значок на &Робочому столі"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
 msgid "Add icon to &Start Menu"
-msgstr ""
+msgstr "Додати значок до &Меню «Пуск»"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_INSTALL
 msgid ""
 "Tell setup if you want it to create a few icons for convenient access to the "
 "Cygwin environment."
 msgstr ""
+"Вкажіть програмі налаштування, якщо ви хочете створити кілька значків для "
+"зручного доступу до середовища Cygwin."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_INSTALL
 msgid "Create Icons"
-msgstr ""
+msgstr "Створити значки"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
 msgid "Shows installation status in download-only mode."
-msgstr ""
+msgstr "Показує стан встановлення в режимі лише завантаження."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
 msgid "Installation complete"
-msgstr ""
+msgstr "Встановлення завершено"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS_HEADER
 msgid "Installation Status"
-msgstr ""
+msgstr "Статус встановлення"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS
 msgid "Cygwin installation completed successfully."
-msgstr ""
+msgstr "Встановлення Cygwin завершено успішно."
 
 #: DIALOG.IDD_FTP_AUTH.CAPTION
 msgid "FTP Authentication required"
-msgstr ""
+msgstr "Потрібна автентифікація FTP"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&Ідентифікатор користувача"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Пароль"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgid "FTP Authorization Required"
-msgstr ""
+msgstr "Потрібна авторизація FTP"
 
 #: DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&Добре"
 
 #: DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Відміна"
 
 #: DIALOG.IDD_CHOOSE.CAPTION
 msgid "Cygwin Setup - Select Packages"
-msgstr ""
+msgstr "Cygwin Setup - Оберіть пакети"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
 msgid "&View"
-msgstr ""
+msgstr "&Перегляд"
 
 #: DIALOG.IDD_CHOOSE.RTEXT.IDC_STATIC
 msgid "&Search"
-msgstr ""
+msgstr "&Пошук"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_DO_SEARCH
 msgid "Search "
