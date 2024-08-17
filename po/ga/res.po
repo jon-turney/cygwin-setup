@@ -4,66 +4,77 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-08-18 20:09+0000\n"
+"Last-Translator: Aindriú Mac Giolla Eoin <aindriu80@gmail.com>\n"
+"Language-Team: Irish <https://hosted.weblate.org/projects/cygwin-setup/"
+"cygwin-setup/ga/>\n"
 "Language: ga\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :("
+"n>6 && n<11) ? 3 : 4;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Translate Toolkit 3.7.3\n"
+"X-Generator: Weblate 5.7\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
 msgid "Cygwin Setup - Choose Installation Type"
-msgstr ""
+msgstr "Socrú Cygwin - Roghnaigh Cineál Suiteála"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_NETINST
 msgid ""
 "&Install from Internet\n"
 "(downloaded files will be kept for future re-use)"
 msgstr ""
+"&Suiteáil ón Idirlíon\n"
+"(coimeádfar comhaid íoslódála le haghaidh athúsáide sa todhchaí)"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_DOWNLOAD
 msgid "&Download Without Installing"
-msgstr ""
+msgstr "& Íoslódáil Gan Suiteáil"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_LOCALDIR
 msgid "Install from &Local Directory"
-msgstr ""
+msgstr "Suiteáil ón & Eolaire Áitiúil"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Source"
-msgstr ""
+msgstr "Roghnaigh Foinse Íoslódáil"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_SOURCE_SUBTEXT
 msgid ""
 "Choose whether to install or download from the internet, or install from "
 "files in a local directory."
 msgstr ""
+"Roghnaigh cibé acu a shuiteáil nó a íoslódáil ón idirlíon, nó a shuiteáil ó "
+"chomhaid in eolaire áitiúil."
 
 #: DIALOG.IDD_VIRUS.CAPTION
 msgid "Cygwin Setup - Disable Virus Scanner?"
-msgstr ""
+msgstr "Socrú Cygwin - Díchumasaigh Scanóir Víreas?"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_DISABLE_AV
 msgid "&Disable Virus scanner"
-msgstr ""
+msgstr "&Díchumasaigh scanóir víreas"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_LEAVE_AV
 msgid "&Leave Virus scanner alone"
-msgstr ""
+msgstr "&Fág scanóir víreas ina aonar"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose whether to disable your virus scanner while installing."
 msgstr ""
+"Roghnaigh cé acu an ndéanfaidh tú do scanóir víreas a dhíchumasú agus é á "
+"shuiteáil."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
 "Some Antivirus programs, notably McAfee, cause a blue screen on Windows XP "
 "computers during installation of Cygwin."
 msgstr ""
+"Is cúis le roinnt cláir Antivirus, go háirithe McAfee, scáileán gorm ar "
+"ríomhairí Windows XP le linn suiteáil Cygwin."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
@@ -71,73 +82,81 @@ msgid ""
 "during the installation process, and re-enable it when the install is "
 "complete."
 msgstr ""
+"Braitheadh fadhb amháin a d’fhéadfadh a bheith ina fhadhb. Is féidir le "
+"socrú Cygwin é seo a dhíchumasú le linn an phróisis suiteála, agus é a "
+"chumasú arís nuair a bheidh an tsuiteáil críochnaithe."
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
 msgid "Cygwin Setup - Select Local Package Directory"
-msgstr ""
+msgstr "Socrú Cygwin - Roghnaigh Eolaire Pacáiste Áitiúil"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Local Package Directory"
-msgstr ""
+msgstr "Roghnaigh Eolaire Pacáistí"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_DOWNLOAD_DESC
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
 msgstr ""
+"Roghnaigh eolaire inar mian leat Socrú chun na comhaid suiteála a "
+"íoslódálann sé a stóráil. Cruthófar an eolaire mura bhfuil sé ann cheana "
+"féin."
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
 msgid ""
 "Select a directory where Setup should look for downloaded installation files."
-msgstr ""
+msgstr "Roghnaigh eolaire inar chóir Socrú comhaid suiteála íoslódáilte a lorg."
 
 #: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
 msgid "Local Package Directory"
-msgstr ""
+msgstr "Eolaire Pacáiste Áitiúil"
 
 #: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
 msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "B&rabhsáil..."
 
 #: DIALOG.IDD_ROOT.CAPTION
 msgid "Cygwin Setup - Choose Installation Directory"
-msgstr ""
+msgstr "Socrú Cygwin - Roghnaigh Eolaire Suiteála"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Root Install Directory"
-msgstr ""
+msgstr "Roghnaigh Root Install Directory"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ROOTDIR_SUBTEXT
 msgid ""
 "Select the directory where you want to install Cygwin.  Also choose a few "
 "installation parameters."
 msgstr ""
+"Roghnaigh an eolaire inar mian leat Cygwin a shuiteáil. Roghnaigh roinnt "
+"paraiméadair suiteála freisin."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
 msgid "Root Directory"
-msgstr ""
+msgstr "Eolaire fréimhe"
 
 #: DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE
 msgctxt "DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE"
 msgid "B&rowse..."
-msgstr ""
+msgstr "B&rabhsáil..."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_INSTALLFOR_GRP
 msgid "Install For"
-msgstr ""
+msgstr "Suiteáil Do"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_SYSTEM
 msgid "&All Users (RECOMMENDED)"
-msgstr ""
+msgstr "&Gach Úsáideoir (MOLTA)"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
 msgid "Just &Me"
-msgstr ""
+msgstr "Díreach &Mise"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
 msgid "Cygwin will be available to all users of the system."
-msgstr ""
+msgstr "Beidh Cygwin ar fáil do gach úsáideoir den chórais."
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_JUSTME_TEXT
 msgid ""
@@ -146,188 +165,196 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
+"Beidh Cygwin fós ar fáil do gach úsáideoir, ach níl deilbhíní deisce, "
+"Iontrálacha Roghchlár Cygwin, agus faisnéis thábhachtach Suiteálaí ar fáil "
+"ach don úsáideoir reatha. Roghnaigh é seo ach mura bhfuil pribhléidí "
+"Riarthóra agat nó má tá riachtanais shonracha agat."
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
-msgstr ""
+msgstr "Socrú Cygwin - Roghnaigh Suíomh Íoslódála"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Available Download Sites:"
-msgstr ""
+msgstr "Láithreáin Íoslódála Ar Fáil:"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Choose a site from this list, or add your own sites to the list."
 msgstr ""
+"Roghnaigh suíomh ón liosta seo, nó cuir do shuíomhanna féin leis an liosta."
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Site"
-msgstr ""
+msgstr "Roghnaigh Suíomh Íoslódála"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
 msgid "User URL:"
-msgstr ""
+msgstr "URL Úsáideora:"
 
 #: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
 msgid "Add"
-msgstr ""
+msgstr "Cuir"
 
 #: DIALOG.IDD_NET.CAPTION
 msgid "Cygwin Setup - Select Connection Type"
-msgstr ""
+msgstr "Socrú Cygwin - Roghnaigh Cineál Ceangail"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
 msgid "Use &System Proxy Settings"
-msgstr ""
+msgstr "Úsáid &Socruithe Seachfhreastalaí Córais"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_DIRECT
 msgid "&Direct Connection"
-msgstr ""
+msgstr "&Ceangal Díreach"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PROXY
 msgid "Use HTTP/FTP &Proxy:"
-msgstr ""
+msgstr "Úsáid HTTP/FTP & Proxy:"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Proxy &Host"
-msgstr ""
+msgstr "Seachfhreastalaí &Óstach"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Por&t"
-msgstr ""
+msgstr "Por&t"
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC
 msgid ""
 "Setup needs to know how you want it to connect to the internet.  Choose the "
 "appropriate settings below."
 msgstr ""
+"Ní mór go mbeadh a fhios ag socrú conas a theastaíonn uait go ndéanfadh sé "
+"nascadh leis Roghnaigh na socruithe cuí thíos."
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Your Internet Connection"
-msgstr ""
+msgstr "Roghnaigh Do Nasc Idirlín"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
 msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
 "DIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
-msgstr ""
+msgstr "Socrú Cygwin"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
 msgid "Installing..."
-msgstr ""
+msgstr "Suiteáil..."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_PKG
 msgid "(PKG)"
-msgstr ""
+msgstr "(PKG)"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_FILE
 msgid "(FILE)"
-msgstr ""
+msgstr "(COMHAD)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
-msgstr ""
+msgstr "Dul chun cinn1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS"
 msgid "Progress1"
-msgstr ""
+msgstr "Dul chun cinn1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS"
 msgid "Progress1"
-msgstr ""
+msgstr "Dul chun cinn1"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE"
 msgid "Package:"
-msgstr ""
+msgstr "Pacáiste:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_TOTAL
 msgid "Total:"
-msgstr ""
+msgstr "Iomlán:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_DISK
 msgid "Disk:"
-msgstr ""
+msgstr "Diosca:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC
 msgid "This page displays the progress of the download or installation."
 msgstr ""
+"Taispeánann an leathanach seo dul chun cinn an íoslódála nó an tsuiteála."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Progress"
-msgstr ""
+msgstr "Dul chun cinn"
 
 #: DIALOG.IDD_PROXY_AUTH.CAPTION
 msgid "Proxy Authentication required"
-msgstr ""
+msgstr "Teastaíonn Fíordheimhniú"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy &User ID"
-msgstr ""
+msgstr "Seachfhreastalaí &Aitheantas Úsáideora"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Focal Faire"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy Authorization Required"
-msgstr ""
+msgstr "Údarú Seachfhreastóra"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&Ceart go leor"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Cealaigh"
 
 #: DIALOG.IDD_NET_AUTH.CAPTION
 msgid "Server Authentication required"
-msgstr ""
+msgstr "Fíordheimhniú freastalaí"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&Aitheantas Úsáideora"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Focal Faire"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgid "Server Authorization Required"
-msgstr ""
+msgstr "Údarú Freastalaí Teast"
 
 #: DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&Ceart go leor"
 
 #: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Cealaigh"
 
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
 msgid "Cygwin Setup"
-msgstr ""
+msgstr "Socrú Cygwin"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
-msgstr ""
+msgstr "Clár Socraithe Scaoileadh Glan Cygwin"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TEXT
 msgid ""
@@ -341,160 +368,172 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
+"Úsáidtear an clár socraithe seo chun suiteáil tosaigh timpeallacht Cygwin "
+"chomh maith le gach nuashonrú ina dhiaidh sin. Treoróidh na leathanaigh a "
+"leanann tú tríd an suiteáil.\n"
+"\n"
+"Tabhair faoi deara le do thoil nach suiteáilimid ach bunsraith pacáistí de "
+"réir réamhshocraithe Soláthraíonn Cygwin líon mór pacáistí a chuimsíonn "
+"réimse leathan cuspóirí.\n"
+"\n"
+"Is féidir leat an clár seo a reáchtáil ag am ar bith sa todhchaí chun "
+"pacáistí a chur leis, a bhaint nó a uasghrádú de réir mar is gá."
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr ""
+msgstr "Cuir le haistriúcháin an chláir seo."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
-msgstr ""
+msgstr "Socrú Cygwin - Stádas Suiteála agus Cruthaigh Deilbhíní"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
 msgid "Create icon on &Desktop"
-msgstr ""
+msgstr "Cruthaigh deilbhín ar an &Deasc"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
 msgid "Add icon to &Start Menu"
-msgstr ""
+msgstr "Cuir deilbhín leis an &Roghchlár Tosaigh"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_INSTALL
 msgid ""
 "Tell setup if you want it to create a few icons for convenient access to the "
 "Cygwin environment."
 msgstr ""
+"Inis ar an socrú más mian leat go gcruthóidh sé cúpla deilbhín le haghaidh "
+"rochtain áisiúil ar thimpeallacht Cygwin."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_INSTALL
 msgid "Create Icons"
-msgstr ""
+msgstr "Cruthaigh deilbhíní"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
 msgid "Shows installation status in download-only mode."
-msgstr ""
+msgstr "Taispeánann stádas suiteála i mód íoslódála amháin."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
 msgid "Installation complete"
-msgstr ""
+msgstr "Suiteáil críochnaithe"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS_HEADER
 msgid "Installation Status"
-msgstr ""
+msgstr "Stádas Suiteála"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS
 msgid "Cygwin installation completed successfully."
-msgstr ""
+msgstr "Críochnaigh suiteáil Cygwin go rathúil."
 
 #: DIALOG.IDD_FTP_AUTH.CAPTION
 msgid "FTP Authentication required"
-msgstr ""
+msgstr "Fíordheimhniú FTP ag teastáil"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr ""
+msgstr "&Aitheantas Úsáideora"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr ""
+msgstr "&Focal Faire"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgid "FTP Authorization Required"
-msgstr ""
+msgstr "Údarú FTP Riachtanach"
 
 #: DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr ""
+msgstr "&Ceart go leor"
 
 #: DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr ""
+msgstr "Cealaigh"
 
 #: DIALOG.IDD_CHOOSE.CAPTION
 msgid "Cygwin Setup - Select Packages"
-msgstr ""
+msgstr "Socrú Cygwin - Roghnaigh Pacáistí"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
 msgid "&View"
-msgstr ""
+msgstr "&Féach"
 
 #: DIALOG.IDD_CHOOSE.RTEXT.IDC_STATIC
 msgid "&Search"
-msgstr ""
+msgstr "&Cuardaigh"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_DO_SEARCH
 msgid "Search "
-msgstr ""
+msgstr "Cuardaigh "
 
 #: DIALOG.IDD_CHOOSE.PUSHBUTTON.IDC_CHOOSE_CLEAR_SEARCH
 msgid "&Clear"
-msgstr ""
+msgstr "&Glan"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_KEEP
 msgid "&Keep"
-msgstr ""
+msgstr "&Coinnigh"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_BEST
 msgid "&Best"
-msgstr ""
+msgstr "&Is Fearr"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_SYNC
 msgid "&Sync"
-msgstr ""
+msgstr "&Sioncronaigh"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
 msgid "&Test"
-msgstr ""
+msgstr "&Tástáil"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
 msgid "&Hide obsolete packages"
-msgstr ""
+msgstr "&Folaigh pacáistí atá as feidhm"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
 msgid "Select packages to download."
-msgstr ""
+msgstr "Roghnaigh pacáistí le híoslódáil."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_INSTALL
 msgid "Select packages to install."
-msgstr ""
+msgstr "Roghnaigh pacáistí le suiteáil."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Packages"
-msgstr ""
+msgstr "Roghnaigh Pacáiste"
 
 #: DIALOG.IDD_PREREQ.CAPTION
 msgid "Cygwin Setup - Resolving Dependencies"
-msgstr ""
+msgstr "Socrú Cygwin - Spleithiúlachtaí a Réiteach"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Resolving Dependencies"
-msgstr ""
+msgstr "Sspleáchas a Réiteach"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC
 msgid "The following problems occured trying to satisfy dependencies."
-msgstr ""
+msgstr "Bhí na fadhbanna seo a leanas ag iarraidh spleáchais a shásamh."
 
 #: DIALOG.IDD_PREREQ.CONTROL.IDC_PREREQ_CHECK
 msgid "&Accept default problem solutions"
-msgstr ""
+msgstr "&Glac le réitigh réamhshocraithe fadhbanna"
 
 #: DIALOG.IDD_CONFIRM.CAPTION
 msgid "Cygwin Setup - Review and confirm changes"
-msgstr ""
+msgstr "Socrú Cygwin - Athruithe a athbhreithniú agus a deimhniú"
 
 #: DIALOG.IDD_CONFIRM.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Review and confirm changes"
-msgstr ""
+msgstr "Athruithe a athbhreithniú agus"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
-msgstr ""
+msgstr "Socrú Cygwin - Úsáid scátháin titim?"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
-msgstr ""
+msgstr "Rabhadh:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -503,6 +542,10 @@ msgid ""
 "\n"
 "This affects the following mirror(s):"
 msgstr ""
+"Níl scátháin amháin nó níos mó roghnaithe agat ar liosta na scátháin "
+"oifigiúla Cygwin a thuilleadh. Féadfaidh sé a bheith as dáta nó roinnt "
+"pacáistí in easnamh.\n"
+"Bíonn tionchar aige seo ar na scátháin seo a leanas:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -511,26 +554,30 @@ msgid ""
 "\n"
 "Do you want to continue, using this/these mirror(s)?"
 msgstr ""
+"Má bhíonn fadhbanna suiteála agat smaoinigh scátháin oifigiúla a thriail\n"
+"\n"
+"Ar mhaith leat leanúint ar aghaidh, ag baint úsáide as an scáthán/na "
+"scátháin seo?"
 
 #: DIALOG.IDD_DROPPED.CONTROL.IDC_DROP_NOWARN
 msgid "&Don't warn me about this/these mirror(s) again"
-msgstr ""
+msgstr "&Ná tabhair rabhadh dom faoi seo/na scáthán(í) seo arís"
 
 #: DIALOG.IDD_DROPPED.PUSHBUTTON.IDYES
 msgid "&Yes"
-msgstr ""
+msgstr "&Tá"
 
 #: DIALOG.IDD_DROPPED.DEFPUSHBUTTON.IDNO
 msgid "&No"
-msgstr ""
+msgstr "&Níl"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.CAPTION
 msgid "Download Incomplete"
-msgstr ""
+msgstr "Íoslódáil Neamhchom"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid "The following package(s) had download errors:"
-msgstr ""
+msgstr "Bhí earráidí íoslódála ag na pacáistí seo a leanas:"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid ""
@@ -538,64 +585,78 @@ msgid ""
 "selection page, 'Continue' to go on anyway (NOT RECOMMENDED), or 'Cancel' to "
 "exit."
 msgstr ""
+"Roghnaigh 'Athbhreithnigh' chun an íoslódáil a athbhreithniú, 'Ar ais' chun "
+"filleadh ar leathanach roghnúcháin an phacáiste, 'Lean ar aghaidh' chun dul "
+"ar aghaidh ar aon nós (NÍ MHOLTAR), nó 'Cealaigh' chun imeacht."
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
 msgid "&Retry"
-msgstr ""
+msgstr "&Atriail"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
 msgid "&Back"
-msgstr ""
+msgstr "&Ar ais"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE"
 msgid "&Continue"
-msgstr ""
+msgstr "&Lean ar aghaidh"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT"
 msgid "Cancel"
-msgstr ""
+msgstr "Cealaigh"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
-msgstr ""
+msgstr "Socrú Cygwin - Scripteanna iar-shuiteála á reáchtáil"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Postinstall script errors"
-msgstr ""
+msgstr "Earráidí script Postinstall"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC
 msgid ""
 "These do not necessarily mean that affected packages will fail to function "
 "properly, but please check /var/log/setup.log.full and report any problems."
 msgstr ""
+"Ní gá go gciallaíonn siad seo go dteipfidh ar phacáistí atá buailte feidhmiú "
+"i gceart, ach seiceáil /var/log/setup.log.full le do thoil agus tuairiscigh "
+"aon fhadhbanna."
 
 #: DIALOG.IDD_FILE_INUSE.CAPTION
 msgid "In-use file detected"
-msgstr ""
+msgstr "Braithíodh comhad in-úsáide"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG
 msgctxt "DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr ""
+msgstr "Ní féidir a bhaint"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_STATIC
 msgid "The file is in use by the following processes:"
-msgstr ""
+msgstr "Tá an comhad in úsáid ag na próisis seo a leanas:"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_0
 msgid ""
 "Select 'Retry' to retry, select 'Stop' to stop processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
+"Roghnaigh 'Athbhreithnigh' chun iarracht a dhéanamh arís, roghnaigh 'Stop' "
+"chun próisis a stopadh agus iarracht a dhéanamh arís, nó roghnaigh 'Lean' "
+"chun dul ar aghaidh ar aon nós (déanfar an comhad a nuashonrú tar éis "
+"atosaigh)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_1
 msgid ""
 "Select 'Retry' to retry, select 'Kill' to kill processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
+"Roghnaigh 'Athbhreithnigh' chun iarracht a dhéanamh arís, roghnaigh "
+"'Maraigh' chun próisis a mharú agus iarracht a dhéanamh arís, nó roghnaigh "
+"'Lean' chun dul ar aghaidh ar aon nós (déanfar an comhad a nuashonrú tar éis "
+"atosaigh)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_2
 msgid ""
@@ -603,20 +664,24 @@ msgid ""
 "retry, or select 'Continue' to go on anyway (the file will be updated after "
 "a reboot)."
 msgstr ""
+"Roghnaigh 'Atriail' chun triail eile a bhaint as, roghnaigh 'Kill' chun na "
+"próisis go léir a mharú go héigeantach agus triail eile a bhaint as, nó "
+"roghnaigh 'Lean ar aghaidh' chun dul ar aghaidh ar aon nós (déanfar an "
+"comhad a nuashonrú tar éis atosaigh)."
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE"
 msgid "&Retry"
-msgstr ""
+msgstr "&Atriail"
 
 #: DIALOG.IDD_FILE_INUSE.DEFPUSHBUTTON.IDRETRY
 msgid "&Stop Processes"
-msgstr ""
+msgstr "&Stad Próisis"
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE"
 msgid "&Continue"
-msgstr ""
+msgstr "&Lean ar aghaidh"
 
 #: STRINGTABLE.IDS_ROOT_SLASH
 msgid ""
@@ -624,102 +689,120 @@ msgid ""
 "cygwin root, to prevent possible conflicts with other programs.  Proceed "
 "anyway?"
 msgstr ""
+"Rabhadh: molaimid duit gan fréamh do thiomáint crua a úsáid mar fhréamh "
+"cygwin, chun coimhlintí féideartha le cláir eile a chosc. Ar aghaidh ar aon "
+"nós?"
 
 #: STRINGTABLE.IDS_ROOT_SPACE
 msgid ""
 "You should not choose a root path that include spaces in directory names.  "
 "Proceed anyway?"
 msgstr ""
+"Níor chóir duit cosán fréimhe a roghnú a chuimsíonn spásanna in ainmneacha "
+"eolaire. Ar aghaidh ar aon nós?"
 
 #: STRINGTABLE.IDS_ERR_OPEN_WRITE
 msgid "Can't open %s for writing: %s"
-msgstr ""
+msgstr "Ní féidir %s a oscailt le haghaidh scríbhneoireachta: %s"
 
 #: STRINGTABLE.IDS_SETUPINI_MISSING
 msgid "Unable to get %s from <%s>"
-msgstr ""
+msgstr "Ní féidir %s a fháil ó <%s>"
 
 #: STRINGTABLE.IDS_OLD_SETUPINI
 msgid ""
 "This setup.ini is older than the one you used last time you installed "
 "cygwin.  Proceed anyway?"
 msgstr ""
+"Tá an setup.ini seo níos sine ná an ceann a d'úsáid tú an uair dheireanach a "
+"shuiteáil tú cygwin. Ar aghaidh ar aon nós?"
 
 #: STRINGTABLE.IDS_NOTHING_INSTALLED
 msgid "Nothing needed to be installed"
-msgstr ""
+msgstr "Ní gá aon rud a shuiteáil"
 
 #: STRINGTABLE.IDS_INSTALL_COMPLETE
 msgid "Installation Complete"
-msgstr ""
+msgstr "Suiteáil Críochnaithe"
 
 #: STRINGTABLE.IDS_REBOOT_REQUIRED
 msgid ""
 "In-use files have been replaced. You need to reboot as soon as possible to "
 "activate the new versions. Cygwin may operate incorrectly until you reboot."
 msgstr ""
+"Cuireadh comhaid in úsáid in ionad. Ní mór duit a atosú chomh luath agus is "
+"féidir chun na leaganacha nua a ghníomhachtú. Féadfaidh Cygwin oibriú go "
+"mícheart go dtí go dtosaíonn tú."
 
 #: STRINGTABLE.IDS_ERR_OPEN_READ
 msgid "Can't open %s for reading: %s"
-msgstr ""
+msgstr "Ní féidir %s a oscailt le haghaidh léitheoireachta: %s"
 
 #: STRINGTABLE.IDS_ROOT_ABSOLUTE
 msgid ""
 "The install directory must be absolute, with both a drive letter and leading "
 "slash, like C:\\Cygwin"
 msgstr ""
+"Caithfidh an t-eolaire suiteála a bheith iomlán, le litir tiomána agus slasc "
+"tosaigh araon, cosúil le C:\\Cygwin"
 
 #: STRINGTABLE.IDS_DOWNLOAD_COMPLETE
 msgid "Download Complete"
-msgstr ""
+msgstr "Íoslódáil Complete"
 
 #: STRINGTABLE.IDS_NOLOGFILE
 msgid "Cannot open log file %s for writing"
-msgstr ""
+msgstr "Ní féidir comhad log %s a oscailt le haghaidh scríobh"
 
 #: STRINGTABLE.IDS_UNINSTALL_COMPLETE
 msgid "Uninstalls complete."
-msgstr ""
+msgstr "Díshuiteálacha críochnaithe."
 
 #: STRINGTABLE.IDS_ERR_CHDIR
 msgid "Could not change dir to %s: %s [%.8x]"
-msgstr ""
+msgstr "Ní féidir dir a athrú go %s: %s [%.8x]"
 
 #: STRINGTABLE.IDS_OLD_SETUP_VERSION
 msgid ""
 "This setup is version %s, but setup.ini claims version %s is available.\n"
 "You might want to upgrade to get the latest features and bug fixes."
 msgstr ""
+"Leagan %s atá sa socrú seo, ach tá leagan %s á éileamh ag setup.ini.\n"
+"B'fhéidir gur mhaith leat uasghrádú a dhéanamh chun na gnéithe is déanaí "
+"agus na ceartúcháin ar fhabht a fháil."
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE
 msgid "Download Incomplete.  Try again?"
-msgstr ""
+msgstr "Íoslódáil Iomlán. Bain triail as arís?"
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE_EXIT
 msgid "Download incomplete.  Check %s for details"
-msgstr ""
+msgstr "Íoslódáil neamhiomlán. Seiceáil %s le haghaidh sonraí"
 
 #: STRINGTABLE.IDS_INSTALL_ERROR
 msgid "Installation error (%s), Continue with other packages?"
-msgstr ""
+msgstr "Earráid suiteála (%s), Leanúint ar aghaidh le pacáistí eile?"
 
 #: STRINGTABLE.IDS_INSTALL_INCOMPLETE
 msgid "Installation incomplete.  Check %s for details"
-msgstr ""
+msgstr "Suiteáil neamhiomlán. Seiceáil %s le haghaidh sonraí"
 
 #: STRINGTABLE.IDS_CORRUPT_PACKAGE
 msgid "Package %s has a corrupt local copy, please remove and retry."
 msgstr ""
+"Tá cóip áitiúil truaillithe ag pacáiste %s, bain agus déan iarracht arís."
 
 #: STRINGTABLE.IDS_QUERY_CORRUPT
 msgid "The file %s is corrupt.  Delete it and download again?"
-msgstr ""
+msgstr "Tá an comhad %s truaillithe. Scrios é agus íoslódáil arís?"
 
 #: STRINGTABLE.IDS_SKIP_PACKAGE
 msgid ""
 "%s\n"
 "Do you want to skip this package ?"
 msgstr ""
+"%s\n"
+"Ar mhaith leat an pacáiste seo a scipeáil?"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION
 msgid ""
@@ -728,6 +811,10 @@ msgid ""
 "Type: %s\n"
 "Message: %s"
 msgstr ""
+"Earráid Marfach: Eisceacht gan ghabháil\n"
+"Snáithe: %s\n"
+"Cineál: %s\n"
+"Teachtaireacht: %s"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
 msgid ""
@@ -737,26 +824,35 @@ msgid ""
 "Message: %s\n"
 "AppErrNo: %d"
 msgstr ""
+"Earráid Marfach: Eisceacht gan ghabháil\n"
+"Snáithe: %s\n"
+"Cineál: %s\n"
+"Teachtaireacht: %s\n"
+"Aibreán: %d"
 
 #: STRINGTABLE.IDS_TRUSTKEEP_TOOLTIP
 msgid ""
 "Sets all packages to their currently installed version.  This is equivalent "
 "to telling setup not to make any changes to any package."
 msgstr ""
+"Socraíonn gach pacáiste ar a leagan atá suiteáilte faoi láthair. Tá sé seo "
+"comhionann le rá ar an socrú gan aon athruithe a dhéanamh ar aon phacáiste."
 
 #: STRINGTABLE.IDS_TRUSTCURR_TOOLTIP
 msgid "Sets all packages to the best version available (RECOMMENDED)."
-msgstr ""
+msgstr "Socraíonn gach pacáiste go dtí an leagan is fearr atá ar fáil (MOLTA)."
 
 #: STRINGTABLE.IDS_TRUSTSYNC_TOOLTIP
 msgid ""
 "Sets all packages to the version available from the package repository, "
 "downgrading if necessary."
 msgstr ""
+"Socraíonn gach pacáiste go dtí an leagan atá ar fáil ó stór an phacáiste, ag "
+"íosghrádú más gá."
 
 #: STRINGTABLE.IDS_TRUSTEXP_TOOLTIP
 msgid "Enable test packages."
-msgstr ""
+msgstr "Cumasaigh pacáistí tástála."
 
 #: STRINGTABLE.IDS_VIEWBUTTON_TOOLTIP
 msgid ""
@@ -785,6 +881,33 @@ msgid ""
 "removed.  Other installed or selected packages no longer depend on these "
 "packages."
 msgstr ""
+"Roghnaigh an radharc pacáiste. Cinneann sé seo cé na pacáistí a thaispeántar "
+"thíos.\n"
+"\n"
+"Catagóir:Grúpáil de réir catagóire pacáiste. Cliceáil ar '+' le leathnú.\n"
+"\n"
+"Iomlán: Taispeáin gach pacáiste.\n"
+"\n"
+"Ar feitheamh: Ná taispeáin ach na pacáistí atá ar tí a shuiteáil, a bhaint "
+"nó a uasghrádú. Insíonn sé seo duit cad a athróidh nuair a bhrúnn tú 'Ar "
+"Aghaidh'.\n"
+"\n"
+"Suas chun dáta: Taispeáin pacáistí suiteáilte nach bhfuil aon ghníomhaíocht "
+"ag teastáil uathu toisc go bhfuil siad ag an leagan atá uait cheana féin.\n"
+"\n"
+"Gan a bheith suiteáilte: Taispeáin pacáistí nach bhfuil suiteáilte faoi "
+"láthair agus nach bhfuil roghnaithe le haghaidh suiteáil.\n"
+"\n"
+"Roghnaithe: Taispeáin pacáistí suiteáilte a roghnaíodh, nach bhfuil "
+"suiteáilte mar spleáchas.\n"
+"\n"
+"Inbhainte: Taispeáin na pacáistí suiteáilte a roghnaíodh agus a d'fhéadfaí a "
+"bhaint go sábháilte. Níl aon phacáiste suiteáilte nó roghnaithe eile ag "
+"brath ar na pacáistí seo.\n"
+"\n"
+"Gan ghá: Taispeáin pacáistí suiteáilte go huathoibríoch a d'fhéadfaí a "
+"bhaint go sábháilte anois. Níl pacáistí suiteáilte nó roghnaithe eile ag "
+"brath ar na pacáistí seo a thuilleadh."
 
 #: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
 msgid ""
@@ -793,28 +916,36 @@ msgid ""
 "have been removed or renamed, or are infrastructure packages that are "
 "handled automatically."
 msgstr ""
+"Má roghnaítear é, cuirfidh an socrú pacáistí i bhfolach i gcatagóirí a "
+"bhfuil ainmneacha orthu a thosaíonn le '_'. Is áitshealbhóirí folamha iad "
+"pacáistí den sórt sin de ghnáth do phacáistí a baineadh nó a athainmníodh, "
+"nó is pacáistí bonneagair iad a láimhseáiltear go huathoibríoch."
 
 #: STRINGTABLE.IDS_SIG_INVALID
 msgid ""
 "Mirror Error:  Setup.ini signature %s from %s failed to verify.\n"
 "Possible corrupt mirror?  Setup.ini rejected."
 msgstr ""
+"Earráid Scáthán: Theip ar shíniú Setup.ini %s ó %s a fhíorú.\n"
+"Scáthán truaillte féideartha Diúltaíodh Setup.ini."
 
 #: STRINGTABLE.IDS_CRYPTO_ERROR
 msgid "Internal Error:  gcrypt library error %d %s"
-msgstr ""
+msgstr "Earráid Inmheánach: earráid leabharlann gcrypt %d %s"
 
 #: STRINGTABLE.IDS_SEARCH_TOOLTIP
 msgid "Search for this string in package names."
-msgstr ""
+msgstr "Cuardaigh an sreang seo in ainmneacha pacáiste."
 
 #: STRINGTABLE.IDS_MAYBE_MKDIR
 msgid "Directory %s does not exist, would you like me to create it?"
-msgstr ""
+msgstr "Níl eolaire %s ann, ar mhaith leat é a chruthú?"
 
 #: STRINGTABLE.IDS_CANT_MKDIR
 msgid "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
 msgstr ""
+"Níorbh fhéidir eolaire %s a chruthú, tá brón orm. (An bhfuil an tiomáint "
+"iomlán nó léite amháin?)"
 
 #: STRINGTABLE.IDS_NO_LOCALDIR
 msgid ""
@@ -825,175 +956,181 @@ msgid ""
 "Press OK if that's what you wanted\n"
 "or Cancel to choose a different directory."
 msgstr ""
+"Níor aimsíodh eolaire pacáiste áitiúil %s.\n"
+"Is féidir leat suiteáilte a bhaint fós\n"
+"pacáistí, ach ní bheidh aon rud le suiteáil.\n"
+"\n"
+"Brúigh OK más é sin an rud a theastaigh uait\n"
+"nó Cealaigh chun eolaire difriúil a roghnú."
 
 #: STRINGTABLE.IDS_ELEVATED
 msgid "Hand installation over to elevated child process."
-msgstr ""
+msgstr "Suiteáil láimhe ar an bpróiseas ardaithe leanaí."
 
 #: STRINGTABLE.IDS_INSTALLEDB_VERSION
 msgid "Unknown INSTALLED.DB version"
-msgstr ""
+msgstr "Leagan INSTALLED.DB anaithnid"
 
 #: STRINGTABLE.IDS_NO_MIRROR_LST
 msgid "Could not download mirror sites list"
-msgstr ""
+msgstr "Ní féidir liosta suíomhanna scátháin a íoslódáil"
 
 #: STRINGTABLE.IDS_PROGRESS_PROGRESS
 msgid "Progress:"
-msgstr ""
+msgstr "Dul chun cinn:"
 
 #: STRINGTABLE.IDS_PROGRESS_PACKAGE
 msgctxt "STRINGTABLE.IDS_PROGRESS_PACKAGE"
 msgid "Package:"
-msgstr ""
+msgstr "Pacáiste:"
 
 #: STRINGTABLE.IDS_PROGRESS_CONNECTING
 msgid "Connecting..."
-msgstr ""
+msgstr "Ag nascadh..."
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING
 msgid "Checking for packages to download..."
-msgstr ""
+msgstr "Seiceáil ar phacáistí le híoslódáil..."
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING
 msgid "Downloading..."
-msgstr ""
+msgstr "Íoslódáil..."
 
 #: STRINGTABLE.IDS_PROGRESS_PARSING
 msgid "Parsing..."
-msgstr ""
+msgstr "Parsáil..."
 
 #: STRINGTABLE.IDS_PROGRESS_PREREMOVE
 msgid "Running preremove script..."
-msgstr ""
+msgstr "Script réamh-bhaint á rith..."
 
 #: STRINGTABLE.IDS_PROGRESS_UNINSTALL
 msgid "Uninstalling..."
-msgstr ""
+msgstr "Díshuiteáil..."
 
 #: STRINGTABLE.IDS_PROGRESS_INSTALL
 msgctxt "STRINGTABLE.IDS_PROGRESS_INSTALL"
 msgid "Installing..."
-msgstr ""
+msgstr "Suiteáil..."
 
 #: STRINGTABLE.IDS_PROGRESS_CALCULATING
 msgid "Calculating..."
-msgstr ""
+msgstr "Ag ríomh..."
 
 #: STRINGTABLE.IDS_PROGRESS_POSTINSTALL
 msgid "Running..."
-msgstr ""
+msgstr "Ag rith..."
 
 #: STRINGTABLE.IDS_PROGRESS_SOLVING
 msgid "Solving dependencies..."
-msgstr ""
+msgstr "Spleithiúlachtaí a réiteach..."
 
 #: STRINGTABLE.IDS_ACTION_DEFAULT
 msgid "Default"
-msgstr ""
+msgstr "Réamhshocraithe"
 
 #: STRINGTABLE.IDS_ACTION_INSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_INSTALL"
 msgid "Install"
-msgstr ""
+msgstr "Suiteáil"
 
 #: STRINGTABLE.IDS_ACTION_UNINSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_UNINSTALL"
 msgid "Uninstall"
-msgstr ""
+msgstr "Díshuiteáil"
 
 #: STRINGTABLE.IDS_ACTION_SKIP
 msgid "Skip"
-msgstr ""
+msgstr "Scipeáil"
 
 #: STRINGTABLE.IDS_ACTION_KEEP
 msgid "Keep"
-msgstr ""
+msgstr "Coinnigh"
 
 #: STRINGTABLE.IDS_ACTION_REINSTALL
 msgid "Reinstall"
-msgstr ""
+msgstr "Athshuiteáil"
 
 #: STRINGTABLE.IDS_ACTION_RETRIEVE
 msgid "Retrieve"
-msgstr ""
+msgstr "Aisghabháil"
 
 #: STRINGTABLE.IDS_ACTION_UNKNOWN
 msgid "Unknown"
-msgstr ""
+msgstr "Anaithnid"
 
 #: STRINGTABLE.IDS_ACTION_SOURCE
 msgid "Source"
-msgstr ""
+msgstr "Foinse"
 
 #: STRINGTABLE.IDS_VIEW_FULL
 msgid "Full"
-msgstr ""
+msgstr "Iomlán"
 
 #: STRINGTABLE.IDS_VIEW_PENDING
 msgid "Pending"
-msgstr ""
+msgstr "Ar feitheamh"
 
 #: STRINGTABLE.IDS_VIEW_UPTODATE
 msgid "Up To Date"
-msgstr ""
+msgstr "Suas chun dáta"
 
 #: STRINGTABLE.IDS_VIEW_NOTINSTALLED
 msgid "Not Installed"
-msgstr ""
+msgstr "Níl Suiteáilte"
 
 #: STRINGTABLE.IDS_VIEW_PICKED
 msgid "Picked"
-msgstr ""
+msgstr "Roghnaithe"
 
 #: STRINGTABLE.IDS_VIEW_REMOVABLE
 msgid "Removable"
-msgstr ""
+msgstr "Inbhainte"
 
 #: STRINGTABLE.IDS_VIEW_UNNEEDED
 msgid "Unneeded"
-msgstr ""
+msgstr "Gan ghá"
 
 #: STRINGTABLE.IDS_VIEW_CATEGORY
 msgid "Category"
-msgstr ""
+msgstr "Catagóir"
 
 #: STRINGTABLE.IDS_COLUMN_PACKAGE
 msgid "Package"
-msgstr ""
+msgstr "Pacáiste"
 
 #: STRINGTABLE.IDS_COLUMN_CURRENT
 msgid "Current"
-msgstr ""
+msgstr "Reatha"
 
 #: STRINGTABLE.IDS_COLUMN_NEW
 msgid "New"
-msgstr ""
+msgstr "Nua"
 
 #: STRINGTABLE.IDS_COLUMN_SOURCE
 msgid "Src?"
-msgstr ""
+msgstr "Src?"
 
 #: STRINGTABLE.IDS_COLUMN_CATEGORIES
 msgid "Categories"
-msgstr ""
+msgstr "Catagóirí"
 
 #: STRINGTABLE.IDS_COLUMN_SIZE
 msgid "Size"
-msgstr ""
+msgstr "Méid"
 
 #: STRINGTABLE.IDS_COLUMN_DESCR
 msgid "Description"
-msgstr ""
+msgstr "Cur síos"
 
 #: STRINGTABLE.IDS_MBOX_CAPTION
 msgctxt "STRINGTABLE.IDS_MBOX_CAPTION"
 msgid "Cygwin Setup"
-msgstr ""
+msgstr "Socrú Cygwin"
 
 #: STRINGTABLE.IDS_EXTRACTION_FAILED
 msgid "Unable to extract /%s -- corrupt package?"
-msgstr ""
+msgstr "Ní féidir le /%s -- pacáiste truaillithe a bhaint?"
 
 #: STRINGTABLE.IDS_EXTRACTION_INUSE
 msgid ""
@@ -1004,6 +1141,13 @@ msgid ""
 "Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
 "\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
+"Ní féidir /%s a bhaint - comhad scríbhneoireachta earráide\n"
+"\n"
+"Tá an comhad in úsáid nó tharla earráid éigin eile.\n"
+"\n"
+"Stop gach próiseas Cygwin le do thoil agus roghnaigh “\" Athbhreithnigh \"”, "
+"nó roghnaigh “\" Lean ar aghaidh \"” chun dul ar aghaidh ar aon nós (déanfar "
+"an comhad a nuashonrú tar éis atosaigh).\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
 msgid ""
@@ -1011,6 +1155,9 @@ msgid ""
 "%s\n"
 "Delete?"
 msgstr ""
+"Fuarthas seanleagan de cygwin1.dll anseo:\n"
+"%s\n"
+"Scrios?"
 
 #: STRINGTABLE.IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
 msgid ""
@@ -1019,6 +1166,10 @@ msgid ""
 "You should delete the old version of cygwin1.dll at your earliest "
 "convenience."
 msgstr ""
+"Níorbh fhéidir comhad %s a scriosadh.\n"
+"An bhfuil an DLL in úsáid ag feidhmchlár eile?\n"
+"Ba chóir duit an seanleagan de cygwin1.dll a scriosadh ag áisiúlacht is "
+"luaithe duit."
 
 #: STRINGTABLE.IDS_SHELLLINK_FAILED
 msgid ""
@@ -1026,28 +1177,33 @@ msgid ""
 "Setup will not be able to create Cygwin Icons in the Start Menu or on the "
 "Desktop."
 msgstr ""
+"Theip ar CoCreateInstance le earráid 0x%x.\n"
+"Ní bheidh an socrú in ann deilbhíní Cygwin a chruthú sa Roghchlár Tosaigh nó "
+"ar an Deisce."
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_VERSION
 msgid "Cygwin is not supported on this Windows version"
-msgstr ""
+msgstr "Ní thacaítear le Cygwin ar an leagan Windows seo"
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
 msgid "Cygwin is not supported on 32-bit Windows"
-msgstr ""
+msgstr "Ní thacaítear le Cygwin ar Windows 32-giotán"
 
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
 "Cygwin support for this Windows version is deprecated, and will be removed "
 "in the next major version"
 msgstr ""
+"Tá tacaíocht Cygwin don leagan Windows seo míchuige, agus bainfear í sa "
+"chéad mhórleagan eile"
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
 msgid "Couldn't create registry key to store installation path"
-msgstr ""
+msgstr "Ní raibh in ann eochair chlárlann a chruthú chun cosán suite"
 
 #: STRINGTABLE.IDS_NIO_ERROR
 msgid "Internet Error: %s"
-msgstr ""
+msgstr "Earráid Idirlín: %s"
 
 #: STRINGTABLE.IDS_PREREQ_UNSOLVED_PROBLEMS
 msgid ""
@@ -1057,6 +1213,11 @@ msgid ""
 "\n"
 "Are you sure you want to proceed (NOT RECOMMENDED)?"
 msgstr ""
+"RABHADH - Fadhbanna gan réiteach\n"
+"\n"
+"B'fhéidir nach n-oibreoidh roinnt pacáistí i gceart má leanann tú\n"
+"\n"
+"An bhfuil tú cinnte gur mhaith leat dul ar aghaidh (NÍ MHOLTAR)?"
 
 #: STRINGTABLE.IDS_MIXED_BITNESS_ERROR
 msgid ""
@@ -1069,293 +1230,314 @@ msgid ""
 "Either run setup-%s.exe to update your existing %s bit installation of "
 "Cygwin, or choose another directory for your %s bit installation."
 msgstr ""
+"Neamhoiriúnú sprioc LAP\n"
+"\n"
+"Tá tú ag iarraidh leagan giotán %s de Cygwin a shuiteáil isteach i eolaire "
+"ina bhfuil leagan giotán %s de Cygwin. Leanfaidh leanúint ar aghaidh ag "
+"déanamh amhlaidh, bhriseadh an t\n"
+"\n"
+"Rith setup-%s.exe chun do shuiteáil giotán %s atá ann cheana de Cygwin a "
+"nuashonrú, nó roghnaigh eolaire eile le haghaidh do shuiteáil giotán %s."
 
 #: STRINGTABLE.IDS_GET_SITELIST_ERROR
 msgid ""
 "Can't get list of download sites.\n"
 "Make sure your network settings are correct and try again."
 msgstr ""
+"Ní féidir liosta de na suíomhanna íoslódála a fháil.\n"
+"Déan cinnte go bhfuil do shocruithe líonra ceart agus déan iarracht arís."
 
 #: STRINGTABLE.IDS_CONFIRM_EXIT
 msgid ""
 "Are you sure you want to exit setup? Any current download or installation "
 "will be aborted."
 msgstr ""
+"An bhfuil tú cinnte gur mhaith leat an socrú a fhágáil? Cuirfear deireadh le "
+"haon íoslódáil nó suiteáil reatha."
 
 #: STRINGTABLE.IDS_CONTINUE
 msgid "Continue"
-msgstr ""
+msgstr "Lean ar aghaidh"
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_NO_PACKAGES
 msgid "No packages found."
-msgstr ""
+msgstr "Níl aon phacáistí le fáil."
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_DOWNLOAD
 msgid "Nothing to download."
-msgstr ""
+msgstr "Níl aon rud le híoslódáil."
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_INSTALL
 msgid "Nothing to install or update."
-msgstr ""
+msgstr "Níl aon rud le suiteáil nó nuashonrú."
 
 #: STRINGTABLE.IDS_ROOT_BROWSE_TITLE
 msgid "Select an installation root directory"
-msgstr ""
+msgstr "Roghnaigh eolaire fréimhe suiteála"
 
 #: STRINGTABLE.IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE
 msgid "Select download directory"
-msgstr ""
+msgstr "Roghnaigh eolaire íos"
 
 #: STRINGTABLE.IDS_LOCALDIR_BROWSE_PACKAGE_TITLE
 msgid "Select local package directory"
-msgstr ""
+msgstr "Roghnaigh eolaire pacáistí"
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING_HASH
 msgid "Checking %s for %s"
-msgstr ""
+msgstr "Seiceáil %s le haghaidh %s"
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING_FROM
 msgid "%s from %s"
-msgstr ""
+msgstr "%s ó %s"
 
 #: STRINGTABLE.IDS_CONFIRM_UNINSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_UNINSTALL"
 msgid "Uninstall"
-msgstr ""
+msgstr "Díshuiteáil"
 
 #: STRINGTABLE.IDS_CONFIRM_INSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_INSTALL"
 msgid "Install"
-msgstr ""
+msgstr "Suiteáil"
 
 #: STRINGTABLE.IDS_CONFIRM_DOWNLOAD
 msgid "Download"
-msgstr ""
+msgstr "Íoslódáil"
 
 #: STRINGTABLE.IDS_CONFIRM_NOTHING
 msgid "No changes"
-msgstr ""
+msgstr "Gan aon athruithe"
 
 #: STRINGTABLE.IDS_CONFIRM_AUTO_ADD
 msgid "(automatically added)"
-msgstr ""
+msgstr "(curtha leis go huathoibríoch"
 
 #: STRINGTABLE.IDS_CONFIRM_SOURCE
 msgid "(source)"
-msgstr ""
+msgstr "(foinse)"
 
 #: STRINGTABLE.IDS_FILE_INUSE_KILL
 msgid "&Kill Processes"
-msgstr ""
+msgstr "&Próisis Mharaithe"
 
 #: STRINGTABLE.IDS_FILE_INUSE_MSG
 msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr ""
+msgstr "Ní féidir a bhaint"
 
 #: STRINGTABLE.IDS_USER_URL_TOOLTIP
 msgid "Additional site URL, path or UNC path"
-msgstr ""
+msgstr "URL breise láithreáin, cosán nó cosán UNC"
 
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
-msgstr ""
+msgstr "Earráid le linn próiseála rogha."
 
 #: STRINGTABLE.IDS_HELPTEXT_HEADER
 msgid "Command Line Options:"
-msgstr ""
+msgstr "Roghanna Líne Orduithe:"
 
 #: STRINGTABLE.IDS_HELPTEXT_FOOTER
 msgid ""
 "The default is to both download and install packages, unless either --"
 "download or --local-install is specified."
 msgstr ""
+"Is é an réamhshocrú pacáistí a íoslódáil agus a shuiteáil araon, mura "
+"sonraítear --download nó --local-install."
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_TEST
 msgid "Consider package versions marked test"
-msgstr ""
+msgstr "Smaoinigh ar leaganacha pacáiste a bhfuil"
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
 msgid "Allow old, unsupported Windows versions"
-msgstr ""
+msgstr "Ceadaigh seanleaganacha Windows gan tacaíocht"
 
 #: STRINGTABLE.IDS_HELPTEXT_ARCH
 msgid "Architecture to install (x86_64 or x86)"
-msgstr ""
+msgstr "Ailtireacht le suiteáil (x86_64 nó x86)"
 
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
 msgid "Specify categories to install"
-msgstr ""
+msgstr "Sonraigh catagóirí le suiteáil"
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""
 "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
 msgstr ""
+"Comhbhrúigh comhaid suiteáilte le Compact OS (xpress4k, xpress8k, xpress16k, "
+"lzx)"
 
 #: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
 msgid "Remove orphaned packages"
-msgstr ""
+msgstr "Bain pacáistí dílleachta"
 
 #: STRINGTABLE.IDS_HELPTEXT_DISABLE_ANTIVIRUS
 msgid ""
 "Disable known or suspected buggy anti virus software packages during "
 "execution"
 msgstr ""
+"Díchumasaigh pacáistí bogearraí frith-víreas aitheanta nó a bhfuil amhras "
+"orthu le linn"
 
 #: STRINGTABLE.IDS_HELPTEXT_DOWNLOAD
 msgid "Download packages from internet"
-msgstr ""
+msgstr "Íoslódáil pacáistí ón idir"
 
 #: STRINGTABLE.IDS_HELPTEXT_FORCE_CURRENT
 msgid "Select the current version for all packages"
-msgstr ""
+msgstr "Roghnaigh an leagan reatha do gach pacáiste"
 
 #: STRINGTABLE.IDS_HELPTEXT_HELP
 msgid "Print help"
-msgstr ""
+msgstr "Cabhair a phriontáil"
 
 #: STRINGTABLE.IDS_HELPTEXT_INCLUDE_SOURCE
 msgid "Automatically install source for every package installed"
-msgstr ""
+msgstr "Suiteáil foinse go huathoibríoch do gach pacá"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
 msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
-msgstr ""
+msgstr "Úsáid bunainm difriúil, m.sh. “\" foo \"”, in ionad “\" setup \"”"
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"
-msgstr ""
+msgstr "Úsáid eochracha neamhiontaofa agus coinnigh gach"
 
 #: STRINGTABLE.IDS_HELPTEXT_LANG
 msgid "Specify GUI language langid"
-msgstr ""
+msgstr "Sonraigh langid teanga GUI"
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_INSTALL
 msgid "Install packages from local directory"
-msgstr ""
+msgstr "Suiteáilte pacáistí ó eolaire"
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_PACKAGE_DIR
 msgid "Local package directory"
-msgstr ""
+msgstr "Eolaire pacáiste áitiúil"
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
 "Skip package availability check when installing from local directory ("
 "requires local directory to be clean mirror!)"
 msgstr ""
+"Scipeáil seiceáil infhaighteachta pacáiste agus tú ag suiteáil ó eolaire "
+"áitiúil (éilíonn go mbeadh eolaire áitiúil"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
 msgid "Do not check for and enforce running as Administrator"
-msgstr ""
+msgstr "Ná seiceáil agus ná déan feidhmiú mar Riarthóir"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_DESKTOP
 msgid "Disable creation of desktop shortcut"
-msgstr ""
+msgstr "Díchumasaigh cruthú aicearra deisce"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_REPLACEONREBOOT
 msgid "Disable replacing in-use files on next reboot"
-msgstr ""
+msgstr "Díchumasaigh comhaid in-úsáide a athsholáthar ar an gcéad"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_SHORTCUTS
 msgid "Disable creation of desktop and start menu shortcuts"
-msgstr ""
+msgstr "Díchumasaigh aicearraí roghchláir deisce agus tosaigh"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_STARTMENU
 msgid "Disable creation of start menu shortcut"
-msgstr ""
+msgstr "Díchumasú aicearra roghchláir tosaigh"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_VERIFY
 msgid "Don't verify setup.ini signatures"
-msgstr ""
+msgstr "Ná fíoraigh sínithe setup.ini"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_VERSION_CHECK
 msgid "Suppress checking if a newer version of setup is available"
-msgstr ""
+msgstr "Cuir cosc a sheiceáil an bhfuil leagan níos nuaí den socrú ar fáil"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
 msgid "Don't warn about deprecated Windows versions"
-msgstr ""
+msgstr "Ná tabhair rabhadh faoi leaganacha Windows atá díscríofa"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WRITE_REGISTRY
 msgid "Don't write root installation directory to registry"
-msgstr ""
+msgstr "Ná scríobh eolaire suiteála fréimhe chuig an gcl"
 
 #: STRINGTABLE.IDS_HELPTEXT_OLD_KEYS
 msgid "Enable old cygwin.com keys"
-msgstr ""
+msgstr "Cumasaigh sean-eochracha cygwin.com"
 
 #: STRINGTABLE.IDS_HELPTEXT_ONLY_SITE
 msgid "Do not download mirror list.  Only use sites specified with -s"
 msgstr ""
+"Ná íoslódáil liosta scátháin. Ná húsáid ach suíomhanna a shonraítear le -s"
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGES
 msgid "Specify packages to install"
-msgstr ""
+msgstr "Sonraigh pacáistí le suiteáil"
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGE_MANAGER
 msgid "Semi-attended chooser-only mode"
-msgstr ""
+msgstr "Modh roghnaithe leathfhreastail amháin"
 
 #: STRINGTABLE.IDS_HELPTEXT_PROXY
 msgid "HTTP/FTP proxy (host:port)"
-msgstr ""
+msgstr "Seachfhreastalaí HTTP/FTP (óstach: calafort)"
 
 #: STRINGTABLE.IDS_HELPTEXT_PRUNE_INSTALL
 msgid "Prune the installation to only the requested packages"
-msgstr ""
+msgstr "Bearr an suiteáil go dtí na pacáistí iarrtha amháin"
 
 #: STRINGTABLE.IDS_HELPTEXT_PUBKEY
 msgid "URL or absolute path of extra public key file (RFC4880 format)"
-msgstr ""
+msgstr "URL nó cosán iomlán comhad eochair phoiblí breise (formáid RFC4880)"
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
 msgid "Unattended setup mode (unattended, noinput, hidden)"
-msgstr ""
+msgstr "Modh socraithe gan faire (gan faire, gan ionchur, i bhfolach)"
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
 msgid "Specify categories to uninstall"
-msgstr ""
+msgstr "Sonraigh catagóirí le díshí"
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_PACKAGES
 msgid "Specify packages to uninstall"
-msgstr ""
+msgstr "Sonraigh pacáistí le díshí"
 
 #: STRINGTABLE.IDS_HELPTEXT_ROOT
 msgid "Root installation directory"
-msgstr ""
+msgstr "Eolaire suiteála fréimhe"
 
 #: STRINGTABLE.IDS_HELPTEXT_SEXPR_PUBKEY
 msgid "Extra DSA public key in s-expr format"
-msgstr ""
+msgstr "Eochair phoiblí breise DSA i bhformáid s-expr"
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
 msgid "Download site URL, path or UNC path"
-msgstr ""
+msgstr "Íoslódáil URL an láithreáin, cosán nó cosán UNC"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
-msgstr ""
+msgstr "Cineál comhnasc (lnk, dúchasach, sys, wsl)"
 
 #: STRINGTABLE.IDS_HELPTEXT_UNTRUSTED_KEYS
 msgid "Use untrusted saved extra keys"
-msgstr ""
+msgstr "Úsáid eochracha breise neamhiontaofa"
 
 #: STRINGTABLE.IDS_HELPTEXT_UPGRADE_ALSO
 msgid "Also upgrade installed packages"
-msgstr ""
+msgstr "Déan pacáistí suiteáilte"
 
 #: STRINGTABLE.IDS_HELPTEXT_USER_AGENT
 msgid "User agent string for HTTP requests"
-msgstr ""
+msgstr "Sreang gníomhaire úsáideora le haghaidh iarratais HTTP"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERBOSE
 msgid "Verbose output"
-msgstr ""
+msgstr "Aschur Verbose"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERSION
 msgid "Show version"
-msgstr ""
+msgstr "Taispeáin leagan"
 
 #: STRINGTABLE.IDS_HELPTEXT_WAIT
 msgid "When elevating, wait for elevated child process"
-msgstr ""
+msgstr "Agus tú ag ardú, fan le próiseas ardaithe leanaí"
