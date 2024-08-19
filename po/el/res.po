@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2024-08-12 09:09+0000\n"
+"PO-Revision-Date: 2024-08-20 12:09+0000\n"
 "Last-Translator: \"Λευτέρης Τ.\" <lefteris592@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/el/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -59,17 +59,20 @@ msgstr "&Απενεργοποίηση ανιχνευτή Ιών"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_LEAVE_AV
 msgid "&Leave Virus scanner alone"
-msgstr ""
+msgstr "&Άσε τον ανιχνευτή Ιών ήσυχο"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose whether to disable your virus scanner while installing."
 msgstr ""
+"Επέλεξε αν θες να απενεργοποιήσεις τον ανιχνευτή ιών κατά την εγκατάσταση."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
 "Some Antivirus programs, notably McAfee, cause a blue screen on Windows XP "
 "computers during installation of Cygwin."
 msgstr ""
+"Κάποια Αντιικά προγράμματα, κυρίως το McAfee, προκαλούν μπλέ οθόνη σε "
+"υπολογιστές με Windows XP κατά την εγκατάσταση του Cygwin."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
@@ -77,20 +80,25 @@ msgid ""
 "during the installation process, and re-enable it when the install is "
 "complete."
 msgstr ""
+"Ανιχνεύθηκε ένα πορ μπορεί να δημιουργήσει πρόβλημα. Η Ρύθμιση Cygwin μπορεί "
+"να το απενεργοποιήσει κατά την εγκατάσταση και να το ενεργοποιήσει ξανά κατά "
+"την ολοκλήρωσή της."
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
 msgid "Cygwin Setup - Select Local Package Directory"
-msgstr ""
+msgstr "Ρύθμιση Cygwin - Επέλεξε Τοπικό Κατάλογο Πακέτου"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Local Package Directory"
-msgstr ""
+msgstr "Επέλεξε Τοπικό Κατάλογο Πακέτου"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_DOWNLOAD_DESC
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
 msgstr ""
+"Επέλεξε έναν κατάλογο όπου θέλετε η Ρύθμιση να αποθηκεύει τα αρχεία "
+"εγκατάστασης που κατεβάζει. Ο κατάλογος θα δημιουργηθεί εάν δεν υπάρχει ήδη."
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
 msgid ""
