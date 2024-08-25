@@ -361,6 +361,21 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
 		// similar delegation as with WM_MOUSEWHEEL
         return OnTimerMessage (message, wParam, lParam);
 
+      case WM_DPICHANGED:
+        {
+          // To support Per Monitor V2 DPI Awareness declared in the manifest,
+          // adjust the window size after DPI changes.
+          RECT* const prcNewWindow = (RECT*)lParam;
+          SetWindowPos(GetHWND (),
+                       NULL,
+                       prcNewWindow -> left,
+                       prcNewWindow -> top,
+                       prcNewWindow -> right - prcNewWindow -> left,
+                       prcNewWindow -> bottom - prcNewWindow -> top,
+                       SWP_NOZORDER | SWP_NOACTIVATE);
+          return TRUE;
+        }
+
       default:
         break;
     }
