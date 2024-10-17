@@ -751,7 +751,7 @@ SolverSolution::trans2db() const
         {
           Log (LOG_PLAIN) << "Can't happen.  No packagemeta for "
                           << pv.Name() << endLog;
-          return;
+          continue;
         }
       switch (i->type)
         {
