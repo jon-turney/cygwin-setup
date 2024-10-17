@@ -9,6 +9,10 @@ case $1 in
         lang="LANG_FRENCH"
         sublang="SUBLANG_FRENCH"
         ;;
+    ja)       # 0411
+        lang="LANG_JAPANESE"
+        sublang="SUBLANG_DEFAULT"
+        ;;
     pl)       # 0415
         lang="LANG_POLISH"
         sublang="SUBLANG_DEFAULT"  # SUBLANG_POLISH_POLAND (equivalent) requires WINVER >= 0x0600

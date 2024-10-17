@@ -93,6 +93,7 @@ CYGWIN-TERMINAL.ICON    FILE    "cygwin-terminal.ico"
 
 #include "res/de/res.rc"
 #include "res/fr/res.rc"
+#include "res/ja/res.rc"
 #include "res/pl/res.rc"
 #include "res/tr/res.rc"
 #include "res/zh_Hans/res.rc"
