@@ -5,4 +5,7 @@ case $1 in
     zh_Hans)  # 0804
         sed -i 's#FONT 8, "MS Shell Dlg"#FONT 9, "Microsoft YaHei UI"#' $2
         ;;
+    ja)       # 0411
+        sed -i 's#FONT 8, "MS Shell Dlg"#FONT 9, "MS UI Gothic"#' $2
+        ;;
 esac
