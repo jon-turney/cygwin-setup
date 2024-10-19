@@ -4,72 +4,77 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2024-05-09 15:07+0000\n"
-"Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
-"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
-"cygwin-setup/cygwin-setup/zh_Hans/>\n"
-"Language: zh_Hans\n"
+"PO-Revision-Date: 2024-08-18 20:09+0000\n"
+"Last-Translator: Aindriú Mac Giolla Eoin <aindriu80@gmail.com>\n"
+"Language-Team: Irish <https://hosted.weblate.org/projects/cygwin-setup/"
+"cygwin-setup/ga/>\n"
+"Language: ga\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :("
+"n>6 && n<11) ? 3 : 4;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 5.5.4-rc\n"
+"X-Generator: Weblate 5.7\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
 msgid "Cygwin Setup - Choose Installation Type"
-msgstr "Cygwin 安装程序 - 选择安装类型"
+msgstr "Socrú Cygwin - Roghnaigh Cineál Suiteála"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_NETINST
 msgid ""
 "&Install from Internet\n"
 "(downloaded files will be kept for future re-use)"
 msgstr ""
-"从互联网安装(&I)\n"
-"（下载的文件将保留以备将来重复使用）"
+"&Suiteáil ón Idirlíon\n"
+"(coimeádfar comhaid íoslódála le haghaidh athúsáide sa todhchaí)"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_DOWNLOAD
 msgid "&Download Without Installing"
-msgstr "下载而不安装(&D)"
+msgstr "& Íoslódáil Gan Suiteáil"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_LOCALDIR
 msgid "Install from &Local Directory"
-msgstr "从本地目录安装(&L)"
+msgstr "Suiteáil ón & Eolaire Áitiúil"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Source"
-msgstr "选择下载源"
+msgstr "Roghnaigh Foinse Íoslódáil"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_SOURCE_SUBTEXT
 msgid ""
 "Choose whether to install or download from the internet, or install from "
 "files in a local directory."
-msgstr "选择是从互联网安装或下载，还是从本地目录中的文件安装。"
+msgstr ""
+"Roghnaigh cibé acu a shuiteáil nó a íoslódáil ón idirlíon, nó a shuiteáil ó "
+"chomhaid in eolaire áitiúil."
 
 #: DIALOG.IDD_VIRUS.CAPTION
 msgid "Cygwin Setup - Disable Virus Scanner?"
-msgstr "Cygwin 安装程序 - 禁用病毒扫描程序？"
+msgstr "Socrú Cygwin - Díchumasaigh Scanóir Víreas?"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_DISABLE_AV
 msgid "&Disable Virus scanner"
-msgstr "禁用病毒扫描程序(&D)"
+msgstr "&Díchumasaigh scanóir víreas"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_LEAVE_AV
 msgid "&Leave Virus scanner alone"
-msgstr "保留病毒扫描程序(&L)"
+msgstr "&Fág scanóir víreas ina aonar"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose whether to disable your virus scanner while installing."
-msgstr "选择是否在安装时禁用病毒扫描程序。"
+msgstr ""
+"Roghnaigh cé acu an ndéanfaidh tú do scanóir víreas a dhíchumasú agus é á "
+"shuiteáil."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
 "Some Antivirus programs, notably McAfee, cause a blue screen on Windows XP "
 "computers during installation of Cygwin."
 msgstr ""
-"某些防病毒程序（尤其是 McAfee）会在安装 Cygwin 期间导致 Windows XP 计算机出现"
-"蓝屏。"
+"Is cúis le roinnt cláir Antivirus, go háirithe McAfee, scáileán gorm ar "
+"ríomhairí Windows XP le linn suiteáil Cygwin."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
@@ -77,77 +82,81 @@ msgid ""
 "during the installation process, and re-enable it when the install is "
 "complete."
 msgstr ""
-"已检测到一个可能存在的问题。 Cygwin 安装程序可以在安装过程中禁用它，并在安装"
-"完成后重新启用它。"
+"Braitheadh fadhb amháin a d’fhéadfadh a bheith ina fhadhb. Is féidir le "
+"socrú Cygwin é seo a dhíchumasú le linn an phróisis suiteála, agus é a "
+"chumasú arís nuair a bheidh an tsuiteáil críochnaithe."
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
 msgid "Cygwin Setup - Select Local Package Directory"
-msgstr "Cygwin 安装程序 - 选择本地软件包目录"
+msgstr "Socrú Cygwin - Roghnaigh Eolaire Pacáiste Áitiúil"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Local Package Directory"
-msgstr "选择本地软件包目录"
+msgstr "Roghnaigh Eolaire Pacáistí"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_DOWNLOAD_DESC
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
 msgstr ""
-"选择希望安装程序存储其下载的安装文件的目录。如果该目录尚不存在，则将创建该目"
-"录。"
+"Roghnaigh eolaire inar mian leat Socrú chun na comhaid suiteála a "
+"íoslódálann sé a stóráil. Cruthófar an eolaire mura bhfuil sé ann cheana "
+"féin."
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
 msgid ""
 "Select a directory where Setup should look for downloaded installation files."
-msgstr "选择安装程序应在其中查找下载的安装文件的目录。"
+msgstr "Roghnaigh eolaire inar chóir Socrú comhaid suiteála íoslódáilte a lorg."
 
 #: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
 msgid "Local Package Directory"
-msgstr "本地软件包目录"
+msgstr "Eolaire Pacáiste Áitiúil"
 
 #: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
 msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
 msgid "B&rowse..."
-msgstr "浏览(&R)..."
+msgstr "B&rabhsáil..."
 
 #: DIALOG.IDD_ROOT.CAPTION
 msgid "Cygwin Setup - Choose Installation Directory"
-msgstr "Cygwin 安装程序 - 选择安装目录"
+msgstr "Socrú Cygwin - Roghnaigh Eolaire Suiteála"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Root Install Directory"
-msgstr "选择根安装目录"
+msgstr "Roghnaigh Root Install Directory"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ROOTDIR_SUBTEXT
 msgid ""
 "Select the directory where you want to install Cygwin.  Also choose a few "
 "installation parameters."
-msgstr "选择要安装 Cygwin 的目录。以及一些安装参数。"
+msgstr ""
+"Roghnaigh an eolaire inar mian leat Cygwin a shuiteáil. Roghnaigh roinnt "
+"paraiméadair suiteála freisin."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
 msgid "Root Directory"
-msgstr "根目录"
+msgstr "Eolaire fréimhe"
 
 #: DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE
 msgctxt "DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE"
 msgid "B&rowse..."
-msgstr "浏览(&R)..."
+msgstr "B&rabhsáil..."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_INSTALLFOR_GRP
 msgid "Install For"
-msgstr "为以下用户安装"
+msgstr "Suiteáil Do"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_SYSTEM
 msgid "&All Users (RECOMMENDED)"
-msgstr "所有用户（推荐）(&A)"
+msgstr "&Gach Úsáideoir (MOLTA)"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
 msgid "Just &Me"
-msgstr "仅自己(&M)"
+msgstr "Díreach &Mise"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
 msgid "Cygwin will be available to all users of the system."
-msgstr "Cygwin 将可供系统的所有用户使用。"
+msgstr "Beidh Cygwin ar fáil do gach úsáideoir den chórais."
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_JUSTME_TEXT
 msgid ""
@@ -156,191 +165,196 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
-"Cygwin 仍将对所有用户可用，但桌面快捷方式，Cygwin 菜单条目和重要的安装程序信"
-"息仅对当前用户可用。仅当您缺少管理员权限或有特定需求时，才应选择此选项。"
+"Beidh Cygwin fós ar fáil do gach úsáideoir, ach níl deilbhíní deisce, "
+"Iontrálacha Roghchlár Cygwin, agus faisnéis thábhachtach Suiteálaí ar fáil "
+"ach don úsáideoir reatha. Roghnaigh é seo ach mura bhfuil pribhléidí "
+"Riarthóra agat nó má tá riachtanais shonracha agat."
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
-msgstr "Cygwin 安装程序 - 选择下载站点"
+msgstr "Socrú Cygwin - Roghnaigh Suíomh Íoslódála"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Available Download Sites:"
-msgstr "可用的下载站点："
+msgstr "Láithreáin Íoslódála Ar Fáil:"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Choose a site from this list, or add your own sites to the list."
-msgstr "从此列表中选择一个站点，或将您自己的站点添加到列表中。"
+msgstr ""
+"Roghnaigh suíomh ón liosta seo, nó cuir do shuíomhanna féin leis an liosta."
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Site"
-msgstr "选择下载站点"
+msgstr "Roghnaigh Suíomh Íoslódála"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
 msgid "User URL:"
-msgstr "用户站点："
+msgstr "URL Úsáideora:"
 
 #: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
 msgid "Add"
-msgstr "添加"
+msgstr "Cuir"
 
 #: DIALOG.IDD_NET.CAPTION
 msgid "Cygwin Setup - Select Connection Type"
-msgstr "Cygwin 安装程序 - 选择连接类型"
+msgstr "Socrú Cygwin - Roghnaigh Cineál Ceangail"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
 msgid "Use &System Proxy Settings"
-msgstr "使用系统代理设置(&S)"
+msgstr "Úsáid &Socruithe Seachfhreastalaí Córais"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_DIRECT
 msgid "&Direct Connection"
-msgstr "直接连接(&D)"
+msgstr "&Ceangal Díreach"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PROXY
 msgid "Use HTTP/FTP &Proxy:"
-msgstr "使用 HTTP/FTP 代理(&P)："
+msgstr "Úsáid HTTP/FTP & Proxy:"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Proxy &Host"
-msgstr "代理主机名(&H)"
+msgstr "Seachfhreastalaí &Óstach"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Por&t"
-msgstr "端口号(&T)"
+msgstr "Por&t"
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC
 msgid ""
 "Setup needs to know how you want it to connect to the internet.  Choose the "
 "appropriate settings below."
-msgstr "安装程序需要知道您希望它如何连接到互联网。请在下面选择适当的设置。"
+msgstr ""
+"Ní mór go mbeadh a fhios ag socrú conas a theastaíonn uait go ndéanfadh sé "
+"nascadh leis Roghnaigh na socruithe cuí thíos."
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Your Internet Connection"
-msgstr "选择您的互联网连接"
+msgstr "Roghnaigh Do Nasc Idirlín"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
-msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
+msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
+"DIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
-msgstr "Cygwin 安装程序"
+msgstr "Socrú Cygwin"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
 msgid "Installing..."
-msgstr "正在安装..."
+msgstr "Suiteáil..."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_PKG
 msgid "(PKG)"
-msgstr "（软件包）"
+msgstr "(PKG)"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_FILE
 msgid "(FILE)"
-msgstr "（文件）"
+msgstr "(COMHAD)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt ""
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL."
-"IDC_INS_DISKFULL"
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
-msgstr "进度一"
+msgstr "Dul chun cinn1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS"
 msgid "Progress1"
-msgstr "进度一"
+msgstr "Dul chun cinn1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS"
 msgid "Progress1"
-msgstr "进度一"
+msgstr "Dul chun cinn1"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE"
 msgid "Package:"
-msgstr "软件包："
+msgstr "Pacáiste:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_TOTAL
 msgid "Total:"
-msgstr "总进度："
+msgstr "Iomlán:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_DISK
 msgid "Disk:"
-msgstr "磁盘用量："
+msgstr "Diosca:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC
 msgid "This page displays the progress of the download or installation."
-msgstr "此页显示下载或安装的进度。"
+msgstr ""
+"Taispeánann an leathanach seo dul chun cinn an íoslódála nó an tsuiteála."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Progress"
-msgstr "进度"
+msgstr "Dul chun cinn"
 
 #: DIALOG.IDD_PROXY_AUTH.CAPTION
 msgid "Proxy Authentication required"
-msgstr "需要代理身份验证"
+msgstr "Teastaíonn Fíordheimhniú"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy &User ID"
-msgstr "代理用户 ID(&U)"
+msgstr "Seachfhreastalaí &Aitheantas Úsáideora"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr "密码(&P)"
+msgstr "&Focal Faire"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy Authorization Required"
-msgstr "需要代理授权"
+msgstr "Údarú Seachfhreastóra"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON."
-"IDOK"
+msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr "确定(&O)"
+msgstr "&Ceart go leor"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON."
-"IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "取消(&C)"
+msgstr "Cealaigh"
 
 #: DIALOG.IDD_NET_AUTH.CAPTION
 msgid "Server Authentication required"
-msgstr "需要服务器身份验证"
+msgstr "Fíordheimhniú freastalaí"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr "用户 ID(&U)"
+msgstr "&Aitheantas Úsáideora"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr "密码(&P)"
+msgstr "&Focal Faire"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgid "Server Authorization Required"
-msgstr "需要服务器授权"
+msgstr "Údarú Freastalaí Teast"
 
 #: DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr "确定(&O)"
+msgstr "&Ceart go leor"
 
 #: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "取消(&C)"
+msgstr "Cealaigh"
 
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
 msgid "Cygwin Setup"
-msgstr "Cygwin 安装程序"
+msgstr "Socrú Cygwin"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
-msgstr "Cygwin 在线安装程序"
+msgstr "Clár Socraithe Scaoileadh Glan Cygwin"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TEXT
 msgid ""
@@ -354,178 +368,184 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
-"本安装程序用于 Cygwin "
-"环境的初始安装以及所有后续更新操作。以下页面将指导您完成安装。\n"
+"Úsáidtear an clár socraithe seo chun suiteáil tosaigh timpeallacht Cygwin "
+"chomh maith le gach nuashonrú ina dhiaidh sin. Treoróidh na leathanaigh a "
+"leanann tú tríd an suiteáil.\n"
 "\n"
-"请注意，默认情况下，我们只安装一组基本的软件包。Cygwin "
-"提供了大量涵盖各种用途的软件包。\n"
+"Tabhair faoi deara le do thoil nach suiteáilimid ach bunsraith pacáistí de "
+"réir réamhshocraithe Soláthraíonn Cygwin líon mór pacáistí a chuimsíonn "
+"réimse leathan cuspóirí.\n"
 "\n"
-"您将来可以随时运行本程序，以根据需要添加、卸载或升级软件包。"
+"Is féidir leat an clár seo a reáchtáil ag am ar bith sa todhchaí chun "
+"pacáistí a chur leis, a bhaint nó a uasghrádú de réir mar is gá."
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr "为本程序的翻译工作做出贡献。"
+msgstr "Cuir le haistriúcháin an chláir seo."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
-msgstr "Cygwin 安装程序 - 安装状态和创建快捷方式"
+msgstr "Socrú Cygwin - Stádas Suiteála agus Cruthaigh Deilbhíní"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
 msgid "Create icon on &Desktop"
-msgstr "在桌面上创建快捷方式(&D)"
+msgstr "Cruthaigh deilbhín ar an &Deasc"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
 msgid "Add icon to &Start Menu"
-msgstr "将快捷方式添加到“开始”菜单(&S)"
+msgstr "Cuir deilbhín leis an &Roghchlár Tosaigh"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_INSTALL
 msgid ""
 "Tell setup if you want it to create a few icons for convenient access to the "
 "Cygwin environment."
-msgstr "告诉安装程序您是否希望它创建一些快捷方式以便于访问 Cygwin 环境。"
+msgstr ""
+"Inis ar an socrú más mian leat go gcruthóidh sé cúpla deilbhín le haghaidh "
+"rochtain áisiúil ar thimpeallacht Cygwin."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_INSTALL
 msgid "Create Icons"
-msgstr "创建快捷方式"
+msgstr "Cruthaigh deilbhíní"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
 msgid "Shows installation status in download-only mode."
-msgstr "在仅下载模式下显示安装状态。"
+msgstr "Taispeánann stádas suiteála i mód íoslódála amháin."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
 msgid "Installation complete"
-msgstr "安装完成"
+msgstr "Suiteáil críochnaithe"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS_HEADER
 msgid "Installation Status"
-msgstr "安装状态"
+msgstr "Stádas Suiteála"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS
 msgid "Cygwin installation completed successfully."
-msgstr "Cygwin 安装成功。"
+msgstr "Críochnaigh suiteáil Cygwin go rathúil."
 
 #: DIALOG.IDD_FTP_AUTH.CAPTION
 msgid "FTP Authentication required"
-msgstr "需要 FTP 身份验证"
+msgstr "Fíordheimhniú FTP ag teastáil"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr "用户 ID(&U)"
+msgstr "&Aitheantas Úsáideora"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr "密码(&P)"
+msgstr "&Focal Faire"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgid "FTP Authorization Required"
-msgstr "需要 FTP 授权"
+msgstr "Údarú FTP Riachtanach"
 
 #: DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
-msgstr "确定(&O)"
+msgstr "&Ceart go leor"
 
 #: DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "取消(&C)"
+msgstr "Cealaigh"
 
 #: DIALOG.IDD_CHOOSE.CAPTION
 msgid "Cygwin Setup - Select Packages"
-msgstr "Cygwin 安装程序 - 选择软件包"
+msgstr "Socrú Cygwin - Roghnaigh Pacáistí"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
 msgid "&View"
-msgstr "视图(&V)"
+msgstr "&Féach"
 
 #: DIALOG.IDD_CHOOSE.RTEXT.IDC_STATIC
 msgid "&Search"
-msgstr "搜索(&S)"
+msgstr "&Cuardaigh"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_DO_SEARCH
 msgid "Search "
-msgstr "搜索 "
+msgstr "Cuardaigh "
 
 #: DIALOG.IDD_CHOOSE.PUSHBUTTON.IDC_CHOOSE_CLEAR_SEARCH
 msgid "&Clear"
-msgstr "清除(&C)"
+msgstr "&Glan"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_KEEP
 msgid "&Keep"
-msgstr "保留(&K)"
+msgstr "&Coinnigh"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_BEST
 msgid "&Best"
-msgstr "最佳(&B)"
+msgstr "&Is Fearr"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_SYNC
 msgid "&Sync"
-msgstr "同步(&S)"
+msgstr "&Sioncronaigh"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
 msgid "&Test"
-msgstr "测试版(&T)"
+msgstr "&Tástáil"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
 msgid "&Hide obsolete packages"
-msgstr "隐藏过时的软件包(&H)"
+msgstr "&Folaigh pacáistí atá as feidhm"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
 msgid "Select packages to download."
-msgstr "选择要下载的软件包。"
+msgstr "Roghnaigh pacáistí le híoslódáil."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_INSTALL
 msgid "Select packages to install."
-msgstr "选择要安装的软件包。"
+msgstr "Roghnaigh pacáistí le suiteáil."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Packages"
-msgstr "选择软件包"
+msgstr "Roghnaigh Pacáiste"
 
 #: DIALOG.IDD_PREREQ.CAPTION
 msgid "Cygwin Setup - Resolving Dependencies"
-msgstr "Cygwin 安装程序 - 解决依赖关系"
+msgstr "Socrú Cygwin - Spleithiúlachtaí a Réiteach"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Resolving Dependencies"
-msgstr "解决依赖关系"
+msgstr "Sspleáchas a Réiteach"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC
 msgid "The following problems occured trying to satisfy dependencies."
-msgstr "在试图满足依赖关系时发生了以下问题。"
+msgstr "Bhí na fadhbanna seo a leanas ag iarraidh spleáchais a shásamh."
 
 #: DIALOG.IDD_PREREQ.CONTROL.IDC_PREREQ_CHECK
 msgid "&Accept default problem solutions"
-msgstr "接受默认问题解决方案(&A)"
+msgstr "&Glac le réitigh réamhshocraithe fadhbanna"
 
 #: DIALOG.IDD_CONFIRM.CAPTION
 msgid "Cygwin Setup - Review and confirm changes"
-msgstr "Cygwin 安装程序 - 审查并确认更改"
+msgstr "Socrú Cygwin - Athruithe a athbhreithniú agus a deimhniú"
 
 #: DIALOG.IDD_CONFIRM.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Review and confirm changes"
-msgstr "审查并确认更改"
+msgstr "Athruithe a athbhreithniú agus"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
-msgstr "Cygwin 安装程序 - 使用非官方镜像？"
+msgstr "Socrú Cygwin - Úsáid scátháin titim?"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
-msgstr "警告："
+msgstr "Rabhadh:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "One or more mirrors you have selected is/are not on the list of official "
-"Cygwin mirrors any more. It/They may be out of date or missing some "
-"packages.\n"
+"Cygwin mirrors any more. It/They may be out of date or missing some packages."
+"\n"
 "This affects the following mirror(s):"
 msgstr ""
-"您选择的一个或多个镜像不再在官方 Cygwin 镜像列表中。它/它们可能已过时或缺少某"
-"些软件包。\n"
-"这会影响以下镜像："
+"Níl scátháin amháin nó níos mó roghnaithe agat ar liosta na scátháin "
+"oifigiúla Cygwin a thuilleadh. Féadfaidh sé a bheith as dáta nó roinnt "
+"pacáistí in easnamh.\n"
+"Bíonn tionchar aige seo ar na scátháin seo a leanas:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -534,29 +554,30 @@ msgid ""
 "\n"
 "Do you want to continue, using this/these mirror(s)?"
 msgstr ""
-"如果您遇到安装问题，请考虑仅尝试官方镜像。\n"
+"Má bhíonn fadhbanna suiteála agat smaoinigh scátháin oifigiúla a thriail\n"
 "\n"
-"是否要使用此镜像继续？"
+"Ar mhaith leat leanúint ar aghaidh, ag baint úsáide as an scáthán/na "
+"scátháin seo?"
 
 #: DIALOG.IDD_DROPPED.CONTROL.IDC_DROP_NOWARN
 msgid "&Don't warn me about this/these mirror(s) again"
-msgstr "不要再警告我这个/这些镜像(&D)"
+msgstr "&Ná tabhair rabhadh dom faoi seo/na scáthán(í) seo arís"
 
 #: DIALOG.IDD_DROPPED.PUSHBUTTON.IDYES
 msgid "&Yes"
-msgstr "是(&Y)"
+msgstr "&Tá"
 
 #: DIALOG.IDD_DROPPED.DEFPUSHBUTTON.IDNO
 msgid "&No"
-msgstr "否(&N)"
+msgstr "&Níl"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.CAPTION
 msgid "Download Incomplete"
-msgstr "下载不完整"
+msgstr "Íoslódáil Neamhchom"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid "The following package(s) had download errors:"
-msgstr "以下软件包出现下载错误："
+msgstr "Bhí earráidí íoslódála ag na pacáistí seo a leanas:"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid ""
@@ -564,92 +585,103 @@ msgid ""
 "selection page, 'Continue' to go on anyway (NOT RECOMMENDED), or 'Cancel' to "
 "exit."
 msgstr ""
-"选择“重试”以重试下载，“返回”以返回软件包选择页面，“继续”以继续（不推荐），"
-"或“取消”以退出。"
+"Roghnaigh 'Athbhreithnigh' chun an íoslódáil a athbhreithniú, 'Ar ais' chun "
+"filleadh ar leathanach roghnúcháin an phacáiste, 'Lean ar aghaidh' chun dul "
+"ar aghaidh ar aon nós (NÍ MHOLTAR), nó 'Cealaigh' chun imeacht."
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
 msgid "&Retry"
-msgstr "重试(&R)"
+msgstr "&Atriail"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
 msgid "&Back"
-msgstr "返回(&B)"
+msgstr "&Ar ais"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE"
 msgid "&Continue"
-msgstr "继续(&C)"
+msgstr "&Lean ar aghaidh"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT"
 msgid "Cancel"
-msgstr "取消(&C)"
+msgstr "Cealaigh"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
-msgstr "Cygwin 安装程序 - 执行安装后操作"
+msgstr "Socrú Cygwin - Scripteanna iar-shuiteála á reáchtáil"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Postinstall script errors"
-msgstr "安装后操作错误"
+msgstr "Earráidí script Postinstall"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC
 msgid ""
 "These do not necessarily mean that affected packages will fail to function "
 "properly, but please check /var/log/setup.log.full and report any problems."
 msgstr ""
-"这些并不一定意味着受影响的软件包将无法正常运行，但请检查 /var/log/setup.log."
-"full 并报告任何问题。"
+"Ní gá go gciallaíonn siad seo go dteipfidh ar phacáistí atá buailte feidhmiú "
+"i gceart, ach seiceáil /var/log/setup.log.full le do thoil agus tuairiscigh "
+"aon fhadhbanna."
 
 #: DIALOG.IDD_FILE_INUSE.CAPTION
 msgid "In-use file detected"
-msgstr "检测到正在使用的文件"
+msgstr "Braithíodh comhad in-úsáide"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG
 msgctxt "DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr "无法解压缩"
+msgstr "Ní féidir a bhaint"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_STATIC
 msgid "The file is in use by the following processes:"
-msgstr "以下进程正在使用该文件："
+msgstr "Tá an comhad in úsáid ag na próisis seo a leanas:"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_0
 msgid ""
 "Select 'Retry' to retry, select 'Stop' to stop processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
-msgstr "选择“重试”以重试，选择“结束进程”以结束进程并重试，或选择“继续”以继续（文件将"
-"在重启后更新）。"
+msgstr ""
+"Roghnaigh 'Athbhreithnigh' chun iarracht a dhéanamh arís, roghnaigh 'Stop' "
+"chun próisis a stopadh agus iarracht a dhéanamh arís, nó roghnaigh 'Lean' "
+"chun dul ar aghaidh ar aon nós (déanfar an comhad a nuashonrú tar éis "
+"atosaigh)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_1
 msgid ""
 "Select 'Retry' to retry, select 'Kill' to kill processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
-msgstr "选择“重试”以重试，选择“终止进程”以终止进程并重试，或选择“继续”以继续（文件将"
-"在重启后更新）。"
+msgstr ""
+"Roghnaigh 'Athbhreithnigh' chun iarracht a dhéanamh arís, roghnaigh "
+"'Maraigh' chun próisis a mharú agus iarracht a dhéanamh arís, nó roghnaigh "
+"'Lean' chun dul ar aghaidh ar aon nós (déanfar an comhad a nuashonrú tar éis "
+"atosaigh)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_2
 msgid ""
 "Select 'Retry' to retry, select 'Kill' to forcibly kill all processes and "
 "retry, or select 'Continue' to go on anyway (the file will be updated after "
 "a reboot)."
-msgstr "选择“重试”以重试，选择“终止进程”以强制终止所有进程并重试，或选择“继续”以继续"
-"（文件将在重启后更新）。"
+msgstr ""
+"Roghnaigh 'Atriail' chun triail eile a bhaint as, roghnaigh 'Kill' chun na "
+"próisis go léir a mharú go héigeantach agus triail eile a bhaint as, nó "
+"roghnaigh 'Lean ar aghaidh' chun dul ar aghaidh ar aon nós (déanfar an "
+"comhad a nuashonrú tar éis atosaigh)."
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE"
 msgid "&Retry"
-msgstr "重试(&R)"
+msgstr "&Atriail"
 
 #: DIALOG.IDD_FILE_INUSE.DEFPUSHBUTTON.IDRETRY
 msgid "&Stop Processes"
-msgstr "结束进程(&S)"
+msgstr "&Stad Próisis"
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE"
 msgid "&Continue"
-msgstr "继续(&C)"
+msgstr "&Lean ar aghaidh"
 
 #: STRINGTABLE.IDS_ROOT_SLASH
 msgid ""
@@ -657,102 +689,112 @@ msgid ""
 "cygwin root, to prevent possible conflicts with other programs.  Proceed "
 "anyway?"
 msgstr ""
-"警告：我们强烈建议您不要将硬盘驱动器的根目录用作 Cygwin 根目录，以防止与其他"
-"程序发生冲突。是否继续？"
+"Rabhadh: molaimid duit gan fréamh do thiomáint crua a úsáid mar fhréamh "
+"cygwin, chun coimhlintí féideartha le cláir eile a chosc. Ar aghaidh ar aon "
+"nós?"
 
 #: STRINGTABLE.IDS_ROOT_SPACE
 msgid ""
 "You should not choose a root path that include spaces in directory names.  "
 "Proceed anyway?"
-msgstr "不应在目录名称中包含空格。是否继续？"
+msgstr ""
+"Níor chóir duit cosán fréimhe a roghnú a chuimsíonn spásanna in ainmneacha "
+"eolaire. Ar aghaidh ar aon nós?"
 
 #: STRINGTABLE.IDS_ERR_OPEN_WRITE
 msgid "Can't open %s for writing: %s"
-msgstr "无法打开 %s 进行写入： %s"
+msgstr "Ní féidir %s a oscailt le haghaidh scríbhneoireachta: %s"
 
 #: STRINGTABLE.IDS_SETUPINI_MISSING
 msgid "Unable to get %s from <%s>"
-msgstr "无法获取 %s（从 <%s>）"
+msgstr "Ní féidir %s a fháil ó <%s>"
 
 #: STRINGTABLE.IDS_OLD_SETUPINI
 msgid ""
 "This setup.ini is older than the one you used last time you installed "
 "cygwin.  Proceed anyway?"
-msgstr "这个 setup.ini 比你上次安装 cygwin 时使用的旧。是否继续？"
+msgstr ""
+"Tá an setup.ini seo níos sine ná an ceann a d'úsáid tú an uair dheireanach a "
+"shuiteáil tú cygwin. Ar aghaidh ar aon nós?"
 
 #: STRINGTABLE.IDS_NOTHING_INSTALLED
 msgid "Nothing needed to be installed"
-msgstr "无需执行安装"
+msgstr "Ní gá aon rud a shuiteáil"
 
 #: STRINGTABLE.IDS_INSTALL_COMPLETE
 msgid "Installation Complete"
-msgstr "安装完成"
+msgstr "Suiteáil Críochnaithe"
 
 #: STRINGTABLE.IDS_REBOOT_REQUIRED
 msgid ""
 "In-use files have been replaced. You need to reboot as soon as possible to "
 "activate the new versions. Cygwin may operate incorrectly until you reboot."
 msgstr ""
-"正在使用的文件已被替换。您需要尽快重新启动才能激活新版本。Cygwin 可能会错误地"
-"运行，直到您重新启动。"
+"Cuireadh comhaid in úsáid in ionad. Ní mór duit a atosú chomh luath agus is "
+"féidir chun na leaganacha nua a ghníomhachtú. Féadfaidh Cygwin oibriú go "
+"mícheart go dtí go dtosaíonn tú."
 
 #: STRINGTABLE.IDS_ERR_OPEN_READ
 msgid "Can't open %s for reading: %s"
-msgstr "无法打开 %s 进行读取： %s"
+msgstr "Ní féidir %s a oscailt le haghaidh léitheoireachta: %s"
 
 #: STRINGTABLE.IDS_ROOT_ABSOLUTE
 msgid ""
 "The install directory must be absolute, with both a drive letter and leading "
 "slash, like C:\\Cygwin"
-msgstr "安装目录必须是绝对目录，同时包含驱动器号和前导斜杠，例如 C:\\Cygwin"
+msgstr ""
+"Caithfidh an t-eolaire suiteála a bheith iomlán, le litir tiomána agus slasc "
+"tosaigh araon, cosúil le C:\\Cygwin"
 
 #: STRINGTABLE.IDS_DOWNLOAD_COMPLETE
 msgid "Download Complete"
-msgstr "下载完成"
+msgstr "Íoslódáil Complete"
 
 #: STRINGTABLE.IDS_NOLOGFILE
 msgid "Cannot open log file %s for writing"
-msgstr "无法打开日志文件 %s 进行写入"
+msgstr "Ní féidir comhad log %s a oscailt le haghaidh scríobh"
 
 #: STRINGTABLE.IDS_UNINSTALL_COMPLETE
 msgid "Uninstalls complete."
-msgstr "卸载完成。"
+msgstr "Díshuiteálacha críochnaithe."
 
 #: STRINGTABLE.IDS_ERR_CHDIR
 msgid "Could not change dir to %s: %s [%.8x]"
-msgstr "无法将目录更改为 %s： %s [%.8x]"
+msgstr "Ní féidir dir a athrú go %s: %s [%.8x]"
 
 #: STRINGTABLE.IDS_OLD_SETUP_VERSION
 msgid ""
 "This setup is version %s, but setup.ini claims version %s is available.\n"
 "You might want to upgrade to get the latest features and bug fixes."
 msgstr ""
-"此安装程序的版本是 %s，但 setup.ini 声称版本 %s 已经可用。\n"
-"您可能想要升级以获得最新的功能和错误修复。"
+"Leagan %s atá sa socrú seo, ach tá leagan %s á éileamh ag setup.ini.\n"
+"B'fhéidir gur mhaith leat uasghrádú a dhéanamh chun na gnéithe is déanaí "
+"agus na ceartúcháin ar fhabht a fháil."
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE
 msgid "Download Incomplete.  Try again?"
-msgstr "下载不完整。是否重试？"
+msgstr "Íoslódáil Iomlán. Bain triail as arís?"
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE_EXIT
 msgid "Download incomplete.  Check %s for details"
-msgstr "下载不完整。检查 %s 以了解详细信息"
+msgstr "Íoslódáil neamhiomlán. Seiceáil %s le haghaidh sonraí"
 
 #: STRINGTABLE.IDS_INSTALL_ERROR
 msgid "Installation error (%s), Continue with other packages?"
-msgstr "安装错误 (%s)，是否继续安装其他软件包？"
+msgstr "Earráid suiteála (%s), Leanúint ar aghaidh le pacáistí eile?"
 
 #: STRINGTABLE.IDS_INSTALL_INCOMPLETE
 msgid "Installation incomplete.  Check %s for details"
-msgstr "安装未完成。检查 %s 以了解详细信息"
+msgstr "Suiteáil neamhiomlán. Seiceáil %s le haghaidh sonraí"
 
 #: STRINGTABLE.IDS_CORRUPT_PACKAGE
 msgid "Package %s has a corrupt local copy, please remove and retry."
-msgstr "软件包 %s 具有损坏的本地副本，请删除并重试。"
+msgstr ""
+"Tá cóip áitiúil truaillithe ag pacáiste %s, bain agus déan iarracht arís."
 
 #: STRINGTABLE.IDS_QUERY_CORRUPT
 msgid "The file %s is corrupt.  Delete it and download again?"
-msgstr "文件 %s 已损坏。是否删除它并再次下载？"
+msgstr "Tá an comhad %s truaillithe. Scrios é agus íoslódáil arís?"
 
 #: STRINGTABLE.IDS_SKIP_PACKAGE
 msgid ""
@@ -760,7 +802,7 @@ msgid ""
 "Do you want to skip this package ?"
 msgstr ""
 "%s\n"
-"是否跳过此软件包？"
+"Ar mhaith leat an pacáiste seo a scipeáil?"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION
 msgid ""
@@ -769,10 +811,10 @@ msgid ""
 "Type: %s\n"
 "Message: %s"
 msgstr ""
-"致命错误：未捕获的异常\n"
-"线程：%s\n"
-"类型：%s\n"
-"消息：%s"
+"Earráid Marfach: Eisceacht gan ghabháil\n"
+"Snáithe: %s\n"
+"Cineál: %s\n"
+"Teachtaireacht: %s"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
 msgid ""
@@ -782,32 +824,35 @@ msgid ""
 "Message: %s\n"
 "AppErrNo: %d"
 msgstr ""
-"致命错误：未捕获的异常\n"
-"线程：%s\n"
-"类型：%s\n"
-"消息：%s\n"
-"应用错误编号：%d"
+"Earráid Marfach: Eisceacht gan ghabháil\n"
+"Snáithe: %s\n"
+"Cineál: %s\n"
+"Teachtaireacht: %s\n"
+"Aibreán: %d"
 
 #: STRINGTABLE.IDS_TRUSTKEEP_TOOLTIP
 msgid ""
 "Sets all packages to their currently installed version.  This is equivalent "
 "to telling setup not to make any changes to any package."
-msgstr "将所有软件包设置为其当前安装的版本。这相当于告诉安装程序不要对任何软件包进行"
-"任何更改。"
+msgstr ""
+"Socraíonn gach pacáiste ar a leagan atá suiteáilte faoi láthair. Tá sé seo "
+"comhionann le rá ar an socrú gan aon athruithe a dhéanamh ar aon phacáiste."
 
 #: STRINGTABLE.IDS_TRUSTCURR_TOOLTIP
 msgid "Sets all packages to the best version available (RECOMMENDED)."
-msgstr "将所有软件包设置为可用的最佳版本（推荐）。"
+msgstr "Socraíonn gach pacáiste go dtí an leagan is fearr atá ar fáil (MOLTA)."
 
 #: STRINGTABLE.IDS_TRUSTSYNC_TOOLTIP
 msgid ""
 "Sets all packages to the version available from the package repository, "
 "downgrading if necessary."
-msgstr "将所有软件包设置为软件包存储库中可用的版本，必要时降级。"
+msgstr ""
+"Socraíonn gach pacáiste go dtí an leagan atá ar fáil ó stór an phacáiste, ag "
+"íosghrádú más gá."
 
 #: STRINGTABLE.IDS_TRUSTEXP_TOOLTIP
 msgid "Enable test packages."
-msgstr "启用测试版软件包。"
+msgstr "Cumasaigh pacáistí tástála."
 
 #: STRINGTABLE.IDS_VIEWBUTTON_TOOLTIP
 msgid ""
@@ -836,26 +881,33 @@ msgid ""
 "removed.  Other installed or selected packages no longer depend on these "
 "packages."
 msgstr ""
-"选择软件包视图。这决定了下面显示哪些软件包。\n"
+"Roghnaigh an radharc pacáiste. Cinneann sé seo cé na pacáistí a thaispeántar "
+"thíos.\n"
 "\n"
-"类别：按软件包类别分组。单击“+”展开。\n"
+"Catagóir:Grúpáil de réir catagóire pacáiste. Cliceáil ar '+' le leathnú.\n"
 "\n"
-"完整：显示所有软件包。\n"
+"Iomlán: Taispeáin gach pacáiste.\n"
 "\n"
-"待定：仅显示即将安装、删除或升级的软件包。这告诉您按“下一步”时将发生什么变化"
-"。\n"
+"Ar feitheamh: Ná taispeáin ach na pacáistí atá ar tí a shuiteáil, a bhaint "
+"nó a uasghrádú. Insíonn sé seo duit cad a athróidh nuair a bhrúnn tú 'Ar "
+"Aghaidh'.\n"
 "\n"
-"最新的：显示不需要执行任何操作的已安装软件包，因为它们已经处于所需版本。\n"
+"Suas chun dáta: Taispeáin pacáistí suiteáilte nach bhfuil aon ghníomhaíocht "
+"ag teastáil uathu toisc go bhfuil siad ag an leagan atá uait cheana féin.\n"
 "\n"
-"未安装的：显示当前未安装且尚未选择安装的软件包。\n"
+"Gan a bheith suiteáilte: Taispeáin pacáistí nach bhfuil suiteáilte faoi "
+"láthair agus nach bhfuil roghnaithe le haghaidh suiteáil.\n"
 "\n"
-"已选择的：显示已选择的，但未作为依赖项安装已安装软件包。\n"
+"Roghnaithe: Taispeáin pacáistí suiteáilte a roghnaíodh, nach bhfuil "
+"suiteáilte mar spleáchas.\n"
 "\n"
-"可卸载的：显示已选择且可以安全卸载的已安装软件包。其他已安装或选定的软件包不"
-"再依赖于这些软件包。\n"
+"Inbhainte: Taispeáin na pacáistí suiteáilte a roghnaíodh agus a d'fhéadfaí a "
+"bhaint go sábháilte. Níl aon phacáiste suiteáilte nó roghnaithe eile ag "
+"brath ar na pacáistí seo.\n"
 "\n"
-"不需要的：显示现在可以安全卸载的自动安装的软件包。其他已安装或选定的软件包不"
-"再依赖于这些软件包。"
+"Gan ghá: Taispeáin pacáistí suiteáilte go huathoibríoch a d'fhéadfaí a "
+"bhaint go sábháilte anois. Níl pacáistí suiteáilte nó roghnaithe eile ag "
+"brath ar na pacáistí seo a thuilleadh."
 
 #: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
 msgid ""
@@ -864,32 +916,36 @@ msgid ""
 "have been removed or renamed, or are infrastructure packages that are "
 "handled automatically."
 msgstr ""
-"如果选中，安装程序将隐藏名称以“_”开头的类别中的软件包。 此类软件包通常是已删"
-"除或重命名的软件包的空占位符，或者是自动处理的基础结构软件包。"
+"Má roghnaítear é, cuirfidh an socrú pacáistí i bhfolach i gcatagóirí a "
+"bhfuil ainmneacha orthu a thosaíonn le '_'. Is áitshealbhóirí folamha iad "
+"pacáistí den sórt sin de ghnáth do phacáistí a baineadh nó a athainmníodh, "
+"nó is pacáistí bonneagair iad a láimhseáiltear go huathoibríoch."
 
 #: STRINGTABLE.IDS_SIG_INVALID
 msgid ""
 "Mirror Error:  Setup.ini signature %s from %s failed to verify.\n"
 "Possible corrupt mirror?  Setup.ini rejected."
 msgstr ""
-"镜像错误：Setup.ini 的签名 %s（来自 %s）验证失败。\n"
-"镜像可能已损坏？ Setup.ini 被拒绝。"
+"Earráid Scáthán: Theip ar shíniú Setup.ini %s ó %s a fhíorú.\n"
+"Scáthán truaillte féideartha Diúltaíodh Setup.ini."
 
 #: STRINGTABLE.IDS_CRYPTO_ERROR
 msgid "Internal Error:  gcrypt library error %d %s"
-msgstr "内部错误：gcrypt 库错误 %d %s"
+msgstr "Earráid Inmheánach: earráid leabharlann gcrypt %d %s"
 
 #: STRINGTABLE.IDS_SEARCH_TOOLTIP
 msgid "Search for this string in package names."
-msgstr "在软件包名称中搜索此字符串。"
+msgstr "Cuardaigh an sreang seo in ainmneacha pacáiste."
 
 #: STRINGTABLE.IDS_MAYBE_MKDIR
 msgid "Directory %s does not exist, would you like me to create it?"
-msgstr "目录 %s 不存在，是否创建该目录？"
+msgstr "Níl eolaire %s ann, ar mhaith leat é a chruthú?"
 
 #: STRINGTABLE.IDS_CANT_MKDIR
 msgid "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
-msgstr "无法创建目录 %s，抱歉。（驱动器是已满还是只读？）"
+msgstr ""
+"Níorbh fhéidir eolaire %s a chruthú, tá brón orm. (An bhfuil an tiomáint "
+"iomlán nó léite amháin?)"
 
 #: STRINGTABLE.IDS_NO_LOCALDIR
 msgid ""
@@ -900,181 +956,181 @@ msgid ""
 "Press OK if that's what you wanted\n"
 "or Cancel to choose a different directory."
 msgstr ""
-"未找到本地软件包目录 %s。\n"
-"您仍然可以卸载已安装的\n"
-"软件包，但不会执行任何安装操作。\n"
+"Níor aimsíodh eolaire pacáiste áitiúil %s.\n"
+"Is féidir leat suiteáilte a bhaint fós\n"
+"pacáistí, ach ní bheidh aon rud le suiteáil.\n"
 "\n"
-"如果这是你希望的，请点击“确定”\n"
-"或点击“取消”以选择其他目录。"
+"Brúigh OK más é sin an rud a theastaigh uait\n"
+"nó Cealaigh chun eolaire difriúil a roghnú."
 
 #: STRINGTABLE.IDS_ELEVATED
 msgid "Hand installation over to elevated child process."
-msgstr "将安装移交给提权的子进程。"
+msgstr "Suiteáil láimhe ar an bpróiseas ardaithe leanaí."
 
 #: STRINGTABLE.IDS_INSTALLEDB_VERSION
 msgid "Unknown INSTALLED.DB version"
-msgstr "INSTALLED.DB 版本未知"
+msgstr "Leagan INSTALLED.DB anaithnid"
 
 #: STRINGTABLE.IDS_NO_MIRROR_LST
 msgid "Could not download mirror sites list"
-msgstr "无法下载镜像站点列表"
+msgstr "Ní féidir liosta suíomhanna scátháin a íoslódáil"
 
 #: STRINGTABLE.IDS_PROGRESS_PROGRESS
 msgid "Progress:"
-msgstr "进度："
+msgstr "Dul chun cinn:"
 
 #: STRINGTABLE.IDS_PROGRESS_PACKAGE
 msgctxt "STRINGTABLE.IDS_PROGRESS_PACKAGE"
 msgid "Package:"
-msgstr "软件包："
+msgstr "Pacáiste:"
 
 #: STRINGTABLE.IDS_PROGRESS_CONNECTING
 msgid "Connecting..."
-msgstr "正在连接..."
+msgstr "Ag nascadh..."
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING
 msgid "Checking for packages to download..."
-msgstr "正在检查要下载的软件包..."
+msgstr "Seiceáil ar phacáistí le híoslódáil..."
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING
 msgid "Downloading..."
-msgstr "正在下载..."
+msgstr "Íoslódáil..."
 
 #: STRINGTABLE.IDS_PROGRESS_PARSING
 msgid "Parsing..."
-msgstr "正在解析..."
+msgstr "Parsáil..."
 
 #: STRINGTABLE.IDS_PROGRESS_PREREMOVE
 msgid "Running preremove script..."
-msgstr "正在执行卸载前操作..."
+msgstr "Script réamh-bhaint á rith..."
 
 #: STRINGTABLE.IDS_PROGRESS_UNINSTALL
 msgid "Uninstalling..."
-msgstr "正在卸载..."
+msgstr "Díshuiteáil..."
 
 #: STRINGTABLE.IDS_PROGRESS_INSTALL
 msgctxt "STRINGTABLE.IDS_PROGRESS_INSTALL"
 msgid "Installing..."
-msgstr "正在安装..."
+msgstr "Suiteáil..."
 
 #: STRINGTABLE.IDS_PROGRESS_CALCULATING
 msgid "Calculating..."
-msgstr "正在计算..."
+msgstr "Ag ríomh..."
 
 #: STRINGTABLE.IDS_PROGRESS_POSTINSTALL
 msgid "Running..."
-msgstr "正在执行..."
+msgstr "Ag rith..."
 
 #: STRINGTABLE.IDS_PROGRESS_SOLVING
 msgid "Solving dependencies..."
-msgstr "正在解决依赖关系..."
+msgstr "Spleithiúlachtaí a réiteach..."
 
 #: STRINGTABLE.IDS_ACTION_DEFAULT
 msgid "Default"
-msgstr "默认"
+msgstr "Réamhshocraithe"
 
 #: STRINGTABLE.IDS_ACTION_INSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_INSTALL"
 msgid "Install"
-msgstr "安装"
+msgstr "Suiteáil"
 
 #: STRINGTABLE.IDS_ACTION_UNINSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_UNINSTALL"
 msgid "Uninstall"
-msgstr "卸载"
+msgstr "Díshuiteáil"
 
 #: STRINGTABLE.IDS_ACTION_SKIP
 msgid "Skip"
-msgstr "跳过"
+msgstr "Scipeáil"
 
 #: STRINGTABLE.IDS_ACTION_KEEP
 msgid "Keep"
-msgstr "保留"
+msgstr "Coinnigh"
 
 #: STRINGTABLE.IDS_ACTION_REINSTALL
 msgid "Reinstall"
-msgstr "重新安装"
+msgstr "Athshuiteáil"
 
 #: STRINGTABLE.IDS_ACTION_RETRIEVE
 msgid "Retrieve"
-msgstr "检索"
+msgstr "Aisghabháil"
 
 #: STRINGTABLE.IDS_ACTION_UNKNOWN
 msgid "Unknown"
-msgstr "未知"
+msgstr "Anaithnid"
 
 #: STRINGTABLE.IDS_ACTION_SOURCE
 msgid "Source"
-msgstr "源代码"
+msgstr "Foinse"
 
 #: STRINGTABLE.IDS_VIEW_FULL
 msgid "Full"
-msgstr "完整"
+msgstr "Iomlán"
 
 #: STRINGTABLE.IDS_VIEW_PENDING
 msgid "Pending"
-msgstr "待定"
+msgstr "Ar feitheamh"
 
 #: STRINGTABLE.IDS_VIEW_UPTODATE
 msgid "Up To Date"
-msgstr "最新的"
+msgstr "Suas chun dáta"
 
 #: STRINGTABLE.IDS_VIEW_NOTINSTALLED
 msgid "Not Installed"
-msgstr "未安装的"
+msgstr "Níl Suiteáilte"
 
 #: STRINGTABLE.IDS_VIEW_PICKED
 msgid "Picked"
-msgstr "已选择的"
+msgstr "Roghnaithe"
 
 #: STRINGTABLE.IDS_VIEW_REMOVABLE
 msgid "Removable"
-msgstr "可卸载的"
+msgstr "Inbhainte"
 
 #: STRINGTABLE.IDS_VIEW_UNNEEDED
 msgid "Unneeded"
-msgstr "不需要的"
+msgstr "Gan ghá"
 
 #: STRINGTABLE.IDS_VIEW_CATEGORY
 msgid "Category"
-msgstr "类别"
+msgstr "Catagóir"
 
 #: STRINGTABLE.IDS_COLUMN_PACKAGE
 msgid "Package"
-msgstr "软件包"
+msgstr "Pacáiste"
 
 #: STRINGTABLE.IDS_COLUMN_CURRENT
 msgid "Current"
-msgstr "当前版本"
+msgstr "Reatha"
 
 #: STRINGTABLE.IDS_COLUMN_NEW
 msgid "New"
-msgstr "操作"
+msgstr "Nua"
 
 #: STRINGTABLE.IDS_COLUMN_SOURCE
 msgid "Src?"
-msgstr "下载源代码？"
+msgstr "Src?"
 
 #: STRINGTABLE.IDS_COLUMN_CATEGORIES
 msgid "Categories"
-msgstr "类别"
+msgstr "Catagóirí"
 
 #: STRINGTABLE.IDS_COLUMN_SIZE
 msgid "Size"
-msgstr "大小"
+msgstr "Méid"
 
 #: STRINGTABLE.IDS_COLUMN_DESCR
 msgid "Description"
-msgstr "描述"
+msgstr "Cur síos"
 
 #: STRINGTABLE.IDS_MBOX_CAPTION
 msgctxt "STRINGTABLE.IDS_MBOX_CAPTION"
 msgid "Cygwin Setup"
-msgstr "Cygwin 安装程序"
+msgstr "Socrú Cygwin"
 
 #: STRINGTABLE.IDS_EXTRACTION_FAILED
 msgid "Unable to extract /%s -- corrupt package?"
-msgstr "无法解压缩 /%s -- 软件包已损坏？"
+msgstr "Ní féidir le /%s -- pacáiste truaillithe a bhaint?"
 
 #: STRINGTABLE.IDS_EXTRACTION_INUSE
 msgid ""
@@ -1082,15 +1138,16 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
-"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
+"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
-"无法解压缩 /%s -- 写入文件时出错\n"
+"Ní féidir /%s a bhaint - comhad scríbhneoireachta earráide\n"
 "\n"
-"文件正在使用中或发生了其他错误。\n"
+"Tá an comhad in úsáid nó tharla earráid éigin eile.\n"
 "\n"
-"请结束所有 Cygwin 进程并选择\"\"重试\"\"，或选择\"\"继续\"\"以继续（文件将在"
-"重启后更新）。\n"
+"Stop gach próiseas Cygwin le do thoil agus roghnaigh “\" Athbhreithnigh \"”, "
+"nó roghnaigh “\" Lean ar aghaidh \"” chun dul ar aghaidh ar aon nós (déanfar "
+"an comhad a nuashonrú tar éis atosaigh).\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
 msgid ""
@@ -1098,9 +1155,9 @@ msgid ""
 "%s\n"
 "Delete?"
 msgstr ""
-"在此处发现了旧版 cygwin1.dll：\n"
+"Fuarthas seanleagan de cygwin1.dll anseo:\n"
 "%s\n"
-"是否删除？"
+"Scrios?"
 
 #: STRINGTABLE.IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
 msgid ""
@@ -1109,9 +1166,10 @@ msgid ""
 "You should delete the old version of cygwin1.dll at your earliest "
 "convenience."
 msgstr ""
-"无法删除文件 %s。\n"
-"DLL 是否正由另一个应用程序使用？\n"
-"您应该尽早删除旧版本的 cygwin1.dll。"
+"Níorbh fhéidir comhad %s a scriosadh.\n"
+"An bhfuil an DLL in úsáid ag feidhmchlár eile?\n"
+"Ba chóir duit an seanleagan de cygwin1.dll a scriosadh ag áisiúlacht is "
+"luaithe duit."
 
 #: STRINGTABLE.IDS_SHELLLINK_FAILED
 msgid ""
@@ -1119,30 +1177,33 @@ msgid ""
 "Setup will not be able to create Cygwin Icons in the Start Menu or on the "
 "Desktop."
 msgstr ""
-"CoCreateInstance 失败，错误为 0x%x。\n"
-"安装程序将无法在“开始”菜单或桌面上创建 Cygwin 快捷方式。"
+"Theip ar CoCreateInstance le earráid 0x%x.\n"
+"Ní bheidh an socrú in ann deilbhíní Cygwin a chruthú sa Roghchlár Tosaigh nó "
+"ar an Deisce."
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_VERSION
 msgid "Cygwin is not supported on this Windows version"
-msgstr "当前 Windows 版本不支持运行 Cygwin"
+msgstr "Ní thacaítear le Cygwin ar an leagan Windows seo"
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
 msgid "Cygwin is not supported on 32-bit Windows"
-msgstr "32 位 Windows 不支持运行 Cygwin"
+msgstr "Ní thacaítear le Cygwin ar Windows 32-giotán"
 
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
 "Cygwin support for this Windows version is deprecated, and will be removed "
 "in the next major version"
-msgstr "Cygwin 对此 Windows 版本的支持已被弃用，并将在下一个主要版本中删除"
+msgstr ""
+"Tá tacaíocht Cygwin don leagan Windows seo míchuige, agus bainfear í sa "
+"chéad mhórleagan eile"
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
 msgid "Couldn't create registry key to store installation path"
-msgstr "无法创建注册表项来存储安装路径"
+msgstr "Ní raibh in ann eochair chlárlann a chruthú chun cosán suite"
 
 #: STRINGTABLE.IDS_NIO_ERROR
 msgid "Internet Error: %s"
-msgstr "互联网错误：%s"
+msgstr "Earráid Idirlín: %s"
 
 #: STRINGTABLE.IDS_PREREQ_UNSOLVED_PROBLEMS
 msgid ""
@@ -1152,11 +1213,11 @@ msgid ""
 "\n"
 "Are you sure you want to proceed (NOT RECOMMENDED)?"
 msgstr ""
-"警告 - 未解决的问题\n"
+"RABHADH - Fadhbanna gan réiteach\n"
 "\n"
-"如果继续，某些软件包可能无法正常工作。\n"
+"B'fhéidir nach n-oibreoidh roinnt pacáistí i gceart má leanann tú\n"
 "\n"
-"是否确定要继续（不推荐）？"
+"An bhfuil tú cinnte gur mhaith leat dul ar aghaidh (NÍ MHOLTAR)?"
 
 #: STRINGTABLE.IDS_MIXED_BITNESS_ERROR
 msgid ""
@@ -1169,310 +1230,314 @@ msgid ""
 "Either run setup-%s.exe to update your existing %s bit installation of "
 "Cygwin, or choose another directory for your %s bit installation."
 msgstr ""
-"目标 CPU 不匹配\n"
+"Neamhoiriúnú sprioc LAP\n"
 "\n"
-"您正在尝试将 %s 位版本的 Cygwin 安装到包含 %s 位版本的 Cygwin "
-"的目录中。继续这样做会破坏现有的安装。\n"
+"Tá tú ag iarraidh leagan giotán %s de Cygwin a shuiteáil isteach i eolaire "
+"ina bhfuil leagan giotán %s de Cygwin. Leanfaidh leanúint ar aghaidh ag "
+"déanamh amhlaidh, bhriseadh an t\n"
 "\n"
-"运行 setup-%s.exe 以更新 Cygwin 的现有 %s 位安装，或为 %s "
-"位安装选择其他目录。"
+"Rith setup-%s.exe chun do shuiteáil giotán %s atá ann cheana de Cygwin a "
+"nuashonrú, nó roghnaigh eolaire eile le haghaidh do shuiteáil giotán %s."
 
 #: STRINGTABLE.IDS_GET_SITELIST_ERROR
 msgid ""
 "Can't get list of download sites.\n"
 "Make sure your network settings are correct and try again."
 msgstr ""
-"无法获取下载站点列表。\n"
-"请确保您的网络设置正确，然后重试。"
+"Ní féidir liosta de na suíomhanna íoslódála a fháil.\n"
+"Déan cinnte go bhfuil do shocruithe líonra ceart agus déan iarracht arís."
 
 #: STRINGTABLE.IDS_CONFIRM_EXIT
 msgid ""
 "Are you sure you want to exit setup? Any current download or installation "
 "will be aborted."
-msgstr "是否确实要退出安装程序？任何当前的下载或安装操作都将被中止。"
+msgstr ""
+"An bhfuil tú cinnte gur mhaith leat an socrú a fhágáil? Cuirfear deireadh le "
+"haon íoslódáil nó suiteáil reatha."
 
 #: STRINGTABLE.IDS_CONTINUE
 msgid "Continue"
-msgstr "继续"
+msgstr "Lean ar aghaidh"
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_NO_PACKAGES
 msgid "No packages found."
-msgstr "未找到软件包。"
+msgstr "Níl aon phacáistí le fáil."
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_DOWNLOAD
 msgid "Nothing to download."
-msgstr "没有可下载的内容。"
+msgstr "Níl aon rud le híoslódáil."
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_INSTALL
 msgid "Nothing to install or update."
-msgstr "无需安装或更新。"
+msgstr "Níl aon rud le suiteáil nó nuashonrú."
 
 #: STRINGTABLE.IDS_ROOT_BROWSE_TITLE
 msgid "Select an installation root directory"
-msgstr "选择安装根目录"
+msgstr "Roghnaigh eolaire fréimhe suiteála"
 
 #: STRINGTABLE.IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE
 msgid "Select download directory"
-msgstr "选择下载目录"
+msgstr "Roghnaigh eolaire íos"
 
 #: STRINGTABLE.IDS_LOCALDIR_BROWSE_PACKAGE_TITLE
 msgid "Select local package directory"
-msgstr "选择本地软件包目录"
+msgstr "Roghnaigh eolaire pacáistí"
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING_HASH
 msgid "Checking %s for %s"
-msgstr "正在检查 %s（文件：%s）"
+msgstr "Seiceáil %s le haghaidh %s"
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING_FROM
 msgid "%s from %s"
-msgstr "%s 来自 %s"
+msgstr "%s ó %s"
 
 #: STRINGTABLE.IDS_CONFIRM_UNINSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_UNINSTALL"
 msgid "Uninstall"
-msgstr "卸载"
+msgstr "Díshuiteáil"
 
 #: STRINGTABLE.IDS_CONFIRM_INSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_INSTALL"
 msgid "Install"
-msgstr "安装"
+msgstr "Suiteáil"
 
 #: STRINGTABLE.IDS_CONFIRM_DOWNLOAD
 msgid "Download"
-msgstr "下载"
+msgstr "Íoslódáil"
 
 #: STRINGTABLE.IDS_CONFIRM_NOTHING
 msgid "No changes"
-msgstr "不更改"
+msgstr "Gan aon athruithe"
 
 #: STRINGTABLE.IDS_CONFIRM_AUTO_ADD
 msgid "(automatically added)"
-msgstr "（自动添加的）"
+msgstr "(curtha leis go huathoibríoch"
 
 #: STRINGTABLE.IDS_CONFIRM_SOURCE
 msgid "(source)"
-msgstr "（源代码）"
+msgstr "(foinse)"
 
 #: STRINGTABLE.IDS_FILE_INUSE_KILL
 msgid "&Kill Processes"
-msgstr "终止进程(&K)"
+msgstr "&Próisis Mharaithe"
 
 #: STRINGTABLE.IDS_FILE_INUSE_MSG
 msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr "无法解压缩"
+msgstr "Ní féidir a bhaint"
 
 #: STRINGTABLE.IDS_USER_URL_TOOLTIP
 msgid "Additional site URL, path or UNC path"
-msgstr "其他站点的网址、路径或 UNC 路径"
+msgstr "URL breise láithreáin, cosán nó cosán UNC"
 
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
-msgstr "选项处理期间出错。"
+msgstr "Earráid le linn próiseála rogha."
 
 #: STRINGTABLE.IDS_HELPTEXT_HEADER
 msgid "Command Line Options:"
-msgstr "命令行选项："
+msgstr "Roghanna Líne Orduithe:"
 
 #: STRINGTABLE.IDS_HELPTEXT_FOOTER
 msgid ""
 "The default is to both download and install packages, unless either --"
 "download or --local-install is specified."
-msgstr "默认设置是下载和安装软件包，除非指定了 --download 或 --local-install。"
+msgstr ""
+"Is é an réamhshocrú pacáistí a íoslódáil agus a shuiteáil araon, mura "
+"sonraítear --download nó --local-install."
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_TEST
 msgid "Consider package versions marked test"
-msgstr "考虑标记为测试版的软件包版本"
+msgstr "Smaoinigh ar leaganacha pacáiste a bhfuil"
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
 msgid "Allow old, unsupported Windows versions"
-msgstr "允许旧的、不受支持的 Windows 版本"
+msgstr "Ceadaigh seanleaganacha Windows gan tacaíocht"
 
 #: STRINGTABLE.IDS_HELPTEXT_ARCH
 msgid "Architecture to install (x86_64 or x86)"
-msgstr "要安装的体系结构（选项：x86_64 或 x86）"
+msgstr "Ailtireacht le suiteáil (x86_64 nó x86)"
 
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
 msgid "Specify categories to install"
-msgstr "指定要安装的类别"
+msgstr "Sonraigh catagóirí le suiteáil"
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""
 "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
-msgstr "使用 Compact OS 压缩已安装的文件（选项：xpress4k、xpress8k、xpress16k、lzx）"
+msgstr ""
+"Comhbhrúigh comhaid suiteáilte le Compact OS (xpress4k, xpress8k, xpress16k, "
+"lzx)"
 
 #: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
 msgid "Remove orphaned packages"
-msgstr "删除孤立的软件包"
+msgstr "Bain pacáistí dílleachta"
 
 #: STRINGTABLE.IDS_HELPTEXT_DISABLE_ANTIVIRUS
 msgid ""
 "Disable known or suspected buggy anti virus software packages during "
 "execution"
-msgstr "在执行过程中禁用已知或可疑的有缺陷的防病毒软件包"
+msgstr ""
+"Díchumasaigh pacáistí bogearraí frith-víreas aitheanta nó a bhfuil amhras "
+"orthu le linn"
 
 #: STRINGTABLE.IDS_HELPTEXT_DOWNLOAD
 msgid "Download packages from internet"
-msgstr "从互联网下载软件包"
+msgstr "Íoslódáil pacáistí ón idir"
 
 #: STRINGTABLE.IDS_HELPTEXT_FORCE_CURRENT
 msgid "Select the current version for all packages"
-msgstr "为所有软件包选择当前版本"
+msgstr "Roghnaigh an leagan reatha do gach pacáiste"
 
 #: STRINGTABLE.IDS_HELPTEXT_HELP
 msgid "Print help"
-msgstr "打印帮助"
+msgstr "Cabhair a phriontáil"
 
 #: STRINGTABLE.IDS_HELPTEXT_INCLUDE_SOURCE
 msgid "Automatically install source for every package installed"
-msgstr "为每个安装的软件包自动安装源代码"
+msgstr "Suiteáil foinse go huathoibríoch do gach pacá"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
 msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
-msgstr "使用不同的基本名称，例如\"\"foo\"\"，而非\"\"setup\"\""
+msgstr "Úsáid bunainm difriúil, m.sh. “\" foo \"”, in ionad “\" setup \"”"
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"
-msgstr "使用不受信任的密钥并保留所有密钥"
+msgstr "Úsáid eochracha neamhiontaofa agus coinnigh gach"
 
 #: STRINGTABLE.IDS_HELPTEXT_LANG
 msgid "Specify GUI language langid"
-msgstr "指定 GUI 语言的 langid"
+msgstr "Sonraigh langid teanga GUI"
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_INSTALL
 msgid "Install packages from local directory"
-msgstr "从本地目录安装软件包"
+msgstr "Suiteáilte pacáistí ó eolaire"
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_PACKAGE_DIR
 msgid "Local package directory"
-msgstr "本地软件包目录"
+msgstr "Eolaire pacáiste áitiúil"
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
-"Skip package availability check when installing from local directory "
-"(requires local directory to be clean mirror!)"
-msgstr "从本地目录安装时跳过包可用性检查（要求本地目录是干净的镜像！）"
+"Skip package availability check when installing from local directory ("
+"requires local directory to be clean mirror!)"
+msgstr ""
+"Scipeáil seiceáil infhaighteachta pacáiste agus tú ag suiteáil ó eolaire "
+"áitiúil (éilíonn go mbeadh eolaire áitiúil"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
 msgid "Do not check for and enforce running as Administrator"
-msgstr "不检查也不强制以管理员身份运行"
+msgstr "Ná seiceáil agus ná déan feidhmiú mar Riarthóir"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_DESKTOP
 msgid "Disable creation of desktop shortcut"
-msgstr "禁用桌面快捷方式的创建"
+msgstr "Díchumasaigh cruthú aicearra deisce"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_REPLACEONREBOOT
 msgid "Disable replacing in-use files on next reboot"
-msgstr "禁用在下次重新启动时替换正在使用的文件"
+msgstr "Díchumasaigh comhaid in-úsáide a athsholáthar ar an gcéad"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_SHORTCUTS
 msgid "Disable creation of desktop and start menu shortcuts"
-msgstr "禁用桌面和开始菜单快捷方式的创建"
+msgstr "Díchumasaigh aicearraí roghchláir deisce agus tosaigh"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_STARTMENU
 msgid "Disable creation of start menu shortcut"
-msgstr "禁用创建开始菜单快捷方式"
+msgstr "Díchumasú aicearra roghchláir tosaigh"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_VERIFY
 msgid "Don't verify setup.ini signatures"
-msgstr "不验证 setup.ini 的签名"
+msgstr "Ná fíoraigh sínithe setup.ini"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_VERSION_CHECK
 msgid "Suppress checking if a newer version of setup is available"
-msgstr "禁止检查是否有较新版本的安装程序可用"
+msgstr "Cuir cosc a sheiceáil an bhfuil leagan níos nuaí den socrú ar fáil"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
 msgid "Don't warn about deprecated Windows versions"
-msgstr "不要警告已弃用的 Windows 版本"
+msgstr "Ná tabhair rabhadh faoi leaganacha Windows atá díscríofa"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WRITE_REGISTRY
 msgid "Don't write root installation directory to registry"
-msgstr "不要将根安装目录写入注册表"
+msgstr "Ná scríobh eolaire suiteála fréimhe chuig an gcl"
 
 #: STRINGTABLE.IDS_HELPTEXT_OLD_KEYS
 msgid "Enable old cygwin.com keys"
-msgstr "启用旧的 cygwin.com 密钥"
+msgstr "Cumasaigh sean-eochracha cygwin.com"
 
 #: STRINGTABLE.IDS_HELPTEXT_ONLY_SITE
 msgid "Do not download mirror list.  Only use sites specified with -s"
-msgstr "不要下载镜像列表。 仅使用 -s 指定的站点"
+msgstr ""
+"Ná íoslódáil liosta scátháin. Ná húsáid ach suíomhanna a shonraítear le -s"
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGES
 msgid "Specify packages to install"
-msgstr "指定要安装的软件包"
+msgstr "Sonraigh pacáistí le suiteáil"
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGE_MANAGER
 msgid "Semi-attended chooser-only mode"
-msgstr "半有人值守仅选择器模式"
+msgstr "Modh roghnaithe leathfhreastail amháin"
 
 #: STRINGTABLE.IDS_HELPTEXT_PROXY
 msgid "HTTP/FTP proxy (host:port)"
-msgstr "HTTP/FTP 代理（主机名:端口号）"
+msgstr "Seachfhreastalaí HTTP/FTP (óstach: calafort)"
 
 #: STRINGTABLE.IDS_HELPTEXT_PRUNE_INSTALL
 msgid "Prune the installation to only the requested packages"
-msgstr "删减安装，只保留所需的软件包"
+msgstr "Bearr an suiteáil go dtí na pacáistí iarrtha amháin"
 
 #: STRINGTABLE.IDS_HELPTEXT_PUBKEY
 msgid "URL or absolute path of extra public key file (RFC4880 format)"
-msgstr "额外公钥文件的 URL 或绝对路径（RFC4880 格式）"
+msgstr "URL nó cosán iomlán comhad eochair phoiblí breise (formáid RFC4880)"
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
 msgid "Unattended setup mode (unattended, noinput, hidden)"
-msgstr "无人值守安装模式（选项：unattended、noinput、hidden）"
+msgstr "Modh socraithe gan faire (gan faire, gan ionchur, i bhfolach)"
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
 msgid "Specify categories to uninstall"
-msgstr "指定要卸载的类别"
+msgstr "Sonraigh catagóirí le díshí"
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_PACKAGES
 msgid "Specify packages to uninstall"
-msgstr "指定要卸载的软件包"
+msgstr "Sonraigh pacáistí le díshí"
 
 #: STRINGTABLE.IDS_HELPTEXT_ROOT
 msgid "Root installation directory"
-msgstr "根安装目录"
+msgstr "Eolaire suiteála fréimhe"
 
 #: STRINGTABLE.IDS_HELPTEXT_SEXPR_PUBKEY
 msgid "Extra DSA public key in s-expr format"
-msgstr "s-expr 格式的额外 DSA 公钥"
+msgstr "Eochair phoiblí breise DSA i bhformáid s-expr"
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
 msgid "Download site URL, path or UNC path"
-msgstr "下载站点的网址、路径或 UNC 路径"
+msgstr "Íoslódáil URL an láithreáin, cosán nó cosán UNC"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
-msgstr "符号链接类型（选项：lnk、native、sys、wsl）"
+msgstr "Cineál comhnasc (lnk, dúchasach, sys, wsl)"
 
 #: STRINGTABLE.IDS_HELPTEXT_UNTRUSTED_KEYS
 msgid "Use untrusted saved extra keys"
-msgstr "使用不受信任的已保存额外密钥"
+msgstr "Úsáid eochracha breise neamhiontaofa"
 
 #: STRINGTABLE.IDS_HELPTEXT_UPGRADE_ALSO
 msgid "Also upgrade installed packages"
-msgstr "同时升级已安装的软件包"
+msgstr "Déan pacáistí suiteáilte"
 
 #: STRINGTABLE.IDS_HELPTEXT_USER_AGENT
 msgid "User agent string for HTTP requests"
-msgstr "用于 HTTP 请求的用户代理（User Agent）字符串"
+msgstr "Sreang gníomhaire úsáideora le haghaidh iarratais HTTP"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERBOSE
 msgid "Verbose output"
-msgstr "详细输出"
+msgstr "Aschur Verbose"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERSION
 msgid "Show version"
-msgstr "显示版本"
+msgstr "Taispeáin leagan"
 
 #: STRINGTABLE.IDS_HELPTEXT_WAIT
 msgid "When elevating, wait for elevated child process"
-msgstr "在提权时，等待提权的子进程"
-
-#~ msgid "Unattended setup mode"
-#~ msgstr "无人值守安装模式"
-
-#~ msgid ""
-#~ "Cygwin support for 32-bit Windows is deprecated, and will be removed in "
-#~ "the next major version"
-#~ msgstr "Cygwin 对 32 位 Windows 的支持已弃用，并将在下一个主要版本中删除"
+msgstr "Agus tú ag ardú, fan le próiseas ardaithe leanaí"
