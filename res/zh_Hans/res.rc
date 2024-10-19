@@ -64,7 +64,7 @@ BEGIN
     CONTROL         "所有用户（推荐）(&A)",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP | WS_GROUP,13,89,130,8
     CONTROL         "仅自己(&M)",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,13,130,130,8
     LTEXT           "Cygwin 将可供系统的所有用户使用。",IDC_ALLUSERS_TEXT,25,101,300,28
-    LTEXT           "Cygwin 仍将对所有用户可用，但桌面图标，Cygwin 菜单条目和重要的安装程序信息仅对当前用户可用。仅当您缺少管理员权限或有特定需求时，才选择此选项。",IDC_JUSTME_TEXT,25,140,300,32
+    LTEXT           "Cygwin 仍将对所有用户可用，但桌面快捷方式，Cygwin 菜单条目和重要的安装程序信息仅对当前用户可用。仅当您缺少管理员权限或有特定需求时，才应选择此选项。",IDC_JUSTME_TEXT,25,140,300,32
 END
 
 IDD_SITE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
@@ -95,8 +95,8 @@ BEGIN
     EDITTEXT        IDC_PROXY_HOST,120,105,120,12,ES_AUTOHSCROLL | WS_DISABLED | WS_GROUP
     EDITTEXT        IDC_PROXY_PORT,120,125,30,12,ES_AUTOHSCROLL | WS_DISABLED
     GROUPBOX        "",IDC_STATIC,60,95,185,50
-    RTEXT           "代理主机(&H)",IDC_STATIC,65,105,50,12,SS_CENTERIMAGE | NOT WS_GROUP
-    RTEXT           "端口(&T)",IDC_STATIC,85,125,30,12,SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT           "代理主机名(&H)",IDC_STATIC,65,105,50,12,SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT           "端口号(&T)",IDC_STATIC,85,125,30,12,SS_CENTERIMAGE | NOT WS_GROUP
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
     LTEXT           "安装程序需要知道您希望它如何连接到互联网。请在下面选择适当的设置。",IDC_STATIC,21,9,239,16,NOT WS_GROUP
@@ -159,7 +159,7 @@ CAPTION "Cygwin 安装程序"
 FONT 9, "Microsoft YaHei UI"
 BEGIN
     LTEXT           "Cygwin 在线安装程序",IDC_STATIC_WELCOME_TITLE,115,1,195,24
-    LTEXT           "本安装程序用于 Cygwin 环境的初始安装以及所有后续更新。以下页面将指导您完成安装。\n\n请注意，默认情况下，我们只安装一组基本的软件包。Cygwin 提供了大量涵盖各种用途的软件包。\n\n您将来可以随时运行此程序，以根据需要添加、删除或升级软件包。",IDC_SPLASH_TEXT,115,25,195,100
+    LTEXT           "本安装程序用于 Cygwin 环境的初始安装以及所有后续更新操作。以下页面将指导您完成安装。\n\n请注意，默认情况下，我们只安装一组基本的软件包。Cygwin 提供了大量涵盖各种用途的软件包。\n\n您将来可以随时运行本程序，以根据需要添加、卸载或升级软件包。",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10
     LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
@@ -318,7 +318,7 @@ BEGIN
     IDS_ERR_OPEN_WRITE      "无法打开 %s 进行写入： %s"
     IDS_SETUPINI_MISSING    "无法获取 %s（从 <%s>）"
     IDS_OLD_SETUPINI        "这个 setup.ini 比你上次安装 cygwin 时使用的旧。是否继续？"
-    IDS_NOTHING_INSTALLED   "无需安装"
+    IDS_NOTHING_INSTALLED   "无需执行安装"
     IDS_INSTALL_COMPLETE    "安装完成"
     IDS_REBOOT_REQUIRED     "正在使用的文件已被替换。您需要尽快重新启动才能激活新版本。Cygwin 可能会错误地运行，直到您重新启动。"
     IDS_ERR_OPEN_READ       "无法打开 %s 进行读取： %s"
@@ -330,27 +330,27 @@ BEGIN
     IDS_OLD_SETUP_VERSION   "此安装程序的版本是 %s，但 setup.ini 声称版本 %s 已经可用。\n您可能想要升级以获得最新的功能和错误修复。"
     IDS_DOWNLOAD_INCOMPLETE "下载不完整。是否重试？"
     IDS_DOWNLOAD_INCOMPLETE_EXIT
-                            "下载不完整。 查看 %s 以了解详细信息"
+                            "下载不完整。检查 %s 以了解详细信息"
     IDS_INSTALL_ERROR       "安装错误 (%s)，是否继续安装其他软件包？"
-    IDS_INSTALL_INCOMPLETE  "安装未完成。查看 %s 以了解详细信息"
+    IDS_INSTALL_INCOMPLETE  "安装未完成。检查 %s 以了解详细信息"
     IDS_CORRUPT_PACKAGE     "软件包 %s 具有损坏的本地副本，请删除并重试。"
     IDS_QUERY_CORRUPT       "文件 %s 已损坏。是否删除它并再次下载？"
     IDS_SKIP_PACKAGE        "%s\n是否跳过此软件包？"
-    IDS_UNCAUGHT_EXCEPTION  "致命错误：未捕获的异常\n线程： %s\n类型： %s\n消息： %s"
+    IDS_UNCAUGHT_EXCEPTION  "致命错误：未捕获的异常\n线程：%s\n类型：%s\n消息：%s"
     IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
-                            "致命错误：未捕获的异常\n线程： %s\n类型： %s\n消息： %s\n应用错误编号： %d"
-    IDS_TRUSTKEEP_TOOLTIP   "将所有软件包设置为其当前安装的版本。 这相当于告诉安装程序不要对任何软件包进行任何更改。"
+                            "致命错误：未捕获的异常\n线程：%s\n类型：%s\n消息：%s\n应用错误编号：%d"
+    IDS_TRUSTKEEP_TOOLTIP   "将所有软件包设置为其当前安装的版本。这相当于告诉安装程序不要对任何软件包进行任何更改。"
     IDS_TRUSTCURR_TOOLTIP   "将所有软件包设置为可用的最佳版本（推荐）。"
     IDS_TRUSTSYNC_TOOLTIP   "将所有软件包设置为软件包存储库中可用的版本，必要时降级。"
     IDS_TRUSTEXP_TOOLTIP    "启用测试版软件包。"
     IDS_VIEWBUTTON_TOOLTIP  "选择软件包视图。这决定了下面显示哪些软件包。\n\n类别：按软件包类别分组。单击“+”展开。\n\n完整：显示所有软件包。\n\n待定：仅显示即将安装、删除或升级的软件包。这告诉您按“下一步”时将发生什么变化。\n\n最新的：显示不需要执行任何操作的已安装软件包，因为它们已经处于所需版本。\n\n未安装的：显示当前未安装且尚未选择安装的软件包。\n\n已选择的：显示已选择的，但未作为依赖项安装已安装软件包。\n\n可卸载的：显示已选择且可以安全卸载的已安装软件包。其他已安装或选定的软件包不再依赖于这些软件包。\n\n不需要的：显示现在可以安全卸载的自动安装的软件包。其他已安装或选定的软件包不再依赖于这些软件包。"
     IDS_HIDEOBS_TOOLTIP     "如果选中，安装程序将隐藏名称以“_”开头的类别中的软件包。 此类软件包通常是已删除或重命名的软件包的空占位符，或者是自动处理的基础结构软件包。"
-    IDS_SIG_INVALID         "镜像错误：Setup.ini 签名 %s（来自 %s）验证失败。\n镜像可能已损坏？ Setup.ini 被拒绝。"
+    IDS_SIG_INVALID         "镜像错误：Setup.ini 的签名 %s（来自 %s）验证失败。\n镜像可能已损坏？ Setup.ini 被拒绝。"
     IDS_CRYPTO_ERROR        "内部错误：gcrypt 库错误 %d %s"
     IDS_SEARCH_TOOLTIP      "在软件包名称中搜索此字符串。"
     IDS_MAYBE_MKDIR         "目录 %s 不存在，是否创建该目录？"
     IDS_CANT_MKDIR          "无法创建目录 %s，抱歉。（驱动器是已满还是只读？）"
-    IDS_NO_LOCALDIR         "找不到本地软件包目录 %s。\n您仍然可以删除已安装的\n软件包，但不会有任何要安装的内容。\n\n点击“确定”，如果这是你想要的\n或“取消”以选择其他目录。"
+    IDS_NO_LOCALDIR         "未找到本地软件包目录 %s。\n您仍然可以卸载已安装的\n软件包，但不会执行任何安装操作。\n\n如果这是你希望的，请点击“确定”\n或点击“取消”以选择其他目录。"
     IDS_ELEVATED            "将安装移交给提权的子进程。"
     IDS_INSTALLEDB_VERSION  "INSTALLED.DB 版本未知"
     IDS_NO_MIRROR_LST       "无法下载镜像站点列表"
@@ -399,7 +399,7 @@ BEGIN
     IDS_INSTALL_OLD_CYGWIN  "在此处发现了旧版 cygwin1.dll：\n%s\n是否删除？"
     IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
                             "无法删除文件 %s。\nDLL 是否正由另一个应用程序使用？\n您应该尽早删除旧版本的 cygwin1.dll。"
-    IDS_SHELLLINK_FAILED    "CoCreateInstance 失败，错误为 0x%x。\n安装程序将无法在“开始”菜单或桌面上创建 Cygwin 图标。"
+    IDS_SHELLLINK_FAILED    "CoCreateInstance 失败，错误为 0x%x。\n安装程序将无法在“开始”菜单或桌面上创建 Cygwin 快捷方式。"
     IDS_UNSUPPORTED_WINDOWS_VERSION
                             "当前 Windows 版本不支持运行 Cygwin"
     IDS_UNSUPPORTED_WINDOWS_ARCH
@@ -411,12 +411,12 @@ BEGIN
     IDS_NIO_ERROR           "互联网错误：%s"
     IDS_PREREQ_UNSOLVED_PROBLEMS
                             "警告 - 未解决的问题\n\n如果继续，某些软件包可能无法正常工作。\n\n是否确定要继续（不推荐）？"
-    IDS_MIXED_BITNESS_ERROR "目标 CPU 不匹配\n\n您正在尝试将 %s 位版本的 Cygwin 安装到包含 %s 位版本的 Cygwin 的目录中。 继续这样做会破坏现有安装。\n\n运行 setup-%s.exe 以更新 Cygwin 的现有 %s 位安装，或为 %s 位安装选择其他目录。"
+    IDS_MIXED_BITNESS_ERROR "目标 CPU 不匹配\n\n您正在尝试将 %s 位版本的 Cygwin 安装到包含 %s 位版本的 Cygwin 的目录中。继续这样做会破坏现有的安装。\n\n运行 setup-%s.exe 以更新 Cygwin 的现有 %s 位安装，或为 %s 位安装选择其他目录。"
     IDS_GET_SITELIST_ERROR  "无法获取下载站点列表。\n请确保您的网络设置正确，然后重试。"
     IDS_CONFIRM_EXIT        "是否确实要退出安装程序？任何当前的下载或安装操作都将被中止。"
     IDS_CONTINUE            "继续"
     IDS_CHOOSER_EMPTY_NO_PACKAGES
-                            "未发现软件包。"
+                            "未找到软件包。"
     IDS_CHOOSER_EMPTY_DOWNLOAD
                             "没有可下载的内容。"
     IDS_CHOOSER_EMPTY_INSTALL
@@ -434,7 +434,7 @@ BEGIN
     IDS_CONFIRM_INSTALL     "安装"
     IDS_CONFIRM_DOWNLOAD    "下载"
     IDS_CONFIRM_NOTHING     "不更改"
-    IDS_CONFIRM_AUTO_ADD    "（自动添加）"
+    IDS_CONFIRM_AUTO_ADD    "（自动添加的）"
     IDS_CONFIRM_SOURCE      "（源代码）"
     IDS_FILE_INUSE_KILL     "终止进程(&K)"
     IDS_FILE_INUSE_MSG      "无法解压缩"
