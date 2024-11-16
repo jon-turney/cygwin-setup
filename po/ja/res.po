@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-19 16:33+0100\n"
+"POT-Creation-Date: 2024-11-16 14:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #: DIALOG.IDD_SOURCE.CAPTION
 msgid "Cygwin Setup - Choose Installation Type"
-msgstr "Cygwin セットアップ - インストール タイプの選択"
+msgstr "Cygwin セットアップ - インストールタイプの選択"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_NETINST
 msgid ""
@@ -42,12 +42,12 @@ msgstr "ダウンロード元を選択"
 msgid ""
 "Choose whether to install or download from the internet, or install from "
 "files in a local directory."
-msgstr "インターネットからインストールまたはダウンロードするか、ローカル "
-"ディレクトリ内のファイルからインストールするかを選択します。"
+msgstr "インターネットからインストールまたはダウンロードするか、ローカルディレクトリ"
+"内のファイルからインストールするかを選択します。"
 
 #: DIALOG.IDD_VIRUS.CAPTION
 msgid "Cygwin Setup - Disable Virus Scanner?"
-msgstr "Cygwin セットアップ - ウイルス スキャナーを無効にしますか?"
+msgstr "Cygwin セットアップ - ウイルススキャナーを無効にしますか?"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_DISABLE_AV
 msgid "&Disable Virus scanner"
@@ -59,7 +59,7 @@ msgstr "ウイルススキャナをそのままにしておく(&L)"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose whether to disable your virus scanner while installing."
-msgstr "インストール中にウイルス スキャナーを無効にするかどうかを選択します。"
+msgstr "インストール中にウイルススキャナーを無効にするかどうかを選択します。"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
@@ -81,7 +81,7 @@ msgstr ""
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
 msgid "Cygwin Setup - Select Local Package Directory"
-msgstr "Cygwin セットアップ - ローカル パッケージ ディレクトリの選択"
+msgstr "Cygwin セットアップ - ローカルパッケージディレクトリの選択"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Local Package Directory"
@@ -91,18 +91,18 @@ msgstr "ローカルパッケージディレクトリを選択"
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
-msgstr "セットアップがダウンロードしたインストール ファイルを保存するディレクトリを選"
+msgstr "セットアップがダウンロードしたインストールファイルを保存するディレクトリを選"
 "択します。ディレクトリがまだ存在しない場合は作成されます。"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
 msgid ""
 "Select a directory where Setup should look for downloaded installation files."
-msgstr "セットアップがダウンロードしたインストール "
-"ファイルを検索するディレクトリを選択します。"
+msgstr "セットアップがダウンロードしたインストールファイルを検索するディレクトリを選"
+"択します。"
 
 #: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
 msgid "Local Package Directory"
-msgstr "ローカル パッケージ ディレクトリ"
+msgstr "ローカルパッケージディレクトリ"
 
 #: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
 msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
@@ -121,8 +121,8 @@ msgstr "ルートインストールディレクトリを選択"
 msgid ""
 "Select the directory where you want to install Cygwin.  Also choose a few "
 "installation parameters."
-msgstr "Cygwin をインストールするディレクトリを選択します。また、"
-"いくつかのインストール パラメータを選択します。"
+msgstr "Cygwin をインストールするディレクトリを選択します。また、いくつかのインストー"
+"ルパラメータを選択します。"
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
 msgid "Root Directory"
@@ -156,14 +156,14 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
-"Cygwin は引き続きすべてのユーザーが利用できますが、デスクトップ アイコン、"
-"Cygwin メニュー エントリ、および重要なインストーラ情報は現在のユーザーのみが"
-"利用できます。管理者権限がない場合、または特別なニーズがある場合にのみ、これ"
-"を選択してください。"
+"Cygwin は引き続きすべてのユーザーが利用できますが、デスクトップアイコン、"
+"Cygwin メニューエントリ、および重要なインストーラ情報は現在のユーザーのみが利"
+"用できます。管理者権限がない場合、または特別なニーズがある場合にのみ、これを"
+"選択してください。"
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
-msgstr "Cygwin セットアップ - ダウンロード サイトの選択"
+msgstr "Cygwin セットアップ - ダウンロードサイトの選択"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Available Download Sites:"
@@ -213,8 +213,8 @@ msgstr "ポート"
 msgid ""
 "Setup needs to know how you want it to connect to the internet.  Choose the "
 "appropriate settings below."
-msgstr "セットアップでは、インターネットへの接続方法を指定する必要があります。"
-"以下の適切な設定を選択してく ださい。"
+msgstr "セットアップでは、インターネットへの接続方法を指定する必要があります。以下の"
+"適切な設定を選択してください。"
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Your Internet Connection"
@@ -224,7 +224,7 @@ msgstr "インターネット接続を選択してください"
 msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
 "DIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
-msgstr "Cygwin のセットアップ"
+msgstr "Cygwin セットアップ"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
@@ -290,7 +290,7 @@ msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "パスワード(&P)"
 
-#: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC_2
+#: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy Authorization Required"
 msgstr "プロキシ認証が必要"
 
@@ -321,7 +321,7 @@ msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "パスワード(&P)"
 
-#: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC_2
+#: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgid "Server Authorization Required"
 msgstr "サーバー認証が必要です"
 
@@ -338,7 +338,7 @@ msgstr "キャンセル"
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
 msgid "Cygwin Setup"
-msgstr "Cygwin のセットアップ"
+msgstr "Cygwin セットアップ"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
@@ -356,8 +356,8 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
-"このセットアップ プログラムは、Cygwin 環境の初期インストールと、その後のすべ"
-"ての更新に使用されます。次のページではインストール手順を説明します。\n"
+"このセットアッププログラムは、Cygwin 環境の初期インストールと、その後のすべて"
+"の更新に使用されます。次のページではインストール手順を説明します。\n"
 "\n"
 "デフォルトでは、パッケージの基本セットのみがインストールされることに注意して"
 "ください。Cygwin は、さまざまな目的に渡る多数のパッケージを提供します。\n"
@@ -371,7 +371,7 @@ msgstr "このプログラムの翻訳に貢献してください。"
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
-msgstr "Cygwin のセットアップ - インストール状況 and アイコンを作成する"
+msgstr "Cygwin セットアップ - インストール状況とアイコンの作成"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
 msgid "Create icon on &Desktop"
@@ -379,7 +379,7 @@ msgstr "デスクトップにアイコンを作成(&D)"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
 msgid "Add icon to &Start Menu"
-msgstr "追加 icon to &Start Menu"
+msgstr "スタートメニューにアイコンを追加(&S)"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_INSTALL
 msgid ""
@@ -394,7 +394,7 @@ msgstr "アイコンを作成する"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
 msgid "Shows installation status in download-only mode."
-msgstr "ダウンロード専用モードでインストールステータスを表示します。"
+msgstr "ダウンロード専用モードでインストール状況を表示します。"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
 msgid "Installation complete"
@@ -422,7 +422,7 @@ msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "パスワード(&P)"
 
-#: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC_2
+#: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgid "FTP Authorization Required"
 msgstr "FTP 認証が必要です"
 
@@ -438,7 +438,7 @@ msgstr "キャンセル"
 
 #: DIALOG.IDD_CHOOSE.CAPTION
 msgid "Cygwin Setup - Select Packages"
-msgstr "Cygwin のセットアップ - パッケージを選択"
+msgstr "Cygwin セットアップ - パッケージを選択"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
 msgid "&View"
@@ -458,7 +458,7 @@ msgstr "クリア(&C)"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_KEEP
 msgid "&Keep"
-msgstr "保つ(&K)"
+msgstr "このまま(&K)"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_BEST
 msgid "&Best"
@@ -490,7 +490,7 @@ msgstr "パッケージを選択"
 
 #: DIALOG.IDD_PREREQ.CAPTION
 msgid "Cygwin Setup - Resolving Dependencies"
-msgstr "Cygwin のセットアップ - 依存関係の解決"
+msgstr "Cygwin セットアップ - 依存関係の解決"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Resolving Dependencies"
@@ -507,15 +507,15 @@ msgstr "デフォルトの問題解決を受け入れる(&A)"
 
 #: DIALOG.IDD_CONFIRM.CAPTION
 msgid "Cygwin Setup - Review and confirm changes"
-msgstr "Cygwin のセットアップ - 変更を確認して確認する"
+msgstr "Cygwin セットアップ - 変更のレビューと確認"
 
 #: DIALOG.IDD_CONFIRM.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Review and confirm changes"
-msgstr "変更を確認して確認する"
+msgstr "変更のレビューと確認する"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
-msgstr "Cygwin のセットアップ - Use dropped mirrors?"
+msgstr "Cygwin セットアップ - Use dropped mirrors?"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
@@ -533,7 +533,7 @@ msgstr ""
 "。\n"
 "これは次のミラーに影響します:"
 
-#: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC_2
+#: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "If you experience installation problems consider trying official mirrors "
 "only.\n"
@@ -563,7 +563,7 @@ msgstr "ダウンロードが不完全です"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid "The following package(s) had download errors:"
-msgstr "次のパッケージにダウンロード エラーが発生しました:"
+msgstr "次のパッケージにダウンロードエラーが発生しました:"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid ""
@@ -578,7 +578,7 @@ msgstr ""
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
 msgid "&Retry"
-msgstr "リトライ(&R)"
+msgstr "再試行(&R)"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
 msgid "&Back"
@@ -596,7 +596,7 @@ msgstr "キャンセル"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
-msgstr "Cygwin のセットアップ - Running postinstall scripts"
+msgstr "Cygwin セットアップ - Running postinstall scripts"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Postinstall script errors"
@@ -655,7 +655,7 @@ msgstr ""
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE"
 msgid "&Retry"
-msgstr "リトライ(&R)"
+msgstr "再試行(&R)"
 
 #: DIALOG.IDD_FILE_INUSE.DEFPUSHBUTTON.IDRETRY
 msgid "&Stop Processes"
@@ -672,15 +672,15 @@ msgid ""
 "cygwin root, to prevent possible conflicts with other programs.  Proceed "
 "anyway?"
 msgstr ""
-"警告: 他のプログラムとの競合を防ぐため、ハード ドライブのルートを cygwin "
+"警告: 他のプログラムとの競合を防ぐため、ハードドライブのルートを cygwin "
 "ルートとして使用しないことをお勧めします。それでも続行しますか?"
 
 #: STRINGTABLE.IDS_ROOT_SPACE
 msgid ""
 "You should not choose a root path that include spaces in directory names.  "
 "Proceed anyway?"
-msgstr "ディレクトリ名にスペースが含まれるルート "
-"パスを選択しないでください。それでも続行しますか?"
+msgstr "ディレクトリ名にスペースが含まれるルートパスを選択しないでください。それでも"
+"続行しますか?"
 
 #: STRINGTABLE.IDS_ERR_OPEN_WRITE
 msgid "Can't open %s for writing: %s"
@@ -710,8 +710,8 @@ msgid ""
 "In-use files have been replaced. You need to reboot as soon as possible to "
 "activate the new versions. Cygwin may operate incorrectly until you reboot."
 msgstr ""
-"使用中のファイルは置き換えられました。新しいバージョンを有効にするには、"
-"できるだけ早く再起 動する必要があります。再起動するまで、Cygwin "
+"使用中のファイルは置き換えられました。新しいバージョンを有効にするには、でき"
+"るだけ早く再起動する必要があります。再起動するまで、Cygwin "
 "は正しく動作しない可能性があります。"
 
 #: STRINGTABLE.IDS_ERR_OPEN_READ
@@ -722,8 +722,8 @@ msgstr "%s を読み取り用に開けません: %s"
 msgid ""
 "The install directory must be absolute, with both a drive letter and leading "
 "slash, like C:\\Cygwin"
-msgstr "インストールディレクトリは、C:\\Cygwinのように、"
-"ドライブ文字と先頭のスラッシュの両方を含む 絶対パスでなければなりません。"
+msgstr "インストールディレクトリは、C:\\Cygwinのように"
+"、ドライブ文字と先頭のスラッシュの両方を含む絶対パスでなければなりません。"
 
 #: STRINGTABLE.IDS_DOWNLOAD_COMPLETE
 msgid "Download Complete"
@@ -825,12 +825,12 @@ msgstr "すべてのパッケージを利用可能な最良のバージョンに
 msgid ""
 "Sets all packages to the version available from the package repository, "
 "downgrading if necessary."
-msgstr "すべてのパッケージをパッケージ リポジトリから入手可能なバージョンに設定し、必"
+msgstr "すべてのパッケージをパッケージリポジトリから入手可能なバージョンに設定し、必"
 "要に応じてダウングレードします。"
 
 #: STRINGTABLE.IDS_TRUSTEXP_TOOLTIP
 msgid "Enable test packages."
-msgstr "テスト パッケージを有効にします。"
+msgstr "テストパッケージを有効にします。"
 
 #: STRINGTABLE.IDS_VIEWBUTTON_TOOLTIP
 msgid ""
@@ -859,7 +859,8 @@ msgid ""
 "removed.  Other installed or selected packages no longer depend on these "
 "packages."
 msgstr ""
-"パッケージビューを選択します。これにより、以下にパッケージを示します。\n"
+"パッケージビューを選択します。  "
+"これにより、以下に表示されるパッケージが決まります。\n"
 "\n"
 "カテゴリ: パッケージ "
 "カテゴリ別にグループ化します。展開するには「+」をクリックします。\n"
@@ -933,7 +934,7 @@ msgid ""
 "Press OK if that's what you wanted\n"
 "or Cancel to choose a different directory."
 msgstr ""
-"ローカル パッケージ ディレクトリ %s が見つかりません。\n"
+"ローカルパッケージディレクトリ %s が見つかりません。\n"
 "インストール済みのパッケージを削除することはできますが、インストールするもの"
 "がなくなります。\n"
 "\n"
@@ -1000,7 +1001,7 @@ msgstr "実行中..."
 
 #: STRINGTABLE.IDS_PROGRESS_SOLVING
 msgid "Solving dependencies..."
-msgstr "Solving 依存関係。.."
+msgstr "依存関係の解決中..."
 
 #: STRINGTABLE.IDS_ACTION_DEFAULT
 msgid "Default"
@@ -1022,7 +1023,7 @@ msgstr "スキップ"
 
 #: STRINGTABLE.IDS_ACTION_KEEP
 msgid "Keep"
-msgstr "保つ"
+msgstr "このまま"
 
 #: STRINGTABLE.IDS_ACTION_REINSTALL
 msgid "Reinstall"
@@ -1042,7 +1043,7 @@ msgstr "ソース"
 
 #: STRINGTABLE.IDS_VIEW_FULL
 msgid "Full"
-msgstr "満杯"
+msgstr "全て"
 
 #: STRINGTABLE.IDS_VIEW_PENDING
 msgid "Pending"
@@ -1050,19 +1051,19 @@ msgstr "保留中"
 
 #: STRINGTABLE.IDS_VIEW_UPTODATE
 msgid "Up To Date"
-msgstr "最新の"
+msgstr "最新"
 
 #: STRINGTABLE.IDS_VIEW_NOTINSTALLED
 msgid "Not Installed"
-msgstr "インストールされていません"
+msgstr "未インストール"
 
 #: STRINGTABLE.IDS_VIEW_PICKED
 msgid "Picked"
-msgstr "選んだ"
+msgstr "選択したの"
 
 #: STRINGTABLE.IDS_VIEW_REMOVABLE
 msgid "Removable"
-msgstr "取り外し可能"
+msgstr "削除可能"
 
 #: STRINGTABLE.IDS_VIEW_UNNEEDED
 msgid "Unneeded"
@@ -1078,11 +1079,11 @@ msgstr "パッケージ"
 
 #: STRINGTABLE.IDS_COLUMN_CURRENT
 msgid "Current"
-msgstr "現在"
+msgstr "現在の"
 
 #: STRINGTABLE.IDS_COLUMN_NEW
 msgid "New"
-msgstr "新しい"
+msgstr "新しいの"
 
 #: STRINGTABLE.IDS_COLUMN_SOURCE
 msgid "Src?"
@@ -1103,11 +1104,11 @@ msgstr "説明"
 #: STRINGTABLE.IDS_MBOX_CAPTION
 msgctxt "STRINGTABLE.IDS_MBOX_CAPTION"
 msgid "Cygwin Setup"
-msgstr "Cygwin のセットアップ"
+msgstr "Cygwin セットアップ"
 
 #: STRINGTABLE.IDS_EXTRACTION_FAILED
 msgid "Unable to extract /%s -- corrupt package?"
-msgstr "抽出できません /%s -- corrupt package?"
+msgstr "抽出できません /%s -- 破損パッケージ？"
 
 #: STRINGTABLE.IDS_EXTRACTION_INUSE
 msgid ""
@@ -1154,31 +1155,31 @@ msgid ""
 "Desktop."
 msgstr ""
 "CoCreateInstance はエラー 0x%x で失敗しました。\n"
-"セットアップでは、スタート メニューまたはデスクトップに Cygwin "
+"セットアップでは、スタートメニューまたはデスクトップに Cygwin "
 "アイコンを作成できません。"
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_VERSION
 msgid "Cygwin is not supported on this Windows version"
-msgstr "このWindowsバージョンではCygwinはサポートされていません"
+msgstr "この Windows バージョンでは Cygwin はサポートされていません"
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
 msgid "Cygwin is not supported on 32-bit Windows"
-msgstr "Cygwinは32ビットWindowsではサポートされていません"
+msgstr "Cygwin は32ビット Windows ではサポートされていません"
 
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
 "Cygwin support for this Windows version is deprecated, and will be removed "
 "in the next major version"
-msgstr "この Windows バージョンでの Cygwin サポートは非推奨であり、次のメジャー "
-"バージョンでは削除されます。"
+msgstr "この Windows バージョンでの Cygwin "
+"サポートは非推奨であり、次のメジャーバージョンでは削除されます。"
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
 msgid "Couldn't create registry key to store installation path"
-msgstr "インストール パスを保存するためのレジストリ キーを作成できませんでした"
+msgstr "インストールパスを保存するためのレジストリキーを作成できませんでした"
 
 #: STRINGTABLE.IDS_NIO_ERROR
 msgid "Internet Error: %s"
-msgstr "インターネット エラー: %s"
+msgstr "インターネットエラー: %s"
 
 #: STRINGTABLE.IDS_PREREQ_UNSOLVED_PROBLEMS
 msgid ""
@@ -1192,7 +1193,7 @@ msgstr ""
 "\n"
 "続行すると、一部のパッケージが正しく動作しない可能性があります。\n"
 "\n"
-"本当に続行しますか (推奨されません)?"
+"本当に続行しますか？(推奨されません)"
 
 #: STRINGTABLE.IDS_MIXED_BITNESS_ERROR
 msgid ""
@@ -1219,7 +1220,7 @@ msgid ""
 "Can't get list of download sites.\n"
 "Make sure your network settings are correct and try again."
 msgstr ""
-"ダウンロード サイトのリストを取得できません。\n"
+"ダウンロードサイトのリストを取得できません。\n"
 "ネットワーク設定が正しいことを確認して、もう一度お試しください。"
 
 #: STRINGTABLE.IDS_CONFIRM_EXIT
@@ -1302,7 +1303,7 @@ msgstr "抽出できません"
 
 #: STRINGTABLE.IDS_USER_URL_TOOLTIP
 msgid "Additional site URL, path or UNC path"
-msgstr "追加のサイト URL、パス、または UNC パス"
+msgstr "追加のサイトURL、パス、または UNCパス"
 
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
@@ -1317,8 +1318,8 @@ msgid ""
 "The default is to both download and install packages, unless either --"
 "download or --local-install is specified."
 msgstr ""
-"--download または --local-install のいずれかが指定されていない限り、"
-"デフォルトではパッケージの ダウンロードとインストールの両方が実行されます。"
+"--download または --local-install のいずれかが指定されていない限り、デフォル"
+"トではパッケージのダウンロードとインストールの両方が実行されます。"
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_TEST
 msgid "Consider package versions marked test"
@@ -1350,11 +1351,11 @@ msgstr "孤立したパッケージを削除する"
 msgid ""
 "Disable known or suspected buggy anti virus software packages during "
 "execution"
-msgstr "実行中に、バグがあるか疑われるウイルス対策ソフトウェア パッケージを無効にする"
+msgstr "実行中に、バグがあるか疑われるウイルス対策ソフトウェアパッケージを無効にする"
 
 #: STRINGTABLE.IDS_HELPTEXT_DOWNLOAD
 msgid "Download packages from internet"
-msgstr "ダウンロード packages from internet"
+msgstr "インターネットからパッケージをダウンロードする"
 
 #: STRINGTABLE.IDS_HELPTEXT_FORCE_CURRENT
 msgid "Select the current version for all packages"
@@ -1378,11 +1379,11 @@ msgstr "信頼できないキーを使用し、すべてを保持する"
 
 #: STRINGTABLE.IDS_HELPTEXT_LANG
 msgid "Specify GUI language langid"
-msgstr "GUI言語langidを指定する"
+msgstr "GUI 言語の langid を指定する"
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_INSTALL
 msgid "Install packages from local directory"
-msgstr "インストール packages from local directory"
+msgstr "ローカルディレクトリからパッケージをインストールする"
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_PACKAGE_DIR
 msgid "Local package directory"
@@ -1393,8 +1394,8 @@ msgid ""
 "Skip package availability check when installing from local directory ("
 "requires local directory to be clean mirror!)"
 msgstr ""
-"ローカル ディレクトリからインストールするときにパッケージの可用性チェックをス"
-"キップします (ローカル ディレクトリがクリーンなミラーである必要があります)"
+"ローカルディレクトリからインストールするときにパッケージの可用性チェックをス"
+"キップします (ローカルディレクトリがクリーンなミラーである必要があります)"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
 msgid "Do not check for and enforce running as Administrator"
@@ -1426,7 +1427,7 @@ msgstr "新しいバージョンのセットアップが利用可能かどうか
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
 msgid "Don't warn about deprecated Windows versions"
-msgstr "廃止予定のWindowsバージョンについて警告しない"
+msgstr "廃止予定の Windows バージョンについて警告しない"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WRITE_REGISTRY
 msgid "Don't write root installation directory to registry"
@@ -1434,7 +1435,7 @@ msgstr "ルートインストールディレクトリをレジストリに書き
 
 #: STRINGTABLE.IDS_HELPTEXT_OLD_KEYS
 msgid "Enable old cygwin.com keys"
-msgstr "古いcygwin.comキーを有効にする"
+msgstr "古い cygwin.com キーを有効にする"
 
 #: STRINGTABLE.IDS_HELPTEXT_ONLY_SITE
 msgid "Do not download mirror list.  Only use sites specified with -s"
@@ -1482,7 +1483,7 @@ msgstr "s-expr 形式の追加の DSA 公開鍵"
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
 msgid "Download site URL, path or UNC path"
-msgstr "ダウンロード site URL, path or UNC path"
+msgstr "ダウンロードサイトURL、パス、もしくは UNCパス"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
