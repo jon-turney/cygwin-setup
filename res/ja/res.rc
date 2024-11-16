@@ -7,7 +7,7 @@ LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
 
 IDD_SOURCE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin セットアップ - インストール タイプの選択"
+CAPTION "Cygwin セットアップ - インストールタイプの選択"
 FONT 9, "MS UI Gothic"
 BEGIN
     CONTROL         "インターネットからインストール(&I)\n(ダウンロードしたファイルは将来の再利用のために保存されます)",IDC_SOURCE_NETINST,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP | BS_MULTILINE | BS_TOP,71,60,200,30
@@ -16,34 +16,34 @@ BEGIN
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
     LTEXT           "ダウンロード元を選択",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
-    LTEXT           "インターネットからインストールまたはダウンロードするか、ローカル ディレクトリ内のファイルからインストールするかを選択します。",IDC_SOURCE_SUBTEXT,21,9,239,16,NOT WS_GROUP
+    LTEXT           "インターネットからインストールまたはダウンロードするか、ローカルディレクトリ内のファイルからインストールするかを選択します。",IDC_SOURCE_SUBTEXT,21,9,239,16,NOT WS_GROUP
 END
 
 IDD_VIRUS DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin セットアップ - ウイルス スキャナーを無効にしますか?"
+CAPTION "Cygwin セットアップ - ウイルススキャナーを無効にしますか?"
 FONT 9, "MS UI Gothic"
 BEGIN
     CONTROL         "ウイルススキャナを無効にする(&D)",IDC_DISABLE_AV,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,101,69,115,10
     CONTROL         "ウイルススキャナをそのままにしておく(&L)",IDC_LEAVE_AV,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,101,84,115,10
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
-    LTEXT           "インストール中にウイルス スキャナーを無効にするかどうかを選択します。",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "インストール中にウイルススキャナーを無効にするかどうかを選択します。",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
     LTEXT           "一部のウイルス対策プログラム (特に McAfee) は、Cygwin のインストール中に Windows XP コンピュータで ブルー スクリーンを引き起こします。",IDC_STATIC,21,9,239,16,NOT WS_GROUP
     LTEXT           "問題となる可能性のあるものが検出されました。Cygwin セットアップでは、インストール プロセス中にこれ を無効にし、インストールが完了したら再度有効にすることができます。",IDC_STATIC,21,32,239,24,NOT WS_GROUP
 END
 
 IDD_LOCAL_DIR DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin セットアップ - ローカル パッケージ ディレクトリの選択"
+CAPTION "Cygwin セットアップ - ローカルパッケージディレクトリの選択"
 FONT 9, "MS UI Gothic"
 BEGIN
     LTEXT           "ローカルパッケージディレクトリを選択",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
-    LTEXT           "セットアップがダウンロードしたインストール ファイルを保存するディレクトリを選択します。ディレクトリがまだ存在しない場合は作成されます。",IDC_LOCAL_DIR_DOWNLOAD_DESC,21,9,248,16,NOT WS_GROUP
-    LTEXT           "セットアップがダウンロードしたインストール ファイルを検索するディレクトリを選択します。",IDC_LOCAL_DIR_INSTALL_DESC,21,9,248,16,NOT WS_GROUP
+    LTEXT           "セットアップがダウンロードしたインストールファイルを保存するディレクトリを選択します。ディレクトリがまだ存在しない場合は作成されます。",IDC_LOCAL_DIR_DOWNLOAD_DESC,21,9,248,16,NOT WS_GROUP
+    LTEXT           "セットアップがダウンロードしたインストールファイルを検索するディレクトリを選択します。",IDC_LOCAL_DIR_INSTALL_DESC,21,9,248,16,NOT WS_GROUP
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
-    GROUPBOX        "ローカル パッケージ ディレクトリ",IDC_LOCALDIR_GRP,5,35,330,35
+    GROUPBOX        "ローカルパッケージディレクトリ",IDC_LOCALDIR_GRP,5,35,330,35
     EDITTEXT        IDC_LOCAL_DIR,13,47,262,14,ES_AUTOHSCROLL | WS_TABSTOP
     PUSHBUTTON      "表示(&B)...",IDC_LOCAL_DIR_BROWSE,277,47,52,14,WS_TABSTOP
 END
@@ -54,7 +54,7 @@ CAPTION "Cygwin セットアップ - インストールディレクトリの選�
 FONT 9, "MS UI Gothic"
 BEGIN
     LTEXT           "ルートインストールディレクトリを選択",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
-    LTEXT           "Cygwin をインストールするディレクトリを選択します。また、いくつかのインストール パラメータを選択します。",IDC_ROOTDIR_SUBTEXT,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Cygwin をインストールするディレクトリを選択します。また、いくつかのインストールパラメータを選択します。",IDC_ROOTDIR_SUBTEXT,21,9,239,16,NOT WS_GROUP
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
     GROUPBOX        "ルートディレクトリ",IDC_ROOTDIR_GRP,5,35,330,35
@@ -64,13 +64,13 @@ BEGIN
     CONTROL         "すべてのユーザー (推奨)(&A)",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP | WS_GROUP,13,89,130,8
     CONTROL         "自分だけ(&M)",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,13,130,130,8
     LTEXT           "Cygwin はシステムのすべてのユーザーが利用できます。",IDC_ALLUSERS_TEXT,25,101,300,28
-    LTEXT           "Cygwin は引き続きすべてのユーザーが利用できますが、デスクトップ アイコン、Cygwin メニュー エントリ、および重要なインストーラ情報は現在のユーザーのみが利用できます。管理者権限がない場合、または特別なニーズがある場合にのみ、これを選択してください。",IDC_JUSTME_TEXT,25,140,300,32
+    LTEXT           "Cygwin は引き続きすべてのユーザーが利用できますが、デスクトップアイコン、Cygwin メニューエントリ、および重要なインストーラ情報は現在のユーザーのみが利用できます。管理者権限がない場合、または特別なニーズがある場合にのみ、これを選択してください。",IDC_JUSTME_TEXT,25,140,300,32
 END
 
 IDD_SITE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_CONTROLPARENT
-CAPTION "Cygwin セットアップ - ダウンロード サイトの選択"
+CAPTION "Cygwin セットアップ - ダウンロードサイトの選択"
 FONT 9, "MS UI Gothic"
 BEGIN
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
@@ -99,13 +99,13 @@ BEGIN
     RTEXT           "ポート",IDC_STATIC,85,125,30,12,SS_CENTERIMAGE | NOT WS_GROUP
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
-    LTEXT           "セットアップでは、インターネットへの接続方法を指定する必要があります。以下の適切な設定を選択してく ださい。",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "セットアップでは、インターネットへの接続方法を指定する必要があります。以下の適切な設定を選択してください。",IDC_STATIC,21,9,239,16,NOT WS_GROUP
     LTEXT           "インターネット接続を選択してください",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
 END
 
 IDD_INSTATUS DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin のセットアップ"
+CAPTION "Cygwin セットアップ"
 FONT 9, "MS UI Gothic"
 BEGIN
     LTEXT           "インストール中...",IDC_INS_ACTION,45,55,205,8,SS_ENDELLIPSIS
@@ -133,7 +133,7 @@ BEGIN
     EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
     LTEXT           "パスワード(&P)",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
     EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "パスワード(&P)",IDC_STATIC,65,10,145,10
+    LTEXT           "プロキシ認証が必要",IDC_STATIC,65,10,145,10
     DEFPUSHBUTTON   "&OK",IDOK,100,75,45,15,WS_DISABLED
     PUSHBUTTON      "キャンセル",IDCANCEL,165,75,45,15
 END
@@ -148,18 +148,18 @@ BEGIN
     EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
     LTEXT           "パスワード(&P)",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
     EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "パスワード(&P)",IDC_STATIC,65,10,145,10
+    LTEXT           "サーバー認証が必要です",IDC_STATIC,65,10,145,10
     DEFPUSHBUTTON   "&OK",IDOK,100,75,45,15,WS_DISABLED
     PUSHBUTTON      "キャンセル",IDCANCEL,165,75,45,15
 END
 
 IDD_SPLASH DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin のセットアップ"
+CAPTION "Cygwin セットアップ"
 FONT 9, "MS UI Gothic"
 BEGIN
     LTEXT           "Cygwin ネットリリース セットアップ プログラム",IDC_STATIC_WELCOME_TITLE,115,1,195,24
-    LTEXT           "このセットアップ プログラムは、Cygwin 環境の初期インストールと、その後のすべての更新に使用されます。次のページではインストール手順を説明します。\n\nデフォルトでは、パッケージの基本セットのみがインストールされることに注意してください。Cygwin は、さまざまな目的に渡る多数のパッケージを提供します。\n\n将来いつでもこのプログラムを実行して、必要に応じてパッケージを追加、削除、またはアップグレードすることができます。",IDC_SPLASH_TEXT,115,25,195,100
+    LTEXT           "このセットアッププログラムは、Cygwin 環境の初期インストールと、その後のすべての更新に使用されます。次のページではインストール手順を説明します。\n\nデフォルトでは、パッケージの基本セットのみがインストールされることに注意してください。Cygwin は、さまざまな目的に渡る多数のパッケージを提供します。\n\n将来いつでもこのプログラムを実行して、必要に応じてパッケージを追加、削除、またはアップグレードすることができます。",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10
     LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
@@ -169,16 +169,16 @@ END
 
 IDD_DESKTOP DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin のセットアップ - インストール状況 and アイコンを作成する"
+CAPTION "Cygwin セットアップ - インストール状況とアイコンの作成"
 FONT 9, "MS UI Gothic"
 BEGIN
     CONTROL         "デスクトップにアイコンを作成(&D)",IDC_ROOT_DESKTOP,"Button",BS_AUTOCHECKBOX,108,78,110,8
-    CONTROL         "追加 icon to &Start Menu",IDC_ROOT_MENU,"Button",BS_AUTOCHECKBOX,108,93,140,8
+    CONTROL         "スタートメニューにアイコンを追加(&S)",IDC_ROOT_MENU,"Button",BS_AUTOCHECKBOX,108,93,140,8
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
     LTEXT           "Cygwin 環境に簡単にアクセスできるように、いくつかのアイコンを作成するかどうかをセットアップに伝えます。",IDC_DESKTOP_HEADER_INSTALL,21,9,239,16,NOT WS_GROUP
     LTEXT           "アイコンを作成する",IDC_DESKTOP_HEADER_TITLE_INSTALL,7,0,258,8,NOT WS_GROUP
-    LTEXT           "ダウンロード専用モードでインストールステータスを表示します。",IDC_DESKTOP_HEADER_DOWNLOAD,21,9,239,16,NOT WS_GROUP
+    LTEXT           "ダウンロード専用モードでインストール状況を表示します。",IDC_DESKTOP_HEADER_DOWNLOAD,21,9,239,16,NOT WS_GROUP
     LTEXT           "インストール完了",IDC_DESKTOP_HEADER_TITLE_DOWNLOAD,7,0,258,8,NOT WS_GROUP
     CONTROL         "",IDC_DESKTOP_SEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,135,SETUP_STANDARD_DIALOG_W,1
     LTEXT           "インストール状況",IDC_STATUS_HEADER,7,140,258,8,NOT WS_GROUP
@@ -195,14 +195,14 @@ BEGIN
     EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
     LTEXT           "パスワード(&P)",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
     EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "パスワード(&P)",IDC_STATIC,65,10,145,10
+    LTEXT           "FTP 認証が必要です",IDC_STATIC,65,10,145,10
     DEFPUSHBUTTON   "&OK",IDOK,100,75,45,15,WS_DISABLED
     PUSHBUTTON      "キャンセル",IDCANCEL,165,75,45,15
 END
 
 IDD_CHOOSE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin のセットアップ - パッケージを選択"
+CAPTION "Cygwin セットアップ - パッケージを選択"
 FONT 9, "MS UI Gothic"
 BEGIN
     LTEXT           "表示(&V)",IDC_CHOOSE_VIEWCAPTION,SETUP_VIEW_X,33,SETUP_VIEW_W,10
@@ -211,7 +211,7 @@ BEGIN
     CONTROL         "検索 ",IDC_CHOOSE_DO_SEARCH,"Button",BS_PUSHBUTTON | NOT WS_VISIBLE,SETUP_SEARCH_X,33,SETUP_SEARCH_W,14
     EDITTEXT        IDC_CHOOSE_SEARCH_EDIT,SETUP_SEARCHTEXT_X,30,SETUP_SEARCHTEXT_W,14,ES_AUTOHSCROLL
     PUSHBUTTON      "クリア(&C)",IDC_CHOOSE_CLEAR_SEARCH,SETUP_CLEAR_X,30,SETUP_CLEAR_W,14
-    CONTROL         "保つ(&K)",IDC_CHOOSE_KEEP,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,SETUP_KEEP_X,30,SETUP_KPCE_W,14
+    CONTROL         "このまま(&K)",IDC_CHOOSE_KEEP,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,SETUP_KEEP_X,30,SETUP_KPCE_W,14
     CONTROL         "最適(&B)",IDC_CHOOSE_BEST,"Button",BS_AUTORADIOBUTTON,SETUP_BEST_X,30,SETUP_KPCE_W,14
     CONTROL         "同期(&S)",IDC_CHOOSE_SYNC,"Button",BS_AUTORADIOBUTTON,SETUP_SYNC_X,30,SETUP_KPCE_W,14
     CONTROL         "テスト(&T)",IDC_CHOOSE_EXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,SETUP_EXP_X,30,SETUP_KPCE_W,14
@@ -226,7 +226,7 @@ END
 
 IDD_PREREQ DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin のセットアップ - 依存関係の解決"
+CAPTION "Cygwin セットアップ - 依存関係の解決"
 FONT 9, "MS UI Gothic"
 BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
@@ -239,24 +239,24 @@ END
 
 IDD_CONFIRM DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin のセットアップ - 変更を確認して確認する"
+CAPTION "Cygwin セットアップ - 変更のレビューと確認"
 FONT 9, "MS UI Gothic"
 BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
     ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
-    LTEXT           "変更を確認して確認する",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "変更のレビューと確認する",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
     EDITTEXT        IDC_CONFIRM_EDIT,7,41,325,131,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
 END
 
 IDD_DROPPED DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin のセットアップ - Use dropped mirrors?"
+CAPTION "Cygwin セットアップ - Use dropped mirrors?"
 FONT 9, "MS UI Gothic"
 BEGIN
     LTEXT           "警告:",IDC_STATIC,7,8,40,8
     LTEXT           "選択した 1 つ以上のミラーは、公式 Cygwin ミラーのリストにもう掲載されていません。それらは古くなっているか、一部のパッケージが欠落している可能性があります。\nこれは次のミラーに影響します:",IDC_STATIC,47,8,263,32
     EDITTEXT        IDC_DROP_MIRRORS,7,40,303,40,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
-    LTEXT           "選択した 1 つ以上のミラーは、公式 Cygwin ミラーのリストにもう掲載されていません。それらは古くなっているか、一部のパッケージが欠落している可能性があります。\nこれは次のミラーに影響します:",IDC_STATIC,7,88,303,24
+    LTEXT           "インストールで問題が発生した場合は、公式ミラーのみを試すことを検討してください。\n\nこのミラーを使用して続行しますか?",IDC_STATIC,7,88,303,24
     CONTROL         "このミラーについて今後警告しない(&N)",IDC_DROP_NOWARN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,120,213,15
     PUSHBUTTON      "はい(&Y)",IDYES,220,120,45,15
     DEFPUSHBUTTON   "いいえ(&N)",IDNO,265,120,45,15
@@ -268,10 +268,10 @@ CAPTION "ダウンロードが不完全です"
 FONT 9, "MS UI Gothic"
 BEGIN
     ICON            IDI_WARNING,IDC_HEADICON,10,10
-    LTEXT           "次のパッケージにダウンロード エラーが発生しました:",IDC_STATIC,7,8,320,16
+    LTEXT           "次のパッケージにダウンロードエラーが発生しました:",IDC_STATIC,7,8,320,16
     EDITTEXT        IDC_DOWNLOAD_EDIT,7,24,320,88,WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL
     LTEXT           "ダウンロードを再試行するには「再試行」、パッケージ選択ページに戻るには「戻る」、とにかく続行するには「続行」（非推奨）、終了するには「キャンセル」を選択します。",IDC_STATIC,7,120,320,24
-    DEFPUSHBUTTON   "リトライ(&R)",IDRETRY,45,150,50,15
+    DEFPUSHBUTTON   "再試行(&R)",IDRETRY,45,150,50,15
     PUSHBUTTON      "戻る(&B)",IDC_BACK,110,150,50,15
     PUSHBUTTON      "続ける(&C)",IDIGNORE,175,150,50,15
     PUSHBUTTON      "キャンセル",IDABORT,240,150,50,15
@@ -279,7 +279,7 @@ END
 
 IDD_POSTINSTALL DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142
 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU
-CAPTION "Cygwin のセットアップ - Running postinstall scripts"
+CAPTION "Cygwin セットアップ - Running postinstall scripts"
 FONT 9, "MS UI Gothic"
 BEGIN
     CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
@@ -301,7 +301,7 @@ BEGIN
     LTEXT           "再試行するには「再試行」を選択し、プロセスを停止して再試行するには「停止」を選択し、とにかく続行するには「続行」を選択します (ファイルは再起動後に更新されます)。",IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
     LTEXT           "再試行するには「再試行」を選択し、プロセスを強制終了して再試行するには「強制終了」を選択し、とにかく続行するには「続行」を選択します (ファイルは再起動後に更新されます)。",IDC_FILE_INUSE_HELP_1,33,80,234,24,NOT WS_GROUP
     LTEXT           "再試行するには「再試行」を選択し、すべてのプロセスを強制終了して再試行するには「強制終了」を選択し、とにかく続行するには「続行」を選択します (ファイルは再起動後に更新されます)。",IDC_FILE_INUSE_HELP_2,33,80,234,24,NOT WS_GROUP
-    PUSHBUTTON      "リトライ(&R)",IDIGNORE,45,112,55,15
+    PUSHBUTTON      "再試行(&R)",IDIGNORE,45,112,55,15
     DEFPUSHBUTTON   "プロセスを停止(&S)",IDRETRY,111,112,55,15
     PUSHBUTTON      "続ける(&C)",IDCONTINUE,177,112,55,15
 END
@@ -313,16 +313,16 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ROOT_SLASH          "警告: 他のプログラムとの競合を防ぐため、ハード ドライブのルートを cygwin ルートとして使用しないことをお勧めします。それでも続行しますか?"
-    IDS_ROOT_SPACE          "ディレクトリ名にスペースが含まれるルート パスを選択しないでください。それでも続行しますか?"
+    IDS_ROOT_SLASH          "警告: 他のプログラムとの競合を防ぐため、ハードドライブのルートを cygwin ルートとして使用しないことをお勧めします。それでも続行しますか?"
+    IDS_ROOT_SPACE          "ディレクトリ名にスペースが含まれるルートパスを選択しないでください。それでも続行しますか?"
     IDS_ERR_OPEN_WRITE      "%s を書き込み用に開けません: %s"
     IDS_SETUPINI_MISSING    "<%s> から %s を取得できません"
     IDS_OLD_SETUPINI        "この setup.ini は、前回 cygwin をインストールしたときに使用したものより古いものです。それでも続行しますか?"
     IDS_NOTHING_INSTALLED   "何もインストールする必要はありません"
     IDS_INSTALL_COMPLETE    "インストール完了"
-    IDS_REBOOT_REQUIRED     "使用中のファイルは置き換えられました。新しいバージョンを有効にするには、できるだけ早く再起 動する必要があります。再起動するまで、Cygwin は正しく動作しない可能性があります。"
+    IDS_REBOOT_REQUIRED     "使用中のファイルは置き換えられました。新しいバージョンを有効にするには、できるだけ早く再起動する必要があります。再起動するまで、Cygwin は正しく動作しない可能性があります。"
     IDS_ERR_OPEN_READ       "%s を読み取り用に開けません: %s"
-    IDS_ROOT_ABSOLUTE       "インストールディレクトリは、C:\\Cygwinのように、ドライブ文字と先頭のスラッシュの両方を含む 絶対パスでなければなりません。"
+    IDS_ROOT_ABSOLUTE       "インストールディレクトリは、C:\\Cygwinのように、ドライブ文字と先頭のスラッシュの両方を含む絶対パスでなければなりません。"
     IDS_DOWNLOAD_COMPLETE   "ダウンロード完了"
     IDS_NOLOGFILE           "書き込み用にログファイル %s を開けません"
     IDS_UNINSTALL_COMPLETE  "アンインストールが完了しました。"
@@ -341,16 +341,16 @@ BEGIN
                             "致命的なエラー: キャッチされない例外\nスレッド: %s\nタイプ: %s\nメッセージ: %s\nAppErrNo: %d"
     IDS_TRUSTKEEP_TOOLTIP   "すべてのパッケージを現在インストールされているバージョンに設定します。これは、どのパッケージにも変更を加えないようにセットアップに指示するのと同じです。"
     IDS_TRUSTCURR_TOOLTIP   "すべてのパッケージを利用可能な最良のバージョンに設定します（推奨）。"
-    IDS_TRUSTSYNC_TOOLTIP   "すべてのパッケージをパッケージ リポジトリから入手可能なバージョンに設定し、必要に応じてダウングレードします。"
-    IDS_TRUSTEXP_TOOLTIP    "テスト パッケージを有効にします。"
-    IDS_VIEWBUTTON_TOOLTIP  "パッケージビューを選択します。これにより、以下にパッケージを示します。\n\nカテゴリ: パッケージ カテゴリ別にグループ化します。展開するには「+」をクリックします。\n\n完全: すべてのパッケージを表示します。\n\n保留中: インストール、削除、またはアップグレードされる予定のパッケージのみを表示します。これにより、「次へ」を押したときに何が変更されるかがわかります。\n\n最新: すでに必要なバージョンになっているため、アクションを必要としないインストール済みパッケージを表示します。\n\nインストールされていません: 現在インストールされておらず、インストール対象として選択されていないパッケージを表示します。\n\n選択済み: 依存関係としてインストールされていない、選択されたインストール済みパッケージを表示します。\n\n削除可能: 選択され、安全に削除できるインストール済みパッケージを表示します。他のインストール済みまたは選択されたパッケージは、これらのパッケージに依存しません。\n\n不要: 自動的にインストールされたパッケージを表示しますが、現在は安全に削除できます。インストールまたは選択された他のパッケージは、これらのパッケージに依存しません。"
+    IDS_TRUSTSYNC_TOOLTIP   "すべてのパッケージをパッケージリポジトリから入手可能なバージョンに設定し、必要に応じてダウングレードします。"
+    IDS_TRUSTEXP_TOOLTIP    "テストパッケージを有効にします。"
+    IDS_VIEWBUTTON_TOOLTIP  "パッケージビューを選択します。  これにより、以下に表示されるパッケージが決まります。\n\nカテゴリ: パッケージ カテゴリ別にグループ化します。展開するには「+」をクリックします。\n\n完全: すべてのパッケージを表示します。\n\n保留中: インストール、削除、またはアップグレードされる予定のパッケージのみを表示します。これにより、「次へ」を押したときに何が変更されるかがわかります。\n\n最新: すでに必要なバージョンになっているため、アクションを必要としないインストール済みパッケージを表示します。\n\nインストールされていません: 現在インストールされておらず、インストール対象として選択されていないパッケージを表示します。\n\n選択済み: 依存関係としてインストールされていない、選択されたインストール済みパッケージを表示します。\n\n削除可能: 選択され、安全に削除できるインストール済みパッケージを表示します。他のインストール済みまたは選択されたパッケージは、これらのパッケージに依存しません。\n\n不要: 自動的にインストールされたパッケージを表示しますが、現在は安全に削除できます。インストールまたは選択された他のパッケージは、これらのパッケージに依存しません。"
     IDS_HIDEOBS_TOOLTIP     "選択すると、セットアップは、名前が '_' で始まるカテゴリのパッケージを非表示にします。このようなパッケージは通常、削除または名前が変更されたパッケージの空のプレースホルダー、または自動的に処理されるインフラストラクチャ パッケージです。"
     IDS_SIG_INVALID         "ミラー エラー: %s からの Setup.ini 署名 %s の検証に失敗しました。\nミラーが破損している可能性が あります。Setup.ini は拒否されました。"
     IDS_CRYPTO_ERROR        "内部エラー: gcrypt ライブラリ エラー %d %s"
     IDS_SEARCH_TOOLTIP      "パッケージ名でこの文字列を検索します。"
     IDS_MAYBE_MKDIR         "ディレクトリ %s が存在しません。作成しますか?"
     IDS_CANT_MKDIR          "ディレクトリ %s を作成できませんでした。(ドライブがいっぱいか読み取り専用ですか?)"
-    IDS_NO_LOCALDIR         "ローカル パッケージ ディレクトリ %s が見つかりません。\nインストール済みのパッケージを削除することはできますが、インストールするものがなくなります。\n\nよろしければ [OK] を押してください。\n別のディレクトリを選択する場合は [キャンセル] を押してください。"
+    IDS_NO_LOCALDIR         "ローカルパッケージディレクトリ %s が見つかりません。\nインストール済みのパッケージを削除することはできますが、インストールするものがなくなります。\n\nよろしければ [OK] を押してください。\n別のディレクトリを選択する場合は [キャンセル] を押してください。"
     IDS_ELEVATED            "インストールを昇格された子プロセスに渡します。"
     IDS_INSTALLEDB_VERSION  "不明なINSTALLED.DBバージョン"
     IDS_NO_MIRROR_LST       "ミラーサイトのリストをダウンロードできませんでした"
@@ -368,51 +368,51 @@ BEGIN
                             "計算中..."
     IDS_PROGRESS_POSTINSTALL
                             "実行中..."
-    IDS_PROGRESS_SOLVING    "Solving 依存関係。.."
+    IDS_PROGRESS_SOLVING    "依存関係の解決中..."
     IDS_ACTION_DEFAULT      "デフォルト"
     IDS_ACTION_INSTALL      "インストール"
     IDS_ACTION_UNINSTALL    "アンインストール"
     IDS_ACTION_SKIP         "スキップ"
-    IDS_ACTION_KEEP         "保つ"
+    IDS_ACTION_KEEP         "このまま"
     IDS_ACTION_REINSTALL    "再インストール"
     IDS_ACTION_RETRIEVE     "取得"
     IDS_ACTION_UNKNOWN      "未知"
     IDS_ACTION_SOURCE       "ソース"
-    IDS_VIEW_FULL           "満杯"
+    IDS_VIEW_FULL           "全て"
     IDS_VIEW_PENDING        "保留中"
-    IDS_VIEW_UPTODATE       "最新の"
-    IDS_VIEW_NOTINSTALLED   "インストールされていません"
-    IDS_VIEW_PICKED         "選んだ"
-    IDS_VIEW_REMOVABLE      "取り外し可能"
+    IDS_VIEW_UPTODATE       "最新"
+    IDS_VIEW_NOTINSTALLED   "未インストール"
+    IDS_VIEW_PICKED         "選択したの"
+    IDS_VIEW_REMOVABLE      "削除可能"
     IDS_VIEW_UNNEEDED       "不要"
     IDS_VIEW_CATEGORY       "カテゴリ"
     IDS_COLUMN_PACKAGE      "パッケージ"
-    IDS_COLUMN_CURRENT      "現在"
-    IDS_COLUMN_NEW          "新しい"
+    IDS_COLUMN_CURRENT      "現在の"
+    IDS_COLUMN_NEW          "新しいの"
     IDS_COLUMN_SOURCE       "ソース?"
     IDS_COLUMN_CATEGORIES   "カテゴリー"
     IDS_COLUMN_SIZE         "サイズ"
     IDS_COLUMN_DESCR        "説明"
-    IDS_MBOX_CAPTION        "Cygwin のセットアップ"
-    IDS_EXTRACTION_FAILED   "抽出できません /%s -- corrupt package?"
+    IDS_MBOX_CAPTION        "Cygwin セットアップ"
+    IDS_EXTRACTION_FAILED   "抽出できません /%s -- 破損パッケージ？"
     IDS_EXTRACTION_INUSE    "/%s を抽出できません -- ファイルの書き込みエラー\n\nファイルが使用中であるか、その他のエラーが発生しました。\n\nすべての Cygwin プロセスを停止して「再試行」を選択するか、とにかく続行するには「続行」を選択してください (ファイルは再起動後に更新されます)。\n"
     IDS_INSTALL_OLD_CYGWIN  "cygwin1.dll の古いバージョンがここに見つかりました:\n%s\n削除しますか?"
     IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
                             "ファイル %s を削除できませんでした。\nDLL は別のアプリケーションで使用されていますか?\ncygwin1.dll の古いバージョンをできるだけ早く削除してください。"
-    IDS_SHELLLINK_FAILED    "CoCreateInstance はエラー 0x%x で失敗しました。\nセットアップでは、スタート メニューまたはデスクトップに Cygwin アイコンを作成できません。"
+    IDS_SHELLLINK_FAILED    "CoCreateInstance はエラー 0x%x で失敗しました。\nセットアップでは、スタートメニューまたはデスクトップに Cygwin アイコンを作成できません。"
     IDS_UNSUPPORTED_WINDOWS_VERSION
-                            "このWindowsバージョンではCygwinはサポートされていません"
+                            "この Windows バージョンでは Cygwin はサポートされていません"
     IDS_UNSUPPORTED_WINDOWS_ARCH
-                            "Cygwinは32ビットWindowsではサポートされていません"
+                            "Cygwin は32ビット Windows ではサポートされていません"
     IDS_DEPRECATED_WINDOWS_VERSION
-                            "この Windows バージョンでの Cygwin サポートは非推奨であり、次のメジャー バージョンでは削除されます。"
+                            "この Windows バージョンでの Cygwin サポートは非推奨であり、次のメジャーバージョンでは削除されます。"
     IDS_MOUNT_REGISTRY_KEY_FAILED
-                            "インストール パスを保存するためのレジストリ キーを作成できませんでした"
-    IDS_NIO_ERROR           "インターネット エラー: %s"
+                            "インストールパスを保存するためのレジストリキーを作成できませんでした"
+    IDS_NIO_ERROR           "インターネットエラー: %s"
     IDS_PREREQ_UNSOLVED_PROBLEMS
-                            "警告 - 未解決の問題\n\n続行すると、一部のパッケージが正しく動作しない可能性があります。\n\n本当に続行しますか (推奨されません)?"
+                            "警告 - 未解決の問題\n\n続行すると、一部のパッケージが正しく動作しない可能性があります。\n\n本当に続行しますか？(推奨されません)"
     IDS_MIXED_BITNESS_ERROR "ターゲットCPUの不一致\n\n%s ビット バージョンの Cygwin を、%s ビット バージョンの Cygwin を含むディレクトリにインストールしようとしています。このまま続行すると、既存のインストールが壊れます。\n\nsetup-%s.exe を実行して既存の %s ビットの Cygwin インストールを更新するか、または %s ビットのインストール用に別のディレクトリを選択してください。"
-    IDS_GET_SITELIST_ERROR  "ダウンロード サイトのリストを取得できません。\nネットワーク設定が正しいことを確認して、もう一度お試しください。"
+    IDS_GET_SITELIST_ERROR  "ダウンロードサイトのリストを取得できません。\nネットワーク設定が正しいことを確認して、もう一度お試しください。"
     IDS_CONFIRM_EXIT        "セットアップを終了してもよろしいですか? 現在のダウンロードまたはインストールはすべて中止されます。"
     IDS_CONTINUE            "続ける"
     IDS_CHOOSER_EMPTY_NO_PACKAGES
@@ -438,7 +438,7 @@ BEGIN
     IDS_CONFIRM_SOURCE      "（ソース）"
     IDS_FILE_INUSE_KILL     "プロセスを強制終了(&K)"
     IDS_FILE_INUSE_MSG      "抽出できません"
-    IDS_USER_URL_TOOLTIP    "追加のサイト URL、パス、または UNC パス"
+    IDS_USER_URL_TOOLTIP    "追加のサイトURL、パス、または UNCパス"
 END
 
 //
@@ -449,7 +449,7 @@ STRINGTABLE
 BEGIN
     IDS_HELPTEXT_ERROR      "オプション処理中にエラーが発生しました。"
     IDS_HELPTEXT_HEADER     "コマンドラインオプション:"
-    IDS_HELPTEXT_FOOTER     "--download または --local-install のいずれかが指定されていない限り、デフォルトではパッケージの ダウンロードとインストールの両方が実行されます。"
+    IDS_HELPTEXT_FOOTER     "--download または --local-install のいずれかが指定されていない限り、デフォルトではパッケージのダウンロードとインストールの両方が実行されます。"
     IDS_HELPTEXT_ALLOW_TEST "テストとマークされたパッケージバージョンを検討する"
     IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
                             "古い、サポートされていないWindowsバージョンを許可する"
@@ -459,8 +459,8 @@ BEGIN
     IDS_HELPTEXT_DELETE_ORPHANS
                             "孤立したパッケージを削除する"
     IDS_HELPTEXT_DISABLE_ANTIVIRUS
-                            "実行中に、バグがあるか疑われるウイルス対策ソフトウェア パッケージを無効にする"
-    IDS_HELPTEXT_DOWNLOAD   "ダウンロード packages from internet"
+                            "実行中に、バグがあるか疑われるウイルス対策ソフトウェアパッケージを無効にする"
+    IDS_HELPTEXT_DOWNLOAD   "インターネットからパッケージをダウンロードする"
     IDS_HELPTEXT_FORCE_CURRENT
                             "すべてのパッケージの現在のバージョンを選択します"
     IDS_HELPTEXT_HELP       "ヘルプを印刷する"
@@ -470,13 +470,13 @@ BEGIN
                             "「setup」の代わりに「foo」など別のベース名を使用します。"
     IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
                             "信頼できないキーを使用し、すべてを保持する"
-    IDS_HELPTEXT_LANG       "GUI言語langidを指定する"
+    IDS_HELPTEXT_LANG       "GUI 言語の langid を指定する"
     IDS_HELPTEXT_LOCAL_INSTALL
-                            "インストール packages from local directory"
+                            "ローカルディレクトリからパッケージをインストールする"
     IDS_HELPTEXT_LOCAL_PACKAGE_DIR
                             "ローカルパッケージディレクトリ"
     IDS_HELPTEXT_MIRROR_MODE
-                            "ローカル ディレクトリからインストールするときにパッケージの可用性チェックをスキップします (ローカル ディレクトリがクリーンなミラーである必要があります)"
+                            "ローカルディレクトリからインストールするときにパッケージの可用性チェックをスキップします (ローカルディレクトリがクリーンなミラーである必要があります)"
     IDS_HELPTEXT_NO_ADMIN   "管理者として実行をチェックおよび強制しない"
     IDS_HELPTEXT_NO_DESKTOP "デスクトップショートカットの作成を無効にする"
     IDS_HELPTEXT_NO_REPLACEONREBOOT
@@ -489,10 +489,10 @@ BEGIN
     IDS_HELPTEXT_NO_VERSION_CHECK
                             "新しいバージョンのセットアップが利用可能かどうかの確認を抑制します"
     IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
-                            "廃止予定のWindowsバージョンについて警告しない"
+                            "廃止予定の Windows バージョンについて警告しない"
     IDS_HELPTEXT_NO_WRITE_REGISTRY
                             "ルートインストールディレクトリをレジストリに書き込まない"
-    IDS_HELPTEXT_OLD_KEYS   "古いcygwin.comキーを有効にする"
+    IDS_HELPTEXT_OLD_KEYS   "古い cygwin.com キーを有効にする"
     IDS_HELPTEXT_ONLY_SITE  "ミラーリストをダウンロードしません。-s で指定されたサイトのみを使用します。"
     IDS_HELPTEXT_PACKAGES   "インストールするパッケージを指定する"
     IDS_HELPTEXT_PACKAGE_MANAGER
@@ -509,7 +509,7 @@ BEGIN
     IDS_HELPTEXT_ROOT       "ルートインストールディレクトリ"
     IDS_HELPTEXT_SEXPR_PUBKEY
                             "s-expr 形式の追加の DSA 公開鍵"
-    IDS_HELPTEXT_SITE       "ダウンロード site URL, path or UNC path"
+    IDS_HELPTEXT_SITE       "ダウンロードサイトURL、パス、もしくは UNCパス"
     IDS_HELPTEXT_SYMLINK_TYPE
                             "シンボリックリンクの種類 (lnk、ネイティブ、sys、wsl)"
     IDS_HELPTEXT_UNTRUSTED_KEYS
