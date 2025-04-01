@@ -6,6 +6,7 @@ autoconf.h*
 autom4te.cache
 cfgaux
 config.cache
+config.log
 config.status
 configure
 configure.lineno
@@ -18,6 +19,7 @@ inilex.cc
 iniparse.cc
 iniparse.hh
 setup_version.c
+wininet.def
 
 tags
 
@@ -25,3 +27,8 @@ tags
 *.swp
 *.Po
 *.Plo
+*.o
+*.a
+*.la
+*.lo
+*.exe
