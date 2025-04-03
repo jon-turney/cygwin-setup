@@ -121,3 +121,19 @@ TRANSLATIONS
 
 Translations of the gettext template res.pot can be made using PO file tools, or
 online at https://hosted.weblate.org/projects/cygwin-setup/cygwin-setup/
+
+
+To update the translations in the .res files from the .po files:
+
+  1) 'pip3 install translate-toolkit'
+  2) When adding a new language <LANG>:
+     - Add <LANG> to the LINGUAS variable in Makefile.am
+     - Add mapping from <LANG> to Windows LCID in langopts script
+     - Add inclusion of res/<LANG>/res.rc in top-level res.rc file
+  3) 'make po2rc' to regenerate the res/<LANG>/res.rc files
+  4) Build and run setup with --lang <LCID> to test translation
+  5) Commit the updated res.rc files
+
+The res/en/res.rc file functions as a template, and po2rc replaces the
+translatable strings in it with those from a given po/<LANG>/res.po file to
+generate a res/<LANG>/res.rc file.
