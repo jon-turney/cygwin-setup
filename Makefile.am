@@ -365,7 +365,7 @@ PKCSMODULE=/usr/lib64/libykcs11.so.2
 # PKCS#11 URI to locate signing key in HSM
 PKCS11_URI="pkcs11:id=%01;pin-value=123456"
 # our code-signing certificate and all intermediate and CA certificates
-CERT_SIGNING_CHAIN=code-signing-chain.pem
+CERT_SIGNING_CHAIN=~/certs/code-signing-chain.pem
 # CA timestamp service
 CA_TIMESTAMP=http://timestamp.sectigo.com
 
@@ -391,7 +391,7 @@ release: sign
 	cp signed//setup-uncompressed${EXEEXT} release/setup-${VER}-uncompressed.${ARCH}${EXEEXT}
 	cp signed/setup${EXEEXT} release/setup-${VER}.${ARCH}${EXEEXT}
 
-UPLOAD_HOST=cygwin-admin@cygwin.com
+UPLOAD_HOST=cygwin.com
 UPLOAD_PATH=/www/sourceware/htdocs/cygwin/setup
 GPG_SIGN_KEYS="--enable-dsa2 --personal-digest-preferences=sha256 -u 1A698DE9E2E56300"
 
