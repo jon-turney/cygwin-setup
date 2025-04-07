@@ -50,13 +50,14 @@ EXTRA_DIST = \
 	tree-plus.ico
 
 # iniparse.hh is generated from iniparse.yy via bison -d, so it needs to be
-# included here for proper tracking (but not iniparse.cc, since automake
-# knows about that already)
+# included here for proper dependency tracking (but not iniparse.cc, since
+# automake knows about that already)
 BUILT_SOURCES = \
 	setup_version.c \
 	iniparse.hh
 
 CLEANFILES = setup_version.c
+MAINTAINERCLEANFILES = iniparse.hh
 
 inilint_LDADD = \
 	libgetopt++/libgetopt++.la \
@@ -100,7 +101,7 @@ wininet-delaylib.a:
 	$(NM) -g --defined-only $$IMPLIB | grep ' T ' | cut -d' ' -f3 >>wininet.def
 	$(AM_V_GEN)$(DLLTOOL) --no-leading-underscore --input-def wininet.def --output-delaylib $@
 
-CLEANFILES += wininet-delaylib.a
+CLEANFILES += wininet-delaylib.a wininet.def
 
 # Unfortunately, the delay-loading stub lib doesn't work properly on 32-bit
 # currently, so don't bother (since we're probably going to stop building that
@@ -347,8 +348,6 @@ strip:	all
 	$(OBJCOPY) --add-gnu-debuglink=/dev/null --only-keep-debug setup$(EXEEXT) stripped/setup.dbg
 	$(OBJCOPY) --strip-all setup$(EXEEXT) stripped/setup$(EXEEXT)
 	$(OBJCOPY) --add-gnu-debuglink=stripped/setup.dbg stripped/setup$(EXEEXT) stripped/setup$(EXEEXT)
-
-CLEANFILES += setup.dbg
 
 upx:	strip
 	@if [ -e `which upx` ]; then\
