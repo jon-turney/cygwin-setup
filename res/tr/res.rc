@@ -411,7 +411,7 @@ BEGIN
     IDS_NIO_ERROR           "İnternet Hatası: %s"
     IDS_PREREQ_UNSOLVED_PROBLEMS
                             "UYARI - Çözülmeyen Sorunlar\n\nDevam ederseniz bazı paketler düzgün çalışmayabilir.\n\nDevam etmek istediğinizden emin misiniz (TAVSİYE EDİLMEZ)?"
-    IDS_MIXED_BITNESS_ERROR "Hedef CPU uyuşmazlığı\n\n%s bit Cygwin sürümünü, %s bit Cygwin sürümü içeren bir dizine kurmaya çalışıyorsunuz.  Bunu yapmaya devam etmek var olan kurulumu bozacaktır.\n\nVar olan %s bit Cygwin kurulumunu güncellemek için setup-%s.exe dosyasını çalıştırın ya da %s bit kurulumunuz için başka bir dizin seçin."
+    IDS_MIXED_BITNESS_ERROR "Hedef CPU uyuşmazlığı\n\n%s Cygwin sürümünü, %s Cygwin sürümü içeren bir dizine kurmaya çalışıyorsunuz.  Bunu yapmaya devam etmek var olan kurulumu bozacaktır.\n\nVar olan %s Cygwin kurulumunu güncellemek için setup-%s.exe dosyasını çalıştırın ya da %s kurulumunuz için başka bir dizin seçin."
     IDS_GET_SITELIST_ERROR  "İndirme sitelerinin listesi alınamıyor.\nAğ ayarlarınızın doğru olduğundan emin olun ve tekrar deneyin."
     IDS_CONFIRM_EXIT        "Kurucudan çıkmak istediğinizden emin misiniz? Var olan herhangi bir indirme veya kurulum işlemi iptal edilecektir."
     IDS_CONTINUE            "Devam et"

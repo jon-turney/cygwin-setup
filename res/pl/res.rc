@@ -411,7 +411,7 @@ BEGIN
     IDS_NIO_ERROR           "Błąd internetowy: %s"
     IDS_PREREQ_UNSOLVED_PROBLEMS
                             "OSTRZEŻENIE — nierozwiązane problemy\n\nNiektóre pakiety mogą nie działać poprawnie, jeśli będziesz kontynuować.\n\nCzy na pewno chcesz kontynuować (NIEZALECANE)?"
-    IDS_MIXED_BITNESS_ERROR "Niezgodność procesora\n\nPróbujesz zainstalować %s bitową wersję Cygwina w katalogu zawierającym %s bitową wersję Cygwina. Kontynuowanie tego spowodowałoby uszkodzenie istniejącej instalacji.\n\nUruchom setup-%s.exe, aby zaktualizować istniejącą %s-bitową instalację Cygwin, lub wybierz inny katalog dla swojej %s-bitowej instalacji."
+    IDS_MIXED_BITNESS_ERROR "Niezgodność procesora\n\nPróbujesz zainstalować %s wersję Cygwina w katalogu zawierającym %s wersję Cygwina. Kontynuowanie tego spowodowałoby uszkodzenie istniejącej instalacji.\n\nUruchom setup-%s.exe, aby zaktualizować istniejącą %s instalację Cygwin, lub wybierz inny katalog dla swojej %s instalacji."
     IDS_GET_SITELIST_ERROR  "Nie można uzyskać listy witryn pobierania.\nUpewnij się, że ustawienia sieciowe są poprawne i spróbuj ponownie."
     IDS_CONFIRM_EXIT        "Czy na pewno chcesz wyjść z konfiguracji? Bieżące pobieranie lub instalacja zostanie przerwana."
     IDS_CONTINUE            "Kontynuuj"
