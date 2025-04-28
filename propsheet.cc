@@ -275,6 +275,21 @@ static LRESULT CALLBACK PropSheetWndProc (HWND hwnd, UINT uMsg,
         InvalidateRect(hwnd, &rect, FALSE);
       }
       break;
+
+    case WM_DPICHANGED:
+      {
+        // adjust the window size after DPI changes.
+        RECT* const prcNewWindow = (RECT*)lParam;
+        SetWindowPos(hwnd,
+                     NULL,
+                     prcNewWindow -> left,
+                     prcNewWindow -> top,
+                     prcNewWindow -> right - prcNewWindow -> left,
+                     prcNewWindow -> bottom - prcNewWindow -> top,
+                     SWP_NOZORDER | SWP_NOACTIVATE);
+        return TRUE;
+      }
+      break;
     }
 
   return CallWindowProc (psd.oldWndProc,
