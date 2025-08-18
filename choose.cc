@@ -41,6 +41,7 @@
 #include "state.h"
 #include "msg.h"
 #include "LogSingleton.h"
+#include "LogFile.h"
 #include "filemanip.h"
 #include "io_stream.h"
 #include "propsheet.h"
@@ -311,6 +312,36 @@ ChooserPage::applyCommandLinePackageSelection()
 	pkg.set_action (packagemeta::Install_action, !wanted ? packageversion () : wanted_version);
       else
 	pkg.set_action (packagemeta::NoChange_action, pkg.installed);
+    }
+
+  for (packagedb::packagecollection::iterator i = db.packages.begin ();
+       i != db.packages.end (); ++i)
+    {
+      // The 'build-depends' option can only specify source package names
+      // presently. (perhaps if name is not found, instead look for binary
+      // package and navigate to the corresponding source?)
+
+      packagemeta &pkg = *(i->second);
+      if (areBuildDependenciesWanted(pkg))
+        {
+          Log (LOG_BABBLE) << "Examining build-deps for package " << pkg.name << endLog;
+          PackageDepends bdp = pkg.curr.build_depends();
+          std::ostream & logger = Log (LOG_BABBLE);
+          logger << "      build-depends=";
+          dumpPackageDepends(bdp, logger);
+          for (PackageDepends::const_iterator j = bdp.begin();
+               j != bdp.end();
+               j++)
+            {
+              Log (LOG_BABBLE) << "looking for " << (*j)->packageName() << endLog;
+              const packagedb::packagecollection::iterator n = db.packages.find((*j)->packageName());
+              if (n != db.packages.end())
+                {
+                  packagemeta &bd_pkg = *(n->second);
+                  bd_pkg.set_action (packagemeta::Install_action, packageversion ());
+                }
+            }
+        }
     }
 }
 

@@ -24,6 +24,7 @@ static StringArrayOption DeletePackageOption ('x', "remove-packages", IDS_HELPTE
 static StringArrayOption DeleteCategoryOption ('c', "remove-categories", IDS_HELPTEXT_REMOVE_CATEGORIES);
 static StringArrayOption PackageOption ('P', "packages", IDS_HELPTEXT_PACKAGES);
 static StringArrayOption CategoryOption ('C', "categories", IDS_HELPTEXT_CATEGORIES);
+static StringArrayOption BuildDependsOption ('\0', "build-depends", IDS_HELPTEXT_BUILD_DEPENDS);
 
 bool hasManualSelections = false;
 
@@ -211,5 +212,37 @@ isManuallyDeleted(packagemeta &pkg)
 
   if (bReturn)
     Log (LOG_BABBLE) << "Deleted manual package " << pkg.name << endLog;
+  return bReturn;
+}
+
+bool
+areBuildDependenciesWanted(packagemeta &pkg)
+{
+  static bool parsed_yet = false;
+  static std::set<std::string> parsed_build_depend;
+  hasManualSelections |= parsed_build_depend.size ();
+  bool bReturn = false;
+
+  /* First time through, we parse all the names out from the
+    option string and store them away in an STL set.  */
+  if (!parsed_yet)
+  {
+    std::vector<std::string> build_depends_options = BuildDependsOption;
+
+    for (std::vector<std::string>::iterator n = build_depends_options.begin ();
+                n != build_depends_options.end (); ++n)
+      {
+        parseNames (parsed_build_depend, *n);
+      }
+    validatePackageNames (parsed_build_depend);
+    parsed_yet = true;
+  }
+
+  /* Once we've already parsed the option string, just do
+     a lookup in the cache of already-parsed names.  */
+  bReturn = parsed_build_depend.find(pkg.name) != parsed_build_depend.end();
+
+  if (bReturn)
+    Log (LOG_BABBLE) << "Adding build-deps for package " << pkg.name << endLog;
   return bReturn;
 }

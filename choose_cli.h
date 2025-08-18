@@ -16,6 +16,7 @@
 
 bool isManuallyWanted(packagemeta &pkg, packageversion &version);
 bool isManuallyDeleted(packagemeta &pkg);
+bool areBuildDependenciesWanted(packagemeta &pkg);
 
 extern bool hasManualSelections;
 
