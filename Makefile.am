@@ -138,6 +138,8 @@ endif
 	archive_tar_file.cc \
 	choose.cc \
 	choose.h \
+	choose_cli.cc \
+	choose_cli.h \
 	compactos.cc \
 	compactos.h \
 	compress.cc \

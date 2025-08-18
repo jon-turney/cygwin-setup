@@ -106,11 +106,6 @@ public:
 
   std::string name;			/* package name, like "cygwin" */
 
-  /* true if package was selected on command-line. */
-  bool isManuallyWanted(packageversion &version) const;
-  /* true if package was deleted on command-line. */
-  bool isManuallyDeleted() const;
-
   const std::string SDesc () const;
   const std::string LDesc () const;
 
@@ -157,13 +152,15 @@ public:
   /* this version is undesirable */
   bool isBlacklisted(const packageversion &version) const;
 
+  /* locate packageversion object for given version string */
+  const packageversion *findVersion(std::string &version) const;
+
 protected:
   packagemeta &operator= (packagemeta const &);
 private:
   std::string trustLabel(packageversion const &) const;
   std::vector <Script> scripts_;
   static bool scan (const packageversion &pkg, bool mirror_mode);
-  const packageversion * findVersion(std::string &version) const;
 
   _actions _action;
 

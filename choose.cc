@@ -48,6 +48,7 @@
 
 #include "package_db.h"
 #include "package_meta.h"
+#include "choose_cli.h"
 
 #include "threebar.h"
 #include "Generic.h"
@@ -289,8 +290,8 @@ ChooserPage::applyCommandLinePackageSelection()
     {
       packagemeta &pkg = *(i->second);
       packageversion wanted_version;
-      bool wanted    = pkg.isManuallyWanted(wanted_version);
-      bool deleted   = pkg.isManuallyDeleted();
+      bool wanted    = isManuallyWanted(pkg, wanted_version);
+      bool deleted   = isManuallyDeleted(pkg);
       bool base      = pkg.categories.find ("Base") != pkg.categories.end ();
       bool orphaned  = pkg.categories.find ("Orphaned") != pkg.categories.end ();
       bool upgrade   = wanted || (!pkg.installed && base);

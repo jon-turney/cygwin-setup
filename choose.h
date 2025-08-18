@@ -25,8 +25,6 @@
 #define DEFAULT_TIMER_ID   5   //value doesn't matter, as long as it's unique
 #define SEARCH_TIMER_DELAY 500 //in milliseconds
 
-extern bool hasManualSelections;
-
 class ChooserPage:public PropertyPage
 {
 public:
