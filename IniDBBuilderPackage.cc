@@ -127,6 +127,7 @@ IniDBBuilderPackage::buildPackage (const std::string& _name)
   obsoletesNodeList = PackageDepends();
   providesNodeList = PackageDepends();
   conflictsNodeList = PackageDepends();
+  buildDependsNodeList = PackageDepends();
 #if DEBUG
   Log (LOG_BABBLE) << "Created package " << name << endLog;
 #endif
@@ -278,8 +279,8 @@ IniDBBuilderPackage::buildBeginBuildDepends ()
   Log (LOG_BABBLE) << "Beginning of a Build-Depends statement" << endLog;
 #endif
   currentSpec = NULL;
-  currentNodeList = NULL;
-  /* there is currently nowhere to store Build-Depends information */
+  buildDependsNodeList = PackageDepends();
+  currentNodeList = &buildDependsNodeList;
 }
 
 void
@@ -432,4 +433,5 @@ IniDBBuilderPackage::process ()
   obsoletesNodeList = PackageDepends();
   providesNodeList = PackageDepends();
   conflictsNodeList = PackageDepends();
+  buildDependsNodeList = PackageDepends();
 }

@@ -85,6 +85,7 @@ private:
   PackageDepends obsoletesNodeList;
   PackageDepends providesNodeList;
   PackageDepends conflictsNodeList;
+  PackageDepends buildDependsNodeList;
   SolverPool::addPackageData cbpv;
   std::set <std::string> replace_versions;
 
