@@ -134,6 +134,13 @@ SolvableVersion::conflicts() const
   return deplist(SOLVABLE_CONFLICTS);
 }
 
+const PackageDepends
+SolvableVersion::build_depends() const
+{
+  Id builddep_attr = pool_str2id(pool, "solvable:build_depends", 1);
+  return deplist(builddep_attr);
+}
+
 // helper function which returns the deplist for a given key, as a PackageDepends
 const PackageDepends
 SolvableVersion::deplist(Id keyname) const
@@ -467,6 +474,34 @@ SolverPool::makedeps(Repo *repo, PackageDepends *requires)
   return deps;
 }
 
+void
+SolverPool::makedeps_queue(Repo *repo, PackageDepends *requires, Queue *q)
+{
+  for (PackageDepends::iterator i = requires->begin();
+       i != requires->end();
+       i++)
+    {
+      Id dep;
+      Id name = pool_str2id(pool, (*i)->packageName().c_str(), 1);
+
+      if ((*i)->version().size() == 0)
+        {
+          // no relation, so dependency is just on package name
+          dep = name;
+        }
+      else
+        {
+          // otherwise, dependency is on package name with a version condition
+          Id evr = pool_str2id(pool, (*i)->version().c_str(), 1);
+          int rel = pool_rel2id(pool, name, evr, Operator2RelId((*i)->op()), 1);
+
+          dep = rel;
+        }
+
+      queue_push(q, dep);
+    }
+}
+
 SolvableVersion
 SolverPool::addPackage(const std::string& pkgname, const addPackageData &pkgdata)
 {
@@ -558,6 +593,17 @@ SolverPool::addPackage(const std::string& pkgname, const addPackageData &pkgdata
   /* store stability level attribute */
   Id stability_attr = pool_str2id(pool, "solvable:stability", 1);
   repodata_set_num(data, handle, stability_attr, pkgdata.stability);
+
+  /* store build_depends */
+  if (pkgdata.build_depends)
+    {
+      Id builddep_attr = pool_str2id(pool, "solvable:build_depends", 1);
+      Queue q;
+      queue_init(&q);
+      makedeps_queue(repo, pkgdata.build_depends, &q);
+      repodata_set_idarray(data, handle, builddep_attr, &q);
+      queue_free(&q);
+    }
 
 #if 0
   repodata_internalize(data);

@@ -119,6 +119,7 @@ IniDBBuilderPackage::buildPackage (const std::string& _name)
   cbpv.obsoletes = NULL;
   cbpv.provides = NULL;
   cbpv.conflicts = NULL;
+  cbpv.build_depends = NULL;
   cbpv.archive = packagesource();
 
   currentSpec = NULL;
@@ -200,6 +201,8 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
   /* create a source package version */
   SolverPool::addPackageData cspv = cbpv;
   cspv.type = package_source;
+  // erase dependency attributes only meaningful for an install package, but
+  // keep build_depends
   cspv.requires = NULL;
   cspv.obsoletes = NULL;
   cspv.provides = NULL;
@@ -281,6 +284,7 @@ IniDBBuilderPackage::buildBeginBuildDepends ()
   currentSpec = NULL;
   buildDependsNodeList = PackageDepends();
   currentNodeList = &buildDependsNodeList;
+  cbpv.build_depends = &buildDependsNodeList;
 }
 
 void

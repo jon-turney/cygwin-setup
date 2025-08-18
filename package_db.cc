@@ -133,6 +133,7 @@ packagedb::read ()
                   data.obsoletes = NULL;
                   data.provides = NULL;
                   data.conflicts = NULL;
+                  data.build_depends = NULL;
                   data.sdesc = "";
                   data.ldesc = "";
                   data.stability = TRUST_UNKNOWN;
@@ -215,6 +216,7 @@ packagedb::makeBase()
   data.obsoletes = NULL;
   data.provides = NULL;
   data.conflicts = NULL;
+  data.build_depends = NULL;
   data.stability = TRUST_CURR;
   // data.spkg = PackageSpecification();
   // data.spkg_id = packageversion();
@@ -251,6 +253,7 @@ packagedb::makeWindows()
   data.obsoletes = NULL;
   data.provides = NULL;
   data.conflicts = NULL;
+  data.build_depends = NULL;
   data.stability = TRUST_CURR;
 
   solver.addPackage("_windows", data);

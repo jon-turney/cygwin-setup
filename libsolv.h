@@ -65,6 +65,8 @@ class SolvableVersion
   const PackageDepends provides() const;
   // Return the conflicts list
   const PackageDepends conflicts() const;
+  // Return the build-depends list
+  const PackageDepends build_depends() const;
   bool accessible () const;
   package_type_t Type () const;
   package_stability_t Stability () const;
@@ -158,6 +160,7 @@ public:
     PackageDepends *obsoletes;
     PackageDepends *provides;
     PackageDepends *conflicts;
+    PackageDepends *build_depends;
   };
 
   SolvableVersion addPackage(const std::string& pkgname,
@@ -170,6 +173,7 @@ public:
 private:
   void init();
   Id makedeps(Repo *repo, PackageDepends *requires);
+  void makedeps_queue(Repo *repo, PackageDepends *requires, Queue *q);
   Pool *pool;
 
   typedef std::map<std::string, SolvRepo *> RepoList;
