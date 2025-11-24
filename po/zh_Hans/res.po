@@ -588,11 +588,11 @@ msgstr "取消(&C)"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
-msgstr "Cygwin 安装程序 - 执行安装后操作"
+msgstr "Cygwin 安装程序 - 执行安装后处理步骤"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Postinstall script errors"
-msgstr "安装后操作错误"
+msgstr "安装后处理错误"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC
 msgid ""
@@ -963,7 +963,7 @@ msgstr "正在计算..."
 
 #: STRINGTABLE.IDS_PROGRESS_POSTINSTALL
 msgid "Running..."
-msgstr "正在执行..."
+msgstr "正在运行脚本..."
 
 #: STRINGTABLE.IDS_PROGRESS_SOLVING
 msgid "Solving dependencies..."
@@ -1171,7 +1171,7 @@ msgid ""
 msgstr ""
 "目标 CPU 不匹配\n"
 "\n"
-"您正在尝试将 %s 位版本的 Cygwin 安装到包含 %s 位版本的 Cygwin "
+"您正在尝试将 %s 版本的 Cygwin 安装到包含 %s 版本的 Cygwin "
 "的目录中。继续这样做会破坏现有的安装。\n"
 "\n"
 "运行 setup-%s.exe 以更新 Cygwin 的现有 %s 位安装，或为 %s "
