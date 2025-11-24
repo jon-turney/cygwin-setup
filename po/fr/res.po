@@ -246,9 +246,7 @@ msgid "(FILE)"
 msgstr "(FICHIER)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt ""
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL."
-"IDC_INS_DISKFULL"
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
 msgstr "Progress1"
 
@@ -293,8 +291,7 @@ msgid "Proxy &User ID"
 msgstr "&Identifiant proxy"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "&Mot de passe"
 
@@ -303,16 +300,12 @@ msgid "Proxy Authorization Required"
 msgstr "Authentification proxy requise"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON."
-"IDOK"
+msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
 msgstr "&OK"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON."
-"IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
 msgstr "Annule"
 
@@ -1235,8 +1228,8 @@ msgstr ""
 "contient une version %s de Cygwin.  Si vous insistez, vous aller casser "
 "l'installation existante.\n"
 "\n"
-"Utilisez setup-%s.exe pour mettre à jour votre installation %s de "
-"Cygwin, ou choisissez un autre dossier pour votre installation %s."
+"Utilisez setup-%s.exe pour mettre à jour votre installation %s de Cygwin, ou "
+"choisissez un autre dossier pour votre installation %s."
 
 #: STRINGTABLE.IDS_GET_SITELIST_ERROR
 msgid ""

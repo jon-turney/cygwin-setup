@@ -249,9 +249,7 @@ msgid "(FILE)"
 msgstr "(PLIK)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt ""
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL."
-"IDC_INS_DISKFULL"
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
 msgstr "Postęp1"
 
@@ -295,8 +293,7 @@ msgid "Proxy &User ID"
 msgstr "Proxy i identyfikator użytkownika"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "Hasło"
 
@@ -305,16 +302,12 @@ msgid "Proxy Authorization Required"
 msgstr "Wymagana autoryzacja serwera proxy"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON."
-"IDOK"
+msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
 msgstr "OK"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON."
-"IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
 msgstr "Anuluj"
 
@@ -1229,12 +1222,12 @@ msgid ""
 msgstr ""
 "Niezgodność procesora\n"
 "\n"
-"Próbujesz zainstalować %s wersję Cygwina w katalogu zawierającym %s "
-"wersję Cygwina. Kontynuowanie tego spowodowałoby uszkodzenie "
-"istniejącej instalacji.\n"
+"Próbujesz zainstalować %s wersję Cygwina w katalogu zawierającym %s wersję "
+"Cygwina. Kontynuowanie tego spowodowałoby uszkodzenie istniejącej "
+"instalacji.\n"
 "\n"
-"Uruchom setup-%s.exe, aby zaktualizować istniejącą %s instalację "
-"Cygwin, lub wybierz inny katalog dla swojej %s instalacji."
+"Uruchom setup-%s.exe, aby zaktualizować istniejącą %s instalację Cygwin, lub "
+"wybierz inny katalog dla swojej %s instalacji."
 
 #: STRINGTABLE.IDS_GET_SITELIST_ERROR
 msgid ""
