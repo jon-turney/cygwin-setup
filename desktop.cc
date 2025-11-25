@@ -52,7 +52,6 @@ static BoolOption NoDesktopOption (false, 'd', "no-desktop", IDS_HELPTEXT_NO_DES
 	@*
    */
 
-static std::string batname;
 static ControlAdjuster::ControlInfo DesktopControlsInfo[] = {
   {IDC_DESKTOP_SEPARATOR, 	CP_STRETCH, CP_BOTTOM},
   {IDC_STATUS, 			CP_LEFT, CP_BOTTOM},
@@ -148,7 +147,7 @@ desktop_icon (const std::string& title, const std::string& target,
 static void
 make_cygwin_bat ()
 {
-  batname = backslash (cygpath ("/Cygwin.bat"));
+  std::string batname = backslash (cygpath ("/Cygwin.bat"));
   FILE *bat;
 
   size_t len = batname.size () + 7;
@@ -164,13 +163,10 @@ make_cygwin_bat ()
   if (!bat)
     return;
 
-  fprintf (bat, "@echo off\n\n");
-
-  fprintf (bat, "%.2s\n", get_root_dir ().c_str());
-  fprintf (bat, "chdir %s\n\n",
-	   replace(backslash(get_root_dir() + "/bin"), "%", "%%").c_str());
-
-  fprintf (bat, "bash --login -i\n");
+  fprintf (bat, "@echo off\n");
+  fprintf (bat, "setlocal enableextensions\n");
+  fprintf (bat, "set TERM=\n");
+  fprintf (bat, "cd /d \"%%~dp0bin\" && .\bash --login -i\n");
 
   fclose (bat);
 }
