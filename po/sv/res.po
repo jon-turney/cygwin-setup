@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2025-11-28 22:00+0000\n"
+"PO-Revision-Date: 2025-12-01 06:00+0000\n"
 "Last-Translator: Stefan Bjornelund the Gnome "
 "<stefan.bjornelund.gnome@gmail.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -31,7 +31,6 @@ msgstr ""
 "(nedladdade filer sparas för framtida återanvändning)"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_DOWNLOAD
-#, fuzzy
 msgid "&Download Without Installing"
 msgstr "&Ladda ner utan att installera"
 
@@ -86,7 +85,6 @@ msgstr ""
 "installationen är klar."
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
-#, fuzzy
 msgid "Cygwin Setup - Select Local Package Directory"
 msgstr "Cygwin-installation - Välj lokal paketkatalog"
 
@@ -117,7 +115,6 @@ msgid "B&rowse..."
 msgstr "Blädd&ra..."
 
 #: DIALOG.IDD_ROOT.CAPTION
-#, fuzzy
 msgid "Cygwin Setup - Choose Installation Directory"
 msgstr "Cygwin-installation - Välj installationskatalog"
 
@@ -151,7 +148,6 @@ msgid "&All Users (RECOMMENDED)"
 msgstr "&Alla användare (Recommended)"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
-#, fuzzy
 msgid "Just &Me"
 msgstr "Bara &Jag"
 
@@ -172,7 +168,6 @@ msgstr ""
 "saknar administratörsbehörighet eller om du har specifika behov."
 
 #: DIALOG.IDD_SITE.CAPTION
-#, fuzzy
 msgid "Cygwin Setup - Choose Download Site(s)"
 msgstr "Cygwin-installation - Välj nedladdningsplats(er)"
 
@@ -215,7 +210,6 @@ msgid "Use HTTP/FTP &Proxy:"
 msgstr "Använd HTTP/FTP och proxy:"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
-#, fuzzy
 msgid "Proxy &Host"
 msgstr "Proxy och &värd"
 
@@ -296,12 +290,10 @@ msgid "Proxy Authentication required"
 msgstr "Proxyautentisering krävs"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-#, fuzzy
 msgid "Proxy &User ID"
 msgstr "Proxy- och &användar-ID"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-#, fuzzy
 msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
@@ -334,7 +326,6 @@ msgid "&User ID"
 msgstr "&Användar-ID"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
-#, fuzzy
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "&Lösenord"
@@ -390,7 +381,6 @@ msgid "Contribute to translations of this program."
 msgstr "Bidra till översättningar av detta program."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
-#, fuzzy
 msgid "Cygwin Setup - Installation Status and Create Icons"
 msgstr "Cygwin-installation - Installationsstatus och skapa ikoner"
 
@@ -435,13 +425,11 @@ msgid "FTP Authentication required"
 msgstr "FTP-autentisering krävs"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
-#, fuzzy
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
 msgstr "&Användar-ID"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
-#, fuzzy
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "&Lösenord"
@@ -498,7 +486,6 @@ msgid "&Test"
 msgstr "&Test"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
-#, fuzzy
 msgid "&Hide obsolete packages"
 msgstr "&Dölj föråldrade paket"
 
@@ -570,7 +557,6 @@ msgstr ""
 "Vill du fortsätta använda den/dessa speglar?"
 
 #: DIALOG.IDD_DROPPED.CONTROL.IDC_DROP_NOWARN
-#, fuzzy
 msgid "&Don't warn me about this/these mirror(s) again"
 msgstr "&Varna mig inte om den här/dessa speglar igen"
 
@@ -606,7 +592,6 @@ msgid "&Retry"
 msgstr "&Försök igen"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
-#, fuzzy
 msgid "&Back"
 msgstr "&Tillbaka"
 
@@ -625,7 +610,6 @@ msgid "Cygwin Setup - Running postinstall scripts"
 msgstr "Cygwin-installation - Köra postinstallationsskript"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
-#, fuzzy
 msgid "Postinstall script errors"
 msgstr "Postinstallation skriptfel"
 
@@ -765,7 +749,6 @@ msgid "Cannot open log file %s for writing"
 msgstr "Kan inte öppna loggfilen %s för skrivning"
 
 #: STRINGTABLE.IDS_UNINSTALL_COMPLETE
-#, fuzzy
 msgid "Uninstalls complete."
 msgstr "Avinstallationerna är klara."
 
@@ -788,7 +771,7 @@ msgstr "Nedladdningen ofullständig.  Försök igen?"
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE_EXIT
 msgid "Download incomplete.  Check %s for details"
-msgstr "Nedladdningen är ofullständig.  Kontrollera %s för mer information"
+msgstr "Nedladdningen är ofullständig. Kontrollera %s för mer information"
 
 #: STRINGTABLE.IDS_INSTALL_ERROR
 msgid "Installation error (%s), Continue with other packages?"
@@ -973,9 +956,8 @@ msgstr ""
 "eller Avbryt för att välja en annan katalog."
 
 #: STRINGTABLE.IDS_ELEVATED
-#, fuzzy
 msgid "Hand installation over to elevated child process."
-msgstr "Överför installationen till en förhöjd underprocess."
+msgstr "Överför installationen till en underprocess med förhöjd behörighet."
 
 #: STRINGTABLE.IDS_INSTALLEDB_VERSION
 msgid "Unknown INSTALLED.DB version"
@@ -1012,7 +994,6 @@ msgid "Parsing..."
 msgstr "Tolkar..."
 
 #: STRINGTABLE.IDS_PROGRESS_PREREMOVE
-#, fuzzy
 msgid "Running preremove script..."
 msgstr "Kör preborttagningsskript..."
 
@@ -1096,7 +1077,6 @@ msgid "Picked"
 msgstr "Valda"
 
 #: STRINGTABLE.IDS_VIEW_REMOVABLE
-#, fuzzy
 msgid "Removable"
 msgstr "Borttagbar"
 
@@ -1206,7 +1186,7 @@ msgid ""
 "Cygwin support for this Windows version is deprecated, and will be removed "
 "in the next major version"
 msgstr ""
-"Cygwins stöd för den här Windows-versionen fasas ut och kommer att tas bort "
+"Cygwins stöd för den här Windows-versionen fasas ut, och kommer att tas bort "
 "i nästa större version"
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
@@ -1284,7 +1264,6 @@ msgid "Nothing to install or update."
 msgstr "Inget att installera eller uppdatera."
 
 #: STRINGTABLE.IDS_ROOT_BROWSE_TITLE
-#, fuzzy
 msgid "Select an installation root directory"
 msgstr "Välj en installationsrotkatalog"
 
@@ -1331,7 +1310,6 @@ msgid "(source)"
 msgstr "(källa)"
 
 #: STRINGTABLE.IDS_FILE_INUSE_KILL
-#, fuzzy
 msgid "&Kill Processes"
 msgstr "&Avsluta processer"
 
@@ -1365,7 +1343,6 @@ msgid "Consider package versions marked test"
 msgstr "Överväg paketversioner markerade test"
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
-#, fuzzy
 msgid "Allow old, unsupported Windows versions"
 msgstr "Tillåt gamla, ostödda Windows-versioner"
 
