@@ -145,33 +145,6 @@ desktop_icon (const std::string& title, const std::string& target,
 }
 
 static void
-make_cygwin_bat ()
-{
-  std::string batname = backslash (cygpath ("/Cygwin.bat"));
-  FILE *bat;
-
-  size_t len = batname.size () + 7;
-  WCHAR wname[len];
-  mklongpath (wname, batname.c_str (), len);
-
-  /* if the batch file exists, don't overwrite it */
-  if (GetFileAttributesW (wname) != INVALID_FILE_ATTRIBUTES)
-    return;
-
-  bat = nt_wfopen (wname, "wt", 0755);
-
-  if (!bat)
-    return;
-
-  fprintf (bat, "@echo off\n");
-  fprintf (bat, "setlocal enableextensions\n");
-  fprintf (bat, "set TERM=\n");
-  fprintf (bat, "cd /d \"%%~dp0bin\" && .\bash --login -i\n");
-
-  fclose (bat);
-}
-
-static void
 save_icon (std::string &iconpath, const char *resource_name)
 {
   HRSRC rsrc = FindResource (NULL, resource_name, "FILE");
@@ -241,8 +214,6 @@ do_desktop_setup ()
 
   save_icon (defaulticon, "CYGWIN.ICON");
   save_icon (terminalicon, "CYGWIN-TERMINAL.ICON");
-
-  make_cygwin_bat ();
 
   if (root_menu)
     start_menu (TERMINALTITLE, target, "-i " TERMINALICON " -", terminalicon);
