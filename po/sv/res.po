@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2025-12-01 06:00+0000\n"
+"PO-Revision-Date: 2025-12-02 00:35+0000\n"
 "Last-Translator: Stefan Bjornelund the Gnome "
 "<stefan.bjornelund.gnome@gmail.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -453,7 +453,6 @@ msgid "Cygwin Setup - Select Packages"
 msgstr "Cygwin-installation - Välj paket"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
-#, fuzzy
 msgid "&View"
 msgstr "&Vy"
 
@@ -989,7 +988,6 @@ msgid "Downloading..."
 msgstr "Laddar ner..."
 
 #: STRINGTABLE.IDS_PROGRESS_PARSING
-#, fuzzy
 msgid "Parsing..."
 msgstr "Tolkar..."
 
@@ -1362,7 +1360,6 @@ msgstr ""
 "(xpress4k, xpress8k, xpress16k, lzx)"
 
 #: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
-#, fuzzy
 msgid "Remove orphaned packages"
 msgstr "Ta bort överblivna paket"
 
@@ -1426,9 +1423,8 @@ msgid "Disable creation of desktop shortcut"
 msgstr "Inaktivera skapandet av skrivbordsgenväg"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_REPLACEONREBOOT
-#, fuzzy
 msgid "Disable replacing in-use files on next reboot"
-msgstr "Inaktivera att ersätta filer-i-bruk på nästa omstart"
+msgstr "Inaktivera ersättning av filer som används vid nästa omstart"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_SHORTCUTS
 msgid "Disable creation of desktop and start menu shortcuts"
@@ -1514,7 +1510,6 @@ msgid "Symlink type (lnk, native, sys, wsl)"
 msgstr "Symlänkstyp (lnk, native, sys, wsl)"
 
 #: STRINGTABLE.IDS_HELPTEXT_UNTRUSTED_KEYS
-#, fuzzy
 msgid "Use untrusted saved extra keys"
 msgstr "Använd otillförlitliga sparade extranycklar"
 
