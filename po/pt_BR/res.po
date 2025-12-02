@@ -1021,8 +1021,8 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
-"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"Retry\", or select "
+"\"Continue\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
@@ -1239,7 +1239,7 @@ msgid "Automatically install source for every package installed"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
-msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
+msgid "Use a different basename, e.g. \"foo\", instead of \"setup\""
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS

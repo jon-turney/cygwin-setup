@@ -1135,8 +1135,8 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
-"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"Retry\", or select \""
+"\"Continue\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 "Не удалось извлечь /%s — ошибка записи файла.\n"
 "\n"
@@ -1393,9 +1393,9 @@ msgstr ""
 "Автоматически устанавливать исходный код для каждого установленного пакета"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
-msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
+msgid "Use a different basename, e.g. \"foo\", instead of \"setup\""
 msgstr ""
-"Использовать другое базовое имя, например \"\"foo\"\" вместо \"\"setup\"\""
+"Использовать другое базовое имя, например \"foo\" вместо \"setup\""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"

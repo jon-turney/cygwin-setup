@@ -1079,14 +1079,14 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
-"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"Retry\", or select "
+"\"Continue\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 "无法解压缩 /%s -- 写入文件时出错\n"
 "\n"
 "文件正在使用中或发生了其他错误。\n"
 "\n"
-"请结束所有 Cygwin 进程并选择\"\"重试\"\"，或选择\"\"继续\"\"以继续（文件将在"
+"请结束所有 Cygwin 进程并选择\"重试\"，或选择\"继续\"以继续（文件将在"
 "重启后更新）。\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
@@ -1326,8 +1326,8 @@ msgid "Automatically install source for every package installed"
 msgstr "为每个安装的软件包自动安装源代码"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
-msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
-msgstr "使用不同的基本名称，例如\"\"foo\"\"，而非\"\"setup\"\""
+msgid "Use a different basename, e.g. \"foo\", instead of \"setup\""
+msgstr "使用不同的基本名称，例如\"foo\"，而非\"setup\""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"

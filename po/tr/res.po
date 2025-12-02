@@ -1124,15 +1124,15 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
-"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"Retry\", or select "
+"\"Continue\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 "/%s çıkarılamıyor -- dosya yazılırken hata oluştu\n"
 "\n"
 "Dosya kullanımda veya başka bir hata oluştu.\n"
 "\n"
-"Lütfen tüm Cygwin işlemlerini durdurun ve \"\"Yeniden dene\"\" veya devam "
-"etmek için \"\"Devam et\"\" seçeneğini seçin (dosya yeniden başlatıldıktan "
+"Lütfen tüm Cygwin işlemlerini durdurun ve \"Yeniden dene\" veya devam "
+"etmek için \"Devam et\" seçeneğini seçin (dosya yeniden başlatıldıktan "
 "sonra güncellenecektir).\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
@@ -1381,8 +1381,8 @@ msgid "Automatically install source for every package installed"
 msgstr "Kurulan her paket için kaynağı otomatik olarak kur"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
-msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
-msgstr "Farklı bir taban adı kullan, örneğin \"\"setup\"\" yerine \"\"foo\"\""
+msgid "Use a different basename, e.g. \"foo\", instead of \"setup\""
+msgstr "Farklı bir taban adı kullan, örneğin \"setup\" yerine \"foo\""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"

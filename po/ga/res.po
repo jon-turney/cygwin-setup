@@ -1133,15 +1133,15 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
-"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"Retry\", or select "
+"\"Continue\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 "Ní féidir /%s a bhaint - comhad scríbhneoireachta earráide\n"
 "\n"
 "Tá an comhad in úsáid nó tharla earráid éigin eile.\n"
 "\n"
-"Stop gach próiseas Cygwin le do thoil agus roghnaigh “\" Athbhreithnigh \"”, "
-"nó roghnaigh “\" Lean ar aghaidh \"” chun dul ar aghaidh ar aon nós (déanfar "
+"Stop gach próiseas Cygwin le do thoil agus roghnaigh “ Athbhreithnigh ”, "
+"nó roghnaigh “ Lean ar aghaidh ” chun dul ar aghaidh ar aon nós (déanfar "
 "an comhad a nuashonrú tar éis atosaigh).\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
@@ -1393,8 +1393,8 @@ msgid "Automatically install source for every package installed"
 msgstr "Suiteáil foinse go huathoibríoch do gach pacá"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
-msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
-msgstr "Úsáid bunainm difriúil, m.sh. “\" foo \"”, in ionad “\" setup \"”"
+msgid "Use a different basename, e.g. \"foo\", instead of \"setup\""
+msgstr "Úsáid bunainm difriúil, m.sh. “ foo ”, in ionad “ setup ”"
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"
