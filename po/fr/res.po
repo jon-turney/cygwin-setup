@@ -1485,7 +1485,7 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
 msgid "Unattended setup mode (unattended, noinput, hidden)"
-msgstr ""
+msgstr "Assistant sans messages (unattended, noinput, hidden)"
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
 msgid "Specify categories to uninstall"

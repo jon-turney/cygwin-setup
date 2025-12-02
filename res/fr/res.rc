@@ -501,7 +501,7 @@ BEGIN
     IDS_HELPTEXT_PRUNE_INSTALL
                             "Purger l'installation pour n'avoir que les paquets demandés"
     IDS_HELPTEXT_PUBKEY     "URL ou chemin complet d'une clé publique supplémentaire (format RFC4880)"
-    IDS_HELPTEXT_QUIET_MODE "Assistant sans messages"
+    IDS_HELPTEXT_QUIET_MODE "Assistant sans messages (unattended, noinput, hidden)"
     IDS_HELPTEXT_REMOVE_CATEGORIES
                             "Spécifie les catégories à désinstaller"
     IDS_HELPTEXT_REMOVE_PACKAGES
