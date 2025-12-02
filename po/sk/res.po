@@ -247,9 +247,7 @@ msgid "(FILE)"
 msgstr "(súbor)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt ""
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL."
-"IDC_INS_DISKFULL"
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
 msgstr "Priebeh1"
 
@@ -293,8 +291,7 @@ msgid "Proxy &User ID"
 msgstr "ID &uživateľa proxy"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "&Heslo"
 
@@ -303,16 +300,12 @@ msgid "Proxy Authorization Required"
 msgstr "Vyžaduje sa autentizácia proxy"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON."
-"IDOK"
+msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt ""
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON."
-"IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
 msgstr ""
 
@@ -1086,12 +1079,12 @@ msgstr ""
 msgid ""
 "Target CPU mismatch\n"
 "\n"
-"You're trying to install a %s bit version of Cygwin into a directory "
-"containing a %s bit version of Cygwin.  Continuing to do so would break the "
+"You're trying to install the %s version of Cygwin into a directory "
+"containing the %s version of Cygwin.  Continuing to do so would break the "
 "existing installation.\n"
 "\n"
-"Either run setup-%s.exe to update your existing %s bit installation of "
-"Cygwin, or choose another directory for your %s bit installation."
+"Either run setup-%s.exe to update your existing %s installation of Cygwin, "
+"or choose another directory for your %s installation."
 msgstr ""
 
 #: STRINGTABLE.IDS_GET_SITELIST_ERROR

@@ -208,8 +208,7 @@ msgid "Select Your Internet Connection"
 msgstr ""
 
 #: DIALOG.IDD_INSTATUS.CAPTION
-msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
-"DIALOG.IDD_INSTATUS.CAPTION"
+msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
 msgstr ""
 
@@ -227,8 +226,7 @@ msgid "(FILE)"
 msgstr ""
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
 msgstr ""
 
@@ -272,8 +270,7 @@ msgid "Proxy &User ID"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "&პაროლი"
 
@@ -282,15 +279,12 @@ msgid "Proxy Authorization Required"
 msgstr ""
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
 msgstr "&დიახ"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
 msgstr "გაუქმება"
 
@@ -501,8 +495,8 @@ msgstr "გაფრთხილება:"
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "One or more mirrors you have selected is/are not on the list of official "
-"Cygwin mirrors any more. It/They may be out of date or missing some packages."
-"\n"
+"Cygwin mirrors any more. It/They may be out of date or missing some "
+"packages.\n"
 "This affects the following mirror(s):"
 msgstr ""
 
@@ -1003,8 +997,8 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
-"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
+"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
@@ -1064,12 +1058,12 @@ msgstr ""
 msgid ""
 "Target CPU mismatch\n"
 "\n"
-"You're trying to install a %s bit version of Cygwin into a directory "
-"containing a %s bit version of Cygwin.  Continuing to do so would break the "
+"You're trying to install the %s version of Cygwin into a directory "
+"containing the %s version of Cygwin.  Continuing to do so would break the "
 "existing installation.\n"
 "\n"
-"Either run setup-%s.exe to update your existing %s bit installation of "
-"Cygwin, or choose another directory for your %s bit installation."
+"Either run setup-%s.exe to update your existing %s installation of Cygwin, "
+"or choose another directory for your %s installation."
 msgstr ""
 
 #: STRINGTABLE.IDS_GET_SITELIST_ERROR
@@ -1242,8 +1236,8 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
-"Skip package availability check when installing from local directory ("
-"requires local directory to be clean mirror!)"
+"Skip package availability check when installing from local directory "
+"(requires local directory to be clean mirror!)"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN

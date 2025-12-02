@@ -4,74 +4,74 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2023-06-25 18:40+0000\n"
-"Last-Translator: Vincent Dawans <dawansv@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/cygwin-setup/"
-"cygwin-setup/fr/>\n"
-"Language: fr\n"
+"PO-Revision-Date: 2025-12-01 06:00+0000\n"
+"Last-Translator: Andika Triwidada <andika@gmail.com>\n"
+"Language-Team: Indonesian <https://hosted.weblate.org/projects/cygwin-setup/"
+"cygwin-setup/id/>\n"
+"Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.18.1\n"
+"X-Generator: Weblate 5.15-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
 msgid "Cygwin Setup - Choose Installation Type"
-msgstr "Assistant Cygwin - Choisissez le type d'installation"
+msgstr "Penyiapan Cygwin - Pilih Jenis Instalasi"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_NETINST
 msgid ""
 "&Install from Internet\n"
 "(downloaded files will be kept for future re-use)"
 msgstr ""
-"&Installer depuis Internet\n"
-"(les fichiers téléchargés seront gardés pour une réutilisation ultérieure)"
+"Pasang dari &Internet\n"
+"(berkas yang diunduh akan disimpan untuk digunakan kembali di masa mendatang)"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_DOWNLOAD
 msgid "&Download Without Installing"
-msgstr "&Télécharger sans installer"
+msgstr "Un&duh Tanpa Memasang"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_LOCALDIR
 msgid "Install from &Local Directory"
-msgstr "Installer depuis un dossier &local"
+msgstr "Pasang dari Direktori &Lokal"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Source"
-msgstr "Choisissez la source du téléchargement"
+msgstr "Pilih Sumber Unduhan"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_SOURCE_SUBTEXT
 msgid ""
 "Choose whether to install or download from the internet, or install from "
 "files in a local directory."
 msgstr ""
-"Choisissez si vous installez ou téléchargez depuis Internet, ou installez "
-"des fichiers depuis un dossier local."
+"Pilih apakah akan memasang atau mengunduh dari internet, atau memasang dari "
+"berkas-berkas di direktori lokal."
 
 #: DIALOG.IDD_VIRUS.CAPTION
 msgid "Cygwin Setup - Disable Virus Scanner?"
-msgstr "Assistant Cygwin - Inhiber l'Anti-Virus ?"
+msgstr "Penyiapan Cygwin - Nonaktifkan Pemindai Virus?"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_DISABLE_AV
 msgid "&Disable Virus scanner"
-msgstr "&Inhiber l'anti-virus"
+msgstr "Nonaktifkan Pemin&dai Virus"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_LEAVE_AV
 msgid "&Leave Virus scanner alone"
-msgstr "&Laisser l'anti-virus tranquille"
+msgstr "&Biarkan pemindai virus"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose whether to disable your virus scanner while installing."
-msgstr "Choisissez si vous inhibez votre anti-virus pendant l'installation."
+msgstr "Pilih apakah akan menonaktifkan pemindai virus Anda saat memasang."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
 "Some Antivirus programs, notably McAfee, cause a blue screen on Windows XP "
 "computers during installation of Cygwin."
 msgstr ""
-"Certains anti-virus, notamment McAfee, génèrent un écran bleu sur Windows XP "
-"lors de l'installation de Cygwin."
+"Beberapa program Antivirus, terutama McAfee, menyebabkan layar biru pada "
+"komputer Windows XP selama instalasi Cygwin."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
@@ -79,81 +79,78 @@ msgid ""
 "during the installation process, and re-enable it when the install is "
 "complete."
 msgstr ""
-"Un anti-virus problématique a été détecté. L'assistant Cygwin peut l'inhiber "
-"pendant le processus d'installation, et le revalider à la fin de "
-"l'installation."
+"Salah satu yang mungkin menjadi masalah telah terdeteksi. Penyiapan Cygwin "
+"dapat menonaktifkan ini selama proses instalasi, dan mengaktifkannya kembali "
+"saat instalasi selesai."
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
 msgid "Cygwin Setup - Select Local Package Directory"
-msgstr "Assistant Cygwin - Sélection du dossier local des paquets"
+msgstr "Penyiapan Cygwin - Pilih Direktori Paket Lokal"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Local Package Directory"
-msgstr "Sélection du dossier local des paquets"
+msgstr "Pilih Direktori Paket Lokal"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_DOWNLOAD_DESC
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
 msgstr ""
-"Choisir un dossier pour enregistrer les fichiers téléchargés. Ce dossier "
-"sera créé s'il n'existe pas."
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
 msgid ""
 "Select a directory where Setup should look for downloaded installation files."
 msgstr ""
-"Choisir un dossier où l'assistant ira chercher les fichiers téléchargés."
 
 #: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
 msgid "Local Package Directory"
-msgstr "Dossier local des paquets"
+msgstr "Direktori Paket Lokal"
 
 #: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
 msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
 msgid "B&rowse..."
-msgstr "Par&courir..."
+msgstr "&Ramban..."
 
 #: DIALOG.IDD_ROOT.CAPTION
 msgid "Cygwin Setup - Choose Installation Directory"
-msgstr "Assistant Cygwin - Choix du dossier d'installation"
+msgstr "Penyiapan Cygwin - Pilih Direktori Instalasi"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Root Install Directory"
-msgstr "Sélection du dossier racine"
+msgstr "Pilih Direktori Instalasi Root"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ROOTDIR_SUBTEXT
 msgid ""
 "Select the directory where you want to install Cygwin.  Also choose a few "
 "installation parameters."
 msgstr ""
-"Sélectionnez le dossier où installer Cygwin. Choisissez également des "
-"paramètres d'installation."
+"Pilih direktori tempat Anda ingin memasang Cygwin.  Pilih juga beberapa "
+"parameter instalasi."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
 msgid "Root Directory"
-msgstr "Dossier racine"
+msgstr "Direktori Root"
 
 #: DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE
 msgctxt "DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE"
 msgid "B&rowse..."
-msgstr "Pa&rcourir..."
+msgstr "&Ramban..."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_INSTALLFOR_GRP
 msgid "Install For"
-msgstr "Installer pour"
+msgstr "Pasang Untuk"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_SYSTEM
 msgid "&All Users (RECOMMENDED)"
-msgstr "&Tout le monde (RECOMMANDÉ)"
+msgstr "Semu&a Pengguna (DISARANKAN)"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
 msgid "Just &Me"
-msgstr "Juste &Moi"
+msgstr "Ha&nya Saya"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
 msgid "Cygwin will be available to all users of the system."
-msgstr "Cygwin sera disponible pour tous les utilisateurs."
+msgstr "Cygwin akan tersedia untuk semua pengguna sistem."
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_JUSTME_TEXT
 msgid ""
@@ -162,54 +159,55 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
-"Cygwin sera disponible pour tous les utilisateurs mais les icônes et les "
-"menus uniquement pour l'utilisateur en cours. Ne sélectionner que si vous "
-"n'avez pas les droits administrateur ou en cas de besoin spécifique."
+"Cygwin akan tetap tersedia untuk semua pengguna, tetapi Ikon Desktop, Entri "
+"Menu Cygwin, dan informasi penting tentang Penginstal hanya tersedia untuk "
+"pengguna saat ini.  Pilih opsi ini hanya jika Anda tidak memiliki hak akses "
+"Administrator atau memiliki kebutuhan khusus."
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
-msgstr "Assistant Cygwin - Choix site(s) de téléchargement"
+msgstr "Penyiapan Cygwin - Pilih Situs Unduhan"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Available Download Sites:"
-msgstr "Sites disponibles :"
+msgstr "Situs Unduhan yang Tersedia:"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Choose a site from this list, or add your own sites to the list."
 msgstr ""
-"Choisissez un site dans cette liste, ou ajoutez vos propres sites à la liste."
+"Pilih situs dari daftar ini, atau tambahkan situs Anda sendiri ke daftar."
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Site"
-msgstr "Choisissez un site de téléchargement"
+msgstr "Pilih Situs Unduhan"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
 msgid "User URL:"
-msgstr "URL perso :"
+msgstr "URL Pengguna:"
 
 #: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
 msgid "Add"
-msgstr "Ajouter"
+msgstr "Tambah"
 
 #: DIALOG.IDD_NET.CAPTION
 msgid "Cygwin Setup - Select Connection Type"
-msgstr "Assistant Cygwin - Sélection du type de connexion"
+msgstr "Penyiapan Cygwin - Pilih Jenis Koneksi"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
 msgid "Use &System Proxy Settings"
-msgstr "Utiliser les paramètres proxy &Système"
+msgstr "Gunakan Pengaturan Proksi &Sistem"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_DIRECT
 msgid "&Direct Connection"
-msgstr "Connexion &directe"
+msgstr "Koneksi &Langsung"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PROXY
 msgid "Use HTTP/FTP &Proxy:"
-msgstr "Utiliser le &proxy HTTP/FTP :"
+msgstr "Gunakan &Proksi HTTP/FTP:"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Proxy &Host"
-msgstr "&Serveur proxy"
+msgstr "&Host Proksi"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Por&t"
@@ -220,112 +218,117 @@ msgid ""
 "Setup needs to know how you want it to connect to the internet.  Choose the "
 "appropriate settings below."
 msgstr ""
-"L'assistant a besoin de savoir comment vous désirez le connecter à Internet. "
-"Choisissez un paramètre approprié ci-dessous."
+"Penyiapan perlu mengetahui bagaimana Anda ingin terhubung ke internet.  "
+"Pilih pengaturan yang sesuai di bawah ini."
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Your Internet Connection"
-msgstr "Sélectionnez votre connexion Internet"
+msgstr "Pilih Koneksi Internet Anda"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
-msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
+msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
+"DIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
-msgstr "Assistant Cygwin"
+msgstr "Penyiapan Cygwin"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
 msgid "Installing..."
-msgstr "Installation..."
+msgstr "Memasang..."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_PKG
 msgid "(PKG)"
-msgstr "(PAQUET)"
+msgstr "(PKG)"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_FILE
 msgid "(FILE)"
-msgstr "(FICHIER)"
+msgstr "(BERKAS)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
-msgstr "Progress1"
+msgstr "Kemajuan1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS"
 msgid "Progress1"
-msgstr "Progress1"
+msgstr "Kemajuan1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS"
 msgid "Progress1"
-msgstr "Progress1"
+msgstr "Kemajuan1"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE"
 msgid "Package:"
-msgstr "Paquet :"
+msgstr "Paket:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_TOTAL
 msgid "Total:"
-msgstr "Total  :"
+msgstr "Total:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_DISK
 msgid "Disk:"
-msgstr "Disque :"
+msgstr "Diska:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC
 msgid "This page displays the progress of the download or installation."
-msgstr ""
-"Cette page affiche l'avancement du téléchargement ou de l'installation."
+msgstr "Halaman ini menampilkan kemajuan pengunduhan atau instalasi."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Progress"
-msgstr "Avancement"
+msgstr "Kemajuan"
 
 #: DIALOG.IDD_PROXY_AUTH.CAPTION
 msgid "Proxy Authentication required"
-msgstr "Authentification proxy requise"
+msgstr "Otentikasi proksi diperlukan"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy &User ID"
-msgstr "&Identifiant proxy"
+msgstr "ID Pengg&una Proksi"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr "&Mot de passe"
+msgstr "Kata &Sandi"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy Authorization Required"
-msgstr "Authentification proxy requise"
+msgstr "Otorisasi Proksi Diperlukan"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
 msgstr "&OK"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "Annule"
+msgstr "Batal"
 
 #: DIALOG.IDD_NET_AUTH.CAPTION
 msgid "Server Authentication required"
-msgstr "Authentification serveur requise"
+msgstr "Autentikasi Server diperlukan"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr "&Identifiant"
+msgstr "ID Pengg&una"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr "&Mot de passe"
+msgstr "Kata &Sandi"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgid "Server Authorization Required"
-msgstr "Authentification serveur requise"
+msgstr "Otorisasi Server Diperlukan"
 
 #: DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK"
@@ -335,16 +338,16 @@ msgstr "&OK"
 #: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "Annule"
+msgstr "Batal"
 
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
 msgid "Cygwin Setup"
-msgstr "Assistant Cygwin"
+msgstr "Penyiapan Cygwin"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
-msgstr "Programme Assistant Cygwin"
+msgstr "Program Penyiapan Rilis Cygwin Net"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TEXT
 msgid ""
@@ -358,77 +361,68 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
-"Cet assistant est utilisé pour l'installation initiale de l'environnement "
-"Cygwin ainsi que pour ses mises à jour. Les pages suivantes vont vous guider "
-"durant l'installation. \n"
-"\n"
-"Notez que Cygwin inclus un grand nombre de paquets destinés à de multiples "
-"usages. Nous ne pourrons installer par défaut qu'un jeu de paquets de base.\n"
-"\n"
-"Redémarrez ce programme ultérieurement pour ajouter, enlever ou mettre à "
-"jour des paquets si nécessaire."
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr "Contribuer à la traduction de ce programme."
+msgstr "Berkontribusi pada penerjemahan program ini."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
-msgstr "Assistant Cygwin - État de l'installation et création des icônes"
+msgstr "Penyiapan Cygwin - Status Instalasi dan Buat Ikon"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
 msgid "Create icon on &Desktop"
-msgstr "Créer une icône sur le &bureau"
+msgstr "Buat ikon di &Desktop"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
 msgid "Add icon to &Start Menu"
-msgstr "Ajouter une icône au menu &Démarrer"
+msgstr "Tambahkan ikon ke &Start Menu"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_INSTALL
 msgid ""
 "Tell setup if you want it to create a few icons for convenient access to the "
 "Cygwin environment."
 msgstr ""
-"Indiquez à l'assistant si vous voulez créer des icônes pour un accès aisé à "
-"Cygwin."
+"Beritahu penyiapan apakah Anda ingin membuat beberapa ikon untuk akses mudah "
+"ke lingkungan Cygwin."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_INSTALL
 msgid "Create Icons"
-msgstr "Création des icônes"
+msgstr "Buat Ikon"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
 msgid "Shows installation status in download-only mode."
-msgstr "Montre l'état de l'installation en mode téléchargement seulement."
+msgstr "Menunjukkan status instalasi dalam mode unduh saja."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
 msgid "Installation complete"
-msgstr "Installation terminée"
+msgstr "Instalasi selesai"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS_HEADER
 msgid "Installation Status"
-msgstr "État de l'installation"
+msgstr "Status Instalasi"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS
 msgid "Cygwin installation completed successfully."
-msgstr "Installation de Cygwin terminée avec succès."
+msgstr "Instalasi Cygwin berhasil diselesaikan."
 
 #: DIALOG.IDD_FTP_AUTH.CAPTION
 msgid "FTP Authentication required"
-msgstr "Authentification FTP requise"
+msgstr "Autentikasi FTP diperlukan"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr "&Identifiant"
+msgstr "ID Pengg&una"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr "&Mot de passe"
+msgstr "Kata &Sandi"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgid "FTP Authorization Required"
-msgstr "Authentification FTP requise"
+msgstr "Otorisasi FTP Diperlukan"
 
 #: DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK"
@@ -438,103 +432,103 @@ msgstr "&OK"
 #: DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "Annule"
+msgstr "Batal"
 
 #: DIALOG.IDD_CHOOSE.CAPTION
 msgid "Cygwin Setup - Select Packages"
-msgstr "Assistant Cygwin - Sélection des paquets"
+msgstr "Penyiapan Cygwin - Pilih Paket"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
 msgid "&View"
-msgstr "&Voir"
+msgstr ""
 
 #: DIALOG.IDD_CHOOSE.RTEXT.IDC_STATIC
 msgid "&Search"
-msgstr "&Chercher"
+msgstr "&Cari"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_DO_SEARCH
 msgid "Search "
-msgstr "Chercher "
+msgstr "Cari "
 
 #: DIALOG.IDD_CHOOSE.PUSHBUTTON.IDC_CHOOSE_CLEAR_SEARCH
 msgid "&Clear"
-msgstr "&Efface"
+msgstr ""
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_KEEP
 msgid "&Keep"
-msgstr "&Garde"
+msgstr "Pertahan&kan"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_BEST
 msgid "&Best"
-msgstr "&Mieux"
+msgstr "Ter&baik"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_SYNC
 msgid "&Sync"
-msgstr "&Sync"
+msgstr "&Selaraskan"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
 msgid "&Test"
-msgstr "&Test"
+msgstr "&Uji"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
 msgid "&Hide obsolete packages"
-msgstr "&Cacher les paquets obsolètes"
+msgstr "Sembuny&ikan paket usang"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
 msgid "Select packages to download."
-msgstr "Sélectionnez les paquets à télécharger."
+msgstr "Pilih paket yang akan diunduh."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_INSTALL
 msgid "Select packages to install."
-msgstr "Sélectionnez les paquets à installer."
+msgstr "Pilih paket yang akan dipasang."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Packages"
-msgstr "Sélection des paquets"
+msgstr "Pilih Paket"
 
 #: DIALOG.IDD_PREREQ.CAPTION
 msgid "Cygwin Setup - Resolving Dependencies"
-msgstr "Assistant Cygwin - Résolution des dépendances"
+msgstr "Penyiapan Cygwin - Menguraikan Ketergantungan"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Resolving Dependencies"
-msgstr "Résolution des dépendances"
+msgstr "Mengurai Ketergantungan"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC
 msgid "The following problems occured trying to satisfy dependencies."
-msgstr ""
-"Les problèmes suivants apparaissent lors de la résolution des dépendances."
+msgstr "Masalah berikut terjadi saat mencoba memenuhi ketergantungan."
 
 #: DIALOG.IDD_PREREQ.CONTROL.IDC_PREREQ_CHECK
 msgid "&Accept default problem solutions"
-msgstr "&Accepter la solution par défaut"
+msgstr "Terim&a solusi masalah default"
 
 #: DIALOG.IDD_CONFIRM.CAPTION
 msgid "Cygwin Setup - Review and confirm changes"
-msgstr "Assistant Cygwin - Revoir et confirmer les changements"
+msgstr "Penyiapan Cygwin - Tinjau dan konfirmasi perubahan"
 
 #: DIALOG.IDD_CONFIRM.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Review and confirm changes"
-msgstr "Revoir et confirmer les changements"
+msgstr "Tinjau dan konfirmasi perubahan"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
-msgstr "Assistant Cygwin - Utiliser les sites miroirs éliminés ?"
+msgstr ""
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
-msgstr "Attention :"
+msgstr "Peringatan:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "One or more mirrors you have selected is/are not on the list of official "
-"Cygwin mirrors any more. It/They may be out of date or missing some "
-"packages.\n"
+"Cygwin mirrors any more. It/They may be out of date or missing some packages."
+"\n"
 "This affects the following mirror(s):"
 msgstr ""
-"Un ou plusieurs miroirs sélectionnés ne sont plus dans la liste officielle "
-"des miroirs Cygwin. Certains paquets peuvent manquer ou ne pas être à jour.\n"
-"Ceci concerne le(s) miroir(s) suivant(s) :"
+"Satu atau beberapa mirror yang Anda pilih tidak lagi ada dalam daftar mirror "
+"resmi Cygwin. Mirror tersebut mungkin sudah kedaluwarsa atau kehilangan "
+"beberapa paket.\n"
+"Hal ini memengaruhi mirror berikut:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -543,30 +537,30 @@ msgid ""
 "\n"
 "Do you want to continue, using this/these mirror(s)?"
 msgstr ""
-"Si vous avez des problèmes à l'installation pensez à n'utiliser que les "
-"miroirs officiels.\n"
+"Jika Anda mengalami masalah pemasangan, pertimbangkan untuk mencoba cermin "
+"resmi saja.\n"
 "\n"
-"Voulez-vous continuer avec ce(s) miroir(s) ?"
+"Apakah Anda ingin melanjutkan menggunakan cermin ini?"
 
 #: DIALOG.IDD_DROPPED.CONTROL.IDC_DROP_NOWARN
 msgid "&Don't warn me about this/these mirror(s) again"
-msgstr "&Ne plus me prévenir pour ce(s) miroir(s)"
+msgstr "&Jangan peringatkan saya tentang cermin ini lagi"
 
 #: DIALOG.IDD_DROPPED.PUSHBUTTON.IDYES
 msgid "&Yes"
-msgstr "&Oui"
+msgstr "&Ya"
 
 #: DIALOG.IDD_DROPPED.DEFPUSHBUTTON.IDNO
 msgid "&No"
-msgstr "&Non"
+msgstr "&Tidak"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.CAPTION
 msgid "Download Incomplete"
-msgstr "Téléchargement Incomplet"
+msgstr "Unduhan Tidak Lengkap"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid "The following package(s) had download errors:"
-msgstr "Les paquets suivants ont des erreurs de téléchargement :"
+msgstr "Paket berikut mengalami kesalahan pengunduhan:"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid ""
@@ -574,75 +568,73 @@ msgid ""
 "selection page, 'Continue' to go on anyway (NOT RECOMMENDED), or 'Cancel' to "
 "exit."
 msgstr ""
-"Choisissez 'Recommencer' pour relancer le téléchargement, 'Précédent' pour "
-"revenir à la page de sélection des paquets, 'Continuer' pour forcer la suite "
-"(NON RECOMMANDÉ), ou 'Annuler' pour quitter."
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
 msgid "&Retry"
-msgstr "&Recommencer"
+msgstr ""
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
 msgid "&Back"
-msgstr "&Précédent"
+msgstr ""
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE"
 msgid "&Continue"
-msgstr "&Continuer"
+msgstr "Lan&jutkan"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT"
 msgid "Cancel"
-msgstr "Annuler"
+msgstr "Batal"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
-msgstr "Assistant Cygwin - Lancement des scripts post-installation"
+msgstr "Penyiapan Cygwin - Menjalankan skrip pasca instalasi"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Postinstall script errors"
-msgstr "Erreurs dans les scripts"
+msgstr "Kesalahan skrip pasca instalasi"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC
 msgid ""
 "These do not necessarily mean that affected packages will fail to function "
 "properly, but please check /var/log/setup.log.full and report any problems."
 msgstr ""
-"Ceci n'indique pas forcément que les paquets concernésne fonctionneront pas, "
-"mais consultez /var/log/setup.log.full avant de reporter un problème."
+"Hal ini tidak serta merta berarti paket yang terpengaruh akan gagal "
+"berfungsi sebagaimana mestinya, namun harap periksa /var/log/setup.log.full "
+"dan laporkan masalah apa pun."
 
 #: DIALOG.IDD_FILE_INUSE.CAPTION
 msgid "In-use file detected"
-msgstr "Détection d'un fichier en cours d'utilisation"
+msgstr "Terdeteksi ada berkas yang sedang digunakan"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG
 msgctxt "DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr "Impossible d'extraire"
+msgstr "Tidak dapat mengekstrak"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_STATIC
 msgid "The file is in use by the following processes:"
-msgstr "Ce fichier est en cours d'utilisation par :"
+msgstr "Berkas tersebut digunakan oleh proses berikut:"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_0
 msgid ""
 "Select 'Retry' to retry, select 'Stop' to stop processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
-"Choisir 'Recommencer' pour recommencer, choisir 'Stop' pour arrêter les "
-"process et recommencer, ou choisir 'Continuer' pour procéder (le fichier "
-"sera mis à jour après un redémarrage)."
+"Pilih 'Coba lagi' untuk mencoba lagi, pilih 'Hentikan' untuk menghentikan "
+"proses dan mencoba lagi, atau pilih 'Lanjutkan' untuk tetap melanjutkan "
+"(berkas akan diperbarui setelah boot ulang)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_1
 msgid ""
 "Select 'Retry' to retry, select 'Kill' to kill processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
-"Choisir 'Recommencer' pour ré-essayer, choisir 'Tuer' pour tuer les "
-"processus et ré-essayer, ou choisir 'Continuer' pour poursuivre (le fichier "
-"sera mis à jour après un redémarrage)."
+"Pilih 'Coba lagi' untuk mencoba lagi, pilih 'Matikan' untuk mematikan proses "
+"dan mencoba lagi, atau pilih 'Lanjutkan' untuk tetap melanjutkan "
+"(berkas akan diperbarui setelah boot ulang)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_2
 msgid ""
@@ -650,23 +642,23 @@ msgid ""
 "retry, or select 'Continue' to go on anyway (the file will be updated after "
 "a reboot)."
 msgstr ""
-"Choisir 'Recommencer' pour ré-essayer, choisir 'Tuer' pour forcer la fin des "
-"processus et ré-essayer, ou choisir 'Continuer' pour poursuivre (le fichier "
-"sera mis à jour après un redémarrage)."
+"Pilih 'Coba lagi' untuk mencoba lagi, pilih 'Matikan' untuk menghentikan "
+"semua proses secara paksa dan mencoba lagi, atau pilih 'Lanjutkan' untuk "
+"tetap melanjutkan (berkas akan diperbarui setelah di-boot ulang)."
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE"
 msgid "&Retry"
-msgstr "&Recommencer"
+msgstr "&Coba Lagi"
 
 #: DIALOG.IDD_FILE_INUSE.DEFPUSHBUTTON.IDRETRY
 msgid "&Stop Processes"
-msgstr "&Stop"
+msgstr "Hentikan Pro&ses"
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE"
 msgid "&Continue"
-msgstr "&Continuer"
+msgstr "Lan&jutkan"
 
 #: STRINGTABLE.IDS_ROOT_SLASH
 msgid ""
@@ -674,114 +666,112 @@ msgid ""
 "cygwin root, to prevent possible conflicts with other programs.  Proceed "
 "anyway?"
 msgstr ""
-"Attention : nous recommandons de ne PAS utiliser la racine du disque dur "
-"comme racine de Cygwin pour éviter des conflits avec d'autres programmes. "
-"Continuer quand même ?"
+"Peringatan: Kami menyarankan Anda untuk tidak menggunakan root hard drive "
+"Anda sebagai root cygwin, untuk mencegah kemungkinan konflik dengan program "
+"lain.  Tetap lanjutkan?"
 
 #: STRINGTABLE.IDS_ROOT_SPACE
 msgid ""
 "You should not choose a root path that include spaces in directory names.  "
 "Proceed anyway?"
 msgstr ""
-"Vous ne devriez pas utiliser un chemin racine qui inclus des espaces dans "
-"les noms de dossiers. Continuer quand même ?"
+"Anda sebaiknya tidak memilih path root yang menyertakan spasi dalam nama "
+"direktori.  Tetap lanjutkan?"
 
 #: STRINGTABLE.IDS_ERR_OPEN_WRITE
 msgid "Can't open %s for writing: %s"
-msgstr "Impossible d'ouvrir %s en écriture : %s"
+msgstr "Tidak dapat membuka %s untuk menulis: %s"
 
 #: STRINGTABLE.IDS_SETUPINI_MISSING
 msgid "Unable to get %s from <%s>"
-msgstr "Impossible de récupérer %s depuis « %s »"
+msgstr "Tidak dapat memperoleh %s dari <%s>"
 
 #: STRINGTABLE.IDS_OLD_SETUPINI
 msgid ""
 "This setup.ini is older than the one you used last time you installed "
 "cygwin.  Proceed anyway?"
 msgstr ""
-"Ce fichier setup.ini est plus ancien que celui utilisé lors de la dernière "
-"installation de Cygwin. Continuer quand même ?"
+"Setup.ini ini lebih lama dari yang Anda gunakan terakhir kali memasang "
+"Cygwin.  Tetap lanjutkan?"
 
 #: STRINGTABLE.IDS_NOTHING_INSTALLED
 msgid "Nothing needed to be installed"
-msgstr "Rien à installer"
+msgstr "Tidak ada yang perlu dipasang"
 
 #: STRINGTABLE.IDS_INSTALL_COMPLETE
 msgid "Installation Complete"
-msgstr "Installation terminée"
+msgstr "Instalasi Selesai"
 
 #: STRINGTABLE.IDS_REBOOT_REQUIRED
 msgid ""
 "In-use files have been replaced. You need to reboot as soon as possible to "
 "activate the new versions. Cygwin may operate incorrectly until you reboot."
 msgstr ""
-"Les fichiers en cours d'utilisation ont été remplacés. Vous devriez "
-"redémarrer dès que possible pour activer ces versions. Cygwin pourrait "
-"fonctionner de façon incorrecte jusqu'au redémarrage."
+"Berkas yang sedang digunakan telah diganti. Anda perlu melakukan boot ulang "
+"sesegera mungkin untuk mengaktifkan versi baru. Cygwin mungkin tidak "
+"beroperasi dengan benar hingga Anda melakukan boot ulang."
 
 #: STRINGTABLE.IDS_ERR_OPEN_READ
 msgid "Can't open %s for reading: %s"
-msgstr "Impossible d'ouvrir %s en lecture : %s"
+msgstr "Tidak dapat membuka %s untuk membaca: %s"
 
 #: STRINGTABLE.IDS_ROOT_ABSOLUTE
 msgid ""
 "The install directory must be absolute, with both a drive letter and leading "
 "slash, like C:\\Cygwin"
 msgstr ""
-"Le dossier d'installation doit être absolu, avec à la fois un identificateur "
-"de lecteur et une barre oblique au début : C:\\Cygwin"
+"Direktori instalasi harus absolut, dengan huruf drive dan garis miring di "
+"depan, seperti C:\\Cygwin"
 
 #: STRINGTABLE.IDS_DOWNLOAD_COMPLETE
 msgid "Download Complete"
-msgstr "Téléchargement terminé"
+msgstr "Unduhan Selesai"
 
 #: STRINGTABLE.IDS_NOLOGFILE
 msgid "Cannot open log file %s for writing"
-msgstr "Impossible d'ouvrir le fichier de trace %s en écriture"
+msgstr "Tidak bisa membuka berkas log %s untuk menulis"
 
 #: STRINGTABLE.IDS_UNINSTALL_COMPLETE
 msgid "Uninstalls complete."
-msgstr "Désinstallation terminée."
+msgstr "Pencopotan instalasi selesai."
 
 #: STRINGTABLE.IDS_ERR_CHDIR
 msgid "Could not change dir to %s: %s [%.8x]"
-msgstr "Impossible de changer le dossier vers %s : %s [%.8x]"
+msgstr "Tidak bisa berpindah dir ke %s: %s [%.8x]"
 
 #: STRINGTABLE.IDS_OLD_SETUP_VERSION
 msgid ""
 "This setup is version %s, but setup.ini claims version %s is available.\n"
 "You might want to upgrade to get the latest features and bug fixes."
 msgstr ""
-"Cet assistant est en version %s, mais setup.ini indique que la version %s "
-"est disponible.\n"
-"Vous devriez le mettre à jour pour avoir les dernière fonctionnalités et "
-"corrections de bogues."
+"Penyiapan ini adalah versi %s, tetapi setup.ini mengklaim versi %s tersedia."
+"\n"
+"Anda mungkin ingin memperbarui untuk mendapatkan fitur dan perbaikan bug "
+"terbaru."
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE
 msgid "Download Incomplete.  Try again?"
-msgstr "Téléchargement incomplet. Recommencer ?"
+msgstr "Unduhan Tidak Lengkap.  Coba lagi?"
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE_EXIT
 msgid "Download incomplete.  Check %s for details"
-msgstr "Téléchargement incomplet. Vérifiez %s pour avoir des détails"
+msgstr "Unduh tidak lengkap.  Periksa %s untuk detailnya"
 
 #: STRINGTABLE.IDS_INSTALL_ERROR
 msgid "Installation error (%s), Continue with other packages?"
-msgstr "Erreur d'installation (%s), Continuer avec les autres paquets ?"
+msgstr "Kesalahan instalasi (%s), Lanjutkan dengan paket lain?"
 
 #: STRINGTABLE.IDS_INSTALL_INCOMPLETE
 msgid "Installation incomplete.  Check %s for details"
-msgstr "Installation incomplète. Vérifiez %s pour les détails"
+msgstr "Instalasi tidak lengkap.  Periksa %s untuk detailnya"
 
 #: STRINGTABLE.IDS_CORRUPT_PACKAGE
 msgid "Package %s has a corrupt local copy, please remove and retry."
-msgstr ""
-"Le fichier du paquet %s a une copie locale altérée, supprimez la et "
-"recommencez."
+msgstr "Paket %s memiliki salinan lokal yang rusak, harap hapus dan coba lagi."
 
 #: STRINGTABLE.IDS_QUERY_CORRUPT
 msgid "The file %s is corrupt.  Delete it and download again?"
-msgstr "Le fichier %s est corrompu. Effacer et re-télécharger ?"
+msgstr "Berkas %s rusak.  Hapus dan unduh lagi?"
 
 #: STRINGTABLE.IDS_SKIP_PACKAGE
 msgid ""
@@ -789,7 +779,7 @@ msgid ""
 "Do you want to skip this package ?"
 msgstr ""
 "%s\n"
-"Voulez-vous passer ce paquet ?"
+"Apakah Anda ingin melewati paket ini?"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION
 msgid ""
@@ -798,10 +788,10 @@ msgid ""
 "Type: %s\n"
 "Message: %s"
 msgstr ""
-"Erreur Fatale : exception non traitée\n"
-"Thread : %s\n"
-"Type : %s\n"
-"Message : %s"
+"Kesalahan Fatal: Pengecualian Tak Tertangkap\n"
+"Utas: %s\n"
+"Jenis: %s\n"
+"Pesan: %s"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
 msgid ""
@@ -811,37 +801,36 @@ msgid ""
 "Message: %s\n"
 "AppErrNo: %d"
 msgstr ""
-"Erreur Fatale : exception non traitée\n"
-"Thread : %s\n"
-"Type : %s\n"
-"Message : %s\n"
-"AppErrNo : %d"
+"Kesalahan Fatal: Pengecualian Tak Tertangkap\n"
+"Utas: %s\n"
+"Jenis: %s\n"
+"Pesan: %s\n"
+"No.AppErr: %d"
 
 #: STRINGTABLE.IDS_TRUSTKEEP_TOOLTIP
 msgid ""
 "Sets all packages to their currently installed version.  This is equivalent "
 "to telling setup not to make any changes to any package."
 msgstr ""
-"Garde tous les paquets à la version installée. Ceci est équivalent à "
-"demander à l'assistant de ne faire aucun changement aux paquets."
+"Mengatur semua paket ke versi yang saat ini terpasang. Ini sama saja dengan "
+"memberi tahu pengaturan untuk tidak membuat perubahan apa pun pada paket apa "
+"pun."
 
 #: STRINGTABLE.IDS_TRUSTCURR_TOOLTIP
 msgid "Sets all packages to the best version available (RECOMMENDED)."
-msgstr ""
-"Sélectionne globalement la version qui est actuellement considérée comme la "
-"meilleure (RECOMMANDÉ)."
+msgstr "Mengatur semua paket ke versi terbaik yang tersedia (DIREKOMENDASIKAN)."
 
 #: STRINGTABLE.IDS_TRUSTSYNC_TOOLTIP
 msgid ""
 "Sets all packages to the version available from the package repository, "
 "downgrading if necessary."
 msgstr ""
-"Sélectionne globalement la version qui est disponible dans le site, "
-"éventuellement une version plus ancienne."
+"Mengatur semua paket ke versi yang tersedia dari repositori paket, "
+"menurunkan versi jika perlu."
 
 #: STRINGTABLE.IDS_TRUSTEXP_TOOLTIP
 msgid "Enable test packages."
-msgstr "Autoriser les versions de test."
+msgstr "Aktifkan paket pengujian."
 
 #: STRINGTABLE.IDS_VIEWBUTTON_TOOLTIP
 msgid ""
@@ -870,33 +859,6 @@ msgid ""
 "removed.  Other installed or selected packages no longer depend on these "
 "packages."
 msgstr ""
-"Itérer les différentes vues des paquets.  Ceci détermine quels paquets "
-"seront montrés dans la vue ci-dessous.\n"
-"\n"
-"Catégorie : regroupe par catégorie de paquets. Cliquez sur '+' pour "
-"étendre.\n"
-"\n"
-"Tout : montre tous les paquets.\n"
-"\n"
-"En attente : montre uniquement les paquets en attente d'ajou, retrait ou "
-"mise à jour. Ceci montre ce que l'assistant est sur le point de modifier "
-"lors de l'appui sur 'Suivant'.\n"
-"\n"
-"À jour : montre les paquets installés qui ne nécessitent pas d'action.\n"
-"\n"
-"Non installé : montre les paquets non installés ou qui ne sont pas "
-"sélectionnés pour installation.\n"
-"\n"
-"Choisi : montre les paquets installés qui ont été sélectionnés, et non pas "
-"installés pour résoudre une dépendance.\n"
-"\n"
-"Supprimable : montre les paquets installés qui ont été sélectionnés et "
-"peuvent être supprimer en toute sécurité.  Aucun autre paquet installé ou "
-"sélectionné ne dépend de ces paquets.\n"
-"\n"
-"Superflu : montre les paquets installés automatiquement qui peuvent "
-"maintenant être supprimer en toute sécurité.  Les autres paquets installés "
-"ou sélectionnés ne dépendent plus de ces paquets."
 
 #: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
 msgid ""
@@ -905,37 +867,36 @@ msgid ""
 "have been removed or renamed, or are infrastructure packages that are "
 "handled automatically."
 msgstr ""
-"L'assistant cachera les paquets des catégories dont le nom commence par "
-"'_'.  Ces paquets sont vides et sont des emplacements pour des paquets "
-"éliminés ou renommés, ou encore des paquets d'infrastructure gérés "
-"automatiquement."
+"Jika dipilih, pengaturan akan menyembunyikan paket dalam kategori dengan "
+"nama yang dimulai dengan '_'. Paket-paket tersebut biasanya berupa tempat "
+"penampung kosong untuk paket yang telah dihapus atau diganti namanya, atau "
+"merupakan paket infrastruktur yang ditangani secara otomatis."
 
 #: STRINGTABLE.IDS_SIG_INVALID
 msgid ""
 "Mirror Error:  Setup.ini signature %s from %s failed to verify.\n"
 "Possible corrupt mirror?  Setup.ini rejected."
 msgstr ""
-"Erreur pour le miroir :  la signature de Setup.ini %s de %s est impossible à "
-"vérifier.\n"
-"Le miroir est peut-être corrompu ?  Setup.ini rejeté."
+"Kesalahan Cermin:  Tanda tangan Setup.ini %s dari %s gagal diverifikasi.\n"
+"Kemungkinan cermin rusak?  Setup.ini ditolak."
 
 #: STRINGTABLE.IDS_CRYPTO_ERROR
 msgid "Internal Error:  gcrypt library error %d %s"
-msgstr "Erreur interne :  erreur %d %s de la librairie gcrypt"
+msgstr "Kesalahan Internal:  kesalahan pustaka gcrypt %d %s"
 
 #: STRINGTABLE.IDS_SEARCH_TOOLTIP
 msgid "Search for this string in package names."
-msgstr "Chercher cette valeur dans les noms des paquets."
+msgstr "Cari string ini dalam nama paket."
 
 #: STRINGTABLE.IDS_MAYBE_MKDIR
 msgid "Directory %s does not exist, would you like me to create it?"
-msgstr "Dossier %s absent, voulez-vous le créer ?"
+msgstr "Direktori %s tidak ada, apakah Anda ingin saya membuatnya?"
 
 #: STRINGTABLE.IDS_CANT_MKDIR
 msgid "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
 msgstr ""
-"Impossible de créer le dossier %s, désolé.  (Disque plein ou uniquement en "
-"lecture ?)"
+"Tidak dapat membuat direktori %s, maaf.  "
+"(Apakah drive penuh atau hanya-baca?)"
 
 #: STRINGTABLE.IDS_NO_LOCALDIR
 msgid ""
@@ -946,181 +907,181 @@ msgid ""
 "Press OK if that's what you wanted\n"
 "or Cancel to choose a different directory."
 msgstr ""
-"Dossier local des paquets %s absent.\n"
-"Voulez-vous efface les paquets, \n"
-"mais il n'y aura rien à installer\n"
+"Direktori paket lokal %s tidak ditemukan.\n"
+"Anda masih dapat menghapus paket terpasang,\n"
+"tetapi tidak akan ada yang perlu dipasang.\n"
 "\n"
-"Choisir OK si c'est ce que vous voulez\n"
-"ou Annuler pour choisir un autre dossier."
+"Tekan OK jika itu yang Anda inginkan\n"
+"atau Batal untuk memilih direktori lain."
 
 #: STRINGTABLE.IDS_ELEVATED
 msgid "Hand installation over to elevated child process."
-msgstr "Passer l'installation au process Administrateur."
+msgstr "Serahkan instalasi ke proses anak yang ditinggikan."
 
 #: STRINGTABLE.IDS_INSTALLEDB_VERSION
 msgid "Unknown INSTALLED.DB version"
-msgstr "Version de INSTALLED.DB inconnue"
+msgstr "Versi INSTALLED.DB tidak diketahui"
 
 #: STRINGTABLE.IDS_NO_MIRROR_LST
 msgid "Could not download mirror sites list"
-msgstr "Impossible de télécharger la liste des sites miroirs"
+msgstr "Tidak dapat mengunduh daftar situs cermin"
 
 #: STRINGTABLE.IDS_PROGRESS_PROGRESS
 msgid "Progress:"
-msgstr "Progression :"
+msgstr "Kemajuan:"
 
 #: STRINGTABLE.IDS_PROGRESS_PACKAGE
 msgctxt "STRINGTABLE.IDS_PROGRESS_PACKAGE"
 msgid "Package:"
-msgstr "Paquet :"
+msgstr "Paket:"
 
 #: STRINGTABLE.IDS_PROGRESS_CONNECTING
 msgid "Connecting..."
-msgstr "Connexion..."
+msgstr "Menyambung..."
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING
 msgid "Checking for packages to download..."
-msgstr "Recherche de paquets à télécharger..."
+msgstr "Memeriksa paket untuk diunduh..."
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING
 msgid "Downloading..."
-msgstr "Télécharge..."
+msgstr "Mengunduh..."
 
 #: STRINGTABLE.IDS_PROGRESS_PARSING
 msgid "Parsing..."
-msgstr "Analyse..."
+msgstr "Mengurai..."
 
 #: STRINGTABLE.IDS_PROGRESS_PREREMOVE
 msgid "Running preremove script..."
-msgstr "Lancement du script de pré-désinstallation..."
+msgstr "Menjalankan skrip prahapus..."
 
 #: STRINGTABLE.IDS_PROGRESS_UNINSTALL
 msgid "Uninstalling..."
-msgstr "Désinstalle..."
+msgstr "Menghapus pemasangan..."
 
 #: STRINGTABLE.IDS_PROGRESS_INSTALL
 msgctxt "STRINGTABLE.IDS_PROGRESS_INSTALL"
 msgid "Installing..."
-msgstr "Installe..."
+msgstr "Memasang..."
 
 #: STRINGTABLE.IDS_PROGRESS_CALCULATING
 msgid "Calculating..."
-msgstr "Calcul..."
+msgstr "Menghitung..."
 
 #: STRINGTABLE.IDS_PROGRESS_POSTINSTALL
 msgid "Running..."
-msgstr "Exécution..."
+msgstr ""
 
 #: STRINGTABLE.IDS_PROGRESS_SOLVING
 msgid "Solving dependencies..."
-msgstr "Résolution des dépendances..."
+msgstr "Memecahkan ketergantungan..."
 
 #: STRINGTABLE.IDS_ACTION_DEFAULT
 msgid "Default"
-msgstr "Par défaut"
+msgstr "Baku"
 
 #: STRINGTABLE.IDS_ACTION_INSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_INSTALL"
 msgid "Install"
-msgstr "Installe"
+msgstr "Pasang"
 
 #: STRINGTABLE.IDS_ACTION_UNINSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_UNINSTALL"
 msgid "Uninstall"
-msgstr "Désinstalle"
+msgstr "Bongkar instalasi"
 
 #: STRINGTABLE.IDS_ACTION_SKIP
 msgid "Skip"
-msgstr "Passe"
+msgstr "Lewati"
 
 #: STRINGTABLE.IDS_ACTION_KEEP
 msgid "Keep"
-msgstr "Garde"
+msgstr "Pertahankan"
 
 #: STRINGTABLE.IDS_ACTION_REINSTALL
 msgid "Reinstall"
-msgstr "Réinstalle"
+msgstr "Pasang Ulang"
 
 #: STRINGTABLE.IDS_ACTION_RETRIEVE
 msgid "Retrieve"
-msgstr "Récupère"
+msgstr "Ambil"
 
 #: STRINGTABLE.IDS_ACTION_UNKNOWN
 msgid "Unknown"
-msgstr "Inconnu"
+msgstr "Tak Dikenal"
 
 #: STRINGTABLE.IDS_ACTION_SOURCE
 msgid "Source"
-msgstr "Source"
+msgstr "Sumber"
 
 #: STRINGTABLE.IDS_VIEW_FULL
 msgid "Full"
-msgstr "Tout"
+msgstr "Penuh"
 
 #: STRINGTABLE.IDS_VIEW_PENDING
 msgid "Pending"
-msgstr "En attente"
+msgstr "Tertunda"
 
 #: STRINGTABLE.IDS_VIEW_UPTODATE
 msgid "Up To Date"
-msgstr "À jour"
+msgstr "Mutakhir"
 
 #: STRINGTABLE.IDS_VIEW_NOTINSTALLED
 msgid "Not Installed"
-msgstr "Non installé"
+msgstr "Tidak Terpasang"
 
 #: STRINGTABLE.IDS_VIEW_PICKED
 msgid "Picked"
-msgstr "Sélectionné"
+msgstr "Dipilih"
 
 #: STRINGTABLE.IDS_VIEW_REMOVABLE
 msgid "Removable"
-msgstr "Supprimable"
+msgstr "Dapat Dihapus"
 
 #: STRINGTABLE.IDS_VIEW_UNNEEDED
 msgid "Unneeded"
-msgstr "Superflu"
+msgstr "Tidak Diperlukan"
 
 #: STRINGTABLE.IDS_VIEW_CATEGORY
 msgid "Category"
-msgstr "Catégorie"
+msgstr "Kategori"
 
 #: STRINGTABLE.IDS_COLUMN_PACKAGE
 msgid "Package"
-msgstr "Paquet"
+msgstr "Paket"
 
 #: STRINGTABLE.IDS_COLUMN_CURRENT
 msgid "Current"
-msgstr "Actuel"
+msgstr "Saat ini"
 
 #: STRINGTABLE.IDS_COLUMN_NEW
 msgid "New"
-msgstr "Nouveau"
+msgstr "Baru"
 
 #: STRINGTABLE.IDS_COLUMN_SOURCE
 msgid "Src?"
-msgstr "Src?"
+msgstr ""
 
 #: STRINGTABLE.IDS_COLUMN_CATEGORIES
 msgid "Categories"
-msgstr "Catégories"
+msgstr "Kategori"
 
 #: STRINGTABLE.IDS_COLUMN_SIZE
 msgid "Size"
-msgstr "Taille"
+msgstr "Ukuran"
 
 #: STRINGTABLE.IDS_COLUMN_DESCR
 msgid "Description"
-msgstr "Description"
+msgstr "Deskripsi"
 
 #: STRINGTABLE.IDS_MBOX_CAPTION
 msgctxt "STRINGTABLE.IDS_MBOX_CAPTION"
 msgid "Cygwin Setup"
-msgstr "Assistant Cygwin"
+msgstr "Penyiapan Cygwin"
 
 #: STRINGTABLE.IDS_EXTRACTION_FAILED
 msgid "Unable to extract /%s -- corrupt package?"
-msgstr "Impossible d'extraire /%s -- paquet corrompu ?"
+msgstr ""
 
 #: STRINGTABLE.IDS_EXTRACTION_INUSE
 msgid ""
@@ -1128,17 +1089,9 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
-"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
+"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
-"Incapable d'extraire /%s -- erreur à l'écriture du fichier\n"
-"\n"
-"Le fichier est utilisé ou une autre erreur est survenue.\n"
-"\n"
-"Arrêtez tous les processus Cygwin et sélectionnez «Recommencer», ou\n"
-"\n"
-"«Continuer» pour poursuivre (il faudra redémarrer).\n"
-"\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
 msgid ""
@@ -1146,9 +1099,6 @@ msgid ""
 "%s\n"
 "Delete?"
 msgstr ""
-"Une ancienne version de cygwin1.dll a été trouvée ici :\n"
-"%s\n"
-"Effacer ?"
 
 #: STRINGTABLE.IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
 msgid ""
@@ -1157,9 +1107,6 @@ msgid ""
 "You should delete the old version of cygwin1.dll at your earliest "
 "convenience."
 msgstr ""
-"Impossible de supprimer le fichier %s.\n"
-"La DLL est peut être utilisée par une autre application ?\n"
-"Vous devriez effacer la vieille version de cygwin1.dll dès que possible."
 
 #: STRINGTABLE.IDS_SHELLLINK_FAILED
 msgid ""
@@ -1167,35 +1114,28 @@ msgid ""
 "Setup will not be able to create Cygwin Icons in the Start Menu or on the "
 "Desktop."
 msgstr ""
-"CoCreateInstance : échec avec erreur 0x%x.\n"
-"L'assistant ne sera pas capable de créer les icônes Cygwin dans le menu "
-"Démarrer ou sur le bureau."
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_VERSION
 msgid "Cygwin is not supported on this Windows version"
-msgstr "Cygwin n'est pas supporté pour cette version de Windows"
+msgstr ""
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
 msgid "Cygwin is not supported on 32-bit Windows"
-msgstr "Cygwin n'est pas disponible sous Windows 32 bits"
+msgstr ""
 
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
 "Cygwin support for this Windows version is deprecated, and will be removed "
 "in the next major version"
 msgstr ""
-"Cygwin n'est plus supporté pour cette version de Windows, et sera enlevé "
-"dans la prochaine version majeure"
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
 msgid "Couldn't create registry key to store installation path"
 msgstr ""
-"Impossible de créer la clé de registre pour enregistrer le chemin "
-"d'installation"
 
 #: STRINGTABLE.IDS_NIO_ERROR
 msgid "Internet Error: %s"
-msgstr "Erreur Internet : %s"
+msgstr ""
 
 #: STRINGTABLE.IDS_PREREQ_UNSOLVED_PROBLEMS
 msgid ""
@@ -1205,11 +1145,6 @@ msgid ""
 "\n"
 "Are you sure you want to proceed (NOT RECOMMENDED)?"
 msgstr ""
-"ATTENTION - Problèmes non résolus\n"
-"\n"
-"Certains paquets ne fonctionneront pas correctement si vous continuez.\n"
-"\n"
-"Voulez vous continuer (NON RECOMMANDÉ) ?"
 
 #: STRINGTABLE.IDS_MIXED_BITNESS_ERROR
 msgid ""
@@ -1222,266 +1157,244 @@ msgid ""
 "Either run setup-%s.exe to update your existing %s installation of Cygwin, "
 "or choose another directory for your %s installation."
 msgstr ""
-"Erreur CPU cible\n"
-"\n"
-"Vous essayez d'installer une version %s de Cygwin dans un dossier qui "
-"contient une version %s de Cygwin.  Si vous insistez, vous aller casser "
-"l'installation existante.\n"
-"\n"
-"Utilisez setup-%s.exe pour mettre à jour votre installation %s de Cygwin, ou "
-"choisissez un autre dossier pour votre installation %s."
 
 #: STRINGTABLE.IDS_GET_SITELIST_ERROR
 msgid ""
 "Can't get list of download sites.\n"
 "Make sure your network settings are correct and try again."
 msgstr ""
-"Impossible d'avoir la liste des sites de téléchargement.\n"
-"Vérifiez que vos paramètres réseau sont corrects et réessayez."
 
 #: STRINGTABLE.IDS_CONFIRM_EXIT
 msgid ""
 "Are you sure you want to exit setup? Any current download or installation "
 "will be aborted."
 msgstr ""
-"Voulez-vous vraiment quitter l'assistant ? Les téléchargements ou "
-"installations en cours seront annulés."
 
 #: STRINGTABLE.IDS_CONTINUE
 msgid "Continue"
-msgstr "Continuer"
+msgstr ""
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_NO_PACKAGES
 msgid "No packages found."
-msgstr "Pas de paquet trouvé."
+msgstr ""
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_DOWNLOAD
 msgid "Nothing to download."
-msgstr "Rien à télécharger."
+msgstr ""
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_INSTALL
 msgid "Nothing to install or update."
-msgstr "Rien à installer ou mettre à jour."
+msgstr ""
 
 #: STRINGTABLE.IDS_ROOT_BROWSE_TITLE
 msgid "Select an installation root directory"
-msgstr "Choisissez le dossier racine de l'installation"
+msgstr ""
 
 #: STRINGTABLE.IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE
 msgid "Select download directory"
-msgstr "Choisissez le dossier pour le téléchargement"
+msgstr ""
 
 #: STRINGTABLE.IDS_LOCALDIR_BROWSE_PACKAGE_TITLE
 msgid "Select local package directory"
-msgstr "Choisissez le dossier local"
+msgstr ""
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING_HASH
 msgid "Checking %s for %s"
-msgstr "Vérification %s pour %s"
+msgstr ""
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING_FROM
 msgid "%s from %s"
-msgstr "%s depuis %s"
+msgstr ""
 
 #: STRINGTABLE.IDS_CONFIRM_UNINSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_UNINSTALL"
 msgid "Uninstall"
-msgstr "Désinstalle"
+msgstr ""
 
 #: STRINGTABLE.IDS_CONFIRM_INSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_INSTALL"
 msgid "Install"
-msgstr "Installe"
+msgstr ""
 
 #: STRINGTABLE.IDS_CONFIRM_DOWNLOAD
 msgid "Download"
-msgstr "Télécharge"
+msgstr ""
 
 #: STRINGTABLE.IDS_CONFIRM_NOTHING
 msgid "No changes"
-msgstr "Pas de changement"
+msgstr ""
 
 #: STRINGTABLE.IDS_CONFIRM_AUTO_ADD
 msgid "(automatically added)"
-msgstr "(ajouté automatiquement)"
+msgstr ""
 
 #: STRINGTABLE.IDS_CONFIRM_SOURCE
 msgid "(source)"
-msgstr "(source)"
+msgstr ""
 
 #: STRINGTABLE.IDS_FILE_INUSE_KILL
 msgid "&Kill Processes"
-msgstr "&Tuer les processus"
+msgstr ""
 
 #: STRINGTABLE.IDS_FILE_INUSE_MSG
 msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr "Incapable d'extraire"
+msgstr ""
 
 #: STRINGTABLE.IDS_USER_URL_TOOLTIP
 msgid "Additional site URL, path or UNC path"
-msgstr "URL de site, chemin d’accès ou chemin UNC supplémentaires"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
-msgstr "Erreur pendant l'analyse des options."
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_HEADER
 msgid "Command Line Options:"
-msgstr "Options de la ligne de commandes :"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_FOOTER
 msgid ""
 "The default is to both download and install packages, unless either --"
 "download or --local-install is specified."
 msgstr ""
-"Par défault téléchargement et installation des paquets, sauf si --download "
-"ou --local-install sont spécifiés."
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_TEST
 msgid "Consider package versions marked test"
-msgstr "Prendre en compte les paquets marqués test"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
 msgid "Allow old, unsupported Windows versions"
-msgstr "Autoriser les vieilles versions de Windows"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_ARCH
 msgid "Architecture to install (x86_64 or x86)"
-msgstr "Architecture à installer (x86_64 ou x86)"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
 msgid "Specify categories to install"
-msgstr "Spécifie les catégories à installer"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""
 "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
 msgstr ""
-"Compresser les fichiers installés avec Compact OS (xpress4k, xpress8k, "
-"xpress16k, lzx)"
 
 #: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
 msgid "Remove orphaned packages"
-msgstr "Supprimer les paquets orphelins"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_DISABLE_ANTIVIRUS
 msgid ""
 "Disable known or suspected buggy anti virus software packages during "
 "execution"
-msgstr "Inhibe les anti-virus buggés à l'exécution"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_DOWNLOAD
 msgid "Download packages from internet"
-msgstr "Télécharger depuis internet"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_FORCE_CURRENT
 msgid "Select the current version for all packages"
-msgstr "Choisir la version courante pour tous les paquets"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_HELP
 msgid "Print help"
-msgstr "Afficher l'aide"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_INCLUDE_SOURCE
 msgid "Automatically install source for every package installed"
-msgstr "Ajouter automatiquement les sources de chaque paquet installé"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
 msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
-msgstr "Utiliser un nom de base différent, p.ex. «toto», au lieu de «setup»"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"
-msgstr "Utiliser les clés non-fiables et les garder"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_LANG
 msgid "Specify GUI language langid"
-msgstr "Choisir la langue de l'IHM"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_INSTALL
 msgid "Install packages from local directory"
-msgstr "Installer depuis un répertoire local"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_PACKAGE_DIR
 msgid "Local package directory"
-msgstr "Dossier local pour les paquets"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
-"Skip package availability check when installing from local directory "
-"(requires local directory to be clean mirror!)"
+"Skip package availability check when installing from local directory ("
+"requires local directory to be clean mirror!)"
 msgstr ""
-"Ne pas vérifier la présence d'un paquet depuis un dossier local (celui-ci "
-"doit être un miroir propre !)"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
 msgid "Do not check for and enforce running as Administrator"
-msgstr "Ne pas vérifier et forcer à installer en tant qu'administrateur"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_DESKTOP
 msgid "Disable creation of desktop shortcut"
-msgstr "Pas de création de raccourci de bureau"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_REPLACEONREBOOT
 msgid "Disable replacing in-use files on next reboot"
 msgstr ""
-"Inhibe le remplacement des fichiers en cours d'utilisation au prochain "
-"redémarrage"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_SHORTCUTS
 msgid "Disable creation of desktop and start menu shortcuts"
-msgstr "Pas de création de raccourcis de bureau et de menu"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_STARTMENU
 msgid "Disable creation of start menu shortcut"
-msgstr "Pas de création de raccourci de menu"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_VERIFY
 msgid "Don't verify setup.ini signatures"
-msgstr "Ne pas vérifier les signatures de setup.ini"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_VERSION_CHECK
 msgid "Suppress checking if a newer version of setup is available"
 msgstr ""
-"Ne pas vérifier si une version plus récente de l'assistant est disponible"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
 msgid "Don't warn about deprecated Windows versions"
-msgstr "Ne pas avertir pour les vieilles versions de Windows"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WRITE_REGISTRY
 msgid "Don't write root installation directory to registry"
-msgstr "Ne pas écrire le répertoire d'installation racine dans le registre"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_OLD_KEYS
 msgid "Enable old cygwin.com keys"
-msgstr "Utiliser les anciennes clés de cygwin.com"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_ONLY_SITE
 msgid "Do not download mirror list.  Only use sites specified with -s"
-msgstr "Ignorer tous les sites sauf ceux spécifiés par -s"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGES
 msgid "Specify packages to install"
-msgstr "Spécifie les paquets à installer"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGE_MANAGER
 msgid "Semi-attended chooser-only mode"
-msgstr "Mode assistant sélection seulement"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_PROXY
 msgid "HTTP/FTP proxy (host:port)"
-msgstr "Proxy HTTP/FTP (serveur:port)"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_PRUNE_INSTALL
 msgid "Prune the installation to only the requested packages"
-msgstr "Purger l'installation pour n'avoir que les paquets demandés"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_PUBKEY
 msgid "URL or absolute path of extra public key file (RFC4880 format)"
 msgstr ""
-"URL ou chemin complet d'une clé publique supplémentaire (format RFC4880)"
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
 msgid "Unattended setup mode (unattended, noinput, hidden)"
@@ -1489,51 +1402,48 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
 msgid "Specify categories to uninstall"
-msgstr "Spécifie les catégories à désinstaller"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_PACKAGES
 msgid "Specify packages to uninstall"
-msgstr "Spécifie les paquets à désinstaller"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_ROOT
 msgid "Root installation directory"
-msgstr "Dossier racine de l'installation"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_SEXPR_PUBKEY
 msgid "Extra DSA public key in s-expr format"
-msgstr "Clé publique DSA supplémentaire au format s-expr"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
 msgid "Download site URL, path or UNC path"
-msgstr "URL, chemin d’accès ou chemin UNC du site de téléchargement"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
-msgstr "Type de lien symbolique (lnk, native, sys, wsl)"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_UNTRUSTED_KEYS
 msgid "Use untrusted saved extra keys"
-msgstr "Utiliser les clés non-fiables enregistrées"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_UPGRADE_ALSO
 msgid "Also upgrade installed packages"
-msgstr "Mettre à jour les paquets installés"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_USER_AGENT
 msgid "User agent string for HTTP requests"
-msgstr "« User agent » pour les requêtes HTTP"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_VERBOSE
 msgid "Verbose output"
-msgstr "Affichages verbeux"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_VERSION
 msgid "Show version"
-msgstr "Montrer la version"
+msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_WAIT
 msgid "When elevating, wait for elevated child process"
-msgstr "Attendre le process fils en mode élévation"
-
-#~ msgid "Unattended setup mode"
-#~ msgstr "Assistant sans messages"
+msgstr ""

@@ -4,74 +4,75 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-11 16:30+0100\n"
-"PO-Revision-Date: 2023-06-25 18:40+0000\n"
-"Last-Translator: Vincent Dawans <dawansv@gmail.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/cygwin-setup/"
-"cygwin-setup/fr/>\n"
-"Language: fr\n"
+"PO-Revision-Date: 2025-12-02 00:35+0000\n"
+"Last-Translator: Stefan Bjornelund the Gnome "
+"<stefan.bjornelund.gnome@gmail.com>\n"
+"Language-Team: Swedish <https://hosted.weblate.org/projects/cygwin-setup/"
+"cygwin-setup/sv/>\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 4.18.1\n"
+"X-Generator: Weblate 5.15-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
 msgid "Cygwin Setup - Choose Installation Type"
-msgstr "Assistant Cygwin - Choisissez le type d'installation"
+msgstr "Cygwin-installation - Välj installationstyp"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_NETINST
 msgid ""
 "&Install from Internet\n"
 "(downloaded files will be kept for future re-use)"
 msgstr ""
-"&Installer depuis Internet\n"
-"(les fichiers téléchargés seront gardés pour une réutilisation ultérieure)"
+"&Installera från internet\n"
+"(nedladdade filer sparas för framtida återanvändning)"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_DOWNLOAD
 msgid "&Download Without Installing"
-msgstr "&Télécharger sans installer"
+msgstr "&Ladda ner utan att installera"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_LOCALDIR
 msgid "Install from &Local Directory"
-msgstr "Installer depuis un dossier &local"
+msgstr "Installera från &lokal katalog"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Source"
-msgstr "Choisissez la source du téléchargement"
+msgstr "Välj en nedladdningskälla"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_SOURCE_SUBTEXT
 msgid ""
 "Choose whether to install or download from the internet, or install from "
 "files in a local directory."
 msgstr ""
-"Choisissez si vous installez ou téléchargez depuis Internet, ou installez "
-"des fichiers depuis un dossier local."
+"Välj om du vill installera eller ladda ner från internet, eller installera "
+"från filer i en lokal katalog."
 
 #: DIALOG.IDD_VIRUS.CAPTION
 msgid "Cygwin Setup - Disable Virus Scanner?"
-msgstr "Assistant Cygwin - Inhiber l'Anti-Virus ?"
+msgstr "Cygwin-installation - Inaktivera virusskannern?"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_DISABLE_AV
 msgid "&Disable Virus scanner"
-msgstr "&Inhiber l'anti-virus"
+msgstr "&Inaktivera virusskannern"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_LEAVE_AV
 msgid "&Leave Virus scanner alone"
-msgstr "&Laisser l'anti-virus tranquille"
+msgstr "&Lämna virusskannern ifred"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose whether to disable your virus scanner while installing."
-msgstr "Choisissez si vous inhibez votre anti-virus pendant l'installation."
+msgstr "Välj om du vill inaktivera virusskannern under installationen."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
 "Some Antivirus programs, notably McAfee, cause a blue screen on Windows XP "
 "computers during installation of Cygwin."
 msgstr ""
-"Certains anti-virus, notamment McAfee, génèrent un écran bleu sur Windows XP "
-"lors de l'installation de Cygwin."
+"Vissa antivirusprogram, särskilt McAfee, orsakar en blå skärm på Windows XP-"
+"datorer under installationen av Cygwin."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
@@ -79,81 +80,80 @@ msgid ""
 "during the installation process, and re-enable it when the install is "
 "complete."
 msgstr ""
-"Un anti-virus problématique a été détecté. L'assistant Cygwin peut l'inhiber "
-"pendant le processus d'installation, et le revalider à la fin de "
-"l'installation."
+"En som kan vara ett problem har upptäckts Cygwin-installationen kan "
+"inaktivera detta under installationsprocessen och återaktivera det när "
+"installationen är klar."
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
 msgid "Cygwin Setup - Select Local Package Directory"
-msgstr "Assistant Cygwin - Sélection du dossier local des paquets"
+msgstr "Cygwin-installation - Välj lokal paketkatalog"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Local Package Directory"
-msgstr "Sélection du dossier local des paquets"
+msgstr "Välj lokal paketkatalog"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_DOWNLOAD_DESC
 msgid ""
 "Select a directory where you want Setup to store the installation files it "
 "downloads.  The directory will be created if it does not already exist."
 msgstr ""
-"Choisir un dossier pour enregistrer les fichiers téléchargés. Ce dossier "
-"sera créé s'il n'existe pas."
+"Välj en katalog där du vill att Setup ska lagra installationsfilerna som den "
+"laddar ner.  Katalogen kommer att skapas om den inte redan finns."
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
 msgid ""
 "Select a directory where Setup should look for downloaded installation files."
-msgstr ""
-"Choisir un dossier où l'assistant ira chercher les fichiers téléchargés."
+msgstr "Välj en katalog där Setup ska leta efter nedladdade installationsfiler."
 
 #: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
 msgid "Local Package Directory"
-msgstr "Dossier local des paquets"
+msgstr "Lokal paketkatalog"
 
 #: DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE
 msgctxt "DIALOG.IDD_LOCAL_DIR.PUSHBUTTON.IDC_LOCAL_DIR_BROWSE"
 msgid "B&rowse..."
-msgstr "Par&courir..."
+msgstr "Blädd&ra..."
 
 #: DIALOG.IDD_ROOT.CAPTION
 msgid "Cygwin Setup - Choose Installation Directory"
-msgstr "Assistant Cygwin - Choix du dossier d'installation"
+msgstr "Cygwin-installation - Välj installationskatalog"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Root Install Directory"
-msgstr "Sélection du dossier racine"
+msgstr "Välj rotinstallationskatalog"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ROOTDIR_SUBTEXT
 msgid ""
 "Select the directory where you want to install Cygwin.  Also choose a few "
 "installation parameters."
 msgstr ""
-"Sélectionnez le dossier où installer Cygwin. Choisissez également des "
-"paramètres d'installation."
+"Välj den katalog där du vill installera Cygwin.  Välj även några "
+"installationsparametrar."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_ROOTDIR_GRP
 msgid "Root Directory"
-msgstr "Dossier racine"
+msgstr "Rotkatalog"
 
 #: DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE
 msgctxt "DIALOG.IDD_ROOT.PUSHBUTTON.IDC_ROOT_BROWSE"
 msgid "B&rowse..."
-msgstr "Pa&rcourir..."
+msgstr "Blädd&ra..."
 
 #: DIALOG.IDD_ROOT.GROUPBOX.IDC_INSTALLFOR_GRP
 msgid "Install For"
-msgstr "Installer pour"
+msgstr "Installera för"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_SYSTEM
 msgid "&All Users (RECOMMENDED)"
-msgstr "&Tout le monde (RECOMMANDÉ)"
+msgstr "&Alla användare (Recommended)"
 
 #: DIALOG.IDD_ROOT.CONTROL.IDC_ROOT_USER
 msgid "Just &Me"
-msgstr "Juste &Moi"
+msgstr "Bara &Jag"
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_ALLUSERS_TEXT
 msgid "Cygwin will be available to all users of the system."
-msgstr "Cygwin sera disponible pour tous les utilisateurs."
+msgstr "Cygwin kommer att vara tillgängligt för alla användare av systemet."
 
 #: DIALOG.IDD_ROOT.LTEXT.IDC_JUSTME_TEXT
 msgid ""
@@ -162,54 +162,56 @@ msgid ""
 "current user.  Only select this if you lack Administrator privileges or if "
 "you have specific needs."
 msgstr ""
-"Cygwin sera disponible pour tous les utilisateurs mais les icônes et les "
-"menus uniquement pour l'utilisateur en cours. Ne sélectionner que si vous "
-"n'avez pas les droits administrateur ou en cas de besoin spécifique."
+"Cygwin kommer fortfarande att vara tillgängligt för alla användare, men "
+"skrivbordsikoner, Cygwin-menyposter och viktig installationsinformation är "
+"endast tillgängliga för den aktuella användaren. Välj endast detta om du "
+"saknar administratörsbehörighet eller om du har specifika behov."
 
 #: DIALOG.IDD_SITE.CAPTION
 msgid "Cygwin Setup - Choose Download Site(s)"
-msgstr "Assistant Cygwin - Choix site(s) de téléchargement"
+msgstr "Cygwin-installation - Välj nedladdningsplats(er)"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Available Download Sites:"
-msgstr "Sites disponibles :"
+msgstr "Tillgängliga nedladdningssidor:"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC
 msgid "Choose a site from this list, or add your own sites to the list."
 msgstr ""
-"Choisissez un site dans cette liste, ou ajoutez vos propres sites à la liste."
+"Välj en webbplats från den här listan eller lägg till dina egna webbplatser "
+"i listan."
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Site"
-msgstr "Choisissez un site de téléchargement"
+msgstr "Välj en nedladdningswebbplats"
 
 #: DIALOG.IDD_SITE.LTEXT.IDC_SITE_USERURL
 msgid "User URL:"
-msgstr "URL perso :"
+msgstr "Användar-URL:"
 
 #: DIALOG.IDD_SITE.PUSHBUTTON.IDC_BUTTON_ADD_URL
 msgid "Add"
-msgstr "Ajouter"
+msgstr "Lägg till"
 
 #: DIALOG.IDD_NET.CAPTION
 msgid "Cygwin Setup - Select Connection Type"
-msgstr "Assistant Cygwin - Sélection du type de connexion"
+msgstr "Cygwin-inställningar - Välj anslutningstyp"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PRECONFIG
 msgid "Use &System Proxy Settings"
-msgstr "Utiliser les paramètres proxy &Système"
+msgstr "Använd &systemets proxyinställningar"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_DIRECT
 msgid "&Direct Connection"
-msgstr "Connexion &directe"
+msgstr "&Direktanslutning"
 
 #: DIALOG.IDD_NET.CONTROL.IDC_NET_PROXY
 msgid "Use HTTP/FTP &Proxy:"
-msgstr "Utiliser le &proxy HTTP/FTP :"
+msgstr "Använd HTTP/FTP och proxy:"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Proxy &Host"
-msgstr "&Serveur proxy"
+msgstr "Proxy och &värd"
 
 #: DIALOG.IDD_NET.RTEXT.IDC_STATIC
 msgid "Por&t"
@@ -220,112 +222,117 @@ msgid ""
 "Setup needs to know how you want it to connect to the internet.  Choose the "
 "appropriate settings below."
 msgstr ""
-"L'assistant a besoin de savoir comment vous désirez le connecter à Internet. "
-"Choisissez un paramètre approprié ci-dessous."
+"Installationsprogrammet behöver veta hur du vill att det ska ansluta till "
+"internet. Välj lämpliga inställningar nedan."
 
 #: DIALOG.IDD_NET.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Your Internet Connection"
-msgstr "Sélectionnez votre connexion Internet"
+msgstr "Välj din Internetanslutning"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
-msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
+msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
+"DIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
-msgstr "Assistant Cygwin"
+msgstr "Cygwin-installation"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_ACTION"
 msgid "Installing..."
-msgstr "Installation..."
+msgstr "Installerar..."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_PKG
 msgid "(PKG)"
-msgstr "(PAQUET)"
+msgstr "(PKG)"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_FILE
 msgid "(FILE)"
-msgstr "(FICHIER)"
+msgstr "(FIL)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
-msgstr "Progress1"
+msgstr "Förlopp1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_IPROGRESS"
 msgid "Progress1"
-msgstr "Progress1"
+msgstr "Förlopp1"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS
 msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_PPROGRESS"
 msgid "Progress1"
-msgstr "Progress1"
+msgstr "Förlopp1"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE
 msgctxt "DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_PACKAGE"
 msgid "Package:"
-msgstr "Paquet :"
+msgstr "Paket:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_TOTAL
 msgid "Total:"
-msgstr "Total  :"
+msgstr "Totalt:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_INS_BL_DISK
 msgid "Disk:"
-msgstr "Disque :"
+msgstr "Disk:"
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC
 msgid "This page displays the progress of the download or installation."
-msgstr ""
-"Cette page affiche l'avancement du téléchargement ou de l'installation."
+msgstr "Den här sidan visar nedladdningens eller installationens förlopp."
 
 #: DIALOG.IDD_INSTATUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Progress"
-msgstr "Avancement"
+msgstr "Förlopp"
 
 #: DIALOG.IDD_PROXY_AUTH.CAPTION
 msgid "Proxy Authentication required"
-msgstr "Authentification proxy requise"
+msgstr "Proxyautentisering krävs"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy &User ID"
-msgstr "&Identifiant proxy"
+msgstr "Proxy- och &användar-ID"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr "&Mot de passe"
+msgstr "&Lösenord"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
 msgid "Proxy Authorization Required"
-msgstr "Authentification proxy requise"
+msgstr "Proxy-auktorisering krävs"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
 msgstr "&OK"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "Annule"
+msgstr "Avbryt"
 
 #: DIALOG.IDD_NET_AUTH.CAPTION
 msgid "Server Authentication required"
-msgstr "Authentification serveur requise"
+msgstr "Serverautentisering krävs"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr "&Identifiant"
+msgstr "&Användar-ID"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr "&Mot de passe"
+msgstr "&Lösenord"
 
 #: DIALOG.IDD_NET_AUTH.LTEXT.IDC_STATIC
 msgid "Server Authorization Required"
-msgstr "Authentification serveur requise"
+msgstr "Serverauktorisering krävs"
 
 #: DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_NET_AUTH.DEFPUSHBUTTON.IDOK"
@@ -335,16 +342,16 @@ msgstr "&OK"
 #: DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_NET_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "Annule"
+msgstr "Avbryt"
 
 #: DIALOG.IDD_SPLASH.CAPTION
 msgctxt "DIALOG.IDD_SPLASH.CAPTION"
 msgid "Cygwin Setup"
-msgstr "Assistant Cygwin"
+msgstr "Cygwin-installation"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_STATIC_WELCOME_TITLE
 msgid "Cygwin Net Release Setup Program"
-msgstr "Programme Assistant Cygwin"
+msgstr "Cygwin Nätutgåva-installationsprogram"
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TEXT
 msgid ""
@@ -358,77 +365,78 @@ msgid ""
 "You can always run this program at any time in the future to add, remove, or "
 "upgrade packages as necessary."
 msgstr ""
-"Cet assistant est utilisé pour l'installation initiale de l'environnement "
-"Cygwin ainsi que pour ses mises à jour. Les pages suivantes vont vous guider "
-"durant l'installation. \n"
+"Detta installationsprogram används för den initiala installationen av Cygwin-"
+"miljön samt alla efterföljande uppdateringar. Sidorna som följer kommer att "
+"vägleda dig genom installationen.\n"
 "\n"
-"Notez que Cygwin inclus un grand nombre de paquets destinés à de multiples "
-"usages. Nous ne pourrons installer par défaut qu'un jeu de paquets de base.\n"
+"Observera att vi endast installerar en basuppsättning paket som standard. "
+"Cygwin tillhandahåller ett stort antal paket som täcker en mängd olika "
+"syften.\n"
 "\n"
-"Redémarrez ce programme ultérieurement pour ajouter, enlever ou mettre à "
-"jour des paquets si nécessaire."
+"Du kan alltid köra det här programmet när som helst i framtiden för att "
+"lägga till, ta bort eller uppgradera paket efter behov."
 
 #: DIALOG.IDD_SPLASH.LTEXT.IDC_SPLASH_TRANSLATE
 msgid "Contribute to translations of this program."
-msgstr "Contribuer à la traduction de ce programme."
+msgstr "Bidra till översättningar av detta program."
 
 #: DIALOG.IDD_DESKTOP.CAPTION
 msgid "Cygwin Setup - Installation Status and Create Icons"
-msgstr "Assistant Cygwin - État de l'installation et création des icônes"
+msgstr "Cygwin-installation - Installationsstatus och skapa ikoner"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_DESKTOP
 msgid "Create icon on &Desktop"
-msgstr "Créer une icône sur le &bureau"
+msgstr "Skapa ikon på skrivbor&det"
 
 #: DIALOG.IDD_DESKTOP.CONTROL.IDC_ROOT_MENU
 msgid "Add icon to &Start Menu"
-msgstr "Ajouter une icône au menu &Démarrer"
+msgstr "Lägg till ikon i &Start-menyn"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_INSTALL
 msgid ""
 "Tell setup if you want it to create a few icons for convenient access to the "
 "Cygwin environment."
 msgstr ""
-"Indiquez à l'assistant si vous voulez créer des icônes pour un accès aisé à "
-"Cygwin."
+"Berätta om du vill att det ska skapa några ikoner för bekväm tillgång till "
+"Cygwin-miljön."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_INSTALL
 msgid "Create Icons"
-msgstr "Création des icônes"
+msgstr "Skapa ikoner"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_DOWNLOAD
 msgid "Shows installation status in download-only mode."
-msgstr "Montre l'état de l'installation en mode téléchargement seulement."
+msgstr "Visar installationsstatus i enbart-nedladdnings läget."
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_DESKTOP_HEADER_TITLE_DOWNLOAD
 msgid "Installation complete"
-msgstr "Installation terminée"
+msgstr "Installationen är klar"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS_HEADER
 msgid "Installation Status"
-msgstr "État de l'installation"
+msgstr "Installationsstatus"
 
 #: DIALOG.IDD_DESKTOP.LTEXT.IDC_STATUS
 msgid "Cygwin installation completed successfully."
-msgstr "Installation de Cygwin terminée avec succès."
+msgstr "Cygwin-installationen har slutförts."
 
 #: DIALOG.IDD_FTP_AUTH.CAPTION
 msgid "FTP Authentication required"
-msgstr "Authentification FTP requise"
+msgstr "FTP-autentisering krävs"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&User ID"
-msgstr "&Identifiant"
+msgstr "&Användar-ID"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgctxt "DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
-msgstr "&Mot de passe"
+msgstr "&Lösenord"
 
 #: DIALOG.IDD_FTP_AUTH.LTEXT.IDC_STATIC
 msgid "FTP Authorization Required"
-msgstr "Authentification FTP requise"
+msgstr "FTP-auktorisering krävs"
 
 #: DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK
 msgctxt "DIALOG.IDD_FTP_AUTH.DEFPUSHBUTTON.IDOK"
@@ -438,39 +446,39 @@ msgstr "&OK"
 #: DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL
 msgctxt "DIALOG.IDD_FTP_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
-msgstr "Annule"
+msgstr "Avbryt"
 
 #: DIALOG.IDD_CHOOSE.CAPTION
 msgid "Cygwin Setup - Select Packages"
-msgstr "Assistant Cygwin - Sélection des paquets"
+msgstr "Cygwin-installation - Välj paket"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_VIEWCAPTION
 msgid "&View"
-msgstr "&Voir"
+msgstr "&Vy"
 
 #: DIALOG.IDD_CHOOSE.RTEXT.IDC_STATIC
 msgid "&Search"
-msgstr "&Chercher"
+msgstr "&Sök"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_DO_SEARCH
 msgid "Search "
-msgstr "Chercher "
+msgstr "Sök "
 
 #: DIALOG.IDD_CHOOSE.PUSHBUTTON.IDC_CHOOSE_CLEAR_SEARCH
 msgid "&Clear"
-msgstr "&Efface"
+msgstr "&Rensa"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_KEEP
 msgid "&Keep"
-msgstr "&Garde"
+msgstr "&Behåll"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_BEST
 msgid "&Best"
-msgstr "&Mieux"
+msgstr "&Bäst"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_SYNC
 msgid "&Sync"
-msgstr "&Sync"
+msgstr "&Synk"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_EXP
 msgid "&Test"
@@ -478,63 +486,62 @@ msgstr "&Test"
 
 #: DIALOG.IDD_CHOOSE.CONTROL.IDC_CHOOSE_HIDE
 msgid "&Hide obsolete packages"
-msgstr "&Cacher les paquets obsolètes"
+msgstr "&Dölj föråldrade paket"
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_DOWNLOAD
 msgid "Select packages to download."
-msgstr "Sélectionnez les paquets à télécharger."
+msgstr "Välj paket att ladda ner."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_CHOOSE_INST_TEXT_INSTALL
 msgid "Select packages to install."
-msgstr "Sélectionnez les paquets à installer."
+msgstr "Välj paket för att installera."
 
 #: DIALOG.IDD_CHOOSE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Packages"
-msgstr "Sélection des paquets"
+msgstr "Välj paket"
 
 #: DIALOG.IDD_PREREQ.CAPTION
 msgid "Cygwin Setup - Resolving Dependencies"
-msgstr "Assistant Cygwin - Résolution des dépendances"
+msgstr "Cygwin-installation - Lösa beroenden"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Resolving Dependencies"
-msgstr "Résolution des dépendances"
+msgstr "Lösa beroenden"
 
 #: DIALOG.IDD_PREREQ.LTEXT.IDC_STATIC
 msgid "The following problems occured trying to satisfy dependencies."
-msgstr ""
-"Les problèmes suivants apparaissent lors de la résolution des dépendances."
+msgstr "Följande problem uppstod vid försök att uppfylla beroenden."
 
 #: DIALOG.IDD_PREREQ.CONTROL.IDC_PREREQ_CHECK
 msgid "&Accept default problem solutions"
-msgstr "&Accepter la solution par défaut"
+msgstr "&Acceptera standardlösningar för problem"
 
 #: DIALOG.IDD_CONFIRM.CAPTION
 msgid "Cygwin Setup - Review and confirm changes"
-msgstr "Assistant Cygwin - Revoir et confirmer les changements"
+msgstr "Cygwin-installation - Granska och bekräfta ändringar"
 
 #: DIALOG.IDD_CONFIRM.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Review and confirm changes"
-msgstr "Revoir et confirmer les changements"
+msgstr "Granska och bekräfta ändringar"
 
 #: DIALOG.IDD_DROPPED.CAPTION
 msgid "Cygwin Setup - Use dropped mirrors?"
-msgstr "Assistant Cygwin - Utiliser les sites miroirs éliminés ?"
+msgstr "Cygwin-inställningar - Använda borttagna speglar?"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid "Warning:"
-msgstr "Attention :"
+msgstr "Varning:"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "One or more mirrors you have selected is/are not on the list of official "
-"Cygwin mirrors any more. It/They may be out of date or missing some "
-"packages.\n"
+"Cygwin mirrors any more. It/They may be out of date or missing some packages."
+"\n"
 "This affects the following mirror(s):"
 msgstr ""
-"Un ou plusieurs miroirs sélectionnés ne sont plus dans la liste officielle "
-"des miroirs Cygwin. Certains paquets peuvent manquer ou ne pas être à jour.\n"
-"Ceci concerne le(s) miroir(s) suivant(s) :"
+"En eller flera speglar du har valt är inte på listan över officiella Cygwin-"
+"speglar längre. De kan vara föråldrade eller saknas vissa paket.\n"
+"Detta påverkar följande spegel(ar):"
 
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
@@ -543,30 +550,30 @@ msgid ""
 "\n"
 "Do you want to continue, using this/these mirror(s)?"
 msgstr ""
-"Si vous avez des problèmes à l'installation pensez à n'utiliser que les "
-"miroirs officiels.\n"
+"Om du upplever installationsproblem överväga att försöka med enbart "
+"officiella speglar.\n"
 "\n"
-"Voulez-vous continuer avec ce(s) miroir(s) ?"
+"Vill du fortsätta använda den/dessa speglar?"
 
 #: DIALOG.IDD_DROPPED.CONTROL.IDC_DROP_NOWARN
 msgid "&Don't warn me about this/these mirror(s) again"
-msgstr "&Ne plus me prévenir pour ce(s) miroir(s)"
+msgstr "&Varna mig inte om den här/dessa speglar igen"
 
 #: DIALOG.IDD_DROPPED.PUSHBUTTON.IDYES
 msgid "&Yes"
-msgstr "&Oui"
+msgstr "&Ja"
 
 #: DIALOG.IDD_DROPPED.DEFPUSHBUTTON.IDNO
 msgid "&No"
-msgstr "&Non"
+msgstr "&Nej"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.CAPTION
 msgid "Download Incomplete"
-msgstr "Téléchargement Incomplet"
+msgstr "Nedladdningen är ofullständig"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid "The following package(s) had download errors:"
-msgstr "Les paquets suivants ont des erreurs de téléchargement :"
+msgstr "Följande paket hade nedladdningsfel:"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.LTEXT.IDC_STATIC
 msgid ""
@@ -574,75 +581,76 @@ msgid ""
 "selection page, 'Continue' to go on anyway (NOT RECOMMENDED), or 'Cancel' to "
 "exit."
 msgstr ""
-"Choisissez 'Recommencer' pour relancer le téléchargement, 'Précédent' pour "
-"revenir à la page de sélection des paquets, 'Continuer' pour forcer la suite "
-"(NON RECOMMANDÉ), ou 'Annuler' pour quitter."
+"Välj \"Försök igen\" för att försöka ladda ner igen, \"Tillbaka\" för att "
+"återgå till sidan för paketval, \"Fortsätt\" för att fortsätta ändå "
+"(REKOMMENDERAS INTE) eller \"Avbryt\" för att avsluta."
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.DEFPUSHBUTTON.IDRETRY"
 msgid "&Retry"
-msgstr "&Recommencer"
+msgstr "&Försök igen"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDC_BACK
 msgid "&Back"
-msgstr "&Précédent"
+msgstr "&Tillbaka"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDIGNORE"
 msgid "&Continue"
-msgstr "&Continuer"
+msgstr "&Fortsätt"
 
 #: DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT
 msgctxt "DIALOG.IDD_DOWNLOAD_ERROR.PUSHBUTTON.IDABORT"
 msgid "Cancel"
-msgstr "Annuler"
+msgstr "Avbryt"
 
 #: DIALOG.IDD_POSTINSTALL.CAPTION
 msgid "Cygwin Setup - Running postinstall scripts"
-msgstr "Assistant Cygwin - Lancement des scripts post-installation"
+msgstr "Cygwin-installation - Köra postinstallationsskript"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Postinstall script errors"
-msgstr "Erreurs dans les scripts"
+msgstr "Postinstallation skriptfel"
 
 #: DIALOG.IDD_POSTINSTALL.LTEXT.IDC_STATIC
 msgid ""
 "These do not necessarily mean that affected packages will fail to function "
 "properly, but please check /var/log/setup.log.full and report any problems."
 msgstr ""
-"Ceci n'indique pas forcément que les paquets concernésne fonctionneront pas, "
-"mais consultez /var/log/setup.log.full avant de reporter un problème."
+"Detta betyder inte nödvändigtvis att berörda paket inte kommer att fungera "
+"korrekt, men vänligen kontrollera /var/log/setup.log.full och rapportera "
+"eventuella problem."
 
 #: DIALOG.IDD_FILE_INUSE.CAPTION
 msgid "In-use file detected"
-msgstr "Détection d'un fichier en cours d'utilisation"
+msgstr "Fil som används upptäcktes"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG
 msgctxt "DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr "Impossible d'extraire"
+msgstr "Kan inte extrahera"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_STATIC
 msgid "The file is in use by the following processes:"
-msgstr "Ce fichier est en cours d'utilisation par :"
+msgstr "Filen används av följande processer:"
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_0
 msgid ""
 "Select 'Retry' to retry, select 'Stop' to stop processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
-"Choisir 'Recommencer' pour recommencer, choisir 'Stop' pour arrêter les "
-"process et recommencer, ou choisir 'Continuer' pour procéder (le fichier "
-"sera mis à jour après un redémarrage)."
+"Välj \"Försök igen\" för att försöka igen, välj \"Stoppa\" för att stoppa "
+"processer och försöka igen, eller välj \"Fortsätt\" för att fortsätta ändå "
+"(filen uppdateras efter en omstart)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_1
 msgid ""
 "Select 'Retry' to retry, select 'Kill' to kill processes and retry, or "
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
-"Choisir 'Recommencer' pour ré-essayer, choisir 'Tuer' pour tuer les "
-"processus et ré-essayer, ou choisir 'Continuer' pour poursuivre (le fichier "
-"sera mis à jour après un redémarrage)."
+"Välj \"Försök igen\" för att försöka igen, välj \"Avsluta\" för att avsluta "
+"processer och försöka igen, eller välj \"Fortsätt\" för att fortsätta ändå "
+"(filen uppdateras efter en omstart)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_2
 msgid ""
@@ -650,23 +658,23 @@ msgid ""
 "retry, or select 'Continue' to go on anyway (the file will be updated after "
 "a reboot)."
 msgstr ""
-"Choisir 'Recommencer' pour ré-essayer, choisir 'Tuer' pour forcer la fin des "
-"processus et ré-essayer, ou choisir 'Continuer' pour poursuivre (le fichier "
-"sera mis à jour après un redémarrage)."
+"Välj \"Försök igen\" för att försöka igen, välj \"Avsluta\" för att "
+"tvångsavsluta alla processer och försöka igen, eller välj \"Fortsätt\" för "
+"att fortsätta ändå (filen uppdateras efter en omstart)."
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDIGNORE"
 msgid "&Retry"
-msgstr "&Recommencer"
+msgstr "&Försök igen"
 
 #: DIALOG.IDD_FILE_INUSE.DEFPUSHBUTTON.IDRETRY
 msgid "&Stop Processes"
-msgstr "&Stop"
+msgstr "&Stoppa processer"
 
 #: DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE
 msgctxt "DIALOG.IDD_FILE_INUSE.PUSHBUTTON.IDCONTINUE"
 msgid "&Continue"
-msgstr "&Continuer"
+msgstr "&Fortsätt"
 
 #: STRINGTABLE.IDS_ROOT_SLASH
 msgid ""
@@ -674,114 +682,112 @@ msgid ""
 "cygwin root, to prevent possible conflicts with other programs.  Proceed "
 "anyway?"
 msgstr ""
-"Attention : nous recommandons de ne PAS utiliser la racine du disque dur "
-"comme racine de Cygwin pour éviter des conflits avec d'autres programmes. "
-"Continuer quand même ?"
+"Varning: Vi rekommenderar att du inte använder hårddiskens rotkatalog som "
+"cygwin-rotkatalog för att förhindra eventuella konflikter med andra program. "
+"Vill du fortsätta ändå?"
 
 #: STRINGTABLE.IDS_ROOT_SPACE
 msgid ""
 "You should not choose a root path that include spaces in directory names.  "
 "Proceed anyway?"
 msgstr ""
-"Vous ne devriez pas utiliser un chemin racine qui inclus des espaces dans "
-"les noms de dossiers. Continuer quand même ?"
+"Du bör inte välja en rotsökväg som innehåller mellanslag i katalognamn.  "
+"Vill du fortsätta ändå?"
 
 #: STRINGTABLE.IDS_ERR_OPEN_WRITE
 msgid "Can't open %s for writing: %s"
-msgstr "Impossible d'ouvrir %s en écriture : %s"
+msgstr "Kan inte öppna %s för skrivning: %s"
 
 #: STRINGTABLE.IDS_SETUPINI_MISSING
 msgid "Unable to get %s from <%s>"
-msgstr "Impossible de récupérer %s depuis « %s »"
+msgstr "Kunde inte hämta %s från <%s>"
 
 #: STRINGTABLE.IDS_OLD_SETUPINI
 msgid ""
 "This setup.ini is older than the one you used last time you installed "
 "cygwin.  Proceed anyway?"
 msgstr ""
-"Ce fichier setup.ini est plus ancien que celui utilisé lors de la dernière "
-"installation de Cygwin. Continuer quand même ?"
+"Denna setup.ini är äldre än den du använde förra gången du installerade "
+"cygwin.  Vill du fortsätta ändå?"
 
 #: STRINGTABLE.IDS_NOTHING_INSTALLED
 msgid "Nothing needed to be installed"
-msgstr "Rien à installer"
+msgstr "Ingenting behövde installeras"
 
 #: STRINGTABLE.IDS_INSTALL_COMPLETE
 msgid "Installation Complete"
-msgstr "Installation terminée"
+msgstr "Installationen är klar"
 
 #: STRINGTABLE.IDS_REBOOT_REQUIRED
 msgid ""
 "In-use files have been replaced. You need to reboot as soon as possible to "
 "activate the new versions. Cygwin may operate incorrectly until you reboot."
 msgstr ""
-"Les fichiers en cours d'utilisation ont été remplacés. Vous devriez "
-"redémarrer dès que possible pour activer ces versions. Cygwin pourrait "
-"fonctionner de façon incorrecte jusqu'au redémarrage."
+"Filer som används har ersatts. Du måste starta om så snart som möjligt för "
+"att aktivera de nya versionerna. Cygwin kan fungera felaktigt tills du "
+"startar om."
 
 #: STRINGTABLE.IDS_ERR_OPEN_READ
 msgid "Can't open %s for reading: %s"
-msgstr "Impossible d'ouvrir %s en lecture : %s"
+msgstr "Kan inte öppna %s för läsning: %s"
 
 #: STRINGTABLE.IDS_ROOT_ABSOLUTE
 msgid ""
 "The install directory must be absolute, with both a drive letter and leading "
 "slash, like C:\\Cygwin"
 msgstr ""
-"Le dossier d'installation doit être absolu, avec à la fois un identificateur "
-"de lecteur et une barre oblique au début : C:\\Cygwin"
+"Installationskatalogen måste vara absolut, med både en enhetsbeteckning och "
+"ett inledande snedstreck, som C:\\Cygwin"
 
 #: STRINGTABLE.IDS_DOWNLOAD_COMPLETE
 msgid "Download Complete"
-msgstr "Téléchargement terminé"
+msgstr "Nedladdning klar"
 
 #: STRINGTABLE.IDS_NOLOGFILE
 msgid "Cannot open log file %s for writing"
-msgstr "Impossible d'ouvrir le fichier de trace %s en écriture"
+msgstr "Kan inte öppna loggfilen %s för skrivning"
 
 #: STRINGTABLE.IDS_UNINSTALL_COMPLETE
 msgid "Uninstalls complete."
-msgstr "Désinstallation terminée."
+msgstr "Avinstallationerna är klara."
 
 #: STRINGTABLE.IDS_ERR_CHDIR
 msgid "Could not change dir to %s: %s [%.8x]"
-msgstr "Impossible de changer le dossier vers %s : %s [%.8x]"
+msgstr "Kunde inte ändra mappen till %s: %s [%.8x]"
 
 #: STRINGTABLE.IDS_OLD_SETUP_VERSION
 msgid ""
 "This setup is version %s, but setup.ini claims version %s is available.\n"
 "You might want to upgrade to get the latest features and bug fixes."
 msgstr ""
-"Cet assistant est en version %s, mais setup.ini indique que la version %s "
-"est disponible.\n"
-"Vous devriez le mettre à jour pour avoir les dernière fonctionnalités et "
-"corrections de bogues."
+"Den här installationen är version %s, men setup.ini hävdar att version %s är "
+"tillgänglig.\n"
+"Du kanske vill uppgradera för att få de senaste funktionerna och buggfixarna."
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE
 msgid "Download Incomplete.  Try again?"
-msgstr "Téléchargement incomplet. Recommencer ?"
+msgstr "Nedladdningen ofullständig.  Försök igen?"
 
 #: STRINGTABLE.IDS_DOWNLOAD_INCOMPLETE_EXIT
 msgid "Download incomplete.  Check %s for details"
-msgstr "Téléchargement incomplet. Vérifiez %s pour avoir des détails"
+msgstr "Nedladdningen är ofullständig. Kontrollera %s för mer information"
 
 #: STRINGTABLE.IDS_INSTALL_ERROR
 msgid "Installation error (%s), Continue with other packages?"
-msgstr "Erreur d'installation (%s), Continuer avec les autres paquets ?"
+msgstr "Installationsfel (%), Fortsätt med andra paket?"
 
 #: STRINGTABLE.IDS_INSTALL_INCOMPLETE
 msgid "Installation incomplete.  Check %s for details"
-msgstr "Installation incomplète. Vérifiez %s pour les détails"
+msgstr "Installation ofullständig.  Kontrollera % för detaljer"
 
 #: STRINGTABLE.IDS_CORRUPT_PACKAGE
 msgid "Package %s has a corrupt local copy, please remove and retry."
 msgstr ""
-"Le fichier du paquet %s a une copie locale altérée, supprimez la et "
-"recommencez."
+"Paketet %s har en skadad lokal kopia, vänligen ta bort det och försök igen."
 
 #: STRINGTABLE.IDS_QUERY_CORRUPT
 msgid "The file %s is corrupt.  Delete it and download again?"
-msgstr "Le fichier %s est corrompu. Effacer et re-télécharger ?"
+msgstr "Filen %s är skadad.  Ta bort den och ladda ner den igen?"
 
 #: STRINGTABLE.IDS_SKIP_PACKAGE
 msgid ""
@@ -789,7 +795,7 @@ msgid ""
 "Do you want to skip this package ?"
 msgstr ""
 "%s\n"
-"Voulez-vous passer ce paquet ?"
+"Vill du hoppa över det här paketet?"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION
 msgid ""
@@ -798,10 +804,10 @@ msgid ""
 "Type: %s\n"
 "Message: %s"
 msgstr ""
-"Erreur Fatale : exception non traitée\n"
-"Thread : %s\n"
-"Type : %s\n"
-"Message : %s"
+"Fatalt fel: Oupptäckt undantag\n"
+"Tråd: %s\n"
+"Typ: %s\n"
+"Meddelande: %s"
 
 #: STRINGTABLE.IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
 msgid ""
@@ -811,37 +817,37 @@ msgid ""
 "Message: %s\n"
 "AppErrNo: %d"
 msgstr ""
-"Erreur Fatale : exception non traitée\n"
-"Thread : %s\n"
-"Type : %s\n"
-"Message : %s\n"
-"AppErrNo : %d"
+"Fatalt fel: Oupptäckt undantag\n"
+"Tråd: %s\n"
+"Typ: %s\n"
+"Meddelande: %s\n"
+"AppErrNr: %d"
 
 #: STRINGTABLE.IDS_TRUSTKEEP_TOOLTIP
 msgid ""
 "Sets all packages to their currently installed version.  This is equivalent "
 "to telling setup not to make any changes to any package."
 msgstr ""
-"Garde tous les paquets à la version installée. Ceci est équivalent à "
-"demander à l'assistant de ne faire aucun changement aux paquets."
+"Ställer in alla paket till deras för närvarande installerade version.  Detta "
+"motsvarar att säga åt installationsprogrammet att inte göra några ändringar "
+"i något paket."
 
 #: STRINGTABLE.IDS_TRUSTCURR_TOOLTIP
 msgid "Sets all packages to the best version available (RECOMMENDED)."
 msgstr ""
-"Sélectionne globalement la version qui est actuellement considérée comme la "
-"meilleure (RECOMMANDÉ)."
+"Ställer in alla paket till den bästa tillgängliga versionen (REKOMMENDERAS)."
 
 #: STRINGTABLE.IDS_TRUSTSYNC_TOOLTIP
 msgid ""
 "Sets all packages to the version available from the package repository, "
 "downgrading if necessary."
 msgstr ""
-"Sélectionne globalement la version qui est disponible dans le site, "
-"éventuellement une version plus ancienne."
+"Ställer in alla paket till den version som är tillgänglig från paketförrådet "
+"och nedgraderar om det behövs."
 
 #: STRINGTABLE.IDS_TRUSTEXP_TOOLTIP
 msgid "Enable test packages."
-msgstr "Autoriser les versions de test."
+msgstr "Aktivera testpaket."
 
 #: STRINGTABLE.IDS_VIEWBUTTON_TOOLTIP
 msgid ""
@@ -870,33 +876,30 @@ msgid ""
 "removed.  Other installed or selected packages no longer depend on these "
 "packages."
 msgstr ""
-"Itérer les différentes vues des paquets.  Ceci détermine quels paquets "
-"seront montrés dans la vue ci-dessous.\n"
+"Välj paketvyn. Detta avgör vilka paket som visas nedan.\n"
 "\n"
-"Catégorie : regroupe par catégorie de paquets. Cliquez sur '+' pour "
-"étendre.\n"
+"Kategori: Gruppera efter paketkategori. Klicka på '+' för att expandera.\n"
 "\n"
-"Tout : montre tous les paquets.\n"
+"Fullständig: Visa alla paket.\n"
 "\n"
-"En attente : montre uniquement les paquets en attente d'ajou, retrait ou "
-"mise à jour. Ceci montre ce que l'assistant est sur le point de modifier "
-"lors de l'appui sur 'Suivant'.\n"
+"Väntande: Visa endast paket som håller på att installeras, tas bort eller "
+"uppgraderas. Detta visar vad som kommer att ändras när du trycker på 'Nästa'."
 "\n"
-"À jour : montre les paquets installés qui ne nécessitent pas d'action.\n"
 "\n"
-"Non installé : montre les paquets non installés ou qui ne sont pas "
-"sélectionnés pour installation.\n"
+"Uppdaterad: Visa installerade paket som inte kräver någon åtgärd eftersom de "
+"redan har önskad version.\n"
 "\n"
-"Choisi : montre les paquets installés qui ont été sélectionnés, et non pas "
-"installés pour résoudre une dépendance.\n"
+"Inte installerat: Visa paket som inte är installerade för närvarande och "
+"inte har valts ut för installation.\n"
 "\n"
-"Supprimable : montre les paquets installés qui ont été sélectionnés et "
-"peuvent être supprimer en toute sécurité.  Aucun autre paquet installé ou "
-"sélectionné ne dépend de ces paquets.\n"
+"Valda: Visa installerade paket som valdes, inte installerades som ett "
+"beroende.\n"
 "\n"
-"Superflu : montre les paquets installés automatiquement qui peuvent "
-"maintenant être supprimer en toute sécurité.  Les autres paquets installés "
-"ou sélectionnés ne dépendent plus de ces paquets."
+"Borttagbar: Visa installerade paket som valdes och kunde tas bort säkert. "
+"Inga andra installerade eller valda paket är beroende av dessa paket.\n"
+"\n"
+"Onödiga: Visa automatiskt installerade paket som nu kan tas bort säkert. "
+"Andra installerade eller valda paket är inte längre beroende av dessa paket."
 
 #: STRINGTABLE.IDS_HIDEOBS_TOOLTIP
 msgid ""
@@ -905,37 +908,35 @@ msgid ""
 "have been removed or renamed, or are infrastructure packages that are "
 "handled automatically."
 msgstr ""
-"L'assistant cachera les paquets des catégories dont le nom commence par "
-"'_'.  Ces paquets sont vides et sont des emplacements pour des paquets "
-"éliminés ou renommés, ou encore des paquets d'infrastructure gérés "
-"automatiquement."
+"Om den väljs kommer installationen att dölja paket i kategorier med namn som "
+"börjar med \"_\".  Sådana paket är vanligtvis tomma platshållare för paket "
+"som har tagits bort eller bytt namn eller är infrastrukturpaket som hanteras "
+"automatiskt."
 
 #: STRINGTABLE.IDS_SIG_INVALID
 msgid ""
 "Mirror Error:  Setup.ini signature %s from %s failed to verify.\n"
 "Possible corrupt mirror?  Setup.ini rejected."
 msgstr ""
-"Erreur pour le miroir :  la signature de Setup.ini %s de %s est impossible à "
-"vérifier.\n"
-"Le miroir est peut-être corrompu ?  Setup.ini rejeté."
+"Spegelfel: Setup.ini-signaturen %s från %s kunde inte verifieras.\n"
+"Möjligen korrupt spegel? Setup.ini avvisad."
 
 #: STRINGTABLE.IDS_CRYPTO_ERROR
 msgid "Internal Error:  gcrypt library error %d %s"
-msgstr "Erreur interne :  erreur %d %s de la librairie gcrypt"
+msgstr "Internt fel: gcrypt-biblioteksfel %d %s"
 
 #: STRINGTABLE.IDS_SEARCH_TOOLTIP
 msgid "Search for this string in package names."
-msgstr "Chercher cette valeur dans les noms des paquets."
+msgstr "Sök efter den här strängen i paketnamn."
 
 #: STRINGTABLE.IDS_MAYBE_MKDIR
 msgid "Directory %s does not exist, would you like me to create it?"
-msgstr "Dossier %s absent, voulez-vous le créer ?"
+msgstr "Katalogen %s finns inte, vill du att jag skapar den?"
 
 #: STRINGTABLE.IDS_CANT_MKDIR
 msgid "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
 msgstr ""
-"Impossible de créer le dossier %s, désolé.  (Disque plein ou uniquement en "
-"lecture ?)"
+"Kunde inte skapa katalogen %s, tyvärr. (Är enheten full eller skrivskyddad?)"
 
 #: STRINGTABLE.IDS_NO_LOCALDIR
 msgid ""
@@ -946,181 +947,181 @@ msgid ""
 "Press OK if that's what you wanted\n"
 "or Cancel to choose a different directory."
 msgstr ""
-"Dossier local des paquets %s absent.\n"
-"Voulez-vous efface les paquets, \n"
-"mais il n'y aura rien à installer\n"
+"Den lokala paketkatalogen %s hittades inte.\n"
+"Du kan fortfarande ta bort installerade\n"
+"paket, men det kommer inte att finnas något att installera.\n"
 "\n"
-"Choisir OK si c'est ce que vous voulez\n"
-"ou Annuler pour choisir un autre dossier."
+"Tryck på OK om det var vad du ville\n"
+"eller Avbryt för att välja en annan katalog."
 
 #: STRINGTABLE.IDS_ELEVATED
 msgid "Hand installation over to elevated child process."
-msgstr "Passer l'installation au process Administrateur."
+msgstr "Överför installationen till en underprocess med förhöjd behörighet."
 
 #: STRINGTABLE.IDS_INSTALLEDB_VERSION
 msgid "Unknown INSTALLED.DB version"
-msgstr "Version de INSTALLED.DB inconnue"
+msgstr "Okänd INSTALLED.DB version"
 
 #: STRINGTABLE.IDS_NO_MIRROR_LST
 msgid "Could not download mirror sites list"
-msgstr "Impossible de télécharger la liste des sites miroirs"
+msgstr "Kunde inte ladda ner spegel-webbplats listan"
 
 #: STRINGTABLE.IDS_PROGRESS_PROGRESS
 msgid "Progress:"
-msgstr "Progression :"
+msgstr "Förlopp:"
 
 #: STRINGTABLE.IDS_PROGRESS_PACKAGE
 msgctxt "STRINGTABLE.IDS_PROGRESS_PACKAGE"
 msgid "Package:"
-msgstr "Paquet :"
+msgstr "Paket:"
 
 #: STRINGTABLE.IDS_PROGRESS_CONNECTING
 msgid "Connecting..."
-msgstr "Connexion..."
+msgstr "Ansluter..."
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING
 msgid "Checking for packages to download..."
-msgstr "Recherche de paquets à télécharger..."
+msgstr "Söker efter paket att ladda ner..."
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING
 msgid "Downloading..."
-msgstr "Télécharge..."
+msgstr "Laddar ner..."
 
 #: STRINGTABLE.IDS_PROGRESS_PARSING
 msgid "Parsing..."
-msgstr "Analyse..."
+msgstr "Tolkar..."
 
 #: STRINGTABLE.IDS_PROGRESS_PREREMOVE
 msgid "Running preremove script..."
-msgstr "Lancement du script de pré-désinstallation..."
+msgstr "Kör preborttagningsskript..."
 
 #: STRINGTABLE.IDS_PROGRESS_UNINSTALL
 msgid "Uninstalling..."
-msgstr "Désinstalle..."
+msgstr "Avinstallerar..."
 
 #: STRINGTABLE.IDS_PROGRESS_INSTALL
 msgctxt "STRINGTABLE.IDS_PROGRESS_INSTALL"
 msgid "Installing..."
-msgstr "Installe..."
+msgstr "Installerar..."
 
 #: STRINGTABLE.IDS_PROGRESS_CALCULATING
 msgid "Calculating..."
-msgstr "Calcul..."
+msgstr "Beräknar..."
 
 #: STRINGTABLE.IDS_PROGRESS_POSTINSTALL
 msgid "Running..."
-msgstr "Exécution..."
+msgstr "Kör..."
 
 #: STRINGTABLE.IDS_PROGRESS_SOLVING
 msgid "Solving dependencies..."
-msgstr "Résolution des dépendances..."
+msgstr "Löser beroenden..."
 
 #: STRINGTABLE.IDS_ACTION_DEFAULT
 msgid "Default"
-msgstr "Par défaut"
+msgstr "Standard"
 
 #: STRINGTABLE.IDS_ACTION_INSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_INSTALL"
 msgid "Install"
-msgstr "Installe"
+msgstr "Installera"
 
 #: STRINGTABLE.IDS_ACTION_UNINSTALL
 msgctxt "STRINGTABLE.IDS_ACTION_UNINSTALL"
 msgid "Uninstall"
-msgstr "Désinstalle"
+msgstr "Avinstallera"
 
 #: STRINGTABLE.IDS_ACTION_SKIP
 msgid "Skip"
-msgstr "Passe"
+msgstr "Hoppa över"
 
 #: STRINGTABLE.IDS_ACTION_KEEP
 msgid "Keep"
-msgstr "Garde"
+msgstr "Behåll"
 
 #: STRINGTABLE.IDS_ACTION_REINSTALL
 msgid "Reinstall"
-msgstr "Réinstalle"
+msgstr "Installera om"
 
 #: STRINGTABLE.IDS_ACTION_RETRIEVE
 msgid "Retrieve"
-msgstr "Récupère"
+msgstr "Hämta"
 
 #: STRINGTABLE.IDS_ACTION_UNKNOWN
 msgid "Unknown"
-msgstr "Inconnu"
+msgstr "Okänd"
 
 #: STRINGTABLE.IDS_ACTION_SOURCE
 msgid "Source"
-msgstr "Source"
+msgstr "Källa"
 
 #: STRINGTABLE.IDS_VIEW_FULL
 msgid "Full"
-msgstr "Tout"
+msgstr "Full"
 
 #: STRINGTABLE.IDS_VIEW_PENDING
 msgid "Pending"
-msgstr "En attente"
+msgstr "Väntande"
 
 #: STRINGTABLE.IDS_VIEW_UPTODATE
 msgid "Up To Date"
-msgstr "À jour"
+msgstr "Uppdaterad"
 
 #: STRINGTABLE.IDS_VIEW_NOTINSTALLED
 msgid "Not Installed"
-msgstr "Non installé"
+msgstr "Inte installerat"
 
 #: STRINGTABLE.IDS_VIEW_PICKED
 msgid "Picked"
-msgstr "Sélectionné"
+msgstr "Valda"
 
 #: STRINGTABLE.IDS_VIEW_REMOVABLE
 msgid "Removable"
-msgstr "Supprimable"
+msgstr "Borttagbar"
 
 #: STRINGTABLE.IDS_VIEW_UNNEEDED
 msgid "Unneeded"
-msgstr "Superflu"
+msgstr "Onödiga"
 
 #: STRINGTABLE.IDS_VIEW_CATEGORY
 msgid "Category"
-msgstr "Catégorie"
+msgstr "Kategori"
 
 #: STRINGTABLE.IDS_COLUMN_PACKAGE
 msgid "Package"
-msgstr "Paquet"
+msgstr "Paket"
 
 #: STRINGTABLE.IDS_COLUMN_CURRENT
 msgid "Current"
-msgstr "Actuel"
+msgstr "Nuvarande"
 
 #: STRINGTABLE.IDS_COLUMN_NEW
 msgid "New"
-msgstr "Nouveau"
+msgstr "Nytt"
 
 #: STRINGTABLE.IDS_COLUMN_SOURCE
 msgid "Src?"
-msgstr "Src?"
+msgstr "Källa?"
 
 #: STRINGTABLE.IDS_COLUMN_CATEGORIES
 msgid "Categories"
-msgstr "Catégories"
+msgstr "Kategorier"
 
 #: STRINGTABLE.IDS_COLUMN_SIZE
 msgid "Size"
-msgstr "Taille"
+msgstr "Storlek"
 
 #: STRINGTABLE.IDS_COLUMN_DESCR
 msgid "Description"
-msgstr "Description"
+msgstr "Beskrivning"
 
 #: STRINGTABLE.IDS_MBOX_CAPTION
 msgctxt "STRINGTABLE.IDS_MBOX_CAPTION"
 msgid "Cygwin Setup"
-msgstr "Assistant Cygwin"
+msgstr "Cygwin-installation"
 
 #: STRINGTABLE.IDS_EXTRACTION_FAILED
 msgid "Unable to extract /%s -- corrupt package?"
-msgstr "Impossible d'extraire /%s -- paquet corrompu ?"
+msgstr "Kunde inte extrahera /%s -- korrupt paket?"
 
 #: STRINGTABLE.IDS_EXTRACTION_INUSE
 msgid ""
@@ -1128,17 +1129,16 @@ msgid ""
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select "
-"\"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
+"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
-"Incapable d'extraire /%s -- erreur à l'écriture du fichier\n"
+"Kunde inte extrahera /%s -- fel vid skrivning av fil\n"
 "\n"
-"Le fichier est utilisé ou une autre erreur est survenue.\n"
+"Filen används eller så har ett annat fel uppstått.\n"
 "\n"
-"Arrêtez tous les processus Cygwin et sélectionnez «Recommencer», ou\n"
-"\n"
-"«Continuer» pour poursuivre (il faudra redémarrer).\n"
-"\n"
+"Stoppa alla Cygwin-processer och välj \"Försök igen\", eller välj "
+"\"Fortsätt\" för att fortsätta ändå "
+"(filen kommer att uppdateras efter en omstart).\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
 msgid ""
@@ -1146,9 +1146,9 @@ msgid ""
 "%s\n"
 "Delete?"
 msgstr ""
-"Une ancienne version de cygwin1.dll a été trouvée ici :\n"
-"%s\n"
-"Effacer ?"
+"En gammal version av cygwin1. dll hittades här:\n"
+"%\n"
+"Radera?"
 
 #: STRINGTABLE.IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
 msgid ""
@@ -1157,9 +1157,9 @@ msgid ""
 "You should delete the old version of cygwin1.dll at your earliest "
 "convenience."
 msgstr ""
-"Impossible de supprimer le fichier %s.\n"
-"La DLL est peut être utilisée par une autre application ?\n"
-"Vous devriez effacer la vieille version de cygwin1.dll dès que possible."
+"Kunde inte ta bort filen %s.\n"
+"Används DLL-filen av ett annat program?\n"
+"Du bör ta bort den gamla versionen av cygwin1.dll så snart som möjligt."
 
 #: STRINGTABLE.IDS_SHELLLINK_FAILED
 msgid ""
@@ -1167,35 +1167,33 @@ msgid ""
 "Setup will not be able to create Cygwin Icons in the Start Menu or on the "
 "Desktop."
 msgstr ""
-"CoCreateInstance : échec avec erreur 0x%x.\n"
-"L'assistant ne sera pas capable de créer les icônes Cygwin dans le menu "
-"Démarrer ou sur le bureau."
+"CoCreateInstance misslyckades med felet 0x%x.\n"
+"Installationsprogrammet kommer inte att kunna skapa Cygwin-ikoner i Start-"
+"menyn eller på skrivbordet."
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_VERSION
 msgid "Cygwin is not supported on this Windows version"
-msgstr "Cygwin n'est pas supporté pour cette version de Windows"
+msgstr "Cygwin stöds inte på denna Windows-version"
 
 #: STRINGTABLE.IDS_UNSUPPORTED_WINDOWS_ARCH
 msgid "Cygwin is not supported on 32-bit Windows"
-msgstr "Cygwin n'est pas disponible sous Windows 32 bits"
+msgstr "Cygwin stöds inte på 32-bitars Windows"
 
 #: STRINGTABLE.IDS_DEPRECATED_WINDOWS_VERSION
 msgid ""
 "Cygwin support for this Windows version is deprecated, and will be removed "
 "in the next major version"
 msgstr ""
-"Cygwin n'est plus supporté pour cette version de Windows, et sera enlevé "
-"dans la prochaine version majeure"
+"Cygwins stöd för den här Windows-versionen fasas ut, och kommer att tas bort "
+"i nästa större version"
 
 #: STRINGTABLE.IDS_MOUNT_REGISTRY_KEY_FAILED
 msgid "Couldn't create registry key to store installation path"
-msgstr ""
-"Impossible de créer la clé de registre pour enregistrer le chemin "
-"d'installation"
+msgstr "Kunde inte skapa registernyckel för att lagra installationsvägen"
 
 #: STRINGTABLE.IDS_NIO_ERROR
 msgid "Internet Error: %s"
-msgstr "Erreur Internet : %s"
+msgstr "Internetfel: %"
 
 #: STRINGTABLE.IDS_PREREQ_UNSOLVED_PROBLEMS
 msgid ""
@@ -1205,11 +1203,11 @@ msgid ""
 "\n"
 "Are you sure you want to proceed (NOT RECOMMENDED)?"
 msgstr ""
-"ATTENTION - Problèmes non résolus\n"
+"VARNING - Olösta problem\n"
 "\n"
-"Certains paquets ne fonctionneront pas correctement si vous continuez.\n"
+"Vissa paket kanske inte fungerar korrekt om du fortsätter.\n"
 "\n"
-"Voulez vous continuer (NON RECOMMANDÉ) ?"
+"Är du säker på att du vill fortsätta (REKOMMENDERAS INTE)?"
 
 #: STRINGTABLE.IDS_MIXED_BITNESS_ERROR
 msgid ""
@@ -1222,318 +1220,317 @@ msgid ""
 "Either run setup-%s.exe to update your existing %s installation of Cygwin, "
 "or choose another directory for your %s installation."
 msgstr ""
-"Erreur CPU cible\n"
+"Mål-CPU-matchningsfel\n"
 "\n"
-"Vous essayez d'installer une version %s de Cygwin dans un dossier qui "
-"contient une version %s de Cygwin.  Si vous insistez, vous aller casser "
-"l'installation existante.\n"
+"Du försöker installera %s-versionen av Cygwin i en katalog som innehåller %s-"
+"versionen av Cygwin. Om du fortsätter med det kommer den befintliga "
+"installationen att förstöras.\n"
 "\n"
-"Utilisez setup-%s.exe pour mettre à jour votre installation %s de Cygwin, ou "
-"choisissez un autre dossier pour votre installation %s."
+"Kör antingen setup-%s.exe för att uppdatera din befintliga %s-installation "
+"av Cygwin, eller välj en annan katalog för din %s-installation."
 
 #: STRINGTABLE.IDS_GET_SITELIST_ERROR
 msgid ""
 "Can't get list of download sites.\n"
 "Make sure your network settings are correct and try again."
 msgstr ""
-"Impossible d'avoir la liste des sites de téléchargement.\n"
-"Vérifiez que vos paramètres réseau sont corrects et réessayez."
+"Det går inte att hämta listan över nedladdningswebbplatser.\n"
+"Kontrollera att dina nätverksinställningar är korrekta och försök igen."
 
 #: STRINGTABLE.IDS_CONFIRM_EXIT
 msgid ""
 "Are you sure you want to exit setup? Any current download or installation "
 "will be aborted."
 msgstr ""
-"Voulez-vous vraiment quitter l'assistant ? Les téléchargements ou "
-"installations en cours seront annulés."
+"Är du säker på att du vill avsluta installationsprogrammet? Alla pågående "
+"nedladdningar eller installationer kommer att avbrytas."
 
 #: STRINGTABLE.IDS_CONTINUE
 msgid "Continue"
-msgstr "Continuer"
+msgstr "Fortsätt"
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_NO_PACKAGES
 msgid "No packages found."
-msgstr "Pas de paquet trouvé."
+msgstr "Inga paket hittades."
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_DOWNLOAD
 msgid "Nothing to download."
-msgstr "Rien à télécharger."
+msgstr "Inget att ladda ner."
 
 #: STRINGTABLE.IDS_CHOOSER_EMPTY_INSTALL
 msgid "Nothing to install or update."
-msgstr "Rien à installer ou mettre à jour."
+msgstr "Inget att installera eller uppdatera."
 
 #: STRINGTABLE.IDS_ROOT_BROWSE_TITLE
 msgid "Select an installation root directory"
-msgstr "Choisissez le dossier racine de l'installation"
+msgstr "Välj en installationsrotkatalog"
 
 #: STRINGTABLE.IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE
 msgid "Select download directory"
-msgstr "Choisissez le dossier pour le téléchargement"
+msgstr "Välj nedladdningskatalog"
 
 #: STRINGTABLE.IDS_LOCALDIR_BROWSE_PACKAGE_TITLE
 msgid "Select local package directory"
-msgstr "Choisissez le dossier local"
+msgstr "Välj lokal paketkatalog"
 
 #: STRINGTABLE.IDS_PROGRESS_CHECKING_HASH
 msgid "Checking %s for %s"
-msgstr "Vérification %s pour %s"
+msgstr "Kontrollerar %s för %s"
 
 #: STRINGTABLE.IDS_PROGRESS_DOWNLOADING_FROM
 msgid "%s from %s"
-msgstr "%s depuis %s"
+msgstr "%s från %s"
 
 #: STRINGTABLE.IDS_CONFIRM_UNINSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_UNINSTALL"
 msgid "Uninstall"
-msgstr "Désinstalle"
+msgstr "Avinstallera"
 
 #: STRINGTABLE.IDS_CONFIRM_INSTALL
 msgctxt "STRINGTABLE.IDS_CONFIRM_INSTALL"
 msgid "Install"
-msgstr "Installe"
+msgstr "Installera"
 
 #: STRINGTABLE.IDS_CONFIRM_DOWNLOAD
 msgid "Download"
-msgstr "Télécharge"
+msgstr "Ladda ner"
 
 #: STRINGTABLE.IDS_CONFIRM_NOTHING
 msgid "No changes"
-msgstr "Pas de changement"
+msgstr "Inga ändringar"
 
 #: STRINGTABLE.IDS_CONFIRM_AUTO_ADD
 msgid "(automatically added)"
-msgstr "(ajouté automatiquement)"
+msgstr "(automatiskt tillagd)"
 
 #: STRINGTABLE.IDS_CONFIRM_SOURCE
 msgid "(source)"
-msgstr "(source)"
+msgstr "(källa)"
 
 #: STRINGTABLE.IDS_FILE_INUSE_KILL
 msgid "&Kill Processes"
-msgstr "&Tuer les processus"
+msgstr "&Avsluta processer"
 
 #: STRINGTABLE.IDS_FILE_INUSE_MSG
 msgctxt "STRINGTABLE.IDS_FILE_INUSE_MSG"
 msgid "Unable to extract"
-msgstr "Incapable d'extraire"
+msgstr "Det gick inte att extrahera"
 
 #: STRINGTABLE.IDS_USER_URL_TOOLTIP
 msgid "Additional site URL, path or UNC path"
-msgstr "URL de site, chemin d’accès ou chemin UNC supplémentaires"
+msgstr "Ytterligare webbplats-URL, sökväg eller UNC-sökväg"
 
 #: STRINGTABLE.IDS_HELPTEXT_ERROR
 msgid "Error during option processing."
-msgstr "Erreur pendant l'analyse des options."
+msgstr "Fel under bearbetning av alternativ."
 
 #: STRINGTABLE.IDS_HELPTEXT_HEADER
 msgid "Command Line Options:"
-msgstr "Options de la ligne de commandes :"
+msgstr "Kommandoradsalternativ:"
 
 #: STRINGTABLE.IDS_HELPTEXT_FOOTER
 msgid ""
 "The default is to both download and install packages, unless either --"
 "download or --local-install is specified."
 msgstr ""
-"Par défault téléchargement et installation des paquets, sauf si --download "
-"ou --local-install sont spécifiés."
+"Standardinställningen är att både ladda ner och installera paket, såvida "
+"inte antingen --download eller --local-install anges."
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_TEST
 msgid "Consider package versions marked test"
-msgstr "Prendre en compte les paquets marqués test"
+msgstr "Överväg paketversioner markerade test"
 
 #: STRINGTABLE.IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
 msgid "Allow old, unsupported Windows versions"
-msgstr "Autoriser les vieilles versions de Windows"
+msgstr "Tillåt gamla, ostödda Windows-versioner"
 
 #: STRINGTABLE.IDS_HELPTEXT_ARCH
 msgid "Architecture to install (x86_64 or x86)"
-msgstr "Architecture à installer (x86_64 ou x86)"
+msgstr "Arkitektur att installera (x86_64 eller x86)"
 
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
 msgid "Specify categories to install"
-msgstr "Spécifie les catégories à installer"
+msgstr "Ange kategorier att installera"
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""
 "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
 msgstr ""
-"Compresser les fichiers installés avec Compact OS (xpress4k, xpress8k, "
-"xpress16k, lzx)"
+"Komprimera installerade filer med Compact OS "
+"(xpress4k, xpress8k, xpress16k, lzx)"
 
 #: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
 msgid "Remove orphaned packages"
-msgstr "Supprimer les paquets orphelins"
+msgstr "Ta bort överblivna paket"
 
 #: STRINGTABLE.IDS_HELPTEXT_DISABLE_ANTIVIRUS
 msgid ""
 "Disable known or suspected buggy anti virus software packages during "
 "execution"
-msgstr "Inhibe les anti-virus buggés à l'exécution"
+msgstr ""
+"Inaktivera kända eller misstänkta buggiga antivirusprogram under körning"
 
 #: STRINGTABLE.IDS_HELPTEXT_DOWNLOAD
 msgid "Download packages from internet"
-msgstr "Télécharger depuis internet"
+msgstr "Ladda ner paket från internet"
 
 #: STRINGTABLE.IDS_HELPTEXT_FORCE_CURRENT
 msgid "Select the current version for all packages"
-msgstr "Choisir la version courante pour tous les paquets"
+msgstr "Välj den aktuella versionen för alla paket"
 
 #: STRINGTABLE.IDS_HELPTEXT_HELP
 msgid "Print help"
-msgstr "Afficher l'aide"
+msgstr "Skriv ut hjälp"
 
 #: STRINGTABLE.IDS_HELPTEXT_INCLUDE_SOURCE
 msgid "Automatically install source for every package installed"
-msgstr "Ajouter automatiquement les sources de chaque paquet installé"
+msgstr "Installera källkoden automatiskt för varje installerat paket"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
 msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
-msgstr "Utiliser un nom de base différent, p.ex. «toto», au lieu de «setup»"
+msgstr "Använd ett annat basnamn, t.ex. \"\"foo\"\", istället för \"\"setup\"\""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"
-msgstr "Utiliser les clés non-fiables et les garder"
+msgstr "Använd opålitliga nycklar och behålla alla"
 
 #: STRINGTABLE.IDS_HELPTEXT_LANG
 msgid "Specify GUI language langid"
-msgstr "Choisir la langue de l'IHM"
+msgstr "Ange GUI-språk langid"
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_INSTALL
 msgid "Install packages from local directory"
-msgstr "Installer depuis un répertoire local"
+msgstr "Installera paket från lokal katalog"
 
 #: STRINGTABLE.IDS_HELPTEXT_LOCAL_PACKAGE_DIR
 msgid "Local package directory"
-msgstr "Dossier local pour les paquets"
+msgstr "Lokal paketkatalog"
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
-"Skip package availability check when installing from local directory "
-"(requires local directory to be clean mirror!)"
+"Skip package availability check when installing from local directory ("
+"requires local directory to be clean mirror!)"
 msgstr ""
-"Ne pas vérifier la présence d'un paquet depuis un dossier local (celui-ci "
-"doit être un miroir propre !)"
+"Hoppa över kontrollen av pakettillgänglighet vid installation från lokal "
+"katalog (kräver att den lokala katalogen är en ren spegel!)"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_ADMIN
 msgid "Do not check for and enforce running as Administrator"
-msgstr "Ne pas vérifier et forcer à installer en tant qu'administrateur"
+msgstr "Kontrollera inte och tvinga inte fram körning som administratör"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_DESKTOP
 msgid "Disable creation of desktop shortcut"
-msgstr "Pas de création de raccourci de bureau"
+msgstr "Inaktivera skapandet av skrivbordsgenväg"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_REPLACEONREBOOT
 msgid "Disable replacing in-use files on next reboot"
-msgstr ""
-"Inhibe le remplacement des fichiers en cours d'utilisation au prochain "
-"redémarrage"
+msgstr "Inaktivera ersättning av filer som används vid nästa omstart"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_SHORTCUTS
 msgid "Disable creation of desktop and start menu shortcuts"
-msgstr "Pas de création de raccourcis de bureau et de menu"
+msgstr "Inaktivera skapandet av genvägar på skrivbordet och i startmenyn"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_STARTMENU
 msgid "Disable creation of start menu shortcut"
-msgstr "Pas de création de raccourci de menu"
+msgstr "Inaktivera skapandet av genvägar till startmenyn"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_VERIFY
 msgid "Don't verify setup.ini signatures"
-msgstr "Ne pas vérifier les signatures de setup.ini"
+msgstr "Verifiera inte setup.ini-signaturer"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_VERSION_CHECK
 msgid "Suppress checking if a newer version of setup is available"
 msgstr ""
-"Ne pas vérifier si une version plus récente de l'assistant est disponible"
+"Undertryck kontroll av om en nyare version av installationsprogrammet är "
+"tillgänglig"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
 msgid "Don't warn about deprecated Windows versions"
-msgstr "Ne pas avertir pour les vieilles versions de Windows"
+msgstr "Varna inte om föråldrade Windows-versioner"
 
 #: STRINGTABLE.IDS_HELPTEXT_NO_WRITE_REGISTRY
 msgid "Don't write root installation directory to registry"
-msgstr "Ne pas écrire le répertoire d'installation racine dans le registre"
+msgstr "Skriv inte rotinstallationskatalogen till registret"
 
 #: STRINGTABLE.IDS_HELPTEXT_OLD_KEYS
 msgid "Enable old cygwin.com keys"
-msgstr "Utiliser les anciennes clés de cygwin.com"
+msgstr "Aktivera gamla cygwin.com nycklar"
 
 #: STRINGTABLE.IDS_HELPTEXT_ONLY_SITE
 msgid "Do not download mirror list.  Only use sites specified with -s"
-msgstr "Ignorer tous les sites sauf ceux spécifiés par -s"
+msgstr "Ladda inte ner speglistan. Använd endast webbplatser som anges med -s"
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGES
 msgid "Specify packages to install"
-msgstr "Spécifie les paquets à installer"
+msgstr "Ange paket att installera"
 
 #: STRINGTABLE.IDS_HELPTEXT_PACKAGE_MANAGER
 msgid "Semi-attended chooser-only mode"
-msgstr "Mode assistant sélection seulement"
+msgstr "Halvautomatiskt läge för enbart val"
 
 #: STRINGTABLE.IDS_HELPTEXT_PROXY
 msgid "HTTP/FTP proxy (host:port)"
-msgstr "Proxy HTTP/FTP (serveur:port)"
+msgstr "HTTP/FTP-proxy (värd:port)"
 
 #: STRINGTABLE.IDS_HELPTEXT_PRUNE_INSTALL
 msgid "Prune the installation to only the requested packages"
-msgstr "Purger l'installation pour n'avoir que les paquets demandés"
+msgstr "Beskär installationen till endast de begärda paketen"
 
 #: STRINGTABLE.IDS_HELPTEXT_PUBKEY
 msgid "URL or absolute path of extra public key file (RFC4880 format)"
 msgstr ""
-"URL ou chemin complet d'une clé publique supplémentaire (format RFC4880)"
+"URL eller absolut sökväg till extra offentlig nyckelfil (RFC4880-format)"
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
 msgid "Unattended setup mode (unattended, noinput, hidden)"
-msgstr ""
+msgstr "Obevakat installationsläge (obevakat, ingen inmatning, dolt)"
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_CATEGORIES
 msgid "Specify categories to uninstall"
-msgstr "Spécifie les catégories à désinstaller"
+msgstr "Ange kategorier att avinstallera"
 
 #: STRINGTABLE.IDS_HELPTEXT_REMOVE_PACKAGES
 msgid "Specify packages to uninstall"
-msgstr "Spécifie les paquets à désinstaller"
+msgstr "Ange paket att avinstallera"
 
 #: STRINGTABLE.IDS_HELPTEXT_ROOT
 msgid "Root installation directory"
-msgstr "Dossier racine de l'installation"
+msgstr "Rotinstallationskatalog"
 
 #: STRINGTABLE.IDS_HELPTEXT_SEXPR_PUBKEY
 msgid "Extra DSA public key in s-expr format"
-msgstr "Clé publique DSA supplémentaire au format s-expr"
+msgstr "Extra DSA-nyckel i s-expr-format"
 
 #: STRINGTABLE.IDS_HELPTEXT_SITE
 msgid "Download site URL, path or UNC path"
-msgstr "URL, chemin d’accès ou chemin UNC du site de téléchargement"
+msgstr "Ladda ner webbplatsens URL, sökväg eller UNC-sökväg"
 
 #: STRINGTABLE.IDS_HELPTEXT_SYMLINK_TYPE
 msgid "Symlink type (lnk, native, sys, wsl)"
-msgstr "Type de lien symbolique (lnk, native, sys, wsl)"
+msgstr "Symlänkstyp (lnk, native, sys, wsl)"
 
 #: STRINGTABLE.IDS_HELPTEXT_UNTRUSTED_KEYS
 msgid "Use untrusted saved extra keys"
-msgstr "Utiliser les clés non-fiables enregistrées"
+msgstr "Använd otillförlitliga sparade extranycklar"
 
 #: STRINGTABLE.IDS_HELPTEXT_UPGRADE_ALSO
 msgid "Also upgrade installed packages"
-msgstr "Mettre à jour les paquets installés"
+msgstr "Uppgradera även installerade paket"
 
 #: STRINGTABLE.IDS_HELPTEXT_USER_AGENT
 msgid "User agent string for HTTP requests"
-msgstr "« User agent » pour les requêtes HTTP"
+msgstr "Användaragentsträng för HTTP-förfrågningar"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERBOSE
 msgid "Verbose output"
-msgstr "Affichages verbeux"
+msgstr "Utförlig utmatning"
 
 #: STRINGTABLE.IDS_HELPTEXT_VERSION
 msgid "Show version"
-msgstr "Montrer la version"
+msgstr "Visa version"
 
 #: STRINGTABLE.IDS_HELPTEXT_WAIT
 msgid "When elevating, wait for elevated child process"
-msgstr "Attendre le process fils en mode élévation"
-
-#~ msgid "Unattended setup mode"
-#~ msgstr "Assistant sans messages"
+msgstr ""
+"Vid behörighetshöjning, vänta på den underordnade processen med förhöjda "
+"behörigheter"
