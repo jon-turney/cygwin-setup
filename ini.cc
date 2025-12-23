@@ -242,8 +242,8 @@ do_remote_ini (Feedback &myFeedback)
 	  ini_file = get_url_to_membuf (current_ini_name, myFeedback);
 	  ini_file = check_ini_sig (ini_file, ini_sig_file, sig_fail,
 				    n->url.c_str (), current_ini_sig_name.c_str (), myFeedback);
-	  // stop searching as soon as we find a setup file
-	  if (ini_file)
+	  // stop searching as soon as we find a ini file with a valid signature
+	  if (ini_file && !sig_fail)
 	    break;
 	}
       if (ini_file)
