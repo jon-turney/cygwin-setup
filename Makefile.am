@@ -69,6 +69,8 @@ inilint_SOURCES = \
 	cli/CliParseFeedback.cc \
 	cli/CliGetUrlFeedback.cc \
 	cli/CliHashCheckFeedback.cc \
+	cli/CliPhaseFeedback.cc \
+	cli/CliPhaseFeedback.h \
 	cli/CliFeedback.h \
 	LogSingleton.cc \
 	LogSingleton.h \
@@ -191,6 +193,8 @@ endif
 	gui/GuiGetUrlFeedback.cc \
 	gui/GuiFeedback.h \
 	gui/GuiHashCheckFeedback.cc \
+	gui/GuiPhaseFeedback.cc \
+	gui/GuiPhaseFeedback.h \
 	ini.cc \
 	ini.h \
 	IniDBBuilder.h \

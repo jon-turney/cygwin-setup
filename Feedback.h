@@ -15,7 +15,8 @@
 #include "win32.h"
 #include <string>
 
-/* Interface for feedback from ini parsing and URL fetching.
+/* Interface for feedback from ini parsing, URL fetching, progress reporting,
+ * etc.
  *
  * Used to send feedback that users need but that should not interrupt
  * processing.
@@ -49,6 +50,10 @@ public:
   // hash checking
   virtual void hash_init (const char *hashalg, const std::string &url) = 0;
   virtual void hash_progress (int bytes, int total_bytes) = 0;
+
+  // phase
+  virtual void phase_init(unsigned int id) = 0;
+  virtual void phase_progress(int distance, int total) const = 0;
 
   //
   virtual HWND owner () = 0;

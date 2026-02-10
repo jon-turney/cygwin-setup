@@ -59,8 +59,13 @@ public:
   void hash_init (const char *hashalg, const std::string &url);
   void hash_progress (int bytes, int total_bytes);
 
+  // phase
 public:
+  void phase_init(unsigned int id);
+  void phase_progress(int distance, int total) const;
+
   // owner
+public:
   HWND owner () { return owner_window; }
 
 private:
