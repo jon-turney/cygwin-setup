@@ -326,20 +326,26 @@ ChooserPage::applyCommandLinePackageSelection()
       if (areBuildDependenciesWanted(pkg))
         {
           Log (LOG_BABBLE) << "Examining build-deps for package " << pkg.name << endLog;
-          PackageDepends bdp = pkg.curr.build_depends();
-          std::ostream & logger = Log (LOG_BABBLE);
-          logger << "      build-depends=";
-          dumpPackageDepends(bdp, logger);
-          for (PackageDepends::const_iterator j = bdp.begin();
-               j != bdp.end();
-               j++)
+          packageversion pv = pkg.trustp(false, chooser->deftrust);
+          if (pv)
             {
-              Log (LOG_BABBLE) << "looking for " << (*j)->packageName() << endLog;
-              const packagedb::packagecollection::iterator n = db.packages.find((*j)->packageName());
-              if (n != db.packages.end())
+              PackageDepends bdp = pv.build_depends();
+              std::ostream & logger = Log (LOG_BABBLE);
+              logger << "      build-depends=";
+              dumpPackageDepends(bdp, logger);
+              logger << endLog;
+
+              for (PackageDepends::const_iterator j = bdp.begin();
+                   j != bdp.end();
+                   j++)
                 {
-                  packagemeta &bd_pkg = *(n->second);
-                  bd_pkg.set_action (packagemeta::Install_action, packageversion ());
+                  Log (LOG_BABBLE) << "looking for " << (*j)->packageName() << endLog;
+                  const packagedb::packagecollection::iterator n = db.packages.find((*j)->packageName());
+                  if (n != db.packages.end())
+                    {
+                      packagemeta &bd_pkg = *(n->second);
+                      bd_pkg.set_action (packagemeta::Install_action, packageversion ());
+                    }
                 }
             }
         }
