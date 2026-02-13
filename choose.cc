@@ -315,21 +315,42 @@ ChooserPage::applyCommandLinePackageSelection()
 	pkg.set_action (packagemeta::NoChange_action, pkg.installed);
     }
 
-  for (packagedb::packagecollection::iterator i = db.packages.begin ();
-       i != db.packages.end (); ++i)
+  std::set<std::string> &build_deps_for = buildDependenciesWanted();
+  for (auto i = build_deps_for.begin();
+       i != build_deps_for.end ();
+       ++i)
     {
       // The 'build-depends' option can only specify source package names
-      // presently. (perhaps if name is not found, instead look for binary
-      // package and navigate to the corresponding source?)
+      // presently.
+      std::string pn = *i;
+      std::string src_pn = *i + "-src";
 
-      packagemeta &pkg = *(i->second);
-      if (areBuildDependenciesWanted(pkg))
+      packagedb::packagecollection::iterator n = db.sourcePackages.find(src_pn);
+
+      // if name is not found, instead look it up as a binary package name and
+      // navigate to the corresponding source
+      if (n == db.sourcePackages.end())
         {
-          Log (LOG_BABBLE) << "Examining build-deps for package " << pkg.name << endLog;
+          Log(LOG_PLAIN) << "No source package named '" << pn << "' found, looking for install package instead." << endLog;
+
+          const packagedb::packagecollection::iterator b = db.packages.find(pn);
+
+          if (b != db.packages.end())
+            {
+              src_pn = b->second->trustp(false, chooser->deftrust).sourcePackageName();
+              n = db.sourcePackages.find(src_pn);
+            }
+        }
+
+      if (n != db.sourcePackages.end())
+        {
+          packagemeta &pkg = *(n->second);
+          Log (LOG_PLAIN) << "Installing build-depends for package " << pkg.name << endLog;
           packageversion pv = pkg.trustp(false, chooser->deftrust);
           if (pv)
             {
               PackageDepends bdp = pv.build_depends();
+
               std::ostream & logger = Log (LOG_BABBLE);
               logger << "      build-depends=";
               dumpPackageDepends(bdp, logger);
@@ -339,7 +360,6 @@ ChooserPage::applyCommandLinePackageSelection()
                    j != bdp.end();
                    j++)
                 {
-                  Log (LOG_BABBLE) << "looking for " << (*j)->packageName() << endLog;
                   const packagedb::packagecollection::iterator n = db.packages.find((*j)->packageName());
                   if (n != db.packages.end())
                     {
@@ -349,6 +369,8 @@ ChooserPage::applyCommandLinePackageSelection()
                 }
             }
         }
+      else
+        Log(LOG_PLAIN) << "Package '" << *i << "' not found." << endLog;
     }
 }
 

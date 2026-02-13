@@ -215,13 +215,11 @@ isManuallyDeleted(packagemeta &pkg)
   return bReturn;
 }
 
-bool
-areBuildDependenciesWanted(packagemeta &pkg)
+std::set<std::string> &
+buildDependenciesWanted(void)
 {
   static bool parsed_yet = false;
   static std::set<std::string> parsed_build_depend;
-  hasManualSelections |= parsed_build_depend.size ();
-  bool bReturn = false;
 
   /* First time through, we parse all the names out from the
     option string and store them away in an STL set.  */
@@ -234,15 +232,10 @@ areBuildDependenciesWanted(packagemeta &pkg)
       {
         parseNames (parsed_build_depend, *n);
       }
-    validatePackageNames (parsed_build_depend);
     parsed_yet = true;
   }
 
-  /* Once we've already parsed the option string, just do
-     a lookup in the cache of already-parsed names.  */
-  bReturn = parsed_build_depend.find(pkg.name) != parsed_build_depend.end();
+  hasManualSelections |= parsed_build_depend.size ();
 
-  if (bReturn)
-    Log (LOG_BABBLE) << "Adding build-deps for package " << pkg.name << endLog;
-  return bReturn;
+  return parsed_build_depend;
 }

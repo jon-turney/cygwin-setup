@@ -16,7 +16,7 @@
 
 bool isManuallyWanted(packagemeta &pkg, packageversion &version);
 bool isManuallyDeleted(packagemeta &pkg);
-bool areBuildDependenciesWanted(packagemeta &pkg);
+std::set<std::string> &buildDependenciesWanted(void);
 
 extern bool hasManualSelections;
 
