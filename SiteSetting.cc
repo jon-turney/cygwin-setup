@@ -30,7 +30,7 @@ StringArrayOption SiteOption('s', "site", IDS_HELPTEXT_SITE);
 extern BoolOption UnsupportedOption;
 
 /* Selected sites */
-SiteList site_list;
+SiteList selected_site_list;
 
 /* Fresh mirrors + selected sites */
 SiteList all_site_list;
@@ -63,8 +63,8 @@ SiteSetting::save()
   io_stream *f = UserSettings::instance().open (lastMirrorKey ());
   if (f)
     {
-      for (SiteList::const_iterator n = site_list.begin ();
-           n != site_list.end (); ++n)
+      for (SiteList::const_iterator n = selected_site_list.begin ();
+           n != selected_site_list.end (); ++n)
         *f << n->url;
       delete f;
     }
@@ -98,7 +98,7 @@ SiteSetting::registerSavedSite (const char * site)
     return;
 
   site_list_insert (all_site_list, tempSite);
-  site_list.push_back (tempSite);
+  selected_site_list.push_back (tempSite);
 }
 
 void

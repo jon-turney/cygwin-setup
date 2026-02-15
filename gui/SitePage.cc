@@ -92,7 +92,7 @@ static void
 save_dialog (HWND h)
 {
   // Remove anything that was previously in the selected site list.
-  site_list.clear ();
+  selected_site_list.clear ();
 
   HWND listbox = GetDlgItem (h, IDC_URL_LIST);
   int sel_count = SendMessage (listbox, LB_GETSELCOUNT, 0, 0);
@@ -104,7 +104,7 @@ save_dialog (HWND h)
 	{
 	  int mirror =
 	    SendMessage (listbox, LB_GETITEMDATA, sel_buffer[n], 0);
-	  site_list.push_back (all_site_list[mirror]);
+	  selected_site_list.push_back (all_site_list[mirror]);
 	}
     }
 }
@@ -191,8 +191,8 @@ migrate_selected_site_list()
 {
   const std::string http = "http://";
 
-  for (SiteList::iterator i = site_list.begin();
-       i != site_list.end();
+  for (SiteList::iterator i = selected_site_list.begin();
+       i != selected_site_list.end();
        ++i)
     {
       /* If the saved selected site URL starts with "http://", and the same URL,
@@ -375,8 +375,8 @@ int check_dropped_mirrors (HWND h)
   cache_warn_urls = "";
   dropped_site_list.clear ();
 
-  for (SiteList::const_iterator n = site_list.begin ();
-       n != site_list.end (); ++n)
+  for (SiteList::const_iterator n = selected_site_list.begin ();
+       n != selected_site_list.end (); ++n)
     {
       SiteList::iterator i = find (all_site_list.begin(), all_site_list.end(),
 				   *n);
@@ -456,8 +456,8 @@ SitePage::OnNext ()
     save_cache_file (cache_action);
 
   // Log all the selected URLs from the list.
-  for (SiteList::const_iterator n = site_list.begin ();
-       n != site_list.end (); ++n)
+  for (SiteList::const_iterator n = selected_site_list.begin ();
+       n != selected_site_list.end (); ++n)
     Log (LOG_PLAIN) << "site: " << n->url << endLog;
 
   Progress.SetActivateTask (WM_APP_START_SETUP_INI_DOWNLOAD);
@@ -526,8 +526,8 @@ SitePage::PopulateListBox ()
        i != all_site_list.end (); ++i)
     {
       // If selected, always show
-      SiteList::iterator f = find (site_list.begin(), site_list.end(), *i);
-      if (f == site_list.end())
+      SiteList::iterator f = find (selected_site_list.begin(), selected_site_list.end(), *i);
+      if (f == selected_site_list.end())
         {
           // Otherwise, hide redundant legacy URLs:
           if (i->noshow)
@@ -540,7 +540,7 @@ SitePage::PopulateListBox ()
       SendMessage (listbox, LB_SETITEMDATA, j, (i - all_site_list.begin()));
 
       // For every selected item, remember the index
-      if (f != site_list.end())
+      if (f != selected_site_list.end())
         {
           sel_indicies.push_back(j);
         }
@@ -593,10 +593,10 @@ bool SitePage::OnMessageCmd (int id, HWND hwndctl, UINT code)
 	      {
 		all_site_list.push_back (newsite);
 		Log (LOG_BABBLE) << "Adding site: " << other_url << endLog;
-		site_list.push_back (newsite);
+		selected_site_list.push_back (newsite);
 	      }
 	    else
-	      site_list.push_back (*i);
+	      selected_site_list.push_back (*i);
 
 	    // Update the list box.
 	    PopulateListBox ();

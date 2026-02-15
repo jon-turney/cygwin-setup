@@ -225,8 +225,8 @@ do_remote_ini (Feedback &myFeedback)
      explicitly delete these things is ridiculous. */
 
   // iterate over all sites
-  for (SiteList::const_iterator n = site_list.begin ();
-       n != site_list.end (); ++n)
+  for (SiteList::const_iterator n = selected_site_list.begin ();
+       n != selected_site_list.end (); ++n)
     {
       IniDBBuilderPackage aBuilder (myFeedback);
       bool sig_fail = false;

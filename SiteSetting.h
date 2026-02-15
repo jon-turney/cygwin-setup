@@ -67,7 +67,7 @@ typedef std::vector <site_list_type> SiteList;
 void site_list_insert(SiteList &site_list, site_list_type newsite);
 
 /* user chosen sites */
-extern SiteList site_list;
+extern SiteList selected_site_list;
 /* potential sites */
 extern SiteList all_site_list;
 
