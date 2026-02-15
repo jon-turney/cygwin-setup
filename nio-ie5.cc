@@ -179,7 +179,7 @@ NetIO_IE5::NetIO_IE5 (char const *url, bool cachable)
     INTERNET_FLAG_EXISTING_CONNECT | INTERNET_FLAG_PASSIVE;
 
   if (!cachable) {
-    flags |= INTERNET_FLAG_NO_CACHE_WRITE;
+    flags |= INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_RELOAD;
   } else {
     flags |= INTERNET_FLAG_RESYNCHRONIZE;
   }

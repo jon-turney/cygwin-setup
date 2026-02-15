@@ -157,6 +157,8 @@ site_list_type::site_list_type (const std::string &_url,
       idx = 0;
   } while (idx > 0);
   key += url;
+
+  speed = 0;
 }
 
 bool

@@ -40,6 +40,7 @@
 #include "Exception.h"
 #include "String++.h"
 #include "gui/GuiFeedback.h"
+#include "SiteSpeedEstimator.h"
 
 #define MIRROR_LIST_URL "https://cygwin.com/mirrors.lst"
 
@@ -281,12 +282,41 @@ get_site_list (Feedback &feedback)
   delete[] theMirrorString;
   delete[] theCachedString;
 
-  // sort all_site_list by 'tld key'
-  std::sort(all_site_list.begin(), all_site_list.end(),
-            [] (site_list_type const &a, site_list_type const &b) { return a.key < b.key; });
+  // if we don't have a selected site (and do have a mirrors list), do a speed test
+  if (selected_site_list.empty() && !all_site_list.empty())
+    {
+      // TBD: show "Selecting mirror" or similar via feedback
+
+      SiteSpeedEstimator estimator(all_site_list);
+      estimator.annotate_sitelist();
+
+      // sort all_site_list by descending speed
+      std::sort(all_site_list.begin(), all_site_list.end(),
+                [] (site_list_type const &a, site_list_type const &b) { return a.speed > b.speed; });
+
+     for (size_t i = 0; i < all_site_list.size(); ++i)
+       if (!all_site_list[i].noshow)
+         Log (LOG_BABBLE) << all_site_list[i].url << " " << std::fixed << all_site_list[i].speed << " bps" << endLog;
+
+     // also, in unattended mode, autoselect the first (fastest) mirror
+     if (unattended_mode)
+       {
+         Log (LOG_PLAIN) << "Defaulted to " << all_site_list[0].url << " (" << std::fixed << all_site_list[0].speed << " bps)" << endLog;
+         selected_site_list.push_back (all_site_list[0]);
+       }
+    }
+  else
+    {
+      // sort all_site_list by 'tld key'
+      std::sort(all_site_list.begin(), all_site_list.end(),
+                [] (site_list_type const &a, site_list_type const &b) { return a.key < b.key; });
+    }
 
   migrate_selected_site_list();
 
+  // XXX: this never returns true (indicating an error), which is probably good
+  // as the logic below would put us into a loop in unattended mode in that
+  // case.
   return 0;
 }
 

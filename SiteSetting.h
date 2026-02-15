@@ -17,6 +17,7 @@
 #define SETUP_SITESETTING_H
 
 #include <vector>
+#include <string>
 
 class SiteSetting
 {
@@ -55,6 +56,9 @@ public:
   std::string displayed_url;
   // tld sort key
   std::string key;
+  // speed measurement (optional)
+  double speed;
+
   bool operator == (const site_list_type &) const;
 };
 

@@ -280,6 +280,8 @@ endif
 	gui/SitePage.h \
 	SiteSetting.cc \
 	SiteSetting.h \
+	SiteSpeedEstimator.cc \
+	SiteSpeedEstimator.h \
 	source.cc \
 	source.h \
 	SourceSetting.cc \
