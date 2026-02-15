@@ -21,7 +21,7 @@
 #include "splash.h"
 
 #define SPLASH_URL "https://cygwin.com"
-#define SPLASH_COPYRIGHT L"Copyright © 2000-2025"
+#define SPLASH_COPYRIGHT L"Copyright © 2000-2026"
 #define SPLASH_TRANSLATE_URL "https://cygwin.com/setup/translate"
 
 static ControlAdjuster::ControlInfo SplashControlsInfo[] = {
