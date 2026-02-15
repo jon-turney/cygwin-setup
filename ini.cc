@@ -217,7 +217,7 @@ do_local_ini (Feedback &myFeedback)
 static bool
 do_remote_ini (Feedback &myFeedback)
 {
-  bool ini_error = false;
+  int ini_count = 0;
   io_stream *ini_file = NULL, *ini_sig_file;
 
   /* FIXME: Get rid of this io_stream pointer travesty.  The need to
@@ -252,7 +252,6 @@ do_remote_ini (Feedback &myFeedback)
 	{
 	  // no setup found or signature invalid
 	  note (myFeedback.owner(), IDS_SETUPINI_MISSING, SetupBaseName().c_str (), n->url.c_str ());
-	  ini_error = true;
 	}
       else
 	{
@@ -264,7 +263,6 @@ do_remote_ini (Feedback &myFeedback)
 	  if (yyparse () || myFeedback.has_errors())
 	    {
 	      myFeedback.show_errors ();
-	      ini_error = true;
 	    }
 	  else
 	    {
@@ -280,6 +278,7 @@ do_remote_ini (Feedback &myFeedback)
 		    io_stream::remove (fp);
 		  delete out;
 		}
+		ini_count++;
 	    }
 	  if (aBuilder.timestamp > setup_timestamp)
 	    {
@@ -290,7 +289,10 @@ do_remote_ini (Feedback &myFeedback)
 	  ini_file = NULL;
 	}
     }
-  return ini_error;
+
+  // report an error if we didn't manage to fetch and parse at least one ini
+  // file.
+  return (ini_count == 0);
 }
 
 bool
