@@ -77,12 +77,11 @@ SiteSetting::~SiteSetting ()
     save ();
 }
 
-/* List of machines that should not be used by default when saved
-   in "last-mirror". */
+/* List of machines that should not be used when saved in "last-mirror". */
 #define NOSAVE1 "ftp://sourceware.org/"
-#define NOSAVE1_LEN (sizeof (NOSAVE2) - 1)
+#define NOSAVE1_LEN (sizeof (NOSAVE1) - 1)
 #define NOSAVE2 "ftp://sources.redhat.com/"
-#define NOSAVE2_LEN (sizeof (NOSAVE1) - 1)
+#define NOSAVE2_LEN (sizeof (NOSAVE2) - 1)
 #define NOSAVE3 "ftp://gcc.gnu.org/"
 #define NOSAVE3_LEN (sizeof (NOSAVE3) - 1)
 
