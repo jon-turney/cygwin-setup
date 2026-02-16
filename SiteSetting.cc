@@ -162,33 +162,19 @@ site_list_type::site_list_type (const std::string &_url,
 bool
 site_list_type::operator == (site_list_type const &rhs) const
 {
+  // for historical reasons, we compare by key, which should give identical
+  // results to comparing by url
   return stricmp (key.c_str(), rhs.key.c_str()) == 0;
 }
 
-bool
-site_list_type::operator < (site_list_type const &rhs) const
-{
-  return stricmp (key.c_str(), rhs.key.c_str()) < 0;
-}
-
-/*
-  A SiteList is maintained as an in-order std::vector of site_list_type, by
-  replacing it with a new object with the new item inserted in the correct
-  place.
-
-  Yes, we could just use an ordered container, instead.
-*/
+// insert newsite into site_list, unless it's already present
 void
 site_list_insert(SiteList &site_list, site_list_type newsite)
 {
   SiteList::iterator i = find (site_list.begin(), site_list.end(), newsite);
   if (i == site_list.end())
     {
-      SiteList result;
-      merge (site_list.begin(), site_list.end(),
-             &newsite, &newsite + 1,
-             inserter (result, result.begin()));
-      site_list = result;
+      site_list.push_back (newsite);
     }
   else
     *i = newsite;

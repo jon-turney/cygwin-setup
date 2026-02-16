@@ -281,6 +281,10 @@ get_site_list (Feedback &feedback)
   delete[] theMirrorString;
   delete[] theCachedString;
 
+  // sort all_site_list by 'tld key'
+  std::sort(all_site_list.begin(), all_site_list.end(),
+            [] (site_list_type const &a, site_list_type const &b) { return a.key < b.key; });
+
   migrate_selected_site_list();
 
   return 0;

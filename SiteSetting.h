@@ -39,6 +39,7 @@ public:
                   const std::string& , const std::string&, bool, bool = false,
                   const std::string& = "");
   ~site_list_type () {};
+
   std::string url;
   // provided by mirrors.lst but not used
   std::string servername;
@@ -50,16 +51,11 @@ public:
   bool noshow;
   // url to redirect to
   std::string redir;
-
+  // displayed_url is protocol and site name part of url
   std::string displayed_url;
-  // sort key
+  // tld sort key
   std::string key;
   bool operator == (const site_list_type &) const;
-  bool operator != (const site_list_type &) const;
-  bool operator < (const site_list_type &) const;
-  bool operator <= (const site_list_type &) const;
-  bool operator > (const site_list_type &) const;
-  bool operator >= (const site_list_type &) const;
 };
 
 typedef std::vector <site_list_type> SiteList;
