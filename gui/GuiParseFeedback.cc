@@ -30,7 +30,7 @@ GuiFeedback::parse_init ()
   Progress.SetText1 (IDS_PROGRESS_PARSING);
   Progress.SetText2 ("");
   Progress.SetText3 ("");
-  Progress.SetText4 (IDS_PROGRESS_PROGRESS);
+  Progress.SetBarLabel1 (IDS_PROGRESS_PROGRESS);
 
   lastpct = 0;
   yyerror_count = 0;
@@ -42,7 +42,7 @@ GuiFeedback::parse_finish ()
 {
   Progress.SetText2 ("");
   Progress.SetText3 ("");
-  Progress.SetText4 (IDS_PROGRESS_PACKAGE);
+  Progress.SetBarLabel1 (IDS_PROGRESS_PACKAGE);
   Progress.SetBar1 (0);
 }
 

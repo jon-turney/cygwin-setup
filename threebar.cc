@@ -100,7 +100,7 @@ ThreeBarProgressPage::SetText3 (const TCHAR * t)
 }
 
 void
-ThreeBarProgressPage::SetText4 (const TCHAR * t)
+ThreeBarProgressPage::SetBarLabel1 (const TCHAR * t)
 {
   ::SetWindowText (ins_bl_package, t);
 }
@@ -124,7 +124,7 @@ ThreeBarProgressPage::SetText3 (unsigned int id)
 }
 
 void
-ThreeBarProgressPage::SetText4 (unsigned int id)
+ThreeBarProgressPage::SetBarLabel1 (unsigned int id)
 {
   ::SetWindowTextW (ins_bl_package, LoadStringW(id).c_str());
 }

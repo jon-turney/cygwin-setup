@@ -23,7 +23,7 @@ GuiFeedback::hash_init(const char *hashalg, const std::string &shortname)
   std::wstring fmt = LoadStringW(IDS_PROGRESS_CHECKING_HASH);
   std::wstring s = format(fmt, hashalg, shortname.c_str());
   Progress.SetText1(s.c_str());
-  Progress.SetText4(IDS_PROGRESS_PROGRESS);
+  Progress.SetBarLabel1(IDS_PROGRESS_PROGRESS);
   Progress.SetBar1(0);
 }
 

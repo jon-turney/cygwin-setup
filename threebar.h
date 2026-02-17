@@ -73,16 +73,17 @@ public:
   void SetText2 (const wchar_t * t);
   void SetText2 (const TCHAR * t);
   void SetText3 (const TCHAR * t);
-  void SetText4 (const TCHAR * t);
 
   void SetText1 (unsigned int id);
   void SetText2 (unsigned int id);
   void SetText3 (unsigned int id);
-  void SetText4 (unsigned int id);
 
   void SetBar1 (off_t progress, off_t max = 100);
   void SetBar2 (off_t progress, off_t max = 100);
   void SetBar3 (off_t progress, off_t max = 100);
+
+  void SetBarLabel1 (const TCHAR * t);
+  void SetBarLabel1 (unsigned int id);
 
   void SetActivateTask (int t)
   {
