@@ -20,6 +20,8 @@
 #include <mutex>
 #include <queue>
 
+class Feedback;
+
 class SiteSpeedEstimator
 {
 public:
@@ -27,17 +29,22 @@ public:
   ~SiteSpeedEstimator();
 
   /* Measure speed for each site in the list using a thread pool. */
-  void annotate_sitelist();
+  void annotate_sitelist(Feedback  &feedback);
 
 private:
   /* Measure speed for a single site */
   double estimate_speed(const site_list_type &site);
 
   /* Worker thread function for the thread pool */
-  void worker_thread();
+  void worker_thread(int worker_index);
+
+  /* Progress reporting thread */
+  void progress_thread(Feedback  &feedback);
 
   std::mutex queue_mutex_;
   std::queue<size_t> work_queue_;
+  size_t work_count;
+  std::vector<unsigned int> progress_counts_;
   SiteList *current_site_list_;
 };
 

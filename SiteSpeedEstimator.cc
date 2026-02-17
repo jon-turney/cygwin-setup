@@ -17,6 +17,7 @@
 #include "netio.h"
 #include "ini.h"
 #include "LogSingleton.h"
+#include "Feedback.h"
 
 #include <vector>
 #include <thread>
@@ -33,26 +34,33 @@ SiteSpeedEstimator::~SiteSpeedEstimator()
 }
 
 void
-SiteSpeedEstimator::annotate_sitelist()
+SiteSpeedEstimator::annotate_sitelist(Feedback  &feedback)
 {
   std::vector<std::thread> worker_threads;
 
   int max_threads = std::thread::hardware_concurrency() * 2;
+
+  progress_counts_.assign(max_threads, 0);
 
   /* Populate the work queue with indices of all sites not marked 'noshow' */
   for (size_t i = 0; i < current_site_list_->size(); ++i)
     if (!(*current_site_list_)[i].noshow)
       work_queue_.push(i);
 
+  work_count = work_queue_.size();
+
   auto start_time = std::chrono::high_resolution_clock::now();
 
   Log (LOG_PLAIN) << "Starting speed measurement for "
-                  << work_queue_.size() << " site(s) with "
+                  << work_count << " site(s) with "
                   << max_threads << " concurrent thread(s)" << endLog;
 
   /* Create worker threads */
   for (int i = 0; i < max_threads; ++i)
-    worker_threads.emplace_back([this]() { worker_thread(); });
+    worker_threads.emplace_back([this, i]() { worker_thread(i); });
+
+  /* Create progress reporting thread */
+  std::thread progress = std::thread([this, &feedback]() { progress_thread(feedback); });
 
   /* Wait for all worker threads to complete */
   for (auto &thread : worker_threads)
@@ -60,6 +68,9 @@ SiteSpeedEstimator::annotate_sitelist()
       if (thread.joinable())
         thread.join();
     }
+
+  /* Wait for progress reporting thread */
+  progress.join();
 
   /* Calculate elapsed time */
   auto end_time = std::chrono::high_resolution_clock::now();
@@ -69,7 +80,7 @@ SiteSpeedEstimator::annotate_sitelist()
 }
 
 void
-SiteSpeedEstimator::worker_thread()
+SiteSpeedEstimator::worker_thread(int worker_index)
 {
   while (true)
     {
@@ -89,6 +100,31 @@ SiteSpeedEstimator::worker_thread()
       /* Perform the measurement */
       double speed = estimate_speed((*current_site_list_)[site_index]);
       (*current_site_list_)[site_index].speed = speed;
+
+      /* Increment this worker's progress count */
+      progress_counts_[worker_index]++;
+    }
+}
+
+void
+SiteSpeedEstimator::progress_thread(Feedback  &feedback)
+{
+  while (true)
+    {
+      /* Count total work consumed by all workers */
+      unsigned int total_progress = 0;
+      for (unsigned int count : progress_counts_)
+        total_progress += count;
+
+      /* Report progress */
+      feedback.phase_progress(total_progress, work_count);
+
+      /* Exit if no work remains... */
+      if (total_progress >= work_count)
+        break;
+
+      /* ... otherwise wait */
+      Sleep(1000);
     }
 }
 

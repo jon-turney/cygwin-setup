@@ -286,10 +286,10 @@ get_site_list (Feedback &feedback)
   // if we don't have a selected site (and do have a mirrors list), do a speed test
   if ((selected_site_list.empty() || AutoSiteOption) && !all_site_list.empty())
     {
-      // TBD: show "Selecting mirror" or similar via feedback
+      feedback.phase_init(IDS_PROGRESS_MIRROR_SPEED);
 
       SiteSpeedEstimator estimator(all_site_list);
-      estimator.annotate_sitelist();
+      estimator.annotate_sitelist(feedback);
 
       // sort all_site_list by descending speed
       std::sort(all_site_list.begin(), all_site_list.end(),
