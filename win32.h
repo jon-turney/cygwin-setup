@@ -56,6 +56,10 @@
 #define _access access
 #endif
 
+/* A replacement version of GetFileAttributesW */
+#define GetFileAttributesW GetFileAttributesWithBackupIntentW
+extern "C" DWORD WINAPI GetFileAttributesW (LPCWSTR wpath);
+
 /* When we have to check for a path delimiter, check for both, slash and
    backslash. */
 #define isdirsep(ch) \
