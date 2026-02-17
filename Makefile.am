@@ -128,7 +128,7 @@ endif
 	-lmingwex \
 	-lshlwapi -lcomctl32 -lole32 -lpsapi -luuid -lntdll $(WININET) -lws2_32 \
 	-lmingw32 -lssp
-@SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs
+@SETUP@_LDFLAGS = -mwindows -Wc,-static -static-libtool-libs -Wl,-trace-symbol=GetFileAttributesW
 @SETUP@_SOURCES = \
 	actionlist.h \
 	AntiVirus.cc \
