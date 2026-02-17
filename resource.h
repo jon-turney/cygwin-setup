@@ -159,6 +159,7 @@
 #define IDS_HELPTEXT_FOOTER              1547
 #define IDS_HELPTEXT_NO_WRITE_REGISTRY   1548
 #define IDS_HELPTEXT_BUILD_DEPENDS       1549
+#define IDS_HELPTEXT_AUTO_SITE           1550
 
 // Dialogs
 

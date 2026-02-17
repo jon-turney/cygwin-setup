@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-24 15:33+0100\n"
+"POT-Creation-Date: 2026-02-17 16:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1180,6 +1180,10 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_ARCH
 msgid "Architecture to install (x86_64 or x86)"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_AUTO_SITE
+msgid "Automatically select download site, if possible"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES

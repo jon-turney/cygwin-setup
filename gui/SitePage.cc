@@ -87,6 +87,7 @@ SiteList cached_site_list;
 SiteList dropped_site_list;
 
 BoolOption OnlySiteOption(false, 'O', "only-site", IDS_HELPTEXT_ONLY_SITE);
+BoolOption AutoSiteOption(false, '\0', "auto-site", IDS_HELPTEXT_AUTO_SITE);
 extern BoolOption UnsupportedOption;
 
 static void
@@ -283,7 +284,7 @@ get_site_list (Feedback &feedback)
   delete[] theCachedString;
 
   // if we don't have a selected site (and do have a mirrors list), do a speed test
-  if (selected_site_list.empty() && !all_site_list.empty())
+  if ((selected_site_list.empty() || AutoSiteOption) && !all_site_list.empty())
     {
       // TBD: show "Selecting mirror" or similar via feedback
 
@@ -298,9 +299,13 @@ get_site_list (Feedback &feedback)
        if (!all_site_list[i].noshow)
          Log (LOG_BABBLE) << all_site_list[i].url << " " << std::fixed << all_site_list[i].speed << " bps" << endLog;
 
-     // also, in unattended mode, autoselect the first (fastest) mirror
-     if (unattended_mode)
+     // also, in unattended or autosite mode, autoselect the first (fastest) mirror
+     if (unattended_mode || AutoSiteOption)
        {
+         // '--autosite' overrides '--site', if we were able to find a site
+         if (AutoSiteOption)
+           selected_site_list.clear();
+
          Log (LOG_PLAIN) << "Defaulted to " << all_site_list[0].url << " (" << std::fixed << all_site_list[0].speed << " bps)" << endLog;
          selected_site_list.push_back (all_site_list[0]);
        }

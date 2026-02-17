@@ -655,6 +655,7 @@ BEGIN
     IDS_HELPTEXT_ALLOW_TEST "Consider package versions marked test"
     IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS "Allow old, unsupported Windows versions"
     IDS_HELPTEXT_ARCH "Architecture to install (x86_64 or x86)"
+    IDS_HELPTEXT_AUTO_SITE "Automatically select download site, if possible"
     IDS_HELPTEXT_CATEGORIES "Specify categories to install"
     IDS_HELPTEXT_BUILD_DEPENDS "Specify packages to install the build requirements of"
     IDS_HELPTEXT_COMPACTOS "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
