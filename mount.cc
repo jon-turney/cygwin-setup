@@ -27,40 +27,8 @@
 #include <stdlib.h>
 #include <malloc.h>
 
-// These headers aren't available outside the winsup tree
-// #include "../cygwin/include/cygwin/version.h"
-// KEEP SYNCHRONISED WITH /src/winsup/cygwin/include/cygwin/version.h
-
 #define CYGWIN_INFO_CYGWIN_REGISTRY_NAME "Cygwin"
 #define CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME "setup"
-
-// #include "../cygwin/include/sys/mount.h"
-
-// KEEP SYNCHRONISED WITH /src/winsup/cygwin/include/sys/mount.h
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-enum
-{
-  MOUNT_SYMLINK =       0x001,  /* "mount point" is a symlink */
-  MOUNT_BINARY =        0x002,  /* "binary" format read/writes */
-  MOUNT_SYSTEM =        0x008,  /* mount point came from system table */
-  MOUNT_EXEC   =        0x010,  /* Any file in the mounted directory gets 'x' bit */
-  MOUNT_AUTO   =        0x020,  /* mount point refers to auto device mount */
-  MOUNT_CYGWIN_EXEC =   0x040,  /* file or directory is or contains a cygwin executable */
-  MOUNT_MIXED   =       0x080,  /* reads are text, writes are binary */
-};
-
-//  int mount (const char *, const char *, unsigned __flags);
-//    int umount (const char *);
-//    int cygwin_umount (const char *__path, unsigned __flags);
-
-#ifdef __cplusplus
-};
-#endif
-
-
 
 #include "mount.h"
 #include "msg.h"
