@@ -188,6 +188,7 @@ do_local_ini (Feedback &myFeedback)
       else
 	{
 	  // grok information from setup
+	  myFeedback.parse_init();
 	  myFeedback.babble ("Found ini file - " + current_ini_name);
 	  myFeedback.iniName (current_ini_name);
 	  int ldl = local_dir.length () + 1;
@@ -209,6 +210,7 @@ do_local_ini (Feedback &myFeedback)
 	    }
 	  delete ini_file;
 	  ini_file = NULL;
+	  myFeedback.parse_finish();
 	}
     }
   return ini_error;
@@ -256,6 +258,7 @@ do_remote_ini (Feedback &myFeedback)
       else
 	{
 	  // grok information from setup
+	  myFeedback.parse_init();
 	  myFeedback.iniName (current_ini_name);
 	  aBuilder.parse_mirror = n->url;
 	  ini_init (ini_file, &aBuilder, myFeedback);
@@ -287,6 +290,7 @@ do_remote_ini (Feedback &myFeedback)
 	    }
 	  delete ini_file;
 	  ini_file = NULL;
+	  myFeedback.parse_finish();
 	}
     }
 
