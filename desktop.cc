@@ -44,14 +44,6 @@ BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", IDS_HELPTEXT_NO_SHORTC
 BoolOption NoStartMenuOption (false, 'N', "no-startmenu", IDS_HELPTEXT_NO_STARTMENU);
 static BoolOption NoDesktopOption (false, 'd', "no-desktop", IDS_HELPTEXT_NO_DESKTOP);
 
-/* Lines starting with '@' are conditionals - include 'N' for NT,
-   '5' for Win95, '8' for Win98, '*' for all, like this:
-	echo foo
-	@N8
-	echo NT or 98
-	@*
-   */
-
 static ControlAdjuster::ControlInfo DesktopControlsInfo[] = {
   {IDC_DESKTOP_SEPARATOR, 	CP_STRETCH, CP_BOTTOM},
   {IDC_STATUS, 			CP_LEFT, CP_BOTTOM},
