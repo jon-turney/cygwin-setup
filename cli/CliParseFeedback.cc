@@ -35,11 +35,6 @@ void CliFeedback::iniName (const std::string& name)
 {
 }
 
-void CliFeedback::babble (const std::string& message) const
-{
-  Log (LOG_BABBLE) << message << endLog;
-}
-
 void CliFeedback::warning (const std::string& message) const
 {
   std::cout << "Warning: " << message << std::endl;

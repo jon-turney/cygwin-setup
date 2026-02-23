@@ -31,7 +31,6 @@ public:
   virtual void parse_finish () = 0;
   virtual void progress (unsigned long const, unsigned long const) = 0;
   virtual void iniName (const std::string& ) = 0;
-  virtual void babble (const std::string& ) const = 0;
   virtual void warning (const std::string& ) const = 0;
   virtual void show_errors () const = 0;
   virtual void note_error(int lineno, const std::string &error) = 0;

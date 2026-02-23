@@ -25,7 +25,6 @@ public:
   void parse_finish ();
   void progress (unsigned long const, unsigned long const);
   void iniName (const std::string& );
-  void babble (const std::string& ) const;
   void warning (const std::string& ) const;
   void show_errors () const;
   void note_error(int lineno, const std::string &error);

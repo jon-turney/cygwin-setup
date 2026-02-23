@@ -189,7 +189,6 @@ do_local_ini (Feedback &myFeedback)
 	{
 	  // grok information from setup
 	  myFeedback.parse_init();
-	  myFeedback.babble ("Found ini file - " + current_ini_name);
 	  myFeedback.iniName (current_ini_name);
 	  int ldl = local_dir.length () + 1;
 	  int cap = current_ini_name.rfind ("/" + SetupArch());

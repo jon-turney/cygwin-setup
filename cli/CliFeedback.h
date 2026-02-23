@@ -21,7 +21,6 @@ public:
   virtual void parse_finish ();
   virtual void progress (unsigned long const pos, unsigned long const max);
   virtual void iniName (const std::string& name);
-  virtual void babble (const std::string& message) const;
   virtual void warning (const std::string& message) const;
   virtual void show_errors () const;
   virtual void note_error(int lineno, const std::string &s);

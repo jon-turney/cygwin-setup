@@ -29,9 +29,8 @@
 #include "String++.h"
 #include "find.h"
 #include "ini.h"
-
 #include "FindVisitor.h"
-#include "IniDBBuilderPackage.h"
+#include "LogSingleton.h"
 
 class SetupFindVisitor : public FindVisitor
 {
@@ -74,9 +73,10 @@ public:
 	  {
 	    if (*fi)
 	      {
-		found_ini_list.push_back (basePath + SetupArch() + "/"
-					  + SetupBaseName() + "." + *ext);
-		/* 
+                std::string fn = basePath + SetupArch() + "/" + SetupBaseName() + "." + *ext;
+                Log (LOG_BABBLE) << "Found ini file: " << fn << endLog;
+                found_ini_list.push_back (fn);
+		/*
 		 * Terminate the search after the first setup file
 		 * found, which shadows any setup files with
 		 * extensions later in the preference order in the

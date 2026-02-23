@@ -77,12 +77,6 @@ GuiFeedback::iniName (const std::string& name)
 }
 
 void
-GuiFeedback::babble (const std::string& message)const
-{
-  Log (LOG_BABBLE) << message << endLog;
-}
-
-void
 GuiFeedback::warning (const std::string& message)const
 {
   mbox (Progress.GetHWND(), message.c_str (), "Warning", 0);
