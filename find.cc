@@ -14,8 +14,16 @@
  *
  */
 
-/* The purpose of this file is to doa recursive find on a given
-   directory, calling a given function for each file found. */
+/* The purpose of this file is to do a (recursive) find on a given directory,
+   calling a given function for each file and directory found.
+
+   accept() calls the visitDirectory() method of the FindVisitor object supplied
+   for each directory found. It also calls the visitFile() method for each file
+   found.
+
+   The default FindVisitor::visitDirectory() implementation simply decrements
+   the level, and recurses if it's greater than zero.
+*/
 
 #include "win32.h"
 #include "filemanip.h"
@@ -68,6 +76,7 @@ Find::accept (FindVisitor &aVisitor, int level)
 
   do
     {
+      /* Ignore '.' and '..' entries */
       if (wcscmp (w_wfd.cFileName, L".") == 0
 	  || wcscmp (w_wfd.cFileName, L"..") == 0)
 	continue;
