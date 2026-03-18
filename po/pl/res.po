@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-11 16:30+0100\n"
+"POT-Creation-Date: 2025-11-24 15:33+0100\n"
 "PO-Revision-Date: 2024-01-24 16:01+0000\n"
 "Last-Translator: Zbigniew Kosowski <kosowskz@o2.pl>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -1352,6 +1352,12 @@ msgstr "Architektura do zainstalowania (x86_64 lub x86)"
 msgid "Specify categories to install"
 msgstr "Określanie kategorii do zainstalowania"
 
+#: STRINGTABLE.IDS_HELPTEXT_BUILD_DEPENDS
+#, fuzzy
+#| msgid "Specify packages to install"
+msgid "Specify packages to install the build requirements of"
+msgstr "Określ pakiety do zainstalowania"
+
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""
 "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
@@ -1389,8 +1395,7 @@ msgstr "Automatycznie instaluj źródła dla każdego zainstalowanego pakietu"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
 msgid "Use a different basename, e.g. \"foo\", instead of \"setup\""
-msgstr ""
-"Użyj innej nazwy bazowej, np. \"foo\", zamiast \"konfiguracja\""
+msgstr "Użyj innej nazwy bazowej, np. \"foo\", zamiast \"konfiguracja\""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"

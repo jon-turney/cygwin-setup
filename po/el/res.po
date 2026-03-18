@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-11 16:30+0100\n"
+"POT-Creation-Date: 2025-11-24 15:33+0100\n"
 "PO-Revision-Date: 2024-08-26 15:09+0000\n"
 "Last-Translator: \"Λευτέρης Τ.\" <lefteris592@gmail.com>\n"
 "Language-Team: Greek <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -1195,6 +1195,10 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
 msgid "Specify categories to install"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_BUILD_DEPENDS
+msgid "Specify packages to install the build requirements of"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS

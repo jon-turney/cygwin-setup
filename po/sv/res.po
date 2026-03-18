@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-11 16:30+0100\n"
+"POT-Creation-Date: 2025-11-24 15:33+0100\n"
 "PO-Revision-Date: 2025-12-02 00:35+0000\n"
 "Last-Translator: Stefan Bjornelund the Gnome "
 "<stefan.bjornelund.gnome@gmail.com>\n"
@@ -103,7 +103,8 @@ msgstr ""
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_INSTALL_DESC
 msgid ""
 "Select a directory where Setup should look for downloaded installation files."
-msgstr "Välj en katalog där Setup ska leta efter nedladdade installationsfiler."
+msgstr ""
+"Välj en katalog där Setup ska leta efter nedladdade installationsfiler."
 
 #: DIALOG.IDD_LOCAL_DIR.GROUPBOX.IDC_LOCALDIR_GRP
 msgid "Local Package Directory"
@@ -230,8 +231,7 @@ msgid "Select Your Internet Connection"
 msgstr "Välj din Internetanslutning"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
-msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
-"DIALOG.IDD_INSTATUS.CAPTION"
+msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
 msgstr "Cygwin-installation"
 
@@ -249,8 +249,7 @@ msgid "(FILE)"
 msgstr "(FIL)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
 msgstr "Förlopp1"
 
@@ -294,8 +293,7 @@ msgid "Proxy &User ID"
 msgstr "Proxy- och &användar-ID"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "&Lösenord"
 
@@ -304,15 +302,12 @@ msgid "Proxy Authorization Required"
 msgstr "Proxy-auktorisering krävs"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
 msgstr "&OK"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -535,8 +530,8 @@ msgstr "Varning:"
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "One or more mirrors you have selected is/are not on the list of official "
-"Cygwin mirrors any more. It/They may be out of date or missing some packages."
-"\n"
+"Cygwin mirrors any more. It/They may be out of date or missing some "
+"packages.\n"
 "This affects the following mirror(s):"
 msgstr ""
 "En eller flera speglar du har valt är inte på listan över officiella Cygwin-"
@@ -883,8 +878,8 @@ msgstr ""
 "Fullständig: Visa alla paket.\n"
 "\n"
 "Väntande: Visa endast paket som håller på att installeras, tas bort eller "
-"uppgraderas. Detta visar vad som kommer att ändras när du trycker på 'Nästa'."
-"\n"
+"uppgraderas. Detta visar vad som kommer att ändras när du trycker på "
+"'Nästa'.\n"
 "\n"
 "Uppdaterad: Visa installerade paket som inte kräver någon åtgärd eftersom de "
 "redan har önskad version.\n"
@@ -1124,21 +1119,30 @@ msgid "Unable to extract /%s -- corrupt package?"
 msgstr "Kunde inte extrahera /%s -- korrupt paket?"
 
 #: STRINGTABLE.IDS_EXTRACTION_INUSE
+#, fuzzy
+#| msgid ""
+#| "Unable to extract /%s -- error writing file\n"
+#| "\n"
+#| "The file is in use or some other error occurred.\n"
+#| "\n"
+#| "Please stop all Cygwin processes and select \"\"Retry\"\", or select "
+#| "\"\"Continue\"\" to go on anyway (the file will be updated after a "
+#| "reboot).\n"
 msgid ""
 "Unable to extract /%s -- error writing file\n"
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"\"Retry\"\", or select \""
-"\"Continue\"\" to go on anyway (the file will be updated after a reboot).\n"
+"Please stop all Cygwin processes and select \"Retry\", or select "
+"\"Continue\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 "Kunde inte extrahera /%s -- fel vid skrivning av fil\n"
 "\n"
 "Filen används eller så har ett annat fel uppstått.\n"
 "\n"
 "Stoppa alla Cygwin-processer och välj \"Försök igen\", eller välj "
-"\"Fortsätt\" för att fortsätta ändå "
-"(filen kommer att uppdateras efter en omstart).\n"
+"\"Fortsätt\" för att fortsätta ändå (filen kommer att uppdateras efter en "
+"omstart).\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
 msgid ""
@@ -1352,12 +1356,18 @@ msgstr "Arkitektur att installera (x86_64 eller x86)"
 msgid "Specify categories to install"
 msgstr "Ange kategorier att installera"
 
+#: STRINGTABLE.IDS_HELPTEXT_BUILD_DEPENDS
+#, fuzzy
+#| msgid "Specify packages to install"
+msgid "Specify packages to install the build requirements of"
+msgstr "Ange paket att installera"
+
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""
 "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
 msgstr ""
-"Komprimera installerade filer med Compact OS "
-"(xpress4k, xpress8k, xpress16k, lzx)"
+"Komprimera installerade filer med Compact OS (xpress4k, xpress8k, xpress16k, "
+"lzx)"
 
 #: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
 msgid "Remove orphaned packages"
@@ -1387,8 +1397,11 @@ msgid "Automatically install source for every package installed"
 msgstr "Installera källkoden automatiskt för varje installerat paket"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
-msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
-msgstr "Använd ett annat basnamn, t.ex. \"\"foo\"\", istället för \"\"setup\"\""
+#, fuzzy
+#| msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
+msgid "Use a different basename, e.g. \"foo\", instead of \"setup\""
+msgstr ""
+"Använd ett annat basnamn, t.ex. \"\"foo\"\", istället för \"\"setup\"\""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"
@@ -1408,8 +1421,8 @@ msgstr "Lokal paketkatalog"
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
-"Skip package availability check when installing from local directory ("
-"requires local directory to be clean mirror!)"
+"Skip package availability check when installing from local directory "
+"(requires local directory to be clean mirror!)"
 msgstr ""
 "Hoppa över kontrollen av pakettillgänglighet vid installation från lokal "
 "katalog (kräver att den lokala katalogen är en ren spegel!)"

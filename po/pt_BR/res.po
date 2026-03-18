@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-11 16:30+0100\n"
+"POT-Creation-Date: 2025-11-24 15:33+0100\n"
 "PO-Revision-Date: 2025-12-28 03:00+0000\n"
 "Last-Translator: Nico <n2778370@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
@@ -1207,6 +1207,10 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
 msgid "Specify categories to install"
+msgstr ""
+
+#: STRINGTABLE.IDS_HELPTEXT_BUILD_DEPENDS
+msgid "Specify packages to install the build requirements of"
 msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-11 16:30+0100\n"
+"POT-Creation-Date: 2025-11-24 15:33+0100\n"
 "PO-Revision-Date: 2023-06-20 13:50+0000\n"
 "Last-Translator: Luis Mengel <mail@lmengel.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -1245,6 +1245,12 @@ msgstr "Zu installierende Architektur (x86_64 oder x86)"
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
 msgid "Specify categories to install"
 msgstr "Zu installierende Kategorien angeben"
+
+#: STRINGTABLE.IDS_HELPTEXT_BUILD_DEPENDS
+#, fuzzy
+#| msgid "Specify packages to install"
+msgid "Specify packages to install the build requirements of"
+msgstr "Zu installierende Pakete angeben"
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""

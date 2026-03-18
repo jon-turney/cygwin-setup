@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-11 16:30+0100\n"
+"POT-Creation-Date: 2025-11-24 15:33+0100\n"
 "PO-Revision-Date: 2025-11-27 16:00+0000\n"
 "Last-Translator: Aindriú Mac Giolla Eoin <aindriu80@gmail.com>\n"
 "Language-Team: Irish <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -1140,9 +1140,9 @@ msgstr ""
 "\n"
 "Tá an comhad in úsáid nó tharla earráid éigin eile.\n"
 "\n"
-"Stop gach próiseas Cygwin le do thoil agus roghnaigh “ Athbhreithnigh ”, "
-"nó roghnaigh “ Lean ar aghaidh ” chun dul ar aghaidh ar aon nós (déanfar "
-"an comhad a nuashonrú tar éis atosaigh).\n"
+"Stop gach próiseas Cygwin le do thoil agus roghnaigh “ Athbhreithnigh ”, nó "
+"roghnaigh “ Lean ar aghaidh ” chun dul ar aghaidh ar aon nós (déanfar an "
+"comhad a nuashonrú tar éis atosaigh).\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
 msgid ""
@@ -1356,6 +1356,12 @@ msgstr "Ailtireacht le suiteáil (x86_64 nó x86)"
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
 msgid "Specify categories to install"
 msgstr "Sonraigh catagóirí le suiteáil"
+
+#: STRINGTABLE.IDS_HELPTEXT_BUILD_DEPENDS
+#, fuzzy
+#| msgid "Specify packages to install"
+msgid "Specify packages to install the build requirements of"
+msgstr "Sonraigh pacáistí le suiteáil"
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""

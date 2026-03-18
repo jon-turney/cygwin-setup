@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-11 16:30+0100\n"
+"POT-Creation-Date: 2025-11-24 15:33+0100\n"
 "PO-Revision-Date: 2025-12-04 01:00+0000\n"
 "Last-Translator: Arif Budiman <arifpedia@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -229,8 +229,7 @@ msgid "Select Your Internet Connection"
 msgstr "Pilih Koneksi Internet Anda"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
-msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
-"DIALOG.IDD_INSTATUS.CAPTION"
+msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
 msgstr "Penyiapan Cygwin"
 
@@ -248,8 +247,7 @@ msgid "(FILE)"
 msgstr "(BERKAS)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
 msgstr "Kemajuan1"
 
@@ -293,8 +291,7 @@ msgid "Proxy &User ID"
 msgstr "ID Pengg&una Proksi"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "Kata &Sandi"
 
@@ -303,15 +300,12 @@ msgid "Proxy Authorization Required"
 msgstr "Otorisasi Proksi Diperlukan"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
 msgstr "&OK"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
 msgstr "Batal"
 
@@ -533,8 +527,8 @@ msgstr "Peringatan:"
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "One or more mirrors you have selected is/are not on the list of official "
-"Cygwin mirrors any more. It/They may be out of date or missing some packages."
-"\n"
+"Cygwin mirrors any more. It/They may be out of date or missing some "
+"packages.\n"
 "This affects the following mirror(s):"
 msgstr ""
 "Satu atau beberapa mirror yang Anda pilih tidak lagi ada dalam daftar mirror "
@@ -648,8 +642,8 @@ msgid ""
 "select 'Continue' to go on anyway (the file will be updated after a reboot)."
 msgstr ""
 "Pilih 'Coba lagi' untuk mencoba lagi, pilih 'Matikan' untuk mematikan proses "
-"dan mencoba lagi, atau pilih 'Lanjutkan' untuk tetap melanjutkan "
-"(berkas akan diperbarui setelah boot ulang)."
+"dan mencoba lagi, atau pilih 'Lanjutkan' untuk tetap melanjutkan (berkas "
+"akan diperbarui setelah boot ulang)."
 
 #: DIALOG.IDD_FILE_INUSE.LTEXT.IDC_FILE_INUSE_HELP_2
 msgid ""
@@ -759,8 +753,8 @@ msgid ""
 "This setup is version %s, but setup.ini claims version %s is available.\n"
 "You might want to upgrade to get the latest features and bug fixes."
 msgstr ""
-"Penyiapan ini adalah versi %s, tetapi setup.ini mengklaim versi %s tersedia."
-"\n"
+"Penyiapan ini adalah versi %s, tetapi setup.ini mengklaim versi %s "
+"tersedia.\n"
 "Anda mungkin ingin memperbarui untuk mendapatkan fitur dan perbaikan bug "
 "terbaru."
 
@@ -833,7 +827,8 @@ msgstr ""
 
 #: STRINGTABLE.IDS_TRUSTCURR_TOOLTIP
 msgid "Sets all packages to the best version available (RECOMMENDED)."
-msgstr "Mengatur semua paket ke versi terbaik yang tersedia (DIREKOMENDASIKAN)."
+msgstr ""
+"Mengatur semua paket ke versi terbaik yang tersedia (DIREKOMENDASIKAN)."
 
 #: STRINGTABLE.IDS_TRUSTSYNC_TOOLTIP
 msgid ""
@@ -874,8 +869,8 @@ msgid ""
 "removed.  Other installed or selected packages no longer depend on these "
 "packages."
 msgstr ""
-"Pilih tampilan paket. Ini menentukan paket mana yang ditampilkan di bawah.  "
-"\n"
+"Pilih tampilan paket. Ini menentukan paket mana yang ditampilkan di "
+"bawah.  \n"
 "\n"
 "Kategori: Kelompokkan berdasarkan kategori paket. Klik '+' untuk "
 "memperluas.  \n"
@@ -936,8 +931,8 @@ msgstr "Direktori %s tidak ada, apakah Anda ingin saya membuatnya?"
 #: STRINGTABLE.IDS_CANT_MKDIR
 msgid "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
 msgstr ""
-"Tidak dapat membuat direktori %s, maaf.  "
-"(Apakah drive penuh atau hanya-baca?)"
+"Tidak dapat membuat direktori %s, maaf.  (Apakah drive penuh atau hanya-"
+"baca?)"
 
 #: STRINGTABLE.IDS_NO_LOCALDIR
 msgid ""
@@ -1205,8 +1200,8 @@ msgid ""
 msgstr ""
 "PERINGATAN - Masalah Belum Terselesaikan  \n"
 "\n"
-"Beberapa paket mungkin tidak berfungsi dengan benar jika Anda melanjutkan.  "
-"\n"
+"Beberapa paket mungkin tidak berfungsi dengan benar jika Anda "
+"melanjutkan.  \n"
 "\n"
 "Apakah Anda yakin ingin melanjutkan (TIDAK DISARANKAN)?"
 
@@ -1352,6 +1347,12 @@ msgstr "Arsitektur yang akan diinstal (x86_64 atau x86)"
 msgid "Specify categories to install"
 msgstr "Tentukan kategori yang akan diinstal"
 
+#: STRINGTABLE.IDS_HELPTEXT_BUILD_DEPENDS
+#, fuzzy
+#| msgid "Specify packages to install"
+msgid "Specify packages to install the build requirements of"
+msgstr "Tentukan paket yang akan diinstal"
+
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""
 "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
@@ -1411,8 +1412,8 @@ msgstr "Direktori paket lokal"
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
-"Skip package availability check when installing from local directory ("
-"requires local directory to be clean mirror!)"
+"Skip package availability check when installing from local directory "
+"(requires local directory to be clean mirror!)"
 msgstr ""
 "Lewati pemeriksaan ketersediaan paket saat menginstal dari direktori lokal "
 "(memerlukan direktori lokal sebagai cermin yang bersih!)"
@@ -1481,7 +1482,8 @@ msgstr "Pangkas instalasi hanya untuk paket yang diminta"
 
 #: STRINGTABLE.IDS_HELPTEXT_PUBKEY
 msgid "URL or absolute path of extra public key file (RFC4880 format)"
-msgstr "URL atau jalur absolut dari file kunci publik tambahan (format RFC4880)"
+msgstr ""
+"URL atau jalur absolut dari file kunci publik tambahan (format RFC4880)"
 
 #: STRINGTABLE.IDS_HELPTEXT_QUIET_MODE
 msgid "Unattended setup mode (unattended, noinput, hidden)"

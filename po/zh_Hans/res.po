@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-11 16:30+0100\n"
+"POT-Creation-Date: 2025-11-24 15:33+0100\n"
 "PO-Revision-Date: 2024-05-09 15:07+0000\n"
 "Last-Translator: Xiang Heng Wei <yylteam@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -1086,8 +1086,8 @@ msgstr ""
 "\n"
 "文件正在使用中或发生了其他错误。\n"
 "\n"
-"请结束所有 Cygwin 进程并选择\"重试\"，或选择\"继续\"以继续（文件将在"
-"重启后更新）。\n"
+"请结束所有 Cygwin 进程并选择\"重试\"，或选择\"继续\"以继续（文件将在重启后更"
+"新）。\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
 msgid ""
@@ -1168,8 +1168,8 @@ msgid ""
 msgstr ""
 "目标 CPU 不匹配\n"
 "\n"
-"您正在尝试将 %s 版本的 Cygwin 安装到包含 %s 版本的 Cygwin "
-"的目录中。继续这样做会破坏现有的安装。\n"
+"您正在尝试将 %s 版本的 Cygwin 安装到包含 %s 版本的 Cygwin 的目录中。继续这样"
+"做会破坏现有的安装。\n"
 "\n"
 "运行 setup-%s.exe 以更新 Cygwin 的现有 %s 位安装，或为 %s 位安装选择其他目"
 "录。"
@@ -1292,6 +1292,12 @@ msgstr "要安装的体系结构（选项：x86_64 或 x86）"
 #: STRINGTABLE.IDS_HELPTEXT_CATEGORIES
 msgid "Specify categories to install"
 msgstr "指定要安装的类别"
+
+#: STRINGTABLE.IDS_HELPTEXT_BUILD_DEPENDS
+#, fuzzy
+#| msgid "Specify packages to install"
+msgid "Specify packages to install the build requirements of"
+msgstr "指定要安装的软件包"
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""

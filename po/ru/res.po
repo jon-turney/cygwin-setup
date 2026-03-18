@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-11 16:30+0100\n"
+"POT-Creation-Date: 2025-11-24 15:33+0100\n"
 "PO-Revision-Date: 2025-11-25 05:05+0000\n"
 "Last-Translator: Yurt Page <yurtpage+weblate@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/cygwin-setup/"
@@ -12,9 +12,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural="
-"(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? "
-"1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Accelerator-Marker: &\n"
 "X-Generator: Weblate 5.15-dev\n"
 "X-Merge-On: location\n"
@@ -231,8 +230,7 @@ msgid "Select Your Internet Connection"
 msgstr "Выберите тип подключения к Интернету"
 
 #: DIALOG.IDD_INSTATUS.CAPTION
-msgctxt "DIALOG.IDD_INSTATUS.CAPTION"
-"DIALOG.IDD_INSTATUS.CAPTION"
+msgctxt "DIALOG.IDD_INSTATUS.CAPTIONDIALOG.IDD_INSTATUS.CAPTION"
 msgid "Cygwin Setup"
 msgstr "Установка Cygwin"
 
@@ -250,8 +248,7 @@ msgid "(FILE)"
 msgstr "(FILE)"
 
 #: DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL
-msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
-"DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
+msgctxt "DIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULLDIALOG.IDD_INSTATUS.CONTROL.IDC_INS_DISKFULL"
 msgid "Progress1"
 msgstr "Progress1"
 
@@ -295,8 +292,7 @@ msgid "Proxy &User ID"
 msgstr "П&ользователь на прокси"
 
 #: DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC
-msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
-"DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
+msgctxt "DIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATICDIALOG.IDD_PROXY_AUTH.LTEXT.IDC_STATIC"
 msgid "&Password"
 msgstr "&Пароль"
 
@@ -305,15 +301,12 @@ msgid "Proxy Authorization Required"
 msgstr "Требуется авторизация на прокси"
 
 #: DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK
-msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
-"DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
+msgctxt "DIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOKDIALOG.IDD_PROXY_AUTH.DEFPUSHBUTTON.IDOK"
 msgid "&OK"
 msgstr "&Хорошо"
 
 #: DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL
-msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
-"DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
+msgctxt "DIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCELDIALOG.IDD_PROXY_AUTH.PUSHBUTTON.IDCANCEL"
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -537,8 +530,8 @@ msgstr "Предупреждение:"
 #: DIALOG.IDD_DROPPED.LTEXT.IDC_STATIC
 msgid ""
 "One or more mirrors you have selected is/are not on the list of official "
-"Cygwin mirrors any more. It/They may be out of date or missing some packages."
-"\n"
+"Cygwin mirrors any more. It/They may be out of date or missing some "
+"packages.\n"
 "This affects the following mirror(s):"
 msgstr ""
 "Одно или несколько выбранных вами зеркал больше не входят в список "
@@ -941,8 +934,8 @@ msgstr "Папка %s не существует. Создать её?"
 #: STRINGTABLE.IDS_CANT_MKDIR
 msgid "Couldn't create directory %s, sorry.  (Is drive full or read-only?)"
 msgstr ""
-"Не удалось создать папку %s. "
-"(Может диск переполнен или доступен только для чтения?)"
+"Не удалось создать папку %s. (Может диск переполнен или доступен только для "
+"чтения?)"
 
 #: STRINGTABLE.IDS_NO_LOCALDIR
 msgid ""
@@ -1130,20 +1123,29 @@ msgid "Unable to extract /%s -- corrupt package?"
 msgstr "Не удалось извлечь /%s — пакет повреждён?"
 
 #: STRINGTABLE.IDS_EXTRACTION_INUSE
+#, fuzzy
+#| msgid ""
+#| "Unable to extract /%s -- error writing file\n"
+#| "\n"
+#| "The file is in use or some other error occurred.\n"
+#| "\n"
+#| "Please stop all Cygwin processes and select \"Retry\", or select "
+#| "\"\"Continue\" to go on anyway (the file will be updated after a "
+#| "reboot).\n"
 msgid ""
 "Unable to extract /%s -- error writing file\n"
 "\n"
 "The file is in use or some other error occurred.\n"
 "\n"
-"Please stop all Cygwin processes and select \"Retry\", or select \""
+"Please stop all Cygwin processes and select \"Retry\", or select "
 "\"Continue\" to go on anyway (the file will be updated after a reboot).\n"
 msgstr ""
 "Не удалось извлечь /%s — ошибка записи файла.\n"
 "\n"
 "Этот файл сейчас используется или произошла другая ошибка.\n"
 "\n"
-"Остановите все процессы Cygwin и нажмите «Повторить» или нажмите «Продолжить»"
-", чтобы продолжить (файл будет обновлён после перезагрузки).\n"
+"Остановите все процессы Cygwin и нажмите «Повторить» или нажмите "
+"«Продолжить», чтобы продолжить (файл будет обновлён после перезагрузки).\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
 msgid ""
@@ -1356,12 +1358,18 @@ msgstr "Архитектура для установки (x86_64 или x86)"
 msgid "Specify categories to install"
 msgstr "Указать категории для установки"
 
+#: STRINGTABLE.IDS_HELPTEXT_BUILD_DEPENDS
+#, fuzzy
+#| msgid "Specify packages to install"
+msgid "Specify packages to install the build requirements of"
+msgstr "Указать пакеты для установки"
+
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""
 "Compress installed files with Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
 msgstr ""
-"Сжать установленные файлы с помощью Compact OS "
-"(xpress4k, xpress8k, xpress16k, lzx)"
+"Сжать установленные файлы с помощью Compact OS (xpress4k, xpress8k, "
+"xpress16k, lzx)"
 
 #: STRINGTABLE.IDS_HELPTEXT_DELETE_ORPHANS
 msgid "Remove orphaned packages"
@@ -1394,8 +1402,7 @@ msgstr ""
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
 msgid "Use a different basename, e.g. \"foo\", instead of \"setup\""
-msgstr ""
-"Использовать другое базовое имя, например \"foo\" вместо \"setup\""
+msgstr "Использовать другое базовое имя, например \"foo\" вместо \"setup\""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"
@@ -1415,8 +1422,8 @@ msgstr "Локальная папка пакетов"
 
 #: STRINGTABLE.IDS_HELPTEXT_MIRROR_MODE
 msgid ""
-"Skip package availability check when installing from local directory ("
-"requires local directory to be clean mirror!)"
+"Skip package availability check when installing from local directory "
+"(requires local directory to be clean mirror!)"
 msgstr ""
 "Пропустить проверку наличия пакетов при установке из локальной папки "
 "(требуется, чтобы локальная папка была чистым зеркалом!)"
