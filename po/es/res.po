@@ -4,67 +4,75 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-24 15:33+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2026-03-21 15:09+0000\n"
+"Last-Translator: Francisco Serrador <fserrador@gmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/cygwin-setup/"
+"cygwin-setup/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Translate Toolkit 3.15.1\n"
+"X-Generator: Weblate 5.17-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
+#, fuzzy
 msgid "Cygwin Setup - Choose Installation Type"
-msgstr ""
+msgstr "Elección del Tipo de Instalación"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_NETINST
 msgid ""
 "&Install from Internet\n"
 "(downloaded files will be kept for future re-use)"
 msgstr ""
+"&Instalar desde Internet\n"
+"(los archivos descargados serán conservados en posible uso futura)"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_DOWNLOAD
 msgid "&Download Without Installing"
-msgstr ""
+msgstr "&Descargar sin instalar"
 
 #: DIALOG.IDD_SOURCE.CONTROL.IDC_SOURCE_LOCALDIR
 msgid "Install from &Local Directory"
-msgstr ""
+msgstr "Instalar desde directorio &local"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose A Download Source"
-msgstr ""
+msgstr "Elija un origen de descarga"
 
 #: DIALOG.IDD_SOURCE.LTEXT.IDC_SOURCE_SUBTEXT
 msgid ""
 "Choose whether to install or download from the internet, or install from "
 "files in a local directory."
 msgstr ""
+"Elige si deseas instalar o descargar desde Internet, o instalar desde "
+"archivos dentro de un directorio local."
 
 #: DIALOG.IDD_VIRUS.CAPTION
 msgid "Cygwin Setup - Disable Virus Scanner?"
-msgstr ""
+msgstr "¿Inhabilito los analizadores de virus?"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_DISABLE_AV
 msgid "&Disable Virus scanner"
-msgstr ""
+msgstr "&Deshabilitar analizador de virus"
 
 #: DIALOG.IDD_VIRUS.CONTROL.IDC_LEAVE_AV
 msgid "&Leave Virus scanner alone"
-msgstr ""
+msgstr "Solo deja e&l analizador de virus"
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Choose whether to disable your virus scanner while installing."
-msgstr ""
+msgstr "Elige si deseas inhabilitar tu antivirus durante la instalación."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
 "Some Antivirus programs, notably McAfee, cause a blue screen on Windows XP "
 "computers during installation of Cygwin."
 msgstr ""
+"Algunos programas antivirus, en particular McAfee, provocan una pantalla "
+"azul en los ordenadores con Windows XP durante la instalación de Cygwin."
 
 #: DIALOG.IDD_VIRUS.LTEXT.IDC_STATIC
 msgid ""
@@ -72,14 +80,17 @@ msgid ""
 "during the installation process, and re-enable it when the install is "
 "complete."
 msgstr ""
+"Se ha detectado un posible problema. La configuración de Cygwin permite "
+"deshabilitar esta función durante el proceso de instalación y volver a "
+"habilitarla una vez finalizada la misma."
 
 #: DIALOG.IDD_LOCAL_DIR.CAPTION
 msgid "Cygwin Setup - Select Local Package Directory"
-msgstr ""
+msgstr "Configuración de Cygwin - Seleccionar directorio de paquetes locales"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_STATIC_HEADER_TITLE
 msgid "Select Local Package Directory"
-msgstr ""
+msgstr "Seleccionar Directorio de Paquete Local"
 
 #: DIALOG.IDD_LOCAL_DIR.LTEXT.IDC_LOCAL_DIR_DOWNLOAD_DESC
 msgid ""
