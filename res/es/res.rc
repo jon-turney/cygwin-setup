@@ -1,0 +1,467 @@
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SOURCE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Elección del Tipo de Instalación" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "&Instalar desde Internet\n(los archivos descargados serán conservados en posible uso futura)",IDC_SOURCE_NETINST,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP | BS_MULTILINE | BS_TOP,71,60,200,30
+    CONTROL         "&Descargar sin instalar",IDC_SOURCE_DOWNLOAD,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,90,200,10
+    CONTROL         "Instalar desde directorio &local",IDC_SOURCE_LOCALDIR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,120,200,10
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Elija un origen de descarga",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Elige si deseas instalar o descargar desde Internet, o instalar desde archivos dentro de un directorio local.",IDC_SOURCE_SUBTEXT,21,9,239,16,NOT WS_GROUP
+END
+
+IDD_VIRUS DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "¿Inhabilito los analizadores de virus?" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "&Deshabilitar analizador de virus",IDC_DISABLE_AV,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,101,69,115,10
+    CONTROL         "Solo deja e&l analizador de virus",IDC_LEAVE_AV,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,101,84,115,10
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Elige si deseas inhabilitar tu antivirus durante la instalación.",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Algunos programas antivirus, en particular McAfee, provocan una pantalla azul en los ordenadores con Windows XP durante la instalación de Cygwin.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Se ha detectado un posible problema. La configuración de Cygwin permite deshabilitar esta función durante el proceso de instalación y volver a habilitarla una vez finalizada la misma.",IDC_STATIC,21,32,239,24,NOT WS_GROUP
+END
+
+IDD_LOCAL_DIR DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Configuración de Cygwin - Seleccionar directorio de paquetes locales" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Seleccionar Directorio de Paquete Local",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Seleccione un directorio donde desee Configurar para almacenar los archivos de la instalación que descarga.  El directorio se creará si no existe ya.",IDC_LOCAL_DIR_DOWNLOAD_DESC,21,9,248,16,NOT WS_GROUP
+    LTEXT           "Seleccione un directorio donde la Instalación buscaría los archivos de instalación descargados.",IDC_LOCAL_DIR_INSTALL_DESC,21,9,248,16,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    GROUPBOX        "Directorio de Paquete Local",IDC_LOCALDIR_GRP,5,35,330,35
+    EDITTEXT        IDC_LOCAL_DIR,13,47,262,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "E&xaminar…",IDC_LOCAL_DIR_BROWSE,277,47,52,14,WS_TABSTOP
+END
+
+IDD_ROOT DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Configuración de Cygwin – Elegir Directorio de Instalación" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Seleccionar el Directorio de Instalación Raíz",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Seleccione el directorio donde desea instalar Cygwin.  Además elija unos pocos parámetros de instalación.",IDC_ROOTDIR_SUBTEXT,21,9,239,16,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    GROUPBOX        "Directorio Raíz",IDC_ROOTDIR_GRP,5,35,330,35
+    EDITTEXT        IDC_ROOT_DIR,13,47,262,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "E&xplorar…",IDC_ROOT_BROWSE,277,47,52,14,WS_TABSTOP
+    GROUPBOX        "Instalar desde",IDC_INSTALLFOR_GRP,5,76,330,101
+    CONTROL         "&Todos los usuarios (RECOMENDADO)",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP | WS_GROUP,13,89,130,8
+    CONTROL         "Tan solo &yo",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,13,130,130,8
+    LTEXT           "Cygwin estará disponible para todos los usuarios del sistema.",IDC_ALLUSERS_TEXT,25,101,300,28
+    LTEXT           "Cygwin aún está disponible para todos los usuarios, pero los Iconos de Escritorio, Apuntes del Menú Cygwin, e información importante del Instalador solo está disponible para el usuario actual.  Solo seleccione esto si de faltan privilegios de Administrador o si tiene necesidades específicas.",IDC_JUSTME_TEXT,25,140,300,32
+END
+
+IDD_SITE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU EXSTYLE WS_EX_CONTROLPARENT CAPTION "Configuración de Cygwin – Elegir Sitio(s) de Descarga" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LISTBOX         IDC_URL_LIST,66,45,185,110,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_GROUP | WS_TABSTOP
+    LTEXT           "Sitios de descarga disponibles:",IDC_STATIC,66,34,183,8,NOT WS_GROUP
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Elije un sitio desde este listado, o añade sus propios sitios al listado.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Elija un sitio de descarga",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    EDITTEXT        IDC_EDIT_USER_URL,65,160,185,14,ES_AUTOHSCROLL | WS_GROUP
+    LTEXT           "URL del usuario:",IDC_SITE_USERURL,15,162,45,8,NOT WS_GROUP
+    PUSHBUTTON      "Añadir",IDC_BUTTON_ADD_URL,255,160,50,14
+END
+
+IDD_NET DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Configuración Cygwin – Seleccionar Tipo de Conexión" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "Utilizar ajustes del proxy del &sistema",IDC_NET_PRECONFIG,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,60,55,185,10
+    CONTROL         "Conexión &directa",IDC_NET_DIRECT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,70,185,10
+    CONTROL         "Utilizar &proxy HTTP/FTP:",IDC_NET_PROXY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,185,10
+    EDITTEXT        IDC_PROXY_HOST,120,105,120,12,ES_AUTOHSCROLL | WS_DISABLED | WS_GROUP
+    EDITTEXT        IDC_PROXY_PORT,120,125,30,12,ES_AUTOHSCROLL | WS_DISABLED
+    GROUPBOX        "",IDC_STATIC,60,95,185,50
+    RTEXT           "&Huésped de proxy",IDC_STATIC,65,105,50,12,SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT           "Puer&to",IDC_STATIC,85,125,30,12,SS_CENTERIMAGE | NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "La configuración necesita conocer como lo desea conectar a Internet.  Elija los ajustes apropiados a continuación.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Seleccionar Tu Conexión de Internet",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+END
+
+IDD_INSTATUS DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Configuración de Cygwin" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Instalando…",IDC_INS_ACTION,45,55,205,8,SS_ENDELLIPSIS
+    LTEXT           "(PKG)",IDC_INS_PKG,45,70,205,8,SS_ENDELLIPSIS
+    LTEXT           "(ARCHIVO)",IDC_INS_FILE,45,85,205,8,SS_ENDELLIPSIS
+    CONTROL         "Progreso1",IDC_INS_DISKFULL,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,130,155,10
+    CONTROL         "Progreso1",IDC_INS_IPROGRESS,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,115,155,10
+    CONTROL         "Progreso1",IDC_INS_PPROGRESS,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,100,155,10
+    LTEXT           "Paquete:",IDC_INS_BL_PACKAGE,45,100,47,8,NOT WS_GROUP
+    LTEXT           "Total:",IDC_INS_BL_TOTAL,45,115,48,8,NOT WS_GROUP
+    LTEXT           "Disco:",IDC_INS_BL_DISK,45,130,47,8,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Esta página exhibe el progreso de la descarga o la instalación.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Progreso",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+END
+
+IDD_PROXY_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Autenticación de Proxy requerida" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "ID de &usuario proxy",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Contraseña",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "Autorización del Proxy Requerida",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&Aceptar",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cancelar",IDCANCEL,165,75,45,15
+END
+
+IDD_NET_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Se requiere Autenticación de Servidor" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "ID del &usuario",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Contraseña",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "Autorización del Servidor Requerida",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&Aceptar",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cancelar",IDCANCEL,165,75,45,15
+END
+
+IDD_SPLASH DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Configuración de Cygwin" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Programa de Configuración de Versión de Red para Cygwin",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "Este programa de configuración se utiliza para la instalación inicial del entorno Cygwin, así como para todas las actualizaciones posteriores. Las siguientes páginas le guiarán durante la instalación.\n\nTenga en cuenta que, por defecto, solo instalamos un conjunto básico de paquetes. Cygwin ofrece una gran cantidad de paquetes para una amplia variedad de propósitos.\n\nPuede ejecutar este programa en cualquier momento para añadir, eliminar o actualizar paquetes según sea necesario.",IDC_SPLASH_TEXT,115,25,195,100
+    ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
+    LTEXT           "",IDC_VERSION,115,127,195,10
+    LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
+    LTEXT           "",IDC_SPLASH_URL,115,152,90,8
+    LTEXT           "Contribuye para traducciones de este programa.",IDC_SPLASH_TRANSLATE,115,164,195,8
+END
+
+IDD_DESKTOP DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Configuración Cygwin – Estado de Instalación y Creación de Iconos" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "Crear icono en &Escritorio",IDC_ROOT_DESKTOP,"Button",BS_AUTOCHECKBOX,108,78,110,8
+    CONTROL         "Añadir icono al Menú &Inicio",IDC_ROOT_MENU,"Button",BS_AUTOCHECKBOX,108,93,140,8
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Indícale al programa de configuración si quieres que cree algunos iconos para acceder fácilmente al entorno de Cygwin.",IDC_DESKTOP_HEADER_INSTALL,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Crear Iconos",IDC_DESKTOP_HEADER_TITLE_INSTALL,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Muestra el estado de la instalación en el modo solo-descarga.",IDC_DESKTOP_HEADER_DOWNLOAD,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Instalación completa",IDC_DESKTOP_HEADER_TITLE_DOWNLOAD,7,0,258,8,NOT WS_GROUP
+    CONTROL         "",IDC_DESKTOP_SEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,135,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Estado de Instalación",IDC_STATUS_HEADER,7,140,258,8,NOT WS_GROUP
+    LTEXT           "Instalación de Cygwin completada correctamente.",IDC_STATUS,21,149,279,36,NOT WS_GROUP
+END
+
+IDD_FTP_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Autenticación FTP requerida" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "ID del &usuario",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Contraseña",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "Autorización de FTP Requerida",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&Aceptar",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cancelar",IDCANCEL,165,75,45,15
+END
+
+IDD_CHOOSE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Configuración de Cygwin – Seleccionar Paquetes" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "&Vista",IDC_CHOOSE_VIEWCAPTION,SETUP_VIEW_X,33,SETUP_VIEW_W,10
+    COMBOBOX        IDC_CHOOSE_VIEW,SETUP_VIEWLIST_X,30,SETUP_VIEWLIST_W,84,CBS_DROPDOWNLIST | WS_TABSTOP
+    RTEXT           "&Buscar",IDC_STATIC,SETUP_SEARCH_X,33,SETUP_SEARCH_W,10,SS_CENTERIMAGE,WS_EX_RIGHT
+    CONTROL         "Busca ",IDC_CHOOSE_DO_SEARCH,"Button",BS_PUSHBUTTON | NOT WS_VISIBLE,SETUP_SEARCH_X,33,SETUP_SEARCH_W,14
+    EDITTEXT        IDC_CHOOSE_SEARCH_EDIT,SETUP_SEARCHTEXT_X,30,SETUP_SEARCHTEXT_W,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Purgar",IDC_CHOOSE_CLEAR_SEARCH,SETUP_CLEAR_X,30,SETUP_CLEAR_W,14
+    CONTROL         "&Mantener",IDC_CHOOSE_KEEP,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,SETUP_KEEP_X,30,SETUP_KPCE_W,14
+    CONTROL         "&Mejor",IDC_CHOOSE_BEST,"Button",BS_AUTORADIOBUTTON,SETUP_BEST_X,30,SETUP_KPCE_W,14
+    CONTROL         "&Sincronizar",IDC_CHOOSE_SYNC,"Button",BS_AUTORADIOBUTTON,SETUP_SYNC_X,30,SETUP_KPCE_W,14
+    CONTROL         "&Test",IDC_CHOOSE_EXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,SETUP_EXP_X,30,SETUP_KPCE_W,14
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    CONTROL         "",IDC_CHOOSE_LIST,WC_LISTVIEW,LVS_NOSORTHEADER | LVS_REPORT | LVS_SINGLESEL | WS_TABSTOP,SETUP_CHOOSE_X,47,SETUP_CHOOSE_W,120,WS_EX_CLIENTEDGE
+    CONTROL         "&Ocultar paquetes obsoletos",IDC_CHOOSE_HIDE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,167,160,14
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Selecciona paquetes para descargar.",IDC_CHOOSE_INST_TEXT_DOWNLOAD,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Selecciona paquetes para instalar.",IDC_CHOOSE_INST_TEXT_INSTALL,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Seleccionar Paquetes",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+END
+
+IDD_PREREQ DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Configuración de Cygwin – Resolver Dependencias" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Resolver Dependencias",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Ocurrieron los siguientes problemas al intentar satisfacer dependencias.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    CONTROL         "&Aceptar soluciones del problema por defecto",IDC_PREREQ_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,167,225,14
+    EDITTEXT        IDC_PREREQ_EDIT,7,41,303,124,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+END
+
+IDD_CONFIRM DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Configuración de Cygwin – Revisar y confirmar cambios" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Revisar y confirmar cambios",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    EDITTEXT        IDC_CONFIRM_EDIT,7,41,325,131,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+END
+
+IDD_DROPPED DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Configuración Cygwin – ¿Utilizar espejos abandonados?" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Aviso:",IDC_STATIC,7,8,40,8
+    LTEXT           "Uno o más de los servidores espejo que has seleccionado ya no figuran en la lista de servidores espejo oficiales de Cygwin. Es posible que estén al día o que no tengan algunos paquetes.\nEsto afecta a los siguientes servidor(es) espejo:",IDC_STATIC,47,8,263,32
+    EDITTEXT        IDC_DROP_MIRRORS,7,40,303,40,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+    LTEXT           "Si experimentas problemas de instalación, considera usar únicamente servidores espejo oficiales.\n\n¿Deseas continuar usando este/estos servidores espejo?",IDC_STATIC,7,88,303,24
+    CONTROL         "&No avisarme otra vez sobre este/estos espejo(s)",IDC_DROP_NOWARN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,120,213,15
+    PUSHBUTTON      "&Sí",IDYES,220,120,45,15
+    DEFPUSHBUTTON   "&No",IDNO,265,120,45,15
+END
+
+IDD_DOWNLOAD_ERROR DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Descarga Incompleta" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_WARNING,IDC_HEADICON,10,10
+    LTEXT           "Los siguientes paquetes presentaron errores de descarga:",IDC_STATIC,7,8,320,16
+    EDITTEXT        IDC_DOWNLOAD_EDIT,7,24,320,88,WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL
+    LTEXT           "Seleccione 'Reintentar' para volver a intentar la descarga, 'Atrás' para regresar a la página de selección de paquetes, 'Continuar' para seguir adelante de todos modos (NO RECOMENDADO) o 'Cancelar' para salir.",IDC_STATIC,7,120,320,24
+    DEFPUSHBUTTON   "&Reintentar",IDRETRY,45,150,50,15
+    PUSHBUTTON      "&Atrás",IDC_BACK,110,150,50,15
+    PUSHBUTTON      "&Continuar",IDIGNORE,175,150,50,15
+    PUSHBUTTON      "Cancelar",IDABORT,240,150,50,15
+END
+
+IDD_POSTINSTALL DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Configuración de Cygwin – Ejecución de scripts posteriores a la instalación" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Errores del script de postinstalación",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Esto no significa necesariamente que los paquetes afectados vayan a dejar de funcionar correctamente, pero por favor, revise el archivo /var/log/setup.log.full e informe de cualquier problema.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    EDITTEXT        IDC_POSTINSTALL_EDIT,7,41,303,112,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+END
+
+IDD_FILE_INUSE DIALOG 0, 0, SETUP_MEDIUM_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Archivo en uso detectado" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_WARNING,IDC_HEADICON,10,10
+    LTEXT           "No es capaz de extraer",IDC_FILE_INUSE_MSG,33,10,234,8,SS_PATHELLIPSIS
+    LTEXT           "El archivo está en uso por los siguientes procesos:",IDC_STATIC,33,28,234,8
+    EDITTEXT        IDC_FILE_INUSE_EDIT,33,40,234,32,WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL | NOT WS_TABSTOP
+    LTEXT           "Seleccione 'Reintentar' para reintentar, seleccione 'Detener' para detener procesos y reintentar, o seleccione 'Continuar' para ir a cualquier lugar (el archivo estará actualizado tras un reinicio).",IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Seleccione 'Reintentar' para volver a intentarlo, seleccione 'Matar' para matar los procesos y volver a intentarlo, o seleccione 'Continuar' para seguir adelante de todos modos (el archivo se actualizará tras reiniciar).",IDC_FILE_INUSE_HELP_1,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Seleccione 'Reintentar' para volver a intentarlo, seleccione 'Matar' para matar forzosamente todos los procesos y volver a intentarlo, o seleccione 'Continuar' para seguir adelante de todos modos (el archivo se actualizará tras reiniciar el sistema).",IDC_FILE_INUSE_HELP_2,33,80,234,24,NOT WS_GROUP
+    PUSHBUTTON      "&Reintentar",IDIGNORE,45,112,55,15
+    DEFPUSHBUTTON   "&Detener Procesos",IDRETRY,111,112,55,15
+    PUSHBUTTON      "&Continuar",IDCONTINUE,177,112,55,15
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_ROOT_SLASH          "Aviso: te recomendamos no utilizar la raíz de su disco duro como la raíz de cygwin, para prevenir conflictos posibles con otros programas.  ¿Procedo a pesar de todo?"
+    IDS_ROOT_SPACE          "No elegiría una ruta raíz que incluya espacios en nombres de directorio.  ¿Procedo a pesar de todo?"
+    IDS_ERR_OPEN_WRITE      "No puede abrir %s para escribir: %s"
+    IDS_SETUPINI_MISSING    "No es capaz de obtener %s desde <%s>"
+    IDS_OLD_SETUPINI        "Este setup.ini es anterior al que utilizó la última vez que instaló cygwin.  ¿Continúo a pesar de todo?"
+    IDS_NOTHING_INSTALLED   "No necesitaba nada para ser instalado"
+    IDS_INSTALL_COMPLETE    "Instalación Completa"
+    IDS_REBOOT_REQUIRED     "Los archivos en uso han sido reemplazados. Debe reiniciar el sistema lo antes posible para activar las versiones nuevas. Cygwin podría funcionar incorrectamente hasta que reinicie."
+    IDS_ERR_OPEN_READ       "No puede abrir %s para lectura: %s"
+    IDS_ROOT_ABSOLUTE       "El directorio de instalación debe ser absoluta, con ambos una letra de unidad y una cabecera de barra lateral, como C:\\Cygwin"
+    IDS_DOWNLOAD_COMPLETE   "Descarga Completada"
+    IDS_NOLOGFILE           "No se puede abrir la bitácora %s para escritura"
+    IDS_UNINSTALL_COMPLETE  "Desinstalación completa."
+    IDS_ERR_CHDIR           "No se pudo cambiar el dir a %s: %s [%.8x]"
+    IDS_OLD_SETUP_VERSION   "Esta configuración es la versión %s, pero setup.ini indica que está disponible la versión %s.\nQuizás le interese actualizar para obtener las últimas funciones y correcciones de errores."
+    IDS_DOWNLOAD_INCOMPLETE "Descarga incompleta.  ¿Intento otra vez?"
+    IDS_DOWNLOAD_INCOMPLETE_EXIT
+                            "Descarga incompleta.  Compruebe %s para los detalles"
+    IDS_INSTALL_ERROR       "Error de instalación (%s). ¿Continuo con otros paquetes?"
+    IDS_INSTALL_INCOMPLETE  "Instalación incompleta.  Compruebe %s para detalles"
+    IDS_CORRUPT_PACKAGE     "El paquete %s tiene una copia local corrupta, quítela y reintente."
+    IDS_QUERY_CORRUPT       "El archivo %s está corrupto.  ¿Lo elimino y lo descargo otra vez?"
+    IDS_SKIP_PACKAGE        "%s\n¿Deseas omitir este paquete?"
+    IDS_UNCAUGHT_EXCEPTION  "Error Fatal: Excepción No Capturada\nHilo: %s\nTipo: %s\nMensaje: %s"
+    IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
+                            "Error Fatal: Excepción No Capturada\nHilo: %s\nTipo: %s\nMensaje: %s\nAppErrNo: %d"
+    IDS_TRUSTKEEP_TOOLTIP   "Establece todos los paquetes a su versión actualmente instalada. Esto es equivalente para decir a la configuración no hacer ningún cambio a cualquier paquete."
+    IDS_TRUSTCURR_TOOLTIP   "Establece todos los paquetes para la mejor versión disponible (RECOMENDADA)."
+    IDS_TRUSTSYNC_TOOLTIP   "Establezca todos los paquetes a la versión disponible desde el repositorio del paquete, degradando si es necesario."
+    IDS_TRUSTEXP_TOOLTIP    "Habilita prueba de paquetes."
+    IDS_VIEWBUTTON_TOOLTIP  "Seleccione la vista de paquetes. Esto determina qué paquetes se muestran a continuación.\n\nCategoría: Agrupe por categoría de paquete. Pulse en '+' para expandir.\n\nCompleto: Muestra todos los paquetes.\n\nPendientes: Muestra solo los paquetes que están a punto de instalarse, eliminarse o actualizarse. Esto le indicará qué cambiará al pulsar 'Siguiente'.\n\nActualizado: Muestra los paquetes instalados que no requieren ninguna acción porque ya están en la versión deseada.\n\nNo instalados: Muestra los paquetes que no están instalados actualmente ni se han seleccionado para su instalación.\n\nSeleccionados: Muestra los paquetes instalados que se seleccionaron, pero no se instalaron como dependencia.\n\nEliminables: Muestra los paquetes instalados que se seleccionaron y se pueden eliminar de forma segura. Ningún otro paquete instalado o seleccionado depende de estos paquetes.\n\nInnecesarios: Muestra los paquetes instalados automáticamente que ahora se pueden eliminar de forma segura. Otros paquetes instalados o seleccionados ya no dependen de estos paquetes."
+    IDS_HIDEOBS_TOOLTIP     "Si se selecciona esta opción, la configuración ocultará los paquetes en las categorías cuyos nombres comiencen con '_'. Tales paquetes suelen ser marcadores de posición vacíos para paquetes que han sido eliminados o renombrados, o son paquetes de infraestructura que se manipulan automáticamente."
+    IDS_SIG_INVALID         "Error del espejo: La firma %s del archivo Setup.ini no se pudo verificar.\n¿Posible espejo dañado? Archivo Setup.ini rechazado."
+    IDS_CRYPTO_ERROR        "Error interno:  error de biblioteca gcrypt %d %s"
+    IDS_SEARCH_TOOLTIP      "Busca esta cadena en nombres de paquetes."
+    IDS_MAYBE_MKDIR         "El directorio %s no existe, ¿le gustaría que lo cree?"
+    IDS_CANT_MKDIR          "No pudo crear el directorio %s, lo siento.  (¿La unidad está llena o es de solo lectura?)"
+    IDS_NO_LOCALDIR         "El directorio de paquetes local %s no se encontró.\nAún puede desinstalar los paquetes instalados,\npero no habrá nada que instalar.\n\nPulse Aceptar si esto es lo que deseaba, o\nCancelar para elegir otro directorio."
+    IDS_ELEVATED            "Instalar a mano sobre proceso heredado elevado."
+    IDS_INSTALLEDB_VERSION  "Versión de INSTALLED.DB desconocido"
+    IDS_NO_MIRROR_LST       "No se pudo descargar el listado de sitios espejo"
+    IDS_PROGRESS_PROGRESS   "Progreso:"
+    IDS_PROGRESS_PACKAGE    "Paquete:"
+    IDS_PROGRESS_CONNECTING "Conectando…"
+    IDS_PROGRESS_CHECKING   "Comprobar paquetes a descargar…"
+    IDS_PROGRESS_DOWNLOADING
+                            "Descargando…"
+    IDS_PROGRESS_PARSING    "Interpretando…"
+    IDS_PROGRESS_PREREMOVE  "Ejecutando script predesinstalación…"
+    IDS_PROGRESS_UNINSTALL  "Desinstalando…"
+    IDS_PROGRESS_INSTALL    "Instalando…"
+    IDS_PROGRESS_CALCULATING
+                            "Calculando…"
+    IDS_PROGRESS_POSTINSTALL
+                            "Ejecutando…"
+    IDS_PROGRESS_SOLVING    "Resolviendo dependencias…"
+    IDS_ACTION_DEFAULT      "Predeterminado"
+    IDS_ACTION_INSTALL      "Instalar"
+    IDS_ACTION_UNINSTALL    "Desinstalar"
+    IDS_ACTION_SKIP         "Omitir"
+    IDS_ACTION_KEEP         "Conservar"
+    IDS_ACTION_REINSTALL    "Reinstalar"
+    IDS_ACTION_RETRIEVE     "Obtener"
+    IDS_ACTION_UNKNOWN      "Desconocido"
+    IDS_ACTION_SOURCE       "Origen"
+    IDS_VIEW_FULL           "Completo"
+    IDS_VIEW_PENDING        "Pendiente"
+    IDS_VIEW_UPTODATE       "Actualizado"
+    IDS_VIEW_NOTINSTALLED   "No Instalado"
+    IDS_VIEW_PICKED         "Bloqueado"
+    IDS_VIEW_REMOVABLE      "Desinstalable"
+    IDS_VIEW_UNNEEDED       "Innecesario"
+    IDS_VIEW_CATEGORY       "Categoría"
+    IDS_COLUMN_PACKAGE      "Paquete"
+    IDS_COLUMN_CURRENT      "Actual"
+    IDS_COLUMN_NEW          "Nuevo"
+    IDS_COLUMN_SOURCE       "Src?"
+    IDS_COLUMN_CATEGORIES   "Categorías"
+    IDS_COLUMN_SIZE         "Tamaño"
+    IDS_COLUMN_DESCR        "Descripción"
+    IDS_MBOX_CAPTION        "Configurar Cygwin"
+    IDS_EXTRACTION_FAILED   "No es capaz de extraer /%s -- ¿paquete corrupto?"
+    IDS_EXTRACTION_INUSE    "No fue capaz de extraer /%s: error al escribir el archivo.\n\nEl archivo está en uso o se produjo algún otro error.\n\nDetenga todos los procesos de Cygwin y seleccione ""Reintentar"", o seleccione ""Continuar"" para seguir adelante (el archivo se actualizará después de reiniciar).\n"
+    IDS_INSTALL_OLD_CYGWIN  "Se encontró una versión antigua de cygwin1.dll aquí:\n%s\n¿Eliminar?"
+    IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
+                            "No se pudo eliminar el archivo %s.\n¿Está siendo utilizada la DLL por otra aplicación?\nDebería eliminar la versión anterior de cygwin1.dll lo antes posible."
+    IDS_SHELLLINK_FAILED    "CoCreateInstance falló con el error 0x%x.\nLa configuración no podrá crear iconos de Cygwin en el menú Inicio ni en el Escritorio."
+    IDS_UNSUPPORTED_WINDOWS_VERSION
+                            "Cygwin no es compatible con esta versión de Windows"
+    IDS_UNSUPPORTED_WINDOWS_ARCH
+                            "Cygwin no es compatible con Windows de 32-bit"
+    IDS_DEPRECATED_WINDOWS_VERSION
+                            "El soporte de Cygwin para esta versión de Windows está obsoleto y se eliminará en la próxima versión principal"
+    IDS_MOUNT_REGISTRY_KEY_FAILED
+                            "No pudo crear la clave de registro para almacenar la ruta de instalación"
+    IDS_NIO_ERROR           "Error de Internet: %s"
+    IDS_PREREQ_UNSOLVED_PROBLEMS
+                            "AVISO: Problemas sin resolver\n\nEs posible que algunos paquetes no funcionen correctamente si continúa.\n\n¿Está seguro de que desea continuar (NO RECOMENDADO)?"
+    IDS_MIXED_BITNESS_ERROR "Error de compatibilidad de CPU\n\nEstás intentando instalar la versión %s de Cygwin en un directorio que ya contiene la versión %s de Cygwin. Si continúas, dañarás la instalación existente.\n\nEjecuta setup-%s.exe para actualizar tu instalación de %s de Cygwin o elige otro directorio para la instalación."
+    IDS_GET_SITELIST_ERROR  "No se puede obtener la lista de sitios de descarga.\nAsegúrate que la configuración de tu red sea correcta e inténtalo de nuevo."
+    IDS_CONFIRM_EXIT        "¿Seguro que quieres salir de la configuración? Se cancelará cualquier descarga o instalación en curso."
+    IDS_CONTINUE            "Continuar"
+    IDS_CHOOSER_EMPTY_NO_PACKAGES
+                            "Ningún paquete encontrado."
+    IDS_CHOOSER_EMPTY_DOWNLOAD
+                            "Nada que descargar."
+    IDS_CHOOSER_EMPTY_INSTALL
+                            "Nada que instalar o actualizar."
+    IDS_ROOT_BROWSE_TITLE   "Seleccione un directorio raíz de instalación"
+    IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE
+                            "Seleccionar directorio de descarga"
+    IDS_LOCALDIR_BROWSE_PACKAGE_TITLE
+                            "Seleccionar directorio del paquete local"
+    IDS_PROGRESS_CHECKING_HASH
+                            "Comprobando %s para %s"
+    IDS_PROGRESS_DOWNLOADING_FROM
+                            "%s desde %s"
+    IDS_CONFIRM_UNINSTALL   "Desinstalar"
+    IDS_CONFIRM_INSTALL     "Instalar"
+    IDS_CONFIRM_DOWNLOAD    "Descargar"
+    IDS_CONFIRM_NOTHING     "Sin cambios"
+    IDS_CONFIRM_AUTO_ADD    "(auto‐añadido)"
+    IDS_CONFIRM_SOURCE      "(fuente)"
+    IDS_FILE_INUSE_KILL     "&Matar procesos"
+    IDS_FILE_INUSE_MSG      "Incapaz de extraer"
+    IDS_USER_URL_TOOLTIP    "Sitio URL adicional, ruta o ruta UNC"
+END
+
+//
+// Option Helptext String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_HELPTEXT_ERROR      "Error durante proceso de opción."
+    IDS_HELPTEXT_HEADER     "Opciones de línea de instrucción:"
+    IDS_HELPTEXT_FOOTER     "Por defecto, se descargan e instalan los paquetes, a menos que se especifique --download o --local-install."
+    IDS_HELPTEXT_ALLOW_TEST "Considere las versiones del paquete marcadas como prueba"
+    IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
+                            "Permitir versiones antiguas de Windows no compatibles"
+    IDS_HELPTEXT_ARCH       "Arquitectura a instalar (x86_64 o x86)"
+    IDS_HELPTEXT_CATEGORIES "Especifique las categorías a instalar"
+    IDS_HELPTEXT_BUILD_DEPENDS
+                            "Especifique los paquetes para instalar según los requisitos de compilación"
+    IDS_HELPTEXT_COMPACTOS  "Comprime los archivos instalados con Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
+    IDS_HELPTEXT_DELETE_ORPHANS
+                            "Eliminar paquetes huérfanos"
+    IDS_HELPTEXT_DISABLE_ANTIVIRUS
+                            "Desactive los paquetes de software antivirus con errores conocidos o sospechosos durante la ejecución"
+    IDS_HELPTEXT_DOWNLOAD   "Descarga los paquetes desde Internet"
+    IDS_HELPTEXT_FORCE_CURRENT
+                            "Selecciona la versión actual para todos los paquetes"
+    IDS_HELPTEXT_HELP       "Exhibir ayuda"
+    IDS_HELPTEXT_INCLUDE_SOURCE
+                            "Instalar automáticamente la fuente para cada paquete instalado"
+    IDS_HELPTEXT_INI_BASENAME
+                            "Utiliza un nombre de base diferente, p.ej. ""tal"", en vez de ""setup"""
+    IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
+                            "Utilizar claves no confiadas y retener todo"
+    IDS_HELPTEXT_LANG       "Especifica el langid del lenguaje de IGU"
+    IDS_HELPTEXT_LOCAL_INSTALL
+                            "Instalar paquetes desde directorio local"
+    IDS_HELPTEXT_LOCAL_PACKAGE_DIR
+                            "Directorio de paquete local"
+    IDS_HELPTEXT_MIRROR_MODE
+                            "Omitir comprobación de disponibilidad del paquete cuando instale desde directorio local (requiere directorio local para ser espejo limpio)"
+    IDS_HELPTEXT_NO_ADMIN   "No marcar y forzar ejecutando como Administrador"
+    IDS_HELPTEXT_NO_DESKTOP "Inhabilita creación de atajo del escritorio"
+    IDS_HELPTEXT_NO_REPLACEONREBOOT
+                            "Inhabilita remplazo en uso de archivos en el reinicio siguiente"
+    IDS_HELPTEXT_NO_SHORTCUTS
+                            "Inhabilita creación de escritorio y atajos del menú de inicio"
+    IDS_HELPTEXT_NO_STARTMENU
+                            "Inhabilita creación de atajo del menú de inicio"
+    IDS_HELPTEXT_NO_VERIFY  "No verificar firmas de setup.ini"
+    IDS_HELPTEXT_NO_VERSION_CHECK
+                            "Suprime comprobar si está disponible una versión más nueva de configuración"
+    IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
+                            "No avisar sobre versiones de Windows obsoletas"
+    IDS_HELPTEXT_NO_WRITE_REGISTRY
+                            "No escribir directorio de instalación raíz para registro"
+    IDS_HELPTEXT_OLD_KEYS   "Habilita claves antiguas de cygwin.com"
+    IDS_HELPTEXT_ONLY_SITE  "No descargar listado de espejos.  Solo utilice sitios especificados con -s"
+    IDS_HELPTEXT_PACKAGES   "Especifique los paquetes a instalar"
+    IDS_HELPTEXT_PACKAGE_MANAGER
+                            "Mode de solo elección semi‐atendida"
+    IDS_HELPTEXT_PROXY      "Proxy HTTP/FTP (host:puerto)"
+    IDS_HELPTEXT_PRUNE_INSTALL
+                            "Reduzca la instalación a solo los paquetes solicitados"
+    IDS_HELPTEXT_PUBKEY     "URL o ruta absoluta del archivo de clave pública adicional (formato RFC4880)"
+    IDS_HELPTEXT_QUIET_MODE "Modo de configuración desatendida (desatendida, sin entrada, oculta)"
+    IDS_HELPTEXT_REMOVE_CATEGORIES
+                            "Especifique las categorías que desea desinstalar"
+    IDS_HELPTEXT_REMOVE_PACKAGES
+                            "Especifique los paquetes que desea desinstalar"
+    IDS_HELPTEXT_ROOT       "Directorio de instalación raíz"
+    IDS_HELPTEXT_SEXPR_PUBKEY
+                            "Clave pública DSA adicional en formato s-expr"
+    IDS_HELPTEXT_SITE       "URL del sitio de descarga, ruta o ruta UNC"
+    IDS_HELPTEXT_SYMLINK_TYPE
+                            "Tipo de enlace simbólico (lnk, nativo, sys, wsl)"
+    IDS_HELPTEXT_UNTRUSTED_KEYS
+                            "Utilice claves adicionales guardadas no confiables"
+    IDS_HELPTEXT_UPGRADE_ALSO
+                            "También mejore los paquetes instalados"
+    IDS_HELPTEXT_USER_AGENT "Cadena de agente de usuario para solicitudes HTTP"
+    IDS_HELPTEXT_VERBOSE    "Salida verbosa"
+    IDS_HELPTEXT_VERSION    "Mostrar versión"
+    IDS_HELPTEXT_WAIT       "Cuando se eleva, espera el proceso heredado sea elevado"
+END

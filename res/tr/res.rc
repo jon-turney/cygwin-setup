@@ -455,6 +455,8 @@ BEGIN
                             "Eski, desteklenmeyen Windows sürümlerine izin ver"
     IDS_HELPTEXT_ARCH       "Kurulacak mimari (x86_64 veya x86)"
     IDS_HELPTEXT_CATEGORIES "Kurulacak kategorileri belirt"
+    IDS_HELPTEXT_BUILD_DEPENDS
+                            "Derleme gereksinimlerini kurmak için paketleri belirt"
     IDS_HELPTEXT_COMPACTOS  "Kurulan dosyaları Compact OS ile sıkıştır (xpress4k, xpress8k, xpress16k, lzx)"
     IDS_HELPTEXT_DELETE_ORPHANS
                             "Sahipsiz paketleri kaldır"

@@ -322,7 +322,7 @@ setup_version.c : Makefile
 pot:
 	cd $(srcdir) && rc2po -P res/en/res.rc res.pot
 
-LINGUAS=de fr ja pl tr zh_Hans
+LINGUAS=de es fr ga ja pl tr zh_Hans
 
 rc2po:
 	cd $(srcdir) && \

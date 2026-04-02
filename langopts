@@ -1,13 +1,22 @@
 #!
+# codes are defined in [MS-LCID] reference
 
 case $1 in
     de)       # 0407
         lang="LANG_GERMAN"
         sublang="SUBLANG_GERMAN"
         ;;
+    es)       # 040a
+        lang="LANG_SPANISH"
+        sublang="SUBLANG_SPANISH"
+        ;;
     fr)       # 040c
         lang="LANG_FRENCH"
         sublang="SUBLANG_FRENCH"
+        ;;
+    ga)       # 003c
+        lang="LANG_IRISH"
+        sublang="SUBLANG_NEUTRAL"
         ;;
     ja)       # 0411
         lang="LANG_JAPANESE"

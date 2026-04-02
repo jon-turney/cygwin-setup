@@ -1,0 +1,467 @@
+LANGUAGE LANG_IRISH, SUBLANG_NEUTRAL
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SOURCE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin - Roghnaigh Cineál Suiteála" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "&Suiteáil ón Idirlíon\n(coimeádfar comhaid íoslódála le haghaidh athúsáide sa todhchaí)",IDC_SOURCE_NETINST,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP | BS_MULTILINE | BS_TOP,71,60,200,30
+    CONTROL         "& Íoslódáil Gan Suiteáil",IDC_SOURCE_DOWNLOAD,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,90,200,10
+    CONTROL         "Suiteáil ón & Eolaire Áitiúil",IDC_SOURCE_LOCALDIR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,71,120,200,10
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Roghnaigh Foinse Íoslódáil",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Roghnaigh cibé acu a shuiteáil nó a íoslódáil ón idirlíon, nó a shuiteáil ó chomhaid in eolaire áitiúil.",IDC_SOURCE_SUBTEXT,21,9,239,16,NOT WS_GROUP
+END
+
+IDD_VIRUS DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin - Díchumasaigh Scanóir Víreas?" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "&Díchumasaigh scanóir víreas",IDC_DISABLE_AV,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,101,69,115,10
+    CONTROL         "&Fág scanóir víreas ina aonar",IDC_LEAVE_AV,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,101,84,115,10
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Roghnaigh cé acu an ndéanfaidh tú do scanóir víreas a dhíchumasú agus é á shuiteáil.",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Is cúis le roinnt cláir Antivirus, go háirithe McAfee, scáileán gorm ar ríomhairí Windows XP le linn suiteáil Cygwin.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Braitheadh fadhb amháin a d’fhéadfadh a bheith ina fhadhb. Is féidir le socrú Cygwin é seo a dhíchumasú le linn an phróisis suiteála, agus é a chumasú arís nuair a bheidh an tsuiteáil críochnaithe.",IDC_STATIC,21,32,239,24,NOT WS_GROUP
+END
+
+IDD_LOCAL_DIR DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin - Roghnaigh Eolaire Pacáiste Áitiúil" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Roghnaigh Eolaire Pacáistí",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Roghnaigh eolaire inar mian leat Socrú chun na comhaid suiteála a íoslódálann sé a stóráil. Cruthófar an eolaire mura bhfuil sé ann cheana féin.",IDC_LOCAL_DIR_DOWNLOAD_DESC,21,9,248,16,NOT WS_GROUP
+    LTEXT           "Roghnaigh eolaire inar chóir Socrú comhaid suiteála íoslódáilte a lorg.",IDC_LOCAL_DIR_INSTALL_DESC,21,9,248,16,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    GROUPBOX        "Eolaire Pacáiste Áitiúil",IDC_LOCALDIR_GRP,5,35,330,35
+    EDITTEXT        IDC_LOCAL_DIR,13,47,262,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "B&rabhsáil...",IDC_LOCAL_DIR_BROWSE,277,47,52,14,WS_TABSTOP
+END
+
+IDD_ROOT DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin - Roghnaigh Eolaire Suiteála" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Roghnaigh Root Install Directory",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Roghnaigh an eolaire inar mian leat Cygwin a shuiteáil. Roghnaigh roinnt paraiméadair suiteála freisin.",IDC_ROOTDIR_SUBTEXT,21,9,239,16,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    GROUPBOX        "Eolaire fréimhe",IDC_ROOTDIR_GRP,5,35,330,35
+    EDITTEXT        IDC_ROOT_DIR,13,47,262,14,ES_AUTOHSCROLL | WS_TABSTOP
+    PUSHBUTTON      "B&rabhsáil...",IDC_ROOT_BROWSE,277,47,52,14,WS_TABSTOP
+    GROUPBOX        "Suiteáil Do",IDC_INSTALLFOR_GRP,5,76,330,101
+    CONTROL         "&Gach Úsáideoir (MOLTA)",IDC_ROOT_SYSTEM,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP | WS_GROUP,13,89,130,8
+    CONTROL         "Díreach &Mise",IDC_ROOT_USER,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,13,130,130,8
+    LTEXT           "Beidh Cygwin ar fáil do gach úsáideoir den chórais.",IDC_ALLUSERS_TEXT,25,101,300,28
+    LTEXT           "Beidh Cygwin fós ar fáil do gach úsáideoir, ach níl deilbhíní deisce, Iontrálacha Roghchlár Cygwin, agus faisnéis thábhachtach Suiteálaí ar fáil ach don úsáideoir reatha. Roghnaigh é seo ach mura bhfuil pribhléidí Riarthóra agat nó má tá riachtanais shonracha agat.",IDC_JUSTME_TEXT,25,140,300,32
+END
+
+IDD_SITE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU EXSTYLE WS_EX_CONTROLPARENT CAPTION "Socrú Cygwin - Roghnaigh Suíomh Íoslódála" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LISTBOX         IDC_URL_LIST,66,45,185,110,LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_HSCROLL | WS_GROUP | WS_TABSTOP
+    LTEXT           "Láithreáin Íoslódála Ar Fáil:",IDC_STATIC,66,34,183,8,NOT WS_GROUP
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Roghnaigh suíomh ón liosta seo, nó cuir do shuíomhanna féin leis an liosta.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Roghnaigh Suíomh Íoslódála",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    EDITTEXT        IDC_EDIT_USER_URL,65,160,185,14,ES_AUTOHSCROLL | WS_GROUP
+    LTEXT           "URL Úsáideora:",IDC_SITE_USERURL,15,162,45,8,NOT WS_GROUP
+    PUSHBUTTON      "Cuir",IDC_BUTTON_ADD_URL,255,160,50,14
+END
+
+IDD_NET DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin - Roghnaigh Cineál Ceangail" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "Úsáid &Socruithe Seachfhreastalaí Córais",IDC_NET_PRECONFIG,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,60,55,185,10
+    CONTROL         "&Ceangal Díreach",IDC_NET_DIRECT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,70,185,10
+    CONTROL         "Úsáid HTTP/FTP & Proxy:",IDC_NET_PROXY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,60,85,185,10
+    EDITTEXT        IDC_PROXY_HOST,120,105,120,12,ES_AUTOHSCROLL | WS_DISABLED | WS_GROUP
+    EDITTEXT        IDC_PROXY_PORT,120,125,30,12,ES_AUTOHSCROLL | WS_DISABLED
+    GROUPBOX        "",IDC_STATIC,60,95,185,50
+    RTEXT           "Seachfhreastalaí &Óstach",IDC_STATIC,65,105,50,12,SS_CENTERIMAGE | NOT WS_GROUP
+    RTEXT           "Por&t",IDC_STATIC,85,125,30,12,SS_CENTERIMAGE | NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Ní mór go mbeadh a fhios ag socrú conas a theastaíonn uait go ndéanfadh sé nascadh leis Roghnaigh na socruithe cuí thíos.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Roghnaigh Do Nasc Idirlín",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+END
+
+IDD_INSTATUS DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Suiteáil...",IDC_INS_ACTION,45,55,205,8,SS_ENDELLIPSIS
+    LTEXT           "(PKG)",IDC_INS_PKG,45,70,205,8,SS_ENDELLIPSIS
+    LTEXT           "(COMHAD)",IDC_INS_FILE,45,85,205,8,SS_ENDELLIPSIS
+    CONTROL         "Dul chun cinn1",IDC_INS_DISKFULL,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,130,155,10
+    CONTROL         "Dul chun cinn1",IDC_INS_IPROGRESS,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,115,155,10
+    CONTROL         "Dul chun cinn1",IDC_INS_PPROGRESS,"msctls_progress32",PBS_SMOOTH | WS_BORDER,95,100,155,10
+    LTEXT           "Pacáiste:",IDC_INS_BL_PACKAGE,45,100,47,8,NOT WS_GROUP
+    LTEXT           "Iomlán:",IDC_INS_BL_TOTAL,45,115,48,8,NOT WS_GROUP
+    LTEXT           "Diosca:",IDC_INS_BL_DISK,45,130,47,8,NOT WS_GROUP
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Taispeánann an leathanach seo dul chun cinn an íoslódála nó an tsuiteála.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Dul chun cinn",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+END
+
+IDD_PROXY_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Teastaíonn Fíordheimhniú" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "Seachfhreastalaí &Aitheantas Úsáideora",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Focal Faire",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "Údarú Seachfhreastóra",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&Ceart go leor",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cealaigh",IDCANCEL,165,75,45,15
+END
+
+IDD_NET_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Fíordheimhniú freastalaí" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "&Aitheantas Úsáideora",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Focal Faire",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "Údarú Freastalaí Teast",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&Ceart go leor",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cealaigh",IDCANCEL,165,75,45,15
+END
+
+IDD_SPLASH DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Clár Socraithe Scaoileadh Glan Cygwin",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "Úsáidtear an clár socraithe seo chun suiteáil tosaigh timpeallacht Cygwin chomh maith le gach nuashonrú ina dhiaidh sin. Treoróidh na leathanaigh a leanann tú tríd an suiteáil.\n\nTabhair faoi deara le do thoil nach suiteáilimid ach bunsraith pacáistí de réir réamhshocraithe Soláthraíonn Cygwin líon mór pacáistí a chuimsíonn réimse leathan cuspóirí.\n\nIs féidir leat an clár seo a reáchtáil ag am ar bith sa todhchaí chun pacáistí a chur leis, a bhaint nó a uasghrádú de réir mar is gá.",IDC_SPLASH_TEXT,115,25,195,100
+    ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
+    LTEXT           "",IDC_VERSION,115,127,195,10
+    LTEXT           "",IDC_SPLASH_COPYR,115,140,195,8
+    LTEXT           "",IDC_SPLASH_URL,115,152,90,8
+    LTEXT           "Cuir le haistriúcháin an chláir seo.",IDC_SPLASH_TRANSLATE,115,164,195,8
+END
+
+IDD_DESKTOP DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin - Stádas Suiteála agus Cruthaigh Deilbhíní" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "Cruthaigh deilbhín ar an &Deasc",IDC_ROOT_DESKTOP,"Button",BS_AUTOCHECKBOX,108,78,110,8
+    CONTROL         "Cuir deilbhín leis an &Roghchlár Tosaigh",IDC_ROOT_MENU,"Button",BS_AUTOCHECKBOX,108,93,140,8
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Inis ar an socrú más mian leat go gcruthóidh sé cúpla deilbhín le haghaidh rochtain áisiúil ar thimpeallacht Cygwin.",IDC_DESKTOP_HEADER_INSTALL,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Cruthaigh deilbhíní",IDC_DESKTOP_HEADER_TITLE_INSTALL,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Taispeánann stádas suiteála i mód íoslódála amháin.",IDC_DESKTOP_HEADER_DOWNLOAD,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Suiteáil críochnaithe",IDC_DESKTOP_HEADER_TITLE_DOWNLOAD,7,0,258,8,NOT WS_GROUP
+    CONTROL         "",IDC_DESKTOP_SEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,135,SETUP_STANDARD_DIALOG_W,1
+    LTEXT           "Stádas Suiteála",IDC_STATUS_HEADER,7,140,258,8,NOT WS_GROUP
+    LTEXT           "Críochnaigh suiteáil Cygwin go rathúil.",IDC_STATUS,21,149,279,36,NOT WS_GROUP
+END
+
+IDD_FTP_AUTH DIALOG 0, 0, SETUP_SMALL_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Fíordheimhniú FTP ag teastáil" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_CYGWIN,IDC_HEADICON,5,5,21,20
+    LTEXT           "&Aitheantas Úsáideora",IDC_STATIC,5,28,55,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_USER,65,28,145,12,ES_AUTOHSCROLL
+    LTEXT           "&Focal Faire",IDC_STATIC,10,43,50,15,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NET_PASSWD,65,43,145,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "Údarú FTP Riachtanach",IDC_STATIC,65,10,145,10
+    DEFPUSHBUTTON   "&Ceart go leor",IDOK,100,75,45,15,WS_DISABLED
+    PUSHBUTTON      "Cealaigh",IDCANCEL,165,75,45,15
+END
+
+IDD_CHOOSE DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin - Roghnaigh Pacáistí" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "&Féach",IDC_CHOOSE_VIEWCAPTION,SETUP_VIEW_X,33,SETUP_VIEW_W,10
+    COMBOBOX        IDC_CHOOSE_VIEW,SETUP_VIEWLIST_X,30,SETUP_VIEWLIST_W,84,CBS_DROPDOWNLIST | WS_TABSTOP
+    RTEXT           "&Cuardaigh",IDC_STATIC,SETUP_SEARCH_X,33,SETUP_SEARCH_W,10,SS_CENTERIMAGE,WS_EX_RIGHT
+    CONTROL         "Cuardaigh ",IDC_CHOOSE_DO_SEARCH,"Button",BS_PUSHBUTTON | NOT WS_VISIBLE,SETUP_SEARCH_X,33,SETUP_SEARCH_W,14
+    EDITTEXT        IDC_CHOOSE_SEARCH_EDIT,SETUP_SEARCHTEXT_X,30,SETUP_SEARCHTEXT_W,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Glan",IDC_CHOOSE_CLEAR_SEARCH,SETUP_CLEAR_X,30,SETUP_CLEAR_W,14
+    CONTROL         "&Coinnigh",IDC_CHOOSE_KEEP,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,SETUP_KEEP_X,30,SETUP_KPCE_W,14
+    CONTROL         "&Is Fearr",IDC_CHOOSE_BEST,"Button",BS_AUTORADIOBUTTON,SETUP_BEST_X,30,SETUP_KPCE_W,14
+    CONTROL         "&Sioncronaigh",IDC_CHOOSE_SYNC,"Button",BS_AUTORADIOBUTTON,SETUP_SYNC_X,30,SETUP_KPCE_W,14
+    CONTROL         "&Tástáil",IDC_CHOOSE_EXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,SETUP_EXP_X,30,SETUP_KPCE_W,14
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    CONTROL         "",IDC_CHOOSE_LIST,WC_LISTVIEW,LVS_NOSORTHEADER | LVS_REPORT | LVS_SINGLESEL | WS_TABSTOP,SETUP_CHOOSE_X,47,SETUP_CHOOSE_W,120,WS_EX_CLIENTEDGE
+    CONTROL         "&Folaigh pacáistí atá as feidhm",IDC_CHOOSE_HIDE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,167,160,14
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Roghnaigh pacáistí le híoslódáil.",IDC_CHOOSE_INST_TEXT_DOWNLOAD,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Roghnaigh pacáistí le suiteáil.",IDC_CHOOSE_INST_TEXT_INSTALL,21,9,239,16,NOT WS_GROUP
+    LTEXT           "Roghnaigh Pacáiste",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+END
+
+IDD_PREREQ DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin - Spleithiúlachtaí a Réiteach" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Sspleáchas a Réiteach",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Bhí na fadhbanna seo a leanas ag iarraidh spleáchais a shásamh.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    CONTROL         "&Glac le réitigh réamhshocraithe fadhbanna",IDC_PREREQ_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,167,225,14
+    EDITTEXT        IDC_PREREQ_EDIT,7,41,303,124,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+END
+
+IDD_CONFIRM DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin - Athruithe a athbhreithniú agus a deimhniú" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Athruithe a athbhreithniú agus",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    EDITTEXT        IDC_CONFIRM_EDIT,7,41,325,131,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+END
+
+IDD_DROPPED DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin - Úsáid scátháin titim?" FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Rabhadh:",IDC_STATIC,7,8,40,8
+    LTEXT           "Níl scátháin amháin nó níos mó roghnaithe agat ar liosta na scátháin oifigiúla Cygwin a thuilleadh. Féadfaidh sé a bheith as dáta nó roinnt pacáistí in easnamh.\nBíonn tionchar aige seo ar na scátháin seo a leanas:",IDC_STATIC,47,8,263,32
+    EDITTEXT        IDC_DROP_MIRRORS,7,40,303,40,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+    LTEXT           "Má bhíonn fadhbanna suiteála agat smaoinigh scátháin oifigiúla a thriail\n\nAr mhaith leat leanúint ar aghaidh, ag baint úsáide as an scáthán/na scátháin seo?",IDC_STATIC,7,88,303,24
+    CONTROL         "&Ná tabhair rabhadh dom faoi seo/na scáthán(í) seo arís",IDC_DROP_NOWARN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,120,213,15
+    PUSHBUTTON      "&Tá",IDYES,220,120,45,15
+    DEFPUSHBUTTON   "&Níl",IDNO,265,120,45,15
+END
+
+IDD_DOWNLOAD_ERROR DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Íoslódáil Neamhchom" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_WARNING,IDC_HEADICON,10,10
+    LTEXT           "Bhí earráidí íoslódála ag na pacáistí seo a leanas:",IDC_STATIC,7,8,320,16
+    EDITTEXT        IDC_DOWNLOAD_EDIT,7,24,320,88,WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL
+    LTEXT           "Roghnaigh 'Athbhreithnigh' chun an íoslódáil a athbhreithniú, 'Ar ais' chun filleadh ar leathanach roghnúcháin an phacáiste, 'Lean ar aghaidh' chun dul ar aghaidh ar aon nós (NÍ MHOLTAR), nó 'Cealaigh' chun imeacht.",IDC_STATIC,7,120,320,24
+    DEFPUSHBUTTON   "&Atriail",IDRETRY,45,150,50,15
+    PUSHBUTTON      "&Ar ais",IDC_BACK,110,150,50,15
+    PUSHBUTTON      "&Lean ar aghaidh",IDIGNORE,175,150,50,15
+    PUSHBUTTON      "Cealaigh",IDABORT,240,150,50,15
+END
+
+IDD_POSTINSTALL DIALOG 0, 0, SETUP_STANDARD_DIALOG_W, 142 STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin - Scripteanna iar-shuiteála á reáchtáil" FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "",IDC_HEADSEPARATOR,"Static",SS_BLACKFRAME | SS_SUNKEN,0,28,SETUP_STANDARD_DIALOG_W,1
+    ICON            IDI_CYGWIN,IDC_HEADICON,SETUP_HEADICON_X,0,21,20
+    LTEXT           "Earráidí script Postinstall",IDC_STATIC_HEADER_TITLE,7,0,258,8,NOT WS_GROUP
+    LTEXT           "Ní gá go gciallaíonn siad seo go dteipfidh ar phacáistí atá buailte feidhmiú i gceart, ach seiceáil /var/log/setup.log.full le do thoil agus tuairiscigh aon fhadhbanna.",IDC_STATIC,21,9,239,16,NOT WS_GROUP
+    EDITTEXT        IDC_POSTINSTALL_EDIT,7,41,303,112,WS_VSCROLL | WS_HSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOHSCROLL | ES_AUTOVSCROLL
+END
+
+IDD_FILE_INUSE DIALOG 0, 0, SETUP_MEDIUM_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU CAPTION "Braithíodh comhad in-úsáide" FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_WARNING,IDC_HEADICON,10,10
+    LTEXT           "Ní féidir a bhaint",IDC_FILE_INUSE_MSG,33,10,234,8,SS_PATHELLIPSIS
+    LTEXT           "Tá an comhad in úsáid ag na próisis seo a leanas:",IDC_STATIC,33,28,234,8
+    EDITTEXT        IDC_FILE_INUSE_EDIT,33,40,234,32,WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL | NOT WS_TABSTOP
+    LTEXT           "Roghnaigh 'Athbhreithnigh' chun iarracht a dhéanamh arís, roghnaigh 'Stop' chun próisis a stopadh agus iarracht a dhéanamh arís, nó roghnaigh 'Lean' chun dul ar aghaidh ar aon nós (déanfar an comhad a nuashonrú tar éis atosaigh).",IDC_FILE_INUSE_HELP_0,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Roghnaigh 'Athbhreithnigh' chun iarracht a dhéanamh arís, roghnaigh 'Maraigh' chun próisis a mharú agus iarracht a dhéanamh arís, nó roghnaigh 'Lean' chun dul ar aghaidh ar aon nós (déanfar an comhad a nuashonrú tar éis atosaigh).",IDC_FILE_INUSE_HELP_1,33,80,234,24,NOT WS_GROUP
+    LTEXT           "Roghnaigh 'Atriail' chun triail eile a bhaint as, roghnaigh 'Kill' chun na próisis go léir a mharú go héigeantach agus triail eile a bhaint as, nó roghnaigh 'Lean ar aghaidh' chun dul ar aghaidh ar aon nós (déanfar an comhad a nuashonrú tar éis atosaigh).",IDC_FILE_INUSE_HELP_2,33,80,234,24,NOT WS_GROUP
+    PUSHBUTTON      "&Atriail",IDIGNORE,45,112,55,15
+    DEFPUSHBUTTON   "&Stad Próisis",IDRETRY,111,112,55,15
+    PUSHBUTTON      "&Lean ar aghaidh",IDCONTINUE,177,112,55,15
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_ROOT_SLASH          "Rabhadh: molaimid duit gan fréamh do thiomáint crua a úsáid mar fhréamh cygwin, chun coimhlintí féideartha le cláir eile a chosc. Ar aghaidh ar aon nós?"
+    IDS_ROOT_SPACE          "Níor chóir duit cosán fréimhe a roghnú a chuimsíonn spásanna in ainmneacha eolaire. Ar aghaidh ar aon nós?"
+    IDS_ERR_OPEN_WRITE      "Ní féidir %s a oscailt le haghaidh scríbhneoireachta: %s"
+    IDS_SETUPINI_MISSING    "Ní féidir %s a fháil ó <%s>"
+    IDS_OLD_SETUPINI        "Tá an setup.ini seo níos sine ná an ceann a d'úsáid tú an uair dheireanach a shuiteáil tú cygwin. Ar aghaidh ar aon nós?"
+    IDS_NOTHING_INSTALLED   "Ní gá aon rud a shuiteáil"
+    IDS_INSTALL_COMPLETE    "Suiteáil Críochnaithe"
+    IDS_REBOOT_REQUIRED     "Cuireadh comhaid in úsáid in ionad. Ní mór duit a atosú chomh luath agus is féidir chun na leaganacha nua a ghníomhachtú. Féadfaidh Cygwin oibriú go mícheart go dtí go dtosaíonn tú."
+    IDS_ERR_OPEN_READ       "Ní féidir %s a oscailt le haghaidh léitheoireachta: %s"
+    IDS_ROOT_ABSOLUTE       "Caithfidh an t-eolaire suiteála a bheith iomlán, le litir tiomána agus slasc tosaigh araon, cosúil le C:\\Cygwin"
+    IDS_DOWNLOAD_COMPLETE   "Íoslódáil Complete"
+    IDS_NOLOGFILE           "Ní féidir comhad log %s a oscailt le haghaidh scríobh"
+    IDS_UNINSTALL_COMPLETE  "Díshuiteálacha críochnaithe."
+    IDS_ERR_CHDIR           "Ní féidir dir a athrú go %s: %s [%.8x]"
+    IDS_OLD_SETUP_VERSION   "Leagan %s atá sa socrú seo, ach tá leagan %s á éileamh ag setup.ini.\nB'fhéidir gur mhaith leat uasghrádú a dhéanamh chun na gnéithe is déanaí agus na ceartúcháin ar fhabht a fháil."
+    IDS_DOWNLOAD_INCOMPLETE "Íoslódáil Iomlán. Bain triail as arís?"
+    IDS_DOWNLOAD_INCOMPLETE_EXIT
+                            "Íoslódáil neamhiomlán. Seiceáil %s le haghaidh sonraí"
+    IDS_INSTALL_ERROR       "Earráid suiteála (%s), Leanúint ar aghaidh le pacáistí eile?"
+    IDS_INSTALL_INCOMPLETE  "Suiteáil neamhiomlán. Seiceáil %s le haghaidh sonraí"
+    IDS_CORRUPT_PACKAGE     "Tá cóip áitiúil truaillithe ag pacáiste %s, bain agus déan iarracht arís."
+    IDS_QUERY_CORRUPT       "Tá an comhad %s truaillithe. Scrios é agus íoslódáil arís?"
+    IDS_SKIP_PACKAGE        "%s\nAr mhaith leat an pacáiste seo a scipeáil?"
+    IDS_UNCAUGHT_EXCEPTION  "Earráid Marfach: Eisceacht gan ghabháil\nSnáithe: %s\nCineál: %s\nTeachtaireacht: %s"
+    IDS_UNCAUGHT_EXCEPTION_WITH_ERRNO
+                            "Earráid Marfach: Eisceacht gan ghabháil\nSnáithe: %s\nCineál: %s\nTeachtaireacht: %s\nAibreán: %d"
+    IDS_TRUSTKEEP_TOOLTIP   "Socraíonn gach pacáiste ar a leagan atá suiteáilte faoi láthair. Tá sé seo comhionann le rá ar an socrú gan aon athruithe a dhéanamh ar aon phacáiste."
+    IDS_TRUSTCURR_TOOLTIP   "Socraíonn gach pacáiste go dtí an leagan is fearr atá ar fáil (MOLTA)."
+    IDS_TRUSTSYNC_TOOLTIP   "Socraíonn gach pacáiste go dtí an leagan atá ar fáil ó stór an phacáiste, ag íosghrádú más gá."
+    IDS_TRUSTEXP_TOOLTIP    "Cumasaigh pacáistí tástála."
+    IDS_VIEWBUTTON_TOOLTIP  "Roghnaigh an radharc pacáiste. Cinneann sé seo cé na pacáistí a thaispeántar thíos.\n\nCatagóir:Grúpáil de réir catagóire pacáiste. Cliceáil ar '+' le leathnú.\n\nIomlán: Taispeáin gach pacáiste.\n\nAr feitheamh: Ná taispeáin ach na pacáistí atá ar tí a shuiteáil, a bhaint nó a uasghrádú. Insíonn sé seo duit cad a athróidh nuair a bhrúnn tú 'Ar Aghaidh'.\n\nSuas chun dáta: Taispeáin pacáistí suiteáilte nach bhfuil aon ghníomhaíocht ag teastáil uathu toisc go bhfuil siad ag an leagan atá uait cheana féin.\n\nGan a bheith suiteáilte: Taispeáin pacáistí nach bhfuil suiteáilte faoi láthair agus nach bhfuil roghnaithe le haghaidh suiteáil.\n\nRoghnaithe: Taispeáin pacáistí suiteáilte a roghnaíodh, nach bhfuil suiteáilte mar spleáchas.\n\nInbhainte: Taispeáin na pacáistí suiteáilte a roghnaíodh agus a d'fhéadfaí a bhaint go sábháilte. Níl aon phacáiste suiteáilte nó roghnaithe eile ag brath ar na pacáistí seo.\n\nGan ghá: Taispeáin pacáistí suiteáilte go huathoibríoch a d'fhéadfaí a bhaint go sábháilte anois. Níl pacáistí suiteáilte nó roghnaithe eile ag brath ar na pacáistí seo a thuilleadh."
+    IDS_HIDEOBS_TOOLTIP     "Má roghnaítear é, cuirfidh an socrú pacáistí i bhfolach i gcatagóirí a bhfuil ainmneacha orthu a thosaíonn le '_'. Is áitshealbhóirí folamha iad pacáistí den sórt sin de ghnáth do phacáistí a baineadh nó a athainmníodh, nó is pacáistí bonneagair iad a láimhseáiltear go huathoibríoch."
+    IDS_SIG_INVALID         "Earráid Scáthán: Theip ar shíniú Setup.ini %s ó %s a fhíorú.\nScáthán truaillte féideartha Diúltaíodh Setup.ini."
+    IDS_CRYPTO_ERROR        "Earráid Inmheánach: earráid leabharlann gcrypt %d %s"
+    IDS_SEARCH_TOOLTIP      "Cuardaigh an sreang seo in ainmneacha pacáiste."
+    IDS_MAYBE_MKDIR         "Níl eolaire %s ann, ar mhaith leat é a chruthú?"
+    IDS_CANT_MKDIR          "Níorbh fhéidir eolaire %s a chruthú, tá brón orm. (An bhfuil an tiomáint iomlán nó léite amháin?)"
+    IDS_NO_LOCALDIR         "Níor aimsíodh eolaire pacáiste áitiúil %s.\nIs féidir leat suiteáilte a bhaint fós\npacáistí, ach ní bheidh aon rud le suiteáil.\n\nBrúigh OK más é sin an rud a theastaigh uait\nnó Cealaigh chun eolaire difriúil a roghnú."
+    IDS_ELEVATED            "Suiteáil láimhe ar an bpróiseas ardaithe leanaí."
+    IDS_INSTALLEDB_VERSION  "Leagan INSTALLED.DB anaithnid"
+    IDS_NO_MIRROR_LST       "Ní féidir liosta suíomhanna scátháin a íoslódáil"
+    IDS_PROGRESS_PROGRESS   "Dul chun cinn:"
+    IDS_PROGRESS_PACKAGE    "Pacáiste:"
+    IDS_PROGRESS_CONNECTING "Ag nascadh..."
+    IDS_PROGRESS_CHECKING   "Seiceáil ar phacáistí le híoslódáil..."
+    IDS_PROGRESS_DOWNLOADING
+                            "Íoslódáil..."
+    IDS_PROGRESS_PARSING    "Parsáil..."
+    IDS_PROGRESS_PREREMOVE  "Script réamh-bhaint á rith..."
+    IDS_PROGRESS_UNINSTALL  "Díshuiteáil..."
+    IDS_PROGRESS_INSTALL    "Suiteáil..."
+    IDS_PROGRESS_CALCULATING
+                            "Ag ríomh..."
+    IDS_PROGRESS_POSTINSTALL
+                            "Ag rith..."
+    IDS_PROGRESS_SOLVING    "Spleithiúlachtaí a réiteach..."
+    IDS_ACTION_DEFAULT      "Réamhshocraithe"
+    IDS_ACTION_INSTALL      "Suiteáil"
+    IDS_ACTION_UNINSTALL    "Díshuiteáil"
+    IDS_ACTION_SKIP         "Scipeáil"
+    IDS_ACTION_KEEP         "Coinnigh"
+    IDS_ACTION_REINSTALL    "Athshuiteáil"
+    IDS_ACTION_RETRIEVE     "Aisghabháil"
+    IDS_ACTION_UNKNOWN      "Anaithnid"
+    IDS_ACTION_SOURCE       "Foinse"
+    IDS_VIEW_FULL           "Iomlán"
+    IDS_VIEW_PENDING        "Ar feitheamh"
+    IDS_VIEW_UPTODATE       "Suas chun dáta"
+    IDS_VIEW_NOTINSTALLED   "Níl Suiteáilte"
+    IDS_VIEW_PICKED         "Roghnaithe"
+    IDS_VIEW_REMOVABLE      "Inbhainte"
+    IDS_VIEW_UNNEEDED       "Gan ghá"
+    IDS_VIEW_CATEGORY       "Catagóir"
+    IDS_COLUMN_PACKAGE      "Pacáiste"
+    IDS_COLUMN_CURRENT      "Reatha"
+    IDS_COLUMN_NEW          "Nua"
+    IDS_COLUMN_SOURCE       "Src?"
+    IDS_COLUMN_CATEGORIES   "Catagóirí"
+    IDS_COLUMN_SIZE         "Méid"
+    IDS_COLUMN_DESCR        "Cur síos"
+    IDS_MBOX_CAPTION        "Socrú Cygwin"
+    IDS_EXTRACTION_FAILED   "Ní féidir le /%s -- pacáiste truaillithe a bhaint?"
+    IDS_EXTRACTION_INUSE    "Ní féidir /%s a bhaint - comhad scríbhneoireachta earráide\n\nTá an comhad in úsáid nó tharla earráid éigin eile.\n\nStop gach próiseas Cygwin le do thoil agus roghnaigh “ Athbhreithnigh ”, nó roghnaigh “ Lean ar aghaidh ” chun dul ar aghaidh ar aon nós (déanfar an comhad a nuashonrú tar éis atosaigh).\n"
+    IDS_INSTALL_OLD_CYGWIN  "Fuarthas seanleagan de cygwin1.dll anseo:\n%s\nScrios?"
+    IDS_INSTALL_DELETE_OLD_CYGWIN_FAILED
+                            "Níorbh fhéidir comhad %s a scriosadh.\nAn bhfuil an DLL in úsáid ag feidhmchlár eile?\nBa chóir duit an seanleagan de cygwin1.dll a scriosadh ag áisiúlacht is luaithe duit."
+    IDS_SHELLLINK_FAILED    "Theip ar CoCreateInstance le earráid 0x%x.\nNí bheidh an socrú in ann deilbhíní Cygwin a chruthú sa Roghchlár Tosaigh nó ar an Deisce."
+    IDS_UNSUPPORTED_WINDOWS_VERSION
+                            "Ní thacaítear le Cygwin ar an leagan Windows seo"
+    IDS_UNSUPPORTED_WINDOWS_ARCH
+                            "Ní thacaítear le Cygwin ar Windows 32-giotán"
+    IDS_DEPRECATED_WINDOWS_VERSION
+                            "Tá tacaíocht Cygwin don leagan Windows seo míchuige, agus bainfear í sa chéad mhórleagan eile"
+    IDS_MOUNT_REGISTRY_KEY_FAILED
+                            "Ní raibh in ann eochair chlárlann a chruthú chun cosán suite"
+    IDS_NIO_ERROR           "Earráid Idirlín: %s"
+    IDS_PREREQ_UNSOLVED_PROBLEMS
+                            "RABHADH - Fadhbanna gan réiteach\n\nB'fhéidir nach n-oibreoidh roinnt pacáistí i gceart má leanann tú\n\nAn bhfuil tú cinnte gur mhaith leat dul ar aghaidh (NÍ MHOLTAR)?"
+    IDS_MIXED_BITNESS_ERROR "Mí-oiriúnacht LAP Sprioc\n\nTá tú ag iarraidh leagan %s de Cygwin a shuiteáil i gcomhadlann ina bhfuil leagan %s de Cygwin. Dá leanfá ort leis sin, chuirfí deireadh leis an suiteáil atá ann cheana féin.\n\nRith setup-%s.exe chun do shuiteáil %s de Cygwin atá ann cheana féin a nuashonrú, nó roghnaigh comhadlann eile do do shuiteáil %s."
+    IDS_GET_SITELIST_ERROR  "Ní féidir liosta de na suíomhanna íoslódála a fháil.\nDéan cinnte go bhfuil do shocruithe líonra ceart agus déan iarracht arís."
+    IDS_CONFIRM_EXIT        "An bhfuil tú cinnte gur mhaith leat an socrú a fhágáil? Cuirfear deireadh le haon íoslódáil nó suiteáil reatha."
+    IDS_CONTINUE            "Lean ar aghaidh"
+    IDS_CHOOSER_EMPTY_NO_PACKAGES
+                            "Níl aon phacáistí le fáil."
+    IDS_CHOOSER_EMPTY_DOWNLOAD
+                            "Níl aon rud le híoslódáil."
+    IDS_CHOOSER_EMPTY_INSTALL
+                            "Níl aon rud le suiteáil nó nuashonrú."
+    IDS_ROOT_BROWSE_TITLE   "Roghnaigh eolaire fréimhe suiteála"
+    IDS_LOCALDIR_BROWSE_DOWNLOAD_TITLE
+                            "Roghnaigh eolaire íos"
+    IDS_LOCALDIR_BROWSE_PACKAGE_TITLE
+                            "Roghnaigh eolaire pacáistí"
+    IDS_PROGRESS_CHECKING_HASH
+                            "Seiceáil %s le haghaidh %s"
+    IDS_PROGRESS_DOWNLOADING_FROM
+                            "%s ó %s"
+    IDS_CONFIRM_UNINSTALL   "Díshuiteáil"
+    IDS_CONFIRM_INSTALL     "Suiteáil"
+    IDS_CONFIRM_DOWNLOAD    "Íoslódáil"
+    IDS_CONFIRM_NOTHING     "Gan aon athruithe"
+    IDS_CONFIRM_AUTO_ADD    "(curtha leis go huathoibríoch"
+    IDS_CONFIRM_SOURCE      "(foinse)"
+    IDS_FILE_INUSE_KILL     "&Próisis Mharaithe"
+    IDS_FILE_INUSE_MSG      "Ní féidir a bhaint"
+    IDS_USER_URL_TOOLTIP    "URL breise láithreáin, cosán nó cosán UNC"
+END
+
+//
+// Option Helptext String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_HELPTEXT_ERROR      "Earráid le linn próiseála rogha."
+    IDS_HELPTEXT_HEADER     "Roghanna Líne Orduithe:"
+    IDS_HELPTEXT_FOOTER     "Is é an réamhshocrú pacáistí a íoslódáil agus a shuiteáil araon, mura sonraítear --download nó --local-install."
+    IDS_HELPTEXT_ALLOW_TEST "Smaoinigh ar leaganacha pacáiste a bhfuil"
+    IDS_HELPTEXT_ALLOW_UNSUPPORTED_WINDOWS
+                            "Ceadaigh seanleaganacha Windows gan tacaíocht"
+    IDS_HELPTEXT_ARCH       "Ailtireacht le suiteáil (x86_64 nó x86)"
+    IDS_HELPTEXT_CATEGORIES "Sonraigh catagóirí le suiteáil"
+    IDS_HELPTEXT_BUILD_DEPENDS
+                            "Sonraigh pacáistí chun na ceanglais tógála a shuiteáil"
+    IDS_HELPTEXT_COMPACTOS  "Comhbhrúigh comhaid suiteáilte le Compact OS (xpress4k, xpress8k, xpress16k, lzx)"
+    IDS_HELPTEXT_DELETE_ORPHANS
+                            "Bain pacáistí dílleachta"
+    IDS_HELPTEXT_DISABLE_ANTIVIRUS
+                            "Díchumasaigh pacáistí bogearraí frith-víreas aitheanta nó a bhfuil amhras orthu le linn"
+    IDS_HELPTEXT_DOWNLOAD   "Íoslódáil pacáistí ón idir"
+    IDS_HELPTEXT_FORCE_CURRENT
+                            "Roghnaigh an leagan reatha do gach pacáiste"
+    IDS_HELPTEXT_HELP       "Cabhair a phriontáil"
+    IDS_HELPTEXT_INCLUDE_SOURCE
+                            "Suiteáil foinse go huathoibríoch do gach pacá"
+    IDS_HELPTEXT_INI_BASENAME
+                            "Úsáid bunainm difriúil, m.sh. “ foo ”, in ionad “ setup ”"
+    IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
+                            "Úsáid eochracha neamhiontaofa agus coinnigh gach"
+    IDS_HELPTEXT_LANG       "Sonraigh langid teanga GUI"
+    IDS_HELPTEXT_LOCAL_INSTALL
+                            "Suiteáilte pacáistí ó eolaire"
+    IDS_HELPTEXT_LOCAL_PACKAGE_DIR
+                            "Eolaire pacáiste áitiúil"
+    IDS_HELPTEXT_MIRROR_MODE
+                            "Scipeáil seiceáil infhaighteachta pacáiste agus tú ag suiteáil ó eolaire áitiúil (éilíonn go mbeadh eolaire áitiúil"
+    IDS_HELPTEXT_NO_ADMIN   "Ná seiceáil agus ná déan feidhmiú mar Riarthóir"
+    IDS_HELPTEXT_NO_DESKTOP "Díchumasaigh cruthú aicearra deisce"
+    IDS_HELPTEXT_NO_REPLACEONREBOOT
+                            "Díchumasaigh comhaid in-úsáide a athsholáthar ar an gcéad"
+    IDS_HELPTEXT_NO_SHORTCUTS
+                            "Díchumasaigh aicearraí roghchláir deisce agus tosaigh"
+    IDS_HELPTEXT_NO_STARTMENU
+                            "Díchumasú aicearra roghchláir tosaigh"
+    IDS_HELPTEXT_NO_VERIFY  "Ná fíoraigh sínithe setup.ini"
+    IDS_HELPTEXT_NO_VERSION_CHECK
+                            "Cuir cosc a sheiceáil an bhfuil leagan níos nuaí den socrú ar fáil"
+    IDS_HELPTEXT_NO_WARN_DEPRECATED_WINDOWS
+                            "Ná tabhair rabhadh faoi leaganacha Windows atá díscríofa"
+    IDS_HELPTEXT_NO_WRITE_REGISTRY
+                            "Ná scríobh eolaire suiteála fréimhe chuig an gcl"
+    IDS_HELPTEXT_OLD_KEYS   "Cumasaigh sean-eochracha cygwin.com"
+    IDS_HELPTEXT_ONLY_SITE  "Ná íoslódáil liosta scátháin. Ná húsáid ach suíomhanna a shonraítear le -s"
+    IDS_HELPTEXT_PACKAGES   "Sonraigh pacáistí le suiteáil"
+    IDS_HELPTEXT_PACKAGE_MANAGER
+                            "Modh roghnaithe leathfhreastail amháin"
+    IDS_HELPTEXT_PROXY      "Seachfhreastalaí HTTP/FTP (óstach: calafort)"
+    IDS_HELPTEXT_PRUNE_INSTALL
+                            "Bearr an suiteáil go dtí na pacáistí iarrtha amháin"
+    IDS_HELPTEXT_PUBKEY     "URL nó cosán iomlán comhad eochair phoiblí breise (formáid RFC4880)"
+    IDS_HELPTEXT_QUIET_MODE "Modh socraithe gan faire (gan faire, gan ionchur, i bhfolach)"
+    IDS_HELPTEXT_REMOVE_CATEGORIES
+                            "Sonraigh catagóirí le díshí"
+    IDS_HELPTEXT_REMOVE_PACKAGES
+                            "Sonraigh pacáistí le díshí"
+    IDS_HELPTEXT_ROOT       "Eolaire suiteála fréimhe"
+    IDS_HELPTEXT_SEXPR_PUBKEY
+                            "Eochair phoiblí breise DSA i bhformáid s-expr"
+    IDS_HELPTEXT_SITE       "Íoslódáil URL an láithreáin, cosán nó cosán UNC"
+    IDS_HELPTEXT_SYMLINK_TYPE
+                            "Cineál comhnasc (lnk, dúchasach, sys, wsl)"
+    IDS_HELPTEXT_UNTRUSTED_KEYS
+                            "Úsáid eochracha breise neamhiontaofa"
+    IDS_HELPTEXT_UPGRADE_ALSO
+                            "Déan pacáistí suiteáilte"
+    IDS_HELPTEXT_USER_AGENT "Sreang gníomhaire úsáideora le haghaidh iarratais HTTP"
+    IDS_HELPTEXT_VERBOSE    "Aschur Verbose"
+    IDS_HELPTEXT_VERSION    "Taispeáin leagan"
+    IDS_HELPTEXT_WAIT       "Agus tú ag ardú, fan le próiseas ardaithe leanaí"
+END

@@ -92,7 +92,9 @@ CYGWIN-TERMINAL.ICON    FILE    "cygwin-terminal.ico"
 // Translations
 
 #include "res/de/res.rc"
+#include "res/es/res.rc"
 #include "res/fr/res.rc"
+#include "res/ga/res.rc"
 #include "res/ja/res.rc"
 #include "res/pl/res.rc"
 #include "res/tr/res.rc"
