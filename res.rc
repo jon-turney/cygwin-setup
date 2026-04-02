@@ -91,6 +91,10 @@ CYGWIN-TERMINAL.ICON    FILE    "cygwin-terminal.ico"
 //
 // Translations
 
+#ifndef LANG_IRISH
+#define LANG_IRISH 0x3c
+#endif
+
 #include "res/de/res.rc"
 #include "res/es/res.rc"
 #include "res/fr/res.rc"
