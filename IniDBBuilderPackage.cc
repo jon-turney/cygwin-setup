@@ -195,7 +195,7 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
      package.
 
      When there's just a source: line, this is really a source package, which
-     will be referred to by a Source: line in other package(s).
+     will be referred to by a srcpkg: line in other package(s).
   */
 
   /* create a source package version */
@@ -326,7 +326,7 @@ IniDBBuilderPackage::buildBeginConflicts ()
 void
 IniDBBuilderPackage::buildSourceName (const std::string& _name)
 {
-  // When there is a Source: line, that names a real source package
+  // When there is a srcpkg: line, that names a real source package
   packagedb db;
   cbpv.spkg = PackageSpecification(_name);
   cbpv.spkg_id = db.findSourceVersion (PackageSpecification(_name, cbpv.version));

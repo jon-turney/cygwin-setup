@@ -118,7 +118,7 @@ B64	[a-zA-Z0-9_-]
 "sdesc:"		return SDESC;
 "ldesc:"		return LDESC;
 "message:"		return MESSAGE;
-"Source:"		return SOURCEPACKAGE;
+"srcpkg:"|"Source:"	return SOURCEPACKAGE;
 [bB]"uild-"[dD]"epends:"	return BUILDDEPENDS;
 "replace-versions:"	return REPLACE_VERSIONS;
 
