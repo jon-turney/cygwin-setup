@@ -101,6 +101,7 @@ static StringChoiceOption::StringChoices quiet_types({
 
 static StringChoiceOption::StringChoices arch_choices({
     {"64", IMAGE_FILE_MACHINE_AMD64},
+    {"x64", IMAGE_FILE_MACHINE_AMD64},
     {"x86_64", IMAGE_FILE_MACHINE_AMD64},
     {"amd64", IMAGE_FILE_MACHINE_AMD64},
     {"32", IMAGE_FILE_MACHINE_I386},
