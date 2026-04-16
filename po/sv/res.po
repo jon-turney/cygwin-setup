@@ -4,9 +4,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-24 15:33+0100\n"
-"PO-Revision-Date: 2025-12-02 00:35+0000\n"
-"Last-Translator: Stefan Bjornelund the Gnome "
-"<stefan.bjornelund.gnome@gmail.com>\n"
+"PO-Revision-Date: 2026-04-17 16:09+0000\n"
+"Last-Translator: bittin1ddc447d824349b2 <bittin@reimu.nl>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/cygwin-setup/"
 "cygwin-setup/sv/>\n"
 "Language: sv\n"
@@ -15,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 "X-Merge-On: location\n"
 
 #: DIALOG.IDD_SOURCE.CAPTION
@@ -1119,15 +1118,6 @@ msgid "Unable to extract /%s -- corrupt package?"
 msgstr "Kunde inte extrahera /%s -- korrupt paket?"
 
 #: STRINGTABLE.IDS_EXTRACTION_INUSE
-#, fuzzy
-#| msgid ""
-#| "Unable to extract /%s -- error writing file\n"
-#| "\n"
-#| "The file is in use or some other error occurred.\n"
-#| "\n"
-#| "Please stop all Cygwin processes and select \"\"Retry\"\", or select "
-#| "\"\"Continue\"\" to go on anyway (the file will be updated after a "
-#| "reboot).\n"
 msgid ""
 "Unable to extract /%s -- error writing file\n"
 "\n"
@@ -1138,11 +1128,10 @@ msgid ""
 msgstr ""
 "Kunde inte extrahera /%s -- fel vid skrivning av fil\n"
 "\n"
-"Filen används eller så har ett annat fel uppstått.\n"
+"Filen används eller så har något annat fel uppstått.\n"
 "\n"
-"Stoppa alla Cygwin-processer och välj \"Försök igen\", eller välj "
-"\"Fortsätt\" för att fortsätta ändå (filen kommer att uppdateras efter en "
-"omstart).\n"
+"Vänligen stoppa alla Cygwin-processer och välj \"Försök igen\", eller välj "
+"\"Fortsätt\" för att fortsätta ändå (filen uppdateras efter en omstart).\n"
 
 #: STRINGTABLE.IDS_INSTALL_OLD_CYGWIN
 msgid ""
@@ -1357,10 +1346,8 @@ msgid "Specify categories to install"
 msgstr "Ange kategorier att installera"
 
 #: STRINGTABLE.IDS_HELPTEXT_BUILD_DEPENDS
-#, fuzzy
-#| msgid "Specify packages to install"
 msgid "Specify packages to install the build requirements of"
-msgstr "Ange paket att installera"
+msgstr "Specificera paket för att installera byggkraven för"
 
 #: STRINGTABLE.IDS_HELPTEXT_COMPACTOS
 msgid ""
@@ -1397,11 +1384,8 @@ msgid "Automatically install source for every package installed"
 msgstr "Installera källkoden automatiskt för varje installerat paket"
 
 #: STRINGTABLE.IDS_HELPTEXT_INI_BASENAME
-#, fuzzy
-#| msgid "Use a different basename, e.g. \"\"foo\"\", instead of \"\"setup\"\""
 msgid "Use a different basename, e.g. \"foo\", instead of \"setup\""
-msgstr ""
-"Använd ett annat basnamn, t.ex. \"\"foo\"\", istället för \"\"setup\"\""
+msgstr "Använd ett annat basnamn, t.ex. \"foo\", istället för \"setup\""
 
 #: STRINGTABLE.IDS_HELPTEXT_KEEP_UNTRUSTED_KEYS
 msgid "Use untrusted keys and retain all"
