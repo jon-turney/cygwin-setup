@@ -306,6 +306,7 @@ WinMain (HINSTANCE h,
     LogSingleton::SetInstance (*LogFile::createLogFile ());
     const char *sep = isdirsep (local_dir[local_dir.size () - 1])
 				? "" : "\\";
+
     /* Don't create log files for help or version output only. */
     if (!elevate && !output_only)
       {
@@ -314,6 +315,17 @@ WinMain (HINSTANCE h,
 	Logger ().setFile (0, local_dir + sep + "setup.log", true);
 	Log (LOG_PLAIN) << "Starting cygwin install, version "
 			<< setup_version << endLog;
+      }
+
+    std::vector<std::string> nonoptions = GetOption::GetInstance().nonOptions();
+    if (!nonoptions.empty())
+      {
+        for (auto i = nonoptions.begin();
+             i != nonoptions.end();
+             i++)
+          {
+            Log (LOG_PLAIN) << "Ignoring non-option argument: " << *i << endLog;
+          }
       }
 
     /* Some confusion of interfaces here: Normally we try to write un-localized
