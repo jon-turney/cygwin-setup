@@ -87,6 +87,7 @@ private:
   PackageDepends conflictsNodeList;
   PackageDepends buildDependsNodeList;
   SolverPool::addPackageData cbpv;
+  packagesource source_archive;
   std::set <std::string> replace_versions;
 
   Feedback const &_feedback;

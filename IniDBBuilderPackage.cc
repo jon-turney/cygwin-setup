@@ -190,7 +190,7 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
                                          char *hash,
                                          hashType type)
 {
-  /* When there is a source: line along with an install: line, we invent a
+  /* When there is a source: line along with an install: line, we will invent a
      package to contain the source, and make it the source package for this
      package.
 
@@ -198,56 +198,29 @@ IniDBBuilderPackage::buildPackageSource (const std::string& path,
      will be referred to by a srcpkg: line in other package(s).
   */
 
-  /* create a source package version */
-  SolverPool::addPackageData cspv = cbpv;
-  cspv.type = package_source;
-  // erase dependency attributes only meaningful for an install package, but
-  // keep build_depends
-  cspv.requires = NULL;
-  cspv.obsoletes = NULL;
-  cspv.provides = NULL;
-  cspv.conflicts = NULL;
-
   /* set archive path, size, mirror, hash */
-  cspv.archive = packagesource();
-  cspv.archive.set_canonical(path.c_str());
-  cspv.archive.size = atoi(size.c_str());
-  cspv.archive.sites.push_back(site(parse_mirror));
+  source_archive = packagesource();
+  source_archive.set_canonical(path.c_str());
+  source_archive.size = atoi(size.c_str());
+  source_archive.sites.push_back(site(parse_mirror));
 
   switch (type) {
   case hashType::sha512:
-    if (hash && !cspv.archive.sha512_isSet)
+    if (hash && !source_archive.sha512_isSet)
       {
-        memcpy (cspv.archive.sha512sum, hash, sizeof(cspv.archive.sha512sum));
-        cspv.archive.sha512_isSet = true;
+        memcpy (source_archive.sha512sum, hash, sizeof(source_archive.sha512sum));
+        source_archive.sha512_isSet = true;
       }
     break;
 
   case hashType::md5:
-    if (hash && !cspv.archive.md5.isSet())
-      cspv.archive.md5.set((unsigned char *)hash);
+    if (hash && !source_archive.md5.isSet())
+      source_archive.md5.set((unsigned char *)hash);
     break;
 
   case hashType::none:
     break;
   }
-
-  /* We make the source package name by appending '-src', unless it's already
-     there.  This handles both cases above (assuming source package don't have
-     any install: lines, which should be true!) */
-  std::string source_name;
-  int pos = name.size() - src_suffix.size();
-  if ((pos > 0) && (name.compare(pos, src_suffix.size(), src_suffix) == 0))
-    source_name = name;
-  else
-    source_name = name + src_suffix;
-
-  packagedb db;
-  packageversion spkg_id = db.addSource (source_name, cspv);
-
-  /* create relationship between binary and source packageversions */
-  cbpv.spkg = PackageSpecification(source_name);
-  cbpv.spkg_id = spkg_id;
 }
 
 void
@@ -406,18 +379,62 @@ IniDBBuilderPackage::process ()
   if (cbpv.version.empty())
     return;
 
-  // no install: line, no package
-  if (!cbpv.archive.Canonical())
-    return;
-
 #if DEBUG
   Log (LOG_BABBLE) << "Finished with package " << name << endLog;
   Log (LOG_BABBLE) << "Version " << cbpv.version << endLog;
 #endif
 
+  // if we have source: but no install:, this is a real source package
+  // if we have source: and install:, but no srcpkg:, we need to invent the source package
+  if (source_archive.Canonical() &&
+      (!cbpv.archive.Canonical() || cbpv.spkg.packageName().empty()))
+    {
+      /* create a source package version */
+      SolverPool::addPackageData cspv = cbpv;
+      cspv.type = package_source;
+
+      // erase dependency attributes only meaningful for an install package, but
+      // keep build_depends
+      cspv.requires = NULL;
+      cspv.obsoletes = NULL;
+      cspv.provides = NULL;
+      cspv.conflicts = NULL;
+
+      /* We make the source package name by appending '-src', unless it's
+         already there.  This handles both cases identified in
+         buildPackageSource (assuming source package don't have any install:
+         lines, which should be true!) */
+      std::string source_name;
+      int pos = name.size() - src_suffix.size();
+      if ((pos > 0) && (name.compare(pos, src_suffix.size(), src_suffix) == 0))
+        source_name = name;
+      else
+        source_name = name + src_suffix;
+
+      /* Transfer accumulated source package information to packagedb */
+      packagedb db;
+      packageversion spkg_id = db.addSource (source_name, cspv);
+
+      /* create relationship between binary and source packageversions */
+      cbpv.spkg = PackageSpecification(source_name);
+      cbpv.spkg_id = spkg_id;
+
+      // reset for next version
+      cspv.version = "";
+      source_archive = packagesource();
+      buildDependsNodeList = PackageDepends();
+    }
+
+  // no install: line, no package
+  if (!cbpv.archive.Canonical())
+    return;
+
   /* Transfer the accumulated package information to packagedb */
   packagedb db;
   packagemeta *pkg = db.addBinary (name, cbpv);
+
+  // erase dependency attributes only meaningful for a source package
+  cbpv.build_depends = NULL;
 
   // For no good historical reason, some data lives in packagemeta rather than
   // the packageversion
