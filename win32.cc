@@ -484,7 +484,7 @@ machine_name(USHORT machine)
       return "x86_64";
       break;
     case IMAGE_FILE_MACHINE_ARM64:
-      return "arm64";
+      return "aarch64";
       break;
     default:
       std::stringstream machine_desc;
