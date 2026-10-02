@@ -106,6 +106,7 @@ static StringChoiceOption::StringChoices arch_choices({
     {"amd64", IMAGE_FILE_MACHINE_AMD64},
     {"32", IMAGE_FILE_MACHINE_I386},
     {"x86", IMAGE_FILE_MACHINE_I386},
+    {"i686", IMAGE_FILE_MACHINE_I386},
     {"aarch64", IMAGE_FILE_MACHINE_ARM64},
     {"arm64", IMAGE_FILE_MACHINE_ARM64},
   });
