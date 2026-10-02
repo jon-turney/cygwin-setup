@@ -212,10 +212,10 @@ directory_contains_wrong_version (HWND h)
     return 0;
 
   /* Forestall mixing. */
-  const char *setup_ver = machine_name(installArch).c_str();
-  const char *inst_ver = machine_name(headerArch).c_str();
-  mbox (h, IDS_MIXED_BITNESS_ERROR, MB_OK, setup_ver, inst_ver, inst_ver,
-        inst_ver, setup_ver);
+  const std::string setup_ver = machine_name(installArch);
+  const std::string inst_ver = machine_name(headerArch);
+  mbox (h, IDS_MIXED_BITNESS_ERROR, MB_OK, setup_ver.c_str(), inst_ver.c_str(),
+        inst_ver.c_str(), inst_ver.c_str(), setup_ver.c_str());
   return 1;
 }
 
