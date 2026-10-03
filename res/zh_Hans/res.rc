@@ -397,6 +397,8 @@ BEGIN
                             "允许旧的、不受支持的 Windows 版本"
     IDS_HELPTEXT_ARCH       "要安装的体系结构（选项：x86_64 或 x86）"
     IDS_HELPTEXT_CATEGORIES "指定要安装的类别"
+    IDS_HELPTEXT_BUILD_DEPENDS
+                            "指定要安装此软件构建需求的包："
     IDS_HELPTEXT_COMPACTOS  "使用 Compact OS 压缩已安装的文件（选项：xpress4k、xpress8k、xpress16k、lzx）"
     IDS_HELPTEXT_DELETE_ORPHANS
                             "删除孤立的软件包"
