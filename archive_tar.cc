@@ -32,6 +32,8 @@
 static int err;
 static char buf[512];
 
+static_assert(sizeof(tar_header_type) == 512);
+
 int _tar_verbose = 0;
 
 archive_tar::archive_tar (io_stream * original)
@@ -47,15 +49,6 @@ archive_tar::archive_tar (io_stream * original)
       return;
     }
   state.parent = original;
-
-  if (sizeof (state.tar_header) != 512)
-    {
-      /* drastic, but important */
-      Log (LOG_TIMESTAMP) << "compilation error: tar header struct not 512"
-			  << " bytes (it's " << sizeof (state.tar_header)
-			  << ")" << endLog;
-      Logger ().exit (1);
-    }
 }
 
 ssize_t
