@@ -175,6 +175,8 @@ endif
 	download.h \
 	Exception.cc \
 	Exception.h \
+	ExitManager.cc \
+	ExitManager.h \
 	find.cc \
 	find.h \
 	FindVisitor.cc \

@@ -23,9 +23,6 @@
 /* used by main.cc to select the next do_* function */
 extern int next_dialog;
 
-/* either "nothing to do" or "setup complete" or something like that */
-extern int exit_msg;
-
 #define D(x) void x(HINSTANCE _h, HWND owner)
 
 /* prototypes for all the do_* functions (most called by main.cc) */

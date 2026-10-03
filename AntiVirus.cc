@@ -25,6 +25,7 @@
 #include "state.h"
 #include "msg.h"
 #include "package_db.h"
+#include "ExitManager.h"
 
 
 /* XXX: Split this into observer and model classes */
@@ -76,7 +77,7 @@ bool
 AntiVirusPage::Create ()
 {
     detect();
-    Logger().atexit(AntiVirus::AtExit);
+    ExitManager::atexit(AntiVirus::AtExit);
     return PropertyPage::Create (NULL, dialog_cmd, IDD_VIRUS);
 }
 

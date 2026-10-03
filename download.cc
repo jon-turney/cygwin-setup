@@ -45,6 +45,7 @@
 #include "gui/GuiFeedback.h"
 
 #include "Exception.h"
+#include "ExitManager.h"
 
 extern ThreeBarProgressPage Progress;
 
@@ -359,8 +360,8 @@ do_download_thread (HINSTANCE h, HWND owner)
 	case IDC_BACK:
 	  return IDD_CHOOSE;
 	case IDABORT:
-	  Logger ().setExitMsg (IDS_DOWNLOAD_INCOMPLETE_EXIT);
-	  Logger ().exit (1);
+          ExitManager::setExitMsg (IDS_DOWNLOAD_INCOMPLETE_EXIT);
+          ExitManager::exit (1);
 	case IDIGNORE:
 	  break;
 	default:
@@ -371,9 +372,9 @@ do_download_thread (HINSTANCE h, HWND owner)
   if (source == IDC_SOURCE_DOWNLOAD)
     {
       if (errors)
-	Logger ().setExitMsg (IDS_DOWNLOAD_INCOMPLETE_EXIT);
+        ExitManager::setExitMsg (IDS_DOWNLOAD_INCOMPLETE_EXIT);
       else if (!unattended_mode)
-	Logger ().setExitMsg (IDS_DOWNLOAD_COMPLETE);
+        ExitManager::setExitMsg (IDS_DOWNLOAD_COMPLETE);
       return IDD_DESKTOP;
     }
   else

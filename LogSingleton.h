@@ -32,17 +32,12 @@ public:
   static LogSingleton &GetInstance();
   static void SetInstance(LogSingleton &anInstance);
 
-  /* Some platforms don't call destructors. So this call exists
-   * which guarantees to flush any log data...
-   * but doesn't call generic C++ destructors
-   */
-  __attribute__ ((noreturn)) virtual void exit (int, bool = true) = 0;
   virtual ~LogSingleton();
   // get a specific verbosity stream.
   virtual std::ostream &operator() (enum log_level level) = 0;
 
   friend std::ostream& endLog(std::ostream& outs);
-  
+
 protected:
   LogSingleton(std::streambuf* aStream); // Only child classs can be created.
   LogSingleton (LogSingleton const &); // no copy constructor

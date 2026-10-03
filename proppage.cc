@@ -26,6 +26,7 @@
 #include "getopt++/BoolOption.h"
 #include "Exception.h"
 #include "LogFile.h"
+#include "ExitManager.h"
 
 bool PropertyPage::DoOnceForSheet = true;
 
@@ -206,7 +207,7 @@ PropertyPage::DialogProc (UINT message, WPARAM wParam, LPARAM lParam)
                 if (nextwindow == -2)
                 {
                   Log (LOG_PLAIN) << "Unable to continue" << endLog;
-                  Logger ().exit (1);
+                  ExitManager::exit (1);
                   return TRUE;
                 }
                 else if (nextwindow == -1)

@@ -39,6 +39,7 @@
 #include "io_stream.h"
 #include "getopt++/BoolOption.h"
 #include "LogFile.h"
+#include "ExitManager.h"
 
 BoolOption NoShortcutsOption (false, 'n', "no-shortcuts", IDS_HELPTEXT_NO_SHORTCUTS);
 BoolOption NoStartMenuOption (false, 'N', "no-startmenu", IDS_HELPTEXT_NO_STARTMENU);
@@ -226,7 +227,7 @@ check_if_enable_next (HWND h)
 static void
 set_status (HWND h)
 {
-  std::wstring fmt = LoadStringW(Logger ().getExitMsg ());
+  std::wstring fmt = LoadStringW(ExitManager::getExitMsg ());
   std::wstring buf = format(fmt, backslash (Logger ().getFileName (LOG_BABBLE)).c_str ());
   eset (h, IDC_STATUS, buf);
 }

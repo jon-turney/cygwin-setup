@@ -61,6 +61,7 @@
 
 #include "threebar.h"
 #include "Exception.h"
+#include "ExitManager.h"
 #include "processlist.h"
 #include "gui/GuiFeedback.h"
 
@@ -952,7 +953,7 @@ do_install_thread (HINSTANCE h, HWND owner)
       {
         Log (LOG_TIMESTAMP)
           << "User cancelled setup after install error" << endLog;
-        Logger ().exit (1);
+        ExitManager::exit (1);
         return;
       }
     }
@@ -985,23 +986,23 @@ do_install_thread (HINSTANCE h, HWND owner)
   if (num_installs == 0 && num_uninstalls == 0)
     {
       if (!unattended_mode)
-	Logger ().setExitMsg (IDS_NOTHING_INSTALLED);
+        ExitManager::setExitMsg (IDS_NOTHING_INSTALLED);
       return;
     }
   if (num_installs == 0)
     {
       if (!unattended_mode)
-	Logger ().setExitMsg (IDS_UNINSTALL_COMPLETE);
+        ExitManager::setExitMsg (IDS_UNINSTALL_COMPLETE);
       return;
     }
 
   if (myInstaller.errors)
-    Logger ().setExitMsg (IDS_INSTALL_INCOMPLETE);
+    ExitManager::setExitMsg (IDS_INSTALL_INCOMPLETE);
   else if (!unattended_mode)
-    Logger ().setExitMsg (IDS_INSTALL_COMPLETE);
+    ExitManager::setExitMsg (IDS_INSTALL_COMPLETE);
 
   if (rebootneeded)
-    Logger ().setExitMsg (IDS_REBOOT_REQUIRED);
+    ExitManager::setExitMsg (IDS_REBOOT_REQUIRED);
 }
 
 static DWORD WINAPI

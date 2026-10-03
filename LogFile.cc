@@ -14,21 +14,15 @@
  */
 
 /* Log to one or more files. */
-
-#include <stdlib.h>
 #include "LogFile.h"
 #include "io_stream.h"
-#include "win32.h"
 #include "msg.h"
-#include "dialog.h"
 #include "resource.h"
 #include <iostream>
 #include <sstream>
 #include <set>
 #include <time.h>
 #include <string>
-#include <stdexcept>
-#include "filemanip.h"
 #include "String++.h"
 #include "getopt++/BoolOption.h"
 
@@ -64,8 +58,6 @@ struct LogEnt
 static LogEnt *first_logent = 0;
 static LogEnt **next_logent = &first_logent;
 static LogEnt *currEnt = 0;
-
-int LogFile::exit_msg = 0;
 
 typedef std::set<filedef> FileSet;
 static FileSet files;
@@ -115,50 +107,8 @@ LogFile::getFileName (int level) const
 }
 
 void
-LogFile::atexit(void (*func)(void))
+LogFile::saveAll ()
 {
-  exit_fns.push_back(func);
-}
-
-void
-LogFile::exit (int exit_code, bool show_end_install_msg)
-{
-  /* Execute any functions we want to run at exit (we don't use stdlib atexit()
-     because we want to allow them to potentially write to the log) */
-  for (auto i = exit_fns.rbegin(); i != exit_fns.rend(); ++i)
-      (*i)();
-
-  static int been_here = 0;
-  if (been_here)
-    ::exit (exit_code);
-  been_here = 1;
-
-  if (exit_msg)
-    {
-      std::wstring fmt = LoadStringWEx(exit_msg, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
-      std::wstring buf = format(fmt, backslash(getFileName(LOG_BABBLE)).c_str());
-      Log (LOG_PLAIN) << "note: " << wstring_to_string(buf) << endLog;
-    }
-
-  /* Skip the log messages when just printing the help/version output, and when
-     we're self-elevating. */
-  if (show_end_install_msg)
-    Log (LOG_TIMESTAMP) << "Ending cygwin install" << endLog;
-
-  for (FileSet::iterator i = files.begin();
-       i != files.end(); ++i)
-    {
-      log_save (i->level, i->key, i->append);
-    }
-  // TODO: remove this when the ::exit issue is tidied up.
-  ::exit (exit_code);
-}
-
-void
-LogFile::flushAll ()
-{
-  Log (LOG_TIMESTAMP) << "Writing messages to log files without exiting" << endLog;
-
   for (FileSet::iterator i = files.begin();
        i != files.end(); ++i)
     {
