@@ -31,6 +31,7 @@
 #include "state.h"
 
 #include "ControlAdjuster.h"
+#include "ExitManager.h"
 
 /*
   Sizing information.
@@ -287,8 +288,8 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 		    Log (LOG_PLAIN)
 			<< "can't install from bad local package dir"
 			<< endLog;
-		    Logger ().setExitMsg (IDS_INSTALL_INCOMPLETE);
-		    Logger ().exit (1);
+                    ExitManager::setExitMsg (IDS_INSTALL_INCOMPLETE);
+                    ExitManager::exit (1);
 		  }
 		GetOwner ()->SetActivePageByID (IDD_SOURCE);
 	      }
@@ -303,8 +304,8 @@ ThreeBarProgressPage::OnMessageApp (UINT uMsg, WPARAM wParam, LPARAM lParam)
 		    Log (LOG_PLAIN)
 			<< "download/verify error in unattended_mode: out of retries"
 			<< endLog;
-		    Logger ().setExitMsg (IDS_INSTALL_INCOMPLETE);
-		    Logger ().exit (1);
+                    ExitManager::setExitMsg (IDS_INSTALL_INCOMPLETE);
+                    ExitManager::exit (1);
 		  }
 		GetOwner ()->SetActivePageByID (IDD_SITE);
 	      }

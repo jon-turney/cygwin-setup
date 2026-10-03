@@ -18,7 +18,6 @@
 
 #include "LogSingleton.h"
 #include <sstream>
-#include <vector>
 
 // Logging class. Default logging level is PLAIN.
 class LogFile : public LogSingleton {
@@ -29,18 +28,7 @@ public:
   void setFile (int minlevel, const std::string& path, bool append);
   std::string getFileName (int level) const;
 
-  static void setExitMsg (int msg) { exit_msg = msg; }
-  static int getExitMsg () { return exit_msg; }
-
-  /* Some platforms don't call destructors. So this call exists
-   * which guarantees to flush any log data...
-   * but doesn't call generic C++ destructors
-   */
-  virtual void exit (int exit_code, bool show_end_install_msg = true)
-          __attribute__ ((noreturn));
-  virtual void atexit( void (*func)(void));
-
-  virtual void flushAll ();
+  virtual void saveAll ();
   virtual ~LogFile();
   // get a specific verbosity stream.
   virtual std::ostream &operator() (enum log_level level);
@@ -50,11 +38,11 @@ protected:
   LogFile (LogFile const &); // no copy constructor
   LogFile &operator = (LogFile const&); // no assignment operator
   virtual void endEntry(); // the current in-progress entry is complete.
-  static int exit_msg;
-  std::vector <void (*)(void)> exit_fns;
+
 private:
   void log_save (int babble, const std::string& filename, bool append);
 };
 
 #define Logger() ((LogFile &) LogSingleton::GetInstance ())
+
 #endif /* SETUP_LOGFILE_H */

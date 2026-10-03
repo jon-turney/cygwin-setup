@@ -68,6 +68,7 @@
 #include "mklink2.h"
 
 #include "Exception.h"
+#include "ExitManager.h"
 #include <stdexcept>
 
 #include "UserSettings.h"
@@ -342,14 +343,14 @@ WinMain (HINSTANCE h,
 	GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN), LoadStringUtf8);
 	Log (LOG_PLAIN) << endLog;
         Log (LOG_PLAIN) << LoadStringUtf8(IDS_HELPTEXT_FOOTER) << endLog;
-	Logger ().exit (invalid_option ? 1 : 0, false);
+        ExitManager::exit (invalid_option ? 1 : 0, false);
 	goto finish_up;
       }
 
     if (VersionOption)
       {
         Log (LOG_PLAIN) << "Cygwin setup " << setup_version << endLog;
-        Logger ().exit (0, false);
+        ExitManager::exit (0, false);
         goto finish_up;
       }
 
@@ -365,14 +366,14 @@ WinMain (HINSTANCE h,
         {
           mbox (NULL, IDS_UNSUPPORTED_WINDOWS_ARCH,
                 MB_ICONEXCLAMATION | MB_OK);
-          Logger ().exit (1, false);
+          ExitManager::exit (1, false);
         }
         else if ((OSMajorVersion () < 6) ||
                  ((OSMajorVersion () == 6) && (OSMinorVersion() < 3)))
           {
             mbox (NULL, IDS_UNSUPPORTED_WINDOWS_VERSION,
                   MB_ICONEXCLAMATION | MB_OK);
-            Logger ().exit (1, false);
+            ExitManager::exit (1, false);
           }
 
 #if 0
@@ -491,11 +492,11 @@ WinMain (HINSTANCE h,
 	    if (WaitOption && sei.hProcess != NULL)
 	      if (!WaitForSingleObject (sei.hProcess, INFINITE))
 	        GetExitCodeProcess (sei.hProcess, &exitcode);
-	    Logger ().setExitMsg (IDS_ELEVATED);
-	    Logger ().exit (exitcode, false);
+            ExitManager::setExitMsg (IDS_ELEVATED);
+            ExitManager::exit (exitcode, false);
 	  }
 	Log (LOG_PLAIN) << "Starting elevated child process failed" << endLog;
-	Logger ().exit (1, false);
+        ExitManager::exit (1, false);
       }
     else
       {
@@ -504,8 +505,8 @@ WinMain (HINSTANCE h,
 	main_display ();
 	Settings.save ();	// Clean exit.. save user options.
 	if (rebootneeded)
-	  Logger ().setExitMsg (IDS_REBOOT_REQUIRED);
-	Logger ().exit (rebootneeded ? IDS_REBOOT_REQUIRED : 0);
+          ExitManager::setExitMsg (IDS_REBOOT_REQUIRED);
+        ExitManager::exit (rebootneeded ? IDS_REBOOT_REQUIRED : 0);
       }
 finish_up:
     ;

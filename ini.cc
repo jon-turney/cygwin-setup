@@ -26,6 +26,7 @@
 #include "setup_version.h"
 #include "win32.h"
 #include "LogFile.h"
+#include "ExitManager.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -333,7 +334,7 @@ do_ini_thread (Feedback &feedback)
 	    {
 	      int yn = yesno (feedback.owner(), IDS_OLD_SETUPINI);
 	      if (yn == IDNO)
-		Logger ().exit (1);
+                ExitManager::exit (1);
 	    }
 	}
       if (setup_timestamp)

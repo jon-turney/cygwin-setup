@@ -16,7 +16,7 @@
 #include "netio.h"
 #include "GuiGetNetAuth.h"
 
-#include "LogFile.h"
+#include "ExitManager.h"
 
 #include "resource.h"
 #include "dialog.h"
@@ -76,7 +76,7 @@ auth_cmd (HWND h, int id, HWND hwndctl, UINT code)
 
     case IDCANCEL:
       EndDialog (h, 1);
-      Logger ().exit (1);
+      ExitManager::exit (1);
       break;
     }
   return 0;

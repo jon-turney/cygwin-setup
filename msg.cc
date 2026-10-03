@@ -19,6 +19,7 @@
 #include "msg.h"
 
 #include "LogFile.h"
+#include "ExitManager.h"
 #include "win32.h"
 
 #include <stdio.h>
@@ -96,7 +97,7 @@ fatal (HWND owner, int id, ...)
   va_list args;
   va_start (args, id);
   mbox (owner, "fatal", 0, id, args);
-  Logger ().exit (1);
+  ExitManager::exit (1);
 }
 
 int
