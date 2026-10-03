@@ -158,7 +158,7 @@ STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSM
 CAPTION "Cygwin Kurucu"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "Cygwin Kurucu Programı",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "Cygwin Kurucu Programı",IDC_STATIC_WELCOME_TITLE,115,1,215,24
     LTEXT           "Bu kurucu program Cygwin ortamının ilk kurulumu ve sonraki tüm güncellemeler için kullanılır. Takip eden sayfalar kurulum boyunca size rehberlik edecektir.\n\nÖntanımlı olarak yalnızca temel bir paket kümesi kurduğumuzu lütfen unutmayın.  Cygwin, çok çeşitli amaçları kapsayan çok sayıda paket sağlar.\n\nGerektiğinde paket eklemek, kaldırmak veya yükseltmek için bu programı istediğiniz zaman çalıştırabilirsiniz.",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10

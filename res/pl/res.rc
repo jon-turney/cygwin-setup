@@ -158,7 +158,7 @@ STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSM
 CAPTION "Konfiguracja Cygwin"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "Program instalacyjny Cygwin Net Release",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "Program instalacyjny Cygwin Net Release",IDC_STATIC_WELCOME_TITLE,115,1,215,24
     LTEXT           "Ten program instalacyjny jest używany do początkowej instalacji środowiska Cygwin, jak również wszystkich późniejszych aktualizacji. Kolejne strony poprowadzą Cię przez instalację.\n\nProszę zauważyć, że domyślnie instalujemy tylko podstawowy zestaw pakietów.  Cygwin dostarcza dużą liczbę pakietów o różnym przeznaczeniu.\n\nZawsze możesz uruchomić ten program w dowolnym momencie w przyszłości, aby dodać, usunąć lub uaktualnić pakiety w razie potrzeby.",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10

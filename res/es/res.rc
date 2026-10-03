@@ -127,7 +127,7 @@ END
 
 IDD_SPLASH DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Configuración de Cygwin" FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "Programa de Configuración de Versión de Red para Cygwin",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "Programa de Configuración de Versión de Red para Cygwin",IDC_STATIC_WELCOME_TITLE,115,1,215,24
     LTEXT           "Este programa de configuración se utiliza para la instalación inicial del entorno Cygwin, así como para todas las actualizaciones posteriores. Las siguientes páginas le guiarán durante la instalación.\n\nTenga en cuenta que, por defecto, solo instalamos un conjunto básico de paquetes. Cygwin ofrece una gran cantidad de paquetes para una amplia variedad de propósitos.\n\nPuede ejecutar este programa en cualquier momento para añadir, eliminar o actualizar paquetes según sea necesario.",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10

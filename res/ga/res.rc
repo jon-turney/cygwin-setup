@@ -127,7 +127,7 @@ END
 
 IDD_SPLASH DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Socrú Cygwin" FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "Clár Socraithe Scaoileadh Glan Cygwin",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "Clár Socraithe Scaoileadh Glan Cygwin",IDC_STATIC_WELCOME_TITLE,115,1,215,24
     LTEXT           "Úsáidtear an clár socraithe seo chun suiteáil tosaigh timpeallacht Cygwin chomh maith le gach nuashonrú ina dhiaidh sin. Treoróidh na leathanaigh a leanann tú tríd an suiteáil.\n\nTabhair faoi deara le do thoil nach suiteáilimid ach bunsraith pacáistí de réir réamhshocraithe Soláthraíonn Cygwin líon mór pacáistí a chuimsíonn réimse leathan cuspóirí.\n\nIs féidir leat an clár seo a reáchtáil ag am ar bith sa todhchaí chun pacáistí a chur leis, a bhaint nó a uasghrádú de réir mar is gá.",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10

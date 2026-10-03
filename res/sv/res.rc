@@ -127,7 +127,7 @@ END
 
 IDD_SPLASH DIALOG 0, 0, SETUP_STANDARD_DIALOG_DIMS STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSMENU CAPTION "Cygwin-installation" FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "Cygwin Nätutgåva-installationsprogram",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "Cygwin Nätutgåva-installationsprogram",IDC_STATIC_WELCOME_TITLE,115,1,215,24
     LTEXT           "Detta installationsprogram används för den initiala installationen av Cygwin-miljön samt alla efterföljande uppdateringar. Sidorna som följer kommer att vägleda dig genom installationen.\n\nObservera att vi endast installerar en basuppsättning paket som standard. Cygwin tillhandahåller ett stort antal paket som täcker en mängd olika syften.\n\nDu kan alltid köra det här programmet när som helst i framtiden för att lägga till, ta bort eller uppgradera paket efter behov.",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10

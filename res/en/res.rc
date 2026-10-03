@@ -230,7 +230,7 @@ CAPTION "Cygwin Setup"
 FONT 8, "MS Shell Dlg"
 BEGIN
     LTEXT           "Cygwin Net Release Setup Program",
-                    IDC_STATIC_WELCOME_TITLE,115,1,195,24
+                    IDC_STATIC_WELCOME_TITLE,115,1,215,24
     LTEXT           "This setup program is used for the initial installation "
                     "of the Cygwin environment as well as all subsequent "
                     "updates. "

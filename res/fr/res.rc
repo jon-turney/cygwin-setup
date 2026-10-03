@@ -158,7 +158,7 @@ STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSM
 CAPTION "Assistant Cygwin"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "Programme Assistant Cygwin",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "Programme Assistant Cygwin",IDC_STATIC_WELCOME_TITLE,115,1,215,24
     LTEXT           "Cet assistant est utilisé pour l'installation initiale de l'environnement Cygwin ainsi que pour ses mises à jour. Les pages suivantes vont vous guider durant l'installation. \n\nNotez que Cygwin inclus un grand nombre de paquets destinés à de multiples usages. Nous ne pourrons installer par défaut qu'un jeu de paquets de base.\n\nRedémarrez ce programme ultérieurement pour ajouter, enlever ou mettre à jour des paquets si nécessaire.",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10

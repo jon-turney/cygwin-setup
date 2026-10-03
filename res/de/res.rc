@@ -158,7 +158,7 @@ STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSM
 CAPTION "Cygwin-Einrichtung"
 FONT 8, "MS Shell Dlg"
 BEGIN
-    LTEXT           "Cygwin Net Release Setup-Programm",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "Cygwin Net Release Setup-Programm",IDC_STATIC_WELCOME_TITLE,115,1,215,24
     LTEXT           "Dieses Setup-Programm wird für die Erstinstallation der Cygwin-Umgebung sowie für alle nachfolgenden Updates verwendet.  Die folgenden Seiten führen Sie durch die Installation.\n\nBitte beachten Sie, dass wir standardmäßig nur einen Basissatz von Paketen installieren.   Cygwin bietet eine große Anzahl von Paketen für eine Vielzahl von Zwecken an.\n\nSie können dieses Programm jederzeit in der Zukunft ausführen, um je nach Bedarf Pakete hinzuzufügen, zu entfernen oder zu aktualisieren.",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10

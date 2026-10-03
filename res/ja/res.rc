@@ -158,7 +158,7 @@ STYLE DS_MODALFRAME | DS_CENTER | DS_SHELLFONT | WS_CHILD | WS_CAPTION | WS_SYSM
 CAPTION "Cygwin セットアップ"
 FONT 9, "MS UI Gothic"
 BEGIN
-    LTEXT           "Cygwin セットアップ プログラム",IDC_STATIC_WELCOME_TITLE,115,1,195,24
+    LTEXT           "Cygwin セットアップ プログラム",IDC_STATIC_WELCOME_TITLE,115,1,215,24
     LTEXT           "このセットアッププログラムは、Cygwin環境の初回インストールと、その後のすべての更新に使用されます。次のページでインストール手順を説明します。\n\nデフォルトでは、基本的なパッケージセットのみがインストールされます。Cygwinは、さまざまな用途に対応する多数のパッケージを提供しています。\n\nこのプログラムはいつでも再実行でき、必要に応じてパッケージの追加、削除、またはアップグレードができます。",IDC_SPLASH_TEXT,115,25,195,100
     ICON            IDI_CYGWIN,IDC_SPLASH_ICON,4,6,0,0,SS_ICON | SS_REALSIZEIMAGE
     LTEXT           "",IDC_VERSION,115,127,195,10
