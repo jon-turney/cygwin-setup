@@ -61,42 +61,49 @@ mount_table[255];
 
 struct mnt *root_here = NULL;
 
-void
-create_install_root ()
+static void
+write_rootdir_reg_key(bool isarch)
 {
   char buf[1000];
   HKEY key;
   DWORD disposition;
   DWORD rv;
 
-  snprintf (buf, sizeof(buf), "Software\\%s\\%s",
-	    CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
-	    CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME);
+  if (isarch)
+    snprintf (buf, sizeof(buf), "Software\\%s\\%s\\%s",
+              CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
+              CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME,
+              machine_name(installArch).c_str());
+  else
+    snprintf (buf, sizeof(buf), "Software\\%s\\%s",
+              CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
+              CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME);
+
   HKEY kr = (root_scope == IDC_ROOT_USER) ? HKEY_CURRENT_USER
-					  : HKEY_LOCAL_MACHINE;
+                                          : HKEY_LOCAL_MACHINE;
   do
     {
       rv = RegCreateKeyEx (kr, buf, 0, (char *)"Cygwin", 0,
-			   KEY_ALL_ACCESS | SETUP_KEY_WOW64,
-			   0, &key, &disposition);
+                           KEY_ALL_ACCESS | SETUP_KEY_WOW64,
+                           0, &key, &disposition);
       if (rv != ERROR_ACCESS_DENIED || kr != HKEY_LOCAL_MACHINE)
-	break;
+        break;
       Log (LOG_PLAIN) << "Access denied trying to create rootdir registry key"
-		      << endLog;
+                      << endLog;
       kr = HKEY_CURRENT_USER;
     }
   while (rv == ERROR_ACCESS_DENIED);
   if (rv == ERROR_SUCCESS)
     do
       {
-	rv = RegSetValueEx (key, "rootdir", 0, REG_SZ,
-			    (BYTE *) get_root_dir ().c_str (),
-			    get_root_dir ().size () + 1);
-	if (rv != ERROR_ACCESS_DENIED || kr != HKEY_LOCAL_MACHINE)
-	  break;
-	Log (LOG_PLAIN) << "Access denied trying to create rootdir registry value"
-			<< endLog;
-	kr = HKEY_CURRENT_USER;
+        rv = RegSetValueEx (key, "rootdir", 0, REG_SZ,
+                            (BYTE *) get_root_dir ().c_str (),
+                            get_root_dir ().size () + 1);
+        if (rv != ERROR_ACCESS_DENIED || kr != HKEY_LOCAL_MACHINE)
+          break;
+        Log (LOG_PLAIN) << "Access denied trying to create rootdir registry value"
+                        << endLog;
+        kr = HKEY_CURRENT_USER;
       }
     while (rv == ERROR_ACCESS_DENIED);
   if (rv != ERROR_SUCCESS)
@@ -104,10 +111,17 @@ create_install_root ()
   RegCloseKey (key);
 
   Log (LOG_TIMESTAMP) << "Registry value set: HKEY_"
-		      << (root_scope == IDC_ROOT_USER ? "CURRENT_USER\\"
-						      : "LOCAL_MACHINE\\")
-		      << buf << "\\rootdir = \"" << get_root_dir () << "\""
-		      << endLog;
+                      << (root_scope == IDC_ROOT_USER ? "CURRENT_USER\\"
+                                                      : "LOCAL_MACHINE\\")
+                      << buf << "\\rootdir = \"" << get_root_dir () << "\""
+                      << endLog;
+}
+
+void
+create_install_root ()
+{
+  write_rootdir_reg_key(false); /* also write general key for backwards compatibility */
+  write_rootdir_reg_key(true);
 }
 
 inline char *
@@ -265,13 +279,51 @@ add_usr_mnts (struct mnt *m)
     }
 }
 
+static std::string
+read_rootdir_reg_key(bool isuser, bool isarch)
+{
+  char buf[10000];
+  if (isarch)
+    {
+      snprintf (buf, sizeof(buf), "Software\\%s\\%s\\%s",
+                CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
+                CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME,
+                machine_name(installArch).c_str());
+    }
+  else
+    {
+      snprintf (buf, sizeof(buf), "Software\\%s\\%s",
+                CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
+                CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME);
+    }
+
+  HKEY key = isuser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
+  if (RegOpenKeyEx (key, buf, 0, KEY_ALL_ACCESS | SETUP_KEY_WOW64, &key) != ERROR_SUCCESS)
+    return "";
+
+  std::string result;
+  DWORD type;
+  /* Cygwin rootdir is always < MAX_PATH. */
+  char aBuffer[MAX_PATH + 1];
+  DWORD posix_path_size = MAX_PATH;
+  if (RegQueryValueEx(key, "rootdir", 0, &type, (BYTE *) aBuffer, &posix_path_size) == ERROR_SUCCESS)
+      result = std::string (aBuffer);
+
+  RegCloseKey (key);
+
+  Log (LOG_BABBLE) << "Read rootdir " << result << " from registry key " <<
+    (isuser ? "HKEY_CURRENT_USER" : "HKEY_LOCAL_MACHINE") << "\\" << buf <<
+    "\\rootdir" << endLog;
+
+  return result;
+}
+
 void
 read_mounts (const std::string val)
 {
-  DWORD posix_path_size;
   struct mnt *m = mount_table;
-  char buf[10000];
 
+  /* initialize mount table */
   root_here = NULL;
   for (mnt * m1 = mount_table; m1->posix.size (); m1++)
     {
@@ -280,6 +332,7 @@ read_mounts (const std::string val)
     }
   got_usr_bin = got_usr_lib = false;
 
+  /* root directory from RootOption */
   if (val.size ())
     {
       /* Cygwin rootdir always < MAX_PATH. */
@@ -293,36 +346,32 @@ read_mounts (const std::string val)
 	  add_usr_mnts (++m);
 	}
     }
-  else
+
+  /* otherwise, check for rootdir from the last time we were run, stored in the
+     registry */
+  if (!root_here)
     {
-      /* Always check HKEY_LOCAL_MACHINE first. */
-      for (int isuser = 0; isuser <= 1; isuser++)
-	{
-	  snprintf (buf, sizeof(buf), "Software\\%s\\%s",
-		   CYGWIN_INFO_CYGWIN_REGISTRY_NAME,
-		   CYGWIN_INFO_CYGWIN_SETUP_REGISTRY_NAME);
-	  HKEY key = isuser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
-	  if (RegOpenKeyEx (key, buf, 0, KEY_ALL_ACCESS | SETUP_KEY_WOW64,
-			    &key) != ERROR_SUCCESS)
-	    continue;
-	  DWORD type;
-	  /* Cygwin rootdir always < MAX_PATH. */
-	  char aBuffer[MAX_PATH + 1];
-	  posix_path_size = MAX_PATH;
-	  if (RegQueryValueEx
-	      (key, "rootdir", 0, &type, (BYTE *) aBuffer,
-	       &posix_path_size) == ERROR_SUCCESS)
-	    {
-	      m->native = std::string (aBuffer);
-	      m->posix = "/";
-	      root_here = m++;
-	      from_fstab (m, root_here->native);
-	      add_usr_mnts (m);
-	      break;
-	    }
-	  RegCloseKey (key);
-	}
+      /* Check arch-specific key first */
+      for (int isarch = 1; isarch >= 0; isarch--)
+        {
+          /* Always check HKEY_LOCAL_MACHINE first. */
+          for (int isuser = 0; isuser <= 1; isuser++)
+            {
+              std::string rootdir = read_rootdir_reg_key(isuser, isarch);
+
+              if (!rootdir.empty())
+                {
+                  m->native = rootdir;
+                  m->posix = "/";
+                  root_here = m++;
+                  from_fstab (m, root_here->native);
+                  add_usr_mnts (m);
+                  goto reg_key_found;
+                }
+            }
+        }
     }
+ reg_key_found:
 
   /*
     The default root directory: for historical reasons (you could already have a
