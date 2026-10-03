@@ -26,6 +26,10 @@ case $1 in
         lang="LANG_POLISH"
         sublang="SUBLANG_DEFAULT"  # SUBLANG_POLISH_POLAND (equivalent) requires WINVER >= 0x0600
         ;;
+    sv)       # 041d
+        lang="LANG_SWEDISH"
+        sublang="SUBLANG_DEFAULT"
+        ;;
     tr)       # 041f
         lang="LANG_TURKISH"
         sublang="SUBLANG_DEFAULT"
