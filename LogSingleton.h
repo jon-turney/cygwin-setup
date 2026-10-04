@@ -34,7 +34,7 @@ public:
 
   virtual ~LogSingleton();
   // get a specific verbosity stream.
-  virtual std::ostream &operator() (enum log_level level) = 0;
+  virtual std::ostream& getStream(enum log_level level) = 0;
 
   friend std::ostream& endLog(std::ostream& outs);
 
@@ -50,7 +50,7 @@ private:
 /* End of a Log comment */
 extern std::ostream& endLog(std::ostream& outs);
 
-#define Log(X) (LogSingleton::GetInstance ()(X))
+#define Log(X) (LogSingleton::GetInstance ().getStream (X))
 
 // Log adapators for printf-style output
 void LogBabblePrintf(const char *fmt, ...);
