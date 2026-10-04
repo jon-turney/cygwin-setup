@@ -16,44 +16,6 @@
 #ifndef SETUP_LOGSINGLETON_H
 #define SETUP_LOGSINGLETON_H
 
-#include <iostream>
-
-enum log_level {
-  LOG_PLAIN = 2,
-  LOG_BABBLE = 1,
-  LOG_TIMESTAMP	= 2
-};
-
-// Logging class. Default logging level is PLAIN.
-class LogSingleton : public std::ostream
-{
-public:
-  // Singleton support
-  static LogSingleton &GetInstance();
-  static void SetInstance(LogSingleton &anInstance);
-
-  virtual ~LogSingleton();
-  // get a specific verbosity stream.
-  virtual std::ostream& getStream(enum log_level level) = 0;
-
-  friend std::ostream& endLog(std::ostream& outs);
-
-protected:
-  LogSingleton(std::streambuf* aStream); // Only child classs can be created.
-  LogSingleton (LogSingleton const &); // no copy constructor
-  LogSingleton &operator = (LogSingleton const&); // no assignment operator
-  virtual void endEntry() = 0; // the current in-progress entry is complete.
-private:
-  static LogSingleton *theInstance;
-};
-
-/* End of a Log comment */
-extern std::ostream& endLog(std::ostream& outs);
-
-#define Log(X) (LogSingleton::GetInstance ().getStream (X))
-
-// Log adapators for printf-style output
-void LogBabblePrintf(const char *fmt, ...);
-void LogPlainPrintf(const char *fmt, ...);
+#include <LogFile.h>
 
 #endif /* SETUP_LOGSINGLETON_H */

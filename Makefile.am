@@ -72,8 +72,8 @@ inilint_SOURCES = \
 	cli/CliPhaseFeedback.cc \
 	cli/CliPhaseFeedback.h \
 	cli/CliFeedback.h \
-	LogSingleton.cc \
-	LogSingleton.h \
+	LogFile.cc \
+	LogFile.h \
 	IniDBBuilder.h \
 	inilintmain.cc \
 	inilex.ll \

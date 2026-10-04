@@ -29,10 +29,11 @@ check_PROGRAMS = \
 TESTS = \
 	UserSettingsTest
 
-UserSettingsTest_SOURCES = UserSettingsTest.cc
+UserSettingsTest_SOURCES = UserSettingsTest.cc \
+	LogStubs.cc
+
 UserSettingsTest_LDADD = \
 	$(top_builddir)/Exception.o \
 	$(top_builddir)/UserSettings.o \
 	$(top_builddir)/String++.o \
-	$(top_builddir)/io_stream.o \
-	$(top_builddir)/LogSingleton.o
+	$(top_builddir)/io_stream.o
