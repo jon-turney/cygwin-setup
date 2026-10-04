@@ -31,7 +31,7 @@ public:
   virtual void saveAll ();
   virtual ~LogFile();
   // get a specific verbosity stream.
-  virtual std::ostream &operator() (enum log_level level);
+  virtual std::ostream& getStream(enum log_level level);
 
 protected:
   LogFile(std::stringbuf *aStream);

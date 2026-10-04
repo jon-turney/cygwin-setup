@@ -151,7 +151,7 @@ LogFile::log_save (int babble, const std::string& filename, bool append)
 }
 
 std::ostream &
-LogFile::operator() (log_level theLevel)
+LogFile::getStream(log_level theLevel)
 {
   if (theLevel < 1 || theLevel > 2)
     throw new std::invalid_argument("Invalid log_level");
