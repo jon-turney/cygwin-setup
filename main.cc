@@ -303,9 +303,8 @@ WinMain (HINSTANCE h,
     if (unattended_mode || output_only || !elevate)
       set_cout ();
 
-    /* Start logging only if we don't elevate.  Same for setting default
-       security settings. */
-    LogSingleton::SetInstance (*LogFile::createLogFile ());
+    /* Start logging only if we don't elevate. */
+    /* Set default security settings only if we don't elevate. */
 
     /* Don't create log files for help or version output only. */
     if (!elevate && !output_only)

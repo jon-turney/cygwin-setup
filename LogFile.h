@@ -16,34 +16,54 @@
 #ifndef SETUP_LOGFILE_H
 #define SETUP_LOGFILE_H
 
-#include "LogSingleton.h"
+#include <iostream>
 #include <sstream>
 
+enum log_level {
+  LOG_PLAIN = 2,
+  LOG_BABBLE = 1,
+  LOG_TIMESTAMP = 2
+};
+
 // Logging class.
-class LogFile : public LogSingleton {
+class LogFile : public std::ostream {
 public:
-  static LogFile *createLogFile();
   LogFile();
+  ~LogFile();
+
   void clearFiles(); // delete all target filenames
   void setFile (int minlevel, const std::string& path, bool append);
   std::string getFileName (int level) const;
 
-  virtual void saveAll ();
-  virtual ~LogFile();
+  void saveAll ();
+
   // get a specific verbosity stream.
-  virtual std::ostream& getStream(enum log_level level);
+  std::ostream& getStream(enum log_level level);
+
+  friend std::ostream& endLog(std::ostream& outs);
 
 protected:
-  LogFile(std::stringbuf *aStream);
   LogFile (LogFile const &); // no copy constructor
   LogFile &operator = (LogFile const&); // no assignment operator
-  virtual void endEntry(); // the current in-progress entry is complete.
+
+  void endEntry(); // the current in-progress entry is complete.
 
 private:
   void log_save (int babble, const std::string& filename, bool append);
 };
 
+// End of a Log comment
+extern std::ostream& endLog(std::ostream& outs);
 
-#define Logger() ((LogFile &) LogSingleton::GetInstance ())
+// Log adapators for printf-style output
+void LogBabblePrintf(const char *fmt, ...);
+void LogPlainPrintf(const char *fmt, ...);
+
+// Global instance
+LogFile &getGlobalLogger();
+
+#define Log(X) (getGlobalLogger ().getStream (X))
+
+#define Logger() (getGlobalLogger ())
 
 #endif /* SETUP_LOGFILE_H */

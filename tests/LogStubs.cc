@@ -1,6 +1,4 @@
 /*
- * Copyright (c) 2002, Robert Collins..
- *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation; either version 2 of the License, or
@@ -9,13 +7,34 @@
  *     A copy of the GNU General Public License can be found at
  *     http://www.gnu.org/
  *
- * Written by Robert Collins <rbtcollins@hotmail.com>
- *
  */
 
-#ifndef SETUP_LOGSINGLETON_H
-#define SETUP_LOGSINGLETON_H
+#include "LogFile.h"
 
-#include <LogFile.h>
+// Global logger instance
+static LogFile global_logger;
 
-#endif /* SETUP_LOGSINGLETON_H */
+LogFile &getGlobalLogger()
+{
+  return global_logger;
+}
+
+// Stub implementation
+LogFile::LogFile()
+{
+}
+
+LogFile::~LogFile()
+{
+}
+
+std::ostream & LogFile::getStream(enum log_level level)
+{
+  return std::cerr;
+}
+
+std::ostream& endLog(std::ostream& outs)
+{
+  outs << std::endl;
+  return outs;
+}

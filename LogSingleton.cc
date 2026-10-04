@@ -14,42 +14,9 @@
  */
 
 #include "LogSingleton.h"
-#include <stdexcept>
 #include <stdarg.h>
 
 /* Helper functions */
-
-/* End of a Log comment */
-std::ostream& endLog(std::ostream& outs)
-{
-  /* Doesn't seem to be any way around this */
-  dynamic_cast<LogSingleton &>(outs).endEntry();
-  return outs;
-}
-
-/* The LogSingleton class */
-
-LogSingleton * LogSingleton::theInstance(0);
-
-LogSingleton::LogSingleton(std::streambuf* aStream) : std::ios (aStream), std::ostream (aStream)
-{
-    std::ios::init (aStream);
-}
-LogSingleton::~LogSingleton(){}
-
-LogSingleton &
-LogSingleton::GetInstance()
-{
-  if (!theInstance)
-    throw new std::invalid_argument ("No instance has been set!");
-  return *theInstance;
-}
-
-void
-LogSingleton::SetInstance(LogSingleton &newInstance)
-{
-  theInstance = &newInstance;
-}
 
 // Log adapators for printf-style output
 void

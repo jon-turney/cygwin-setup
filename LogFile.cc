@@ -28,6 +28,14 @@
 
 static BoolOption VerboseOutput (false, 'v', "verbose", IDS_HELPTEXT_VERBOSE);
 
+// Global logger instance
+static LogFile global_logger;
+
+LogFile &getGlobalLogger()
+{
+  return global_logger;
+}
+
 /* private helper class */
 class filedef
 {
@@ -63,16 +71,12 @@ typedef std::set<filedef> FileSet;
 static FileSet files;
 static std::stringbuf *theStream;
 
-LogFile *
-LogFile::createLogFile()
+LogFile::LogFile()
 {
     theStream = new std::stringbuf;
-    return new LogFile(theStream);
+    std::ios::init (theStream);
 }
 
-LogFile::LogFile(std::stringbuf *aStream) : LogSingleton (aStream) 
-{
-}
 LogFile::~LogFile(){}
 
 void
@@ -217,4 +221,12 @@ LogFile::endEntry()
   theStream = new std::stringbuf;
   rdbuf (theStream);
   init (theStream);
+}
+
+/* End of a Log comment */
+std::ostream& endLog(std::ostream& outs)
+{
+  /* Doesn't seem to be any way around this */
+  dynamic_cast<LogFile &>(outs).endEntry();
+  return outs;
 }
