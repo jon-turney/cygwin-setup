@@ -23,7 +23,7 @@
 #include "compress.h"
 #include "gcrypt.h"
 #include "msg.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "resource.h"
 #include "getopt++/StringArrayOption.h"
 #include "getopt++/BoolOption.h"

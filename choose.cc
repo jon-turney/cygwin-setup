@@ -40,7 +40,6 @@
 #include "resource.h"
 #include "state.h"
 #include "msg.h"
-#include "LogSingleton.h"
 #include "LogFile.h"
 #include "filemanip.h"
 #include "io_stream.h"

@@ -26,7 +26,7 @@
 #include "msg.h"
 #include "netio.h"
 #include "nio-ie5.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "setup_version.h"
 #include "getopt++/StringOption.h"
 #include <sstream>

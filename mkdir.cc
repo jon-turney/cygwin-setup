@@ -22,7 +22,7 @@
 
 #include "mkdir.h"
 #include "filemanip.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 /* Return 0 on success.
    A mode of 0 means no POSIX perms. */

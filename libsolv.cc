@@ -20,7 +20,7 @@
 #include "solv/solverdebug.h"
 #include "solv/evr.h"
 
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include <iomanip>
 #include <algorithm>
 

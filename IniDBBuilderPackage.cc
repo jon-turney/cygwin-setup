@@ -25,7 +25,7 @@
 #include "ini.h"
 // for strtoul
 #include <string.h>
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "PackageSpecification.h"
 #include <algorithm>
 

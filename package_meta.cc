@@ -28,7 +28,7 @@
 #include "compress.h"
 
 #include "filemanip.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 /* io_stream needs a bit of tweaking to get rid of this. TODO */
 #include "mount.h"
 /* this goes at the same time */

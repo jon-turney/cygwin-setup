@@ -24,7 +24,7 @@
 #include <map>
 #include "win32.h"
 #include <commctrl.h>
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 class RECTWrapper;
 

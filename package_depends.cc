@@ -12,7 +12,7 @@
  */
 
 #include <package_depends.h>
-#include <LogSingleton.h>
+#include "LogFile.h"
 
 void
 dumpPackageDepends (PackageDepends const &currentList,

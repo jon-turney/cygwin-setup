@@ -16,7 +16,7 @@
 /* Archive IO operations
  */
 
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 #include "io_stream.h"
 #include "archive.h"

@@ -19,7 +19,7 @@
 
 #include "processlist.h"
 #include <String++.h>
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "script.h"
 #include "mount.h"
 #include "filemanip.h"

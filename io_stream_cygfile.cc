@@ -28,7 +28,7 @@
 
 #include "io_stream_cygfile.h"
 #include "IOStreamProvider.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "resource.h"
 
 static StringChoiceOption::StringChoices algs({

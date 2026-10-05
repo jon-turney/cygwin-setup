@@ -13,7 +13,7 @@
  *
  */
 
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include <stdarg.h>
 
 /* Helper functions */

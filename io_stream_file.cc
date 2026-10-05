@@ -25,7 +25,7 @@
   
 #include "io_stream_file.h"
 #include "IOStreamProvider.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 /* completely private iostream registration class */
 class FileProvider : public IOStreamProvider

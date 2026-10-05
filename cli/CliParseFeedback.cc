@@ -12,7 +12,7 @@
  */
 
 #include "cli/CliFeedback.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include <sstream>
 #include <iostream>
 

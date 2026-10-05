@@ -37,7 +37,7 @@
 #include "package_meta.h"
 #include "Exception.h"
 #include "Generic.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "resource.h"
 #include "libsolv.h"
 #include "csu_util/version_compare.h"
