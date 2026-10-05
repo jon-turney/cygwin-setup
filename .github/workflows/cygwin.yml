@@ -18,7 +18,7 @@ jobs:
     - run: git config --global core.autocrlf input
 
     # fetch all history for all tags for 'git describe'
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
 
