@@ -18,11 +18,33 @@
 
 #include <iostream>
 #include <sstream>
+#include <memory>
 
 enum log_level {
   LOG_PLAIN = 2,
   LOG_BABBLE = 1,
   LOG_TIMESTAMP = 2
+};
+
+// Forward declaration
+class LogFile;
+
+// Custom ostream subclass that carries context for thread-safe logging.
+// Each getStream() call returns a fresh LogStream instance with its own buffer.
+class LogStream : public std::ostream
+{
+public:
+  LogStream(LogFile *parent, log_level level);
+  ~LogStream();
+
+  LogFile *getParent() const { return parent_; }
+  log_level getLevel() const { return level_; }
+  std::stringbuf *getBuffer() const { return buffer_; }
+
+private:
+  LogFile *parent_;
+  log_level level_;
+  std::stringbuf *buffer_;
 };
 
 // Logging class.
@@ -38,7 +60,7 @@ public:
   void saveAll ();
 
   // get a specific verbosity stream.
-  std::ostream& getStream(enum log_level level);
+  std::unique_ptr<LogStream> getStream(enum log_level level);
 
   friend std::ostream& endLog(std::ostream& outs);
 
@@ -46,7 +68,8 @@ protected:
   LogFile (LogFile const &); // no copy constructor
   LogFile &operator = (LogFile const&); // no assignment operator
 
-  void endEntry(); // the current in-progress entry is complete.
+
+  void endEntry(LogStream &stream); // the current in-progress entry is complete.
 
 private:
   void log_save (int babble, const std::string& filename, bool append);
@@ -62,7 +85,7 @@ void LogPlainPrintf(const char *fmt, ...);
 // Global instance
 LogFile &getGlobalLogger();
 
-#define Log(X) (getGlobalLogger ().getStream (X))
+#define Log(X) (*(getGlobalLogger ().getStream (X)))
 
 #define Logger() (getGlobalLogger ())
 

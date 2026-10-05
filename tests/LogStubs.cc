@@ -28,9 +28,19 @@ LogFile::~LogFile()
 {
 }
 
-std::ostream & LogFile::getStream(enum log_level level)
+LogStream::LogStream(LogFile *parent, log_level level)
+  : std::ostream(nullptr), parent_(parent), level_(level), buffer_(nullptr)
 {
-  return std::cerr;
+  rdbuf(std::cerr.rdbuf());
+}
+
+LogStream::~LogStream()
+{
+}
+
+std::unique_ptr<LogStream> LogFile::getStream(enum log_level level)
+{
+  return std::unique_ptr<LogStream>(new LogStream(this, level));
 }
 
 std::ostream& endLog(std::ostream& outs)
