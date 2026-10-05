@@ -139,6 +139,11 @@ LogFile::log_save (int minlevel, const std::string& filename, bool append)
     {
       if (l->level >= minlevel)
         {
+          char b[100];
+          struct tm *tm = localtime (&(l->when));
+          strftime (b, 100, "%Y/%m/%d %H:%M:%S ", tm);
+          f->write(b, strlen(b));
+
           const char *tstr = l->msg.c_str();
           f->write (tstr, strlen (tstr));
           if (tstr[strlen (tstr) - 1] != '\n')
@@ -201,17 +206,12 @@ LogFile::endEntry()
       currEnt->next = 0;
       currEnt->level = LOG_PLAIN;
     }
+
   *next_logent = currEnt;
   next_logent = &(currEnt->next);
+
   time (&(currEnt->when));
-  if (currEnt->level == LOG_TIMESTAMP)
-    {
-      char b[100];
-      struct tm *tm = localtime (&(currEnt->when));
-      strftime (b, 1000, "%Y/%m/%d %H:%M:%S ", tm);
-      currEnt->msg = b;
-    }
-  currEnt->msg += buf;
+  currEnt->msg = buf;
 
   /* reset for next use */
   theStream = new std::stringbuf;
