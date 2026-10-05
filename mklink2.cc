@@ -6,7 +6,7 @@
 #include "mklink2.h"
 #include "filemanip.h"
 #include "winioctl.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "mount.h"
 
 SymlinkTypeEnum symlinkType = SymlinkTypeMagic; // default to historical behaviour

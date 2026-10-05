@@ -26,7 +26,7 @@
 #include "gcrypt.h"
 #include "gpg-packet.h"
 #include "msg.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "resource.h"
 
 #ifndef RFC4880DEBUGGING

@@ -17,7 +17,7 @@
 #include "resource.h"
 #include "state.h"
 #include "threebar.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "ControlAdjuster.h"
 #include "package_db.h"
 

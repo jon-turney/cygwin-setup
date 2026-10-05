@@ -12,7 +12,7 @@
  */
 
 #include "ListView.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "resource.h"
 #include "String++.h"
 

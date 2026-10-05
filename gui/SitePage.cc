@@ -29,7 +29,7 @@
 #include "state.h"
 #include "geturl.h"
 #include "msg.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "io_stream.h"
 #include "gui/SitePage.h"
 

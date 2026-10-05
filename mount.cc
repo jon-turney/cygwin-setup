@@ -21,7 +21,7 @@
 #include "ini.h"
 #include "win32.h"
 #include "filemanip.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -19,7 +19,7 @@
 #include "ini.h"
 #include <iostream>
 #include <sstream>
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 void
 show_help()

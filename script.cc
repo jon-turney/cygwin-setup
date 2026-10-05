@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "filemanip.h"
 #include "mount.h"
 #include "io_stream.h"

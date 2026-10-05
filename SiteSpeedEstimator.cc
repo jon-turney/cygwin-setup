@@ -16,7 +16,7 @@
 #include "SiteSpeedEstimator.h"
 #include "netio.h"
 #include "ini.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "Feedback.h"
 
 #include <vector>

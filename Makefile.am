@@ -226,7 +226,6 @@ endif
 	LogFile.cc \
 	LogFile.h \
 	LogSingleton.cc \
-	LogSingleton.h \
 	main.cc \
 	mkdir.cc \
 	mkdir.h \

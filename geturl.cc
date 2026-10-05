@@ -36,7 +36,7 @@
 
 #include "Exception.h"
 
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "Feedback.h"
 
 static void

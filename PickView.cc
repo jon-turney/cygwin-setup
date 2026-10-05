@@ -26,7 +26,7 @@
 #include "resource.h"
 /* For 'source' */
 #include "state.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "Exception.h"
 
 // Scan desired packages and collect the names of packages which provide the

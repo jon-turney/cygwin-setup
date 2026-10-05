@@ -18,7 +18,7 @@
  */
 
 #include "compress_xz.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 #include <stdexcept>
 

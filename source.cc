@@ -19,7 +19,7 @@
 
 #include "source.h"
 
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 #include "win32.h"
 #include <stdio.h>

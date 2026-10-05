@@ -11,7 +11,7 @@
 
 #include "choose_cli.h"
 
-#include "LogSingleton.h"
+#include "LogFile.h"
 #include "resource.h"
 #include "package_db.h"
 #include "package_meta.h"

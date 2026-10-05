@@ -30,7 +30,7 @@
 #include "find.h"
 #include "ini.h"
 #include "FindVisitor.h"
-#include "LogSingleton.h"
+#include "LogFile.h"
 
 class SetupFindVisitor : public FindVisitor
 {
