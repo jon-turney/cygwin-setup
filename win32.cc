@@ -35,7 +35,6 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 			   mode_t mode, SECURITY_DESCRIPTOR &out_sd, acl_t &acl)
 {
   DWORD u_attribute, g_attribute, o_attribute;
-  DWORD offset = 0;
 
   /* Initialize out SD */
   if (!InitializeSecurityDescriptor (&out_sd, SECURITY_DESCRIPTOR_REVISION))
@@ -62,8 +61,6 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 			      u_attribute, owner_sid))
     Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
     			<< ", owner) failed: " << GetLastError () << endLog;
-  else
-    offset++;
   /* GROUP */
   /* Default group to current primary group. */
   if (!group_sid)
@@ -81,8 +78,6 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 			      g_attribute, group_sid))
     Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
     			<< ", group) failed: " << GetLastError () << endLog;
-  else
-    offset++;
   /* OTHER */
   o_attribute = STANDARD_RIGHTS_READ | FILE_READ_ATTRIBUTES;
   if (mode & 0004) // S_IROTH
@@ -97,8 +92,6 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 			      o_attribute, everyOneSID.theSID ()))
     Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
     			<< ", everyone) failed: " << GetLastError () << endLog;
-  else
-    offset++;
   if (mode & 07000) /* At least one of S_ISUID, S_ISGID, S_ISVTX */
     {
       DWORD attribute = 0;
@@ -112,8 +105,6 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 				  attribute, nullSID.theSID ()))
 	Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
 			    << ", null) failed: " << GetLastError () << endLog;
-      else
-	offset++;
     }
   /* For directories, we also add inherit-only ACEs for CREATOR OWNER,
      CREATOR GROUP, and EVERYONE (aka OTHER). */
@@ -141,22 +132,16 @@ NTSecurity::GetPosixPerms (const char *fname, PSID owner_sid, PSID group_sid,
 	Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
 			    << ", creator owner) failed: "
 			    << GetLastError () << endLog;
-      else
-	offset++;
       if (!AddAccessAllowedAceEx (&acl.acl, ACL_REVISION, ALL_INHERIT_ACE,
 				  g_attribute, cr_groupSID.theSID ()))
 	Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
 			    << ", creator group) failed: "
 			    << GetLastError () << endLog;
-      else
-	offset++;
       if (!AddAccessAllowedAceEx (&acl.acl, ACL_REVISION, ALL_INHERIT_ACE,
 				  o_attribute, everyOneSID.theSID ()))
 	Log (LOG_TIMESTAMP) << "AddAccessAllowedAceEx(" << fname
 			    << ", everyone inherit) failed: "
 			    << GetLastError () << endLog;
-      else
-	offset++;
     }
 
   /* Set SD's DACL to just created ACL. */
