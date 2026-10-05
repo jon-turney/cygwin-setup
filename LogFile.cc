@@ -54,6 +54,9 @@ public:
     }
 };
 
+typedef std::set<filedef> FileSet;
+static FileSet files;
+
 /* another */
 struct LogEnt
 {
@@ -65,16 +68,22 @@ struct LogEnt
 
 static LogEnt *first_logent = 0;
 static LogEnt **next_logent = &first_logent;
-static LogEnt *currEnt = 0;
 
-typedef std::set<filedef> FileSet;
-static FileSet files;
-static std::stringbuf *theStream;
+// LogStream Implementation
+LogStream::LogStream(LogFile *parent, log_level level)
+  : std::ostream(nullptr), parent_(parent), level_(level), buffer_(new std::stringbuf())
+{
+  rdbuf(buffer_);
+}
 
+LogStream::~LogStream()
+{
+  delete buffer_;
+}
+
+// LogFile Implementation
 LogFile::LogFile()
 {
-    theStream = new std::stringbuf;
-    std::ios::init (theStream);
 }
 
 LogFile::~LogFile(){}
@@ -159,28 +168,26 @@ LogFile::log_save (int minlevel, const std::string& filename, bool append)
   been_here = 0;
 }
 
-std::ostream &
+std::unique_ptr<LogStream>
 LogFile::getStream(log_level theLevel)
 {
   if (theLevel < 1 || theLevel > 2)
     throw new std::invalid_argument("Invalid log_level");
-  if (!theStream)
-    theStream = new std::stringbuf;
-  rdbuf (theStream);
-  currEnt = new LogEnt;
-  currEnt->next = 0;
-  currEnt->level = theLevel;
-  return *this;
+
+  return std::unique_ptr<LogStream>(new LogStream(this, theLevel));
 }
 
 void
-LogFile::endEntry()
+LogFile::endEntry(LogStream &stream)
 {
-  std::string buf = theStream->str();
-  delete theStream;
+  std::stringbuf *strbuf = stream.getBuffer();
+  if (!strbuf)
+    return;
+
+  std::string buf = strbuf->str();
 
   /* also write to stdout */
-  if ((currEnt->level >= LOG_PLAIN) || VerboseOutput)
+  if ((stream.getLevel() >= LOG_PLAIN) || VerboseOutput)
     {
       /*
         The log message is UTF-8 encoded. Re-encode this in the console output
@@ -203,30 +210,25 @@ LogFile::endEntry()
       std::cout << cpbuf << std::endl;
     }
 
-  if (!currEnt)
-    {
-      /* get a default LogEnt */
-      currEnt = new LogEnt;
-      currEnt->next = 0;
-      currEnt->level = LOG_PLAIN;
-    }
+  LogEnt *currEnt = new LogEnt;
+  currEnt->next = 0;
+  currEnt->level = stream.getLevel();
+  currEnt->msg = buf;
+  time (&(currEnt->when));
 
+  /* add to log entry chain */
   *next_logent = currEnt;
   next_logent = &(currEnt->next);
-
-  time (&(currEnt->when));
-  currEnt->msg = buf;
-
-  /* reset for next use */
-  theStream = new std::stringbuf;
-  rdbuf (theStream);
-  init (theStream);
 }
 
-/* End of a Log comment */
+// End-of-log message stream manipulator
 std::ostream& endLog(std::ostream& outs)
 {
-  /* Doesn't seem to be any way around this */
-  dynamic_cast<LogFile &>(outs).endEntry();
+  // Cast to LogStream to access parent and level information.
+  LogStream *log_stream = dynamic_cast<LogStream *>(&outs);
+  if (log_stream && log_stream->getParent())
+    {
+      log_stream->getParent()->endEntry(*log_stream);
+    }
   return outs;
 }
