@@ -19,6 +19,7 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <mutex>
 
 enum log_level {
   LOG_PLAIN = 2,
@@ -73,6 +74,7 @@ protected:
 
 private:
   void log_save (int babble, const std::string& filename, bool append);
+  std::mutex log_mutex;
 };
 
 // End of a Log comment
