@@ -217,8 +217,11 @@ LogFile::endEntry(LogStream &stream)
   time (&(currEnt->when));
 
   /* add to log entry chain */
-  *next_logent = currEnt;
-  next_logent = &(currEnt->next);
+  {
+    std::lock_guard <std::mutex> scope(log_mutex);
+    *next_logent = currEnt;
+    next_logent = &(currEnt->next);
+  }
 }
 
 // End-of-log message stream manipulator
