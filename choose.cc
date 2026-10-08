@@ -350,10 +350,10 @@ ChooserPage::applyCommandLinePackageSelection()
             {
               PackageDepends bdp = pv.build_depends();
 
-              std::ostream & logger = Log (LOG_BABBLE);
-              logger << "      build-depends=";
-              dumpPackageDepends(bdp, logger);
-              logger << endLog;
+              auto logger = LogPtr (LOG_BABBLE);
+              *logger << "      build-depends=";
+              dumpPackageDepends(bdp, *logger);
+              *logger << endLog;
 
               for (PackageDepends::const_iterator j = bdp.begin();
                    j != bdp.end();

@@ -85,6 +85,7 @@ void LogPlainPrintf(const char *fmt, ...);
 LogFile &getGlobalLogger();
 
 #define Log(X) (*(getGlobalLogger ().getStream (X)))
+#define LogPtr(X) (getGlobalLogger ().getStream (X))
 
 #define Logger() (getGlobalLogger ())
 

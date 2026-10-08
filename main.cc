@@ -345,8 +345,11 @@ WinMain (HINSTANCE h,
           Log (LOG_PLAIN) << "\n" << LoadStringUtf8(IDS_HELPTEXT_ERROR) << "\n" << endLog;
         Log (LOG_PLAIN) << "Cygwin setup " << setup_version << endLog;
         Log (LOG_PLAIN) << "\n" << LoadStringUtf8(IDS_HELPTEXT_HEADER) << "\n" << endLog;
-	GetOption::GetInstance ().ParameterUsage (Log (LOG_PLAIN), LoadStringUtf8);
-	Log (LOG_PLAIN) << endLog;
+        {
+          auto logger = LogPtr (LOG_PLAIN);
+          GetOption::GetInstance ().ParameterUsage (*logger, LoadStringUtf8);
+          *logger << endLog;
+        }
         Log (LOG_PLAIN) << LoadStringUtf8(IDS_HELPTEXT_FOOTER) << endLog;
         ExitManager::exit (invalid_option ? 1 : 0, false);
 	goto finish_up;
