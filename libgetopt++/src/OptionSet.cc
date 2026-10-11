@@ -86,14 +86,17 @@ OptionSet::doNoArgumentOption(std::string &option, std::string::size_type const 
 {
     if (pos == 1 && option.size() > 1) {
 	/* Parameter when none allowed */
-	
+
 	if (option.find("=") == 1)
 	    /* How best to provide failure state ? */
 	    return false;
-	
-	argv.insert(argv.begin() + 1,"-" + option.substr(1));
+
+        /* Reinsert any remaining single-character options after this
+           one */
+        if (option.size() > 1)
+          argv.insert(argv.begin() + 1,"-" + option.substr(1));
     }
-    
+
     if (pos == 2) {
 	if (option.find("=") != std::string::npos)
 	    /* How best to provide failure state ? */
@@ -142,10 +145,12 @@ OptionSet::doOption(std::string &option, std::string::size_type const &pos)
                     /* value if present is in this argv */
 
                     if (option.find ("=") == 1) {
-                        /* option present */
+                        /* value present */
                         value = option.substr(2);
                     } else
-                        /* no option present */
+                        /* no value present - reinsert any remaining
+                         single-character options after this one */
+                      if (option.size() > 1)
                         argv.insert(argv.begin() + 1,"-" + option.substr(1));
                 }
             }
@@ -207,7 +212,10 @@ OptionSet::doOption(std::string &option, std::string::size_type const &pos)
                     value = option.substr(2);
                 }
 
-                argv.insert(argv.begin() + 1,"-" + option.substr(1));
+                /* Reinsert any remaining single-character options after this
+                   one */
+                if (option.size() > 1)
+                  argv.insert(argv.begin() + 1,"-" + option.substr(1));
             }
 
             if (pos == 2) {
